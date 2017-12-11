@@ -31,52 +31,68 @@
             this.ButtonStart = new System.Windows.Forms.Button();
             this.ButtonStop = new System.Windows.Forms.Button();
             this.RichTextBoxConsole = new System.Windows.Forms.RichTextBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // ButtonStart
             // 
-            this.ButtonStart.Location = new System.Drawing.Point(13, 13);
+            this.ButtonStart.Location = new System.Drawing.Point(17, 16);
+            this.ButtonStart.Margin = new System.Windows.Forms.Padding(4);
             this.ButtonStart.Name = "ButtonStart";
-            this.ButtonStart.Size = new System.Drawing.Size(110, 23);
+            this.ButtonStart.Size = new System.Drawing.Size(98, 28);
             this.ButtonStart.TabIndex = 0;
-            this.ButtonStart.Text = "Start";
+            this.ButtonStart.Text = "Start Server";
             this.ButtonStart.UseVisualStyleBackColor = true;
             this.ButtonStart.Click += new System.EventHandler(this.ButtonStart_Click);
             // 
             // ButtonStop
             // 
             this.ButtonStop.Enabled = false;
-            this.ButtonStop.Location = new System.Drawing.Point(205, 13);
+            this.ButtonStop.Location = new System.Drawing.Point(325, 16);
+            this.ButtonStop.Margin = new System.Windows.Forms.Padding(4);
             this.ButtonStop.Name = "ButtonStop";
-            this.ButtonStop.Size = new System.Drawing.Size(110, 23);
+            this.ButtonStop.Size = new System.Drawing.Size(98, 28);
             this.ButtonStop.TabIndex = 0;
-            this.ButtonStop.Text = "Stop";
+            this.ButtonStop.Text = "Stop Server";
             this.ButtonStop.UseVisualStyleBackColor = true;
             this.ButtonStop.Click += new System.EventHandler(this.ButtonStop_Click);
             // 
             // RichTextBoxConsole
             // 
-            this.RichTextBoxConsole.Location = new System.Drawing.Point(13, 42);
+            this.RichTextBoxConsole.Location = new System.Drawing.Point(17, 100);
+            this.RichTextBoxConsole.Margin = new System.Windows.Forms.Padding(4);
             this.RichTextBoxConsole.Name = "RichTextBoxConsole";
             this.RichTextBoxConsole.ReadOnly = true;
-            this.RichTextBoxConsole.Size = new System.Drawing.Size(302, 226);
+            this.RichTextBoxConsole.Size = new System.Drawing.Size(401, 229);
             this.RichTextBoxConsole.TabIndex = 1;
             this.RichTextBoxConsole.Text = "";
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(17, 76);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(55, 17);
+            this.label1.TabIndex = 2;
+            this.label1.Text = "Details:";
+            // 
             // WinFormsServer
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(327, 280);
+            this.ClientSize = new System.Drawing.Size(436, 345);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.RichTextBoxConsole);
             this.Controls.Add(this.ButtonStop);
             this.Controls.Add(this.ButtonStart);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.MaximizeBox = false;
             this.Name = "WinFormsServer";
             this.Text = "SignalR Server";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.WinFormsServer_FormClosing);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -85,6 +101,7 @@
         private System.Windows.Forms.Button ButtonStart;
         private System.Windows.Forms.Button ButtonStop;
         private System.Windows.Forms.RichTextBox RichTextBoxConsole;
+        private System.Windows.Forms.Label label1;
     }
 }
 
