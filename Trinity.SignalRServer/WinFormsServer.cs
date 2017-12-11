@@ -65,14 +65,14 @@ namespace SignalRChat
 
         private void WinFormsServer_FormClosing(object sender, FormClosingEventArgs e)
         {
-            
+
             if (SignalR != null)
             {
                 SignalR.Dispose();
             }
         }
-    }
 
+    }
     class Startup
     {
         public void Configuration(IAppBuilder app)

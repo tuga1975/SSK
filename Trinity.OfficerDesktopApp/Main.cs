@@ -32,10 +32,10 @@ namespace OfficerDesktopApp
 
         private void buttonSend_Click(object sender, EventArgs e)
         {
-            HubProxy.Invoke("AddNotification", textBoxSubject.Text, richTextBoxContent.Text);
-            richTextBoxContent.Text = String.Empty;
-            textBoxSubject.Text = String.Empty;
-            textBoxSubject.Focus();
+            HubProxy.Invoke("AddNotification", txtSubject.Text, rtbContent.Text);
+            rtbContent.Text = String.Empty;
+            txtSubject.Text = String.Empty;
+            txtSubject.Focus();
         }
 
         private async void ConnectAsync()
@@ -62,17 +62,17 @@ namespace OfficerDesktopApp
             }
 
             //Activate UI
-            textBoxSubject.Enabled = true;
-            richTextBoxContent.Enabled = true;
+            txtSubject.Enabled = true;
+            rtbContent.Enabled = true;
             buttonSend.Enabled = true;
-            textBoxSubject.Focus();
+            txtSubject.Focus();
             labelStatus.Text = "Connected to server at " + ServerURI;
         }
         private void Connection_Closed()
         {
             //Deactivate chat UI; show login UI. 
-            this.Invoke((Action)(() => textBoxSubject.Enabled = false));
-            this.Invoke((Action)(() => richTextBoxContent.Enabled = false));
+            this.Invoke((Action)(() => txtSubject.Enabled = false));
+            this.Invoke((Action)(() => rtbContent.Enabled = false));
             this.Invoke((Action)(() => labelStatus.Text = "You have been disconnected."));
         }
 
