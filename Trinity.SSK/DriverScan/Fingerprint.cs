@@ -29,25 +29,26 @@ namespace SSK.DriverScan
         }
         private void ThreadScan()
         {
-            web.LoadPageHtml("FingerPrint.html");
+            web.LoadPageHtml("Authentication/FingerPrint.html");
+            web.RunScript("$('.status-text').css('color','#000').text('Please place your finger on the reader.');");
+            Thread.Sleep(1000);
             bool status = Event_Scan();
             while (!status && CountScan < 3)
             {
                 CountScan++;
-                web.RunScript("$('.status-text').text('Fingerprint Scanning " + CountScan + "/3');");
                 status = Event_Scan();
 
             }
             if (!status)
             {
-                web.RunScript("$('.status-text').text('Fingerprint Scanning  Failure');");
+                web.RunScript("$('.status-text').text('Fingerprint Scanning Failure. Please try again.');");
                 Thread.Sleep(1000);
                 CountScan = 0;
                 smartCard.Scanning();
             }
             else
             {
-                web.RunScript("$('.status-text').text('Fingerprint Scanning Success');");
+                web.RunScript("$('.status-text').css('color','blue').text('Fingerprint Scanning Success');");
                 Thread.Sleep(1000);
                 web.LoadPageHtml("Supervisee.html");
             }
@@ -55,7 +56,7 @@ namespace SSK.DriverScan
 
         private bool Event_Scan()
         {
-            Thread.Sleep(3000);
+            Thread.Sleep(5000);
             return (ran.Next(0, 10)) % 2 == 0 ? true : false;
         }
 

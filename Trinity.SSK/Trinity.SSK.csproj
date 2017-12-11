@@ -237,14 +237,13 @@
     <Content Include="View\bootstrap\fonts\fontawesome-webfont.svg" />
     <Content Include="View\bootstrap\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="View\bootstrap\js\bootstrap.min.js" />
-    <Content Include="View\html\index.html" />
-    <Content Include="View\html\FingerPrint.html" />
-    <Content Include="View\html\mov_bbb.mp4" />
-    <Content Include="View\html\SmartCard.html" />
+    <Content Include="View\html\Layer.html" />
+    <Content Include="View\html\Authentication\FingerPrint.html" />
+    <Content Include="View\html\Authentication\mov_bbb.mp4" />
+    <Content Include="View\html\Authentication\SmartCard.html" />
     <Content Include="View\html\Notication.html" />
     <Content Include="View\html\Profile.html" />
     <Content Include="View\html\Supervisee.html" />
-    <Content Include="View\html\login.html" />
     <Content Include="View\scripts\jquery-1.10.2.min.js" />
     <Content Include="View\scripts\lib.js" />
     <Content Include="View\styles\main.css" />
@@ -254,6 +253,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Partial\" />
+    <Folder Include="View\img\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" />
