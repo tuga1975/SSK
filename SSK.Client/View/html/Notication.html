@@ -1,0 +1,61 @@
+﻿<div>
+    <div style="text-align:left;width:50%;float:left;">
+        <span style="border:1px solid #CCC;padding:5px 10px;">
+            Notification
+        </span>
+    </div>
+
+    <div class="col-md-6" style="text-align:right;width:50%;float:right;">
+        <span style="border:1px solid #CCC;padding:5px 10px;">
+            1 of XX message
+        </span>
+    </div>
+    <div style="clear:both;"></div>
+</div>
+
+<div id="myCarousel" class="carousel slide" data-ride="carousel" noti style="margin-top:20px;">
+    <!-- Indicators -->
+    <ol class="carousel-indicators">
+    </ol>
+
+    <!-- Wrapper for slides -->
+    <div class="carousel-inner">
+    </div>
+
+    <!-- Left and right controls -->
+    <a class="left carousel-control" href="#myCarousel" data-slide="prev">
+        <span class="glyphicon glyphicon-chevron-left"></span>
+        <span class="sr-only">Previous</span>
+    </a>
+    <a class="right carousel-control" href="#myCarousel" data-slide="next">
+        <span class="glyphicon glyphicon-chevron-right"></span>
+        <span class="sr-only">Next</span>
+    </a>
+</div>
+
+
+<button type="button" class="btn btn-danger" style="position:fixed;bottom:10px;left:10px;" onclick="api.server.LoadPage('Supervisee.html');">Back</button>
+
+<style type="text/css">
+    [noti] .carousel-inner{
+        width:70%;
+        margin:auto;
+        border:1px solid #CCC;
+        padding:10px;
+    }
+    [noti] .carousel-control{
+        background-image:none;
+    }
+        [noti] .carousel-control .glyphicon {
+            font-size:40px;
+            color:#000;
+        }
+    
+</style>
+<script type="text/javascript">
+    for (var i = 0; i < api.model.length; i++) {
+        $('[noti] .carousel-indicators').append('<li data-target="#myCarousel" data-slide-to="' + i + '" class="' + (i == 0 ? 'active' : '') + '"></li>');
+        $('[noti] .carousel-inner').append('<div class="item ' + (i == 0 ? 'active' : '') + '">To: Suppervise<br />Date: <br />Subject: ' + api.model[i].Subject + '<div style="margin-top: 20px;">' + api.model[i].Content + '</div></div>');
+    }
+    api.countNoti = 0;
+</script>

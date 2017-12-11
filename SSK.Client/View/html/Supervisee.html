@@ -1,0 +1,61 @@
+﻿<div class="row" sup>
+    <div class="col-sm-3">
+        <div class="thumbnail">
+            <a href="javascript:;"  onclick="api.server.GetQueuAsync(10);">
+                <img src="https://www.reninc.com/wp-content/uploads/2016/12/Reporting-Icon-300x300.png">
+                <div class="caption">
+                    <p>Reporting for Queue Number</p>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div class="col-sm-3">
+        <div class="thumbnail">
+            <a href="javascript:;" onclick="api.server.LoadPage('Profile.html');">
+                <img src="https://cdn4.iconfinder.com/data/icons/gray-user-management/512/refresh-512.png">
+                <div class="caption">
+                    <p>Update Profile</p>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div class="col-sm-3">
+        <div class="thumbnail">
+            <a href="javascript:;" onclick="api.server.LoadPage('BookAppointment.html');">
+                <img src="http://eddiesbarbershoppe.com/wp-content/uploads/2014/02/Calendar-Clock-Icon.jpeg">
+                <div class="caption">
+                    <p>Book Appointment</p>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div class="col-sm-3">
+        <div class="thumbnail">
+            <a href="javascript:;" onclick="api.server.LoadNotication();">
+                <img src="https://cdn4.iconfinder.com/data/icons/flat-shaded-2/512/Notification-512.png">
+                <div class="caption">
+                    <p>Notication</p>
+                    <span class="badge" notinumber></span>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+
+<style type="text/css">
+    [sup] .caption {
+        text-align: center;
+    }
+    [sup] img {
+        width: 100px;
+        height: auto;
+    }
+    [sup]{
+        text-align:center;
+    }
+</style>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('[notinumber]').text(api.countNoti == 0 ? '' : api.countNoti);
+    });
+</script>
