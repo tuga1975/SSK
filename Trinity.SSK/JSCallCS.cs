@@ -17,7 +17,7 @@ namespace SSK
         private DbContext.SSKCentralizedEntities sSKCentralizedEntities = new DbContext.SSKCentralizedEntities();
         private WebBrowser web = null;
         private Type thisType = null;
-        private Dictionary<string, Thread> arrayThread = new Dictionary<string, Thread>();
+
         public JSCallCS(WebBrowser web)
         {
             this.web = web;
@@ -53,20 +53,7 @@ namespace SSK
         }
         public void ClientCallServer(string method,params object[] pram)
         {
-            Thread thread = null;
-            if (!arrayThread.ContainsKey(method))
-            {
-                thread = new Thread(actionThread);
-                thread.IsBackground = true;
-                arrayThread.Add(method, thread);
-                thread.Start(new object[] { method,pram });
-            
-            }else
-            {
-                arrayThread[method] = new Thread(actionThread);
-                arrayThread[method].IsBackground = true;
-                arrayThread[method].Start(new object[] { method, pram });
-            }
+            ThreadPool.QueueUserWorkItem(new WaitCallback(actionThread), new object[] { method, pram });
         }
     }
 }

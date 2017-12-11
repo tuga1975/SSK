@@ -121,6 +121,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>SSKModel.edmx</DependentUpon>
     </Compile>
+    <Compile Include="DriverScan\Fingerprint.cs" />
+    <Compile Include="DriverScan\SmartCard.cs" />
     <Compile Include="Main.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -237,6 +239,7 @@
     <Content Include="View\bootstrap\js\bootstrap.min.js" />
     <Content Include="View\html\index.html" />
     <Content Include="View\html\FingerPrint.html" />
+    <Content Include="View\html\mov_bbb.mp4" />
     <Content Include="View\html\SmartCard.html" />
     <Content Include="View\html\Notication.html" />
     <Content Include="View\html\Profile.html" />
@@ -250,7 +253,6 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="DriverScan\" />
     <Folder Include="Partial\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

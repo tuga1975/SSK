@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNet.SignalR.Client;
 using Newtonsoft.Json;
 using SSK.Business;
+using SSK.DriverScan;
 using SSK.Models;
 using System;
 using System.Collections.Generic;
@@ -24,12 +25,12 @@ namespace SSK
         private HubConnection Connection { get; set; }
         private JSCallCS jsCallCS = null;
 
-        //private SmartCard smartCard = null;
+        private SmartCard smartCard = null;
         public Main()
         {
             InitializeComponent();
             jsCallCS = new JSCallCS(this.LayerWeb);
-            //smartCard = new SmartCard(this.LayerWeb);
+            smartCard = new SmartCard(this.LayerWeb);
             this.LayerWeb.Url = new Uri(String.Format("file:///{0}/View/html/index.html", CSCallJS.curDir));
             this.LayerWeb.ObjectForScripting = jsCallCS;
             
@@ -43,7 +44,7 @@ namespace SSK
             //this.LayerWeb.LoadPageHtml("login.html");
             this.LayerWeb.InvokeScript("createEvent", JsonConvert.SerializeObject(jsCallCS.GetType().GetMethods().Where(d => d.IsPublic && !d.IsVirtual && !d.IsSecuritySafeCritical).ToArray().Select(d => d.Name)));
             checkNotification();
-            //smartCard.Scanning();
+            smartCard.Scanning();
 
         }
 
@@ -72,11 +73,11 @@ namespace SSK
         }
         private void checkNotification()
         {
-            DbContext.SSKCentralizedEntities sSKCentralizedEntities = new DbContext.SSKCentralizedEntities();
-            var unread = sSKCentralizedEntities.Notifications.Where(item => item.Read != true).Select(d => d.Id).Count();
+            //DbContext.SSKCentralizedEntities sSKCentralizedEntities = new DbContext.SSKCentralizedEntities();
+            //var unread = sSKCentralizedEntities.Notifications.Where(item => item.Read != true).Select(d => d.Id).Count();
             LayerWeb.Invoke((MethodInvoker)(() =>
             {
-                LayerWeb.PushNoti(unread);
+                LayerWeb.PushNoti(10);
             }));
         }
     }
