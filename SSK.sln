@@ -1,13 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2010
+VisualStudioVersion = 15.0.26403.7
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SSK.Client", "SSK.Client\SSK.Client.csproj", "{B65ECADC-0BC9-4B1A-84EE-C1FE0541A787}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trinity.SSK", "Trinity.SSK\Trinity.SSK.csproj", "{B65ECADC-0BC9-4B1A-84EE-C1FE0541A787}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignalRServer", "SignalRServer\SignalRServer.csproj", "{2368DFE4-48D1-482D-9445-B5F95FEF5424}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trinity.SignalRServer", "Trinity.SignalRServer\Trinity.SignalRServer.csproj", "{2368DFE4-48D1-482D-9445-B5F95FEF5424}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OfficerDesktopApp", "OfficerDesktopApp\OfficerDesktopApp.csproj", "{5EC0C99E-3EA6-49B6-A1F2-1F5BCB7DB019}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trinity.OfficerDesktopApp", "Trinity.OfficerDesktopApp\Trinity.OfficerDesktopApp.csproj", "{5EC0C99E-3EA6-49B6-A1F2-1F5BCB7DB019}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
