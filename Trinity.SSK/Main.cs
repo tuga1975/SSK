@@ -36,8 +36,8 @@ namespace SSK
             
             ConnectAsync();
 
-            SCardMonitor sCardMonitor = new SCardMonitor();
-            sCardMonitor.Start();
+            //SCardMonitor sCardMonitor = new SCardMonitor();
+            //sCardMonitor.Start();
 
             //
             // For testing purpose only
