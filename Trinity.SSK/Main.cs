@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNet.SignalR.Client;
 using Newtonsoft.Json;
 using SSK.Business;
+using SSK.DeviceMonitor;
 using SSK.DriverScan;
 using SSK.Models;
 using System;
@@ -31,11 +32,18 @@ namespace SSK
             InitializeComponent();
             jsCallCS = new JSCallCS(this.LayerWeb);
             smartCard = new SmartCard(this.LayerWeb);
-            this.LayerWeb.Url = new Uri(String.Format("file:///{0}/View/html/Layer.html", CSCallJS.curDir));
+            this.LayerWeb.Url = new Uri(String.Format("file:///{0}/View/html/Layout.html", CSCallJS.curDir));
             this.LayerWeb.ObjectForScripting = jsCallCS;
             
             ConnectAsync();
-
+            //this.Invoke((MethodInvoker)(() =>
+            //{
+            //    SCardMonitor sCardMonitor = new SCardMonitor();
+            //    sCardMonitor.Start();
+            //}));
+            //Task task = new Task(sCardMonitor.Start);
+            //task.Start();
+            //sCardMonitor.Start();
         }
 
         private void LayerWeb_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
