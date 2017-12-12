@@ -1,5 +1,4 @@
-﻿using SSK.Business;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -14,7 +13,6 @@ namespace SSK
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public class JSCallCS
     {
-        private DbContext.SSKCentralizedEntities sSKCentralizedEntities = new DbContext.SSKCentralizedEntities();
         private WebBrowser web = null;
         private Type thisType = null;
 
@@ -32,9 +30,9 @@ namespace SSK
 
         public async Task GetQueuAsync(int a)
         {
-            QueueHandler queuHandler = new QueueHandler();
-            var queuValue = queuHandler.GetQueue();
-            MessageBox.Show(queuValue);
+            //QueueHandler queuHandler = new QueueHandler();
+            //var queuValue = queuHandler.GetQueue();
+            MessageBox.Show("1");
         }
         
         public void LoadNotication()

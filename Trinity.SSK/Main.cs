@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNet.SignalR.Client;
 using Newtonsoft.Json;
-using SSK.Business;
 using SSK.DeviceMonitor;
 using SSK.DriverScan;
 using SSK.Models;
@@ -39,6 +38,12 @@ namespace SSK
 
             SCardMonitor sCardMonitor = new SCardMonitor();
             sCardMonitor.Start();
+
+            //
+            // For testing purpose only
+            // 
+            //Trinity.DAL.DAL.DAL_User dalUser = new Trinity.DAL.DAL.DAL_User();
+            //Trinity.BE.User user = dalUser.GetUserBySmartCardId("123456789");
         }
 
         private void LayerWeb_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
@@ -46,7 +51,7 @@ namespace SSK
 
             //this.LayerWeb.LoadPageHtml("login.html");
             this.LayerWeb.InvokeScript("createEvent", JsonConvert.SerializeObject(jsCallCS.GetType().GetMethods().Where(d => d.IsPublic && !d.IsVirtual && !d.IsSecuritySafeCritical).ToArray().Select(d => d.Name)));
-            checkNotification();
+            CheckNotification();
             smartCard.Scanning();
 
         }
@@ -57,7 +62,7 @@ namespace SSK
             Connection.Closed += Connection_Closed;
             HubProxy = Connection.CreateHubProxy("MyHub");
             //Handle incoming event from server: use Invoke to write to console from SignalR's thread
-            HubProxy.On("checkNotification", () => checkNotification());
+            HubProxy.On("checkNotification", () => CheckNotification());
 
             try
             {
@@ -74,7 +79,7 @@ namespace SSK
         {
             Connection.Start();
         }
-        private void checkNotification()
+        private void CheckNotification()
         {
             //DbContext.SSKCentralizedEntities sSKCentralizedEntities = new DbContext.SSKCentralizedEntities();
             //var unread = sSKCentralizedEntities.Notifications.Where(item => item.Read != true).Select(d => d.Id).Count();

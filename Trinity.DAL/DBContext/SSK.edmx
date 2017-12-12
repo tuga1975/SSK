@@ -1,0 +1,600 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="SSKModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="AbsenceReporting">
+          <Key>
+            <PropertyRef Name="UserId" />
+            <PropertyRef Name="ReportingDate" />
+          </Key>
+          <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="ReportingDate" Type="date" Nullable="false" />
+          <Property Name="AbsenceReason" Type="smallint" />
+          <Property Name="ReasonDetails" Type="nvarchar" MaxLength="500" />
+          <Property Name="ScannedDocument" Type="varbinary(max)" />
+        </EntityType>
+        <EntityType Name="Addresses">
+          <Key>
+            <PropertyRef Name="Address_ID" />
+          </Key>
+          <Property Name="Address_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="255" />
+          <Property Name="BlkHouse_Number" Type="varchar" MaxLength="50" />
+          <Property Name="FlrUnit_Number" Type="varchar" MaxLength="50" />
+          <Property Name="Street_Name" Type="varchar" MaxLength="255" />
+          <Property Name="Country" Type="nvarchar" MaxLength="50" />
+          <Property Name="Postal_Code" Type="varchar" MaxLength="30" />
+        </EntityType>
+        <EntityType Name="Appointments">
+          <Key>
+            <PropertyRef Name="UserId" />
+            <PropertyRef Name="Date" />
+          </Key>
+          <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="Date" Type="date" Nullable="false" />
+          <Property Name="FromTime" Type="time" Precision="7" Nullable="false" />
+          <Property Name="ToTime" Type="time" Precision="7" Nullable="false" />
+          <Property Name="ChangedCount" Type="smallint" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Holidays">
+          <Key>
+            <PropertyRef Name="Holiday" />
+          </Key>
+          <Property Name="Holiday" Type="date" Nullable="false" />
+          <Property Name="IsSingHoliday" Type="bit" Nullable="false" />
+          <Property Name="IsMalayHoliday" Type="bit" />
+        </EntityType>
+        <EntityType Name="Notifications">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Date" Type="datetime" />
+          <Property Name="FromUserId" Type="nvarchar" MaxLength="128" />
+          <Property Name="ToUserId" Type="nvarchar" MaxLength="128" />
+          <Property Name="Subject" Type="nvarchar" MaxLength="100" />
+          <Property Name="Content" Type="nvarchar" MaxLength="500" />
+          <Property Name="IsRead" Type="bit" />
+        </EntityType>
+        <EntityType Name="User_Profiles">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="Primary_Phone" Type="varchar" MaxLength="50" />
+          <Property Name="Secondary_Phone" Type="varchar" MaxLength="50" />
+          <Property Name="Primary_Email" Type="nvarchar" MaxLength="255" />
+          <Property Name="Secondary_Email" Type="nvarchar" MaxLength="255" />
+          <Property Name="DOB" Type="date" />
+          <Property Name="Nationality" Type="nchar" MaxLength="10" />
+          <Property Name="Maritial_Status" Type="nvarchar" MaxLength="50" />
+          <Property Name="Residential_Addess_ID" Type="int" />
+          <Property Name="Other_Address_ID" Type="int" />
+          <Property Name="NextOfKin_Name" Type="nvarchar" MaxLength="255" />
+          <Property Name="NextOfKin_Contact_Number" Type="varchar" MaxLength="50" />
+          <Property Name="NextOfKin_Relationship" Type="nvarchar" MaxLength="255" />
+          <Property Name="NextOfKin_BlkHouse_Number" Type="varchar" MaxLength="50" />
+          <Property Name="NextOfKin_FlrUnit_Number" Type="varchar" MaxLength="50" />
+          <Property Name="NextOfKin_Street_Name" Type="nvarchar" MaxLength="255" />
+          <Property Name="NextOfKin_Country" Type="nvarchar" MaxLength="50" />
+          <Property Name="NextOfKin_PostalCode" Type="varchar" MaxLength="30" />
+          <Property Name="Employment_Name" Type="nvarchar" MaxLength="255" />
+          <Property Name="Employment_Contact_Number" Type="nvarchar" MaxLength="50" />
+          <Property Name="Employment_Company_Name" Type="nvarchar" MaxLength="255" />
+          <Property Name="Employment_Job_Title" Type="nvarchar" MaxLength="50" />
+          <Property Name="Employment_Start_Date" Type="date" />
+          <Property Name="Employment_End_Date" Type="date" />
+          <Property Name="Employment_Remarks" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="Users">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="NRIC" Type="nvarchar" MaxLength="20" />
+          <Property Name="Name" Type="nvarchar" MaxLength="128" />
+          <Property Name="LastLoginTime" Type="datetime" />
+          <Property Name="SmartCardFailedCount" Type="smallint" />
+          <Property Name="FingerprintFailedCount" Type="smallint" />
+          <Property Name="SmartCard_Id" Type="nvarchar" MaxLength="50" />
+          <Property Name="EnrolledDate" Type="datetime" />
+          <Property Name="Type" Type="smallint" />
+          <Property Name="DutyOfficer_Id" Type="nvarchar" MaxLength="128" />
+        </EntityType>
+        <Association Name="FK_AbsenceReporting_Users">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="AbsenceReporting" Type="Self.AbsenceReporting" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="AbsenceReporting">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Appointments_Users">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="Appointments" Type="Self.Appointments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="Appointments">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Notifications_Users">
+          <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
+          <End Role="Notifications" Type="Self.Notifications" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="Notifications">
+              <PropertyRef Name="FromUserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Notifications_Users1">
+          <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
+          <End Role="Notifications" Type="Self.Notifications" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="Notifications">
+              <PropertyRef Name="ToUserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_User_Profiles_Addresses">
+          <End Role="Addresses" Type="Self.Addresses" Multiplicity="0..1" />
+          <End Role="User_Profiles" Type="Self.User_Profiles" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Addresses">
+              <PropertyRef Name="Address_ID" />
+            </Principal>
+            <Dependent Role="User_Profiles">
+              <PropertyRef Name="Residential_Addess_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_User_Profiles_Addresses1">
+          <End Role="Addresses" Type="Self.Addresses" Multiplicity="0..1" />
+          <End Role="User_Profiles" Type="Self.User_Profiles" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Addresses">
+              <PropertyRef Name="Address_ID" />
+            </Principal>
+            <Dependent Role="User_Profiles">
+              <PropertyRef Name="Other_Address_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_User_Profiles_Users">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="User_Profiles" Type="Self.User_Profiles" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="User_Profiles">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="SSKModelStoreContainer">
+          <EntitySet Name="AbsenceReporting" EntityType="Self.AbsenceReporting" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Addresses" EntityType="Self.Addresses" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Appointments" EntityType="Self.Appointments" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Holidays" EntityType="Self.Holidays" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Notifications" EntityType="Self.Notifications" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="User_Profiles" EntityType="Self.User_Profiles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_AbsenceReporting_Users" Association="Self.FK_AbsenceReporting_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="AbsenceReporting" EntitySet="AbsenceReporting" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Appointments_Users" Association="Self.FK_Appointments_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Appointments" EntitySet="Appointments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Notifications_Users" Association="Self.FK_Notifications_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Notifications" EntitySet="Notifications" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Notifications_Users1" Association="Self.FK_Notifications_Users1">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Notifications" EntitySet="Notifications" />
+          </AssociationSet>
+          <AssociationSet Name="FK_User_Profiles_Addresses" Association="Self.FK_User_Profiles_Addresses">
+            <End Role="Addresses" EntitySet="Addresses" />
+            <End Role="User_Profiles" EntitySet="User_Profiles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_User_Profiles_Addresses1" Association="Self.FK_User_Profiles_Addresses1">
+            <End Role="Addresses" EntitySet="Addresses" />
+            <End Role="User_Profiles" EntitySet="User_Profiles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_User_Profiles_Users" Association="Self.FK_User_Profiles_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="User_Profiles" EntitySet="User_Profiles" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="SSKModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="AbsenceReporting">
+          <Key>
+            <PropertyRef Name="UserId" />
+            <PropertyRef Name="ReportingDate" />
+          </Key>
+          <Property Name="UserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ReportingDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="AbsenceReason" Type="Int16" />
+          <Property Name="ReasonDetails" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="ScannedDocument" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <NavigationProperty Name="User" Relationship="Self.FK_AbsenceReporting_Users" FromRole="AbsenceReporting" ToRole="Users" />
+        </EntityType>
+        <EntityType Name="Address">
+          <Key>
+            <PropertyRef Name="Address_ID" />
+          </Key>
+          <Property Name="Address_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="BlkHouse_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="FlrUnit_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Street_Name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Country" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Postal_Code" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="User_Profiles" Relationship="Self.FK_User_Profiles_Addresses" FromRole="Addresses" ToRole="User_Profiles" />
+          <NavigationProperty Name="User_Profiles1" Relationship="Self.FK_User_Profiles_Addresses1" FromRole="Addresses" ToRole="User_Profiles" />
+        </EntityType>
+        <EntityType Name="Appointment">
+          <Key>
+            <PropertyRef Name="UserId" />
+            <PropertyRef Name="Date" />
+          </Key>
+          <Property Name="UserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Date" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="FromTime" Type="Time" Nullable="false" Precision="7" />
+          <Property Name="ToTime" Type="Time" Nullable="false" Precision="7" />
+          <Property Name="ChangedCount" Type="Int16" Nullable="false" />
+          <NavigationProperty Name="User" Relationship="Self.FK_Appointments_Users" FromRole="Appointments" ToRole="Users" />
+        </EntityType>
+        <EntityType Name="Holiday">
+          <Key>
+            <PropertyRef Name="Holiday1" />
+          </Key>
+          <Property Name="Holiday1" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="IsSingHoliday" Type="Boolean" Nullable="false" />
+          <Property Name="IsMalayHoliday" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="Notification">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Date" Type="DateTime" Precision="3" />
+          <Property Name="FromUserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="ToUserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Subject" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Content" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="IsRead" Type="Boolean" />
+          <NavigationProperty Name="User" Relationship="Self.FK_Notifications_Users" FromRole="Notifications" ToRole="Users" />
+          <NavigationProperty Name="User1" Relationship="Self.FK_Notifications_Users1" FromRole="Notifications" ToRole="Users" />
+        </EntityType>
+        <EntityType Name="User_Profiles">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Primary_Phone" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Secondary_Phone" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Primary_Email" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Secondary_Email" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="DOB" Type="DateTime" Precision="0" />
+          <Property Name="Nationality" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="Maritial_Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Residential_Addess_ID" Type="Int32" />
+          <Property Name="Other_Address_ID" Type="Int32" />
+          <Property Name="NextOfKin_Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="NextOfKin_Contact_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="NextOfKin_Relationship" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="NextOfKin_BlkHouse_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="NextOfKin_FlrUnit_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="NextOfKin_Street_Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="NextOfKin_Country" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="NextOfKin_PostalCode" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="Employment_Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Employment_Contact_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Employment_Company_Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Employment_Job_Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Employment_Start_Date" Type="DateTime" Precision="0" />
+          <Property Name="Employment_End_Date" Type="DateTime" Precision="0" />
+          <Property Name="Employment_Remarks" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Address" Relationship="Self.FK_User_Profiles_Addresses" FromRole="User_Profiles" ToRole="Addresses" />
+          <NavigationProperty Name="Address1" Relationship="Self.FK_User_Profiles_Addresses1" FromRole="User_Profiles" ToRole="Addresses" />
+          <NavigationProperty Name="User" Relationship="Self.FK_User_Profiles_Users" FromRole="User_Profiles" ToRole="Users" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="NRIC" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="LastLoginTime" Type="DateTime" Precision="3" />
+          <Property Name="SmartCardFailedCount" Type="Int16" />
+          <Property Name="FingerprintFailedCount" Type="Int16" />
+          <Property Name="SmartCard_Id" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="EnrolledDate" Type="DateTime" Precision="3" />
+          <Property Name="Type" Type="Int16" />
+          <Property Name="DutyOfficer_Id" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AbsenceReportings" Relationship="Self.FK_AbsenceReporting_Users" FromRole="Users" ToRole="AbsenceReporting" />
+          <NavigationProperty Name="Appointments" Relationship="Self.FK_Appointments_Users" FromRole="Users" ToRole="Appointments" />
+          <NavigationProperty Name="Notifications" Relationship="Self.FK_Notifications_Users" FromRole="Users" ToRole="Notifications" />
+          <NavigationProperty Name="Notifications1" Relationship="Self.FK_Notifications_Users1" FromRole="Users" ToRole="Notifications" />
+          <NavigationProperty Name="User_Profiles" Relationship="Self.FK_User_Profiles_Users" FromRole="Users" ToRole="User_Profiles" />
+        </EntityType>
+        <Association Name="FK_AbsenceReporting_Users">
+          <End Role="Users" Type="Self.User" Multiplicity="1" />
+          <End Role="AbsenceReporting" Type="Self.AbsenceReporting" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="AbsenceReporting">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_User_Profiles_Addresses">
+          <End Role="Addresses" Type="Self.Address" Multiplicity="0..1" />
+          <End Role="User_Profiles" Type="Self.User_Profiles" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Addresses">
+              <PropertyRef Name="Address_ID" />
+            </Principal>
+            <Dependent Role="User_Profiles">
+              <PropertyRef Name="Residential_Addess_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_User_Profiles_Addresses1">
+          <End Role="Addresses" Type="Self.Address" Multiplicity="0..1" />
+          <End Role="User_Profiles" Type="Self.User_Profiles" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Addresses">
+              <PropertyRef Name="Address_ID" />
+            </Principal>
+            <Dependent Role="User_Profiles">
+              <PropertyRef Name="Other_Address_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Appointments_Users">
+          <End Role="Users" Type="Self.User" Multiplicity="1" />
+          <End Role="Appointments" Type="Self.Appointment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="Appointments">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Notifications_Users">
+          <End Role="Users" Type="Self.User" Multiplicity="0..1" />
+          <End Role="Notifications" Type="Self.Notification" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="Notifications">
+              <PropertyRef Name="FromUserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Notifications_Users1">
+          <End Role="Users" Type="Self.User" Multiplicity="0..1" />
+          <End Role="Notifications" Type="Self.Notification" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="Notifications">
+              <PropertyRef Name="ToUserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_User_Profiles_Users">
+          <End Role="Users" Type="Self.User" Multiplicity="1" />
+          <End Role="User_Profiles" Type="Self.User_Profiles" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="User_Profiles">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="SSKEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="AbsenceReportings" EntityType="Self.AbsenceReporting" />
+          <EntitySet Name="Addresses" EntityType="Self.Address" />
+          <EntitySet Name="Appointments" EntityType="Self.Appointment" />
+          <EntitySet Name="Holidays" EntityType="Self.Holiday" />
+          <EntitySet Name="Notifications" EntityType="Self.Notification" />
+          <EntitySet Name="User_Profiles" EntityType="Self.User_Profiles" />
+          <EntitySet Name="Users" EntityType="Self.User" />
+          <AssociationSet Name="FK_AbsenceReporting_Users" Association="Self.FK_AbsenceReporting_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="AbsenceReporting" EntitySet="AbsenceReportings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_User_Profiles_Addresses" Association="Self.FK_User_Profiles_Addresses">
+            <End Role="Addresses" EntitySet="Addresses" />
+            <End Role="User_Profiles" EntitySet="User_Profiles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_User_Profiles_Addresses1" Association="Self.FK_User_Profiles_Addresses1">
+            <End Role="Addresses" EntitySet="Addresses" />
+            <End Role="User_Profiles" EntitySet="User_Profiles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Appointments_Users" Association="Self.FK_Appointments_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Appointments" EntitySet="Appointments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Notifications_Users" Association="Self.FK_Notifications_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Notifications" EntitySet="Notifications" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Notifications_Users1" Association="Self.FK_Notifications_Users1">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Notifications" EntitySet="Notifications" />
+          </AssociationSet>
+          <AssociationSet Name="FK_User_Profiles_Users" Association="Self.FK_User_Profiles_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="User_Profiles" EntitySet="User_Profiles" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="SSKModelStoreContainer" CdmEntityContainer="SSKEntities">
+          <EntitySetMapping Name="AbsenceReportings">
+            <EntityTypeMapping TypeName="SSKModel.AbsenceReporting">
+              <MappingFragment StoreEntitySet="AbsenceReporting">
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="ReportingDate" ColumnName="ReportingDate" />
+                <ScalarProperty Name="AbsenceReason" ColumnName="AbsenceReason" />
+                <ScalarProperty Name="ReasonDetails" ColumnName="ReasonDetails" />
+                <ScalarProperty Name="ScannedDocument" ColumnName="ScannedDocument" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Addresses">
+            <EntityTypeMapping TypeName="SSKModel.Address">
+              <MappingFragment StoreEntitySet="Addresses">
+                <ScalarProperty Name="Address_ID" ColumnName="Address_ID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="BlkHouse_Number" ColumnName="BlkHouse_Number" />
+                <ScalarProperty Name="FlrUnit_Number" ColumnName="FlrUnit_Number" />
+                <ScalarProperty Name="Street_Name" ColumnName="Street_Name" />
+                <ScalarProperty Name="Country" ColumnName="Country" />
+                <ScalarProperty Name="Postal_Code" ColumnName="Postal_Code" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Appointments">
+            <EntityTypeMapping TypeName="SSKModel.Appointment">
+              <MappingFragment StoreEntitySet="Appointments">
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="FromTime" ColumnName="FromTime" />
+                <ScalarProperty Name="ToTime" ColumnName="ToTime" />
+                <ScalarProperty Name="ChangedCount" ColumnName="ChangedCount" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Holidays">
+            <EntityTypeMapping TypeName="SSKModel.Holiday">
+              <MappingFragment StoreEntitySet="Holidays">
+                <ScalarProperty Name="Holiday1" ColumnName="Holiday" />
+                <ScalarProperty Name="IsSingHoliday" ColumnName="IsSingHoliday" />
+                <ScalarProperty Name="IsMalayHoliday" ColumnName="IsMalayHoliday" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Notifications">
+            <EntityTypeMapping TypeName="SSKModel.Notification">
+              <MappingFragment StoreEntitySet="Notifications">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="FromUserId" ColumnName="FromUserId" />
+                <ScalarProperty Name="ToUserId" ColumnName="ToUserId" />
+                <ScalarProperty Name="Subject" ColumnName="Subject" />
+                <ScalarProperty Name="Content" ColumnName="Content" />
+                <ScalarProperty Name="IsRead" ColumnName="IsRead" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="User_Profiles">
+            <EntityTypeMapping TypeName="SSKModel.User_Profiles">
+              <MappingFragment StoreEntitySet="User_Profiles">
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="Primary_Phone" ColumnName="Primary_Phone" />
+                <ScalarProperty Name="Secondary_Phone" ColumnName="Secondary_Phone" />
+                <ScalarProperty Name="Primary_Email" ColumnName="Primary_Email" />
+                <ScalarProperty Name="Secondary_Email" ColumnName="Secondary_Email" />
+                <ScalarProperty Name="DOB" ColumnName="DOB" />
+                <ScalarProperty Name="Nationality" ColumnName="Nationality" />
+                <ScalarProperty Name="Maritial_Status" ColumnName="Maritial_Status" />
+                <ScalarProperty Name="Residential_Addess_ID" ColumnName="Residential_Addess_ID" />
+                <ScalarProperty Name="Other_Address_ID" ColumnName="Other_Address_ID" />
+                <ScalarProperty Name="NextOfKin_Name" ColumnName="NextOfKin_Name" />
+                <ScalarProperty Name="NextOfKin_Contact_Number" ColumnName="NextOfKin_Contact_Number" />
+                <ScalarProperty Name="NextOfKin_Relationship" ColumnName="NextOfKin_Relationship" />
+                <ScalarProperty Name="NextOfKin_BlkHouse_Number" ColumnName="NextOfKin_BlkHouse_Number" />
+                <ScalarProperty Name="NextOfKin_FlrUnit_Number" ColumnName="NextOfKin_FlrUnit_Number" />
+                <ScalarProperty Name="NextOfKin_Street_Name" ColumnName="NextOfKin_Street_Name" />
+                <ScalarProperty Name="NextOfKin_Country" ColumnName="NextOfKin_Country" />
+                <ScalarProperty Name="NextOfKin_PostalCode" ColumnName="NextOfKin_PostalCode" />
+                <ScalarProperty Name="Employment_Name" ColumnName="Employment_Name" />
+                <ScalarProperty Name="Employment_Contact_Number" ColumnName="Employment_Contact_Number" />
+                <ScalarProperty Name="Employment_Company_Name" ColumnName="Employment_Company_Name" />
+                <ScalarProperty Name="Employment_Job_Title" ColumnName="Employment_Job_Title" />
+                <ScalarProperty Name="Employment_Start_Date" ColumnName="Employment_Start_Date" />
+                <ScalarProperty Name="Employment_End_Date" ColumnName="Employment_End_Date" />
+                <ScalarProperty Name="Employment_Remarks" ColumnName="Employment_Remarks" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="SSKModel.User">
+              <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="NRIC" ColumnName="NRIC" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="LastLoginTime" ColumnName="LastLoginTime" />
+                <ScalarProperty Name="SmartCardFailedCount" ColumnName="SmartCardFailedCount" />
+                <ScalarProperty Name="FingerprintFailedCount" ColumnName="FingerprintFailedCount" />
+                <ScalarProperty Name="SmartCard_Id" ColumnName="SmartCard_Id" />
+                <ScalarProperty Name="EnrolledDate" ColumnName="EnrolledDate" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="DutyOfficer_Id" ColumnName="DutyOfficer_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
