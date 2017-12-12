@@ -1,272 +1,243 @@
 ﻿<style type="text/css">
-    [profile] {
-        border: 1px solid #EDEDED;
-        border-top: none;
-        padding: 20px;
-    }
-    button{
-        z-index:100;
-    }
+	[profile] {
+		border: 1px solid #EDEDED;
+		border-top: none;
+		padding: 20px;
+	}
 </style>
 <ul class="nav nav-tabs">
-    <li class="active"><a data-toggle="tab" href="#Particulars">Particulars</a></li>
-    <li><a data-toggle="tab" href="#Addresses">Addresses</a></li>
-    <li><a data-toggle="tab" href="#Next-Of-Kin-Details">Next-Of-Kin Details</a></li>
-    <li><a data-toggle="tab" href="#Employment-Details">Employment Details</a></li>
+	<li class="active"><a data-toggle="tab" href="#Particulars">Particulars</a></li>
+	<li><a data-toggle="tab" href="#Addresses">Addresses</a></li>
+	<li><a data-toggle="tab" href="#Next-Of-Kin-Details">Next-Of-Kin Details</a></li>
+	<li><a data-toggle="tab" href="#Employment-Details">Employment Details</a></li>
 </ul>
 <form id="profileFrm">
-    <div class="tab-content" profile>
-        <input type="hidden" id="activeTab" />
-        <div id="Particulars" class="tab-pane fade in active" onclick="activeTab('Particulars');">
-            <div class="input-group">
-                <span class="input-group-addon">Name</span>
-                <input id="ParticularsName" type="text" class="form-control pri" name="ParticularsName">
-            </div>
-            <br />
-            <div class="form-inline">
-                <div class="input-group">
-                    <span class="input-group-addon">NRIC NO</span>
-                    <input id="NRIC" type="text" class="form-control pri" name="NRIC">
-                </div>
-                <div class="input-group">
-                    <span class="input-group-addon">Date of birth</span>
-                    <input id="DOB" type="text" class="form-control pri" name="DOB">
-                </div>
-            </div>
-            <br />
-            <div class="form-inline">
-                <div class="input-group">
-                    <span class="input-group-addon">Nationlality</span>
-                    <input id="Nationlality" type="text" class="form-control pri" name="Nationlality">
-                </div>
-                <div class="input-group">
-                    <span class="input-group-addon">Marital Status</span>
-                    <input id="MaritalStatus" type="text" class="form-control pri" name="MaritalStatus">
-                </div>
-            </div>
-            <br />
-            <div class="form-inline">
-                <div class="input-group">
-                    <span class="input-group-addon">Primary Contact</span>
-                    <input id="PrimaryContact" type="text" class="form-control" name="PrimaryContact">
-                </div>
-                <div class="input-group">
-                    <span class="input-group-addon">Secondary Contact</span>
-                    <input id="SecondaryContact" type="text" class="form-control" name="SecondaryContact">
-                </div>
-            </div>
-            <br />
-            <div class="input-group">
-                <span class="input-group-addon">Primary Email</span>
-                <input id="PrimaryEmail" type="text" class="form-control" name="PrimaryEmail">
-            </div>
-            <br />
-            <div class="input-group">
-                <span class="input-group-addon">Secondary Email</span>
-                <input id="SecondaryEmail" type="text" class="form-control" name="SecondaryEmail">
-            </div>
-            <br />
+	<div class="tab-content" profile>
+		<input type="hidden" id="activeTab"/>
+		<div id="Particulars" class="tab-pane fade in active" onclick="activeTab('Particulars');">
+			<div class="input-group">
+				<span class="input-group-addon">Name</span>
+				<input id="ParticularsName" type="text" class="form-control" name="ParticularsName" disabled="disabled">
+			</div>
+			<br />
+			<div class="form-inline">
+				<div class="input-group">
+					<span class="input-group-addon">NRIC NO</span>
+					<input id="NRIC" type="text" class="form-control" name="NRIC" disabled="disabled">
+				</div>
+				<div class="input-group">
+					<span class="input-group-addon">Date of birth</span>
+					<input id="DOB" type="text" class="form-control" name="DOB" disabled="disabled">
+				</div>
+			</div>
+			<br />
+			<div class="form-inline">
+				<div class="input-group">
+					<span class="input-group-addon">Nationlality</span>
+					<input id="Nationlality" type="text" class="form-control" name="Nationlality" disabled="disabled">
+				</div>
+				<div class="input-group">
+					<span class="input-group-addon">Marital Status</span>
+					<input id="MaritalStatus" type="text" class="form-control" name="MaritalStatus" disabled="disabled">
+				</div>
+			</div>
+			<br />
+			<div class="form-inline">
+				<div class="input-group">
+					<span class="input-group-addon">Primary Contact</span>
+					<input id="PrimaryContact" type="text" class="form-control" name="PrimaryContact">
+				</div>
+				<div class="input-group">
+					<span class="input-group-addon">Secondary Contact</span>
+					<input id="SecondaryContact" type="text" class="form-control" name="SecondaryContact">
+				</div>
+			</div>
+			<br />
+			<div class="input-group">
+				<span class="input-group-addon">Primary Email</span>
+				<input id="PrimaryEmail" type="text" class="form-control" name="PrimaryEmail">
+			</div>
+			<br />
+			<div class="input-group">
+				<span class="input-group-addon">Secondary Email</span>
+				<input id="SecondaryEmail" type="text" class="form-control" name="SecondaryEmail">
+			</div>
+			<br />
 
-        </div>
-        <div id="Addresses" class="tab-pane fade" onclick="activeTab('Addresses');" style="pointer-events:none;">
-            <div class="input-group">
-                <span class="input-group-addon">House Number</span>
-                <input id="AddressHouseNumber" type="text" class="form-control" name="AddressesHouseNumber" disabled="disabled" />
-            </div>
-            <br />
-            <div class="input-group">
-                <span class="input-group-addon">Unit Number</span>
-                <input id="AddressUnitNumber" type="text" class="form-control" name="UnitNumber" disabled="disabled" />
-            </div>
-            <br />
-            <div class="input-group">
-                <span class="input-group-addon">Street Name</span>
-                <input id="AddressStreetName" type="text" class="form-control" name="StreetName" disabled="disabled" />
-            </div>
-            <br />
-            <div class="input-group">
-                <span class="input-group-addon">Country</span>
-                <input id="AddressCountry" type="text" class="form-control" name="Country" disabled="disabled" />
-            </div>
-        </div>
+		</div>
+		<div id="Addresses" class="tab-pane fade" onclick="activeTab('Addresses');" style="pointer-events:none;">
+			<div class="input-group">
+				<span class="input-group-addon">House Number</span>
+				<input id="AddressHouseNumber" type="text" class="form-control" name="AddressesHouseNumber"  disabled="disabled"/>
+			</div>
+			<br />
+			<div class="input-group">
+				<span class="input-group-addon">Unit Number</span>
+				<input id="AddressUnitNumber" type="text" class="form-control" name="UnitNumber" disabled="disabled" />
+			</div>
+			<br />
+			<div class="input-group">
+				<span class="input-group-addon">Street Name</span>
+				<input id="AddressStreetName" type="text" class="form-control" name="StreetName" disabled="disabled" />
+			</div>
+			<br />
+			<div class="input-group">
+				<span class="input-group-addon">Country</span>
+				<input id="AddressCountry" type="text" class="form-control" name="Country" disabled="disabled" />
+			</div>
+		</div>
 
-        <div id="Next-Of-Kin-Details" class="tab-pane fade" onclick="activeTab('Next-Of-Kin-Details');">
-            <div class="input-group">
-                <span class="input-group-addon">Name</span>
-                <input id="NextOfKinDetailsName" type="text" class="form-control" name="NextOfKinDetailsName" />
-            </div>
-            <br />
-            <div class="input-group">
-                <span class="input-group-addon">Contact Number</span>
-                <input id="NextOfKinDetailsContactNumber" type="text" class="form-control" name="ContactNumber" />
-            </div>
-            <br />
-            <div class="input-group">
-                <span class="input-group-addon">Relationship</span>
-                <input id="NextOfKinDetailsRelationship" type="text" class="form-control" name="Relationship" />
-            </div>
-            <br />
-            <div class="input-group">
-                <span class="input-group-addon">House Number</span>
-                <input id="NextOfKinDetailsHouseNumber" type="text" class="form-control" name="NextOfKinDetailsHouseNumber" />
-            </div>
-            <br />
-            <div class="input-group">
-                <span class="input-group-addon">Unit Number</span>
-                <input id="NextOfKinDetailsUnitNumber" type="text" class="form-control" name="NextOfKinDetailsUnitNumber" />
-            </div>
-            <br />
-            <div class="input-group">
-                <span class="input-group-addon">Street Name</span>
-                <input id="NextOfKinDetailsStreetName" type="text" class="form-control" name="NextOfKinDetailsStreetName" />
-            </div>
-            <br />
-            <div class="input-group">
-                <span class="input-group-addon">Postal Code</span>
-                <input id="NextOfKinDetailsPostalCode" type="text" class="form-control" name="NextOfKinDetailsPostalCode" />
-            </div>
-            <br />
-            <div class="input-group">
-                <span class="input-group-addon">Country</span>
-                <input id="NextOfKinDetailsCountry" type="text" class="form-control" name="NextOfKinDetailsCountry" />
-            </div>
-            <br />
-        </div>
-        <div id="Employment-Details" class="tab-pane fade" onclick="activeTab('Employment-Details');">
-            <div class="input-group">
-                <span class="input-group-addon">Employer Name</span>
-                <input id="EmployerName" type="text" class="form-control" name="EmployerName" />
-            </div>
-            <br />
-            <div class="input-group">
-                <span class="input-group-addon">Employer Contact</span>
-                <input id="EmployerContact" type="text" class="form-control" name="EmployerContact" />
-            </div>
-            <br />
-            <div class="input-group">
-                <span class="input-group-addon">Company Name</span>
-                <input id="CompanyName" type="text" class="form-control" name="CompanyName" />
-            </div>
-            <br />
-            <div class="input-group">
-                <span class="input-group-addon">Job Title</span>
-                <input id="JobTitle" type="text" class="form-control" name="JobTitle" />
-            </div>
-            <br />
-            <div class="input-group">
-                <span class="input-group-addon">Start Date</span>
-                <input id="StartDate" type="text" class="form-control" name="StartDate" />
-            </div>
-            <br />
-            <div class="input-group">
-                <span class="input-group-addon">End Date and Remarks</span>
-                <input id="EndDateAndRemarks" type="text" class="form-control" name="EndDateAndRemarks" />
-            </div>
+		<div id="Next-Of-Kin-Details" class="tab-pane fade" onclick="activeTab('Next-Of-Kin-Details');" >
+			<div class="input-group">
+				<span class="input-group-addon">Name</span>
+				<input id="NextOfKinDetailsName" type="text" class="form-control" name="NextOfKinDetailsName" />
+			</div>
+			<br />
+			<div class="input-group">
+				<span class="input-group-addon">Contact Number</span>
+				<input id="NextOfKinDetailsContactNumber" type="text" class="form-control" name="ContactNumber" />
+			</div>
+			<br />
+			<div class="input-group">
+				<span class="input-group-addon">Relationship</span>
+				<input id="NextOfKinDetailsRelationship" type="text" class="form-control" name="Relationship" />
+			</div>
+			<br />
+			<div class="input-group">
+				<span class="input-group-addon">House Number</span>
+				<input id="NextOfKinDetailsHouseNumber" type="text" class="form-control" name="NextOfKinDetailsHouseNumber" />
+			</div>
+			<br />
+			<div class="input-group">
+				<span class="input-group-addon">Unit Number</span>
+				<input id="NextOfKinDetailsUnitNumber" type="text" class="form-control" name="NextOfKinDetailsUnitNumber" />
+			</div>
+			<br />
+			<div class="input-group">
+				<span class="input-group-addon">Street Name</span>
+				<input id="NextOfKinDetailsStreetName" type="text" class="form-control" name="NextOfKinDetailsStreetName" />
+			</div>
+			<br />
+			<div class="input-group">
+				<span class="input-group-addon">Country</span>
+				<input id="NextOfKinDetailsCountry" type="text" class="form-control" name="NextOfKinDetailsCountry" />
+			</div>
+			<br />
+		</div>
+		<div id="Employment-Details" class="tab-pane fade"  onclick="activeTab('Employment-Details');">
+			<div class="input-group">
+				<span class="input-group-addon">Employer Name</span>
+				<input id="EmployerName" type="text" class="form-control" name="EmployerName"  />
+			</div>
+			<br />
+			<div class="input-group">
+				<span class="input-group-addon">Employer Contact</span>
+				<input id="EmployerContact" type="text" class="form-control" name="EmployerContact" />
+			</div>
+			<br />
+			<div class="input-group">
+				<span class="input-group-addon">Company Name</span>
+				<input id="CompanyName" type="text" class="form-control" name="CompanyName" />
+			</div>
+			<br />
+			<div class="input-group">
+				<span class="input-group-addon">Job Title</span>
+				<input id="JobTitle" type="text" class="form-control" name="JobTitle" />
+			</div>
+			<br />
+			<div class="input-group">
+				<span class="input-group-addon">Start Date</span>
+				<input id="StartDate" type="text" class="form-control" name="StartDate" />
+			</div>
+			<br />
+			<div class="input-group">
+				<span class="input-group-addon">End Date and Remarks</span>
+				<input id="EndDateAndRemarks" type="text" class="form-control" name="EndDateAndRemarks" />
+			</div>
 
-        </div>
-    </div>
-
-    <div style="display:none;float:right;" id="divSupportDocument">
-        <button type="button" class="btn btn-danger" style="position:fixed;bottom:10px;right:10px;" onclick="api.server.LoadPage('Document.html');">Supporting documents required</button>
-        <button type="button" class="btn btn-dark" style="position:fixed;bottom:10px;left:10px;float:left;" onclick="api.server.LoadPage('Supervisee.html');">Back</button>
-    </div>
-    <div style="display:none;float:right;" id="divConfirm">
-        <label><strong>Are you sure ?</strong></label>
-        <button type="button" class="btn btn-dark" style="position:fixed;bottom:10px;right:60px; float:right;" id="btnCancel">Cancel</button>
-        <button type="submit" class="btn btn-success" style="position:fixed;bottom:10px;right:10px; float:right;" id="btnOK">OK</button>
-    </div>
-    <div style="display:block;float:right;" id="divSave">
-        <button type="button" class="btn btn-dark" style="position:fixed;bottom:10px;left:10px;" onclick="api.server.LoadPage('Supervisee.html');">Back</button>
-        <button type="button" class="btn btn-success" style="position:fixed;bottom:10px;right:10px; float:right;" id="SaveBtn">Save</button>
-    </div>
+		</div>
+	</div>
+	<div style="display:none;float:right;" id="divConfirm">
+		<label><strong>Are you sure ?</strong></label>
+		<button type="button" class="btn btn-dark" style="position:fixed;bottom:10px;right:60px; float:right;" id="btnCancel">Cancel</button>
+		<button type="submit" class="btn btn-success" style="position:fixed;bottom:10px;right:10px; float:right;" id="btnOK">OK</button>
+	</div>
+	<div style="display:block;float:right;" id="divSave">
+		<button type="button" class="btn btn-danger" style="position:fixed;bottom:10px;left:10px;" onclick="api.server.LoadPage('Supervisee.html');">Back</button>
+		<button type="button" class="btn btn-success" style="position:fixed;bottom:10px;right:10px; float:right;" id="SaveBtn">Save</button>
+		</div>
 </form>
 <script type="text/javascript">
-    var _particularName, _nric, _dob, _nationality, _maritalStatus = "";
-    $(document).ready(function myfunction() {
 
-        _particularName = api.model.ParticularsName;
-        _nric = api.model.NRIC;
-        _dob = api.model.DOB;
-        _nationality = api.model.Nationlality;
-        _maritalStatus = api.model.MaritalStatus;
+	$(document).ready(function myfunction() {
 
-        //particulars inforation
-        $('#ParticularsName').val(api.model.ParticularsName);
-        $('#NRIC').val(api.model.NRIC);
-        $('#DOB').val(api.model.DOB);
-        $('#Nationlality').val(api.model.Nationlality);
-        $('#MaritalStatus').val(api.model.MaritalStatus);
-        $('#PrimaryContact').val(api.model.PrimaryContact);
-        $('#SecondaryContact').val(api.model.SecondaryContact);
-        $('#PrimaryEmail').val(api.model.PrimaryEmail);
-        $('#SecondaryEmail').val(api.model.SecondaryEmail);
+		//particulars inforation
+		$('#ParticularsName').val(api.model.ParticularsName);
+		$('#NRIC').val(api.model.NRIC);
+		$('#DOB').val(api.model.DOB);
+		$('#Nationlality').val(api.model.Nationlality);
+		$('#MaritalStatus').val(api.model.MaritalStatus);
+		$('#PrimaryContact').val(api.model.PrimaryContact);
+		$('#SecondaryContact').val(api.model.SecondaryContact);
+		$('#PrimaryEmail').val(api.model.PrimaryEmail);
+		$('#SecondaryEmail').val(api.model.SecondaryEmail);
 
-        //address information
-        $('#AddressHouseNumber').val(api.model.Address.AddressHouseNumber);
-        $('#AddressUnitNumber').val(api.model.Address.AddressUnitNumber);
-        $('#AddressStreetName').val(api.model.Address.AddressStreetName);
-        $('#AddressCountry').val(api.model.Address.AddressCountry);
+		//address information
+		$('#AddressHouseNumber').val(api.model.Address.AddressHouseNumber);
+		$('#AddressUnitNumber').val(api.model.Address.AddressUnitNumber);
+		$('#AddressStreetName').val(api.model.Address.AddressStreetName);
+		$('#AddressCountry').val(api.model.Address.AddressCountry);
 
-        //next of kin information
-        $('#NextOfKinDetailsName').val(api.model.NextOfKinDetails.NextOfKinDetailsName);
-        $('#NextOfKinDetailsContactNumber').val(api.model.NextOfKinDetails.NextOfKinDetailsContactNumber);
-        $('#NextOfKinDetailsRelationship').val(api.model.NextOfKinDetails.NextOfKinDetailsRelationship);
-        $('#NextOfKinDetailsHouseNumber').val(api.model.NextOfKinDetails.NextOfKinDetailsHouseNumber);
-        $('#NextOfKinDetailsUnitNumber').val(api.model.NextOfKinDetails.NextOfKinDetailsUnitNumber);
-        $('#NextOfKinDetailsStreetName').val(api.model.NextOfKinDetails.NextOfKinDetailsStreetName);
-        $('#NextOfKinDetailsCountry').val(api.model.NextOfKinDetails.NextOfKinDetailsCountry);
-        $('#NextOfKinDetailsPostalCode').val(api.model.NextOfKinDetails.NextOfKinDetailsPostalCode);
+		//next of kin information
+		$('#NextOfKinDetailsName').val(api.model.NextOfKinDetails.NextOfKinDetailsName);
+		$('#NextOfKinDetailsContactNumber').val(api.model.NextOfKinDetails.NextOfKinDetailsContactNumber);
+		$('#NextOfKinDetailsRelationship').val(api.model.NextOfKinDetails.NextOfKinDetailsRelationship);
+		$('#NextOfKinDetailsHouseNumber').val(api.model.NextOfKinDetails.NextOfKinDetailsHouseNumber);
+		$('#NextOfKinDetailsUnitNumber').val(api.model.NextOfKinDetails.NextOfKinDetailsUnitNumber);
+		$('#NextOfKinDetailsStreetName').val(api.model.NextOfKinDetails.NextOfKinDetailsStreetName);
+		$('#NextOfKinDetailsCountry').val(api.model.NextOfKinDetails.NextOfKinDetailsCountry);
 
-        //employee details information
-        $('#EmployerName').val(api.model.EmployerDetails.EmployerName);
-        $('#EmployerContact').val(api.model.EmployerDetails.EmployerContact);
-        $('#CompanyName').val(api.model.EmployerDetails.CompanyName);
-        $('#JobTitle').val(api.model.EmployerDetails.JobTitle);
-        $('#StartDate').val(api.model.EmployerDetails.StartDate);
-        $('#EndDateAndRemarks').val(api.model.EmployerDetails.EndDateAndRemarks);
+		//employee details information
+		$('#EmployerName').val(api.model.EmployerDetails.EmployerName);
+		$('#EmployerContact').val(api.model.EmployerDetails.EmployerContact);
+		$('#CompanyName').val(api.model.EmployerDetails.CompanyName);
+		$('#JobTitle').val(api.model.EmployerDetails.JobTitle);
+		$('#StartDate').val(api.model.EmployerDetails.StartDate);
+		$('#EndDateAndRemarks').val(api.model.EmployerDetails.EndDateAndRemarks);
 
-    });
+	});
 
-    function activeTab(name) {
-        $('#activeTab').val(name);
-    }
+	function activeTab(name) {
+		$('#activeTab').val(name);
+	}
 
-    $("#profileFrm").submit(function (e) {
+	$("#profileFrm").submit(function (e) {
 
-        var $form = $("#profileFrm");
-        var data = getFormData($form);
-        var json = JSON.stringify(data);
-        var isPrimaryInfoChanged = false;
-        api.server.SaveProfile(json, isPrimaryInfoChanged);
+		var $form = $("#profileFrm");
+		var data = getFormData($form);
+		var json= JSON.stringify(data);
+		api.server.SaveProfile(json);
 
-        e.preventDefault(); // avoid to execute the actual submit of the form.
-    });
+		e.preventDefault(); // avoid to execute the actual submit of the form.
+	});
 
-    function getFormData($form) {
-        var unindexed_array = $form.serializeArray();
-        var indexed_array = {};
+	function getFormData($form) {
+		var unindexed_array = $form.serializeArray();
+		var indexed_array = {};
 
-        $.map(unindexed_array, function (n, i) {
-            indexed_array[n['name']] = n['value'];
-        });
+		$.map(unindexed_array, function (n, i) {
+			indexed_array[n['name']] = n['value'];
+		});
 
-        return indexed_array;
-    }
-    $('#SaveBtn').click(function () {
-        if ($('#ParticularsName').val() != _particularName || $('#NRIC').val() != _nric || $('#DOB').val() != _dob || $('#Nationlality').val() != _nationality || $('#MaritalStatus').val() != _maritalStatus) {
-            $('#divSave').hide();
-            $('#divSupportDocument').fadeIn(1000);
-            $('.pri').css('border-color', 'red');
-        }
-        else {
-            $('#divConfirm').show();
-            $('#divSave').hide();
-        }
+		return indexed_array;
+	}
+	$('#SaveBtn').click(function () {
+		$('#divConfirm').show();
+		$('#divSave').hide();
+	});
 
-    });
-
-    $('#btnCancel').click(function () {
-        $('#divSave').show();
-        $('#divConfirm').hide();
-    });
+	$('#btnCancel').click(function () {
+		$('#divSave').show();
+		$('#divConfirm').hide();
+	});
 </script>
