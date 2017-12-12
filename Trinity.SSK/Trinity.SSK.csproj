@@ -134,6 +134,7 @@
     <Compile Include="JSCallCS.cs" />
     <Compile Include="CSCallJS.cs" />
     <Compile Include="Models\Order.cs" />
+    <Compile Include="Models\ProfileModel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository\DatabaseFactory.cs" />

@@ -42,6 +42,38 @@ namespace SSK
             //var model = sSKCentralizedEntities.Notifications.Where(item => item.Read != true).ToList();
             web.LoadPageHtml("Notication.html", new List<string>());
         }
+
+        public void LoadProfile()
+        {
+            try
+            {
+                //profile model 
+                var model = new Models.ProfileModel();
+                web.LoadPageHtml("Profile.html", model);
+            }
+            catch (Exception)
+            {
+
+                LoadPage("Supervisee.html");
+            }
+        }
+
+        public void SaveProfile(string param)
+        {
+            try
+            {
+                var data = JsonConvert.DeserializeObject<Models.ProfileModel>(param);
+                //save change to db
+                //load profile page
+                //send notify to case officer
+                LoadProfile();
+            }
+            catch (Exception)
+            {
+                LoadPage("Supervisee.html");
+            }
+        }
+
         private void actionThread(object pram)
         {
             

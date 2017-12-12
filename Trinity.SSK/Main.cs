@@ -31,7 +31,7 @@ namespace SSK
             InitializeComponent();
             jsCallCS = new JSCallCS(this.LayerWeb);
             smartCard = new SmartCard(this.LayerWeb);
-            this.LayerWeb.Url = new Uri(String.Format("file:///{0}/View/html/Layer.html", CSCallJS.curDir));
+            this.LayerWeb.Url = new Uri(String.Format("file:///{0}/View/html/Layout.html", CSCallJS.curDir));
             this.LayerWeb.ObjectForScripting = jsCallCS;
             
             ConnectAsync();
