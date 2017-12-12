@@ -13,42 +13,39 @@ namespace SSK.DeviceMonitor
 {
     class SCardMonitor
     {
+
+        #region Event Action
+        public event Action<string> CardInitialized;
+        public event Action<string> CardInserted;
+        public event Action CardRemoved;
+        #endregion Event Action
+
+
         static List<string> _lstCardReaders = new List<string>();
         string _currentCardReader = string.Empty;
         PCSC.SCardMonitor _sCardMonitor;
+        private IDeviceMonitor deviceMonitor { get; set; }
+
+
+
         public SCardMonitor()
-        {
-        }
-        internal void Start()
         {
             Thread thread = new Thread(new ThreadStart(StartDeviceMonitor));
             thread.Start();
-            //StartDeviceMonitor();
         }
-
+        
         private void StartDeviceMonitor()
         {
+
             var factory = DeviceMonitorFactory.Instance;
-            using (var deviceMonitor = factory.Create(SCardScope.System))
-            {
-                deviceMonitor.Initialized += OnInitialized;
-                deviceMonitor.StatusChanged += OnStatusChanged;
-                deviceMonitor.MonitorException += OnMonitorException;
-
-                deviceMonitor.Start();
-
-                WaitHereForever();
-
-                deviceMonitor.Initialized -= OnInitialized;
-                deviceMonitor.StatusChanged -= OnStatusChanged;
-                deviceMonitor.MonitorException -= OnMonitorException;
-            }
+            deviceMonitor = factory.Create(SCardScope.System);
+            
+            deviceMonitor.Initialized += OnInitialized;
+            deviceMonitor.StatusChanged += OnStatusChanged;
+            deviceMonitor.MonitorException += OnMonitorException;
+            deviceMonitor.Start();
         }
 
-        private void WaitHereForever()
-        {
-            while (true) { }
-        }
 
         private void OnMonitorException(object sender, DeviceMonitorExceptionEventArgs args)
         {
@@ -84,6 +81,7 @@ namespace SSK.DeviceMonitor
                 Debug.WriteLine(name);
             }
             _lstCardReaders.AddRange(e.AllReaders);
+
             StartCardMonitor();
         }
 
@@ -105,18 +103,25 @@ namespace SSK.DeviceMonitor
         private void OnCardRemoved(object sender, CardStatusEventArgs e)
         {
             Debug.WriteLine("Card removed");
+            if (CardRemoved != null)
+                CardRemoved();
         }
 
         private void OnCardInserted(object sender, CardStatusEventArgs e)
         {
             string cardInfo = GetCardUID();
             Debug.WriteLine($"Card UID: {cardInfo}");
+            if (CardInserted != null)
+                CardInserted(cardInfo);
         }
 
         private void OnCardInitialized(object sender, CardStatusEventArgs e)
         {
             string cardInfo = GetCardUID();
             Debug.WriteLine($"Card UID: {cardInfo}");
+            if (CardInitialized != null)
+                CardInitialized(cardInfo);
+
         }
         private string GetCardUID()
         {
@@ -196,6 +201,16 @@ namespace SSK.DeviceMonitor
 
                     return cardUID;
                 }
+            }
+        }
+        public void Dispose()
+        {
+            if (deviceMonitor != null)
+            {
+                deviceMonitor.Initialized -= OnInitialized;
+                deviceMonitor.StatusChanged -= OnStatusChanged;
+                deviceMonitor.MonitorException -= OnMonitorException;
+                deviceMonitor.Cancel();
             }
         }
     }
