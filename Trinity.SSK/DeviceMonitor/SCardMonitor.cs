@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -20,7 +21,9 @@ namespace SSK.DeviceMonitor
         }
         internal void Start()
         {
-            StartDeviceMonitor();
+            Thread thread = new Thread(new ThreadStart(StartDeviceMonitor));
+            thread.Start();
+            //StartDeviceMonitor();
         }
 
         private void StartDeviceMonitor()
@@ -33,13 +36,8 @@ namespace SSK.DeviceMonitor
                 deviceMonitor.MonitorException += OnMonitorException;
 
                 deviceMonitor.Start();
-                //MethodInvoker test = new MethodInvoker(deviceMonitor.Start);
-                //test.Invoke();
-                //MethodInvoker((MethodInvoker)(() =>
-                //{
-                //    deviceMonitor.Start();
-                //}));
-                WaitUntilSpacebarPressed();
+
+                WaitHereForever();
 
                 deviceMonitor.Initialized -= OnInitialized;
                 deviceMonitor.StatusChanged -= OnStatusChanged;
@@ -47,7 +45,7 @@ namespace SSK.DeviceMonitor
             }
         }
 
-        private void WaitUntilSpacebarPressed()
+        private void WaitHereForever()
         {
             while (true) { }
         }

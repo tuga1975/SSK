@@ -36,14 +36,9 @@ namespace SSK
             this.LayerWeb.ObjectForScripting = jsCallCS;
             
             ConnectAsync();
-            //this.Invoke((MethodInvoker)(() =>
-            //{
-            //    SCardMonitor sCardMonitor = new SCardMonitor();
-            //    sCardMonitor.Start();
-            //}));
-            //Task task = new Task(sCardMonitor.Start);
-            //task.Start();
-            //sCardMonitor.Start();
+
+            SCardMonitor sCardMonitor = new SCardMonitor();
+            sCardMonitor.Start();
         }
 
         private void LayerWeb_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
