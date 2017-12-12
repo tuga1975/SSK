@@ -13,9 +13,21 @@ namespace SSK.DeviceMonitor
 {
     class SCardMonitor
     {
+
+        #region Event Action
+        public event Action<string> CardInitialized;
+        public event Action<string> CardInserted;
+        public event Action CardRemoved;
+        #endregion Event Action
+
+
         static List<string> _lstCardReaders = new List<string>();
         string _currentCardReader = string.Empty;
         PCSC.SCardMonitor _sCardMonitor;
+
+        
+
+
         public SCardMonitor()
         {
         }
@@ -23,6 +35,7 @@ namespace SSK.DeviceMonitor
         {
             Thread thread = new Thread(new ThreadStart(StartDeviceMonitor));
             thread.Start();
+
             //StartDeviceMonitor();
         }
 
@@ -34,6 +47,12 @@ namespace SSK.DeviceMonitor
                 deviceMonitor.Initialized += OnInitialized;
                 deviceMonitor.StatusChanged += OnStatusChanged;
                 deviceMonitor.MonitorException += OnMonitorException;
+
+                deviceMonitor.Initialized += OnInitialized;
+                deviceMonitor.StatusChanged += OnStatusChanged;
+                deviceMonitor.MonitorException += OnMonitorException;
+
+
 
                 deviceMonitor.Start();
 
@@ -84,6 +103,7 @@ namespace SSK.DeviceMonitor
                 Debug.WriteLine(name);
             }
             _lstCardReaders.AddRange(e.AllReaders);
+
             StartCardMonitor();
         }
 
@@ -105,18 +125,25 @@ namespace SSK.DeviceMonitor
         private void OnCardRemoved(object sender, CardStatusEventArgs e)
         {
             Debug.WriteLine("Card removed");
+            if (CardRemoved != null)
+                CardRemoved();
         }
 
         private void OnCardInserted(object sender, CardStatusEventArgs e)
         {
             string cardInfo = GetCardUID();
             Debug.WriteLine($"Card UID: {cardInfo}");
+            if (CardInserted != null)
+                CardInserted(cardInfo);
         }
 
         private void OnCardInitialized(object sender, CardStatusEventArgs e)
         {
             string cardInfo = GetCardUID();
             Debug.WriteLine($"Card UID: {cardInfo}");
+            if (CardInitialized != null)
+                CardInitialized(cardInfo);
+
         }
         private string GetCardUID()
         {
