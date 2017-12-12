@@ -26,6 +26,7 @@ namespace SSK
         private JSCallCS jsCallCS = null;
 
         private SmartCard smartCard = null;
+        
         public Main()
         {
             InitializeComponent();
@@ -36,24 +37,18 @@ namespace SSK
             
             ConnectAsync();
 
-            SCardMonitor sCardMonitor = new SCardMonitor();
-            sCardMonitor.Start();
-
+            
             //
             // For testing purpose only
             // 
             //Trinity.DAL.DAL.DAL_User dalUser = new Trinity.DAL.DAL.DAL_User();
             //Trinity.BE.User user = dalUser.GetUserBySmartCardId("123456789");
         }
-
         private void LayerWeb_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
-
-            //this.LayerWeb.LoadPageHtml("login.html");
             this.LayerWeb.InvokeScript("createEvent", JsonConvert.SerializeObject(jsCallCS.GetType().GetMethods().Where(d => d.IsPublic && !d.IsVirtual && !d.IsSecuritySafeCritical).ToArray().Select(d => d.Name)));
             CheckNotification();
             smartCard.Scanning();
-
         }
 
         private async void ConnectAsync()
@@ -81,12 +76,18 @@ namespace SSK
         }
         private void CheckNotification()
         {
-            //DbContext.SSKCentralizedEntities sSKCentralizedEntities = new DbContext.SSKCentralizedEntities();
-            //var unread = sSKCentralizedEntities.Notifications.Where(item => item.Read != true).Select(d => d.Id).Count();
+            Trinity.DAL.DBContext.TrinityCentralizedDBEntities sSKCentralizedEntities = new Trinity.DAL.DBContext.TrinityCentralizedDBEntities();
+            var unread = sSKCentralizedEntities.Notifications.Where(item => item.IsRead != true).Select(d => d.ID).Count();
             LayerWeb.Invoke((MethodInvoker)(() =>
             {
-                LayerWeb.PushNoti(10);
+                LayerWeb.PushNoti(unread);
             }));
+        }
+
+        private void Main_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Application.ExitThread();
+            APIUtils.Dispose();
         }
     }
 }

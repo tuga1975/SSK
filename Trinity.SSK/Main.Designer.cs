@@ -49,6 +49,7 @@
             this.Controls.Add(this.LayerWeb);
             this.Name = "Main";
             this.Text = "SSK-Kiosk";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Main_FormClosing);
             this.ResumeLayout(false);
 
         }

@@ -24,50 +24,28 @@ namespace SSK.DeviceMonitor
         static List<string> _lstCardReaders = new List<string>();
         string _currentCardReader = string.Empty;
         PCSC.SCardMonitor _sCardMonitor;
+        private IDeviceMonitor deviceMonitor { get; set; }
 
-        
 
 
         public SCardMonitor()
         {
-        }
-        internal void Start()
-        {
             Thread thread = new Thread(new ThreadStart(StartDeviceMonitor));
             thread.Start();
-
-            //StartDeviceMonitor();
         }
-
+        
         private void StartDeviceMonitor()
         {
+
             var factory = DeviceMonitorFactory.Instance;
-            using (var deviceMonitor = factory.Create(SCardScope.System))
-            {
-                deviceMonitor.Initialized += OnInitialized;
-                deviceMonitor.StatusChanged += OnStatusChanged;
-                deviceMonitor.MonitorException += OnMonitorException;
-
-                deviceMonitor.Initialized += OnInitialized;
-                deviceMonitor.StatusChanged += OnStatusChanged;
-                deviceMonitor.MonitorException += OnMonitorException;
-
-
-
-                deviceMonitor.Start();
-
-                WaitHereForever();
-
-                deviceMonitor.Initialized -= OnInitialized;
-                deviceMonitor.StatusChanged -= OnStatusChanged;
-                deviceMonitor.MonitorException -= OnMonitorException;
-            }
+            deviceMonitor = factory.Create(SCardScope.System);
+            
+            deviceMonitor.Initialized += OnInitialized;
+            deviceMonitor.StatusChanged += OnStatusChanged;
+            deviceMonitor.MonitorException += OnMonitorException;
+            deviceMonitor.Start();
         }
 
-        private void WaitHereForever()
-        {
-            while (true) { }
-        }
 
         private void OnMonitorException(object sender, DeviceMonitorExceptionEventArgs args)
         {
@@ -223,6 +201,16 @@ namespace SSK.DeviceMonitor
 
                     return cardUID;
                 }
+            }
+        }
+        public void Dispose()
+        {
+            if (deviceMonitor != null)
+            {
+                deviceMonitor.Initialized -= OnInitialized;
+                deviceMonitor.StatusChanged -= OnStatusChanged;
+                deviceMonitor.MonitorException -= OnMonitorException;
+                deviceMonitor.Cancel();
             }
         }
     }
