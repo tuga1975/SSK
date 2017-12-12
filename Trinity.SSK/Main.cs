@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNet.SignalR.Client;
 using Newtonsoft.Json;
 using SSK.Business;
+using SSK.DeviceMonitor;
 using SSK.DriverScan;
 using SSK.Models;
 using System;
@@ -36,6 +37,8 @@ namespace SSK
             
             ConnectAsync();
 
+            SCardMonitor sCardMonitor = new SCardMonitor();
+            sCardMonitor.Start();
         }
 
         private void LayerWeb_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
