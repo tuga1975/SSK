@@ -236,7 +236,8 @@
         var $form = $("#profileFrm");
         var data = getFormData($form);
         var json = JSON.stringify(data);
-        api.server.SaveProfile(json, false);
+        var isPrimaryInfoChanged = false;
+        api.server.SaveProfile(json, isPrimaryInfoChanged);
 
         e.preventDefault(); // avoid to execute the actual submit of the form.
     });
