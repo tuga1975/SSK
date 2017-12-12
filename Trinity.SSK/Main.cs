@@ -20,9 +20,7 @@ namespace SSK
 {
     public partial class Main : Form
     {
-        private IHubProxy HubProxy { get; set; }
-        const string ServerURI = "http://localhost:8080/signalr";
-        private HubConnection Connection { get; set; }
+        
         private JSCallCS jsCallCS = null;
 
         private SmartCard smartCard = null;
@@ -30,14 +28,13 @@ namespace SSK
         public Main()
         {
             InitializeComponent();
+
+            APIUtils.LayerWeb = LayerWeb;
             jsCallCS = new JSCallCS(this.LayerWeb);
             smartCard = new SmartCard(this.LayerWeb);
             this.LayerWeb.Url = new Uri(String.Format("file:///{0}/View/html/Layout.html", CSCallJS.curDir));
             this.LayerWeb.ObjectForScripting = jsCallCS;
-            
-            ConnectAsync();
 
-            
             //
             // For testing purpose only
             // 
@@ -47,41 +44,8 @@ namespace SSK
         private void LayerWeb_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
             this.LayerWeb.InvokeScript("createEvent", JsonConvert.SerializeObject(jsCallCS.GetType().GetMethods().Where(d => d.IsPublic && !d.IsVirtual && !d.IsSecuritySafeCritical).ToArray().Select(d => d.Name)));
-            CheckNotification();
+            APIUtils.SignalR.CheckNotification();
             smartCard.Scanning();
-        }
-
-        private async void ConnectAsync()
-        {
-            Connection = new HubConnection(ServerURI);
-            Connection.Closed += Connection_Closed;
-            HubProxy = Connection.CreateHubProxy("MyHub");
-            //Handle incoming event from server: use Invoke to write to console from SignalR's thread
-            HubProxy.On("checkNotification", () => CheckNotification());
-
-            try
-            {
-                await Connection.Start();
-            }
-            catch 
-            {
-                //No connection: Don't enable Send button or show chat UI
-                return;
-            }
-        }
-
-        private void Connection_Closed()
-        {
-            Connection.Start();
-        }
-        private void CheckNotification()
-        {
-            Trinity.DAL.DBContext.TrinityCentralizedDBEntities sSKCentralizedEntities = new Trinity.DAL.DBContext.TrinityCentralizedDBEntities();
-            var unread = sSKCentralizedEntities.Notifications.Where(item => item.IsRead != true).Select(d => d.ID).Count();
-            LayerWeb.Invoke((MethodInvoker)(() =>
-            {
-                LayerWeb.PushNoti(unread);
-            }));
         }
 
         private void Main_FormClosing(object sender, FormClosingEventArgs e)
