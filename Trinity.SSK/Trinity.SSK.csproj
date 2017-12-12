@@ -121,6 +121,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>SSKModel.edmx</DependentUpon>
     </Compile>
+    <Compile Include="DeviceMonitor\HealthMonitor.cs" />
+    <Compile Include="DeviceMonitor\SCardMonitor.cs" />
     <Compile Include="DriverScan\Fingerprint.cs" />
     <Compile Include="DriverScan\SmartCard.cs" />
     <Compile Include="Main.cs">
@@ -237,7 +239,7 @@
     <Content Include="View\bootstrap\fonts\fontawesome-webfont.svg" />
     <Content Include="View\bootstrap\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="View\bootstrap\js\bootstrap.min.js" />
-    <Content Include="View\html\Layer.html" />
+    <Content Include="View\html\Layout.html" />
     <Content Include="View\html\Authentication\FingerPrint.html" />
     <Content Include="View\html\Authentication\mov_bbb.mp4" />
     <Content Include="View\html\Authentication\SmartCard.html" />
