@@ -74,7 +74,8 @@ namespace SSK
         {
             try
             {
-                var data = JsonConvert.DeserializeObject<Trinity.BE.ProfileModel>(param);
+                var rawData = JsonConvert.DeserializeObject<Trinity.BE.ProfileRawMData>(param);
+                var data = new Trinity.BE.ProfileRawMData().ToProfileModel(rawData);
                 var dalUser = new Trinity.DAL.DAL_User();
                 var dalUserprofile = new Trinity.DAL.DAL_UserProfile();
                 if (primaryInfoChange)

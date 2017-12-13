@@ -20,7 +20,97 @@ namespace Trinity.BE
 
 
     }
+    public class ProfileRawMData
+    {
+        public string UserId { get; set; }
+        public DateTime? LastLoginTime { get; set; }
+        public short? SmartCardFailedCount { get; set; }
+        public short? FingerprintFailedCount { get; set; }
+        public DateTime? EnrolledDate { get; set; }
+        public short? Type { get; set; }
+        public string ParticularsName { get; set; }
+        public string NRIC { get; set; }
+        public DateTime? DOB { get; set; }
+        public string Nationality { get; set; }
+        public string MaritalStatus { get; set; }
+        public string PrimaryContact { get; set; }
+        public string SecondaryContact { get; set; }
+        public string PrimaryEmail { get; set; }
+        public string SecondaryEmail { get; set; }
+        public int? Residential_Addess_ID { get; set; }
+        public int? Other_Address_ID { get; set; }
+        public string Postal_Code { get; set; }
+        public string NextOfKinDetailsName { get; set; }
+        public string ContactNumber { get; set; }
+        public string Relationship { get; set; }
+        public string NextOfKinDetailsHouseNumber { get; set; }
+        public string NextOfKinDetailsUnitNumber { get; set; }
+        public string NextOfKinDetailsStreetName { get; set; }
+        public string NextOfKinDetailsPostalCode { get; set; }
+        public string NextOfKinDetailsCountry { get; set; }
+        public string EmployerName { get; set; }
+        public string EmployerContact { get; set; }
+        public string CompanyName { get; set; }
+        public string JobTitle { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
+        public string Remarks { get; set; }
+        public string SmartCard_Id { get; set; }
 
+        public ProfileModel ToProfileModel(ProfileRawMData rawData)
+        {
+            var profileModel = new ProfileModel
+            {
+                User = new User
+                {
+                    EnrolledDate = rawData.EnrolledDate,
+                    FingerprintFailedCount = rawData.FingerprintFailedCount,
+                    LastLoginTime = rawData.LastLoginTime,
+                    Fingerprint = null,
+                    Name = rawData.ParticularsName,
+                    NRIC = rawData.NRIC,
+                    SmartCardFailedCount = rawData.SmartCardFailedCount,
+                    SmartCard_Id = rawData.SmartCard_Id,
+                    Type = rawData.Type,
+                    UserId = rawData.UserId
+                },
+                UserProfile = new UserProfile
+                {
+                    UserId = rawData.UserId,
+                    DOB = rawData.DOB,
+                    Employment_Company_Name = rawData.CompanyName,
+                    Employment_Contact_Number = rawData.EmployerContact,
+                    Employment_End_Date = rawData.EndDate,
+                    Employment_Job_Title = rawData.JobTitle,
+                    Employment_Name = rawData.EmployerName,
+                    Employment_Remarks = rawData.Remarks,
+                    Employment_Start_Date = rawData.StartDate,
+                    Maritial_Status = rawData.MaritalStatus,
+                    Nationality = rawData.Nationality,
+                    NextOfKin_BlkHouse_Number = rawData.NextOfKinDetailsHouseNumber,
+                    NextOfKin_Contact_Number = rawData.ContactNumber,
+                    NextOfKin_Country = rawData.NextOfKinDetailsCountry,
+                    NextOfKin_FlrUnit_Number = rawData.NextOfKinDetailsUnitNumber,
+                    NextOfKin_Name = rawData.NextOfKinDetailsName,
+                    NextOfKin_PostalCode = rawData.NextOfKinDetailsPostalCode,
+                    NextOfKin_Relationship = rawData.Relationship,
+                    NextOfKin_Street_Name = rawData.NextOfKinDetailsStreetName,
+                    Primary_Email = rawData.PrimaryEmail,
+                    Primary_Phone = rawData.PrimaryContact,
+                    Secondary_Email = rawData.SecondaryEmail,
+                    Secondary_Phone = rawData.SecondaryContact,
+                    Residential_Addess_ID = rawData.Residential_Addess_ID,
+                    Other_Address_ID = rawData.Other_Address_ID
+                },
+                Addresses = new Address
+                {
+
+                }
+            };
+            return profileModel;
+
+        }
+    }
     [Serializable]
     public class Address
     {

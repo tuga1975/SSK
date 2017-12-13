@@ -265,10 +265,10 @@
         var data = getFormData($form);
         var json = JSON.stringify(data);
 
-        var jsonUserData = '{"User":{"UserId":"dfkkmdkg"},'
+        var jsonUserData = '{"User":{"UserId":"' + $('#UserId').val() + '","NRIC":"' + $('#NRIC').val()  + '","Name":"' + json.Name + '","LastLoginTime":"' + json.LastLoginTime + '","SmartCardFailedCount":"' + json.SmartCardFailedCount + '","FingerprintFailedCount":"' + json.FingerprintFailedCount + '","EnrolledDate":"' + json.EnrolledDate + '","Type":"' + json.Type + '","SmartCard_Id":"' + json.SmartCard_Id + '"},'
             + '"UserProfile":{ "UserId":"dfkkmdkg" },'
-            + '"Addresses":{ "Address_ID": 1 }}';
-        api.server.SaveProfile(jsonUserData, false);
+            + '"Addresses":{ "Address_ID": "' + json.Address_ID + '", }}';
+        api.server.SaveProfile(json, false);
 
         e.preventDefault(); // avoid to execute the actual submit of the form.
     });
