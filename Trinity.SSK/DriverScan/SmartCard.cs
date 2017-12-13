@@ -71,9 +71,9 @@ namespace SSK.DriverScan
                 var user = sSKCentralizedEntities.Users.Where(d => d.UserId == cardInfo).FirstOrDefault();
                 if (user != null)
                 {
-                    APIUtils.SCardMonitor.CardInitialized -= CardInitialized;
-                    APIUtils.SCardMonitor.CardInserted -= CardInserted;
-                    APIUtils.SCardMonitor.CardRemoved -= CardRemoved;
+                    //APIUtils.SCardMonitor.CardInitialized -= CardInitialized;
+                    //APIUtils.SCardMonitor.CardInserted -= CardInserted;
+                    //APIUtils.SCardMonitor.CardRemoved -= CardRemoved;
                     web.RunScript("$('.status-text').css('color','blue').text('Authentication Successful');");
                     Thread.Sleep(1000);
                     fingerPrint.Scanning();

@@ -51,7 +51,8 @@ namespace SSK
         {
             this.LayerWeb.InvokeScript("createEvent", JsonConvert.SerializeObject(jsCallCS.GetType().GetMethods().Where(d => d.IsPublic && !d.IsVirtual && !d.IsSecuritySafeCritical).ToArray().Select(d => d.Name)));
             APIUtils.SignalR.GetLatestNotifications();
-            smartCard.Scanning();
+            //smartCard.Scanning();
+            CodeBehind.Authentication.SmartCard smartCard = new CodeBehind.Authentication.SmartCard(this.LayerWeb);
         }
 
         private void Main_FormClosing(object sender, FormClosingEventArgs e)
