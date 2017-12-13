@@ -183,6 +183,16 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Trinity.BE\Trinity.BE.csproj">
+      <Project>{4321fa96-3a53-49c1-89ef-8a2f6e9b81c7}</Project>
+      <Name>Trinity.BE</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Trinity.DAL\Trinity.DAL.csproj">
+      <Project>{344f2633-3277-44c5-a55e-b66f920cca14}</Project>
+      <Name>Trinity.DAL</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

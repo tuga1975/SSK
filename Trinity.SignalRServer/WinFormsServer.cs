@@ -10,7 +10,6 @@ using System.Windows.Forms;
 
 namespace SignalRChat
 {
-
     public partial class WinFormsServer : Form
     {
         private IDisposable SignalR { get; set; }
@@ -89,6 +88,9 @@ namespace SignalRChat
         }
         public void SendNotification(string subject, string content, string fromUserId, string toUserId)
         {
+            // Insert notification into centralized DB first
+            Trinity.DAL.DAL_Notification dalNotification = new Trinity.DAL.DAL_Notification();
+            
             Bussiness bussiness = new Bussiness();
             if (bussiness.AddNotification(subject, content) > 0)
             {

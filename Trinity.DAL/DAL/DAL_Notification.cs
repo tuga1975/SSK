@@ -6,15 +6,23 @@ using System.Threading.Tasks;
 using Trinity.BE;
 using Trinity.DAL.Repository;
 
-namespace Trinity.DAL.Local
+namespace Trinity.DAL
 {
     public class DAL_Notification
     {
-        Local_UnitOfWork _unitOfWork = new Local_UnitOfWork();
+        Local_UnitOfWork _localUnitOfWork = new Local_UnitOfWork();
+        Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
 
-        public List<Notification> GetMyNotifications(string myUserId)
+        public List<Notification> GetMyNotifications(string myUserId, bool isLocal)
         {
-            IQueryable<DBContext.Notification> queryNotifications = _unitOfWork.DataContext.Notifications.Where(n => n.FromUserId == myUserId);
+            IQueryable<DBContext.Notification> queryNotifications = null;
+            if (isLocal)
+            {
+                queryNotifications = _localUnitOfWork.DataContext.Notifications.Where(n => n.FromUserId == myUserId);
+            } else
+            {
+                queryNotifications = _centralizedUnitOfWork.DataContext.Notifications.Where(n => n.FromUserId == myUserId);
+            }
             int count = queryNotifications.Count();
             if (count > 0)
             {
@@ -24,16 +32,16 @@ namespace Trinity.DAL.Local
                     Notification notification = new Notification()
                     {
                         Content = item.Content,
-                        Date = item.Date.Value,
+                        Date = item.Date,
                         FromUserId = item.FromUserId,
                         ID = item.ID,
-                        IsRead = item.IsRead.Value,
+                        IsRead = item.IsRead,
                         Subject = item.Subject,
                         ToUserId = item.ToUserId
                     };
                     notifications.Add(notification);
                 }
-                
+
                 return notifications;
             }
             return null;

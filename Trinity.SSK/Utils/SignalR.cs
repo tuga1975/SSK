@@ -49,8 +49,8 @@ namespace SSK.Utils
 
         public void CheckNotification()
         {
-            Trinity.DAL.Local.DAL_Notification dalNotification = new Trinity.DAL.Local.DAL_Notification();
-            List<Notification> myNotifications = dalNotification.GetMyNotifications("dfkkmdkg");
+            Trinity.DAL.DAL_Notification dalNotification = new Trinity.DAL.DAL_Notification();
+            List<Notification> myNotifications = dalNotification.GetMyNotifications("dfkkmdkg", true);
             var unReadCount = myNotifications.Count;
             APIUtils.LayerWeb.Invoke((System.Windows.Forms.MethodInvoker)(() =>
             {

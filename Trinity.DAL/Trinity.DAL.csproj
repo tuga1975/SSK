@@ -83,13 +83,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DAL\Centralized\DAL_Appointment.cs" />
-    <Compile Include="DAL\Centralized\DAL_Notification.cs" />
-    <Compile Include="DAL\Centralized\DAL_User.cs" />
-    <Compile Include="DAL\Local\DAL_Appointment.cs" />
-    <Compile Include="DAL\Local\DAL_Notification.cs" />
-    <Compile Include="DAL\Local\DAL_User.cs" />
-    <Compile Include="DAL\Local\DAL_UserProfile.cs" />
+    <Compile Include="DAL\DAL_Notification.cs" />
+    <Compile Include="DAL\DAL_User.cs" />
+    <Compile Include="DAL\DAL_UserProfile.cs" />
     <Compile Include="DBContext\AbsenceReporting.cs">
       <DependentUpon>SSK.tt</DependentUpon>
     </Compile>
@@ -103,6 +99,9 @@
       <DependentUpon>SSK.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\Notification.cs">
+      <DependentUpon>SSK.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBContext\sysdiagram.cs">
       <DependentUpon>SSK.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\TrinityCentralizedDB.Context.cs">

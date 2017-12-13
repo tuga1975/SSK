@@ -6,15 +6,24 @@ using System.Threading.Tasks;
 using Trinity.DAL.DBContext;
 using Trinity.DAL.Repository;
 
-namespace Trinity.DAL.Centralized
+namespace Trinity.DAL
 {
     public class DAL_User
     {
-        Centralized_UnitOfWork _unitOfWork = new Centralized_UnitOfWork();
+        Local_UnitOfWork _localUnitOfWork = new Local_UnitOfWork();
+        Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
 
-        public Trinity.BE.User GetUserBySmartCardId(string smartCardId)
+        public Trinity.BE.User GetUserBySmartCardId(string smartCardId, bool isLocal)
         {
-            User dbUser = _unitOfWork.DataContext.Users.FirstOrDefault(u => u.SmartCard_Id == smartCardId);
+            User dbUser = null;
+            if (isLocal)
+            {
+                dbUser = _localUnitOfWork.DataContext.Users.FirstOrDefault(u => u.SmartCard_Id == smartCardId);
+            }
+            else
+            {
+                dbUser = _centralizedUnitOfWork.DataContext.Users.FirstOrDefault(u => u.SmartCard_Id == smartCardId);
+            }
             if (dbUser != null)
             {
                 Trinity.BE.User user = new BE.User()

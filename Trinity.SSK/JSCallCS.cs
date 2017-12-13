@@ -8,7 +8,7 @@ using System.Windows.Forms;
 using Newtonsoft.Json;
 using System.Threading;
 using Trinity.DAL.DBContext;
-using Trinity.DAL.Local;
+using Trinity.DAL;
 using Trinity.BE;
 
 namespace SSK
@@ -138,7 +138,7 @@ namespace SSK
                         Employment_Start_Date = Convert.ToDateTime(data.EmployerDetails.StartDate),
                         Employment_Remarks = data.EmployerDetails.EndDateAndRemarks
                     };
-                    dalUserProfile.SaveUserProfile(userProfile);
+                    dalUserProfile.SaveUserProfile(userProfile, true);
                 }
 
                 //send notify to case officer

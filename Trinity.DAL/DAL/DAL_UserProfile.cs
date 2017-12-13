@@ -7,14 +7,23 @@ using Trinity.BE;
 using Trinity.DAL.DBContext;
 using Trinity.DAL.Repository;
 
-namespace Trinity.DAL.Local
+namespace Trinity.DAL
 {
     public class DAL_UserProfile
     {
-        Local_UnitOfWork _unitOfWork = new Local_UnitOfWork();
-        public void SaveUserProfile(UserProfile userProfile)
+        Local_UnitOfWork _localUnitOfWork = new Local_UnitOfWork();
+        Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
+        public void SaveUserProfile(UserProfile userProfile, bool isLocal)
         {
-            var userProfileRepo = _unitOfWork.GetRepository<User_Profiles>();
+            IRepository<User_Profiles> userProfileRepo = null;
+            if (isLocal)
+            {
+                userProfileRepo = _localUnitOfWork.GetRepository<User_Profiles>();
+            }
+            else
+            {
+                userProfileRepo = _centralizedUnitOfWork.GetRepository<User_Profiles>();
+            }
             User_Profiles userProfileEntity = new User_Profiles()
             {
                 //particulars optional
@@ -42,7 +51,15 @@ namespace Trinity.DAL.Local
                 Employment_Remarks = userProfile.Employment_Remarks
             };
             userProfileRepo.Update(userProfileEntity);
-            _unitOfWork.Save();
+
+            if (isLocal)
+            {
+                _localUnitOfWork.Save();
+            }
+            else
+            {
+                _centralizedUnitOfWork.Save();
+            }
         }
     }
 }
