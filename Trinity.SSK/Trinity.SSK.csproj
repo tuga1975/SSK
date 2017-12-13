@@ -110,6 +110,7 @@
     <Compile Include="Utils\BarcodeScannerUtils.cs" />
     <Compile Include="Utils\DocumentScannerUtils.cs" />
     <Compile Include="Utils\ReceiptPrinterUtils.cs" />
+    <Compile Include="Utils\SignalR.cs" />
     <Compile Include="Utils\SmartCardReaderUtils.cs" />
     <EmbeddedResource Include="Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
