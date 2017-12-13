@@ -41,6 +41,10 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="ftrSDKHelper13, Version=4.5.0.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Libs\ftrSDKHelper13.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.AspNet.SignalR.Client, Version=2.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.SignalR.Client.2.2.2\lib\net45\Microsoft.AspNet.SignalR.Client.dll</HintPath>
     </Reference>
@@ -85,6 +89,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DeviceMonitor\FingerprintMonitor.cs" />
     <Compile Include="DeviceMonitor\HealthMonitor.cs" />
     <Compile Include="DeviceMonitor\SCardMonitor.cs" />
     <Compile Include="DriverScan\Fingerprint.cs" />
@@ -150,6 +155,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Libs\ftrSDKHelper13.dll" />
     <Content Include="Libs\pcsc-sharp.dll" />
     <Content Include="View\bootstrap\css\bootstrap-grid.css" />
     <Content Include="View\bootstrap\css\bootstrap-grid.min.css" />
