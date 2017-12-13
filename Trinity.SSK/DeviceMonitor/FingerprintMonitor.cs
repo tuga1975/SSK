@@ -1,45 +1,104 @@
-﻿using System;
+﻿using Futronic.SDKHelper;
+using SSK.Utils;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SSK.DeviceMonitor
 {
-    class FingerprintMonitor
+    public class FingerprintMonitor
     {
-        static void Start()
+        public static bool Started = false;
+        public static bool IdentificationStarted = false;
+        public static bool VerificationStarted = false;
+        static FingerprintReaderUtils _fingerprintReaderUtils;
+        public static void Start()
         {
-            //Debug.WriteLine("Programme is loading database, please wait ...");
-            //SSKEntities sskEntities = new SSKEntities();
-            //_users = sskEntities.Fingerprints.ToList();
-            //if (_users.Count == 0)
+            if (Started)
+            {
+                Debug.WriteLine("FingerprintMonitor is already started.");
+                return;
+            }
+
+            _fingerprintReaderUtils = new FingerprintReaderUtils();
+            Started = true;
+        }
+
+        public static void StartIdentification(OnGetBaseTemplateCompleteHandler OnGetBaseTemplateComplete)
+        {
+            if (!Started)
+            {
+                Debug.WriteLine("Start FingerprintMonitor first please...");
+                return;
+            }
+
+            if (IdentificationStarted)
+            {
+                Debug.WriteLine("Fingerprint Identification is already started.");
+                return;
+            }
+
+            //Start StartIdentification thread
+            Thread thread = new Thread(new ThreadStart(() => _fingerprintReaderUtils.StartIdentification(OnGetBaseTemplateComplete)));
+            thread.Start();
+            IdentificationStarted = true;
+        }
+
+        public static void StartVerification(OnVerificationCompleteHandler onVerificationComplete, byte[] fingerprint_Template)
+        {
+            if (!Started)
+            {
+                Debug.WriteLine("Start FingerprintMonitor first please...");
+                return;
+            }
+
+            //if (VerificationStarted)
             //{
-            //    Console.WriteLine("Users not found. Please, run enrollment process first.");
+            //    Debug.WriteLine("Fingerprint Identification is already started.");
             //    return;
             //}
 
-            //_futronicIdentification = new FutronicIdentification();
+            //Start StartIdentification thread
+            Thread thread = new Thread(new ThreadStart(() => _fingerprintReaderUtils.StartVerification(onVerificationComplete, fingerprint_Template)));
+            thread.Start();
+            VerificationStarted = true;
+        }
 
-            //// Set control property
-            //_futronicIdentification.FakeDetection = true;
-            //_futronicIdentification.FFDControl = true;
-            //_futronicIdentification.FARN = 200;
-            //_futronicIdentification.Version = VersionCompatible.ftr_version_compatible;
-            //_futronicIdentification.FastMode = true;
-            //_futronicIdentification.MinMinuitaeLevel = 3;
-            //_futronicIdentification.MinOverlappedLevel = 3;
+        public static bool IdentificationResult(bool bSuccess, int nRetCode, byte[] fingerprint_Template)
+        {
+            if (!Started)
+            {
+                Debug.WriteLine("Start FingerprintMonitor first please...");
+                return false;
+            }
 
-            //// register events
-            //_futronicIdentification.OnPutOn += OnPutOn;
-            //_futronicIdentification.OnTakeOff += OnTakeOff;
-            ////_futronicIdentification.UpdateScreenImage += new UpdateScreenImageHandler(this.UpdateScreenImage);
-            //_futronicIdentification.OnFakeSource += OnFakeSource;
-            //_futronicIdentification.OnGetBaseTemplateComplete += OnGetBaseTemplateComplete;
+            if (!IdentificationStarted)
+            {
+                Debug.WriteLine("Start Fingerprint Identification first please...");
+                return false;
+            }
+            return _fingerprintReaderUtils.IdentificationResult(bSuccess, nRetCode, fingerprint_Template);
+        }
 
-            //// start identification process
-            //_futronicIdentification.GetBaseTemplate()
+        public static bool VerificationResult(bool bSuccess, int nRetCode, bool bVerificationSuccess)
+        {
+            if (!Started)
+            {
+                Debug.WriteLine("Start FingerprintMonitor first please...");
+                return false;
+            }
+
+            if (!VerificationStarted)
+            {
+                Debug.WriteLine("Start Fingerprint Verification first please...");
+                return false;
+            }
+
+            return _fingerprintReaderUtils.VerificationResult(bSuccess, nRetCode, bVerificationSuccess);
         }
     }
 }

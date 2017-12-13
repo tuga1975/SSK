@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="SSKModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="SSKModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="AbsenceReporting">
           <Key>
             <PropertyRef Name="UserId" />
@@ -103,6 +103,7 @@
           <Property Name="EnrolledDate" Type="datetime" />
           <Property Name="Type" Type="smallint" />
           <Property Name="DutyOfficer_Id" Type="nvarchar" MaxLength="128" />
+          <Property Name="Fingerprint_Template" Type="varbinary(max)" />
         </EntityType>
         <Association Name="FK_AbsenceReporting_Users">
           <End Role="Users" Type="Self.Users" Multiplicity="1" />
@@ -225,8 +226,7 @@
             <End Role="User_Profiles" EntitySet="User_Profiles" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="SSKModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -342,6 +342,7 @@
           <NavigationProperty Name="Notifications" Relationship="Self.FK_Notifications_Users" FromRole="Users" ToRole="Notifications" />
           <NavigationProperty Name="Notifications1" Relationship="Self.FK_Notifications_Users1" FromRole="Users" ToRole="Notifications" />
           <NavigationProperty Name="User_Profiles" Relationship="Self.FK_User_Profiles_Users" FromRole="Users" ToRole="User_Profiles" />
+          <Property Name="Fingerprint_Template" Type="Binary" MaxLength="Max" FixedLength="false" />
         </EntityType>
         <Association Name="FK_AbsenceReporting_Users">
           <End Role="Users" Type="Self.User" Multiplicity="1" />
@@ -561,6 +562,7 @@
           <EntitySetMapping Name="Users">
             <EntityTypeMapping TypeName="SSKModel.User">
               <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="Fingerprint_Template" ColumnName="Fingerprint_Template" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
                 <ScalarProperty Name="NRIC" ColumnName="NRIC" />
                 <ScalarProperty Name="Name" ColumnName="Name" />

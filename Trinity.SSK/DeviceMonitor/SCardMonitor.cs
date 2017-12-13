@@ -1,5 +1,6 @@
 ﻿using PCSC;
 using PCSC.Iso7816;
+using SSK.Utils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -12,6 +13,49 @@ using System.Windows.Forms;
 namespace SSK.DeviceMonitor
 {
     class SCardMonitor
+    {
+        static SmartCardReaderUtils _smartCardReaderUtils;
+        static bool _smartCardReaderMonitorStarted;
+        static bool _smartCardMonitorStarted;
+
+
+        public static void Start()
+        {
+            //Start StartSmartCardReaderMonitor thread
+            _smartCardReaderUtils = new SmartCardReaderUtils();
+            Thread thread = new Thread(new ThreadStart(() => _smartCardReaderMonitorStarted = _smartCardReaderUtils.StartSmartCardReaderMonitor()));
+            thread.Start();
+        }
+
+        public static void StartCardMonitor(CardInitializedEvent onCardInitialized, CardInsertedEvent onCardInserted, CardRemovedEvent onCardRemoved)
+        {
+            Thread thread = new Thread(new ThreadStart(() => _smartCardMonitorStarted = _smartCardReaderUtils.StartCardMonitor(onCardInitialized, onCardInserted, onCardRemoved)));
+            thread.Start();
+        }
+        public static string GetCardUID()
+        {
+            if (!_smartCardReaderMonitorStarted)
+            {
+                Debug.WriteLine("SCardMonitor first please...");
+                return string.Empty;
+            }
+
+            return _smartCardReaderUtils.GetCardUID();
+        }
+
+        public static void Dispose()
+        {
+            if (!_smartCardReaderMonitorStarted)
+            {
+                Debug.WriteLine("SCardMonitor first please...");
+                return;
+            }
+
+            _smartCardReaderUtils.SCardMonitorDispose();
+        }
+    }
+
+    class SCardMonitor_BK
     {
 
         #region Event Action
@@ -28,7 +72,7 @@ namespace SSK.DeviceMonitor
 
 
 
-        public SCardMonitor()
+        public SCardMonitor_BK()
         {
             Thread thread = new Thread(new ThreadStart(StartDeviceMonitor));
             thread.Start();
@@ -36,7 +80,6 @@ namespace SSK.DeviceMonitor
         
         private void StartDeviceMonitor()
         {
-
             var factory = DeviceMonitorFactory.Instance;
             deviceMonitor = factory.Create(SCardScope.System);
             

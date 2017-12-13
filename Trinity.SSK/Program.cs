@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SSK.DeviceMonitor;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,6 +17,8 @@ namespace SSK
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            //
+            DeviceMonitor.DeviceMonitor.Start();
             Application.Run(new Main());
         }
     }

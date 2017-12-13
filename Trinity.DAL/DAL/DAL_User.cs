@@ -28,7 +28,8 @@ namespace Trinity.DAL.DAL
                     SmartCardFailedCount = dbUser.SmartCardFailedCount,
                     SmartCard_Id = dbUser.SmartCard_Id,
                     Type = dbUser.Type,
-                    UserId = dbUser.UserId
+                    UserId = dbUser.UserId,
+                    Fingerprint_Template = dbUser.Fingerprint_Template
                 };
                 return user;
             }

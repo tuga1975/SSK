@@ -64,7 +64,6 @@ namespace SSK.Models
         public string NextOfKinDetailsUnitNumber { get; set; }
         public string NextOfKinDetailsStreetName { get; set; }
         public string NextOfKinDetailsCountry { get; set; }
-        public string NextOfKinDetailsPostalCode { get; set; }
 
         public NextOfKinDetailsModel()
         {
@@ -74,7 +73,6 @@ namespace SSK.Models
             NextOfKinDetailsHouseNumber = "2017";
             NextOfKinDetailsUnitNumber = "12";
             NextOfKinDetailsStreetName = "12";
-            NextOfKinDetailsPostalCode = "10000";
             NextOfKinDetailsCountry = "SG";
         }
     }

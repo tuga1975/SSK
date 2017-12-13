@@ -66,6 +66,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DAL\DAL_Appointment.cs" />
+    <Compile Include="DAL\DAL_Notification.cs" />
     <Compile Include="DAL\DAL_User.cs" />
     <Compile Include="DBContext\AbsenceReporting.cs">
       <DependentUpon>SSK.tt</DependentUpon>
@@ -177,7 +178,9 @@
     </EntityDeploy>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.Config" />
+    <None Include="App.Config">
+      <SubType>Designer</SubType>
+    </None>
     <EntityDeploy Include="DBContext\TrinityCentralizedDB.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>TrinityCentralizedDB.Designer.cs</LastGenOutput>

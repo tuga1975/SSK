@@ -40,5 +40,8 @@ namespace Trinity.BE
 
         [DataMember]
         public string DutyOfficer_Id { get; set; }
+
+        [DataMember]
+        public byte[] Fingerprint_Template { get; set; }
     }
 }

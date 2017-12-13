@@ -89,6 +89,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CodeBehind\Authentication\Fingerprint.cs" />
+    <Compile Include="CodeBehind\Authentication\SmartCard.cs" />
+    <Compile Include="DeviceMonitor\DeviceMonitor.cs" />
     <Compile Include="DeviceMonitor\FingerprintMonitor.cs" />
     <Compile Include="DeviceMonitor\HealthMonitor.cs" />
     <Compile Include="DeviceMonitor\SCardMonitor.cs" />
@@ -109,6 +112,7 @@
     <Compile Include="Utils\APIUtils.cs" />
     <Compile Include="Utils\BarcodeScannerUtils.cs" />
     <Compile Include="Utils\DocumentScannerUtils.cs" />
+    <Compile Include="Utils\FingerprintReaderUtils.cs" />
     <Compile Include="Utils\ReceiptPrinterUtils.cs" />
     <Compile Include="Utils\SignalR.cs" />
     <Compile Include="Utils\SmartCardReaderUtils.cs" />
