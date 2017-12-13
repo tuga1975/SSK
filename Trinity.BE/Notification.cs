@@ -31,5 +31,8 @@ namespace Trinity.BE
 
         [DataMember]
         public bool IsRead { get; set; }
+
+        [DataMember]
+        public bool IsFromSupervisee { get; set; }
     }
 }

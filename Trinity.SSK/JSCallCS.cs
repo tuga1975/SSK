@@ -38,10 +38,12 @@ namespace SSK
             MessageBox.Show("1");
         }
 
-        public void LoadNotication()
+        public void LoadNotications()
         {
-            //var model = sSKCentralizedEntities.Notifications.Where(item => item.Read != true).ToList();
-            web.LoadPageHtml("Notication.html", new List<string>());
+            DAL_Notification dalNotification = new DAL_Notification();
+            List<Trinity.BE.Notification> myNotifications = dalNotification.GetMyNotifications("supervisee", false);
+            var model = myNotifications;
+            web.LoadPageHtml("Notication.html", myNotifications);
         }
 
         public void LoadProfile(string userId)

@@ -18,10 +18,11 @@ namespace Trinity.DAL
             IQueryable<DBContext.Notification> queryNotifications = null;
             if (isLocal)
             {
-                queryNotifications = _localUnitOfWork.DataContext.Notifications.Where(n => n.FromUserId == myUserId);
-            } else
+                queryNotifications = _localUnitOfWork.DataContext.Notifications.Where(n => n.ToUserId == myUserId);
+            }
+            else
             {
-                queryNotifications = _centralizedUnitOfWork.DataContext.Notifications.Where(n => n.FromUserId == myUserId);
+                queryNotifications = _centralizedUnitOfWork.DataContext.Notifications.Where(n => n.ToUserId == myUserId);
             }
             int count = queryNotifications.Count();
             if (count > 0)
@@ -45,6 +46,33 @@ namespace Trinity.DAL
                 return notifications;
             }
             return null;
+        }
+
+        public void InsertNotification(string subject, string content, string fromUserId, string toUserId, bool isFromSupervisee, bool isLocal)
+        {
+            Trinity.DAL.DBContext.Notification notifcation = new DBContext.Notification()
+            {
+                Content = content,
+                Date = DateTime.Now,
+                FromUserId = fromUserId,
+                IsFromSupervisee = isFromSupervisee,
+                IsRead = false,
+                Subject = subject,
+                ToUserId = toUserId
+            };
+            IRepository<Trinity.DAL.DBContext.Notification> notificationRepo = null;
+            if (isLocal)
+            {
+                notificationRepo = _localUnitOfWork.GetRepository<Trinity.DAL.DBContext.Notification>();
+                notificationRepo.Add(notifcation);
+                _localUnitOfWork.Save();
+            }
+            else
+            {
+                notificationRepo = _centralizedUnitOfWork.GetRepository<Trinity.DAL.DBContext.Notification>();
+                notificationRepo.Add(notifcation);
+                _centralizedUnitOfWork.Save();
+            }
         }
     }
 }

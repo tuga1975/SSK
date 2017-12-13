@@ -47,8 +47,9 @@
             // 
             // ButtonStop
             // 
+            this.ButtonStop.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.ButtonStop.Enabled = false;
-            this.ButtonStop.Location = new System.Drawing.Point(325, 16);
+            this.ButtonStop.Location = new System.Drawing.Point(534, 16);
             this.ButtonStop.Margin = new System.Windows.Forms.Padding(4);
             this.ButtonStop.Name = "ButtonStop";
             this.ButtonStop.Size = new System.Drawing.Size(98, 28);
@@ -59,11 +60,14 @@
             // 
             // RichTextBoxConsole
             // 
+            this.RichTextBoxConsole.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.RichTextBoxConsole.Location = new System.Drawing.Point(17, 100);
             this.RichTextBoxConsole.Margin = new System.Windows.Forms.Padding(4);
             this.RichTextBoxConsole.Name = "RichTextBoxConsole";
             this.RichTextBoxConsole.ReadOnly = true;
-            this.RichTextBoxConsole.Size = new System.Drawing.Size(401, 229);
+            this.RichTextBoxConsole.Size = new System.Drawing.Size(610, 271);
             this.RichTextBoxConsole.TabIndex = 1;
             this.RichTextBoxConsole.Text = "";
             // 
@@ -80,7 +84,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(436, 345);
+            this.ClientSize = new System.Drawing.Size(645, 387);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.RichTextBoxConsole);
             this.Controls.Add(this.ButtonStop);
