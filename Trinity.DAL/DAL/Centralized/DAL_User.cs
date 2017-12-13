@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 using Trinity.DAL.DBContext;
 using Trinity.DAL.Repository;
 
-namespace Trinity.DAL.DAL
+namespace Trinity.DAL.Centralized
 {
     public class DAL_User
     {
-        UnitOfWork _unitOfWork = new UnitOfWork();
+        Centralized_UnitOfWork _unitOfWork = new Centralized_UnitOfWork();
 
         public Trinity.BE.User GetUserBySmartCardId(string smartCardId)
         {
@@ -19,7 +19,6 @@ namespace Trinity.DAL.DAL
             {
                 Trinity.BE.User user = new BE.User()
                 {
-                    DutyOfficer_Id = dbUser.DutyOfficer_Id,
                     EnrolledDate = dbUser.EnrolledDate,
                     FingerprintFailedCount = dbUser.FingerprintFailedCount,
                     LastLoginTime = dbUser.LastLoginTime,

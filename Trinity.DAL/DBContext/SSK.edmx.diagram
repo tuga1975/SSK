@@ -11,15 +11,15 @@
         <EntityTypeShape EntityType="SSKModel.Holiday" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="SSKModel.Notification" Width="1.5" PointX="3" PointY="11" IsExpanded="true" />
         <EntityTypeShape EntityType="SSKModel.User_Profiles" Width="1.5" PointX="6" PointY="6.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="SSKModel.User" Width="1.5" PointX="0.75" PointY="7.5" IsExpanded="true" />
-        <AssociationConnector Association="SSKModel.FK_AbsenceReporting_Users" ManuallyRouted="false" />
         <AssociationConnector Association="SSKModel.FK_User_Profiles_Addresses" ManuallyRouted="false" />
         <AssociationConnector Association="SSKModel.FK_User_Profiles_Addresses1" ManuallyRouted="false" />
-        <AssociationConnector Association="SSKModel.FK_Appointments_Users" ManuallyRouted="false" />
-        <AssociationConnector Association="SSKModel.FK_Notifications_Users" ManuallyRouted="false" />
-        <AssociationConnector Association="SSKModel.FK_Notifications_Users1" ManuallyRouted="false" />
-        <AssociationConnector Association="SSKModel.FK_User_Profiles_Users" ManuallyRouted="false" />
-      </Diagram>
+        <EntityTypeShape EntityType="SSKModel.User" Width="1.5" PointX="0.75" PointY="7.5" />
+        <AssociationConnector Association="SSKModel.FK_AbsenceReporting_Users" />
+        <AssociationConnector Association="SSKModel.FK_Appointments_Users" />
+        <AssociationConnector Association="SSKModel.FK_Notifications_Users" />
+        <AssociationConnector Association="SSKModel.FK_Notifications_Users1" />
+        <AssociationConnector Association="SSKModel.FK_User_Profiles_Users" />
+        </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
 </edmx:Edmx>

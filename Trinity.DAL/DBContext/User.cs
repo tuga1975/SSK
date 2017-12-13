@@ -32,7 +32,7 @@ namespace Trinity.DAL.DBContext
         public string SmartCard_Id { get; set; }
         public Nullable<System.DateTime> EnrolledDate { get; set; }
         public Nullable<short> Type { get; set; }
-        public string DutyOfficer_Id { get; set; }
+        public byte[] Fingerprint { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AbsenceReporting> AbsenceReportings { get; set; }

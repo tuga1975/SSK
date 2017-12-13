@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Trinity.BE;
 
 namespace SSK.Utils
 {
@@ -48,11 +49,12 @@ namespace SSK.Utils
 
         public void CheckNotification()
         {
-            Trinity.DAL.DBContext.TrinityCentralizedDBEntities sSKCentralizedEntities = new Trinity.DAL.DBContext.TrinityCentralizedDBEntities();
-            var unread = sSKCentralizedEntities.Notifications.Where(item => item.IsRead != true).Select(d => d.ID).Count();
+            Trinity.DAL.Local.DAL_Notification dalNotification = new Trinity.DAL.Local.DAL_Notification();
+            List<Notification> myNotifications = dalNotification.GetMyNotifications("dfkkmdkg");
+            var unReadCount = myNotifications.Count;
             APIUtils.LayerWeb.Invoke((System.Windows.Forms.MethodInvoker)(() =>
             {
-                APIUtils.LayerWeb.PushNoti(unread);
+                APIUtils.LayerWeb.PushNoti(unReadCount);
             }));
         }
     }

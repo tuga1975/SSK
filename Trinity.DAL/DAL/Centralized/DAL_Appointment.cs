@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Trinity.DAL.DAL
+namespace Trinity.DAL.Centralized
 {
     class DAL_Appointment
     {

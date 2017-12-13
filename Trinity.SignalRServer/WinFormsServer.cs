@@ -42,7 +42,7 @@ namespace SignalRChat
             }
             catch (TargetInvocationException)
             {
-                WriteToConsole("Server failed to start. A server is already running on " + ServerURI);
+                WriteToConsole("Server could not start. Another instance is running...");
                 //Re-enable button to let user try to start server again
                 this.Invoke((Action)(() => ButtonStart.Enabled = true));
                 return;
@@ -71,7 +71,6 @@ namespace SignalRChat
                 SignalR.Dispose();
             }
         }
-
     }
     class Startup
     {
@@ -88,7 +87,7 @@ namespace SignalRChat
         {
             Clients.All.addMessage(name, message);
         }
-        public void AddNotification(string subject, string content)
+        public void SendNotification(string subject, string content, string fromUserId, string toUserId)
         {
             Bussiness bussiness = new Bussiness();
             if (bussiness.AddNotification(subject, content) > 0)

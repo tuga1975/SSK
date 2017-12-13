@@ -38,8 +38,11 @@ namespace SSK
             //
             // For testing purpose only
             // 
-            //Trinity.DAL.DAL.DAL_User dalUser = new Trinity.DAL.DAL.DAL_User();
-            //Trinity.BE.User user = dalUser.GetUserBySmartCardId("123456789");
+            Trinity.DAL.Local.DAL_User dalUser = new Trinity.DAL.Local.DAL_User();
+            Trinity.BE.User user = dalUser.GetUserBySmartCardId("123456789");
+            Trinity.DAL.Local.DAL_Notification dalNotification = new Trinity.DAL.Local.DAL_Notification();
+            List<Trinity.BE.Notification> myNotifications = dalNotification.GetMyNotifications("dfkkmdkg");
+            string a = "";
         }
         private void LayerWeb_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {

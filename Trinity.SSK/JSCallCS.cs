@@ -8,6 +8,8 @@ using System.Windows.Forms;
 using Newtonsoft.Json;
 using System.Threading;
 using Trinity.DAL.DBContext;
+using Trinity.DAL.Local;
+using Trinity.BE;
 
 namespace SSK
 {
@@ -69,46 +71,74 @@ namespace SSK
                 {
                     var data = JsonConvert.DeserializeObject<Models.ProfileModel>(param);
                     //save change to db
-                    using (var unitOfWork = new Trinity.DAL.Repository.UnitOfWork())
+                    //using (var unitOfWork = new Trinity.DAL.Repository.UnitOfWork())
+                    //{
+                    //    var userEntity = unitOfWork.DataContext.Users.FirstOrDefault(u => u.Name == data.ParticularsName);
+                    //    if (userEntity != null)
+                    //    {
+                    //        var userProfileRepo = unitOfWork.GetRepository<User_Profiles>();
+                    //        var userProfileEntity = unitOfWork.DataContext.User_Profiles.FirstOrDefault(p => p.UserId == userEntity.UserId);
+                    //        if (userProfileEntity != null)
+                    //        {
+
+                    //            //particulars optional
+                    //            userProfileEntity.Primary_Phone = data.PrimaryContact;
+                    //            userProfileEntity.Secondary_Phone = data.SecondaryContact;
+                    //            userProfileEntity.Primary_Email = data.PrimaryEmail;
+                    //            userProfileEntity.Secondary_Email = data.SecondaryEmail;
+
+                    //            //next of kin
+                    //            userProfileEntity.NextOfKin_Name = data.NextOfKinDetails.NextOfKinDetailsName;
+                    //            userProfileEntity.NextOfKin_Contact_Number = data.NextOfKinDetails.NextOfKinDetailsContactNumber;
+                    //            userProfileEntity.NextOfKin_Relationship = data.NextOfKinDetails.NextOfKinDetailsRelationship;
+                    //            userProfileEntity.NextOfKin_BlkHouse_Number = data.NextOfKinDetails.NextOfKinDetailsHouseNumber;
+                    //            userProfileEntity.NextOfKin_FlrUnit_Number = data.NextOfKinDetails.NextOfKinDetailsUnitNumber;
+                    //            userProfileEntity.NextOfKin_Street_Name = data.NextOfKinDetails.NextOfKinDetailsStreetName;
+                    //            userProfileEntity.NextOfKin_Country = data.NextOfKinDetails.NextOfKinDetailsCountry;
+                    //            userProfileEntity.NextOfKin_PostalCode = data.NextOfKinDetails.NextOfKinDetailsPostalCode;
+
+                    //            //Employment details
+                    //            userProfileEntity.Employment_Name = data.EmployerDetails.EmployerName;
+                    //            userProfileEntity.Employment_Contact_Number = data.EmployerDetails.EmployerContact;
+                    //            userProfileEntity.Employment_Company_Name = data.EmployerDetails.CompanyName;
+                    //            userProfileEntity.Employment_Job_Title = data.EmployerDetails.JobTitle;
+                    //            userProfileEntity.Employment_Start_Date = Convert.ToDateTime(data.EmployerDetails.StartDate);
+                    //            userProfileEntity.Employment_Remarks = data.EmployerDetails.EndDateAndRemarks;
+
+                    //            userProfileRepo.Update(userProfileEntity);
+                    //            unitOfWork.Save();
+                    //        }
+                    //    }
+                    //}
+                    DAL_UserProfile dalUserProfile = new DAL_UserProfile();
+
+                    UserProfile userProfile = new UserProfile()
                     {
-                        var userEntity = unitOfWork.DataContext.Users.FirstOrDefault(u => u.Name == data.ParticularsName);
-                        if (userEntity != null)
-                        {
-                            var userProfileRepo = unitOfWork.GetRepository<User_Profiles>();
-                            var userProfileEntity = unitOfWork.DataContext.User_Profiles.FirstOrDefault(p => p.UserId == userEntity.UserId);
-                            if (userProfileEntity != null)
-                            {
+                        //particulars optional
+                        Primary_Phone = data.PrimaryContact,
+                        Secondary_Phone = data.SecondaryContact,
+                        Primary_Email = data.PrimaryEmail,
+                        Secondary_Email = data.SecondaryEmail,
 
-                                //particulars optional
-                                userProfileEntity.Primary_Phone = data.PrimaryContact;
-                                userProfileEntity.Secondary_Phone = data.SecondaryContact;
-                                userProfileEntity.Primary_Email = data.PrimaryEmail;
-                                userProfileEntity.Secondary_Email = data.SecondaryEmail;
+                        //next of kin
+                        NextOfKin_Name = data.NextOfKinDetails.NextOfKinDetailsName,
+                        NextOfKin_Contact_Number = data.NextOfKinDetails.NextOfKinDetailsContactNumber,
+                        NextOfKin_Relationship = data.NextOfKinDetails.NextOfKinDetailsRelationship,
+                        NextOfKin_BlkHouse_Number = data.NextOfKinDetails.NextOfKinDetailsHouseNumber,
+                        NextOfKin_FlrUnit_Number = data.NextOfKinDetails.NextOfKinDetailsUnitNumber,
+                        NextOfKin_Street_Name = data.NextOfKinDetails.NextOfKinDetailsStreetName,
+                        NextOfKin_Country = data.NextOfKinDetails.NextOfKinDetailsCountry,
+                        NextOfKin_PostalCode = data.NextOfKinDetails.NextOfKinDetailsPostalCode,
 
-                                //next of kin
-                                userProfileEntity.NextOfKin_Name = data.NextOfKinDetails.NextOfKinDetailsName;
-                                userProfileEntity.NextOfKin_Contact_Number = data.NextOfKinDetails.NextOfKinDetailsContactNumber;
-                                userProfileEntity.NextOfKin_Relationship = data.NextOfKinDetails.NextOfKinDetailsRelationship;
-                                userProfileEntity.NextOfKin_BlkHouse_Number = data.NextOfKinDetails.NextOfKinDetailsHouseNumber;
-                                userProfileEntity.NextOfKin_FlrUnit_Number = data.NextOfKinDetails.NextOfKinDetailsUnitNumber;
-                                userProfileEntity.NextOfKin_Street_Name = data.NextOfKinDetails.NextOfKinDetailsStreetName;
-                                userProfileEntity.NextOfKin_Country = data.NextOfKinDetails.NextOfKinDetailsCountry;
-                                userProfileEntity.NextOfKin_PostalCode = data.NextOfKinDetails.NextOfKinDetailsPostalCode;
-
-                                //Employment details
-                                userProfileEntity.Employment_Name = data.EmployerDetails.EmployerName;
-                                userProfileEntity.Employment_Contact_Number = data.EmployerDetails.EmployerContact;
-                                userProfileEntity.Employment_Company_Name = data.EmployerDetails.CompanyName;
-                                userProfileEntity.Employment_Job_Title = data.EmployerDetails.JobTitle;
-                                userProfileEntity.Employment_Start_Date = Convert.ToDateTime(data.EmployerDetails.StartDate);
-                                userProfileEntity.Employment_Remarks = data.EmployerDetails.EndDateAndRemarks;
-
-                                userProfileRepo.Update(userProfileEntity);
-                                unitOfWork.Save();
-                            }
-                        }
-                    }
-
+                        //Employment details
+                        Employment_Name = data.EmployerDetails.EmployerName,
+                        Employment_Contact_Number = data.EmployerDetails.EmployerContact,
+                        Employment_Company_Name = data.EmployerDetails.CompanyName,
+                        Employment_Job_Title = data.EmployerDetails.JobTitle,
+                        Employment_Start_Date = Convert.ToDateTime(data.EmployerDetails.StartDate),
+                        Employment_Remarks = data.EmployerDetails.EndDateAndRemarks
+                    };
+                    dalUserProfile.SaveUserProfile(userProfile);
                 }
 
                 //send notify to case officer

@@ -8,15 +8,22 @@ namespace Trinity.DAL.Repository
 {
     public class DatabaseFactory : IDatabaseFactory
     {
-        private readonly SSKEntities dataContext;
+        private readonly SSKEntities localDataContext;
+        private readonly TrinityCentralizedDBEntities centralizedDataContext;
         public DatabaseFactory()
         {
-            dataContext = new SSKEntities();
+            localDataContext = new SSKEntities();
+            centralizedDataContext = new TrinityCentralizedDBEntities();
         }
 
-        public SSKEntities GetDbContext()
+        public SSKEntities GetLocalDbContext()
         {
-            return dataContext;
+            return localDataContext;
+        }
+
+        public TrinityCentralizedDBEntities GetCentralizedDbContext()
+        {
+            return centralizedDataContext;
         }
     }
 }

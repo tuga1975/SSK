@@ -4,6 +4,7 @@ namespace Trinity.DAL.Repository
 {
     public interface IDatabaseFactory
     {
-        SSKEntities GetDbContext();
+        SSKEntities GetLocalDbContext();
+        TrinityCentralizedDBEntities GetCentralizedDbContext();
     }
 }
