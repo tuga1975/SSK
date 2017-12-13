@@ -10,7 +10,6 @@ using System.Windows.Forms;
 
 namespace SignalRChat
 {
-
     public partial class WinFormsServer : Form
     {
         private IDisposable SignalR { get; set; }
@@ -42,7 +41,7 @@ namespace SignalRChat
             }
             catch (TargetInvocationException)
             {
-                WriteToConsole("Server failed to start. A server is already running on " + ServerURI);
+                WriteToConsole("Server could not start. Another instance is running...");
                 //Re-enable button to let user try to start server again
                 this.Invoke((Action)(() => ButtonStart.Enabled = true));
                 return;
@@ -71,7 +70,6 @@ namespace SignalRChat
                 SignalR.Dispose();
             }
         }
-
     }
     class Startup
     {
@@ -84,18 +82,19 @@ namespace SignalRChat
 
     public class MyHub : Hub
     {
-        public void Send(string name, string message)
+        public void SendNotification(string subject, string content, string fromUserId, string toUserId, bool isFromSupervisee)
         {
-            Clients.All.addMessage(name, message);
+            // Insert notification into centralized DB first
+            Trinity.DAL.DAL_Notification dalNotification = new Trinity.DAL.DAL_Notification();
+            dalNotification.InsertNotification(subject, content, fromUserId, toUserId, isFromSupervisee, false);
+
+            // And notify all client about new notification
+            // In later phase we should send to appropriate client
+            Clients.All.OnNewNotification(subject, content, fromUserId, toUserId, isFromSupervisee);
+
+            Program.MainForm.WriteToConsole("User:" + fromUserId + "' send notification|subject:" + subject + "|" + "|content:" + content + "|to user:" + toUserId);
         }
-        public void AddNotification(string subject, string content)
-        {
-            Bussiness bussiness = new Bussiness();
-            if (bussiness.AddNotification(subject, content) > 0)
-            {
-                Clients.All.checkNotification();
-            }
-        }
+
         public override Task OnConnected()
         {
             Program.MainForm.WriteToConsole("Client connected: " + Context.ConnectionId);
@@ -105,30 +104,6 @@ namespace SignalRChat
         {
             Program.MainForm.WriteToConsole("Client disconnected: " + Context.ConnectionId);
             return base.OnDisconnected();
-        }
-    }
-
-    public class Bussiness
-    {
-        public int AddNotification(string subject, string content)
-        {
-            try
-            {
-                Notification notification = new Notification()
-                {
-                    Subject = subject,
-                    Content = content,
-                    Read = false
-                };
-
-                SSKCentralizedEntities sSKCentralizedEntities = new SSKCentralizedEntities();
-                sSKCentralizedEntities.Notifications.Add(notification);
-                return sSKCentralizedEntities.SaveChanges();
-            }
-            catch (Exception ex)
-            {
-                return -1;
-            }
         }
     }
 }

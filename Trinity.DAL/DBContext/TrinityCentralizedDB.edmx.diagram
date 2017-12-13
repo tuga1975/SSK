@@ -5,20 +5,20 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="e17ce6b5c6f94759bc5b75d0af8983e3" Name="Diagram1">
-        <EntityTypeShape EntityType="TrinityCentralizedDBModel.AbsenceReporting" Width="1.5" PointX="3" PointY="5.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="TrinityCentralizedDBModel.Address" Width="1.5" PointX="3.75" PointY="1.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="TrinityCentralizedDBModel.Appointment" Width="1.5" PointX="3" PointY="8.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="TrinityCentralizedDBModel.Holiday" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="TrinityCentralizedDBModel.Notification" Width="1.5" PointX="3" PointY="11" IsExpanded="true" />
-        <EntityTypeShape EntityType="TrinityCentralizedDBModel.User_Profiles" Width="1.5" PointX="6" PointY="6.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="TrinityCentralizedDBModel.User" Width="1.5" PointX="0.75" PointY="7.5" IsExpanded="true" />
-        <AssociationConnector Association="TrinityCentralizedDBModel.FK_AbsenceReporting_Users" ManuallyRouted="false" />
-        <AssociationConnector Association="TrinityCentralizedDBModel.FK_User_Profiles_Addresses" ManuallyRouted="false" />
-        <AssociationConnector Association="TrinityCentralizedDBModel.FK_User_Profiles_Addresses1" ManuallyRouted="false" />
-        <AssociationConnector Association="TrinityCentralizedDBModel.FK_Appointments_Users" ManuallyRouted="false" />
-        <AssociationConnector Association="TrinityCentralizedDBModel.FK_Notifications_Users" ManuallyRouted="false" />
-        <AssociationConnector Association="TrinityCentralizedDBModel.FK_Notifications_Users1" ManuallyRouted="false" />
-        <AssociationConnector Association="TrinityCentralizedDBModel.FK_User_Profiles_Users" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="TrinityCentralizedDBModel.AbsenceReporting" Width="1.5" PointX="3" PointY="5.25" />
+        <EntityTypeShape EntityType="TrinityCentralizedDBModel.Address" Width="1.5" PointX="3.75" PointY="8.25" />
+        <EntityTypeShape EntityType="TrinityCentralizedDBModel.Appointment" Width="1.5" PointX="3" PointY="19" />
+        <EntityTypeShape EntityType="TrinityCentralizedDBModel.Holiday" Width="1.5" PointX="0.75" PointY="0.75" />
+        <EntityTypeShape EntityType="TrinityCentralizedDBModel.Notification" Width="1.5" PointX="3" PointY="15.25" />
+        <EntityTypeShape EntityType="TrinityCentralizedDBModel.User_Profiles" Width="1.5" PointX="6" PointY="6.375" />
+        <EntityTypeShape EntityType="TrinityCentralizedDBModel.User" Width="1.5" PointX="0.75" PointY="7.625" />
+        <AssociationConnector Association="TrinityCentralizedDBModel.FK_AbsenceReporting_Users" />
+        <AssociationConnector Association="TrinityCentralizedDBModel.FK_User_Profiles_Addresses" />
+        <AssociationConnector Association="TrinityCentralizedDBModel.FK_User_Profiles_Addresses1" />
+        <AssociationConnector Association="TrinityCentralizedDBModel.FK_Appointments_Users" />
+        <AssociationConnector Association="TrinityCentralizedDBModel.FK_Notifications_Users" />
+        <AssociationConnector Association="TrinityCentralizedDBModel.FK_Notifications_Users1" />
+        <AssociationConnector Association="TrinityCentralizedDBModel.FK_User_Profiles_Users" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

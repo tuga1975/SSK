@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Trinity.DAL;
 
 namespace SSK.DriverScan
 {
@@ -14,7 +15,7 @@ namespace SSK.DriverScan
         private SmartCard smartCard = null;
         private int CountScan = 0;
         private Trinity.DAL.DBContext.TrinityCentralizedDBEntities sSKCentralizedEntities = null;
-        public FingerPrint(SmartCard smartCard,WebBrowser web)
+        public FingerPrint(SmartCard smartCard, WebBrowser web)
         {
             this.web = web;
             sSKCentralizedEntities = new Trinity.DAL.DBContext.TrinityCentralizedDBEntities();
@@ -99,16 +100,7 @@ namespace SSK.DriverScan
         }
         private void CreateNoti(string cardInfo)
         {
-            sSKCentralizedEntities.Notifications.Add(new Trinity.DAL.DBContext.Notification()
-            {
-                Date = DateTime.Now,
-                Content = "Authentication Finger Failure",
-                Subject = "Authentication Finger Failure",
-                ToUserId = cardInfo,
-                FromUserId = cardInfo
-            });
-            sSKCentralizedEntities.SaveChanges();
-            APIUtils.SignalR.AddNotification("Authentication Finger Failure", "Authentication Finger Failure");
+            APIUtils.SignalR.SendNotificationToDutyOfficer("Authentication Finger Failure", "Authentication Finger Failure");
             MessageBox.Show("Unable to read your fingerprint. Please report to the Duty Officer");
             CountScan = 0;
             // remove event Finger
@@ -123,8 +115,8 @@ namespace SSK.DriverScan
 
 
 
-        
-        
+
+
 
     }
 }

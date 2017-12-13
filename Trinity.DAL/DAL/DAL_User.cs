@@ -6,20 +6,28 @@ using System.Threading.Tasks;
 using Trinity.DAL.DBContext;
 using Trinity.DAL.Repository;
 
-namespace Trinity.DAL.DAL
+namespace Trinity.DAL
 {
     public class DAL_User
     {
-        UnitOfWork _unitOfWork = new UnitOfWork();
+        Local_UnitOfWork _localUnitOfWork = new Local_UnitOfWork();
+        Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
 
-        public Trinity.BE.User GetUserBySmartCardId(string smartCardId)
+        public Trinity.BE.User GetUserBySmartCardId(string smartCardId, bool isLocal)
         {
-            User dbUser = _unitOfWork.DataContext.Users.FirstOrDefault(u => u.SmartCard_Id == smartCardId);
+            User dbUser = null;
+            if (isLocal)
+            {
+                dbUser = _localUnitOfWork.DataContext.Users.FirstOrDefault(u => u.SmartCard_Id == smartCardId);
+            }
+            else
+            {
+                dbUser = _centralizedUnitOfWork.DataContext.Users.FirstOrDefault(u => u.SmartCard_Id == smartCardId);
+            }
             if (dbUser != null)
             {
                 Trinity.BE.User user = new BE.User()
                 {
-                    DutyOfficer_Id = dbUser.DutyOfficer_Id,
                     EnrolledDate = dbUser.EnrolledDate,
                     FingerprintFailedCount = dbUser.FingerprintFailedCount,
                     LastLoginTime = dbUser.LastLoginTime,
@@ -29,7 +37,7 @@ namespace Trinity.DAL.DAL
                     SmartCard_Id = dbUser.SmartCard_Id,
                     Type = dbUser.Type,
                     UserId = dbUser.UserId,
-                    Fingerprint_Template = dbUser.Fingerprint_Template
+                    Fingerprint_Template = dbUser.Fingerprint
                 };
                 return user;
             }

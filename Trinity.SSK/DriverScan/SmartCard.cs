@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Trinity.DAL;
 
 namespace SSK.DriverScan
 {
@@ -96,15 +97,8 @@ namespace SSK.DriverScan
         }
         private void CreateNoti(string cardInfo)
         {
-            sSKCentralizedEntities.Notifications.Add(new Trinity.DAL.DBContext.Notification() {
-                Date = DateTime.Now,
-                Content= "Authentication Smart Card Failure",
-                Subject = "Authentication Smart Card Failure",
-                ToUserId = cardInfo,
-                FromUserId = cardInfo
-            });
-            sSKCentralizedEntities.SaveChanges();
-            APIUtils.SignalR.AddNotification("Authentication Smart Card Failure", "Authentication Smart Card Failure");
+            APIUtils.SignalR.SendNotificationToDutyOfficer("Authentication Smart Card Failure", "Authentication Smart Card Failure");
+
             MessageBox.Show("Unable to read your smart card. Please report to the Duty Officer");
             CountScan = 0;
             web.RunScript("$('.status-text').css('color','#000').text('Please place your smart card on the reader.');");

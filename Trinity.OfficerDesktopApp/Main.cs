@@ -32,7 +32,7 @@ namespace OfficerDesktopApp
 
         private void buttonSend_Click(object sender, EventArgs e)
         {
-            HubProxy.Invoke("AddNotification", txtSubject.Text, rtbContent.Text);
+            HubProxy.Invoke("SendNotification", txtSubject.Text, rtbContent.Text, "dutyofficer", "supervisee", false);
             rtbContent.Text = String.Empty;
             txtSubject.Text = String.Empty;
             txtSubject.Focus();
@@ -43,13 +43,8 @@ namespace OfficerDesktopApp
             Connection = new HubConnection(ServerURI);
             Connection.Closed += Connection_Closed;
             HubProxy = Connection.CreateHubProxy("MyHub");
-            //Handle incoming event from server: use Invoke to write to console from SignalR's thread
-            //HubProxy.On<string, string>("Add", (name, message) =>
-            //    this.Invoke((Action)(() =>
-            //        richTextBoxContent.AppendText(String.Format("{0}: {1}" + Environment.NewLine, name, message))
-            //    ))
-            //);
 
+            HubProxy.On<string, string, string, string>("OnNewNotification", (subject, content, fromUserId, toUserId) => OnNewNotificationHandler(subject, content, fromUserId, toUserId));
             try
             {
                 await Connection.Start();
@@ -74,6 +69,26 @@ namespace OfficerDesktopApp
             this.Invoke((Action)(() => txtSubject.Enabled = false));
             this.Invoke((Action)(() => rtbContent.Enabled = false));
             this.Invoke((Action)(() => labelStatus.Text = "You have been disconnected."));
+        }
+
+        delegate void OnNewNotificationHandlerDelegate(string subject, string content, string fromUserId, string toUserId);
+        private void OnNewNotificationHandler(string subject, string content, string fromUserId, string toUserId)
+        {
+            if (string.IsNullOrEmpty(toUserId))
+            {
+                if (this.dgvNotifications.InvokeRequired)
+                {
+                    OnNewNotificationHandlerDelegate onNewNotificationHandlerDelegated = new OnNewNotificationHandlerDelegate(OnNewNotificationHandler);
+                    this.Invoke(onNewNotificationHandlerDelegated, new object[] { subject, content, fromUserId, toUserId });
+                }
+                else
+                {
+                    dgvNotifications.Rows.Insert(0, 1);
+                    dgvNotifications[colFromUserId.Index, 0].Value = fromUserId;
+                    dgvNotifications[ColSubject.Index, 0].Value = subject;
+                    dgvNotifications[ColContent.Index, 0].Value = content;
+                }
+            }
         }
 
         private void Main_FormClosing(object sender, FormClosingEventArgs e)
