@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Trinity.BE;
+using Trinity.DAL;
 
 namespace SSK.Utils
 {
@@ -24,7 +25,7 @@ namespace SSK.Utils
             Connection.Closed += Connection_Closed;
             HubProxy = Connection.CreateHubProxy("MyHub");
             //Handle incoming event from server: use Invoke to write to console from SignalR's thread
-            HubProxy.On("checkNotification", () => CheckNotification());
+            HubProxy.On("OnNewNotification", () => GetLatestNotifications());
 
             try
             {
@@ -42,20 +43,37 @@ namespace SSK.Utils
 
         }
 
-        public void AddNotification(string Subject,string Content)
+        public void SendNotificationToDutyOfficer(string subject, string content)
         {
-            HubProxy.Invoke("AddNotification", Subject, Content);
+            DAL_Notification dalNotification = new DAL_Notification();
+            // Insert notification to local DB and also CentralizedDB
+            dalNotification.InsertNotification(subject, content, "supervisee", null, true, true);
+            dalNotification.InsertNotification(subject, content, "supervisee", null, true, false);
+
+            try
+            {
+                HubProxy.Invoke("SendNotification", subject, content, "supervisee", null, true);
+            }
+            catch (Exception)
+            {
+            }
         }
 
-        public void CheckNotification()
+        public void GetLatestNotifications()
         {
             Trinity.DAL.DAL_Notification dalNotification = new Trinity.DAL.DAL_Notification();
-            List<Notification> myNotifications = dalNotification.GetMyNotifications("dfkkmdkg", true);
-            var unReadCount = myNotifications.Count;
-            APIUtils.LayerWeb.Invoke((System.Windows.Forms.MethodInvoker)(() =>
+
+            // Get notifications from local db
+            // In this demo we get notifications from centralized db directly
+            List<Notification> myNotifications = dalNotification.GetMyNotifications("supervisee", false);
+            if (myNotifications != null)
             {
-                APIUtils.LayerWeb.PushNoti(unReadCount);
-            }));
+                var unReadCount = myNotifications.Count;
+                APIUtils.LayerWeb.Invoke((System.Windows.Forms.MethodInvoker)(() =>
+                {
+                    APIUtils.LayerWeb.PushNoti(unReadCount);
+                }));
+            }
         }
     }
 }
