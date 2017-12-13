@@ -1,13 +1,8 @@
 ﻿using PCSC;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using Trinity.DAL.DAL;
+using Trinity.DAL;
 
 namespace SSK.CodeBehind.Authentication
 {
@@ -56,7 +51,7 @@ namespace SSK.CodeBehind.Authentication
 
             Debug.WriteLine($"Card UID: {cardUID}");
             DAL_User dAL_User = new DAL_User();
-            var user = dAL_User.GetUserBySmartCardId(cardUID);
+            var user = dAL_User.GetUserBySmartCardId(cardUID, true);
 
             if (user != null)
             {
