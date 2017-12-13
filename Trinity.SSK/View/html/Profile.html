@@ -24,7 +24,7 @@
         <input type="hidden" name="FingerprintFailedCount" id="FingerprintFailedCount" />
         <input type="hidden" name="EnrolledDate" id="EnrolledDate" />
         <input type="hidden" name="Type" id="Type" />
-        
+        <input type="hidden" name="SmartCard_Id" id="SmartCard_Id" />
         <div id="Particulars" class="tab-pane fade in active" onclick="activeTab('Particulars');">
             <div class="input-group">
                 <span class="input-group-addon">Name</span>
@@ -216,7 +216,7 @@
         $('#FingerprintFailedCount').val(api.model.User.FingerprintFailedCount);
         $('#EnrolledDate').val(api.model.User.EnrolledDate);
         $('#Type').val(api.model.User.Type);
-
+        $('#SmartCard_Id').val(api.model.User.SmartCard_Id);
         // profile
         $('#Nationality').val(api.model.UserProfile.Nationality);
         $('#MaritalStatus').val(api.model.UserProfile.Maritial_Status);
