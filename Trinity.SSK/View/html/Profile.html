@@ -18,6 +18,13 @@
 <form id="profileFrm">
     <div class="tab-content" profile>
         <input type="hidden" id="activeTab" />
+        <input type="hidden" name="UserId" id="UserId" />
+        <input type="hidden" name="LastLoginTime" id="LastLoginTime" />
+        <input type="hidden" name="SmartCardFailedCount" id="SmartCardFailedCount" />
+        <input type="hidden" name="FingerprintFailedCount" id="FingerprintFailedCount" />
+        <input type="hidden" name="EnrolledDate" id="EnrolledDate" />
+        <input type="hidden" name="Type" id="Type" />
+        
         <div id="Particulars" class="tab-pane fade in active" onclick="activeTab('Particulars');">
             <div class="input-group">
                 <span class="input-group-addon">Name</span>
@@ -37,8 +44,8 @@
             <br />
             <div class="form-inline">
                 <div class="input-group">
-                    <span class="input-group-addon">Nationlality</span>
-                    <input id="Nationlality" type="text" class="form-control pri" name="Nationlality">
+                    <span class="input-group-addon">Nationality</span>
+                    <input id="Nationality" type="text" class="form-control pri" name="Nationality">
                 </div>
                 <div class="input-group">
                     <span class="input-group-addon">Marital Status</span>
@@ -70,6 +77,10 @@
 
         </div>
         <div id="Addresses" class="tab-pane fade" onclick="activeTab('Addresses');" style="pointer-events:none;">
+
+            <input type="hidden" name="Residential_Addess_ID" id="Residential_Addess_ID" />
+            <input type="hidden" name="Other_Address_ID" id="Other_Address_ID" />
+            <input type="hidden" name="Postal_Code" id="Postal_Code" />
             <div class="input-group">
                 <span class="input-group-addon">House Number</span>
                 <input id="AddressHouseNumber" type="text" class="form-control" name="AddressesHouseNumber" disabled="disabled" />
@@ -160,10 +171,14 @@
             </div>
             <br />
             <div class="input-group">
-                <span class="input-group-addon">End Date and Remarks</span>
-                <input id="EndDateAndRemarks" type="text" class="form-control" name="EndDateAndRemarks" />
+                <span class="input-group-addon">End Date </span>
+                <input id="EndDate" type="text" class="form-control" name="EndDate" />
             </div>
-
+            <br />
+            <div class="input-group">
+                <span class="input-group-addon">Remarks</span>
+                <input id="Remarks" type="text" class="form-control" name="Remarks" />
+            </div>
         </div>
     </div>
 
@@ -185,46 +200,58 @@
     var _particularName, _nric, _dob, _nationality, _maritalStatus = "";
     $(document).ready(function myfunction() {
 
-        _particularName = api.model.ParticularsName;
-        _nric = api.model.NRIC;
-        _dob = api.model.DOB;
-        _nationality = api.model.Nationlality;
-        _maritalStatus = api.model.MaritalStatus;
+        _particularName = api.model.User.Name;
+        _nric = api.model.User.NRIC;
+        _dob = api.model.UserProfile.DOB;
+        _nationality = api.model.UserProfile.Nationlality;
+        _maritalStatus = api.model.UserProfile.Maritial_Status;
 
-        //particulars inforation
-        $('#ParticularsName').val(api.model.ParticularsName);
-        $('#NRIC').val(api.model.NRIC);
-        $('#DOB').val(api.model.DOB);
-        $('#Nationlality').val(api.model.Nationlality);
-        $('#MaritalStatus').val(api.model.MaritalStatus);
-        $('#PrimaryContact').val(api.model.PrimaryContact);
-        $('#SecondaryContact').val(api.model.SecondaryContact);
-        $('#PrimaryEmail').val(api.model.PrimaryEmail);
-        $('#SecondaryEmail').val(api.model.SecondaryEmail);
+        $('#UserId').val(api.model.User.UserId);
+        //user inforation
+        $('#ParticularsName').val(api.model.User.Name);
+        $('#NRIC').val(api.model.User.NRIC);
+        $('#DOB').val(api.model.UserProfile.DOB);
+        $('#LastLoginTime').val(api.model.User.LastLoginTime);
+        $('#SmartCardFailedCount').val(api.model.User.SmartCardFailedCount);
+        $('#FingerprintFailedCount').val(api.model.User.FingerprintFailedCount);
+        $('#EnrolledDate').val(api.model.User.EnrolledDate);
+        $('#Type').val(api.model.User.Type);
+
+        // profile
+        $('#Nationality').val(api.model.UserProfile.Nationality);
+        $('#MaritalStatus').val(api.model.UserProfile.Maritial_Status);
+        $('#PrimaryContact').val(api.model.UserProfile.Primary_Phone);
+        $('#SecondaryContact').val(api.model.UserProfile.Secondary_Phone);
+        $('#PrimaryEmail').val(api.model.UserProfile.Primary_Email);
+        $('#SecondaryEmail').val(api.model.UserProfile.Secondary_Email);
 
         //address information
-        $('#AddressHouseNumber').val(api.model.Address.AddressHouseNumber);
-        $('#AddressUnitNumber').val(api.model.Address.AddressUnitNumber);
-        $('#AddressStreetName').val(api.model.Address.AddressStreetName);
-        $('#AddressCountry').val(api.model.Address.AddressCountry);
+        $('#Residential_Addess_ID').val(api.model.Addresses.Address_ID);
+        $('#Other_Address_ID').val(api.model.Addresses.Address_ID);
+        $('#AddressHouseNumber').val(api.model.Addresses.BlkHouse_Number);
+        $('#AddressUnitNumber').val(api.model.Addresses.FlrUnit_Number);
+        $('#AddressStreetName').val(api.model.Addresses.Street_Name);
+        $('#AddressCountry').val(api.model.Addresses.Country);
+        $('#Postal_Code').val(api.model.Addresses.Postal_Code);
 
         //next of kin information
-        $('#NextOfKinDetailsName').val(api.model.NextOfKinDetails.NextOfKinDetailsName);
-        $('#NextOfKinDetailsContactNumber').val(api.model.NextOfKinDetails.NextOfKinDetailsContactNumber);
-        $('#NextOfKinDetailsRelationship').val(api.model.NextOfKinDetails.NextOfKinDetailsRelationship);
-        $('#NextOfKinDetailsHouseNumber').val(api.model.NextOfKinDetails.NextOfKinDetailsHouseNumber);
-        $('#NextOfKinDetailsUnitNumber').val(api.model.NextOfKinDetails.NextOfKinDetailsUnitNumber);
-        $('#NextOfKinDetailsStreetName').val(api.model.NextOfKinDetails.NextOfKinDetailsStreetName);
-        $('#NextOfKinDetailsCountry').val(api.model.NextOfKinDetails.NextOfKinDetailsCountry);
-        $('#NextOfKinDetailsPostalCode').val(api.model.NextOfKinDetails.NextOfKinDetailsPostalCode);
+        $('#NextOfKinDetailsName').val(api.model.UserProfile.NextOfKin_Name);
+        $('#NextOfKinDetailsContactNumber').val(api.model.UserProfile.NextOfKin_Contact_Number);
+        $('#NextOfKinDetailsRelationship').val(api.model.UserProfile.NextOfKin_Relationship);
+        $('#NextOfKinDetailsHouseNumber').val(api.model.UserProfile.NextOfKin_BlkHouse_Number);
+        $('#NextOfKinDetailsUnitNumber').val(api.model.UserProfile.NextOfKin_FlrUnit_Number);
+        $('#NextOfKinDetailsStreetName').val(api.model.UserProfile.NextOfKin_Street_Name);
+        $('#NextOfKinDetailsCountry').val(api.model.UserProfile.NextOfKin_Country);
+        $('#NextOfKinDetailsPostalCode').val(api.model.UserProfile.NextOfKin_PostalCode);
 
         //employee details information
-        $('#EmployerName').val(api.model.EmployerDetails.EmployerName);
-        $('#EmployerContact').val(api.model.EmployerDetails.EmployerContact);
-        $('#CompanyName').val(api.model.EmployerDetails.CompanyName);
-        $('#JobTitle').val(api.model.EmployerDetails.JobTitle);
-        $('#StartDate').val(api.model.EmployerDetails.StartDate);
-        $('#EndDateAndRemarks').val(api.model.EmployerDetails.EndDateAndRemarks);
+        $('#EmployerName').val(api.model.UserProfile.Employment_Name);
+        $('#EmployerContact').val(api.model.UserProfile.Employment_Contact_Number);
+        $('#CompanyName').val(api.model.UserProfile.Employment_Company_Name);
+        $('#JobTitle').val(api.model.UserProfile.Employment_Job_Title);
+        $('#StartDate').val(api.model.UserProfile.Employment_Start_Date);
+        $('#EndDate').val(api.model.UserProfile.Employment_End_Date);
+        $('#Remarks').val(api.model.UserProfile.Employment_Remarks);
 
     });
 
@@ -237,7 +264,11 @@
         var $form = $("#profileFrm");
         var data = getFormData($form);
         var json = JSON.stringify(data);
-        api.server.SaveProfile(json, false);
+
+        var jsonUserData = '{"User":{"UserId":"dfkkmdkg"},'
+            + '"UserProfile":{ "UserId":"dfkkmdkg" },'
+            + '"Addresses":{ "Address_ID": 1 }}';
+        api.server.SaveProfile(jsonUserData, false);
 
         e.preventDefault(); // avoid to execute the actual submit of the form.
     });

@@ -39,6 +39,6 @@ namespace Trinity.BE
         public Nullable<short> Type { get; set; }
 
         [DataMember]
-        public string DutyOfficer_Id { get; set; }
+        public byte[] Fingerprint { get; set; }
     }
 }
