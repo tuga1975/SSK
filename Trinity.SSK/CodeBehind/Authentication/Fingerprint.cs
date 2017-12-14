@@ -61,6 +61,7 @@ namespace SSK.CodeBehind.Authentication
                 session.IsFingerprintAuthenticated = true;
 
                 _web.RunScript("$('.status-text').css('color','#000').text('Fingerprint authentication is successful.');");
+                APIUtils.SignalR.GetLatestNotifications();
                 Thread.Sleep(2000);
 
                 _web.LoadPageHtml("Supervisee.html");

@@ -18,10 +18,16 @@ namespace Trinity.BE
         public DateTime Date { get; set; }
 
         [DataMember]
+        public string FromUserName { get; set; }
+
+        [DataMember]
         public string FromUserId { get; set; }
 
         [DataMember]
         public string ToUserId { get; set; }
+
+        [DataMember]
+        public string ToUserName { get; set; }
 
         [DataMember]
         public string Subject { get; set; }
