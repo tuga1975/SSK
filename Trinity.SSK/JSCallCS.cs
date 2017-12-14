@@ -54,9 +54,9 @@ namespace SSK
                 var dalUserprofile = new Trinity.DAL.DAL_UserProfile();
                 var profileModel = new Trinity.BE.ProfileModel
                 {
-                    User = dalUser.GetUserByUserId(userId,true),
-                    UserProfile = dalUserprofile.GetUserProfileByUserId(userId,true),
-                    Addresses = dalUserprofile.GetAddressByUserId(userId,true)
+                    User = dalUser.GetUserByUserId(userId, true),
+                    UserProfile = dalUserprofile.GetUserProfileByUserId(userId, true),
+                    Addresses = dalUserprofile.GetAddressByUserId(userId, true)
 
                 };
                 //profile model 
@@ -81,14 +81,14 @@ namespace SSK
                 if (primaryInfoChange)
                 {
 
-                    dalUser.UpdateUser(data.User, data.User.UserId,true);
+                    dalUser.UpdateUser(data.User, data.User.UserId, true);
 
                     dalUserprofile.UpdateUserProfile(data.UserProfile, data.User.UserId, true);
 
                 }
                 else
                 {
-                    dalUserprofile.UpdateUserProfile(data.UserProfile, data.User.UserId,true);
+                    dalUserprofile.UpdateUserProfile(data.UserProfile, data.User.UserId, true);
                 }
 
                 //send notify to case officer
@@ -99,6 +99,12 @@ namespace SSK
             {
                 LoadPage("Supervisee.html");
             }
+        }
+
+        public void ScanDocument()
+        {
+            //
+            APIUtils.SignalR.SendNotificationToDutyOfficer("Hello Mr. Duty Officer!", "Hello Mr. Duty Officer! I'm a Supervisee");
         }
 
         private void actionThread(object pram)
