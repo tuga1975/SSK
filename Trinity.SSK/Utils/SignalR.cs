@@ -45,7 +45,7 @@ namespace SSK.Utils
         public void SendNotificationToDutyOfficer(string subject, string content)
         {
             Session session = Session.Instance;
-            User user = (User) session[CommonConstants.USER_LOGIN];
+            User user = (User)session[CommonConstants.USER_LOGIN];
             if (user == null)
             {
                 // User hasn't authenticated yet
@@ -54,11 +54,11 @@ namespace SSK.Utils
             DAL_Notification dalNotification = new DAL_Notification();
             // Insert notification to local DB and also CentralizedDB
             dalNotification.InsertNotification(subject, content, user.UserId, null, true, true);
-            dalNotification.InsertNotification(subject, content, user.UserId, null, true, false);
+            //dalNotification.InsertNotification(subject, content, user.UserId, null, true, false);
 
             try
             {
-                HubProxy.Invoke("SendNotification", subject, content, "supervisee", null, true);
+                HubProxy.Invoke("SendNotification", subject, content, user.UserId, null, true);
             }
             catch (Exception)
             {
@@ -71,14 +71,19 @@ namespace SSK.Utils
 
             // Get notifications from local db
             // In this demo we get notifications from centralized db directly
-            List<Notification> myNotifications = dalNotification.GetMyNotifications("supervisee", false);
-            if (myNotifications != null)
+            Session currentSession = Session.Instance;
+            User user = (User)currentSession[CommonConstants.USER_LOGIN];
+            if (user != null)
             {
-                var unReadCount = myNotifications.Count;
-                APIUtils.LayerWeb.Invoke((System.Windows.Forms.MethodInvoker)(() =>
+                List<Notification> myNotifications = dalNotification.GetMyNotifications(user.UserId, false);
+                if (myNotifications != null)
                 {
-                    APIUtils.LayerWeb.PushNoti(unReadCount);
-                }));
+                    var unReadCount = myNotifications.Count;
+                    APIUtils.LayerWeb.Invoke((System.Windows.Forms.MethodInvoker)(() =>
+                    {
+                        APIUtils.LayerWeb.PushNoti(unReadCount);
+                    }));
+                }
             }
         }
     }

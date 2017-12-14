@@ -48,6 +48,30 @@ namespace Trinity.DAL
             return null;
         }
 
+        public List<Notification> GetNotificationsSentToDutyOfficer(bool isLocal)
+        {
+            IQueryable<Trinity.BE.Notification> queryNotifications = null;
+            if (isLocal)
+            {
+                //queryNotifications = _localUnitOfWork.DataContext.Notifications.Where(n => n.ToUserId == null);
+                queryNotifications = (from n in _localUnitOfWork.DataContext.Notifications
+                                      join u in _localUnitOfWork.DataContext.Users on n.FromUserId equals u.UserId
+                                      select new Trinity.BE.Notification() { FromUserName = u.Name, Subject = n.Subject, Content = n.Content, Date = n.Date });
+            }
+            else
+            {
+                //queryNotifications = _centralizedUnitOfWork.DataContext.Notifications.Where(n => n.ToUserId == null);
+                queryNotifications = (from n in _centralizedUnitOfWork.DataContext.Notifications
+                                      join u in _centralizedUnitOfWork.DataContext.Users on n.FromUserId equals u.UserId
+                                      select new Trinity.BE.Notification() { FromUserName = u.Name, Subject = n.Subject, Content = n.Content, Date = n.Date });
+            }
+            if (queryNotifications.Count() > 0)
+            {
+                return queryNotifications.ToList<Notification>();
+            }
+            return null;
+        }
+
         public void InsertNotification(string subject, string content, string fromUserId, string toUserId, bool isFromSupervisee, bool isLocal)
         {
             Trinity.DAL.DBContext.Notification notifcation = new DBContext.Notification()

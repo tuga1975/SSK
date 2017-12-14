@@ -66,8 +66,10 @@ namespace SSK
 
         public void LoadNotications()
         {
+            Session currentSession = Session.Instance;
+            Trinity.BE.User user = (Trinity.BE.User)currentSession[CommonConstants.USER_LOGIN];
             DAL_Notification dalNotification = new DAL_Notification();
-            List<Trinity.BE.Notification> myNotifications = dalNotification.GetMyNotifications("supervisee", false);
+            List<Trinity.BE.Notification> myNotifications = dalNotification.GetMyNotifications(user.UserId, false);
             var model = myNotifications;
             web.LoadPageHtml("Notication.html", myNotifications);
         }
