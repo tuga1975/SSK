@@ -1,8 +1,10 @@
 ﻿using PCSC;
+using SSK.Contstants;
 using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Windows.Forms;
+using Trinity.Common;
 using Trinity.DAL;
 
 namespace SSK.CodeBehind.Authentication
@@ -78,6 +80,14 @@ namespace SSK.CodeBehind.Authentication
 
             if (user != null)
             {
+                //
+                // SmartCard is authenticated
+                //
+                // Create a session object to store UserLogin information
+                Session session = Session.Instance;
+                session.IsSmartCardAuthenticated = true;
+                session[CommonConstants.USER_LOGIN] = user;
+
                 _web.RunScript("$('.status-text').css('color','#000').text('Smart card authentication is sucessful.');");
                 Thread.Sleep(3000);
 

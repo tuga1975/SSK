@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -24,9 +25,8 @@ namespace OfficerDesktopApp
             InitializeComponent();
         }
 
-        private void buttonConnect_Click(object sender, EventArgs e)
+        private void Main_Load(object sender, EventArgs e)
         {
-            labelStatus.Text = "Connecting to server...";
             ConnectAsync();
         }
 
@@ -40,6 +40,7 @@ namespace OfficerDesktopApp
 
         private async void ConnectAsync()
         {
+            lblStatus.Text = "Connecting to server...";
             Connection = new HubConnection(ServerURI);
             Connection.Closed += Connection_Closed;
             HubProxy = Connection.CreateHubProxy("MyHub");
@@ -51,24 +52,30 @@ namespace OfficerDesktopApp
             }
             catch (HttpRequestException)
             {
-                labelStatus.Text = "Unable to connect to server: Start server before connecting clients.";
-                //No connection: Don't enable Send button or show chat UI
+                this.Invoke((Action)(() => rtbContent.Enabled = false));
+                this.Invoke((Action)(() => lblStatus.Text = "Unable to connect. The SignalR Server doesn't seem to work. Reconnecting..."));
+
+                // Reconnect again
+                ConnectAsync();
                 return;
             }
 
             //Activate UI
             txtSubject.Enabled = true;
             rtbContent.Enabled = true;
-            buttonSend.Enabled = true;
+            btnSend.Enabled = true;
             txtSubject.Focus();
-            labelStatus.Text = "Connected to server at " + ServerURI;
+            lblStatus.Text = "Connected to server at " + ServerURI;
         }
         private void Connection_Closed()
         {
             //Deactivate chat UI; show login UI. 
             this.Invoke((Action)(() => txtSubject.Enabled = false));
             this.Invoke((Action)(() => rtbContent.Enabled = false));
-            this.Invoke((Action)(() => labelStatus.Text = "You have been disconnected."));
+            this.Invoke((Action)(() => lblStatus.Text = "Could not connect.Reconnecting..."));
+
+            Thread.Sleep(1000);
+            ConnectAsync();
         }
 
         delegate void OnNewNotificationHandlerDelegate(string subject, string content, string fromUserId, string toUserId);

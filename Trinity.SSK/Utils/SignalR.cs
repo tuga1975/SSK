@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNet.SignalR.Client;
+using SSK.Contstants;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Trinity.BE;
+using Trinity.Common;
 using Trinity.DAL;
 
 namespace SSK.Utils
@@ -45,10 +44,17 @@ namespace SSK.Utils
 
         public void SendNotificationToDutyOfficer(string subject, string content)
         {
+            Session session = Session.Instance;
+            User user = (User) session[CommonConstants.USER_LOGIN];
+            if (user == null)
+            {
+                // User hasn't authenticated yet
+                return;
+            }
             DAL_Notification dalNotification = new DAL_Notification();
             // Insert notification to local DB and also CentralizedDB
-            dalNotification.InsertNotification(subject, content, "supervisee", null, true, true);
-            dalNotification.InsertNotification(subject, content, "supervisee", null, true, false);
+            dalNotification.InsertNotification(subject, content, user.UserId, null, true, true);
+            dalNotification.InsertNotification(subject, content, user.UserId, null, true, false);
 
             try
             {
