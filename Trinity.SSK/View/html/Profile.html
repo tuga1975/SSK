@@ -20,11 +20,9 @@
         <input type="hidden" id="activeTab" />
         <input type="hidden" name="UserId" id="UserId" />
         <input type="hidden" name="LastLoginTime" id="LastLoginTime" />
-        <input type="hidden" name="SmartCardFailedCount" id="SmartCardFailedCount" />
-        <input type="hidden" name="FingerprintFailedCount" id="FingerprintFailedCount" />
         <input type="hidden" name="EnrolledDate" id="EnrolledDate" />
-        <input type="hidden" name="Type" id="Type" />
-        <input type="hidden" name="SmartCard_Id" id="SmartCard_Id" />
+        <input type="hidden" name="Role" id="Role" />
+        <input type="hidden" name="SmartCardId" id="SmartCardId" />
         <div id="Particulars" class="tab-pane fade in active" onclick="activeTab('Particulars');">
             <div class="input-group">
                 <span class="input-group-addon">Name</span>
@@ -212,11 +210,9 @@
         $('#NRIC').val(api.model.User.NRIC);
         $('#DOB').val(api.model.UserProfile.DOB);
         $('#LastLoginTime').val(api.model.User.LastLoginTime);
-        $('#SmartCardFailedCount').val(api.model.User.SmartCardFailedCount);
-        $('#FingerprintFailedCount').val(api.model.User.FingerprintFailedCount);
         $('#EnrolledDate').val(api.model.User.EnrolledDate);
-        $('#Type').val(api.model.User.Type);
-        $('#SmartCard_Id').val(api.model.User.SmartCard_Id);
+        $('#Role').val(api.model.User.Role);
+        $('#SmartCardId').val(api.model.User.SmartCardId);
         // profile
         $('#Nationality').val(api.model.UserProfile.Nationality);
         $('#MaritalStatus').val(api.model.UserProfile.Maritial_Status);
