@@ -130,6 +130,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CodeBehind\Authentication\Fingerprint.cs" />
+    <Compile Include="CodeBehind\Authentication\NRIC.cs" />
     <Compile Include="CodeBehind\Authentication\SmartCard.cs" />
     <Compile Include="Contstants\CommonConstants.cs" />
     <Compile Include="DeviceMonitor\DeviceMonitor.cs" />
@@ -215,6 +216,9 @@
     <Content Include="View\bootstrap\fonts\fontawesome-webfont.svg" />
     <Content Include="View\bootstrap\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="View\bootstrap\js\bootstrap.min.js" />
+    <Content Include="View\html\Authentication\NRIC.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="View\html\BookAppointment.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
