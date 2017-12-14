@@ -1,4 +1,5 @@
-﻿using SSK.DeviceMonitor;
+﻿using SSK.Contstants;
+using SSK.DeviceMonitor;
 using System.Threading;
 using System.Windows.Forms;
 using Trinity.Common;
@@ -17,6 +18,9 @@ namespace SSK.CodeBehind.Authentication
         }
         internal void Start()
         {
+            _web.LoadPageHtml("Authentication/FingerPrint.html");
+            _web.RunScript("$('.status-text').css('color','#000').text('Please place your Finger on the reader.');");
+
             StartVerification();
         }
 
@@ -41,6 +45,13 @@ namespace SSK.CodeBehind.Authentication
                 _web.RunScript("$('.status-text').css('color','#000').text('Fingerprint authentication is sucessful.');");
                 Thread.Sleep(2000);
 
+                // if supervisee login, redirect to Supervisee.html
+                // if duty officer override, redirect to NRIC.html
+                Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN]
+                //if (user.Type)
+                //{
+
+                //}
                 _web.LoadPageHtml("Supervisee.html");
             }
             else
