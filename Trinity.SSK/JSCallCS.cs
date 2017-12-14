@@ -61,7 +61,7 @@ namespace SSK
                 else
                 {
                     Trinity.BE.User user = new Trinity.BE.User();
-                    user.UserId = "supervisee";
+                    user.UserId = "a179195a-d502-4069-a7c0-9530613c961f";
 
                     var dalUser = new Trinity.DAL.DAL_User();
                     var dalUserprofile = new Trinity.DAL.DAL_UserProfile();
@@ -78,7 +78,7 @@ namespace SSK
             }
             catch (Exception ex)
             {
-                LoadPage("Supervisee.html");
+                web.LoadPageHtml("Profile.html", new Trinity.BE.ProfileModel());
             }
         }
 

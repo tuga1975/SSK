@@ -105,7 +105,7 @@ namespace Trinity.DAL
                 };
                 return userProfile;
             }
-            return null;
+            return new UserProfile();
         }
 
         public bool UpdateUserProfile(BE.UserProfile model, string userId,bool isLocal)
@@ -178,12 +178,19 @@ namespace Trinity.DAL
             if (isLocal)
             {
                 dbUserProfile = _localUnitOfWork.DataContext.User_Profiles.FirstOrDefault(u => u.UserId == userId);
-                dbAddress = _localUnitOfWork.DataContext.Addresses.FirstOrDefault(a => a.Address_ID == dbUserProfile.Residential_Addess_ID);
+                if (dbUserProfile!=null)
+                {
+                    dbAddress = _localUnitOfWork.DataContext.Addresses.FirstOrDefault(a => a.Address_ID == dbUserProfile.Residential_Addess_ID);
+                }
+               
             }
             else
-            {
-                dbUserProfile = _centralizedUnitOfWork.DataContext.User_Profiles.FirstOrDefault(u => u.UserId == userId);
-                dbAddress = _centralizedUnitOfWork.DataContext.Addresses.FirstOrDefault(a => a.Address_ID == dbUserProfile.Residential_Addess_ID);
+            { dbUserProfile = _centralizedUnitOfWork.DataContext.User_Profiles.FirstOrDefault(u => u.UserId == userId);
+                if (dbUserProfile != null)
+                {
+
+                    dbAddress = _centralizedUnitOfWork.DataContext.Addresses.FirstOrDefault(a => a.Address_ID == dbUserProfile.Residential_Addess_ID);
+                }
             }
             
             if (dbUserProfile != null)
@@ -205,7 +212,7 @@ namespace Trinity.DAL
                 }
             }
 
-            return null;
+            return new BE.Address();
         }
     }
 }
