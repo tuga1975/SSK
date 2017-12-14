@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Trinity.DAL.DBContext;
 using Trinity.DAL.Repository;
@@ -9,6 +10,55 @@ namespace Trinity.DAL
     {
         Local_UnitOfWork _localUnitOfWork = new Local_UnitOfWork();
         Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
+
+        public List<Trinity.BE.User> GetAllSupervisees(bool isLocal)
+        {
+            if (isLocal)
+            {
+                List<Trinity.BE.User> result = new List<BE.User>();
+                List<User> users = _localUnitOfWork.DataContext.Users.Where(u => u.Role == 1).ToList();
+                foreach (var item in users)
+                {
+                    Trinity.BE.User user = new BE.User()
+                    {
+                        EnrolledDate = item.EnrolledDate,
+                        LastLoginTime = item.LastLoginTime,
+                        Name = item.Name,
+                        NRIC = item.NRIC,
+                        SmartCardId = item.SmartCardId,
+                        Role = item.Role,
+                        UserId = item.UserId,
+                        Fingerprint = item.Fingerprint
+                    };
+                    result.Add(user);
+
+                }
+                return result;
+            }
+            else
+            {
+                List<Trinity.BE.User> result = new List<BE.User>();
+
+                List<User> users = _centralizedUnitOfWork.DataContext.Users.Where(u => u.Role == 1).ToList();
+                foreach (var item in users)
+                {
+                    Trinity.BE.User user = new BE.User()
+                    {
+                        EnrolledDate = item.EnrolledDate,
+                        LastLoginTime = item.LastLoginTime,
+                        Name = item.Name,
+                        NRIC = item.NRIC,
+                        SmartCardId = item.SmartCardId,
+                        Role = item.Role,
+                        UserId = item.UserId,
+                        Fingerprint = item.Fingerprint
+                    };
+                    result.Add(user);
+
+                }
+                return result;
+            }
+        }
 
         public Trinity.BE.User GetUserBySmartCardId(string smartCardId, bool isLocal)
         {
@@ -172,6 +222,7 @@ namespace Trinity.DAL
                 else
                 {
                     var centralUserRepo = _centralizedUnitOfWork.GetRepository<User>();
+                    dbUser = new User();
                     SetInfo(dbUser, user);
                     centralUserRepo.Add(dbUser);
                     _centralizedUnitOfWork.Save();

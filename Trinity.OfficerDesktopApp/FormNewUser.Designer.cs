@@ -34,20 +34,20 @@
             this.btnSave = new System.Windows.Forms.Button();
             this.lblNote = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.btnScanFingerprint = new System.Windows.Forms.Button();
+            this.btnScanSmartcard = new System.Windows.Forms.Button();
+            this.dpDOB = new System.Windows.Forms.DateTimePicker();
+            this.label7 = new System.Windows.Forms.Label();
+            this.txtNationality = new System.Windows.Forms.TextBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.txtPrimaryEmail = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.txtPrimaryPhone = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
             this.cboRoles = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
             this.txtNRIC = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.txtPrimaryPhone = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.txtPrimaryEmail = new System.Windows.Forms.TextBox();
-            this.label5 = new System.Windows.Forms.Label();
-            this.txtNationality = new System.Windows.Forms.TextBox();
-            this.label6 = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
-            this.dpDOB = new System.Windows.Forms.DateTimePicker();
-            this.btnScanSmartcard = new System.Windows.Forms.Button();
-            this.btnScanFingerprint = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -118,6 +118,103 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "User Information";
             // 
+            // btnScanFingerprint
+            // 
+            this.btnScanFingerprint.Enabled = false;
+            this.btnScanFingerprint.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnScanFingerprint.Location = new System.Drawing.Point(387, 269);
+            this.btnScanFingerprint.Name = "btnScanFingerprint";
+            this.btnScanFingerprint.Size = new System.Drawing.Size(193, 44);
+            this.btnScanFingerprint.TabIndex = 15;
+            this.btnScanFingerprint.Text = "Scan your finger print";
+            this.btnScanFingerprint.UseVisualStyleBackColor = true;
+            this.btnScanFingerprint.Click += new System.EventHandler(this.btnScanFingerprint_Click);
+            // 
+            // btnScanSmartcard
+            // 
+            this.btnScanSmartcard.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnScanSmartcard.Location = new System.Drawing.Point(165, 269);
+            this.btnScanSmartcard.Name = "btnScanSmartcard";
+            this.btnScanSmartcard.Size = new System.Drawing.Size(193, 44);
+            this.btnScanSmartcard.TabIndex = 14;
+            this.btnScanSmartcard.Text = "Scan your smart card";
+            this.btnScanSmartcard.UseVisualStyleBackColor = true;
+            this.btnScanSmartcard.Click += new System.EventHandler(this.btnScanSmartcard_Click);
+            // 
+            // dpDOB
+            // 
+            this.dpDOB.CustomFormat = "dd/MM/yyyy";
+            this.dpDOB.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dpDOB.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.dpDOB.Location = new System.Drawing.Point(165, 218);
+            this.dpDOB.Name = "dpDOB";
+            this.dpDOB.Size = new System.Drawing.Size(193, 24);
+            this.dpDOB.TabIndex = 13;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label7.Location = new System.Drawing.Point(29, 218);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(45, 18);
+            this.label7.TabIndex = 12;
+            this.label7.Text = "DOB:";
+            // 
+            // txtNationality
+            // 
+            this.txtNationality.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtNationality.Location = new System.Drawing.Point(165, 185);
+            this.txtNationality.Name = "txtNationality";
+            this.txtNationality.Size = new System.Drawing.Size(635, 24);
+            this.txtNationality.TabIndex = 11;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.Location = new System.Drawing.Point(29, 188);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(76, 18);
+            this.label6.TabIndex = 10;
+            this.label6.Text = "Nationality";
+            // 
+            // txtPrimaryEmail
+            // 
+            this.txtPrimaryEmail.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtPrimaryEmail.Location = new System.Drawing.Point(165, 155);
+            this.txtPrimaryEmail.Name = "txtPrimaryEmail";
+            this.txtPrimaryEmail.Size = new System.Drawing.Size(635, 24);
+            this.txtPrimaryEmail.TabIndex = 9;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.Location = new System.Drawing.Point(29, 158);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(104, 18);
+            this.label5.TabIndex = 8;
+            this.label5.Text = "Primary Email:";
+            // 
+            // txtPrimaryPhone
+            // 
+            this.txtPrimaryPhone.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtPrimaryPhone.Location = new System.Drawing.Point(165, 125);
+            this.txtPrimaryPhone.Name = "txtPrimaryPhone";
+            this.txtPrimaryPhone.Size = new System.Drawing.Size(635, 24);
+            this.txtPrimaryPhone.TabIndex = 7;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.Location = new System.Drawing.Point(29, 128);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(110, 18);
+            this.label4.TabIndex = 6;
+            this.label4.Text = "Primary Phone:";
+            // 
             // cboRoles
             // 
             this.cboRoles.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -159,103 +256,6 @@
             this.label2.TabIndex = 2;
             this.label2.Text = "NRIC:";
             // 
-            // txtPrimaryPhone
-            // 
-            this.txtPrimaryPhone.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtPrimaryPhone.Location = new System.Drawing.Point(165, 125);
-            this.txtPrimaryPhone.Name = "txtPrimaryPhone";
-            this.txtPrimaryPhone.Size = new System.Drawing.Size(635, 24);
-            this.txtPrimaryPhone.TabIndex = 7;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(29, 128);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(110, 18);
-            this.label4.TabIndex = 6;
-            this.label4.Text = "Primary Phone:";
-            // 
-            // txtPrimaryEmail
-            // 
-            this.txtPrimaryEmail.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtPrimaryEmail.Location = new System.Drawing.Point(165, 155);
-            this.txtPrimaryEmail.Name = "txtPrimaryEmail";
-            this.txtPrimaryEmail.Size = new System.Drawing.Size(635, 24);
-            this.txtPrimaryEmail.TabIndex = 9;
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(29, 158);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(104, 18);
-            this.label5.TabIndex = 8;
-            this.label5.Text = "Primary Email:";
-            // 
-            // txtNationality
-            // 
-            this.txtNationality.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtNationality.Location = new System.Drawing.Point(165, 185);
-            this.txtNationality.Name = "txtNationality";
-            this.txtNationality.Size = new System.Drawing.Size(635, 24);
-            this.txtNationality.TabIndex = 11;
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.Location = new System.Drawing.Point(29, 188);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(76, 18);
-            this.label6.TabIndex = 10;
-            this.label6.Text = "Nationality";
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label7.Location = new System.Drawing.Point(29, 218);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(45, 18);
-            this.label7.TabIndex = 12;
-            this.label7.Text = "DOB:";
-            // 
-            // dpDOB
-            // 
-            this.dpDOB.CustomFormat = "dd/MM/yyyy";
-            this.dpDOB.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dpDOB.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dpDOB.Location = new System.Drawing.Point(165, 218);
-            this.dpDOB.Name = "dpDOB";
-            this.dpDOB.Size = new System.Drawing.Size(193, 24);
-            this.dpDOB.TabIndex = 13;
-            // 
-            // btnScanSmartcard
-            // 
-            this.btnScanSmartcard.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnScanSmartcard.Location = new System.Drawing.Point(165, 269);
-            this.btnScanSmartcard.Name = "btnScanSmartcard";
-            this.btnScanSmartcard.Size = new System.Drawing.Size(193, 44);
-            this.btnScanSmartcard.TabIndex = 14;
-            this.btnScanSmartcard.Text = "Scan your smart card";
-            this.btnScanSmartcard.UseVisualStyleBackColor = true;
-            this.btnScanSmartcard.Click += new System.EventHandler(this.btnScanSmartcard_Click);
-            // 
-            // btnScanFingerprint
-            // 
-            this.btnScanFingerprint.Enabled = false;
-            this.btnScanFingerprint.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnScanFingerprint.Location = new System.Drawing.Point(387, 269);
-            this.btnScanFingerprint.Name = "btnScanFingerprint";
-            this.btnScanFingerprint.Size = new System.Drawing.Size(193, 44);
-            this.btnScanFingerprint.TabIndex = 15;
-            this.btnScanFingerprint.Text = "Scan your finger print";
-            this.btnScanFingerprint.UseVisualStyleBackColor = true;
-            this.btnScanFingerprint.Click += new System.EventHandler(this.btnScanFingerprint_Click);
-            // 
             // FormNewUser
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -268,6 +268,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "FormNewUser";
             this.Text = "Create New User";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormNewUser_FormClosing);
             this.Load += new System.EventHandler(this.FormNewUser_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();

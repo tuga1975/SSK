@@ -8,6 +8,10 @@
     button {
         z-index: 100;
     }
+
+    .highlight {
+        border-color: red;
+    }
 </style>
 <ul class="nav nav-tabs">
     <li class="active"><a data-toggle="tab" href="#Particulars">Particulars</a></li>
@@ -17,7 +21,7 @@
 </ul>
 <form id="profileFrm">
     <div class="tab-content" profile>
-        <input type="hidden" id="activeTab" />
+        <input type="hidden" id="activeTab" value="Particulars" />
         <input type="hidden" name="UserId" id="UserId" />
         <input type="hidden" name="LastLoginTime" id="LastLoginTime" />
         <input type="hidden" name="EnrolledDate" id="EnrolledDate" />
@@ -74,7 +78,7 @@
             <br />
 
         </div>
-        <div id="Addresses" class="tab-pane fade" onclick="activeTab('Addresses');" style="pointer-events:none;">
+        <div id="Addresses" class="tab-pane fade" onclick="activeTab('Addresses');">
 
             <input type="hidden" name="Residential_Addess_ID" id="Residential_Addess_ID" />
             <input type="hidden" name="Other_Address_ID" id="Other_Address_ID" />
@@ -179,10 +183,14 @@
             </div>
         </div>
     </div>
-
+    <div style="display:none;float:left;" id="divError"><button type="button" class="btn btn-danger">Following input must not null!</button></div>
     <div style="display:none;float:right;" id="divSupportDocument">
-        <button type="button" class="btn btn-danger" style="position:fixed;bottom:10px;right:10px;" onclick="api.server.LoadScanDocument();">Supporting documents required</button>
+        <button type="button" class="btn btn-danger" style="position:fixed;bottom:10px;right:10px;" id="btnScanDocument">Supporting documents required</button>
         <button type="button" class="btn btn-dark" style="position:fixed;bottom:10px;left:10px;float:left;" onclick="api.server.LoadPage('Supervisee.html');">Back</button>
+    </div>
+    <div style="float:right;" id="tempSupportDocument">
+        <button type="button" class="btn btn-danger" style="position:fixed;bottom:10px;right:150px;" onclick="api.server.LoadScanDocument();">Supporting documents required</button>
+        
     </div>
     <div style="display:none;float:right;" id="divConfirm">
         <label><strong>Are you sure ?</strong></label>
@@ -201,7 +209,7 @@
         _particularName = api.model.User.Name;
         _nric = api.model.User.NRIC;
         _dob = api.model.UserProfile.DOB;
-        _nationality = api.model.UserProfile.Nationlality;
+        _nationality = api.model.UserProfile.Nationality;
         _maritalStatus = api.model.UserProfile.Maritial_Status;
 
         $('#UserId').val(api.model.User.UserId);
@@ -253,6 +261,7 @@
 
     function activeTab(name) {
         $('#activeTab').val(name);
+        $('#divError').hide();
     }
 
     $("#profileFrm").submit(function (e) {
@@ -260,12 +269,18 @@
         var $form = $("#profileFrm");
         var data = getFormData($form);
         var json = JSON.stringify(data);
-        
+
         api.server.SaveProfile(json, false);
 
         e.preventDefault(); // avoid to execute the actual submit of the form.
     });
 
+    $('#btnScanDocument').click(function () {
+        var $form = $("#profileFrm");
+        var data = getFormData($form);
+        var json = JSON.stringify(data);
+        api.server.LoadScanDocument(json);
+    });
     function getFormData($form) {
         var unindexed_array = $form.serializeArray();
         var indexed_array = {};
@@ -276,15 +291,39 @@
 
         return indexed_array;
     }
+
     $('#SaveBtn').click(function () {
-        if ($('#ParticularsName').val() != _particularName || $('#NRIC').val() != _nric || $('#DOB').val() != _dob || $('#Nationlality').val() != _nationality || $('#MaritalStatus').val() != _maritalStatus) {
+
+        if ($('#ParticularsName').val() != _particularName || $('#NRIC').val() != _nric || $('#DOB').val() != _dob || $('#Nationality').val() != _nationality || $('#MaritalStatus').val() != _maritalStatus) {
             $('#divSave').hide();
             $('#divSupportDocument').fadeIn(1000);
             $('.pri').css('border-color', 'red');
         }
         else {
-            $('#divConfirm').show();
-            $('#divSave').hide();
+
+            var activeTab = $('#activeTab').val();
+            var empty = $('#' + activeTab).find("input").filter(function () {
+                return this.value.trim() === "";
+            });
+            if (empty.length) {
+                //At least one input is empty
+                $("input[class='form-control']").each(function () {
+                    if ($.trim($(this).val()).length == 0) {
+                        $(this).addClass("highlight");
+                    }
+                    else {
+                        $(this).removeClass("highlight");
+
+                    }
+                });
+                $('#divError').show();
+            }
+            else {
+                $('#divError').hide();
+                $('#divConfirm').show();
+                $('#divSave').hide();
+            }
+
         }
 
     });
@@ -293,4 +332,35 @@
         $('#divSave').show();
         $('#divConfirm').hide();
     });
+    $('input[class="form-control"]').keyup(function () {
+        $('#btnCancel').trigger('click');
+        if ($(this).val() != "") {
+            $(this).removeClass('highlight');
+          
+        }
+        else {
+            $(this).addClass('highlight');
+           
+        }
+    });
+    var listTab = ["Particulars", "Addresses", "Next-Of-Kin-Details", "Employment-Details"];
+    //function disableOtherTab(thisTab) {
+
+    //    for (var i = 0; i < listTab.length; i++) {
+    //        if (thisTab == listTab[i]) {
+    //            continue;
+    //        }
+    //        else {
+                
+    //                $('#' + listTab[i]).unbind('mouseenter mouseleave');
+    //        }
+    //    }
+    //}
+    //function enableAllTab() {
+    //    for (var i = 0; i < listTab.length; i++) {
+
+    //        $('#' + listTab[i]).bind('mouseenter mouseleave');
+
+    //    }
+    //}
 </script>

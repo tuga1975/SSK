@@ -42,7 +42,7 @@ namespace SSK
         private void LayerWeb_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
             this.LayerWeb.InvokeScript("createEvent", JsonConvert.SerializeObject(jsCallCS.GetType().GetMethods().Where(d => d.IsPublic && !d.IsVirtual && !d.IsSecuritySafeCritical).ToArray().Select(d => d.Name)));
-            APIUtils.SignalR.GetLatestNotifications();
+            
             //smartCard.Scanning();
 
             _nric = new CodeBehind.Authentication.NRIC(this.LayerWeb);

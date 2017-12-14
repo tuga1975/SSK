@@ -66,8 +66,10 @@ namespace SSK
 
         public void LoadNotications()
         {
+            Session currentSession = Session.Instance;
+            Trinity.BE.User user = (Trinity.BE.User)currentSession[CommonConstants.USER_LOGIN];
             DAL_Notification dalNotification = new DAL_Notification();
-            List<Trinity.BE.Notification> myNotifications = dalNotification.GetMyNotifications("supervisee", false);
+            List<Trinity.BE.Notification> myNotifications = dalNotification.GetMyNotifications(user.UserId, false);
             var model = myNotifications;
             _web.LoadPageHtml("Notication.html", myNotifications);
         }
@@ -76,7 +78,7 @@ namespace SSK
         {
             try
             {
-                Trinity.Common.Session session = Trinity.Common.Session.Instance;
+
                 if (session.IsAuthenticated)
                 {
                     Trinity.BE.User user = (Trinity.BE.User)session[Contstants.CommonConstants.USER_LOGIN];
@@ -100,7 +102,7 @@ namespace SSK
                 else
                 {
                     Trinity.BE.User user = new Trinity.BE.User();
-                    user.UserId = "supervisee";
+                    user.UserId = "a179195a-d502-4069-a7c0-9530613c961f";
 
                     var dalUser = new Trinity.DAL.DAL_User();
                     var dalUserprofile = new Trinity.DAL.DAL_UserProfile();
@@ -117,7 +119,7 @@ namespace SSK
             }
             catch (Exception ex)
             {
-                LoadPage("Supervisee.html");
+                _web.LoadPageHtml("Profile.html", new Trinity.BE.ProfileModel());
             }
         }
 
@@ -142,9 +144,9 @@ namespace SSK
                 {
                     dalUserprofile.UpdateUserProfile(data.UserProfile, data.User.UserId, true);
                     //send notifiy to case officer
+                    APIUtils.SignalR.SendNotificationToDutyOfficer("Supervisee's information changed!", "Please check the Supervisee's information!");
                 }
 
-                //send notify to case officer
                 //load Supervisee page 
                 LoadPage("Supervisee.html");
             }
@@ -154,20 +156,28 @@ namespace SSK
             }
         }
 
-        public void LoadScanDocument()
+        public void LoadScanDocument(string jsonData)
         {
             try
             {
+
+                session[Contstants.CommonConstants.PROFILE_DATA] = jsonData;
+
                 LoadPage("Document.html");
 
             }
             catch (Exception)
             {
-
+                MessageBox.Show("Something wrong happened!");
                 LoadProfile();
             }
         }
-       
+        public void UpdateProfileAfterScanDoc()
+        {
+            var jsonData = session[Contstants.CommonConstants.PROFILE_DATA];
+            SaveProfile(jsonData.ToString(), true);
+        }
+
 
         private void actionThread(object pram)
         {
@@ -191,7 +201,7 @@ namespace SSK
             if (user == null)
             {
                 // raise failsed event and return false
-                RaiseOnNRICFailedEvent(new NRICEventArgs("NRIC "+ nric + ": not found. Please check NRIC again."));
+                RaiseOnNRICFailedEvent(new NRICEventArgs("NRIC " + nric + ": not found. Please check NRIC again."));
                 return;
             }
 

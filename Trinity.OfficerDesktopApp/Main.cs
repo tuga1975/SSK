@@ -10,6 +10,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Trinity.BE;
+using Trinity.DAL;
 
 namespace OfficerDesktopApp
 {
@@ -26,8 +28,10 @@ namespace OfficerDesktopApp
         }
 
         private void Main_Load(object sender, EventArgs e)
-        {            
+        {
             //ConnectAsync();
+            GetAllSupervisees();
+            LoadNotifications();
         }
 
         private void btnConnect_Click(object sender, EventArgs e)
@@ -37,7 +41,7 @@ namespace OfficerDesktopApp
 
         private void buttonSend_Click(object sender, EventArgs e)
         {
-            HubProxy.Invoke("SendNotification", txtSubject.Text, rtbContent.Text, "dutyofficer", "supervisee", false);
+            HubProxy.Invoke("SendNotification", txtSubject.Text, rtbContent.Text, null, cboUsers.SelectedValue.ToString(), false);
             rtbContent.Text = String.Empty;
             txtSubject.Text = String.Empty;
             txtSubject.Focus();
@@ -92,10 +96,12 @@ namespace OfficerDesktopApp
                 }
                 else
                 {
-                    dgvNotifications.Rows.Insert(0, 1);
-                    dgvNotifications[colFromUserId.Index, 0].Value = fromUserId;
-                    dgvNotifications[ColSubject.Index, 0].Value = subject;
-                    dgvNotifications[ColContent.Index, 0].Value = content;
+                    //dgvNotifications.Rows.Insert(0, 1);
+                    //dgvNotifications[colFromUserName.Index, 0].Value = fromUserId;
+                    //dgvNotifications[ColSubject.Index, 0].Value = subject;
+                    //dgvNotifications[ColContent.Index, 0].Value = content;
+                    //dgvNotifications[ColDate.Index, 0].Value = DateTime.Now.ToString("dd/MM/yyyy HH:mm");
+                    LoadNotifications();
                 }
             }
         }
@@ -109,13 +115,39 @@ namespace OfficerDesktopApp
             }
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void btnCreateNewUser_Click(object sender, EventArgs e)
         {
             FormNewUser f = new FormNewUser();
+            f.MainForm = this;
             f.Show();
             this.Hide();
         }
 
-        
+        private void GetAllSupervisees()
+        {
+            DAL_User dalUser = new DAL_User();
+
+            cboUsers.DataSource = dalUser.GetAllSupervisees(true);
+            cboUsers.DisplayMember = "Name";
+            cboUsers.ValueMember = "UserId";
+        }
+        private void LoadNotifications()
+        {
+            DAL_Notification dalNotification = new DAL_Notification();
+            List<Notification> notifications = dalNotification.GetNotificationsSentToDutyOfficer(false);
+            if (notifications != null && notifications.Count > 0)
+            {
+                notifications = notifications.OrderBy(n => n.Date).ToList();
+                for (int i = 0; i < notifications.Count; i++)
+                {
+                    dgvNotifications.Rows.Insert(0, 1);
+                    dgvNotifications[colFromUserName.Index, 0].Value = notifications[i].FromUserName;
+                    dgvNotifications[ColSubject.Index, 0].Value = notifications[i].Subject;
+                    dgvNotifications[ColContent.Index, 0].Value = notifications[i].Content;
+                    dgvNotifications[ColDate.Index, 0].Value = notifications[i].Date.ToString("dd/MM/yyyy HH:mm");
+                }
+                
+            }
+        }
     }
 }

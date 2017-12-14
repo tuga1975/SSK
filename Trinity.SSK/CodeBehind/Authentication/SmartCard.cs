@@ -20,13 +20,9 @@ namespace SSK.CodeBehind.Authentication
         public SmartCard(WebBrowser web, Fingerprint fingerprint)
         {
             _web = web;
-
             //_fingerprint = new Fingerprint(_web);
             _fingerprint = fingerprint;
-       
-
-            // for testing purpose
-            // web.LoadPageHtml("Supervisee.html");
+           
         }
 
         public void Start()
@@ -34,6 +30,8 @@ namespace SSK.CodeBehind.Authentication
             _web.LoadPageHtml("Authentication/SmartCard.html");
             _web.RunScript("$('.status-text').css('color','#000').text('Please place your smart card on the reader.');");
             DeviceMonitor.SCardMonitor.StartCardMonitor(OnCardInitialized, OnCardInserted, OnCardRemoved);
+            // for testing purpose
+            //_web.LoadPageHtml("Supervisee.html");
         }
 
         // Wrap event invocations inside a protected virtual method

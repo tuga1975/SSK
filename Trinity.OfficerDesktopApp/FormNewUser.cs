@@ -1,26 +1,34 @@
 ﻿using Futronic.SDKHelper;
 using PCSC;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using Trinity.Common.Monitor;
+using Trinity.DAL;
 
 namespace OfficerDesktopApp
 {
     public partial class FormNewUser : Form
     {
+        private Form _frmMain = null;
         private Trinity.BE.User _currentUser = null;
 
         private FutronicEnrollment _futronicEnrollment = null;
         public FormNewUser()
         {
             InitializeComponent();
+        }
+
+        public Form MainForm
+        {
+            get
+            {
+                return _frmMain;
+            }
+            set
+            {
+                _frmMain = value;
+            }
         }
 
         private void FormNewUser_Load(object sender, EventArgs e)
@@ -46,16 +54,27 @@ namespace OfficerDesktopApp
             Trinity.DAL.DAL_User dalUser = new Trinity.DAL.DAL_User();
             if (dalUser.CreateUser(_currentUser, true))
             {
+                // Save to the Centralized DB also
+                dalUser.CreateUser(_currentUser, false);
+
                 Trinity.DAL.DAL_UserProfile dalUserProfile = new Trinity.DAL.DAL_UserProfile();
                 Trinity.BE.UserProfile userProfile = new Trinity.BE.UserProfile();
+                userProfile.UserId = _currentUser.UserId;
                 userProfile.Primary_Phone = txtPrimaryPhone.Text;
                 userProfile.Primary_Email = txtPrimaryEmail.Text;
                 userProfile.Nationality = txtNationality.Text;
                 userProfile.DOB = dpDOB.Value;
 
                 dalUserProfile.UpdateUserProfile(userProfile, _currentUser.UserId, true);
+                
+                // Save to the Centralized DB also
+                dalUserProfile.UpdateUserProfile(userProfile, _currentUser.UserId, false);
+
                 btnSave.Enabled = false;
                 MessageBox.Show("Create user successfully!", "Create user", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Form frmMain = (Form)this.MainForm;
+                frmMain.Show();
+                this.Close();
             }
             else
             {
@@ -63,10 +82,19 @@ namespace OfficerDesktopApp
             }
         }
 
-        private void Log(string message, Color color)
+        delegate void UpdateNoteDelegate(string message, Color color);
+        private void UpdateNote(string message, Color color)
         {
-            this.Invoke((Action)(() => lblNote.Text = message));
-            this.Invoke((Action)(() => lblNote.ForeColor = color));
+            if (this.lblNote.InvokeRequired)
+            {
+                UpdateNoteDelegate updateNoteDelegate = new UpdateNoteDelegate(UpdateNote);
+                this.Invoke(updateNoteDelegate, new object[] { message, color });
+            }
+            else
+            {
+                lblNote.Text = message;
+                lblNote.ForeColor = color;
+            }
         }
 
         #region Fingerprint
@@ -77,6 +105,7 @@ namespace OfficerDesktopApp
         }
         private void btnScanFingerprint_Click(object sender, EventArgs e)
         {
+            btnScanFingerprint.Enabled = false;
             Enrollment();
         }
 
@@ -119,12 +148,12 @@ namespace OfficerDesktopApp
 
                 _currentUser.Fingerprint = _futronicEnrollment.Template;
 
-                Log("Your fingerprint was scanned successfully!", Color.Blue);
+                UpdateNote("Your fingerprint was scanned successfully!", Color.Blue);
                 this.Invoke((Action)(() => btnSave.Enabled = true));
             }
             else
             {
-                Log(FutronicSdkBase.SdkRetCode2Message(nResult), Color.Red);
+                UpdateNote(FutronicSdkBase.SdkRetCode2Message(nResult), Color.Red);
             }
 
             // unregister events
@@ -139,18 +168,18 @@ namespace OfficerDesktopApp
 
         private bool OnFakeSource(FTR_PROGRESS Progress)
         {
-            Log("Fake source detected. Continue ...", Color.Red);
+            UpdateNote("Fake source detected. Continue ...", Color.Red);
             return false;
         }
 
         private void OnTakeOff(FTR_PROGRESS Progress)
         {
-            Log("Take off finger from device, please ...", Color.Yellow);
+            UpdateNote("Take off finger from device, please ...", Color.Yellow);
         }
 
         private void OnPutOn(FTR_PROGRESS Progress)
         {
-            Log("Put finger into device, please ...", Color.Yellow);
+            UpdateNote("Put finger into device, please ...", Color.Yellow);
         }
 
         #endregion
@@ -172,12 +201,20 @@ namespace OfficerDesktopApp
             string cardUID = Trinity.Common.Monitor.SCardMonitor.GetCardUID();
             if (string.IsNullOrEmpty(cardUID))
             {
-                Log("Please insert your smart card.", Color.Red);
+                UpdateNote("Please insert your smart card.", Color.Red);
                 return;
-            } else
+            }
+            else
             {
+                DAL_User dalUser = new DAL_User();
+                Trinity.BE.User user = dalUser.GetUserBySmartCardId(cardUID, true);
+                if (user != null)
+                {
+                    MessageBox.Show("This smart card is already in used by another person. Please user another card.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
                 // Scan smart card successfully
-                Log("Your smart card was scanned successfully. Please scan your finger print to continue", Color.Blue);
+                UpdateNote("Your smart card was scanned successfully. Please scan your finger print to continue", Color.Blue);
 
                 // Then stop Smart Card and Start to scan finger print
                 Trinity.Common.Monitor.SCardMonitor.Stop();
@@ -193,8 +230,14 @@ namespace OfficerDesktopApp
             string cardUID = Trinity.Common.Monitor.SCardMonitor.GetCardUID();
             if (!string.IsNullOrEmpty(cardUID))
             {
-                // Scan smart card successfully
-                Log("Scan smart card successfully. Please scan your finger print to continue", Color.Blue);
+                // Scan smart card successfully                
+                DAL_User dalUser = new DAL_User();
+                Trinity.BE.User user = dalUser.GetUserBySmartCardId(cardUID, true);
+                if (user != null)
+                {
+                    MessageBox.Show("This smart card is already in used by another person. Please user another card.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
 
                 // Then stop Smart Card and Start to scan finger print
                 Trinity.Common.Monitor.SCardMonitor.Stop();
@@ -202,16 +245,24 @@ namespace OfficerDesktopApp
 
                 _currentUser.SmartCardId = cardUID;
                 StartToScanFingerprint();
+
+                UpdateNote("Scan smart card successfully. Please scan your finger print to continue", Color.Blue);
+                return;
             }
-            Log("Could not scan the smart card", Color.Red);
+            UpdateNote("Could not scan the smart card", Color.Red);
         }
 
         private void OnCardRemoved(object sender, CardStatusEventArgs e)
         {
-            Log("The smart card has been removed", Color.Red);
+            UpdateNote("The smart card has been removed", Color.Red);
         }
+
         #endregion
 
-
+        private void FormNewUser_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Form frmMain = this.MainForm;
+            frmMain.Show();
+        }
     }
 }

@@ -6,12 +6,39 @@
     video {
         position: fixed;
         width: calc(100% - 20px);
-        height: calc(100% - 140px);
+        height: calc(70% - 140px);
         left: 10px;
         top: 80px;
     }
 </style>
-<div style="width:100%;padding:10px 0px;text-align:center; margin-top:520px">
-    <button type="button" class="btn btn-warning" onclick="api.server.LoadPage('Document.html');">Please scan your document in the scanner.</button>
-    <button type="button" class="btn btn-dark" onclick="api.server.LoadPage('Supervisee.html');">Back</button>
+<div style="width:100%;padding:10px 0px;text-align:center; margin-top:400px">
+    <div type="button" class="btn btn-warning" onclick="api.server.LoadPage('Document.html');">Please scan your document in the scanner.</div>
+    
 </div>
+<div style="width:100%;padding:10px 0px;text-align:center; margin-top:10px">
+    <div type="button" class="btn btn-success" id="divMessage" style="display:none;">Your document was scanned successfully! </div>
+</div>
+<div style="width:100%;padding:10px 0px;text-align:center; margin-top:10px">
+    <div id="divConfirm" style="display:none;">
+        <strong>Confirm update information </strong>
+        <button class="btn btn-dark">Cancel</button>
+        <button class="btn btn-success" id="btnOK" >OK</button>
+    </div>
+</div>
+
+    <script>
+        var formData, json = null;
+        $(document).ready(function () {
+         
+        });
+        var setSuccess = setTimeout(showMessage, 5000);
+        function showMessage() {
+            $('#divMessage').show();
+            $('#divConfirm').show();
+        }
+        
+        $('#btnOK').click(function () {
+            api.server.UpdateProfileAfterScanDoc();
+        });
+       
+    </script>
