@@ -47,7 +47,7 @@ namespace SSK.CodeBehind.Authentication
 
                 // if supervisee login, redirect to Supervisee.html
                 // if duty officer override, redirect to NRIC.html
-                Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN]
+                Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
                 //if (user.Type)
                 //{
 
