@@ -114,5 +114,10 @@ namespace SSK
         {
             ThreadPool.QueueUserWorkItem(new WaitCallback(actionThread), new object[] { method, pram });
         }
+
+        public void SubmitNRIC(string nric)
+        {
+
+        }
     }
 }

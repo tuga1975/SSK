@@ -1,0 +1,24 @@
+﻿<div class="subcontent">
+    <span>Please scan supervisee NRIC:</span>
+    <input type="text" id="txtNRIC" class="txtNRIC" autofocus />
+    <input type="button" value="Enter manually" onclick="enterManually()" />
+    <input type="button" value="Submit" />
+</div>
+
+<style type="text/css">
+    .subcontent {
+        width: calc(100% - 20px);
+        margin-top: 200px;
+        text-align: center;
+    }
+    .txtNRIC {
+        height: 28px;
+    }
+</style>
+
+<script type="text/javascript">
+    function enterManually() {
+        $('#txtNRIC').val('');
+        $('#txtNRIC').focus();
+    }
+</script>

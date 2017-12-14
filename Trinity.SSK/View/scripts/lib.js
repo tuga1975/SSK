@@ -68,3 +68,7 @@ function setLoading(status) {
 function RunScript(script) {
     eval(script);
 }
+
+function updateNRICTextValue(value) {
+    $('#txtNRIC').text(value);
+}

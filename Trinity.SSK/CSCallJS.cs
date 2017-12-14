@@ -40,6 +40,11 @@ public static class CSCallJS
         web.InvokeScript("setLoading", status);
     }
 
+    public static void UpdateNRICTextValue(WebBrowser web, string value)
+    {
+        web.InvokeScript("updateNRICTextValue", value);
+    }
+
     /// <summary>
     /// Run script javascript
     /// </summary>
