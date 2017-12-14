@@ -132,6 +132,7 @@
     <Compile Include="CodeBehind\Authentication\Fingerprint.cs" />
     <Compile Include="CodeBehind\Authentication\NRIC.cs" />
     <Compile Include="CodeBehind\Authentication\SmartCard.cs" />
+    <Compile Include="CodeBehind\Document.cs" />
     <Compile Include="Contstants\CommonConstants.cs" />
     <Compile Include="DeviceMonitor\DeviceMonitor.cs" />
     <Compile Include="DeviceMonitor\FingerprintMonitor.cs" />

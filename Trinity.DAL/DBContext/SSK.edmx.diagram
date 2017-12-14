@@ -12,10 +12,10 @@
         <EntityTypeShape EntityType="SSKModel.Notification" Width="1.5" PointX="3" PointY="18.25" />
         <EntityTypeShape EntityType="SSKModel.sysdiagram" Width="1.5" PointX="2.75" PointY="0.75" />
         <EntityTypeShape EntityType="SSKModel.User_Profiles" Width="1.5" PointX="6" PointY="6.375" />
-        <EntityTypeShape EntityType="SSKModel.User" Width="1.5" PointX="0.75" PointY="7.625" />
-        <AssociationConnector Association="SSKModel.FK_AbsenceReporting_Users" />
         <AssociationConnector Association="SSKModel.FK_User_Profiles_Addresses" />
         <AssociationConnector Association="SSKModel.FK_User_Profiles_Addresses1" />
+        <EntityTypeShape EntityType="SSKModel.User" Width="1.5" PointX="0.75" PointY="11.5" />
+        <AssociationConnector Association="SSKModel.FK_AbsenceReporting_Users" />
         <AssociationConnector Association="SSKModel.FK_Appointments_Users" />
         <AssociationConnector Association="SSKModel.FK_Notifications_Users" />
         <AssociationConnector Association="SSKModel.FK_Notifications_Users1" />

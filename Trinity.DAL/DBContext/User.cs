@@ -27,11 +27,9 @@ namespace Trinity.DAL.DBContext
         public string NRIC { get; set; }
         public string Name { get; set; }
         public Nullable<System.DateTime> LastLoginTime { get; set; }
-        public Nullable<short> SmartCardFailedCount { get; set; }
-        public Nullable<short> FingerprintFailedCount { get; set; }
-        public string SmartCard_Id { get; set; }
+        public string SmartCardId { get; set; }
         public Nullable<System.DateTime> EnrolledDate { get; set; }
-        public Nullable<short> Type { get; set; }
+        public Nullable<short> Role { get; set; }
         public byte[] Fingerprint { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

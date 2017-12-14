@@ -135,11 +135,13 @@ namespace SSK
                     dalUser.UpdateUser(data.User, data.User.UserId, true);
 
                     dalUserprofile.UpdateUserProfile(data.UserProfile, data.User.UserId, true);
-
+                    //send notifiy to duty officer
+                    APIUtils.SignalR.SendNotificationToDutyOfficer("Supervisee's information changed!", "Please check the Supervisee's information!");
                 }
                 else
                 {
                     dalUserprofile.UpdateUserProfile(data.UserProfile, data.User.UserId, true);
+                    //send notifiy to case officer
                 }
 
                 //send notify to case officer
@@ -152,6 +154,20 @@ namespace SSK
             }
         }
 
+        public void LoadScanDocument()
+        {
+            try
+            {
+                LoadPage("Document.html");
+
+            }
+            catch (Exception)
+            {
+
+                LoadProfile();
+            }
+        }
+       
 
         private void actionThread(object pram)
         {

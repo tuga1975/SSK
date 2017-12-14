@@ -42,7 +42,7 @@ namespace SSK.CodeBehind.Authentication
                 Session session = Session.Instance;
                 session.IsFingerprintAuthenticated = true;
 
-                _web.RunScript("$('.status-text').css('color','#000').text('Fingerprint authentication is sucessful.');");
+                _web.RunScript("$('.status-text').css('color','#000').text('Fingerprint authentication is successful.');");
                 Thread.Sleep(2000);
 
                 // if supervisee login, redirect to Supervisee.html
@@ -57,7 +57,7 @@ namespace SSK.CodeBehind.Authentication
             else
             {
                 _numberOfFailed++;
-                string script = "$('.status-text').css('color','#000').text('Please place your Finger on the reader. Failed: " + _numberOfFailed + "');";
+                string script = "$('.status-text').css('color','#000').text('Please place your finger on the reader. Failed: " + _numberOfFailed + "');";
                 _web.RunScript(script);
 
                 FingerprintMonitor.StartVerification(OnVerificationComplete, _fingerprint_Template);

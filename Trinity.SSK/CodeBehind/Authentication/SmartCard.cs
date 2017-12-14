@@ -89,11 +89,11 @@ namespace SSK.CodeBehind.Authentication
                 session.IsSmartCardAuthenticated = true;
                 session[CommonConstants.USER_LOGIN] = user;
 
-                _web.RunScript("$('.status-text').css('color','#000').text('Smart card authentication is sucessful.');");
+                _web.RunScript("$('.status-text').css('color','#000').text('Your smart card is authenticated.');");
                 Thread.Sleep(3000);
 
                 _web.LoadPageHtml("Authentication/FingerPrint.html");
-                _web.RunScript("$('.status-text').css('color','#000').text('Please place your Finger on the reader.');");
+                _web.RunScript("$('.status-text').css('color','#000').text('Please place your finger on the reader.');");
 
                 DeviceMonitor.SCardMonitor.Dispose();
 
