@@ -1,15 +1,10 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Newtonsoft.Json;
 using System.Threading;
-using Trinity.DAL.DBContext;
+using System.Windows.Forms;
 using Trinity.DAL;
-using Trinity.BE;
 
 namespace SSK
 {
@@ -28,14 +23,6 @@ namespace SSK
         public void LoadPage(string file)
         {
             web.LoadPageHtml(file);
-        }
-
-
-        public async Task GetQueuAsync(int a)
-        {
-            //QueueHandler queuHandler = new QueueHandler();
-            //var queuValue = queuHandler.GetQueue();
-            MessageBox.Show("1");
         }
 
         public void LoadNotications()
@@ -65,7 +52,6 @@ namespace SSK
             }
             catch (Exception ex)
             {
-
                 LoadPage("Supervisee.html");
             }
         }
