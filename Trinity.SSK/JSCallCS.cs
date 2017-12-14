@@ -78,7 +78,7 @@ namespace SSK
         {
             try
             {
-
+                Session session = Session.Instance;
                 if (session.IsAuthenticated)
                 {
                     Trinity.BE.User user = (Trinity.BE.User)session[Contstants.CommonConstants.USER_LOGIN];
@@ -160,7 +160,7 @@ namespace SSK
         {
             try
             {
-
+                Session session = Session.Instance;
                 session[Contstants.CommonConstants.PROFILE_DATA] = jsonData;
 
                 LoadPage("Document.html");
@@ -174,6 +174,7 @@ namespace SSK
         }
         public void UpdateProfileAfterScanDoc()
         {
+            Session session = Session.Instance;
             var jsonData = session[Contstants.CommonConstants.PROFILE_DATA];
             SaveProfile(jsonData.ToString(), true);
         }
