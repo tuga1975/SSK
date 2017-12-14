@@ -41,7 +41,6 @@ namespace Trinity.DAL
             return null;
         }
 
-
         public Trinity.BE.User GetUserByUserId(string userId, bool isLocal)
         {
             User dbUser = null;
@@ -71,6 +70,40 @@ namespace Trinity.DAL
                 };
                 return user;
             }
+            return null;
+        }
+
+        public Trinity.BE.User GetUserByNRIC(string nric, bool isLocal)
+        {
+            User dbUser = null;
+            if (isLocal)
+            {
+                dbUser = _localUnitOfWork.DataContext.Users.FirstOrDefault(u => u.NRIC == nric);
+
+            }
+            else
+            {
+                dbUser = _centralizedUnitOfWork.DataContext.Users.FirstOrDefault(u => u.NRIC == nric);
+            }
+
+            if (dbUser != null)
+            {
+                Trinity.BE.User user = new BE.User()
+                {
+                    Fingerprint = dbUser.Fingerprint,
+                    EnrolledDate = dbUser.EnrolledDate,
+                    FingerprintFailedCount = dbUser.FingerprintFailedCount,
+                    LastLoginTime = dbUser.LastLoginTime,
+                    Name = dbUser.Name,
+                    NRIC = dbUser.NRIC,
+                    SmartCardFailedCount = dbUser.SmartCardFailedCount,
+                    SmartCard_Id = dbUser.SmartCard_Id,
+                    Type = dbUser.Type,
+                    UserId = dbUser.UserId
+                };
+                return user;
+            }
+
             return null;
         }
         public bool UpdateUser(BE.User model, string userId, bool isLocal)
