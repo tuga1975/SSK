@@ -9,7 +9,8 @@ namespace SSK
     public partial class Main : Form
     {
         private JSCallCS jsCallCS = null;
-        private CodeBehind.Authentication.SmartCard smartCard = null;
+        private CodeBehind.Authentication.SmartCard _smartCard = null;
+        private CodeBehind.Authentication.Fingerprint _fingerprint = null;
         //private SmartCard smartCard = null;
 
         public Main()
@@ -39,8 +40,17 @@ namespace SSK
             this.LayerWeb.InvokeScript("createEvent", JsonConvert.SerializeObject(jsCallCS.GetType().GetMethods().Where(d => d.IsPublic && !d.IsVirtual && !d.IsSecuritySafeCritical).ToArray().Select(d => d.Name)));
             APIUtils.SignalR.GetLatestNotifications();
             //smartCard.Scanning();
-            smartCard = new CodeBehind.Authentication.SmartCard(this.LayerWeb);
-            smartCard.OnSmartCardFailed += SmartCard_OnSmartCardFailed;
+
+            _fingerprint = new CodeBehind.Authentication.Fingerprint(this.LayerWeb);
+            _fingerprint.OnFingerprintFailed += _fingerprint_OnFingerprintFailed;
+            _smartCard = new CodeBehind.Authentication.SmartCard(this.LayerWeb, _fingerprint);
+            _smartCard.OnSmartCardFailed += SmartCard_OnSmartCardFailed;
+        }
+
+        private void _fingerprint_OnFingerprintFailed(object sender, CodeBehind.Authentication.FingerprintEventArgs e)
+        {
+            APIUtils.SignalR.SendNotificationToDutyOfficer(e.Message, e.Message);
+            MessageBox.Show(e.Message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         private void SmartCard_OnSmartCardFailed(object sender, CodeBehind.Authentication.SmartCardEventArgs e)
