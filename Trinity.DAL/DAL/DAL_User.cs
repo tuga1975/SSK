@@ -172,6 +172,7 @@ namespace Trinity.DAL
                 else
                 {
                     var centralUserRepo = _centralizedUnitOfWork.GetRepository<User>();
+                    dbUser = new User();
                     SetInfo(dbUser, user);
                     centralUserRepo.Add(dbUser);
                     _centralizedUnitOfWork.Save();

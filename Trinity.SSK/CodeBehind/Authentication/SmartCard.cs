@@ -20,11 +20,8 @@ namespace SSK.CodeBehind.Authentication
         public SmartCard(WebBrowser web, Fingerprint fingerprint)
         {
             _web = web;
-
             //_fingerprint = new Fingerprint(_web);
             _fingerprint = fingerprint;
-       
-
             // for testing purpose
             // web.LoadPageHtml("Supervisee.html");
         }

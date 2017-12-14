@@ -48,6 +48,7 @@ namespace SSK
             _fingerprint.OnFingerprintFailed += _fingerprint_OnFingerprintFailed;
             _smartCard = new CodeBehind.Authentication.SmartCard(this.LayerWeb, _fingerprint);
             _smartCard.OnSmartCardFailed += SmartCard_OnSmartCardFailed;
+            _smartCard.Start();
         }
 
         private void _fingerprint_OnFingerprintFailed(object sender, CodeBehind.Authentication.FingerprintEventArgs e)
