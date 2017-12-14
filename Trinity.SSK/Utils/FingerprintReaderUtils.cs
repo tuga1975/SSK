@@ -82,6 +82,18 @@ namespace SSK.Utils
             _futronicVerification.Verification();
         }
 
+        public void StopVerification()
+        {
+            // unregister events
+            _futronicVerification.OnPutOn -= OnPutOn;
+            _futronicVerification.OnTakeOff -= OnTakeOff;
+            //_futronicVerification.UpdateScreenImage -= UpdateScreenImage;
+            _futronicVerification.OnFakeSource -= OnFakeSource;
+            _futronicVerification.OnVerificationComplete -= _onVerificationComplete;
+
+            _futronicVerification = null;
+        }
+
         public bool VerificationResult(bool bSuccess, int nRetCode, bool bVerificationSuccess)
         {
             StringBuilder szResult = new StringBuilder();
@@ -115,6 +127,7 @@ namespace SSK.Utils
             _futronicVerification.OnVerificationComplete -= _onVerificationComplete;
 
             _futronicVerification = null;
+
             return returnValue;
         }
 

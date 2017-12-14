@@ -138,6 +138,12 @@
     <Compile Include="DeviceMonitor\FingerprintMonitor.cs" />
     <Compile Include="DeviceMonitor\HealthMonitor.cs" />
     <Compile Include="DeviceMonitor\SCardMonitor.cs" />
+    <Compile Include="FormQueueNumber.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormQueueNumber.Designer.cs">
+      <DependentUpon>FormQueueNumber.cs</DependentUpon>
+    </Compile>
     <Compile Include="Main.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -156,6 +162,9 @@
     <Compile Include="Utils\ReceiptPrinterUtils.cs" />
     <Compile Include="Utils\SignalR.cs" />
     <Compile Include="Utils\SmartCardReaderUtils.cs" />
+    <EmbeddedResource Include="FormQueueNumber.resx">
+      <DependentUpon>FormQueueNumber.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
     </EmbeddedResource>

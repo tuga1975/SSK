@@ -13,17 +13,16 @@ namespace SSK
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public class JSCallCS
     {
-        Trinity.Common.Session session = Trinity.Common.Session.Instance;
-        private WebBrowser web = null;
-        private Type thisType = null;
+        private WebBrowser _web = null;
+        private Type _thisType = null;
 
         public event EventHandler<NRICEventArgs> OnNRICFailed;
         public event EventHandler<ShowMessageEventArgs> OnShowMessage;
 
         public JSCallCS(WebBrowser web)
         {
-            this.web = web;
-            thisType = this.GetType();
+            this._web = web;
+            _thisType = this.GetType();
         }
 
         #region virtual events
@@ -62,7 +61,7 @@ namespace SSK
 
         public void LoadPage(string file)
         {
-            web.LoadPageHtml(file);
+            _web.LoadPageHtml(file);
         }
 
         public void LoadNotications()
@@ -72,14 +71,14 @@ namespace SSK
             DAL_Notification dalNotification = new DAL_Notification();
             List<Trinity.BE.Notification> myNotifications = dalNotification.GetMyNotifications(user.UserId, false);
             var model = myNotifications;
-            web.LoadPageHtml("Notication.html", myNotifications);
+            _web.LoadPageHtml("Notication.html", myNotifications);
         }
 
         public void LoadProfile()
         {
             try
             {
-
+                Session session = Session.Instance;
                 if (session.IsAuthenticated)
                 {
                     Trinity.BE.User user = (Trinity.BE.User)session[Contstants.CommonConstants.USER_LOGIN];
@@ -97,7 +96,7 @@ namespace SSK
                     };
                     //profile model 
 
-                    web.LoadPageHtml("Profile.html", profileModel);
+                    _web.LoadPageHtml("Profile.html", profileModel);
                 }
                 //for testing purpose
                 else
@@ -114,13 +113,13 @@ namespace SSK
                         Addresses = dalUserprofile.GetAddressByUserId(user.UserId, true)
 
                     };
-                    web.LoadPageHtml("Profile.html", profileModel);
+                    _web.LoadPageHtml("Profile.html", profileModel);
                 }
 
             }
             catch (Exception ex)
             {
-                web.LoadPageHtml("Profile.html", new Trinity.BE.ProfileModel());
+                _web.LoadPageHtml("Profile.html", new Trinity.BE.ProfileModel());
             }
         }
 
@@ -161,7 +160,7 @@ namespace SSK
         {
             try
             {
-
+                Session session = Session.Instance;
                 session[Contstants.CommonConstants.PROFILE_DATA] = jsonData;
                 APIUtils.SignalR.SendNotificationToDutyOfficer("Supervisee's information changed!", "Please check the Supervisee's information!");
                 LoadPage("Document.html");
@@ -175,6 +174,7 @@ namespace SSK
         }
         public void UpdateProfileAfterScanDoc()
         {
+            Session session = Session.Instance;
             var jsonData = session[Contstants.CommonConstants.PROFILE_DATA];
 
             SaveProfile(jsonData.ToString(), true);
@@ -186,9 +186,9 @@ namespace SSK
 
             var data = (object[])pram;
             var method = data[0].ToString();
-            MethodInfo theMethod = thisType.GetMethod(method);
+            MethodInfo theMethod = _thisType.GetMethod(method);
             theMethod.Invoke(this, (object[])data[1]);
-            web.SetLoading(false);
+            _web.SetLoading(false);
         }
         public void ClientCallServer(string method, params object[] pram)
         {
@@ -212,10 +212,11 @@ namespace SSK
             Session session = Session.Instance;
             session[CommonConstants.USER_LOGIN] = user;
 
+            // redirect to Supervisee.html
+            _web.LoadPageHtml("Supervisee.html");
 
-            web.LoadPageHtml("Supervisee.html");
-
-            return;
+            // setup screen for NRIC login
+            CSCallJS.DisplayNRICLogin(_web);
         }
 
         public void GetQueue()
@@ -224,7 +225,6 @@ namespace SSK
             Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
             string queueNumber = "S" + user.NRIC.Substring(user.NRIC.Length - 5, 5).PadLeft(8, '*');
             RaiseOnShowMessageEvent(new ShowMessageEventArgs("Your queue is: " + queueNumber, "Queue Number", MessageBoxButtons.OK, MessageBoxIcon.Information));
-
         }
     }
 
