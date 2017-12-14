@@ -11,10 +11,10 @@
         <EntityTypeShape EntityType="TrinityCentralizedDBModel.Holiday" Width="1.5" PointX="0.75" PointY="0.75" />
         <EntityTypeShape EntityType="TrinityCentralizedDBModel.Notification" Width="1.5" PointX="3" PointY="15.25" />
         <EntityTypeShape EntityType="TrinityCentralizedDBModel.User_Profiles" Width="1.5" PointX="6" PointY="6.375" />
-        <EntityTypeShape EntityType="TrinityCentralizedDBModel.User" Width="1.5" PointX="0.75" PointY="7.625" />
-        <AssociationConnector Association="TrinityCentralizedDBModel.FK_AbsenceReporting_Users" />
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_User_Profiles_Addresses" />
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_User_Profiles_Addresses1" />
+        <EntityTypeShape EntityType="TrinityCentralizedDBModel.User" Width="1.5" PointX="0.75" PointY="11.5" />
+        <AssociationConnector Association="TrinityCentralizedDBModel.FK_AbsenceReporting_Users" />
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_Appointments_Users" />
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_Notifications_Users" />
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_Notifications_Users1" />

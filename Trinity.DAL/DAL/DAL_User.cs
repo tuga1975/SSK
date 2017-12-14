@@ -15,24 +15,22 @@ namespace Trinity.DAL
             User dbUser = null;
             if (isLocal)
             {
-                dbUser = _localUnitOfWork.DataContext.Users.FirstOrDefault(u => u.SmartCard_Id == smartCardId);
+                dbUser = _localUnitOfWork.DataContext.Users.FirstOrDefault(u => u.SmartCardId == smartCardId);
             }
             else
             {
-                dbUser = _centralizedUnitOfWork.DataContext.Users.FirstOrDefault(u => u.SmartCard_Id == smartCardId);
+                dbUser = _centralizedUnitOfWork.DataContext.Users.FirstOrDefault(u => u.SmartCardId == smartCardId);
             }
             if (dbUser != null)
             {
                 Trinity.BE.User user = new BE.User()
                 {
                     EnrolledDate = dbUser.EnrolledDate,
-                    FingerprintFailedCount = dbUser.FingerprintFailedCount,
                     LastLoginTime = dbUser.LastLoginTime,
                     Name = dbUser.Name,
                     NRIC = dbUser.NRIC,
-                    SmartCardFailedCount = dbUser.SmartCardFailedCount,
-                    SmartCard_Id = dbUser.SmartCard_Id,
-                    Type = dbUser.Type,
+                    SmartCardId = dbUser.SmartCardId,
+                    Role = dbUser.Role,
                     UserId = dbUser.UserId,
                     Fingerprint = dbUser.Fingerprint
                 };
@@ -40,7 +38,6 @@ namespace Trinity.DAL
             }
             return null;
         }
-
 
         public Trinity.BE.User GetUserByUserId(string userId, bool isLocal)
         {
@@ -60,6 +57,37 @@ namespace Trinity.DAL
                 {
                     Fingerprint = dbUser.Fingerprint,
                     EnrolledDate = dbUser.EnrolledDate,
+                    LastLoginTime = dbUser.LastLoginTime,
+                    Name = dbUser.Name,
+                    NRIC = dbUser.NRIC,
+                    SmartCardId = dbUser.SmartCardId,
+                    Role = dbUser.Role,
+                    UserId = dbUser.UserId
+                };
+                return user;
+            }
+            return null;
+        }
+
+        public Trinity.BE.User GetUserByNRIC(string nric, bool isLocal)
+        {
+            User dbUser = null;
+            if (isLocal)
+            {
+                dbUser = _localUnitOfWork.DataContext.Users.FirstOrDefault(u => u.NRIC == nric);
+
+            }
+            else
+            {
+                dbUser = _centralizedUnitOfWork.DataContext.Users.FirstOrDefault(u => u.NRIC == nric);
+            }
+
+            if (dbUser != null)
+            {
+                Trinity.BE.User user = new BE.User()
+                {
+                    Fingerprint = dbUser.Fingerprint,
+                    EnrolledDate = dbUser.EnrolledDate,
                     FingerprintFailedCount = dbUser.FingerprintFailedCount,
                     LastLoginTime = dbUser.LastLoginTime,
                     Name = dbUser.Name,
@@ -71,6 +99,7 @@ namespace Trinity.DAL
                 };
                 return user;
             }
+
             return null;
         }
         public bool UpdateUser(BE.User model, string userId, bool isLocal)
@@ -111,13 +140,11 @@ namespace Trinity.DAL
             {
                 dbUser.Fingerprint = model.Fingerprint;
                 dbUser.EnrolledDate = model.EnrolledDate;
-                dbUser.FingerprintFailedCount = model.FingerprintFailedCount;
                 dbUser.LastLoginTime = model.LastLoginTime;
                 dbUser.Name = model.Name;
                 dbUser.NRIC = model.NRIC;
-                dbUser.SmartCardFailedCount = model.SmartCardFailedCount;
-                dbUser.SmartCard_Id = model.SmartCard_Id;
-                dbUser.Type = model.Type;
+                dbUser.SmartCardId = model.SmartCardId;
+                dbUser.Role = model.Role;
                 dbUser.UserId = model.UserId;
                 if (model.Fingerprint != null)
                 {
@@ -151,6 +178,7 @@ namespace Trinity.DAL
                     centralUserRepo.Add(dbUser);
                     _centralizedUnitOfWork.Save();
                 }
+
                 return true;
             }
             catch (Exception ex)

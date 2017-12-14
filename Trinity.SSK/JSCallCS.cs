@@ -144,9 +144,18 @@ namespace SSK
             ThreadPool.QueueUserWorkItem(new WaitCallback(actionThread), new object[] { method, pram });
         }
 
-        public void SubmitNRIC(string nric)
+        public bool SubmitNRIC(string nric)
         {
+            DAL_User dal_User = new DAL_User();
+            var user = dal_User.GetUserByNRIC(nric, true);
 
+            if (user == null)
+            {
+                // raise failsed event and return false
+                return false;
+            }
+
+            return true;
         }
     }
 }

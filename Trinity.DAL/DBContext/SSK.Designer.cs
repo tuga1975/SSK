@@ -1,4 +1,4 @@
-﻿// T4 code generation is enabled for model 'E:\GitHub\SSK\Trinity.DAL\DBContext\SSK.edmx'. 
+﻿// T4 code generation is enabled for model 'D:\TVO\BU-2\Clients\Nano\SSK\Sourcecode_Git\SSK\Trinity.DAL\DBContext\SSK.edmx'. 
 // To enable legacy code generation, change the value of the 'Code Generation Strategy' designer
 // property to 'Legacy ObjectContext'. This property is available in the Properties Window when the model
 // is open in the designer.

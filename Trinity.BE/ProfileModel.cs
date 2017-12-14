@@ -27,7 +27,7 @@ namespace Trinity.BE
         public short? SmartCardFailedCount { get; set; }
         public short? FingerprintFailedCount { get; set; }
         public DateTime? EnrolledDate { get; set; }
-        public short? Type { get; set; }
+        public short? Role { get; set; }
         public string ParticularsName { get; set; }
         public string NRIC { get; set; }
         public DateTime? DOB { get; set; }
@@ -55,7 +55,7 @@ namespace Trinity.BE
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public string Remarks { get; set; }
-        public string SmartCard_Id { get; set; }
+        public string SmartCardId { get; set; }
 
         public ProfileModel ToProfileModel(ProfileRawMData rawData)
         {
@@ -70,8 +70,8 @@ namespace Trinity.BE
                     Name = rawData.ParticularsName,
                     NRIC = rawData.NRIC,
                     SmartCardFailedCount = rawData.SmartCardFailedCount,
-                    SmartCard_Id = rawData.SmartCard_Id,
-                    Type = rawData.Type,
+                    SmartCardId = rawData.SmartCardId,
+                    Role = rawData.Role,
                     UserId = rawData.UserId
                 },
                 UserProfile = new UserProfile

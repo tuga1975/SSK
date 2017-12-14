@@ -26,6 +26,11 @@ namespace OfficerDesktopApp
         }
 
         private void Main_Load(object sender, EventArgs e)
+        {            
+            //ConnectAsync();
+        }
+
+        private void btnConnect_Click(object sender, EventArgs e)
         {
             ConnectAsync();
         }
@@ -40,7 +45,7 @@ namespace OfficerDesktopApp
 
         private async void ConnectAsync()
         {
-            lblStatus.Text = "Connecting to server...";
+            this.Invoke((Action)(() => lblStatus.Text = "Connecting to server..."));
             Connection = new HubConnection(ServerURI);
             Connection.Closed += Connection_Closed;
             HubProxy = Connection.CreateHubProxy("MyHub");
@@ -53,10 +58,10 @@ namespace OfficerDesktopApp
             catch (HttpRequestException)
             {
                 this.Invoke((Action)(() => rtbContent.Enabled = false));
-                this.Invoke((Action)(() => lblStatus.Text = "Unable to connect. The SignalR Server doesn't seem to work. Reconnecting..."));
+                this.Invoke((Action)(() => lblStatus.Text = "Unable to connect. The SignalR Server doesn't seem to work. Please reconnect"));
 
                 // Reconnect again
-                ConnectAsync();
+                //ConnectAsync();
                 return;
             }
 
@@ -73,9 +78,6 @@ namespace OfficerDesktopApp
             this.Invoke((Action)(() => txtSubject.Enabled = false));
             this.Invoke((Action)(() => rtbContent.Enabled = false));
             this.Invoke((Action)(() => lblStatus.Text = "Could not connect.Reconnecting..."));
-
-            Thread.Sleep(1000);
-            ConnectAsync();
         }
 
         delegate void OnNewNotificationHandlerDelegate(string subject, string content, string fromUserId, string toUserId);
@@ -113,5 +115,7 @@ namespace OfficerDesktopApp
             f.Show();
             this.Hide();
         }
+
+        
     }
 }
