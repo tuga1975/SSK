@@ -112,10 +112,9 @@ namespace OfficerDesktopApp
         private void button1_Click(object sender, EventArgs e)
         {
             FormNewUser f = new FormNewUser();
+            f.MainForm = this;
             f.Show();
             this.Hide();
         }
-
-        
     }
 }
