@@ -163,7 +163,7 @@ namespace SSK
             {
 
                 session[Contstants.CommonConstants.PROFILE_DATA] = jsonData;
-
+                APIUtils.SignalR.SendNotificationToDutyOfficer("Supervisee's information changed!", "Please check the Supervisee's information!");
                 LoadPage("Document.html");
 
             }
@@ -176,6 +176,7 @@ namespace SSK
         public void UpdateProfileAfterScanDoc()
         {
             var jsonData = session[Contstants.CommonConstants.PROFILE_DATA];
+
             SaveProfile(jsonData.ToString(), true);
         }
 
