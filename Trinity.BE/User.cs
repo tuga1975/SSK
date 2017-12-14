@@ -30,13 +30,13 @@ namespace Trinity.BE
         public Nullable<short> FingerprintFailedCount { get; set; }
 
         [DataMember]
-        public string SmartCard_Id { get; set; }
+        public string SmartCardId { get; set; }
 
         [DataMember]
         public Nullable<System.DateTime> EnrolledDate { get; set; }
 
         [DataMember]
-        public Nullable<short> Type { get; set; }
+        public Nullable<short> Role { get; set; }
 
         [DataMember]
         public byte[] Fingerprint { get; set; }

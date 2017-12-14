@@ -90,6 +90,9 @@
       <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="pcsc-sharp">
+      <HintPath>..\Trinity.SSK\Libs\pcsc-sharp.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
@@ -151,6 +154,10 @@
     <ProjectReference Include="..\Trinity.BE\Trinity.BE.csproj">
       <Project>{4321fa96-3a53-49c1-89ef-8a2f6e9b81c7}</Project>
       <Name>Trinity.BE</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Trinity.Common\Trinity.Common.csproj">
+      <Project>{6c023597-f6ba-4857-9c3b-82d91eb4b4a3}</Project>
+      <Name>Trinity.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\Trinity.DAL\Trinity.DAL.csproj">
       <Project>{344f2633-3277-44c5-a55e-b66f920cca14}</Project>

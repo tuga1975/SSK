@@ -98,11 +98,9 @@
           <Property Name="NRIC" Type="nvarchar" MaxLength="20" />
           <Property Name="Name" Type="nvarchar" MaxLength="128" />
           <Property Name="LastLoginTime" Type="datetime" />
-          <Property Name="SmartCardFailedCount" Type="smallint" />
-          <Property Name="FingerprintFailedCount" Type="smallint" />
-          <Property Name="SmartCard_Id" Type="nvarchar" MaxLength="50" />
+          <Property Name="SmartCardId" Type="nvarchar" MaxLength="50" />
           <Property Name="EnrolledDate" Type="datetime" />
-          <Property Name="Type" Type="smallint" />
+          <Property Name="Role" Type="smallint" />
           <Property Name="Fingerprint" Type="varbinary(max)" />
         </EntityType>
         <Association Name="FK_AbsenceReporting_Users">
@@ -237,11 +235,6 @@
           <EntitySet Name="Holidays" EntityType="TrinityCentralizedDBModel.Holiday" />
           <EntitySet Name="Notifications" EntityType="TrinityCentralizedDBModel.Notification" />
           <EntitySet Name="User_Profiles" EntityType="TrinityCentralizedDBModel.User_Profiles" />
-          <EntitySet Name="Users" EntityType="TrinityCentralizedDBModel.User" />
-          <AssociationSet Name="FK_AbsenceReporting_Users" Association="TrinityCentralizedDBModel.FK_AbsenceReporting_Users">
-            <End Role="User" EntitySet="Users" />
-            <End Role="AbsenceReporting" EntitySet="AbsenceReportings" />
-          </AssociationSet>
           <AssociationSet Name="FK_User_Profiles_Addresses" Association="TrinityCentralizedDBModel.FK_User_Profiles_Addresses">
             <End Role="Address" EntitySet="Addresses" />
             <End Role="User_Profiles" EntitySet="User_Profiles" />
@@ -249,6 +242,11 @@
           <AssociationSet Name="FK_User_Profiles_Addresses1" Association="TrinityCentralizedDBModel.FK_User_Profiles_Addresses1">
             <End Role="Address" EntitySet="Addresses" />
             <End Role="User_Profiles" EntitySet="User_Profiles" />
+          </AssociationSet>
+          <EntitySet Name="Users" EntityType="TrinityCentralizedDBModel.User" />
+          <AssociationSet Name="FK_AbsenceReporting_Users" Association="TrinityCentralizedDBModel.FK_AbsenceReporting_Users">
+            <End Role="User" EntitySet="Users" />
+            <End Role="AbsenceReporting" EntitySet="AbsenceReportings" />
           </AssociationSet>
           <AssociationSet Name="FK_Appointments_Users" Association="TrinityCentralizedDBModel.FK_Appointments_Users">
             <End Role="User" EntitySet="Users" />
@@ -266,7 +264,7 @@
             <End Role="User" EntitySet="Users" />
             <End Role="User_Profiles" EntitySet="User_Profiles" />
           </AssociationSet>
-        </EntityContainer>
+          </EntityContainer>
         <EntityType Name="AbsenceReporting">
           <Key>
             <PropertyRef Name="UserId" />
@@ -327,7 +325,7 @@
           <Property Name="IsFromSupervisee" Type="Boolean" />
           <NavigationProperty Name="User" Relationship="TrinityCentralizedDBModel.FK_Notifications_Users" FromRole="Notification" ToRole="User" />
           <NavigationProperty Name="User1" Relationship="TrinityCentralizedDBModel.FK_Notifications_Users1" FromRole="Notification" ToRole="User" />
-        </EntityType>
+          </EntityType>
         <EntityType Name="User_Profiles">
           <Key>
             <PropertyRef Name="UserId" />
@@ -361,38 +359,6 @@
           <NavigationProperty Name="Address1" Relationship="TrinityCentralizedDBModel.FK_User_Profiles_Addresses1" FromRole="User_Profiles" ToRole="Address" />
           <NavigationProperty Name="User" Relationship="TrinityCentralizedDBModel.FK_User_Profiles_Users" FromRole="User_Profiles" ToRole="User" />
         </EntityType>
-        <EntityType Name="User">
-          <Key>
-            <PropertyRef Name="UserId" />
-          </Key>
-          <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="NRIC" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="Name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="LastLoginTime" Type="DateTime" Precision="3" />
-          <Property Name="SmartCardFailedCount" Type="Int16" />
-          <Property Name="FingerprintFailedCount" Type="Int16" />
-          <Property Name="SmartCard_Id" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="EnrolledDate" Type="DateTime" Precision="3" />
-          <Property Name="Type" Type="Int16" />
-          <Property Name="Fingerprint" Type="Binary" MaxLength="Max" FixedLength="false" />
-          <NavigationProperty Name="AbsenceReportings" Relationship="TrinityCentralizedDBModel.FK_AbsenceReporting_Users" FromRole="User" ToRole="AbsenceReporting" />
-          <NavigationProperty Name="Appointments" Relationship="TrinityCentralizedDBModel.FK_Appointments_Users" FromRole="User" ToRole="Appointment" />
-          <NavigationProperty Name="Notifications" Relationship="TrinityCentralizedDBModel.FK_Notifications_Users" FromRole="User" ToRole="Notification" />
-          <NavigationProperty Name="Notifications1" Relationship="TrinityCentralizedDBModel.FK_Notifications_Users1" FromRole="User" ToRole="Notification" />
-          <NavigationProperty Name="User_Profiles" Relationship="TrinityCentralizedDBModel.FK_User_Profiles_Users" FromRole="User" ToRole="User_Profiles" />
-        </EntityType>
-        <Association Name="FK_AbsenceReporting_Users">
-          <End Type="TrinityCentralizedDBModel.User" Role="User" Multiplicity="1" />
-          <End Type="TrinityCentralizedDBModel.AbsenceReporting" Role="AbsenceReporting" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="User">
-              <PropertyRef Name="UserId" />
-            </Principal>
-            <Dependent Role="AbsenceReporting">
-              <PropertyRef Name="UserId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_User_Profiles_Addresses">
           <End Type="TrinityCentralizedDBModel.Address" Role="Address" Multiplicity="0..1" />
           <End Type="TrinityCentralizedDBModel.User_Profiles" Role="User_Profiles" Multiplicity="*" />
@@ -414,6 +380,36 @@
             </Principal>
             <Dependent Role="User_Profiles">
               <PropertyRef Name="Other_Address_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="NRIC" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="LastLoginTime" Type="DateTime" Precision="3" />
+          <Property Name="SmartCardId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="EnrolledDate" Type="DateTime" Precision="3" />
+          <Property Name="Role" Type="Int16" />
+          <Property Name="Fingerprint" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <NavigationProperty Name="AbsenceReportings" Relationship="TrinityCentralizedDBModel.FK_AbsenceReporting_Users" FromRole="User" ToRole="AbsenceReporting" />
+          <NavigationProperty Name="Appointments" Relationship="TrinityCentralizedDBModel.FK_Appointments_Users" FromRole="User" ToRole="Appointment" />
+          <NavigationProperty Name="Notifications" Relationship="TrinityCentralizedDBModel.FK_Notifications_Users" FromRole="User" ToRole="Notification" />
+          <NavigationProperty Name="Notifications1" Relationship="TrinityCentralizedDBModel.FK_Notifications_Users1" FromRole="User" ToRole="Notification" />
+          <NavigationProperty Name="User_Profiles" Relationship="TrinityCentralizedDBModel.FK_User_Profiles_Users" FromRole="User" ToRole="User_Profiles" />
+        </EntityType>
+        <Association Name="FK_AbsenceReporting_Users">
+          <End Type="TrinityCentralizedDBModel.User" Role="User" Multiplicity="1" />
+          <End Type="TrinityCentralizedDBModel.AbsenceReporting" Role="AbsenceReporting" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="AbsenceReporting">
+              <PropertyRef Name="UserId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -465,7 +461,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-      </Schema>
+        </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
@@ -564,11 +560,9 @@
             <EntityTypeMapping TypeName="TrinityCentralizedDBModel.User">
               <MappingFragment StoreEntitySet="Users">
                 <ScalarProperty Name="Fingerprint" ColumnName="Fingerprint" />
-                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="Role" ColumnName="Role" />
                 <ScalarProperty Name="EnrolledDate" ColumnName="EnrolledDate" />
-                <ScalarProperty Name="SmartCard_Id" ColumnName="SmartCard_Id" />
-                <ScalarProperty Name="FingerprintFailedCount" ColumnName="FingerprintFailedCount" />
-                <ScalarProperty Name="SmartCardFailedCount" ColumnName="SmartCardFailedCount" />
+                <ScalarProperty Name="SmartCardId" ColumnName="SmartCardId" />
                 <ScalarProperty Name="LastLoginTime" ColumnName="LastLoginTime" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="NRIC" ColumnName="NRIC" />

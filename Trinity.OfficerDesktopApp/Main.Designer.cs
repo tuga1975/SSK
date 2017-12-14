@@ -42,6 +42,7 @@
             this.label3 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.button1 = new System.Windows.Forms.Button();
+            this.btnConnect = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgvNotifications)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -104,14 +105,13 @@
             // 
             // lblStatus
             // 
-            this.lblStatus.AutoSize = true;
-            this.lblStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblStatus.Location = new System.Drawing.Point(17, 9);
+            this.lblStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblStatus.Location = new System.Drawing.Point(238, 9);
             this.lblStatus.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblStatus.Name = "lblStatus";
-            this.lblStatus.Size = new System.Drawing.Size(157, 20);
+            this.lblStatus.Size = new System.Drawing.Size(495, 56);
             this.lblStatus.TabIndex = 7;
-            this.lblStatus.Text = "Status: Not connect";
+            this.lblStatus.Text = "Not connected";
             // 
             // dgvNotifications
             // 
@@ -123,12 +123,12 @@
             this.colFromUserId,
             this.ColSubject,
             this.ColContent});
-            this.dgvNotifications.Location = new System.Drawing.Point(20, 89);
+            this.dgvNotifications.Location = new System.Drawing.Point(20, 137);
             this.dgvNotifications.Name = "dgvNotifications";
             this.dgvNotifications.ReadOnly = true;
             this.dgvNotifications.RowHeadersVisible = false;
             this.dgvNotifications.RowTemplate.Height = 24;
-            this.dgvNotifications.Size = new System.Drawing.Size(885, 268);
+            this.dgvNotifications.Size = new System.Drawing.Size(885, 220);
             this.dgvNotifications.TabIndex = 8;
             // 
             // colFromUserId
@@ -155,7 +155,7 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(17, 66);
+            this.label3.Location = new System.Drawing.Point(17, 104);
             this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(238, 20);
@@ -189,12 +189,25 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
+            // btnConnect
+            // 
+            this.btnConnect.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnConnect.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnConnect.Location = new System.Drawing.Point(20, 9);
+            this.btnConnect.Name = "btnConnect";
+            this.btnConnect.Size = new System.Drawing.Size(211, 40);
+            this.btnConnect.TabIndex = 12;
+            this.btnConnect.Text = "Connect to SignalR";
+            this.btnConnect.UseVisualStyleBackColor = true;
+            this.btnConnect.Click += new System.EventHandler(this.btnConnect_Click);
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.ClientSize = new System.Drawing.Size(917, 650);
+            this.Controls.Add(this.btnConnect);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.label3);
@@ -228,6 +241,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn colFromUserId;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColSubject;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColContent;
+        private System.Windows.Forms.Button btnConnect;
     }
 }
 
