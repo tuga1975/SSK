@@ -37,11 +37,12 @@
             this.buttonSend = new System.Windows.Forms.Button();
             this.labelStatus = new System.Windows.Forms.Label();
             this.dgvNotifications = new System.Windows.Forms.DataGridView();
-            this.label3 = new System.Windows.Forms.Label();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.colFromUserId = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColSubject = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColContent = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.label3 = new System.Windows.Forms.Label();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgvNotifications)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -151,6 +152,25 @@
             this.dgvNotifications.Size = new System.Drawing.Size(885, 234);
             this.dgvNotifications.TabIndex = 8;
             // 
+            // colFromUserId
+            // 
+            this.colFromUserId.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.colFromUserId.HeaderText = "Supervisee ID";
+            this.colFromUserId.Name = "colFromUserId";
+            this.colFromUserId.ReadOnly = true;
+            // 
+            // ColSubject
+            // 
+            this.ColSubject.HeaderText = "Subject";
+            this.ColSubject.Name = "ColSubject";
+            this.ColSubject.ReadOnly = true;
+            // 
+            // ColContent
+            // 
+            this.ColContent.HeaderText = "Content";
+            this.ColContent.Name = "ColContent";
+            this.ColContent.ReadOnly = true;
+            // 
             // label3
             // 
             this.label3.AutoSize = true;
@@ -177,30 +197,22 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Send notification";
             // 
-            // colFromUserId
+            // button1
             // 
-            this.colFromUserId.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.colFromUserId.HeaderText = "Supervisee ID";
-            this.colFromUserId.Name = "colFromUserId";
-            this.colFromUserId.ReadOnly = true;
-            // 
-            // ColSubject
-            // 
-            this.ColSubject.HeaderText = "Subject";
-            this.ColSubject.Name = "ColSubject";
-            this.ColSubject.ReadOnly = true;
-            // 
-            // ColContent
-            // 
-            this.ColContent.HeaderText = "Content";
-            this.ColContent.Name = "ColContent";
-            this.ColContent.ReadOnly = true;
+            this.button1.Location = new System.Drawing.Point(776, 19);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(129, 23);
+            this.button1.TabIndex = 11;
+            this.button1.Text = "Create new user";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(917, 650);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.dgvNotifications);
@@ -235,6 +247,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn ColContent;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.Button button1;
     }
 }
 

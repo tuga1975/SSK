@@ -42,7 +42,7 @@ namespace SSK.CodeBehind.Authentication
             else
             {
                 _numberOfFailed++;
-                string script = "$('.status-text').css('color','#000').text('Please place your Finger on the reader. Failed: "+ _numberOfFailed + "');";
+                string script = "$('.status-text').css('color','#000').text('Please place your Finger on the reader. Failed: " + _numberOfFailed + "');";
                 _web.RunScript(script);
 
                 FingerprintMonitor.StartVerification(OnVerificationComplete, _fingerprint_Template);

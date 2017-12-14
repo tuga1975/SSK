@@ -13,9 +13,6 @@ class APIUtils
 
     static APIUtils()
     {
-        #region Đóng lại nếu ko có Smart Card Driver
-        //SCardMonitor = new SCardMonitor();
-        #endregion
         SignalR = new SSK.Utils.SignalR();
     }
 

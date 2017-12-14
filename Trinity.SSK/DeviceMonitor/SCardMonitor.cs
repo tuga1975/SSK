@@ -18,6 +18,7 @@ namespace SSK.DeviceMonitor
         static bool _smartCardReaderMonitorStarted;
         static bool _smartCardMonitorStarted;
 
+        #region Monitor Smart Card
 
         public static void Start()
         {
@@ -29,9 +30,13 @@ namespace SSK.DeviceMonitor
 
         public static void StartCardMonitor(CardInitializedEvent onCardInitialized, CardInsertedEvent onCardInserted, CardRemovedEvent onCardRemoved)
         {
+            //Thread threadMonitor = new Thread(new ParameterizedThreadStart(MonitorCard));
             Thread thread = new Thread(new ThreadStart(() => _smartCardMonitorStarted = _smartCardReaderUtils.StartCardMonitor(onCardInitialized, onCardInserted, onCardRemoved)));
             thread.Start();
         }
+
+        #endregion
+
         public static string GetCardUID()
         {
             if (!_smartCardReaderMonitorStarted)

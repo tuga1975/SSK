@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNet.SignalR.Client;
 using Newtonsoft.Json;
 using SSK.DeviceMonitor;
-using SSK.DriverScan;
 using SSK.Models;
 using System;
 using System.Collections.Generic;
@@ -20,18 +19,17 @@ namespace SSK
 {
     public partial class Main : Form
     {
-        
         private JSCallCS jsCallCS = null;
+        private CodeBehind.Authentication.SmartCard smartCard = null;
+        //private SmartCard smartCard = null;
 
-        private SmartCard smartCard = null;
-        
         public Main()
         {
             InitializeComponent();
 
             APIUtils.LayerWeb = LayerWeb;
             jsCallCS = new JSCallCS(this.LayerWeb);
-            smartCard = new SmartCard(this.LayerWeb);
+            //smartCard = new SmartCard(this.LayerWeb);
             this.LayerWeb.Url = new Uri(String.Format("file:///{0}/View/html/Layout.html", CSCallJS.curDir));
             this.LayerWeb.ObjectForScripting = jsCallCS;
 
@@ -52,7 +50,14 @@ namespace SSK
             this.LayerWeb.InvokeScript("createEvent", JsonConvert.SerializeObject(jsCallCS.GetType().GetMethods().Where(d => d.IsPublic && !d.IsVirtual && !d.IsSecuritySafeCritical).ToArray().Select(d => d.Name)));
             APIUtils.SignalR.GetLatestNotifications();
             //smartCard.Scanning();
-            CodeBehind.Authentication.SmartCard smartCard = new CodeBehind.Authentication.SmartCard(this.LayerWeb);
+            smartCard = new CodeBehind.Authentication.SmartCard(this.LayerWeb);
+            smartCard.OnSmartCardFailed += SmartCard_OnSmartCardFailed;
+        }
+
+        private void SmartCard_OnSmartCardFailed(object sender, CodeBehind.Authentication.SmartCardEventArgs e)
+        {
+            APIUtils.SignalR.SendNotificationToDutyOfficer(e.Message, e.Message);
+            MessageBox.Show(e.Message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         private void Main_FormClosing(object sender, FormClosingEventArgs e)

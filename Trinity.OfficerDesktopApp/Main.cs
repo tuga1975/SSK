@@ -99,5 +99,12 @@ namespace OfficerDesktopApp
                 Connection.Dispose();
             }
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            FormNewUser f = new FormNewUser();
+            f.Show();
+            this.Hide();
+        }
     }
 }

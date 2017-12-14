@@ -37,7 +37,7 @@ namespace Trinity.DAL
                     SmartCard_Id = dbUser.SmartCard_Id,
                     Type = dbUser.Type,
                     UserId = dbUser.UserId,
-                    Fingerprint_Template = dbUser.Fingerprint
+                    Fingerprint = dbUser.Fingerprint
                 };
                 return user;
             }
@@ -122,7 +122,44 @@ namespace Trinity.DAL
                 dbUser.SmartCard_Id = model.SmartCard_Id;
                 dbUser.Type = model.Type;
                 dbUser.UserId = model.UserId;
+                if (model.Fingerprint != null)
+                {
+                    byte[] data = new byte[model.Fingerprint.Length];
+                    for (int i = 0; i < data.Length; i++)
+                    {
+                        data[i] = model.Fingerprint[i];
+                    }
+                    dbUser.Fingerprint = data;
+                }
+            }
+        }
 
+        public bool CreateUser(BE.User user, bool isLocal)
+        {
+            try
+            {
+                User dbUser = null;
+                if (isLocal)
+                {
+                    var localUserRepo = _localUnitOfWork.GetRepository<User>();
+                    dbUser = new User();
+                    SetInfo(dbUser, user);
+                    localUserRepo.Add(dbUser);
+                    _localUnitOfWork.Save();
+                }
+                else
+                {
+                    var centralUserRepo = _centralizedUnitOfWork.GetRepository<User>();
+                    SetInfo(dbUser, user);
+                    centralUserRepo.Add(dbUser);
+                    _centralizedUnitOfWork.Save();
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
             }
         }
     }
