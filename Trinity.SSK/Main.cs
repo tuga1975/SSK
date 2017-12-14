@@ -11,6 +11,7 @@ namespace SSK
         private JSCallCS jsCallCS = null;
         private CodeBehind.Authentication.SmartCard _smartCard = null;
         private CodeBehind.Authentication.Fingerprint _fingerprint = null;
+        private CodeBehind.Authentication.NRIC _nric = null;
         //private SmartCard smartCard = null;
 
         public Main()
@@ -44,13 +45,17 @@ namespace SSK
             APIUtils.SignalR.GetLatestNotifications();
             //smartCard.Scanning();
 
-            _fingerprint = new CodeBehind.Authentication.Fingerprint(this.LayerWeb);
-            _fingerprint.OnFingerprintFailed += _fingerprint_OnFingerprintFailed;
+            _nric = new CodeBehind.Authentication.NRIC(this.LayerWeb);
+            _fingerprint = new CodeBehind.Authentication.Fingerprint(this.LayerWeb, _nric);
+            _fingerprint.OnFingerprintFailed += Fingerprint_OnFingerprintFailed;
+            _fingerprint.OnShowMessage += Fingerprint_ShowMessage;
             _smartCard = new CodeBehind.Authentication.SmartCard(this.LayerWeb, _fingerprint);
             _smartCard.OnSmartCardFailed += SmartCard_OnSmartCardFailed;
+            _smartCard.Start();
+            //_fingerprint.Start();
         }
 
-        private void _fingerprint_OnFingerprintFailed(object sender, CodeBehind.Authentication.FingerprintEventArgs e)
+        private void Fingerprint_OnFingerprintFailed(object sender, CodeBehind.Authentication.FingerprintEventArgs e)
         {
             APIUtils.SignalR.SendNotificationToDutyOfficer(e.Message, e.Message);
             MessageBox.Show(e.Message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -69,6 +74,11 @@ namespace SSK
         }
 
         private void JSCallCS_ShowMessage(object sender, ShowMessageEventArgs e)
+        {
+            MessageBox.Show(e.Message, e.Caption, e.Button, e.Icon);
+        }
+
+        private void Fingerprint_ShowMessage(object sender, ShowMessageEventArgs e)
         {
             MessageBox.Show(e.Message, e.Caption, e.Button, e.Icon);
         }

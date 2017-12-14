@@ -95,12 +95,8 @@ namespace SSK.CodeBehind.Authentication
                 session[CommonConstants.USER_LOGIN] = user;
 
                 _web.RunScript("$('.status-text').css('color','#000').text('Your smart card is authenticated.');");
-                Thread.Sleep(3000);
-
-                _web.LoadPageHtml("Authentication/FingerPrint.html");
-                _web.RunScript("$('.status-text').css('color','#000').text('Please place your finger on the reader.');");
-
                 DeviceMonitor.SCardMonitor.Dispose();
+                Thread.Sleep(3000);
 
                 //Fingerprint fingerprint = new Fingerprint(_web, user.Fingerprint);
                 _fingerprint.FingerprintTemplate = user.Fingerprint;

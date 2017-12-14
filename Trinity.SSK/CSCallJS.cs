@@ -45,6 +45,16 @@ public static class CSCallJS
         web.InvokeScript("updateNRICTextValue", value);
     }
 
+    public static void DisplayNRICLogin(WebBrowser web)
+    {
+        web.InvokeScript("displayNRICLogin");
+    }
+
+    public static void SetNRICFocus(WebBrowser web)
+    {
+        web.InvokeScript("setNRICFocus");
+    }
+
     /// <summary>
     /// Run script javascript
     /// </summary>

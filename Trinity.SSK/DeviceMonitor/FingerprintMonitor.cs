@@ -100,5 +100,22 @@ namespace SSK.DeviceMonitor
 
             return _fingerprintReaderUtils.VerificationResult(bSuccess, nRetCode, bVerificationSuccess);
         }
+
+        public static void StopVerification()
+        {
+            if (!Started)
+            {
+                Debug.WriteLine("Start FingerprintMonitor first please...");
+                return;
+            }
+
+            if (!VerificationStarted)
+            {
+                Debug.WriteLine("Start Fingerprint Verification first please...");
+                return;
+            }
+
+            _fingerprintReaderUtils.StopVerification();
+        }
     }
 }

@@ -7,7 +7,7 @@ using System.Windows.Forms;
 
 namespace SSK.CodeBehind.Authentication
 {
-    class NRIC
+    public class NRIC
     {
         WebBrowser _web;
         public NRIC(WebBrowser web)
@@ -17,6 +17,7 @@ namespace SSK.CodeBehind.Authentication
         internal void Start()
         {
             _web.LoadPageHtml("Authentication/NRIC.html");
+            //CSCallJS.SetNRICFocus(_web);
         }
     }
 }
