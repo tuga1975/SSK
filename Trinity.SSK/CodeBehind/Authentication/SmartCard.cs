@@ -23,6 +23,9 @@ namespace SSK.CodeBehind.Authentication
             web.LoadPageHtml("Authentication/SmartCard.html");
             web.RunScript("$('.status-text').css('color','#000').text('Please place your smart card on the reader.');");
             StartCardMonitor();
+
+            // for testing purpose
+           // web.LoadPageHtml("Supervisee.html");
         }
 
         private void StartCardMonitor()

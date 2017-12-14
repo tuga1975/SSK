@@ -33,22 +33,48 @@ namespace SSK
             web.LoadPageHtml("Notication.html", myNotifications);
         }
 
-        public void LoadProfile(string userId)
+        public void LoadProfile()
         {
             try
             {
-                var dalUser = new Trinity.DAL.DAL_User();
-                var dalUserprofile = new Trinity.DAL.DAL_UserProfile();
-                var profileModel = new Trinity.BE.ProfileModel
+                Trinity.Common.Session session = Trinity.Common.Session.Instance;
+                if (session.IsAuthenticated)
                 {
-                    User = dalUser.GetUserByUserId(userId, true),
-                    UserProfile = dalUserprofile.GetUserProfileByUserId(userId, true),
-                    Addresses = dalUserprofile.GetAddressByUserId(userId, true)
+                    Trinity.BE.User user = (Trinity.BE.User)session[Contstants.CommonConstants.USER_LOGIN];
 
-                };
-                //profile model 
 
-                web.LoadPageHtml("Profile.html", profileModel);
+
+                    var dalUser = new Trinity.DAL.DAL_User();
+                    var dalUserprofile = new Trinity.DAL.DAL_UserProfile();
+                    var profileModel = new Trinity.BE.ProfileModel
+                    {
+                        User = dalUser.GetUserByUserId(user.UserId, true),
+                        UserProfile = dalUserprofile.GetUserProfileByUserId(user.UserId, true),
+                        Addresses = dalUserprofile.GetAddressByUserId(user.UserId, true)
+
+                    };
+                    //profile model 
+
+                    web.LoadPageHtml("Profile.html", profileModel);
+                }
+                //for testing purpose
+                else
+                {
+                    Trinity.BE.User user = new Trinity.BE.User();
+                    user.UserId = "supervisee";
+
+                    var dalUser = new Trinity.DAL.DAL_User();
+                    var dalUserprofile = new Trinity.DAL.DAL_UserProfile();
+                    var profileModel = new Trinity.BE.ProfileModel
+                    {
+                        User = dalUser.GetUserByUserId(user.UserId, true),
+                        UserProfile = dalUserprofile.GetUserProfileByUserId(user.UserId, true),
+                        Addresses = dalUserprofile.GetAddressByUserId(user.UserId, true)
+
+                    };
+                    web.LoadPageHtml("Profile.html", profileModel);
+                }
+
             }
             catch (Exception ex)
             {
@@ -87,11 +113,7 @@ namespace SSK
             }
         }
 
-        public void ScanDocument()
-        {
-            //
-            APIUtils.SignalR.SendNotificationToDutyOfficer("Hello Mr. Duty Officer!", "Hello Mr. Duty Officer! I'm a Supervisee");
-        }
+       
 
         private void actionThread(object pram)
         {
