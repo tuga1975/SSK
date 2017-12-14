@@ -1,11 +1,7 @@
 ﻿using SSK.DeviceMonitor;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using Trinity.Common;
 
 namespace SSK.CodeBehind.Authentication
 {
@@ -34,8 +30,16 @@ namespace SSK.CodeBehind.Authentication
             var result = FingerprintMonitor.VerificationResult(bSuccess, nRetCode, bVerificationSuccess);
             if (result)
             {
+                //
+                // Login successfully
+                //
+                // Create a session object to store UserLogin information
+                // Create a session object to store UserLogin information
+                Session session = Session.Instance;
+                session.IsFingerprintAuthenticated = true;
+
                 _web.RunScript("$('.status-text').css('color','#000').text('Fingerprint authentication is sucessful.');");
-                Thread.Sleep(3000);
+                Thread.Sleep(2000);
 
                 _web.LoadPageHtml("Supervisee.html");
             }

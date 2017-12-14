@@ -28,14 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.buttonConnect = new System.Windows.Forms.Button();
-            this.buttonDisconnect = new System.Windows.Forms.Button();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
             this.label1 = new System.Windows.Forms.Label();
             this.txtSubject = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.rtbContent = new System.Windows.Forms.RichTextBox();
-            this.buttonSend = new System.Windows.Forms.Button();
-            this.labelStatus = new System.Windows.Forms.Label();
+            this.btnSend = new System.Windows.Forms.Button();
+            this.lblStatus = new System.Windows.Forms.Label();
             this.dgvNotifications = new System.Windows.Forms.DataGridView();
             this.colFromUserId = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColSubject = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -46,27 +45,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.dgvNotifications)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // buttonConnect
-            // 
-            this.buttonConnect.Location = new System.Drawing.Point(20, 16);
-            this.buttonConnect.Margin = new System.Windows.Forms.Padding(4);
-            this.buttonConnect.Name = "buttonConnect";
-            this.buttonConnect.Size = new System.Drawing.Size(184, 28);
-            this.buttonConnect.TabIndex = 0;
-            this.buttonConnect.Text = "Connect to SignalR Server";
-            this.buttonConnect.UseVisualStyleBackColor = true;
-            this.buttonConnect.Click += new System.EventHandler(this.buttonConnect_Click);
-            // 
-            // buttonDisconnect
-            // 
-            this.buttonDisconnect.Location = new System.Drawing.Point(212, 16);
-            this.buttonDisconnect.Margin = new System.Windows.Forms.Padding(4);
-            this.buttonDisconnect.Name = "buttonDisconnect";
-            this.buttonDisconnect.Size = new System.Drawing.Size(100, 28);
-            this.buttonDisconnect.TabIndex = 1;
-            this.buttonDisconnect.Text = "Disconnect";
-            this.buttonDisconnect.UseVisualStyleBackColor = true;
             // 
             // label1
             // 
@@ -111,28 +89,29 @@
             this.rtbContent.TabIndex = 5;
             this.rtbContent.Text = "";
             // 
-            // buttonSend
+            // btnSend
             // 
-            this.buttonSend.Enabled = false;
-            this.buttonSend.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonSend.Location = new System.Drawing.Point(21, 206);
-            this.buttonSend.Margin = new System.Windows.Forms.Padding(4);
-            this.buttonSend.Name = "buttonSend";
-            this.buttonSend.Size = new System.Drawing.Size(841, 43);
-            this.buttonSend.TabIndex = 6;
-            this.buttonSend.Text = "Send";
-            this.buttonSend.UseVisualStyleBackColor = true;
-            this.buttonSend.Click += new System.EventHandler(this.buttonSend_Click);
+            this.btnSend.Enabled = false;
+            this.btnSend.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnSend.Location = new System.Drawing.Point(21, 206);
+            this.btnSend.Margin = new System.Windows.Forms.Padding(4);
+            this.btnSend.Name = "btnSend";
+            this.btnSend.Size = new System.Drawing.Size(841, 43);
+            this.btnSend.TabIndex = 6;
+            this.btnSend.Text = "Send";
+            this.btnSend.UseVisualStyleBackColor = true;
+            this.btnSend.Click += new System.EventHandler(this.buttonSend_Click);
             // 
-            // labelStatus
+            // lblStatus
             // 
-            this.labelStatus.AutoSize = true;
-            this.labelStatus.Location = new System.Drawing.Point(17, 48);
-            this.labelStatus.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.labelStatus.Name = "labelStatus";
-            this.labelStatus.Size = new System.Drawing.Size(132, 17);
-            this.labelStatus.TabIndex = 7;
-            this.labelStatus.Text = "Status: Not connect";
+            this.lblStatus.AutoSize = true;
+            this.lblStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblStatus.Location = new System.Drawing.Point(17, 9);
+            this.lblStatus.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblStatus.Name = "lblStatus";
+            this.lblStatus.Size = new System.Drawing.Size(157, 20);
+            this.lblStatus.TabIndex = 7;
+            this.lblStatus.Text = "Status: Not connect";
             // 
             // dgvNotifications
             // 
@@ -144,12 +123,12 @@
             this.colFromUserId,
             this.ColSubject,
             this.ColContent});
-            this.dgvNotifications.Location = new System.Drawing.Point(20, 123);
+            this.dgvNotifications.Location = new System.Drawing.Point(20, 89);
             this.dgvNotifications.Name = "dgvNotifications";
             this.dgvNotifications.ReadOnly = true;
             this.dgvNotifications.RowHeadersVisible = false;
             this.dgvNotifications.RowTemplate.Height = 24;
-            this.dgvNotifications.Size = new System.Drawing.Size(885, 234);
+            this.dgvNotifications.Size = new System.Drawing.Size(885, 268);
             this.dgvNotifications.TabIndex = 8;
             // 
             // colFromUserId
@@ -158,6 +137,7 @@
             this.colFromUserId.HeaderText = "Supervisee ID";
             this.colFromUserId.Name = "colFromUserId";
             this.colFromUserId.ReadOnly = true;
+            this.colFromUserId.Width = 120;
             // 
             // ColSubject
             // 
@@ -175,7 +155,7 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(16, 100);
+            this.label3.Location = new System.Drawing.Point(17, 66);
             this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(238, 20);
@@ -184,7 +164,7 @@
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.buttonSend);
+            this.groupBox1.Controls.Add(this.btnSend);
             this.groupBox1.Controls.Add(this.txtSubject);
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.rtbContent);
@@ -199,9 +179,11 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(776, 19);
+            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button1.Location = new System.Drawing.Point(751, 9);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(129, 23);
+            this.button1.Size = new System.Drawing.Size(154, 40);
             this.button1.TabIndex = 11;
             this.button1.Text = "Create new user";
             this.button1.UseVisualStyleBackColor = true;
@@ -211,18 +193,19 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.ClientSize = new System.Drawing.Size(917, 650);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.dgvNotifications);
-            this.Controls.Add(this.labelStatus);
-            this.Controls.Add(this.buttonDisconnect);
-            this.Controls.Add(this.buttonConnect);
+            this.Controls.Add(this.lblStatus);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "Main";
             this.Text = "Officer Desktop Application";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Main_FormClosing);
+            this.Load += new System.EventHandler(this.Main_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dgvNotifications)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
@@ -232,22 +215,19 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.Button buttonConnect;
-        private System.Windows.Forms.Button buttonDisconnect;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox txtSubject;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.RichTextBox rtbContent;
-        private System.Windows.Forms.Button buttonSend;
-        private System.Windows.Forms.Label labelStatus;
+        private System.Windows.Forms.Button btnSend;
+        private System.Windows.Forms.Label lblStatus;
         private System.Windows.Forms.DataGridView dgvNotifications;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colFromUserId;
-        private System.Windows.Forms.DataGridViewTextBoxColumn ColSubject;
-        private System.Windows.Forms.DataGridViewTextBoxColumn ColContent;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colFromUserId;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ColSubject;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ColContent;
     }
 }
 

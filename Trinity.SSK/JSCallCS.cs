@@ -1,15 +1,10 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Newtonsoft.Json;
 using System.Threading;
-using Trinity.DAL.DBContext;
+using System.Windows.Forms;
 using Trinity.DAL;
-using Trinity.BE;
 
 namespace SSK
 {
@@ -30,14 +25,6 @@ namespace SSK
             web.LoadPageHtml(file);
         }
 
-
-        public async Task GetQueuAsync(int a)
-        {
-            //QueueHandler queuHandler = new QueueHandler();
-            //var queuValue = queuHandler.GetQueue();
-            MessageBox.Show("1");
-        }
-
         public void LoadNotications()
         {
             DAL_Notification dalNotification = new DAL_Notification();
@@ -54,9 +41,9 @@ namespace SSK
                 var dalUserprofile = new Trinity.DAL.DAL_UserProfile();
                 var profileModel = new Trinity.BE.ProfileModel
                 {
-                    User = dalUser.GetUserByUserId(userId,true),
-                    UserProfile = dalUserprofile.GetUserProfileByUserId(userId,true),
-                    Addresses = dalUserprofile.GetAddressByUserId(userId,true)
+                    User = dalUser.GetUserByUserId(userId, true),
+                    UserProfile = dalUserprofile.GetUserProfileByUserId(userId, true),
+                    Addresses = dalUserprofile.GetAddressByUserId(userId, true)
 
                 };
                 //profile model 
@@ -65,7 +52,6 @@ namespace SSK
             }
             catch (Exception ex)
             {
-
                 LoadPage("Supervisee.html");
             }
         }
@@ -81,14 +67,14 @@ namespace SSK
                 if (primaryInfoChange)
                 {
 
-                    dalUser.UpdateUser(data.User, data.User.UserId,true);
+                    dalUser.UpdateUser(data.User, data.User.UserId, true);
 
                     dalUserprofile.UpdateUserProfile(data.UserProfile, data.User.UserId, true);
 
                 }
                 else
                 {
-                    dalUserprofile.UpdateUserProfile(data.UserProfile, data.User.UserId,true);
+                    dalUserprofile.UpdateUserProfile(data.UserProfile, data.User.UserId, true);
                 }
 
                 //send notify to case officer
