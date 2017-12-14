@@ -15,8 +15,9 @@ namespace SSK.CodeBehind.Authentication
         int _failedCount = 0;
 
         public event EventHandler<SmartCardEventArgs> OnSmartCardFailed;
+        private Fingerprint _fingerprint;
 
-        public SmartCard(WebBrowser web)
+        public SmartCard(WebBrowser web, Fingerprint fingerprint)
         {
             _web = web;
 
