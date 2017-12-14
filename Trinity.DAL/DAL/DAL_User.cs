@@ -88,13 +88,11 @@ namespace Trinity.DAL
                 {
                     Fingerprint = dbUser.Fingerprint,
                     EnrolledDate = dbUser.EnrolledDate,
-                    FingerprintFailedCount = dbUser.FingerprintFailedCount,
                     LastLoginTime = dbUser.LastLoginTime,
                     Name = dbUser.Name,
                     NRIC = dbUser.NRIC,
-                    SmartCardFailedCount = dbUser.SmartCardFailedCount,
-                    SmartCard_Id = dbUser.SmartCard_Id,
-                    Type = dbUser.Type,
+                    SmartCardId = dbUser.SmartCardId,
+                    Role = dbUser.Role,
                     UserId = dbUser.UserId
                 };
                 return user;
