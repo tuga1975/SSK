@@ -2,7 +2,7 @@
     <span>Please scan supervisee NRIC:</span>
     <input type="text" id="txtNRIC" class="txtNRIC" autofocus />
     <input type="button" value="Enter manually" onclick="enterManually()" />
-    <input type="button" value="Submit" />
+    <input type="button" value="Submit" onclick="api.server.SubmitNRIC($('#txtNRIC').val())" />
 </div>
 
 <style type="text/css">

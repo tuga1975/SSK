@@ -15,22 +15,23 @@ namespace SSK.CodeBehind.Authentication
         int _failedCount = 0;
 
         public event EventHandler<SmartCardEventArgs> OnSmartCardFailed;
-        private Fingerprint _fingerprint;
-        public SmartCard(WebBrowser web, Fingerprint fingerprint)
+
+        public SmartCard(WebBrowser web)
         {
             _web = web;
+
             //_fingerprint = new Fingerprint(_web);
             _fingerprint = fingerprint;
-            web.LoadPageHtml("Authentication/SmartCard.html");
-            web.RunScript("$('.status-text').css('color','#000').text('Please place your smart card on the reader.');");
-            StartCardMonitor();
+       
 
             // for testing purpose
-           // web.LoadPageHtml("Supervisee.html");
+            // web.LoadPageHtml("Supervisee.html");
         }
 
-        private void StartCardMonitor()
+        public void Start()
         {
+            _web.LoadPageHtml("Authentication/SmartCard.html");
+            _web.RunScript("$('.status-text').css('color','#000').text('Please place your smart card on the reader.');");
             DeviceMonitor.SCardMonitor.StartCardMonitor(OnCardInitialized, OnCardInserted, OnCardRemoved);
         }
 
