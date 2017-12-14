@@ -13,6 +13,7 @@ namespace SSK
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public class JSCallCS
     {
+        Trinity.Common.Session session = Trinity.Common.Session.Instance;
         private WebBrowser web = null;
         private Type thisType = null;
 
@@ -76,7 +77,7 @@ namespace SSK
         {
             try
             {
-                Trinity.Common.Session session = Trinity.Common.Session.Instance;
+
                 if (session.IsAuthenticated)
                 {
                     Trinity.BE.User user = (Trinity.BE.User)session[Contstants.CommonConstants.USER_LOGIN];
@@ -142,9 +143,9 @@ namespace SSK
                 {
                     dalUserprofile.UpdateUserProfile(data.UserProfile, data.User.UserId, true);
                     //send notifiy to case officer
+                    APIUtils.SignalR.SendNotificationToDutyOfficer("Supervisee's information changed!", "Please check the Supervisee's information!");
                 }
 
-                //send notify to case officer
                 //load Supervisee page 
                 LoadPage("Supervisee.html");
             }
@@ -154,20 +155,28 @@ namespace SSK
             }
         }
 
-        public void LoadScanDocument()
+        public void LoadScanDocument(string jsonData)
         {
             try
             {
+
+                session[Contstants.CommonConstants.PROFILE_DATA] = jsonData;
+
                 LoadPage("Document.html");
 
             }
             catch (Exception)
             {
-
+                MessageBox.Show("Something wrong happened!");
                 LoadProfile();
             }
         }
-       
+        public void UpdateProfileAfterScanDoc()
+        {
+            var jsonData = session[Contstants.CommonConstants.PROFILE_DATA];
+            SaveProfile(jsonData.ToString(), true);
+        }
+
 
         private void actionThread(object pram)
         {
@@ -191,7 +200,7 @@ namespace SSK
             if (user == null)
             {
                 // raise failsed event and return false
-                RaiseOnNRICFailedEvent(new NRICEventArgs("NRIC "+ nric + ": not found. Please check NRIC again."));
+                RaiseOnNRICFailedEvent(new NRICEventArgs("NRIC " + nric + ": not found. Please check NRIC again."));
                 return;
             }
 

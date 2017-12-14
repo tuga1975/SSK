@@ -9,5 +9,6 @@ namespace SSK.Contstants
     public static class CommonConstants
     {
         public const string USER_LOGIN = "UserLogin";
+        public const string PROFILE_DATA = "ProfileData";
     }
 }

@@ -22,15 +22,23 @@
     <div id="divConfirm" style="display:none;">
         <strong>Confirm update information </strong>
         <button class="btn btn-dark">Cancel</button>
-        <button class="btn btn-success" onclick="api.server.LoadPage('Supervisee.html')" >OK</button>
+        <button class="btn btn-success" id="btnOK" >OK</button>
     </div>
 </div>
 
     <script>
+        var formData, json = null;
+        $(document).ready(function () {
+         
+        });
         var setSuccess = setTimeout(showMessage, 5000);
         function showMessage() {
             $('#divMessage').show();
             $('#divConfirm').show();
         }
         
+        $('#btnOK').click(function () {
+            api.server.UpdateProfileAfterScanDoc();
+        });
+       
     </script>

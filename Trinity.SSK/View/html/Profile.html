@@ -185,7 +185,7 @@
     </div>
     <div style="display:none;float:left;" id="divError"><button type="button" class="btn btn-danger">Following input must not null!</button></div>
     <div style="display:none;float:right;" id="divSupportDocument">
-        <button type="button" class="btn btn-danger" style="position:fixed;bottom:10px;right:10px;" onclick="api.server.LoadScanDocument();">Supporting documents required</button>
+        <button type="button" class="btn btn-danger" style="position:fixed;bottom:10px;right:10px;" id="btnScanDocument">Supporting documents required</button>
         <button type="button" class="btn btn-dark" style="position:fixed;bottom:10px;left:10px;float:left;" onclick="api.server.LoadPage('Supervisee.html');">Back</button>
     </div>
     <div style="float:right;" id="tempSupportDocument">
@@ -275,6 +275,12 @@
         e.preventDefault(); // avoid to execute the actual submit of the form.
     });
 
+    $('#btnScanDocument').click(function () {
+        var $form = $("#profileFrm");
+        var data = getFormData($form);
+        var json = JSON.stringify(data);
+        api.server.LoadScanDocument(json);
+    });
     function getFormData($form) {
         var unindexed_array = $form.serializeArray();
         var indexed_array = {};
