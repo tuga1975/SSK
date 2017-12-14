@@ -78,7 +78,7 @@
             <br />
 
         </div>
-        <div id="Addresses" class="tab-pane fade" onclick="activeTab('Addresses');" >
+        <div id="Addresses" class="tab-pane fade" onclick="activeTab('Addresses');">
 
             <input type="hidden" name="Residential_Addess_ID" id="Residential_Addess_ID" />
             <input type="hidden" name="Other_Address_ID" id="Other_Address_ID" />
@@ -187,6 +187,10 @@
     <div style="display:none;float:right;" id="divSupportDocument">
         <button type="button" class="btn btn-danger" style="position:fixed;bottom:10px;right:10px;" onclick="api.server.LoadScanDocument();">Supporting documents required</button>
         <button type="button" class="btn btn-dark" style="position:fixed;bottom:10px;left:10px;float:left;" onclick="api.server.LoadPage('Supervisee.html');">Back</button>
+    </div>
+    <div style="float:right;" id="tempSupportDocument">
+        <button type="button" class="btn btn-danger" style="position:fixed;bottom:10px;right:150px;" onclick="api.server.LoadScanDocument();">Supporting documents required</button>
+        
     </div>
     <div style="display:none;float:right;" id="divConfirm">
         <label><strong>Are you sure ?</strong></label>
