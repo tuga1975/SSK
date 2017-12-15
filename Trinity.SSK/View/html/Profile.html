@@ -271,7 +271,10 @@
         var data = getFormData($form);
         var json = JSON.stringify(data);
 
-        api.server.SaveProfile(json, false);
+        //for testing purpose
+        api.server.SaveProfile(json, true);
+
+        //api.server.SaveProfile(json, false);
 
         e.preventDefault(); // avoid to execute the actual submit of the form.
     });
