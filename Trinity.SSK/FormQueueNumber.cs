@@ -12,12 +12,12 @@ namespace SSK
 {
     public partial class FormQueueNumber : Form
     {
-        private static Form _instance = null;
-        public static Form GetInstance()
+        private static FormQueueNumber _instance = null;
+        public static FormQueueNumber GetInstance()
         {
             if (_instance == null)
             {
-                _instance = new Form();
+                _instance = new FormQueueNumber();
             }
             return _instance;
         }
@@ -26,9 +26,8 @@ namespace SSK
             InitializeComponent();
         }
 
-        public void ShowQueueNumber(string queueNumber)
+        public void ShowOnSecondaryScreen()
         {
-            this.Invoke((Action)(() => lblQueueNumber.Text = queueNumber));
             if (Screen.AllScreens.Count() > 1)
             {
                 if (Screen.AllScreens[0].Primary)
@@ -40,6 +39,10 @@ namespace SSK
                     this.Location = Screen.AllScreens[0].WorkingArea.Location;
                 }
             }
+        }
+        public void ShowQueueNumber(string queueNumber)
+        {
+            this.Invoke((Action)(() => lblQueueNumber.Text = queueNumber));       
         }
     }
 }

@@ -58,9 +58,11 @@ namespace OfficerDesktopApp
             try
             {
                 await Connection.Start();
+                this.Invoke((Action)(() => btnConnect.Enabled = false));
             }
             catch (HttpRequestException)
             {
+                this.Invoke((Action)(() => btnConnect.Enabled = true));
                 this.Invoke((Action)(() => rtbContent.Enabled = false));
                 this.Invoke((Action)(() => lblStatus.Text = "Unable to connect. The SignalR Server doesn't seem to work. Please reconnect"));
 
@@ -79,6 +81,7 @@ namespace OfficerDesktopApp
         private void Connection_Closed()
         {
             //Deactivate chat UI; show login UI. 
+            this.Invoke((Action)(() => txtSubject.Enabled = true));
             this.Invoke((Action)(() => txtSubject.Enabled = false));
             this.Invoke((Action)(() => rtbContent.Enabled = false));
             this.Invoke((Action)(() => lblStatus.Text = "Could not connect.Reconnecting..."));

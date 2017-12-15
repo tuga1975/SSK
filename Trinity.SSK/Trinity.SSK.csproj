@@ -133,6 +133,7 @@
     <Compile Include="CodeBehind\Authentication\NRIC.cs" />
     <Compile Include="CodeBehind\Authentication\SmartCard.cs" />
     <Compile Include="CodeBehind\Document.cs" />
+    <Compile Include="Common\Enums.cs" />
     <Compile Include="Contstants\CommonConstants.cs" />
     <Compile Include="DeviceMonitor\DeviceMonitor.cs" />
     <Compile Include="DeviceMonitor\FingerprintMonitor.cs" />

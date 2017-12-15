@@ -15,7 +15,7 @@
 </head>
 <body>
     <div class="logo" title="logo">Logo</div>
-    <div class="logout glyphicon glyphicon-log-out"  title="Logout"></div>
+    <div class="logout glyphicon glyphicon-log-out"  title="Logout" onclick="confirm('Are you sure you want to logout?') == true ? api.server.logOut() : null" id="btn-logout"></div>
     
     <div id="content">
 

@@ -40,7 +40,7 @@ namespace SSK.CodeBehind.Authentication
                 _fingerprint_Template = value;
             }
         }
-        
+
 
         internal void Start()
         {
@@ -71,14 +71,14 @@ namespace SSK.CodeBehind.Authentication
                     Session session = Session.Instance;
                     session.IsFingerprintAuthenticated = true;
 
-                _web.RunScript("$('.status-text').css('color','#000').text('Fingerprint authentication is successful.');");
-                APIUtils.SignalR.GetLatestNotifications();
-                Thread.Sleep(2000);
+                    _web.RunScript("$('.status-text').css('color','#000').text('Fingerprint authentication is successful.');");
+                    APIUtils.SignalR.GetLatestNotifications();
+                    Thread.Sleep(2000);
 
-                    // if duty officer login, redirect to NRIC.html
+                    // if role = 0 = duty officer login, redirect to NRIC.html
                     // else supervisee login, redirect to Supervisee.html
                     Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-                    if (user.Role == 1)
+                    if (user.Role == 0)
                     {
                         _nric.Start();
                     }

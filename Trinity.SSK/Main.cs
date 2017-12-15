@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using SSK.Common;
 using System;
 using System.Data;
 using System.Linq;
@@ -8,10 +9,12 @@ namespace SSK
 {
     public partial class Main : Form
     {
-        private JSCallCS jsCallCS = null;
+        private JSCallCS _jsCallCS = null;
         private CodeBehind.Authentication.SmartCard _smartCard = null;
         private CodeBehind.Authentication.Fingerprint _fingerprint = null;
         private CodeBehind.Authentication.NRIC _nric = null;
+        private NavigatorEnums _currentPage;
+        private bool _displayLoginButtonStatus = false;
         //private SmartCard smartCard = null;
 
         public Main()
@@ -19,12 +22,13 @@ namespace SSK
             InitializeComponent();
 
             APIUtils.LayerWeb = LayerWeb;
-            jsCallCS = new JSCallCS(this.LayerWeb);
-            jsCallCS.OnNRICFailed += JSCallCS_OnNRICFailed;
-            jsCallCS.OnShowMessage += JSCallCS_ShowMessage;
+            _jsCallCS = new JSCallCS(this.LayerWeb);
+            _jsCallCS.OnNRICFailed += JSCallCS_OnNRICFailed;
+            _jsCallCS.OnShowMessage += JSCallCS_ShowMessage;
+            _jsCallCS.OnNavigate += OnNavigate;
             //smartCard = new SmartCard(this.LayerWeb);
             this.LayerWeb.Url = new Uri(String.Format("file:///{0}/View/html/Layout.html", CSCallJS.curDir));
-            this.LayerWeb.ObjectForScripting = jsCallCS;
+            this.LayerWeb.ObjectForScripting = _jsCallCS;
 
             //
             // For testing purpose only
@@ -41,17 +45,20 @@ namespace SSK
 
         private void LayerWeb_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
-            this.LayerWeb.InvokeScript("createEvent", JsonConvert.SerializeObject(jsCallCS.GetType().GetMethods().Where(d => d.IsPublic && !d.IsVirtual && !d.IsSecuritySafeCritical).ToArray().Select(d => d.Name)));
-            
+            this.LayerWeb.InvokeScript("createEvent", JsonConvert.SerializeObject(_jsCallCS.GetType().GetMethods().Where(d => d.IsPublic && !d.IsVirtual && !d.IsSecuritySafeCritical).ToArray().Select(d => d.Name)));
+
             //smartCard.Scanning();
 
             _nric = new CodeBehind.Authentication.NRIC(this.LayerWeb);
+            _nric.OnNavigate += OnNavigate;
             _fingerprint = new CodeBehind.Authentication.Fingerprint(this.LayerWeb, _nric);
             _fingerprint.OnFingerprintFailed += Fingerprint_OnFingerprintFailed;
             _fingerprint.OnShowMessage += Fingerprint_ShowMessage;
             _smartCard = new CodeBehind.Authentication.SmartCard(this.LayerWeb, _fingerprint);
             _smartCard.OnSmartCardFailed += SmartCard_OnSmartCardFailed;
-            _smartCard.Start();
+            OnNavigate(new object(), new NavigateEventArgs(Common.NavigatorEnums.Authentication_SmartCard));
+            //_smartCard.Start();
+            //_nric.Start();
             //_fingerprint.Start();
         }
 
@@ -88,6 +95,49 @@ namespace SSK
             APIUtils.SignalR.SendNotificationToDutyOfficer(e.Message, e.Message);
             MessageBox.Show(e.Message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
+
+        private void OnNavigate(object sender, NavigateEventArgs e)
+        {
+            // navigate
+            if (e.navigatorEnum == Common.NavigatorEnums.Authentication_SmartCard)
+            {
+                _smartCard.Start();
+            }
+            else if (e.navigatorEnum == Common.NavigatorEnums.Authentication_Fingerprint)
+            {
+                _fingerprint.Start();
+                CSCallJS.DisplayLogoutButton(this.LayerWeb, true);
+            }
+            else if (e.navigatorEnum == Common.NavigatorEnums.Authentication_NRIC)
+            {
+                _nric.Start();
+                CSCallJS.DisplayLogoutButton(this.LayerWeb, true);
+            }
+
+            // set current page
+            _currentPage = e.navigatorEnum;
+
+            // display options in Authentication_SmartCard page
+            if (_displayLoginButtonStatus && _currentPage == NavigatorEnums.Authentication_SmartCard)
+            {
+                _displayLoginButtonStatus = false;
+                CSCallJS.DisplayLogoutButton(this.LayerWeb, _displayLoginButtonStatus);
+            }
+
+            // display options in the rest
+            if (!_displayLoginButtonStatus && _currentPage != NavigatorEnums.Authentication_SmartCard)
+            {
+                _displayLoginButtonStatus = true;
+                CSCallJS.DisplayLogoutButton(this.LayerWeb, _displayLoginButtonStatus);
+            }
+        }
         #endregion
+
+        private void Main_Load(object sender, EventArgs e)
+        {
+            FormQueueNumber f = FormQueueNumber.GetInstance();            
+            f.ShowOnSecondaryScreen();
+            f.Show();
+        }
     }
 }
