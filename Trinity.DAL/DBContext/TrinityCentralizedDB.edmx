@@ -282,7 +282,6 @@
             <PropertyRef Name="Address_ID" />
           </Key>
           <Property Name="Address_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="BlkHouse_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="FlrUnit_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Street_Name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
@@ -486,7 +485,6 @@
                 <ScalarProperty Name="Street_Name" ColumnName="Street_Name" />
                 <ScalarProperty Name="FlrUnit_Number" ColumnName="FlrUnit_Number" />
                 <ScalarProperty Name="BlkHouse_Number" ColumnName="BlkHouse_Number" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Address_ID" ColumnName="Address_ID" />
               </MappingFragment>
             </EntityTypeMapping>

@@ -12,14 +12,12 @@ namespace Trinity.DAL.DBContext
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
-    using System.Diagnostics;
-
+    
     public partial class SSKEntities : DbContext
     {
         public SSKEntities()
             : base("name=SSKEntities")
         {
-            Database.Log = x => Console.WriteLine(x);
         }
     
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

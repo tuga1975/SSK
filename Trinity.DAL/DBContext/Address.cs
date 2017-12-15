@@ -22,7 +22,6 @@ namespace Trinity.DAL.DBContext
         }
     
         public int Address_ID { get; set; }
-        public string Name { get; set; }
         public string BlkHouse_Number { get; set; }
         public string FlrUnit_Number { get; set; }
         public string Street_Name { get; set; }
