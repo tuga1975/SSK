@@ -251,14 +251,14 @@ namespace SSK
             // get Queue number
             Session session = Session.Instance;
             Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-            string queueNumber = string.Empty;
+            string queueNumber = "Current Queue Number: ";
             if (user.NRIC != null && user.NRIC.Length >= 5)
             {
-                queueNumber = "S" + user.NRIC.Substring(user.NRIC.Length - 5, 5).PadLeft(8, '*');
+                queueNumber += "S" + user.NRIC.Substring(user.NRIC.Length - 5, 5).PadLeft(8, '*');
             }
             else
             {
-                queueNumber = user.NRIC;
+                queueNumber += "S" + user.NRIC.PadLeft(8, '*');
             }
 
             // displayqueue number
