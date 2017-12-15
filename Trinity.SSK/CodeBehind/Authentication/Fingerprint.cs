@@ -11,6 +11,7 @@ namespace SSK.CodeBehind.Authentication
     {
         public event EventHandler<FingerprintEventArgs> OnFingerprintFailed;
         public event EventHandler<ShowMessageEventArgs> OnShowMessage;
+        public event EventHandler<NavigateEventArgs> OnNavigate;
 
         WebBrowser _web;
         NRIC _nric;
@@ -98,6 +99,8 @@ namespace SSK.CodeBehind.Authentication
                     {
                         // If FailedCount > 3 then raise Smart Card Failure
                         RaiseFingerprintFailedEvent(new FingerprintEventArgs("Unable to read your fingerprint. Please report to the Duty Officer", _failedCount));
+                        // return to smartcard authentication
+                        RaiseOnNavigateEvent(new NavigateEventArgs(Common.NavigatorEnums.Authentication_SmartCard));
                     }
                     FingerprintMonitor.StartVerification(OnVerificationComplete, _fingerprint_Template);
                 }
@@ -132,6 +135,21 @@ namespace SSK.CodeBehind.Authentication
             // a race condition if the last subscriber unsubscribes
             // immediately after the null check and before the event is raised.
             EventHandler<ShowMessageEventArgs> handler = OnShowMessage;
+
+            // Event will be null if there are no subscribers
+            if (handler != null)
+            {
+                // Use the () operator to raise the event.
+                handler(this, e);
+            }
+        }
+
+        protected virtual void RaiseOnNavigateEvent(NavigateEventArgs e)
+        {
+            // Make a temporary copy of the event to avoid possibility of
+            // a race condition if the last subscriber unsubscribes
+            // immediately after the null check and before the event is raised.
+            EventHandler<NavigateEventArgs> handler = OnNavigate;
 
             // Event will be null if there are no subscribers
             if (handler != null)

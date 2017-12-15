@@ -157,20 +157,13 @@ namespace Trinity.DAL
                 User dbUser = null;
                 if (isLocal)
                 {
-                    var localUserRepo = _localUnitOfWork.GetRepository<User>();
-                    dbUser = localUserRepo.GetById(userId);
-                    SetInfo(dbUser, model);
-                    localUserRepo.Update(dbUser);
-                    _localUnitOfWork.Save();
+                    dbUser = UpdateLocal(model, userId);
+                    dbUser = UpdateCentral(model, userId);
                     return true;
                 }
                 else
                 {
-                    var centralUserRepo = _centralizedUnitOfWork.GetRepository<User>();
-                    dbUser = centralUserRepo.GetById(userId);
-                    SetInfo(dbUser, model);
-                    centralUserRepo.Update(dbUser);
-                    _centralizedUnitOfWork.Save();
+                    dbUser = UpdateCentral(model, userId);
                     return true;
                 }
 
@@ -180,6 +173,28 @@ namespace Trinity.DAL
                 Console.WriteLine(ex.Message);
                 return false;
             }
+        }
+
+        private User UpdateCentral(BE.User model, string userId)
+        {
+            User dbUser;
+            var centralUserRepo = _centralizedUnitOfWork.GetRepository<User>();
+            dbUser = centralUserRepo.GetById(userId);
+            SetInfo(dbUser, model);
+            centralUserRepo.Update(dbUser);
+            _centralizedUnitOfWork.Save();
+            return dbUser;
+        }
+
+        private User UpdateLocal(BE.User model, string userId)
+        {
+            User dbUser;
+            var localUserRepo = _localUnitOfWork.GetRepository<User>();
+            dbUser = localUserRepo.GetById(userId);
+            SetInfo(dbUser, model);
+            localUserRepo.Update(dbUser);
+            _localUnitOfWork.Save();
+            return dbUser;
         }
 
         protected void SetInfo(User dbUser, BE.User model)

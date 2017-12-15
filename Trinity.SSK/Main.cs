@@ -54,6 +54,7 @@ namespace SSK
             _fingerprint = new CodeBehind.Authentication.Fingerprint(this.LayerWeb, _nric);
             _fingerprint.OnFingerprintFailed += Fingerprint_OnFingerprintFailed;
             _fingerprint.OnShowMessage += Fingerprint_ShowMessage;
+            _fingerprint.OnNavigate += OnNavigate;
             _smartCard = new CodeBehind.Authentication.SmartCard(this.LayerWeb, _fingerprint);
             _smartCard.OnSmartCardFailed += SmartCard_OnSmartCardFailed;
             OnNavigate(new object(), new NavigateEventArgs(Common.NavigatorEnums.Authentication_SmartCard));

@@ -67,38 +67,13 @@ namespace Trinity.DAL
                 User_Profiles dbUserProfile = null;
                 if (isLocal)
                 {
-                    var localUserProfileRepo = _localUnitOfWork.GetRepository<User_Profiles>();
-                    dbUserProfile = localUserProfileRepo.GetById(userId);
-                    if (dbUserProfile == null)
-                    {
-                        dbUserProfile = new User_Profiles();
-                        SetInfo(dbUserProfile, model);
-                        localUserProfileRepo.Add(dbUserProfile);
-                    }
-                    else
-                    {
-                        SetInfo(dbUserProfile, model);
-                        localUserProfileRepo.Update(dbUserProfile);
-                    }
-                    _localUnitOfWork.Save();
+                    dbUserProfile = UpdateLocal(model, userId);
+                    dbUserProfile = UpdateCentral(model, userId);
                     return true;
                 }
                 else
                 {
-                    var centralUserProfileRepo = _centralizedUnitOfWork.GetRepository<User_Profiles>();
-                    dbUserProfile = centralUserProfileRepo.GetById(userId);
-                    if (dbUserProfile == null)
-                    {
-                        dbUserProfile = new User_Profiles();
-                        SetInfo(dbUserProfile, model);
-                        centralUserProfileRepo.Add(dbUserProfile);
-                    }
-                    else
-                    {
-                        SetInfo(dbUserProfile, model);
-                        centralUserProfileRepo.Update(dbUserProfile);
-                    }
-                    _centralizedUnitOfWork.Save();
+                    dbUserProfile = UpdateCentral(model, userId);
                     return true;
                 }
             }
@@ -108,6 +83,47 @@ namespace Trinity.DAL
                 return false;
             }
         }
+
+        private User_Profiles UpdateCentral(UserProfile model, string userId)
+        {
+            User_Profiles dbUserProfile;
+            var centralUserProfileRepo = _centralizedUnitOfWork.GetRepository<User_Profiles>();
+            dbUserProfile = centralUserProfileRepo.GetById(userId);
+            if (dbUserProfile == null)
+            {
+                dbUserProfile = new User_Profiles();
+                SetInfo(dbUserProfile, model);
+                centralUserProfileRepo.Add(dbUserProfile);
+            }
+            else
+            {
+                SetInfo(dbUserProfile, model);
+                centralUserProfileRepo.Update(dbUserProfile);
+            }
+            _centralizedUnitOfWork.Save();
+            return dbUserProfile;
+        }
+
+        private User_Profiles UpdateLocal(UserProfile model, string userId)
+        {
+            User_Profiles dbUserProfile;
+            var localUserProfileRepo = _localUnitOfWork.GetRepository<User_Profiles>();
+            dbUserProfile = localUserProfileRepo.GetById(userId);
+            if (dbUserProfile == null)
+            {
+                dbUserProfile = new User_Profiles();
+                SetInfo(dbUserProfile, model);
+                localUserProfileRepo.Add(dbUserProfile);
+            }
+            else
+            {
+                SetInfo(dbUserProfile, model);
+                localUserProfileRepo.Update(dbUserProfile);
+            }
+            _localUnitOfWork.Save();
+            return dbUserProfile;
+        }
+
         protected void SetInfo(User_Profiles dbUserProfile, BE.UserProfile model)
         {
             dbUserProfile.UserId = model.UserId;
