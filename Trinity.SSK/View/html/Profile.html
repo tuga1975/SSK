@@ -192,8 +192,8 @@
         <button type="button" class="btn btn-danger" style="position:fixed;bottom:10px;right:150px;" id="btnScan">Scan documents</button>
         
     </div>
-    <div style="display:none;float:right;" id="divConfirm">
-        <label><strong>Are you sure ?</strong></label>
+    <div style="display:none;float:right;" id="divConfirm" >
+        <p style="position:fixed;z-index:100;bottom:45px;right:10px;"><strong>Are you sure ?</strong></p>
         <button type="button" class="btn btn-dark" style="position:fixed;bottom:10px;right:60px; float:right;" id="btnCancel">Cancel</button>
         <button type="submit" class="btn btn-success" style="position:fixed;bottom:10px;right:10px; float:right;" id="btnOK">OK</button>
     </div>
@@ -339,17 +339,17 @@
     });
 
     //temp not check for require
-    //$('input[class="form-control"]').keyup(function () {
-    //    $('#btnCancel').trigger('click');
-    //    if ($(this).val() != "") {
-    //        $(this).removeClass('highlight');
+    $('input[class="form-control"]').keyup(function () {
+        $('#btnCancel').trigger('click');
+        //if ($(this).val() != "") {
+        //    $(this).removeClass('highlight');
           
-    //    }
-    //    else {
-    //        $(this).addClass('highlight');
+        //}
+        //else {
+        //    $(this).addClass('highlight');
            
-    //    }
-    //});
+        //}
+    });
 
     var listTab = ["Particulars", "Addresses", "Next-Of-Kin-Details", "Employment-Details"];
     //function disableOtherTab(thisTab) {
