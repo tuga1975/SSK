@@ -89,6 +89,7 @@ namespace SSK.CodeBehind.Authentication
                     }
 
                     FingerprintMonitor.StopVerification();
+                    _failedCount = 0;
                 }
                 else
                 {
@@ -101,6 +102,7 @@ namespace SSK.CodeBehind.Authentication
                         RaiseFingerprintFailedEvent(new FingerprintEventArgs("Unable to read your fingerprint. Please report to the Duty Officer", _failedCount));
                         // return to smartcard authentication
                         RaiseOnNavigateEvent(new NavigateEventArgs(Common.NavigatorEnums.Authentication_SmartCard));
+                        _failedCount = 0;
                     }
                     FingerprintMonitor.StartVerification(OnVerificationComplete, _fingerprint_Template);
                 }
@@ -110,6 +112,7 @@ namespace SSK.CodeBehind.Authentication
                 string error = Futronic.SDKHelper.FutronicSdkBase.SdkRetCode2Message(nRetCode);
                 RaiseFingerprintShowMessage(new ShowMessageEventArgs(error, "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning));
                 FingerprintMonitor.StopVerification();
+                _failedCount = 0;
             }
         }
 
