@@ -217,11 +217,20 @@ namespace SSK
             DAL_User dal_User = new DAL_User();
             var user = dal_User.GetSuperviseeByNRIC(nric, true);
 
+            // if local user is null, check NRIC in centralized db
             if (user == null)
             {
+                user = dal_User.GetSuperviseeByNRIC(nric, false);
+
+                // if centralized user is null
                 // raise failsed event and return false
-                RaiseOnNRICFailedEvent(new NRICEventArgs("NRIC " + nric + ": not found. Please check NRIC again."));
-                return;
+                if (user == null)
+                {
+                    RaiseOnNRICFailedEvent(new NRICEventArgs("NRIC " + nric + ": not found. Please check NRIC again."));
+                    return;
+                }
+
+                // else sync between centralized and local db
             }
 
 
