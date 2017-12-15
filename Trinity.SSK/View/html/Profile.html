@@ -189,7 +189,7 @@
         <button type="button" class="btn btn-dark" style="position:fixed;bottom:10px;left:10px;float:left;" onclick="api.server.LoadPage('Supervisee.html');">Back</button>
     </div>
     <div style="float:right;" id="tempSupportDocument">
-        <button type="button" class="btn btn-danger" style="position:fixed;bottom:10px;right:150px;" onclick="api.server.LoadScanDocument();">Supporting documents required</button>
+        <button type="button" class="btn btn-danger" style="position:fixed;bottom:10px;right:150px;" id="btnScan">Scan documents</button>
         
     </div>
     <div style="display:none;float:right;" id="divConfirm">
@@ -228,6 +228,7 @@
         $('#SecondaryContact').val(api.model.UserProfile.Secondary_Phone);
         $('#PrimaryEmail').val(api.model.UserProfile.Primary_Email);
         $('#SecondaryEmail').val(api.model.UserProfile.Secondary_Email);
+        if (api.model.Addresses != null) {
 
         //address information
         $('#Residential_Addess_ID').val(api.model.Addresses.Address_ID);
@@ -237,7 +238,7 @@
         $('#AddressStreetName').val(api.model.Addresses.Street_Name);
         $('#AddressCountry').val(api.model.Addresses.Country);
         $('#Postal_Code').val(api.model.Addresses.Postal_Code);
-
+        }
         //next of kin information
         $('#NextOfKinDetailsName').val(api.model.UserProfile.NextOfKin_Name);
         $('#NextOfKinDetailsContactNumber').val(api.model.UserProfile.NextOfKin_Contact_Number);
@@ -275,7 +276,7 @@
         e.preventDefault(); // avoid to execute the actual submit of the form.
     });
 
-    $('#btnScanDocument').click(function () {
+    $('#btnScan').click(function () {
         var $form = $("#profileFrm");
         var data = getFormData($form);
         var json = JSON.stringify(data);
@@ -294,37 +295,38 @@
 
     $('#SaveBtn').click(function () {
 
-        if ($('#ParticularsName').val() != _particularName || $('#NRIC').val() != _nric || $('#DOB').val() != _dob || $('#Nationality').val() != _nationality || $('#MaritalStatus').val() != _maritalStatus) {
-            $('#divSave').hide();
-            $('#divSupportDocument').fadeIn(1000);
-            $('.pri').css('border-color', 'red');
-        }
-        else {
+        //temp not check for require
+        //if ($('#ParticularsName').val() != _particularName || $('#NRIC').val() != _nric || $('#DOB').val() != _dob || $('#Nationality').val() != _nationality || $('#MaritalStatus').val() != _maritalStatus) {
+        //    $('#divSave').hide();
+        //    $('#divSupportDocument').fadeIn(1000);
+        //    $('.pri').css('border-color', 'red');
+        //}
+        //else {
 
-            var activeTab = $('#activeTab').val();
-            var empty = $('#' + activeTab).find("input").filter(function () {
-                return this.value.trim() === "";
-            });
-            if (empty.length) {
-                //At least one input is empty
-                $("input[class='form-control']").each(function () {
-                    if ($.trim($(this).val()).length == 0) {
-                        $(this).addClass("highlight");
-                    }
-                    else {
-                        $(this).removeClass("highlight");
+            //var activeTab = $('#activeTab').val();
+            //var empty = $('#' + activeTab).find("input").filter(function () {
+            //    return this.value.trim() === "";
+            //});
+            //if (empty.length) {
+            //    //At least one input is empty
+            //    $("input[class='form-control']").each(function () {
+            //        if ($.trim($(this).val()).length == 0) {
+            //            $(this).addClass("highlight");
+            //        }
+            //        else {
+            //            $(this).removeClass("highlight");
 
-                    }
-                });
-                $('#divError').show();
-            }
-            else {
+            //        }
+            //    });
+            //    $('#divError').show();
+            //}
+            //else {
                 $('#divError').hide();
                 $('#divConfirm').show();
                 $('#divSave').hide();
-            }
+            //}
 
-        }
+        //}
 
     });
 
@@ -332,17 +334,20 @@
         $('#divSave').show();
         $('#divConfirm').hide();
     });
-    $('input[class="form-control"]').keyup(function () {
-        $('#btnCancel').trigger('click');
-        if ($(this).val() != "") {
-            $(this).removeClass('highlight');
+
+    //temp not check for require
+    //$('input[class="form-control"]').keyup(function () {
+    //    $('#btnCancel').trigger('click');
+    //    if ($(this).val() != "") {
+    //        $(this).removeClass('highlight');
           
-        }
-        else {
-            $(this).addClass('highlight');
+    //    }
+    //    else {
+    //        $(this).addClass('highlight');
            
-        }
-    });
+    //    }
+    //});
+
     var listTab = ["Particulars", "Addresses", "Next-Of-Kin-Details", "Employment-Details"];
     //function disableOtherTab(thisTab) {
 

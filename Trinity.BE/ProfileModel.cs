@@ -117,8 +117,6 @@ namespace Trinity.BE
         [DataMember]
         public int Address_ID { get; set; }
         [DataMember]
-        public string Name { get; set; }
-        [DataMember]
         public string BlkHouse_Number { get; set; }
         [DataMember]
         public string FlrUnit_Number { get; set; }
