@@ -79,8 +79,16 @@ namespace SSK.CodeBehind.Authentication
         private void SmartCardLoginProcess(string cardUID)
         {
             Debug.WriteLine($"Card UID: {cardUID}");
+
+            // get local user info
             DAL_User dAL_User = new DAL_User();
             var user = dAL_User.GetUserBySmartCardId(cardUID, true);
+
+            // if local user is null, get user from centralized, and sync db
+            if (user == null)
+            {
+                user = dAL_User.GetUserBySmartCardId(cardUID, false);
+            }
 
             if (user != null)
             {

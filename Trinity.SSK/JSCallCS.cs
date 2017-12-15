@@ -243,7 +243,7 @@ namespace SSK
             //RaiseOnNavigateEvent(new NavigateEventArgs(NavigatorEnums.Supervisee));
 
             // setup screen for NRIC login
-            // CSCallJS.DisplayNRICLogin(_web);
+            CSCallJS.DisplayNRICLogin(_web);
         }
 
         public void GetQueue()

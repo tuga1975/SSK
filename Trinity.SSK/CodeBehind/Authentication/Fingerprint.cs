@@ -103,6 +103,7 @@ namespace SSK.CodeBehind.Authentication
                         // return to smartcard authentication
                         RaiseOnNavigateEvent(new NavigateEventArgs(Common.NavigatorEnums.Authentication_SmartCard));
                         _failedCount = 0;
+                        return;
                     }
                     FingerprintMonitor.StartVerification(OnVerificationComplete, _fingerprint_Template);
                 }
