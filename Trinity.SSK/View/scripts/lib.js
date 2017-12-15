@@ -81,3 +81,12 @@ function displayNRICLogin() {
 function setNRICFocus() {
     $('#txtNRIC').focus();
 }
+
+function displayLogoutButton(display) {
+    if (display == false) {
+        $('#btn-logout').hide();
+    }
+    else {
+        $('#btn-logout').show();
+    }
+}

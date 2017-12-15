@@ -170,7 +170,6 @@ namespace Trinity.DAL
                         BlkHouse_Number = dbAddress.BlkHouse_Number,
                         Country = dbAddress.Country,
                         FlrUnit_Number = dbAddress.FlrUnit_Number,
-                        Name = dbAddress.Name,
                         Postal_Code = dbAddress.Postal_Code,
                         Street_Name = dbAddress.Street_Name
                     };
@@ -178,7 +177,7 @@ namespace Trinity.DAL
                 }
             }
 
-            return new BE.Address();
+            return null;
         }
     }
 }

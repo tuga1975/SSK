@@ -205,6 +205,7 @@ namespace SSK.Utils
             _sCardMonitor.Initialized -= _onCardInitialized;
             _sCardMonitor.CardInserted -= _onCardInserted;
             _sCardMonitor.CardRemoved -= _onCardRemoved;
+            _currentCardReader = string.Empty;
             _sCardMonitor.Cancel();
         }
     }
