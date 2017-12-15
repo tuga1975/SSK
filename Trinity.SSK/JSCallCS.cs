@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using SSK.Common;
 using SSK.Contstants;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,7 @@ namespace SSK
 
         public event EventHandler<NRICEventArgs> OnNRICFailed;
         public event EventHandler<ShowMessageEventArgs> OnShowMessage;
+        public event EventHandler<NavigateEventArgs> OnNavigate;
 
         public JSCallCS(WebBrowser web)
         {
@@ -48,6 +50,20 @@ namespace SSK
             // a race condition if the last subscriber unsubscribes
             // immediately after the null check and before the event is raised.
             EventHandler<ShowMessageEventArgs> handler = OnShowMessage;
+
+            // Event will be null if there are no subscribers
+            if (handler != null)
+            {
+                // Use the () operator to raise the event.
+                handler(this, e);
+            }
+        }
+        protected virtual void RaiseOnNavigateEvent(NavigateEventArgs e)
+        {
+            // Make a temporary copy of the event to avoid possibility of
+            // a race condition if the last subscriber unsubscribes
+            // immediately after the null check and before the event is raised.
+            EventHandler<NavigateEventArgs> handler = OnNavigate;
 
             // Event will be null if there are no subscribers
             if (handler != null)
@@ -179,7 +195,6 @@ namespace SSK
             SaveProfile(jsonData.ToString(), true);
         }
 
-
         private void actionThread(object pram)
         {
 
@@ -197,7 +212,7 @@ namespace SSK
         public void SubmitNRIC(string nric)
         {
             DAL_User dal_User = new DAL_User();
-            var user = dal_User.GetUserByNRIC(nric, true);
+            var user = dal_User.GetSuperviseeByNRIC(nric, true);
 
             if (user == null)
             {
@@ -213,6 +228,7 @@ namespace SSK
 
             // redirect to Supervisee.html
             _web.LoadPageHtml("Supervisee.html");
+            //RaiseOnNavigateEvent(new NavigateEventArgs(NavigatorEnums.Supervisee));
 
             // setup screen for NRIC login
             CSCallJS.DisplayNRICLogin(_web);
@@ -220,10 +236,36 @@ namespace SSK
 
         public void GetQueue()
         {
+            // get Queue number
             Session session = Session.Instance;
             Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-            string queueNumber = "S" + user.NRIC.Substring(user.NRIC.Length - 5, 5).PadLeft(8, '*');
-            RaiseOnShowMessageEvent(new ShowMessageEventArgs("Your queue is: " + queueNumber, "Queue Number", MessageBoxButtons.OK, MessageBoxIcon.Information));
+            string queueNumber = string.Empty;
+            if (user.NRIC != null && user.NRIC.Length >= 5)
+            {
+                queueNumber = "S" + user.NRIC.Substring(user.NRIC.Length - 5, 5).PadLeft(8, '*');
+            }
+            else
+            {
+                queueNumber = user.NRIC;
+            }
+
+            // displayqueue number
+            FormQueueNumber f = FormQueueNumber.GetInstance();
+            f.ShowQueueNumber(queueNumber);
+            //RaiseOnShowMessageEvent(new ShowMessageEventArgs("Your queue is: " + queueNumber, "Queue Number", MessageBoxButtons.OK, MessageBoxIcon.Information));
+        }
+
+        public void logOut()
+        {
+            // reset session value
+            Session session = Session.Instance;
+            session.IsSmartCardAuthenticated = false;
+            session.IsFingerprintAuthenticated = false;
+            session[CommonConstants.USER_LOGIN] = null;
+            session[CommonConstants.PROFILE_DATA] = null;
+
+            // redirect to StartCard login
+            RaiseOnNavigateEvent(new NavigateEventArgs(NavigatorEnums.Authentication_SmartCard));
         }
     }
 
@@ -267,6 +309,25 @@ namespace SSK
         public string Caption { get => _caption; set => _caption = value; }
         public MessageBoxButtons Button { get => _button; set => _button = value; }
         public MessageBoxIcon Icon { get => _icon; set => _icon = value; }
+    }
+    public class NavigateEventArgs
+    {
+        private NavigatorEnums _navigatorEnum;
+        public NavigateEventArgs(NavigatorEnums navigatorEnum)
+        {
+            _navigatorEnum = navigatorEnum;
+        }
+        public NavigatorEnums navigatorEnum
+        {
+            get
+            {
+                return _navigatorEnum;
+            }
+            set
+            {
+                _navigatorEnum = value;
+            }
+        }
     }
     #endregion
 }

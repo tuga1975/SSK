@@ -55,6 +55,11 @@ public static class CSCallJS
         web.InvokeScript("setNRICFocus");
     }
 
+    public static void DisplayLogoutButton(WebBrowser web, bool display)
+    {
+        web.InvokeScript("displayLogoutButton", display);
+    }
+
     /// <summary>
     /// Run script javascript
     /// </summary>

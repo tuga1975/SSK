@@ -119,17 +119,17 @@ namespace Trinity.DAL
             return null;
         }
 
-        public Trinity.BE.User GetUserByNRIC(string nric, bool isLocal)
+        public Trinity.BE.User GetSuperviseeByNRIC(string nric, bool isLocal)
         {
             User dbUser = null;
             if (isLocal)
             {
-                dbUser = _localUnitOfWork.DataContext.Users.FirstOrDefault(u => u.NRIC == nric);
+                dbUser = _localUnitOfWork.DataContext.Users.FirstOrDefault(u => u.NRIC == nric && u.Role == 1);
 
             }
             else
             {
-                dbUser = _centralizedUnitOfWork.DataContext.Users.FirstOrDefault(u => u.NRIC == nric);
+                dbUser = _centralizedUnitOfWork.DataContext.Users.FirstOrDefault(u => u.NRIC == nric && u.Role == 1);
             }
 
             if (dbUser != null)
