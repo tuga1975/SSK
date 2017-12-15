@@ -116,6 +116,8 @@ namespace SSK.CodeBehind.Authentication
                 {
                     // If FailedCount > 3 then raise Smart Card Failure
                     RaiseSmartCardFailedEvent(new SmartCardEventArgs("Unable to read your smart card. Please report to the Duty Officer", _failedCount));
+                    _failedCount = 0;
+                    _web.RunScript("$('.status-text').css('color','#000').text('Please place your smart card on the reader.');");
                 }
             }
         }
