@@ -27,6 +27,7 @@
         <input type="hidden" name="EnrolledDate" id="EnrolledDate" />
         <input type="hidden" name="Role" id="Role" />
         <input type="hidden" name="SmartCardId" id="SmartCardId" />
+        <input type="hidden" name="Fingerprint" id="Fingerprint" />
         <div id="Particulars" class="tab-pane fade in active" onclick="activeTab('Particulars');">
             <div class="input-group">
                 <span class="input-group-addon">Name</span>
@@ -213,6 +214,7 @@
         _maritalStatus = api.model.UserProfile.Maritial_Status;
 
         $('#UserId').val(api.model.User.UserId);
+        $('#Fingerprint').val(api.model.User.Fingerprint);
         //user inforation
         $('#ParticularsName').val(api.model.User.Name);
         $('#NRIC').val(api.model.User.NRIC);

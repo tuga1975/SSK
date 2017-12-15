@@ -56,6 +56,7 @@ namespace Trinity.BE
         public DateTime? EndDate { get; set; }
         public string Remarks { get; set; }
         public string SmartCardId { get; set; }
+        public byte[] Fingerprint { get; set; }
 
         public ProfileModel ToProfileModel(ProfileRawMData rawData)
         {
@@ -66,7 +67,7 @@ namespace Trinity.BE
                     EnrolledDate = rawData.EnrolledDate,
                     FingerprintFailedCount = rawData.FingerprintFailedCount,
                     LastLoginTime = rawData.LastLoginTime,
-                    Fingerprint = null,
+                    Fingerprint = rawData.Fingerprint,
                     Name = rawData.ParticularsName,
                     NRIC = rawData.NRIC,
                     SmartCardFailedCount = rawData.SmartCardFailedCount,
