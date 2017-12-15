@@ -76,8 +76,8 @@ namespace SSK.CodeBehind.Authentication
                     APIUtils.SignalR.GetLatestNotifications();
                     Thread.Sleep(2000);
 
-                    // if role = 0 = duty officer login, redirect to NRIC.html
-                    // else supervisee login, redirect to Supervisee.html
+                    // if role = 0 (duty officer), redirect to NRIC.html
+                    // else (supervisee), redirect to Supervisee.html
                     Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
                     if (user.Role == 0)
                     {
