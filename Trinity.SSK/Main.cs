@@ -57,7 +57,7 @@ namespace SSK
             _fingerprint.OnNavigate += OnNavigate;
             _smartCard = new CodeBehind.Authentication.SmartCard(this.LayerWeb, _fingerprint);
             _smartCard.OnSmartCardFailed += SmartCard_OnSmartCardFailed;
-            OnNavigate(new object(), new NavigateEventArgs(Common.NavigatorEnums.Authentication_NRIC));
+            OnNavigate(new object(), new NavigateEventArgs(Common.NavigatorEnums.Authentication_SmartCard));
             //_smartCard.Start();
             //_nric.Start();
             //_fingerprint.Start();
