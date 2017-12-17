@@ -1,0 +1,95 @@
+﻿<div class="tab-content" wap-area>
+    <div>
+        <div class="">
+            <strong class="header" style="width:100px">
+                Absence Reporting
+            </strong>
+        </div>
+    </div>
+    <br />
+    <div class="form-border">
+        <div class="form-border" style="display:table-cell">
+            You have been absent for 3 reporting date.<br />
+            Select date:
+        </div>
+        <div>
+            <input type="radio" id="dateChoice1"
+                   name="dateChoice" value="dateChoice1">
+            <label for="dateChoice1">12/12/2017</label>
+
+            <input type="radio" id="dateChoice2"
+                   name="dateChoice" value="dateChoice2">
+            <label for="dateChoice2">14/12/2017</label>
+
+            <input type="radio" id="dateChoice3"
+                   name="dateChoice" value="dateChoice3">
+            <label for="dateChoice3">16/12/2017</label>
+        </div>
+        <div class="form-border" style="display:table-cell;padding: 5px !important;">
+            Reason for absence:
+        </div>
+        <div id="reason-area" style="margin:10px 0px;">
+            <div class="reason">
+                Medical Certificate
+            </div>
+            <div class="reason">
+                Medical Certificate
+            </div>
+            <div class="reason">
+                Medical Certificate
+            </div>
+        <!--</div>
+        <div>-->
+            <div class="reason">
+                Medical Certificate
+            </div>
+            <div class="reason">
+                Medical Certificate
+            </div>
+            <div class="reason">
+                <!--don't change it-->
+                No Supporting Document
+            </div>
+        </div>
+    </div>
+</div>
+<style type="text/css">
+    [wap-area] {
+        padding: 40px;
+        font-weight: bold;
+    }
+
+    .header {
+        border: 1px solid black;
+        padding: 10px;
+        margin-top: 10px;
+        font-size: 26px;
+    }
+
+    .form-border {
+        border: 1px solid black;
+        padding: 10px;
+    }
+
+    .reason {
+        border: 1px solid black;
+        display: inline-block;
+        padding: 5px;
+        margin-left: 5px;
+        border-radius: 7px;
+        margin: 5px 5px !important;
+
+    }
+</style>
+<button type="button" class="btn btn-danger" style="position:fixed;bottom:10px;left:10px;" onclick="window.external.LoadPage('Supervisee.html');">Back</button>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        alert(api.model);
+        var a = {
+            a: 1,
+            b:2
+        };
+        api.server.HamGoi(JSON.stringify(a));
+    });
+</script>

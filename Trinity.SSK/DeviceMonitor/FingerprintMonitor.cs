@@ -61,8 +61,8 @@ namespace SSK.DeviceMonitor
             //    Debug.WriteLine("Fingerprint Identification is already started.");
             //    return;
             //}
-
             //Start StartIdentification thread
+
             Thread thread = new Thread(new ThreadStart(() => _fingerprintReaderUtils.StartVerification(onVerificationComplete, fingerprint_Template)));
             thread.Start();
             VerificationStarted = true;

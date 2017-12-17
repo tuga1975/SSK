@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using SSK.Common;
 using SSK.Contstants;
 using System;
 using System.Collections.Generic;
@@ -8,6 +7,7 @@ using System.Threading;
 using System.Windows.Forms;
 using Trinity.Common;
 using Trinity.DAL;
+using System.Linq;
 
 namespace SSK
 {
@@ -90,6 +90,31 @@ namespace SSK
             _web.LoadPageHtml("Notication.html", myNotifications);
         }
 
+        public void BookAppointment()
+        {
+            Session session = Session.Instance;
+            Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+
+            DAL_Appointments DAL_Appointments = new DAL_Appointments();
+            Trinity.DAL.DBContext.Appointment appointment = DAL_Appointments.GetMyAppointmentCurrent(user.UserId);
+
+            DAL_Environment DAL_Environment = new DAL_Environment();
+            var listSelectTime = DAL_Environment.GetEnvironment(appointment.Date);
+
+            var item = listSelectTime.Where(d => d.StartTime == appointment.FromTime.Value && d.EndTime == appointment.ToTime.Value).FirstOrDefault();
+            item.IsSelected = true;
+
+            if (appointment.ChangedCount > 0)
+            {
+                
+
+            }
+
+            
+            this._web.LoadPageHtml("BookAppointment.html", new object[] { appointment, listSelectTime });
+
+        }
+
         public void LoadProfile()
         {
             try
@@ -110,7 +135,7 @@ namespace SSK
                         Addresses = dalUserprofile.GetAddressByUserId(user.UserId, true)
 
                     };
-                   
+
                     //profile model 
 
                     _web.LoadPageHtml("Profile.html", profileModel);
@@ -130,7 +155,7 @@ namespace SSK
                         Addresses = dalUserprofile.GetAddressByUserId(user.UserId, true)
 
                     };
-                   
+
                     _web.LoadPageHtml("Profile.html", profileModel);
                 }
 
@@ -265,6 +290,97 @@ namespace SSK
             FormQueueNumber f = FormQueueNumber.GetInstance();
             f.ShowQueueNumber(queueNumber);
             //RaiseOnShowMessageEvent(new ShowMessageEventArgs("Your queue is: " + queueNumber, "Queue Number", MessageBoxButtons.OK, MessageBoxIcon.Information));
+        }
+
+
+        public void QueueNumber()
+        {
+
+
+
+            Session session = Session.Instance;
+            Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+
+
+            DAL_AbsenceReporting AbSence = new DAL_AbsenceReporting();
+            int countAbSence = AbSence.CountAbsendReporing(user.UserId);
+            //if (countAbSence == 0)
+            //{
+            //    DAL_Notification noti = new DAL_Notification();
+            //    if (noti.CountGetMyNotifications(user.UserId, true) > 0)
+            //    {
+            //        LoadNotications();
+            //    }
+            //    else
+            //    {
+            //        ShowQueueNumber(user);
+            //    }
+            //}
+            //else
+            //if (countAbSence >= 3)
+            //{
+            //    MessageBox.Show("You have been absent for 3 times or more. Report to the Duty Officer");
+            //    LoadScanDocumentFromQueue();
+            //    ShowQueueNumber(user);
+            //}
+            //else 
+            //if (countAbSence > 0 && countAbSence < 3)
+            //{
+            MessageBox.Show("You have been absent for "+ countAbSence+" times.\nPlease provide reasons and the supporting documents.");
+            LoadReasonsFromQueue();
+            //}
+
+        }
+        public void HamGoi(string json)
+        {
+            int a = 0;
+            int b = a;
+        }
+        public void ShowQueueNumber(Trinity.BE.User user)
+        {
+            DAL_Appointments _Appointment = new DAL_Appointments();
+            Trinity.DAL.DBContext.Appointment appointment = _Appointment.GetMyAppointmentByDate(user.UserId, DateTime.Today);
+            //if (appointment == null)
+            //{
+            //    MessageBox.Show("You have no appointment");
+            //}
+            //else
+            //{
+                DAL_QueueNumber QueueNumber = new DAL_QueueNumber();
+                QueueNumber.InsertQueueNumber(appointment.ID, appointment.UserId);
+                _web.LoadPageHtml("QueueNumber.html", QueueNumber.GetAllQueueNumberByDate(DateTime.Today).Select(d => new
+                {
+                    Status = d.Status,
+                    NRIC = d.User.NRIC
+                }));
+            //}
+        }
+        public void LoadScanDocumentFromQueue()
+        {
+            try
+            {
+                //APIUtils.SignalR.SendNotificationToDutyOfficer("Supervisee's information changed!", "Please check the Supervisee's information!");
+                LoadPage("DocumentFromQueue.html");
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Something wrong happened!");
+                LoadProfile();
+            }
+        }
+        public void LoadReasonsFromQueue()
+        {
+            try
+            {
+                //APIUtils.SignalR.SendNotificationToDutyOfficer("Supervisee's information changed!", "Please check the Supervisee's information!");
+                //LoadPage("ReasonsForQueue.html",0);
+                this._web.LoadPageHtml("ReasonsForQueue.html", 0);
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Something wrong happened!");
+                LoadProfile();
+            }
         }
 
         public void logOut()

@@ -133,7 +133,6 @@
     <Compile Include="CodeBehind\Authentication\NRIC.cs" />
     <Compile Include="CodeBehind\Authentication\SmartCard.cs" />
     <Compile Include="CodeBehind\Document.cs" />
-    <Compile Include="Common\Enums.cs" />
     <Compile Include="Contstants\CommonConstants.cs" />
     <Compile Include="DeviceMonitor\DeviceMonitor.cs" />
     <Compile Include="DeviceMonitor\FingerprintMonitor.cs" />
@@ -230,6 +229,13 @@
     <Content Include="View\html\Authentication\NRIC.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="View\html\ReasonsForQueue.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="View\html\DocumentFromQueue.html" />
+    <Content Include="View\html\QueueNumber.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="View\html\BookAppointment.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -264,7 +270,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Business\" />
-    <Folder Include="Partial\" />
     <Folder Include="View\img\" />
   </ItemGroup>
   <ItemGroup>

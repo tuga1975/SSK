@@ -13,6 +13,20 @@ namespace Trinity.DAL
         Local_UnitOfWork _localUnitOfWork = new Local_UnitOfWork();
         Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
 
+
+
+        public int CountGetMyNotifications(string myUserId, bool isLocal)
+        {
+            if (isLocal)
+            {
+                return _localUnitOfWork.DataContext.Notifications.Count(n => n.ToUserId == myUserId && !n.IsRead);
+            }
+            else
+            {
+               return _centralizedUnitOfWork.DataContext.Notifications.Count(n => n.ToUserId == myUserId && !n.IsRead);
+            }
+        }
+
         public List<Notification> GetMyNotifications(string myUserId, bool isLocal)
         {
             IQueryable<DBContext.Notification> queryNotifications = null;
