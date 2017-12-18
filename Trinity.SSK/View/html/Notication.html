@@ -7,7 +7,7 @@
 
     <div class="col-md-6" style="text-align:right;width:50%;float:right;">
         <span style="border:1px solid #CCC;padding:5px 10px;">
-            1 of XX message
+            1 of <span id="notificationsCount"></span>
         </span>
     </div>
     <div style="clear:both;"></div>
@@ -53,6 +53,12 @@
     
 </style>
 <script type="text/javascript">
+    if (api.model.length > 1) {
+        $('#notificationsCount').text(api.model.length + ' notifications');
+    }
+    else {
+        $('#notificationsCount').text(api.model.length + ' notification');
+    }
     for (var i = 0; i < api.model.length; i++) {
         $('[noti] .carousel-indicators').append('<li data-target="#myCarousel" data-slide-to="' + i + '" class="' + (i == 0 ? 'active' : '') + '"></li>');
         $('[noti] .carousel-inner').append('<div class="item ' + (i == 0 ? 'active' : '') + '">To: Suppervise<br />Date: <br />Subject: ' + api.model[i].Subject + '<div style="margin-top: 20px;">' + api.model[i].Content + '</div></div>');
