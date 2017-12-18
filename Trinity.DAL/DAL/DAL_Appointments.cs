@@ -38,5 +38,14 @@ namespace Trinity.DAL
             _localUnitOfWork.Save();
             return appointment;
         }
+        public int CountMyAbsence(string UserID)
+        {
+            return _localUnitOfWork.DataContext.Appointments.Count(d => d.UserId == UserID && d.Status==(int)StatusEnums.Absence);
+        }
+
+        public List<Appointment> GetMyAppointmentAbsence(string UserID)
+        {
+            return _localUnitOfWork.DataContext.Appointments.Where(d => d.UserId == UserID && d.Status == (int)StatusEnums.Absence).ToList();
+        }
     }
 }

@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using Trinity.Common;
 using Trinity.DAL;
 using System.Linq;
+using Trinity.DAL.DBContext;
 
 namespace SSK
 {
@@ -105,11 +106,11 @@ namespace SSK
             var item = listSelectTime.Where(d => d.StartTime == appointment.FromTime.Value && d.EndTime == appointment.ToTime.Value).FirstOrDefault();
             item.IsSelected = true;
 
-            
+
             this._web.LoadPageHtml("BookAppointment.html", new object[] { appointment, listSelectTime });
 
         }
-        public string UpdateTimeAppointment(string IDAppointment,string timeStart, string timeEnd)
+        public string UpdateTimeAppointment(string IDAppointment, string timeStart, string timeEnd)
         {
             DAL_Appointments DAL_Appointments = new DAL_Appointments();
             var appointment = DAL_Appointments.UpdateBookTime(IDAppointment, timeStart, timeEnd);
@@ -233,8 +234,8 @@ namespace SSK
             var method = data[0].ToString();
 
             MethodInfo theMethod = _thisType.GetMethod(method);
-            var dataReturn =  theMethod.Invoke(this, (object[])data[2]);
-            if (data[1]!=null)
+            var dataReturn = theMethod.Invoke(this, (object[])data[2]);
+            if (data[1] != null)
             {
                 this._web.InvokeScript("callEventCallBack", data[1], JsonConvert.SerializeObject(dataReturn, Formatting.Indented, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore }));
             }
@@ -284,7 +285,11 @@ namespace SSK
 
 
             DAL_AbsenceReporting AbSence = new DAL_AbsenceReporting();
-            int countAbSence = AbSence.CountAbsendReporing(user.UserId);
+
+            DAL_Appointments Appointment = new DAL_Appointments();
+
+            int countAbSence = 0;
+            countAbSence = Appointment.CountMyAbsence(user.UserId);
             if (countAbSence == 0)
             {
                 DAL_Notification noti = new DAL_Notification();
@@ -294,31 +299,32 @@ namespace SSK
                 }
                 else
                 {
-                    ShowQueueNumber(user);
+                    ShowQueueNumber();
                 }
             }
             else
             if (countAbSence >= 3)
             {
                 MessageBox.Show("You have been absent for 3 times or more. Report to the Duty Officer");
-                LoadScanDocumentFromQueue();
-                ShowQueueNumber(user);
+                LoadPage("DocumentFromQueue.html");
             }
             else
             if (countAbSence > 0 && countAbSence < 3)
             {
+                var absence_reporting = new List<Appointment>();
+                absence_reporting = Appointment.GetMyAppointmentAbsence(user.UserId);
+                
                 MessageBox.Show("You have been absent for " + countAbSence + " times.\nPlease provide reasons and the supporting documents.");
-                LoadReasonsFromQueue();
-            }
 
+                this._web.LoadPageHtml("ReasonsForQueue.html", absence_reporting);
+            }
         }
-        public void HamGoi(string json)
+       
+        public void ShowQueueNumber()
         {
-            int a = 0;
-            int b = a;
-        }
-        public void ShowQueueNumber(Trinity.BE.User user)
-        {
+            Session session = Session.Instance;
+            Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+
             DAL_Appointments _Appointment = new DAL_Appointments();
             Trinity.DAL.DBContext.Appointment appointment = _Appointment.GetMyAppointmentByDate(user.UserId, DateTime.Today);
             if (appointment == null)
@@ -333,7 +339,7 @@ namespace SSK
                 {
                     _dalQueue.InsertQueueNumber(appointment.ID, appointment.UserId);
                 }
-               
+
                 var model = _dalQueue.GetAllQueueNumberByDate(DateTime.Today).Select(d => new
                 {
                     Status = d.Status,
@@ -360,36 +366,34 @@ namespace SSK
             }
 
             return queueNumber;
-            
-        }
-        public void LoadScanDocumentFromQueue()
-        {
-            try
-            {
-                //APIUtils.SignalR.SendNotificationToDutyOfficer("Supervisee's information changed!", "Please check the Supervisee's information!");
-                LoadPage("DocumentFromQueue.html");
-            }
-            catch (Exception)
-            {
-                MessageBox.Show("Something wrong happened!");
-                LoadProfile();
-            }
-        }
-        public void LoadReasonsFromQueue()
-        {
-            try
-            {
-                //APIUtils.SignalR.SendNotificationToDutyOfficer("Supervisee's information changed!", "Please check the Supervisee's information!");
-                //LoadPage("ReasonsForQueue.html",0);
-                this._web.LoadPageHtml("ReasonsForQueue.html", 0);
-            }
-            catch (Exception)
-            {
-                MessageBox.Show("Something wrong happened!");
-                LoadProfile();
-            }
-        }
 
+        }
+       
+     
+        public void SaveReasonForQueue(string absence, string reason)
+        {
+            //send message to case office if no support document
+            if (reason == "No Supporting Document")
+            {
+                APIUtils.SignalR.SendNotificationToDutyOfficer("Supervisee get queue without supporting document", "Please check the Supervisee's information!");
+            }
+
+            var absence_reporting = JsonConvert.DeserializeObject<List<AbsenceReporting>>(absence);
+            
+            DAL_AbsenceReporting AbSence = new DAL_AbsenceReporting();
+            
+            //foreach (var item in absence_reporting)
+            //{
+            //    item.AbsenceReason = 1;
+            //    item.ReasonDetails = reason;
+            //    item.Status = (int)StatusEnums.Success;
+                
+
+            //    AbSence.SaveAbsendReporing(item);
+            //}
+
+            ShowQueueNumber();
+        }
         public void logOut()
         {
             // reset session value

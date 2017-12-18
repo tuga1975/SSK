@@ -26,7 +26,8 @@ public enum StatusEnums
     Wait = 4,
     Working = 5,
     Success = 6,
-    Miss = 7
+    Miss = 7,
+    Absence = 8
 }
 public enum Frequency
 {
