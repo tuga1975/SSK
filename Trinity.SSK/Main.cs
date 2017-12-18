@@ -122,7 +122,7 @@ namespace SSK
         private void SmartCard_OnSmartCardSucceeded()
         {
             // navigate to next page: Authentication_Fingerprint
-            OnNavigate(new Object(), new NavigateEventArgs(Common.NavigatorEnums.Authentication_Fingerprint));
+            OnNavigate(new Object(), new NavigateEventArgs(NavigatorEnums.Authentication_Fingerprint));
         }
 
         private void SmartCard_OnSmartCardFailed(object sender, CodeBehind.Authentication.SmartCardEventArgs e)
@@ -167,7 +167,7 @@ namespace SSK
                 MessageBox.Show(e.Message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
                 // navigate to smartcard login page
-                OnNavigate(new Object(), new NavigateEventArgs(Common.NavigatorEnums.Authentication_SmartCard));
+                OnNavigate(new Object(), new NavigateEventArgs(NavigatorEnums.Authentication_SmartCard));
 
                 // reset counter
                 _fingerprintFailed = 0;
