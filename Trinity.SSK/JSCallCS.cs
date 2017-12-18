@@ -89,7 +89,7 @@ namespace SSK
             var model = myNotifications;
             _web.LoadPageHtml("Notication.html", myNotifications);
         }
-
+        #region BookAppointment
         public void BookAppointment()
         {
             Session session = Session.Instance;
@@ -97,24 +97,23 @@ namespace SSK
 
             DAL_Appointments DAL_Appointments = new DAL_Appointments();
             Trinity.DAL.DBContext.Appointment appointment = DAL_Appointments.GetMyAppointmentCurrent(user.UserId);
-
             DAL_Environment DAL_Environment = new DAL_Environment();
             var listSelectTime = DAL_Environment.GetEnvironment(appointment.Date);
 
             var item = listSelectTime.Where(d => d.StartTime == appointment.FromTime.Value && d.EndTime == appointment.ToTime.Value).FirstOrDefault();
             item.IsSelected = true;
 
-            if (appointment.ChangedCount > 0)
-            {
-                
-
-            }
-
             
             this._web.LoadPageHtml("BookAppointment.html", new object[] { appointment, listSelectTime });
 
         }
-
+        public string UpdateTimeAppointment(string IDAppointment,string timeStart, string timeEnd)
+        {
+            DAL_Appointments DAL_Appointments = new DAL_Appointments();
+            DAL_Appointments.UpdateBookTime(IDAppointment, timeStart, timeEnd);
+            return timeStart;
+        }
+        #endregion
         public void LoadProfile()
         {
             try
@@ -228,13 +227,18 @@ namespace SSK
 
             var data = (object[])pram;
             var method = data[0].ToString();
+
             MethodInfo theMethod = _thisType.GetMethod(method);
-            theMethod.Invoke(this, (object[])data[1]);
+            var dataReturn =  theMethod.Invoke(this, (object[])data[2]);
+            if (data[1]!=null)
+            {
+                this._web.InvokeScript("callEventCallBack", data[1], JsonConvert.SerializeObject(dataReturn, Formatting.Indented, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore }));
+            }
             _web.SetLoading(false);
         }
-        public void ClientCallServer(string method, params object[] pram)
+        public void ClientCallServer(string method, string guidEvent, params object[] pram)
         {
-            ThreadPool.QueueUserWorkItem(new WaitCallback(actionThread), new object[] { method, pram });
+            ThreadPool.QueueUserWorkItem(new WaitCallback(actionThread), new object[] { method, guidEvent, pram });
         }
 
         public void SubmitNRIC(string nric)
@@ -295,9 +299,6 @@ namespace SSK
 
         public void QueueNumber()
         {
-
-
-
             Session session = Session.Instance;
             Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
 

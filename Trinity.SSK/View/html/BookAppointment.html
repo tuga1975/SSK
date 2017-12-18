@@ -1,6 +1,9 @@
 ﻿<span style="display: inline-block;font-size:20px;border:1px solid #CCC;background-color:#FFF;padding:10px;border-bottom:none;">Book Appointment</span>
     </br>
-<span style="display: inline-block;font-size:15px;border:1px solid #CCC;background-color:#FFF;padding:5px;">You next Book Appointment will be on : <span app-date></span> <span app-time></span></span>
+<span style="display: inline-block;font-size:15px;border:1px solid #CCC;background-color:#FFF;padding:5px;">
+    You next Book Appointment will be on : <span app-date></span> <span app-time></span>
+    <span style="display:block;" info-notime>You have not selected a time slot.</span>
+</span>
 
 <div style="max-width:100%;padding:10px;border:1px solid #CCC;margin-top:10px;" add-time>
 </div>
@@ -25,7 +28,11 @@
             background-color:#CCC;
         }
 
-        [item-select-time][selected="true"] {
+        [item-select-time][selecttime="true"] {
+            background-color: deepskyblue !important;
+            pointer-events: none;
+        }
+        [item-select-time][selecttime="true"] {
             background-color: deepskyblue !important;
             pointer-events: none;
         }
@@ -40,8 +47,34 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $('[app-date]').text(api.model[0].GetDateTxt);
+        if (api.model[0].FromTime != null) {
+            $('[info-notime]').remove();
+            $('[app-time]').text(api.model[0].FromTimeTxt);
+        }
+        //
         $.each(api.model[1], function (index, item) {
-            $('[add-time]').append('<span item-select-time availble="' + item.IsAvailble + '" selected="' + item.IsSelected + '">' + item.StartTime + ' to ' + item.EndTime + '</span>');
+            $('[add-time]').append('<span item-select-time availble="' + item.IsAvailble + '" selecttime="' + item.IsSelected + '" start="' + item.StartTimeTxt + '" end="' + item.EndTimeTxt +'">' + item.StartTimeTxt + ' to ' + item.EndTimeTxt + '</span>');
+        });
+
+        $('[item-select-time]').click(function () {
+            var _this = $(this);
+            var startTime = _this.attr('start');
+            var endTime = _this.attr('end');
+            
+            if (api.model[0].ChangedCount >= 3) {
+                alert('You have exceeded the number of times allowed for time slot change. Please keep to your timeslot ' + startTime + ' on ' + api.model[0].FromTimeTxt+'. Otherwise, please contact your case officer.');
+            } else {
+                var re = confirm('You have selected the time slot\n' + startTime + ' on ' + api.model[0].FromTimeTxt + '\nConfirm time slot?','Warning');
+                if (re == true) {
+                    api.server.UpdateTimeAppointment(api.model[0].ID, startTime, endTime, function (time) {
+                        api.model[0].ChangedCount += 1;
+                        $('[item-select-time][selecttime="true"]').removeAttr('selecttime').removeAttr('availble');
+                        _this.attr('availble', false).attr('selecttime',true);
+                        $('[app-time]').text(time);
+                        $('[info-notime]').remove();
+                    });
+                }
+            }
         });
     });
 </script>
