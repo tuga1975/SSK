@@ -5,8 +5,9 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $.each(api.model, function (index,item) {
-            if (index == 0)
+            if (index == 0) {
                 $('[show-queue]').text(item.NRIC);
+            }
             else {
                 $('[show-queue-list]').append('<span>' + item.NRIC + ' - ' + index + '</span>');
             }

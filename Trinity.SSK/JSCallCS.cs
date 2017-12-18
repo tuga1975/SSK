@@ -305,31 +305,31 @@ namespace SSK
 
             DAL_AbsenceReporting AbSence = new DAL_AbsenceReporting();
             int countAbSence = AbSence.CountAbsendReporing(user.UserId);
-            //if (countAbSence == 0)
-            //{
-            //    DAL_Notification noti = new DAL_Notification();
-            //    if (noti.CountGetMyNotifications(user.UserId, true) > 0)
-            //    {
-            //        LoadNotications();
-            //    }
-            //    else
-            //    {
-            //        ShowQueueNumber(user);
-            //    }
-            //}
-            //else
-            //if (countAbSence >= 3)
-            //{
-            //    MessageBox.Show("You have been absent for 3 times or more. Report to the Duty Officer");
-            //    LoadScanDocumentFromQueue();
-            //    ShowQueueNumber(user);
-            //}
-            //else 
-            //if (countAbSence > 0 && countAbSence < 3)
-            //{
-            MessageBox.Show("You have been absent for "+ countAbSence+" times.\nPlease provide reasons and the supporting documents.");
-            LoadReasonsFromQueue();
-            //}
+            if (countAbSence == 0)
+            {
+                DAL_Notification noti = new DAL_Notification();
+                if (noti.CountGetMyNotifications(user.UserId, true) > 0)
+                {
+                    LoadNotications();
+                }
+                else
+                {
+                    ShowQueueNumber(user);
+                }
+            }
+            else
+            if (countAbSence >= 3)
+            {
+                MessageBox.Show("You have been absent for 3 times or more. Report to the Duty Officer");
+                LoadScanDocumentFromQueue();
+                ShowQueueNumber(user);
+            }
+            else
+            if (countAbSence > 0 && countAbSence < 3)
+            {
+                MessageBox.Show("You have been absent for " + countAbSence + " times.\nPlease provide reasons and the supporting documents.");
+                LoadReasonsFromQueue();
+            }
 
         }
         public void HamGoi(string json)
@@ -341,20 +341,46 @@ namespace SSK
         {
             DAL_Appointments _Appointment = new DAL_Appointments();
             Trinity.DAL.DBContext.Appointment appointment = _Appointment.GetMyAppointmentByDate(user.UserId, DateTime.Today);
-            //if (appointment == null)
-            //{
-            //    MessageBox.Show("You have no appointment");
-            //}
-            //else
-            //{
-                DAL_QueueNumber QueueNumber = new DAL_QueueNumber();
-                QueueNumber.InsertQueueNumber(appointment.ID, appointment.UserId);
-                _web.LoadPageHtml("QueueNumber.html", QueueNumber.GetAllQueueNumberByDate(DateTime.Today).Select(d => new
+            if (appointment == null)
+            {
+                MessageBox.Show("You have no appointment");
+            }
+            else
+            {
+                var _dalQueue = new DAL_QueueNumber();
+                //check queue exist
+                if (!_dalQueue.CheckQueueExistToday(appointment.UserId))
+                {
+                    _dalQueue.InsertQueueNumber(appointment.ID, appointment.UserId);
+                }
+               
+                var model = _dalQueue.GetAllQueueNumberByDate(DateTime.Today).Select(d => new
                 {
                     Status = d.Status,
-                    NRIC = d.User.NRIC
-                }));
-            //}
+                    NRIC = GenerateQueueNumber(d.User.NRIC)
+                });
+                _web.LoadPageHtml("QueueNumber.html", model);
+            }
+        }
+
+        public string GenerateQueueNumber(string baseOnNRIC)
+        {
+            string queueNumber = "";
+            if (!string.IsNullOrEmpty(baseOnNRIC) && baseOnNRIC.Length > 6)
+            {
+                queueNumber += baseOnNRIC.Substring(0, 1) + baseOnNRIC.Substring(baseOnNRIC.Length - 5, 5).PadLeft(8, '*');
+            }
+            else if (!string.IsNullOrEmpty(baseOnNRIC) && baseOnNRIC.Length <= 6)
+            {
+                queueNumber += baseOnNRIC.Substring(0, 1) + baseOnNRIC.PadLeft(8, '*');
+            }
+            else
+            {
+                queueNumber += null;
+            }
+
+            return queueNumber;
+            
         }
         public void LoadScanDocumentFromQueue()
         {
