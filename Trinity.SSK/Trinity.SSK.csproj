@@ -136,6 +136,16 @@
     <Compile Include="CodeBehind\Suppervisee.cs" />
     <Compile Include="Common\Enums.cs" />
     <Compile Include="Contstants\CommonConstants.cs" />
+    <Compile Include="DeviceMonitor\DeviceMonitor.cs" />
+    <Compile Include="DeviceMonitor\FingerprintMonitor.cs" />
+    <Compile Include="DeviceMonitor\HealthMonitor.cs" />
+    <Compile Include="DeviceMonitor\SCardMonitor.cs" />
+    <Compile Include="FormAnnouncementDetails.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormAnnouncementDetails.Designer.cs">
+      <DependentUpon>FormAnnouncementDetails.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormQueueNumber.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -154,6 +164,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\APIUtils.cs" />
     <Compile Include="Utils\SignalR.cs" />
+    <Compile Include="Utils\SmartCardReaderUtils.cs" />
+    <EmbeddedResource Include="FormAnnouncementDetails.resx">
+      <DependentUpon>FormAnnouncementDetails.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormQueueNumber.resx">
       <DependentUpon>FormQueueNumber.cs</DependentUpon>
     </EmbeddedResource>
@@ -221,6 +235,13 @@
     <Content Include="View\html\Authentication\NRIC.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="View\html\ReasonsForQueue.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="View\html\DocumentFromQueue.html" />
+    <Content Include="View\html\QueueNumber.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="View\html\BookAppointment.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -240,10 +261,16 @@
     <Content Include="View\html\Notication.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="View\html\AppointmentDetailsTemplate.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="View\html\Profile.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="View\html\Supervisee.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="View\img\Logo.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="View\scripts\jquery-1.10.2.min.js" />

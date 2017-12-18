@@ -101,23 +101,39 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DAL\DAL_Environment.cs" />
+    <Compile Include="DAL\DAL_Appointments.cs" />
+    <Compile Include="DAL\DAL_QueueNumber.cs" />
     <Compile Include="DAL\DAL_Notification.cs" />
+    <Compile Include="DAL\DAL_AbsenceReporting.cs" />
     <Compile Include="DAL\DAL_User.cs" />
     <Compile Include="DAL\DAL_UserProfile.cs" />
     <Compile Include="DBContext\AbsenceReporting.cs">
-      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
+      <DependentUpon>SSK.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\Address.cs">
-      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
+      <DependentUpon>SSK.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBContext\ApplicationDevice_Status.cs">
+      <DependentUpon>SSK.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\Appointment.cs">
-      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
+      <DependentUpon>SSK.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBContext\Device.cs">
+      <DependentUpon>SSK.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBContext\Environment.cs">
+      <DependentUpon>SSK.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\Holiday.cs">
-      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
+      <DependentUpon>SSK.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\Notification.cs">
-      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
+      <DependentUpon>SSK.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBContext\QueueNumber.cs">
+      <DependentUpon>SSK.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\sysdiagram.cs">
       <DependentUpon>SSK.tt</DependentUpon>
@@ -137,6 +153,13 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>TrinityCentralizedDB.edmx</DependentUpon>
     </Compile>
+    <Compile Include="DBContext\User.cs">
+      <DependentUpon>SSK.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBContext\User_Profiles.cs">
+      <DependentUpon>SSK.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Partial\Appointment.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DBContext\SSK.Context.cs">
       <AutoGen>True</AutoGen>
@@ -153,12 +176,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>SSK.edmx</DependentUpon>
     </Compile>
-    <Compile Include="DBContext\User.cs">
-      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
-    </Compile>
-    <Compile Include="DBContext\User_Profiles.cs">
-      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
-    </Compile>
     <Compile Include="Repository\DatabaseFactory.cs" />
     <Compile Include="Repository\Disposable.cs" />
     <Compile Include="Repository\GenericRepository.cs" />
@@ -167,6 +184,11 @@
     <Compile Include="Repository\IUnitOfWork.cs" />
     <Compile Include="Repository\Repository.cs" />
     <Compile Include="Repository\UnitOfWork.cs" />
+    <Compile Include="SSKDataSet.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SSKDataSet.xsd</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">
@@ -228,6 +250,17 @@
     <None Include="packages.config" />
     <None Include="DBContext\SSK.edmx.diagram">
       <DependentUpon>SSK.edmx</DependentUpon>
+    </None>
+    <None Include="SSKDataSet.xsc">
+      <DependentUpon>SSKDataSet.xsd</DependentUpon>
+    </None>
+    <None Include="SSKDataSet.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>SSKDataSet.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="SSKDataSet.xss">
+      <DependentUpon>SSKDataSet.xsd</DependentUpon>
     </None>
   </ItemGroup>
   <ItemGroup>

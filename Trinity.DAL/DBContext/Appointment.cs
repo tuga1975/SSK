@@ -14,12 +14,25 @@ namespace Trinity.DAL.DBContext
     
     public partial class Appointment
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public Appointment()
+        {
+            this.AbsenceReportings = new HashSet<AbsenceReporting>();
+            this.QueueNumbers = new HashSet<QueueNumber>();
+        }
+    
+        public System.Guid ID { get; set; }
         public string UserId { get; set; }
         public System.DateTime Date { get; set; }
-        public System.TimeSpan FromTime { get; set; }
-        public System.TimeSpan ToTime { get; set; }
+        public Nullable<System.TimeSpan> FromTime { get; set; }
+        public Nullable<System.TimeSpan> ToTime { get; set; }
         public short ChangedCount { get; set; }
+        public int Status { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<AbsenceReporting> AbsenceReportings { get; set; }
         public virtual User User { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<QueueNumber> QueueNumbers { get; set; }
     }
 }

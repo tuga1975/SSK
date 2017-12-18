@@ -1,106 +1,80 @@
-﻿<div class="tab-conten" BookAppointment>
-    <div>
-        <div>
-            <span class="input-group-addon" style="width:100px">Book Appointment</span>
-        </div>
-        <div>
-            <span>You next Book Appointment will be on : thursday,20 july 2018 HH:MM xm  </span>
-        </div>
-    </div>
-    <div class="input-group-addon">
-        <div class="input-group-addon">
-            <div class="input-group-addon">
-                <span class="input-group-addon">MORNING</span>
-            </div>
-            <br />
-            <div class="input-group-addon">
-                <div class="input-group-addon">
-                    <span class="input-group">HH:MM xm to HH:MM xm</span>
-                </div>
-                <br />
-                <div class="input-group-addon">
-                    <span class="input-group">HH:MM xm to HH:MM xm</span>
-                </div>
-                <br />
-                <div class="input-group-addon">
-                    <span class="input-group">HH:MM xm to HH:MM xm</span>
-                </div>
-            </div>
-    </div>
-    <div class="input-group-addon">
-        <div class="input-group-addon">
-            <div class="input-group">
-                <span class="input-group-addon">AFTERN00N</span>
-            </div>
-        </div>
-        <br />
-        <div class="input-group-addon">
-            <div class="input-group-addon">
-                <span class="input-group">HH:MM xm to HH:MM xm</span>
-            </div>
-            <br />
-            <div class="input-group-addon">
-                <span class="input-group">HH:MM xm to HH:MM xm</span>
-            </div>
-            <br />
-            <div class="input-group-addon">
-                <span class="input-group">HH:MM xm to HH:MM xm</span>
-            </div>
-        </div>
-    </div>
-    <div class="input-group-addon">
-        <div class="input-group-addon">
-            <span class="input-group-addon">EVENING</span>
-        </div>
-        <br />
-        <div class="input-group-addon">
-            <div class="input-group-addon">
-                <span class="input-group">HH:MM xm to HH:MM xm</span>
-            </div>
-            <br />
-            <div class="input-group-addon">
-                <span class="input-group">HH:MM xm to HH:MM xm</span>
-            </div>
-            <br/>
-            <div class="input-group-addon">
-                <span class="input-group">HH:MM xm to HH:MM xm</span>
-            </div>
-         </div>
-       </div>
-        <br />
-        <div class="input-group">
-            <div class="input-group">
-                <span class="input-group">Legends</span>
-            </div>
-            <br />
-        </div>
-            <div class="input-group-addon">
-                <div class="input-group-addon">
-                    <span style="border:inherit">Available</span>
-                </div>
-                <div class="input-group-addon">
-                    <span>Selecter</span>
-                </div>
-                <div class="input-group-addon" style="border-spacing:10px" >
-                    <span class="container-1">Full Booked</span>
-                </div>
-            </div> 
+﻿<span style="display: inline-block;font-size:20px;border:1px solid #CCC;background-color:#FFF;padding:10px;border-bottom:none;">Book Appointment</span>
+    </br>
+<span style="display: inline-block;font-size:15px;border:1px solid #CCC;background-color:#FFF;padding:5px;">
+    You next Book Appointment will be on : <span app-date></span> <span app-time></span>
+    <span style="display:block;" info-notime>You have not selected a time slot.</span>
+</span>
+
+<div style="max-width:100%;padding:10px;border:1px solid #CCC;margin-top:10px;" add-time>
 </div>
-    </div>'
 <style type="text/css">
-    
-    [BookAppointment] {
-         border: 1px solid #EDEDED;
-        border-top: none;
-        padding: 20px;
+    .input-group-addon {
+        padding: 10px;
     }
-    .container-1 .icon{
-  position: absolute;
-  top: 50%;
-  margin-left: 17px;
-  margin-top: 17px;
-  z-index: 1;
-  color: #4f5b66;
-}
+
+    [item-select-time] {
+        display: inline-block;
+        width: calc(25% - 24px);
+        margin: 5px 10px;
+        border: 1px solid #CCC;
+        border-radius: 5px;
+        padding: 5px 10px;
+        box-sizing: border-box;
+        text-align: center;
+        cursor: pointer;
+    }
+
+        [item-select-time]:hover {
+            background-color:#CCC;
+        }
+
+        [item-select-time][selecttime="true"] {
+            background-color: deepskyblue !important;
+            pointer-events: none;
+        }
+        [item-select-time][selecttime="true"] {
+            background-color: deepskyblue !important;
+            pointer-events: none;
+        }
+
+        [item-select-time][availble="false"] {
+            background-color: #999;
+            pointer-events: none;
+        }
 </style>
 <button type="button" class="btn btn-danger" style="position:fixed;bottom:10px;left:10px;" onclick="window.external.LoadPage('Supervisee.html');">Back</button>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('[app-date]').text(api.model[0].GetDateTxt);
+        if (api.model[0].FromTime != null) {
+            $('[info-notime]').remove();
+            $('[app-time]').text(api.model[0].FromTimeTxt);
+        }
+        //
+        $.each(api.model[1], function (index, item) {
+            $('[add-time]').append('<span item-select-time availble="' + item.IsAvailble + '" selecttime="' + item.IsSelected + '" start="' + item.StartTimeTxt + '" end="' + item.EndTimeTxt +'">' + item.StartTimeTxt + ' to ' + item.EndTimeTxt + '</span>');
+        });
+
+        $('[item-select-time]').click(function () {
+            var _this = $(this);
+            var startTime = _this.attr('start');
+            var endTime = _this.attr('end');
+            
+            if (api.model[0].ChangedCount >= 3) {
+                alert('You have exceeded the number of times allowed for time slot change. Please keep to your timeslot ' + startTime + ' on ' + api.model[0].FromTimeTxt+'. Otherwise, please contact your case officer.');
+            } else {
+                var re = confirm('You have selected the time slot\n' + startTime + ' on ' + api.model[0].FromTimeTxt + '\nConfirm time slot?','Warning');
+                if (re == true) {
+                    api.server.UpdateTimeAppointment(api.model[0].ID, startTime, endTime, function (time) {
+                        api.model[0].ChangedCount += 1;
+                        $('[item-select-time][selecttime="true"]').removeAttr('selecttime').removeAttr('availble');
+                        _this.attr('availble', false).attr('selecttime',true);
+                        $('[app-time]').text(time);
+                        $('[info-notime]').remove();
+                    });
+                }
+            }
+        });
+    });
+</script>
