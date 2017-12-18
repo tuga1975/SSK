@@ -102,7 +102,7 @@ namespace SSK.CodeBehind.Authentication
 
                 _web.RunScript("$('.status-text').css('color','#000').text('Your smart card is authenticated.');");
                 DeviceMonitor.SCardMonitor.Dispose();
-                Thread.Sleep(3000);
+                Thread.Sleep(2000);
 
                 //Fingerprint fingerprint = new Fingerprint(_web, user.Fingerprint);
                 _fingerprint.FingerprintTemplate = user.Fingerprint;
