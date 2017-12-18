@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using SSK.CodeBehind.Authentication;
 using SSK.Common;
 using SSK.Contstants;
 using System;
@@ -212,38 +213,10 @@ namespace SSK
             ThreadPool.QueueUserWorkItem(new WaitCallback(actionThread), new object[] { method, pram });
         }
 
-        public void SubmitNRIC(string nric)
+        public void SubmitNRIC(string strNRIC)
         {
-            DAL_User dal_User = new DAL_User();
-            var user = dal_User.GetSuperviseeByNRIC(nric, true);
-
-            // if local user is null, check NRIC in centralized db
-            if (user == null)
-            {
-                user = dal_User.GetSuperviseeByNRIC(nric, false);
-
-                // if centralized user is null
-                // raise failsed event and return false
-                if (user == null)
-                {
-                    RaiseOnNRICFailedEvent(new NRICEventArgs("NRIC " + nric + ": not found. Please check NRIC again."));
-                    return;
-                }
-
-                // else sync between centralized and local db
-            }
-
-
-            // Create a session object to store UserLogin information
-            Session session = Session.Instance;
-            session[CommonConstants.USER_LOGIN] = user;
-
-            // redirect to Supervisee.html
-            _web.LoadPageHtml("Supervisee.html");
-            //RaiseOnNavigateEvent(new NavigateEventArgs(NavigatorEnums.Supervisee));
-
-            // setup screen for NRIC login
-            CSCallJS.DisplayNRICLogin(_web);
+            NRIC nric = NRIC.GetInstance(_web);
+            nric.NRICAuthentication(strNRIC);
         }
 
         public void GetQueue()
@@ -252,13 +225,17 @@ namespace SSK
             Session session = Session.Instance;
             Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
             string queueNumber = "Current Queue Number: ";
-            if (user.NRIC != null && user.NRIC.Length >= 5)
+            if (!string.IsNullOrEmpty(user.NRIC) && user.NRIC.Length > 5)
             {
-                queueNumber += "S" + user.NRIC.Substring(user.NRIC.Length - 5, 5).PadLeft(8, '*');
+                queueNumber += user.NRIC.Substring(0, 1) + user.NRIC.Substring(user.NRIC.Length - 5, 5).PadLeft(8, '*');
+            }
+            else if (!string.IsNullOrEmpty(user.NRIC) && user.NRIC.Length <= 5)
+            {
+                queueNumber += user.NRIC.Substring(0, 1) + user.NRIC.PadLeft(8, '*');
             }
             else
             {
-                queueNumber += "S" + user.NRIC.PadLeft(8, '*');
+                queueNumber += null;
             }
 
             // displayqueue number

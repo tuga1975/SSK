@@ -15,6 +15,7 @@ namespace SSK.Common
         Document = 4,
         Notification = 5,
         Profile = 6,
-        Supervisee = 7
+        Supervisee = 7,
+        Supervisee_NRIC = 8
     };
 }

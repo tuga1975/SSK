@@ -1,9 +1,14 @@
 ﻿using Newtonsoft.Json;
 using SSK.Common;
+using SSK.Contstants;
 using System;
 using System.Data;
 using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
+using Trinity.Common;
+using Trinity.Common.Common;
+using Trinity.Common.Monitor;
 
 namespace SSK
 {
@@ -13,9 +18,13 @@ namespace SSK
         private CodeBehind.Authentication.SmartCard _smartCard = null;
         private CodeBehind.Authentication.Fingerprint _fingerprint = null;
         private CodeBehind.Authentication.NRIC _nric = null;
+        private CodeBehind.Suppervisee _suppervisee = null;
         private NavigatorEnums _currentPage;
         private bool _displayLoginButtonStatus = false;
-        //private SmartCard smartCard = null;
+
+        // refator
+        private int _smartCardFailed;
+        private int _fingerprintFailed;
 
         public Main()
         {
@@ -29,6 +38,9 @@ namespace SSK
             //smartCard = new SmartCard(this.LayerWeb);
             this.LayerWeb.Url = new Uri(String.Format("file:///{0}/View/html/Layout.html", CSCallJS.curDir));
             this.LayerWeb.ObjectForScripting = _jsCallCS;
+
+            _smartCardFailed = 0;
+            _fingerprintFailed = 0;
 
             //
             // For testing purpose only
@@ -47,26 +59,124 @@ namespace SSK
         {
             this.LayerWeb.InvokeScript("createEvent", JsonConvert.SerializeObject(_jsCallCS.GetType().GetMethods().Where(d => d.IsPublic && !d.IsVirtual && !d.IsSecuritySafeCritical).ToArray().Select(d => d.Name)));
 
-            //smartCard.Scanning();
-
-            _nric = new CodeBehind.Authentication.NRIC(this.LayerWeb);
-            _nric.OnNavigate += OnNavigate;
-            _fingerprint = new CodeBehind.Authentication.Fingerprint(this.LayerWeb, _nric);
-            _fingerprint.OnFingerprintFailed += Fingerprint_OnFingerprintFailed;
-            _fingerprint.OnShowMessage += Fingerprint_ShowMessage;
-            _fingerprint.OnNavigate += OnNavigate;
-            _smartCard = new CodeBehind.Authentication.SmartCard(this.LayerWeb, _fingerprint);
+            // Initialized and register events
+            // SmartCard
+            _smartCard = new CodeBehind.Authentication.SmartCard(LayerWeb);
+            _smartCard.OnSmartCardSucceeded += SmartCard_OnSmartCardSucceeded;
             _smartCard.OnSmartCardFailed += SmartCard_OnSmartCardFailed;
-            OnNavigate(new object(), new NavigateEventArgs(Common.NavigatorEnums.Authentication_SmartCard));
-            //_smartCard.Start();
-            //_nric.Start();
-            //_fingerprint.Start();
+
+            // Fingerprint
+            _fingerprint = new CodeBehind.Authentication.Fingerprint(LayerWeb);
+            _fingerprint.OnFingerprintSucceeded += Fingerprint_OnFingerprintSucceeded;
+            _fingerprint.OnFingerprintFailed += Fingerprint_OnFingerprintFailed;
+            _fingerprint.OnShowMessage += OnShowMessage;
+
+            // NRIC
+            _nric = CodeBehind.Authentication.NRIC.GetInstance(LayerWeb);
+            _nric.OnNRICSucceeded += NRIC_OnNRICSucceeded;
+            _nric.OnShowMessage += OnShowMessage;
+
+            // Supervisee
+            _suppervisee = new CodeBehind.Suppervisee(LayerWeb);
+
+
+            // Start page
+            OnNavigate(new object(), new NavigateEventArgs(NavigatorEnums.Authentication_SmartCard));
+        }
+
+        private void NRIC_OnNRICSucceeded()
+        {
+            // navigate to Supervisee page
+            OnNavigate(new object(), new NavigateEventArgs(NavigatorEnums.Supervisee_NRIC));
+        }
+
+        private void Fingerprint_OnFingerprintSucceeded()
+        {
+            //
+            // Login successfully
+            //
+            // Create a session object to store UserLogin information
+            Session session = Session.Instance;
+            session.IsFingerprintAuthenticated = true;
+
+            LayerWeb.RunScript("$('.status-text').css('color','#000').text('Fingerprint authentication is successful.');");
+            APIUtils.SignalR.GetLatestNotifications();
+
+            Thread.Sleep(2000);
+
+            // if role = 0 (duty officer), redirect to NRIC.html
+            // else (supervisee), redirect to Supervisee.html
+            Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+            if (user.Role == (int)UserRoles.DutyOfficer)
+            {
+                // navigate to Authentication_NRIC
+                OnNavigate(new object(), new NavigateEventArgs(NavigatorEnums.Authentication_NRIC));
+            }
+            else
+            {
+                // navigate to Supervisee page
+                OnNavigate(new object(), new NavigateEventArgs(NavigatorEnums.Supervisee));
+            }
+        }
+
+        private void SmartCard_OnSmartCardSucceeded()
+        {
+            // navigate to next page: Authentication_Fingerprint
+            OnNavigate(new Object(), new NavigateEventArgs(Common.NavigatorEnums.Authentication_Fingerprint));
+        }
+
+        private void SmartCard_OnSmartCardFailed(object sender, CodeBehind.Authentication.SmartCardEventArgs e)
+        {
+            // increase counter
+            _smartCardFailed++;
+
+            // exceeded max failed
+            if (_smartCardFailed > 3)
+            {
+                // Send Notification to duty officer
+                APIUtils.SignalR.SendNotificationToDutyOfficer(e.Message, e.Message);
+
+                // show message box to user
+                MessageBox.Show(e.Message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                // reset counter
+                _smartCardFailed = 0;
+
+                // display failed on UI
+                LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please place your smart card on the reader.');");
+
+                return;
+            }
+
+            // display failed on UI
+            LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please place your smart card on the reader. Failed: " + _smartCardFailed + "');");
         }
 
         private void Fingerprint_OnFingerprintFailed(object sender, CodeBehind.Authentication.FingerprintEventArgs e)
         {
-            APIUtils.SignalR.SendNotificationToDutyOfficer(e.Message, e.Message);
-            MessageBox.Show(e.Message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            // increase counter
+            _fingerprintFailed++;
+
+            // exceeded max failed
+            if (_fingerprintFailed > 3)
+            {
+                // Send Notification to duty officer
+                APIUtils.SignalR.SendNotificationToDutyOfficer(e.Message, e.Message);
+                
+                // show message box to user
+                MessageBox.Show(e.Message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                // navigate to smartcard login page
+                OnNavigate(new Object(), new NavigateEventArgs(Common.NavigatorEnums.Authentication_SmartCard));
+
+                // reset counter
+                _fingerprintFailed = 0;
+
+                return;
+            }
+
+            // display failed on UI
+            LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please place your finger on the reader. Failed: " + _fingerprintFailed + "');");
         }
 
         private void Main_FormClosing(object sender, FormClosingEventArgs e)
@@ -86,33 +196,34 @@ namespace SSK
             MessageBox.Show(e.Message, e.Caption, e.Button, e.Icon);
         }
 
-        private void Fingerprint_ShowMessage(object sender, ShowMessageEventArgs e)
+        private void OnShowMessage(object sender, ShowMessageEventArgs e)
         {
             MessageBox.Show(e.Message, e.Caption, e.Button, e.Icon);
-        }
-
-        private void SmartCard_OnSmartCardFailed(object sender, CodeBehind.Authentication.SmartCardEventArgs e)
-        {
-            APIUtils.SignalR.SendNotificationToDutyOfficer(e.Message, e.Message);
-            MessageBox.Show(e.Message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         private void OnNavigate(object sender, NavigateEventArgs e)
         {
             // navigate
-            if (e.navigatorEnum == Common.NavigatorEnums.Authentication_SmartCard)
+            if (e.navigatorEnum == NavigatorEnums.Authentication_SmartCard)
             {
                 _smartCard.Start();
             }
-            else if (e.navigatorEnum == Common.NavigatorEnums.Authentication_Fingerprint)
+            else if (e.navigatorEnum == NavigatorEnums.Authentication_Fingerprint)
             {
                 _fingerprint.Start();
-                CSCallJS.DisplayLogoutButton(this.LayerWeb, true);
             }
-            else if (e.navigatorEnum == Common.NavigatorEnums.Authentication_NRIC)
+            else if (e.navigatorEnum == NavigatorEnums.Authentication_NRIC)
             {
                 _nric.Start();
-                CSCallJS.DisplayLogoutButton(this.LayerWeb, true);
+            }
+            else if (e.navigatorEnum == NavigatorEnums.Supervisee)
+            {
+                _suppervisee.Start();
+            }
+            else if (e.navigatorEnum == NavigatorEnums.Supervisee_NRIC)
+            {
+                _suppervisee.Start();
+                CSCallJS.DisplayNRICLogin(LayerWeb);
             }
 
             // set current page

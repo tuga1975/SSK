@@ -4,16 +4,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{6C023597-F6BA-4857-9C3B-82D91EB4B4A3}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Trinity.Common</RootNamespace>
-    <AssemblyName>Trinity.Common</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <ProjectGuid>{0417DDE4-5395-45A2-8518-BAD1112C8FD7}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>DocumentScannerTest</RootNamespace>
+    <AssemblyName>DocumentScannerTest</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -23,6 +23,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -31,12 +32,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ftrSDKHelper13">
-      <HintPath>..\Trinity.SSK\Libs\ftrSDKHelper13.dll</HintPath>
-    </Reference>
-    <Reference Include="pcsc-sharp">
-      <HintPath>..\Trinity.SSK\Libs\pcsc-sharp.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -47,33 +42,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Common\Enums.cs" />
-    <Compile Include="Common\EventAgrs.cs" />
-    <Compile Include="Common\Results.cs" />
-    <Compile Include="DeviceMonitor\AbstractDeviceMonitor.cs" />
-    <Compile Include="DeviceMonitor\DeviceMonitor.cs" />
-    <Compile Include="DeviceMonitor\DocumentScannerMonitor.cs" />
-    <Compile Include="DeviceMonitor\FingerprintMonitor.cs" />
-    <Compile Include="DeviceMonitor\HealthMonitor.cs" />
-    <Compile Include="DeviceMonitor\SCardMonitor.cs" />
-    <Compile Include="Session.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Utils\DeviceUtils.cs" />
-    <Compile Include="Utils\DocumentScannerUtils.cs" />
-    <Compile Include="Utils\FingerprintReaderUtils.cs" />
-    <Compile Include="Utils\ReceiptPrinterUtils.cs" />
-    <Compile Include="Utils\SmartCardReaderUtils.cs" />
   </ItemGroup>
   <ItemGroup>
-    <COMReference Include="WIA">
-      <Guid>{94A0E92D-43C0-494E-AC29-FD45948A5221}</Guid>
-      <VersionMajor>1</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>tlbimp</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-    </COMReference>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Trinity.Common\Trinity.Common.csproj">
+      <Project>{6C023597-F6BA-4857-9C3B-82D91EB4B4A3}</Project>
+      <Name>Trinity.Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
