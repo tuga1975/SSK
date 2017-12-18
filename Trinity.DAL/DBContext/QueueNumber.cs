@@ -12,14 +12,12 @@ namespace Trinity.DAL.DBContext
     using System;
     using System.Collections.Generic;
     
-    public partial class AbsenceReporting
+    public partial class QueueNumber
     {
+        public System.Guid ID { get; set; }
         public System.Guid AppointmentID { get; set; }
-        public System.DateTime ReportingDate { get; set; }
         public string UserId { get; set; }
-        public Nullable<short> AbsenceReason { get; set; }
-        public string ReasonDetails { get; set; }
-        public byte[] ScannedDocument { get; set; }
+        public System.DateTime Date { get; set; }
         public int Status { get; set; }
     
         public virtual Appointment Appointment { get; set; }

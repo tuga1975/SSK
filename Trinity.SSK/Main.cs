@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using SSK.Common;
 using System;
 using System.Data;
 using System.Linq;
@@ -49,18 +48,29 @@ namespace SSK
 
             //smartCard.Scanning();
 
-            _nric = new CodeBehind.Authentication.NRIC(this.LayerWeb);
-            _nric.OnNavigate += OnNavigate;
-            _fingerprint = new CodeBehind.Authentication.Fingerprint(this.LayerWeb, _nric);
-            _fingerprint.OnFingerprintFailed += Fingerprint_OnFingerprintFailed;
-            _fingerprint.OnShowMessage += Fingerprint_ShowMessage;
-            _fingerprint.OnNavigate += OnNavigate;
-            _smartCard = new CodeBehind.Authentication.SmartCard(this.LayerWeb, _fingerprint);
-            _smartCard.OnSmartCardFailed += SmartCard_OnSmartCardFailed;
-            OnNavigate(new object(), new NavigateEventArgs(Common.NavigatorEnums.Authentication_SmartCard));
+
+            // vừa dóng
+            //_nric = new CodeBehind.Authentication.NRIC(this.LayerWeb);
+            //_nric.OnNavigate += OnNavigate;
+            //_fingerprint = new CodeBehind.Authentication.Fingerprint(this.LayerWeb, _nric);
+            //_fingerprint.OnFingerprintFailed += Fingerprint_OnFingerprintFailed;
+            //_fingerprint.OnShowMessage += Fingerprint_ShowMessage;
+            //_fingerprint.OnNavigate += OnNavigate;
+            //_smartCard = new CodeBehind.Authentication.SmartCard(this.LayerWeb, _fingerprint);
+            //_smartCard.OnSmartCardFailed += SmartCard_OnSmartCardFailed;
+            //OnNavigate(new object(), new NavigateEventArgs(NavigatorEnums.Authentication_SmartCard));
+
             //_smartCard.Start();
             //_nric.Start();
             //_fingerprint.Start();
+
+
+            Trinity.Common.Session session = Trinity.Common.Session.Instance;
+            
+            session[Contstants.CommonConstants.USER_LOGIN] = new Trinity.DAL.DAL_User().GetUserByUserId("656ebbb1-190b-4c8a-9d77-ffa4ff4c9e93", true);
+            this.LayerWeb.LoadPageHtml("Supervisee.html");
+
+
         }
 
         private void Fingerprint_OnFingerprintFailed(object sender, CodeBehind.Authentication.FingerprintEventArgs e)
@@ -100,16 +110,16 @@ namespace SSK
         private void OnNavigate(object sender, NavigateEventArgs e)
         {
             // navigate
-            if (e.navigatorEnum == Common.NavigatorEnums.Authentication_SmartCard)
+            if (e.navigatorEnum == NavigatorEnums.Authentication_SmartCard)
             {
                 _smartCard.Start();
             }
-            else if (e.navigatorEnum == Common.NavigatorEnums.Authentication_Fingerprint)
+            else if (e.navigatorEnum == NavigatorEnums.Authentication_Fingerprint)
             {
                 _fingerprint.Start();
                 CSCallJS.DisplayLogoutButton(this.LayerWeb, true);
             }
-            else if (e.navigatorEnum == Common.NavigatorEnums.Authentication_NRIC)
+            else if (e.navigatorEnum == NavigatorEnums.Authentication_NRIC)
             {
                 _nric.Start();
                 CSCallJS.DisplayLogoutButton(this.LayerWeb, true);

@@ -101,7 +101,7 @@ namespace SSK.CodeBehind.Authentication
                         // If FailedCount > 3 then raise Smart Card Failure
                         RaiseFingerprintFailedEvent(new FingerprintEventArgs("Unable to read your fingerprint. Please report to the Duty Officer", _failedCount));
                         // return to smartcard authentication
-                        RaiseOnNavigateEvent(new NavigateEventArgs(Common.NavigatorEnums.Authentication_SmartCard));
+                        RaiseOnNavigateEvent(new NavigateEventArgs(NavigatorEnums.Authentication_SmartCard));
                         _failedCount = 0;
                         return;
                     }

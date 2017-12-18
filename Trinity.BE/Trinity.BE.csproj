@@ -78,6 +78,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Lib.cs" />
+    <Compile Include="Enums.cs" />
+    <Compile Include="EnvironmentTime.cs" />
     <Compile Include="Notification.cs" />
     <Compile Include="ProfileModel.cs" />
     <Compile Include="User.cs" />
