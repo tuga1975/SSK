@@ -15,7 +15,8 @@ namespace Trinity.DAL
 
         public void InsertQueueNumber(Guid AppointmentID, string UserId)
         {
-            _localUnitOfWork.GetRepository<QueueNumber>().Add(new QueueNumber() {
+            _localUnitOfWork.GetRepository<QueueNumber>().Add(new QueueNumber()
+            {
                 AppointmentID = AppointmentID,
                 ID = Guid.NewGuid(),
                 Date = DateTime.Today,
@@ -29,7 +30,28 @@ namespace Trinity.DAL
         public List<QueueNumber> GetAllQueueNumberByDate(DateTime date)
         {
             date = date.Date;
-            return _localUnitOfWork.DataContext.QueueNumbers.Include(d=>d.User).Where(d => DbFunctions.TruncateTime(d.Date).Value == date && (d.Status == (int)StatusEnums.Wait || d.Status == (int)StatusEnums.Working)).OrderBy(d=>d.Date).ToList();
+            return _localUnitOfWork.DataContext.QueueNumbers.Include(d => d.User).Where(d => DbFunctions.TruncateTime(d.Date).Value == date && (d.Status == (int)StatusEnums.Wait || d.Status == (int)StatusEnums.Working)).OrderBy(d => d.Date).ToList();
+        }
+
+        public bool CheckQueueExistToday(string userId)
+        {
+            if (CountQueueByStatus(userId, (int)StatusEnums.Wait) > 0 || CountQueueByStatus(userId, (int)StatusEnums.Working) > 0)
+            {
+                return true;
+            }
+            if (CountQueueByStatus(userId, (int)StatusEnums.Miss) > 0)
+            {
+                return false;
+            }
+            return false;
+
+
+        }
+
+        public int CountQueueByStatus(string userId, int status)
+        {
+            var today = DateTime.Now.Date;
+            return _localUnitOfWork.DataContext.QueueNumbers.Count(d => DbFunctions.TruncateTime(d.Date).Value == today && d.UserId == userId && d.Status == status);
         }
     }
 }
