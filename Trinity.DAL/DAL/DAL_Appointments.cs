@@ -28,7 +28,7 @@ namespace Trinity.DAL
         {
             return _localUnitOfWork.DataContext.Appointments.Where(d => d.UserId == UserId && d.Date >= DateTime.Today).OrderBy(d=>d.Date).FirstOrDefault();
         }
-        public void UpdateBookTime(string IDAppointment, string timeStart, string timeEnd)
+        public Appointment UpdateBookTime(string IDAppointment, string timeStart, string timeEnd)
         {
             Trinity.DAL.DBContext.Appointment appointment = GetMyAppointmentByID(new Guid(IDAppointment));
             appointment.FromTime = TimeSpan.Parse(timeStart);
@@ -36,7 +36,7 @@ namespace Trinity.DAL
             appointment.ChangedCount += 1;
             _localUnitOfWork.GetRepository<Appointment>().Update(appointment);
             _localUnitOfWork.Save();
-
+            return appointment;
         }
     }
 }

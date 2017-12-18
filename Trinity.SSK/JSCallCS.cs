@@ -112,7 +112,9 @@ namespace SSK
         public string UpdateTimeAppointment(string IDAppointment,string timeStart, string timeEnd)
         {
             DAL_Appointments DAL_Appointments = new DAL_Appointments();
-            DAL_Appointments.UpdateBookTime(IDAppointment, timeStart, timeEnd);
+            var appointment = DAL_Appointments.UpdateBookTime(IDAppointment, timeStart, timeEnd);
+
+            APIUtils.Printer.PrintFormFile("BookAppointmentTemplate.html", appointment);
             return timeStart;
         }
         #endregion
