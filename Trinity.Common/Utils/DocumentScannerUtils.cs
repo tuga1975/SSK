@@ -40,7 +40,7 @@ namespace Trinity.Common.Utils
         }
         #endregion
 
-        public DocumentScannerResult Start()
+        public DocumentScannerResult StartScanning()
         {
             // Create returnValue
             DocumentScannerResult returnValue = new DocumentScannerResult()

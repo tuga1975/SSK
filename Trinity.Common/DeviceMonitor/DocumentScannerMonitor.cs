@@ -59,7 +59,7 @@ namespace Trinity.Common.DeviceMonitor
             DocumentScannerUtils documentScannerUtils = DocumentScannerUtils.Instance;
 
             // Start scanner
-            DocumentScannerResult documentScannerResult = documentScannerUtils.Start();
+            DocumentScannerResult documentScannerResult = documentScannerUtils.StartScanning();
 
             // Return value
             if (documentScannerResult.Success)
