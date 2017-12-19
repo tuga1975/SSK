@@ -29,7 +29,32 @@ public enum StatusEnums
     Miss = 7,
     Absence = 8
 }
-public enum Frequency
+public enum AbsenceReason
 {
-    Weekly = 1
+    Medical_Certificate = 0,
+    Work_Commitment = 1,
+    Family_Matters = 2,
+    Other_Reasons = 3,
+    No_Valid_Reason = 4,
+    No_Supporting_Document = 5
 }
+
+public static class StatusConstant
+{
+    public const string Miss = "Miss";
+    public const string Wait = "Wait";
+    public const string Working = "Working";
+}
+
+public static class UserStatus
+{
+    public const string Active = "Active";
+    public const string Blocked = "Blocked";
+}
+
+public static class Frequency
+{
+    public const string Weekly = "Weekly";
+}
+
+

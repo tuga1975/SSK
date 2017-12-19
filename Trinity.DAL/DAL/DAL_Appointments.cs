@@ -47,5 +47,21 @@ namespace Trinity.DAL
         {
             return _localUnitOfWork.DataContext.Appointments.Where(d => d.UserId == UserID && d.Status == (int)StatusEnums.Absence).ToList();
         }
+
+        /// <summary>
+        /// UpdateReason for absence appointment 
+        /// </summary>
+        /// <param name="appointmentId"></param>
+        /// <param name="absenceId"></param>
+        /// <returns></returns>
+        public Appointment UpdateReason(Guid appointmentId, Guid absenceId)
+        {
+            Trinity.DAL.DBContext.Appointment appointment = GetMyAppointmentByID(appointmentId);
+            appointment.AbsenceReporting_ID = absenceId;
+            appointment.Status = (int)StatusEnums.Success;
+            _localUnitOfWork.GetRepository<Appointment>().Update(appointment);
+            _localUnitOfWork.Save();
+            return appointment;
+        }
     }
 }

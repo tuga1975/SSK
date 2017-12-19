@@ -6,10 +6,10 @@
     $(document).ready(function () {
         $.each(api.model, function (index,item) {
             if (index == 0) {
-                $('[show-queue]').text(item.NRIC);
+                $('[show-queue]').text(item.QueueNumber);
             }
             else {
-                $('[show-queue-list]').append('<span>' + item.NRIC + ' - ' + index + '</span>');
+                $('[show-queue-list]').append('<span>' + item.QueueNumber + ' - ' + index + '</span>');
             }
         })
     });

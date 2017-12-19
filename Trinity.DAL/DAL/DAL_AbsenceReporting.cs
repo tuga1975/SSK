@@ -12,15 +12,85 @@ namespace Trinity.DAL
         Local_UnitOfWork _localUnitOfWork = new Local_UnitOfWork();
         Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
 
-        public List<AbsenceReporting> GetByUserID(string UserId)
+        public List<AbsenceReporting> GetByUserID(string userId)
         {
-            return _localUnitOfWork.DataContext.AbsenceReportings.Where(d => d.UserId == UserId).ToList();
+            var _absenceReporting = from ab in _localUnitOfWork.DataContext.AbsenceReportings
+                                    join appoint in _localUnitOfWork.DataContext.Appointments on ab.ID equals appoint.AbsenceReporting_ID
+                                    join usr in _localUnitOfWork.DataContext.Users on appoint.UserId equals usr.UserId
+                                    where usr.UserId == userId
+                                    select ab;
+
+            return _absenceReporting.ToList();
         }
 
         public int SaveAbsendReporing(AbsenceReporting absenceReporting)
         {
             _localUnitOfWork.GetRepository<AbsenceReporting>().Update(absenceReporting);
             return _localUnitOfWork.Save();
+        }
+
+        public bool CreateAbsenceReporting(Trinity.BE.AbsenceReporting model,bool isLocal)
+        {
+            try
+            {
+                if (isLocal)
+                {
+                    var absenceRepo = _localUnitOfWork.GetRepository<AbsenceReporting>();
+                    AbsenceReporting dbAbsence = SetInfo(model);
+                    absenceRepo.Add(dbAbsence);
+                    _localUnitOfWork.Save();
+
+                }
+                else
+                {
+                    var absenceRepo = _centralizedUnitOfWork.GetRepository<AbsenceReporting>();
+                    AbsenceReporting dbAbsence = SetInfo(model);
+                    absenceRepo.Add(dbAbsence);
+                    _centralizedUnitOfWork.Save();
+
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// SetInfo using model
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        private static AbsenceReporting SetInfo(BE.AbsenceReporting model)
+        {
+            var dbAbsence = new AbsenceReporting();
+            dbAbsence.ID = model.ID;
+            dbAbsence.ReportingDate = model.ReportingDate;
+            dbAbsence.ReasonDetails = model.ReasonDetails;
+            dbAbsence.ScannedDocument = model.ScannedDocument;
+            dbAbsence.AbsenceReason = model.AbsenceReason;
+            return dbAbsence;
+        }
+      
+
+        /// <summary>
+        /// Set new info and reason
+        /// </summary>
+        /// <param name="reason"></param>
+        /// <returns></returns>
+        public Trinity.BE.AbsenceReporting SetInfo(Trinity.BE.Reason reason)
+        {
+            var absenceModel = new Trinity.BE.AbsenceReporting();
+            absenceModel.ID = Guid.NewGuid();
+            absenceModel.AbsenceReason = reason.Value;
+            absenceModel.ReasonDetails = reason.Detail;
+            // set after scan document
+            absenceModel.ScannedDocument = null;
+            absenceModel.ReportingDate = DateTime.Now;
+
+            return absenceModel;
         }
     }
 }

@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using Trinity.Common;
 using Trinity.Common.Common;
 using Trinity.Common.Monitor;
+using Trinity.DAL;
 
 namespace SSK
 {
@@ -82,6 +83,13 @@ namespace SSK
 
             // Start page
             OnNavigate(new object(), new NavigateEventArgs(NavigatorEnums.Authentication_SmartCard));
+
+            //for testing purpose
+            //Session session = Session.Instance;
+            //Trinity.BE.User user = new DAL_User().GetUserByUserId("656ebbb1-190b-4c8a-9d77-ffa4ff4c9e93", true);
+            //session[CommonConstants.USER_LOGIN] = user;
+
+            //OnNavigate(new object(), new NavigateEventArgs(NavigatorEnums.Supervisee));
         }
 
         private void NRIC_OnNRICSucceeded()
