@@ -137,10 +137,6 @@
     <Compile Include="CodeBehind\Suppervisee.cs" />
     <Compile Include="Common\Enums.cs" />
     <Compile Include="Contstants\CommonConstants.cs" />
-    <Compile Include="DeviceMonitor\DeviceMonitor.cs" />
-    <Compile Include="DeviceMonitor\FingerprintMonitor.cs" />
-    <Compile Include="DeviceMonitor\HealthMonitor.cs" />
-    <Compile Include="DeviceMonitor\SCardMonitor.cs" />
     <Compile Include="FormAppointmentDetails.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -172,7 +168,6 @@
     <Compile Include="Utils\APIUtils.cs" />
     <Compile Include="Utils\Printer.cs" />
     <Compile Include="Utils\SignalR.cs" />
-    <Compile Include="Utils\SmartCardReaderUtils.cs" />
     <EmbeddedResource Include="FormAppointmentDetails.resx">
       <DependentUpon>FormAppointmentDetails.cs</DependentUpon>
     </EmbeddedResource>
