@@ -26,7 +26,7 @@ namespace Trinity.DAL
         }
         public Appointment GetMyAppointmentCurrent(string UserId)
         {
-            return _localUnitOfWork.DataContext.Appointments.Where(d => d.UserId == UserId && d.Date >= DateTime.Today).OrderBy(d=>d.Date).FirstOrDefault();
+            return _localUnitOfWork.DataContext.Appointments.Where(d => d.UserId == UserId && d.Date >= DateTime.Today).OrderBy(d => d.Date).FirstOrDefault();
         }
         public Appointment UpdateBookTime(string IDAppointment, string timeStart, string timeEnd)
         {
@@ -34,18 +34,21 @@ namespace Trinity.DAL
             appointment.FromTime = TimeSpan.Parse(timeStart);
             appointment.ToTime = TimeSpan.Parse(timeEnd);
             appointment.ChangedCount += 1;
+            appointment.Status = (int) EnumAppointmentStatuses.Booked;
             _localUnitOfWork.GetRepository<Appointment>().Update(appointment);
             _localUnitOfWork.Save();
             return appointment;
         }
         public int CountMyAbsence(string UserID)
         {
-            return _localUnitOfWork.DataContext.Appointments.Count(d => d.UserId == UserID && d.Status==(int)StatusEnums.Absence);
+            return _localUnitOfWork.DataContext.Appointments.Count(d => d.UserId == UserID && d.Date.Date < DateTime.Today && (d.Status == (int)EnumAppointmentStatuses.Pending &&
+            d.Status == (int)EnumAppointmentStatuses.Booked));
         }
 
-        public List<Appointment> GetMyAppointmentAbsence(string UserID)
+        public List<Appointment> GetMyAbsentAppointments(string UserID)
         {
-            return _localUnitOfWork.DataContext.Appointments.Where(d => d.UserId == UserID && d.Status == (int)StatusEnums.Absence).ToList();
+            return _localUnitOfWork.DataContext.Appointments.Where(d => d.UserId == UserID && d.Date.Date < DateTime.Today && (d.Status == (int)EnumAppointmentStatuses.Pending &&
+            d.Status == (int)EnumAppointmentStatuses.Booked)).ToList();
         }
 
         /// <summary>
@@ -58,7 +61,7 @@ namespace Trinity.DAL
         {
             Trinity.DAL.DBContext.Appointment appointment = GetMyAppointmentByID(appointmentId);
             appointment.AbsenceReporting_ID = absenceId;
-            appointment.Status = (int)StatusEnums.Success;
+            appointment.Status = (int)EnumAppointmentStatuses.Reported;
             _localUnitOfWork.GetRepository<Appointment>().Update(appointment);
             _localUnitOfWork.Save();
             return appointment;

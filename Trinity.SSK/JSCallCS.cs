@@ -103,12 +103,12 @@ namespace SSK
             DAL_Environment DAL_Environment = new DAL_Environment();
             var listSelectTime = DAL_Environment.GetEnvironment(appointment.Date);
 
-            var item = listSelectTime.Where(d => d.StartTime == appointment.FromTime.Value && d.EndTime == appointment.ToTime.Value).FirstOrDefault();
-            item.IsSelected = true;
-
-
+            var item = listSelectTime.Where(d => appointment.FromTime != null && d.StartTime == appointment.FromTime.Value && d.EndTime == appointment.ToTime.Value).FirstOrDefault();
+            if (item != null)
+            {
+                item.IsSelected = true;
+            }
             this._web.LoadPageHtml("BookAppointment.html", new object[] { appointment, listSelectTime });
-
         }
         public string UpdateTimeAppointment(string IDAppointment, string timeStart, string timeEnd)
         {
@@ -219,15 +219,15 @@ namespace SSK
                 LoadProfile();
             }
         }
-        public void LoadScanDocumentForAbsence(string jsonData,string reason)
+        public void LoadScanDocumentForAbsence(string jsonData, string reason)
         {
             try
             {
                 Session session = Session.Instance;
-                
+
                 var dalAbsence = new DAL_AbsenceReporting();
                 var reasonModel = JsonConvert.DeserializeObject<Trinity.BE.Reason>(reason);
-                var absenceModel= dalAbsence.SetInfo(reasonModel);
+                var absenceModel = dalAbsence.SetInfo(reasonModel);
                 session[Contstants.CommonConstants.ABSENCE_REPORTING_DATA] = absenceModel;
 
                 LoadPage("DocumentFromQueue.html");
@@ -335,18 +335,18 @@ namespace SSK
                 APIUtils.SignalR.SendNotificationToDutyOfficer("Supervisee got blocked for 3 or more absences", "Please check the Supervisee's information!");
                 var dalUser = new DAL_User();
                 //active the user
-                dalUser.ChangeUserStatus(user.UserId, UserStatus.Active);
+                dalUser.ChangeUserStatus(user.UserId, EnumUserStatuses.Active);
 
                 //create absence reporting
-                
-                 var listAppointment = dalAppointment.GetMyAppointmentAbsence(user.UserId);
+
+                var listAppointment = dalAppointment.GetMyAbsentAppointments(user.UserId);
                 session[CommonConstants.LIST_APPOINTMENT] = listAppointment;
                 _web.LoadPageHtml("ReasonsForQueue.html", listAppointment);
             }
             else
             if (countAbsence > 0 && countAbsence < 3)
             {
-                var listAppointment = dalAppointment.GetMyAppointmentAbsence(user.UserId);
+                var listAppointment = dalAppointment.GetMyAbsentAppointments(user.UserId);
 
                 MessageBox.Show("You have been absent for " + countAbsence + " times.\nPlease provide reasons and the supporting documents.");
 
@@ -417,8 +417,8 @@ namespace SSK
             Session session = Session.Instance;
             Trinity.BE.AbsenceReporting absenceData = (Trinity.BE.AbsenceReporting)session[CommonConstants.ABSENCE_REPORTING_DATA];
             //get scanned data from session
-            var scannedDoc= (byte[])session[CommonConstants.SCANNED_DOCUMENT];
-            var listAppointment= (List<Appointment>)session[CommonConstants.LIST_APPOINTMENT];
+            var scannedDoc = (byte[])session[CommonConstants.SCANNED_DOCUMENT];
+            var listAppointment = (List<Appointment>)session[CommonConstants.LIST_APPOINTMENT];
             absenceData.ScannedDocument = scannedDoc;
             var dalAbsence = new DAL_AbsenceReporting();
             var create = dalAbsence.CreateAbsenceReporting(absenceData, true);
@@ -430,7 +430,7 @@ namespace SSK
                     dalAppointment.UpdateReason(item.ID, absenceData.ID);
                 }
             }
-            
+
             QueueNumber();
 
         }

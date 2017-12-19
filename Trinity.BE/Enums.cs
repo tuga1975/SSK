@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public enum NavigatorEnums
+public enum EnumScreens
 {
     Authentication_SmartCard = 0,
     Authentication_Fingerprint = 1,
@@ -16,20 +16,15 @@ public enum NavigatorEnums
     Supervisee = 7,
     Supervisee_NRIC = 8
 };
-public enum StatusEnums
+public enum EnumAppointmentStatuses
 {
-    Delete = -1,
-    Deactivate = 0,
-    Active = 1,
-    Create = 2,
-    Open = 3,
-    Wait = 4,
-    Working = 5,
-    Success = 6,
-    Miss = 7,
-    Absence = 8
+    Deleted = -1,
+    Pending = 0,
+    Booked = 1,
+    Reported = 2,
+    Completed = 3
 }
-public enum AbsenceReason
+public enum EnumAbsenceReasons
 {
     Medical_Certificate = 0,
     Work_Commitment = 1,
@@ -39,22 +34,24 @@ public enum AbsenceReason
     No_Supporting_Document = 5
 }
 
-public static class StatusConstant
+public static class EnumQueueStatuses
 {
-    public const string Miss = "Miss";
-    public const string Wait = "Wait";
-    public const string Working = "Working";
+    public const string Missed = "Missed";
+    public const string Waiting = "Waiting";
+    public const string Processing = "Processing";
 }
 
-public static class UserStatus
+public static class EnumUserStatuses
 {
     public const string Active = "Active";
     public const string Blocked = "Blocked";
 }
 
-public static class Frequency
+public static class EnumFrequency
 {
     public const string Weekly = "Weekly";
+    public const string Biweekly = "Biweekly";
+    public const string Monthly = "Monthly";
 }
 
 

@@ -10,7 +10,6 @@
         <EntityTypeShape EntityType="SSKModel.Device" Width="1.5" PointX="2.75" PointY="0.75" />
         <EntityTypeShape EntityType="SSKModel.Holiday" Width="1.5" PointX="2.75" PointY="3.75" />
         <EntityTypeShape EntityType="SSKModel.Notification" Width="1.5" PointX="3" PointY="14.125" />
-        <EntityTypeShape EntityType="SSKModel.sysdiagram" Width="1.5" PointX="5.75" PointY="3.75" />
         <EntityTypeShape EntityType="SSKModel.User_Profiles" Width="1.5" PointX="3" PointY="6.125" />
         <EntityTypeShape EntityType="SSKModel.User" Width="1.5" PointX="0.75" PointY="8.5" />
         <AssociationConnector Association="SSKModel.FK_User_Profiles_Addresses" />

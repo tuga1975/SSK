@@ -129,6 +129,9 @@ namespace SSK
 
         private void SmartCard_OnSmartCardSucceeded()
         {
+            // Pause for 1 second and goto Fingerprint Login Screen
+            Thread.Sleep(1000);
+
             // navigate to next page: Authentication_Fingerprint
             OnNavigate(new Object(), new NavigateEventArgs(NavigatorEnums.Authentication_Fingerprint));
         }

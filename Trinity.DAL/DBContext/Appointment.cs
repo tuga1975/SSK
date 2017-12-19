@@ -30,8 +30,8 @@ namespace Trinity.DAL.DBContext
         public int Status { get; set; }
     
         public virtual AbsenceReporting AbsenceReporting { get; set; }
+        public virtual User User { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<QueueNumber> QueueNumbers { get; set; }
-        public virtual User User { get; set; }
     }
 }

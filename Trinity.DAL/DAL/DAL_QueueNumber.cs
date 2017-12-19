@@ -21,8 +21,8 @@ namespace Trinity.DAL
                 Appointment_ID = AppointmentID,
                 ID = Guid.NewGuid(),
                 CreatedTime = DateTime.Today,
-                Status = StatusConstant.Wait,
-                QueuedNumber=generateQNo
+                Status = EnumQueueStatuses.Waiting,
+                QueuedNumber = generateQNo
             });
             _localUnitOfWork.Save();
         }
@@ -50,16 +50,16 @@ namespace Trinity.DAL
         public List<QueueNumber> GetAllQueueNumberByDate(DateTime date)
         {
             date = date.Date;
-            return _localUnitOfWork.DataContext.QueueNumbers.Include(d => d.Appointment).Where(d => DbFunctions.TruncateTime(d.CreatedTime).Value == date && (d.Status == StatusConstant.Wait || d.Status == StatusConstant.Working)).OrderBy(d => d.CreatedTime).ToList();
+            return _localUnitOfWork.DataContext.QueueNumbers.Include(d => d.Appointment).Where(d => DbFunctions.TruncateTime(d.CreatedTime).Value == date && (d.Status == EnumQueueStatuses.Waiting || d.Status == EnumQueueStatuses.Processing)).OrderBy(d => d.CreatedTime).ToList();
         }
 
         public bool CheckQueueExistToday(string userId)
         {
-            if (CountQueueByStatus(userId, StatusConstant.Wait) > 0 || CountQueueByStatus(userId, StatusConstant.Working) > 0)
+            if (CountQueueByStatus(userId, EnumQueueStatuses.Waiting) > 0 || CountQueueByStatus(userId, EnumQueueStatuses.Processing) > 0)
             {
                 return true;
             }
-            if (CountQueueByStatus(userId, StatusConstant.Miss) > 0)
+            if (CountQueueByStatus(userId, EnumQueueStatuses.Missed) > 0)
             {
                 return false;
             }
@@ -71,7 +71,7 @@ namespace Trinity.DAL
         public int CountQueueByStatus(string userId, string status)
         {
             var today = DateTime.Now.Date;
-            return _localUnitOfWork.DataContext.QueueNumbers.Include(u=>u.Appointment).Count(d => DbFunctions.TruncateTime(d.CreatedTime).Value == today && d.Appointment.UserId == userId && d.Status == status);
+            return _localUnitOfWork.DataContext.QueueNumbers.Include(u => u.Appointment).Count(d => DbFunctions.TruncateTime(d.CreatedTime).Value == today && d.Appointment.UserId == userId && d.Status == status);
         }
     }
 }

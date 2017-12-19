@@ -30,7 +30,6 @@ namespace Trinity.DAL.DBContext
         public virtual DbSet<Device> Devices { get; set; }
         public virtual DbSet<Holiday> Holidays { get; set; }
         public virtual DbSet<Notification> Notifications { get; set; }
-        public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
         public virtual DbSet<User_Profiles> User_Profiles { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<AbsenceReporting> AbsenceReportings { get; set; }

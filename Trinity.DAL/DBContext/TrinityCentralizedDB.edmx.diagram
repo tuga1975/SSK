@@ -8,7 +8,7 @@
         <EntityTypeShape EntityType="TrinityCentralizedDBModel.AbsenceReporting" Width="1.5" PointX="0.75" PointY="1.375" />
         <EntityTypeShape EntityType="TrinityCentralizedDBModel.Address" Width="1.5" PointX="0.75" PointY="4.75" />
         <EntityTypeShape EntityType="TrinityCentralizedDBModel.ApplicationDevice_Status" Width="1.5" PointX="2.75" PointY="4.75" />
-        <EntityTypeShape EntityType="TrinityCentralizedDBModel.Appointment" Width="1.5" PointX="3" PointY="1" />
+        <EntityTypeShape EntityType="TrinityCentralizedDBModel.Appointment" Width="2" PointX="3" PointY="1" />
         <EntityTypeShape EntityType="TrinityCentralizedDBModel.Device" Width="1.5" PointX="4.75" PointY="4.75" />
         <EntityTypeShape EntityType="TrinityCentralizedDBModel.Environment" Width="1.5" PointX="6.75" PointY="4.75" />
         <EntityTypeShape EntityType="TrinityCentralizedDBModel.Holiday" Width="1.5" PointX="7.75" PointY="0.75" />
