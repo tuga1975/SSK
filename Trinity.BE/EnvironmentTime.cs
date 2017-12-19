@@ -15,6 +15,21 @@ namespace Trinity.BE
         public bool IsSelected { get; set; }
         public System.TimeSpan StartTime { get; set; }
         public System.TimeSpan EndTime { get; set; }
+
+        public string StartTimeTxt
+        {
+            get
+            {
+                return string.Format("{0:D2}:{1:D2}", StartTime.Hours, StartTime.Minutes);
+            }
+        }
+        public string EndTimeTxt
+        {
+            get
+            {
+                return string.Format("{0:D2}:{1:D2}", EndTime.Hours, EndTime.Minutes);
+            }
+        }
         public string TimeTxt
         {
             get

@@ -1,4 +1,6 @@
 ﻿using Newtonsoft.Json;
+using SSK.CodeBehind.Authentication;
+using SSK.Common;
 using SSK.Contstants;
 using System;
 using System.Collections.Generic;
@@ -8,6 +10,7 @@ using System.Windows.Forms;
 using Trinity.Common;
 using Trinity.DAL;
 using System.Linq;
+using Trinity.DAL.DBContext;
 
 namespace SSK
 {
@@ -89,7 +92,7 @@ namespace SSK
             var model = myNotifications;
             _web.LoadPageHtml("Notication.html", myNotifications);
         }
-
+        #region BookAppointment
         public void BookAppointment()
         {
             Session session = Session.Instance;
@@ -97,24 +100,25 @@ namespace SSK
 
             DAL_Appointments DAL_Appointments = new DAL_Appointments();
             Trinity.DAL.DBContext.Appointment appointment = DAL_Appointments.GetMyAppointmentCurrent(user.UserId);
-
             DAL_Environment DAL_Environment = new DAL_Environment();
             var listSelectTime = DAL_Environment.GetEnvironment(appointment.Date);
 
             var item = listSelectTime.Where(d => d.StartTime == appointment.FromTime.Value && d.EndTime == appointment.ToTime.Value).FirstOrDefault();
             item.IsSelected = true;
 
-            if (appointment.ChangedCount > 0)
-            {
-                
 
-            }
-
-            
             this._web.LoadPageHtml("BookAppointment.html", new object[] { appointment, listSelectTime });
 
         }
+        public string UpdateTimeAppointment(string IDAppointment, string timeStart, string timeEnd)
+        {
+            DAL_Appointments DAL_Appointments = new DAL_Appointments();
+            var appointment = DAL_Appointments.UpdateBookTime(IDAppointment, timeStart, timeEnd);
 
+            APIUtils.Printer.PrintFormFile("BookAppointmentTemplate.html", appointment);
+            return timeStart;
+        }
+        #endregion
         public void LoadProfile()
         {
             try
@@ -228,47 +232,24 @@ namespace SSK
 
             var data = (object[])pram;
             var method = data[0].ToString();
+
             MethodInfo theMethod = _thisType.GetMethod(method);
-            theMethod.Invoke(this, (object[])data[1]);
+            var dataReturn = theMethod.Invoke(this, (object[])data[2]);
+            if (data[1] != null)
+            {
+                this._web.InvokeScript("callEventCallBack", data[1], JsonConvert.SerializeObject(dataReturn, Formatting.Indented, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore }));
+            }
             _web.SetLoading(false);
         }
-        public void ClientCallServer(string method, params object[] pram)
+        public void ClientCallServer(string method, string guidEvent, params object[] pram)
         {
-            ThreadPool.QueueUserWorkItem(new WaitCallback(actionThread), new object[] { method, pram });
+            ThreadPool.QueueUserWorkItem(new WaitCallback(actionThread), new object[] { method, guidEvent, pram });
         }
 
-        public void SubmitNRIC(string nric)
+        public void SubmitNRIC(string strNRIC)
         {
-            DAL_User dal_User = new DAL_User();
-            var user = dal_User.GetSuperviseeByNRIC(nric, true);
-
-            // if local user is null, check NRIC in centralized db
-            if (user == null)
-            {
-                user = dal_User.GetSuperviseeByNRIC(nric, false);
-
-                // if centralized user is null
-                // raise failsed event and return false
-                if (user == null)
-                {
-                    RaiseOnNRICFailedEvent(new NRICEventArgs("NRIC " + nric + ": not found. Please check NRIC again."));
-                    return;
-                }
-
-                // else sync between centralized and local db
-            }
-
-
-            // Create a session object to store UserLogin information
-            Session session = Session.Instance;
-            session[CommonConstants.USER_LOGIN] = user;
-
-            // redirect to Supervisee.html
-            _web.LoadPageHtml("Supervisee.html");
-            //RaiseOnNavigateEvent(new NavigateEventArgs(NavigatorEnums.Supervisee));
-
-            // setup screen for NRIC login
-            CSCallJS.DisplayNRICLogin(_web);
+            NRIC nric = NRIC.GetInstance(_web);
+            nric.NRICAuthentication(strNRIC);
         }
 
         public void GetQueue()
@@ -277,13 +258,17 @@ namespace SSK
             Session session = Session.Instance;
             Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
             string queueNumber = "Current Queue Number: ";
-            if (user.NRIC != null && user.NRIC.Length >= 5)
+            if (!string.IsNullOrEmpty(user.NRIC) && user.NRIC.Length > 5)
             {
-                queueNumber += "S" + user.NRIC.Substring(user.NRIC.Length - 5, 5).PadLeft(8, '*');
+                queueNumber += user.NRIC.Substring(0, 1) + user.NRIC.Substring(user.NRIC.Length - 5, 5).PadLeft(8, '*');
+            }
+            else if (!string.IsNullOrEmpty(user.NRIC) && user.NRIC.Length <= 5)
+            {
+                queueNumber += user.NRIC.Substring(0, 1) + user.NRIC.PadLeft(8, '*');
             }
             else
             {
-                queueNumber += "S" + user.NRIC.PadLeft(8, '*');
+                queueNumber += null;
             }
 
             // displayqueue number
@@ -295,15 +280,16 @@ namespace SSK
 
         public void QueueNumber()
         {
-
-
-
             Session session = Session.Instance;
             Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
 
 
             DAL_AbsenceReporting AbSence = new DAL_AbsenceReporting();
-            int countAbSence = AbSence.CountAbsendReporing(user.UserId);
+
+            DAL_Appointments Appointment = new DAL_Appointments();
+
+            int countAbSence = 0;
+            countAbSence = Appointment.CountMyAbsence(user.UserId);
             if (countAbSence == 0)
             {
                 DAL_Notification noti = new DAL_Notification();
@@ -313,31 +299,32 @@ namespace SSK
                 }
                 else
                 {
-                    ShowQueueNumber(user);
+                    ShowQueueNumber();
                 }
             }
             else
             if (countAbSence >= 3)
             {
                 MessageBox.Show("You have been absent for 3 times or more. Report to the Duty Officer");
-                LoadScanDocumentFromQueue();
-                ShowQueueNumber(user);
+                LoadPage("DocumentFromQueue.html");
             }
             else
             if (countAbSence > 0 && countAbSence < 3)
             {
+                var absence_reporting = new List<Appointment>();
+                absence_reporting = Appointment.GetMyAppointmentAbsence(user.UserId);
+                
                 MessageBox.Show("You have been absent for " + countAbSence + " times.\nPlease provide reasons and the supporting documents.");
-                LoadReasonsFromQueue();
-            }
 
+                this._web.LoadPageHtml("ReasonsForQueue.html", absence_reporting);
+            }
         }
-        public void HamGoi(string json)
+       
+        public void ShowQueueNumber()
         {
-            int a = 0;
-            int b = a;
-        }
-        public void ShowQueueNumber(Trinity.BE.User user)
-        {
+            Session session = Session.Instance;
+            Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+
             DAL_Appointments _Appointment = new DAL_Appointments();
             Trinity.DAL.DBContext.Appointment appointment = _Appointment.GetMyAppointmentByDate(user.UserId, DateTime.Today);
             if (appointment == null)
@@ -352,7 +339,7 @@ namespace SSK
                 {
                     _dalQueue.InsertQueueNumber(appointment.ID, appointment.UserId);
                 }
-               
+
                 var model = _dalQueue.GetAllQueueNumberByDate(DateTime.Today).Select(d => new
                 {
                     Status = d.Status,
@@ -379,36 +366,34 @@ namespace SSK
             }
 
             return queueNumber;
-            
-        }
-        public void LoadScanDocumentFromQueue()
-        {
-            try
-            {
-                //APIUtils.SignalR.SendNotificationToDutyOfficer("Supervisee's information changed!", "Please check the Supervisee's information!");
-                LoadPage("DocumentFromQueue.html");
-            }
-            catch (Exception)
-            {
-                MessageBox.Show("Something wrong happened!");
-                LoadProfile();
-            }
-        }
-        public void LoadReasonsFromQueue()
-        {
-            try
-            {
-                //APIUtils.SignalR.SendNotificationToDutyOfficer("Supervisee's information changed!", "Please check the Supervisee's information!");
-                //LoadPage("ReasonsForQueue.html",0);
-                this._web.LoadPageHtml("ReasonsForQueue.html", 0);
-            }
-            catch (Exception)
-            {
-                MessageBox.Show("Something wrong happened!");
-                LoadProfile();
-            }
-        }
 
+        }
+       
+     
+        public void SaveReasonForQueue(string absence, string reason)
+        {
+            //send message to case office if no support document
+            if (reason == "No Supporting Document")
+            {
+                APIUtils.SignalR.SendNotificationToDutyOfficer("Supervisee get queue without supporting document", "Please check the Supervisee's information!");
+            }
+
+            var absence_reporting = JsonConvert.DeserializeObject<List<AbsenceReporting>>(absence);
+            
+            DAL_AbsenceReporting AbSence = new DAL_AbsenceReporting();
+            
+            //foreach (var item in absence_reporting)
+            //{
+            //    item.AbsenceReason = 1;
+            //    item.ReasonDetails = reason;
+            //    item.Status = (int)StatusEnums.Success;
+                
+
+            //    AbSence.SaveAbsendReporing(item);
+            //}
+
+            ShowQueueNumber();
+        }
         public void logOut()
         {
             // reset session value

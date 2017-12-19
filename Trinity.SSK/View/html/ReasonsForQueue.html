@@ -9,47 +9,25 @@
     <br />
     <div class="form-border">
         <div class="form-border" style="display:table-cell">
-            You have been absent for 3 reporting date.<br />
+            You have been absent for <span id="countdate"></span> reporting date.<br />
             Select date:
         </div>
-        <div>
-            <input type="radio" id="dateChoice1"
-                   name="dateChoice" value="dateChoice1">
-            <label for="dateChoice1">12/12/2017</label>
-
-            <input type="radio" id="dateChoice2"
-                   name="dateChoice" value="dateChoice2">
-            <label for="dateChoice2">14/12/2017</label>
-
-            <input type="radio" id="dateChoice3"
-                   name="dateChoice" value="dateChoice3">
-            <label for="dateChoice3">16/12/2017</label>
+        <div id="choosedate">
         </div>
         <div class="form-border" style="display:table-cell;padding: 5px !important;">
             Reason for absence:
         </div>
         <div id="reason-area" style="margin:10px 0px;">
-            <div class="reason">
-                Medical Certificate
-            </div>
-            <div class="reason">
-                Medical Certificate
-            </div>
-            <div class="reason">
-                Medical Certificate
-            </div>
-        <!--</div>
-        <div>-->
-            <div class="reason">
-                Medical Certificate
-            </div>
-            <div class="reason">
-                Medical Certificate
-            </div>
-            <div class="reason">
-                <!--don't change it-->
-                No Supporting Document
-            </div>
+
+
+            <div class="btn btn-default reason">Medical CertificateInput</div>
+            <div class="btn btn-default reason">Medical CertificateInput</div>
+            <div class="btn btn-default reason">Medical CertificateInput</div>
+            <div class="btn btn-default reason">Medical CertificateInput</div>
+            <div class="btn btn-default reason">Medical CertificateInput</div>
+            <!--don't change it-->
+            <div class="btn btn-default reason">No Supporting Document</div>
+
         </div>
     </div>
 </div>
@@ -72,24 +50,31 @@
     }
 
     .reason {
+        width: 245px;
         border: 1px solid black;
         display: inline-block;
         padding: 5px;
         margin-left: 5px;
         border-radius: 7px;
         margin: 5px 5px !important;
-
     }
 </style>
 <button type="button" class="btn btn-danger" style="position:fixed;bottom:10px;left:10px;" onclick="window.external.LoadPage('Supervisee.html');">Back</button>
+<button type="button" id="saveReason" class="btn btn-danger" style="position:fixed;bottom:10px;right:10px;">Save</button>
 
 <script type="text/javascript">
     $(document).ready(function () {
-        alert(api.model);
-        var a = {
-            a: 1,
-            b:2
-        };
-        api.server.HamGoi(JSON.stringify(a));
+        $("#countdate").text(api.model.length);
+        $.each(api.model, function (index, item) {
+            $('#choosedate').append(' <input type="checkbox" id="dateChoice' + (index + 1) + '" value= "dateChoice' + (index + 1) + '" > <label for="dateChoice' + (index + 1)  + '">' + item.GetDateTxt + '</label>');
+        });
+    });
+    $('.reason').click(function () {
+        $(this).removeClass("btn-default").addClass("btn-primary");
+    });
+    
+
+    $("#saveReason").click(function () {
+        api.server.SaveReasonForQueue(JSON.stringify(api.model), "reasontest");
     });
 </script>

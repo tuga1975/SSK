@@ -33,7 +33,5 @@ namespace Trinity.DAL
             }
             return array;
         }
-
-
     }
 }

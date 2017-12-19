@@ -13,7 +13,8 @@ public enum NavigatorEnums
     Document = 4,
     Notification = 5,
     Profile = 6,
-    Supervisee = 7
+    Supervisee = 7,
+    Supervisee_NRIC = 8
 };
 public enum StatusEnums
 {
@@ -25,7 +26,8 @@ public enum StatusEnums
     Wait = 4,
     Working = 5,
     Success = 6,
-    Miss = 7
+    Miss = 7,
+    Absence = 8
 }
 public enum Frequency
 {
