@@ -13,18 +13,20 @@ namespace Trinity.DAL
         Local_UnitOfWork _localUnitOfWork = new Local_UnitOfWork();
         Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
 
-        public void InsertQueueNumber(Guid AppointmentID, string UserId)
+        public QueueNumber InsertQueueNumber(Guid AppointmentID, string UserId)
         {
             var generateQNo = GenerateQueueNumber(_localUnitOfWork.DataContext.Users.Find(UserId).NRIC);
-            _localUnitOfWork.GetRepository<QueueNumber>().Add(new QueueNumber()
+            QueueNumber dataInsert = new QueueNumber()
             {
                 Appointment_ID = AppointmentID,
                 ID = Guid.NewGuid(),
                 CreatedTime = DateTime.Today,
                 Status = EnumQueueStatuses.Waiting,
                 QueuedNumber = generateQNo
-            });
+            };
+            _localUnitOfWork.GetRepository<QueueNumber>().Add(dataInsert);
             _localUnitOfWork.Save();
+            return dataInsert;
         }
 
 

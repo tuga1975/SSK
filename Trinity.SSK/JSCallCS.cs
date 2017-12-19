@@ -368,18 +368,20 @@ namespace SSK
             else
             {
                 var _dalQueue = new DAL_QueueNumber();
+                Trinity.DAL.DBContext.QueueNumber QueueNumber = null;
                 //check queue exist
                 if (!_dalQueue.CheckQueueExistToday(appointment.UserId))
                 {
-                    _dalQueue.InsertQueueNumber(appointment.ID, appointment.UserId);
+                    QueueNumber = _dalQueue.InsertQueueNumber(appointment.ID, appointment.UserId);
+                    RaiseOnShowMessageEvent(new ShowMessageEventArgs("Your queue is: " + QueueNumber.QueuedNumber, "Queue Number", MessageBoxButtons.OK, MessageBoxIcon.Information));
                 }
-
-                var model = _dalQueue.GetAllQueueNumberByDate(DateTime.Today).Select(d => new
+                var model = _dalQueue.GetAllQueueNumberByDate(DateTime.Today).Select(d => new Trinity.BE.QueueNumber()
                 {
                     Status = d.Status,
-                    QueueNumber = d.QueuedNumber
-                });
-                _web.LoadPageHtml("QueueNumber.html", model);
+                    Queue = d.QueuedNumber
+                }).ToList();
+                FormQueueNumber f = FormQueueNumber.GetInstance();
+                f.ShowQueueNumber(model);
             }
         }
 
