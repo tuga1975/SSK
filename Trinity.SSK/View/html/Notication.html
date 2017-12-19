@@ -53,6 +53,9 @@
     
 </style>
 <script type="text/javascript">
+    if (api.model != null) {
+
+    
     if (api.model.length > 1) {
         $('#notificationsCount').text(api.model.length + ' notifications');
     }
@@ -64,4 +67,5 @@
         $('[noti] .carousel-inner').append('<div class="item ' + (i == 0 ? 'active' : '') + '">To: Suppervise<br />Date: <br />Subject: ' + api.model[i].Subject + '<div style="margin-top: 20px;">' + api.model[i].Content + '</div></div>');
     }
     api.countNoti = 0;
+    }
 </script>
