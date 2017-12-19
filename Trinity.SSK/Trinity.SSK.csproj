@@ -118,6 +118,7 @@
     </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
+    <Reference Include="System.Speech" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -136,17 +137,23 @@
     <Compile Include="CodeBehind\Suppervisee.cs" />
     <Compile Include="Common\Enums.cs" />
     <Compile Include="Contstants\CommonConstants.cs" />
-    <Compile Include="FormAnnouncementDetails.cs">
+    <Compile Include="FormAppointmentDetails.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormAnnouncementDetails.Designer.cs">
-      <DependentUpon>FormAnnouncementDetails.cs</DependentUpon>
+    <Compile Include="FormAppointmentDetails.Designer.cs">
+      <DependentUpon>FormAppointmentDetails.cs</DependentUpon>
     </Compile>
     <Compile Include="FormQueueNumber.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormQueueNumber.Designer.cs">
       <DependentUpon>FormQueueNumber.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormTextToSpeech.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormTextToSpeech.Designer.cs">
+      <DependentUpon>FormTextToSpeech.cs</DependentUpon>
     </Compile>
     <Compile Include="Main.cs">
       <SubType>Form</SubType>
@@ -161,11 +168,14 @@
     <Compile Include="Utils\APIUtils.cs" />
     <Compile Include="Utils\Printer.cs" />
     <Compile Include="Utils\SignalR.cs" />
-    <EmbeddedResource Include="FormAnnouncementDetails.resx">
-      <DependentUpon>FormAnnouncementDetails.cs</DependentUpon>
+    <EmbeddedResource Include="FormAppointmentDetails.resx">
+      <DependentUpon>FormAppointmentDetails.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormQueueNumber.resx">
       <DependentUpon>FormQueueNumber.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormTextToSpeech.resx">
+      <DependentUpon>FormTextToSpeech.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
@@ -279,6 +289,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Business\" />
+    <Folder Include="Partial\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Trinity.BE\Trinity.BE.csproj">

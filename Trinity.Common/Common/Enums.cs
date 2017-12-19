@@ -24,7 +24,8 @@ namespace Trinity.Common.Common
         DocumentScannerNull = -1,
         UnknownError = -2,
         FingerprintNull = -3,
-        SmartCardReaderNull = -4
+        SmartCardReaderNull = -4,
+        UserNameNull = -5
     };
 
     public static class ErrorMessages
@@ -33,5 +34,6 @@ namespace Trinity.Common.Common
         public static string UnknownError = "An unknown error has occurred.";
         public static string FingerprintNull = "fingerprint_Template can not be null.";
         public static string SmartCardReaderNull = "SmartCardReader is not connected.";
+        public static string UserNameNull = "UserName can not be null.";
     }
 }

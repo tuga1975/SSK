@@ -20,6 +20,8 @@ namespace SSK
             //
             DeviceMonitor.Start();
             Application.Run(new Main());
+            //Application.Run(new FormTextToSpeech());
+            //Application.Run(new FormAppointmentDetails());
         }
     }
 }
