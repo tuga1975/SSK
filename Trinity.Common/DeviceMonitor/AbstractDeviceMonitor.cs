@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SSK.DeviceMonitor
+namespace Trinity.Common.DeviceMonitor
 {
-    class HealthMonitor
+    public abstract class AbstractDeviceMonitor
     {
+        public abstract void Start();
     }
 }

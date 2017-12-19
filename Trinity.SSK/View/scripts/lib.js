@@ -19,6 +19,14 @@
                 }, 100);
             }
         }
+    },
+    callback: [],
+    callback_this: [],
+    Guid: function () {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+            var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
     }
 }
 
@@ -41,13 +49,36 @@ function createEvent(arrayFun) {
     arrayFun = JSON.parse(arrayFun);
     arrayFun.forEach(function (fun) {
         api.server[fun] = function () {
-            var arg = arguments || [];
+            var arg = [];
+            var callback = null;
+            var Guid = api.Guid();
+            $.each(arguments || [], function (index, item) {
+                if (typeof item == 'function')
+                    callback = item;
+                else
+                    arg.push(item);
+            });
             api.loading(true);
-            eval('window.external.ClientCallServer("' + fun + '"' + createArguments(arg) + ');');
+            if (callback != null) {
+                api.callback_this[Guid] = this;
+                api.callback[Guid] = callback;
+                eval('window.external.ClientCallServer("' + fun + '","' + Guid +'"' + createArguments(arg) + ');');
+            } else {
+                eval('window.external.ClientCallServer("' + fun + '",null' + createArguments(arg) + ');');
+            }
         }
     });
-
-
+}
+function callEventCallBack(guid, model) {
+    var call = api.callback[guid];
+    if (typeof item != 'undefined') {
+        if (model!=null)
+            call.call(api.callback_this[guid], JSON.parse(model));
+        else
+            call.call(api.callback_this[guid]);
+        delete api.callback_this[guid];
+        delete api.callback[guid];
+    }
 }
 function createArguments(arguments) {
     var array = Array.prototype.slice.call(arguments);

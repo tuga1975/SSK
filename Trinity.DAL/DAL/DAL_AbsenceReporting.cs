@@ -16,9 +16,11 @@ namespace Trinity.DAL
         {
             return _localUnitOfWork.DataContext.AbsenceReportings.Where(d => d.UserId == UserId).ToList();
         }
-        public int CountAbsendReporing(string UserId)
+
+        public int SaveAbsendReporing(AbsenceReporting absenceReporting)
         {
-            return _localUnitOfWork.DataContext.AbsenceReportings.Count(d=> d.UserId == UserId && d.Status==(int)StatusEnums.Create);
+            _localUnitOfWork.GetRepository<AbsenceReporting>().Update(absenceReporting);
+            return _localUnitOfWork.Save();
         }
     }
 }

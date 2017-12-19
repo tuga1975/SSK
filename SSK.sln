@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26403.7
+VisualStudioVersion = 15.0.27130.2003
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trinity.SSK", "Trinity.SSK\Trinity.SSK.csproj", "{B65ECADC-0BC9-4B1A-84EE-C1FE0541A787}"
 EndProject
@@ -14,6 +14,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trinity.BE", "Trinity.BE\Trinity.BE.csproj", "{4321FA96-3A53-49C1-89EF-8A2F6E9B81C7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trinity.Common", "Trinity.Common\Trinity.Common.csproj", "{6C023597-F6BA-4857-9C3B-82D91EB4B4A3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocumentScannerTest", "DocumentScannerTest\DocumentScannerTest.csproj", "{0417DDE4-5395-45A2-8518-BAD1112C8FD7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{6C023597-F6BA-4857-9C3B-82D91EB4B4A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6C023597-F6BA-4857-9C3B-82D91EB4B4A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6C023597-F6BA-4857-9C3B-82D91EB4B4A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0417DDE4-5395-45A2-8518-BAD1112C8FD7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0417DDE4-5395-45A2-8518-BAD1112C8FD7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0417DDE4-5395-45A2-8518-BAD1112C8FD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0417DDE4-5395-45A2-8518-BAD1112C8FD7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

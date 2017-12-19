@@ -134,6 +134,8 @@
     <Compile Include="CodeBehind\Authentication\NRIC.cs" />
     <Compile Include="CodeBehind\Authentication\SmartCard.cs" />
     <Compile Include="CodeBehind\Document.cs" />
+    <Compile Include="CodeBehind\Suppervisee.cs" />
+    <Compile Include="Common\Enums.cs" />
     <Compile Include="Contstants\CommonConstants.cs" />
     <Compile Include="DeviceMonitor\DeviceMonitor.cs" />
     <Compile Include="DeviceMonitor\FingerprintMonitor.cs" />
@@ -165,14 +167,10 @@
     </Compile>
     <Compile Include="JSCallCS.cs" />
     <Compile Include="CSCallJS.cs" />
-    <Compile Include="Models\Order.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\APIUtils.cs" />
-    <Compile Include="Utils\BarcodeScannerUtils.cs" />
-    <Compile Include="Utils\DocumentScannerUtils.cs" />
-    <Compile Include="Utils\FingerprintReaderUtils.cs" />
-    <Compile Include="Utils\ReceiptPrinterUtils.cs" />
+    <Compile Include="Utils\Printer.cs" />
     <Compile Include="Utils\SignalR.cs" />
     <Compile Include="Utils\SmartCardReaderUtils.cs" />
     <EmbeddedResource Include="FormAppointmentDetails.resx">
@@ -283,6 +281,7 @@
     <Content Include="View\html\Supervisee.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="View\html\TeamplatePrinter\BookAppointmentTemplate.html" />
     <Content Include="View\img\Logo.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
