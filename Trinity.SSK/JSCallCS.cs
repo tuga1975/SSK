@@ -4,12 +4,12 @@ using SSK.Common;
 using SSK.Contstants;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
 using Trinity.Common;
 using Trinity.DAL;
-using System.Linq;
 using Trinity.DAL.DBContext;
 
 namespace SSK
@@ -66,7 +66,7 @@ namespace SSK
         public void SpeakNotification(string notificationId)
         {
             var dalNotify = new DAL_Notification();
-            var content = dalNotify.GetNotificationContentById(int.Parse(notificationId),false);
+            var content = dalNotify.GetNotificationContentById(int.Parse(notificationId), false);
             APIUtils.TextToSpeech.Speak(content);
         }
 
@@ -132,8 +132,6 @@ namespace SSK
                 {
                     Trinity.BE.User user = (Trinity.BE.User)session[Contstants.CommonConstants.USER_LOGIN];
 
-
-
                     var dalUser = new Trinity.DAL.DAL_User();
                     var dalUserprofile = new Trinity.DAL.DAL_UserProfile();
                     var profileModel = new Trinity.BE.ProfileModel
@@ -141,32 +139,11 @@ namespace SSK
                         User = dalUser.GetUserByUserId(user.UserId, true),
                         UserProfile = dalUserprofile.GetUserProfileByUserId(user.UserId, true),
                         Addresses = dalUserprofile.GetAddressByUserId(user.UserId, true)
-
                     };
 
                     //profile model 
-
                     _web.LoadPageHtml("Profile.html", profileModel);
                 }
-                //for testing purpose
-                else
-                {
-                    Trinity.BE.User user = new Trinity.BE.User();
-                    user.UserId = "df0153ad-9a26-43e7-af3d-7406dd65defe";
-
-                    var dalUser = new Trinity.DAL.DAL_User();
-                    var dalUserprofile = new Trinity.DAL.DAL_UserProfile();
-                    var profileModel = new Trinity.BE.ProfileModel
-                    {
-                        User = dalUser.GetUserByUserId(user.UserId, true),
-                        UserProfile = dalUserprofile.GetUserProfileByUserId(user.UserId, true),
-                        Addresses = dalUserprofile.GetAddressByUserId(user.UserId, true)
-
-                    };
-
-                    _web.LoadPageHtml("Profile.html", profileModel);
-                }
-
             }
             catch (Exception ex)
             {
@@ -337,7 +314,7 @@ namespace SSK
             Trinity.DAL.DBContext.Appointment appointment = _Appointment.GetMyAppointmentByDate(user.UserId, DateTime.Today);
             if (appointment == null)
             {
-                MessageBox.Show("You have no appointment");
+                MessageBox.Show("You have no appointment today");
             }
             else
             {
@@ -369,7 +346,15 @@ namespace SSK
             }
 
             var listAppointment = JsonConvert.DeserializeObject<List<Appointment>>(data);
-            var reasonModel = JsonConvert.DeserializeObject<Trinity.BE.Reason>(reason);
+            Trinity.BE.Reason reasonModel = JsonConvert.DeserializeObject<Trinity.BE.Reason>(reason);
+            if (reasonModel == null)
+            {
+                reasonModel = new Trinity.BE.Reason()
+                {
+                    Detail = "",
+                    Value = (int)EnumAbsenceReasons.No_Valid_Reason
+                };
+            }
             //create absence report 
             var dalAbsence = new DAL_AbsenceReporting();
             var absenceModel = dalAbsence.SetInfo(reasonModel);
@@ -383,8 +368,10 @@ namespace SSK
                 }
             }
             //send notify to case officer
-            APIUtils.SignalR.SendNotificationToDutyOfficer("Supervisee's information changed!", "Please check the Supervisee's information!");
-
+            Session currentSession = Session.Instance;
+            Trinity.BE.User user = (Trinity.BE.User)currentSession[CommonConstants.USER_LOGIN];
+            APIUtils.SignalR.SendNotificationToDutyOfficer(user.Name + " has provided absent reason", user.Name + " has provided absent reason.");
+            ReportingForQueueNumber();
             LoadPage("Supervisee.html");
         }
 

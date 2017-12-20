@@ -17,9 +17,8 @@ namespace Trinity.BE
         {
 
         }
-
-
     }
+
     public class ProfileRawMData
     {
         public string UserId { get; set; }
@@ -109,9 +108,9 @@ namespace Trinity.BE
                 }
             };
             return profileModel;
-
         }
     }
+
     [Serializable]
     public class Address
     {
@@ -127,7 +126,5 @@ namespace Trinity.BE
         public string Country { get; set; }
         [DataMember]
         public string Postal_Code { get; set; }
-
     }
-
 }
