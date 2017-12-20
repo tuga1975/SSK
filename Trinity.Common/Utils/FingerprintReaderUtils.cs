@@ -39,6 +39,7 @@ namespace Trinity.Common
         FutronicVerification _futronicVerification;
         OnVerificationCompleteHandler _onVerificationComplete;
 
+
         public FingerprintScannerStartResult StartVerification(OnVerificationCompleteHandler onVerificationComplete, byte[] fingerprint_Template)
         {
             // Create returnValue
@@ -75,7 +76,7 @@ namespace Trinity.Common
                 _futronicVerification.MinOverlappedLevel = 3;
 
                 // register events
-                _futronicVerification.OnPutOn += this.OnPutOn;
+                _futronicVerification.OnPutOn += OnPutOn;
                 _futronicVerification.OnTakeOff += OnTakeOff;
                 //futronicVerification.UpdateScreenImage += new UpdateScreenImageHandler(this.UpdateScreenImage);
                 _futronicVerification.OnFakeSource += OnFakeSource;
@@ -132,6 +133,41 @@ namespace Trinity.Common
         private void OnPutOn(FTR_PROGRESS Progress)
         {
             Console.WriteLine("Put finger into device, please ...");
+        }
+
+        public void GetDeviceStatus(OnVerificationCompleteHandler onVerificationComplete)
+        {
+            try
+            {
+                Debug.WriteLine("OnGetDeviceStatusCompleted is starting, please wait ...");
+                var test = new byte[100];
+                test[0] = 1;
+                _futronicVerification = new FutronicVerification(new byte[100]);
+
+                // Set control properties
+                _futronicVerification.FakeDetection = true;
+                _futronicVerification.FFDControl = true;
+                _futronicVerification.FARN = 200;
+                _futronicVerification.Version = VersionCompatible.ftr_version_compatible;
+                _futronicVerification.FastMode = true;
+                _futronicVerification.MinMinuitaeLevel = 3;
+                _futronicVerification.MinOverlappedLevel = 3;
+
+                // register events
+                _futronicVerification.OnPutOn += OnPutOn;
+                _futronicVerification.OnTakeOff += OnTakeOff;
+                //futronicVerification.UpdateScreenImage += new UpdateScreenImageHandler(this.UpdateScreenImage);
+                _futronicVerification.OnFakeSource += OnFakeSource;
+                _futronicVerification.OnVerificationComplete += onVerificationComplete;
+
+                // start verification process
+                this._futronicVerification.Verification();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("GetDeviceStatus Exception: ");
+                Debug.WriteLine(ex.Message);
+            }
         }
     }
 

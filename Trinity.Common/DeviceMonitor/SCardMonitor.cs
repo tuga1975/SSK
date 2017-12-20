@@ -11,7 +11,7 @@ namespace Trinity.Common.Monitor
 {
     public class SCardMonitor
     {
-        SmartCardReaderUtils _smartCardReaderUtils = SmartCardReaderUtils.Instance;
+        SmartCardReaderUtils _smartCardReaderUtils;
 
         #region Singleton Implementation
         // The variable is declared to be volatile to ensure that assignment to the instance variable completes before the instance variable can be accessed
@@ -40,16 +40,48 @@ namespace Trinity.Common.Monitor
         }
         #endregion
 
+        public event Action OnNoSmartCardReaderConnected;
+        public event EventHandler<SmartCardReaderConnectedArgs> OnSmartCardReaderConnected;
 
-        // Start monitor
+        protected virtual void RaiseNoDeviceConnectedEvent()
+        {
+            // Make a temporary copy of the event to avoid possibility of
+            // a race condition if the last subscriber unsubscribes
+            // immediately after the null check and before the event is raised.
+            OnNoSmartCardReaderConnected?.Invoke();
+        }
+
+        protected virtual void RaiseDeviceConnectedEvent( SmartCardReaderConnectedArgs e)
+        {
+            OnSmartCardReaderConnected?.Invoke(this, e);
+        }
+
+        /// <summary>
+        /// start monitoring
+        /// </summary>
         public void Start()
         {
-            // start a thread for health check
+            // initialize SmartCardReaderUtils
+            _smartCardReaderUtils = SmartCardReaderUtils.Instance;
+
+            // register events
+            _smartCardReaderUtils.OnDeviceConnected += OnDeviceConnected;
+            _smartCardReaderUtils.OnNoDeviceConnected += OnNoDeviceConnected;
 
             // StartSmartCardReaderMonitor
             bool startCardReaderMonitorResult = _smartCardReaderUtils.StartSmartCardReaderMonitor();
 
             // if CardReaderMonitor is false, start a thread to restart
+        }
+
+        private void OnNoDeviceConnected()
+        {
+            RaiseNoDeviceConnectedEvent();
+        }
+
+        private void OnDeviceConnected(object sender, SmartCardReaderConnectedArgs e)
+        {
+            RaiseDeviceConnectedEvent(e);
         }
 
         public SCardReaderStartResult StartCardMonitor(CardInitializedEvent onCardInitialized, CardInsertedEvent onCardInserted, CardRemovedEvent onCardRemoved)
@@ -65,6 +97,14 @@ namespace Trinity.Common.Monitor
         public void Stop()
         {
             _smartCardReaderUtils.StopSmartCardMonitor();
+        }
+
+        /// <summary>
+        /// GetDeviceStatus
+        /// </summary>
+        public DeviceStatus GetDeviceStatus()
+        {
+            return SmartCardReaderUtils.Instance.GetDeviceStatus();
         }
     }
 

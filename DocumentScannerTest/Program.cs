@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Trinity.Common.Common;
 using Trinity.Common.DeviceMonitor;
+using Trinity.Common.Monitor;
 using Trinity.Common.Utils;
 
 namespace DocumentScannerTest
@@ -20,7 +21,34 @@ namespace DocumentScannerTest
             // StartDocumentScannerMonitor();
 
             // TSC Bar code scanner
-            StartBarcodeScanner();
+            // StartBarcodeScanner();
+
+            // PrinterMonitor checkstatus
+            ReportPrinterStatus();
+        }
+
+        private static void ReportPrinterStatus()
+        {
+            Console.WriteLine("ReportPrinterStatus is starting...");
+            FingerprintMonitor fingerprintMonitor  = FingerprintMonitor.Instance;
+            fingerprintMonitor.OnGetDeviceStatusCompleted += OnGetDeviceStatusCompleted;
+            //fingerprintMonitor.StartVerification(OnVerificationComplete, new byte[10]);
+            fingerprintMonitor.StartCheckingDeviceStatus();
+
+            Console.ReadKey();
+        }
+
+        private static void OnVerificationComplete(bool bSuccess, int nResult, bool bVerificationSuccess)
+        {
+
+            Console.WriteLine("OnVerificationComplete :" + bSuccess);
+        }
+
+        private static void OnGetDeviceStatusCompleted(object sender, GetDeviceStatusCompletedArgs e)
+        {
+            Console.WriteLine("OnGetDeviceStatusCompleted :" + e.IsConnected);
+
+            // report the result to server
         }
 
         private static void StartBarcodeScanner()
@@ -28,9 +56,6 @@ namespace DocumentScannerTest
             try
             {
                 Console.WriteLine("StartBarcodeScanner is starting...");
-                string userName = "Avril Lavigne";
-                string nric = "S1234567G";  
-                string dob = "01/01/1990";  
                 //TSCLIB_DLL.about();                                                                 //Show the DLL version
                 //BarcodeScannerUtils.openport("TSC TTP-244 PRO");                                           //Open specified printer driver
                 //                                                                                           // 2.8"x1.4"
@@ -49,17 +74,26 @@ namespace DocumentScannerTest
                 //BarcodeScannerUtils.closeport();
 
                 PrinterMonitor printerMonitor = PrinterMonitor.Instance;
-                printerMonitor.OnPrintUserInfo_BarcodeSucceeded += OnPrintUserInfo_BarcodeSucceeded;
+                printerMonitor.OnPrintLabelSucceeded += OnPrintUserInfo_BarcodeSucceeded;
                 printerMonitor.OnMonitorException += OnMonitorException;
 
-                BarcodeScannerUtils barcodeScannerUtils = BarcodeScannerUtils.Instance; 
-                if (barcodeScannerUtils.GetDeviceStatus() == DeviceStatus.Connected)
+                var test = DeviceManagement.GetUSBDevices();
+
+                BarcodePrinterUtils barcodeScannerUtils = BarcodePrinterUtils.Instance;
+                UserInfo userInfo = new UserInfo()
                 {
-                    printerMonitor.PrintUserInfo_Barcode(userName, nric, dob);
+                    UserName = "Avril Lavigne",
+                    NRIC = "S1234567G",
+                    DOB = "01/01/1970"
+                };
+
+                if (barcodeScannerUtils.GetDeviceStatus().Connected)
+                {
+                    printerMonitor.PrintLabel(userInfo);
                 }
                 else
                 {
-                    Console.WriteLine("printer is not connected.");
+                    Console.WriteLine("Barcode printer is not connected.");
                 }
 
                 Console.ReadKey();

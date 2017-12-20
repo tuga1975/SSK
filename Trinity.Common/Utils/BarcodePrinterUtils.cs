@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
+using System.Management;
+using System.Printing;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,18 +12,18 @@ using Trinity.Common.Common;
 
 namespace Trinity.Common.Utils
 {
-    public class BarcodeScannerUtils
+    public class BarcodePrinterUtils
     {
         #region Singleton Implementation
         // The variable is declared to be volatile to ensure that assignment to the instance variable completes before the instance variable can be accessed
-        private static volatile BarcodeScannerUtils _instance;
+        private static volatile BarcodePrinterUtils _instance;
 
         // Uses a syncRoot instance to lock on, rather than locking on the type itself, to avoid deadlocks.
         private static object syncRoot = new Object();
 
-        private BarcodeScannerUtils() { }
+        private BarcodePrinterUtils() { }
 
-        public static BarcodeScannerUtils Instance
+        public static BarcodePrinterUtils Instance
         {
             get
             {
@@ -30,7 +32,7 @@ namespace Trinity.Common.Utils
                     lock (syncRoot)
                     {
                         if (_instance == null)
-                            _instance = new BarcodeScannerUtils();
+                            _instance = new BarcodePrinterUtils();
                     }
                 }
 
@@ -46,17 +48,17 @@ namespace Trinity.Common.Utils
         /// <param name="nric">nric (e.g S1234567G)</param>
         /// <param name="dob">date of birth (dd/MM/yyyy)</param>
         /// <returns>call printer success or not</returns>
-        public bool PrintUserInfo(string userName, string nric, string dob)
+        public bool PrintUserInfo(UserInfo userInfo)
         {
             try
             {
                 // user name can not be null
-                if (string.IsNullOrEmpty(userName) || userName.Length == 0)
+                if (string.IsNullOrEmpty(userInfo.UserName) || string.IsNullOrEmpty(userInfo.NRIC))
                 {
                     return false;
                 }
 
-                // barcodePrinter = "TSC TTP-244 PRO"
+                // barcodePrinter = "TSC TTP-244 Pro"
                 string barcodePrinter = ConfigurationManager.AppSettings["BarcodePrinterName"];
                 //TSCLIB_DLL.about();  //Show the DLL version
                 TSCLIB_DLL.openport(barcodePrinter);                                           //Open specified printer driver
@@ -64,13 +66,13 @@ namespace Trinity.Common.Utils
                 // actually 71.12mm x 42.5mm
                 TSCLIB_DLL.setup("71.12", "42.5", "4", "8", "0", "0", "0");                           //Setup the media size and sensor type info
                 TSCLIB_DLL.clearbuffer();                                                           //Clear image buffer
-                TSCLIB_DLL.barcode("170", "0", "128", "100", "1", "0", "2", "6", nric); //Drawing barcode
+                TSCLIB_DLL.barcode("170", "0", "128", "100", "1", "0", "2", "6", userInfo.NRIC); //Drawing barcode
                 //TSCLIB_DLL.printerfont("100", "300", "3", "0", "1", "1", "Print Font Test");        //Drawing printer font
                 // max 35 chars per line
                 // 20~ units per char => 700~ units per line
-                int x = (35 - userName.Length) / 2;
-                TSCLIB_DLL.windowsfont(x * 17, 150, 40, 0, 0, 0, "ARIAL", userName);  //Draw windows font
-                TSCLIB_DLL.windowsfont(210, 200, 36, 0, 0, 0, "ARIAL", dob);  //Draw windows font
+                int x = (35 - userInfo.UserName.Length) / 2;
+                TSCLIB_DLL.windowsfont(x * 17, 150, 40, 0, 0, 0, "ARIAL", userInfo.UserName);  //Draw windows font
+                TSCLIB_DLL.windowsfont(210, 200, 36, 0, 0, 0, "ARIAL", userInfo.DOB);  //Draw windows font
                 TSCLIB_DLL.downloadpcx("UL.PCX", "UL.PCX");                                         //Download PCX file into printer
                 TSCLIB_DLL.sendcommand("PUTPCX 100,400,\"UL.PCX\"");                                //Drawing PCX graphic
                 TSCLIB_DLL.printlabel("1", "1");                                                    //Print labels
@@ -86,22 +88,76 @@ namespace Trinity.Common.Utils
         }
 
         /// <summary>
-        /// GetDeviceStatus
+        /// get barcode printer status
         /// </summary>
-        /// <returns>device is connected or not</returns>
-        public DeviceStatus GetDeviceStatus()
+        /// <returns>PrinterStatus</returns>
+        public PrinterStatus GetDeviceStatus()
         {
-            string barcodePrinter = ConfigurationManager.AppSettings["BarcodePrinterName"].ToUpper();
-            var test = System.Drawing.Printing.PrinterSettings.InstalledPrinters;
-            foreach (string printer in System.Drawing.Printing.PrinterSettings.InstalledPrinters)
+            // get barcodePrinter name from appconfig
+            string barcodePrinterName = ConfigurationManager.AppSettings["BarcodePrinterName"].ToUpper();
+
+            // check printer is connected or not
+            if (!IsPrinterConnected(barcodePrinterName))
             {
-                if (barcodePrinter == printer.ToUpper())
-                {
-                    return DeviceStatus.Connected;
-                }
+                return new PrinterStatus();
             }
 
-            return DeviceStatus.Disconnected;
+            // Get a list of available printers (installed printers).
+            var printServer = new PrintServer();
+            var printQueues = printServer.GetPrintQueues(new[] { EnumeratedPrintQueueTypes.Local, EnumeratedPrintQueueTypes.Connections });
+
+            // Get barcode printer
+            PrintQueue printQueue = printQueues.FirstOrDefault(p => p.Name.ToUpper() == barcodePrinterName);
+
+            // if barcode printer is null, return disconnected
+            if (printQueue == null)
+            {
+                return new PrinterStatus();
+            }
+
+            // set returnValue
+            PrinterStatus printerStatus = new PrinterStatus(printQueue);
+            return printerStatus;
+        }
+
+        private bool IsPrinterConnected(string barcodePrinterName)
+        {
+            try
+            {
+                //ManagementScope scope = new ManagementScope(@"\root\cimv2");
+                //scope.Connect();
+
+                // Select Printers from WMI Object Collections
+                ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT * FROM Win32_Printer");
+
+                string printerName = "";
+                foreach (ManagementObject printer in searcher.Get())
+                {
+                    printerName = printer["Name"].ToString().ToUpper();
+                    if (printerName.Equals(barcodePrinterName))
+                    {
+                        if (printer["WorkOffline"].ToString().ToLower().Equals("true"))
+                        {
+                            // printer is offline by user
+                            Debug.WriteLine(barcodePrinterName + ": Your barcode printer is not connected.");
+                            return false;
+                        }
+                        else
+                        {
+                            // printer is not offline
+                            Debug.WriteLine(barcodePrinterName + ": Your barcode printer is connected.");
+                            return true;
+                        }
+                    }
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("IsPrinterConnected exception: " + ex.ToString());
+                return false;
+            }
         }
     }
 
