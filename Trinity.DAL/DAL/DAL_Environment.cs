@@ -21,16 +21,16 @@ namespace Trinity.DAL
             if (setting != null)
             {
                 var allTimeBooked = _localUnitOfWork.DataContext.Appointments.Where(d => d.Date == date.Date && d.FromTime.HasValue && d.ToTime.HasValue).Select(d => d.FromTime.Value.Hours + d.FromTime.Value.Minutes + d.ToTime.Value.Hours + d.ToTime.Value.Minutes).Distinct().ToList();
-
-
+                var morningTimeSpan = new TimeSpan(12, 0, 0);
+                var eveningTimeSpan = new TimeSpan(17, 0, 0);
                 while (setting.StartTime < setting.EndTime)
                 {
                     var setTime = SetEnviromentTime(setting, allTimeBooked);
-                    if (setTime.EndTime.Hours <= 12)
+                    if (setTime.EndTime <= morningTimeSpan)
                     {
                         appointmentTime.Morning.Add(setTime);
                     }
-                    else if (setTime.EndTime.Hours > 17)
+                    else if (setTime.EndTime > eveningTimeSpan)
                     {
                         appointmentTime.Evening.Add(setTime);
                     }

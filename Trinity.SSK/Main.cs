@@ -97,7 +97,7 @@ namespace SSK
             //Trinity.BE.User user = new DAL_User().GetUserByUserId("656ebbb1-190b-4c8a-9d77-ffa4ff4c9e93", true);
             //session[CommonConstants.USER_LOGIN] = user;
 
-            //OnNavigate(new object(), new NavigateEventArgs(NavigatorEnums.Supervisee));
+            //NavigateTo(NavigatorEnums.Supervisee);
         }
 
         private void NRIC_OnNRICSucceeded()

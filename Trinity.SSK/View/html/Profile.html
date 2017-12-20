@@ -181,20 +181,25 @@
             <br />
             <div class="input-group">
                 <span class="input-group-addon">Remarks</span>
-                <input id="Remarks" type="text"  class="form-control" name="Remarks" />
+                <input id="Remarks" type="text" class="form-control" name="Remarks" />
             </div>
         </div>
+        <div>
+
+            <div style="display:none;" id="divError"><span class="text-danger">Following input must not null!</span></div>
+            <div style="display:block;float:left;" id=""><span class="text-danger">* Supporting documents required </span></div>
+        </div>
     </div>
-    <div style="display:none;float:left;" id="divError"><span class="text-danger">Following input must not null!</span></div>
+    
     <div style="display:none;float:right;" id="divSupportDocument">
         <button type="button" class="btn btn-danger" style="position:fixed;bottom:10px;right:150px;" id="btnScan">Scan documents</button>
         <button type="button" class="btn btn-dark" style="position:fixed;bottom:10px;left:10px;float:left;" onclick="api.server.LoadPage('Supervisee.html');">Back</button>
     </div>
     <!--<div style="float:right;" id="tempSupportDocument">
         <button type="button" class="btn btn-danger" style="position:fixed;bottom:10px;right:150px;" id="btnScan">Scan documents</button>
-        
+
     </div>-->
-    <div style="display:none;float:right;" id="divConfirm" >
+    <div style="display:none;float:right;" id="divConfirm">
         <p style="position:fixed;z-index:100;bottom:45px;right:10px;"><strong>Are you sure ?</strong></p>
         <button type="button" class="btn btn-dark" style="position:fixed;bottom:10px;right:60px; float:right;" id="btnCancel">Cancel</button>
         <button type="submit" class="btn btn-success" style="position:fixed;bottom:10px;right:10px; float:right;" id="btnOK">OK</button>
