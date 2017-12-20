@@ -78,7 +78,9 @@
             pointer-events: none;
         }
 </style>
-<button type="button" class="btn btn-danger" style="position:fixed;bottom:10px;right:20px;" onclick="window.external.LoadPage('Supervisee.html');">Back</button>
+
+<button type="button" class="btn btn-danger" style="position:fixed;bottom:10px;right:100px;" id="btnPrintDetail">Print Appointment Details</button>
+<button type="button" class="btn btn-dark" style="position:fixed;bottom:10px;right:20px;" onclick="window.external.LoadPage('Supervisee.html');">Back</button>
 
 <script type="text/javascript">
     $(document).ready(function () {
@@ -104,7 +106,6 @@
             var _this = $(this);
             var startTime = _this.attr('start');
             var endTime = _this.attr('end');
-
             if (api.model[0].ChangedCount >= 3) {
                 alert('You have exceeded the number of times allowed for time slot change. Please keep to your timeslot ' + startTime + ' on ' + api.model[0].FromTimeTxt + '. Otherwise, please contact your case officer.');
             } else {
@@ -120,5 +121,9 @@
                 }
             }
         });
+    });
+    $('#btnPrintDetail').click(function () {
+     
+        api.server.PrintAppointmentDetails(api.model[0].ID)
     });
 </script>

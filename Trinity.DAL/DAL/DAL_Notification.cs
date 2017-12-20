@@ -13,7 +13,17 @@ namespace Trinity.DAL
         Local_UnitOfWork _localUnitOfWork = new Local_UnitOfWork();
         Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
 
-
+        public string GetNotificationContentById(int id,bool isLocal)
+        {
+            if (isLocal)
+            {
+                return _localUnitOfWork.DataContext.Notifications.Find(id).Content;
+            }
+            else
+            {
+                return _centralizedUnitOfWork.DataContext.Notifications.Find(id).Content;
+            }
+        }
 
         public int CountGetMyNotifications(string myUserId, bool isLocal)
         {

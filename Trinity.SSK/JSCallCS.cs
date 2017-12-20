@@ -63,6 +63,13 @@ namespace SSK
             var model = myNotifications;
             _web.LoadPageHtml("Notication.html", myNotifications);
         }
+        public void SpeakNotification(string notificationId)
+        {
+            var dalNotify = new DAL_Notification();
+            var content = dalNotify.GetNotificationContentById(int.Parse(notificationId),false);
+            APIUtils.TextToSpeech.Speak(content);
+        }
+
         #region BookAppointment
         public void BookAppointment()
         {
@@ -105,6 +112,13 @@ namespace SSK
 
             APIUtils.Printer.PrintFormFile("BookAppointmentTemplate.html", appointment);
             return timeStart;
+        }
+
+        public void PrintAppointmentDetails(string appointmentId)
+        {
+            var dalAppointment = new DAL_Appointments();
+            var appointment = dalAppointment.GetMyAppointmentByID(Guid.Parse(appointmentId));
+            APIUtils.Printer.PrintFormFile("BookAppointmentTemplate.html", appointment);
         }
         #endregion
         public void LoadProfile()
@@ -369,7 +383,7 @@ namespace SSK
             //send notify to case officer
             APIUtils.SignalR.SendNotificationToDutyOfficer("Supervisee's information changed!", "Please check the Supervisee's information!");
 
-            ReportingForQueueNumber();
+            LoadPage("Supervisee.html");
         }
 
         public void UpdateAbsenceAfterScanDoc()
@@ -391,7 +405,7 @@ namespace SSK
                 }
             }
 
-            ReportingForQueueNumber();
+            LoadPage("Supervisee.html");
 
         }
         public void LogOut()

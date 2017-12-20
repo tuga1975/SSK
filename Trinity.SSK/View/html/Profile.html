@@ -29,7 +29,7 @@
         <input type="hidden" name="SmartCardId" id="SmartCardId" />
         <input type="hidden" name="Fingerprint" id="Fingerprint" />
         <input type="hidden" name="UserStatus" id="UserStatus" />
-        <div id="Particulars" class="tab-pane fade in active" onclick="activeTab('Particulars');">
+        <div id="Particulars" class="tab-pane fade in active" onclick="activeTab('Particulars');" style="height:350px;overflow:auto;">
             <div class="input-group">
                 <span class="input-group-addon"><span style="color:red">*</span>Name</span>
                 <input id="ParticularsName" type="text" class="form-control pri" name="ParticularsName" placeholder="Name">
@@ -80,7 +80,7 @@
             <br />
 
         </div>
-        <div id="Addresses" class="tab-pane fade" onclick="activeTab('Addresses');">
+        <div id="Addresses" class="tab-pane fade" onclick="activeTab('Addresses');"style="height:350px;overflow:auto;">
 
             <input type="hidden" name="Residential_Addess_ID" id="Residential_Addess_ID" />
             <input type="hidden" name="Other_Address_ID" id="Other_Address_ID" />
@@ -106,7 +106,7 @@
             </div>
         </div>
 
-        <div id="Next-Of-Kin-Details" class="tab-pane fade" onclick="activeTab('Next-Of-Kin-Details');">
+        <div id="Next-Of-Kin-Details" class="tab-pane fade" onclick="activeTab('Next-Of-Kin-Details');"style="height:350px;overflow:auto;">
             <div class="input-group">
                 <span class="input-group-addon">Name</span>
                 <input id="NextOfKinDetailsName" type="text" class="form-control" name="NextOfKinDetailsName" />
@@ -148,7 +148,7 @@
             </div>
             <br />
         </div>
-        <div id="Employment-Details" class="tab-pane fade" onclick="activeTab('Employment-Details');">
+        <div id="Employment-Details" class="tab-pane fade" onclick="activeTab('Employment-Details');"style="height:350px;overflow:auto;">
             <div class="input-group">
                 <span class="input-group-addon">Employer Name</span>
                 <input id="EmployerName" type="text" class="form-control" name="EmployerName" />
@@ -187,7 +187,7 @@
         <div>
 
             <div style="display:none;" id="divError"><span class="text-danger">Following input must not null!</span></div>
-            <div style="display:block;float:left;" id=""><span class="text-danger">* Supporting documents required </span></div>
+            <div style="float:left;" id="noticeMess"><span class="text-danger">* Supporting documents required </span></div>
         </div>
     </div>
     
@@ -272,6 +272,10 @@
     function activeTab(name) {
         $('#activeTab').val(name);
         $('#divError').hide();
+        if (name!="Particulars") {
+            $('#noticeMess').hide();
+        }
+      
     }
 
     $("#profileFrm").submit(function (e) {
@@ -310,7 +314,7 @@
      
         if ($('#ParticularsName').val() != _particularName || $('#NRIC').val() != _nric || $('#DOB').val() != _dob || $('#Nationality').val() != _nationality || $('#MaritalStatus').val() != _maritalStatus) {
             //$('#divSave').hide();
-            $('#divError').show();
+            //$('#divError').show();
             $('#divSupportDocument').fadeIn(1000);
             $("input[class='form-control pri']").each(function () {
                 if ($(this).val() == "") {
@@ -323,7 +327,7 @@
             });
         }
         else {
-
+            $('#divSupportDocument').hide();
             var activeTab = $('#activeTab').val();
             var empty = $('#' + activeTab).find("input[class='form-control pri']").filter(function () {
                 return this.value.trim() === "";
@@ -373,7 +377,13 @@
     
     $('input[class="form-control pri"]').keyup(function () {
         $('#divSave').show();
-        $('#divSupportDocument').fadeIn(1000);
+        if ($('#ParticularsName').val() != _particularName || $('#NRIC').val() != _nric || $('#DOB').val() != _dob || $('#Nationality').val() != _nationality || $('#MaritalStatus').val() != _maritalStatus) {
+            $('#divSupportDocument').fadeIn(1000);
+        }
+        else {
+            $('#divSupportDocument').fadeOut(500);
+        }
+        
         if ($(this).val() != "") {
             $(this).removeClass('highlight');
 

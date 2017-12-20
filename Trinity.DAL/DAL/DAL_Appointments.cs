@@ -41,13 +41,13 @@ namespace Trinity.DAL
         }
         public int CountMyAbsence(string UserID)
         {
-            return _localUnitOfWork.DataContext.Appointments.Count(d => d.UserId == UserID && d.Date < DateTime.Today && (d.Status == (int)EnumAppointmentStatuses.Pending &&
+            return _localUnitOfWork.DataContext.Appointments.Count(d => d.UserId == UserID && d.Date < DateTime.Today && (d.Status == (int)EnumAppointmentStatuses.Pending ||
             d.Status == (int)EnumAppointmentStatuses.Booked));
         }
 
         public List<Appointment> GetMyAbsentAppointments(string UserID)
         {
-            return _localUnitOfWork.DataContext.Appointments.Where(d => d.UserId == UserID && d.Date.Date < DateTime.Today && (d.Status == (int)EnumAppointmentStatuses.Pending &&
+            return _localUnitOfWork.DataContext.Appointments.Where(d => d.UserId == UserID && System.Data.Entity.DbFunctions.AddDays(d.Date, 1) <= DateTime.Today && (d.Status == (int)EnumAppointmentStatuses.Pending ||
             d.Status == (int)EnumAppointmentStatuses.Booked)).ToList();
         }
 
