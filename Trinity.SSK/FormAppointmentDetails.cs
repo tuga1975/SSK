@@ -47,8 +47,8 @@ namespace SSK
         {
             if (documentLoaded)
             {
-                //webBrowserAppointmentDetails.Print();
-                webBrowserAppointmentDetails.ShowPrintPreviewDialog();
+                webBrowserAppointmentDetails.Print();
+                //webBrowserAppointmentDetails.ShowPrintPreviewDialog();
             }
         }
     }

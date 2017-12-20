@@ -16,6 +16,29 @@ namespace Trinity.DAL
         {
             return _localUnitOfWork.DataContext.Appointments.FirstOrDefault(d => d.ID == ID);
         }
+
+        public Trinity.BE.Appointment GetAppointmentDetails(Guid ID)
+        {
+            Appointment appointment = _localUnitOfWork.DataContext.Appointments.FirstOrDefault(d => d.ID == ID);
+            if (appointment != null)
+            {
+                User user = _localUnitOfWork.DataContext.Users.FirstOrDefault(u => u.UserId == appointment.UserId);
+                Trinity.BE.Appointment result = new BE.Appointment()
+                {
+                    UserId = appointment.UserId,
+                    AppointmentDate = appointment.Date,
+                    ChangedCount = appointment.ChangedCount,
+                    FromTime = appointment.FromTime,
+                    Name = user.Name,
+                    NRIC = user.NRIC,
+                    Status = (EnumAppointmentStatuses)appointment.Status,
+                    ToTime = appointment.ToTime
+                };
+                return result;
+            }
+            return null;
+        }
+
         public Appointment GetMyAppointmentByDate(string UserId, DateTime date)
         {
             return _localUnitOfWork.DataContext.Appointments.FirstOrDefault(d => d.UserId == UserId && d.Date == date);
@@ -34,7 +57,7 @@ namespace Trinity.DAL
             appointment.FromTime = TimeSpan.Parse(timeStart);
             appointment.ToTime = TimeSpan.Parse(timeEnd);
             appointment.ChangedCount += 1;
-            appointment.Status = (int) EnumAppointmentStatuses.Booked;
+            appointment.Status = (int)EnumAppointmentStatuses.Booked;
             _localUnitOfWork.GetRepository<Appointment>().Update(appointment);
             _localUnitOfWork.Save();
             return appointment;
