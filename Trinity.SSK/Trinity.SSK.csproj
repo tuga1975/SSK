@@ -169,7 +169,6 @@
     <Compile Include="Utils\APIUtils.cs" />
     <Compile Include="Utils\Printer.cs" />
     <Compile Include="Utils\SignalR.cs" />
-    <Compile Include="Utils\TextToSpeech.cs" />
     <EmbeddedResource Include="FormAppointmentDetails.resx">
       <DependentUpon>FormAppointmentDetails.cs</DependentUpon>
     </EmbeddedResource>
@@ -246,6 +245,7 @@
     <Content Include="View\html\Layout_QueueNumber.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="View\html\PrintingTemplates\AppointmentDetailsTemplate.html" />
     <Content Include="View\html\ReasonsForQueue.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -272,16 +272,12 @@
     <Content Include="View\html\Notication.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="View\html\AppointmentDetailsTemplate.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="View\html\Profile.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="View\html\Supervisee.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="View\html\TeamplatePrinter\BookAppointmentTemplate.html" />
     <Content Include="View\img\Logo.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

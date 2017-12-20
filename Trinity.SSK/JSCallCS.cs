@@ -119,8 +119,8 @@ namespace SSK
         public void PrintAppointmentDetails(string appointmentId)
         {
             var dalAppointment = new DAL_Appointments();
-            var appointment = dalAppointment.GetMyAppointmentByID(Guid.Parse(appointmentId));
-            //APIUtils.Printer.PrintAppointmentDetails("BookAppointmentTemplate.html", appointment);
+            Trinity.BE.Appointment appointment = dalAppointment.GetAppointmentDetails(Guid.Parse(appointmentId));
+            APIUtils.Printer.PrintAppointmentDetails("AppointmentDetailsTemplate.html", appointment);
         }
         #endregion
         public void LoadProfile()
@@ -383,9 +383,8 @@ namespace SSK
                 }
             }
             //send notify to case officer
-            APIUtils.SignalR.SendNotificationToDutyOfficer("Supervisee's Updated absence reason!", "Please check the Supervisee's information!");
+            APIUtils.SignalR.SendNotificationToDutyOfficer("Supervisee's information changed!", "Please check the Supervisee's information!");
 
-            GetMyQueueNumber();
             LoadPage("Supervisee.html");
         }
 
@@ -408,7 +407,6 @@ namespace SSK
                 }
             }
 
-            GetMyQueueNumber();
             LoadPage("Supervisee.html");
 
         }
