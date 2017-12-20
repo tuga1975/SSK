@@ -313,20 +313,34 @@
 
      
         if ($('#ParticularsName').val() != _particularName || $('#NRIC').val() != _nric || $('#DOB').val() != _dob || $('#Nationality').val() != _nationality || $('#MaritalStatus').val() != _maritalStatus) {
-            //$('#divSave').hide();
-            //$('#divError').show();
+            var empty = 0;
             $('#divSupportDocument').fadeIn(1000);
-            $("input[class='form-control pri']").each(function () {
+            $(".pri").each(function () {
+                
                 if ($(this).val() == "") {
                     $(this).addClass("highlight");
+                   
+                    empty++;
                 }
                 else {
                     $(this).removeClass("highlight");
 
                 }
             });
+            
+            if (empty > 0) {
+                $('#divError').show();
+            } else {
+             
+                $('#divError').hide();
+                $('#divConfirm').show();
+                $('#divSave').hide();
+            }
+           
+           
         }
         else {
+            
             $('#divSupportDocument').hide();
             var activeTab = $('#activeTab').val();
             var empty = $('#' + activeTab).find("input[class='form-control pri']").filter(function () {

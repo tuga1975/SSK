@@ -70,15 +70,38 @@
             api.countNoti = 0;
         }
 
-        $(function () {
+        
             var carouselEl = $('.carousel');
             var carouselItems = carouselEl.find('.item');
-            carouselEl.carousel({
-            }).on('slide.bs.carousel', function (event) {
-                var id = carouselItems.siblings('.active').attr('id');
-                 api.server.SpeakNotification(id);
-            })
-        })
+            //carouselEl.carousel({
+            //}).on('slide.bs.carousel', function (event) {
+               
+            //})
+        
+
+            $('.carousel-control.left').click(function () {
+                var hasPrev = carouselItems.siblings('.active').prev().length;
+                if (hasPrev) {
+                    var id = carouselItems.siblings('.active').prev().attr('id');
+                api.server.SpeakNotification(id);
+            }
+            else {
+                var id = api.model[0].ID.toString();
+                api.server.SpeakNotification(id);
+            }
+        });
+
+        $('.carousel-control.right').click(function () {
+            var hasNext = carouselItems.siblings('.active').next().length;
+            if (hasNext) {
+                var id = carouselItems.siblings('.active').next().attr('id');
+                api.server.SpeakNotification(id);
+            }
+            else {
+                var id = api.model[0].ID.toString();
+                api.server.SpeakNotification(id);
+            }
+        });
 
         $(document).ready(function () {
             if (api.model != null && api.model.length > 0) {

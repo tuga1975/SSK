@@ -94,7 +94,7 @@ namespace SSK
 
             // For testing purpose
             //Session session = Session.Instance;
-            //Trinity.BE.User user = new DAL_User().GetUserByUserId("df0153ad-9a26-43e7-af3d-7406dd65defe", true);
+            //Trinity.BE.User user = new DAL_User().GetUserByUserId("656ebbb1-190b-4c8a-9d77-ffa4ff4c9e93", true);
             //session[CommonConstants.USER_LOGIN] = user;
             //NavigateTo(NavigatorEnums.Supervisee);
         }
