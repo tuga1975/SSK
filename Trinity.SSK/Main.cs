@@ -118,7 +118,7 @@ namespace SSK
             LayerWeb.RunScript("$('.status-text').css('color','#000').text('Fingerprint authentication is successful.');");
             APIUtils.SignalR.GetLatestNotifications();
 
-            Thread.Sleep(2000);
+            Thread.Sleep(1000);
 
             // if role = 0 (duty officer), redirect to NRIC.html
             // else (supervisee), redirect to Supervisee.html

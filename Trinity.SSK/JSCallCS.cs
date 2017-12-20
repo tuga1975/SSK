@@ -70,16 +70,25 @@ namespace SSK
             Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
 
             DAL_Appointments DAL_Appointments = new DAL_Appointments();
-            Trinity.DAL.DBContext.Appointment appointment = DAL_Appointments.GetMyAppointmentCurrent(user.UserId);
-            DAL_Environment DAL_Environment = new DAL_Environment();
-            var listSelectTime = DAL_Environment.GetEnvironment(appointment.Date);
 
-            var item = listSelectTime.Where(d => appointment.FromTime != null && d.StartTime == appointment.FromTime.Value && d.EndTime == appointment.ToTime.Value).FirstOrDefault();
-            if (item != null)
+            DAL_Environment DAL_Environment = new DAL_Environment();
+
+            Trinity.DAL.DBContext.Appointment appointment = DAL_Appointments.GetMyAppointmentCurrent(user.UserId);
+            List<Trinity.BE.EnvironmentTime> selectedTimes = null;
+            if (appointment != null)
             {
-                item.IsSelected = true;
+                selectedTimes = DAL_Environment.GetEnvironment(appointment.Date);
+                var item = selectedTimes.Where(d => appointment.FromTime != null && d.StartTime == appointment.FromTime.Value && d.EndTime == appointment.ToTime.Value).FirstOrDefault();
+                if (item != null)
+                {
+                    item.IsSelected = true;
+                }
+                this._web.LoadPageHtml("BookAppointment.html", new object[] { appointment, selectedTimes });
             }
-            this._web.LoadPageHtml("BookAppointment.html", new object[] { appointment, listSelectTime });
+            else
+            {
+                MessageBox.Show("You have no appointment");
+            }
         }
         public string UpdateTimeAppointment(string IDAppointment, string timeStart, string timeEnd)
         {
