@@ -12,6 +12,7 @@ class APIUtils
     public static SSK.Utils.SignalR SignalR { get; set; }
     public static SSK.Utils.Printer Printer { get; set; }
     public static SSK.Utils.TextToSpeech TextToSpeech { get; set; }
+
     static APIUtils()
     {
         SignalR = new SSK.Utils.SignalR();

@@ -1,21 +1,28 @@
-﻿using System;
+﻿using Microsoft.AspNet.SignalR.Client;
+using SSK.Contstants;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Configuration;
+using System.Speech.Synthesis;
+using Trinity.BE;
+using Trinity.Common;
+using Trinity.DAL;
 
 namespace SSK.Utils
 {
     public class TextToSpeech
     {
+        private SpeechSynthesizer _synthesizer;
         public TextToSpeech()
         {
-
+            _synthesizer = new SpeechSynthesizer();
+            _synthesizer.Volume = Convert.ToInt32(ConfigurationManager.AppSettings["SpeechSynthesizer_Volume"]);
+            _synthesizer.Rate = Convert.ToInt32(ConfigurationManager.AppSettings["SpeechSynthesizer_Rate"]);
         }
 
         public void Speak(string text)
         {
-            //speak
+            _synthesizer.SpeakAsync(text);
         }
     }
 }

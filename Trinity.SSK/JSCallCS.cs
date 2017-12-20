@@ -108,9 +108,11 @@ namespace SSK
         public string UpdateTimeAppointment(string IDAppointment, string timeStart, string timeEnd)
         {
             DAL_Appointments DAL_Appointments = new DAL_Appointments();
-            var appointment = DAL_Appointments.UpdateBookTime(IDAppointment, timeStart, timeEnd);
+            DAL_Appointments.UpdateBookTime(IDAppointment, timeStart, timeEnd);
 
-            APIUtils.Printer.PrintFormFile("BookAppointmentTemplate.html", appointment);
+            Trinity.BE.Appointment appointment = DAL_Appointments.GetAppointmentDetails(new Guid(IDAppointment));
+            APIUtils.Printer.PrintAppointmentDetails("AppointmentDetailsTemplate.html", appointment);
+
             return timeStart;
         }
 

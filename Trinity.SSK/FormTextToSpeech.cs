@@ -20,15 +20,16 @@ namespace SSK
 
         private void btnSpeak_Click(object sender, EventArgs e)
         {
-            SpeechSynthesizer synthesizer = new SpeechSynthesizer();
-            synthesizer.Volume = 100;  // 0...100
-            synthesizer.Rate = -2;     // -10...10
+            APIUtils.TextToSpeech.Speak(txtTextToSpeech.Text);
+            //SpeechSynthesizer synthesizer = new SpeechSynthesizer();
+            //synthesizer.Volume = 100;  // 0...100
+            //synthesizer.Rate = -2;     // -10...10
 
-            // Synchronous
-            //synthesizer.Speak(txtTextToSpeech.Text);
+            //// Synchronous
+            ////synthesizer.Speak(txtTextToSpeech.Text);
 
-            // Asynchronous
-            synthesizer.SpeakAsync(txtTextToSpeech.Text);
+            //// Asynchronous
+            //synthesizer.SpeakAsync(txtTextToSpeech.Text);
         }
     }
 }
