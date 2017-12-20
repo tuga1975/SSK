@@ -9,16 +9,12 @@ namespace Trinity.BE
 {
 
     [Serializable]
-    public class QueueNumber
+    public class Queue
     {
+        public DateTime Time { get; set; }
+
         public string Status { get; set; }
-        public string Queue { get; set; }
-        public string QueueEncoder
-        {
-            get
-            {
-                return string.IsNullOrEmpty(Queue) ? string.Empty : Queue.EncoderQueueNumber();
-            }
-        }
+
+        public string QueueNumber { get; set; }
     }
 }
