@@ -119,8 +119,8 @@ namespace SSK
         public void PrintAppointmentDetails(string appointmentId)
         {
             var dalAppointment = new DAL_Appointments();
-            var appointment = dalAppointment.GetMyAppointmentByID(Guid.Parse(appointmentId));
-            APIUtils.Printer.PrintFormFile("BookAppointmentTemplate.html", appointment);
+            Trinity.BE.Appointment appointment = dalAppointment.GetAppointmentDetails(Guid.Parse(appointmentId));
+            APIUtils.Printer.PrintAppointmentDetails("AppointmentDetailsTemplate.html", appointment);
         }
         #endregion
         public void LoadProfile()
