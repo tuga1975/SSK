@@ -101,13 +101,13 @@ namespace SSK
             DAL_Appointments DAL_Appointments = new DAL_Appointments();
             Trinity.DAL.DBContext.Appointment appointment = DAL_Appointments.GetMyAppointmentCurrent(user.UserId);
             DAL_Environment DAL_Environment = new DAL_Environment();
-            var listSelectTime = DAL_Environment.GetEnvironment(appointment.Date);
+            var listSelectTime = DAL_Environment.GetEnvironmentTime(appointment.Date);
 
-            var item = listSelectTime.Where(d => appointment.FromTime != null && d.StartTime == appointment.FromTime.Value && d.EndTime == appointment.ToTime.Value).FirstOrDefault();
-            if (item != null)
-            {
-                item.IsSelected = true;
-            }
+            //var item = listSelectTime.Where(d => appointment.FromTime != null && d.StartTime == appointment.FromTime.Value && d.EndTime == appointment.ToTime.Value).FirstOrDefault();
+            //if (item != null)
+            //{
+            //    item.IsSelected = true;
+            //}
             this._web.LoadPageHtml("BookAppointment.html", new object[] { appointment, listSelectTime });
         }
         public string UpdateTimeAppointment(string IDAppointment, string timeStart, string timeEnd)
