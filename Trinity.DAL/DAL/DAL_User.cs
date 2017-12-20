@@ -82,7 +82,8 @@ namespace Trinity.DAL
                     SmartCardId = dbUser.SmartCardId,
                     Role = dbUser.Role,
                     UserId = dbUser.UserId,
-                    Fingerprint = dbUser.Fingerprint
+                    Fingerprint = dbUser.Fingerprint,
+                    Status = dbUser.Status
                 };
                 return user;
             }
@@ -143,7 +144,8 @@ namespace Trinity.DAL
                     NRIC = dbUser.NRIC,
                     SmartCardId = dbUser.SmartCardId,
                     Role = dbUser.Role,
-                    UserId = dbUser.UserId
+                    UserId = dbUser.UserId,
+                    Status = dbUser.Status
                 };
                 return user;
             }
@@ -218,6 +220,7 @@ namespace Trinity.DAL
                     }
                     dbUser.Fingerprint = data;
                 }
+                dbUser.Status = model.Status;
             }
         }
 
@@ -249,6 +252,34 @@ namespace Trinity.DAL
             {
                 Console.WriteLine(ex.Message);
                 return false;
+            }
+        }
+
+        public void ChangeUserStatus(string userId,string status)
+        {
+            var localUserRepo = _localUnitOfWork.GetRepository<User>();
+            var centralUserRepo = _centralizedUnitOfWork.GetRepository<User>();
+            UpdateStatus(userId, status, localUserRepo);
+            UpdateStatus(userId, status, centralUserRepo);
+            _localUnitOfWork.Save();
+            _centralizedUnitOfWork.Save();
+        }
+
+        private void UpdateStatus(string userId, string status, IRepository<User> userRepo)
+        {
+            try
+            {
+                var dbUser = userRepo.GetById(userId);
+                if (dbUser != null)
+                {
+                    dbUser.Status = status;
+                    userRepo.Update(dbUser);
+
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
             }
         }
     }

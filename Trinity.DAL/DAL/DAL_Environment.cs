@@ -17,7 +17,7 @@ namespace Trinity.DAL
         {
             List<Trinity.BE.EnvironmentTime> array = new List<BE.EnvironmentTime>();
             int DateOfWeek = date.DayOfWeek();
-            var setting = _localUnitOfWork.DataContext.Environments.Where(d => d.DateOfWeek == DateOfWeek && d.Frequency == (int)Frequency.Weekly).FirstOrDefault();
+            var setting = _localUnitOfWork.DataContext.Environments.Where(d => d.DateOfWeek == DateOfWeek && d.Frequency == EnumFrequency.Weekly).FirstOrDefault();
             if (setting != null)
             {
                 var allTimeBooked = _localUnitOfWork.DataContext.Appointments.Where(d =>d.Date == date.Date && d.FromTime.HasValue && d.ToTime.HasValue).Select(d => d.FromTime.Value.Hours+ d.FromTime.Value.Minutes+ d.ToTime.Value.Hours + d.ToTime.Value.Minutes).Distinct().ToList();

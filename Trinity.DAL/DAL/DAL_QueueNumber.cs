@@ -13,33 +13,55 @@ namespace Trinity.DAL
         Local_UnitOfWork _localUnitOfWork = new Local_UnitOfWork();
         Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
 
-        public void InsertQueueNumber(Guid AppointmentID, string UserId)
+        public QueueNumber InsertQueueNumber(Guid AppointmentID, string UserId)
         {
-            _localUnitOfWork.GetRepository<QueueNumber>().Add(new QueueNumber()
+            var generateQNo = GenerateQueueNumber(_localUnitOfWork.DataContext.Users.Find(UserId).NRIC);
+            QueueNumber dataInsert = new QueueNumber()
             {
-                AppointmentID = AppointmentID,
+                Appointment_ID = AppointmentID,
                 ID = Guid.NewGuid(),
-                Date = DateTime.Today,
-                Status = (int)StatusEnums.Wait,
-                UserId = UserId
-            });
+                CreatedTime = DateTime.Today,
+                Status = EnumQueueStatuses.Waiting,
+                QueuedNumber = generateQNo
+            };
+            _localUnitOfWork.GetRepository<QueueNumber>().Add(dataInsert);
             _localUnitOfWork.Save();
+            return dataInsert;
         }
 
 
+        public string GenerateQueueNumber(string baseOnNRIC)
+        {
+            string queueNumber = "";
+            if (!string.IsNullOrEmpty(baseOnNRIC) && baseOnNRIC.Length > 6)
+            {
+                queueNumber += baseOnNRIC.Substring(0, 1) + baseOnNRIC.Substring(baseOnNRIC.Length - 5, 5).PadLeft(8, '*');
+            }
+            else if (!string.IsNullOrEmpty(baseOnNRIC) && baseOnNRIC.Length <= 6)
+            {
+                queueNumber += baseOnNRIC.Substring(0, 1) + baseOnNRIC.PadLeft(8, '*');
+            }
+            else
+            {
+                queueNumber += null;
+            }
+
+            return queueNumber;
+
+        }
         public List<QueueNumber> GetAllQueueNumberByDate(DateTime date)
         {
             date = date.Date;
-            return _localUnitOfWork.DataContext.QueueNumbers.Include(d => d.User).Where(d => DbFunctions.TruncateTime(d.Date).Value == date && (d.Status == (int)StatusEnums.Wait || d.Status == (int)StatusEnums.Working)).OrderBy(d => d.Date).ToList();
+            return _localUnitOfWork.DataContext.QueueNumbers.Include(d => d.Appointment).Where(d => DbFunctions.TruncateTime(d.CreatedTime).Value == date && (d.Status == EnumQueueStatuses.Waiting || d.Status == EnumQueueStatuses.Processing)).OrderBy(d => d.CreatedTime).ToList();
         }
 
         public bool CheckQueueExistToday(string userId)
         {
-            if (CountQueueByStatus(userId, (int)StatusEnums.Wait) > 0 || CountQueueByStatus(userId, (int)StatusEnums.Working) > 0)
+            if (CountQueueByStatus(userId, EnumQueueStatuses.Waiting) > 0 || CountQueueByStatus(userId, EnumQueueStatuses.Processing) > 0)
             {
                 return true;
             }
-            if (CountQueueByStatus(userId, (int)StatusEnums.Miss) > 0)
+            if (CountQueueByStatus(userId, EnumQueueStatuses.Missed) > 0)
             {
                 return false;
             }
@@ -48,10 +70,10 @@ namespace Trinity.DAL
 
         }
 
-        public int CountQueueByStatus(string userId, int status)
+        public int CountQueueByStatus(string userId, string status)
         {
             var today = DateTime.Now.Date;
-            return _localUnitOfWork.DataContext.QueueNumbers.Count(d => DbFunctions.TruncateTime(d.Date).Value == today && d.UserId == userId && d.Status == status);
+            return _localUnitOfWork.DataContext.QueueNumbers.Include(u => u.Appointment).Count(d => DbFunctions.TruncateTime(d.CreatedTime).Value == today && d.Appointment.UserId == userId && d.Status == status);
         }
     }
 }

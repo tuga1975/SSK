@@ -122,8 +122,6 @@ namespace SSK.CodeBehind.Authentication
                 Trinity.Common.Monitor.SCardMonitor sCardMonitor = Trinity.Common.Monitor.SCardMonitor.Instance;
                 sCardMonitor.Stop();
 
-                Thread.Sleep(3000);
-
                 // raise succeeded event
                 RaiseSmartCardSucceededEvent();
             }

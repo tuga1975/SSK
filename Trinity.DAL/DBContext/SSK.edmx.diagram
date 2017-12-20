@@ -5,28 +5,25 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="8d20fa7148f941f48dc517cdb36815f0" Name="Diagram1">
-        <EntityTypeShape EntityType="SSKModel.AbsenceReporting" Width="1.5" PointX="5.25" PointY="15" />
         <EntityTypeShape EntityType="SSKModel.Address" Width="1.5" PointX="0.75" PointY="5" />
         <EntityTypeShape EntityType="SSKModel.ApplicationDevice_Status" Width="1.5" PointX="0.75" PointY="0.75" />
-        <EntityTypeShape EntityType="SSKModel.Appointment" Width="1.5" PointX="3" PointY="21.375" />
         <EntityTypeShape EntityType="SSKModel.Device" Width="1.5" PointX="2.75" PointY="0.75" />
-        <EntityTypeShape EntityType="SSKModel.Environment" Width="1.5" PointX="4.75" PointY="0.75" />
         <EntityTypeShape EntityType="SSKModel.Holiday" Width="1.5" PointX="2.75" PointY="3.75" />
         <EntityTypeShape EntityType="SSKModel.Notification" Width="1.5" PointX="3" PointY="14.125" />
-        <EntityTypeShape EntityType="SSKModel.QueueNumber" Width="1.5" PointX="8.25" PointY="15.25" />
-        <EntityTypeShape EntityType="SSKModel.sysdiagram" Width="1.5" PointX="5.75" PointY="3.75" />
         <EntityTypeShape EntityType="SSKModel.User_Profiles" Width="1.5" PointX="3" PointY="6.125" />
         <EntityTypeShape EntityType="SSKModel.User" Width="1.5" PointX="0.75" PointY="8.5" />
-        <AssociationConnector Association="SSKModel.FK_AbsenceReporting_Appointments" />
-        <AssociationConnector Association="SSKModel.FK_AbsenceReporting_Users" />
         <AssociationConnector Association="SSKModel.FK_User_Profiles_Addresses" />
         <AssociationConnector Association="SSKModel.FK_User_Profiles_Addresses1" />
-        <AssociationConnector Association="SSKModel.FK_Appointments_Users" />
-        <AssociationConnector Association="SSKModel.FK_QueueNumber_Appointments" />
         <AssociationConnector Association="SSKModel.FK_Notifications_Users" />
         <AssociationConnector Association="SSKModel.FK_Notifications_Users1" />
-        <AssociationConnector Association="SSKModel.FK_QueueNumber_Users" />
         <AssociationConnector Association="SSKModel.FK_User_Profiles_Users" />
+        <EntityTypeShape EntityType="SSKModel.AbsenceReporting" Width="1.5" PointX="3.75" PointY="18.125" />
+        <EntityTypeShape EntityType="SSKModel.Appointment" Width="1.5" PointX="6" PointY="8.625" />
+        <EntityTypeShape EntityType="SSKModel.QueueNumber" Width="1.5" PointX="8.25" PointY="9.125" />
+        <AssociationConnector Association="SSKModel.FK_Appointments_AbsenceReporting" />
+        <AssociationConnector Association="SSKModel.FK_Appointments_Users" />
+        <AssociationConnector Association="SSKModel.FK_QueueNumbers_Appointments1" />
+        <EntityTypeShape EntityType="SSKModel.Environment" Width="1.5" PointX="5.375" PointY="0.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

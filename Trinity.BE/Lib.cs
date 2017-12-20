@@ -10,4 +10,14 @@ public static class Lib
     {
         return (int)date.DayOfWeek==0?8: ((int)date.DayOfWeek) +1;
     }
+    public static string EncoderQueueNumber(this string queuenumber)
+    {
+        string NICR = queuenumber;
+        if (NICR.Length < 3)
+            return string.Empty;
+        string FirstChar = NICR.Substring(0, 1);
+        string LastChar = NICR.Substring(1, NICR.Length - 1);
+        string CharRemove = LastChar.Remove(0, LastChar.Length - (NICR.Length<4? NICR.Length:4));
+        return  NICR.Substring(0, 1) + string.Empty.PadLeft(LastChar.Length - CharRemove.Length, '*') + CharRemove;
+    }
 }

@@ -40,5 +40,8 @@ namespace Trinity.BE
 
         [DataMember]
         public byte[] Fingerprint { get; set; }
+
+        [DataMember]
+        public string Status { get; set; }
     }
 }

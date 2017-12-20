@@ -135,9 +135,6 @@
     <Compile Include="DBContext\QueueNumber.cs">
       <DependentUpon>SSK.tt</DependentUpon>
     </Compile>
-    <Compile Include="DBContext\sysdiagram.cs">
-      <DependentUpon>SSK.tt</DependentUpon>
-    </Compile>
     <Compile Include="DBContext\TrinityCentralizedDB.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

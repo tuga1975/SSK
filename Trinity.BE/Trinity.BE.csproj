@@ -78,6 +78,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AbsenceReporting.cs" />
+    <Compile Include="QueueNumber.cs" />
     <Compile Include="Lib.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="EnvironmentTime.cs" />
