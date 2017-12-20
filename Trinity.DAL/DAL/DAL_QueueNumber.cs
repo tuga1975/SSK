@@ -20,7 +20,7 @@ namespace Trinity.DAL
             {
                 Appointment_ID = AppointmentID,
                 ID = Guid.NewGuid(),
-                CreatedTime = DateTime.Today,
+                CreatedTime = DateTime.Now,
                 Status = EnumQueueStatuses.Waiting,
                 QueuedNumber = generateQNo
             };
@@ -52,7 +52,7 @@ namespace Trinity.DAL
         public List<QueueNumber> GetAllQueueNumberByDate(DateTime date)
         {
             date = date.Date;
-            return _localUnitOfWork.DataContext.QueueNumbers.Include(d => d.Appointment).Where(d => DbFunctions.TruncateTime(d.CreatedTime).Value == date && (d.Status == EnumQueueStatuses.Waiting || d.Status == EnumQueueStatuses.Processing)).OrderBy(d => d.CreatedTime).ToList();
+            return _localUnitOfWork.DataContext.QueueNumbers.Include(d => d.Appointment).Where(d => DbFunctions.TruncateTime(d.CreatedTime).Value == date && (d.Status == EnumQueueStatuses.Waiting || d.Status == EnumQueueStatuses.Processing)).OrderBy(d => d.Appointment.FromTime).ToList();
         }
 
         public bool CheckQueueExistToday(string userId)

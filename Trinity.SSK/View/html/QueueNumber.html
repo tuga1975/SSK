@@ -1,25 +1,16 @@
-﻿<div show-queue class="box">
+﻿<div><h1>Processing:</h1></div>
+<div show-queue class="box">
 </div>
+
 <div show-queue-list>
+    <h3>Next Queue Numbers:</h3>
 </div>
-<script type="text/javascript">
-    $(document).ready(function () {
-        $.each(api.model, function (index,item) {
-            if (index == 0) {
-                $('[show-queue]').text(item.QueueNumber);
-            }
-            else {
-                $('[show-queue-list]').append('<span>' + item.QueueNumber + ' - ' + index + '</span>');
-            }
-        })
-    });
-</script>
 
 <style type="text/css">
     [show-queue] {
         position: fixed;
         width: calc(100% - 20px);
-        height: calc(100% - 180px);
+        height: calc(100% - 280px);
         left: 10px;
         top: 80px;
         font-size: 100px;
@@ -31,14 +22,16 @@
         border: 1px solid #CCC;
         box-sizing: border-box;
     }
+
     [show-queue-list] {
         position: fixed;
         width: calc(100% - 20px);
-        height:70px;
+        height: 170px;
         bottom: 10px;
-        text-align:left;
-        overflow:hidden;
+        text-align: left;
+        overflow: hidden;
     }
+
         [show-queue-list] span {
             display: inline-block;
             min-width: 100px;
@@ -47,7 +40,7 @@
             border: 1px solid #CCC;
             box-sizing: border-box;
             padding: 0px 10px;
-            text-align:justify;
-            line-height:65px;
+            text-align: justify;
+            line-height: 65px;
         }
 </style>

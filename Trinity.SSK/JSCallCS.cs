@@ -244,40 +244,11 @@ namespace SSK
             nric.NRICAuthentication(strNRIC);
         }
 
-        /// <summary>
-        /// obsolete,will be remove
-        /// </summary>
-        public void GetQueue()
-        {
-            // get Queue number
-            Session session = Session.Instance;
-            Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-            string queueNumber = "Current Queue Number: ";
-            if (!string.IsNullOrEmpty(user.NRIC) && user.NRIC.Length > 5)
-            {
-                queueNumber += user.NRIC.Substring(0, 1) + user.NRIC.Substring(user.NRIC.Length - 5, 5).PadLeft(8, '*');
-            }
-            else if (!string.IsNullOrEmpty(user.NRIC) && user.NRIC.Length <= 5)
-            {
-                queueNumber += user.NRIC.Substring(0, 1) + user.NRIC.PadLeft(8, '*');
-            }
-            else
-            {
-                queueNumber += null;
-            }
-
-            // displayqueue number
-            FormQueueNumber f = FormQueueNumber.GetInstance();
-            f.ShowQueueNumber(queueNumber);
-            //RaiseOnShowMessageEvent(new ShowMessageEventArgs("Your queue is: " + queueNumber, "Queue Number", MessageBoxButtons.OK, MessageBoxIcon.Information));
-        }
-
-
-        public void QueueNumber()
+        // Reporting for Queue Number
+        public void ReportingForQueueNumber()
         {
             Session session = Session.Instance;
             Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-
 
             var dalAbsence = new DAL_AbsenceReporting();
 
@@ -294,11 +265,10 @@ namespace SSK
                 }
                 else
                 {
-                    ShowQueueNumber();
+                    GetMyQueueNumber();
                 }
             }
-            else
-            if (countAbsence >= 3)
+            else if (countAbsence >= 3)
             {
                 MessageBox.Show("You have been blocked for 3 or more absences \n Please report to the Duty Officer");
 
@@ -315,8 +285,7 @@ namespace SSK
                 session[CommonConstants.LIST_APPOINTMENT] = listAppointment;
                 _web.LoadPageHtml("ReasonsForQueue.html", listAppointment);
             }
-            else
-            if (countAbsence > 0 && countAbsence < 3)
+            else if (countAbsence > 0 && countAbsence < 3)
             {
                 var listAppointment = dalAppointment.GetMyAbsentAppointments(user.UserId);
 
@@ -326,7 +295,7 @@ namespace SSK
             }
         }
 
-        public void ShowQueueNumber()
+        private void GetMyQueueNumber()
         {
             Session session = Session.Instance;
             Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
@@ -345,15 +314,15 @@ namespace SSK
                 if (!_dalQueue.CheckQueueExistToday(appointment.UserId))
                 {
                     QueueNumber = _dalQueue.InsertQueueNumber(appointment.ID, appointment.UserId);
-                    RaiseOnShowMessageEvent(new ShowMessageEventArgs("Your queue is: " + QueueNumber.QueuedNumber, "Queue Number", MessageBoxButtons.OK, MessageBoxIcon.Information));
+                    RaiseOnShowMessageEvent(new ShowMessageEventArgs("Your queue number is: " + QueueNumber.QueuedNumber, "Queue Number", MessageBoxButtons.OK, MessageBoxIcon.Information));
                 }
-                var model = _dalQueue.GetAllQueueNumberByDate(DateTime.Today).Select(d => new Trinity.BE.QueueNumber()
-                {
-                    Status = d.Status,
-                    Queue = d.QueuedNumber
-                }).ToList();
+                //var model = _dalQueue.GetAllQueueNumberByDate(DateTime.Today).Select(d => new Trinity.BE.Queue()
+                //{
+                //    Status = d.Status,
+                //    QueueNumber = d.QueuedNumber
+                //}).ToArray();
                 FormQueueNumber f = FormQueueNumber.GetInstance();
-                f.ShowQueueNumber(model);
+                f.RefreshQueueNumbers();
             }
         }
 
@@ -383,7 +352,7 @@ namespace SSK
             //send notify to case officer
             APIUtils.SignalR.SendNotificationToDutyOfficer("Supervisee's information changed!", "Please check the Supervisee's information!");
 
-            QueueNumber();
+            ReportingForQueueNumber();
         }
 
         public void UpdateAbsenceAfterScanDoc()
@@ -405,10 +374,10 @@ namespace SSK
                 }
             }
 
-            QueueNumber();
+            ReportingForQueueNumber();
 
         }
-        public void logOut()
+        public void LogOut()
         {
             // reset session value
             Session session = Session.Instance;

@@ -1,18 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Newtonsoft.Json;
 using System.Windows.Forms;
+using Trinity.DAL;
 
 namespace SSK
 {
     public partial class FormQueueNumber : Form
     {
         private static FormQueueNumber _instance = null;
+        private JSCallCS _jsCallCS = null;
+
         public static FormQueueNumber GetInstance()
         {
             if (_instance == null)
@@ -24,6 +23,18 @@ namespace SSK
         public FormQueueNumber()
         {
             InitializeComponent();
+
+            _jsCallCS = new JSCallCS(this.wbQueueNumber);
+
+            this.wbQueueNumber.Url = new Uri(String.Format("file:///{0}/View/html/Layout_QueueNumber.html", CSCallJS.curDir));
+            this.wbQueueNumber.ObjectForScripting = _jsCallCS;
+        }
+
+        private void wbQueueNumber_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
+        {
+            this.wbQueueNumber.InvokeScript("createEvent", JsonConvert.SerializeObject(_jsCallCS.GetType().GetMethods().Where(d => d.IsPublic && !d.IsVirtual && !d.IsSecuritySafeCritical).ToArray().Select(d => d.Name)));
+            this.wbQueueNumber.LoadPageHtml("QueueNumber.html");
+            RefreshQueueNumbers();
         }
 
         public void ShowOnSecondaryScreen()
@@ -40,38 +51,26 @@ namespace SSK
                 }
             }
         }
-        public void ShowQueueNumber(string queueNumber)
+        public void RefreshQueueNumbers()
         {
-            this.Invoke((Action)(() => lblQueueNumber.Text = queueNumber ));
-        }
-        public void ShowQueueNumber(List<Trinity.BE.QueueNumber> arrayQueue)
-        {
-            this.Invoke((Action)(() =>
+            DAL_QueueNumber dalQueue = new DAL_QueueNumber();
+            var arrayQueue = dalQueue.GetAllQueueNumberByDate(DateTime.Today).Select(d => new Trinity.BE.Queue()
             {
-                int maxWidth = this.panelList.Width-10;
-                int maxNumberShow = (arrayQueue.Count > 6 ? 6 : arrayQueue.Count) - 1;
-                int width = maxWidth / maxNumberShow-10;
-                for (int i = 0; i < (arrayQueue.Count > 6 ? 6 : arrayQueue.Count); i++)
+                Status = d.Status,
+                QueueNumber = d.QueuedNumber
+            }).ToArray();
+            
+            string currentQueueNumber = string.Empty;
+            for (int i = 0; i < arrayQueue.Length; i++)
+            {
+                if (arrayQueue[i].Status == EnumQueueStatuses.Processing)
                 {
-                    Trinity.BE.QueueNumber item = arrayQueue[i];
-                    if (i == 0)
-                    {
-                        lblQueueNumber.Text = item.QueueEncoder;
-                    }
-                    else
-                    {
-                        Label qs_label = new Label();
-                        qs_label.Location = new Point(((i - 1) * width)+(i*10), 10);
-                        qs_label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-                        qs_label.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-                        qs_label.Size = new Size(width, 60);
-                        qs_label.Text = item.QueueEncoder;
-                        qs_label.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-                        this.panelList.Controls.Add(qs_label);
-                    }
+                    currentQueueNumber = arrayQueue[i].QueueNumber;
+                    break;
                 }
             }
-            ));
+            string[] waitingQueueNumbers = arrayQueue.Where(q => q.Status == EnumQueueStatuses.Waiting).OrderByDescending(d => d.Time).Select(d => d.QueueNumber).ToArray();
+            this.wbQueueNumber.RefreshQueueNumbers(currentQueueNumber, waitingQueueNumbers);
         }
     }
 }
