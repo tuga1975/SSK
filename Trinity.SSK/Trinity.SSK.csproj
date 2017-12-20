@@ -169,6 +169,7 @@
     <Compile Include="Utils\APIUtils.cs" />
     <Compile Include="Utils\Printer.cs" />
     <Compile Include="Utils\SignalR.cs" />
+    <Compile Include="Utils\TextToSpeech.cs" />
     <EmbeddedResource Include="FormAppointmentDetails.resx">
       <DependentUpon>FormAppointmentDetails.cs</DependentUpon>
     </EmbeddedResource>
