@@ -22,7 +22,7 @@ namespace SSK
 
         public event EventHandler<NRICEventArgs> OnNRICFailed;
         public event EventHandler<ShowMessageEventArgs> OnShowMessage;
-        public event EventHandler<NavigateEventArgs> OnNavigate;
+        public event Action OnLogOutCompleted;
 
         public JSCallCS(WebBrowser web)
         {
@@ -35,47 +35,18 @@ namespace SSK
         // to allow derived classes to override the event invocation behavior
         protected virtual void RaiseOnNRICFailedEvent(NRICEventArgs e)
         {
-            // Make a temporary copy of the event to avoid possibility of
-            // a race condition if the last subscriber unsubscribes
-            // immediately after the null check and before the event is raised.
-            EventHandler<NRICEventArgs> handler = OnNRICFailed;
-
-            // Event will be null if there are no subscribers
-            if (handler != null)
-            {
-                // Use the () operator to raise the event.
-                handler(this, e);
-            }
+            OnNRICFailed?.Invoke(this, e);
         }
+
         protected virtual void RaiseOnShowMessageEvent(ShowMessageEventArgs e)
         {
-            // Make a temporary copy of the event to avoid possibility of
-            // a race condition if the last subscriber unsubscribes
-            // immediately after the null check and before the event is raised.
-            EventHandler<ShowMessageEventArgs> handler = OnShowMessage;
-
-            // Event will be null if there are no subscribers
-            if (handler != null)
-            {
-                // Use the () operator to raise the event.
-                handler(this, e);
-            }
+            OnShowMessage?.Invoke(this, e);
         }
-        protected virtual void RaiseOnNavigateEvent(NavigateEventArgs e)
+
+        protected virtual void RaiseLogOutCompletedEvent()
         {
-            // Make a temporary copy of the event to avoid possibility of
-            // a race condition if the last subscriber unsubscribes
-            // immediately after the null check and before the event is raised.
-            EventHandler<NavigateEventArgs> handler = OnNavigate;
-
-            // Event will be null if there are no subscribers
-            if (handler != null)
-            {
-                // Use the () operator to raise the event.
-                handler(this, e);
-            }
+            OnLogOutCompleted?.Invoke();
         }
-
         #endregion
 
         public void LoadPage(string file)
@@ -261,6 +232,7 @@ namespace SSK
             }
             _web.SetLoading(false);
         }
+
         public void ClientCallServer(string method, string guidEvent, params object[] pram)
         {
             ThreadPool.QueueUserWorkItem(new WaitCallback(actionThread), new object[] { method, guidEvent, pram });
@@ -414,8 +386,8 @@ namespace SSK
             session[CommonConstants.USER_LOGIN] = null;
             session[CommonConstants.PROFILE_DATA] = null;
 
-            // redirect to StartCard login
-            RaiseOnNavigateEvent(new NavigateEventArgs(NavigatorEnums.Authentication_SmartCard));
+            // RaiseLogOutCompletedEvent
+            RaiseLogOutCompletedEvent();
         }
     }
 

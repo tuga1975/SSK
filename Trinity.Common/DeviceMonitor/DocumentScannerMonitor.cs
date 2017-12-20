@@ -47,10 +47,9 @@ namespace Trinity.Common.DeviceMonitor
             OnMonitorException?.Invoke(this, e);
         }
 
-        // Start monitor
+        // Start monitoring
         public void Start()
         {
-            // start a thread for health check
         }
         
         public object ScanDocument()
