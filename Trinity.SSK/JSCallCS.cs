@@ -386,6 +386,7 @@ namespace SSK
             session[CommonConstants.USER_LOGIN] = null;
             session[CommonConstants.PROFILE_DATA] = null;
 
+            //
             // RaiseLogOutCompletedEvent
             RaiseLogOutCompletedEvent();
         }
