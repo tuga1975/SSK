@@ -38,6 +38,7 @@ namespace Trinity.Common.Monitor
         #endregion
 
         public event EventHandler<ExceptionArgs> OnMonitorException;
+        public event EventHandler<GetDeviceStatusCompletedArgs> OnGetDeviceStatusCompleted;
 
         protected virtual void RaiseMonitorExceptionEvent(ExceptionArgs e)
         {
@@ -45,6 +46,14 @@ namespace Trinity.Common.Monitor
             // a race condition if the last subscriber unsubscribes
             // immediately after the null check and before the event is raised.
             OnMonitorException?.Invoke(this, e);
+        }
+
+        protected virtual void RaiseGetDeviceStatusCompletedEvent(GetDeviceStatusCompletedArgs e)
+        {
+            // Make a temporary copy of the event to avoid possibility of
+            // a race condition if the last subscriber unsubscribes
+            // immediately after the null check and before the event is raised.
+            OnGetDeviceStatusCompleted?.Invoke(this, e);
         }
 
         // Start monitor
@@ -72,6 +81,23 @@ namespace Trinity.Common.Monitor
         {
             FingerprintReaderUtils fingerprintReaderUtils = FingerprintReaderUtils.Instance;
             fingerprintReaderUtils.StopVerification();
+        }
+
+        /// <summary>
+        /// Start checking device status, raise OnGetDeviceStatusCompleted event when completed
+        /// </summary>
+        public void StartCheckingDeviceStatus()
+        {
+            FingerprintReaderUtils.Instance.GetDeviceStatus(OnVerificationComplete);
+        }
+
+        private void OnVerificationComplete(bool bSuccess, int nRetCode, bool bVerificationSuccess)
+        {
+            // bSuccess = true when fingerprinter is connected
+            // raise RaiseOnGetDeviceStatusCompletedEvent
+
+            System.Diagnostics.Debug.WriteLine("OnGetDeviceStatusCompleted result: " + bSuccess);
+            RaiseGetDeviceStatusCompletedEvent(new GetDeviceStatusCompletedArgs() { IsConnected = bSuccess });
         }
     }
 

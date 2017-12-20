@@ -69,4 +69,13 @@ public static class CSCallJS
     {
         web.InvokeScript("RunScript", script);
     }
+
+    #region Queue Number
+    public static void RefreshQueueNumbers(this WebBrowser web, string currentQueueNumber, string[] nextQueueNumberList)
+    {
+        var model = JsonConvert.SerializeObject(nextQueueNumberList, Formatting.Indented, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
+        web.InvokeScript("refreshQueueNumbers", currentQueueNumber, model);
+    }
+    
+    #endregion
 }

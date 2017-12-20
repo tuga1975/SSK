@@ -37,15 +37,15 @@ namespace Trinity.Common.DeviceMonitor
         }
         #endregion
 
-        public event Action OnPrintUserInfo_BarcodeSucceeded;
+        public event Action OnPrintLabelSucceeded;
         public event EventHandler<ExceptionArgs> OnMonitorException;
 
-        protected virtual void RaisePrintUserInfo_BarcodeSucceededEvent()
+        protected virtual void RaisePrintLabelSucceededEvent()
         {
             // Make a temporary copy of the event to avoid possibility of
             // a race condition if the last subscriber unsubscribes
             // immediately after the null check and before the event is raised.
-            OnPrintUserInfo_BarcodeSucceeded?.Invoke();
+            OnPrintLabelSucceeded?.Invoke();
         }
 
         protected virtual void RaiseMonitorExceptionEvent(ExceptionArgs e)
@@ -56,36 +56,53 @@ namespace Trinity.Common.DeviceMonitor
             OnMonitorException?.Invoke(this, e);
         }
 
-        public void PrintUserInfo_Barcode(string userName, string nric, string dob)
+        public void PrintLabel(UserInfo userInfo)
         {
-            BarcodeScannerUtils barcodeScannerUtils = BarcodeScannerUtils.Instance;
-            if (barcodeScannerUtils.PrintUserInfo(userName, nric, dob))
+            // validation
+            if (string.IsNullOrEmpty(userInfo.UserName))
+            {
+                // username is null
+                RaiseMonitorExceptionEvent(new ExceptionArgs(new FailedInfo()
+                {
+                    ErrorCode = (int)ErrorCodes.UserNameNull,
+                    ErrorMessage = ErrorMessages.UserNameNull
+                }));
+
+                return;
+            }
+            else if (string.IsNullOrEmpty(userInfo.NRIC))
+            {
+                // NRIC is null
+                RaiseMonitorExceptionEvent(new ExceptionArgs(new FailedInfo()
+                {
+                    ErrorCode = (int)ErrorCodes.NRICNull,
+                    ErrorMessage = ErrorMessages.NRICNull
+                }));
+
+                return;
+            }
+
+            // print label
+            BarcodePrinterUtils barcodeScannerUtils = BarcodePrinterUtils.Instance;
+            if (barcodeScannerUtils.PrintUserInfo(userInfo))
             {
                 // raise succeeded event
-                RaisePrintUserInfo_BarcodeSucceededEvent();
+                RaisePrintLabelSucceededEvent();
             }
             else
             {
                 // raise failed event
-                if (string.IsNullOrEmpty(userName))
+                RaiseMonitorExceptionEvent(new ExceptionArgs(new FailedInfo()
                 {
-                    // username is null
-                    RaiseMonitorExceptionEvent(new ExceptionArgs(new FailedInfo()
-                    {
-                        ErrorCode = (int)ErrorCodes.UserNameNull,
-                        ErrorMessage = ErrorMessages.UserNameNull
-                    }));
-                }
-                else
-                {
-                    // fatal error
-                    RaiseMonitorExceptionEvent(new ExceptionArgs(new FailedInfo()
-                    {
-                        ErrorCode = (int)ErrorCodes.UnknownError,
-                        ErrorMessage = ErrorMessages.UnknownError
-                    }));
-                }
+                    ErrorCode = (int)ErrorCodes.UnknownError,
+                    ErrorMessage = ErrorMessages.UnknownError
+                }));
             }
+        }
+
+        public PrinterStatus GetBarcodePrinterStatus()
+        {
+            return BarcodePrinterUtils.Instance.GetDeviceStatus();
         }
     }
 }

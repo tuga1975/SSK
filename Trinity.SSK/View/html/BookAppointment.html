@@ -1,59 +1,11 @@
 ﻿<span style="display: inline-block;font-size:20px;border:1px solid #CCC;background-color:#FFF;padding:10px;border-bottom:none;">Book Appointment</span>
-    </br>
-<button type="button" class="btn btn-danger" style="position:fixed;bottom:10px;right:10px;" onclick="window.external.LoadPage('Supervisee.html');">Back</button>
+<br />
 <span style="display: inline-block;font-size:15px;border:1px solid #CCC;background-color:#FFF;padding:5px;">
-    You next Book Appointment will be on : <span app-date></span> <span app-time></span>
+    Your next appointment will be on: <span app-date></span> <span app-time></span>
     <span style="display:block;" info-notime>You have not selected a time slot.</span>
 </span>
-<div style="height:300px;overflow:auto;width:100%">
-    <div style="width:30%;padding:10px;margin-top:10px;float:left">
-        <span class="btn btn-dark" style="display:block;text-align:center">Morning</span>
-        <div add-time-morning>
 
-        </div>
-    </div>
-    <div style="width:30%;padding:10px;margin-top:10px;float:left">
-        <span class="btn btn-dark" style="display:block;text-align:center">Afternoon</span>
-        <div add-time-afternoon>
-        </div>
-    </div>
-    <div style="width:30%;padding:10px;margin-top:10px;float:left">
-        <span class="btn btn-dark" style="display:block;text-align:center">Evening</span>
-        <div add-time-evening>
-        </div>
-    </div>
-
-
-    <div style="clear:both"></div>
-</div>
-<div style="border: 1px solid #000;width:80px;">
-    Legends
-</div>
-<div style="width:60%">
-    <div style="width:120px;padding:10px;margin-top:10px;float:left">
-        <span style="border: 1px solid #000;width:22px;float:left;background-color:#FFF">
-            
-        </span>
-        <span style="border: 1px solid #000;width:100px;float:right;">
-            Avaiable
-        </span>
-    </div>
-    <div style="width:120px;padding:10px;margin-top:10px;float:left">
-        <span style="border: 1px solid #000;width:22px;float:left;background-color:deepskyblue">
-            
-        </span>
-        <span style="border: 1px solid #000;width:100px;">
-            Selected
-        </span>
-    </div>
-    <div style="width:150px;padding:10px;margin-top:10px;float:left">
-        <span style="border: 1px solid #000;width:22px;float:left;background-color:#808080">
-          
-        </span>
-        <span style="border: 1px solid #000;width:130px;">
-            Fully Booked
-        </span>
-    </div>
+<div style="max-width:100%;padding:10px;border:1px solid #CCC;margin-top:10px;" add-time>
 </div>
 <style type="text/css">
     .input-group-addon {
@@ -91,7 +43,7 @@
             pointer-events: none;
         }
 </style>
-
+<button type="button" class="btn btn-danger" style="position:fixed;bottom:10px;left:10px;" onclick="window.external.LoadPage('Supervisee.html');">Back</button>
 
 <script type="text/javascript">
     $(document).ready(function () {
@@ -102,14 +54,8 @@
             $('[app-time]').text(api.model[0].FromTimeTxt);
         }
         //
-        $.each(api.model[1].Morning, function (index, item) {
-            $('[add-time-morning]').append('<span style="width:100%;" item-select-time availble="' + item.IsAvailble + '" selecttime="' + item.IsSelected + '" start="' + item.StartTimeTxt + '" end="' + item.EndTimeTxt + '">' + item.StartTimeTxt + ' to ' + item.EndTimeTxt + '</span>');
-        });
-        $.each(api.model[1].Afternoon, function (index, item) {
-            $('[add-time-afternoon]').append('<span style="width:100%;" item-select-time availble="' + item.IsAvailble + '" selecttime="' + item.IsSelected + '" start="' + item.StartTimeTxt + '" end="' + item.EndTimeTxt + '">' + item.StartTimeTxt + ' to ' + item.EndTimeTxt + '</span>');
-        });
-        $.each(api.model[1].Evening, function (index, item) {
-            $('[add-time-evening]').append('<span style="width:100%;" item-select-time availble="' + item.IsAvailble + '" selecttime="' + item.IsSelected + '" start="' + item.StartTimeTxt + '" end="' + item.EndTimeTxt + '">' + item.StartTimeTxt + ' to ' + item.EndTimeTxt + '</span>');
+        $.each(api.model[1], function (index, item) {
+            $('[add-time]').append('<span item-select-time availble="' + item.IsAvailble + '" selecttime="' + item.IsSelected + '" start="' + item.StartTimeTxt + '" end="' + item.EndTimeTxt + '">' + item.StartTimeTxt + ' to ' + item.EndTimeTxt + '</span>');
         });
 
         $('[item-select-time]').click(function () {

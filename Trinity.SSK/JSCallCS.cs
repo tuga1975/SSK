@@ -22,7 +22,7 @@ namespace SSK
 
         public event EventHandler<NRICEventArgs> OnNRICFailed;
         public event EventHandler<ShowMessageEventArgs> OnShowMessage;
-        public event EventHandler<NavigateEventArgs> OnNavigate;
+        public event Action OnLogOutCompleted;
 
         public JSCallCS(WebBrowser web)
         {
@@ -35,47 +35,18 @@ namespace SSK
         // to allow derived classes to override the event invocation behavior
         protected virtual void RaiseOnNRICFailedEvent(NRICEventArgs e)
         {
-            // Make a temporary copy of the event to avoid possibility of
-            // a race condition if the last subscriber unsubscribes
-            // immediately after the null check and before the event is raised.
-            EventHandler<NRICEventArgs> handler = OnNRICFailed;
-
-            // Event will be null if there are no subscribers
-            if (handler != null)
-            {
-                // Use the () operator to raise the event.
-                handler(this, e);
-            }
+            OnNRICFailed?.Invoke(this, e);
         }
+
         protected virtual void RaiseOnShowMessageEvent(ShowMessageEventArgs e)
         {
-            // Make a temporary copy of the event to avoid possibility of
-            // a race condition if the last subscriber unsubscribes
-            // immediately after the null check and before the event is raised.
-            EventHandler<ShowMessageEventArgs> handler = OnShowMessage;
-
-            // Event will be null if there are no subscribers
-            if (handler != null)
-            {
-                // Use the () operator to raise the event.
-                handler(this, e);
-            }
+            OnShowMessage?.Invoke(this, e);
         }
-        protected virtual void RaiseOnNavigateEvent(NavigateEventArgs e)
+
+        protected virtual void RaiseLogOutCompletedEvent()
         {
-            // Make a temporary copy of the event to avoid possibility of
-            // a race condition if the last subscriber unsubscribes
-            // immediately after the null check and before the event is raised.
-            EventHandler<NavigateEventArgs> handler = OnNavigate;
-
-            // Event will be null if there are no subscribers
-            if (handler != null)
-            {
-                // Use the () operator to raise the event.
-                handler(this, e);
-            }
+            OnLogOutCompleted?.Invoke();
         }
-
         #endregion
 
         public void LoadPage(string file)
@@ -99,16 +70,25 @@ namespace SSK
             Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
 
             DAL_Appointments DAL_Appointments = new DAL_Appointments();
-            Trinity.DAL.DBContext.Appointment appointment = DAL_Appointments.GetMyAppointmentCurrent(user.UserId);
-            DAL_Environment DAL_Environment = new DAL_Environment();
-            var listSelectTime = DAL_Environment.GetEnvironmentTime(appointment.Date);
 
-            //var item = listSelectTime.Where(d => appointment.FromTime != null && d.StartTime == appointment.FromTime.Value && d.EndTime == appointment.ToTime.Value).FirstOrDefault();
-            //if (item != null)
-            //{
-            //    item.IsSelected = true;
-            //}
-            this._web.LoadPageHtml("BookAppointment.html", new object[] { appointment, listSelectTime });
+            DAL_Environment DAL_Environment = new DAL_Environment();
+
+            Trinity.DAL.DBContext.Appointment appointment = DAL_Appointments.GetMyAppointmentCurrent(user.UserId);
+            List<Trinity.BE.EnvironmentTime> selectedTimes = null;
+            if (appointment != null)
+            {
+                selectedTimes = DAL_Environment.GetEnvironment(appointment.Date);
+                var item = selectedTimes.Where(d => appointment.FromTime != null && d.StartTime == appointment.FromTime.Value && d.EndTime == appointment.ToTime.Value).FirstOrDefault();
+                if (item != null)
+                {
+                    item.IsSelected = true;
+                }
+                this._web.LoadPageHtml("BookAppointment.html", new object[] { appointment, selectedTimes });
+            }
+            else
+            {
+                MessageBox.Show("You have no appointment");
+            }
         }
         public string UpdateTimeAppointment(string IDAppointment, string timeStart, string timeEnd)
         {
@@ -261,6 +241,7 @@ namespace SSK
             }
             _web.SetLoading(false);
         }
+
         public void ClientCallServer(string method, string guidEvent, params object[] pram)
         {
             ThreadPool.QueueUserWorkItem(new WaitCallback(actionThread), new object[] { method, guidEvent, pram });
@@ -272,40 +253,11 @@ namespace SSK
             nric.NRICAuthentication(strNRIC);
         }
 
-        /// <summary>
-        /// obsolete,will be remove
-        /// </summary>
-        public void GetQueue()
-        {
-            // get Queue number
-            Session session = Session.Instance;
-            Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-            string queueNumber = "Current Queue Number: ";
-            if (!string.IsNullOrEmpty(user.NRIC) && user.NRIC.Length > 5)
-            {
-                queueNumber += user.NRIC.Substring(0, 1) + user.NRIC.Substring(user.NRIC.Length - 5, 5).PadLeft(8, '*');
-            }
-            else if (!string.IsNullOrEmpty(user.NRIC) && user.NRIC.Length <= 5)
-            {
-                queueNumber += user.NRIC.Substring(0, 1) + user.NRIC.PadLeft(8, '*');
-            }
-            else
-            {
-                queueNumber += null;
-            }
-
-            // displayqueue number
-            FormQueueNumber f = FormQueueNumber.GetInstance();
-            f.ShowQueueNumber(queueNumber);
-            //RaiseOnShowMessageEvent(new ShowMessageEventArgs("Your queue is: " + queueNumber, "Queue Number", MessageBoxButtons.OK, MessageBoxIcon.Information));
-        }
-
-
-        public void QueueNumber()
+        // Reporting for Queue Number
+        public void ReportingForQueueNumber()
         {
             Session session = Session.Instance;
             Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-
 
             var dalAbsence = new DAL_AbsenceReporting();
 
@@ -322,11 +274,10 @@ namespace SSK
                 }
                 else
                 {
-                    ShowQueueNumber();
+                    GetMyQueueNumber();
                 }
             }
-            else
-            if (countAbsence >= 3)
+            else if (countAbsence >= 3)
             {
                 MessageBox.Show("You have been blocked for 3 or more absences \n Please report to the Duty Officer");
 
@@ -343,8 +294,7 @@ namespace SSK
                 session[CommonConstants.LIST_APPOINTMENT] = listAppointment;
                 _web.LoadPageHtml("ReasonsForQueue.html", listAppointment);
             }
-            else
-            if (countAbsence > 0 && countAbsence < 3)
+            else if (countAbsence > 0 && countAbsence < 3)
             {
                 var listAppointment = dalAppointment.GetMyAbsentAppointments(user.UserId);
 
@@ -354,7 +304,7 @@ namespace SSK
             }
         }
 
-        public void ShowQueueNumber()
+        private void GetMyQueueNumber()
         {
             Session session = Session.Instance;
             Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
@@ -373,15 +323,15 @@ namespace SSK
                 if (!_dalQueue.CheckQueueExistToday(appointment.UserId))
                 {
                     QueueNumber = _dalQueue.InsertQueueNumber(appointment.ID, appointment.UserId);
-                    RaiseOnShowMessageEvent(new ShowMessageEventArgs("Your queue is: " + QueueNumber.QueuedNumber, "Queue Number", MessageBoxButtons.OK, MessageBoxIcon.Information));
+                    RaiseOnShowMessageEvent(new ShowMessageEventArgs("Your queue number is: " + QueueNumber.QueuedNumber, "Queue Number", MessageBoxButtons.OK, MessageBoxIcon.Information));
                 }
-                var model = _dalQueue.GetAllQueueNumberByDate(DateTime.Today).Select(d => new Trinity.BE.QueueNumber()
-                {
-                    Status = d.Status,
-                    Queue = d.QueuedNumber
-                }).ToList();
+                //var model = _dalQueue.GetAllQueueNumberByDate(DateTime.Today).Select(d => new Trinity.BE.Queue()
+                //{
+                //    Status = d.Status,
+                //    QueueNumber = d.QueuedNumber
+                //}).ToArray();
                 FormQueueNumber f = FormQueueNumber.GetInstance();
-                f.ShowQueueNumber(model);
+                f.RefreshQueueNumbers();
             }
         }
 
@@ -411,7 +361,7 @@ namespace SSK
             //send notify to case officer
             APIUtils.SignalR.SendNotificationToDutyOfficer("Supervisee's information changed!", "Please check the Supervisee's information!");
 
-            QueueNumber();
+            ReportingForQueueNumber();
         }
 
         public void UpdateAbsenceAfterScanDoc()
@@ -433,10 +383,10 @@ namespace SSK
                 }
             }
 
-            QueueNumber();
+            ReportingForQueueNumber();
 
         }
-        public void logOut()
+        public void LogOut()
         {
             // reset session value
             Session session = Session.Instance;
@@ -445,8 +395,9 @@ namespace SSK
             session[CommonConstants.USER_LOGIN] = null;
             session[CommonConstants.PROFILE_DATA] = null;
 
-            // redirect to StartCard login
-            RaiseOnNavigateEvent(new NavigateEventArgs(NavigatorEnums.Authentication_SmartCard));
+            //
+            // RaiseLogOutCompletedEvent
+            RaiseLogOutCompletedEvent();
         }
     }
 

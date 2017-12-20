@@ -5,10 +5,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Trinity.Common.Common;
+using Trinity.Common.Utils;
 
 namespace Trinity.Common
 {
-    class SmartCardReaderUtils
+    class SmartCardReaderUtils : DeviceUtils
     {
         List<string> _cardReaders;
         PCSC.SCardMonitor _sCardMonitor;
@@ -42,6 +43,19 @@ namespace Trinity.Common
             }
         }
         #endregion
+
+        public event Action OnNoDeviceConnected;
+        public event EventHandler<SmartCardReaderConnectedArgs> OnDeviceConnected;
+
+        protected virtual void RaiseNoDeviceConnectedEvent()
+        {
+            OnNoDeviceConnected?.Invoke();
+        }
+
+        protected virtual void RaiseDeviceConnectedEvent(SmartCardReaderConnectedArgs e)
+        {
+            OnDeviceConnected?.Invoke(this, e);
+        }
 
         public bool StartSmartCardReaderMonitor()
         {
@@ -195,12 +209,27 @@ namespace Trinity.Common
             {
                 Debug.WriteLine($"Reader detached: {removed}");
                 _cardReaders.Remove(removed);
+
+                if (_cardReaders == null || _cardReaders.Count() == 0)
+                {
+                    // Raise NoDeviceConnected Event when system have no conntected cared reader
+                    RaiseNoDeviceConnectedEvent();
+                }
             }
 
             foreach (var added in e.AttachedReaders)
             {
                 Debug.WriteLine($"New reader attached: {added}");
                 _cardReaders.Add(added);
+
+                // raise RaiseDeviceConnectedEvent
+                List<string> newReaders = new List<string>();
+                newReaders.Add(_cardReaders.Last());
+                RaiseDeviceConnectedEvent(new SmartCardReaderConnectedArgs()
+                {
+                    NewReaders = newReaders,
+                    Readers = _cardReaders
+                });
             }
         }
 
@@ -213,6 +242,31 @@ namespace Trinity.Common
             }
 
             _cardReaders.AddRange(e.AllReaders);
+
+            if (_cardReaders == null || _cardReaders.Count() == 0)
+            {
+                // Raise NoDeviceConnected Event when system have no conntected cared reader
+                RaiseNoDeviceConnectedEvent();
+            }
+            else
+            {
+                // raise RaiseDeviceConnectedEvent
+                RaiseDeviceConnectedEvent(new SmartCardReaderConnectedArgs()
+                {
+                    NewReaders = _cardReaders,
+                    Readers = _cardReaders
+                });
+            }
+        }
+
+        public override DeviceStatus GetDeviceStatus()
+        {
+            if (_cardReaders == null || _cardReaders.Count() == 0)
+            {
+                return DeviceStatus.Disconnected;
+            }
+
+            return DeviceStatus.Connected;
         }
     }
     class SmartCardReaderUtils_Old
