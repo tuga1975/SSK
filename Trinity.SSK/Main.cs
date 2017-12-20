@@ -30,10 +30,6 @@ namespace SSK
         {
             InitializeComponent();
 
-            APIUtils.LayerWeb = LayerWeb;
-            LayerWeb.Url = new Uri(String.Format("file:///{0}/View/html/Layout.html", CSCallJS.curDir));
-            LayerWeb.ObjectForScripting = _jsCallCS;
-
             // setup variables
             _smartCardFailed = 0;
             _fingerprintFailed = 0;
@@ -65,6 +61,11 @@ namespace SSK
             // Supervisee
             _suppervisee = new CodeBehind.Suppervisee(LayerWeb);
             #endregion
+
+
+            APIUtils.LayerWeb = LayerWeb;
+            LayerWeb.Url = new Uri(String.Format("file:///{0}/View/html/Layout.html", CSCallJS.curDir));
+            LayerWeb.ObjectForScripting = _jsCallCS;
 
             //
             // For testing purpose only
