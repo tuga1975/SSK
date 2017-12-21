@@ -38,4 +38,17 @@ namespace Trinity.BE
             }
         }
     }
+
+    public class EnvironmentTimeDetail
+    {
+        public List<EnvironmentTime> Morning { get; set; }
+        public List<EnvironmentTime> Afternoon { get; set; }
+        public List<EnvironmentTime> Evening { get; set; }
+        public EnvironmentTimeDetail()
+        {
+            Morning = new List<EnvironmentTime>();
+            Afternoon = new List<EnvironmentTime>();
+            Evening = new List<EnvironmentTime>();
+        }
+    }
 }

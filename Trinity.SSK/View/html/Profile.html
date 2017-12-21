@@ -28,30 +28,31 @@
         <input type="hidden" name="Role" id="Role" />
         <input type="hidden" name="SmartCardId" id="SmartCardId" />
         <input type="hidden" name="Fingerprint" id="Fingerprint" />
-        <div id="Particulars" class="tab-pane fade in active" onclick="activeTab('Particulars');">
+        <input type="hidden" name="UserStatus" id="UserStatus" />
+        <div id="Particulars" class="tab-pane fade in active" onclick="activeTab('Particulars');" style="height:350px;overflow:auto;">
             <div class="input-group">
-                <span class="input-group-addon">Name</span>
-                <input id="ParticularsName" type="text" class="form-control pri" name="ParticularsName">
+                <span class="input-group-addon"><span style="color:red">*</span>Name</span>
+                <input id="ParticularsName" type="text" class="form-control pri" name="ParticularsName" placeholder="Name">
             </div>
             <br />
             <div class="form-inline">
                 <div class="input-group">
-                    <span class="input-group-addon">NRIC NO</span>
+                    <span class="input-group-addon"><span style="color:red">*</span>NRIC NO</span>
                     <input id="NRIC" type="text" class="form-control pri" name="NRIC">
                 </div>
                 <div class="input-group">
-                    <span class="input-group-addon">Date of birth</span>
+                    <span class="input-group-addon"><span style="color:red">*</span>Date of birth</span>
                     <input id="DOB" type="text" class="form-control pri" name="DOB">
                 </div>
             </div>
             <br />
             <div class="form-inline">
                 <div class="input-group">
-                    <span class="input-group-addon">Nationality</span>
+                    <span class="input-group-addon"><span style="color:red">*</span>Nationality</span>
                     <input id="Nationality" type="text" class="form-control pri" name="Nationality">
                 </div>
                 <div class="input-group">
-                    <span class="input-group-addon">Marital Status</span>
+                    <span class="input-group-addon"><span style="color:red">*</span>Marital Status</span>
                     <input id="MaritalStatus" type="text" class="form-control pri" name="MaritalStatus">
                 </div>
             </div>
@@ -79,7 +80,7 @@
             <br />
 
         </div>
-        <div id="Addresses" class="tab-pane fade" onclick="activeTab('Addresses');">
+        <div id="Addresses" class="tab-pane fade" onclick="activeTab('Addresses');" style="height:350px;overflow:auto;">
 
             <input type="hidden" name="Residential_Addess_ID" id="Residential_Addess_ID" />
             <input type="hidden" name="Other_Address_ID" id="Other_Address_ID" />
@@ -105,7 +106,7 @@
             </div>
         </div>
 
-        <div id="Next-Of-Kin-Details" class="tab-pane fade" onclick="activeTab('Next-Of-Kin-Details');">
+        <div id="Next-Of-Kin-Details" class="tab-pane fade" onclick="activeTab('Next-Of-Kin-Details');" style="height:350px;overflow:auto;">
             <div class="input-group">
                 <span class="input-group-addon">Name</span>
                 <input id="NextOfKinDetailsName" type="text" class="form-control" name="NextOfKinDetailsName" />
@@ -147,7 +148,7 @@
             </div>
             <br />
         </div>
-        <div id="Employment-Details" class="tab-pane fade" onclick="activeTab('Employment-Details');">
+        <div id="Employment-Details" class="tab-pane fade" onclick="activeTab('Employment-Details');" style="height:350px;overflow:auto;">
             <div class="input-group">
                 <span class="input-group-addon">Employer Name</span>
                 <input id="EmployerName" type="text" class="form-control" name="EmployerName" />
@@ -183,17 +184,22 @@
                 <input id="Remarks" type="text" class="form-control" name="Remarks" />
             </div>
         </div>
+        <div>
+
+            <div style="display:none;" id="divError"><span class="text-danger">Following input must not null!</span></div>
+            <div style="float:left;" id="noticeMess"><span class="text-danger">* Supporting documents required </span></div>
+        </div>
     </div>
-    <div style="display:none;float:left;" id="divError"><button type="button" class="btn btn-danger">Following input must not null!</button></div>
+
     <div style="display:none;float:right;" id="divSupportDocument">
-        <button type="button" class="btn btn-danger" style="position:fixed;bottom:10px;right:10px;" id="btnScanDocument">Supporting documents required</button>
+        <button type="button" class="btn btn-danger" style="position:fixed;bottom:10px;right:150px;" id="btnScan">Scan documents</button>
         <button type="button" class="btn btn-dark" style="position:fixed;bottom:10px;left:10px;float:left;" onclick="api.server.LoadPage('Supervisee.html');">Back</button>
     </div>
-    <div style="float:right;" id="tempSupportDocument">
+    <!--<div style="float:right;" id="tempSupportDocument">
         <button type="button" class="btn btn-danger" style="position:fixed;bottom:10px;right:150px;" id="btnScan">Scan documents</button>
-        
-    </div>
-    <div style="display:none;float:right;" id="divConfirm" >
+
+    </div>-->
+    <div style="display:none;float:right;" id="divConfirm">
         <p style="position:fixed;z-index:100;bottom:45px;right:10px;"><strong>Are you sure ?</strong></p>
         <button type="button" class="btn btn-dark" style="position:fixed;bottom:10px;right:60px; float:right;" id="btnCancel">Cancel</button>
         <button type="submit" class="btn btn-success" style="position:fixed;bottom:10px;right:10px; float:right;" id="btnOK">OK</button>
@@ -206,7 +212,6 @@
 <script type="text/javascript">
     var _particularName, _nric, _dob, _nationality, _maritalStatus = "";
     $(document).ready(function myfunction() {
-
         _particularName = api.model.User.Name;
         _nric = api.model.User.NRIC;
         _dob = api.model.UserProfile.DOB;
@@ -215,6 +220,7 @@
 
         $('#UserId').val(api.model.User.UserId);
         $('#Fingerprint').val(api.model.User.Fingerprint);
+        $('#UserStatus').val(api.model.User.Status);
         //user inforation
         $('#ParticularsName').val(api.model.User.Name);
         $('#NRIC').val(api.model.User.NRIC);
@@ -232,14 +238,14 @@
         $('#SecondaryEmail').val(api.model.UserProfile.Secondary_Email);
         if (api.model.Addresses != null) {
 
-        //address information
-        $('#Residential_Addess_ID').val(api.model.Addresses.Address_ID);
-        $('#Other_Address_ID').val(api.model.Addresses.Address_ID);
-        $('#AddressHouseNumber').val(api.model.Addresses.BlkHouse_Number);
-        $('#AddressUnitNumber').val(api.model.Addresses.FlrUnit_Number);
-        $('#AddressStreetName').val(api.model.Addresses.Street_Name);
-        $('#AddressCountry').val(api.model.Addresses.Country);
-        $('#Postal_Code').val(api.model.Addresses.Postal_Code);
+            //address information
+            $('#Residential_Addess_ID').val(api.model.Addresses.Address_ID);
+            $('#Other_Address_ID').val(api.model.Addresses.Address_ID);
+            $('#AddressHouseNumber').val(api.model.Addresses.BlkHouse_Number);
+            $('#AddressUnitNumber').val(api.model.Addresses.FlrUnit_Number);
+            $('#AddressStreetName').val(api.model.Addresses.Street_Name);
+            $('#AddressCountry').val(api.model.Addresses.Country);
+            $('#Postal_Code').val(api.model.Addresses.Postal_Code);
         }
         //next of kin information
         $('#NextOfKinDetailsName').val(api.model.UserProfile.NextOfKin_Name);
@@ -265,6 +271,10 @@
     function activeTab(name) {
         $('#activeTab').val(name);
         $('#divError').hide();
+        if (name != "Particulars") {
+            $('#noticeMess').hide();
+        }
+
     }
 
     $("#profileFrm").submit(function (e) {
@@ -300,39 +310,54 @@
 
     $('#SaveBtn').click(function () {
 
-        //temp not check for require
-        //if ($('#ParticularsName').val() != _particularName || $('#NRIC').val() != _nric || $('#DOB').val() != _dob || $('#Nationality').val() != _nationality || $('#MaritalStatus').val() != _maritalStatus) {
-        //    $('#divSave').hide();
-        //    $('#divSupportDocument').fadeIn(1000);
-        //    $('.pri').css('border-color', 'red');
-        //}
-        //else {
 
-            //var activeTab = $('#activeTab').val();
-            //var empty = $('#' + activeTab).find("input").filter(function () {
-            //    return this.value.trim() === "";
-            //});
-            //if (empty.length) {
-            //    //At least one input is empty
-            //    $("input[class='form-control']").each(function () {
-            //        if ($.trim($(this).val()).length == 0) {
-            //            $(this).addClass("highlight");
-            //        }
-            //        else {
-            //            $(this).removeClass("highlight");
+        if ($('#ParticularsName').val() != _particularName || $('#NRIC').val() != _nric || $('#DOB').val() != _dob || $('#Nationality').val() != _nationality || $('#MaritalStatus').val() != _maritalStatus) {
+            //$('#divSave').hide();
+            //$('#divError').show();
+            $('#divSupportDocument').fadeIn(1000);
+            $("input[class='form-control pri']").each(function () {
+                if ($(this).val() == "") {
+                    $(this).addClass("highlight");
+                }
+                else {
+                    $(this).removeClass("highlight");
+                }
+            });
 
-            //        }
-            //    });
-            //    $('#divError').show();
-            //}
-            //else {
+            if (empty > 0) {
+                $('#divError').show();
+            } else {
+
                 $('#divError').hide();
                 $('#divConfirm').show();
                 $('#divSave').hide();
-            //}
+            }
+        }
+        else {
+            $('#divSupportDocument').hide();
+            var activeTab = $('#activeTab').val();
+            var empty = $('#' + activeTab).find("input[class='form-control pri']").filter(function () {
+                return this.value.trim() === "";
+            });
+            if (empty.length > 0) {
+                //At least one input is empty
+                $("input[class='form-control pri']").each(function () {
+                    if ($(this).val() == "") {
+                        $(this).addClass("highlight");
+                    }
+                    else {
+                        $(this).removeClass("highlight");
 
-        //}
-
+                    }
+                });
+                $('#divError').show();
+            }
+            else {
+                $('#divError').hide();
+                $('#divConfirm').show();
+                $('#divSave').hide();
+            }
+        }
     });
 
     $('#btnCancel').click(function () {
@@ -340,17 +365,38 @@
         $('#divConfirm').hide();
     });
 
-    //temp not check for require
+
     $('input[class="form-control"]').keyup(function () {
         $('#btnCancel').trigger('click');
         //if ($(this).val() != "") {
         //    $(this).removeClass('highlight');
-          
+
         //}
         //else {
         //    $(this).addClass('highlight');
-           
+
         //}
+    });
+
+
+
+    $('input[class="form-control pri"]').keyup(function () {
+        $('#divSave').show();
+        if ($('#ParticularsName').val() != _particularName || $('#NRIC').val() != _nric || $('#DOB').val() != _dob || $('#Nationality').val() != _nationality || $('#MaritalStatus').val() != _maritalStatus) {
+            $('#divSupportDocument').fadeIn(1000);
+        }
+        else {
+            $('#divSupportDocument').fadeOut(500);
+        }
+
+        if ($(this).val() != "") {
+            $(this).removeClass('highlight');
+
+        }
+        else {
+            $(this).addClass('highlight');
+
+        }
     });
 
     var listTab = ["Particulars", "Addresses", "Next-Of-Kin-Details", "Employment-Details"];
@@ -361,7 +407,7 @@
     //            continue;
     //        }
     //        else {
-                
+
     //                $('#' + listTab[i]).unbind('mouseenter mouseleave');
     //        }
     //    }

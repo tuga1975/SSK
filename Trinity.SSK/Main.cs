@@ -9,57 +9,39 @@ using System.Windows.Forms;
 using Trinity.Common;
 using Trinity.Common.Common;
 using Trinity.Common.Monitor;
+using Trinity.DAL;
 
 namespace SSK
 {
     public partial class Main : Form
     {
-        private JSCallCS _jsCallCS = null;
-        private CodeBehind.Authentication.SmartCard _smartCard = null;
-        private CodeBehind.Authentication.Fingerprint _fingerprint = null;
-        private CodeBehind.Authentication.NRIC _nric = null;
-        private CodeBehind.Suppervisee _suppervisee = null;
+        private JSCallCS _jsCallCS;
+        private CodeBehind.Authentication.SmartCard _smartCard;
+        private CodeBehind.Authentication.Fingerprint _fingerprint;
+        private CodeBehind.Authentication.NRIC _nric;
+        private CodeBehind.Suppervisee _suppervisee;
         private NavigatorEnums _currentPage;
-        private bool _displayLoginButtonStatus = false;
 
-        // refator
         private int _smartCardFailed;
         private int _fingerprintFailed;
+        private bool _displayLoginButtonStatus = false;
 
         public Main()
         {
             InitializeComponent();
 
-            APIUtils.LayerWeb = LayerWeb;
+            // setup variables
+            _smartCardFailed = 0;
+            _fingerprintFailed = 0;
+            _displayLoginButtonStatus = false;
+
+            #region Initialize and register events
+            // _jsCallCS
             _jsCallCS = new JSCallCS(this.LayerWeb);
             _jsCallCS.OnNRICFailed += JSCallCS_OnNRICFailed;
             _jsCallCS.OnShowMessage += JSCallCS_ShowMessage;
-            _jsCallCS.OnNavigate += OnNavigate;
-            //smartCard = new SmartCard(this.LayerWeb);
-            this.LayerWeb.Url = new Uri(String.Format("file:///{0}/View/html/Layout.html", CSCallJS.curDir));
-            this.LayerWeb.ObjectForScripting = _jsCallCS;
+            _jsCallCS.OnLogOutCompleted += JSCallCS_OnLogOutCompleted;
 
-            _smartCardFailed = 0;
-            _fingerprintFailed = 0;
-
-            //
-            // For testing purpose only
-            // 
-            //Trinity.DAL.DAL_User dalUser = new Trinity.DAL.DAL_User();
-            //Trinity.BE.User localUser = dalUser.GetUserBySmartCardId("123456789", true);
-            //Trinity.BE.User centralizedUser = dalUser.GetUserBySmartCardId("999", false);
-            //Trinity.DAL.DAL_Notification dalNotification = new Trinity.DAL.DAL_Notification();
-            //List<Trinity.BE.Notification> myLocaNotifications = dalNotification.GetMyNotifications("dfkkmdkg", true);
-            //List<Trinity.BE.Notification> myCentralizedNotifications = dalNotification.GetMyNotifications("minhdq", false);
-            //APIUtils.SignalR.SendNotificationToDutyOfficer("Hello Mr. Duty Officer!", "Hello Mr. Duty Officer! I'm a Supervisee");
-
-        }
-
-        private void LayerWeb_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
-        {
-            this.LayerWeb.InvokeScript("createEvent", JsonConvert.SerializeObject(_jsCallCS.GetType().GetMethods().Where(d => d.IsPublic && !d.IsVirtual && !d.IsSecuritySafeCritical).ToArray().Select(d => d.Name)));
-
-            // Initialized and register events
             // SmartCard
             _smartCard = new CodeBehind.Authentication.SmartCard(LayerWeb);
             _smartCard.OnSmartCardSucceeded += SmartCard_OnSmartCardSucceeded;
@@ -78,16 +60,51 @@ namespace SSK
 
             // Supervisee
             _suppervisee = new CodeBehind.Suppervisee(LayerWeb);
+            #endregion
 
+
+            APIUtils.LayerWeb = LayerWeb;
+            LayerWeb.Url = new Uri(String.Format("file:///{0}/View/html/Layout.html", CSCallJS.curDir));
+            LayerWeb.ObjectForScripting = _jsCallCS;
+
+            //
+            // For testing purpose only
+            // 
+            //Trinity.DAL.DAL_User dalUser = new Trinity.DAL.DAL_User();
+            //Trinity.BE.User localUser = dalUser.GetUserBySmartCardId("123456789", true);
+            //Trinity.BE.User centralizedUser = dalUser.GetUserBySmartCardId("999", false);
+            //Trinity.DAL.DAL_Notification dalNotification = new Trinity.DAL.DAL_Notification();
+            //List<Trinity.BE.Notification> myLocaNotifications = dalNotification.GetMyNotifications("dfkkmdkg", true);
+            //List<Trinity.BE.Notification> myCentralizedNotifications = dalNotification.GetMyNotifications("minhdq", false);
+            //APIUtils.SignalR.SendNotificationToDutyOfficer("Hello Mr. Duty Officer!", "Hello Mr. Duty Officer! I'm a Supervisee");
+
+        }
+
+        private void JSCallCS_OnLogOutCompleted()
+        {
+            NavigateTo(NavigatorEnums.Authentication_SmartCard);
+        }
+
+        private void LayerWeb_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
+        {
+            LayerWeb.InvokeScript("createEvent", JsonConvert.SerializeObject(_jsCallCS.GetType().GetMethods().Where(d => d.IsPublic && !d.IsVirtual && !d.IsSecuritySafeCritical).ToArray().Select(d => d.Name)));
 
             // Start page
-            OnNavigate(new object(), new NavigateEventArgs(NavigatorEnums.Authentication_SmartCard));
+            NavigateTo(NavigatorEnums.Authentication_SmartCard);
+
+            // For testing purpose
+            Session session = Session.Instance;
+            Trinity.BE.User user = new DAL_User().GetUserByUserId("656ebbb1-190b-4c8a-9d77-ffa4ff4c9e93", true);
+            session[CommonConstants.USER_LOGIN] = user;
+            session.IsSmartCardAuthenticated = true;
+            session.IsFingerprintAuthenticated = true;
+            NavigateTo(NavigatorEnums.Supervisee);
         }
 
         private void NRIC_OnNRICSucceeded()
         {
             // navigate to Supervisee page
-            OnNavigate(new object(), new NavigateEventArgs(NavigatorEnums.Supervisee_NRIC));
+            NavigateTo(NavigatorEnums.Supervisee_NRIC);
         }
 
         private void Fingerprint_OnFingerprintSucceeded()
@@ -102,7 +119,7 @@ namespace SSK
             LayerWeb.RunScript("$('.status-text').css('color','#000').text('Fingerprint authentication is successful.');");
             APIUtils.SignalR.GetLatestNotifications();
 
-            Thread.Sleep(2000);
+            Thread.Sleep(1000);
 
             // if role = 0 (duty officer), redirect to NRIC.html
             // else (supervisee), redirect to Supervisee.html
@@ -110,19 +127,22 @@ namespace SSK
             if (user.Role == (int)UserRoles.DutyOfficer)
             {
                 // navigate to Authentication_NRIC
-                OnNavigate(new object(), new NavigateEventArgs(NavigatorEnums.Authentication_NRIC));
+                NavigateTo(NavigatorEnums.Authentication_NRIC);
             }
             else
             {
                 // navigate to Supervisee page
-                OnNavigate(new object(), new NavigateEventArgs(NavigatorEnums.Supervisee));
+                NavigateTo(NavigatorEnums.Supervisee);
             }
         }
 
         private void SmartCard_OnSmartCardSucceeded()
         {
+            // Pause for 1 second and goto Fingerprint Login Screen
+            Thread.Sleep(1000);
+
             // navigate to next page: Authentication_Fingerprint
-            OnNavigate(new Object(), new NavigateEventArgs(NavigatorEnums.Authentication_Fingerprint));
+            NavigateTo(NavigatorEnums.Authentication_Fingerprint);
         }
 
         private void SmartCard_OnSmartCardFailed(object sender, CodeBehind.Authentication.SmartCardEventArgs e)
@@ -167,7 +187,7 @@ namespace SSK
                 MessageBox.Show(e.Message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
                 // navigate to smartcard login page
-                OnNavigate(new Object(), new NavigateEventArgs(NavigatorEnums.Authentication_SmartCard));
+                NavigateTo(NavigatorEnums.Authentication_SmartCard);
 
                 // reset counter
                 _fingerprintFailed = 0;
@@ -201,33 +221,33 @@ namespace SSK
             MessageBox.Show(e.Message, e.Caption, e.Button, e.Icon);
         }
 
-        private void OnNavigate(object sender, NavigateEventArgs e)
+        private void NavigateTo(NavigatorEnums navigatorEnum)
         {
             // navigate
-            if (e.navigatorEnum == NavigatorEnums.Authentication_SmartCard)
+            if (navigatorEnum == NavigatorEnums.Authentication_SmartCard)
             {
                 _smartCard.Start();
             }
-            else if (e.navigatorEnum == NavigatorEnums.Authentication_Fingerprint)
+            else if (navigatorEnum == NavigatorEnums.Authentication_Fingerprint)
             {
                 _fingerprint.Start();
             }
-            else if (e.navigatorEnum == NavigatorEnums.Authentication_NRIC)
+            else if (navigatorEnum == NavigatorEnums.Authentication_NRIC)
             {
                 _nric.Start();
             }
-            else if (e.navigatorEnum == NavigatorEnums.Supervisee)
+            else if (navigatorEnum == NavigatorEnums.Supervisee)
             {
                 _suppervisee.Start();
             }
-            else if (e.navigatorEnum == NavigatorEnums.Supervisee_NRIC)
+            else if (navigatorEnum == NavigatorEnums.Supervisee_NRIC)
             {
                 _suppervisee.Start();
                 CSCallJS.DisplayNRICLogin(LayerWeb);
             }
 
             // set current page
-            _currentPage = e.navigatorEnum;
+            _currentPage = navigatorEnum;
 
             // display options in Authentication_SmartCard page
             if (_displayLoginButtonStatus && _currentPage == NavigatorEnums.Authentication_SmartCard)

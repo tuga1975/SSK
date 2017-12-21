@@ -8,10 +8,10 @@ using Trinity.Common.Common;
 
 namespace Trinity.Common.Utils
 {
-    public class ReceiptPrinterUtils
+    public class ReceiptPrinterUtils : DeviceUtils
     {
         // for testing purpose
-        public DeviceStatus GetDeviceStatus()
+        public override DeviceStatus GetDeviceStatus()
         {
             return DeviceStatus.Disconnected;
         }

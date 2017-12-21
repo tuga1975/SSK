@@ -1,5 +1,5 @@
 ﻿<video autoplay="autoplay" loop="loop">
-    <source src="Authentication/mov_bbb.mp4" type="video/mp4">    
+    <source src="Authentication/mov_bbb.mp4" type="video/mp4">
 </video>
 <div style="clear:both"></div>
 <style type="text/css">
@@ -13,19 +13,45 @@
 </style>
 <div style="width:100%;padding:10px 0px;text-align:center; margin-top:400px">
     <div type="button" id="btnScan" class="btn btn-warning" onclick="api.server.LoadPage('DocumentFromQueue.html');">Please scan your document in the scanner.</div>
-    </div>
+</div>
+
 <div style="width:100%;padding:10px 0px;text-align:center; margin-top:10px">
     <div type="button" class="btn btn-success" id="divMessage" style="display:none;">Your document was scanned successfully! </div>
 </div>
+<div style="width:100%;padding:10px 0px;text-align:center; margin-top:10px">
+    <div id="divConfirm" style="display:none;">
+        <strong>Confirm update information </strong>
+        <button class="btn btn-dark">Cancel</button>
+        <button class="btn btn-success" id="btnOK">OK</button>
+    </div>
+</div>
+
 <script>
     var formData, json = null;
     $(document).ready(function () {
-        setTimeout(function () { $('#btnScan').text('Scanning...'); },1000);
+
+    });
+    var setSuccess = setTimeout(showMessage, 5000);
+    function showMessage() {
+        $('#divMessage').show();
+        $('#divConfirm').show();
+    }
+
+    $('#btnOK').click(function () {
+        api.server.UpdateAbsenceAfterScanDoc();
+    });
+
+</script>
+
+<!--<script>
+    var formData, json = null;
+    $(document).ready(function () {
+        setTimeout(function () { $('#btnScan').text('Scanning...'); }, 1000);
     });
     var setSuccess = setTimeout(showMessage, 5000);
     function showMessage() {
         $('#divMessage').show();
         $('#btnScan').text('Scan again');
         api.server.ShowQueueNumber();
-    } 
-</script>
+    }
+</script>-->

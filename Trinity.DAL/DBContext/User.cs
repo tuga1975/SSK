@@ -17,11 +17,9 @@ namespace Trinity.DAL.DBContext
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public User()
         {
-            this.AbsenceReportings = new HashSet<AbsenceReporting>();
             this.Appointments = new HashSet<Appointment>();
             this.Notifications = new HashSet<Notification>();
             this.Notifications1 = new HashSet<Notification>();
-            this.QueueNumbers = new HashSet<QueueNumber>();
         }
     
         public string UserId { get; set; }
@@ -32,17 +30,14 @@ namespace Trinity.DAL.DBContext
         public Nullable<System.DateTime> EnrolledDate { get; set; }
         public Nullable<short> Role { get; set; }
         public byte[] Fingerprint { get; set; }
+        public string Status { get; set; }
     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<AbsenceReporting> AbsenceReportings { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Appointment> Appointments { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Notification> Notifications { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Notification> Notifications1 { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<QueueNumber> QueueNumbers { get; set; }
         public virtual User_Profiles User_Profiles { get; set; }
     }
 }

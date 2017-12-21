@@ -9,8 +9,6 @@ namespace Trinity.Common.Utils
 {
     public abstract class DeviceUtils
     {
-        public abstract void Start();
-        public abstract void Stop();
         public abstract DeviceStatus GetDeviceStatus();
     }
 }

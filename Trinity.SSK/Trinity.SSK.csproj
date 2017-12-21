@@ -136,9 +136,7 @@
     <Compile Include="CodeBehind\Suppervisee.cs" />
     <Compile Include="Common\Enums.cs" />
     <Compile Include="Contstants\CommonConstants.cs" />
-    <Compile Include="FormAnnouncementDetails.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="FormAnnouncementDetails.cs" />
     <Compile Include="FormAnnouncementDetails.Designer.cs">
       <DependentUpon>FormAnnouncementDetails.cs</DependentUpon>
     </Compile>

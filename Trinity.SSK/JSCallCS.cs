@@ -4,12 +4,12 @@ using SSK.Common;
 using SSK.Contstants;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
 using Trinity.Common;
 using Trinity.DAL;
-using System.Linq;
 using Trinity.DAL.DBContext;
 
 namespace SSK
@@ -22,7 +22,7 @@ namespace SSK
 
         public event EventHandler<NRICEventArgs> OnNRICFailed;
         public event EventHandler<ShowMessageEventArgs> OnShowMessage;
-        public event EventHandler<NavigateEventArgs> OnNavigate;
+        public event Action OnLogOutCompleted;
 
         public JSCallCS(WebBrowser web)
         {
@@ -35,47 +35,18 @@ namespace SSK
         // to allow derived classes to override the event invocation behavior
         protected virtual void RaiseOnNRICFailedEvent(NRICEventArgs e)
         {
-            // Make a temporary copy of the event to avoid possibility of
-            // a race condition if the last subscriber unsubscribes
-            // immediately after the null check and before the event is raised.
-            EventHandler<NRICEventArgs> handler = OnNRICFailed;
-
-            // Event will be null if there are no subscribers
-            if (handler != null)
-            {
-                // Use the () operator to raise the event.
-                handler(this, e);
-            }
+            OnNRICFailed?.Invoke(this, e);
         }
+
         protected virtual void RaiseOnShowMessageEvent(ShowMessageEventArgs e)
         {
-            // Make a temporary copy of the event to avoid possibility of
-            // a race condition if the last subscriber unsubscribes
-            // immediately after the null check and before the event is raised.
-            EventHandler<ShowMessageEventArgs> handler = OnShowMessage;
-
-            // Event will be null if there are no subscribers
-            if (handler != null)
-            {
-                // Use the () operator to raise the event.
-                handler(this, e);
-            }
+            OnShowMessage?.Invoke(this, e);
         }
-        protected virtual void RaiseOnNavigateEvent(NavigateEventArgs e)
+
+        protected virtual void RaiseLogOutCompletedEvent()
         {
-            // Make a temporary copy of the event to avoid possibility of
-            // a race condition if the last subscriber unsubscribes
-            // immediately after the null check and before the event is raised.
-            EventHandler<NavigateEventArgs> handler = OnNavigate;
-
-            // Event will be null if there are no subscribers
-            if (handler != null)
-            {
-                // Use the () operator to raise the event.
-                handler(this, e);
-            }
+            OnLogOutCompleted?.Invoke();
         }
-
         #endregion
 
         public void LoadPage(string file)
@@ -92,6 +63,28 @@ namespace SSK
             var model = myNotifications;
             _web.LoadPageHtml("Notication.html", myNotifications);
         }
+
+        public void ChangeReadStatus(string notificationId)
+        {
+            try
+            {
+                
+                var dalNotify = new DAL_Notification();
+                dalNotify.ChangeReadStatus(notificationId);
+            }
+            catch (Exception ex)
+            {
+
+                return;
+            }
+        }
+        public void SpeakNotification(string notificationId)
+        {
+            var dalNotify = new DAL_Notification();
+            var content = dalNotify.GetNotificationContentById(Guid.Parse(notificationId), false);
+            APIUtils.TextToSpeech.Speak(content);
+        }
+
         #region BookAppointment
         public void BookAppointment()
         {
@@ -99,24 +92,50 @@ namespace SSK
             Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
 
             DAL_Appointments DAL_Appointments = new DAL_Appointments();
-            Trinity.DAL.DBContext.Appointment appointment = DAL_Appointments.GetMyAppointmentCurrent(user.UserId);
+
             DAL_Environment DAL_Environment = new DAL_Environment();
-            var listSelectTime = DAL_Environment.GetEnvironment(appointment.Date);
 
-            var item = listSelectTime.Where(d => d.StartTime == appointment.FromTime.Value && d.EndTime == appointment.ToTime.Value).FirstOrDefault();
-            item.IsSelected = true;
-
-
-            this._web.LoadPageHtml("BookAppointment.html", new object[] { appointment, listSelectTime });
-
+            Trinity.DAL.DBContext.Appointment appointment = DAL_Appointments.GetMyAppointmentCurrent(user.UserId);
+            var selectedTimes = new Trinity.BE.EnvironmentTimeDetail();
+            if (appointment != null)
+            {
+                selectedTimes = DAL_Environment.GetEnvironmentTime(appointment.Date);
+                SetSelectedTime(appointment, selectedTimes.Morning);
+                SetSelectedTime(appointment, selectedTimes.Afternoon);
+                SetSelectedTime(appointment, selectedTimes.Evening);
+                this._web.LoadPageHtml("BookAppointment.html", new object[] { appointment, selectedTimes });
+            }
+            else
+            {
+                MessageBox.Show("You have no appointment");
+            }
         }
+
+        private static void SetSelectedTime(Appointment appointment, List<Trinity.BE.EnvironmentTime> selectedTimes)
+        {
+            var item = selectedTimes.Where(d => appointment.FromTime != null && d.StartTime == appointment.FromTime.Value && d.EndTime == appointment.ToTime.Value).FirstOrDefault();
+            if (item != null)
+            {
+                item.IsSelected = true;
+            }
+        }
+
         public string UpdateTimeAppointment(string IDAppointment, string timeStart, string timeEnd)
         {
             DAL_Appointments DAL_Appointments = new DAL_Appointments();
-            var appointment = DAL_Appointments.UpdateBookTime(IDAppointment, timeStart, timeEnd);
+            DAL_Appointments.UpdateBookTime(IDAppointment, timeStart, timeEnd);
 
-            APIUtils.Printer.PrintFormFile("BookAppointmentTemplate.html", appointment);
+            Trinity.BE.Appointment appointment = DAL_Appointments.GetAppointmentDetails(new Guid(IDAppointment));
+            APIUtils.Printer.PrintAppointmentDetails("AppointmentDetailsTemplate.html", appointment);
+
             return timeStart;
+        }
+
+        public void PrintAppointmentDetails(string appointmentId)
+        {
+            var dalAppointment = new DAL_Appointments();
+            Trinity.BE.Appointment appointment = dalAppointment.GetAppointmentDetails(Guid.Parse(appointmentId));
+            APIUtils.Printer.PrintAppointmentDetails("AppointmentDetailsTemplate.html", appointment);
         }
         #endregion
         public void LoadProfile()
@@ -128,8 +147,6 @@ namespace SSK
                 {
                     Trinity.BE.User user = (Trinity.BE.User)session[Contstants.CommonConstants.USER_LOGIN];
 
-
-
                     var dalUser = new Trinity.DAL.DAL_User();
                     var dalUserprofile = new Trinity.DAL.DAL_UserProfile();
                     var profileModel = new Trinity.BE.ProfileModel
@@ -137,32 +154,11 @@ namespace SSK
                         User = dalUser.GetUserByUserId(user.UserId, true),
                         UserProfile = dalUserprofile.GetUserProfileByUserId(user.UserId, true),
                         Addresses = dalUserprofile.GetAddressByUserId(user.UserId, true)
-
                     };
 
                     //profile model 
-
                     _web.LoadPageHtml("Profile.html", profileModel);
                 }
-                //for testing purpose
-                else
-                {
-                    Trinity.BE.User user = new Trinity.BE.User();
-                    user.UserId = "df0153ad-9a26-43e7-af3d-7406dd65defe";
-
-                    var dalUser = new Trinity.DAL.DAL_User();
-                    var dalUserprofile = new Trinity.DAL.DAL_UserProfile();
-                    var profileModel = new Trinity.BE.ProfileModel
-                    {
-                        User = dalUser.GetUserByUserId(user.UserId, true),
-                        UserProfile = dalUserprofile.GetUserProfileByUserId(user.UserId, true),
-                        Addresses = dalUserprofile.GetAddressByUserId(user.UserId, true)
-
-                    };
-
-                    _web.LoadPageHtml("Profile.html", profileModel);
-                }
-
             }
             catch (Exception ex)
             {
@@ -219,6 +215,26 @@ namespace SSK
                 LoadProfile();
             }
         }
+        public void LoadScanDocumentForAbsence(string jsonData, string reason)
+        {
+            try
+            {
+                Session session = Session.Instance;
+
+                var dalAbsence = new DAL_AbsenceReporting();
+                var reasonModel = JsonConvert.DeserializeObject<Trinity.BE.Reason>(reason);
+                var absenceModel = dalAbsence.SetInfo(reasonModel);
+                session[Contstants.CommonConstants.ABSENCE_REPORTING_DATA] = absenceModel;
+
+                LoadPage("DocumentFromQueue.html");
+
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Something wrong happened!");
+                LoadProfile();
+            }
+        }
         public void UpdateProfileAfterScanDoc()
         {
             Session session = Session.Instance;
@@ -241,6 +257,7 @@ namespace SSK
             }
             _web.SetLoading(false);
         }
+
         public void ClientCallServer(string method, string guidEvent, params object[] pram)
         {
             ThreadPool.QueueUserWorkItem(new WaitCallback(actionThread), new object[] { method, guidEvent, pram });
@@ -252,45 +269,19 @@ namespace SSK
             nric.NRICAuthentication(strNRIC);
         }
 
-        public void GetQueue()
-        {
-            // get Queue number
-            Session session = Session.Instance;
-            Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-            string queueNumber = "Current Queue Number: ";
-            if (!string.IsNullOrEmpty(user.NRIC) && user.NRIC.Length > 5)
-            {
-                queueNumber += user.NRIC.Substring(0, 1) + user.NRIC.Substring(user.NRIC.Length - 5, 5).PadLeft(8, '*');
-            }
-            else if (!string.IsNullOrEmpty(user.NRIC) && user.NRIC.Length <= 5)
-            {
-                queueNumber += user.NRIC.Substring(0, 1) + user.NRIC.PadLeft(8, '*');
-            }
-            else
-            {
-                queueNumber += null;
-            }
-
-            // displayqueue number
-            FormQueueNumber f = FormQueueNumber.GetInstance();
-            f.ShowQueueNumber(queueNumber);
-            //RaiseOnShowMessageEvent(new ShowMessageEventArgs("Your queue is: " + queueNumber, "Queue Number", MessageBoxButtons.OK, MessageBoxIcon.Information));
-        }
-
-
-        public void QueueNumber()
+        // Reporting for Queue Number
+        public void ReportingForQueueNumber()
         {
             Session session = Session.Instance;
             Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
 
+            var dalAbsence = new DAL_AbsenceReporting();
 
-            DAL_AbsenceReporting AbSence = new DAL_AbsenceReporting();
+            var dalAppointment = new DAL_Appointments();
 
-            DAL_Appointments Appointment = new DAL_Appointments();
-
-            int countAbSence = 0;
-            countAbSence = Appointment.CountMyAbsence(user.UserId);
-            if (countAbSence == 0)
+            int countAbsence = 0;
+            countAbsence = dalAppointment.CountMyAbsence(user.UserId);
+            if (countAbsence == 0)
             {
                 DAL_Notification noti = new DAL_Notification();
                 if (noti.CountGetMyNotifications(user.UserId, true) > 0)
@@ -299,28 +290,37 @@ namespace SSK
                 }
                 else
                 {
-                    ShowQueueNumber();
+                    GetMyQueueNumber();
                 }
             }
-            else
-            if (countAbSence >= 3)
+            else if (countAbsence >= 3)
             {
-                MessageBox.Show("You have been absent for 3 times or more. Report to the Duty Officer");
-                LoadPage("DocumentFromQueue.html");
-            }
-            else
-            if (countAbSence > 0 && countAbSence < 3)
-            {
-                var absence_reporting = new List<Appointment>();
-                absence_reporting = Appointment.GetMyAppointmentAbsence(user.UserId);
-                
-                MessageBox.Show("You have been absent for " + countAbSence + " times.\nPlease provide reasons and the supporting documents.");
+                MessageBox.Show("You have been blocked for 3 or more absences \n Please report to the Duty Officer");
 
-                this._web.LoadPageHtml("ReasonsForQueue.html", absence_reporting);
+                //for testing purpose
+                //notify to officer
+                APIUtils.SignalR.SendNotificationToDutyOfficer("Supervisee got blocked for 3 or more absences", "Please check the Supervisee's information!");
+                var dalUser = new DAL_User();
+                //active the user
+                dalUser.ChangeUserStatus(user.UserId, EnumUserStatuses.Active);
+
+                //create absence reporting
+
+                var listAppointment = dalAppointment.GetMyAbsentAppointments(user.UserId);
+                session[CommonConstants.LIST_APPOINTMENT] = listAppointment;
+                _web.LoadPageHtml("ReasonsForQueue.html", listAppointment);
+            }
+            else if (countAbsence > 0 && countAbsence < 3)
+            {
+                var listAppointment = dalAppointment.GetMyAbsentAppointments(user.UserId);
+
+                MessageBox.Show("You have been absent for " + countAbsence + " times.\nPlease provide reasons and the supporting documents.");
+
+                this._web.LoadPageHtml("ReasonsForQueue.html", listAppointment);
             }
         }
-       
-        public void ShowQueueNumber()
+
+        private void GetMyQueueNumber()
         {
             Session session = Session.Instance;
             Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
@@ -329,72 +329,96 @@ namespace SSK
             Trinity.DAL.DBContext.Appointment appointment = _Appointment.GetMyAppointmentByDate(user.UserId, DateTime.Today);
             if (appointment == null)
             {
-                MessageBox.Show("You have no appointment");
+                MessageBox.Show("You have no appointment today");
             }
             else
             {
                 var _dalQueue = new DAL_QueueNumber();
+                Trinity.DAL.DBContext.QueueNumber QueueNumber = null;
                 //check queue exist
                 if (!_dalQueue.CheckQueueExistToday(appointment.UserId))
                 {
-                    _dalQueue.InsertQueueNumber(appointment.ID, appointment.UserId);
+                    QueueNumber = _dalQueue.InsertQueueNumber(appointment.ID, appointment.UserId);
+                    RaiseOnShowMessageEvent(new ShowMessageEventArgs("Your queue number is: " + QueueNumber.QueuedNumber, "Queue Number", MessageBoxButtons.OK, MessageBoxIcon.Information));
                 }
-
-                var model = _dalQueue.GetAllQueueNumberByDate(DateTime.Today).Select(d => new
-                {
-                    Status = d.Status,
-                    NRIC = GenerateQueueNumber(d.User.NRIC)
-                });
-                _web.LoadPageHtml("QueueNumber.html", model);
+                //var model = _dalQueue.GetAllQueueNumberByDate(DateTime.Today).Select(d => new Trinity.BE.Queue()
+                //{
+                //    Status = d.Status,
+                //    QueueNumber = d.QueuedNumber
+                //}).ToArray();
+                FormQueueNumber f = FormQueueNumber.GetInstance();
+                f.RefreshQueueNumbers();
             }
         }
 
-        public string GenerateQueueNumber(string baseOnNRIC)
-        {
-            string queueNumber = "";
-            if (!string.IsNullOrEmpty(baseOnNRIC) && baseOnNRIC.Length > 6)
-            {
-                queueNumber += baseOnNRIC.Substring(0, 1) + baseOnNRIC.Substring(baseOnNRIC.Length - 5, 5).PadLeft(8, '*');
-            }
-            else if (!string.IsNullOrEmpty(baseOnNRIC) && baseOnNRIC.Length <= 6)
-            {
-                queueNumber += baseOnNRIC.Substring(0, 1) + baseOnNRIC.PadLeft(8, '*');
-            }
-            else
-            {
-                queueNumber += null;
-            }
 
-            return queueNumber;
-
-        }
-       
-     
-        public void SaveReasonForQueue(string absence, string reason)
+        public void SaveReasonForQueue(/*string data,*/ string reason,string selectedID)
         {
             //send message to case office if no support document
             if (reason == "No Supporting Document")
             {
                 APIUtils.SignalR.SendNotificationToDutyOfficer("Supervisee get queue without supporting document", "Please check the Supervisee's information!");
             }
-
-            var absence_reporting = JsonConvert.DeserializeObject<List<AbsenceReporting>>(absence);
+            var charSeparators = new char[] { ',' };
+            var listSplitID = selectedID.Split(charSeparators, StringSplitOptions.RemoveEmptyEntries).ToList();
             
-            DAL_AbsenceReporting AbSence = new DAL_AbsenceReporting();
-            
-            //foreach (var item in absence_reporting)
-            //{
-            //    item.AbsenceReason = 1;
-            //    item.ReasonDetails = reason;
-            //    item.Status = (int)StatusEnums.Success;
-                
 
-            //    AbSence.SaveAbsendReporing(item);
-            //}
+            //var listAppointment = JsonConvert.DeserializeObject<List<Appointment>>(data);
+            Trinity.BE.Reason reasonModel = JsonConvert.DeserializeObject<Trinity.BE.Reason>(reason);
+            if (reasonModel == null)
+            {
+                reasonModel = new Trinity.BE.Reason()
+                {
+                    Detail = "",
+                    Value = (int)EnumAbsenceReasons.No_Valid_Reason
+                };
+            }
+            //create absence report 
+            var dalAbsence = new DAL_AbsenceReporting();
+            var absenceModel = dalAbsence.SetInfo(reasonModel);
+            var create = dalAbsence.CreateAbsenceReporting(absenceModel, true);
+            if (create)
+            {
+                var dalAppointment = new DAL_Appointments();
 
-            ShowQueueNumber();
+                var listSelectedDate = dalAppointment.GetListAppointmentFromSelectedDate(listSplitID);
+
+                foreach (var item in listSelectedDate)
+                {
+                    dalAppointment.UpdateReason(item.ID, absenceModel.ID);
+                }
+            }
+            //send notify to case officer
+            Session currentSession = Session.Instance;
+            Trinity.BE.User user = (Trinity.BE.User)currentSession[CommonConstants.USER_LOGIN];
+            APIUtils.SignalR.SendNotificationToDutyOfficer(user.Name + " has provided absent reason", user.Name + " has provided absent reason.");
+            ReportingForQueueNumber();
+            LoadPage("Supervisee.html");
         }
-        public void logOut()
+
+        public void UpdateAbsenceAfterScanDoc()
+        {
+            Session session = Session.Instance;
+            Trinity.BE.AbsenceReporting absenceData = (Trinity.BE.AbsenceReporting)session[CommonConstants.ABSENCE_REPORTING_DATA];
+            //get scanned data from session
+            var scannedDoc = (byte[])session[CommonConstants.SCANNED_DOCUMENT];
+            var listAppointment = (List<Appointment>)session[CommonConstants.LIST_APPOINTMENT];
+            absenceData.ScannedDocument = scannedDoc;
+            var dalAbsence = new DAL_AbsenceReporting();
+            var create = dalAbsence.CreateAbsenceReporting(absenceData, true);
+            if (create)
+            {
+                var dalAppointment = new DAL_Appointments();
+                foreach (var item in listAppointment)
+                {
+                    dalAppointment.UpdateReason(item.ID, absenceData.ID);
+                }
+            }
+
+            LoadPage("Supervisee.html");
+
+        }
+        public void LogOut()
         {
             // reset session value
             Session session = Session.Instance;
@@ -403,8 +427,9 @@ namespace SSK
             session[CommonConstants.USER_LOGIN] = null;
             session[CommonConstants.PROFILE_DATA] = null;
 
-            // redirect to StartCard login
-            RaiseOnNavigateEvent(new NavigateEventArgs(NavigatorEnums.Authentication_SmartCard));
+            //
+            // RaiseLogOutCompletedEvent
+            RaiseLogOutCompletedEvent();
         }
     }
 

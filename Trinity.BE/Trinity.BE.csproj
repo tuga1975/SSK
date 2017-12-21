@@ -78,11 +78,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AbsenceReporting.cs" />
+    <Compile Include="QueueNumber.cs" />
     <Compile Include="Lib.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="EnvironmentTime.cs" />
     <Compile Include="Notification.cs" />
     <Compile Include="ProfileModel.cs" />
+    <Compile Include="Appointment.cs" />
     <Compile Include="User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserProfile.cs" />

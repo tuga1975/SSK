@@ -13,59 +13,105 @@
     <div style="clear:both;"></div>
 </div>
 
-<div id="myCarousel" class="carousel slide" data-ride="carousel" noti style="margin-top:20px;">
-    <!-- Indicators -->
-    <ol class="carousel-indicators">
-    </ol>
+<!--<div id="myCarousel" class="carousel slide" data-ride="carousel" noti style="margin-top:20px;">-->
+    <div id="myCarousel" class="carousel slide"  noti style="margin-top:20px;">
+        <!-- Indicators -->
+        <ol class="carousel-indicators"></ol>
 
-    <!-- Wrapper for slides -->
-    <div class="carousel-inner">
+        <!-- Wrapper for slides -->
+        <div class="carousel-inner">
+        </div>
+
+        <!-- Left and right controls -->
+        <a class="left carousel-control" href="#myCarousel" data-slide="prev">
+            <span class="glyphicon glyphicon-chevron-left"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="right carousel-control" href="#myCarousel" data-slide="next">
+            <span class="glyphicon glyphicon-chevron-right"></span>
+            <span class="sr-only">Next</span>
+        </a>
     </div>
 
-    <!-- Left and right controls -->
-    <a class="left carousel-control" href="#myCarousel" data-slide="prev">
-        <span class="glyphicon glyphicon-chevron-left"></span>
-        <span class="sr-only">Previous</span>
-    </a>
-    <a class="right carousel-control" href="#myCarousel" data-slide="next">
-        <span class="glyphicon glyphicon-chevron-right"></span>
-        <span class="sr-only">Next</span>
-    </a>
-</div>
 
+    <button type="button" class="btn btn-danger" style="position:fixed;bottom:10px;left:10px;" onclick="api.server.LoadPage('Supervisee.html');">Back</button>
 
-<button type="button" class="btn btn-danger" style="position:fixed;bottom:10px;left:10px;" onclick="api.server.LoadPage('Supervisee.html');">Back</button>
-
-<style type="text/css">
-    [noti] .carousel-inner{
-        width:70%;
-        margin:auto;
-        border:1px solid #CCC;
-        padding:10px;
-    }
-    [noti] .carousel-control{
-        background-image:none;
-    }
-        [noti] .carousel-control .glyphicon {
-            font-size:40px;
-            color:#000;
+    <style type="text/css">
+        [noti] .carousel-inner {
+            width: 70%;
+            margin: auto;
+            border: 1px solid #CCC;
+            padding: 10px;
         }
-    
-</style>
-<script type="text/javascript">
-    if (api.model != null) {
 
-    
-    if (api.model.length > 1) {
-        $('#notificationsCount').text(api.model.length + ' notifications');
-    }
-    else {
-        $('#notificationsCount').text(api.model.length + ' notification');
-    }
-    for (var i = 0; i < api.model.length; i++) {
-        $('[noti] .carousel-indicators').append('<li data-target="#myCarousel" data-slide-to="' + i + '" class="' + (i == 0 ? 'active' : '') + '"></li>');
-        $('[noti] .carousel-inner').append('<div class="item ' + (i == 0 ? 'active' : '') + '">To: Suppervise<br />Date: <br />Subject: ' + api.model[i].Subject + '<div style="margin-top: 20px;">' + api.model[i].Content + '</div></div>');
-    }
-    api.countNoti = 0;
-    }
-</script>
+        [noti] .carousel-control {
+            background-image: none;
+        }
+
+            [noti] .carousel-control .glyphicon {
+                font-size: 40px;
+                color: #000;
+            }
+    </style>
+    <script type="text/javascript">
+        if (api.model != null && api.model.length > 0) {
+
+
+            if (api.model.length > 1) {
+                $('#notificationsCount').text(api.model.length + ' notifications');
+            }
+            else {
+                $('#notificationsCount').text(api.model.length + ' notification');
+            }
+            for (var i = 0; i < api.model.length; i++) {
+                $('[noti] .carousel-indicators').append('<li data-target="#myCarousel" data-slide-to="' + i + '" class="' + (i == 0 ? 'active' : '') + '"></li>');
+                $('[noti] .carousel-inner').append('<div id="' + api.model[i].ID + '" class="item ' + (i == 0 ? 'active' : '') + '">To: Suppervise<br />Date: <br />Subject: ' + api.model[i].Subject + '<div style="margin-top: 20px;">' + api.model[i].Content + '</div></div>');
+            }
+            api.countNoti = 0;
+        }
+
+        
+            var carouselEl = $('.carousel');
+            var carouselItems = carouselEl.find('.item');
+            //carouselEl.carousel({
+            //}).on('slide.bs.carousel', function (event) {
+               
+            //})
+        
+
+            $('.carousel-control.left').click(function () {
+                var hasPrev = carouselItems.siblings('.active').prev().length;
+                if (hasPrev) {
+                    var id = carouselItems.siblings('.active').prev().attr('id');
+                    api.server.ChangeReadStatus(id);
+                api.server.SpeakNotification(id);
+            }
+            else {
+                var id = api.model[0].ID.toString();
+                api.server.SpeakNotification(id);
+            }
+        });
+
+        $('.carousel-control.right').click(function () {
+            var hasNext = carouselItems.siblings('.active').next().length;
+            if (hasNext) {
+                var id = carouselItems.siblings('.active').next().attr('id');
+                api.server.ChangeReadStatus(id);
+                api.server.SpeakNotification(id);
+            }
+            else {
+                var id = api.model[0].ID.toString();
+                api.server.SpeakNotification(id);
+            }
+        });
+
+        $(document).ready(function () {
+            if (api.model != null && api.model.length > 0) {
+                var id = api.model[0].ID.toString();
+                api.server.SpeakNotification(id);
+                api.server.ChangeReadStatus(id);
+            }
+           
+        });
+
+    </script>

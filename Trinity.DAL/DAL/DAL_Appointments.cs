@@ -16,6 +16,29 @@ namespace Trinity.DAL
         {
             return _localUnitOfWork.DataContext.Appointments.FirstOrDefault(d => d.ID == ID);
         }
+
+        public Trinity.BE.Appointment GetAppointmentDetails(Guid ID)
+        {
+            Appointment appointment = _localUnitOfWork.DataContext.Appointments.FirstOrDefault(d => d.ID == ID);
+            if (appointment != null)
+            {
+                User user = _localUnitOfWork.DataContext.Users.FirstOrDefault(u => u.UserId == appointment.UserId);
+                Trinity.BE.Appointment result = new BE.Appointment()
+                {
+                    UserId = appointment.UserId,
+                    AppointmentDate = appointment.Date,
+                    ChangedCount = appointment.ChangedCount,
+                    FromTime = appointment.FromTime,
+                    Name = user.Name,
+                    NRIC = user.NRIC,
+                    Status = (EnumAppointmentStatuses)appointment.Status,
+                    ToTime = appointment.ToTime
+                };
+                return result;
+            }
+            return null;
+        }
+
         public Appointment GetMyAppointmentByDate(string UserId, DateTime date)
         {
             return _localUnitOfWork.DataContext.Appointments.FirstOrDefault(d => d.UserId == UserId && d.Date == date);
@@ -26,7 +49,7 @@ namespace Trinity.DAL
         }
         public Appointment GetMyAppointmentCurrent(string UserId)
         {
-            return _localUnitOfWork.DataContext.Appointments.Where(d => d.UserId == UserId && d.Date >= DateTime.Today).OrderBy(d=>d.Date).FirstOrDefault();
+            return _localUnitOfWork.DataContext.Appointments.Where(d => d.UserId == UserId && d.Date >= DateTime.Today).OrderBy(d => d.Date).FirstOrDefault();
         }
         public Appointment UpdateBookTime(string IDAppointment, string timeStart, string timeEnd)
         {
@@ -34,18 +57,50 @@ namespace Trinity.DAL
             appointment.FromTime = TimeSpan.Parse(timeStart);
             appointment.ToTime = TimeSpan.Parse(timeEnd);
             appointment.ChangedCount += 1;
+            appointment.Status = (int)EnumAppointmentStatuses.Booked;
             _localUnitOfWork.GetRepository<Appointment>().Update(appointment);
             _localUnitOfWork.Save();
             return appointment;
         }
         public int CountMyAbsence(string UserID)
         {
-            return _localUnitOfWork.DataContext.Appointments.Count(d => d.UserId == UserID && d.Status==(int)StatusEnums.Absence);
+            return _localUnitOfWork.DataContext.Appointments.Count(d => d.UserId == UserID && d.Date < DateTime.Today && (d.Status == (int)EnumAppointmentStatuses.Pending ||
+            d.Status == (int)EnumAppointmentStatuses.Booked) && d.AbsenceReporting_ID == null);
         }
 
-        public List<Appointment> GetMyAppointmentAbsence(string UserID)
+        public List<Appointment> GetMyAbsentAppointments(string UserID)
         {
-            return _localUnitOfWork.DataContext.Appointments.Where(d => d.UserId == UserID && d.Status == (int)StatusEnums.Absence).ToList();
+            return _localUnitOfWork.DataContext.Appointments.Where(d => d.UserId == UserID && System.Data.Entity.DbFunctions.AddDays(d.Date, 1) <= DateTime.Today && (d.Status == (int)EnumAppointmentStatuses.Pending ||
+            d.Status == (int)EnumAppointmentStatuses.Booked) && d.AbsenceReporting_ID == null).ToList();
+        }
+
+        /// <summary>
+        /// UpdateReason for absence appointment 
+        /// </summary>
+        /// <param name="appointmentId"></param>
+        /// <param name="absenceId"></param>
+        /// <returns></returns>
+        public Appointment UpdateReason(Guid appointmentId, Guid absenceId)
+        {
+            Trinity.DAL.DBContext.Appointment appointment = GetMyAppointmentByID(appointmentId);
+            appointment.AbsenceReporting_ID = absenceId;
+            appointment.Status = (int)EnumAppointmentStatuses.Reported;
+            _localUnitOfWork.GetRepository<Appointment>().Update(appointment);
+            _localUnitOfWork.Save();
+            return appointment;
+        }
+
+        public List<Appointment> GetListAppointmentFromSelectedDate(List<string> listID)
+        {
+            var localDbAppointment = new List<Appointment>();
+
+
+            foreach (var item in listID)
+            {
+                localDbAppointment.Add(_localUnitOfWork.DataContext.Appointments.Find(Guid.Parse(item)));
+
+            }
+            return localDbAppointment;
         }
     }
 }

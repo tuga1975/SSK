@@ -20,13 +20,13 @@
         <div id="reason-area" style="margin:10px 0px;">
 
 
-            <div class="btn btn-default reason">Medical CertificateInput</div>
-            <div class="btn btn-default reason">Medical CertificateInput</div>
-            <div class="btn btn-default reason">Medical CertificateInput</div>
-            <div class="btn btn-default reason">Medical CertificateInput</div>
-            <div class="btn btn-default reason">Medical CertificateInput</div>
+            <div class="btn btn-default reason" id="0">Medical Certificate (MC)</div>
+            <div class="btn btn-default reason" id="1">Work Commitment</div>
+            <div class="btn btn-default reason" id="2">Family Matters</div>
+            <div class="btn btn-default reason" id="3">Other Reasons</div>
+            <div class="btn btn-default reason" id="4">No Valid Reason</div>
             <!--don't change it-->
-            <div class="btn btn-default reason">No Supporting Document</div>
+            <div class="btn btn-default reason" id="5">No Supporting Document</div>
 
         </div>
     </div>
@@ -59,22 +59,48 @@
         margin: 5px 5px !important;
     }
 </style>
+
+<div style="float:right;" id="absenceSupportDocument">
+    <button type="button" class="btn btn-danger" style="position:fixed;bottom:10px;right:150px;" id="btnAbsenceScan">Scan documents</button>
+
+</div>
 <button type="button" class="btn btn-danger" style="position:fixed;bottom:10px;left:10px;" onclick="window.external.LoadPage('Supervisee.html');">Back</button>
 <button type="button" id="saveReason" class="btn btn-danger" style="position:fixed;bottom:10px;right:10px;">Save</button>
-
+<input type="hidden" id="reasonDetail" />
+<input type="hidden" id="reasonValue" />
+<input type="hidden" id="selectedAbsenceDate" />
 <script type="text/javascript">
     $(document).ready(function () {
-        $("#countdate").text(api.model.length);
-        $.each(api.model, function (index, item) {
-            $('#choosedate').append(' <input type="checkbox" id="dateChoice' + (index + 1) + '" value= "dateChoice' + (index + 1) + '" > <label for="dateChoice' + (index + 1)  + '">' + item.GetDateTxt + '</label>');
-        });
+      
+            $("#countdate").text(api.model.length);
+            $.each(api.model, function (index, item) {
+                $('#choosedate').append(' <input type="checkbox" id="dateChoice' + (index + 1) + '" value= "' + item.ID + '" > <label for="dateChoice' + (index + 1) + '">' + item.GetDateTxt + '</label>');
+            });
+        
+       
     });
+
+    var _reason = "";
     $('.reason').click(function () {
+        $('.reason').removeClass("btn-primary");
         $(this).removeClass("btn-default").addClass("btn-primary");
+        $('#reasonDetail').val(""+$(this).text());
+        $('#reasonValue').val($(this).attr('id'));
+        _reason = '{"Value":"' + $('#reasonValue').val() + '", "Detail":" ' + $('#reasonDetail').val() + '"}';
     });
-    
+
 
     $("#saveReason").click(function () {
-        api.server.SaveReasonForQueue(JSON.stringify(api.model), "reasontest");
+        var selectedID = "";
+        $('input[type=checkbox]').each(function () {
+             selectedID += (this.checked ? $(this).val()+"," : "");
+        });
+
+        api.server.SaveReasonForQueue(_reason,selectedID);
     });
+
+    $('#btnAbsenceScan').click(function () {
+        api.server.LoadScanDocumentForAbsence(JSON.stringify(api.model), _reason);
+    });
+
 </script>

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Trinity.BE;
 
 namespace SSK.Utils
 {
@@ -19,21 +20,26 @@ namespace SSK.Utils
             new WebBrowserDocumentCompletedEventHandler(PrintDocument);
         }
 
-        public void PrintFormFile(string filetemplate, object model)
+        public void PrintAppointmentDetails(string filetemplate, Appointment appointmentInfo)
         {
-            string documentText = File.ReadAllText(String.Format("{0}/View/html/TeamplatePrinter/" + filetemplate, CSCallJS.curDir), Encoding.UTF8);
-            var properties = model.GetType().GetProperties();
-            foreach (var p in properties)
-            {
-                var value = p.GetValue(model);
-                documentText = documentText.Replace("{%" + p.Name + "%}", value != null ? value.ToString() : string.Empty);
-            }
+            string documentText = File.ReadAllText(String.Format("{0}/View/html/PrintingTemplates/" + filetemplate, CSCallJS.curDir), Encoding.UTF8);
+            //var properties = appointmentInfo.GetType().GetProperties();
+            //foreach (var p in properties)
+            //{
+            //    var value = p.GetValue(appointmentInfo);
+            //    documentText = documentText.Replace("{%" + p.Name + "%}", value != null ? value.ToString() : string.Empty);
+            //}
+            documentText = documentText.Replace("{%Name%}", appointmentInfo.Name);
+            documentText = documentText.Replace("{%NRIC%}", appointmentInfo.NRIC);
+            documentText = documentText.Replace("{%AppointmentDate%}", appointmentInfo.AppointmentDate.Value.ToString("dd/MM/yyyy"));
+            documentText = documentText.Replace("{%FromTime%}", appointmentInfo.FromTime.Value.ToString());
+            documentText = documentText.Replace("{%ToTime%}", appointmentInfo.ToTime.Value.ToString());
             File.WriteAllText(String.Format("{0}/View/html/temp.html", CSCallJS.curDir), documentText, Encoding.UTF8);
             Uri uri = new Uri(String.Format("file:///{0}/View/html/temp.html", CSCallJS.curDir));
             webBrowserForPrinting.Navigate(uri);
         }
 
-        private void PrintDocument(object sender,WebBrowserDocumentCompletedEventArgs e)
+        private void PrintDocument(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
             // Print the document now that it is fully loaded.
             webBrowserForPrinting.Invoke((MethodInvoker)(() =>

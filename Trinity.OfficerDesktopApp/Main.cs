@@ -140,6 +140,7 @@ namespace OfficerDesktopApp
             List<Notification> notifications = dalNotification.GetNotificationsSentToDutyOfficer(false);
             if (notifications != null && notifications.Count > 0)
             {
+                dgvNotifications.Rows.Clear();
                 notifications = notifications.OrderBy(n => n.Date).ToList();
                 for (int i = 0; i < notifications.Count; i++)
                 {
@@ -149,7 +150,6 @@ namespace OfficerDesktopApp
                     dgvNotifications[ColContent.Index, 0].Value = notifications[i].Content;
                     dgvNotifications[ColDate.Index, 0].Value = notifications[i].Date.ToString("dd/MM/yyyy HH:mm");
                 }
-                
             }
         }
     }

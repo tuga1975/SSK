@@ -1,6 +1,6 @@
 ﻿namespace SSK
 {
-    partial class FormAnnouncementDetails
+    partial class FormAppointmentDetails
     {
         /// <summary>
         /// Required designer variable.
@@ -28,9 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormAnnouncementDetails));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormAppointmentDetails));
             this.btnPrint = new System.Windows.Forms.Button();
-            this.webBrowser1 = new System.Windows.Forms.WebBrowser();
+            this.webBrowserAppointmentDetails = new System.Windows.Forms.WebBrowser();
             this.SuspendLayout();
             // 
             // btnPrint
@@ -44,17 +44,17 @@
             this.btnPrint.UseVisualStyleBackColor = true;
             this.btnPrint.Click += new System.EventHandler(this.btnPrint_Click);
             // 
-            // webBrowser1
+            // webBrowserAppointmentDetails
             // 
-            this.webBrowser1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.webBrowserAppointmentDetails.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.webBrowser1.Location = new System.Drawing.Point(13, 65);
-            this.webBrowser1.MinimumSize = new System.Drawing.Size(20, 20);
-            this.webBrowser1.Name = "webBrowser1";
-            this.webBrowser1.ScriptErrorsSuppressed = true;
-            this.webBrowser1.Size = new System.Drawing.Size(694, 521);
-            this.webBrowser1.TabIndex = 1;
+            this.webBrowserAppointmentDetails.Location = new System.Drawing.Point(13, 65);
+            this.webBrowserAppointmentDetails.MinimumSize = new System.Drawing.Size(20, 20);
+            this.webBrowserAppointmentDetails.Name = "webBrowserAppointmentDetails";
+            this.webBrowserAppointmentDetails.ScriptErrorsSuppressed = true;
+            this.webBrowserAppointmentDetails.Size = new System.Drawing.Size(694, 521);
+            this.webBrowserAppointmentDetails.TabIndex = 1;
             // 
             // FormAnnouncementDetails
             // 
@@ -62,7 +62,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.ClientSize = new System.Drawing.Size(719, 598);
-            this.Controls.Add(this.webBrowser1);
+            this.Controls.Add(this.webBrowserAppointmentDetails);
             this.Controls.Add(this.btnPrint);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "FormAnnouncementDetails";
@@ -75,6 +75,6 @@
         #endregion
 
         private System.Windows.Forms.Button btnPrint;
-        private System.Windows.Forms.WebBrowser webBrowser1;
+        private System.Windows.Forms.WebBrowser webBrowserAppointmentDetails;
     }
 }

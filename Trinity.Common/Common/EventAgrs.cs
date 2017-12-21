@@ -19,4 +19,15 @@ namespace Trinity.Common.Common
             ErrorMessage = failedInfo.ErrorMessage;
         }
     }
+
+    public class GetDeviceStatusCompletedArgs
+    {
+        public bool IsConnected { get; set; }
+    }
+
+    public class SmartCardReaderConnectedArgs
+    {
+        public List<string> NewReaders { get; set; }
+        public List<string> Readers { get; set; }
+    }
 }

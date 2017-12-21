@@ -15,12 +15,11 @@ namespace Trinity.DAL.DBContext
     public partial class QueueNumber
     {
         public System.Guid ID { get; set; }
-        public System.Guid AppointmentID { get; set; }
-        public string UserId { get; set; }
-        public System.DateTime Date { get; set; }
-        public int Status { get; set; }
+        public string QueuedNumber { get; set; }
+        public System.Guid Appointment_ID { get; set; }
+        public System.DateTime CreatedTime { get; set; }
+        public string Status { get; set; }
     
         public virtual Appointment Appointment { get; set; }
-        public virtual User User { get; set; }
     }
 }

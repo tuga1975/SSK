@@ -47,10 +47,9 @@ namespace Trinity.Common.DeviceMonitor
             OnMonitorException?.Invoke(this, e);
         }
 
-        // Start monitor
+        // Start monitoring
         public void Start()
         {
-            // start a thread for health check
         }
         
         public object ScanDocument()
@@ -59,7 +58,7 @@ namespace Trinity.Common.DeviceMonitor
             DocumentScannerUtils documentScannerUtils = DocumentScannerUtils.Instance;
 
             // Start scanner
-            DocumentScannerResult documentScannerResult = documentScannerUtils.Start();
+            DocumentScannerResult documentScannerResult = documentScannerUtils.StartScanning();
 
             // Return value
             if (documentScannerResult.Success)

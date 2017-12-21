@@ -14,15 +14,19 @@ namespace Trinity.DAL.DBContext
     
     public partial class AbsenceReporting
     {
-        public System.Guid AppointmentID { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public AbsenceReporting()
+        {
+            this.Appointments = new HashSet<Appointment>();
+        }
+    
+        public System.Guid ID { get; set; }
         public System.DateTime ReportingDate { get; set; }
-        public string UserId { get; set; }
-        public Nullable<short> AbsenceReason { get; set; }
+        public short AbsenceReason { get; set; }
         public string ReasonDetails { get; set; }
         public byte[] ScannedDocument { get; set; }
-        public int Status { get; set; }
     
-        public virtual Appointment Appointment { get; set; }
-        public virtual User User { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Appointment> Appointments { get; set; }
     }
 }

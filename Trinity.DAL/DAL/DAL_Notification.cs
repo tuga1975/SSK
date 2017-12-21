@@ -13,7 +13,17 @@ namespace Trinity.DAL
         Local_UnitOfWork _localUnitOfWork = new Local_UnitOfWork();
         Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
 
-
+        public string GetNotificationContentById(Guid id, bool isLocal)
+        {
+            if (isLocal)
+            {
+                return _localUnitOfWork.DataContext.Notifications.Find(id).Content;
+            }
+            else
+            {
+                return _centralizedUnitOfWork.DataContext.Notifications.Find(id).Content;
+            }
+        }
 
         public int CountGetMyNotifications(string myUserId, bool isLocal)
         {
@@ -23,7 +33,7 @@ namespace Trinity.DAL
             }
             else
             {
-               return _centralizedUnitOfWork.DataContext.Notifications.Count(n => n.ToUserId == myUserId && !n.IsRead);
+                return _centralizedUnitOfWork.DataContext.Notifications.Count(n => n.ToUserId == myUserId && !n.IsRead);
             }
         }
 
@@ -96,7 +106,8 @@ namespace Trinity.DAL
                 IsFromSupervisee = isFromSupervisee,
                 IsRead = false,
                 Subject = subject,
-                ToUserId = toUserId
+                ToUserId = toUserId,
+                ID= Guid.NewGuid()
             };
             IRepository<Trinity.DAL.DBContext.Notification> notificationRepo = null;
             if (isLocal)
@@ -111,6 +122,43 @@ namespace Trinity.DAL
                 notificationRepo.Add(notifcation);
                 _centralizedUnitOfWork.Save();
             }
+        }
+
+        public Trinity.DAL.DBContext.Notification GetNotification(Guid notificationId, bool isLocal)
+        {
+            if (isLocal)
+            {
+                return _localUnitOfWork.DataContext.Notifications.Find(notificationId);
+            }
+            else
+            {
+                return _centralizedUnitOfWork.DataContext.Notifications.Find(notificationId);
+            }
+
+        }
+        public void ChangeReadStatus(string notificationId)
+        {
+
+            var localRepo = _localUnitOfWork.GetRepository<DBContext.Notification>();
+            var centralRepo = _centralizedUnitOfWork.GetRepository<DBContext.Notification>();
+
+            var dbLocalNotification = GetNotification(Guid.Parse(notificationId), true);
+            if (dbLocalNotification != null)
+            {
+                dbLocalNotification.IsRead = true;
+                localRepo.Update(dbLocalNotification);
+                _localUnitOfWork.Save();
+            }
+
+
+            var dbCentralNotification = GetNotification(Guid.Parse(notificationId), false);
+            if (dbCentralNotification != null)
+            {
+                dbCentralNotification.IsRead = true;
+                centralRepo.Update(dbCentralNotification);
+                _centralizedUnitOfWork.Save();
+            }
+
         }
     }
 }

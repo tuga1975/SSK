@@ -15,7 +15,7 @@ namespace Trinity.DAL.DBContext
     public partial class Environment
     {
         public int DateOfWeek { get; set; }
-        public int Frequency { get; set; }
+        public string Frequency { get; set; }
         public System.TimeSpan StartTime { get; set; }
         public System.TimeSpan EndTime { get; set; }
         public int Duration { get; set; }

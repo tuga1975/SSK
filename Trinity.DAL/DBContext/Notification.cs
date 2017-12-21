@@ -14,7 +14,7 @@ namespace Trinity.DAL.DBContext
     
     public partial class Notification
     {
-        public long ID { get; set; }
+        public System.Guid ID { get; set; }
         public System.DateTime Date { get; set; }
         public string FromUserId { get; set; }
         public string ToUserId { get; set; }

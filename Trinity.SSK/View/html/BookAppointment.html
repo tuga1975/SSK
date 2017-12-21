@@ -1,11 +1,46 @@
 ﻿<span style="display: inline-block;font-size:20px;border:1px solid #CCC;background-color:#FFF;padding:10px;border-bottom:none;">Book Appointment</span>
-    </br>
+<br />
 <span style="display: inline-block;font-size:15px;border:1px solid #CCC;background-color:#FFF;padding:5px;">
-    You next Book Appointment will be on : <span app-date></span> <span app-time></span>
+    Your next appointment will be on: <span app-date></span> <span app-time></span>
     <span style="display:block;" info-notime>You have not selected a time slot.</span>
 </span>
 
-<div style="max-width:100%;padding:10px;border:1px solid #CCC;margin-top:10px;" add-time>
+<div style="overflow:auto;height:300px;">
+    <div style="width:32%;padding:10px;margin-top:10px;float:left">
+        <div><p style="text-align:center;"><strong>Morning</strong></p></div>
+        <div style="" add-time-Morning>
+        </div>
+    </div>
+    <div style="width:32%;padding:10px;margin-top:10px;float:left">
+        <div><p style="text-align:center;"><strong>Afternoon</strong></p></div>
+        <div  add-time-Afternoon>
+        </div>
+    </div>
+    <div style="width:32%;padding:10px;margin-top:10px;float:left">
+        <div><p style="text-align:center;"><strong>Evening</strong></p></div>
+        <div  add-time-Evening>
+        </div>
+    </div>
+    <div style="clear:both;"></div>
+</div>
+<div style="position:fixed;bottom:10px;left:20px;width:60%">
+    <div style="height:25px;width:90px;border:solid 1px #000;text-align:center;">Legends</div>
+    <br />
+    <div >
+        <div style="float:left;width:150px;">
+            <div style="height:25px;width:25px;border:solid 1px #000;text-align:center;float:left;"></div>
+            <div style="height:25px;width:100px;border:solid 1px #000;text-align:center;">Available</div>
+        </div>
+        <div style="float:left;width:150px;">
+            <div style="height:25px;width:25px;border:solid 1px #000;text-align:center;float:left;background-color:deepskyblue"></div>
+            <div style="height:25px;width:100px;border:solid 1px #000;text-align:center;">Selected</div>
+        </div>
+        <div style="float:left;width:180px;">
+            <div style="height:25px;width:25px;border:solid 1px #000;text-align:center;float:left;background-color:#808080"></div>
+            <div style="height:25px;width:150px;border:solid 1px #000;text-align:center;">Fully Booked</div>
+        </div>
+        <div style="clear:both;"></div>
+    </div>
 </div>
 <style type="text/css">
     .input-group-addon {
@@ -43,7 +78,9 @@
             pointer-events: none;
         }
 </style>
-<button type="button" class="btn btn-danger" style="position:fixed;bottom:10px;left:10px;" onclick="window.external.LoadPage('Supervisee.html');">Back</button>
+
+<button type="button" class="btn btn-danger" style="position:fixed;bottom:10px;right:100px;" id="btnPrintDetail">Print Appointment Details</button>
+<button type="button" class="btn btn-dark" style="position:fixed;bottom:10px;right:20px;" onclick="window.external.LoadPage('Supervisee.html');">Back</button>
 
 <script type="text/javascript">
     $(document).ready(function () {
@@ -54,17 +91,23 @@
             $('[app-time]').text(api.model[0].FromTimeTxt);
         }
         //
-        $.each(api.model[1], function (index, item) {
-            $('[add-time]').append('<span item-select-time availble="' + item.IsAvailble + '" selecttime="' + item.IsSelected + '" start="' + item.StartTimeTxt + '" end="' + item.EndTimeTxt + '">' + item.StartTimeTxt + ' to ' + item.EndTimeTxt + '</span>');
+        $.each(api.model[1].Morning, function (index, item) {
+            $('[add-time-Morning]').append('<span style="width:100%" item-select-time availble="' + item.IsAvailble + '" selecttime="' + item.IsSelected + '" start="' + item.StartTimeTxt + '" end="' + item.EndTimeTxt + '">' + item.StartTimeTxt + ' to ' + item.EndTimeTxt + '</span>');
+        });
+
+        $.each(api.model[1].Afternoon, function (index, item) {
+            $('[add-time-Afternoon]').append('<span style="width:100%" item-select-time availble="' + item.IsAvailble + '" selecttime="' + item.IsSelected + '" start="' + item.StartTimeTxt + '" end="' + item.EndTimeTxt + '">' + item.StartTimeTxt + ' to ' + item.EndTimeTxt + '</span>');
+        });
+        $.each(api.model[1].Evening, function (index, item) {
+            $('[add-time-Evening]').append('<span style="width:100%" item-select-time availble="' + item.IsAvailble + '" selecttime="' + item.IsSelected + '" start="' + item.StartTimeTxt + '" end="' + item.EndTimeTxt + '">' + item.StartTimeTxt + ' to ' + item.EndTimeTxt + '</span>');
         });
 
         $('[item-select-time]').click(function () {
             var _this = $(this);
             var startTime = _this.attr('start');
             var endTime = _this.attr('end');
-
             if (api.model[0].ChangedCount >= 3) {
-                alert('You have exceeded the number of times allowed for time slot change. Please keep to your timeslot ' + startTime + ' on ' + api.model[0].FromTimeTxt + '. Otherwise, please contact your case officer.');
+                alert('You have exceeded the number of times allowed for time slot change. Please keep to your timeslot ' + startTime + ' on ' + api.model[0].GetDateTxt + '. Otherwise, please contact your case officer.');
             } else {
                 var re = confirm('You have selected the time slot\n' + startTime + ' on ' + api.model[0].FromTimeTxt + '\nConfirm time slot?', 'Warning');
                 if (re == true) {
@@ -78,5 +121,9 @@
                 }
             }
         });
+    });
+    $('#btnPrintDetail').click(function () {
+     
+        api.server.PrintAppointmentDetails(api.model[0].ID)
     });
 </script>

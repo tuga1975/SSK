@@ -62,7 +62,7 @@ function createEvent(arrayFun) {
             if (callback != null) {
                 api.callback_this[Guid] = this;
                 api.callback[Guid] = callback;
-                eval('window.external.ClientCallServer("' + fun + '","' + Guid +'"' + createArguments(arg) + ');');
+                eval('window.external.ClientCallServer("' + fun + '","' + Guid + '"' + createArguments(arg) + ');');
             } else {
                 eval('window.external.ClientCallServer("' + fun + '",null' + createArguments(arg) + ');');
             }
@@ -72,7 +72,7 @@ function createEvent(arrayFun) {
 function callEventCallBack(guid, model) {
     var call = api.callback[guid];
     if (typeof item != 'undefined') {
-        if (model!=null)
+        if (model != null)
             call.call(api.callback_this[guid], JSON.parse(model));
         else
             call.call(api.callback_this[guid]);
@@ -119,5 +119,25 @@ function displayLogoutButton(display) {
     }
     else {
         $('#btn-logout').show();
+    }
+}
+
+function refreshQueueNumbers(currentQueueNumber, nextQueueNumberList) {
+    if (currentQueueNumber) {
+        $('[show-queue]').text(currentQueueNumber);
+    } else {
+        $('[show-queue]').text('');
+    }
+    var nextQueueNumbers;
+    if (nextQueueNumberList != null)
+        nextQueueNumbers = JSON.parse(nextQueueNumberList);
+    else
+        nextQueueNumbers = null;
+
+    $('[show-queue-list] span').remove();
+    if (nextQueueNumbers != null && nextQueueNumbers.length > 0) {
+        for (var i = 0; i < nextQueueNumbers.length; i++) {
+            $('[show-queue-list]').append('<span>' + nextQueueNumbers[i] + '</span>');
+        }
     }
 }
