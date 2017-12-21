@@ -63,10 +63,25 @@ namespace SSK
             var model = myNotifications;
             _web.LoadPageHtml("Notication.html", myNotifications);
         }
+
+        public void ChangeReadStatus(string notificationId)
+        {
+            try
+            {
+                
+                var dalNotify = new DAL_Notification();
+                dalNotify.ChangeReadStatus(notificationId);
+            }
+            catch (Exception ex)
+            {
+
+                return;
+            }
+        }
         public void SpeakNotification(string notificationId)
         {
             var dalNotify = new DAL_Notification();
-            var content = dalNotify.GetNotificationContentById(int.Parse(notificationId), false);
+            var content = dalNotify.GetNotificationContentById(Guid.Parse(notificationId), false);
             APIUtils.TextToSpeech.Speak(content);
         }
 
@@ -337,15 +352,18 @@ namespace SSK
         }
 
 
-        public void SaveReasonForQueue(string data, string reason)
+        public void SaveReasonForQueue(/*string data,*/ string reason,string selectedID)
         {
             //send message to case office if no support document
             if (reason == "No Supporting Document")
             {
                 APIUtils.SignalR.SendNotificationToDutyOfficer("Supervisee get queue without supporting document", "Please check the Supervisee's information!");
             }
+            var charSeparators = new char[] { ',' };
+            var listSplitID = selectedID.Split(charSeparators, StringSplitOptions.RemoveEmptyEntries).ToList();
+            
 
-            var listAppointment = JsonConvert.DeserializeObject<List<Appointment>>(data);
+            //var listAppointment = JsonConvert.DeserializeObject<List<Appointment>>(data);
             Trinity.BE.Reason reasonModel = JsonConvert.DeserializeObject<Trinity.BE.Reason>(reason);
             if (reasonModel == null)
             {
@@ -362,7 +380,10 @@ namespace SSK
             if (create)
             {
                 var dalAppointment = new DAL_Appointments();
-                foreach (var item in listAppointment)
+
+                var listSelectedDate = dalAppointment.GetListAppointmentFromSelectedDate(listSplitID);
+
+                foreach (var item in listSelectedDate)
                 {
                     dalAppointment.UpdateReason(item.ID, absenceModel.ID);
                 }

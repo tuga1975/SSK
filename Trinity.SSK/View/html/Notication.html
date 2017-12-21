@@ -83,6 +83,7 @@
                 var hasPrev = carouselItems.siblings('.active').prev().length;
                 if (hasPrev) {
                     var id = carouselItems.siblings('.active').prev().attr('id');
+                    api.server.ChangeReadStatus(id);
                 api.server.SpeakNotification(id);
             }
             else {
@@ -95,6 +96,7 @@
             var hasNext = carouselItems.siblings('.active').next().length;
             if (hasNext) {
                 var id = carouselItems.siblings('.active').next().attr('id');
+                api.server.ChangeReadStatus(id);
                 api.server.SpeakNotification(id);
             }
             else {
@@ -107,6 +109,7 @@
             if (api.model != null && api.model.length > 0) {
                 var id = api.model[0].ID.toString();
                 api.server.SpeakNotification(id);
+                api.server.ChangeReadStatus(id);
             }
            
         });

@@ -83,7 +83,7 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
           <Property Name="Date" Type="datetime" Nullable="false" />
           <Property Name="FromUserId" Type="nvarchar" MaxLength="128" />
           <Property Name="ToUserId" Type="nvarchar" MaxLength="128" />
@@ -170,7 +170,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Notifications_Users">
+        <Association Name="FK_Notifications_User">
           <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
           <End Role="Notifications" Type="Self.Notifications" Multiplicity="*" />
           <ReferentialConstraint>
@@ -182,7 +182,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Notifications_Users1">
+        <Association Name="FK_Notifications_User1">
           <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
           <End Role="Notifications" Type="Self.Notifications" Multiplicity="*" />
           <ReferentialConstraint>
@@ -190,7 +190,7 @@
               <PropertyRef Name="UserId" />
             </Principal>
             <Dependent Role="Notifications">
-              <PropertyRef Name="FromUserId" />
+              <PropertyRef Name="ToUserId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -262,11 +262,11 @@
             <End Role="Users" EntitySet="Users" />
             <End Role="Appointments" EntitySet="Appointments" />
           </AssociationSet>
-          <AssociationSet Name="FK_Notifications_Users" Association="Self.FK_Notifications_Users">
+          <AssociationSet Name="FK_Notifications_User" Association="Self.FK_Notifications_User">
             <End Role="Users" EntitySet="Users" />
             <End Role="Notifications" EntitySet="Notifications" />
           </AssociationSet>
-          <AssociationSet Name="FK_Notifications_Users1" Association="Self.FK_Notifications_Users1">
+          <AssociationSet Name="FK_Notifications_User1" Association="Self.FK_Notifications_User1">
             <End Role="Users" EntitySet="Users" />
             <End Role="Notifications" EntitySet="Notifications" />
           </AssociationSet>
@@ -301,16 +301,12 @@
           <EntitySet Name="Holidays" EntityType="TrinityCentralizedDBModel.Holiday" />
           <EntitySet Name="Notifications" EntityType="TrinityCentralizedDBModel.Notification" />
           <EntitySet Name="QueueNumbers" EntityType="TrinityCentralizedDBModel.QueueNumber" />
+          <EntitySet Name="User_Profiles" EntityType="TrinityCentralizedDBModel.User_Profiles" />
+          <EntitySet Name="Users" EntityType="TrinityCentralizedDBModel.User" />
           <AssociationSet Name="FK_Appointments_AbsenceReporting" Association="TrinityCentralizedDBModel.FK_Appointments_AbsenceReporting">
             <End Role="AbsenceReporting" EntitySet="AbsenceReportings" />
             <End Role="Appointment" EntitySet="Appointments" />
           </AssociationSet>
-          <AssociationSet Name="FK_QueueNumbers_Appointments1" Association="TrinityCentralizedDBModel.FK_QueueNumbers_Appointments1">
-            <End Role="Appointment" EntitySet="Appointments" />
-            <End Role="QueueNumber" EntitySet="QueueNumbers" />
-          </AssociationSet>
-          <EntitySet Name="User_Profiles" EntityType="TrinityCentralizedDBModel.User_Profiles" />
-          <EntitySet Name="Users" EntityType="TrinityCentralizedDBModel.User" />
           <AssociationSet Name="FK_User_Profiles_Addresses" Association="TrinityCentralizedDBModel.FK_User_Profiles_Addresses">
             <End Role="Address" EntitySet="Addresses" />
             <End Role="User_Profiles" EntitySet="User_Profiles" />
@@ -323,11 +319,15 @@
             <End Role="User" EntitySet="Users" />
             <End Role="Appointment" EntitySet="Appointments" />
           </AssociationSet>
-          <AssociationSet Name="FK_Notifications_Users" Association="TrinityCentralizedDBModel.FK_Notifications_Users">
+          <AssociationSet Name="FK_QueueNumbers_Appointments1" Association="TrinityCentralizedDBModel.FK_QueueNumbers_Appointments1">
+            <End Role="Appointment" EntitySet="Appointments" />
+            <End Role="QueueNumber" EntitySet="QueueNumbers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Notifications_User" Association="TrinityCentralizedDBModel.FK_Notifications_User">
             <End Role="User" EntitySet="Users" />
             <End Role="Notification" EntitySet="Notifications" />
           </AssociationSet>
-          <AssociationSet Name="FK_Notifications_Users1" Association="TrinityCentralizedDBModel.FK_Notifications_Users1">
+          <AssociationSet Name="FK_Notifications_User1" Association="TrinityCentralizedDBModel.FK_Notifications_User1">
             <End Role="User" EntitySet="Users" />
             <End Role="Notification" EntitySet="Notifications" />
           </AssociationSet>
@@ -384,8 +384,8 @@
           <Property Name="ChangedCount" Type="Int16" Nullable="false" />
           <Property Name="Status" Type="Int32" Nullable="false" />
           <NavigationProperty Name="AbsenceReporting" Relationship="TrinityCentralizedDBModel.FK_Appointments_AbsenceReporting" FromRole="Appointment" ToRole="AbsenceReporting" />
-          <NavigationProperty Name="QueueNumbers" Relationship="TrinityCentralizedDBModel.FK_QueueNumbers_Appointments1" FromRole="Appointment" ToRole="QueueNumber" />
           <NavigationProperty Name="User" Relationship="TrinityCentralizedDBModel.FK_Appointments_Users" FromRole="Appointment" ToRole="User" />
+          <NavigationProperty Name="QueueNumbers" Relationship="TrinityCentralizedDBModel.FK_QueueNumbers_Appointments1" FromRole="Appointment" ToRole="QueueNumber" />
         </EntityType>
         <EntityType Name="Device">
           <Key>
@@ -420,7 +420,7 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ID" Type="Guid" Nullable="false" />
           <Property Name="Date" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="FromUserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="ToUserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
@@ -428,8 +428,8 @@
           <Property Name="Content" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="IsRead" Type="Boolean" Nullable="false" />
           <Property Name="IsFromSupervisee" Type="Boolean" />
-          <NavigationProperty Name="User" Relationship="TrinityCentralizedDBModel.FK_Notifications_Users" FromRole="Notification" ToRole="User" />
-          <NavigationProperty Name="User1" Relationship="TrinityCentralizedDBModel.FK_Notifications_Users1" FromRole="Notification" ToRole="User" />
+          <NavigationProperty Name="User" Relationship="TrinityCentralizedDBModel.FK_Notifications_User" FromRole="Notification" ToRole="User" />
+          <NavigationProperty Name="User1" Relationship="TrinityCentralizedDBModel.FK_Notifications_User1" FromRole="Notification" ToRole="User" />
         </EntityType>
         <EntityType Name="QueueNumber">
           <Key>
@@ -442,30 +442,6 @@
           <Property Name="Status" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="Appointment" Relationship="TrinityCentralizedDBModel.FK_QueueNumbers_Appointments1" FromRole="QueueNumber" ToRole="Appointment" />
         </EntityType>
-        <Association Name="FK_Appointments_AbsenceReporting">
-          <End Type="TrinityCentralizedDBModel.AbsenceReporting" Role="AbsenceReporting" Multiplicity="0..1" />
-          <End Type="TrinityCentralizedDBModel.Appointment" Role="Appointment" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="AbsenceReporting">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="Appointment">
-              <PropertyRef Name="AbsenceReporting_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_QueueNumbers_Appointments1">
-          <End Type="TrinityCentralizedDBModel.Appointment" Role="Appointment" Multiplicity="1" />
-          <End Type="TrinityCentralizedDBModel.QueueNumber" Role="QueueNumber" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Appointment">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="QueueNumber">
-              <PropertyRef Name="Appointment_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="User_Profiles">
           <Key>
             <PropertyRef Name="UserId" />
@@ -513,10 +489,22 @@
           <Property Name="Fingerprint" Type="Binary" MaxLength="Max" FixedLength="false" />
           <Property Name="Status" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="Appointments" Relationship="TrinityCentralizedDBModel.FK_Appointments_Users" FromRole="User" ToRole="Appointment" />
-          <NavigationProperty Name="Notifications" Relationship="TrinityCentralizedDBModel.FK_Notifications_Users" FromRole="User" ToRole="Notification" />
-          <NavigationProperty Name="Notifications1" Relationship="TrinityCentralizedDBModel.FK_Notifications_Users1" FromRole="User" ToRole="Notification" />
+          <NavigationProperty Name="Notifications" Relationship="TrinityCentralizedDBModel.FK_Notifications_User" FromRole="User" ToRole="Notification" />
+          <NavigationProperty Name="Notifications1" Relationship="TrinityCentralizedDBModel.FK_Notifications_User1" FromRole="User" ToRole="Notification" />
           <NavigationProperty Name="User_Profiles" Relationship="TrinityCentralizedDBModel.FK_User_Profiles_Users" FromRole="User" ToRole="User_Profiles" />
         </EntityType>
+        <Association Name="FK_Appointments_AbsenceReporting">
+          <End Type="TrinityCentralizedDBModel.AbsenceReporting" Role="AbsenceReporting" Multiplicity="0..1" />
+          <End Type="TrinityCentralizedDBModel.Appointment" Role="Appointment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AbsenceReporting">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Appointment">
+              <PropertyRef Name="AbsenceReporting_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_User_Profiles_Addresses">
           <End Type="TrinityCentralizedDBModel.Address" Role="Address" Multiplicity="0..1" />
           <End Type="TrinityCentralizedDBModel.User_Profiles" Role="User_Profiles" Multiplicity="*" />
@@ -553,7 +541,19 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Notifications_Users">
+        <Association Name="FK_QueueNumbers_Appointments1">
+          <End Type="TrinityCentralizedDBModel.Appointment" Role="Appointment" Multiplicity="1" />
+          <End Type="TrinityCentralizedDBModel.QueueNumber" Role="QueueNumber" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Appointment">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="QueueNumber">
+              <PropertyRef Name="Appointment_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Notifications_User">
           <End Type="TrinityCentralizedDBModel.User" Role="User" Multiplicity="0..1" />
           <End Type="TrinityCentralizedDBModel.Notification" Role="Notification" Multiplicity="*" />
           <ReferentialConstraint>
@@ -565,7 +565,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Notifications_Users1">
+        <Association Name="FK_Notifications_User1">
           <End Type="TrinityCentralizedDBModel.User" Role="User" Multiplicity="0..1" />
           <End Type="TrinityCentralizedDBModel.Notification" Role="Notification" Multiplicity="*" />
           <ReferentialConstraint>
@@ -573,7 +573,7 @@
               <PropertyRef Name="UserId" />
             </Principal>
             <Dependent Role="Notification">
-              <PropertyRef Name="FromUserId" />
+              <PropertyRef Name="ToUserId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
