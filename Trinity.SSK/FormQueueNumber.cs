@@ -9,6 +9,7 @@ namespace SSK
 {
     public partial class FormQueueNumber : Form
     {
+        private WebBrowser wbQueueNumber = null;
         private static FormQueueNumber _instance = null;
         private JSCallCS _jsCallCS = null;
 
@@ -22,34 +23,42 @@ namespace SSK
         }
         public FormQueueNumber()
         {
-            InitializeComponent();
+            InitializeComponent();            
+        }
 
-            _jsCallCS = new JSCallCS(this.wbQueueNumber);
+        private void InitializeWebBrowser()
+        {
+            wbQueueNumber = new WebBrowser();
+            this.Controls.Add(wbQueueNumber);
+            wbQueueNumber.Dock = DockStyle.Fill;
+            wbQueueNumber.DocumentCompleted += wbQueueNumber_DocumentCompleted;
 
-            this.wbQueueNumber.Url = new Uri(String.Format("file:///{0}/View/html/Layout_QueueNumber.html", CSCallJS.curDir));
-            this.wbQueueNumber.ObjectForScripting = _jsCallCS;
+            _jsCallCS = new JSCallCS(wbQueueNumber);
+            wbQueueNumber.Url = new Uri(String.Format("file:///{0}/View/html/Layout_QueueNumber.html", CSCallJS.curDir));
+            wbQueueNumber.ObjectForScripting = _jsCallCS;
         }
 
         private void wbQueueNumber_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
-            this.wbQueueNumber.InvokeScript("createEvent", JsonConvert.SerializeObject(_jsCallCS.GetType().GetMethods().Where(d => d.IsPublic && !d.IsVirtual && !d.IsSecuritySafeCritical).ToArray().Select(d => d.Name)));
-            this.wbQueueNumber.LoadPageHtml("QueueNumber.html");
+            wbQueueNumber.InvokeScript("createEvent", JsonConvert.SerializeObject(_jsCallCS.GetType().GetMethods().Where(d => d.IsPublic && !d.IsVirtual && !d.IsSecuritySafeCritical).ToArray().Select(d => d.Name)));
+            wbQueueNumber.LoadPageHtml("QueueNumber.html");
             RefreshQueueNumbers();
         }
-
         public void ShowOnSecondaryScreen()
         {
             if (Screen.AllScreens.Count() > 1)
             {
                 if (Screen.AllScreens[0].Primary)
                 {
-                    this.Location = Screen.AllScreens[1].WorkingArea.Location;
+
+                    this.DesktopLocation = Screen.AllScreens[1].WorkingArea.Location;
                 }
                 else
                 {
-                    this.Location = Screen.AllScreens[0].WorkingArea.Location;
+                    this.DesktopLocation = Screen.AllScreens[0].WorkingArea.Location;
                 }
             }
+            InitializeWebBrowser();
         }
         public void RefreshQueueNumbers()
         {
@@ -59,7 +68,7 @@ namespace SSK
                 Status = d.Status,
                 QueueNumber = d.QueuedNumber
             }).ToArray();
-            
+
             string currentQueueNumber = string.Empty;
             for (int i = 0; i < arrayQueue.Length; i++)
             {
@@ -70,7 +79,9 @@ namespace SSK
                 }
             }
             string[] waitingQueueNumbers = arrayQueue.Where(q => q.Status == EnumQueueStatuses.Waiting).OrderByDescending(d => d.Time).Select(d => d.QueueNumber).ToArray();
-            this.wbQueueNumber.RefreshQueueNumbers(currentQueueNumber, waitingQueueNumbers);
+            wbQueueNumber.RefreshQueueNumbers(currentQueueNumber, waitingQueueNumbers);
         }
+
+
     }
 }

@@ -36,7 +36,7 @@
             // 
             this.LayerWeb.Dock = System.Windows.Forms.DockStyle.Fill;
             this.LayerWeb.Location = new System.Drawing.Point(0, 0);
-            this.LayerWeb.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.LayerWeb.Margin = new System.Windows.Forms.Padding(4);
             this.LayerWeb.MinimumSize = new System.Drawing.Size(27, 25);
             this.LayerWeb.Name = "LayerWeb";
             this.LayerWeb.Size = new System.Drawing.Size(1201, 716);
@@ -50,8 +50,9 @@
             this.ClientSize = new System.Drawing.Size(1201, 716);
             this.Controls.Add(this.LayerWeb);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "Main";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Self-Servie Kiosk";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Main_FormClosing);
             this.Load += new System.EventHandler(this.Main_Load);

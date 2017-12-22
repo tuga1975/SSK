@@ -166,13 +166,13 @@ namespace SSK
 
                     dalUserprofile.UpdateUserProfile(data.UserProfile, data.User.UserId, true);
                     //send notifiy to duty officer
-                    APIUtils.SignalR.SendNotificationToDutyOfficer("Supervisee's information changed!", "Please check the Supervisee's information!");
+                    APIUtils.SignalR.SendNotificationToDutyOfficer("A supervisee has updated profile.", "Please check Supervisee's information!");
                 }
                 else
                 {
                     dalUserprofile.UpdateUserProfile(data.UserProfile, data.User.UserId, true);
                     //send notifiy to case officer
-                    APIUtils.SignalR.SendNotificationToDutyOfficer("Supervisee's information changed!", "Please check the Supervisee's information!");
+                    APIUtils.SignalR.SendNotificationToDutyOfficer("A supervisee has updated profile.", "Please check Supervisee's information!");
                 }
 
                 //load Supervisee page 

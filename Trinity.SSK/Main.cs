@@ -94,11 +94,15 @@ namespace SSK
 
             // For testing purpose
             //Session session = Session.Instance;
-            //Trinity.BE.User user = new DAL_User().GetUserByUserId("b9200ff4-b97e-4cbe-8842-91bfcb7f0f82", true);
+            //// Supervisee
+            ////Trinity.BE.User user = new DAL_User().GetUserByUserId("b9200ff4-b97e-4cbe-8842-91bfcb7f0f82", true);
+            //// Duty Officer
+            //Trinity.BE.User user = new DAL_User().GetUserByUserId("ead039f9-b9a1-45bb-8186-0bb7248aafac", true);
             //session[CommonConstants.USER_LOGIN] = user;
             //session.IsSmartCardAuthenticated = true;
             //session.IsFingerprintAuthenticated = true;
-            //NavigateTo(NavigatorEnums.Supervisee);
+            ////NavigateTo(NavigatorEnums.Supervisee);
+            //NavigateTo(NavigatorEnums.Authentication_NRIC);
         }
 
         private void NRIC_OnNRICSucceeded()

@@ -109,7 +109,7 @@
             if (api.model[0].ChangedCount >= 3) {
                 alert('You have exceeded the number of times allowed for time slot change. Please keep to your timeslot ' + startTime + ' on ' + api.model[0].GetDateTxt + '. Otherwise, please contact your case officer.');
             } else {
-                var re = confirm('You have selected the time slot\n' + startTime + ' on ' + api.model[0].FromTimeTxt + '\nConfirm time slot?', 'Warning');
+                var re = confirm('You have selected the time slot\n' + startTime + ' on ' + api.model[0].GetDateTxt + '\nConfirm time slot?', 'Warning');
                 if (re == true) {
                     api.server.UpdateTimeAppointment(api.model[0].ID, startTime, endTime, function (time) {
                         api.model[0].ChangedCount += 1;
