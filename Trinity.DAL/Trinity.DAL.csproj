@@ -231,6 +231,8 @@
       <DependentUpon>TrinityCentralizedDB.edmx</DependentUpon>
       <LastGenOutput>TrinityCentralizedDB.cs</LastGenOutput>
     </Content>
+    <Content Include="DBScripts\SSK_CreateTables.sql" />
+    <Content Include="DBScripts\TrinityCentralizedDB_CreateTables.sql" />
   </ItemGroup>
   <ItemGroup>
     <EntityDeploy Include="DBContext\SSK.edmx">
@@ -272,5 +274,6 @@
       <Name>Trinity.BE</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
