@@ -19,7 +19,7 @@ namespace SSA
         private CodeBehind.Authentication.SmartCard _smartCard;
         private CodeBehind.Authentication.Fingerprint _fingerprint;
         private CodeBehind.Authentication.NRIC _nric;
-        private CodeBehind.Suppervisee _suppervisee;
+        private CodeBehind.SupperviseeParticulars _supperviseeParticulars;
         private NavigatorEnums _currentPage;
 
         private int _smartCardFailed;
@@ -59,7 +59,7 @@ namespace SSA
             _nric.OnShowMessage += OnShowMessage;
 
             // Supervisee
-            _suppervisee = new CodeBehind.Suppervisee(LayerWeb);
+            _supperviseeParticulars = new CodeBehind.SupperviseeParticulars(LayerWeb);
             #endregion
 
 
@@ -86,18 +86,18 @@ namespace SSA
             LayerWeb.InvokeScript("createEvent", JsonConvert.SerializeObject(_jsCallCS.GetType().GetMethods().Where(d => d.IsPublic && !d.IsVirtual && !d.IsSecuritySafeCritical).ToArray().Select(d => d.Name)));
 
             // Start page
-            NavigateTo(NavigatorEnums.Authentication_SmartCard);
+            //NavigateTo(NavigatorEnums.Authentication_SmartCard);
 
             // For testing purpose
-            //Session session = Session.Instance;
-            //// Supervisee
-            ////Trinity.BE.User user = new DAL_User().GetUserByUserId("b9200ff4-b97e-4cbe-8842-91bfcb7f0f82", true);
-            //// Duty Officer
+            Session session = Session.Instance;
+            // Supervisee
+            Trinity.BE.User user = new DAL_User().GetUserByUserId("b9200ff4-b97e-4cbe-8842-91bfcb7f0f82", true);
+            // Duty Officer
             //Trinity.BE.User user = new DAL_User().GetUserByUserId("ead039f9-b9a1-45bb-8186-0bb7248aafac", true);
-            //session[CommonConstants.USER_LOGIN] = user;
-            //session.IsSmartCardAuthenticated = true;
-            //session.IsFingerprintAuthenticated = true;
-            ////NavigateTo(NavigatorEnums.Supervisee);
+            session[CommonConstants.USER_LOGIN] = user;
+            session.IsSmartCardAuthenticated = true;
+            session.IsFingerprintAuthenticated = true;
+            NavigateTo(NavigatorEnums.Supervisee_Particulars);
             //NavigateTo(NavigatorEnums.Authentication_NRIC);
         }
 
@@ -235,13 +235,13 @@ namespace SSA
             {
                 _nric.Start();
             }
-            else if (navigatorEnum == NavigatorEnums.Supervisee)
+            else if (navigatorEnum == NavigatorEnums.Supervisee_Particulars)
             {
-                _suppervisee.Start();
+                _supperviseeParticulars.Start();
             }
             else if (navigatorEnum == NavigatorEnums.Supervisee_NRIC)
             {
-                _suppervisee.Start();
+                _supperviseeParticulars.Start();
                 CSCallJS.DisplayNRICLogin(LayerWeb);
             }
 
