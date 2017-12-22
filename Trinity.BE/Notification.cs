@@ -12,7 +12,7 @@ namespace Trinity.BE
     public class Notification
     {
         [DataMember]
-        public long ID { get; set; }
+        public Guid ID { get; set; }
 
         [DataMember]
         public DateTime Date { get; set; }

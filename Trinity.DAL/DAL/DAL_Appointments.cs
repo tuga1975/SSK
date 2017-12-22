@@ -65,13 +65,13 @@ namespace Trinity.DAL
         public int CountMyAbsence(string UserID)
         {
             return _localUnitOfWork.DataContext.Appointments.Count(d => d.UserId == UserID && d.Date < DateTime.Today && (d.Status == (int)EnumAppointmentStatuses.Pending ||
-            d.Status == (int)EnumAppointmentStatuses.Booked));
+            d.Status == (int)EnumAppointmentStatuses.Booked) && d.AbsenceReporting_ID == null);
         }
 
         public List<Appointment> GetMyAbsentAppointments(string UserID)
         {
             return _localUnitOfWork.DataContext.Appointments.Where(d => d.UserId == UserID && System.Data.Entity.DbFunctions.AddDays(d.Date, 1) <= DateTime.Today && (d.Status == (int)EnumAppointmentStatuses.Pending ||
-            d.Status == (int)EnumAppointmentStatuses.Booked)).ToList();
+            d.Status == (int)EnumAppointmentStatuses.Booked) && d.AbsenceReporting_ID == null).ToList();
         }
 
         /// <summary>
@@ -88,6 +88,19 @@ namespace Trinity.DAL
             _localUnitOfWork.GetRepository<Appointment>().Update(appointment);
             _localUnitOfWork.Save();
             return appointment;
+        }
+
+        public List<Appointment> GetListAppointmentFromSelectedDate(List<string> listID)
+        {
+            var localDbAppointment = new List<Appointment>();
+
+
+            foreach (var item in listID)
+            {
+                localDbAppointment.Add(_localUnitOfWork.DataContext.Appointments.Find(Guid.Parse(item)));
+
+            }
+            return localDbAppointment;
         }
     }
 }

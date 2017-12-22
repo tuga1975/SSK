@@ -12,18 +12,12 @@ namespace Trinity.DAL.DBContext
     using System;
     using System.Collections.Generic;
     
-    public partial class Notification
+    public partial class sysdiagram
     {
-        public System.Guid ID { get; set; }
-        public System.DateTime Date { get; set; }
-        public string FromUserId { get; set; }
-        public string ToUserId { get; set; }
-        public string Subject { get; set; }
-        public string Content { get; set; }
-        public bool IsRead { get; set; }
-        public Nullable<bool> IsFromSupervisee { get; set; }
-    
-        public virtual User User { get; set; }
-        public virtual User User1 { get; set; }
+        public string name { get; set; }
+        public int principal_id { get; set; }
+        public int diagram_id { get; set; }
+        public Nullable<int> version { get; set; }
+        public byte[] definition { get; set; }
     }
 }

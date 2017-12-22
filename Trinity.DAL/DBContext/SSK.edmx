@@ -83,7 +83,7 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
           <Property Name="Date" Type="datetime" Nullable="false" />
           <Property Name="FromUserId" Type="nvarchar" MaxLength="128" />
           <Property Name="ToUserId" Type="nvarchar" MaxLength="128" />
@@ -101,6 +101,16 @@
           <Property Name="Appointment_ID" Type="uniqueidentifier" Nullable="false" />
           <Property Name="CreatedTime" Type="datetime" Nullable="false" />
           <Property Name="Status" Type="varchar" MaxLength="10" Nullable="false" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
         </EntityType>
         <EntityType Name="User_Profiles">
           <Key>
@@ -190,7 +200,7 @@
               <PropertyRef Name="UserId" />
             </Principal>
             <Dependent Role="Notifications">
-              <PropertyRef Name="FromUserId" />
+              <PropertyRef Name="ToUserId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -252,6 +262,7 @@
           <EntitySet Name="Holidays" EntityType="Self.Holidays" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Notifications" EntityType="Self.Notifications" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="QueueNumbers" EntityType="Self.QueueNumbers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User_Profiles" EntityType="Self.User_Profiles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_Appointments_AbsenceReporting" Association="Self.FK_Appointments_AbsenceReporting">
@@ -292,13 +303,22 @@
     <edmx:ConceptualModels>
       <Schema Namespace="SSKModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityContainer Name="SSKEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="AbsenceReportings" EntityType="SSKModel.AbsenceReporting" />
           <EntitySet Name="Addresses" EntityType="SSKModel.Address" />
           <EntitySet Name="ApplicationDevice_Status" EntityType="SSKModel.ApplicationDevice_Status" />
+          <EntitySet Name="Appointments" EntityType="SSKModel.Appointment" />
           <EntitySet Name="Devices" EntityType="SSKModel.Device" />
+          <EntitySet Name="Environments" EntityType="SSKModel.Environment" />
           <EntitySet Name="Holidays" EntityType="SSKModel.Holiday" />
           <EntitySet Name="Notifications" EntityType="SSKModel.Notification" />
+          <EntitySet Name="QueueNumbers" EntityType="SSKModel.QueueNumber" />
+          <EntitySet Name="sysdiagrams" EntityType="SSKModel.sysdiagram" />
           <EntitySet Name="User_Profiles" EntityType="SSKModel.User_Profiles" />
           <EntitySet Name="Users" EntityType="SSKModel.User" />
+          <AssociationSet Name="FK_Appointments_AbsenceReporting" Association="SSKModel.FK_Appointments_AbsenceReporting">
+            <End Role="AbsenceReporting" EntitySet="AbsenceReportings" />
+            <End Role="Appointment" EntitySet="Appointments" />
+          </AssociationSet>
           <AssociationSet Name="FK_User_Profiles_Addresses" Association="SSKModel.FK_User_Profiles_Addresses">
             <End Role="Address" EntitySet="Addresses" />
             <End Role="User_Profiles" EntitySet="User_Profiles" />
@@ -306,6 +326,14 @@
           <AssociationSet Name="FK_User_Profiles_Addresses1" Association="SSKModel.FK_User_Profiles_Addresses1">
             <End Role="Address" EntitySet="Addresses" />
             <End Role="User_Profiles" EntitySet="User_Profiles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Appointments_Users" Association="SSKModel.FK_Appointments_Users">
+            <End Role="User" EntitySet="Users" />
+            <End Role="Appointment" EntitySet="Appointments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_QueueNumbers_Appointments1" Association="SSKModel.FK_QueueNumbers_Appointments1">
+            <End Role="Appointment" EntitySet="Appointments" />
+            <End Role="QueueNumber" EntitySet="QueueNumbers" />
           </AssociationSet>
           <AssociationSet Name="FK_Notifications_Users" Association="SSKModel.FK_Notifications_Users">
             <End Role="User" EntitySet="Users" />
@@ -319,23 +347,18 @@
             <End Role="User" EntitySet="Users" />
             <End Role="User_Profiles" EntitySet="User_Profiles" />
           </AssociationSet>
-          <EntitySet Name="AbsenceReportings" EntityType="SSKModel.AbsenceReporting" />
-          <EntitySet Name="Appointments" EntityType="SSKModel.Appointment" />
-          <EntitySet Name="QueueNumbers" EntityType="SSKModel.QueueNumber" />
-          <AssociationSet Name="FK_Appointments_AbsenceReporting" Association="SSKModel.FK_Appointments_AbsenceReporting">
-            <End Role="AbsenceReporting" EntitySet="AbsenceReportings" />
-            <End Role="Appointment" EntitySet="Appointments" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Appointments_Users" Association="SSKModel.FK_Appointments_Users">
-            <End Role="User" EntitySet="Users" />
-            <End Role="Appointment" EntitySet="Appointments" />
-          </AssociationSet>
-          <AssociationSet Name="FK_QueueNumbers_Appointments1" Association="SSKModel.FK_QueueNumbers_Appointments1">
-            <End Role="Appointment" EntitySet="Appointments" />
-            <End Role="QueueNumber" EntitySet="QueueNumbers" />
-          </AssociationSet>
-          <EntitySet Name="Environments" EntityType="SSKModel.Environment" />
         </EntityContainer>
+        <EntityType Name="AbsenceReporting">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="ReportingDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="AbsenceReason" Type="Int16" Nullable="false" />
+          <Property Name="ReasonDetails" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="ScannedDocument" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <NavigationProperty Name="Appointments" Relationship="SSKModel.FK_Appointments_AbsenceReporting" FromRole="AbsenceReporting" ToRole="Appointment" />
+        </EntityType>
         <EntityType Name="Address">
           <Key>
             <PropertyRef Name="Address_ID" />
@@ -360,6 +383,22 @@
           <Property Name="StatusCode" Type="Int32" Nullable="false" />
           <Property Name="StatusMessage" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
         </EntityType>
+        <EntityType Name="Appointment">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="AbsenceReporting_ID" Type="Guid" />
+          <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Date" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="FromTime" Type="Time" Precision="4" />
+          <Property Name="ToTime" Type="Time" Precision="4" />
+          <Property Name="ChangedCount" Type="Int16" Nullable="false" />
+          <Property Name="Status" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="AbsenceReporting" Relationship="SSKModel.FK_Appointments_AbsenceReporting" FromRole="Appointment" ToRole="AbsenceReporting" />
+          <NavigationProperty Name="User" Relationship="SSKModel.FK_Appointments_Users" FromRole="Appointment" ToRole="User" />
+          <NavigationProperty Name="QueueNumbers" Relationship="SSKModel.FK_QueueNumbers_Appointments1" FromRole="Appointment" ToRole="QueueNumber" />
+        </EntityType>
         <EntityType Name="Device">
           <Key>
             <PropertyRef Name="DeviceID" />
@@ -367,6 +406,19 @@
           <Property Name="DeviceID" Type="Int32" Nullable="false" />
           <Property Name="DeviceName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Details" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Environment">
+          <Key>
+            <PropertyRef Name="DateOfWeek" />
+            <PropertyRef Name="Frequency" />
+            <PropertyRef Name="StartTime" />
+            <PropertyRef Name="EndTime" />
+          </Key>
+          <Property Name="DateOfWeek" Type="Int32" Nullable="false" />
+          <Property Name="Frequency" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="StartTime" Type="Time" Nullable="false" Precision="4" />
+          <Property Name="EndTime" Type="Time" Nullable="false" Precision="4" />
+          <Property Name="Duration" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="Holiday">
           <Key>
@@ -380,7 +432,7 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ID" Type="Guid" Nullable="false" />
           <Property Name="Date" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="FromUserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="ToUserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
@@ -390,6 +442,27 @@
           <Property Name="IsFromSupervisee" Type="Boolean" />
           <NavigationProperty Name="User" Relationship="SSKModel.FK_Notifications_Users" FromRole="Notification" ToRole="User" />
           <NavigationProperty Name="User1" Relationship="SSKModel.FK_Notifications_Users1" FromRole="Notification" ToRole="User" />
+        </EntityType>
+        <EntityType Name="QueueNumber">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="QueuedNumber" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="Appointment_ID" Type="Guid" Nullable="false" />
+          <Property Name="CreatedTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Status" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Appointment" Relationship="SSKModel.FK_QueueNumbers_Appointments1" FromRole="QueueNumber" ToRole="Appointment" />
+        </EntityType>
+        <EntityType Name="sysdiagram">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
         </EntityType>
         <EntityType Name="User_Profiles">
           <Key>
@@ -436,12 +509,24 @@
           <Property Name="EnrolledDate" Type="DateTime" Precision="3" />
           <Property Name="Role" Type="Int16" />
           <Property Name="Fingerprint" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="Status" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Appointments" Relationship="SSKModel.FK_Appointments_Users" FromRole="User" ToRole="Appointment" />
           <NavigationProperty Name="Notifications" Relationship="SSKModel.FK_Notifications_Users" FromRole="User" ToRole="Notification" />
           <NavigationProperty Name="Notifications1" Relationship="SSKModel.FK_Notifications_Users1" FromRole="User" ToRole="Notification" />
           <NavigationProperty Name="User_Profiles" Relationship="SSKModel.FK_User_Profiles_Users" FromRole="User" ToRole="User_Profiles" />
-          <NavigationProperty Name="Appointments" Relationship="SSKModel.FK_Appointments_Users" FromRole="User" ToRole="Appointment" />
-          <Property Name="Status" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
         </EntityType>
+        <Association Name="FK_Appointments_AbsenceReporting">
+          <End Type="SSKModel.AbsenceReporting" Role="AbsenceReporting" Multiplicity="0..1" />
+          <End Type="SSKModel.Appointment" Role="Appointment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AbsenceReporting">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Appointment">
+              <PropertyRef Name="AbsenceReporting_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_User_Profiles_Addresses">
           <End Type="SSKModel.Address" Role="Address" Multiplicity="0..1" />
           <End Type="SSKModel.User_Profiles" Role="User_Profiles" Multiplicity="*" />
@@ -463,92 +548,6 @@
             </Principal>
             <Dependent Role="User_Profiles">
               <PropertyRef Name="Other_Address_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Notifications_Users">
-          <End Type="SSKModel.User" Role="User" Multiplicity="0..1" />
-          <End Type="SSKModel.Notification" Role="Notification" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="User">
-              <PropertyRef Name="UserId" />
-            </Principal>
-            <Dependent Role="Notification">
-              <PropertyRef Name="FromUserId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Notifications_Users1">
-          <End Type="SSKModel.User" Role="User" Multiplicity="0..1" />
-          <End Type="SSKModel.Notification" Role="Notification" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="User">
-              <PropertyRef Name="UserId" />
-            </Principal>
-            <Dependent Role="Notification">
-              <PropertyRef Name="FromUserId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_User_Profiles_Users">
-          <End Type="SSKModel.User" Role="User" Multiplicity="1" />
-          <End Type="SSKModel.User_Profiles" Role="User_Profiles" Multiplicity="0..1" />
-          <ReferentialConstraint>
-            <Principal Role="User">
-              <PropertyRef Name="UserId" />
-            </Principal>
-            <Dependent Role="User_Profiles">
-              <PropertyRef Name="UserId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <EntityType Name="AbsenceReporting">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Guid" Nullable="false" />
-          <Property Name="ReportingDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="AbsenceReason" Type="Int16" Nullable="false" />
-          <Property Name="ReasonDetails" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="ScannedDocument" Type="Binary" MaxLength="Max" FixedLength="false" />
-          <NavigationProperty Name="Appointments" Relationship="SSKModel.FK_Appointments_AbsenceReporting" FromRole="AbsenceReporting" ToRole="Appointment" />
-        </EntityType>
-        <EntityType Name="Appointment">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Guid" Nullable="false" />
-          <Property Name="AbsenceReporting_ID" Type="Guid" />
-          <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="Date" Type="DateTime" Nullable="false" Precision="0" />
-          <Property Name="FromTime" Type="Time" Precision="4" />
-          <Property Name="ToTime" Type="Time" Precision="4" />
-          <Property Name="ChangedCount" Type="Int16" Nullable="false" />
-          <Property Name="Status" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="AbsenceReporting" Relationship="SSKModel.FK_Appointments_AbsenceReporting" FromRole="Appointment" ToRole="AbsenceReporting" />
-          <NavigationProperty Name="User" Relationship="SSKModel.FK_Appointments_Users" FromRole="Appointment" ToRole="User" />
-          <NavigationProperty Name="QueueNumbers" Relationship="SSKModel.FK_QueueNumbers_Appointments1" FromRole="Appointment" ToRole="QueueNumber" />
-        </EntityType>
-        <EntityType Name="QueueNumber">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Guid" Nullable="false" />
-          <Property Name="QueuedNumber" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="Appointment_ID" Type="Guid" Nullable="false" />
-          <Property Name="CreatedTime" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="Status" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Appointment" Relationship="SSKModel.FK_QueueNumbers_Appointments1" FromRole="QueueNumber" ToRole="Appointment" />
-        </EntityType>
-        <Association Name="FK_Appointments_AbsenceReporting">
-          <End Type="SSKModel.AbsenceReporting" Role="AbsenceReporting" Multiplicity="0..1" />
-          <End Type="SSKModel.Appointment" Role="Appointment" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="AbsenceReporting">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="Appointment">
-              <PropertyRef Name="AbsenceReporting_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -576,25 +575,59 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="Environment">
-          <Key>
-            <PropertyRef Name="DateOfWeek" />
-            <PropertyRef Name="Frequency" />
-            <PropertyRef Name="StartTime" />
-            <PropertyRef Name="EndTime" />
-          </Key>
-          <Property Name="DateOfWeek" Type="Int32" Nullable="false" />
-          <Property Name="Frequency" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="StartTime" Type="Time" Nullable="false" Precision="4" />
-          <Property Name="EndTime" Type="Time" Nullable="false" Precision="4" />
-          <Property Name="Duration" Type="Int32" Nullable="false" />
-        </EntityType>
+        <Association Name="FK_Notifications_Users">
+          <End Type="SSKModel.User" Role="User" Multiplicity="0..1" />
+          <End Type="SSKModel.Notification" Role="Notification" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="Notification">
+              <PropertyRef Name="FromUserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Notifications_Users1">
+          <End Type="SSKModel.User" Role="User" Multiplicity="0..1" />
+          <End Type="SSKModel.Notification" Role="Notification" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="Notification">
+              <PropertyRef Name="ToUserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_User_Profiles_Users">
+          <End Type="SSKModel.User" Role="User" Multiplicity="1" />
+          <End Type="SSKModel.User_Profiles" Role="User_Profiles" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="User_Profiles">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="SSKModelStoreContainer" CdmEntityContainer="SSKEntities">
+          <EntitySetMapping Name="AbsenceReportings">
+            <EntityTypeMapping TypeName="SSKModel.AbsenceReporting">
+              <MappingFragment StoreEntitySet="AbsenceReporting">
+                <ScalarProperty Name="ScannedDocument" ColumnName="ScannedDocument" />
+                <ScalarProperty Name="ReasonDetails" ColumnName="ReasonDetails" />
+                <ScalarProperty Name="AbsenceReason" ColumnName="AbsenceReason" />
+                <ScalarProperty Name="ReportingDate" ColumnName="ReportingDate" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Addresses">
             <EntityTypeMapping TypeName="SSKModel.Address">
               <MappingFragment StoreEntitySet="Addresses">
@@ -619,12 +652,37 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Appointments">
+            <EntityTypeMapping TypeName="SSKModel.Appointment">
+              <MappingFragment StoreEntitySet="Appointments">
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="ChangedCount" ColumnName="ChangedCount" />
+                <ScalarProperty Name="ToTime" ColumnName="ToTime" />
+                <ScalarProperty Name="FromTime" ColumnName="FromTime" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="AbsenceReporting_ID" ColumnName="AbsenceReporting_ID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Devices">
             <EntityTypeMapping TypeName="SSKModel.Device">
               <MappingFragment StoreEntitySet="Devices">
                 <ScalarProperty Name="Details" ColumnName="Details" />
                 <ScalarProperty Name="DeviceName" ColumnName="DeviceName" />
                 <ScalarProperty Name="DeviceID" ColumnName="DeviceID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Environments">
+            <EntityTypeMapping TypeName="SSKModel.Environment">
+              <MappingFragment StoreEntitySet="Environment">
+                <ScalarProperty Name="Duration" ColumnName="Duration" />
+                <ScalarProperty Name="EndTime" ColumnName="EndTime" />
+                <ScalarProperty Name="StartTime" ColumnName="StartTime" />
+                <ScalarProperty Name="Frequency" ColumnName="Frequency" />
+                <ScalarProperty Name="DateOfWeek" ColumnName="DateOfWeek" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -648,6 +706,28 @@
                 <ScalarProperty Name="FromUserId" ColumnName="FromUserId" />
                 <ScalarProperty Name="Date" ColumnName="Date" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="QueueNumbers">
+            <EntityTypeMapping TypeName="SSKModel.QueueNumber">
+              <MappingFragment StoreEntitySet="QueueNumbers">
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="CreatedTime" ColumnName="CreatedTime" />
+                <ScalarProperty Name="Appointment_ID" ColumnName="Appointment_ID" />
+                <ScalarProperty Name="QueuedNumber" ColumnName="QueuedNumber" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="SSKModel.sysdiagram">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="definition" ColumnName="definition" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="name" ColumnName="name" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -694,53 +774,6 @@
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="NRIC" ColumnName="NRIC" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="AbsenceReportings">
-            <EntityTypeMapping TypeName="SSKModel.AbsenceReporting">
-              <MappingFragment StoreEntitySet="AbsenceReporting">
-                <ScalarProperty Name="ScannedDocument" ColumnName="ScannedDocument" />
-                <ScalarProperty Name="ReasonDetails" ColumnName="ReasonDetails" />
-                <ScalarProperty Name="AbsenceReason" ColumnName="AbsenceReason" />
-                <ScalarProperty Name="ReportingDate" ColumnName="ReportingDate" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Appointments">
-            <EntityTypeMapping TypeName="SSKModel.Appointment">
-              <MappingFragment StoreEntitySet="Appointments">
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="ChangedCount" ColumnName="ChangedCount" />
-                <ScalarProperty Name="ToTime" ColumnName="ToTime" />
-                <ScalarProperty Name="FromTime" ColumnName="FromTime" />
-                <ScalarProperty Name="Date" ColumnName="Date" />
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
-                <ScalarProperty Name="AbsenceReporting_ID" ColumnName="AbsenceReporting_ID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="QueueNumbers">
-            <EntityTypeMapping TypeName="SSKModel.QueueNumber">
-              <MappingFragment StoreEntitySet="QueueNumbers">
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="CreatedTime" ColumnName="CreatedTime" />
-                <ScalarProperty Name="Appointment_ID" ColumnName="Appointment_ID" />
-                <ScalarProperty Name="QueuedNumber" ColumnName="QueuedNumber" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Environments">
-            <EntityTypeMapping TypeName="SSKModel.Environment">
-              <MappingFragment StoreEntitySet="Environment">
-                <ScalarProperty Name="Duration" ColumnName="Duration" />
-                <ScalarProperty Name="EndTime" ColumnName="EndTime" />
-                <ScalarProperty Name="StartTime" ColumnName="StartTime" />
-                <ScalarProperty Name="Frequency" ColumnName="Frequency" />
-                <ScalarProperty Name="DateOfWeek" ColumnName="DateOfWeek" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
