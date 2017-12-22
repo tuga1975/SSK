@@ -14,6 +14,9 @@ namespace Trinity.Common.Monitor
             sCardMonitor.Start();
             FingerprintMonitor fingerprintMonitor = FingerprintMonitor.Instance;
             fingerprintMonitor.Start();
+
+            HealthMonitor healthMonitor = HealthMonitor.Instance;
+            healthMonitor.Start();
         }
     }
 }

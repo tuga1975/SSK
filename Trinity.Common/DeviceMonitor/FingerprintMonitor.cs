@@ -40,6 +40,7 @@ namespace Trinity.Common.Monitor
         public event EventHandler<ExceptionArgs> OnMonitorException;
         public event EventHandler<GetDeviceStatusCompletedArgs> OnGetDeviceStatusCompleted;
 
+
         protected virtual void RaiseMonitorExceptionEvent(ExceptionArgs e)
         {
             // Make a temporary copy of the event to avoid possibility of

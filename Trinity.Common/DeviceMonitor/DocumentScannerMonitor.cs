@@ -88,5 +88,10 @@ namespace Trinity.Common.DeviceMonitor
                 return null;
             }
         }
+
+        public DeviceStatus GetDocumentScannerStatus()
+        {
+            return DocumentScannerUtils.Instance.GetDeviceStatus();
+        }
     }
 }
