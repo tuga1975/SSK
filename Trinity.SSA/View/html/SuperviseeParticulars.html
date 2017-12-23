@@ -1,9 +1,8 @@
 ﻿<style type="text/css">
     [particulars] {
         border-top: none;
-        padding: 20px;
+        padding: 10px;
         width: 650px;
-        display: inline-block;
     }
 
     button {
@@ -12,8 +11,8 @@
 </style>
 
 <form id="particularsFrm">
-    <div particulars>
-        <span style="display: inline-block;font-size:15px;border:1px solid #CCC;background-color:#FFF;padding:5px; margin-bottom:30px">Information to be printed</span>
+    <div class="container" particulars>
+        <span style="display: inline-block;font-size:16px;border:1px solid #CCC;background-color:#FFF;padding:5px; margin-bottom:25px">Information to be printed</span>
         <br />
         <div class="input-group">
             <span class="input-group-addon">Name:</span>
@@ -29,11 +28,11 @@
             <span class="input-group-addon">Date:</span>
             <input id="ParticularsDate" type="text" class="form-control pri" name="ParticularsDate" disabled="disabled" />
         </div>
-    </div>
 
-    <div style="display:block;float:right;" id="divSave">
-        <button type="button" class="btn btn-success" style="position:fixed;bottom:10px;left:10px; float:right;" id="ConfirmBtn">Confirm</button>
-        <button type="button" class="btn btn-dark" style="position:fixed;bottom:10px;right:10px;" onclick="api.server.LoadPage('SuperviseeParticulars.html');">Cancel</button>
+        <div style="display:block;float:right; margin-top:20px;" id="divSave">
+            <button type="button" class="btn btn-primary" id="ConfirmBtn">Confirm</button>
+            <button type="button" class="btn btn-dark" style="margin-left:10px;" id="CancelBtn">Cancel</button>
+        </div>
     </div>
 </form>
 
