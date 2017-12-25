@@ -1,7 +1,7 @@
 ﻿<style type="text/css">
     [particulars] {
         border-top: none;
-        padding: 10px;
+        padding: 5px;
         width: 650px;
     }
 
@@ -41,5 +41,9 @@
         $('#ParticularsName').val(api.model.User.Name);
         $('#ParticularsNRICNo').val(api.model.User.NRIC);
         $('#ParticularsDate').val(api.model.UserProfile.DOB);
+    });
+
+    $('#ConfirmBtn').click(function () {
+        api.server.PrintingMUBAndTTLabels();
     });
 </script>

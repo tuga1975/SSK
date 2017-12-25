@@ -99,6 +99,7 @@
     <Compile Include="CodeBehind\Authentication\Fingerprint.cs" />
     <Compile Include="CodeBehind\Authentication\NRIC.cs" />
     <Compile Include="CodeBehind\Authentication\SmartCard.cs" />
+    <Compile Include="CodeBehind\PrintTTLabel.cs" />
     <Compile Include="CodeBehind\SupperviseeParticulars.cs" />
     <Compile Include="Common\Enums.cs" />
     <Compile Include="Constants\CommonConstants.cs" />
@@ -208,9 +209,11 @@
     <Content Include="View\html\Authentication\mov_bbb.mp4" />
     <Content Include="View\html\Authentication\NRIC.html" />
     <Content Include="View\html\Authentication\SmartCard.html" />
+    <Content Include="View\html\hourglass.gif" />
     <Content Include="View\html\Layout.html" />
     <Content Include="View\html\Layout_QueueNumber.html" />
     <Content Include="View\html\Notication.html" />
+    <Content Include="View\html\PrintingMUBAndTTLabels.html" />
     <Content Include="View\html\PrintingTemplates\AppointmentDetailsTemplate.html" />
     <Content Include="View\html\QueueNumber.html" />
     <Content Include="View\html\SuperviseeParticulars.html" />
