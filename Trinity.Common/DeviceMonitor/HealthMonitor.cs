@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
+using System.Timers;
 using Trinity.Common.Common;
 using Trinity.Common.DeviceMonitor;
 using Trinity.DAL.DBContext;
@@ -45,13 +45,13 @@ namespace Trinity.Common.Monitor
         DocumentScannerMonitor _documentScannerMonitor;
         FingerprintMonitor _fingerprintMonitor;
         HealthStatus _healthStatus;
-       
-        private void GetHealthStatus()
+
+        private HealthStatus GetHealthStatus()
         {
             _healthStatus = HealthStatus.Instance;
             _fingerprintMonitor = FingerprintMonitor.Instance;
             _fingerprintMonitor.OnGetDeviceStatusCompleted += FingerprintMonitor_OnGetDeviceStatusCompleted;
-           // _fingerprintMonitor.StartCheckingDeviceStatus();
+            // _fingerprintMonitor.StartCheckingDeviceStatus();
             _sCardMonitor = SCardMonitor.Instance;
             _printerMonitor = PrinterMonitor.Instance;
 
@@ -59,6 +59,7 @@ namespace Trinity.Common.Monitor
             _healthStatus.SCardStatus = _sCardMonitor.GetDeviceStatus();
             _healthStatus.DocStatus = _documentScannerMonitor.GetDocumentScannerStatus();
             _healthStatus.PrintStatus = _printerMonitor.GetBarcodePrinterStatus();
+            return _healthStatus;
 
 
         }
@@ -69,20 +70,28 @@ namespace Trinity.Common.Monitor
 
         public void Start()
         {
+            //test purpose
+            //Timer timer = new Timer(10000);
 
-            Thread monitorThread = new Thread(new ThreadStart(GetHealthStatus));
-            monitorThread.Start();
-          
-                // health.HealthStatus.FPrintStatus = _healthStatus.FPrintStatus;
-
-                //add to db
-                Console.WriteLine("monitoring...");
-                //sleep for  15 Minutes
-                Thread.Sleep(1000 * 60 * 15);
-
+            Timer timer = new Timer(1000 * 60 * 15);
+            timer.Elapsed += MonitorHandler;
+            timer.Start();
             
+
         }
-       
+
+     
+        private void MonitorHandler(object sender, ElapsedEventArgs e)
+        {
+            Console.WriteLine("monitoring...\n");
+            var health=  Task.Run(() => GetHealthStatus());
+            Console.WriteLine("Print:");
+            Console.WriteLine(health.Result.PrintStatus);
+
+            //add to db
+
+          
+        }
     }
 
 
