@@ -54,4 +54,17 @@ public static class EnumFrequency
     public const string Monthly = "Monthly";
 }
 
+public static class EnumDeviceType
+{
+    public const string ReceiptPrinter = "ReceiptPrinter";
+    public const string FingerprintScanner = "Fingerprint";
+    public const string DocumentScanner = "DocumentScanner";
+    public const string SmartCardReader = "SmartCardScanner";
+    public const string BarcodeScanner = "BarcodeScanner";
+    public const string LEDDisplayMonitor = "LEDDisplayMonitor";
+    public const string Camera = "Camera";
+
+}
+
+
 

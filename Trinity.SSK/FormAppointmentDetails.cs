@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Trinity.Common.Utils;
 
 namespace SSK
 {
@@ -22,7 +23,7 @@ namespace SSK
         private void FormLabelPrint_Load(object sender, EventArgs e)
         {
             webBrowserAppointmentDetails.DocumentCompleted += webBrowserAppointmentDetails_DocumentCompleted;
-            string documentText = File.ReadAllText(String.Format("{0}/View/html/AppointmentDetailsTemplate.html", CSCallJS.curDir), Encoding.UTF8);
+            string documentText = File.ReadAllText(String.Format("{0}/View/html/PrintingTemplates/AppointmentDetailsTemplate.html", CSCallJS.curDir), Encoding.UTF8);
 
             // Query Appointment Details from DB and fill values into html template
             documentText = documentText.Replace("{%Name%}", "Dao Quang Minh");
@@ -45,11 +46,20 @@ namespace SSK
 
         private void btnPrint_Click(object sender, EventArgs e)
         {
-            if (documentLoaded)
+            BarcodePrinterUtils printerUtil = BarcodePrinterUtils.Instance;
+
+            Trinity.Common.Common.UserInfo userInfo = new Trinity.Common.Common.UserInfo()
             {
-                webBrowserAppointmentDetails.Print();
-                //webBrowserAppointmentDetails.ShowPrintPreviewDialog();
-            }
+                DOB = "07-04-1982",
+                NRIC = "022234343",
+                UserName = "minhdq"
+            };
+            printerUtil.PrintUserInfo(userInfo);
+            //if (documentLoaded)
+            //{
+            //    webBrowserAppointmentDetails.Print();
+            //    //webBrowserAppointmentDetails.ShowPrintPreviewDialog();
+            //}
         }
     }
 }
