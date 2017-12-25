@@ -30,6 +30,8 @@ namespace SSA.CodeBehind.Authentication
 
             // StartCardMonitor
             Trinity.Common.Monitor.SCardMonitor sCardMonitor = Trinity.Common.Monitor.SCardMonitor.Instance;
+            // Ta Vo: Fix null SCardMonitor
+            sCardMonitor.Start();
             sCardMonitor.StartCardMonitor(OnCardInitialized, OnCardInserted, OnCardRemoved);
         }
 
