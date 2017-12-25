@@ -46,12 +46,12 @@ namespace Trinity.Common.Monitor
         FingerprintMonitor _fingerprintMonitor;
         HealthStatus _healthStatus;
        
-        private HealthStatus GetHealthStatus()
+        private void GetHealthStatus()
         {
             _healthStatus = HealthStatus.Instance;
             _fingerprintMonitor = FingerprintMonitor.Instance;
             _fingerprintMonitor.OnGetDeviceStatusCompleted += FingerprintMonitor_OnGetDeviceStatusCompleted;
-            _fingerprintMonitor.StartCheckingDeviceStatus();
+           // _fingerprintMonitor.StartCheckingDeviceStatus();
             _sCardMonitor = SCardMonitor.Instance;
             _printerMonitor = PrinterMonitor.Instance;
 
@@ -60,7 +60,6 @@ namespace Trinity.Common.Monitor
             _healthStatus.DocStatus = _documentScannerMonitor.GetDocumentScannerStatus();
             _healthStatus.PrintStatus = _printerMonitor.GetBarcodePrinterStatus();
 
-            return _healthStatus;
 
         }
         private void FingerprintMonitor_OnGetDeviceStatusCompleted(object sender, GetDeviceStatusCompletedArgs e)
@@ -70,17 +69,18 @@ namespace Trinity.Common.Monitor
 
         public void Start()
         {
-            while (true)
-            {
 
+            Thread monitorThread = new Thread(new ThreadStart(GetHealthStatus));
+            monitorThread.Start();
+          
                 // health.HealthStatus.FPrintStatus = _healthStatus.FPrintStatus;
-                var health = GetHealthStatus();
-                //add to db
 
+                //add to db
+                Console.WriteLine("monitoring...");
                 //sleep for  15 Minutes
                 Thread.Sleep(1000 * 60 * 15);
 
-            }
+            
         }
        
     }
