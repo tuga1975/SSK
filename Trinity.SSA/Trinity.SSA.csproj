@@ -99,7 +99,7 @@
     <Compile Include="CodeBehind\Authentication\Fingerprint.cs" />
     <Compile Include="CodeBehind\Authentication\NRIC.cs" />
     <Compile Include="CodeBehind\Authentication\SmartCard.cs" />
-    <Compile Include="CodeBehind\Suppervisee.cs" />
+    <Compile Include="CodeBehind\SupperviseeParticulars.cs" />
     <Compile Include="Common\Enums.cs" />
     <Compile Include="Constants\CommonConstants.cs" />
     <Compile Include="CSCallJS.cs" />
@@ -213,7 +213,7 @@
     <Content Include="View\html\Notication.html" />
     <Content Include="View\html\PrintingTemplates\AppointmentDetailsTemplate.html" />
     <Content Include="View\html\QueueNumber.html" />
-    <Content Include="View\html\Supervisee.html" />
+    <Content Include="View\html\SuperviseeParticulars.html" />
     <Content Include="View\img\Logo.png" />
     <Content Include="View\scripts\jquery-1.10.2.min.js" />
     <Content Include="View\scripts\lib.js" />

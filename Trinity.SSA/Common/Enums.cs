@@ -16,6 +16,7 @@ namespace SSA.Common
         Notification = 5,
         Profile = 6,
         Supervisee = 7,
-        Supervisee_NRIC = 8
+        Supervisee_NRIC = 8,
+        Supervisee_Particulars = 9
     };
 }

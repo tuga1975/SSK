@@ -10,10 +10,14 @@ namespace Trinity.Common.Monitor
     {
         public static void Start()
         {
+            HealthMonitor healthMonitor = HealthMonitor.Instance;
+            healthMonitor.Start();
+
             SCardMonitor sCardMonitor = SCardMonitor.Instance;
             sCardMonitor.Start();
             FingerprintMonitor fingerprintMonitor = FingerprintMonitor.Instance;
             fingerprintMonitor.Start();
+            
         }
     }
 }

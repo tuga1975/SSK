@@ -1,0 +1,45 @@
+﻿<style type="text/css">
+    [particulars] {
+        border-top: none;
+        padding: 10px;
+        width: 650px;
+    }
+
+    button {
+        z-index: 100;
+    }
+</style>
+
+<form id="particularsFrm">
+    <div class="container" particulars>
+        <span style="display: inline-block;font-size:16px;border:1px solid #CCC;background-color:#FFF;padding:5px; margin-bottom:25px">Information to be printed</span>
+        <br />
+        <div class="input-group">
+            <span class="input-group-addon">Name:</span>
+            <input id="ParticularsName" type="text" class="form-control pri" name="ParticularsName" disabled="disabled" />
+        </div>
+        <br />
+        <div class="input-group">
+            <span class="input-group-addon">NRIC No.:</span>
+            <input id="ParticularsNRICNo" type="text" class="form-control pri" name="ParticularsNRICNo" disabled="disabled" />
+        </div>
+        <br />
+        <div class="input-group">
+            <span class="input-group-addon">Date:</span>
+            <input id="ParticularsDate" type="text" class="form-control pri" name="ParticularsDate" disabled="disabled" />
+        </div>
+
+        <div style="display:block;float:right; margin-top:20px;" id="divSave">
+            <button type="button" class="btn btn-primary" id="ConfirmBtn">Confirm</button>
+            <button type="button" class="btn btn-dark" style="margin-left:10px;" id="CancelBtn">Cancel</button>
+        </div>
+    </div>
+</form>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#ParticularsName').val(api.model.User.Name);
+        $('#ParticularsNRICNo').val(api.model.User.NRIC);
+        $('#ParticularsDate').val(api.model.UserProfile.DOB);
+    });
+</script>
