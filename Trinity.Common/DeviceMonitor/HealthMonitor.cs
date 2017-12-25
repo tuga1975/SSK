@@ -1,14 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 using System.Timers;
 using Trinity.Common.Common;
 using Trinity.Common.DeviceMonitor;
 using Trinity.DAL.DBContext;
-using static Trinity.Common.Monitor.FingerprintMonitor;
 
 namespace Trinity.Common.Monitor
 {
@@ -72,9 +67,9 @@ namespace Trinity.Common.Monitor
         public void Start()
         {
             //test purpose
-            //Timer timer = new Timer(10000);
+            Timer timer = new Timer(30000);
 
-            Timer timer = new Timer(1000 * 60 * 15);
+            //Timer timer = new Timer(1000 * 60 * 15);
             timer.Elapsed += MonitorHandler;
             timer.Start();
 
@@ -85,102 +80,106 @@ namespace Trinity.Common.Monitor
         private void MonitorHandler(object sender, ElapsedEventArgs e)
         {
             Console.WriteLine("monitoring...\n");
-            var health = Task.Run(() => GetHealthStatus());
+            var health = GetHealthStatus();
 
             //add to db
             var dalDeviceStatus = new DAL.DAL_DeviceStatus();
 
-            var appName = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name;
-            var deviceID = 0;
-            var statusMessage = "";
-            var statusCode = 0;
+            var listDeviceStatus = new List<ApplicationDevice_Status>();
 
             //Receipt Print Status
-            AddReceiptPrintStatus(health, dalDeviceStatus, appName, out deviceID, out statusMessage, out statusCode);
-
+            var status = GetPrintDeviceStatus(health);
+            listDeviceStatus.Add(SetDeviceStatus(dalDeviceStatus.GetDeviceId(EnumDeviceType.ReceiptPrinter),status.Key, status.Value));
             //Smart Cart Reader Status
-
-            AddSmartCardReaderStatus(health, dalDeviceStatus, appName, out deviceID, out statusMessage);
-
-
+             status = GetSmartCardDeviceStatus(health, health.SCardStatus);
+            listDeviceStatus.Add(SetDeviceStatus(dalDeviceStatus.GetDeviceId(EnumDeviceType.SmartCardReader), status.Key, status.Value));
 
             //Document Scanner Status
-            AddDocumentScannerStatus(health, dalDeviceStatus, appName, out deviceID, out statusMessage);
-
+             status = GetDocumnetDeviceStatus(health, health.DocStatus);
+            listDeviceStatus.Add(SetDeviceStatus(dalDeviceStatus.GetDeviceId(EnumDeviceType.DocumentScanner), status.Key, status.Value));
 
             //Fingerprint Scanner Status
-            AddFingerprintScannerStatus(health, dalDeviceStatus, appName, out deviceID, out statusMessage, out statusCode);
+             status = GetFingerPrintDeviceStatus(health);
+            listDeviceStatus.Add(SetDeviceStatus(dalDeviceStatus.GetDeviceId(EnumDeviceType.FingerprintScanner), status.Key, status.Value));
 
-
+            dalDeviceStatus.Insert(listDeviceStatus);
 
         }
 
-        private static void AddFingerprintScannerStatus(Task<HealthStatus> health, DAL.DAL_DeviceStatus dalDeviceStatus, string appName, out int deviceID, out string statusMessage, out int statusCode)
+
+        private ApplicationDevice_Status SetDeviceStatus(int? deviceId,int statusCode,string statusMessage)
         {
-            var fingerPrintStatusCode = health.Result.FPrintStatus;
-            if (fingerPrintStatusCode)
+            var deviceStatus = new ApplicationDevice_Status();
+            deviceStatus.ApplicationType = System.Reflection.Assembly.GetEntryAssembly().GetName().Name;
+            deviceStatus.DeviceID = deviceId;
+            deviceStatus.StatusMessage = statusMessage;
+            deviceStatus.StatusCode = statusCode;
+            return deviceStatus;
+        }
+
+        private KeyValuePair<int,string> GetPrintDeviceStatus(HealthStatus health)
+        {
+            var statusCode = health.PrintStatus.Connected;
+            return SetCodeAndMessage(health, statusCode);
+        }
+        private KeyValuePair<int, string> GetFingerPrintDeviceStatus(HealthStatus health)
+        {
+            var statusCode = health.FPrintStatus;
+            
+            return SetCodeAndMessage(health, statusCode);
+           
+        }
+        private KeyValuePair<int, string> GetDocumnetDeviceStatus(HealthStatus health,DeviceStatus deviceStatus)
+        {
+            var statusCode = health.DocStatus;
+          
+            return SetCodeAndMessage(health, deviceStatus);
+            
+        }
+        private KeyValuePair<int, string> GetSmartCardDeviceStatus(HealthStatus health, DeviceStatus deviceStatus)
+        {
+            var statusCode = health.SCardStatus;
+           
+            return SetCodeAndMessage(health, deviceStatus);
+            
+        }
+
+
+
+        private static KeyValuePair<int, string> SetCodeAndMessage(HealthStatus health, bool statusCode)
+        {
+            KeyValuePair<int, string> returnValue;
+            if (statusCode)
             {
-                statusMessage = DeviceStatus.Connected.ToString();
-                statusCode = (int)DeviceStatus.Connected;
+                returnValue = new KeyValuePair<int, string>(1, "Connected");
+
             }
             else
             {
-                statusMessage = DeviceStatus.Disconnected.ToString();
-                statusCode = (int)DeviceStatus.Disconnected;
+                returnValue = new KeyValuePair<int, string>(0, "Disconnected");
+
             }
-            deviceID = dalDeviceStatus.GetDeviceId(EnumDeviceType.FingerprintScanner);
 
-            Trinity.BE.DeviceStatus fingerScanDevice = dalDeviceStatus.SetInfo(appName, deviceID, statusMessage, statusCode);
-            dalDeviceStatus.Insert(fingerScanDevice);
+            return returnValue;
         }
-
-        private static void AddDocumentScannerStatus(Task<HealthStatus> health, DAL.DAL_DeviceStatus dalDeviceStatus, string appName, out int deviceID, out string statusMessage)
+        private static KeyValuePair<int, string> SetCodeAndMessage(HealthStatus health,DeviceStatus deviceStatus)
         {
-            var documnetScannerStatusCode = (int)health.Result.DocStatus;
-            deviceID = dalDeviceStatus.GetDeviceId(EnumDeviceType.DocumentScanner);
-            statusMessage = health.Result.DocStatus.ToString();
-
-            Trinity.BE.DeviceStatus docScanDevice = dalDeviceStatus.SetInfo(appName, deviceID, statusMessage, documnetScannerStatusCode);
-            dalDeviceStatus.Insert(docScanDevice);
-        }
-
-        private static void AddSmartCardReaderStatus(Task<HealthStatus> health, DAL.DAL_DeviceStatus dalDeviceStatus, string appName, out int deviceID, out string statusMessage)
-        {
-            var sCardStatusCode = (int)health.Result.SCardStatus;
-            deviceID = dalDeviceStatus.GetDeviceId(EnumDeviceType.SmartCardReader);
-            statusMessage = health.Result.SCardStatus.ToString();
-
-            Trinity.BE.DeviceStatus sCardDevice = dalDeviceStatus.SetInfo(appName, deviceID, statusMessage, sCardStatusCode);
-            dalDeviceStatus.Insert(sCardDevice);
-        }
-
-        private static void AddReceiptPrintStatus(Task<HealthStatus> health, DAL.DAL_DeviceStatus dalDeviceStatus, string appName, out int deviceID, out string statusMessage, out int statusCode)
-        {
-
-
-            var printStatusCode = health.Result.PrintStatus;
-            deviceID = dalDeviceStatus.GetDeviceId(EnumDeviceType.ReceiptPrinter);
-
-
-            if (printStatusCode.Connected)
+            
+            if (deviceStatus.HasFlag(DeviceStatus.Connected))
             {
-                statusMessage = nameof(health.Result.PrintStatus.Connected);
-                statusCode = 1;
+                return new KeyValuePair<int, string>(1, "Connected");
+
             }
-            else if (printStatusCode.Busy)
+            else if (deviceStatus.HasFlag(DeviceStatus.Busy))
             {
-                statusMessage = nameof(health.Result.PrintStatus.Busy);
-                statusCode = 2;
+                return new KeyValuePair<int, string>(2, "Busy");
             }
             else
             {
-                statusMessage = "Disconnected";
-                statusCode = 0;
+                return new KeyValuePair<int, string>(0, "Disconnected");
+
             }
-
-
-            Trinity.BE.DeviceStatus printStatus = dalDeviceStatus.SetInfo(appName, deviceID, statusMessage, statusCode);
-            dalDeviceStatus.Insert(printStatus);
+            
         }
     }
 

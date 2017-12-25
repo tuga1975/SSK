@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Trinity.BE
 {
     [Serializable]
-    public class DeviceStatus
+    public class ApplicationDevice_Status
     {
         [DataMember]
         public int ID { get; set; }

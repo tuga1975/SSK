@@ -11,13 +11,14 @@ namespace Trinity.DAL
         Local_UnitOfWork _localUnitOfWork = new Local_UnitOfWork();
         Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
 
-        public bool Insert(Trinity.BE.DeviceStatus model)
+        public bool Insert(List<ApplicationDevice_Status> listModel)
         {
             try
             {
-                var dbDeviceStatus = new ApplicationDevice_Status();
-                SetInfoToInsert(model, dbDeviceStatus);
-                _localUnitOfWork.GetRepository<ApplicationDevice_Status>().Add(dbDeviceStatus);
+
+                var repo = _localUnitOfWork.GetRepository<ApplicationDevice_Status>();
+                
+                repo.AddRange(listModel);
                 _localUnitOfWork.Save();
                 return true;
             }
@@ -27,33 +28,7 @@ namespace Trinity.DAL
                 return false;
             }
         }
-        public void SetInfoToInsert(Trinity.BE.DeviceStatus deviceStatus, ApplicationDevice_Status dbDeviceStatus)
-        {
-
-            dbDeviceStatus.StatusCode = deviceStatus.StatusCode;
-            dbDeviceStatus.ApplicationType = deviceStatus.ApplicationType;
-            dbDeviceStatus.DeviceID = deviceStatus.DeviceID;
-            dbDeviceStatus.StatusMessage = deviceStatus.StatusMessage;
-        }
-
-        /// <summary>
-        /// Set status info of a device
-        /// </summary>
-        /// <param name="appType">appType</param>
-        /// <param name="deviceID">deviceID</param>
-        /// <param name="statusMessage">statusMessage</param>
-        /// <param name="statusCode">statusCode</param>
-        /// <returns>DeviceStatus</returns>
-        public Trinity.BE.DeviceStatus SetInfo(string appType, int? deviceID, string statusMessage, int statusCode)
-        {
-            var deviceStatus = new Trinity.BE.DeviceStatus();
-            deviceStatus.ApplicationType = appType;
-            deviceStatus.StatusCode = statusCode;
-            deviceStatus.StatusMessage = statusMessage;
-            deviceStatus.DeviceID = deviceID;
-
-            return deviceStatus;
-        }
+       
 
         public int GetDeviceId(string deviceType)
         {

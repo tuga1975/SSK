@@ -93,16 +93,16 @@ namespace SSK
             //NavigateTo(NavigatorEnums.Authentication_SmartCard);
 
             // For testing purpose
-            NavigateTo(NavigatorEnums.Authentication_Fingerprint);
-            //Session session = Session.Instance;
-            //Supervisee
-            //Trinity.BE.User user = new DAL_User().GetUserByUserId("656ebbb1-190b-4c8a-9d77-ffa4ff4c9e93", true);
-            ////// Duty Officer
-            ////Trinity.BE.User user = new DAL_User().GetUserByUserId("ead039f9-b9a1-45bb-8186-0bb7248aafac", true);
-            //session[CommonConstants.USER_LOGIN] = user;
-            //session.IsSmartCardAuthenticated = true;
-            //session.IsFingerprintAuthenticated = true;
-            //NavigateTo(NavigatorEnums.Supervisee);
+            //NavigateTo(NavigatorEnums.Authentication_Fingerprint);
+            Session session = Session.Instance;
+            ////Supervisee
+            Trinity.BE.User user = new DAL_User().GetUserByUserId("656ebbb1-190b-4c8a-9d77-ffa4ff4c9e93", true);
+            //// Duty Officer
+            //Trinity.BE.User user = new DAL_User().GetUserByUserId("ead039f9-b9a1-45bb-8186-0bb7248aafac", true);
+            session[CommonConstants.USER_LOGIN] = user;
+            session.IsSmartCardAuthenticated = true;
+            session.IsFingerprintAuthenticated = true;
+            NavigateTo(NavigatorEnums.Supervisee);
             //NavigateTo(NavigatorEnums.Authentication_NRIC);
         }
 
@@ -235,7 +235,16 @@ namespace SSK
             }
             else if (navigatorEnum == NavigatorEnums.Authentication_Fingerprint)
             {
-                _fingerprint.Start();
+                try
+                {
+                    _fingerprint.Start();
+                }
+                catch (System.IO.FileNotFoundException ex)
+                {
+
+                    Console.WriteLine("File missing:\n");
+                    Console.WriteLine(ex.FileName);
+                }
             }
             else if (navigatorEnum == NavigatorEnums.Authentication_NRIC)
             {
