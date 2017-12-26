@@ -1,0 +1,153 @@
+.clear{clear:both}
+
+.container{
+	padding-top:10px;
+	padding-bottom:10px;
+}
+/*-------Login--------*/
+.header-login{
+	margin:20px 0px;
+}
+.header-login img, .header img{
+	width:100px;
+	border:3px solid #000;
+	-webkit-border-radius: 50%;
+	-moz-border-radius: 50%;
+	border-radius: 50%;
+	float:left;
+	margin-right:10px;
+	padding:6px
+}
+.header-login h3{
+	margin:26px 0 0 0;
+	padding:0px;
+	font-size:20px;
+	font-weight:bold;
+	font-size:34px;
+	float:left
+}
+.form-login{
+	border:2px solid #000
+}
+.form-login h4{
+	border-bottom:2px solid #000;
+	padding:10px 5px;
+	margin-bottom:20px;
+}
+.form-login .col-form-label{
+	text-align:right;
+	font-weight:bold;
+}
+.form-login .col-sm-8 input{
+	width:80%;
+	border:2px solid #000;
+	padding:3px;
+}
+.form-login .btn-login{
+	background:#e5e5e5;
+	padding:5px 20px;
+	border:2px solid #000
+}
+.form-login .forgot-pass{
+	display:block;
+	margin-bottom:10px;
+	font-size:15px;
+}
+.form-login .form-login-footer{
+	width:100%;
+	text-align:center
+}
+
+/*-------Supervisees--------*/
+.header-landingPage h3{
+	float:left;
+	margin:0px;
+}
+.header-landingPage .logout{
+	width:40px;
+	float:right;
+}
+.list-supervisees{
+	margin-top:20px;
+}
+.list-supervisees h4{
+	text-align:center;
+	font-size:20px;
+}
+.list-supervisees-search{
+	margin-bottom:12px;
+	padding:0px 30px;
+}
+.list-supervisees-search input{
+	width:70%;
+	background:#e5e5e5;
+	border:1px solid #000;
+	padding:3px;
+}
+.list-supervisees-search .btn-search{
+	background:#e5e5e5;
+	border:1px solid #000;
+	padding:3px 20px;;	
+}
+.wrap-list{
+	width:100%;
+	height:438px;
+	overflow:auto;
+}
+/*------------*/
+.header img{
+	width:60px;	
+}
+.header h3{
+	margin:0px;
+	font-size:30px;float:left;
+	margin-top:10px;
+}
+.header {
+	margin-bottom:20px;
+}
+.name-supervisee{
+	width:100%;
+	margin-bottom:10px;
+	padding:3px;
+	border:1px solid #000
+}
+.form-supervisee .tab-content {
+	border:1px solid #000;
+	padding:20px;
+}
+.form-supervisee .tab-content input{
+	width:100%;
+	padding:3px;
+	margin-bottom:10px;
+	background:#e5e5e5;
+	border:1px solid #000
+}
+.nav-tabs .nav-link{
+	border:1px solid #000;
+	border-radius:none;
+	margin-right:10px;
+}
+.nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active{
+	background:#e5e5e5;
+	border:1px solid #000;
+}
+.nav-tabs .nav-link:focus, .nav-tabs .nav-link:hover{
+	border:1px solid #000;
+}
+.nav-tabs{
+	border-bottom:none;	
+}
+.form-supervisee .btn-group{
+	display:block;
+	margin-top:20px;
+	text-align:right
+}
+.form-supervisee .btn-form{
+	background:#e5e5e5;
+	border:1px solid #000;
+	padding:3px 20px;
+}
+.avatar{
+	width:100%
+}

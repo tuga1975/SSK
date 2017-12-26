@@ -1,2 +1,3 @@
 # SSK
 Self-Service Kiosk
+.

@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleTesting", "DocumentS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trinity.SSA", "Trinity.SSA\Trinity.SSA.csproj", "{B859C82A-D53C-4C65-BADE-C8D8AD6107C8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Enrolment", "Enrolment\Enrolment.csproj", "{11700A83-F635-41DB-8732-A58EA8C41A24}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -125,6 +127,18 @@ Global
 		{B859C82A-D53C-4C65-BADE-C8D8AD6107C8}.Release|x64.Build.0 = Release|Any CPU
 		{B859C82A-D53C-4C65-BADE-C8D8AD6107C8}.Release|x86.ActiveCfg = Release|Any CPU
 		{B859C82A-D53C-4C65-BADE-C8D8AD6107C8}.Release|x86.Build.0 = Release|Any CPU
+		{11700A83-F635-41DB-8732-A58EA8C41A24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{11700A83-F635-41DB-8732-A58EA8C41A24}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{11700A83-F635-41DB-8732-A58EA8C41A24}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{11700A83-F635-41DB-8732-A58EA8C41A24}.Debug|x64.Build.0 = Debug|Any CPU
+		{11700A83-F635-41DB-8732-A58EA8C41A24}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{11700A83-F635-41DB-8732-A58EA8C41A24}.Debug|x86.Build.0 = Debug|Any CPU
+		{11700A83-F635-41DB-8732-A58EA8C41A24}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{11700A83-F635-41DB-8732-A58EA8C41A24}.Release|Any CPU.Build.0 = Release|Any CPU
+		{11700A83-F635-41DB-8732-A58EA8C41A24}.Release|x64.ActiveCfg = Release|Any CPU
+		{11700A83-F635-41DB-8732-A58EA8C41A24}.Release|x64.Build.0 = Release|Any CPU
+		{11700A83-F635-41DB-8732-A58EA8C41A24}.Release|x86.ActiveCfg = Release|Any CPU
+		{11700A83-F635-41DB-8732-A58EA8C41A24}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
