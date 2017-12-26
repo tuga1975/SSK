@@ -8,7 +8,13 @@ using System.Threading.Tasks;
 namespace Trinity.BE
 {
     [Serializable]
-    public class ApplicationDevice_Status
+    public class DeviceStatusInfo
+    {
+
+    }
+
+    [Serializable]
+    public class DeviceStatus
     {
         [DataMember]
         public int ID { get; set; }
@@ -17,8 +23,6 @@ namespace Trinity.BE
         [DataMember]
         public Nullable<int> DeviceID { get; set; }
         [DataMember]
-        public int StatusCode { get; set; }
-        [DataMember]
-        public string StatusMessage { get; set; }
+        public EnumDeviceStatuses[] StatusCode { get; set; }
     }
 }

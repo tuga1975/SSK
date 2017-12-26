@@ -16,6 +16,26 @@ public enum EnumScreens
     Supervisee = 7,
     Supervisee_NRIC = 8
 };
+
+public enum EnumUserRoles
+{
+    DutyOfficer = 0,
+    Supervisee = 1,
+    EnrolmentOfficer = 2,
+    CaseOfficer = 3
+};
+
+public enum EnumErrorCodes
+{
+    FatalError = 0,
+    DocumentScannerNull = -1,
+    UnknownError = -2,
+    FingerprintNull = -3,
+    SmartCardReaderNull = -4,
+    UserNameNull = -5,
+    NRICNull = -6
+};
+
 public enum EnumAppointmentStatuses
 {
     Deleted = -1,
@@ -54,7 +74,7 @@ public static class EnumFrequency
     public const string Monthly = "Monthly";
 }
 
-public static class EnumDeviceType
+public static class EnumDeviceTypes
 {
     public const string ReceiptPrinter = "ReceiptPrinter";
     public const string FingerprintScanner = "Fingerprint";
@@ -63,7 +83,38 @@ public static class EnumDeviceType
     public const string BarcodeScanner = "BarcodeScanner";
     public const string LEDDisplayMonitor = "LEDDisplayMonitor";
     public const string Camera = "Camera";
+}
 
+public enum EnumDeviceStatuses
+{
+    Connected = 0,
+    None = -1,
+    Paused = -2,
+    Error = -3,
+    PendingDeletion = -4,
+    PaperJam = -5,
+    PaperOut = -6,
+    ManualFeed = -7,
+    PaperProblem = -8,
+    Offline = -9,
+    IOActive = -10,
+    Busy = -11,
+    Printing = -12,
+    OutputBinFull = -13,
+    NotAvailable = -14,
+    Waiting = -15,
+    Processing = -16,
+    Initializing = -17,
+    WarmingUp = -18,
+    TonerLow = -19,
+    NoToner = -20,
+    PagePunt = -21,
+    UserIntervention = -22,
+    OutOfMemory = -23,
+    DoorOpen = -24,
+    ServerUnknown = -25,
+    PowerSave = -26,
+    Disconnected = -27
 }
 
 
