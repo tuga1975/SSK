@@ -6,6 +6,7 @@ using System.Data;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
+using Trinity.BE;
 using Trinity.Common;
 using Trinity.Common.Common;
 using Trinity.Common.Monitor;
@@ -21,6 +22,7 @@ namespace SSK
         private CodeBehind.Authentication.NRIC _nric;
         private CodeBehind.Suppervisee _suppervisee;
         private NavigatorEnums _currentPage;
+        private Trinity.Common.DeviceMonitor.HealthMonitor healthMonitor;
 
         private int _smartCardFailed;
         private int _fingerprintFailed;
@@ -67,6 +69,18 @@ namespace SSK
             LayerWeb.Url = new Uri(String.Format("file:///{0}/View/html/Layout.html", CSCallJS.curDir));
             LayerWeb.ObjectForScripting = _jsCallCS;
 
+            //health check
+            healthMonitor = Trinity.Common.DeviceMonitor.HealthMonitor.Instance;
+            healthMonitor.OnHealthCheck += OnHealthMonitor;
+
+            //for testing
+            //var timer = new System.Timers.Timer(30000);
+
+            //15 minutes
+            var timer = new System.Timers.Timer(1000 * 60 * 15);
+
+            timer.Elapsed += PeriodCheck; ;
+            timer.Start();
             //
             // For testing purpose only
             // 
@@ -80,6 +94,49 @@ namespace SSK
 
         }
 
+
+        private void PeriodCheck(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            healthMonitor.CheckHealth();
+        }
+
+        private void OnHealthMonitor(object sender, Trinity.Common.DeviceMonitor.HealthMonitorEventArgs e)
+        {
+            var dalDeviceStatus = new DAL_DeviceStatus();
+            var listDeviceStatusModel = new System.Collections.Generic.List<DeviceStatus>();
+            try
+            {
+
+                //entry app name - lenght better be < 10 char
+                var entryAppName = System.Reflection.Assembly.GetEntryAssembly().GetName().Name;
+                if (e != null)
+                {
+                    //Receipt Print Status
+                    var deviceId = dalDeviceStatus.GetDeviceId(EnumDeviceTypes.ReceiptPrinter);
+                    listDeviceStatusModel.Add(dalDeviceStatus.SetInfo(entryAppName, deviceId, e.PrintStatus));
+
+                    //Smart Cart Reader Status
+                    deviceId = dalDeviceStatus.GetDeviceId(EnumDeviceTypes.SmartCardReader);
+                    listDeviceStatusModel.Add(dalDeviceStatus.SetInfo(entryAppName, deviceId, e.PrintStatus));
+
+                    //Document Scanner Status
+                    deviceId = dalDeviceStatus.GetDeviceId(EnumDeviceTypes.DocumentScanner);
+                    listDeviceStatusModel.Add(dalDeviceStatus.SetInfo(entryAppName, deviceId, e.PrintStatus));
+
+                    //Fingerprint Scanner Status
+                    deviceId = dalDeviceStatus.GetDeviceId(EnumDeviceTypes.FingerprintScanner);
+                    listDeviceStatusModel.Add(dalDeviceStatus.SetInfo(entryAppName, deviceId, e.PrintStatus));
+
+                    dalDeviceStatus.Insert(listDeviceStatusModel);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return;
+            }
+        }
+
         private void JSCallCS_OnLogOutCompleted()
         {
             NavigateTo(NavigatorEnums.Authentication_SmartCard);
@@ -90,19 +147,19 @@ namespace SSK
             LayerWeb.InvokeScript("createEvent", JsonConvert.SerializeObject(_jsCallCS.GetType().GetMethods().Where(d => d.IsPublic && !d.IsVirtual && !d.IsSecuritySafeCritical).ToArray().Select(d => d.Name)));
 
             // Start page
-            //NavigateTo(NavigatorEnums.Authentication_SmartCard);
+            NavigateTo(NavigatorEnums.Authentication_SmartCard);
 
             // For testing purpose
             //NavigateTo(NavigatorEnums.Authentication_Fingerprint);
-            Session session = Session.Instance;
+            //Session session = Session.Instance;
             ////Supervisee
-            Trinity.BE.User user = new DAL_User().GetUserByUserId("656ebbb1-190b-4c8a-9d77-ffa4ff4c9e93", true);
+            //Trinity.BE.User user = new DAL_User().GetUserByUserId("656ebbb1-190b-4c8a-9d77-ffa4ff4c9e93", true);
             //// Duty Officer
             //Trinity.BE.User user = new DAL_User().GetUserByUserId("ead039f9-b9a1-45bb-8186-0bb7248aafac", true);
-            session[CommonConstants.USER_LOGIN] = user;
-            session.IsSmartCardAuthenticated = true;
-            session.IsFingerprintAuthenticated = true;
-            NavigateTo(NavigatorEnums.Supervisee);
+            //session[CommonConstants.USER_LOGIN] = user;
+            //session.IsSmartCardAuthenticated = true;
+            //session.IsFingerprintAuthenticated = true;
+            //NavigateTo(NavigatorEnums.Supervisee);
             //NavigateTo(NavigatorEnums.Authentication_NRIC);
         }
 
@@ -187,7 +244,7 @@ namespace SSK
             {
                 // Send Notification to duty officer
                 APIUtils.SignalR.SendNotificationToDutyOfficer(e.Message, e.Message);
-                
+
                 // show message box to user
                 MessageBox.Show(e.Message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
@@ -281,7 +338,7 @@ namespace SSK
 
         private void Main_Load(object sender, EventArgs e)
         {
-            FormQueueNumber f = FormQueueNumber.GetInstance();            
+            FormQueueNumber f = FormQueueNumber.GetInstance();
             f.ShowOnSecondaryScreen();
             f.Show();
         }

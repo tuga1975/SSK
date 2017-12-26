@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Trinity.Common;
 using Trinity.DAL.DBContext;
 using Trinity.DAL.Repository;
 
@@ -16,8 +17,19 @@ namespace Trinity.DAL
         {
             try
             {
-                var repo = _localUnitOfWork.GetRepository<ApplicationDevice_Status>();
+                var localRepo = _localUnitOfWork.GetRepository<ApplicationDevice_Status>();
+                var centralRepo = _centralizedUnitOfWork.GetRepository<ApplicationDevice_Status>();
 
+                var listdbDeviceStatus = new List<ApplicationDevice_Status>();
+                foreach (var item in listModel)
+                {
+                    SetInfoToInsert(item, listdbDeviceStatus);
+                }
+
+                centralRepo.AddRange(listdbDeviceStatus);
+                localRepo.AddRange(listdbDeviceStatus);
+                _centralizedUnitOfWork.Save();
+                _localUnitOfWork.Save();
                 return true;
             }
             catch (Exception ex)
@@ -28,7 +40,7 @@ namespace Trinity.DAL
         }
 
 
-        private void SetInfo(BE.DeviceStatus model,List<ApplicationDevice_Status> dbDeviceStatus)
+        private void SetInfoToInsert(BE.DeviceStatus model, List<ApplicationDevice_Status> dbDeviceStatus)
         {
             foreach (var item in model.StatusCode)
             {
@@ -37,8 +49,19 @@ namespace Trinity.DAL
                 deviceStatus.DeviceID = model.DeviceID;
                 deviceStatus.ID = Guid.NewGuid();
                 deviceStatus.StatusCode = (int)item;
-                
+                deviceStatus.StatusMessage = CommonUtil.GetDeviceStatusText(item);
+                dbDeviceStatus.Add(deviceStatus);
             }
+        }
+
+        public BE.DeviceStatus SetInfo(string appName, int? deviceId, EnumDeviceStatuses[] statusCode)
+        {
+            return new BE.DeviceStatus
+            {
+                ApplicationType = appName,
+                DeviceID= deviceId,
+                StatusCode=statusCode
+            };
         }
 
         public int GetDeviceId(string deviceType)

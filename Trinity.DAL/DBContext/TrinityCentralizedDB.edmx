@@ -31,7 +31,7 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
           <Property Name="ApplicationType" Type="varchar" MaxLength="10" Nullable="false" />
           <Property Name="DeviceID" Type="int" />
           <Property Name="StatusCode" Type="int" Nullable="false" />
@@ -294,7 +294,6 @@
         <EntityContainer Name="TrinityCentralizedDBEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="AbsenceReportings" EntityType="TrinityCentralizedDBModel.AbsenceReporting" />
           <EntitySet Name="Addresses" EntityType="TrinityCentralizedDBModel.Address" />
-          <EntitySet Name="ApplicationDevice_Status" EntityType="TrinityCentralizedDBModel.ApplicationDevice_Status" />
           <EntitySet Name="Appointments" EntityType="TrinityCentralizedDBModel.Appointment" />
           <EntitySet Name="Devices" EntityType="TrinityCentralizedDBModel.Device" />
           <EntitySet Name="Environments" EntityType="TrinityCentralizedDBModel.Environment" />
@@ -335,6 +334,7 @@
             <End Role="User" EntitySet="Users" />
             <End Role="User_Profiles" EntitySet="User_Profiles" />
           </AssociationSet>
+          <EntitySet Name="ApplicationDevice_Status" EntityType="TrinityCentralizedDBModel.ApplicationDevice_Status" />
         </EntityContainer>
         <EntityType Name="AbsenceReporting">
           <Key>
@@ -360,16 +360,6 @@
           <Property Name="Postal_Code" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="User_Profiles" Relationship="TrinityCentralizedDBModel.FK_User_Profiles_Addresses" FromRole="Address" ToRole="User_Profiles" />
           <NavigationProperty Name="User_Profiles1" Relationship="TrinityCentralizedDBModel.FK_User_Profiles_Addresses1" FromRole="Address" ToRole="User_Profiles" />
-        </EntityType>
-        <EntityType Name="ApplicationDevice_Status">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" />
-          <Property Name="ApplicationType" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="DeviceID" Type="Int32" />
-          <Property Name="StatusCode" Type="Int32" Nullable="false" />
-          <Property Name="StatusMessage" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Appointment">
           <Key>
@@ -589,6 +579,16 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="ApplicationDevice_Status">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="ApplicationType" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="DeviceID" Type="Int32" />
+          <Property Name="StatusCode" Type="Int32" Nullable="false" />
+          <Property Name="StatusMessage" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -616,17 +616,6 @@
                 <ScalarProperty Name="BlkHouse_Number" ColumnName="BlkHouse_Number" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Address_ID" ColumnName="Address_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="ApplicationDevice_Status">
-            <EntityTypeMapping TypeName="TrinityCentralizedDBModel.ApplicationDevice_Status">
-              <MappingFragment StoreEntitySet="ApplicationDevice_Status">
-                <ScalarProperty Name="StatusMessage" ColumnName="StatusMessage" />
-                <ScalarProperty Name="StatusCode" ColumnName="StatusCode" />
-                <ScalarProperty Name="DeviceID" ColumnName="DeviceID" />
-                <ScalarProperty Name="ApplicationType" ColumnName="ApplicationType" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -741,6 +730,17 @@
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="NRIC" ColumnName="NRIC" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ApplicationDevice_Status">
+            <EntityTypeMapping TypeName="TrinityCentralizedDBModel.ApplicationDevice_Status">
+              <MappingFragment StoreEntitySet="ApplicationDevice_Status">
+                <ScalarProperty Name="StatusMessage" ColumnName="StatusMessage" />
+                <ScalarProperty Name="StatusCode" ColumnName="StatusCode" />
+                <ScalarProperty Name="DeviceID" ColumnName="DeviceID" />
+                <ScalarProperty Name="ApplicationType" ColumnName="ApplicationType" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

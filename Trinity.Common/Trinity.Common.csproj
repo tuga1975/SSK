@@ -134,10 +134,6 @@
       <Project>{4321fa96-3a53-49c1-89ef-8a2f6e9b81c7}</Project>
       <Name>Trinity.BE</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Trinity.DAL\Trinity.DAL.csproj">
-      <Project>{344f2633-3277-44c5-a55e-b66f920cca14}</Project>
-      <Name>Trinity.DAL</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

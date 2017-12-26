@@ -110,31 +110,31 @@
     <Compile Include="DAL\DAL_User.cs" />
     <Compile Include="DAL\DAL_UserProfile.cs" />
     <Compile Include="DBContext\AbsenceReporting.cs">
-      <DependentUpon>SSK.tt</DependentUpon>
+      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\Address.cs">
-      <DependentUpon>SSK.tt</DependentUpon>
+      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\ApplicationDevice_Status.cs">
-      <DependentUpon>SSK.tt</DependentUpon>
+      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\Appointment.cs">
-      <DependentUpon>SSK.tt</DependentUpon>
+      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\Device.cs">
-      <DependentUpon>SSK.tt</DependentUpon>
+      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\Environment.cs">
-      <DependentUpon>SSK.tt</DependentUpon>
+      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\Holiday.cs">
-      <DependentUpon>SSK.tt</DependentUpon>
+      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\Notification.cs">
-      <DependentUpon>SSK.tt</DependentUpon>
+      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\QueueNumber.cs">
-      <DependentUpon>SSK.tt</DependentUpon>
+      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\sysdiagram.cs">
       <DependentUpon>SSK.tt</DependentUpon>
@@ -155,10 +155,10 @@
       <DependentUpon>TrinityCentralizedDB.edmx</DependentUpon>
     </Compile>
     <Compile Include="DBContext\User.cs">
-      <DependentUpon>SSK.tt</DependentUpon>
+      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\User_Profiles.cs">
-      <DependentUpon>SSK.tt</DependentUpon>
+      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
     </Compile>
     <Compile Include="Partial\Appointment.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -273,6 +273,10 @@
     <ProjectReference Include="..\Trinity.BE\Trinity.BE.csproj">
       <Project>{4321fa96-3a53-49c1-89ef-8a2f6e9b81c7}</Project>
       <Name>Trinity.BE</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Trinity.Common\Trinity.Common.csproj">
+      <Project>{6C023597-F6BA-4857-9C3B-82D91EB4B4A3}</Project>
+      <Name>Trinity.Common</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />
