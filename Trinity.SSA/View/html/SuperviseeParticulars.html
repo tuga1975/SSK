@@ -28,6 +28,16 @@
             <span class="input-group-addon">Date:</span>
             <input id="ParticularsDate" type="text" class="form-control pri" name="ParticularsDate" disabled="disabled" />
         </div>
+        <br />
+        <div class="input-group">
+            <span class="input-group-addon">Status:</span>
+            <input id="ParticularsStatus" type="text" class="form-control pri" name="ParticularsStatus" disabled="disabled" />
+        </div>
+        <br />
+        <div class="input-group">
+            <span class="input-group-addon">Marking Number:</span>
+            <input id="ParticularsMarkingNumber" type="text" class="form-control pri" name="ParticularsMarkingNumber" disabled="disabled" />
+        </div>
 
         <div style="display:block;float:right; margin-top:20px;" id="divSave">
             <button type="button" class="btn btn-primary" id="ConfirmBtn">Confirm</button>
@@ -38,9 +48,11 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-        $('#ParticularsName').val(api.model.User.Name);
-        $('#ParticularsNRICNo').val(api.model.User.NRIC);
-        $('#ParticularsDate').val(api.model.UserProfile.DOB);
+        $('#ParticularsName').val(api.model.UserName);
+        $('#ParticularsNRICNo').val(api.model.NRIC);
+        $('#ParticularsDate').val(api.model.DOB);
+        $('#ParticularsStatus').val(api.model.Status);
+        $('#ParticularsMarkingNumber').val(api.model.MarkingNumber);
     });
 
     $('#ConfirmBtn').click(function () {

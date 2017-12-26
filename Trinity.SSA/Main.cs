@@ -70,9 +70,9 @@ namespace SSA
 
         private void Main_Load(object sender, EventArgs e)
         {
-            FormQueueNumber f = FormQueueNumber.GetInstance();
-            f.ShowOnSecondaryScreen();
-            f.Show();
+            //FormQueueNumber f = FormQueueNumber.GetInstance();
+            //f.ShowOnSecondaryScreen();
+            //f.Show();
         }
 
         private void Main_FormClosing(object sender, FormClosingEventArgs e)

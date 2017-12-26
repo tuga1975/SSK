@@ -99,7 +99,7 @@
     <Compile Include="CodeBehind\Authentication\Fingerprint.cs" />
     <Compile Include="CodeBehind\Authentication\NRIC.cs" />
     <Compile Include="CodeBehind\Authentication\SmartCard.cs" />
-    <Compile Include="CodeBehind\PrintTTLabel.cs" />
+    <Compile Include="CodeBehind\PrintMUBAndTTLabels.cs" />
     <Compile Include="CodeBehind\SupperviseeParticulars.cs" />
     <Compile Include="Common\Enums.cs" />
     <Compile Include="Constants\CommonConstants.cs" />
