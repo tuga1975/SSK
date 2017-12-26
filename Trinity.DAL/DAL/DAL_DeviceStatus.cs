@@ -4,6 +4,7 @@ using System.Linq;
 using Trinity.DAL.DBContext;
 using Trinity.DAL.Repository;
 
+
 namespace Trinity.DAL
 {
     public class DAL_DeviceStatus
@@ -11,14 +12,12 @@ namespace Trinity.DAL
         Local_UnitOfWork _localUnitOfWork = new Local_UnitOfWork();
         Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
 
-        public bool Insert(List<ApplicationDevice_Status> listModel)
+        public bool Insert(List<BE.DeviceStatus> listModel)
         {
             try
             {
                 var repo = _localUnitOfWork.GetRepository<ApplicationDevice_Status>();
 
-                repo.AddRange(listModel);
-                _localUnitOfWork.Save();
                 return true;
             }
             catch (Exception ex)
@@ -29,23 +28,36 @@ namespace Trinity.DAL
         }
 
 
+        private void SetInfo(BE.DeviceStatus model,List<ApplicationDevice_Status> dbDeviceStatus)
+        {
+            foreach (var item in model.StatusCode)
+            {
+                var deviceStatus = new ApplicationDevice_Status();
+                deviceStatus.ApplicationType = model.ApplicationType;
+                deviceStatus.DeviceID = model.DeviceID;
+                deviceStatus.ID = Guid.NewGuid();
+                deviceStatus.StatusCode = (int)item;
+                
+            }
+        }
+
         public int GetDeviceId(string deviceType)
         {
             switch (deviceType)
             {
-                case EnumDeviceType.SmartCardReader:
+                case EnumDeviceTypes.SmartCardReader:
                     return 1;
-                case EnumDeviceType.FingerprintScanner:
+                case EnumDeviceTypes.FingerprintScanner:
                     return 2;
-                case EnumDeviceType.DocumentScanner:
+                case EnumDeviceTypes.DocumentScanner:
                     return 3;
-                case EnumDeviceType.ReceiptPrinter:
+                case EnumDeviceTypes.ReceiptPrinter:
                     return 4;
-                case EnumDeviceType.BarcodeScanner:
+                case EnumDeviceTypes.BarcodeScanner:
                     return 5;
-                case EnumDeviceType.LEDDisplayMonitor:
+                case EnumDeviceTypes.LEDDisplayMonitor:
                     return 6;
-                case EnumDeviceType.Camera:
+                case EnumDeviceTypes.Camera:
                     return 7;
                 default:
                     return 0;

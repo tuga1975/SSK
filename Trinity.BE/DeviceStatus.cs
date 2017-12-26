@@ -17,7 +17,7 @@ namespace Trinity.BE
     public class DeviceStatus
     {
         [DataMember]
-        public int ID { get; set; }
+        public Guid ID { get; set; }
         [DataMember]
         public string ApplicationType { get; set; }
         [DataMember]

@@ -89,7 +89,7 @@ namespace Trinity.Common.DeviceMonitor
             }
         }
 
-        public DeviceStatus GetDocumentScannerStatus()
+        public EnumDeviceStatuses[] GetDocumentScannerStatus()
         {
             return DocumentScannerUtils.Instance.GetDeviceStatus();
         }

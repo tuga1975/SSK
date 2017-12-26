@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Timers;
+using Trinity.BE;
 using Trinity.Common.Common;
 using Trinity.Common.Monitor;
 using Trinity.DAL.DBContext;
@@ -36,6 +37,9 @@ namespace Trinity.Common.DeviceMonitor
         }
         #endregion
 
+        public event EventHandler<ExceptionArgs> OnMonitorException;
+        public event EventHandler<GetDeviceStatusCompletedArgs> OnGetDeviceStatusCompleted;
+
         SCardMonitor _sCardMonitor;
         PrinterMonitor _printerMonitor;
         DocumentScannerMonitor _documentScannerMonitor;
@@ -61,7 +65,15 @@ namespace Trinity.Common.DeviceMonitor
         }
         private void FingerprintMonitor_OnGetDeviceStatusCompleted(object sender, GetDeviceStatusCompletedArgs e)
         {
-            _healthStatus.FPrintStatus = e.IsConnected;
+            if (e.IsConnected)
+            {
+                _healthStatus.FPrintStatus = new EnumDeviceStatuses[] { EnumDeviceStatuses.Connected };
+            }
+            else
+            {
+                _healthStatus.FPrintStatus = new EnumDeviceStatuses[] { EnumDeviceStatuses.Disconnected };
+            }
+            
         }
 
         public void Start()
@@ -83,109 +95,58 @@ namespace Trinity.Common.DeviceMonitor
             var health = GetHealthStatus();
 
             //add to db
-            var dalDeviceStatus = new DAL.DAL_DeviceStatus();
+            var dalDeviceStatus = new  DAL.DAL_DeviceStatus();
 
-            var listDeviceStatus = new List<ApplicationDevice_Status>();
+            var listDeviceStatus = new List<DeviceStatus>();
 
             //Receipt Print Status
-            var status = GetPrintDeviceStatus(health);
-            listDeviceStatus.Add(SetDeviceStatus(dalDeviceStatus.GetDeviceId(EnumDeviceType.ReceiptPrinter),status.Key, status.Value));
+            var status = health.PrintStatus;
+            listDeviceStatus.Add(SetDeviceStatus(dalDeviceStatus.GetDeviceId(EnumDeviceTypes.ReceiptPrinter), status));
+           
             //Smart Cart Reader Status
-             status = GetSmartCardDeviceStatus(health, health.SCardStatus);
-            listDeviceStatus.Add(SetDeviceStatus(dalDeviceStatus.GetDeviceId(EnumDeviceType.SmartCardReader), status.Key, status.Value));
+             status =  health.SCardStatus;
+            listDeviceStatus.Add(SetDeviceStatus(dalDeviceStatus.GetDeviceId(EnumDeviceTypes.SmartCardReader), status));
 
             //Document Scanner Status
-             status = GetDocumnetDeviceStatus(health, health.DocStatus);
-            listDeviceStatus.Add(SetDeviceStatus(dalDeviceStatus.GetDeviceId(EnumDeviceType.DocumentScanner), status.Key, status.Value));
+            status = health.DocStatus;
+            listDeviceStatus.Add(SetDeviceStatus(dalDeviceStatus.GetDeviceId(EnumDeviceTypes.DocumentScanner), status));
 
             //Fingerprint Scanner Status
-             status = GetFingerPrintDeviceStatus(health);
-            listDeviceStatus.Add(SetDeviceStatus(dalDeviceStatus.GetDeviceId(EnumDeviceType.FingerprintScanner), status.Key, status.Value));
+            status = health.FPrintStatus;
+            listDeviceStatus.Add(SetDeviceStatus(dalDeviceStatus.GetDeviceId(EnumDeviceTypes.FingerprintScanner), status));
 
             dalDeviceStatus.Insert(listDeviceStatus);
 
         }
 
 
-        private ApplicationDevice_Status SetDeviceStatus(int? deviceId,int statusCode,string statusMessage)
+        private BE.DeviceStatus SetDeviceStatus(int? deviceId,EnumDeviceStatuses[] statusCode)
         {
-            var deviceStatus = new ApplicationDevice_Status();
+            var deviceStatus = new BE.DeviceStatus();
             deviceStatus.ApplicationType = System.Reflection.Assembly.GetEntryAssembly().GetName().Name;
             deviceStatus.DeviceID = deviceId;
-            deviceStatus.StatusMessage = statusMessage;
             deviceStatus.StatusCode = statusCode;
-            deviceStatus.ID = Guid.NewGuid();
             return deviceStatus;
         }
 
-        private KeyValuePair<int,string> GetPrintDeviceStatus(HealthStatus health)
-        {
-            var statusCode = health.PrintStatus.Connected;
-            return SetCodeAndMessage(health, statusCode);
-        }
-        private KeyValuePair<int, string> GetFingerPrintDeviceStatus(HealthStatus health)
-        {
-            var statusCode = health.FPrintStatus;
-            
-            return SetCodeAndMessage(health, statusCode);
-           
-        }
-        private KeyValuePair<int, string> GetDocumnetDeviceStatus(HealthStatus health,DeviceStatus deviceStatus)
-        {
-            var statusCode = health.DocStatus;
-          
-            return SetCodeAndMessage(health, deviceStatus);
-            
-        }
-        private KeyValuePair<int, string> GetSmartCardDeviceStatus(HealthStatus health, DeviceStatus deviceStatus)
-        {
-            var statusCode = health.SCardStatus;
-           
-            return SetCodeAndMessage(health, deviceStatus);
-            
-        }
-
-
-
-        private static KeyValuePair<int, string> SetCodeAndMessage(HealthStatus health, bool statusCode)
-        {
-            KeyValuePair<int, string> returnValue;
-            if (statusCode)
-            {
-                returnValue = new KeyValuePair<int, string>(1, "Connected");
-
-            }
-            else
-            {
-                returnValue = new KeyValuePair<int, string>(0, "Disconnected");
-
-            }
-
-            return returnValue;
-        }
-        private static KeyValuePair<int, string> SetCodeAndMessage(HealthStatus health,DeviceStatus deviceStatus)
-        {
-            
-            if (deviceStatus.HasFlag(DeviceStatus.Connected))
-            {
-                return new KeyValuePair<int, string>(1, "Connected");
-
-            }
-            else if (deviceStatus.HasFlag(DeviceStatus.Busy))
-            {
-                return new KeyValuePair<int, string>(2, "Busy");
-            }
-            else
-            {
-                return new KeyValuePair<int, string>(0, "Disconnected");
-
-            }
             
         }
     }
 
+public class HealthMonitorEventArgs : EventArgs
+{
+    public EnumDeviceStatuses[] SCardStatus { get; set; }
+    public EnumDeviceStatuses[] FPrintStatus { get; set; }
+    public EnumDeviceStatuses[] DocStatus { get; set; }
+    public EnumDeviceStatuses[] PrintStatus { get; set; }
+    public HealthMonitorEventArgs()
+    {
+    }
 
-    public class HealthStatus
+}
+
+
+public class HealthStatus
     {
         #region Singleton Implementation
         // The variable is declared to be volatile to ensure that assignment to the instance variable completes before the instance variable can be accessed
@@ -215,12 +176,12 @@ namespace Trinity.Common.DeviceMonitor
         #endregion
 
 
-        public DeviceStatus SCardStatus { get; set; }
-        public bool FPrintStatus { get; set; }
-        public DeviceStatus DocStatus { get; set; }
-        public PrinterStatus PrintStatus { get; set; }
+        public EnumDeviceStatuses[] SCardStatus { get; set; }
+        public EnumDeviceStatuses[] FPrintStatus { get; set; }
+        public EnumDeviceStatuses[] DocStatus { get; set; }
+        public EnumDeviceStatuses[] PrintStatus { get; set; }
 
 
     }
 
-}
+

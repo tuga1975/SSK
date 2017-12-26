@@ -63,6 +63,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Trinity.BE\Trinity.BE.csproj">
+      <Project>{4321FA96-3A53-49C1-89EF-8A2F6E9B81C7}</Project>
+      <Name>Trinity.BE</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Trinity.Common\Trinity.Common.csproj">
       <Project>{6C023597-F6BA-4857-9C3B-82D91EB4B4A3}</Project>
       <Name>Trinity.Common</Name>

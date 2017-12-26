@@ -135,7 +135,7 @@
       <Name>Trinity.BE</Name>
     </ProjectReference>
     <ProjectReference Include="..\Trinity.DAL\Trinity.DAL.csproj">
-      <Project>{344F2633-3277-44C5-A55E-B66F920CCA14}</Project>
+      <Project>{344f2633-3277-44c5-a55e-b66f920cca14}</Project>
       <Name>Trinity.DAL</Name>
     </ProjectReference>
   </ItemGroup>

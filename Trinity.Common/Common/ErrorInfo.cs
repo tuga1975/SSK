@@ -11,6 +11,10 @@ namespace Trinity.Common
     public class ErrorInfo
     {
         private EnumErrorCodes _errorCode;
+        public ErrorInfo()
+        {
+
+        }
         public ErrorInfo(EnumErrorCodes errorCode)
         {
             _errorCode = errorCode;

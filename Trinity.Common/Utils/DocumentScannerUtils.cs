@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using Trinity.Common.Common;
+using Trinity.BE;
 using WIA;
 
 namespace Trinity.Common.Utils
@@ -86,7 +87,7 @@ namespace Trinity.Common.Utils
                     returnValue.FailedInfo = new FailedInfo()
                     {
                         ErrorCode = -1,
-                        ErrorMessage = ErrorMessages.DocumentScannerNull
+                        ErrorMessage = new ErrorInfo().GetErrorMessage(EnumErrorCodes.DocumentScannerNull)
                     };
                     return returnValue;
                 }
@@ -177,9 +178,9 @@ namespace Trinity.Common.Utils
         }
 
         // for testing purpose
-        public DeviceStatus GetDeviceStatus()
+        public EnumDeviceStatuses[] GetDeviceStatus()
         {
-            return DeviceStatus.Connected;
+            return new EnumDeviceStatuses[] { EnumDeviceStatuses.Connected };
         }
 
         private static void AdjustScannerSettings(IItem scannnerItem, int scanResolutionDPI, int scanStartLeftPixel, int scanStartTopPixel, int scanWidthPixels, int scanHeightPixels, int brightnessPercents, int contrastPercents, int colorMode)

@@ -5,7 +5,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Trinity.Common.Utils
+namespace Trinity.Common
 {
     public class CommonUtil
     {
