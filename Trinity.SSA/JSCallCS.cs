@@ -131,18 +131,20 @@ namespace SSA
         {
             this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').show(); ; ");
             this._web.RunScript("$('.status-text').css('color','#000').text('Please collect your labels');");
-
-             
         }
 
         private void PrintTTLabel_OnPrintTTLabelFailed(object sender, CodeBehind.PrintTTLabelEventArgs e)
         {
-            MessageBox.Show(e.Message, "Print TT Label Fail", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').show(); ; ");
+            MessageBox.Show("Unable to print labels\nPlease report to the Duty Officer", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            APIUtils.SignalR.SendNotificationToDutyOfficer("A supervisee can't print label", "Please check Supervisee's information!");
+            this._web.RunScript("$('.status-text').css('color','#000').text('Sent problem to Duty Officer. Please wait to check !');");
         }
 
         private void PrintTTLabel_OnPrintTTLabelException(object sender, ExceptionArgs e)
         {
             MessageBox.Show("Unable to print labels \n Please report to the Duty Officer", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            APIUtils.SignalR.SendNotificationToDutyOfficer("A supervisee can't print label", "Please check Supervisee's information!");
         }
     }
 

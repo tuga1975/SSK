@@ -8,6 +8,7 @@ using System.Printing;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Trinity.Common.Common;
 using ZXing.QrCode;
@@ -128,7 +129,9 @@ namespace Trinity.Common.Utils
                     // test qr code bang file image, chua goi printer
                     bitmap.Save("D:\\qrcode.png", System.Drawing.Imaging.ImageFormat.Png);
                 }
-
+                //TODO : Remove hardcode timeout call service print MUB and TT
+                int millisecondsSleep = 2000;
+                Thread.Sleep(millisecondsSleep);
                 return true;
             }
             catch (Exception ex)
