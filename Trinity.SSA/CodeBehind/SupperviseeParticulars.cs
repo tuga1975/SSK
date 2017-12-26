@@ -28,14 +28,18 @@ namespace SSA.CodeBehind
 
                     var dalUser = new Trinity.DAL.DAL_User();
                     var dalUserprofile = new Trinity.DAL.DAL_UserProfile();
-                    var profileModel = new Trinity.BE.ProfileModel
-                    {
-                        User = dalUser.GetUserByUserId(user.UserId, true),
-                        UserProfile = dalUserprofile.GetUserProfileByUserId(user.UserId, true)
-                    };
                     
+                    var userInfo = new Trinity.Common.Common.UserInfo
+                    {
+                        UserName = user.Name,
+                        NRIC = user.NRIC,
+                        DOB = dalUserprofile.GetUserProfileByUserId(user.UserId, true).DOB.Value.ToString("dd/MM/yyyy"),
+                        Status = dalUserprofile.GetUserProfileByUserId(user.UserId, true).Maritial_Status,
+                        MarkingNumber = Trinity.Common.Utils.CommonUtils.GenerateMarkingNumber()
+                    };
+
                     //profile model 
-                    _web.LoadPageHtml("SuperviseeParticulars.html", profileModel);
+                    _web.LoadPageHtml("SuperviseeParticulars.html", userInfo);
                 }
             }
             catch (Exception ex)

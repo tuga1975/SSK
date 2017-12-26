@@ -20,7 +20,7 @@ namespace SSA
     {
         private WebBrowser _web = null;
         private Type _thisType = null;
-        private CodeBehind.PrintTTLabel _printTTLabel;
+        private CodeBehind.PrintMUBAndTTLabels _printTTLabel;
 
         public event EventHandler<NRICEventArgs> OnNRICFailed;
         public event EventHandler<ShowMessageEventArgs> OnShowMessage;
@@ -31,10 +31,10 @@ namespace SSA
         {
             this._web = web;
             _thisType = this.GetType();
-            _printTTLabel = new CodeBehind.PrintTTLabel(web);
-            _printTTLabel.OnPrintTTLabelSucceeded += PrintTTLabdel_OnPrintTTLabelSucceeded;
-            _printTTLabel.OnPrintTTLabelFailed += PrintTTLabel_OnPrintTTLabelFailed;
-            _printTTLabel.OnPrintTTLabelException += PrintTTLabel_OnPrintTTLabelException;
+            _printTTLabel = new CodeBehind.PrintMUBAndTTLabels(web);
+            _printTTLabel.OnPrintMUBAndTTLabelsSucceeded += PrintMUBAndTTLabels_OnPrintTTLabelSucceeded;
+            _printTTLabel.OnPrintMUBAndTTLabelsFailed += PrintMUBAndTTLabels_OnPrintTTLabelFailed;
+            _printTTLabel.OnPrintMUBAndTTLabelsException += PrintMUBAndTTLabels_OnPrintTTLabelException;
         }
 
         #region virtual events
@@ -127,7 +127,7 @@ namespace SSA
             _printTTLabel.Start();
         }
 
-        private void PrintTTLabdel_OnPrintTTLabelSucceeded()
+        private void PrintMUBAndTTLabels_OnPrintTTLabelSucceeded()
         {
             this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').show(); ; ");
             this._web.RunScript("$('.status-text').css('color','#000').text('Please collect your labels');");
@@ -135,12 +135,12 @@ namespace SSA
              
         }
 
-        private void PrintTTLabel_OnPrintTTLabelFailed(object sender, CodeBehind.PrintTTLabelEventArgs e)
+        private void PrintMUBAndTTLabels_OnPrintTTLabelFailed(object sender, CodeBehind.PrintMUBAndTTLabelsEventArgs e)
         {
             MessageBox.Show(e.Message, "Print TT Label Fail", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
-        private void PrintTTLabel_OnPrintTTLabelException(object sender, ExceptionArgs e)
+        private void PrintMUBAndTTLabels_OnPrintTTLabelException(object sender, ExceptionArgs e)
         {
             MessageBox.Show("Unable to print labels \n Please report to the Duty Officer", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }

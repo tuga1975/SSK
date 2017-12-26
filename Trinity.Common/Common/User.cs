@@ -11,5 +11,7 @@ namespace Trinity.Common.Common
         public string UserName { get; set; }
         public string NRIC { get; set; }
         public string DOB { get; set; }
+        public string Status { get; set; }
+        public string MarkingNumber { get; set; }
     }
 }
