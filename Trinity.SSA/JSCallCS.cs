@@ -129,6 +129,9 @@ namespace SSA
 
         private void PrintMUBAndTTLabels_OnPrintTTLabelSucceeded()
         {
+            int millisecondsSleep = 2000;
+            Thread.Sleep(millisecondsSleep);
+
             this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').show(); ; ");
             this._web.RunScript("$('.status-text').css('color','#000').text('Please collect your labels');");
         }

@@ -99,11 +99,11 @@ namespace Trinity.Common.Utils
                 }
 
                 var contentQRCode = "User Name: " + userInfo.UserName + "; NRIC: " + userInfo.NRIC + "; DOB: " + userInfo.DOB + "; Status: " + userInfo.Status + "; Marking Number: " + userInfo.MarkingNumber;
-                var bitmap = CommonUtils.CreateQRCode(contentQRCode, "AESKey");
+                var bitmap = CommonUtil.CreateQRCode(contentQRCode, "AESKey");
 
                 // save to stream as PNG  
                 // test qr code bang file image, chua goi printer
-                //bitmap.Save("D:\\qrcode.png", System.Drawing.Imaging.ImageFormat.Png);
+                bitmap.Save("D:\\qrcode.png", System.Drawing.Imaging.ImageFormat.Png);
                 
                 return true;
             }

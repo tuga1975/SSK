@@ -35,7 +35,7 @@ namespace SSA.CodeBehind
                         NRIC = user.NRIC,
                         DOB = dalUserprofile.GetUserProfileByUserId(user.UserId, true).DOB.Value.ToString("dd/MM/yyyy"),
                         Status = dalUserprofile.GetUserProfileByUserId(user.UserId, true).Maritial_Status,
-                        MarkingNumber = Trinity.Common.Utils.CommonUtils.GenerateMarkingNumber()
+                        MarkingNumber = CommonUtil.GenerateMarkingNumber()
                     };
 
                     //profile model 

@@ -61,7 +61,7 @@ namespace SSA.CodeBehind
                 //}
 
                 // Print QR Code
-
+                // Can kiem tra status cua may in QRCode-printer
                 if (barcodeScannerUtils.PrintQRCodeUserInfo(userInfo))
                 {
                     // raise succeeded event
