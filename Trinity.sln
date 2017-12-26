@@ -19,7 +19,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleTesting", "DocumentS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trinity.SSA", "Trinity.SSA\Trinity.SSA.csproj", "{B859C82A-D53C-4C65-BADE-C8D8AD6107C8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Enrolment", "Enrolment\Enrolment.csproj", "{11700A83-F635-41DB-8732-A58EA8C41A24}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trinity.Enrolment", "Enrolment\Trinity.Enrolment.csproj", "{11700A83-F635-41DB-8732-A58EA8C41A24}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
