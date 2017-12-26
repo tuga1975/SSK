@@ -102,7 +102,7 @@ namespace Trinity.Common.Monitor
         /// <summary>
         /// GetDeviceStatus
         /// </summary>
-        public DeviceStatus GetDeviceStatus()
+        public EnumDeviceStatuses[] GetDeviceStatus()
         {
             return SmartCardReaderUtils.Instance.GetDeviceStatus();
         }

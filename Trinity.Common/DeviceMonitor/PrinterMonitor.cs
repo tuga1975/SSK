@@ -64,8 +64,8 @@ namespace Trinity.Common.DeviceMonitor
                 // username is null
                 RaiseMonitorExceptionEvent(new ExceptionArgs(new FailedInfo()
                 {
-                    ErrorCode = (int)ErrorCodes.UserNameNull,
-                    ErrorMessage = ErrorMessages.UserNameNull
+                    ErrorCode = (int)EnumErrorCodes.UserNameNull,
+                    ErrorMessage = new ErrorInfo().GetErrorMessage(EnumErrorCodes.UserNameNull)
                 }));
 
                 return;
@@ -75,8 +75,8 @@ namespace Trinity.Common.DeviceMonitor
                 // NRIC is null
                 RaiseMonitorExceptionEvent(new ExceptionArgs(new FailedInfo()
                 {
-                    ErrorCode = (int)ErrorCodes.NRICNull,
-                    ErrorMessage = ErrorMessages.NRICNull
+                    ErrorCode = (int)EnumErrorCodes.NRICNull,
+                    ErrorMessage = new ErrorInfo().GetErrorMessage(EnumErrorCodes.NRICNull)
                 }));
 
                 return;
@@ -94,13 +94,13 @@ namespace Trinity.Common.DeviceMonitor
                 // raise failed event
                 RaiseMonitorExceptionEvent(new ExceptionArgs(new FailedInfo()
                 {
-                    ErrorCode = (int)ErrorCodes.UnknownError,
-                    ErrorMessage = ErrorMessages.UnknownError
+                    ErrorCode = (int)EnumErrorCodes.UnknownError,
+                    ErrorMessage = new ErrorInfo().GetErrorMessage(EnumErrorCodes.UnknownError)
                 }));
             }
         }
 
-        public PrinterStatus GetBarcodePrinterStatus()
+        public EnumDeviceStatuses[] GetBarcodePrinterStatus()
         {
             return BarcodePrinterUtils.Instance.GetDeviceStatus();
         }

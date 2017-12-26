@@ -30,7 +30,7 @@ namespace DocumentScannerTest
         private static void ReportPrinterStatus()
         {
             Console.WriteLine("ReportPrinterStatus is starting...");
-            FingerprintMonitor fingerprintMonitor  = FingerprintMonitor.Instance;
+            FingerprintMonitor fingerprintMonitor = FingerprintMonitor.Instance;
             fingerprintMonitor.OnGetDeviceStatusCompleted += OnGetDeviceStatusCompleted;
             //fingerprintMonitor.StartVerification(OnVerificationComplete, new byte[10]);
             fingerprintMonitor.StartCheckingDeviceStatus();
@@ -87,13 +87,16 @@ namespace DocumentScannerTest
                     DOB = "01/01/1970"
                 };
 
-                if (barcodeScannerUtils.GetDeviceStatus().Connected)
+                foreach (var item in barcodeScannerUtils.GetDeviceStatus())
                 {
-                    printerMonitor.PrintLabel(userInfo);
-                }
-                else
-                {
-                    Console.WriteLine("Barcode printer is not connected.");
+                    if (item == EnumDeviceStatuses.Connected)
+                    {
+                        printerMonitor.PrintLabel(userInfo);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Barcode printer is not connected.");
+                    }
                 }
 
                 Console.ReadKey();

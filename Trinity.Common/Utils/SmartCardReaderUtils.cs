@@ -105,8 +105,8 @@ namespace Trinity.Common
                 // if card reader is not found
                 returnValue.FailedInfo = new FailedInfo()
                 {
-                    ErrorCode = (int)ErrorCodes.SmartCardReaderNull,
-                    ErrorMessage = ErrorMessages.SmartCardReaderNull
+                    ErrorCode = (int)EnumErrorCodes.SmartCardReaderNull,
+                    ErrorMessage = new ErrorInfo().GetErrorMessage(EnumErrorCodes.SmartCardReaderNull)
                 };
                 return returnValue;
             }
@@ -115,8 +115,8 @@ namespace Trinity.Common
                 Debug.WriteLine("StartCardMonitor Exception: " + ex.Message);
                 returnValue.FailedInfo = new FailedInfo()
                 {
-                    ErrorCode = (int)ErrorCodes.UnknownError,
-                    ErrorMessage = ErrorMessages.UnknownError
+                    ErrorCode = (int)EnumErrorCodes.UnknownError,
+                    ErrorMessage = new ErrorInfo().GetErrorMessage(EnumErrorCodes.UnknownError)
                 };
                 return returnValue;
             }
@@ -259,14 +259,14 @@ namespace Trinity.Common
             }
         }
 
-        public override DeviceStatus GetDeviceStatus()
+        public override EnumDeviceStatuses[] GetDeviceStatus()
         {
             if (_cardReaders == null || _cardReaders.Count() == 0)
             {
-                return DeviceStatus.Disconnected;
+                return new EnumDeviceStatuses[] { EnumDeviceStatuses.Disconnected };
             }
 
-            return DeviceStatus.Connected;
+            return new EnumDeviceStatuses[] { EnumDeviceStatuses.Connected };
         }
     }
     class SmartCardReaderUtils_Old

@@ -26,6 +26,7 @@ namespace SSA.CodeBehind
 
         internal void Start()
         {
+            _web.SetLoading(false);
             this._web.LoadPageHtml("PrintingMUBAndTTLabels.html");
             this._web.RunScript("$('.status-text').css('color','#000').text('Please wait');");
 
@@ -60,10 +61,16 @@ namespace SSA.CodeBehind
                 //}
 
                 // Print QR Code
+
                 if (barcodeScannerUtils.PrintQRCodeUserInfo(userInfo))
                 {
                     // raise succeeded event
                     RaisePrintMUBAndTTLabelsSucceededEvent();
+                    //Retrieve and verify correct MUB and TT 
+                }
+                else
+                {
+                    RaisePrintMUBAndTTLabelsFailedEvent(new PrintMUBAndTTLabelsEventArgs("Can't print label !"));
                 }
             }
         }

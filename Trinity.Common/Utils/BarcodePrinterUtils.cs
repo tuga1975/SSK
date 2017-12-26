@@ -7,6 +7,7 @@ using System.Management;
 using System.Printing;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Trinity.Common.Common;
 
@@ -117,16 +118,17 @@ namespace Trinity.Common.Utils
         /// get barcode printer status
         /// </summary>
         /// <returns>PrinterStatus</returns>
-        public PrinterStatus GetDeviceStatus()
+        public EnumDeviceStatuses[] GetDeviceStatus()
         {
             // get barcodePrinter name from appconfig
             string barcodePrinterName = ConfigurationManager.AppSettings["BarcodePrinterName"].ToUpper();
 
             // check printer is connected or not
-            if (!IsPrinterConnected(barcodePrinterName))
+            if (IsPrinterConnected(barcodePrinterName))
             {
-                return new PrinterStatus();
+                return new EnumDeviceStatuses[] { EnumDeviceStatuses.Connected };
             }
+          
 
             // Get a list of available printers (installed printers).
             var printServer = new PrintServer();
@@ -134,17 +136,21 @@ namespace Trinity.Common.Utils
 
             // Get barcode printer
             PrintQueue printQueue = printQueues.FirstOrDefault(p => p.Name.ToUpper() == barcodePrinterName);
-
+           
             // if barcode printer is null, return disconnected
             if (printQueue == null)
             {
-                return new PrinterStatus();
+                return new EnumDeviceStatuses[] { EnumDeviceStatuses.Disconnected };
             }
-
-            // set returnValue
-            PrinterStatus printerStatus = new PrinterStatus(printQueue);
-            return printerStatus;
+            else
+            {
+                //return list status here
+                var status = printQueue.QueueStatus;
+                return new EnumDeviceStatuses[] { (EnumDeviceStatuses)status };
+            }
+            
         }
+
 
         private bool IsPrinterConnected(string barcodePrinterName)
         {

@@ -16,6 +16,26 @@ public enum EnumScreens
     Supervisee = 7,
     Supervisee_NRIC = 8
 };
+
+public enum EnumUserRoles
+{
+    DutyOfficer = 0,
+    Supervisee = 1,
+    EnrolmentOfficer = 2,
+    CaseOfficer = 3
+};
+
+public enum EnumErrorCodes
+{
+    FatalError = 0,
+    DocumentScannerNull = -1,
+    UnknownError = -2,
+    FingerprintNull = -3,
+    SmartCardReaderNull = -4,
+    UserNameNull = -5,
+    NRICNull = -6
+};
+
 public enum EnumAppointmentStatuses
 {
     Deleted = -1,
@@ -54,7 +74,7 @@ public static class EnumFrequency
     public const string Monthly = "Monthly";
 }
 
-public static class EnumDeviceType
+public static class EnumDeviceTypes
 {
     public const string ReceiptPrinter = "ReceiptPrinter";
     public const string FingerprintScanner = "Fingerprint";
@@ -63,7 +83,118 @@ public static class EnumDeviceType
     public const string BarcodeScanner = "BarcodeScanner";
     public const string LEDDisplayMonitor = "LEDDisplayMonitor";
     public const string Camera = "Camera";
+}
 
+public enum EnumDeviceStatuses
+{
+    Connected = 10,
+    //
+    // Summary:
+    //     Status is not specified.
+    None = 0,
+    //
+    // Summary:
+    //     The print queue is paused.
+    Paused = 1,
+    //
+    // Summary:
+    //     The printer cannot print due to an error condition.
+    Error = 2,
+    //
+    // Summary:
+    //     The print queue is deleting a print job.
+    PendingDeletion = 4,
+    //
+    // Summary:
+    //     The paper in the printer is jammed.
+    PaperJam = 8,
+    //
+    // Summary:
+    //     The printer does not have, or is out of, the type of paper needed for the current
+    //     print job.
+    PaperOut = 16,
+    //
+    // Summary:
+    //     The printer is waiting for a user to place print media in the manual feed bin.
+    ManualFeed = 32,
+    //
+    // Summary:
+    //     The paper in the printer is causing an unspecified error condition.
+    PaperProblem = 64,
+    //
+    // Summary:
+    //     The printer is offline.
+    Offline = 128,
+    //
+    // Summary:
+    //     The printer is exchanging data with the print server.
+    IOActive = 256,
+    //
+    // Summary:
+    //     The printer is busy.
+    Busy = 512,
+    //
+    // Summary:
+    //     The device is printing.
+    Printing = 1024,
+    //
+    // Summary:
+    //     The printer's output bin is full.
+    OutputBinFull = 2048,
+    //
+    // Summary:
+    //     Status information is unavailable.
+    NotAvailable = 4096,
+    //
+    // Summary:
+    //     The printer is waiting for a print job.
+    Waiting = 8192,
+    //
+    // Summary:
+    //     The device is doing some kind of work, which need not be printing if the device
+    //     is a combination printer, fax machine, and scanner.
+    Processing = 16384,
+    //
+    // Summary:
+    //     The printer is initializing.
+    Initializing = 32768,
+    //
+    // Summary:
+    //     The printer is warming up.
+    WarmingUp = 65536,
+    //
+    // Summary:
+    //     Only a small amount of toner remains in the printer.
+    TonerLow = 131072,
+    //
+    // Summary:
+    //     The printer is out of toner.
+    NoToner = 262144,
+    //
+    // Summary:
+    //     The printer is unable to print the current page.
+    PagePunt = 524288,
+    //
+    // Summary:
+    //     The printer requires user action to correct an error condition.
+    UserIntervention = 1048576,
+    //
+    // Summary:
+    //     The printer has no available memory.
+    OutOfMemory = 2097152,
+    //
+    // Summary:
+    //     A door on the printer is open.
+    DoorOpen = 4194304,
+    //
+    // Summary:
+    //     The printer is in an error state.
+    ServerUnknown = 8388608,
+    //
+    // Summary:
+    //     The printer is in power save mode.
+    PowerSave = 16777216,
+    Disconnected = -1
 }
 
 

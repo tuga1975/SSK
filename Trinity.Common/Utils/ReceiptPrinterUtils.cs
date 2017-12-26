@@ -11,9 +11,9 @@ namespace Trinity.Common.Utils
     public class ReceiptPrinterUtils : DeviceUtils
     {
         // for testing purpose
-        public override DeviceStatus GetDeviceStatus()
+        public override EnumDeviceStatuses[] GetDeviceStatus()
         {
-            return DeviceStatus.Disconnected;
+            return new EnumDeviceStatuses[]{ EnumDeviceStatuses.Disconnected };
         }
     }
 }

@@ -55,8 +55,8 @@ namespace Trinity.Common
                 {
                     returnValue.FailedInfo = new FailedInfo()
                     {
-                        ErrorCode = (int)ErrorCodes.FingerprintNull,
-                        ErrorMessage = ErrorMessages.FingerprintNull
+                        ErrorCode = (int)EnumErrorCodes.FingerprintNull,
+                        ErrorMessage = new ErrorInfo().GetErrorMessage(EnumErrorCodes.FingerprintNull)
                     };
                     return returnValue;
                 }
@@ -96,8 +96,8 @@ namespace Trinity.Common
 
                 returnValue.FailedInfo = new FailedInfo()
                 {
-                    ErrorCode = (int)ErrorCodes.UnknownError,
-                    ErrorMessage = ErrorMessages.UnknownError
+                    ErrorCode = (int)EnumErrorCodes.UnknownError,
+                    ErrorMessage = new ErrorInfo().GetErrorMessage(EnumErrorCodes.UnknownError)
                 };
 
                 return returnValue;
