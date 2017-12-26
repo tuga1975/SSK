@@ -287,3 +287,5 @@ __pycache__/
 *.odx.cs
 *.xsd.cs
 /Test.html
+/SetupSSK
+/SSK1.0

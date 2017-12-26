@@ -15,9 +15,8 @@ namespace Trinity.DAL
         {
             try
             {
-
                 var repo = _localUnitOfWork.GetRepository<ApplicationDevice_Status>();
-                
+
                 repo.AddRange(listModel);
                 _localUnitOfWork.Save();
                 return true;
@@ -28,7 +27,7 @@ namespace Trinity.DAL
                 return false;
             }
         }
-       
+
 
         public int GetDeviceId(string deviceType)
         {

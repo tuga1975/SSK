@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Timers;
 using Trinity.Common.Common;
-using Trinity.Common.DeviceMonitor;
+using Trinity.Common.Monitor;
 using Trinity.DAL.DBContext;
 
-namespace Trinity.Common.Monitor
+namespace Trinity.Common.DeviceMonitor
 {
     public class HealthMonitor
     {
@@ -114,6 +114,7 @@ namespace Trinity.Common.Monitor
             deviceStatus.DeviceID = deviceId;
             deviceStatus.StatusMessage = statusMessage;
             deviceStatus.StatusCode = statusCode;
+            deviceStatus.ID = Guid.NewGuid();
             return deviceStatus;
         }
 
