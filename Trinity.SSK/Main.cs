@@ -129,7 +129,7 @@ namespace SSK
             // if role = 0 (duty officer), redirect to NRIC.html
             // else (supervisee), redirect to Supervisee.html
             Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-            if (user.Role == (int)EnumUserRoles.DutyOfficer)
+            if (user.Role == EnumUserRoles.DutyOfficer)
             {
                 // navigate to Authentication_NRIC
                 NavigateTo(NavigatorEnums.Authentication_NRIC);
@@ -187,7 +187,7 @@ namespace SSK
             {
                 // Send Notification to duty officer
                 APIUtils.SignalR.SendNotificationToDutyOfficer(e.Message, e.Message);
-                
+
                 // show message box to user
                 MessageBox.Show(e.Message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
@@ -281,7 +281,7 @@ namespace SSK
 
         private void Main_Load(object sender, EventArgs e)
         {
-            FormQueueNumber f = FormQueueNumber.GetInstance();            
+            FormQueueNumber f = FormQueueNumber.GetInstance();
             f.ShowOnSecondaryScreen();
             f.Show();
         }

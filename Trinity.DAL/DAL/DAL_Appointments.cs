@@ -22,7 +22,7 @@ namespace Trinity.DAL
             Appointment appointment = _localUnitOfWork.DataContext.Appointments.FirstOrDefault(d => d.ID == ID);
             if (appointment != null)
             {
-                User user = _localUnitOfWork.DataContext.Users.FirstOrDefault(u => u.UserId == appointment.UserId);
+                Membership_Users user = _localUnitOfWork.DataContext.Membership_Users.FirstOrDefault(u => u.UserId == appointment.UserId);
                 Trinity.BE.Appointment result = new BE.Appointment()
                 {
                     UserId = appointment.UserId,

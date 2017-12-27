@@ -63,15 +63,11 @@ namespace Trinity.BE
             {
                 User = new User
                 {
-                    EnrolledDate = rawData.EnrolledDate,
-                    FingerprintFailedCount = rawData.FingerprintFailedCount,
-                    LastLoginTime = rawData.LastLoginTime,
                     Fingerprint = rawData.Fingerprint,
                     Name = rawData.ParticularsName,
                     NRIC = rawData.NRIC,
-                    SmartCardFailedCount = rawData.SmartCardFailedCount,
                     SmartCardId = rawData.SmartCardId,
-                    Role = rawData.Role,
+                    //Role = rawData.Role,
                     UserId = rawData.UserId
                 },
                 UserProfile = new UserProfile

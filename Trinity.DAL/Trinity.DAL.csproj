@@ -88,6 +88,12 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.1\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.EntityFramework, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.EntityFramework.2.2.1\lib\net45\Microsoft.AspNet.Identity.EntityFramework.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
@@ -110,34 +116,40 @@
     <Compile Include="DAL\DAL_User.cs" />
     <Compile Include="DAL\DAL_UserProfile.cs" />
     <Compile Include="DBContext\AbsenceReporting.cs">
-      <DependentUpon>SSK.tt</DependentUpon>
+      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\Address.cs">
-      <DependentUpon>SSK.tt</DependentUpon>
+      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\ApplicationDevice_Status.cs">
-      <DependentUpon>SSK.tt</DependentUpon>
+      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\Appointment.cs">
-      <DependentUpon>SSK.tt</DependentUpon>
+      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\Device.cs">
-      <DependentUpon>SSK.tt</DependentUpon>
+      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\Environment.cs">
-      <DependentUpon>SSK.tt</DependentUpon>
+      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\Holiday.cs">
-      <DependentUpon>SSK.tt</DependentUpon>
+      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBContext\Membership_Roles.cs">
+      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBContext\Membership_UserRoles.cs">
+      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBContext\Membership_Users.cs">
+      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\Notification.cs">
-      <DependentUpon>SSK.tt</DependentUpon>
+      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\QueueNumber.cs">
-      <DependentUpon>SSK.tt</DependentUpon>
-    </Compile>
-    <Compile Include="DBContext\sysdiagram.cs">
-      <DependentUpon>SSK.tt</DependentUpon>
+      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\TrinityCentralizedDB.Context.cs">
       <AutoGen>True</AutoGen>
@@ -154,11 +166,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>TrinityCentralizedDB.edmx</DependentUpon>
     </Compile>
-    <Compile Include="DBContext\User.cs">
-      <DependentUpon>SSK.tt</DependentUpon>
-    </Compile>
     <Compile Include="DBContext\User_Profiles.cs">
-      <DependentUpon>SSK.tt</DependentUpon>
+      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
     </Compile>
     <Compile Include="Partial\Appointment.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -273,6 +282,10 @@
     <ProjectReference Include="..\Trinity.BE\Trinity.BE.csproj">
       <Project>{4321fa96-3a53-49c1-89ef-8a2f6e9b81c7}</Project>
       <Name>Trinity.BE</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Trinity.Identity\Trinity.Identity.csproj">
+      <Project>{b25053fb-2050-4115-9441-8edf5c03fb1d}</Project>
+      <Name>Trinity.Identity</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

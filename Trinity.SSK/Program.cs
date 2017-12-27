@@ -19,8 +19,8 @@ namespace SSK
             Application.SetCompatibleTextRenderingDefault(false);
             //
             DeviceMonitor.Start();
-            Application.Run(new Main());
-            //Application.Run(new FormTextToSpeech());
+            //Application.Run(new Main());
+            Application.Run(new FormTextToSpeech());
             //Application.Run(new FormAppointmentDetails());
         }
     }

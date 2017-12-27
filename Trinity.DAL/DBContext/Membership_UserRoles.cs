@@ -12,12 +12,13 @@ namespace Trinity.DAL.DBContext
     using System;
     using System.Collections.Generic;
     
-    public partial class sysdiagram
+    public partial class Membership_UserRoles
     {
-        public string name { get; set; }
-        public int principal_id { get; set; }
-        public int diagram_id { get; set; }
-        public Nullable<int> version { get; set; }
-        public byte[] definition { get; set; }
+        public string UserId { get; set; }
+        public string RoleId { get; set; }
+        public string IdentityUser_Id { get; set; }
+    
+        public virtual Membership_Roles Membership_Roles { get; set; }
+        public virtual Membership_Users Membership_Users { get; set; }
     }
 }

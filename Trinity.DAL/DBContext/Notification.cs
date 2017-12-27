@@ -23,7 +23,7 @@ namespace Trinity.DAL.DBContext
         public bool IsRead { get; set; }
         public Nullable<bool> IsFromSupervisee { get; set; }
     
-        public virtual User User { get; set; }
-        public virtual User User1 { get; set; }
+        public virtual Membership_Users Membership_Users { get; set; }
+        public virtual Membership_Users Membership_Users1 { get; set; }
     }
 }

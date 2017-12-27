@@ -31,7 +31,7 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
           <Property Name="ApplicationType" Type="varchar" MaxLength="10" Nullable="false" />
           <Property Name="DeviceID" Type="int" />
           <Property Name="StatusCode" Type="int" Nullable="false" />
@@ -79,6 +79,45 @@
           <Property Name="IsSingHoliday" Type="bit" Nullable="false" />
           <Property Name="IsMalayHoliday" Type="bit" />
         </EntityType>
+        <EntityType Name="Membership_Roles">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="256" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Membership_UserRoles">
+          <Key>
+            <PropertyRef Name="UserId" />
+            <PropertyRef Name="RoleId" />
+          </Key>
+          <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="RoleId" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="IdentityUser_Id" Type="nvarchar" MaxLength="128" />
+        </EntityType>
+        <EntityType Name="Membership_Users">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="Email" Type="nvarchar" MaxLength="256" />
+          <Property Name="EmailConfirmed" Type="bit" Nullable="false" />
+          <Property Name="PasswordHash" Type="nvarchar(max)" />
+          <Property Name="SecurityStamp" Type="nvarchar(max)" />
+          <Property Name="PhoneNumber" Type="nvarchar(max)" />
+          <Property Name="PhoneNumberConfirmed" Type="bit" Nullable="false" />
+          <Property Name="TwoFactorEnabled" Type="bit" Nullable="false" />
+          <Property Name="LockoutEndDateUtc" Type="datetime" />
+          <Property Name="LockoutEnabled" Type="bit" />
+          <Property Name="AccessFailedCount" Type="int" Nullable="false" />
+          <Property Name="UserName" Type="nvarchar" MaxLength="256" Nullable="false" />
+          <Property Name="Discriminator" Type="nvarchar" MaxLength="128" />
+          <Property Name="NRIC" Type="nvarchar" MaxLength="20" />
+          <Property Name="Name" Type="nvarchar" MaxLength="128" />
+          <Property Name="SmartCardId" Type="nvarchar" MaxLength="50" />
+          <Property Name="Fingerprint" Type="varbinary(max)" />
+          <Property Name="Status" Type="varchar" MaxLength="20" />
+        </EntityType>
         <EntityType Name="Notifications">
           <Key>
             <PropertyRef Name="ID" />
@@ -100,7 +139,7 @@
           <Property Name="QueuedNumber" Type="varchar" MaxLength="10" Nullable="false" />
           <Property Name="Appointment_ID" Type="uniqueidentifier" Nullable="false" />
           <Property Name="CreatedTime" Type="datetime" Nullable="false" />
-          <Property Name="Status" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="Status" Type="varchar" MaxLength="20" Nullable="false" />
         </EntityType>
         <EntityType Name="User_Profiles">
           <Key>
@@ -132,20 +171,6 @@
           <Property Name="Employment_End_Date" Type="date" />
           <Property Name="Employment_Remarks" Type="nvarchar" MaxLength="255" />
         </EntityType>
-        <EntityType Name="Users">
-          <Key>
-            <PropertyRef Name="UserId" />
-          </Key>
-          <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
-          <Property Name="NRIC" Type="nvarchar" MaxLength="20" />
-          <Property Name="Name" Type="nvarchar" MaxLength="128" />
-          <Property Name="LastLoginTime" Type="datetime" />
-          <Property Name="SmartCardId" Type="nvarchar" MaxLength="50" />
-          <Property Name="EnrolledDate" Type="datetime" />
-          <Property Name="Role" Type="smallint" />
-          <Property Name="Fingerprint" Type="varbinary(max)" />
-          <Property Name="Status" Type="varchar" MaxLength="10" />
-        </EntityType>
         <Association Name="FK_Appointments_AbsenceReporting">
           <End Role="AbsenceReporting" Type="Self.AbsenceReporting" Multiplicity="0..1" />
           <End Role="Appointments" Type="Self.Appointments" Multiplicity="*" />
@@ -158,11 +183,11 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Appointments_Users">
-          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+        <Association Name="FK_Appointments_Membership_Users">
+          <End Role="Membership_Users" Type="Self.Membership_Users" Multiplicity="1" />
           <End Role="Appointments" Type="Self.Appointments" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Users">
+            <Principal Role="Membership_Users">
               <PropertyRef Name="UserId" />
             </Principal>
             <Dependent Role="Appointments">
@@ -170,27 +195,55 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Notifications_User">
-          <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
-          <End Role="Notifications" Type="Self.Notifications" Multiplicity="*" />
+        <Association Name="FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId">
+          <End Role="Membership_Roles" Type="Self.Membership_Roles" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Membership_UserRoles" Type="Self.Membership_UserRoles" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Users">
-              <PropertyRef Name="UserId" />
+            <Principal Role="Membership_Roles">
+              <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="Notifications">
-              <PropertyRef Name="FromUserId" />
+            <Dependent Role="Membership_UserRoles">
+              <PropertyRef Name="RoleId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Notifications_User1">
-          <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
+        <Association Name="FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId">
+          <End Role="Membership_Users" Type="Self.Membership_Users" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Membership_UserRoles" Type="Self.Membership_UserRoles" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Membership_Users">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="Membership_UserRoles">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Notifications_Membership_Users">
+          <End Role="Membership_Users" Type="Self.Membership_Users" Multiplicity="0..1" />
           <End Role="Notifications" Type="Self.Notifications" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Users">
+            <Principal Role="Membership_Users">
               <PropertyRef Name="UserId" />
             </Principal>
             <Dependent Role="Notifications">
               <PropertyRef Name="ToUserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Notifications_Membership_Users1">
+          <End Role="Membership_Users" Type="Self.Membership_Users" Multiplicity="0..1" />
+          <End Role="Notifications" Type="Self.Notifications" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Membership_Users">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="Notifications">
+              <PropertyRef Name="FromUserId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -230,11 +283,11 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_User_Profiles_Users">
-          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+        <Association Name="FK_User_Profiles_Membership_Users">
+          <End Role="Membership_Users" Type="Self.Membership_Users" Multiplicity="1" />
           <End Role="User_Profiles" Type="Self.User_Profiles" Multiplicity="0..1" />
           <ReferentialConstraint>
-            <Principal Role="Users">
+            <Principal Role="Membership_Users">
               <PropertyRef Name="UserId" />
             </Principal>
             <Dependent Role="User_Profiles">
@@ -250,24 +303,34 @@
           <EntitySet Name="Devices" EntityType="Self.Devices" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Environment" EntityType="Self.Environment" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Holidays" EntityType="Self.Holidays" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Membership_Roles" EntityType="Self.Membership_Roles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Membership_UserRoles" EntityType="Self.Membership_UserRoles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Membership_Users" EntityType="Self.Membership_Users" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Notifications" EntityType="Self.Notifications" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="QueueNumbers" EntityType="Self.QueueNumbers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User_Profiles" EntityType="Self.User_Profiles" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_Appointments_AbsenceReporting" Association="Self.FK_Appointments_AbsenceReporting">
             <End Role="AbsenceReporting" EntitySet="AbsenceReporting" />
             <End Role="Appointments" EntitySet="Appointments" />
           </AssociationSet>
-          <AssociationSet Name="FK_Appointments_Users" Association="Self.FK_Appointments_Users">
-            <End Role="Users" EntitySet="Users" />
+          <AssociationSet Name="FK_Appointments_Membership_Users" Association="Self.FK_Appointments_Membership_Users">
+            <End Role="Membership_Users" EntitySet="Membership_Users" />
             <End Role="Appointments" EntitySet="Appointments" />
           </AssociationSet>
-          <AssociationSet Name="FK_Notifications_User" Association="Self.FK_Notifications_User">
-            <End Role="Users" EntitySet="Users" />
+          <AssociationSet Name="FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId" Association="Self.FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId">
+            <End Role="Membership_Roles" EntitySet="Membership_Roles" />
+            <End Role="Membership_UserRoles" EntitySet="Membership_UserRoles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId">
+            <End Role="Membership_Users" EntitySet="Membership_Users" />
+            <End Role="Membership_UserRoles" EntitySet="Membership_UserRoles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Notifications_Membership_Users" Association="Self.FK_Notifications_Membership_Users">
+            <End Role="Membership_Users" EntitySet="Membership_Users" />
             <End Role="Notifications" EntitySet="Notifications" />
           </AssociationSet>
-          <AssociationSet Name="FK_Notifications_User1" Association="Self.FK_Notifications_User1">
-            <End Role="Users" EntitySet="Users" />
+          <AssociationSet Name="FK_Notifications_Membership_Users1" Association="Self.FK_Notifications_Membership_Users1">
+            <End Role="Membership_Users" EntitySet="Membership_Users" />
             <End Role="Notifications" EntitySet="Notifications" />
           </AssociationSet>
           <AssociationSet Name="FK_QueueNumbers_Appointments1" Association="Self.FK_QueueNumbers_Appointments1">
@@ -282,8 +345,8 @@
             <End Role="Addresses" EntitySet="Addresses" />
             <End Role="User_Profiles" EntitySet="User_Profiles" />
           </AssociationSet>
-          <AssociationSet Name="FK_User_Profiles_Users" Association="Self.FK_User_Profiles_Users">
-            <End Role="Users" EntitySet="Users" />
+          <AssociationSet Name="FK_User_Profiles_Membership_Users" Association="Self.FK_User_Profiles_Membership_Users">
+            <End Role="Membership_Users" EntitySet="Membership_Users" />
             <End Role="User_Profiles" EntitySet="User_Profiles" />
           </AssociationSet>
         </EntityContainer>
@@ -294,15 +357,16 @@
         <EntityContainer Name="TrinityCentralizedDBEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="AbsenceReportings" EntityType="TrinityCentralizedDBModel.AbsenceReporting" />
           <EntitySet Name="Addresses" EntityType="TrinityCentralizedDBModel.Address" />
-          <EntitySet Name="ApplicationDevice_Status" EntityType="TrinityCentralizedDBModel.ApplicationDevice_Status" />
           <EntitySet Name="Appointments" EntityType="TrinityCentralizedDBModel.Appointment" />
           <EntitySet Name="Devices" EntityType="TrinityCentralizedDBModel.Device" />
           <EntitySet Name="Environments" EntityType="TrinityCentralizedDBModel.Environment" />
           <EntitySet Name="Holidays" EntityType="TrinityCentralizedDBModel.Holiday" />
+          <EntitySet Name="Membership_Roles" EntityType="TrinityCentralizedDBModel.Membership_Roles" />
+          <EntitySet Name="Membership_UserRoles" EntityType="TrinityCentralizedDBModel.Membership_UserRoles" />
+          <EntitySet Name="Membership_Users" EntityType="TrinityCentralizedDBModel.Membership_Users" />
           <EntitySet Name="Notifications" EntityType="TrinityCentralizedDBModel.Notification" />
           <EntitySet Name="QueueNumbers" EntityType="TrinityCentralizedDBModel.QueueNumber" />
           <EntitySet Name="User_Profiles" EntityType="TrinityCentralizedDBModel.User_Profiles" />
-          <EntitySet Name="Users" EntityType="TrinityCentralizedDBModel.User" />
           <AssociationSet Name="FK_Appointments_AbsenceReporting" Association="TrinityCentralizedDBModel.FK_Appointments_AbsenceReporting">
             <End Role="AbsenceReporting" EntitySet="AbsenceReportings" />
             <End Role="Appointment" EntitySet="Appointments" />
@@ -315,26 +379,35 @@
             <End Role="Address" EntitySet="Addresses" />
             <End Role="User_Profiles" EntitySet="User_Profiles" />
           </AssociationSet>
-          <AssociationSet Name="FK_Appointments_Users" Association="TrinityCentralizedDBModel.FK_Appointments_Users">
-            <End Role="User" EntitySet="Users" />
+          <AssociationSet Name="FK_Appointments_Membership_Users" Association="TrinityCentralizedDBModel.FK_Appointments_Membership_Users">
+            <End Role="Membership_Users" EntitySet="Membership_Users" />
             <End Role="Appointment" EntitySet="Appointments" />
           </AssociationSet>
           <AssociationSet Name="FK_QueueNumbers_Appointments1" Association="TrinityCentralizedDBModel.FK_QueueNumbers_Appointments1">
             <End Role="Appointment" EntitySet="Appointments" />
             <End Role="QueueNumber" EntitySet="QueueNumbers" />
           </AssociationSet>
-          <AssociationSet Name="FK_Notifications_User" Association="TrinityCentralizedDBModel.FK_Notifications_User">
-            <End Role="User" EntitySet="Users" />
+          <AssociationSet Name="FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId" Association="TrinityCentralizedDBModel.FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId">
+            <End Role="Membership_Roles" EntitySet="Membership_Roles" />
+            <End Role="Membership_UserRoles" EntitySet="Membership_UserRoles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId" Association="TrinityCentralizedDBModel.FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId">
+            <End Role="Membership_Users" EntitySet="Membership_Users" />
+            <End Role="Membership_UserRoles" EntitySet="Membership_UserRoles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Notifications_Membership_Users" Association="TrinityCentralizedDBModel.FK_Notifications_Membership_Users">
+            <End Role="Membership_Users" EntitySet="Membership_Users" />
             <End Role="Notification" EntitySet="Notifications" />
           </AssociationSet>
-          <AssociationSet Name="FK_Notifications_User1" Association="TrinityCentralizedDBModel.FK_Notifications_User1">
-            <End Role="User" EntitySet="Users" />
+          <AssociationSet Name="FK_Notifications_Membership_Users1" Association="TrinityCentralizedDBModel.FK_Notifications_Membership_Users1">
+            <End Role="Membership_Users" EntitySet="Membership_Users" />
             <End Role="Notification" EntitySet="Notifications" />
           </AssociationSet>
-          <AssociationSet Name="FK_User_Profiles_Users" Association="TrinityCentralizedDBModel.FK_User_Profiles_Users">
-            <End Role="User" EntitySet="Users" />
+          <AssociationSet Name="FK_User_Profiles_Membership_Users" Association="TrinityCentralizedDBModel.FK_User_Profiles_Membership_Users">
+            <End Role="Membership_Users" EntitySet="Membership_Users" />
             <End Role="User_Profiles" EntitySet="User_Profiles" />
           </AssociationSet>
+          <EntitySet Name="ApplicationDevice_Status" EntityType="TrinityCentralizedDBModel.ApplicationDevice_Status" />
         </EntityContainer>
         <EntityType Name="AbsenceReporting">
           <Key>
@@ -361,16 +434,6 @@
           <NavigationProperty Name="User_Profiles" Relationship="TrinityCentralizedDBModel.FK_User_Profiles_Addresses" FromRole="Address" ToRole="User_Profiles" />
           <NavigationProperty Name="User_Profiles1" Relationship="TrinityCentralizedDBModel.FK_User_Profiles_Addresses1" FromRole="Address" ToRole="User_Profiles" />
         </EntityType>
-        <EntityType Name="ApplicationDevice_Status">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" />
-          <Property Name="ApplicationType" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="DeviceID" Type="Int32" />
-          <Property Name="StatusCode" Type="Int32" Nullable="false" />
-          <Property Name="StatusMessage" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
-        </EntityType>
         <EntityType Name="Appointment">
           <Key>
             <PropertyRef Name="ID" />
@@ -384,7 +447,7 @@
           <Property Name="ChangedCount" Type="Int16" Nullable="false" />
           <Property Name="Status" Type="Int32" Nullable="false" />
           <NavigationProperty Name="AbsenceReporting" Relationship="TrinityCentralizedDBModel.FK_Appointments_AbsenceReporting" FromRole="Appointment" ToRole="AbsenceReporting" />
-          <NavigationProperty Name="User" Relationship="TrinityCentralizedDBModel.FK_Appointments_Users" FromRole="Appointment" ToRole="User" />
+          <NavigationProperty Name="Membership_Users" Relationship="TrinityCentralizedDBModel.FK_Appointments_Membership_Users" FromRole="Appointment" ToRole="Membership_Users" />
           <NavigationProperty Name="QueueNumbers" Relationship="TrinityCentralizedDBModel.FK_QueueNumbers_Appointments1" FromRole="Appointment" ToRole="QueueNumber" />
         </EntityType>
         <EntityType Name="Device">
@@ -416,6 +479,53 @@
           <Property Name="IsSingHoliday" Type="Boolean" Nullable="false" />
           <Property Name="IsMalayHoliday" Type="Boolean" />
         </EntityType>
+        <EntityType Name="Membership_Roles">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Membership_UserRoles" Relationship="TrinityCentralizedDBModel.FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId" FromRole="Membership_Roles" ToRole="Membership_UserRoles" />
+        </EntityType>
+        <EntityType Name="Membership_UserRoles">
+          <Key>
+            <PropertyRef Name="UserId" />
+            <PropertyRef Name="RoleId" />
+          </Key>
+          <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="RoleId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="IdentityUser_Id" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Membership_Roles" Relationship="TrinityCentralizedDBModel.FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId" FromRole="Membership_UserRoles" ToRole="Membership_Roles" />
+          <NavigationProperty Name="Membership_Users" Relationship="TrinityCentralizedDBModel.FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId" FromRole="Membership_UserRoles" ToRole="Membership_Users" />
+        </EntityType>
+        <EntityType Name="Membership_Users">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Name="EmailConfirmed" Type="Boolean" Nullable="false" />
+          <Property Name="PasswordHash" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SecurityStamp" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="PhoneNumber" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="PhoneNumberConfirmed" Type="Boolean" Nullable="false" />
+          <Property Name="TwoFactorEnabled" Type="Boolean" Nullable="false" />
+          <Property Name="LockoutEndDateUtc" Type="DateTime" Precision="3" />
+          <Property Name="LockoutEnabled" Type="Boolean" />
+          <Property Name="AccessFailedCount" Type="Int32" Nullable="false" />
+          <Property Name="UserName" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Name="Discriminator" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="NRIC" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="SmartCardId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Fingerprint" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="Status" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Appointments" Relationship="TrinityCentralizedDBModel.FK_Appointments_Membership_Users" FromRole="Membership_Users" ToRole="Appointment" />
+          <NavigationProperty Name="Membership_UserRoles" Relationship="TrinityCentralizedDBModel.FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId" FromRole="Membership_Users" ToRole="Membership_UserRoles" />
+          <NavigationProperty Name="Notifications" Relationship="TrinityCentralizedDBModel.FK_Notifications_Membership_Users" FromRole="Membership_Users" ToRole="Notification" />
+          <NavigationProperty Name="Notifications1" Relationship="TrinityCentralizedDBModel.FK_Notifications_Membership_Users1" FromRole="Membership_Users" ToRole="Notification" />
+          <NavigationProperty Name="User_Profiles" Relationship="TrinityCentralizedDBModel.FK_User_Profiles_Membership_Users" FromRole="Membership_Users" ToRole="User_Profiles" />
+        </EntityType>
         <EntityType Name="Notification">
           <Key>
             <PropertyRef Name="ID" />
@@ -428,8 +538,8 @@
           <Property Name="Content" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="IsRead" Type="Boolean" Nullable="false" />
           <Property Name="IsFromSupervisee" Type="Boolean" />
-          <NavigationProperty Name="User" Relationship="TrinityCentralizedDBModel.FK_Notifications_User" FromRole="Notification" ToRole="User" />
-          <NavigationProperty Name="User1" Relationship="TrinityCentralizedDBModel.FK_Notifications_User1" FromRole="Notification" ToRole="User" />
+          <NavigationProperty Name="Membership_Users" Relationship="TrinityCentralizedDBModel.FK_Notifications_Membership_Users" FromRole="Notification" ToRole="Membership_Users" />
+          <NavigationProperty Name="Membership_Users1" Relationship="TrinityCentralizedDBModel.FK_Notifications_Membership_Users1" FromRole="Notification" ToRole="Membership_Users" />
         </EntityType>
         <EntityType Name="QueueNumber">
           <Key>
@@ -439,7 +549,7 @@
           <Property Name="QueuedNumber" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="Appointment_ID" Type="Guid" Nullable="false" />
           <Property Name="CreatedTime" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="Status" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="Status" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="Appointment" Relationship="TrinityCentralizedDBModel.FK_QueueNumbers_Appointments1" FromRole="QueueNumber" ToRole="Appointment" />
         </EntityType>
         <EntityType Name="User_Profiles">
@@ -473,25 +583,7 @@
           <Property Name="Employment_Remarks" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Address" Relationship="TrinityCentralizedDBModel.FK_User_Profiles_Addresses" FromRole="User_Profiles" ToRole="Address" />
           <NavigationProperty Name="Address1" Relationship="TrinityCentralizedDBModel.FK_User_Profiles_Addresses1" FromRole="User_Profiles" ToRole="Address" />
-          <NavigationProperty Name="User" Relationship="TrinityCentralizedDBModel.FK_User_Profiles_Users" FromRole="User_Profiles" ToRole="User" />
-        </EntityType>
-        <EntityType Name="User">
-          <Key>
-            <PropertyRef Name="UserId" />
-          </Key>
-          <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="NRIC" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="Name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="LastLoginTime" Type="DateTime" Precision="3" />
-          <Property Name="SmartCardId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="EnrolledDate" Type="DateTime" Precision="3" />
-          <Property Name="Role" Type="Int16" />
-          <Property Name="Fingerprint" Type="Binary" MaxLength="Max" FixedLength="false" />
-          <Property Name="Status" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Appointments" Relationship="TrinityCentralizedDBModel.FK_Appointments_Users" FromRole="User" ToRole="Appointment" />
-          <NavigationProperty Name="Notifications" Relationship="TrinityCentralizedDBModel.FK_Notifications_User" FromRole="User" ToRole="Notification" />
-          <NavigationProperty Name="Notifications1" Relationship="TrinityCentralizedDBModel.FK_Notifications_User1" FromRole="User" ToRole="Notification" />
-          <NavigationProperty Name="User_Profiles" Relationship="TrinityCentralizedDBModel.FK_User_Profiles_Users" FromRole="User" ToRole="User_Profiles" />
+          <NavigationProperty Name="Membership_Users" Relationship="TrinityCentralizedDBModel.FK_User_Profiles_Membership_Users" FromRole="User_Profiles" ToRole="Membership_Users" />
         </EntityType>
         <Association Name="FK_Appointments_AbsenceReporting">
           <End Type="TrinityCentralizedDBModel.AbsenceReporting" Role="AbsenceReporting" Multiplicity="0..1" />
@@ -529,11 +621,11 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Appointments_Users">
-          <End Type="TrinityCentralizedDBModel.User" Role="User" Multiplicity="1" />
+        <Association Name="FK_Appointments_Membership_Users">
+          <End Type="TrinityCentralizedDBModel.Membership_Users" Role="Membership_Users" Multiplicity="1" />
           <End Type="TrinityCentralizedDBModel.Appointment" Role="Appointment" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="User">
+            <Principal Role="Membership_Users">
               <PropertyRef Name="UserId" />
             </Principal>
             <Dependent Role="Appointment">
@@ -553,23 +645,39 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Notifications_User">
-          <End Type="TrinityCentralizedDBModel.User" Role="User" Multiplicity="0..1" />
-          <End Type="TrinityCentralizedDBModel.Notification" Role="Notification" Multiplicity="*" />
+        <Association Name="FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId">
+          <End Type="TrinityCentralizedDBModel.Membership_Roles" Role="Membership_Roles" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="TrinityCentralizedDBModel.Membership_UserRoles" Role="Membership_UserRoles" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="User">
-              <PropertyRef Name="UserId" />
+            <Principal Role="Membership_Roles">
+              <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="Notification">
-              <PropertyRef Name="FromUserId" />
+            <Dependent Role="Membership_UserRoles">
+              <PropertyRef Name="RoleId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Notifications_User1">
-          <End Type="TrinityCentralizedDBModel.User" Role="User" Multiplicity="0..1" />
+        <Association Name="FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId">
+          <End Type="TrinityCentralizedDBModel.Membership_Users" Role="Membership_Users" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="TrinityCentralizedDBModel.Membership_UserRoles" Role="Membership_UserRoles" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Membership_Users">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="Membership_UserRoles">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Notifications_Membership_Users">
+          <End Type="TrinityCentralizedDBModel.Membership_Users" Role="Membership_Users" Multiplicity="0..1" />
           <End Type="TrinityCentralizedDBModel.Notification" Role="Notification" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="User">
+            <Principal Role="Membership_Users">
               <PropertyRef Name="UserId" />
             </Principal>
             <Dependent Role="Notification">
@@ -577,11 +685,23 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_User_Profiles_Users">
-          <End Type="TrinityCentralizedDBModel.User" Role="User" Multiplicity="1" />
+        <Association Name="FK_Notifications_Membership_Users1">
+          <End Type="TrinityCentralizedDBModel.Membership_Users" Role="Membership_Users" Multiplicity="0..1" />
+          <End Type="TrinityCentralizedDBModel.Notification" Role="Notification" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Membership_Users">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="Notification">
+              <PropertyRef Name="FromUserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_User_Profiles_Membership_Users">
+          <End Type="TrinityCentralizedDBModel.Membership_Users" Role="Membership_Users" Multiplicity="1" />
           <End Type="TrinityCentralizedDBModel.User_Profiles" Role="User_Profiles" Multiplicity="0..1" />
           <ReferentialConstraint>
-            <Principal Role="User">
+            <Principal Role="Membership_Users">
               <PropertyRef Name="UserId" />
             </Principal>
             <Dependent Role="User_Profiles">
@@ -589,6 +709,16 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="ApplicationDevice_Status">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="ApplicationType" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="DeviceID" Type="Int32" />
+          <Property Name="StatusCode" Type="Int32" Nullable="false" />
+          <Property Name="StatusMessage" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -616,17 +746,6 @@
                 <ScalarProperty Name="BlkHouse_Number" ColumnName="BlkHouse_Number" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Address_ID" ColumnName="Address_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="ApplicationDevice_Status">
-            <EntityTypeMapping TypeName="TrinityCentralizedDBModel.ApplicationDevice_Status">
-              <MappingFragment StoreEntitySet="ApplicationDevice_Status">
-                <ScalarProperty Name="StatusMessage" ColumnName="StatusMessage" />
-                <ScalarProperty Name="StatusCode" ColumnName="StatusCode" />
-                <ScalarProperty Name="DeviceID" ColumnName="DeviceID" />
-                <ScalarProperty Name="ApplicationType" ColumnName="ApplicationType" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -670,6 +789,47 @@
                 <ScalarProperty Name="IsMalayHoliday" ColumnName="IsMalayHoliday" />
                 <ScalarProperty Name="IsSingHoliday" ColumnName="IsSingHoliday" />
                 <ScalarProperty Name="Holiday1" ColumnName="Holiday" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Membership_Roles">
+            <EntityTypeMapping TypeName="TrinityCentralizedDBModel.Membership_Roles">
+              <MappingFragment StoreEntitySet="Membership_Roles">
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Membership_UserRoles">
+            <EntityTypeMapping TypeName="TrinityCentralizedDBModel.Membership_UserRoles">
+              <MappingFragment StoreEntitySet="Membership_UserRoles">
+                <ScalarProperty Name="IdentityUser_Id" ColumnName="IdentityUser_Id" />
+                <ScalarProperty Name="RoleId" ColumnName="RoleId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Membership_Users">
+            <EntityTypeMapping TypeName="TrinityCentralizedDBModel.Membership_Users">
+              <MappingFragment StoreEntitySet="Membership_Users">
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Fingerprint" ColumnName="Fingerprint" />
+                <ScalarProperty Name="SmartCardId" ColumnName="SmartCardId" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="NRIC" ColumnName="NRIC" />
+                <ScalarProperty Name="Discriminator" ColumnName="Discriminator" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="AccessFailedCount" ColumnName="AccessFailedCount" />
+                <ScalarProperty Name="LockoutEnabled" ColumnName="LockoutEnabled" />
+                <ScalarProperty Name="LockoutEndDateUtc" ColumnName="LockoutEndDateUtc" />
+                <ScalarProperty Name="TwoFactorEnabled" ColumnName="TwoFactorEnabled" />
+                <ScalarProperty Name="PhoneNumberConfirmed" ColumnName="PhoneNumberConfirmed" />
+                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
+                <ScalarProperty Name="SecurityStamp" ColumnName="SecurityStamp" />
+                <ScalarProperty Name="PasswordHash" ColumnName="PasswordHash" />
+                <ScalarProperty Name="EmailConfirmed" ColumnName="EmailConfirmed" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -729,18 +889,14 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Users">
-            <EntityTypeMapping TypeName="TrinityCentralizedDBModel.User">
-              <MappingFragment StoreEntitySet="Users">
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="Fingerprint" ColumnName="Fingerprint" />
-                <ScalarProperty Name="Role" ColumnName="Role" />
-                <ScalarProperty Name="EnrolledDate" ColumnName="EnrolledDate" />
-                <ScalarProperty Name="SmartCardId" ColumnName="SmartCardId" />
-                <ScalarProperty Name="LastLoginTime" ColumnName="LastLoginTime" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="NRIC" ColumnName="NRIC" />
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
+          <EntitySetMapping Name="ApplicationDevice_Status">
+            <EntityTypeMapping TypeName="TrinityCentralizedDBModel.ApplicationDevice_Status">
+              <MappingFragment StoreEntitySet="ApplicationDevice_Status">
+                <ScalarProperty Name="StatusMessage" ColumnName="StatusMessage" />
+                <ScalarProperty Name="StatusCode" ColumnName="StatusCode" />
+                <ScalarProperty Name="DeviceID" ColumnName="DeviceID" />
+                <ScalarProperty Name="ApplicationType" ColumnName="ApplicationType" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
