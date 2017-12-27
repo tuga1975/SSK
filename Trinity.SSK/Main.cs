@@ -166,7 +166,7 @@ namespace SSK
         private void NRIC_OnNRICSucceeded()
         {
             // navigate to Supervisee page
-            NavigateTo(NavigatorEnums.Supervisee_NRIC);
+            NavigateTo(NavigatorEnums.Supervisee);
         }
 
         private void Fingerprint_OnFingerprintSucceeded()
@@ -298,7 +298,6 @@ namespace SSK
                 }
                 catch (System.IO.FileNotFoundException ex)
                 {
-
                     Console.WriteLine("File missing:\n");
                     Console.WriteLine(ex.FileName);
                 }
@@ -310,11 +309,6 @@ namespace SSK
             else if (navigatorEnum == NavigatorEnums.Supervisee)
             {
                 _suppervisee.Start();
-            }
-            else if (navigatorEnum == NavigatorEnums.Supervisee_NRIC)
-            {
-                _suppervisee.Start();
-                CSCallJS.DisplayNRICLogin(LayerWeb);
             }
 
             // set current page
