@@ -900,6 +900,17 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="ApplicationDevice_Status">
+            <EntityTypeMapping TypeName="TrinityCentralizedDBModel.ApplicationDevice_Status">
+              <MappingFragment StoreEntitySet="ApplicationDevice_Status">
+                <ScalarProperty Name="StatusMessage" ColumnName="StatusMessage" />
+                <ScalarProperty Name="StatusCode" ColumnName="StatusCode" />
+                <ScalarProperty Name="DeviceID" ColumnName="DeviceID" />
+                <ScalarProperty Name="ApplicationType" ColumnName="ApplicationType" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

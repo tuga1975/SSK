@@ -86,27 +86,26 @@ namespace SSK.CodeBehind.Authentication
         public void NRICAuthentication(string nric)
         {
             DAL_User dal_User = new DAL_User();
-            var user = dal_User.GetSuperviseeByNRIC(nric, true);
+            var supervisee = dal_User.GetSuperviseeByNRIC(nric, true);
 
             // if local user is null, get user from centralized, and sync db
-            if (user == null)
+            if (supervisee == null)
             {
-                user = dal_User.GetSuperviseeByNRIC(nric, false);
+                supervisee = dal_User.GetSuperviseeByNRIC(nric, false);
             }
 
             // if centralized user is null
             // raise failsed event and return false
-            if (user == null)
+            if (supervisee == null)
             {
                 // raise show message event, then return
                 RaiseShowMessage(new ShowMessageEventArgs("NRIC " + nric + ": not found. Please check NRIC again.", "Not found", MessageBoxButtons.OK, MessageBoxIcon.Warning));
                 return;
             }
 
-            // Create a session object to store UserLogin information
+            // Create a session object to store Suppervisee information
             Session session = Session.Instance;
-            session[CommonConstants.USER_LOGIN] = user;
-
+            session[CommonConstants.SUPERVISEE] = supervisee;
             // raise succeeded event
             RaiseNRICSucceededEvent();
         }

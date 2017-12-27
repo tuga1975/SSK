@@ -11,15 +11,15 @@ using Trinity.Common.Utils;
 
 namespace SSA.CodeBehind
 {
-    public class PrintTTLabel
+    public class PrintMUBAndTTLabels
     {
-        public event Action OnPrintTTLabelSucceeded;
-        public event EventHandler<PrintTTLabelEventArgs> OnPrintTTLabelFailed;
-        public event EventHandler<ExceptionArgs> OnPrintTTLabelException;
+        public event Action OnPrintMUBAndTTLabelsSucceeded;
+        public event EventHandler<PrintMUBAndTTLabelsEventArgs> OnPrintMUBAndTTLabelsFailed;
+        public event EventHandler<ExceptionArgs> OnPrintMUBAndTTLabelsException;
 
         WebBrowser _web;
 
-        public PrintTTLabel(WebBrowser web)
+        public PrintMUBAndTTLabels(WebBrowser web)
         {
             _web = web;
         }
@@ -30,9 +30,11 @@ namespace SSA.CodeBehind
             this._web.LoadPageHtml("PrintingMUBAndTTLabels.html");
             this._web.RunScript("$('.status-text').css('color','#000').text('Please wait');");
 
+            System.Threading.Thread.Sleep(1500);
+
             PrinterMonitor printerMonitor = PrinterMonitor.Instance;
-            printerMonitor.OnPrintLabelSucceeded += RaisePrintTTLabelSucceededEvent;
-            printerMonitor.OnMonitorException += OnPrintTTLabelException;
+            printerMonitor.OnPrintLabelSucceeded += RaisePrintMUBAndTTLabelsSucceededEvent;
+            printerMonitor.OnMonitorException += OnPrintMUBAndTTLabelsException;
             
             BarcodePrinterUtils barcodeScannerUtils = BarcodePrinterUtils.Instance;           
 
@@ -49,41 +51,34 @@ namespace SSA.CodeBehind
                     NRIC = user.NRIC,
                     DOB = dalUserprofile.GetUserProfileByUserId(user.UserId, true).DOB.ToString()
                 };
-                        
-                // Print BarCode
-                //if (barcodeScannerUtils.GetDeviceStatus().Connected)
-                //{
-                //    printerMonitor.PrintLabel(userInfo);
-                //}
-                //else
-                //{
-                //    Console.WriteLine("Barcode printer is not connected.");
-                //}
-                
-                // Print QR Code
 
-                if (barcodeScannerUtils.PrintQRCodeUserInfo(userInfo))
+                // Print BarCode and QR Code
+                foreach (var item in barcodeScannerUtils.GetDeviceStatus())
                 {
-                    // raise succeeded event
-                    RaisePrintTTLabelSucceededEvent();
-                    //Retrieve and verify correct MUB and TT 
+                    if (item == EnumDeviceStatuses.Connected)
+                    {
+                        printerMonitor.PrintLabel(userInfo);
+                    }
+                    else
+                    {
+                        RaisePrintMUBAndTTLabelsFailedEvent(new PrintMUBAndTTLabelsEventArgs("Printer have problem: " + item));
+                        APIUtils.SignalR.SendNotificationToDutyOfficer("A supervisee can't print label", "Printer have problem: " + item);
+                        Console.WriteLine("Barcode printer is not connected.");
+                    }
                 }
-                else
-                {
-                    RaisePrintTTLabelFailedEvent(new PrintTTLabelEventArgs("Can't print label !"));
-                }
+                
             }
         }
 
 
         // Wrap event invocations inside a protected virtual method
         // to allow derived classes to override the event invocation behavior
-        protected virtual void RaisePrintTTLabelSucceededEvent()
+        protected virtual void RaisePrintMUBAndTTLabelsSucceededEvent()
         {
             // Make a temporary copy of the event to avoid possibility of
             // a race condition if the last subscriber unsubscribes
             // immediately after the null check and before the event is raised.
-            Action handler = OnPrintTTLabelSucceeded;
+            Action handler = OnPrintMUBAndTTLabelsSucceeded;
 
             // Event will be null if there are no subscribers
             if (handler != null)
@@ -94,12 +89,12 @@ namespace SSA.CodeBehind
         }
 
 
-        protected virtual void RaisePrintTTLabelFailedEvent(PrintTTLabelEventArgs e)
+        protected virtual void RaisePrintMUBAndTTLabelsFailedEvent(PrintMUBAndTTLabelsEventArgs e)
         {
             // Make a temporary copy of the event to avoid possibility of
             // a race condition if the last subscriber unsubscribes
             // immediately after the null check and before the event is raised.
-            EventHandler<PrintTTLabelEventArgs> handler = OnPrintTTLabelFailed;
+            EventHandler<PrintMUBAndTTLabelsEventArgs> handler = OnPrintMUBAndTTLabelsFailed;
 
             // Event will be null if there are no subscribers
             if (handler != null)
@@ -109,20 +104,20 @@ namespace SSA.CodeBehind
             }
         }
 
-        protected virtual void RaisePrintTTLabelExceptionEvent(ExceptionArgs e)
+        protected virtual void RaisePrintMUBAndTTLabelsExceptionEvent(ExceptionArgs e)
         {
             // Make a temporary copy of the event to avoid possibility of
             // a race condition if the last subscriber unsubscribes
             // immediately after the null check and before the event is raised.
-            OnPrintTTLabelException?.Invoke(this, e);
+            OnPrintMUBAndTTLabelsException?.Invoke(this, e);
         }
     }
 
     #region Custom Events
-    public class PrintTTLabelEventArgs : EventArgs
+    public class PrintMUBAndTTLabelsEventArgs : EventArgs
     {
         private string _message;
-        public PrintTTLabelEventArgs(string message)
+        public PrintMUBAndTTLabelsEventArgs(string message)
         {
             _message = message;
         }
