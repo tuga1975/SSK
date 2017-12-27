@@ -318,6 +318,10 @@
       <Project>{344f2633-3277-44c5-a55e-b66f920cca14}</Project>
       <Name>Trinity.DAL</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Trinity.SSA\Trinity.SSA.csproj">
+      <Project>{B859C82A-D53C-4C65-BADE-C8D8AD6107C8}</Project>
+      <Name>Trinity.SSA</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
