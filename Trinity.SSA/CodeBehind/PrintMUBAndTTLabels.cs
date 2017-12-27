@@ -30,6 +30,8 @@ namespace SSA.CodeBehind
             this._web.LoadPageHtml("PrintingMUBAndTTLabels.html");
             this._web.RunScript("$('.status-text').css('color','#000').text('Please wait');");
 
+            System.Threading.Thread.Sleep(1500);
+
             PrinterMonitor printerMonitor = PrinterMonitor.Instance;
             printerMonitor.OnPrintLabelSucceeded += RaisePrintMUBAndTTLabelsSucceededEvent;
             printerMonitor.OnMonitorException += OnPrintMUBAndTTLabelsException;
@@ -50,28 +52,21 @@ namespace SSA.CodeBehind
                     DOB = dalUserprofile.GetUserProfileByUserId(user.UserId, true).DOB.ToString()
                 };
 
-                // Print BarCode
-                //if (barcodeScannerUtils.GetDeviceStatus().Connected)
-                //{
-                //    printerMonitor.PrintLabel(userInfo);
-                //}
-                //else
-                //{
-                //    Console.WriteLine("Barcode printer is not connected.");
-                //}
-
-                // Print QR Code
-                // Can kiem tra status cua may in QRCode-printer
-                if (barcodeScannerUtils.PrintQRCodeUserInfo(userInfo))
+                // Print BarCode and QR Code
+                foreach (var item in barcodeScannerUtils.GetDeviceStatus())
                 {
-                    // raise succeeded event
-                    RaisePrintMUBAndTTLabelsSucceededEvent();
-                    //Retrieve and verify correct MUB and TT 
+                    if (item == EnumDeviceStatuses.Connected)
+                    {
+                        printerMonitor.PrintLabel(userInfo);
+                    }
+                    else
+                    {
+                        RaisePrintMUBAndTTLabelsFailedEvent(new PrintMUBAndTTLabelsEventArgs("Printer have problem: " + item));
+                        APIUtils.SignalR.SendNotificationToDutyOfficer("A supervisee can't print label", "Printer have problem: " + item);
+                        Console.WriteLine("Barcode printer is not connected.");
+                    }
                 }
-                else
-                {
-                    RaisePrintMUBAndTTLabelsFailedEvent(new PrintMUBAndTTLabelsEventArgs("Can't print label !"));
-                }
+                
             }
         }
 

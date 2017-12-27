@@ -129,24 +129,23 @@ namespace SSA
 
         private void PrintMUBAndTTLabels_OnPrintTTLabelSucceeded()
         {
-            int millisecondsSleep = 2000;
-            Thread.Sleep(millisecondsSleep);
-
             this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').show(); ; ");
             this._web.RunScript("$('.status-text').css('color','#000').text('Please collect your labels');");
         }
 
         private void PrintMUBAndTTLabels_OnPrintTTLabelFailed(object sender, CodeBehind.PrintMUBAndTTLabelsEventArgs e)
         {
-            this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').show(); ; ");
+            this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').hide(); ; ");
             MessageBox.Show("Unable to print labels\nPlease report to the Duty Officer", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            APIUtils.SignalR.SendNotificationToDutyOfficer("A supervisee can't print label", "Please check Supervisee's information!");
+            APIUtils.SignalR.SendNotificationToDutyOfficer("A supervisee can't print label", e.Message);
             this._web.RunScript("$('.status-text').css('color','#000').text('Sent problem to Duty Officer. Please wait to check !');");
         }
 
         private void PrintMUBAndTTLabels_OnPrintTTLabelException(object sender, ExceptionArgs e)
         {
-            MessageBox.Show("Unable to print labels \n Please report to the Duty Officer", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').hide(); ; ");
+            this._web.RunScript("$('.status-text').css('color','#000').text('Sent problem to Duty Officer. Please wait to check !');");
+            MessageBox.Show(e.ErrorMessage, "", MessageBoxButtons.OK, MessageBoxIcon.Error);
             APIUtils.SignalR.SendNotificationToDutyOfficer("A supervisee can't print label", "Please check Supervisee's information!");
         }
     }

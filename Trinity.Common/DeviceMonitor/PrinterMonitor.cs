@@ -86,8 +86,21 @@ namespace Trinity.Common.DeviceMonitor
             BarcodePrinterUtils barcodeScannerUtils = BarcodePrinterUtils.Instance;
             if (barcodeScannerUtils.PrintUserInfo(userInfo))
             {
-                // raise succeeded event
-                RaisePrintLabelSucceededEvent();
+                // Print TT Label succeeded, then continue printing MUB Label
+                if (barcodeScannerUtils.PrintQRCodeUserInfo(userInfo))
+                {
+                    // raise succeeded event
+                    RaisePrintLabelSucceededEvent();
+                }
+                else
+                {
+                    // raise failed event
+                    RaiseMonitorExceptionEvent(new ExceptionArgs(new FailedInfo()
+                    {
+                        ErrorCode = (int)EnumErrorCodes.UnknownError,
+                        ErrorMessage = new ErrorInfo().GetErrorMessage(EnumErrorCodes.UnknownError)
+                    }));
+                }
             }
             else
             {
