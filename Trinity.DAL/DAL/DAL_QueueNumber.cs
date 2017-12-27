@@ -15,7 +15,7 @@ namespace Trinity.DAL
 
         public QueueNumber InsertQueueNumber(Guid AppointmentID, string UserId)
         {
-            var generateQNo = GenerateQueueNumber(_localUnitOfWork.DataContext.Users.Find(UserId).NRIC);
+            var generateQNo = GenerateQueueNumber(_localUnitOfWork.DataContext.Membership_Users.Find(UserId).NRIC);
             QueueNumber dataInsert = new QueueNumber()
             {
                 Appointment_ID = AppointmentID,

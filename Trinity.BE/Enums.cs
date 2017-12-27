@@ -17,12 +17,13 @@ public enum EnumScreens
     Supervisee_NRIC = 8
 };
 
-public enum EnumUserRoles
+public static class EnumUserRoles
 {
-    DutyOfficer = 0,
-    Supervisee = 1,
-    EnrolmentOfficer = 2,
-    CaseOfficer = 3
+    public const string DutyOfficer = "DutyOfficer";
+    public const string SuperAdmin = "SuperAdmin";
+    public const string Supervisee = "Supervisee";
+    public const string EnrolmentOfficer = "EnrolmentOfficer";
+    public const string CaseOfficer = "CaseOfficer";
 };
 
 public enum EnumErrorCodes

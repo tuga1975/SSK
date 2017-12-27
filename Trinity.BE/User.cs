@@ -21,22 +21,10 @@ namespace Trinity.BE
         public string Name { get; set; }
 
         [DataMember]
-        public Nullable<System.DateTime> LastLoginTime { get; set; }
-
-        [DataMember]
-        public Nullable<short> SmartCardFailedCount { get; set; }
-
-        [DataMember]
-        public Nullable<short> FingerprintFailedCount { get; set; }
-
-        [DataMember]
         public string SmartCardId { get; set; }
 
         [DataMember]
-        public Nullable<System.DateTime> EnrolledDate { get; set; }
-
-        [DataMember]
-        public Nullable<short> Role { get; set; }
+        public string Role { get; set; }
 
         [DataMember]
         public byte[] Fingerprint { get; set; }

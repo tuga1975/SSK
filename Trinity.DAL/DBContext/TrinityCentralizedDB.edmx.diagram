@@ -5,24 +5,28 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="e17ce6b5c6f94759bc5b75d0af8983e3" Name="Diagram1">
-        <EntityTypeShape EntityType="TrinityCentralizedDBModel.AbsenceReporting" Width="1.5" PointX="3.75" PointY="1.375" />
-        <EntityTypeShape EntityType="TrinityCentralizedDBModel.Address" Width="1.5" PointX="0.75" PointY="3.125" />
-        <EntityTypeShape EntityType="TrinityCentralizedDBModel.Appointment" Width="1.5" PointX="6" PointY="7" />
-        <EntityTypeShape EntityType="TrinityCentralizedDBModel.Device" Width="1.5" PointX="0.75" PointY="0.75" />
-        <EntityTypeShape EntityType="TrinityCentralizedDBModel.Environment" Width="1.5" PointX="5.75" PointY="3.75" />
-        <EntityTypeShape EntityType="TrinityCentralizedDBModel.Holiday" Width="1.5" PointX="7.75" PointY="0.75" />
-        <EntityTypeShape EntityType="TrinityCentralizedDBModel.Notification" Width="1.5" PointX="3" PointY="18.125" />
-        <EntityTypeShape EntityType="TrinityCentralizedDBModel.QueueNumber" Width="1.5" PointX="8.25" PointY="7.375" />
-        <EntityTypeShape EntityType="TrinityCentralizedDBModel.User_Profiles" Width="1.5" PointX="3" PointY="5.25" />
-        <EntityTypeShape EntityType="TrinityCentralizedDBModel.User" Width="1.5" PointX="0.75" PointY="6.75" />
+        <EntityTypeShape EntityType="TrinityCentralizedDBModel.AbsenceReporting" Width="1.5" PointX="3.75" PointY="14.875" />
+        <EntityTypeShape EntityType="TrinityCentralizedDBModel.Address" Width="1.5" PointX="0.75" PointY="3.625" />
+        <EntityTypeShape EntityType="TrinityCentralizedDBModel.Appointment" Width="1.5" PointX="6" PointY="8.5" />
+        <EntityTypeShape EntityType="TrinityCentralizedDBModel.Device" Width="1.5" PointX="2.75" PointY="0.75" />
+        <EntityTypeShape EntityType="TrinityCentralizedDBModel.Environment" Width="1.5" PointX="4.75" PointY="0.75" />
+        <EntityTypeShape EntityType="TrinityCentralizedDBModel.Holiday" Width="1.5" PointX="6.75" PointY="0.75" />
+        <EntityTypeShape EntityType="TrinityCentralizedDBModel.Membership_Roles" Width="1.5" PointX="3.75" PointY="4.25" />
+        <EntityTypeShape EntityType="TrinityCentralizedDBModel.Membership_UserRoles" Width="1.5" PointX="6" PointY="5" />
+        <EntityTypeShape EntityType="TrinityCentralizedDBModel.Membership_Users" Width="1.5" PointX="0.75" PointY="7.25" />
+        <EntityTypeShape EntityType="TrinityCentralizedDBModel.Notification" Width="1.5" PointX="3" PointY="19.625" />
+        <EntityTypeShape EntityType="TrinityCentralizedDBModel.QueueNumber" Width="1.5" PointX="8.25" PointY="8.875" />
+        <EntityTypeShape EntityType="TrinityCentralizedDBModel.User_Profiles" Width="1.5" PointX="3" PointY="6.875" />
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_Appointments_AbsenceReporting" />
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_User_Profiles_Addresses" />
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_User_Profiles_Addresses1" />
-        <AssociationConnector Association="TrinityCentralizedDBModel.FK_Appointments_Users" />
+        <AssociationConnector Association="TrinityCentralizedDBModel.FK_Appointments_Membership_Users" />
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_QueueNumbers_Appointments1" />
-        <AssociationConnector Association="TrinityCentralizedDBModel.FK_Notifications_User" />
-        <AssociationConnector Association="TrinityCentralizedDBModel.FK_Notifications_User1" />
-        <AssociationConnector Association="TrinityCentralizedDBModel.FK_User_Profiles_Users" />
+        <AssociationConnector Association="TrinityCentralizedDBModel.FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId" />
+        <AssociationConnector Association="TrinityCentralizedDBModel.FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId" />
+        <AssociationConnector Association="TrinityCentralizedDBModel.FK_Notifications_Membership_Users" />
+        <AssociationConnector Association="TrinityCentralizedDBModel.FK_Notifications_Membership_Users1" />
+        <AssociationConnector Association="TrinityCentralizedDBModel.FK_User_Profiles_Membership_Users" />
         <EntityTypeShape EntityType="TrinityCentralizedDBModel.ApplicationDevice_Status" Width="1.5" PointX="8.375" PointY="3.75" />
       </Diagram>
     </edmx:Diagrams>

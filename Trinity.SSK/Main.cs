@@ -186,7 +186,7 @@ namespace SSK
             // if role = 0 (duty officer), redirect to NRIC.html
             // else (supervisee), redirect to Supervisee.html
             Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-            if (user.Role == (int)EnumUserRoles.DutyOfficer)
+            if (user.Role == EnumUserRoles.DutyOfficer)
             {
                 // navigate to Authentication_NRIC
                 NavigateTo(NavigatorEnums.Authentication_NRIC);

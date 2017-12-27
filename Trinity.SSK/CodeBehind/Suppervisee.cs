@@ -28,7 +28,7 @@ namespace SSK.CodeBehind
             Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
 
             // if user login is dutyofficer, implement duty officer override
-            if (user.Role == (int)EnumUserRoles.DutyOfficer)
+            if (user.Role == EnumUserRoles.DutyOfficer)
             {
                 CSCallJS.DisplayNRICLogin(_web);
             }

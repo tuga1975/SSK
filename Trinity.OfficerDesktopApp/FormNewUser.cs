@@ -1,10 +1,13 @@
 ﻿using Futronic.SDKHelper;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using PCSC;
 using System;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using Trinity.DAL;
+using Trinity.Identity;
 
 namespace OfficerDesktopApp
 {
@@ -40,6 +43,11 @@ namespace OfficerDesktopApp
 
         private void btnSave_Click(object sender, EventArgs e)
         {
+            CreateUserAsync();
+        }
+
+        private async void CreateUserAsync()
+        {
             if (string.IsNullOrEmpty(_currentUser.SmartCardId) || _currentUser.Fingerprint == null)
             {
                 MessageBox.Show("You have to scan your smart card and fingerprint");
@@ -48,14 +56,30 @@ namespace OfficerDesktopApp
             //
             // Prepare user information
             //
+            
             _currentUser.Name = txtName.Text;
             _currentUser.NRIC = txtNRIC.Text;
-            _currentUser.Role = Convert.ToInt16(cboRoles.SelectedIndex <= 0 ? 0 : 1);
+            _currentUser.Role = String.IsNullOrEmpty(cboRoles.Text) ? EnumUserRoles.Supervisee : cboRoles.Text;
+
+            ApplicationUser user = new ApplicationUser();
+            user.UserName = _currentUser.NRIC;
+            user.Name = _currentUser.Name;
+            user.Email= txtPrimaryEmail.Text;
+            user.Fingerprint= _currentUser.Fingerprint;
+            user.NRIC= _currentUser.NRIC;
+            user.PhoneNumber= txtPrimaryPhone.Text;
+            user.SmartCardId= _currentUser.SmartCardId;
+            user.Status= EnumUserStatuses.Active;
+
+            UserManager<ApplicationUser> userManager = ApplicationIdentityManager.GetUserManager();
             Trinity.DAL.DAL_User dalUser = new Trinity.DAL.DAL_User();
-            if (dalUser.CreateUser(_currentUser, true))
+            IdentityResult result = await userManager.CreateAsync(user, "123456");
+            if (result.Succeeded)
             {
+                RoleManager<IdentityRole> roleManager = ApplicationIdentityManager.GetRoleManager();
+                userManager.AddToRole(user.Id, EnumUserRoles.Supervisee);
                 // Save to the Centralized DB also
-                dalUser.CreateUser(_currentUser, false);
+                //dalUser.CreateUser(_currentUser, false);
 
                 Trinity.DAL.DAL_UserProfile dalUserProfile = new Trinity.DAL.DAL_UserProfile();
                 Trinity.BE.UserProfile userProfile = new Trinity.BE.UserProfile();
@@ -66,7 +90,7 @@ namespace OfficerDesktopApp
                 userProfile.DOB = dpDOB.Value;
 
                 dalUserProfile.UpdateUserProfile(userProfile, _currentUser.UserId, true);
-                
+
                 // Save to the Centralized DB also
                 dalUserProfile.UpdateUserProfile(userProfile, _currentUser.UserId, false);
 

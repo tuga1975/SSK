@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Microsoft.AspNet.Identity;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Trinity.DAL.DBContext;
 using Trinity.DAL.Repository;
+using Trinity.Identity;
 
 namespace Trinity.DAL
 {
@@ -15,157 +17,102 @@ namespace Trinity.DAL
         {
             if (isLocal)
             {
-                List<Trinity.BE.User> result = new List<BE.User>();
-                List<User> users = _localUnitOfWork.DataContext.Users.Where(u => u.Role == 1).ToList();
-                foreach (var item in users)
-                {
-                    Trinity.BE.User user = new BE.User()
-                    {
-                        EnrolledDate = item.EnrolledDate,
-                        LastLoginTime = item.LastLoginTime,
-                        Name = item.Name,
-                        NRIC = item.NRIC,
-                        SmartCardId = item.SmartCardId,
-                        Role = item.Role,
-                        UserId = item.UserId,
-                        Fingerprint = item.Fingerprint
-                    };
-                    result.Add(user);
-
-                }
-                return result;
+                var user = (from mu in _localUnitOfWork.DataContext.Membership_Users
+                            join mur in _localUnitOfWork.DataContext.Membership_UserRoles on mu.UserId equals mur.UserId
+                            join mr in _localUnitOfWork.DataContext.Membership_Roles on mur.RoleId equals mr.Id
+                            where mr.Name == "Supervisee"
+                            select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, SmartCardId = mu.SmartCardId, Fingerprint = mu.Fingerprint, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name });
+                return user.ToList();
             }
             else
             {
-                List<Trinity.BE.User> result = new List<BE.User>();
-
-                List<User> users = _centralizedUnitOfWork.DataContext.Users.Where(u => u.Role == 1).ToList();
-                foreach (var item in users)
-                {
-                    Trinity.BE.User user = new BE.User()
-                    {
-                        EnrolledDate = item.EnrolledDate,
-                        LastLoginTime = item.LastLoginTime,
-                        Name = item.Name,
-                        NRIC = item.NRIC,
-                        SmartCardId = item.SmartCardId,
-                        Role = item.Role,
-                        UserId = item.UserId,
-                        Fingerprint = item.Fingerprint
-                    };
-                    result.Add(user);
-
-                }
-                return result;
+                var user = (from mu in _centralizedUnitOfWork.DataContext.Membership_Users
+                            join mur in _centralizedUnitOfWork.DataContext.Membership_UserRoles on mu.UserId equals mur.UserId
+                            join mr in _centralizedUnitOfWork.DataContext.Membership_Roles on mur.RoleId equals mr.Id
+                            where mr.Name == "Supervisee"
+                            select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, SmartCardId = mu.SmartCardId, Fingerprint = mu.Fingerprint, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name });
+                return user.ToList();
             }
         }
 
         public Trinity.BE.User GetUserBySmartCardId(string smartCardId, bool isLocal)
         {
-            User dbUser = null;
             if (isLocal)
             {
-                dbUser = _localUnitOfWork.DataContext.Users.FirstOrDefault(u => u.SmartCardId == smartCardId);
+                var user = (from mu in _localUnitOfWork.DataContext.Membership_Users
+                            join mur in _localUnitOfWork.DataContext.Membership_UserRoles on mu.UserId equals mur.UserId
+                            join mr in _localUnitOfWork.DataContext.Membership_Roles on mur.RoleId equals mr.Id
+                            where mu.SmartCardId == smartCardId
+                            select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, SmartCardId = mu.SmartCardId, Fingerprint = mu.Fingerprint, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name });
+                return user.FirstOrDefault();
             }
             else
             {
-                dbUser = _centralizedUnitOfWork.DataContext.Users.FirstOrDefault(u => u.SmartCardId == smartCardId);
+                var user = (from mu in _centralizedUnitOfWork.DataContext.Membership_Users
+                            join mur in _centralizedUnitOfWork.DataContext.Membership_UserRoles on mu.UserId equals mur.UserId
+                            join mr in _centralizedUnitOfWork.DataContext.Membership_Roles on mur.RoleId equals mr.Id
+                            where mu.SmartCardId == smartCardId
+                            select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, SmartCardId = mu.SmartCardId, Fingerprint = mu.Fingerprint, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name });
+                return user.FirstOrDefault();
             }
-            if (dbUser != null)
-            {
-                Trinity.BE.User user = new BE.User()
-                {
-                    EnrolledDate = dbUser.EnrolledDate,
-                    LastLoginTime = dbUser.LastLoginTime,
-                    Name = dbUser.Name,
-                    NRIC = dbUser.NRIC,
-                    SmartCardId = dbUser.SmartCardId,
-                    Role = dbUser.Role,
-                    UserId = dbUser.UserId,
-                    Fingerprint = dbUser.Fingerprint,
-                    Status = dbUser.Status
-                };
-                return user;
-            }
-            return null;
         }
 
         public Trinity.BE.User GetUserByUserId(string userId, bool isLocal)
         {
-            User dbUser = null;
             if (isLocal)
             {
-                dbUser = _localUnitOfWork.DataContext.Users.FirstOrDefault(u => u.UserId == userId);
-
+                var user = (from mu in _localUnitOfWork.DataContext.Membership_Users
+                            join mur in _localUnitOfWork.DataContext.Membership_UserRoles on mu.UserId equals mur.UserId
+                            join mr in _localUnitOfWork.DataContext.Membership_Roles on mur.RoleId equals mr.Id
+                            where mu.UserId == userId
+                            select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, SmartCardId = mu.SmartCardId, Fingerprint = mu.Fingerprint, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name });
+                return user.FirstOrDefault();
             }
             else
             {
-                dbUser = _centralizedUnitOfWork.DataContext.Users.FirstOrDefault(u => u.UserId == userId);
+                var user = (from mu in _centralizedUnitOfWork.DataContext.Membership_Users
+                            join mur in _centralizedUnitOfWork.DataContext.Membership_UserRoles on mu.UserId equals mur.UserId
+                            join mr in _centralizedUnitOfWork.DataContext.Membership_Roles on mur.RoleId equals mr.Id
+                            where mu.UserId == userId
+                            select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, SmartCardId = mu.SmartCardId, Fingerprint = mu.Fingerprint, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name });
+                return user.FirstOrDefault();
             }
-            if (dbUser != null)
-            {
-                Trinity.BE.User user = new BE.User()
-                {
-                    Fingerprint = dbUser.Fingerprint,
-                    EnrolledDate = dbUser.EnrolledDate,
-                    LastLoginTime = dbUser.LastLoginTime,
-                    Name = dbUser.Name,
-                    NRIC = dbUser.NRIC,
-                    SmartCardId = dbUser.SmartCardId,
-                    Role = dbUser.Role,
-                    UserId = dbUser.UserId
-                };
-                return user;
-            }
-            return null;
         }
 
         public Trinity.BE.User GetSuperviseeByNRIC(string nric, bool isLocal)
         {
-            User dbUser = null;
             if (isLocal)
             {
-                dbUser = _localUnitOfWork.DataContext.Users.FirstOrDefault(u => u.NRIC == nric && u.Role == 1);
-
+                var user = (from mu in _localUnitOfWork.DataContext.Membership_Users
+                            join mur in _localUnitOfWork.DataContext.Membership_UserRoles on mu.UserId equals mur.UserId
+                            join mr in _localUnitOfWork.DataContext.Membership_Roles on mur.RoleId equals mr.Id
+                            where mu.NRIC == nric
+                            select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, SmartCardId = mu.SmartCardId, Fingerprint = mu.Fingerprint, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name });
+                return user.FirstOrDefault();
             }
             else
             {
-                dbUser = _centralizedUnitOfWork.DataContext.Users.FirstOrDefault(u => u.NRIC == nric && u.Role == 1);
+                var user = (from mu in _centralizedUnitOfWork.DataContext.Membership_Users
+                            join mur in _centralizedUnitOfWork.DataContext.Membership_UserRoles on mu.UserId equals mur.UserId
+                            join mr in _centralizedUnitOfWork.DataContext.Membership_Roles on mur.RoleId equals mr.Id
+                            where mu.NRIC == nric
+                            select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, SmartCardId = mu.SmartCardId, Fingerprint = mu.Fingerprint, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name });
+                return user.FirstOrDefault();
             }
-
-            if (dbUser != null)
-            {
-                Trinity.BE.User user = new BE.User()
-                {
-                    Fingerprint = dbUser.Fingerprint,
-                    EnrolledDate = dbUser.EnrolledDate,
-                    LastLoginTime = dbUser.LastLoginTime,
-                    Name = dbUser.Name,
-                    NRIC = dbUser.NRIC,
-                    SmartCardId = dbUser.SmartCardId,
-                    Role = dbUser.Role,
-                    UserId = dbUser.UserId,
-                    Status = dbUser.Status
-                };
-                return user;
-            }
-
-            return null;
         }
         public bool UpdateUser(BE.User model, string userId, bool isLocal)
         {
             try
             {
-                User dbUser = null;
                 if (isLocal)
                 {
-                    dbUser = UpdateLocal(model, userId);
-                    dbUser = UpdateCentral(model, userId);
+                    UpdateLocal(model, userId);
+                    UpdateCentral(model, userId);
                     return true;
                 }
                 else
                 {
-                    dbUser = UpdateCentral(model, userId);
+                    UpdateCentral(model, userId);
                     return true;
                 }
 
@@ -177,10 +124,10 @@ namespace Trinity.DAL
             }
         }
 
-        private User UpdateCentral(BE.User model, string userId)
+        private Membership_Users UpdateCentral(BE.User model, string userId)
         {
-            User dbUser;
-            var centralUserRepo = _centralizedUnitOfWork.GetRepository<User>();
+            Membership_Users dbUser;
+            var centralUserRepo = _centralizedUnitOfWork.GetRepository<Membership_Users>();
             dbUser = centralUserRepo.GetById(userId);
             SetInfo(dbUser, model);
             centralUserRepo.Update(dbUser);
@@ -188,10 +135,10 @@ namespace Trinity.DAL
             return dbUser;
         }
 
-        private User UpdateLocal(BE.User model, string userId)
+        private Membership_Users UpdateLocal(BE.User model, string userId)
         {
-            User dbUser;
-            var localUserRepo = _localUnitOfWork.GetRepository<User>();
+            Membership_Users dbUser;
+            var localUserRepo = _localUnitOfWork.GetRepository<Membership_Users>();
             dbUser = localUserRepo.GetById(userId);
             SetInfo(dbUser, model);
             localUserRepo.Update(dbUser);
@@ -199,17 +146,15 @@ namespace Trinity.DAL
             return dbUser;
         }
 
-        protected void SetInfo(User dbUser, BE.User model)
+        protected void SetInfo(Membership_Users dbUser, BE.User model)
         {
             if (dbUser != null)
             {
                 dbUser.Fingerprint = model.Fingerprint;
-                dbUser.EnrolledDate = model.EnrolledDate;
-                dbUser.LastLoginTime = model.LastLoginTime;
                 dbUser.Name = model.Name;
                 dbUser.NRIC = model.NRIC;
                 dbUser.SmartCardId = model.SmartCardId;
-                dbUser.Role = model.Role;
+                //dbUser.Role = model.Role;
                 dbUser.UserId = model.UserId;
                 if (model.Fingerprint != null)
                 {
@@ -224,48 +169,48 @@ namespace Trinity.DAL
             }
         }
 
-        public bool CreateUser(BE.User user, bool isLocal)
-        {
-            try
-            {
-                User dbUser = null;
-                if (isLocal)
-                {
-                    var localUserRepo = _localUnitOfWork.GetRepository<User>();
-                    dbUser = new User();
-                    SetInfo(dbUser, user);
-                    localUserRepo.Add(dbUser);
-                    _localUnitOfWork.Save();
-                }
-                else
-                {
-                    var centralUserRepo = _centralizedUnitOfWork.GetRepository<User>();
-                    dbUser = new User();
-                    SetInfo(dbUser, user);
-                    centralUserRepo.Add(dbUser);
-                    _centralizedUnitOfWork.Save();
-                }
+        //public bool CreateUser(BE.User user, bool isLocal)
+        //{
+        //    try
+        //    {
+        //        Membership_Users dbUser = null;
+        //        if (isLocal)
+        //        {
+        //            var localUserRepo = _localUnitOfWork.GetRepository<Membership_Users>();
+        //            dbUser = new Membership_Users();
+        //            SetInfo(dbUser, user);
+        //            localUserRepo.Add(dbUser);
+        //            _localUnitOfWork.Save();
+        //        }
+        //        else
+        //        {
+        //            var centralUserRepo = _centralizedUnitOfWork.GetRepository<Membership_Users>();
+        //            dbUser = new Membership_Users();
+        //            SetInfo(dbUser, user);
+        //            centralUserRepo.Add(dbUser);
+        //            _centralizedUnitOfWork.Save();
+        //        }
 
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                return false;
-            }
-        }
+        //        return true;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine(ex.Message);
+        //        return false;
+        //    }
+        //}
 
-        public void ChangeUserStatus(string userId,string status)
+        public void ChangeUserStatus(string userId, string status)
         {
-            var localUserRepo = _localUnitOfWork.GetRepository<User>();
-            var centralUserRepo = _centralizedUnitOfWork.GetRepository<User>();
+            var localUserRepo = _localUnitOfWork.GetRepository<Membership_Users>();
+            var centralUserRepo = _centralizedUnitOfWork.GetRepository<Membership_Users>();
             UpdateStatus(userId, status, localUserRepo);
             UpdateStatus(userId, status, centralUserRepo);
             _localUnitOfWork.Save();
             _centralizedUnitOfWork.Save();
         }
 
-        private void UpdateStatus(string userId, string status, IRepository<User> userRepo)
+        private void UpdateStatus(string userId, string status, IRepository<Membership_Users> userRepo)
         {
             try
             {

@@ -16,7 +16,7 @@ namespace Trinity.DAL
         {
             var _absenceReporting = from ab in _localUnitOfWork.DataContext.AbsenceReportings
                                     join appoint in _localUnitOfWork.DataContext.Appointments on ab.ID equals appoint.AbsenceReporting_ID
-                                    join usr in _localUnitOfWork.DataContext.Users on appoint.UserId equals usr.UserId
+                                    join usr in _localUnitOfWork.DataContext.Membership_Users on appoint.UserId equals usr.UserId
                                     where usr.UserId == userId
                                     select ab;
 

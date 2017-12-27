@@ -42,6 +42,6 @@ namespace Trinity.DAL.DBContext
     
         public virtual Address Address { get; set; }
         public virtual Address Address1 { get; set; }
-        public virtual User User { get; set; }
+        public virtual Membership_Users Membership_Users { get; set; }
     }
 }
