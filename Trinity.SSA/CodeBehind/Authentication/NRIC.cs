@@ -105,7 +105,7 @@ namespace SSA.CodeBehind.Authentication
 
             // Create a session object to store UserLogin information
             Session session = Session.Instance;
-            session[CommonConstants.USER_LOGIN] = user;
+            session[CommonConstants.SUPERVISEE] = user;
 
             // raise succeeded event
             RaiseNRICSucceededEvent();

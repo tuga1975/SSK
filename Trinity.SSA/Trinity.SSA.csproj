@@ -206,6 +206,8 @@
     <Content Include="View\bootstrap\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="View\bootstrap\js\bootstrap.min.js" />
     <Content Include="View\html\Authentication\FingerPrint.html" />
+    <Content Include="View\html\Authentication\Key.png" />
+    <Content Include="View\html\Authentication\ManualLogin.html" />
     <Content Include="View\html\Authentication\mov_bbb.mp4" />
     <Content Include="View\html\Authentication\NRIC.html" />
     <Content Include="View\html\Authentication\SmartCard.html" />
