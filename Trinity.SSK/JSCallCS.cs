@@ -277,7 +277,7 @@ namespace SSK
             Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
 
             // if duty officcer override, set supervisee info into user
-            if (user.Role == (int)EnumUserRoles.DutyOfficer)
+            if (user.Role == EnumUserRoles.DutyOfficer)
             {
                 user = (Trinity.BE.User)session[CommonConstants.SUPERVISEE];
             }

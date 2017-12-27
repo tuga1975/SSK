@@ -56,10 +56,20 @@ namespace OfficerDesktopApp
             //
             // Prepare user information
             //
-            ApplicationUser user = new ApplicationUser() { Name = txtName.Text, NRIC = txtNRIC.Text, Email = txtPrimaryEmail.Text };
+            
             _currentUser.Name = txtName.Text;
             _currentUser.NRIC = txtNRIC.Text;
-            _currentUser.Role = cboRoles.SelectedValue.ToString();
+            _currentUser.Role = String.IsNullOrEmpty(cboRoles.Text) ? EnumUserRoles.Supervisee : cboRoles.Text;
+
+            ApplicationUser user = new ApplicationUser();
+            user.UserName = _currentUser.NRIC;
+            user.Name = _currentUser.Name;
+            user.Email= txtPrimaryEmail.Text;
+            user.Fingerprint= _currentUser.Fingerprint;
+            user.NRIC= _currentUser.NRIC;
+            user.PhoneNumber= txtPrimaryPhone.Text;
+            user.SmartCardId= _currentUser.SmartCardId;
+            user.Status= EnumUserStatuses.Active;
 
             UserManager<ApplicationUser> userManager = ApplicationIdentityManager.GetUserManager();
             Trinity.DAL.DAL_User dalUser = new Trinity.DAL.DAL_User();

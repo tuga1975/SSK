@@ -64,7 +64,7 @@ namespace Trinity.DAL
                 var user = (from mu in _localUnitOfWork.DataContext.Membership_Users
                             join mur in _localUnitOfWork.DataContext.Membership_UserRoles on mu.UserId equals mur.UserId
                             join mr in _localUnitOfWork.DataContext.Membership_Roles on mur.RoleId equals mr.Id
-                            where mu.SmartCardId == userId
+                            where mu.UserId == userId
                             select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, SmartCardId = mu.SmartCardId, Fingerprint = mu.Fingerprint, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name });
                 return user.FirstOrDefault();
             }
@@ -73,7 +73,7 @@ namespace Trinity.DAL
                 var user = (from mu in _centralizedUnitOfWork.DataContext.Membership_Users
                             join mur in _centralizedUnitOfWork.DataContext.Membership_UserRoles on mu.UserId equals mur.UserId
                             join mr in _centralizedUnitOfWork.DataContext.Membership_Roles on mur.RoleId equals mr.Id
-                            where mu.SmartCardId == userId
+                            where mu.UserId == userId
                             select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, SmartCardId = mu.SmartCardId, Fingerprint = mu.Fingerprint, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name });
                 return user.FirstOrDefault();
             }
@@ -86,7 +86,7 @@ namespace Trinity.DAL
                 var user = (from mu in _localUnitOfWork.DataContext.Membership_Users
                             join mur in _localUnitOfWork.DataContext.Membership_UserRoles on mu.UserId equals mur.UserId
                             join mr in _localUnitOfWork.DataContext.Membership_Roles on mur.RoleId equals mr.Id
-                            where mu.SmartCardId == nric
+                            where mu.NRIC == nric
                             select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, SmartCardId = mu.SmartCardId, Fingerprint = mu.Fingerprint, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name });
                 return user.FirstOrDefault();
             }
@@ -95,7 +95,7 @@ namespace Trinity.DAL
                 var user = (from mu in _centralizedUnitOfWork.DataContext.Membership_Users
                             join mur in _centralizedUnitOfWork.DataContext.Membership_UserRoles on mu.UserId equals mur.UserId
                             join mr in _centralizedUnitOfWork.DataContext.Membership_Roles on mur.RoleId equals mr.Id
-                            where mu.SmartCardId == nric
+                            where mu.NRIC == nric
                             select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, SmartCardId = mu.SmartCardId, Fingerprint = mu.Fingerprint, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name });
                 return user.FirstOrDefault();
             }

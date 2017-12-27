@@ -256,6 +256,7 @@
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>TrinityCentralizedDB.Designer.cs</LastGenOutput>
     </EntityDeploy>
+    <None Include="Data\Database.zip" />
     <None Include="DBContext\TrinityCentralizedDB.edmx.diagram">
       <DependentUpon>TrinityCentralizedDB.edmx</DependentUpon>
     </None>
@@ -282,6 +283,10 @@
     <ProjectReference Include="..\Trinity.BE\Trinity.BE.csproj">
       <Project>{4321fa96-3a53-49c1-89ef-8a2f6e9b81c7}</Project>
       <Name>Trinity.BE</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Trinity.Common\Trinity.Common.csproj">
+      <Project>{6c023597-f6ba-4857-9c3b-82d91eb4b4a3}</Project>
+      <Name>Trinity.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\Trinity.Identity\Trinity.Identity.csproj">
       <Project>{b25053fb-2050-4115-9441-8edf5c03fb1d}</Project>
