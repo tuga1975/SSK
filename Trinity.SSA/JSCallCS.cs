@@ -148,6 +148,11 @@ namespace SSA
             MessageBox.Show(e.ErrorMessage, "", MessageBoxButtons.OK, MessageBoxIcon.Error);
             APIUtils.SignalR.SendNotificationToDutyOfficer("A supervisee can't print label", "Please check Supervisee's information!");
         }
+
+        public void ManualLogin(string NRIC, string password)
+        {
+
+        }
     }
 
     #region Custom Events

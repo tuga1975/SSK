@@ -24,7 +24,7 @@ namespace SSA.CodeBehind
                 Session session = Session.Instance;
                 if (session.IsAuthenticated)
                 {
-                    Trinity.BE.User user = (Trinity.BE.User)session[Constants.CommonConstants.USER_LOGIN];
+                    Trinity.BE.User user = (Trinity.BE.User)session[Constants.CommonConstants.SUPERVISEE];
 
                     var dalUser = new Trinity.DAL.DAL_User();
                     var dalUserprofile = new Trinity.DAL.DAL_UserProfile();

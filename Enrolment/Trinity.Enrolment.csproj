@@ -32,14 +32,30 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.AspNet.SignalR.Client, Version=2.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="ftrSDKHelper13, Version=4.5.0.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Libs\ftrSDKHelper13.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.SignalR.Client">
       <HintPath>..\packages\Microsoft.AspNet.SignalR.Client.2.2.2\lib\net45\Microsoft.AspNet.SignalR.Client.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+    <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="pcsc-sharp, Version=3.8.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Libs\pcsc-sharp.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Net" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -51,19 +67,28 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CodeBehind\Authentication\Fingerprint.cs" />
+    <Compile Include="CodeBehind\Authentication\NRIC.cs" />
+    <Compile Include="CodeBehind\Authentication\SmartCard.cs" />
+    <Compile Include="CodeBehind\Document.cs" />
+    <Compile Include="CodeBehind\Login.cs" />
+    <Compile Include="CodeBehind\Suppervisee.cs" />
+    <Compile Include="Common\Enums.cs" />
+    <Compile Include="Contstants\CommonConstants.cs" />
     <Compile Include="CSCallJS.cs" />
+    <Compile Include="JSCallCS.cs" />
     <Compile Include="Main.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Main.Designer.cs">
       <DependentUpon>Main.cs</DependentUpon>
     </Compile>
-    <Compile Include="JSCallCS.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\APIUtils.cs" />
     <Compile Include="Utils\Printer.cs" />
     <Compile Include="Utils\SignalR.cs" />
+    <Compile Include="Utils\TextToSpeech.cs" />
     <EmbeddedResource Include="Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
     </EmbeddedResource>
@@ -91,10 +116,19 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Libs\ftrSDKHelper13.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libs\pcsc-sharp.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="View\html\Edit-Supervisee.html" />
+    <Content Include="View\html\Layout.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="View\html\Login.html" />
     <Content Include="View\html\New-Supervisee.html" />
-    <Content Include="View\html\Supervisees.html" />
+    <Content Include="View\html\Supervisee.html" />
     <Content Include="View\images\log-out.png" />
     <Content Include="View\images\logo.png" />
     <Content Include="View\images\usr-default.jpg" />
@@ -109,6 +143,9 @@
     <Content Include="View\scripts\lib.js" />
     <Content Include="View\scripts\scripts.js" />
     <Content Include="View\scripts\styles.css" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Business\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Trinity.BE\Trinity.BE.csproj">

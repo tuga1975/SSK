@@ -86,19 +86,20 @@ namespace SSA
             LayerWeb.InvokeScript("createEvent", JsonConvert.SerializeObject(_jsCallCS.GetType().GetMethods().Where(d => d.IsPublic && !d.IsVirtual && !d.IsSecuritySafeCritical).ToArray().Select(d => d.Name)));
 
             // Start page
-            //NavigateTo(NavigatorEnums.Authentication_SmartCard);
+            NavigateTo(NavigatorEnums.Authentication_SmartCard);
 
-            // For testing purpose
-            Session session = Session.Instance;
-            // Supervisee
-            //Trinity.BE.User user = new DAL_User().GetUserByUserId("b9200ff4-b97e-4cbe-8842-91bfcb7f0f82", true);
-            // Duty Officer
-            Trinity.BE.User user = new DAL_User().GetUserByUserId("ead039f9-b9a1-45bb-8186-0bb7248aafac", true);
-            session[CommonConstants.USER_LOGIN] = user;
-            session.IsSmartCardAuthenticated = true;
-            session.IsFingerprintAuthenticated = true;
+            //// For testing purpose
+            //Session session = Session.Instance;
+            //// Supervisee
+            ////Trinity.BE.User user = new DAL_User().GetUserByUserId("b9200ff4-b97e-4cbe-8842-91bfcb7f0f82", true);
+            ////session[CommonConstants.SUPERVISEE] = user;
+            //// Duty Officer
+            //Trinity.BE.User user = new DAL_User().GetUserByUserId("ead039f9-b9a1-45bb-8186-0bb7248aafac", true);
+            //session[CommonConstants.USER_LOGIN] = user;
+            //session.IsSmartCardAuthenticated = true;
+            //session.IsFingerprintAuthenticated = true;
             //NavigateTo(NavigatorEnums.Supervisee_Particulars);
-            NavigateTo(NavigatorEnums.Authentication_NRIC);
+            ////NavigateTo(NavigatorEnums.Authentication_NRIC);
         }
 
         private void JSCallCS_OnLogOutCompleted()
@@ -136,6 +137,7 @@ namespace SSA
             }
             else
             {
+                session[CommonConstants.SUPERVISEE] = user;
                 // navigate to SuperviseeParticulars page
                 NavigateTo(NavigatorEnums.Supervisee_Particulars);
             }

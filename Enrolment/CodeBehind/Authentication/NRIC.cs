@@ -1,5 +1,5 @@
-﻿using SSA.Common;
-using SSA.Constants;
+﻿using Enrolment.Common;
+using Enrolment.Contstants;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +9,7 @@ using System.Windows.Forms;
 using Trinity.Common;
 using Trinity.DAL;
 
-namespace SSA.CodeBehind.Authentication
+namespace Enrolment.CodeBehind.Authentication
 {
     public class NRIC
     {
@@ -105,7 +105,7 @@ namespace SSA.CodeBehind.Authentication
 
             // Create a session object to store UserLogin information
             Session session = Session.Instance;
-            session[CommonConstants.SUPERVISEE] = user;
+            session[CommonConstants.USER_LOGIN] = user;
 
             // raise succeeded event
             RaiseNRICSucceededEvent();

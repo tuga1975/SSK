@@ -386,3 +386,6 @@
 	padding: 5px 20px;
 	font-size:14px
 }
+.wizard > .content > .body{
+	width:100%
+}
