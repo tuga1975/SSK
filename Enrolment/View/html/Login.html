@@ -1,4 +1,4 @@
-<div class="row" style="width:100%">
+﻿<div class="row" style="width:100%">
 			<div class="col">
 			</div>
 			<div class="col-6">
@@ -22,7 +22,7 @@
 						</div>
 					</div>
 					<div class="form-login-footer">
-						<button type="submit" class="btn-login">Login</button>
+						<button type="submit" class="btn-login" onclick="api.server.Login($('#inputUsername').val(), $('#inputPassword').val())" >Login</button>
 						<div class="clear"></div>
 						<a class="forgot-pass" href="">Forgot Password</a>
 					</div>					

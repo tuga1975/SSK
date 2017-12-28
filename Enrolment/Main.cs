@@ -18,8 +18,6 @@ namespace Enrolment
     {
         private JSCallCS _jsCallCS;
         private EventCenter _eventCenter;
-        private CodeBehind.Authentication.SmartCard _smartCard;
-        private CodeBehind.Authentication.Fingerprint _fingerprint;
         private CodeBehind.Authentication.NRIC _nric;
         private CodeBehind.Login _login;
         private CodeBehind.Suppervisee _suppervisee;
@@ -42,25 +40,12 @@ namespace Enrolment
             #region Initialize and register events
             // _jsCallCS
             _jsCallCS = new JSCallCS(this.LayerWeb);
+            _eventCenter = EventCenter.CreateEventCenter();
+
             _eventCenter.OnNRICFailed += JSCallCS_OnNRICFailed;
             _eventCenter.OnShowMessage += JSCallCS_ShowMessage;
             _eventCenter.OnLogOutCompleted += JSCallCS_OnLogOutCompleted;
-
-            // SmartCard
-            _smartCard = new CodeBehind.Authentication.SmartCard(LayerWeb);
-            _smartCard.OnSmartCardSucceeded += SmartCard_OnSmartCardSucceeded;
-            _smartCard.OnSmartCardFailed += SmartCard_OnSmartCardFailed;
-
-            // Fingerprint
-            _fingerprint = new CodeBehind.Authentication.Fingerprint(LayerWeb);
-            _fingerprint.OnFingerprintSucceeded += Fingerprint_OnFingerprintSucceeded;
-            _fingerprint.OnFingerprintFailed += Fingerprint_OnFingerprintFailed;
-            _fingerprint.OnShowMessage += OnShowMessage;
-
-            // NRIC
-            _nric = CodeBehind.Authentication.NRIC.GetInstance(LayerWeb);
-            _nric.OnNRICSucceeded += NRIC_OnNRICSucceeded;
-            _nric.OnShowMessage += OnShowMessage;
+            _eventCenter.OnLogInSucceeded += JSCallCS_OnLogInSucceeded;
 
             //login
             _login = new CodeBehind.Login(LayerWeb);
@@ -143,7 +128,12 @@ namespace Enrolment
 
         private void JSCallCS_OnLogOutCompleted()
         {
-            NavigateTo(NavigatorEnums.Authentication_SmartCard);
+            NavigateTo(NavigatorEnums.Login);
+        }
+
+        private void JSCallCS_OnLogInSucceeded()
+        {
+            NavigateTo(NavigatorEnums.Supervisee);
         }
 
         private void LayerWeb_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
@@ -290,23 +280,7 @@ namespace Enrolment
         private void NavigateTo(NavigatorEnums navigatorEnum)
         {
             // navigate
-            if (navigatorEnum == NavigatorEnums.Authentication_SmartCard)
-            {
-                _smartCard.Start();
-            }
-            else if (navigatorEnum == NavigatorEnums.Authentication_Fingerprint)
-            {
-                try
-                {
-                    _fingerprint.Start();
-                }
-                catch (System.IO.FileNotFoundException ex)
-                {
-                    Console.WriteLine("File missing:\n");
-                    Console.WriteLine(ex.FileName);
-                }
-            }
-            else if (navigatorEnum == NavigatorEnums.Authentication_NRIC)
+            if (navigatorEnum == NavigatorEnums.Authentication_NRIC)
             {
                 _nric.Start();
             }
