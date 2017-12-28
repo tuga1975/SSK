@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using Trinity.Common;
 using Trinity.Common.Common;
 using Trinity.Common.DeviceMonitor;
 using Trinity.Common.Monitor;

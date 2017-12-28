@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public enum EnumScreens
+public enum NavigatorEnums
 {
     Authentication_SmartCard = 0,
     Authentication_Fingerprint = 1,
@@ -14,7 +14,9 @@ public enum EnumScreens
     Notification = 5,
     Profile = 6,
     Supervisee = 7,
-    Supervisee_NRIC = 8
+    Supervisee_NRIC = 8,
+    Supervisee_Particulars = 9,
+    Login = 10
 };
 
 public static class EnumUserRoles

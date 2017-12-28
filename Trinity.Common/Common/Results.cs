@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Trinity.Common.Common
+namespace Trinity.Common
 {
     public class DocumentScannerResult
     {

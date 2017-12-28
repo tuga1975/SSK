@@ -101,7 +101,6 @@
     <Compile Include="CodeBehind\Authentication\SmartCard.cs" />
     <Compile Include="CodeBehind\PrintMUBAndTTLabels.cs" />
     <Compile Include="CodeBehind\SupperviseeParticulars.cs" />
-    <Compile Include="Common\Enums.cs" />
     <Compile Include="Constants\CommonConstants.cs" />
     <Compile Include="CSCallJS.cs" />
     <Compile Include="FormQueueNumber.cs">
@@ -184,6 +183,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Business\" />
+    <Folder Include="Common\" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">

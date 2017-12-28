@@ -48,7 +48,7 @@ namespace SSK
         {
             BarcodePrinterUtils printerUtil = BarcodePrinterUtils.Instance;
 
-            Trinity.Common.Common.UserInfo userInfo = new Trinity.Common.Common.UserInfo()
+            Trinity.Common.UserInfo userInfo = new Trinity.Common.UserInfo()
             {
                 DOB = "07-04-1982",
                 NRIC = "022234343",
