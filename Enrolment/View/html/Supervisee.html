@@ -9,8 +9,8 @@
         <div class="row">
             <div class="col"></div>
             <div class="col-8 list-supervisees-search">
-                <form>
-                    <input type="text" name="" placeholder="Please input keyword" />
+                <form id="searchForm">
+                    <input type="text" name="nric" id="nric" placeholder="Please input keyword" />
                     <button type="submit" class="btn-search">Search</button>
                 </form>
             </div>
@@ -37,9 +37,35 @@
 <script>
     $(document).ready(function () {
         if (api.model != null) {
+
             for (var i = 0; i < api.model.length; i++) {
-                $('#listSupervisee').append("<tr> <th scope='row'>" + (i + 1) + "</th><td>" + api.model[i].User.Name + "</td><td>" + api.model[i].User.NRIC + "</td><td>" + api.model[i].UserProfile.DOB + "</td><td><a href='#' onclick='api.server.EditSupervisee(" + api.model[i].User.UserId+")'>" + api.model[i].User.Status + "</a></td></tr>");
+                $('#listSupervisee').append("<tr> <th scope='row'>" + (i + 1) + "</th><td>" + api.model[i].User.Name + "</td><td>" + api.model[i].User.NRIC + "</td><td>" + api.model[i].UserProfile.DOB + "</td><td><a href='#' onclick='api.server.EditSupervisee(" + api.model[i].User.UserId + ")'>" + api.model[i].User.Status + "</a></td></tr>");
             }
         }
+
     });
+    $('#searchForm').submit(function myfunction(e) {
+        //var $form = $("#searchForm");
+        //var data = getFormData($form);
+        //var json = JSON.stringify(data);
+        if ($.trim($('#nric').val()) != "") {
+            api.server.SearchSuperviseeByNRIC($('#nric').val());
+        }
+        else {
+            api.server.LoadListSupervisee();
+        }
+
+        e.preventDefault();
+    });
+
+    function getFormData($form) {
+        var unindexed_array = $form.serializeArray();
+        var indexed_array = {};
+
+        $.map(unindexed_array, function (n, i) {
+            indexed_array[n['name']] = n['value'];
+        });
+
+        return indexed_array;
+    }
 </script>

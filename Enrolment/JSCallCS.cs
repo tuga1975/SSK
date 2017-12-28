@@ -61,16 +61,52 @@ namespace Enrolment
             nric.NRICAuthentication(strNRIC);
         }
 
-
+        public void LoadListSupervisee()
+        {
+            Session session = Session.Instance;
+            var dalUser = new DAL_User();
+            var dalUserProfile = new DAL_UserProfile();
+            var dbUsers = dalUser.GetAllSupervisees(true);
+            var listSupervisee = new List<Trinity.BE.ProfileModel>();
+            if (dbUsers != null)
+            {
+                foreach (var item in dbUsers)
+                {
+                    var model = new Trinity.BE.ProfileModel()
+                    {
+                        User = item,
+                        UserProfile = dalUserProfile.GetUserProfileByUserId(item.UserId, true),
+                        Addresses = null
+                    };
+                    listSupervisee.Add(model);
+                }
+                
+                _web.LoadPageHtml("Supervisee.html", listSupervisee);
+            }
+        }
 
         public void SearchSuperviseeByNRIC(string nric)
         {
             Session session = Session.Instance;
             var dalUser = new DAL_User();
+            var dalUserProfile = new DAL_UserProfile();
             var dbUser = dalUser.GetSuperviseeByNRIC(nric, true);
+            var listModel = new List<Trinity.BE.ProfileModel>();
             if (dbUser != null)
             {
+                var model = new Trinity.BE.ProfileModel()
+                {
+                    User = dbUser,
+                    UserProfile = dalUserProfile.GetUserProfileByUserId(dbUser.UserId, true),
+                    Addresses = null
+                };
                 session[CommonConstants.SUPERVISEE] = dbUser;
+                listModel.Add(model);
+                _web.LoadPageHtml("Supervisee.html", listModel);
+            }
+            else
+            {
+                LoadListSupervisee();
             }
         }
 

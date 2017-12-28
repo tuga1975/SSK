@@ -124,6 +124,8 @@ namespace Enrolment
 
             // Start page
             NavigateTo(NavigatorEnums.Login);
+            //NavigateTo(NavigatorEnums.Supervisee);
+
         }
 
         private void NRIC_OnNRICSucceeded()
