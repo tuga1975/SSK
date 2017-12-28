@@ -116,8 +116,8 @@ namespace Enrolment
             LayerWeb.InvokeScript("createEvent", JsonConvert.SerializeObject(_jsCallCS.GetType().GetMethods().Where(d => d.IsPublic && !d.IsVirtual && !d.IsSecuritySafeCritical).ToArray().Select(d => d.Name)));
 
             // Start page
-            //NavigateTo(NavigatorEnums.Login);
-            NavigateTo(NavigatorEnums.Supervisee);
+            NavigateTo(NavigatorEnums.Login);
+            //NavigateTo(NavigatorEnums.Supervisee);
 
         }
 
