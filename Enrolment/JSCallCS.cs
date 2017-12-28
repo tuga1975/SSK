@@ -61,28 +61,60 @@ namespace Enrolment
             nric.NRICAuthentication(strNRIC);
         }
 
-
+        public void LoadListSupervisee()
+        {
+            Session session = Session.Instance;
+            var dalUser = new DAL_User();
+            var dalUserProfile = new DAL_UserProfile();
+            var dbUsers = dalUser.GetAllSupervisees(true);
+            var listSupervisee = new List<Trinity.BE.ProfileModel>();
+            if (dbUsers != null)
+            {
+                foreach (var item in dbUsers)
+                {
+                    var model = new Trinity.BE.ProfileModel()
+                    {
+                        User = item,
+                        UserProfile = dalUserProfile.GetUserProfileByUserId(item.UserId, true),
+                        Addresses = null
+                    };
+                    listSupervisee.Add(model);
+                }
+                
+                _web.LoadPageHtml("Supervisee.html", listSupervisee);
+            }
+        }
 
         public void SearchSuperviseeByNRIC(string nric)
         {
             Session session = Session.Instance;
             var dalUser = new DAL_User();
+            var dalUserProfile = new DAL_UserProfile();
             var dbUser = dalUser.GetSuperviseeByNRIC(nric, true);
+            var listModel = new List<Trinity.BE.ProfileModel>();
             if (dbUser != null)
             {
+                var model = new Trinity.BE.ProfileModel()
+                {
+                    User = dbUser,
+                    UserProfile = dalUserProfile.GetUserProfileByUserId(dbUser.UserId, true),
+                    Addresses = null
+                };
                 session[CommonConstants.SUPERVISEE] = dbUser;
+                listModel.Add(model);
+                _web.LoadPageHtml("Supervisee.html", listModel);
             }
-        }
-
-        public void AddNewSupervisee() {
-            _web.LoadPageHtml("New-Supervisee.html");
+            else
+            {
+                LoadListSupervisee();
+            }
         }
 
         #region Authentication & Authorization
 
         public void Login(string username, string password)
         {
-            EventCenter eventCenter = EventCenter.CreateEventCenter();
+            EventCenter eventCenter = EventCenter.Default;
 
             UserManager<ApplicationUser> userManager = ApplicationIdentityManager.GetUserManager();
             ApplicationUser appUser = userManager.Find(username, password);
@@ -108,16 +140,16 @@ namespace Enrolment
                     session.Role = EnumUserRoles.EnrolmentOfficer;
                     session[CommonConstants.USER_LOGIN] = user;
 
-                    eventCenter.RaiseLogInSucceededEvent();
+                    eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = 0, Name = EventNames.LOGIN_SUCCEEDED });
                 }
                 else
                 {
-                    eventCenter.RaiseLogInFailedEvent(new LoginEventArgs(-2, "You do not have permission to access this page."));
+                    eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -2, Name = EventNames.LOGIN_FAILED, Message = "You do not have permission to access this page." });
                 }
             }
             else
             {
-                eventCenter.RaiseLogInFailedEvent(new LoginEventArgs(-1, "Your username or password is incorrect."));
+                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.LOGIN_FAILED, Message = "Your username or password is incorrect." });
             }
         }
 
@@ -132,8 +164,8 @@ namespace Enrolment
 
             //
             // RaiseLogOutCompletedEvent
-            EventCenter eventCenter = EventCenter.CreateEventCenter();
-            eventCenter.RaiseLogOutCompletedEvent();
+            EventCenter eventCenter = EventCenter.Default;
+            eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = 0, Name = EventNames.LOGOUT_SUCCEEDED });
         }
 
         #endregion

@@ -10,15 +10,16 @@ namespace Enrolment.CodeBehind
     class Suppervisee
     {
         WebBrowser _web;
-
+        JSCallCS jSCallCS;
         public Suppervisee(WebBrowser web)
         {
             _web = web;
+            jSCallCS = new JSCallCS(web);
         }
 
         public void Start()
         {
-            _web.LoadPageHtml("Supervisee.html");
+            jSCallCS.LoadListSupervisee();
         }
     }
 }
