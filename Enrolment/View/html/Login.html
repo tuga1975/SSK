@@ -1,4 +1,4 @@
-<!-- <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> -->
+﻿<!-- <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> -->
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="../scripts/styles.css"/>
     <script type="text/javascript" src="../scripts/jquery-3.2.1.min.js"></script>
     <script type="text/javascript" src="../scripts/bootstrap/bootstrap.min.js"></script>
+    <script src="../scripts/lib.js"></script>
 </head>
 <body>
 	<div style="width:1000px;min-height:600px;margin:20px auto;border:2px solid #000">		
@@ -38,7 +39,7 @@
 						</div>
 					</div>
 					<div class="form-login-footer">
-						<button type="submit" class="btn-login">Login</button>
+						<button type="submit" class="btn-login" onclick="api.server.Login('username', 'password');">Login</button>
 						<div class="clear"></div>
 						<a class="forgot-pass" href="">Forgot Password</a>
 					</div>					
