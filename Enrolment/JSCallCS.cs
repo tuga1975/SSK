@@ -69,7 +69,7 @@ namespace Enrolment
         {
             try
             {
-                
+
                 var dalNotify = new DAL_Notification();
                 dalNotify.ChangeReadStatus(notificationId);
             }
@@ -139,31 +139,36 @@ namespace Enrolment
             APIUtils.Printer.PrintAppointmentDetails("AppointmentDetailsTemplate.html", appointment);
         }
         #endregion
-        public void LoadProfile()
+        public void LoadListSupervisee()
         {
             try
             {
-                Session session = Session.Instance;
-                if (session.IsAuthenticated)
-                {
-                    Trinity.BE.User user = (Trinity.BE.User)session[Contstants.CommonConstants.USER_LOGIN];
+               
 
                     var dalUser = new Trinity.DAL.DAL_User();
                     var dalUserprofile = new Trinity.DAL.DAL_UserProfile();
-                    var profileModel = new Trinity.BE.ProfileModel
+                    var listSupervisee = new List<Trinity.BE.ProfileModel>();
+                    var listDbUser = dalUser.GetAllSupervisees(true);
+                    if (listDbUser!= null)
                     {
-                        User = dalUser.GetUserByUserId(user.UserId, true),
-                        UserProfile = dalUserprofile.GetUserProfileByUserId(user.UserId, true),
-                        Addresses = dalUserprofile.GetAddressByUserId(user.UserId, true)
-                    };
-
-                    //profile model 
-                    _web.LoadPageHtml("Profile.html", profileModel);
+                        foreach (var item in listDbUser)
+                        {
+                            var superviseeModel = new Trinity.BE.ProfileModel
+                            {
+                                User = dalUser.GetUserByUserId(item.UserId, true),
+                                UserProfile = dalUserprofile.GetUserProfileByUserId(item.UserId, true),
+                                Addresses = dalUserprofile.GetAddressByUserId(item.UserId, true)
+                            };
+                            listSupervisee.Add(superviseeModel);
+                        }
+                    
+                    //list Supervisee model 
+                    _web.LoadPageHtml("Supervisee.html", listSupervisee);
                 }
             }
             catch (Exception ex)
             {
-                _web.LoadPageHtml("Profile.html", new Trinity.BE.ProfileModel());
+                _web.LoadPageHtml("Supervisee.html", new Trinity.BE.ProfileModel());
             }
         }
 
@@ -213,7 +218,7 @@ namespace Enrolment
             catch (Exception)
             {
                 MessageBox.Show("Something wrong happened!");
-                LoadProfile();
+                LoadListSupervisee();
             }
         }
         public void LoadScanDocumentForAbsence(string jsonData, string reason)
@@ -233,7 +238,7 @@ namespace Enrolment
             catch (Exception)
             {
                 MessageBox.Show("Something wrong happened!");
-                LoadProfile();
+                LoadListSupervisee();
             }
         }
         public void UpdateProfileAfterScanDoc()
@@ -360,7 +365,7 @@ namespace Enrolment
         }
 
 
-        public void SaveReasonForQueue(/*string data,*/ string reason,string selectedID)
+        public void SaveReasonForQueue(/*string data,*/ string reason, string selectedID)
         {
             //send message to case office if no support document
             if (reason == "No Supporting Document")
@@ -369,7 +374,7 @@ namespace Enrolment
             }
             var charSeparators = new char[] { ',' };
             var listSplitID = selectedID.Split(charSeparators, StringSplitOptions.RemoveEmptyEntries).ToList();
-            
+
 
             //var listAppointment = JsonConvert.DeserializeObject<List<Appointment>>(data);
             Trinity.BE.Reason reasonModel = JsonConvert.DeserializeObject<Trinity.BE.Reason>(reason);
@@ -438,6 +443,17 @@ namespace Enrolment
             //
             // RaiseLogOutCompletedEvent
             RaiseLogOutCompletedEvent();
+        }
+
+        public void SearchSuperviseeByNRIC(string nric)
+        {
+            Session session = Session.Instance;
+            var dalUser = new DAL_User();
+            var dbUser = dalUser.GetSuperviseeByNRIC(nric, true);
+            if (dbUser!=null)
+            {
+                session[CommonConstants.SUPERVISEE] = dbUser;
+            }
         }
     }
 

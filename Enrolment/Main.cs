@@ -163,6 +163,8 @@ namespace Enrolment
             session.IsSmartCardAuthenticated = true;
             session.IsFingerprintAuthenticated = true;
             NavigateTo(NavigatorEnums.Login);
+            //_jsCallCS.LoadListSupervisee();
+            //NavigateTo(NavigatorEnums.Supervisee);
             //NavigateTo(NavigatorEnums.Authentication_NRIC);
         }
 
