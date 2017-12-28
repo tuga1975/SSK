@@ -6,13 +6,10 @@ using System.Threading.Tasks;
 
 namespace Trinity.Common.Common
 {
+    // An event dispatch mechanism that enables the broadcast of information to registered observers.
     public class EventCenter
     {
-        public event EventHandler<NRICEventArgs> OnNRICFailed;
-        public event EventHandler<ShowMessageEventArgs> OnShowMessage;
-        public event Action OnLogOutCompleted;
-        public event Action OnLogInSucceeded;
-        public event EventHandler<LoginEventArgs> OnLogInFailed;
+        public event EventHandler<EventInfo> OnNewEvent;
 
         #region Singleton Implementation
         // The variable is declared to be volatile to ensure that assignment to the instance variable completes before the instance variable can be accessed
@@ -23,47 +20,26 @@ namespace Trinity.Common.Common
 
         private EventCenter() { }
 
-        public static EventCenter CreateEventCenter()
+        public static EventCenter Default
         {
-            if (_instance == null)
+            get
             {
-                lock (syncRoot)
+                if (_instance == null)
                 {
-                    if (_instance == null)
-                        _instance = new EventCenter();
+                    lock (syncRoot)
+                    {
+                        if (_instance == null)
+                            _instance = new EventCenter();
+                    }
                 }
+                return _instance;
             }
-            return _instance;
         }
         #endregion
 
-        #region Raise virtual events
-        // Wrap event invocations inside a protected virtual method
-        // to allow derived classes to override the event invocation behavior
-        public virtual void RaiseOnNRICFailedEvent(NRICEventArgs e)
+        public void RaiseEvent(EventInfo eventInfo)
         {
-            OnNRICFailed?.Invoke(this, e);
+            OnNewEvent?.Invoke(this, eventInfo);
         }
-
-        public virtual void RaiseOnShowMessageEvent(ShowMessageEventArgs e)
-        {
-            OnShowMessage?.Invoke(this, e);
-        }
-
-        public virtual void RaiseLogInSucceededEvent()
-        {
-            OnLogInSucceeded?.Invoke();
-        }
-
-        public virtual void RaiseLogInFailedEvent(LoginEventArgs e)
-        {
-            OnLogInFailed?.Invoke(this, e);
-        }
-
-        public virtual void RaiseLogOutCompletedEvent()
-        {
-            OnLogOutCompleted?.Invoke();
-        }
-        #endregion
     }
 }
