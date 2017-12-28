@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿
+using Newtonsoft.Json;
 using Enrolment.Common;
 using Enrolment.Contstants;
 using System;
@@ -42,10 +43,12 @@ namespace Enrolment
             _jsCallCS = new JSCallCS(this.LayerWeb);
             _eventCenter = EventCenter.CreateEventCenter();
 
-            _eventCenter.OnNRICFailed += JSCallCS_OnNRICFailed;
-            _eventCenter.OnShowMessage += JSCallCS_ShowMessage;
-            _eventCenter.OnLogOutCompleted += JSCallCS_OnLogOutCompleted;
-            _eventCenter.OnLogInSucceeded += JSCallCS_OnLogInSucceeded;
+            _eventCenter.OnNRICFailed += EventCenter_OnNRICFailed;
+            _eventCenter.OnShowMessage += EventCenter_OnShowMessage;
+            _eventCenter.OnLogOutCompleted += EventCenter_OnLogOutCompleted;
+            _eventCenter.OnLogInSucceeded += EventCenter_OnLogInSucceeded;
+            _eventCenter.OnLogInFailed += EventCenter_OnLogInFailed;
+
 
             //login
             _login = new CodeBehind.Login(LayerWeb);
@@ -70,18 +73,8 @@ namespace Enrolment
 
             timer.Elapsed += PeriodCheck; ;
             timer.Start();
-            //
-            // For testing purpose only
-            // 
-            //Trinity.DAL.DAL_User dalUser = new Trinity.DAL.DAL_User();
-            //Trinity.BE.User localUser = dalUser.GetUserBySmartCardId("123456789", true);
-            //Trinity.BE.User centralizedUser = dalUser.GetUserBySmartCardId("999", false);
-            //Trinity.DAL.DAL_Notification dalNotification = new Trinity.DAL.DAL_Notification();
-            //List<Trinity.BE.Notification> myLocaNotifications = dalNotification.GetMyNotifications("dfkkmdkg", true);
-            //List<Trinity.BE.Notification> myCentralizedNotifications = dalNotification.GetMyNotifications("minhdq", false);
-            //APIUtils.SignalR.SendNotificationToDutyOfficer("Hello Mr. Duty Officer!", "Hello Mr. Duty Officer! I'm a Supervisee");
-
         }
+
 
 
         private void PeriodCheck(object sender, System.Timers.ElapsedEventArgs e)
@@ -121,19 +114,8 @@ namespace Enrolment
             }
             catch (Exception ex)
             {
-
                 return;
             }
-        }
-
-        private void JSCallCS_OnLogOutCompleted()
-        {
-            NavigateTo(NavigatorEnums.Login);
-        }
-
-        private void JSCallCS_OnLogInSucceeded()
-        {
-            NavigateTo(NavigatorEnums.Supervisee);
         }
 
         private void LayerWeb_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
@@ -141,20 +123,7 @@ namespace Enrolment
             LayerWeb.InvokeScript("createEvent", JsonConvert.SerializeObject(_jsCallCS.GetType().GetMethods().Where(d => d.IsPublic && !d.IsVirtual && !d.IsSecuritySafeCritical).ToArray().Select(d => d.Name)));
 
             // Start page
-            //NavigateTo(NavigatorEnums.Authentication_SmartCard);
-
-            // For testing purpose
-            //NavigateTo(NavigatorEnums.Authentication_Fingerprint);
-            Session session = Session.Instance;
-            ////Supervisee
-            Trinity.BE.User user = new DAL_User().GetUserByUserId("dfbb2a6a-9e45-4a76-9f75-af1a7824a947", true);
-            //// Duty Officer
-            //Trinity.BE.User user = new DAL_User().GetUserByUserId("ead039f9-b9a1-45bb-8186-0bb7248aafac", true);
-            session[CommonConstants.USER_LOGIN] = user;
-            session.IsSmartCardAuthenticated = true;
-            session.IsFingerprintAuthenticated = true;
             NavigateTo(NavigatorEnums.Login);
-            //NavigateTo(NavigatorEnums.Authentication_NRIC);
         }
 
         private void NRIC_OnNRICSucceeded()
@@ -163,119 +132,40 @@ namespace Enrolment
             NavigateTo(NavigatorEnums.Supervisee);
         }
 
-        private void Fingerprint_OnFingerprintSucceeded()
-        {
-            //
-            // Login successfully
-            //
-            // Create a session object to store UserLogin information
-            Session session = Session.Instance;
-            session.IsFingerprintAuthenticated = true;
-
-            LayerWeb.RunScript("$('.status-text').css('color','#000').text('Fingerprint authentication is successful.');");
-            APIUtils.SignalR.GetLatestNotifications();
-
-            Thread.Sleep(1000);
-
-            // if role = 0 (duty officer), redirect to NRIC.html
-            // else (supervisee), redirect to Supervisee.html
-            Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-            if (user.Role == EnumUserRoles.DutyOfficer)
-            {
-                // navigate to Authentication_NRIC
-                NavigateTo(NavigatorEnums.Authentication_NRIC);
-            }
-            else
-            {
-                // navigate to Supervisee page
-                NavigateTo(NavigatorEnums.Supervisee);
-            }
-        }
-
-        private void SmartCard_OnSmartCardSucceeded()
-        {
-            // Pause for 1 second and goto Fingerprint Login Screen
-            Thread.Sleep(1000);
-
-            // navigate to next page: Authentication_Fingerprint
-            NavigateTo(NavigatorEnums.Authentication_Fingerprint);
-        }
-
-        private void SmartCard_OnSmartCardFailed(object sender, CodeBehind.Authentication.SmartCardEventArgs e)
-        {
-            // increase counter
-            _smartCardFailed++;
-
-            // exceeded max failed
-            if (_smartCardFailed > 3)
-            {
-                // Send Notification to duty officer
-                APIUtils.SignalR.SendNotificationToDutyOfficer(e.Message, e.Message);
-
-                // show message box to user
-                MessageBox.Show(e.Message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-                // reset counter
-                _smartCardFailed = 0;
-
-                // display failed on UI
-                LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please place your smart card on the reader.');");
-
-                return;
-            }
-
-            // display failed on UI
-            LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please place your smart card on the reader. Failed: " + _smartCardFailed + "');");
-        }
-
-        private void Fingerprint_OnFingerprintFailed(object sender, CodeBehind.Authentication.FingerprintEventArgs e)
-        {
-            // increase counter
-            _fingerprintFailed++;
-
-            // exceeded max failed
-            if (_fingerprintFailed > 3)
-            {
-                // Send Notification to duty officer
-                APIUtils.SignalR.SendNotificationToDutyOfficer(e.Message, e.Message);
-
-                // show message box to user
-                MessageBox.Show(e.Message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-                // navigate to smartcard login page
-                NavigateTo(NavigatorEnums.Authentication_SmartCard);
-
-                // reset counter
-                _fingerprintFailed = 0;
-
-                return;
-            }
-
-            // display failed on UI
-            LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please place your finger on the reader. Failed: " + _fingerprintFailed + "');");
-        }
-
         private void Main_FormClosing(object sender, FormClosingEventArgs e)
         {
             Application.ExitThread();
             APIUtils.Dispose();
         }
 
-        #region events
-        private void JSCallCS_OnNRICFailed(object sender, NRICEventArgs e)
+        #region Event Handlers
+
+        private void EventCenter_OnLogOutCompleted()
+        {
+            NavigateTo(NavigatorEnums.Login);
+        }
+
+        private void EventCenter_OnLogInSucceeded()
+        {
+            NavigateTo(NavigatorEnums.Supervisee);
+        }
+
+        private void EventCenter_OnLogInFailed(object sender, LoginEventArgs e)
+        {
+            MessageBox.Show(e.ErrorMsg, "Login Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
+        private void EventCenter_OnNRICFailed(object sender, Trinity.Common.NRICEventArgs e)
         {
             MessageBox.Show(e.Message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
-        private void JSCallCS_ShowMessage(object sender, ShowMessageEventArgs e)
+        private void EventCenter_OnShowMessage(object sender, ShowMessageEventArgs e)
         {
             MessageBox.Show(e.Message, e.Caption, e.Button, e.Icon);
         }
 
-        private void OnShowMessage(object sender, ShowMessageEventArgs e)
-        {
-            MessageBox.Show(e.Message, e.Caption, e.Button, e.Icon);
-        }
+        #endregion
 
         private void NavigateTo(NavigatorEnums navigatorEnum)
         {
@@ -310,13 +200,6 @@ namespace Enrolment
                 CSCallJS.DisplayLogoutButton(this.LayerWeb, _displayLoginButtonStatus);
             }
         }
-        #endregion
-
-        private void Main_Load(object sender, EventArgs e)
-        {
-            //FormQueueNumber f = FormQueueNumber.GetInstance();
-            //f.ShowOnSecondaryScreen();
-            //f.Show();
-        }
     }
 }
+
