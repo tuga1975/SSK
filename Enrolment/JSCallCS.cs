@@ -93,11 +93,12 @@ namespace Enrolment
 
         public void SearchSuperviseeByNRIC(string nric)
         {
+            EventCenter eventCenter = EventCenter.Default;
             Session session = Session.Instance;
             var dalUser = new DAL_User();
             var dalUserProfile = new DAL_UserProfile();
             var dbUser = dalUser.GetSuperviseeByNRIC(nric, true);
-            var listModel = new List<Trinity.BE.ProfileModel>();
+            var listSupervisee = new List<Trinity.BE.ProfileModel>();
             if (dbUser != null)
             {
                 var model = new Trinity.BE.ProfileModel()
@@ -107,8 +108,9 @@ namespace Enrolment
                     Addresses = null
                 };
                 session[CommonConstants.SUPERVISEE] = dbUser;
-                listModel.Add(model);
-                _web.LoadPageHtml("Supervisee.html", listModel);
+                listSupervisee.Add(model);
+                _web.LoadPageHtml("Supervisee.html", listSupervisee);
+                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = 0, Name = EventNames.GET_LIST_SUPERVISEE_SUCCEEDED, Data = listSupervisee, Source = "Supervisee.html" });
             }
             else
             {
