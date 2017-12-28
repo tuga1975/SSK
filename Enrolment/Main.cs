@@ -41,14 +41,9 @@ namespace Enrolment
             #region Initialize and register events
             // _jsCallCS
             _jsCallCS = new JSCallCS(this.LayerWeb);
-            _eventCenter = EventCenter.CreateEventCenter();
+            _eventCenter = EventCenter.Default;
 
-            _eventCenter.OnNRICFailed += EventCenter_OnNRICFailed;
-            _eventCenter.OnShowMessage += EventCenter_OnShowMessage;
-            _eventCenter.OnLogOutCompleted += EventCenter_OnLogOutCompleted;
-            _eventCenter.OnLogInSucceeded += EventCenter_OnLogInSucceeded;
-            _eventCenter.OnLogInFailed += EventCenter_OnLogInFailed;
-
+            _eventCenter.OnNewEvent += EventCenter_OnNewEvent;
 
             //login
             _login = new CodeBehind.Login(LayerWeb);
@@ -74,9 +69,7 @@ namespace Enrolment
             timer.Elapsed += PeriodCheck; ;
             timer.Start();
         }
-
-
-
+        
         private void PeriodCheck(object sender, System.Timers.ElapsedEventArgs e)
         {
             healthMonitor.CheckHealth();
@@ -140,29 +133,20 @@ namespace Enrolment
 
         #region Event Handlers
 
-        private void EventCenter_OnLogOutCompleted()
+        private void EventCenter_OnNewEvent(object sender, EventInfo e)
         {
-            NavigateTo(NavigatorEnums.Login);
-        }
-
-        private void EventCenter_OnLogInSucceeded()
-        {
-            NavigateTo(NavigatorEnums.Supervisee);
-        }
-
-        private void EventCenter_OnLogInFailed(object sender, LoginEventArgs e)
-        {
-            MessageBox.Show(e.ErrorMsg, "Login Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-
-        private void EventCenter_OnNRICFailed(object sender, Trinity.Common.NRICEventArgs e)
-        {
-            MessageBox.Show(e.Message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-
-        private void EventCenter_OnShowMessage(object sender, ShowMessageEventArgs e)
-        {
-            MessageBox.Show(e.Message, e.Caption, e.Button, e.Icon);
+            if (e.Name == EventNames.LOGIN_SUCCEEDED)
+            {
+                NavigateTo(NavigatorEnums.Supervisee);
+            }
+            else if (e.Name.Equals(EventNames.LOGIN_FAILED))
+            {
+                MessageBox.Show(e.Message, "Login Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else if (e.Name == EventNames.LOGOUT_SUCCEEDED)
+            {
+                NavigateTo(NavigatorEnums.Login);
+            }
         }
 
         #endregion

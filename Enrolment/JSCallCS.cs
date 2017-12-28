@@ -78,7 +78,7 @@ namespace Enrolment
 
         public void Login(string username, string password)
         {
-            EventCenter eventCenter = EventCenter.CreateEventCenter();
+            EventCenter eventCenter = EventCenter.Default;
 
             UserManager<ApplicationUser> userManager = ApplicationIdentityManager.GetUserManager();
             ApplicationUser appUser = userManager.Find(username, password);
@@ -104,16 +104,16 @@ namespace Enrolment
                     session.Role = EnumUserRoles.EnrolmentOfficer;
                     session[CommonConstants.USER_LOGIN] = user;
 
-                    eventCenter.RaiseLogInSucceededEvent();
+                    eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = 0, Name = EventNames.LOGIN_SUCCEEDED });
                 }
                 else
                 {
-                    eventCenter.RaiseLogInFailedEvent(new LoginEventArgs(-2, "You do not have permission to access this page."));
+                    eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -2, Name = EventNames.LOGIN_FAILED, Message = "You do not have permission to access this page." });
                 }
             }
             else
             {
-                eventCenter.RaiseLogInFailedEvent(new LoginEventArgs(-1, "Your username or password is incorrect."));
+                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.LOGIN_FAILED, Message = "Your username or password is incorrect." });
             }
         }
 
@@ -128,8 +128,8 @@ namespace Enrolment
 
             //
             // RaiseLogOutCompletedEvent
-            EventCenter eventCenter = EventCenter.CreateEventCenter();
-            eventCenter.RaiseLogOutCompletedEvent();
+            EventCenter eventCenter = EventCenter.Default;
+            eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = 0, Name = EventNames.LOGOUT_SUCCEEDED });
         }
 
         #endregion

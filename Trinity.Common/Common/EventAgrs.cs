@@ -106,4 +106,20 @@ namespace Trinity.Common
         public int ErrorCode { get => _errorCode; set => _errorCode = value; }
         public string ErrorMsg { get => _errorMsg; set => _errorMsg = value; }
     }
+
+    public static class EventNames
+    {
+        public const string LOGIN_FAILED = "LoginFailed";
+        public const string LOGIN_SUCCEEDED = "LoginSucceeded";
+        public const string LOGOUT_SUCCEEDED = "LogoutSucceeded";
+    }
+
+    public class EventInfo
+    {
+        public string Name { get; set; }
+        public int Code { get; set; }
+        public string Message { get; set; }
+        public object Data { get; set; }
+        public object Source { get; set; }
+    }
 }
