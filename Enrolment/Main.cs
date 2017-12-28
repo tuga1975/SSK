@@ -17,6 +17,7 @@ namespace Enrolment
     public partial class Main : Form
     {
         private JSCallCS _jsCallCS;
+        private EventCenter _eventCenter;
         private CodeBehind.Authentication.SmartCard _smartCard;
         private CodeBehind.Authentication.Fingerprint _fingerprint;
         private CodeBehind.Authentication.NRIC _nric;
@@ -41,9 +42,9 @@ namespace Enrolment
             #region Initialize and register events
             // _jsCallCS
             _jsCallCS = new JSCallCS(this.LayerWeb);
-            _jsCallCS.OnNRICFailed += JSCallCS_OnNRICFailed;
-            _jsCallCS.OnShowMessage += JSCallCS_ShowMessage;
-            _jsCallCS.OnLogOutCompleted += JSCallCS_OnLogOutCompleted;
+            _eventCenter.OnNRICFailed += JSCallCS_OnNRICFailed;
+            _eventCenter.OnShowMessage += JSCallCS_ShowMessage;
+            _eventCenter.OnLogOutCompleted += JSCallCS_OnLogOutCompleted;
 
             // SmartCard
             _smartCard = new CodeBehind.Authentication.SmartCard(LayerWeb);
@@ -163,8 +164,6 @@ namespace Enrolment
             session.IsSmartCardAuthenticated = true;
             session.IsFingerprintAuthenticated = true;
             NavigateTo(NavigatorEnums.Login);
-            //_jsCallCS.LoadListSupervisee();
-            //NavigateTo(NavigatorEnums.Supervisee);
             //NavigateTo(NavigatorEnums.Authentication_NRIC);
         }
 

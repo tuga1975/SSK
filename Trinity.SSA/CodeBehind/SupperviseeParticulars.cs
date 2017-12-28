@@ -29,7 +29,7 @@ namespace SSA.CodeBehind
                     var dalUser = new Trinity.DAL.DAL_User();
                     var dalUserprofile = new Trinity.DAL.DAL_UserProfile();
                     
-                    var userInfo = new Trinity.Common.Common.UserInfo
+                    var userInfo = new Trinity.Common.UserInfo
                     {
                         UserName = user.Name,
                         NRIC = user.NRIC,

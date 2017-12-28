@@ -36,7 +36,11 @@ namespace Trinity.Common
 
         public bool IsFingerprintAuthenticated { get; set; }
 
-        public bool IsAuthenticated => IsSmartCardAuthenticated & IsFingerprintAuthenticated;
+        public bool IsUserNamePasswordAuthenticated { get; set; }
+
+        public bool IsAuthenticated => (IsSmartCardAuthenticated & IsFingerprintAuthenticated) | IsUserNamePasswordAuthenticated;
+
+        public string Role { get; set; }
 
         private Dictionary<string, object> _properties = new Dictionary<string, object>();
         #region Public methods
