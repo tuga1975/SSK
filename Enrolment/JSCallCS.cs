@@ -63,6 +63,7 @@ namespace Enrolment
 
         public void LoadListSupervisee()
         {
+            EventCenter eventCenter = EventCenter.Default;
             Session session = Session.Instance;
             var dalUser = new DAL_User();
             var dalUserProfile = new DAL_UserProfile();
@@ -80,8 +81,13 @@ namespace Enrolment
                     };
                     listSupervisee.Add(model);
                 }
-                
-                _web.LoadPageHtml("Supervisee.html", listSupervisee);
+                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = 0, Name = EventNames.GET_LIST_SUPERVISEE_SUCCEEDED, Data = listSupervisee, Source = "Supervisee.html" });
+
+                //_web.LoadPageHtml("Supervisee.html", listSupervisee);
+            }
+            else
+            {
+                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.GET_LIST_SUPERVISEE_FAILED,  Source = "Login.html" });
             }
         }
 
@@ -107,6 +113,22 @@ namespace Enrolment
             else
             {
                 LoadListSupervisee();
+            }
+        }
+
+        public void ScanNRIC()
+        {
+            Session session = Session.Instance;
+            var codeScanned = (string)session[CommonConstants.SCANNED_BARCODE];
+            if (!string.IsNullOrEmpty(codeScanned))
+            {
+                SearchSuperviseeByNRIC(codeScanned);
+            }
+            else
+            {
+                APIUtils.SignalR.SendNotificationToDutyOfficer("Unable to scan supervisee's NRIC", "Unable to scan supervisee's NRIC! Please check the manually input information!");
+                LoadListSupervisee();
+
             }
         }
 

@@ -116,8 +116,8 @@ namespace Enrolment
             LayerWeb.InvokeScript("createEvent", JsonConvert.SerializeObject(_jsCallCS.GetType().GetMethods().Where(d => d.IsPublic && !d.IsVirtual && !d.IsSecuritySafeCritical).ToArray().Select(d => d.Name)));
 
             // Start page
-            NavigateTo(NavigatorEnums.Login);
-            //NavigateTo(NavigatorEnums.Supervisee);
+            //NavigateTo(NavigatorEnums.Login);
+            NavigateTo(NavigatorEnums.Supervisee);
 
         }
 
@@ -149,6 +149,16 @@ namespace Enrolment
             {
                 NavigateTo(NavigatorEnums.Login);
             }
+            else if (e.Name == EventNames.GET_LIST_SUPERVISEE_SUCCEEDED)
+            {
+                var model = (System.Collections.Generic.List<Trinity.BE.ProfileModel>)e.Data;
+                CSCallJS.LoadPageHtml(this.LayerWeb, e.Source.ToString(), model);
+            }
+            else if (e.Name == EventNames.GET_LIST_SUPERVISEE_FAILED)
+            {
+                NavigateTo(NavigatorEnums.Login);
+            }
+
         }
 
         #endregion

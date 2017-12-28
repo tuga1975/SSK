@@ -14,5 +14,6 @@ namespace Enrolment.Contstants
         public const string LIST_APPOINTMENT = "ListAppointment";
         public const string SCANNED_DOCUMENT = "ScannedDocument";
         public const string SUPERVISEE = "SUPERVISEE";
+        public const string SCANNED_BARCODE = "ScannedBarcode";
     }
 }
