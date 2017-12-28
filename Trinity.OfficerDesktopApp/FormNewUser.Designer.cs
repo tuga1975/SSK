@@ -48,6 +48,8 @@
             this.label3 = new System.Windows.Forms.Label();
             this.txtNRIC = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
+            this.txtPassword = new System.Windows.Forms.TextBox();
+            this.label8 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -71,7 +73,6 @@
             // 
             // btnSave
             // 
-            this.btnSave.Enabled = false;
             this.btnSave.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnSave.Location = new System.Drawing.Point(12, 411);
             this.btnSave.Name = "btnSave";
@@ -94,6 +95,8 @@
             // 
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add(this.txtPassword);
+            this.groupBox1.Controls.Add(this.label8);
             this.groupBox1.Controls.Add(this.btnScanFingerprint);
             this.groupBox1.Controls.Add(this.btnScanSmartcard);
             this.groupBox1.Controls.Add(this.dpDOB);
@@ -122,7 +125,7 @@
             // 
             this.btnScanFingerprint.Enabled = false;
             this.btnScanFingerprint.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnScanFingerprint.Location = new System.Drawing.Point(387, 269);
+            this.btnScanFingerprint.Location = new System.Drawing.Point(387, 305);
             this.btnScanFingerprint.Name = "btnScanFingerprint";
             this.btnScanFingerprint.Size = new System.Drawing.Size(193, 44);
             this.btnScanFingerprint.TabIndex = 15;
@@ -133,7 +136,7 @@
             // btnScanSmartcard
             // 
             this.btnScanSmartcard.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnScanSmartcard.Location = new System.Drawing.Point(165, 269);
+            this.btnScanSmartcard.Location = new System.Drawing.Point(165, 305);
             this.btnScanSmartcard.Name = "btnScanSmartcard";
             this.btnScanSmartcard.Size = new System.Drawing.Size(193, 44);
             this.btnScanSmartcard.TabIndex = 14;
@@ -221,8 +224,11 @@
             this.cboRoles.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboRoles.FormattingEnabled = true;
             this.cboRoles.Items.AddRange(new object[] {
+            "Supervisee",
             "DutyOfficer",
-            "Supervisee"});
+            "CaseOfficer",
+            "EnrolmentOfficer",
+            "SuperAdmin"});
             this.cboRoles.Location = new System.Drawing.Point(165, 91);
             this.cboRoles.Name = "cboRoles";
             this.cboRoles.Size = new System.Drawing.Size(193, 26);
@@ -252,9 +258,27 @@
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.Location = new System.Drawing.Point(29, 59);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(48, 18);
+            this.label2.Size = new System.Drawing.Size(131, 18);
             this.label2.TabIndex = 2;
-            this.label2.Text = "NRIC:";
+            this.label2.Text = "NRIC (Username):";
+            // 
+            // txtPassword
+            // 
+            this.txtPassword.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtPassword.Location = new System.Drawing.Point(165, 248);
+            this.txtPassword.Name = "txtPassword";
+            this.txtPassword.Size = new System.Drawing.Size(635, 24);
+            this.txtPassword.TabIndex = 17;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label8.Location = new System.Drawing.Point(29, 251);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(79, 18);
+            this.label8.TabIndex = 16;
+            this.label8.Text = "Password:";
             // 
             // FormNewUser
             // 
@@ -298,5 +322,7 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Button btnScanFingerprint;
         private System.Windows.Forms.Button btnScanSmartcard;
+        private System.Windows.Forms.TextBox txtPassword;
+        private System.Windows.Forms.Label label8;
     }
 }

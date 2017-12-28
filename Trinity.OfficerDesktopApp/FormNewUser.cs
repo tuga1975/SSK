@@ -48,15 +48,15 @@ namespace OfficerDesktopApp
 
         private async void CreateUserAsync()
         {
-            if (string.IsNullOrEmpty(_currentUser.SmartCardId) || _currentUser.Fingerprint == null)
-            {
-                MessageBox.Show("You have to scan your smart card and fingerprint");
-                return;
-            }
+            //if (string.IsNullOrEmpty(_currentUser.SmartCardId) || _currentUser.Fingerprint == null)
+            //{
+            //    MessageBox.Show("You have to scan your smart card and fingerprint");
+            //    return;
+            //}
             //
             // Prepare user information
             //
-            
+
             _currentUser.Name = txtName.Text;
             _currentUser.NRIC = txtNRIC.Text;
             _currentUser.Role = String.IsNullOrEmpty(cboRoles.Text) ? EnumUserRoles.Supervisee : cboRoles.Text;
@@ -64,20 +64,20 @@ namespace OfficerDesktopApp
             ApplicationUser user = new ApplicationUser();
             user.UserName = _currentUser.NRIC;
             user.Name = _currentUser.Name;
-            user.Email= txtPrimaryEmail.Text;
-            user.Fingerprint= _currentUser.Fingerprint;
-            user.NRIC= _currentUser.NRIC;
-            user.PhoneNumber= txtPrimaryPhone.Text;
-            user.SmartCardId= _currentUser.SmartCardId;
-            user.Status= EnumUserStatuses.Active;
+            user.Email = txtPrimaryEmail.Text;
+            user.Fingerprint = _currentUser.Fingerprint;
+            user.NRIC = _currentUser.NRIC;
+            user.PhoneNumber = txtPrimaryPhone.Text;
+            user.SmartCardId = _currentUser.SmartCardId;
+            user.Status = EnumUserStatuses.Active;
 
             UserManager<ApplicationUser> userManager = ApplicationIdentityManager.GetUserManager();
             Trinity.DAL.DAL_User dalUser = new Trinity.DAL.DAL_User();
-            IdentityResult result = await userManager.CreateAsync(user, "123456");
+            IdentityResult result = await userManager.CreateAsync(user, txtPassword.Text.Trim());
             if (result.Succeeded)
             {
                 RoleManager<IdentityRole> roleManager = ApplicationIdentityManager.GetRoleManager();
-                userManager.AddToRole(user.Id, EnumUserRoles.Supervisee);
+                userManager.AddToRole(user.Id, _currentUser.Role);
                 // Save to the Centralized DB also
                 //dalUser.CreateUser(_currentUser, false);
 
