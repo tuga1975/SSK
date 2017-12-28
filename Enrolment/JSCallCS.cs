@@ -74,6 +74,10 @@ namespace Enrolment
             }
         }
 
+        public void AddNewSupervisee() {
+            _web.LoadPageHtml("New-Supervisee.html");
+        }
+
         #region Authentication & Authorization
 
         public void Login(string username, string password)

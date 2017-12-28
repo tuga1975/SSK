@@ -1,37 +1,18 @@
-<!-- <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> -->
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <meta name="viewport" content="width=device-width, intial-scale=1"/>
-    <meta name="description" content="Something abt this cpn"/>
-    <title>New Supervisee</title>
-    <link rel="stylesheet" href="../scripts/bootstrap/bootstrap.min.css"/>
-    <link rel="stylesheet" href="../scripts/jquery.steps.css"/>
-    <link rel="stylesheet" href="../scripts/styles.css"/>
-    <script type="text/javascript" src="../scripts/jquery-3.2.1.min.js"></script>
-    <script type="text/javascript" src="../scripts/jquery-ui.min.js"></script>
-    <script type="text/javascript" src="../scripts/bootstrap/popper.min.js"></script>
-    <script type="text/javascript" src="../scripts/bootstrap/bootstrap.min.js"></script>
-    <script type="text/javascript" src="../scripts/jquery.steps.min.js"></script>
-	<script>
-		$(function ()
-		{
-			$("#wizard").steps({
-				headerTag: "h2",
-				bodyTag: "section",
-				transitionEffect: "slideLeft"
-			});
-			
-			$("input[type='image']").click(function() {
-				$("input[id='my_file']").click();
-			});
+<script>
+	$(function ()
+	{
+		$("#wizard").steps({
+			headerTag: "h2",
+			bodyTag: "section",
+			transitionEffect: "slideLeft"
 		});
-	</script>
-</head>
-<body>
-	<div style="width:1000px;min-height:600px;margin:20px auto;border:2px solid #000">
-		<div class="container">
+			
+		$("input[type='image']").click(function() {
+			$("input[id='my_file']").click();
+		});
+	});
+</script>
+<div style="width:100%">
 			<div class="header">
 				<img class="logo" src="../images/logo.png" />
 				<h3>Edit Supervisee</h3>
@@ -51,15 +32,18 @@
 								<div class="row">
 									<div class="col">
 										<img class="avatar" src="../images/usr-default.jpg" />
-										<input type="file" id="my_file" />
+										
+										<button type="button">Get Image</button>
 									</div>
 									<div class="col">
 										<img class="avatar" src="../images/usr-default.jpg" />
-										<input type="file" id="my_file" />
+										
+										<button type="button">Get Image</button>
 									</div>
 									<div class="col">
 										<img class="avatar" src="../images/usr-default.jpg" />
-										<input type="file" id="my_file" />
+										
+										<button type="button">Get Image</button>
 									</div>
 								</div>
 							</section>
@@ -94,7 +78,4 @@
 				</div>
 			</div>
 		</div>
-	</div>
-</body>
-</html>
     
