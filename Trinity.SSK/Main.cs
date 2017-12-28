@@ -117,15 +117,15 @@ namespace SSK
 
                     //Smart Cart Reader Status
                     deviceId = dalDeviceStatus.GetDeviceId(EnumDeviceTypes.SmartCardReader);
-                    listDeviceStatusModel.Add(dalDeviceStatus.SetInfo(entryAppName, deviceId, e.PrintStatus));
+                    listDeviceStatusModel.Add(dalDeviceStatus.SetInfo(entryAppName, deviceId, e.SCardStatus));
 
                     //Document Scanner Status
                     deviceId = dalDeviceStatus.GetDeviceId(EnumDeviceTypes.DocumentScanner);
-                    listDeviceStatusModel.Add(dalDeviceStatus.SetInfo(entryAppName, deviceId, e.PrintStatus));
+                    listDeviceStatusModel.Add(dalDeviceStatus.SetInfo(entryAppName, deviceId, e.DocStatus));
 
                     //Fingerprint Scanner Status
                     deviceId = dalDeviceStatus.GetDeviceId(EnumDeviceTypes.FingerprintScanner);
-                    listDeviceStatusModel.Add(dalDeviceStatus.SetInfo(entryAppName, deviceId, e.PrintStatus));
+                    listDeviceStatusModel.Add(dalDeviceStatus.SetInfo(entryAppName, deviceId, e.FPrintStatus));
 
                     dalDeviceStatus.Insert(listDeviceStatusModel);
                 }
