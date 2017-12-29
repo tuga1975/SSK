@@ -58,7 +58,7 @@ namespace SSA
         {
             _web.LoadPageHtml(file);
         }
-                      
+
         private void actionThread(object pram)
         {
 
@@ -145,7 +145,9 @@ namespace SSA
                     // Authorized successfully
                     Trinity.BE.User user = new Trinity.BE.User()
                     {
-                        Fingerprint = appUser.Fingerprint,
+                        RightThumbFingerprint = appUser.RightThumbFingerprint,
+                        LeftThumbFingerprint = appUser.LeftThumbFingerprint,
+                        IsFirstAttempt = appUser.IsFirstAttempt,
                         Name = appUser.Name,
                         NRIC = appUser.NRIC,
                         Role = EnumUserRoles.DutyOfficer,

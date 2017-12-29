@@ -18,6 +18,9 @@ namespace Trinity.DAL.DBContext
         public Membership_Users()
         {
             this.Appointments = new HashSet<Appointment>();
+            this.Membership_UserClaims = new HashSet<Membership_UserClaims>();
+            this.Membership_UserDevices = new HashSet<Membership_UserDevices>();
+            this.Membership_UserLogins = new HashSet<Membership_UserLogins>();
             this.Membership_UserRoles = new HashSet<Membership_UserRoles>();
             this.Notifications = new HashSet<Notification>();
             this.Notifications1 = new HashSet<Notification>();
@@ -39,11 +42,19 @@ namespace Trinity.DAL.DBContext
         public string NRIC { get; set; }
         public string Name { get; set; }
         public string SmartCardId { get; set; }
-        public byte[] Fingerprint { get; set; }
+        public byte[] RightThumbFingerprint { get; set; }
+        public byte[] LeftThumbFingerprint { get; set; }
         public string Status { get; set; }
+        public Nullable<bool> IsFirstAttempt { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Appointment> Appointments { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Membership_UserClaims> Membership_UserClaims { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Membership_UserDevices> Membership_UserDevices { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Membership_UserLogins> Membership_UserLogins { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Membership_UserRoles> Membership_UserRoles { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

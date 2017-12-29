@@ -21,7 +21,7 @@ namespace Trinity.DAL
                             join mur in _localUnitOfWork.DataContext.Membership_UserRoles on mu.UserId equals mur.UserId
                             join mr in _localUnitOfWork.DataContext.Membership_Roles on mur.RoleId equals mr.Id
                             where mr.Name == "Supervisee"
-                            select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, SmartCardId = mu.SmartCardId, Fingerprint = mu.Fingerprint, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name });
+                            select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, SmartCardId = mu.SmartCardId, RightThumbFingerprint = mu.RightThumbFingerprint, LeftThumbFingerprint = mu.LeftThumbFingerprint, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name, IsFirstAttempt = mu.IsFirstAttempt });
                 return user.ToList();
             }
             else
@@ -30,7 +30,7 @@ namespace Trinity.DAL
                             join mur in _centralizedUnitOfWork.DataContext.Membership_UserRoles on mu.UserId equals mur.UserId
                             join mr in _centralizedUnitOfWork.DataContext.Membership_Roles on mur.RoleId equals mr.Id
                             where mr.Name == "Supervisee"
-                            select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, SmartCardId = mu.SmartCardId, Fingerprint = mu.Fingerprint, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name });
+                            select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, SmartCardId = mu.SmartCardId, RightThumbFingerprint = mu.RightThumbFingerprint, LeftThumbFingerprint = mu.LeftThumbFingerprint, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name, IsFirstAttempt = mu.IsFirstAttempt });
                 return user.ToList();
             }
         }
@@ -43,7 +43,7 @@ namespace Trinity.DAL
                             join mur in _localUnitOfWork.DataContext.Membership_UserRoles on mu.UserId equals mur.UserId
                             join mr in _localUnitOfWork.DataContext.Membership_Roles on mur.RoleId equals mr.Id
                             where mu.SmartCardId == smartCardId
-                            select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, SmartCardId = mu.SmartCardId, Fingerprint = mu.Fingerprint, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name });
+                            select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, SmartCardId = mu.SmartCardId, RightThumbFingerprint = mu.RightThumbFingerprint, LeftThumbFingerprint = mu.LeftThumbFingerprint, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name, IsFirstAttempt = mu.IsFirstAttempt });
                 return user.FirstOrDefault();
             }
             else
@@ -52,7 +52,7 @@ namespace Trinity.DAL
                             join mur in _centralizedUnitOfWork.DataContext.Membership_UserRoles on mu.UserId equals mur.UserId
                             join mr in _centralizedUnitOfWork.DataContext.Membership_Roles on mur.RoleId equals mr.Id
                             where mu.SmartCardId == smartCardId
-                            select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, SmartCardId = mu.SmartCardId, Fingerprint = mu.Fingerprint, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name });
+                            select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, SmartCardId = mu.SmartCardId, RightThumbFingerprint = mu.RightThumbFingerprint, LeftThumbFingerprint = mu.LeftThumbFingerprint, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name, IsFirstAttempt = mu.IsFirstAttempt });
                 return user.FirstOrDefault();
             }
         }
@@ -65,7 +65,7 @@ namespace Trinity.DAL
                             join mur in _localUnitOfWork.DataContext.Membership_UserRoles on mu.UserId equals mur.UserId
                             join mr in _localUnitOfWork.DataContext.Membership_Roles on mur.RoleId equals mr.Id
                             where mu.UserId == userId
-                            select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, SmartCardId = mu.SmartCardId, Fingerprint = mu.Fingerprint, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name });
+                            select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, SmartCardId = mu.SmartCardId, RightThumbFingerprint = mu.RightThumbFingerprint, LeftThumbFingerprint = mu.LeftThumbFingerprint, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name, IsFirstAttempt = mu.IsFirstAttempt });
                 return user.FirstOrDefault();
             }
             else
@@ -74,7 +74,7 @@ namespace Trinity.DAL
                             join mur in _centralizedUnitOfWork.DataContext.Membership_UserRoles on mu.UserId equals mur.UserId
                             join mr in _centralizedUnitOfWork.DataContext.Membership_Roles on mur.RoleId equals mr.Id
                             where mu.UserId == userId
-                            select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, SmartCardId = mu.SmartCardId, Fingerprint = mu.Fingerprint, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name });
+                            select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, SmartCardId = mu.SmartCardId, RightThumbFingerprint = mu.RightThumbFingerprint, LeftThumbFingerprint = mu.LeftThumbFingerprint, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name, IsFirstAttempt = mu.IsFirstAttempt });
                 return user.FirstOrDefault();
             }
         }
@@ -87,7 +87,7 @@ namespace Trinity.DAL
                             join mur in _localUnitOfWork.DataContext.Membership_UserRoles on mu.UserId equals mur.UserId
                             join mr in _localUnitOfWork.DataContext.Membership_Roles on mur.RoleId equals mr.Id
                             where mu.NRIC == nric
-                            select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, SmartCardId = mu.SmartCardId, Fingerprint = mu.Fingerprint, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name });
+                            select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, SmartCardId = mu.SmartCardId, RightThumbFingerprint = mu.RightThumbFingerprint, LeftThumbFingerprint = mu.LeftThumbFingerprint, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name, IsFirstAttempt = mu.IsFirstAttempt });
                 return user.FirstOrDefault();
             }
             else
@@ -96,7 +96,7 @@ namespace Trinity.DAL
                             join mur in _centralizedUnitOfWork.DataContext.Membership_UserRoles on mu.UserId equals mur.UserId
                             join mr in _centralizedUnitOfWork.DataContext.Membership_Roles on mur.RoleId equals mr.Id
                             where mu.NRIC == nric
-                            select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, SmartCardId = mu.SmartCardId, Fingerprint = mu.Fingerprint, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name });
+                            select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, SmartCardId = mu.SmartCardId, RightThumbFingerprint = mu.RightThumbFingerprint, LeftThumbFingerprint = mu.LeftThumbFingerprint, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name, IsFirstAttempt = mu.IsFirstAttempt });
                 return user.FirstOrDefault();
             }
         }
@@ -150,22 +150,31 @@ namespace Trinity.DAL
         {
             if (dbUser != null)
             {
-                dbUser.Fingerprint = model.Fingerprint;
                 dbUser.Name = model.Name;
                 dbUser.NRIC = model.NRIC;
                 dbUser.SmartCardId = model.SmartCardId;
                 //dbUser.Role = model.Role;
                 dbUser.UserId = model.UserId;
-                if (model.Fingerprint != null)
+                if (model.RightThumbFingerprint != null)
                 {
-                    byte[] data = new byte[model.Fingerprint.Length];
+                    byte[] data = new byte[model.RightThumbFingerprint.Length];
                     for (int i = 0; i < data.Length; i++)
                     {
-                        data[i] = model.Fingerprint[i];
+                        data[i] = model.RightThumbFingerprint[i];
                     }
-                    dbUser.Fingerprint = data;
+                    dbUser.RightThumbFingerprint = data;
+                }
+                if (model.LeftThumbFingerprint != null)
+                {
+                    byte[] data = new byte[model.LeftThumbFingerprint.Length];
+                    for (int i = 0; i < data.Length; i++)
+                    {
+                        data[i] = model.LeftThumbFingerprint[i];
+                    }
+                    dbUser.LeftThumbFingerprint = data;
                 }
                 dbUser.Status = model.Status;
+                dbUser.IsFirstAttempt = model.IsFirstAttempt;
             }
         }
 

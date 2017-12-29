@@ -17,12 +17,15 @@ namespace Trinity.DAL.DBContext
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Membership_Roles()
         {
+            this.Membership_RoleClaims = new HashSet<Membership_RoleClaims>();
             this.Membership_UserRoles = new HashSet<Membership_UserRoles>();
         }
     
         public string Id { get; set; }
         public string Name { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Membership_RoleClaims> Membership_RoleClaims { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Membership_UserRoles> Membership_UserRoles { get; set; }
     }

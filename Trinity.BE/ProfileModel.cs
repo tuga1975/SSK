@@ -55,7 +55,10 @@ namespace Trinity.BE
         public DateTime? EndDate { get; set; }
         public string Remarks { get; set; }
         public string SmartCardId { get; set; }
-        public byte[] Fingerprint { get; set; }
+        public byte[] RightThumbFingerprint { get; set; }
+        public byte[] LeftThumbFingerprint { get; set; }
+        public bool? IsFirstAttempt { get; set; }
+
 
         public ProfileModel ToProfileModel(ProfileRawMData rawData)
         {
@@ -63,12 +66,14 @@ namespace Trinity.BE
             {
                 User = new User
                 {
-                    Fingerprint = rawData.Fingerprint,
+                    RightThumbFingerprint = rawData.RightThumbFingerprint,
+                    LeftThumbFingerprint = rawData.LeftThumbFingerprint,
                     Name = rawData.ParticularsName,
                     NRIC = rawData.NRIC,
                     SmartCardId = rawData.SmartCardId,
                     //Role = rawData.Role,
-                    UserId = rawData.UserId
+                    UserId = rawData.UserId,
+                    IsFirstAttempt = rawData.IsFirstAttempt
                 },
                 UserProfile = new UserProfile
                 {

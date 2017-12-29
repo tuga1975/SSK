@@ -27,9 +27,15 @@ namespace Trinity.BE
         public string Role { get; set; }
 
         [DataMember]
-        public byte[] Fingerprint { get; set; }
+        public byte[] RightThumbFingerprint { get; set; }
+
+        [DataMember]
+        public byte[] LeftThumbFingerprint { get; set; }
 
         [DataMember]
         public string Status { get; set; }
+
+        [DataMember]
+        public Nullable<bool> IsFirstAttempt { get; set; }
     }
 }

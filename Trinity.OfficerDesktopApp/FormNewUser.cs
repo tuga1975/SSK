@@ -65,7 +65,9 @@ namespace OfficerDesktopApp
             user.UserName = _currentUser.NRIC;
             user.Name = _currentUser.Name;
             user.Email = txtPrimaryEmail.Text;
-            user.Fingerprint = _currentUser.Fingerprint;
+            user.RightThumbFingerprint = _currentUser.RightThumbFingerprint;
+            user.LeftThumbFingerprint = _currentUser.LeftThumbFingerprint;
+            user.IsFirstAttempt = _currentUser.IsFirstAttempt;
             user.NRIC = _currentUser.NRIC;
             user.PhoneNumber = txtPrimaryPhone.Text;
             user.SmartCardId = _currentUser.SmartCardId;
@@ -170,7 +172,7 @@ namespace OfficerDesktopApp
                 szMessage.Append(_futronicEnrollment.Quality.ToString());
                 Console.WriteLine(szMessage);
 
-                _currentUser.Fingerprint = _futronicEnrollment.Template;
+                _currentUser.RightThumbFingerprint = _futronicEnrollment.Template;
 
                 UpdateNote("Your fingerprint was scanned successfully!", Color.Blue);
                 this.Invoke((Action)(() => btnSave.Enabled = true));

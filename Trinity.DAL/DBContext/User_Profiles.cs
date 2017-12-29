@@ -39,6 +39,12 @@ namespace Trinity.DAL.DBContext
         public Nullable<System.DateTime> Employment_Start_Date { get; set; }
         public Nullable<System.DateTime> Employment_End_Date { get; set; }
         public string Employment_Remarks { get; set; }
+        public byte[] User_Photo1 { get; set; }
+        public byte[] User_Photo2 { get; set; }
+        public string Serial_Number { get; set; }
+        public Nullable<System.DateTime> Date_of_Issue { get; set; }
+        public string Gender { get; set; }
+        public string Race { get; set; }
     
         public virtual Address Address { get; set; }
         public virtual Address Address1 { get; set; }
