@@ -33,8 +33,8 @@ namespace SSA.CodeBehind
                     {
                         UserName = user.Name,
                         NRIC = user.NRIC,
-                        DOB = dalUserprofile.GetUserProfileByUserId(user.UserId, true).DOB.Value.ToString("dd/MM/yyyy"),
-                        Status = dalUserprofile.GetUserProfileByUserId(user.UserId, true).Maritial_Status,
+                        DOB = dalUserprofile.GetUserProfileByUserId(user.UserId, true).DOB.HasValue ? dalUserprofile.GetUserProfileByUserId(user.UserId, true).DOB.Value.ToString("dd/MM/yyyy") : "",
+                        Status = user.Status, //dalUserprofile.GetUserProfileByUserId(user.UserId, true).Maritial_Status,
                         MarkingNumber = CommonUtil.GenerateMarkingNumber()
                     };
 
