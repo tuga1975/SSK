@@ -114,6 +114,7 @@ namespace Trinity.Common
         public const string LOGOUT_SUCCEEDED = "LogoutSucceeded";
         public const string GET_LIST_SUPERVISEE_SUCCEEDED = "GetListSuperviseeSucceeded";
         public const string GET_LIST_SUPERVISEE_FAILED = "GetListSuperviseeSFailed";
+        public const string OPEN_PICTURE_CAPTURE_FORM = "OpenPictureCaptureForm";
     }
 
     public class EventInfo
