@@ -98,13 +98,14 @@ namespace Trinity.Common.Utils
                     return false;
                 }
 
-                var contentQRCode = "User Name: " + userInfo.UserName + "; NRIC: " + userInfo.NRIC + "; DOB: " + userInfo.DOB + "; Status: " + userInfo.Status + "; Marking Number: " + userInfo.MarkingNumber;
-                var bitmap = CommonUtil.CreateQRCode(contentQRCode, "AESKey");
+                //QR Code will be save on DB with table Profile['QRCode']
+                //var contentQRCode = "User Name: " + userInfo.UserName + "; NRIC: " + userInfo.NRIC + "; DOB: " + userInfo.DOB + "; Status: " + userInfo.Status;
+                //var bitmap = CommonUtil.CreateQRCode(contentQRCode, "AESKey");
 
-                // save to stream as PNG  
-                // test qr code bang file image, chua goi printer
-                string filepath = System.IO.Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath) + "\\qrcode.png";
-                bitmap.Save(filepath, System.Drawing.Imaging.ImageFormat.Png);
+                //// save to stream as PNG  
+                //// test qr code bang file image, chua goi printer
+                //string filepath = System.IO.Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath) + "\\qrcode.png";
+                //bitmap.Save(filepath, System.Drawing.Imaging.ImageFormat.Png);
                 
                 return true;
             }
