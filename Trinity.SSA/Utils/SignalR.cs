@@ -45,7 +45,7 @@ namespace SSA.Utils
         public void SendNotificationToDutyOfficer(string subject, string content)
         {
             Session session = Session.Instance;
-            User user = (User)session[CommonConstants.USER_LOGIN];
+            User user = (User)session[CommonConstants.SUPERVISEE];
             if (user == null)
             {
                 // User hasn't authenticated yet

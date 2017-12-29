@@ -54,8 +54,10 @@ namespace Trinity.Identity
         public string Name { get; set; }
         public string NRIC { get; set; }
         public string SmartCardId { get; set; }
-        public byte[] Fingerprint { get; set; }
+        public byte[] RightThumbFingerprint { get; set; }
+        public byte[] LeftThumbFingerprint { get; set; }
         public string Status { get; set; }
+        public Nullable<bool> IsFirstAttempt { get; set; }
     }
 
     public class ApplicationIdentityManager

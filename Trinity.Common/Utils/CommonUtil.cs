@@ -10,7 +10,7 @@ namespace Trinity.Common
 {
     public class CommonUtil
     {
-        public static System.Drawing.Bitmap CreateQRCode(string content, string AESKey)
+        public static System.Drawing.Bitmap CreateQRCode(UserInfo userInfo, string AESKey)
         {
             System.Drawing.Bitmap bitmap = null;
             var width = 250; // width of the Qr Code    
@@ -27,7 +27,8 @@ namespace Trinity.Common
                 }
             };
 
-            var encryptContent = CommonUtil.EncryptString(content, AESKey);
+            var contentQRCode = "User Name: " + userInfo.UserName + "; NRIC: " + userInfo.NRIC + "; DOB: " + userInfo.DOB + "; Status: " + userInfo.Status;
+            var encryptContent = CommonUtil.EncryptString(contentQRCode, AESKey);
             var pixelData = qrCodeWriter.Write(encryptContent);
             // creating a bitmap from the raw pixel data; if only black and white colors are used it makes no difference    
             // that the pixel data ist BGRA oriented and the bitmap is initialized with RGB    

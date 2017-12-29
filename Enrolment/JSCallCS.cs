@@ -133,40 +133,21 @@ namespace Enrolment
             }
         }
 
-        public void PreviewSuperviseePhoto(string userId, int failAttemp)
-        {
-            EventCenter eventCenter = EventCenter.Default;
-            if (failAttemp > 3)
-            {
-                APIUtils.SignalR.SendNotificationToDutyOfficer("Unable to capture supervisee's Photo", "Unable to capture supervisee's Photo! Please check the status !");
-                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.PHOTO_CAPTURE_FAILED, Message = "Fail to capture Photo" });
-                
-            }
-            else
-            {
-                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.OPEN_PICTURE_CAPTURE_FORM });
-            }
-        }
-
-        public void PreviewSuperviseeFingerprint(string userId, int attemp)
-        {
-            EventCenter eventCenter = EventCenter.Default;
-            if (attemp > 3)
-            {
-                APIUtils.SignalR.SendNotificationToDutyOfficer("Unable to capture supervisee's Fingerprint", "Unable to capture supervisee's Fingerprint! Please check the status !");
-                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.FINGERPRINT_CAPTURE_FAILED ,Message="Fail to capture Fingerprint"});
-               
-            }
-            else
-            {
-                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.OPEN_FINGERPRINT_CAPTURE_FORM });
-            }
-        }
-
         public void EditSupervisee(string userId)
         {
+            var dalUser = new DAL_User();
+            var dalUserProfile = new DAL_UserProfile();
 
-            _web.LoadPageHtml("Edit-Supervisee.html");
+            var dbUser = dalUser.GetUserByUserId(userId, true);
+
+            var profileModel = new Trinity.BE.ProfileModel
+            {
+                User = dbUser,
+                UserProfile = dalUserProfile.GetUserProfileByUserId(userId, true),
+                Addresses = dalUserProfile.GetAddressByUserId(userId, true)
+            };
+
+            _web.LoadPageHtml("Edit-Supervisee.html", profileModel);
         }
 
         public void AddNewSupervisee()
@@ -174,10 +155,10 @@ namespace Enrolment
             _web.LoadPageHtml("New-Supervisee.html");
         }
 
-        public void OpenPictureCaptureForm()
+        public void OpenPictureCaptureForm(string number)
         {
             EventCenter eventCenter = EventCenter.Default;
-            eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.OPEN_PICTURE_CAPTURE_FORM });
+            eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.OPEN_PICTURE_CAPTURE_FORM, Message = number });
         }
         #region Authentication & Authorization
 
@@ -196,7 +177,9 @@ namespace Enrolment
                     // Authorized successfully
                     Trinity.BE.User user = new Trinity.BE.User()
                     {
-                        Fingerprint = appUser.Fingerprint,
+                        RightThumbFingerprint = appUser.RightThumbFingerprint,
+                        LeftThumbFingerprint = appUser.LeftThumbFingerprint,
+                        IsFirstAttempt = appUser.IsFirstAttempt,
                         Name = appUser.Name,
                         NRIC = appUser.NRIC,
                         Role = EnumUserRoles.EnrolmentOfficer,

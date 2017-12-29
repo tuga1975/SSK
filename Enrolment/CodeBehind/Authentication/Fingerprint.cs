@@ -32,7 +32,7 @@ namespace Enrolment.CodeBehind.Authentication
             FingerprintMonitor fingerprintMonitor = FingerprintMonitor.Instance;
             Session session = Session.Instance;
             var user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-            fingerprintMonitor.StartVerification(OnVerificationComplete, user.Fingerprint);
+            fingerprintMonitor.StartVerification(OnVerificationComplete, user.RightThumbFingerprint);
         }
 
         private void OnVerificationComplete(bool bSuccess, int nRetCode, bool bVerificationSuccess)
@@ -55,7 +55,7 @@ namespace Enrolment.CodeBehind.Authentication
 
                     Session session = Session.Instance;
                     var user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-                    fingerprintMonitor.StartVerification(OnVerificationComplete, user.Fingerprint);
+                    fingerprintMonitor.StartVerification(OnVerificationComplete, user.RightThumbFingerprint);
                 }
             }
             else

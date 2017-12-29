@@ -99,12 +99,6 @@
     <Compile Include="Main.Designer.cs">
       <DependentUpon>Main.cs</DependentUpon>
     </Compile>
-    <Compile Include="PictureCaptureForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PictureCaptureForm.Designer.cs">
-      <DependentUpon>PictureCaptureForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\APIUtils.cs" />
@@ -113,9 +107,6 @@
     <Compile Include="Utils\TextToSpeech.cs" />
     <EmbeddedResource Include="Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PictureCaptureForm.resx">
-      <DependentUpon>PictureCaptureForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

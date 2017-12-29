@@ -43,15 +43,16 @@ namespace SSA.CodeBehind
                 Session session = Session.Instance;
                 if (session.IsAuthenticated)
                 {
-                    Trinity.BE.User user = (Trinity.BE.User)session[Constants.CommonConstants.USER_LOGIN];
+                    Trinity.BE.User user = (Trinity.BE.User)session[Constants.CommonConstants.SUPERVISEE];
 
                     var dalUser = new Trinity.DAL.DAL_User();
                     var dalUserprofile = new Trinity.DAL.DAL_UserProfile();
+                    
                     var userInfo = new UserInfo
                     {
                         UserName = user.Name,
                         NRIC = user.NRIC,
-                        DOB = dalUserprofile.GetUserProfileByUserId(user.UserId, true).DOB.ToString()
+                        DOB = dalUserprofile.GetUserProfileByUserId(user.UserId, true).DOB.HasValue ? dalUserprofile.GetUserProfileByUserId(user.UserId, true).DOB.ToString() : ""
                     };
 
                     // Print BarCode and QR Code
@@ -64,7 +65,7 @@ namespace SSA.CodeBehind
                         else
                         {
                             RaisePrintMUBAndTTLabelsFailedEvent(new PrintMUBAndTTLabelsEventArgs("Printer have problem: " + item));
-                            APIUtils.SignalR.SendNotificationToDutyOfficer("A supervisee can't print label", "Printer have problem: " + item);
+                            
                             Console.WriteLine("Barcode printer is not connected.");
                         }
                     }

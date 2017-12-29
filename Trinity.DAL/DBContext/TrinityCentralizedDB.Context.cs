@@ -27,16 +27,20 @@ namespace Trinity.DAL.DBContext
     
         public virtual DbSet<AbsenceReporting> AbsenceReportings { get; set; }
         public virtual DbSet<Address> Addresses { get; set; }
+        public virtual DbSet<ApplicationDevice_Status> ApplicationDevice_Status { get; set; }
         public virtual DbSet<Appointment> Appointments { get; set; }
         public virtual DbSet<Device> Devices { get; set; }
         public virtual DbSet<Environment> Environments { get; set; }
         public virtual DbSet<Holiday> Holidays { get; set; }
+        public virtual DbSet<Membership_RoleClaims> Membership_RoleClaims { get; set; }
         public virtual DbSet<Membership_Roles> Membership_Roles { get; set; }
+        public virtual DbSet<Membership_UserClaims> Membership_UserClaims { get; set; }
+        public virtual DbSet<Membership_UserDevices> Membership_UserDevices { get; set; }
+        public virtual DbSet<Membership_UserLogins> Membership_UserLogins { get; set; }
         public virtual DbSet<Membership_UserRoles> Membership_UserRoles { get; set; }
         public virtual DbSet<Membership_Users> Membership_Users { get; set; }
         public virtual DbSet<Notification> Notifications { get; set; }
         public virtual DbSet<QueueNumber> QueueNumbers { get; set; }
         public virtual DbSet<User_Profiles> User_Profiles { get; set; }
-        public virtual DbSet<ApplicationDevice_Status> ApplicationDevice_Status { get; set; }
     }
 }

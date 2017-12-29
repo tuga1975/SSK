@@ -55,16 +55,10 @@ namespace Trinity.BE
         public DateTime? EndDate { get; set; }
         public string Remarks { get; set; }
         public string SmartCardId { get; set; }
-        public byte[] Fingerprint { get; set; }
-        public byte[] SecondaryFingerprint { get; set; }
-        public string Gender { get; set; }
-        public string NRICBarcode { get; set; }
-        public string SerialNumber { get; set; }
-        public string Race { get; set; }
-        public DateTime DateOfIssue { get; set; }
-        public string CNBLogo { get; set; }
-        public string PrimaryPhoto { get; set; }
-        public string SecondaryPhoto { get; set; }
+        public byte[] RightThumbFingerprint { get; set; }
+        public byte[] LeftThumbFingerprint { get; set; }
+        public bool? IsFirstAttempt { get; set; }
+
 
         public ProfileModel ToProfileModel(ProfileRawMData rawData)
         {
@@ -72,12 +66,14 @@ namespace Trinity.BE
             {
                 User = new User
                 {
-                    Fingerprint = rawData.Fingerprint,
+                    RightThumbFingerprint = rawData.RightThumbFingerprint,
+                    LeftThumbFingerprint = rawData.LeftThumbFingerprint,
                     Name = rawData.ParticularsName,
                     NRIC = rawData.NRIC,
                     SmartCardId = rawData.SmartCardId,
                     //Role = rawData.Role,
-                    UserId = rawData.UserId
+                    UserId = rawData.UserId,
+                    IsFirstAttempt = rawData.IsFirstAttempt
                 },
                 UserProfile = new UserProfile
                 {
@@ -105,16 +101,7 @@ namespace Trinity.BE
                     Secondary_Email = rawData.SecondaryEmail,
                     Secondary_Phone = rawData.SecondaryContact,
                     Residential_Addess_ID = rawData.Residential_Addess_ID,
-                    Other_Address_ID = rawData.Other_Address_ID,
-                    SecondaryFingerprint= rawData.SecondaryFingerprint,
-                    PrimaryPhoto=rawData.PrimaryPhoto,
-                    SecondaryPhoto=rawData.SecondaryPhoto,
-                    CNBLogo=rawData.CNBLogo,
-                    DateOfIssue=rawData.DateOfIssue,
-                    Gender=rawData.Gender,
-                    NRICBarcode=rawData.NRICBarcode,
-                    Race=rawData.Race,
-                    SerialNumber=rawData.SerialNumber
+                    Other_Address_ID = rawData.Other_Address_ID
                 },
                 Addresses = new Address
                 {

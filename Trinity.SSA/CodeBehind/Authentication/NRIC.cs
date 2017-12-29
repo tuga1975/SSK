@@ -44,6 +44,14 @@ namespace SSA.CodeBehind.Authentication
         internal void Start()
         {
             _web.LoadPageHtml("Authentication/NRIC.html");
+
+            #region Start Barcode Scanner here to scan NRIC
+            // Start Barcode Scanner to scan NRIC
+            //var barcodeScanner = BarcodeSannerMonitor.Instance;
+            // if succeeded, auto get NRIC info to textbox NIRC on screen
+            // else -- scan failed, show message failed
+            //    RaiseShowMessage(new ShowMessageEventArgs(" Unable to scan  NRIC. \n Please enter manually.", "", MessageBoxButtons.OK, MessageBoxIcon.Error));
+            #endregion
         }
 
         // Wrap event invocations inside a protected virtual method
@@ -100,6 +108,8 @@ namespace SSA.CodeBehind.Authentication
 
             // Create a session object to store UserLogin information
             Session session = Session.Instance;
+            session.IsSmartCardAuthenticated = true;
+            session.IsFingerprintAuthenticated = true;
             session[CommonConstants.SUPERVISEE] = user;
 
             // raise succeeded event

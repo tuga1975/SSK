@@ -30,8 +30,8 @@
         </div>
         <br />
         <div class="input-group">
-            <span class="input-group-addon">Status:</span>
-            <input id="ParticularsStatus" type="text" class="form-control pri" name="ParticularsStatus" disabled="disabled" />
+            <span class="input-group-addon">QR Code:</span>
+            <img src="../img/QRCode.png" width="120" height="120">
         </div>
         <br />
         <div class="input-group">
@@ -57,5 +57,9 @@
 
     $('#ConfirmBtn').click(function () {
         api.server.PrintingMUBAndTTLabels();
+    });
+
+    $('#CancelBtn').click(function () {
+        api.server.LogOut();
     });
 </script>
