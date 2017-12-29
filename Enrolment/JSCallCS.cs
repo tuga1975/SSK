@@ -141,9 +141,15 @@ namespace Enrolment
         public void AddNewSupervisee() {
             _web.LoadPageHtml("New-Supervisee.html");
         }
-        #region Authentication & Authorization
 
-        public void Login(string username, string password)
+        public void OpenPictureCaptureForm()
+        {
+            EventCenter eventCenter = EventCenter.Default;
+            eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.OPEN_PICTURE_CAPTURE_FORM });
+        }
+            #region Authentication & Authorization
+
+            public void Login(string username, string password)
         {
             EventCenter eventCenter = EventCenter.Default;
 
