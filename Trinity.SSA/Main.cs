@@ -140,6 +140,7 @@ namespace SSA
             else
             {
                 session[CommonConstants.SUPERVISEE] = user;
+                session[CommonConstants.USER_LOGIN] = null;
                 // navigate to SuperviseeParticulars page
                 NavigateTo(NavigatorEnums.Supervisee_Particulars);
             }
