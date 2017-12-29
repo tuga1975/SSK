@@ -56,6 +56,15 @@ namespace Trinity.BE
         public string Remarks { get; set; }
         public string SmartCardId { get; set; }
         public byte[] Fingerprint { get; set; }
+        public byte[] SecondaryFingerprint { get; set; }
+        public string Gender { get; set; }
+        public string NRICBarcode { get; set; }
+        public string SerialNumber { get; set; }
+        public string Race { get; set; }
+        public DateTime DateOfIssue { get; set; }
+        public string CNBLogo { get; set; }
+        public string PrimaryPhoto { get; set; }
+        public string SecondaryPhoto { get; set; }
 
         public ProfileModel ToProfileModel(ProfileRawMData rawData)
         {
@@ -96,7 +105,16 @@ namespace Trinity.BE
                     Secondary_Email = rawData.SecondaryEmail,
                     Secondary_Phone = rawData.SecondaryContact,
                     Residential_Addess_ID = rawData.Residential_Addess_ID,
-                    Other_Address_ID = rawData.Other_Address_ID
+                    Other_Address_ID = rawData.Other_Address_ID,
+                    SecondaryFingerprint= rawData.SecondaryFingerprint,
+                    PrimaryPhoto=rawData.PrimaryPhoto,
+                    SecondaryPhoto=rawData.SecondaryPhoto,
+                    CNBLogo=rawData.CNBLogo,
+                    DateOfIssue=rawData.DateOfIssue,
+                    Gender=rawData.Gender,
+                    NRICBarcode=rawData.NRICBarcode,
+                    Race=rawData.Race,
+                    SerialNumber=rawData.SerialNumber
                 },
                 Addresses = new Address
                 {

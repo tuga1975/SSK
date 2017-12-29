@@ -133,12 +133,44 @@ namespace Enrolment
             }
         }
 
-        public void EditSupervisee(string userId) {
+        public void PreviewSuperviseePhoto(string userId, int failAttemp)
+        {
+            EventCenter eventCenter = EventCenter.Default;
+            if (failAttemp > 3)
+            {
+                APIUtils.SignalR.SendNotificationToDutyOfficer("Unable to capture supervisee's Photo", "Unable to capture supervisee's Photo! Please check the status !");
+                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.PHOTO_CAPTURE_FAILED, Message = "Fail to capture Photo" });
+                
+            }
+            else
+            {
+                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.OPEN_PICTURE_CAPTURE_FORM });
+            }
+        }
+
+        public void PreviewSuperviseeFingerprint(string userId, int attemp)
+        {
+            EventCenter eventCenter = EventCenter.Default;
+            if (attemp > 3)
+            {
+                APIUtils.SignalR.SendNotificationToDutyOfficer("Unable to capture supervisee's Fingerprint", "Unable to capture supervisee's Fingerprint! Please check the status !");
+                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.FINGERPRINT_CAPTURE_FAILED ,Message="Fail to capture Fingerprint"});
+               
+            }
+            else
+            {
+                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.OPEN_FINGERPRINT_CAPTURE_FORM });
+            }
+        }
+
+        public void EditSupervisee(string userId)
+        {
 
             _web.LoadPageHtml("Edit-Supervisee.html");
         }
 
-        public void AddNewSupervisee() {
+        public void AddNewSupervisee()
+        {
             _web.LoadPageHtml("New-Supervisee.html");
         }
 
@@ -147,9 +179,9 @@ namespace Enrolment
             EventCenter eventCenter = EventCenter.Default;
             eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.OPEN_PICTURE_CAPTURE_FORM });
         }
-            #region Authentication & Authorization
+        #region Authentication & Authorization
 
-            public void Login(string username, string password)
+        public void Login(string username, string password)
         {
             EventCenter eventCenter = EventCenter.Default;
 

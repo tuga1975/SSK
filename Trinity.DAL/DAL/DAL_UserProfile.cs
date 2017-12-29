@@ -53,7 +53,16 @@ namespace Trinity.DAL
                     Residential_Addess_ID = dbUserProfile.Residential_Addess_ID,
                     Secondary_Email = dbUserProfile.Secondary_Email,
                     Secondary_Phone = dbUserProfile.Secondary_Phone,
-                    UserId = dbUserProfile.UserId
+                    UserId = dbUserProfile.UserId,
+                    SecondaryFingerprint = dbUserProfile.Secondary_Fingerprint,
+                    PrimaryPhoto = dbUserProfile.Primary_Photo,
+                    SecondaryPhoto = dbUserProfile.Secondary_Photo,
+                    CNBLogo = dbUserProfile.CNB_Logo,
+                    DateOfIssue = dbUserProfile.Date_of_Issue,
+                    Gender = dbUserProfile.Gender,
+                    NRICBarcode = dbUserProfile.NRIC_barcode,
+                    Race = dbUserProfile.Race,
+                    SerialNumber = dbUserProfile.Serial_Number
                 };
                 return userProfile;
             }
@@ -151,6 +160,15 @@ namespace Trinity.DAL
             dbUserProfile.Residential_Addess_ID = model.Residential_Addess_ID;
             dbUserProfile.Secondary_Email = model.Secondary_Email;
             dbUserProfile.Secondary_Phone = model.Secondary_Phone;
+            dbUserProfile.Secondary_Fingerprint = model.SecondaryFingerprint;
+            dbUserProfile.Primary_Photo = model.PrimaryPhoto;
+            dbUserProfile.Secondary_Photo = model.SecondaryPhoto;
+            dbUserProfile.CNB_Logo = model.CNBLogo;
+            dbUserProfile.Date_of_Issue = model.DateOfIssue;
+            dbUserProfile.Gender = model.Gender;
+            dbUserProfile.NRIC_barcode = model.NRICBarcode;
+            dbUserProfile.Race = model.Race;
+            dbUserProfile.Serial_Number = model.SerialNumber;
 
         }
         public Trinity.BE.Address GetAddressByUserId(string userId, bool isLocal)
@@ -160,14 +178,15 @@ namespace Trinity.DAL
             if (isLocal)
             {
                 dbUserProfile = _localUnitOfWork.DataContext.User_Profiles.FirstOrDefault(u => u.UserId == userId);
-                if (dbUserProfile!=null)
+                if (dbUserProfile != null)
                 {
                     dbAddress = _localUnitOfWork.DataContext.Addresses.FirstOrDefault(a => a.Address_ID == dbUserProfile.Residential_Addess_ID);
                 }
-               
+
             }
             else
-            { dbUserProfile = _centralizedUnitOfWork.DataContext.User_Profiles.FirstOrDefault(u => u.UserId == userId);
+            {
+                dbUserProfile = _centralizedUnitOfWork.DataContext.User_Profiles.FirstOrDefault(u => u.UserId == userId);
                 if (dbUserProfile != null)
                 {
 

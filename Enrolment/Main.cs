@@ -163,6 +163,14 @@ namespace Enrolment
                 PictureCaptureForm pic = new PictureCaptureForm();
                 pic.ShowDialog();
             }
+            else if (e.Name== EventNames.PHOTO_CAPTURE_FAILED)
+            {
+                CSCallJS.LoadPageHtml(this.LayerWeb,"FailToCapture", e.Message);
+            }
+            else if(e.Name== EventNames.FINGERPRINT_CAPTURE_FAILED)
+            {
+                CSCallJS.LoadPageHtml(this.LayerWeb, "FailToCapture", e.Message);
+            }
 
         }
 

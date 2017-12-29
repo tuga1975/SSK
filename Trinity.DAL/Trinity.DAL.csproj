@@ -136,7 +136,19 @@
     <Compile Include="DBContext\Holiday.cs">
       <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
     </Compile>
+    <Compile Include="DBContext\Membership_RoleClaims.cs">
+      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
+    </Compile>
     <Compile Include="DBContext\Membership_Roles.cs">
+      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBContext\Membership_UserClaims.cs">
+      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBContext\Membership_UserDevices.cs">
+      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBContext\Membership_UserLogins.cs">
       <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\Membership_UserRoles.cs">

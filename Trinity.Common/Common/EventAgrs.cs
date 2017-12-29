@@ -115,6 +115,9 @@ namespace Trinity.Common
         public const string GET_LIST_SUPERVISEE_SUCCEEDED = "GetListSuperviseeSucceeded";
         public const string GET_LIST_SUPERVISEE_FAILED = "GetListSuperviseeSFailed";
         public const string OPEN_PICTURE_CAPTURE_FORM = "OpenPictureCaptureForm";
+        public const string OPEN_FINGERPRINT_CAPTURE_FORM = "OpenFingerprintCaptureForm";
+        public const string PHOTO_CAPTURE_FAILED = "PhotoCaptureFailed";
+        public const string FINGERPRINT_CAPTURE_FAILED = "FingerCaptureFailed";
     }
 
     public class EventInfo
