@@ -81,12 +81,12 @@ namespace Enrolment
                     };
                     listSupervisee.Add(model);
                 }
-                
+
                 _web.LoadPageHtml("Supervisee.html", listSupervisee);
             }
             else
             {
-                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.GET_LIST_SUPERVISEE_FAILED,  Source = "Login.html" });
+                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.GET_LIST_SUPERVISEE_FAILED, Source = "Login.html" });
             }
         }
 
@@ -133,11 +133,14 @@ namespace Enrolment
             }
         }
 
-        public void EditSupervisee(string userId){
-            
-            _web.LoadPageHtml("Edit-Supervisee.html");   
+        public void EditSupervisee(string userId) {
+
+            _web.LoadPageHtml("Edit-Supervisee.html");
         }
 
+        public void AddNewSupervisee() {
+            _web.LoadPageHtml("New-Supervisee.html");
+        }
         #region Authentication & Authorization
 
         public void Login(string username, string password)
