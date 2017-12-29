@@ -135,8 +135,8 @@ namespace SSA
             if (appUser != null)
             {
                 // Authenticated successfully
-                // Check if the current user is an Enrolment Officer or not
-                if (userManager.IsInRole(appUser.Id, EnumUserRoles.EnrolmentOfficer))
+                // Check if the current user is an Duty Officer or not
+                if (userManager.IsInRole(appUser.Id, EnumUserRoles.DutyOfficer))
                 {
                     // Authorized successfully
                     Trinity.BE.User user = new Trinity.BE.User()
@@ -144,14 +144,14 @@ namespace SSA
                         Fingerprint = appUser.Fingerprint,
                         Name = appUser.Name,
                         NRIC = appUser.NRIC,
-                        Role = EnumUserRoles.EnrolmentOfficer,
+                        Role = EnumUserRoles.DutyOfficer,
                         SmartCardId = appUser.SmartCardId,
                         Status = appUser.Status,
                         UserId = appUser.Id
                     };
                     Session session = Session.Instance;
                     session.IsUserNamePasswordAuthenticated = true;
-                    session.Role = EnumUserRoles.EnrolmentOfficer;
+                    session.Role = EnumUserRoles.DutyOfficer;
                     session[CommonConstants.USER_LOGIN] = user;
 
                     eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = 0, Name = EventNames.LOGIN_SUCCEEDED });
