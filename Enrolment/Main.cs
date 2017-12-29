@@ -158,6 +158,11 @@ namespace Enrolment
             {
                 NavigateTo(NavigatorEnums.Login);
             }
+            else if (e.Name.Equals(EventNames.OPEN_PICTURE_CAPTURE_FORM))
+            {
+                PictureCaptureForm pic = new PictureCaptureForm();
+                pic.ShowDialog();
+            }
 
         }
 
