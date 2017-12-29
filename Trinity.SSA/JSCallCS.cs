@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.AspNet.Identity;
+using Newtonsoft.Json;
 using SSA.CodeBehind.Authentication;
 using SSA.Constants;
 using System;
@@ -6,7 +7,9 @@ using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
 using Trinity.Common;
+using Trinity.Common.Common;
 using Trinity.DAL;
+using Trinity.Identity;
 
 namespace SSA
 {
@@ -55,28 +58,7 @@ namespace SSA
         {
             _web.LoadPageHtml(file);
         }
-        
-        public void ChangeReadStatus(string notificationId)
-        {
-            try
-            {
-
-                var dalNotify = new DAL_Notification();
-                dalNotify.ChangeReadStatus(notificationId);
-            }
-            catch (Exception ex)
-            {
-
-                return;
-            }
-        }
-        public void SpeakNotification(string notificationId)
-        {
-            var dalNotify = new DAL_Notification();
-            var content = dalNotify.GetNotificationContentById(Guid.Parse(notificationId), false);
-            APIUtils.TextToSpeech.Speak(content);
-        }
-              
+                      
         private void actionThread(object pram)
         {
 
@@ -144,9 +126,45 @@ namespace SSA
             APIUtils.SignalR.SendNotificationToDutyOfficer("A supervisee can't print label", "Please check Supervisee's information!");
         }
 
-        public void ManualLogin(string NRIC, string password)
+        public void ManualLogin(string username, string password)
         {
+            EventCenter eventCenter = EventCenter.Default;
 
+            UserManager<ApplicationUser> userManager = ApplicationIdentityManager.GetUserManager();
+            ApplicationUser appUser = userManager.Find(username, password);
+            if (appUser != null)
+            {
+                // Authenticated successfully
+                // Check if the current user is an Enrolment Officer or not
+                if (userManager.IsInRole(appUser.Id, EnumUserRoles.EnrolmentOfficer))
+                {
+                    // Authorized successfully
+                    Trinity.BE.User user = new Trinity.BE.User()
+                    {
+                        Fingerprint = appUser.Fingerprint,
+                        Name = appUser.Name,
+                        NRIC = appUser.NRIC,
+                        Role = EnumUserRoles.EnrolmentOfficer,
+                        SmartCardId = appUser.SmartCardId,
+                        Status = appUser.Status,
+                        UserId = appUser.Id
+                    };
+                    Session session = Session.Instance;
+                    session.IsUserNamePasswordAuthenticated = true;
+                    session.Role = EnumUserRoles.EnrolmentOfficer;
+                    session[CommonConstants.USER_LOGIN] = user;
+
+                    eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = 0, Name = EventNames.LOGIN_SUCCEEDED });
+                }
+                else
+                {
+                    eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -2, Name = EventNames.LOGIN_FAILED, Message = "You do not have permission to access this page." });
+                }
+            }
+            else
+            {
+                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.LOGIN_FAILED, Message = "Your username or password is incorrect." });
+            }
         }
     }
 

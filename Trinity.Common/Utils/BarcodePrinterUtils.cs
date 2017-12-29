@@ -103,7 +103,8 @@ namespace Trinity.Common.Utils
 
                 // save to stream as PNG  
                 // test qr code bang file image, chua goi printer
-                bitmap.Save("D:\\qrcode.png", System.Drawing.Imaging.ImageFormat.Png);
+                string filepath = System.IO.Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath) + "\\qrcode.png";
+                bitmap.Save(filepath, System.Drawing.Imaging.ImageFormat.Png);
                 
                 return true;
             }
