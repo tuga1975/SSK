@@ -80,7 +80,7 @@ namespace Enrolment
                     };
                     listSupervisee.Add(model);
                 }
-                
+
                 _web.LoadPageHtml("Supervisee.html", listSupervisee);
             }
         }
@@ -112,6 +112,11 @@ namespace Enrolment
 
         public void AddNewSupervisee() {
             _web.LoadPageHtml("New-Supervisee.html");
+        }
+
+        public void EditSupervisee(string userId){
+            
+            _web.LoadPageHtml("Edit-Supervisee.html");   
         }
 
         #region Authentication & Authorization
