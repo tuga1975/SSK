@@ -26,47 +26,58 @@ namespace SSA.CodeBehind
 
         internal void Start()
         {
-            _web.SetLoading(false);
-            this._web.LoadPageHtml("PrintingMUBAndTTLabels.html");
-            this._web.RunScript("$('.status-text').css('color','#000').text('Please wait');");
-
-            System.Threading.Thread.Sleep(1500);
-
-            PrinterMonitor printerMonitor = PrinterMonitor.Instance;
-            printerMonitor.OnPrintLabelSucceeded += RaisePrintMUBAndTTLabelsSucceededEvent;
-            printerMonitor.OnMonitorException += OnPrintMUBAndTTLabelsException;
-            
-            BarcodePrinterUtils barcodeScannerUtils = BarcodePrinterUtils.Instance;           
-
-            Session session = Session.Instance;
-            if (session.IsAuthenticated)
+            try
             {
-                Trinity.BE.User user = (Trinity.BE.User)session[Constants.CommonConstants.USER_LOGIN];
+                _web.SetLoading(false);
+                this._web.LoadPageHtml("PrintingMUBAndTTLabels.html");
+                this._web.RunScript("$('.status-text').css('color','#000').text('Please wait');");
 
-                var dalUser = new Trinity.DAL.DAL_User();
-                var dalUserprofile = new Trinity.DAL.DAL_UserProfile();
-                var userInfo = new UserInfo
-                {
-                    UserName = user.Name,
-                    NRIC = user.NRIC,
-                    DOB = dalUserprofile.GetUserProfileByUserId(user.UserId, true).DOB.ToString()
-                };
+                System.Threading.Thread.Sleep(1500);
 
-                // Print BarCode and QR Code
-                foreach (var item in barcodeScannerUtils.GetDeviceStatus())
+                PrinterMonitor printerMonitor = PrinterMonitor.Instance;
+                printerMonitor.OnPrintLabelSucceeded += RaisePrintMUBAndTTLabelsSucceededEvent;
+                printerMonitor.OnMonitorException += OnPrintMUBAndTTLabelsException;
+
+                BarcodePrinterUtils barcodeScannerUtils = BarcodePrinterUtils.Instance;
+
+                Session session = Session.Instance;
+                if (session.IsAuthenticated)
                 {
-                    if (item == EnumDeviceStatuses.Connected)
+                    Trinity.BE.User user = (Trinity.BE.User)session[Constants.CommonConstants.USER_LOGIN];
+
+                    var dalUser = new Trinity.DAL.DAL_User();
+                    var dalUserprofile = new Trinity.DAL.DAL_UserProfile();
+                    var userInfo = new UserInfo
                     {
-                        printerMonitor.PrintLabel(userInfo);
-                    }
-                    else
+                        UserName = user.Name,
+                        NRIC = user.NRIC,
+                        DOB = dalUserprofile.GetUserProfileByUserId(user.UserId, true).DOB.ToString()
+                    };
+
+                    // Print BarCode and QR Code
+                    foreach (var item in barcodeScannerUtils.GetDeviceStatus())
                     {
-                        RaisePrintMUBAndTTLabelsFailedEvent(new PrintMUBAndTTLabelsEventArgs("Printer have problem: " + item));
-                        APIUtils.SignalR.SendNotificationToDutyOfficer("A supervisee can't print label", "Printer have problem: " + item);
-                        Console.WriteLine("Barcode printer is not connected.");
+                        if (item == EnumDeviceStatuses.Connected)
+                        {
+                            printerMonitor.PrintLabel(userInfo);
+                        }
+                        else
+                        {
+                            RaisePrintMUBAndTTLabelsFailedEvent(new PrintMUBAndTTLabelsEventArgs("Printer have problem: " + item));
+                            APIUtils.SignalR.SendNotificationToDutyOfficer("A supervisee can't print label", "Printer have problem: " + item);
+                            Console.WriteLine("Barcode printer is not connected.");
+                        }
                     }
+
                 }
-                
+            }
+            catch (Exception ex)
+            {
+                RaisePrintMUBAndTTLabelsExceptionEvent(new ExceptionArgs(new FailedInfo()
+                {
+                    ErrorCode = (int)EnumErrorCodes.UnknownError,
+                    ErrorMessage = new ErrorInfo().GetErrorMessage(EnumErrorCodes.UnknownError)
+                }));
             }
         }
 

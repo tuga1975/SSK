@@ -81,13 +81,12 @@ namespace Enrolment
                     };
                     listSupervisee.Add(model);
                 }
-                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = 0, Name = EventNames.GET_LIST_SUPERVISEE_SUCCEEDED, Data = listSupervisee, Source = "Supervisee.html" });
 
-                //_web.LoadPageHtml("Supervisee.html", listSupervisee);
+                _web.LoadPageHtml("Supervisee.html", listSupervisee);
             }
             else
             {
-                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.GET_LIST_SUPERVISEE_FAILED,  Source = "Login.html" });
+                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.GET_LIST_SUPERVISEE_FAILED, Source = "Login.html" });
             }
         }
 
@@ -134,9 +133,23 @@ namespace Enrolment
             }
         }
 
-        #region Authentication & Authorization
+        public void EditSupervisee(string userId) {
 
-        public void Login(string username, string password)
+            _web.LoadPageHtml("Edit-Supervisee.html");
+        }
+
+        public void AddNewSupervisee() {
+            _web.LoadPageHtml("New-Supervisee.html");
+        }
+
+        public void OpenPictureCaptureForm()
+        {
+            EventCenter eventCenter = EventCenter.Default;
+            eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.OPEN_PICTURE_CAPTURE_FORM });
+        }
+            #region Authentication & Authorization
+
+            public void Login(string username, string password)
         {
             EventCenter eventCenter = EventCenter.Default;
 
