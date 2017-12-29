@@ -15,6 +15,21 @@
 </form>
 <script type="text/javascript">
     $('#LoginBtn').click(function () {
-        api.server.ManualLogin($('#loginNRIC').val(), $('#loginPassword').val());
+
+        var loginNRIC = document.getElementById('loginNRIC').value;
+        var password = document.getElementById('loginPassword').value;
+
+        if (loginNRIC == '') {
+            alert('Please type your NRIC');
+        }
+        else if (password == '') {
+            alert('Please type your password');
+        }
+        else {
+            api.server.ManualLogin($('#loginNRIC').val(), $('#loginPassword').val());
+            return true;
+        }
+        return false;
     });
+
 </script>
