@@ -134,22 +134,29 @@ namespace Enrolment
         }
 
         public void EditSupervisee(string userId) {
+            var dalUser = new DAL_User();
+            var dalUserProfile = new DAL_UserProfile();
 
-            _web.LoadPageHtml("Edit-Supervisee.html");
+            var dbUser = dalUser.GetUserByUserId(userId, true);
+
+            var profileModel = new Trinity.BE.ProfileModel { User = dbUser, UserProfile = dalUserProfile.GetUserProfileByUserId(userId, true),
+                Addresses = dalUserProfile.GetAddressByUserId(userId, true)};
+
+            _web.LoadPageHtml("Edit-Supervisee.html", profileModel);
         }
 
         public void AddNewSupervisee() {
             _web.LoadPageHtml("New-Supervisee.html");
         }
 
-        public void OpenPictureCaptureForm()
+        public void OpenPictureCaptureForm(string number)
         {
             EventCenter eventCenter = EventCenter.Default;
-            eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.OPEN_PICTURE_CAPTURE_FORM });
+            eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.OPEN_PICTURE_CAPTURE_FORM, Message= number });
         }
-            #region Authentication & Authorization
+        #region Authentication & Authorization
 
-            public void Login(string username, string password)
+        public void Login(string username, string password)
         {
             EventCenter eventCenter = EventCenter.Default;
 

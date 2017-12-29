@@ -15,6 +15,7 @@ using Trinity.DAL;
 using AForge.Video;
 using AForge.Video.DirectShow;
 using System.Drawing;
+using System.IO;
 
 namespace Enrolment
 {
@@ -31,11 +32,11 @@ namespace Enrolment
         private int _smartCardFailed;
         private int _fingerprintFailed;
         private bool _displayLoginButtonStatus = false;
-
+        private string _imgBox;
         public Main()
         {
             InitializeComponent();
-
+            pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
             // setup variables
             _smartCardFailed = 0;
             _fingerprintFailed = 0;
@@ -55,7 +56,6 @@ namespace Enrolment
             // Supervisee
             _suppervisee = new CodeBehind.Suppervisee(LayerWeb);
             #endregion
-
 
             APIUtils.LayerWeb = LayerWeb;
             LayerWeb.Url = new Uri(String.Format("file:///{0}/View/html/Layout.html", CSCallJS.curDir));
@@ -108,7 +108,6 @@ namespace Enrolment
                 //Create NewFrame event handler
                 //(This one triggers every time a new frame/image is captured
                 videoSource.NewFrame += new AForge.Video.NewFrameEventHandler(videoSource_NewFrame);
-                pictureBox1.SizeMode = PictureBoxSizeMode.CenterImage;
                 pictureBox1.Show();
                 button1.Show();
                 button2.Show();
@@ -122,7 +121,7 @@ namespace Enrolment
         {
             //Cast the frame as Bitmap object and don't forget to use ".Clone()" otherwise
             //you'll probably get access violation exceptions
-            pictureBox1.BackgroundImage = (Bitmap)eventArgs.Frame.Clone();
+            pictureBox1.Image = (Bitmap)eventArgs.Frame.Clone();
         }
 
         private void stopWebcam()
@@ -232,6 +231,7 @@ namespace Enrolment
                 {
                     Invoke(new Action(() =>
                     {
+                        _imgBox = e.Message;
                         startWebcam();
                     }));
                     return;
@@ -278,12 +278,27 @@ namespace Enrolment
 
         private void button1_Click(object sender, EventArgs e)
         {
-
+            pictureBox1.Image.Save(AppDomain.CurrentDomain.BaseDirectory.ToString()+"/image"+_imgBox+".jpg");
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
+            pictureBox1.Image = null;
             stopWebcam();
+        }
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            String path = AppDomain.CurrentDomain.BaseDirectory.ToString();
+            if (File.Exists(path+"image1.jpg"))
+            {
+                //File.Delete(path+"image1.jpg");
+            }
+            if (File.Exists(path + "image2.jpg"))
+            {
+                //File.Delete(path + "image2.jpg");
+            }
+            base.OnFormClosing(e);
         }
     }
 }
