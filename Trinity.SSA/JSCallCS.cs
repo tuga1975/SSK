@@ -113,9 +113,9 @@ namespace SSA
         private void PrintMUBAndTTLabels_OnPrintTTLabelFailed(object sender, CodeBehind.PrintMUBAndTTLabelsEventArgs e)
         {
             this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').hide(); ; ");
+            this._web.RunScript("$('.status-text').css('color','#000').text('Sent problem to Duty Officer. Please wait to check !');");
             MessageBox.Show("Unable to print labels\nPlease report to the Duty Officer", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
             //APIUtils.SignalR.SendNotificationToDutyOfficer("A supervisee can't print label", e.Message);
-            this._web.RunScript("$('.status-text').css('color','#000').text('Sent problem to Duty Officer. Please wait to check !');");
 
             LogOut();
         }
