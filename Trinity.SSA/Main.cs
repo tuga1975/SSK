@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using Trinity.Common;
+using Trinity.Common.Common;
 using Trinity.DAL;
 
 namespace SSA
@@ -13,6 +14,7 @@ namespace SSA
     public partial class Main : Form
     {
         private JSCallCS _jsCallCS;
+        private EventCenter _eventCenter;
         private CodeBehind.Authentication.SmartCard _smartCard;
         private CodeBehind.Authentication.Fingerprint _fingerprint;
         private CodeBehind.Authentication.NRIC _nric;
@@ -57,6 +59,9 @@ namespace SSA
 
             // Supervisee
             _supperviseeParticulars = new CodeBehind.SupperviseeParticulars(LayerWeb);
+
+            _eventCenter = EventCenter.Default;
+            _eventCenter.OnNewEvent += EventCenter_OnNewEvent;
             #endregion
 
 
@@ -88,10 +93,10 @@ namespace SSA
             // For testing purpose
             Session session = Session.Instance;
             // Supervisee
-            //Trinity.BE.User user = new DAL_User().GetUserByUserId("b9200ff4-b97e-4cbe-8842-91bfcb7f0f82", true);
+            //Trinity.BE.User user = new DAL_User().GetUserByUserId("bb67863c-c330-41aa-b397-c220428ad16f", true);
             //session[CommonConstants.SUPERVISEE] = user;
             // Duty Officer
-            Trinity.BE.User user = new DAL_User().GetUserByUserId("ead039f9-b9a1-45bb-8186-0bb7248aafac", true);
+            Trinity.BE.User user = new DAL_User().GetUserByUserId("dfbb2a6a-9e45-4a76-9f75-af1a7824a947", true);
             session[CommonConstants.USER_LOGIN] = user;
             session.IsSmartCardAuthenticated = true;
             session.IsFingerprintAuthenticated = true;
@@ -135,6 +140,7 @@ namespace SSA
             else
             {
                 session[CommonConstants.SUPERVISEE] = user;
+                session[CommonConstants.USER_LOGIN] = null;
                 // navigate to SuperviseeParticulars page
                 NavigateTo(NavigatorEnums.Supervisee_Particulars);
             }
@@ -201,6 +207,19 @@ namespace SSA
 
             // display failed on UI
             LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please place your finger on the reader. Failed: " + _fingerprintFailed + "');");
+        }
+
+        private void EventCenter_OnNewEvent(object sender, EventInfo e)
+        {
+            if (e.Name == EventNames.LOGIN_SUCCEEDED)
+            {
+                NavigateTo(NavigatorEnums.Authentication_NRIC);
+            }
+            else if (e.Name.Equals(EventNames.LOGIN_FAILED))
+            {
+                MessageBox.Show(e.Message, "Login Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
         }
 
         #region events

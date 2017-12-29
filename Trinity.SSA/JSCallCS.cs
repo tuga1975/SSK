@@ -113,9 +113,11 @@ namespace SSA
         private void PrintMUBAndTTLabels_OnPrintTTLabelFailed(object sender, CodeBehind.PrintMUBAndTTLabelsEventArgs e)
         {
             this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').hide(); ; ");
-            MessageBox.Show("Unable to print labels\nPlease report to the Duty Officer", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            APIUtils.SignalR.SendNotificationToDutyOfficer("A supervisee can't print label", e.Message);
             this._web.RunScript("$('.status-text').css('color','#000').text('Sent problem to Duty Officer. Please wait to check !');");
+            MessageBox.Show("Unable to print labels\nPlease report to the Duty Officer", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //APIUtils.SignalR.SendNotificationToDutyOfficer("A supervisee can't print label", e.Message);
+
+            LogOut();
         }
 
         private void PrintMUBAndTTLabels_OnPrintTTLabelException(object sender, ExceptionArgs e)
@@ -123,7 +125,9 @@ namespace SSA
             this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').hide(); ; ");
             this._web.RunScript("$('.status-text').css('color','#000').text('Sent problem to Duty Officer. Please wait to check !');");
             MessageBox.Show(e.ErrorMessage, "", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            APIUtils.SignalR.SendNotificationToDutyOfficer("A supervisee can't print label", "Please check Supervisee's information!");
+            //APIUtils.SignalR.SendNotificationToDutyOfficer("A supervisee can't print label", "Please check Supervisee's information!");
+
+            LogOut();
         }
 
         public void ManualLogin(string username, string password)
@@ -135,8 +139,8 @@ namespace SSA
             if (appUser != null)
             {
                 // Authenticated successfully
-                // Check if the current user is an Enrolment Officer or not
-                if (userManager.IsInRole(appUser.Id, EnumUserRoles.EnrolmentOfficer))
+                // Check if the current user is an Duty Officer or not
+                if (userManager.IsInRole(appUser.Id, EnumUserRoles.DutyOfficer))
                 {
                     // Authorized successfully
                     Trinity.BE.User user = new Trinity.BE.User()
@@ -144,14 +148,14 @@ namespace SSA
                         Fingerprint = appUser.Fingerprint,
                         Name = appUser.Name,
                         NRIC = appUser.NRIC,
-                        Role = EnumUserRoles.EnrolmentOfficer,
+                        Role = EnumUserRoles.DutyOfficer,
                         SmartCardId = appUser.SmartCardId,
                         Status = appUser.Status,
                         UserId = appUser.Id
                     };
                     Session session = Session.Instance;
                     session.IsUserNamePasswordAuthenticated = true;
-                    session.Role = EnumUserRoles.EnrolmentOfficer;
+                    session.Role = EnumUserRoles.DutyOfficer;
                     session[CommonConstants.USER_LOGIN] = user;
 
                     eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = 0, Name = EventNames.LOGIN_SUCCEEDED });

@@ -31,14 +31,16 @@
 							<section>
 								<div class="row">
 									<div class="col">
-										<img class="avatar" src="../images/usr-default.jpg" />
+                                        <object class="avatar" data="/image1.jpg" type="image/jpg">
+                                            <img class="avatar" src="../images/usr-default.jpg"/>
+                                        </object>
 										
-										<button type="button">Get Image</button>
+										<button type="button" onclick="api.server.OpenPictureCaptureForm('1')">Get Image</button>
 									</div>
 									<div class="col">
 										<img class="avatar" src="../images/usr-default.jpg" />
 										
-										<button type="button">Get Image</button>
+										<button type="button" onclick="api.server.OpenPictureCaptureForm('2')">Get Image</button>
 									</div>
 									<div class="col">
 										<img class="avatar" src="../images/usr-default.jpg" />
