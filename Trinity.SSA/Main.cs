@@ -68,6 +68,7 @@ namespace SSA
             APIUtils.LayerWeb = LayerWeb;
             LayerWeb.Url = new Uri(String.Format("file:///{0}/View/html/Layout.html", CSCallJS.curDir));
             LayerWeb.ObjectForScripting = _jsCallCS;
+
         }
 
         private void Main_Load(object sender, EventArgs e)
@@ -93,15 +94,15 @@ namespace SSA
             // For testing purpose
             Session session = Session.Instance;
             // Supervisee
-            //Trinity.BE.User user = new DAL_User().GetUserByUserId("bb67863c-c330-41aa-b397-c220428ad16f", true);
-            //session[CommonConstants.SUPERVISEE] = user;
+            Trinity.BE.User user = new DAL_User().GetUserByUserId("bb67863c-c330-41aa-b397-c220428ad16f", true);
+            session[CommonConstants.SUPERVISEE] = user;
             // Duty Officer
-            Trinity.BE.User user = new DAL_User().GetUserByUserId("dfbb2a6a-9e45-4a76-9f75-af1a7824a947", true);
-            session[CommonConstants.USER_LOGIN] = user;
+            //Trinity.BE.User user = new DAL_User().GetUserByUserId("dfbb2a6a-9e45-4a76-9f75-af1a7824a947", true);
+            //session[CommonConstants.USER_LOGIN] = user;
             session.IsSmartCardAuthenticated = true;
             session.IsFingerprintAuthenticated = true;
-            //NavigateTo(NavigatorEnums.Supervisee_Particulars);
-            NavigateTo(NavigatorEnums.Authentication_NRIC);
+            NavigateTo(NavigatorEnums.Supervisee_Particulars);
+            //NavigateTo(NavigatorEnums.Authentication_NRIC);
         }
 
         private void JSCallCS_OnLogOutCompleted()
@@ -217,6 +218,7 @@ namespace SSA
             }
             else if (e.Name.Equals(EventNames.LOGIN_FAILED))
             {
+                //NavigateTo(NavigatorEnums.Authentication_NRIC);
                 MessageBox.Show(e.Message, "Login Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 

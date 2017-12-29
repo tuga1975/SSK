@@ -108,6 +108,8 @@ namespace SSA.CodeBehind.Authentication
 
             // Create a session object to store UserLogin information
             Session session = Session.Instance;
+            session.IsSmartCardAuthenticated = true;
+            session.IsFingerprintAuthenticated = true;
             session[CommonConstants.SUPERVISEE] = user;
 
             // raise succeeded event
