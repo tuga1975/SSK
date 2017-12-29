@@ -134,8 +134,15 @@ namespace Enrolment
         }
 
         public void EditSupervisee(string userId) {
+            var dalUser = new DAL_User();
+            var dalUserProfile = new DAL_UserProfile();
 
-            _web.LoadPageHtml("Edit-Supervisee.html");
+            var dbUser = dalUser.GetUserByUserId(userId, true);
+
+            var profileModel = new Trinity.BE.ProfileModel { User = dbUser, UserProfile = dalUserProfile.GetUserProfileByUserId(userId, true),
+                Addresses = dalUserProfile.GetAddressByUserId(userId, true)};
+
+            _web.LoadPageHtml("Edit-Supervisee.html", profileModel);
         }
 
         public void AddNewSupervisee() {
