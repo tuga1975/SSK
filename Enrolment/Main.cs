@@ -149,6 +149,16 @@ namespace Enrolment
             {
                 NavigateTo(NavigatorEnums.Login);
             }
+            else if (e.Name == EventNames.GET_LIST_SUPERVISEE_SUCCEEDED)
+            {
+                var model = (System.Collections.Generic.List<Trinity.BE.ProfileModel>)e.Data;
+                CSCallJS.LoadPageHtml(this.LayerWeb, e.Source.ToString(), model);
+            }
+            else if (e.Name == EventNames.GET_LIST_SUPERVISEE_FAILED)
+            {
+                NavigateTo(NavigatorEnums.Login);
+            }
+
         }
 
         #endregion
