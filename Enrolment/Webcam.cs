@@ -7,6 +7,8 @@ using AForge.Video.DirectShow;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+using Trinity.Common.Common;
+using Trinity.Common;
 
 namespace Enrolment
 {
@@ -27,8 +29,15 @@ namespace Enrolment
             if (videosources != null)
             {
                 //For example use first video device. You may check if this is your webcam.
-                videoSource = new VideoCaptureDevice(videosources[0].MonikerString);
-
+                try
+                {
+                    videoSource = new VideoCaptureDevice(videosources[0].MonikerString);
+                }
+                catch {
+                    EventCenter eventCenter = EventCenter.Default;
+                    eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.OPEN_PICTURE_CAPTURE_FORM_FAILED });
+                    return;
+                }
                 try
                 {
                     //Check if the video device provides a list of supported resolutions
