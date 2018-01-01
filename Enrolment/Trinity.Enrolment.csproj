@@ -105,6 +105,7 @@
     <Compile Include="Utils\Printer.cs" />
     <Compile Include="Utils\SignalR.cs" />
     <Compile Include="Utils\TextToSpeech.cs" />
+    <Compile Include="Webcam.cs" />
     <EmbeddedResource Include="Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
     </EmbeddedResource>
