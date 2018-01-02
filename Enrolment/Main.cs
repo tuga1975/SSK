@@ -29,7 +29,7 @@ namespace Enrolment
         private CodeBehind.Suppervisee _suppervisee;
         private NavigatorEnums _currentPage;
         private Trinity.Common.DeviceMonitor.HealthMonitor healthMonitor;
-
+        private CodeBehind.Authentication.Fingerprint _fingerprint;
         private int _smartCardFailed;
         private int _fingerprintFailed;
         private Webcam webcam;
@@ -60,6 +60,12 @@ namespace Enrolment
             _suppervisee = new CodeBehind.Suppervisee(LayerWeb);
             //webcam capture
             _webcamCapture = new CodeBehind.WebcamCapture(LayerWeb);
+
+            // Fingerprint
+            _fingerprint = new CodeBehind.Authentication.Fingerprint(LayerWeb);
+            _fingerprint.OnFingerprintSucceeded += Fingerprint_OnFingerprintSucceeded;
+            _fingerprint.OnFingerprintFailed += Fingerprint_OnFingerprintFailed;
+
             #endregion
 
             APIUtils.LayerWeb = LayerWeb;
@@ -78,6 +84,42 @@ namespace Enrolment
 
             timer.Elapsed += PeriodCheck; ;
             timer.Start();
+        }
+        private void Fingerprint_OnFingerprintSucceeded()
+        {
+            Session session = Session.Instance;
+            if (session[CommonConstants.CURRENT_FINGERPRINTDATA] != null)
+            {
+                var fingerprintData = (byte[])session[CommonConstants.CURRENT_FINGERPRINTDATA];
+                CSCallJS.LoadPageHtml(LayerWeb, "FingerprintCapture.html", fingerprintData);
+            }
+        }
+
+        private void Fingerprint_OnFingerprintFailed(object sender, CodeBehind.Authentication.FingerprintEventArgs e)
+        {
+            // increase counter
+            _fingerprintFailed++;
+
+            // exceeded max failed
+            if (_fingerprintFailed > 3)
+            {
+                // Send Notification to duty officer
+                APIUtils.SignalR.SendNotificationToDutyOfficer(e.Message, e.Message);
+
+                // show message  to user
+
+
+                // navigate to  login page
+
+
+                // reset counter
+                _fingerprintFailed = 0;
+
+                return;
+            }
+
+            // display failed on UI
+            LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please place your finger on the reader. Failed: " + _fingerprintFailed + "');");
         }
 
         private void PeriodCheck(object sender, System.Timers.ElapsedEventArgs e)
@@ -184,10 +226,15 @@ namespace Enrolment
                     return;
                 }
             }
+            else if (e.Name.Equals(EventNames.CAPTURE_PICTURE))
+            {
+                pictureBox1.Image.Save(AppDomain.CurrentDomain.BaseDirectory.ToString() + "/image" + _imgBox + ".jpg");
+            }
             else if (e.Name.Equals(EventNames.CANCEL_CAPTURE_PICTURE))
             {
                 if (InvokeRequired)
                 {
+                    CaptureAttempt(CommonConstants.CAPTURE_PHOTO_ATTEMPT);
                     Invoke(new Action(() =>
                     {
                         webcam.stopWebcam();
@@ -197,36 +244,11 @@ namespace Enrolment
                     return;
                 }
             }
-            else if (e.Name.Equals(EventNames.CAPTURE_PICTURE))
+            else if (e.Name == EventNames.PHOTO_CAPTURE_FAILED)
             {
-                webcam.stopWebcam();
-                LayerWeb.InvokeScript("confirmMode");
+                CSCallJS.LoadPageHtml(this.LayerWeb, "FailToCapture.html", e.Message);
             }
-            else if (e.Name.Equals(EventNames.CONFIRM_CAPTURE_PICTURE))
-            {
-                if (InvokeRequired)
-                {
-                    CaptureAttempt("CapturePhotoAttemp");
-                    Invoke(new Action(() =>
-                    {
-                        pictureBox1.Hide();
-                        webcam.stopWebcam();
-                        LayerWeb.LoadPageHtml("New-Supervisee.html");
-                    }));
-                    return;
-                }
-            }
-            else if (e.Name.Equals(EventNames.CANCEL_CONFIRM_CAPTURE_PICTURE))
-            {
-                webcam.InitializeWebCam();
-                webcam.startWebcam();
-                LayerWeb.InvokeScript("captureMode");
-            }
-            else if (e.Name== EventNames.PHOTO_CAPTURE_FAILED)
-            {
-                CSCallJS.LoadPageHtml(this.LayerWeb,"FailToCapture.html", e.Message);
-            }
-            else if(e.Name== EventNames.FINGERPRINT_CAPTURE_FAILED)
+            else if (e.Name == EventNames.FINGERPRINT_CAPTURE_FAILED)
             {
                 CSCallJS.LoadPageHtml(this.LayerWeb, "FailToCapture.html", e.Message);
             }
@@ -234,10 +256,29 @@ namespace Enrolment
             {
                 CSCallJS.LoadPageHtml(this.LayerWeb, "FailToCapture.html", e.Message);
             }
-            else if (e.Name==EventNames.CANCEL_CAPTURE_FINGERPRINT)
+            else if (e.Name == EventNames.CANCEL_CAPTURE_FINGERPRINT)
             {
-                CaptureAttempt("CaptureFingerprintAttempt");
+                CaptureAttempt(CommonConstants.CAPTURE_FINGERPRINT_ATTEMPT);
             }
+            else if (e.Name == EventNames.CONFIRM_CAPTURE_FINGERPRINT)
+            {
+                Session session = Session.Instance;
+                if (session[CommonConstants.CURRENT_EDIT_USER] != null && session[CommonConstants.IS_RIGHT_THUMB] != null && session[CommonConstants.CURRENT_FINGERPRINTDATA] != null)
+                {
+                    var user = (Trinity.BE.User)session[CommonConstants.CURRENT_EDIT_USER];
+                    if ((bool)session[CommonConstants.IS_RIGHT_THUMB])
+                    {
+                        user.RightThumbFingerprint = (byte[])session[CommonConstants.CURRENT_FINGERPRINTDATA];
+                    }
+                    else
+                    {
+                        user.LeftThumbFingerprint = (byte[])session[CommonConstants.CURRENT_FINGERPRINTDATA];
+                    }
+                    CSCallJS.LoadPageHtml(this.LayerWeb, "PrintSmartCard.html", user);
+                }
+
+            }
+
 
         }
 
@@ -300,7 +341,7 @@ namespace Enrolment
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
             String path = AppDomain.CurrentDomain.BaseDirectory.ToString();
-            if (File.Exists(path+"image1.jpg"))
+            if (File.Exists(path + "image1.jpg"))
             {
                 //File.Delete(path+"image1.jpg");
             }
