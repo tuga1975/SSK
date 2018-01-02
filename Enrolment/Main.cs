@@ -25,6 +25,7 @@ namespace Enrolment
         private EventCenter _eventCenter;
         private CodeBehind.Authentication.NRIC _nric;
         private CodeBehind.Login _login;
+        private CodeBehind.WebcamCapture _webcamCapture;
         private CodeBehind.Suppervisee _suppervisee;
         private NavigatorEnums _currentPage;
         private Trinity.Common.DeviceMonitor.HealthMonitor healthMonitor;
@@ -55,6 +56,8 @@ namespace Enrolment
             _login = new CodeBehind.Login(LayerWeb);
             // Supervisee
             _suppervisee = new CodeBehind.Suppervisee(LayerWeb);
+            //webcam capture
+            _webcamCapture = new CodeBehind.WebcamCapture(LayerWeb);
             #endregion
 
             APIUtils.LayerWeb = LayerWeb;
@@ -165,6 +168,8 @@ namespace Enrolment
             }
             else if (e.Name.Equals(EventNames.OPEN_PICTURE_CAPTURE_FORM))
             {
+                //pictureBox1.Image.Save(AppDomain.CurrentDomain.BaseDirectory.ToString() + "/image" + _imgBox + ".jpg");
+                NavigateTo(NavigatorEnums.WebcamCapture);
                 if (InvokeRequired)
                 {
                     Invoke(new Action(() =>
@@ -173,6 +178,23 @@ namespace Enrolment
                         pictureBox1.Show();
                         webcam.InitializeWebCam();
                         webcam.startWebcam();
+                    }));
+                    return;
+                }
+            }
+            else if (e.Name.Equals(EventNames.CAPTURE_PICTURE))
+            {
+                pictureBox1.Image.Save(AppDomain.CurrentDomain.BaseDirectory.ToString() + "/image" + _imgBox + ".jpg");
+            }
+            else if (e.Name.Equals(EventNames.CANCEL_CAPTURE_PICTURE))
+            {
+                if (InvokeRequired)
+                {
+                    Invoke(new Action(() =>
+                    {
+                        webcam.stopWebcam();
+                        pictureBox1.Hide();
+                        LayerWeb.LoadPageHtml("New-Supervisee.html");
                     }));
                     return;
                 }
@@ -209,6 +231,10 @@ namespace Enrolment
             {
                 _login.Start();
             }
+            else if (navigatorEnum == NavigatorEnums.WebcamCapture)
+            {
+                _webcamCapture.Start();
+            }
 
             // set current page
             _currentPage = navigatorEnum;
@@ -226,18 +252,6 @@ namespace Enrolment
                 _displayLoginButtonStatus = true;
                 CSCallJS.DisplayLogoutButton(this.LayerWeb, _displayLoginButtonStatus);
             }
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            pictureBox1.Image.Save(AppDomain.CurrentDomain.BaseDirectory.ToString()+"/image"+_imgBox+".jpg");
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            pictureBox1.Image = null;
-            webcam.stopWebcam();
-            pictureBox1.Hide();
         }
 
         protected override void OnFormClosing(FormClosingEventArgs e)

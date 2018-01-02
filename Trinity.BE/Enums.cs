@@ -16,7 +16,8 @@ public enum NavigatorEnums
     Supervisee = 7,
     Supervisee_NRIC = 8,
     Supervisee_Particulars = 9,
-    Login = 10
+    Login = 10,
+    WebcamCapture = 11
 };
 
 public static class EnumUserRoles

@@ -116,54 +116,52 @@
     <Compile Include="DAL\DAL_User.cs" />
     <Compile Include="DAL\DAL_UserProfile.cs" />
     <Compile Include="DBContext\AbsenceReporting.cs">
-      <DependentUpon>SSK.tt</DependentUpon>
+      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\Address.cs">
-      <DependentUpon>SSK.tt</DependentUpon>
+      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\ApplicationDevice_Status.cs">
-      <DependentUpon>SSK.tt</DependentUpon>
+      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\Appointment.cs">
-      <DependentUpon>SSK.tt</DependentUpon>
+      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\Device.cs">
-      <DependentUpon>SSK.tt</DependentUpon>
+      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\Environment.cs">
-      <DependentUpon>SSK.tt</DependentUpon>
+      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\Holiday.cs">
-      <DependentUpon>SSK.tt</DependentUpon>
+      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\Membership_RoleClaims.cs">
-      <DependentUpon>SSK.tt</DependentUpon>
+      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
     </Compile>
-    
     <Compile Include="DBContext\Membership_Roles.cs">
-      <DependentUpon>SSK.tt</DependentUpon>
+      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\Membership_UserClaims.cs">
-      <DependentUpon>SSK.tt</DependentUpon>
+      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\Membership_UserDevices.cs">
-      <DependentUpon>SSK.tt</DependentUpon>
+      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\Membership_UserLogins.cs">
-      <DependentUpon>SSK.tt</DependentUpon>
+      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
     </Compile>
-    
     <Compile Include="DBContext\Membership_UserRoles.cs">
-      <DependentUpon>SSK.tt</DependentUpon>
+      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\Membership_Users.cs">
-      <DependentUpon>SSK.tt</DependentUpon>
+      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\Notification.cs">
-      <DependentUpon>SSK.tt</DependentUpon>
+      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\QueueNumber.cs">
-      <DependentUpon>SSK.tt</DependentUpon>
+      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\TrinityCentralizedDB.Context.cs">
       <AutoGen>True</AutoGen>
@@ -181,7 +179,7 @@
       <DependentUpon>TrinityCentralizedDB.edmx</DependentUpon>
     </Compile>
     <Compile Include="DBContext\User_Profiles.cs">
-      <DependentUpon>SSK.tt</DependentUpon>
+      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
     </Compile>
     <Compile Include="Partial\Appointment.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
