@@ -123,13 +123,17 @@ namespace Enrolment
         {
             EventCenter eventCenter = EventCenter.Default;
             Session session = Session.Instance;
+            var sessionAttempt = (int)session["CapturePhotoAttempt"];
             if (attempt > 3)
             {
+                session["CapturePhotoAttempt"] = null;
                 APIUtils.SignalR.SendNotificationToDutyOfficer("Supervisee failed to capture photo!", "Supervisee failed to capture photo!\n Please check the status");
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.PHOTO_CAPTURE_FAILED, Message="Unable to capture photo", Source = "FailToCapture.html" });
             }
             else
             {
+                sessionAttempt++;
+                session["CapturePhotoAttemp"] = sessionAttempt;
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = 0, Name = EventNames.OPEN_PICTURE_CAPTURE_FORM });
             }
         }
@@ -138,13 +142,17 @@ namespace Enrolment
         {
             EventCenter eventCenter = EventCenter.Default;
             Session session = Session.Instance;
+            var sessionAttempt = (int)session["CaptureFingerprintAttempt"];
             if (attempt > 3)
             {
+                session["CaptureFingerprintAttempt"] = null;
                 APIUtils.SignalR.SendNotificationToDutyOfficer("Supervisee failed to capture photo!", "Supervisee failed to capture fingerprint!\n Please check the status");
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.PHOTO_CAPTURE_FAILED, Message = "Unable to capture fingerprint", Source = "FailToCapture.html" });
             }
             else
             {
+                sessionAttempt++;
+                session["CaptureFingerprintAttempt"] = sessionAttempt;
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = 0, Name = EventNames.OPEN_FINGERPRINT_CAPTURE_FORM });
             }
         }
@@ -153,14 +161,17 @@ namespace Enrolment
         {
             EventCenter eventCenter = EventCenter.Default;
             Session session = Session.Instance;
+            var sessionAttempt = (int)session["AbleToPrintSCardAttempt"];
             if (attempt > 3)
             {
+                session["AbleToPrintSCardAttempt"]=null;
                 APIUtils.SignalR.SendNotificationToDutyOfficer("Supervisee failed to capture photo!", "Supervisee failed to print smart card!\n Please check the status");
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.ABLE_TO_PRINT_FAILED, Message = "Unable to print smart card", Source = "FailToCapture.html" });
             }
             else
             {
-               
+                sessionAttempt++;
+                session["AbleToPrintSCardAttempt"] = sessionAttempt;
             }
         }
 

@@ -190,6 +190,7 @@ namespace Enrolment
             {
                 if (InvokeRequired)
                 {
+                    CaptureAttempt("CapturePhotoAttemp");
                     Invoke(new Action(() =>
                     {
                         webcam.stopWebcam();
@@ -211,7 +212,27 @@ namespace Enrolment
             {
                 CSCallJS.LoadPageHtml(this.LayerWeb, "FailToCapture.html", e.Message);
             }
+            else if (e.Name==EventNames.CANCEL_CAPTURE_FINGERPRINT)
+            {
+                CaptureAttempt("CaptureFingerprintAttempt");
+            }
 
+        }
+
+        private void CaptureAttempt(string sessionAttemptName)
+        {
+            Session session = Session.Instance;
+            var firstAttemp = 1;
+            if (session[sessionAttemptName] != null)
+            {
+                var attempt = (int)session[sessionAttemptName];
+                _jsCallCS.PreviewSuperviseeFingerprint(attempt);
+            }
+            else
+            {
+                session[sessionAttemptName] = firstAttemp;
+                _jsCallCS.PreviewSuperviseeFingerprint(firstAttemp);
+            }
         }
 
         #endregion
