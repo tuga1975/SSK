@@ -33,8 +33,10 @@ namespace Enrolment
         private int _smartCardFailed;
         private int _fingerprintFailed;
         private Webcam webcam;
-        private bool _displayLoginButtonStatus = false;
         private string _imgBox;
+        private string image1;
+        private string image2;
+        private bool _displayLoginButtonStatus = false;
         public Main()
         {
             InitializeComponent();
@@ -182,10 +184,6 @@ namespace Enrolment
                     return;
                 }
             }
-            else if (e.Name.Equals(EventNames.CAPTURE_PICTURE))
-            {
-                pictureBox1.Image.Save(AppDomain.CurrentDomain.BaseDirectory.ToString() + "/image" + _imgBox + ".jpg");
-            }
             else if (e.Name.Equals(EventNames.CANCEL_CAPTURE_PICTURE))
             {
                 if (InvokeRequired)
@@ -198,6 +196,30 @@ namespace Enrolment
                     }));
                     return;
                 }
+            }
+            else if (e.Name.Equals(EventNames.CAPTURE_PICTURE))
+            {
+                webcam.stopWebcam();
+                LayerWeb.InvokeScript("confirmMode");
+            }
+            else if (e.Name.Equals(EventNames.CONFIRM_CAPTURE_PICTURE))
+            {
+                if (InvokeRequired)
+                {
+                    Invoke(new Action(() =>
+                    {
+                        pictureBox1.Hide();
+                        webcam.stopWebcam();
+                        LayerWeb.LoadPageHtml("New-Supervisee.html");
+                    }));
+                    return;
+                }
+            }
+            else if (e.Name.Equals(EventNames.CANCEL_CONFIRM_CAPTURE_PICTURE))
+            {
+                webcam.InitializeWebCam();
+                webcam.startWebcam();
+                LayerWeb.InvokeScript("captureMode");
             }
             else if (e.Name== EventNames.PHOTO_CAPTURE_FAILED)
             {
