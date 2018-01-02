@@ -155,11 +155,24 @@ namespace Enrolment
             _web.LoadPageHtml("New-Supervisee.html");
         }
 
+        #region Webcam event
         public void OpenPictureCaptureForm(string number)
         {
             EventCenter eventCenter = EventCenter.Default;
             eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.OPEN_PICTURE_CAPTURE_FORM, Message = number });
         }
+        public void CapturePicture()
+        {
+            EventCenter eventCenter = EventCenter.Default;
+            eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.CAPTURE_PICTURE });
+        }
+        public void CancelCapturePicture()
+        {
+            EventCenter eventCenter = EventCenter.Default;
+            eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.CANCEL_CAPTURE_PICTURE });
+        }
+        #endregion
+
         #region Authentication & Authorization
 
         public void Login(string username, string password)

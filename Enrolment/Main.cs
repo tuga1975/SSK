@@ -25,12 +25,14 @@ namespace Enrolment
         private EventCenter _eventCenter;
         private CodeBehind.Authentication.NRIC _nric;
         private CodeBehind.Login _login;
+        private CodeBehind.WebcamCapture _webcamCapture;
         private CodeBehind.Suppervisee _suppervisee;
         private NavigatorEnums _currentPage;
         private Trinity.Common.DeviceMonitor.HealthMonitor healthMonitor;
 
         private int _smartCardFailed;
         private int _fingerprintFailed;
+        private Webcam webcam;
         private bool _displayLoginButtonStatus = false;
         private string _imgBox;
         public Main()
@@ -40,10 +42,9 @@ namespace Enrolment
             // setup variables
             _smartCardFailed = 0;
             _fingerprintFailed = 0;
+            webcam = new Webcam(pictureBox1);
             _displayLoginButtonStatus = false;
             pictureBox1.Hide();
-            button1.Hide();
-            button2.Hide();
             #region Initialize and register events
             // _jsCallCS
             _jsCallCS = new JSCallCS(this.LayerWeb);
@@ -55,6 +56,8 @@ namespace Enrolment
             _login = new CodeBehind.Login(LayerWeb);
             // Supervisee
             _suppervisee = new CodeBehind.Suppervisee(LayerWeb);
+            //webcam capture
+            _webcamCapture = new CodeBehind.WebcamCapture(LayerWeb);
             #endregion
 
             APIUtils.LayerWeb = LayerWeb;
@@ -74,69 +77,7 @@ namespace Enrolment
             timer.Elapsed += PeriodCheck; ;
             timer.Start();
         }
-        VideoCaptureDevice videoSource;
 
-        private void startWebcam()
-        {
-            //List all available video sources. (That can be webcams as well as tv cards, etc)
-            FilterInfoCollection videosources = new FilterInfoCollection(FilterCategory.VideoInputDevice);
-
-            //Check if atleast one video source is available
-            if (videosources != null)
-            {
-                //For example use first video device. You may check if this is your webcam.
-                videoSource = new VideoCaptureDevice(videosources[0].MonikerString);
-
-                try
-                {
-                    //Check if the video device provides a list of supported resolutions
-                    if (videoSource.VideoCapabilities.Length > 0)
-                    {
-                        string highestSolution = "0;0";
-                        //Search for the highest resolution
-                        for (int i = 0; i < videoSource.VideoCapabilities.Length; i++)
-                        {
-                            if (videoSource.VideoCapabilities[i].FrameSize.Width > Convert.ToInt32(highestSolution.Split(';')[0]))
-                                highestSolution = videoSource.VideoCapabilities[i].FrameSize.Width.ToString() + ";" + i.ToString();
-                        }
-                        //Set the highest resolution as active
-                        videoSource.VideoResolution = videoSource.VideoCapabilities[Convert.ToInt32(highestSolution.Split(';')[1])];
-                    }
-                }
-                catch { }
-
-                //Create NewFrame event handler
-                //(This one triggers every time a new frame/image is captured
-                videoSource.NewFrame += new AForge.Video.NewFrameEventHandler(videoSource_NewFrame);
-                pictureBox1.Show();
-                button1.Show();
-                button2.Show();
-                LayerWeb.Hide();
-                //Start recording
-                videoSource.Start();
-            }
-        }
-
-        void videoSource_NewFrame(object sender, AForge.Video.NewFrameEventArgs eventArgs)
-        {
-            //Cast the frame as Bitmap object and don't forget to use ".Clone()" otherwise
-            //you'll probably get access violation exceptions
-            pictureBox1.Image = (Bitmap)eventArgs.Frame.Clone();
-        }
-
-        private void stopWebcam()
-        {
-            if (videoSource != null && videoSource.IsRunning)
-            {
-                videoSource.SignalToStop();
-                videoSource.NewFrame -= new AForge.Video.NewFrameEventHandler(videoSource_NewFrame);
-                videoSource = null;
-            }
-            pictureBox1.Hide();
-            button1.Hide();
-            button2.Hide();
-            LayerWeb.Show();
-        }
         private void PeriodCheck(object sender, System.Timers.ElapsedEventArgs e)
         {
             healthMonitor.CheckHealth();
@@ -227,12 +168,33 @@ namespace Enrolment
             }
             else if (e.Name.Equals(EventNames.OPEN_PICTURE_CAPTURE_FORM))
             {
+                //pictureBox1.Image.Save(AppDomain.CurrentDomain.BaseDirectory.ToString() + "/image" + _imgBox + ".jpg");
+                NavigateTo(NavigatorEnums.WebcamCapture);
                 if (InvokeRequired)
                 {
                     Invoke(new Action(() =>
                     {
                         _imgBox = e.Message;
-                        startWebcam();
+                        pictureBox1.Show();
+                        webcam.InitializeWebCam();
+                        webcam.startWebcam();
+                    }));
+                    return;
+                }
+            }
+            else if (e.Name.Equals(EventNames.CAPTURE_PICTURE))
+            {
+                pictureBox1.Image.Save(AppDomain.CurrentDomain.BaseDirectory.ToString() + "/image" + _imgBox + ".jpg");
+            }
+            else if (e.Name.Equals(EventNames.CANCEL_CAPTURE_PICTURE))
+            {
+                if (InvokeRequired)
+                {
+                    Invoke(new Action(() =>
+                    {
+                        webcam.stopWebcam();
+                        pictureBox1.Hide();
+                        LayerWeb.LoadPageHtml("New-Supervisee.html");
                     }));
                     return;
                 }
@@ -265,6 +227,10 @@ namespace Enrolment
             {
                 _login.Start();
             }
+            else if (navigatorEnum == NavigatorEnums.WebcamCapture)
+            {
+                _webcamCapture.Start();
+            }
 
             // set current page
             _currentPage = navigatorEnum;
@@ -282,17 +248,6 @@ namespace Enrolment
                 _displayLoginButtonStatus = true;
                 CSCallJS.DisplayLogoutButton(this.LayerWeb, _displayLoginButtonStatus);
             }
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            pictureBox1.Image.Save(AppDomain.CurrentDomain.BaseDirectory.ToString()+"/image"+_imgBox+".jpg");
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            pictureBox1.Image = null;
-            stopWebcam();
         }
 
         protected override void OnFormClosing(FormClosingEventArgs e)
