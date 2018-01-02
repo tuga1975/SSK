@@ -117,6 +117,8 @@ namespace Trinity.Common
         public const string OPEN_PICTURE_CAPTURE_FORM = "OpenPictureCaptureForm";
         public const string OPEN_PICTURE_CAPTURE_FORM_FAILED = "OpenPictureCaptureFormFailed";
         public const string CAPTURE_PICTURE = "CapturePicture";
+        public const string CONFIRM_CAPTURE_PICTURE = "ConfirmCapturePicture";
+        public const string CANCEL_CONFIRM_CAPTURE_PICTURE = "CancelConfirmCapturePicture";
         public const string CANCEL_CAPTURE_PICTURE = "CancelCapturePicture";
         public const string OPEN_FINGERPRINT_CAPTURE_FORM = "OpenFingerprintCaptureForm";
         public const string PHOTO_CAPTURE_FAILED = "PhotoCaptureFailed";
@@ -124,7 +126,7 @@ namespace Trinity.Common
         public const string ABLE_TO_PRINT_FAILED = "AbleToPrintFailed";
         public const string CANCEL_CAPTURE_FINGERPRINT = "CancelCaptureFingerPrint";
         public const string CANCEL_PRINT_SMARTCARD = "CancelPrintSmartCard";
-
+        public const string CONFIRM_CAPTURE_FINGERPRINT = "ConfirmCaptureFingerprint";
     }
 
     public class EventInfo
