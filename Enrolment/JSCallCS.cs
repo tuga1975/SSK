@@ -123,17 +123,17 @@ namespace Enrolment
         {
             EventCenter eventCenter = EventCenter.Default;
             Session session = Session.Instance;
-            var sessionAttempt = (int)session["CapturePhotoAttempt"];
+            var sessionAttempt = (int)session[CommonConstants.CAPTURE_PHOTO_ATTEMPT];
             if (attempt > 3)
             {
-                session["CapturePhotoAttempt"] = null;
+                session[CommonConstants.CAPTURE_PHOTO_ATTEMPT] = null;
                 APIUtils.SignalR.SendNotificationToDutyOfficer("Supervisee failed to capture photo!", "Supervisee failed to capture photo!\n Please check the status");
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.PHOTO_CAPTURE_FAILED, Message="Unable to capture photo", Source = "FailToCapture.html" });
             }
             else
             {
                 sessionAttempt++;
-                session["CapturePhotoAttemp"] = sessionAttempt;
+                session[CommonConstants.CAPTURE_PHOTO_ATTEMPT] = sessionAttempt;
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = 0, Name = EventNames.OPEN_PICTURE_CAPTURE_FORM });
             }
         }
@@ -142,17 +142,17 @@ namespace Enrolment
         {
             EventCenter eventCenter = EventCenter.Default;
             Session session = Session.Instance;
-            var sessionAttempt = (int)session["CaptureFingerprintAttempt"];
+            var sessionAttempt = (int)session[CommonConstants.CAPTURE_FINGERPRINT_ATTEMPT];
             if (attempt > 3)
             {
-                session["CaptureFingerprintAttempt"] = null;
+                session[CommonConstants.CAPTURE_FINGERPRINT_ATTEMPT] = null;
                 APIUtils.SignalR.SendNotificationToDutyOfficer("Supervisee failed to capture photo!", "Supervisee failed to capture fingerprint!\n Please check the status");
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.PHOTO_CAPTURE_FAILED, Message = "Unable to capture fingerprint", Source = "FailToCapture.html" });
             }
             else
             {
                 sessionAttempt++;
-                session["CaptureFingerprintAttempt"] = sessionAttempt;
+                session[CommonConstants.CAPTURE_FINGERPRINT_ATTEMPT] = sessionAttempt;
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = 0, Name = EventNames.OPEN_FINGERPRINT_CAPTURE_FORM });
             }
         }
@@ -161,19 +161,39 @@ namespace Enrolment
         {
             EventCenter eventCenter = EventCenter.Default;
             Session session = Session.Instance;
-            var sessionAttempt = (int)session["AbleToPrintSCardAttempt"];
+            var sessionAttempt = (int)session[CommonConstants.PRINT_SMARTCARD_ATTEMPT];
             if (attempt > 3)
             {
-                session["AbleToPrintSCardAttempt"]=null;
+                session[CommonConstants.PRINT_SMARTCARD_ATTEMPT] =null;
                 APIUtils.SignalR.SendNotificationToDutyOfficer("Supervisee failed to capture photo!", "Supervisee failed to print smart card!\n Please check the status");
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.ABLE_TO_PRINT_FAILED, Message = "Unable to print smart card", Source = "FailToCapture.html" });
             }
             else
             {
                 sessionAttempt++;
-                session["AbleToPrintSCardAttempt"] = sessionAttempt;
+                session[CommonConstants.PRINT_SMARTCARD_ATTEMPT] = sessionAttempt;
             }
         }
+
+        #region Fingerprint Capture Event
+        public void CancelCaptureFingerprint()
+        {
+            EventCenter eventCenter = EventCenter.Default;
+            eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.CANCEL_CAPTURE_FINGERPRINT });
+        }
+
+        public void ConfirmFingerprint()
+        {
+            EventCenter eventCenter = EventCenter.Default;
+          
+                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.CONFIRM_CAPTURE_FINGERPRINT });
+            
+            
+        }
+        #endregion
+
+
+
 
         public void ScanNRIC()
         {

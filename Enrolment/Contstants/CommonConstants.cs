@@ -15,5 +15,13 @@ namespace Enrolment.Contstants
         public const string SCANNED_DOCUMENT = "ScannedDocument";
         public const string SUPERVISEE = "SUPERVISEE";
         public const string SCANNED_BARCODE = "ScannedBarcode";
+        public const string CAPTURE_FINGERPRINT_ATTEMPT = "CaptureFingerprintAttempt";
+        public const string CAPTURE_PHOTO_ATTEMPT = "CapturePhotoAttempt";
+        public const string PRINT_SMARTCARD_ATTEMPT = "PrintSmartCardAttempt";
+        public const string CURRENT_PAGE = "CurrentPage";
+        public const string CURRENT_FINGERPRINTDATA = "CurrentFingerprint";
+        public const string IS_RIGHT_THUMB = "CurrentFinger";
+        public const string CURRENT_EDIT_USER = "CurrentEditUser";
+
     }
 }

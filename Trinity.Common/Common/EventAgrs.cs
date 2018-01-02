@@ -124,7 +124,7 @@ namespace Trinity.Common
         public const string ABLE_TO_PRINT_FAILED = "AbleToPrintFailed";
         public const string CANCEL_CAPTURE_FINGERPRINT = "CancelCaptureFingerPrint";
         public const string CANCEL_PRINT_SMARTCARD = "CancelPrintSmartCard";
-
+        public const string CONFIRM_CAPTURE_FINGERPRINT = "ConfirmCaptureFingerprint";
     }
 
     public class EventInfo

@@ -145,6 +145,7 @@
     </Content>
     <Content Include="View\html\Edit-Supervisee.html" />
     <Content Include="View\html\FailToCapture.html" />
+    <Content Include="View\html\FingerprintCapture.html" />
     <Content Include="View\html\Layout.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
