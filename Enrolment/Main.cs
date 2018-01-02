@@ -179,11 +179,15 @@ namespace Enrolment
             }
             else if (e.Name== EventNames.PHOTO_CAPTURE_FAILED)
             {
-                CSCallJS.LoadPageHtml(this.LayerWeb,"FailToCapture", e.Message);
+                CSCallJS.LoadPageHtml(this.LayerWeb,"FailToCapture.html", e.Message);
             }
             else if(e.Name== EventNames.FINGERPRINT_CAPTURE_FAILED)
             {
-                CSCallJS.LoadPageHtml(this.LayerWeb, "FailToCapture", e.Message);
+                CSCallJS.LoadPageHtml(this.LayerWeb, "FailToCapture.html", e.Message);
+            }
+            else if (e.Name == EventNames.ABLE_TO_PRINT_FAILED)
+            {
+                CSCallJS.LoadPageHtml(this.LayerWeb, "FailToCapture.html", e.Message);
             }
 
         }

@@ -118,6 +118,7 @@ namespace Trinity.Common
         public const string OPEN_FINGERPRINT_CAPTURE_FORM = "OpenFingerprintCaptureForm";
         public const string PHOTO_CAPTURE_FAILED = "PhotoCaptureFailed";
         public const string FINGERPRINT_CAPTURE_FAILED = "FingerCaptureFailed";
+        public const string ABLE_TO_PRINT_FAILED = "AbleToPrintFailed";
     }
 
     public class EventInfo

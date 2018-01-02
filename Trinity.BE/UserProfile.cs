@@ -86,14 +86,10 @@ namespace Trinity.BE
         [DataMember]
         public string Employment_Remarks { get; set; }
 
-        [DataMember]
-        public byte[] SecondaryFingerprint { get; set; }
 
         [DataMember]
         public string Gender { get; set; }
 
-        [DataMember]
-        public string NRICBarcode { get; set; }
 
         [DataMember]
         public string SerialNumber { get; set; }
@@ -105,12 +101,9 @@ namespace Trinity.BE
         public DateTime? DateOfIssue { get; set; }
 
         [DataMember]
-        public string CNBLogo { get; set; }
+        public byte[] User_Photo1 { get; set; }
 
         [DataMember]
-        public string PrimaryPhoto { get; set; }
-
-        [DataMember]
-        public string SecondaryPhoto { get; set; }
+        public byte[] User_Photo2 { get; set; }
     }
 }
