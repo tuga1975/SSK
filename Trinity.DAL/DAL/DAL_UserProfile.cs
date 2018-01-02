@@ -54,13 +54,13 @@ namespace Trinity.DAL
                     Secondary_Email = dbUserProfile.Secondary_Email,
                     Secondary_Phone = dbUserProfile.Secondary_Phone,
                     UserId = dbUserProfile.UserId,
-                    SecondaryFingerprint = dbUserProfile.Secondary_Fingerprint,
-                    PrimaryPhoto = dbUserProfile.Primary_Photo,
-                    SecondaryPhoto = dbUserProfile.Secondary_Photo,
-                    CNBLogo = dbUserProfile.CNB_Logo,
+                    //SecondaryFingerprint = dbUserProfile.Secondary_Fingerprint,
+                    //PrimaryPhoto = dbUserProfile.Primary_Photo,
+                    //SecondaryPhoto = dbUserProfile.Secondary_Photo,
+                    //CNBLogo = dbUserProfile.CNB_Logo,
                     DateOfIssue = dbUserProfile.Date_of_Issue,
                     Gender = dbUserProfile.Gender,
-                    NRICBarcode = dbUserProfile.NRIC_barcode,
+                    //NRICBarcode = dbUserProfile.NRIC_barcode,
                     Race = dbUserProfile.Race,
                     SerialNumber = dbUserProfile.Serial_Number
                 };
@@ -160,13 +160,13 @@ namespace Trinity.DAL
             dbUserProfile.Residential_Addess_ID = model.Residential_Addess_ID;
             dbUserProfile.Secondary_Email = model.Secondary_Email;
             dbUserProfile.Secondary_Phone = model.Secondary_Phone;
-            dbUserProfile.Secondary_Fingerprint = model.SecondaryFingerprint;
-            dbUserProfile.Primary_Photo = model.PrimaryPhoto;
-            dbUserProfile.Secondary_Photo = model.SecondaryPhoto;
-            dbUserProfile.CNB_Logo = model.CNBLogo;
+            //dbUserProfile.Secondary_Fingerprint = model.SecondaryFingerprint;
+            //dbUserProfile.Primary_Photo = model.PrimaryPhoto;
+            //dbUserProfile.Secondary_Photo = model.SecondaryPhoto;
+            //dbUserProfile.CNB_Logo = model.CNBLogo;
             dbUserProfile.Date_of_Issue = model.DateOfIssue;
             dbUserProfile.Gender = model.Gender;
-            dbUserProfile.NRIC_barcode = model.NRICBarcode;
+            //dbUserProfile.NRIC_barcode = model.NRICBarcode;
             dbUserProfile.Race = model.Race;
             dbUserProfile.Serial_Number = model.SerialNumber;
 
