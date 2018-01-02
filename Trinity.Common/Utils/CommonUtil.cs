@@ -10,9 +10,11 @@ namespace Trinity.Common
 {
     public class CommonUtil
     {
-        public static System.Drawing.Bitmap CreateQRCode(UserInfo userInfo, string AESKey)
+        public static byte[] CreateQRCode(UserInfo userInfo)
         {
-            System.Drawing.Bitmap bitmap = null;
+            // get AESKey from API return
+            string AESKey = "AESKey";
+
             var width = 250; // width of the Qr Code    
             var height = 250; // height of the Qr Code    
             var margin = 0;
@@ -27,29 +29,27 @@ namespace Trinity.Common
                 }
             };
 
-            var contentQRCode = "User Name: " + userInfo.UserName + "; NRIC: " + userInfo.NRIC + "; DOB: " + userInfo.DOB + "; Status: " + userInfo.Status;
+            var contentQRCode = "User Name: " + userInfo.UserName + "; NRIC: " + userInfo.NRIC + "; DOB: " + userInfo.DOB;
             var encryptContent = CommonUtil.EncryptString(contentQRCode, AESKey);
             var pixelData = qrCodeWriter.Write(encryptContent);
             // creating a bitmap from the raw pixel data; if only black and white colors are used it makes no difference    
             // that the pixel data ist BGRA oriented and the bitmap is initialized with RGB    
-            bitmap = new System.Drawing.Bitmap(pixelData.Width, pixelData.Height, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
-            using (var ms = new System.IO.MemoryStream())
+            System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(pixelData.Width, pixelData.Height, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
+            var ms = new System.IO.MemoryStream();
+
+            var bitmapData = bitmap.LockBits(new System.Drawing.Rectangle(0, 0, pixelData.Width, pixelData.Height), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
+            try
             {
-                var bitmapData = bitmap.LockBits(new System.Drawing.Rectangle(0, 0, pixelData.Width, pixelData.Height), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
-                try
-                {
-                    // we assume that the row stride of the bitmap is aligned to 4 byte multiplied by the width of the image    
-                    System.Runtime.InteropServices.Marshal.Copy(pixelData.Pixels, 0, bitmapData.Scan0, pixelData.Pixels.Length);
-                }
-                finally
-                {
-                    bitmap.UnlockBits(bitmapData);
-                }
-                // save to stream as PNG  
-                // test qr code bang file image, chua goi printer
-                //bitmap.Save("D:\\qrcode.png", System.Drawing.Imaging.ImageFormat.Png);
+                // we assume that the row stride of the bitmap is aligned to 4 byte multiplied by the width of the image    
+                System.Runtime.InteropServices.Marshal.Copy(pixelData.Pixels, 0, bitmapData.Scan0, pixelData.Pixels.Length);
             }
-            return bitmap;
+            finally
+            {
+                bitmap.UnlockBits(bitmapData);
+            }
+            bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+
+            return ms.ToArray();
         }
 
         public static string EncryptString(string message, string passphrase)

@@ -26,7 +26,7 @@ namespace Trinity.BE
         public short? SmartCardFailedCount { get; set; }
         public short? FingerprintFailedCount { get; set; }
         public DateTime? EnrolledDate { get; set; }
-        public short? Role { get; set; }
+        public string Role { get; set; }
         public string ParticularsName { get; set; }
         public string NRIC { get; set; }
         public DateTime? DOB { get; set; }

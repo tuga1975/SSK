@@ -59,7 +59,8 @@ namespace Trinity.DAL
                     DateOfIssue = dbUserProfile.Date_of_Issue,
                     Gender = dbUserProfile.Gender,
                     Race = dbUserProfile.Race,
-                    SerialNumber = dbUserProfile.Serial_Number
+                    SerialNumber = dbUserProfile.Serial_Number,
+                    QRCode = dbUserProfile.QRCode
                 };
                 return userProfile;
             }
@@ -164,6 +165,16 @@ namespace Trinity.DAL
             dbUserProfile.Race = model.Race;
             dbUserProfile.Serial_Number = model.SerialNumber;
 
+            var dalUser = new Trinity.DAL.DAL_User();
+            var user = dalUser.GetUserByUserId(model.UserId,true);
+            var userInfo = new Trinity.Common.UserInfo {
+                NRIC = user.NRIC,
+                UserName = user.Name,
+                DOB = model.DOB.ToString()
+            };
+
+            dbUserProfile.QRCode = Common.CommonUtil.CreateQRCode(userInfo);
+            
         }
         public Trinity.BE.Address GetAddressByUserId(string userId, bool isLocal)
         {

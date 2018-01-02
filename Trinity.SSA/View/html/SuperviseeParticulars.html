@@ -31,7 +31,7 @@
         <br />
         <div class="input-group">
             <span class="input-group-addon">QR Code:</span>
-            <img src="../img/QRCode.png" width="120" height="120">
+            <img id="imgQRCode" src="../img/QRCode.png" width="120" height="120" style="margin-left:12px;">
         </div>
         <br />
         <div class="input-group">
@@ -53,6 +53,8 @@
         $('#ParticularsDate').val(api.model.DOB);
         $('#ParticularsStatus').val(api.model.Status);
         $('#ParticularsMarkingNumber').val(api.model.MarkingNumber);
+        var srcQRCode = "../img/QRCode_" + api.model.NRIC + ".png";
+        $("#imgQRCode").attr("src", srcQRCode);
     });
 
     $('#ConfirmBtn').click(function () {
@@ -60,6 +62,7 @@
     });
 
     $('#CancelBtn').click(function () {
+        api.server.DeleteQRCodeImageFile();
         api.server.LogOut();
     });
 </script>

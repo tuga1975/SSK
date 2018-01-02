@@ -108,6 +108,8 @@ namespace SSA
         {
             this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').show(); ; ");
             this._web.RunScript("$('.status-text').css('color','#000').text('Please collect your labels');");
+
+            DeleteQRCodeImageFile();
         }
 
         private void PrintMUBAndTTLabels_OnPrintTTLabelFailed(object sender, CodeBehind.PrintMUBAndTTLabelsEventArgs e)
@@ -117,6 +119,7 @@ namespace SSA
             MessageBox.Show("Unable to print labels\nPlease report to the Duty Officer", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
             //APIUtils.SignalR.SendNotificationToDutyOfficer("A supervisee can't print label", e.Message);
 
+            DeleteQRCodeImageFile();
             LogOut();
         }
 
@@ -127,6 +130,7 @@ namespace SSA
             MessageBox.Show(e.ErrorMessage, "", MessageBoxButtons.OK, MessageBoxIcon.Error);
             //APIUtils.SignalR.SendNotificationToDutyOfficer("A supervisee can't print label", "Please check Supervisee's information!");
 
+            DeleteQRCodeImageFile();
             LogOut();
         }
 
@@ -171,6 +175,16 @@ namespace SSA
             {
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.LOGIN_FAILED, Message = "Your username or password is incorrect." });
             }
+        }
+
+        // Delete file image QRCode after print Supervisee particulars to avoid over memory. The image QRCode is auto generate to show on view SuperviseeParticulars
+        public void DeleteQRCodeImageFile()
+        {
+            Session session = Session.Instance;
+            Trinity.BE.User user = (Trinity.BE.User)session[Constants.CommonConstants.SUPERVISEE];
+            string fileName = String.Format("{0}/View/img/{1}", CSCallJS.curDir, "QRCode_" + user. NRIC + ".png");
+            if (System.IO.File.Exists(fileName))
+                System.IO.File.Delete(fileName);
         }
     }
 
