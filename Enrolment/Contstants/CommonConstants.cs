@@ -19,8 +19,10 @@ namespace Enrolment.Contstants
         public const string CAPTURE_PHOTO_ATTEMPT = "CapturePhotoAttempt";
         public const string PRINT_SMARTCARD_ATTEMPT = "PrintSmartCardAttempt";
         public const string CURRENT_PAGE = "CurrentPage";
-        public const string CURRENT_FINGERPRINTDATA = "CurrentFingerprint";
+        public const string CURRENT_PHOTO_DATA = "CurrentPhotoData";
+        public const string CURRENT_FINGERPRINT_DATA = "CurrentFingerprintData";
         public const string IS_RIGHT_THUMB = "CurrentFinger";
+        public const string IS_PRIMARY_PHOTO = "CurrentPhoto";
         public const string CURRENT_EDIT_USER = "CurrentEditUser";
 
     }

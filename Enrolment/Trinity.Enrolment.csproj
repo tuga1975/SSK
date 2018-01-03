@@ -151,6 +151,7 @@
     </Content>
     <Content Include="View\html\Login.html" />
     <Content Include="View\html\New-Supervisee.html" />
+    <Content Include="View\html\PrintSmartCard.html" />
     <Content Include="View\html\Supervisee.html" />
     <Content Include="View\html\WebcamCapture.html" />
     <Content Include="View\images\log-out.png" />
