@@ -68,7 +68,7 @@ namespace SSK
         {
             try
             {
-                
+
                 var dalNotify = new DAL_Notification();
                 dalNotify.ChangeReadStatus(notificationId);
             }
@@ -113,10 +113,19 @@ namespace SSK
 
         private static void SetSelectedTime(Appointment appointment, List<Trinity.BE.EnvironmentTime> selectedTimes)
         {
+            var dalAppointment = new DAL_Appointments();
             var item = selectedTimes.Where(d => appointment.FromTime != null && d.StartTime == appointment.FromTime.Value && d.EndTime == appointment.ToTime.Value).FirstOrDefault();
             if (item != null)
             {
                 item.IsSelected = true;
+            }
+            var maxAppPerTimeslot = System.Configuration.ConfigurationManager.AppSettings.Get("MaxAppointmentPerTimeslot");
+            foreach (var selectedItem in selectedTimes)
+            {
+                if (dalAppointment.CountListAppointmentByTimeslot(selectedItem.StartTime, selectedItem.EndTime) >= Convert.ToInt32(maxAppPerTimeslot))
+                {
+                    selectedItem.IsAvailble = false;
+                }
             }
         }
 
@@ -359,7 +368,7 @@ namespace SSK
         }
 
 
-        public void SaveReasonForQueue(/*string data,*/ string reason,string selectedID)
+        public void SaveReasonForQueue(/*string data,*/ string reason, string selectedID)
         {
             //send message to case office if no support document
             if (reason == "No Supporting Document")
@@ -368,7 +377,7 @@ namespace SSK
             }
             var charSeparators = new char[] { ',' };
             var listSplitID = selectedID.Split(charSeparators, StringSplitOptions.RemoveEmptyEntries).ToList();
-            
+
 
             //var listAppointment = JsonConvert.DeserializeObject<List<Appointment>>(data);
             Trinity.BE.Reason reasonModel = JsonConvert.DeserializeObject<Trinity.BE.Reason>(reason);

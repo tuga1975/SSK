@@ -113,8 +113,10 @@
                 if (re == true) {
                     api.server.UpdateTimeAppointment(api.model[0].ID, startTime, endTime, function (time) {
                         api.model[0].ChangedCount += 1;
-                        $('[item-select-time][selecttime="true"]').removeAttr('selecttime').removeAttr('availble');
-                        _this.attr('availble', false).attr('selecttime', true);
+                        //$('[item-select-time][selecttime="true"]').removeAttr('selecttime').removeAttr('availble');
+                        //_this.attr('availble', false).attr('selecttime', true);
+                        $('[item-select-time][selecttime="true"]').removeAttr('selecttime');
+                        _this.attr('selecttime', true);
                         $('[app-time]').text(time);
                         $('[info-notime]').remove();
                     });

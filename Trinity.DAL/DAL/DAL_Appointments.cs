@@ -102,5 +102,10 @@ namespace Trinity.DAL
             }
             return localDbAppointment;
         }
+
+        public int CountListAppointmentByTimeslot(TimeSpan fromTime, TimeSpan toTime)
+        {
+            return _localUnitOfWork.DataContext.Appointments.Count(a => a.FromTime >= fromTime && a.ToTime <= toTime && System.Data.Entity.DbFunctions.DiffDays(a.Date, DateTime.Now) == 0);
+        }
     }
 }

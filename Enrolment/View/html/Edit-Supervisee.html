@@ -5,83 +5,223 @@
 		<div class="clear"></div>
 	</div>
 	<div class="form-supervisee">
-		<input class="name-supervisee" type="text" value="Erol Supervisee" />
-		<nav class="nav nav-tabs" id="myTab" role="tablist">
-			<a class="nav-item nav-link active" data-toggle="tab" href="#print-card" role="tab" aria-controls="nav-home" aria-selected="true">Print Card</a>
-			<a class="nav-item nav-link" data-toggle="tab" href="#supervisee-details" role="tab" aria-controls="nav-profile" aria-selected="false">Supervisee Details</a>
-		</nav>
-		<div class="tab-content" id="nav-tabContent">
-			<div class="tab-pane fade show active" id="print-card" role="tabpanel" aria-labelledby="nav-home-tab">
-				<span class="s_blodata" >Supervisee's Biodata</span>
-						<div class="detail_s_blodata">
-							<div class="row">								
-								<div class="col-7">
-									<div class="row">								
-										<div class="col">
-											<img class="avatar" id="userPhoto1" src="" />
-											<button  type="button" id="updatePhoto1">Update Photos</button>
-										</div>
-										<div class="col">
-											<img class="avatar" id="userPhoto2" src="../images/usr-default.jpg" />
-											<button type="button" id="updatePhoto2">Update Photos</button>
-										</div>
+		<form id="superviseeFrm">
+			<input class="name-supervisee" type="text" value="Erol Supervisee" />
+			<nav class="nav nav-tabs" id="myTab" role="tablist">
+				<a class="nav-item nav-link active" data-toggle="tab" href="#print-card" role="tab" aria-controls="nav-home" aria-selected="true">Print Card</a>
+				<a class="nav-item nav-link" data-toggle="tab" href="#supervisee-details" role="tab" aria-controls="nav-profile" aria-selected="false">Supervisee Details</a>
+			</nav>
+			<div class="tab-content" id="nav-tabContent">
+				<div class="tab-pane fade show active" id="print-card" role="tabpanel" aria-labelledby="nav-home-tab">
+					<span class="s_label s_blodata" >Supervisee's Biodata</span>
+					<div class="s_detail detail_s_blodata">
+						<div class="row">								
+							<div class="col-7">
+								<div class="row">								
+									<div class="col">
+										<img class="avatar" id="userPhoto1" src="../images/usr-default.jpg" />
+										<button  type="button" id="updatePhoto1" onclick="api.server.OpenPictureCaptureForm('1')">Update Photos</button>
+									</div>
+									<div class="col">
+										<img class="avatar" id="userPhoto2" src="../images/usr-default.jpg" />
+										<button type="button" id="updatePhoto2" onclick="api.server.OpenPictureCaptureForm('2')">Update Photos</button>
 									</div>
 								</div>
-								<div class="col-5">
-									<div class="row">
-										<div class="col">
-											<img class="avatar" src="../images/fingerprint.png" style="max-width:70%" />
-											<button type="button">Update Fingerprints</button>
-										</div>
-										<div class="col">
-											<img class="avatar" src="../images/fingerprint.png" style="max-width:70%" />
-											<button type="button">Update Fingerprints</button>
-										</div>
+							</div>
+							<div class="col-5">
+								<div class="row">
+									<div class="col">
+										<img class="avatar" src="../images/fingerprint.png" style="max-width:70%" />
+										<button type="button" onclick="api.server.OpenFingerprintCaptureForm('1')">Update Fingerprints</button>
+									</div>
+									<div class="col">
+										<img class="avatar" src="../images/fingerprint.png" style="max-width:70%" />
+										<button type="button"  onclick="api.server.OpenFingerprintCaptureForm('2')">Update Fingerprints</button>
 									</div>
 								</div>
 							</div>
 						</div>
-						<input class="s_address" type="text" value="" placeholder="Supervisee's Address" />
-						<input class="s_other_address" type="text" value="" placeholder="Other Address" />
-						<input class="s_next_of_kin" type="text" value="" placeholder="Next Of Kin" />
-						<input class="s_employment_details" type="text" value="" placeholder="Employment details" />
-				<div class="btn-group">
-					<button type="submit" class="btn-form">Save</button>
-					<button type="submit" class="btn-form">Cancel</button>
+					</div>
+					<input class="s_address" type="text" value="" name="" placeholder="Supervisee's Address" />
+					<input class="s_other_address" type="text" value="" placeholder="Other Address" />
+					<span class="s_label s_next_of_kin">Next Of Kin</span>
+					<div class="s_detail detail_s_next_of_kin">
+						<div class="row">
+							<div class="col">
+								<div class="form-group row">
+									<label class="col-sm-4 col-form-label">NextOfKin Name</label>
+									<div class="col-sm-8">
+										<input type="text" class="nok_name" name="NextOfKin_Name" value="" />
+									</div>
+								</div>
+								<div class="form-group row">
+									<label class="col-sm-4 col-form-label">NextOfKin Contact Number</label>
+									<div class="col-sm-8">
+										<input type="text" class="nok_contact_number" name="NextOfKin_Contact_Number" value="" />
+									</div>
+								</div>
+								<div class="form-group row">
+									<label class="col-sm-4 col-form-label">NextOfKin Relationship</label>
+									<div class="col-sm-8">
+										<input type="text" class="nok_relationship" name="NextOfKin_Relationship" value="" />
+									</div>
+								</div>
+								<div class="form-group row">
+									<label class="col-sm-4 col-form-label">NextOfKin BlkHouse Number</label>
+									<div class="col-sm-8">
+										<input type="text" class="nok_blkhousr_number" name="NextOfKin_BlkHouse_Number" value="" />
+									</div>
+								</div>
+								<div class="form-group row">
+									<label class="col-sm-4 col-form-label">NextOfKin FlrUnit Number</label>
+									<div class="col-sm-8">
+										<input type="text" class="nok_flrunit_number" name="NextOfKin_FlrUnit_Number" value="" />
+									</div>
+								</div>
+								<div class="form-group row">
+									<label class="col-sm-4 col-form-label">NextOfKin Street Name</label>
+									<div class="col-sm-8">
+										<input type="text" class="nok_street_name" name="NextOfKin_Street_Name" value="" />
+									</div>
+								</div>
+								<div class="form-group row">
+									<label class="col-sm-4 col-form-label">NextOfKin Country</label>
+									<div class="col-sm-8">
+										<input type="text" class="nok_country" name="NextOfKin_Country" value="" />
+									</div>
+								</div>
+								<div class="form-group row">
+									<label class="col-sm-4 col-form-label">NextOfKin PostalCode</label>
+									<div class="col-sm-8">
+										<input type="text" class="nok_postalcode" name="NextOfKin_PostalCode" value="" />
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<span class="s_label s_employment_details">Employment details</span>
+					<div class="s_detail detail_s_employment_details">
+						<div class="row">
+							<div class="col">
+								<div class="form-group row">
+									<label class="col-sm-4 col-form-label">Employment Name</label>
+									<div class="col-sm-8">
+										<input type="text" class="e_name" name="EmployerName" value="" />
+									</div>
+								</div>
+								<div class="form-group row">
+									<label class="col-sm-4 col-form-label">Employment Contact Number</label>
+									<div class="col-sm-8">
+										<input type="text" class="e_contact_number" name="Employment_Contact_Number" value="" />
+									</div>
+								</div>
+								<div class="form-group row">
+									<label class="col-sm-4 col-form-label">Employment Company Name</label>
+									<div class="col-sm-8">
+										<input type="text" class="e_company_name" name="Employment_Company_Name" value="" />
+									</div>
+								</div>
+								<div class="form-group row">
+									<label class="col-sm-4 col-form-label">Employment Job Title</label>
+									<div class="col-sm-8">
+										<input type="text" class="e_job_title" name="Employment_Job_Title" value="" />
+									</div>
+								</div>
+								<div class="form-group row">
+									<label class="col-sm-4 col-form-label">Employment Start Date</label>
+									<div class="col-sm-8">
+										<input type="text" class="e_start_date" name="Employment_Start_Date" value="" />
+									</div>
+								</div>
+								<div class="form-group row">
+									<label class="col-sm-4 col-form-label">Employment End Date</label>
+									<div class="col-sm-8">
+										<input type="text" class="e_end_date" name="Employment_End_Date" value="" />
+									</div>
+								</div>
+								<div class="form-group row">
+									<label class="col-sm-4 col-form-label">Employment Remarks</label>
+									<div class="col-sm-8">
+										<input type="text" class="e_remarks" name="Employment_Remarks" value="" />
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="btn-group">
+						<button type="submit" class="btn-form" id="SaveBtn">Save</button>
+						<button type="submit" class="btn-form">Cancel</button>
+					</div>
+				</div>
+				<div class="tab-pane fade" id="supervisee-details" role="tabpanel" aria-labelledby="nav-profile-tab">
+					<input class="" type="text" value="" placeholder="Supervisee's Blodata" />
+					<input class="" type="text" value="" placeholder="Supervisee's Address" />
+					<input class="" type="text" value="" placeholder="Other Address" />
+					<input class="" type="text" value="" placeholder="Next Of Kin" />
+					<input class="" type="text" value="" placeholder="Employment details" />
+					<div class="btn-group">
+						<button type="submit" class="btn-form" >Save</button>
+						<button type="submit" class="btn-form">Cancel</button>
+					</div>
 				</div>
 			</div>
-			<div class="tab-pane fade" id="supervisee-details" role="tabpanel" aria-labelledby="nav-profile-tab">
-				<input class="" type="text" value="" placeholder="Supervisee's Blodata" />
-				<input class="" type="text" value="" placeholder="Supervisee's Address" />
-				<input class="" type="text" value="" placeholder="Other Address" />
-				<input class="" type="text" value="" placeholder="Next Of Kin" />
-				<input class="" type="text" value="" placeholder="Employment details" />
-				<div class="btn-group">
-					<button type="submit" class="btn-form">Save</button>
-					<button type="submit" class="btn-form">Cancel</button>
-				</div>
-			</div>
-		</div>
+		</form>
 	</div>
 </div>
 
 <script>
-
-
 	$(function() {
+		$(".s_blodata").click(function(){
+			$(".detail_s_blodata").fadeToggle('show');
+		});
+		$(".s_next_of_kin").click(function(){
+			$(".detail_s_next_of_kin").fadeToggle('show');
+		});
+		$(".s_employment_details").click(function(){
+			$(".detail_s_employment_details").fadeToggle('show');
+		});
         if (api.model != null) {
-			$('.s_address').val(api.model.User.Name);
-			$('.s_other_address').val(api.model.UserProfile.Name);
-			$('.s_next_of_kin').val(api.model.UserProfile.NextOfKin_Name);
-			$('.s_employment_details').val(api.model.UserProfile.Name);
-
-            /*for (var i = 0; i < api.model.length; i++) {
-				var uId = '"' + api.model[i].User.UserId + '"';
-                $('#listSupervisee').append("<tr> <th scope='row'>" + (i + 1) + "</th><td>" + api.model[i].User.Name + "</td><td>" + api.model[i].User.NRIC + "</td><td>" + api.model[i].UserProfile.DOB + "</td><td><a href='#' onclick='api.server.EditSupervisee(" + uId + ");'>" + api.model[i].User.Status + "</a></td></tr>");
-            }*/
+			$('.s_address').val(api.model.Addresses.Street_Name);
+			$('.s_other_address').val(api.model.Addresses.Street_Name);
+			// NextOfKin
+			$('.nok_name').val(api.model.UserProfile.NextOfKin_Name);
+			$('.nok_contact_number').val(api.model.UserProfile.NextOfKin_Contact_Number);
+			$('.nok_relationship').val(api.model.UserProfile.NextOfKin_Relationship);
+			$('.nok_blkhousr_number').val(api.model.UserProfile.NextOfKin_BlkHouse_Number);
+			$('.nok_flrunit_number').val(api.model.UserProfile.NextOfKin_FlrUnit_Number);
+			$('.nok_street_name').val(api.model.UserProfile.NextOfKin_Street_Name);
+			$('.nok_country').val(api.model.UserProfile.NextOfKin_Country);
+			$('.nok_postalcode').val(api.model.UserProfile.NextOfKin_PostalCode);
+			// Employment
+			$('.e_name').val(api.model.UserProfile.Employment_Name);
+			$('.e_contact_number').val(api.model.UserProfile.Employment_Contact_Number);
+			$('.e_company_name').val(api.model.UserProfile.Employment_Company_Name);
+			$('.e_job_title').val(api.model.UserProfile.Employment_Job_Title);
+			$('.e_start_date').val(api.model.UserProfile.Employment_Start_Date);
+			$('.e_end_date').val(api.model.UserProfile.Employment_End_Date);
+			$('.e_remarks').val(api.model.UserProfile.Employment_Remarks);
         }
 
     });
 
+	$("#superviseeFrm").submit(function (e) {
 
+        var $form = $("#profileFrm");
+        var data = getFormData($form);
+        var json = JSON.stringify(data);
+
+        //for testing purpose
+        api.server.SaveProfile(json, true);
+
+        //api.server.SaveProfile(json, false);
+
+        e.preventDefault(); // avoid to execute the actual submit of the form.
+    });
+
+	$('#SaveBtn').click(function () {
+		var $form = $("#superviseeFrm");
+        var data = getFormData($form);
+        var json = JSON.stringify(data);
+        api.server.SaveSupervisee(json, true);
+	});
 </script>

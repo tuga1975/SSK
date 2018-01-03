@@ -128,7 +128,7 @@ namespace Enrolment
             {
                 session[CommonConstants.CAPTURE_PHOTO_ATTEMPT] = null;
                 APIUtils.SignalR.SendNotificationToDutyOfficer("Supervisee failed to capture photo!", "Supervisee failed to capture photo!\n Please check the status");
-                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.PHOTO_CAPTURE_FAILED, Message="Unable to capture photo", Source = "FailToCapture.html" });
+                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.PHOTO_CAPTURE_FAILED, Message = "Unable to capture photo", Source = "FailToCapture.html" });
             }
             else
             {
@@ -164,7 +164,7 @@ namespace Enrolment
             var sessionAttempt = (int)session[CommonConstants.PRINT_SMARTCARD_ATTEMPT];
             if (attempt > 3)
             {
-                session[CommonConstants.PRINT_SMARTCARD_ATTEMPT] =null;
+                session[CommonConstants.PRINT_SMARTCARD_ATTEMPT] = null;
                 APIUtils.SignalR.SendNotificationToDutyOfficer("Supervisee failed to capture photo!", "Supervisee failed to print smart card!\n Please check the status");
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.ABLE_TO_PRINT_FAILED, Message = "Unable to print smart card", Source = "FailToCapture.html" });
             }
@@ -176,6 +176,17 @@ namespace Enrolment
         }
 
         #region Fingerprint Capture Event
+
+        public void OpenFingerprintCaptureForm(string number)
+        {
+            EventCenter eventCenter = EventCenter.Default;
+            Session session = Session.Instance;
+            if (number.Equals("1"))
+            {
+                session[CommonConstants.IS_RIGHT_THUMB] = true;
+            }
+            eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.OPEN_FINGERPRINT_CAPTURE_FORM, Message = number });
+        }
         public void CancelCaptureFingerprint()
         {
             EventCenter eventCenter = EventCenter.Default;
@@ -185,10 +196,10 @@ namespace Enrolment
         public void ConfirmFingerprint()
         {
             EventCenter eventCenter = EventCenter.Default;
-          
-                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.CONFIRM_CAPTURE_FINGERPRINT });
-            
-            
+
+            eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.CONFIRM_CAPTURE_FINGERPRINT });
+
+
         }
         #endregion
 
@@ -213,19 +224,54 @@ namespace Enrolment
 
         public void EditSupervisee(string userId)
         {
+            Session session = Session.Instance;
+            session[CommonConstants.CURRENT_PAGE] = "EditSupervisee";
+            
             var dalUser = new DAL_User();
             var dalUserProfile = new DAL_UserProfile();
 
             var dbUser = dalUser.GetUserByUserId(userId, true);
-
+          
             var profileModel = new Trinity.BE.ProfileModel
             {
                 User = dbUser,
                 UserProfile = dalUserProfile.GetUserProfileByUserId(userId, true),
                 Addresses = dalUserProfile.GetAddressByUserId(userId, true)
             };
-
+            session[CommonConstants.CURRENT_EDIT_USER] = profileModel;
             _web.LoadPageHtml("Edit-Supervisee.html", profileModel);
+        }
+
+        public void SaveSupervisee(string param, bool primaryInfoChange) {
+            try
+            {
+                var rawData = JsonConvert.DeserializeObject<Trinity.BE.ProfileRawMData>(param);
+                var data = new Trinity.BE.ProfileRawMData().ToProfileModel(rawData);
+                var dalUser = new Trinity.DAL.DAL_User();
+                var dalUserprofile = new Trinity.DAL.DAL_UserProfile();
+                if (primaryInfoChange)
+                {
+
+                    dalUser.UpdateUser(data.User, data.User.UserId, true);
+
+                    dalUserprofile.UpdateUserProfile(data.UserProfile, data.User.UserId, true);
+                    //send notifiy to duty officer
+                    APIUtils.SignalR.SendNotificationToDutyOfficer("A supervisee has updated profile.", "Please check Supervisee's information!");
+                }
+                else
+                {
+                    dalUserprofile.UpdateUserProfile(data.UserProfile, data.User.UserId, true);
+                    //send notifiy to case officer
+                    APIUtils.SignalR.SendNotificationToDutyOfficer("A supervisee has updated profile.", "Please check Supervisee's information!");
+                }
+
+                //load Supervisee page 
+                LoadPage("Supervisee.html");
+            }
+            catch (Exception)
+            {
+                LoadPage("Supervisee.html");
+            }
         }
 
         public void AddNewSupervisee()
@@ -237,6 +283,11 @@ namespace Enrolment
         public void OpenPictureCaptureForm(string number)
         {
             EventCenter eventCenter = EventCenter.Default;
+            Session session = Session.Instance;
+            if (number.Equals("1"))
+            {
+                session[CommonConstants.IS_PRIMARY_PHOTO] = true;
+            }
             eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.OPEN_PICTURE_CAPTURE_FORM, Message = number });
         }
         public void CancelCapturePicture()
