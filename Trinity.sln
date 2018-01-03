@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27130.2003
+VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trinity.SSK", "Trinity.SSK\Trinity.SSK.csproj", "{B65ECADC-0BC9-4B1A-84EE-C1FE0541A787}"
 EndProject
@@ -22,6 +22,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trinity.Enrolment", "Enrolment\Trinity.Enrolment.csproj", "{11700A83-F635-41DB-8732-A58EA8C41A24}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trinity.Identity", "Trinity.Identity\Trinity.Identity.csproj", "{B25053FB-2050-4115-9441-8EDF5C03FB1D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trinity.DutyOfficer", "Trinity.DutyOfficer\Trinity.DutyOfficer.csproj", "{697D6D2C-59F5-4C0A-8999-045F03F00707}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -153,6 +155,18 @@ Global
 		{B25053FB-2050-4115-9441-8EDF5C03FB1D}.Release|x64.Build.0 = Release|Any CPU
 		{B25053FB-2050-4115-9441-8EDF5C03FB1D}.Release|x86.ActiveCfg = Release|Any CPU
 		{B25053FB-2050-4115-9441-8EDF5C03FB1D}.Release|x86.Build.0 = Release|Any CPU
+		{697D6D2C-59F5-4C0A-8999-045F03F00707}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{697D6D2C-59F5-4C0A-8999-045F03F00707}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{697D6D2C-59F5-4C0A-8999-045F03F00707}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{697D6D2C-59F5-4C0A-8999-045F03F00707}.Debug|x64.Build.0 = Debug|Any CPU
+		{697D6D2C-59F5-4C0A-8999-045F03F00707}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{697D6D2C-59F5-4C0A-8999-045F03F00707}.Debug|x86.Build.0 = Debug|Any CPU
+		{697D6D2C-59F5-4C0A-8999-045F03F00707}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{697D6D2C-59F5-4C0A-8999-045F03F00707}.Release|Any CPU.Build.0 = Release|Any CPU
+		{697D6D2C-59F5-4C0A-8999-045F03F00707}.Release|x64.ActiveCfg = Release|Any CPU
+		{697D6D2C-59F5-4C0A-8999-045F03F00707}.Release|x64.Build.0 = Release|Any CPU
+		{697D6D2C-59F5-4C0A-8999-045F03F00707}.Release|x86.ActiveCfg = Release|Any CPU
+		{697D6D2C-59F5-4C0A-8999-045F03F00707}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

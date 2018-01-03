@@ -1,0 +1,29 @@
+﻿<!--Api http://bootstrap-table.wenzhixin.net.cn/documentation/ -->
+
+<table id="table"></table>
+<script type="text/javascript">
+    $('#table').bootstrapTable({
+        pagination: true,
+        pageSize:1,
+        columns: [{
+            field: 'id',
+            title: 'Item ID'
+        }, {
+            field: 'name',
+            title: 'Item Name'
+        }, {
+            field: 'price',
+            title: 'Item Price',
+            sortable:true
+        }],
+        data: [{
+            id: 1,
+            name: 'Item 1',
+            price: '$1'
+        }, {
+            id: 2,
+            name: 'Item 2',
+            price: '$2'
+        }]
+    });
+</script>
