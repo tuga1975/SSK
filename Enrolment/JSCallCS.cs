@@ -176,6 +176,17 @@ namespace Enrolment
         }
 
         #region Fingerprint Capture Event
+
+        public void OpenFingerprintCaptureForm(string number)
+        {
+            EventCenter eventCenter = EventCenter.Default;
+            Session session = Session.Instance;
+            if (number.Equals("1"))
+            {
+                session[CommonConstants.IS_RIGHT_THUMB] = true;
+            }
+            eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.OPEN_FINGERPRINT_CAPTURE_FORM, Message = number });
+        }
         public void CancelCaptureFingerprint()
         {
             EventCenter eventCenter = EventCenter.Default;
@@ -213,18 +224,21 @@ namespace Enrolment
 
         public void EditSupervisee(string userId)
         {
+            Session session = Session.Instance;
+            session[CommonConstants.CURRENT_PAGE] = "EditSupervisee";
+            
             var dalUser = new DAL_User();
             var dalUserProfile = new DAL_UserProfile();
 
             var dbUser = dalUser.GetUserByUserId(userId, true);
-
+          
             var profileModel = new Trinity.BE.ProfileModel
             {
                 User = dbUser,
                 UserProfile = dalUserProfile.GetUserProfileByUserId(userId, true),
                 Addresses = dalUserProfile.GetAddressByUserId(userId, true)
             };
-
+            session[CommonConstants.CURRENT_EDIT_USER] = profileModel;
             _web.LoadPageHtml("Edit-Supervisee.html", profileModel);
         }
 
@@ -237,6 +251,11 @@ namespace Enrolment
         public void OpenPictureCaptureForm(string number)
         {
             EventCenter eventCenter = EventCenter.Default;
+            Session session = Session.Instance;
+            if (number.Equals("1"))
+            {
+                session[CommonConstants.IS_PRIMARY_PHOTO] = true;
+            }
             eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.OPEN_PICTURE_CAPTURE_FORM, Message = number });
         }
         public void CancelCapturePicture()

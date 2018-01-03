@@ -88,38 +88,16 @@ namespace Enrolment
         private void Fingerprint_OnFingerprintSucceeded()
         {
             Session session = Session.Instance;
-            if (session[CommonConstants.CURRENT_FINGERPRINTDATA] != null)
+            if (session[CommonConstants.CURRENT_FINGERPRINT_DATA] != null)
             {
-                var fingerprintData = (byte[])session[CommonConstants.CURRENT_FINGERPRINTDATA];
+                var fingerprintData = (byte[])session[CommonConstants.CURRENT_FINGERPRINT_DATA];
                 CSCallJS.LoadPageHtml(LayerWeb, "FingerprintCapture.html", fingerprintData);
             }
         }
 
         private void Fingerprint_OnFingerprintFailed(object sender, CodeBehind.Authentication.FingerprintEventArgs e)
         {
-            // increase counter
-            _fingerprintFailed++;
 
-            // exceeded max failed
-            if (_fingerprintFailed > 3)
-            {
-                // Send Notification to duty officer
-                APIUtils.SignalR.SendNotificationToDutyOfficer(e.Message, e.Message);
-
-                // show message  to user
-
-
-                // navigate to  login page
-
-
-                // reset counter
-                _fingerprintFailed = 0;
-
-                return;
-            }
-
-            // display failed on UI
-            LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please place your finger on the reader. Failed: " + _fingerprintFailed + "');");
         }
 
         private void PeriodCheck(object sender, System.Timers.ElapsedEventArgs e)
@@ -229,6 +207,60 @@ namespace Enrolment
             else if (e.Name.Equals(EventNames.CAPTURE_PICTURE))
             {
                 pictureBox1.Image.Save(AppDomain.CurrentDomain.BaseDirectory.ToString() + "/image" + _imgBox + ".jpg");
+                //for testing purpose
+                Session session = Session.Instance;
+                using (var ms = new MemoryStream())
+                {
+                    pictureBox1.Image.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                    session[CommonConstants.CURRENT_PHOTO_DATA] = ms.ToArray();
+
+                }
+
+            }
+            else if (e.Name.Equals(EventNames.CONFIRM_CAPTURE_PICTURE))
+            {
+                Session session = Session.Instance;
+                if (InvokeRequired)
+                {
+
+                    Invoke(new Action(() =>
+                    {
+                        pictureBox1.Hide();
+                        webcam.stopWebcam();
+                        var currentPage = session[CommonConstants.CURRENT_PAGE];
+                        var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
+                        var isPrimaryPhoto = session[CommonConstants.IS_PRIMARY_PHOTO];
+                        //for testing purpose
+                        var tempBase64String = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAMSURBVBhXY/j//z8ABf4C/qc1gYQAAAAASUVORK5CYII=";
+                        var converToByte = Convert.FromBase64String(tempBase64String);
+                        var captureImage = session[CommonConstants.CURRENT_PHOTO_DATA];
+
+                        if (currentPage != null && currentPage.ToString() == "EditSupervise" && currentEditUser != null)
+                        {
+                            if (captureImage != null)
+                            {
+                                if (isPrimaryPhoto != null && (bool)isPrimaryPhoto)
+                                {
+                                    // currentEditUser.UserProfile.User_Photo1 = (byte[])captureImage;
+                                    currentEditUser.UserProfile.User_Photo1 = converToByte;
+                                }
+                                else
+                                {
+                                    currentEditUser.UserProfile.User_Photo2 = (byte[])captureImage;
+                                }
+
+                            }
+
+                            CSCallJS.LoadPageHtml(this.LayerWeb, "Edit-Supervisee.html", currentEditUser);
+                        }
+                        else
+                        {
+                            LayerWeb.LoadPageHtml("New-Supervisee.html");
+                        }
+
+                    }));
+                    return;
+                }
             }
             else if (e.Name.Equals(EventNames.CANCEL_CAPTURE_PICTURE))
             {
@@ -248,6 +280,11 @@ namespace Enrolment
             {
                 CSCallJS.LoadPageHtml(this.LayerWeb, "FailToCapture.html", e.Message);
             }
+            else if (e.Name.Equals(EventNames.OPEN_FINGERPRINT_CAPTURE_FORM))
+            {
+                CSCallJS.LoadPageHtml(this.LayerWeb, "FingerprintCapture.html");
+
+            }
             else if (e.Name == EventNames.FINGERPRINT_CAPTURE_FAILED)
             {
                 CSCallJS.LoadPageHtml(this.LayerWeb, "FailToCapture.html", e.Message);
@@ -263,18 +300,18 @@ namespace Enrolment
             else if (e.Name == EventNames.CONFIRM_CAPTURE_FINGERPRINT)
             {
                 Session session = Session.Instance;
-                if (session[CommonConstants.CURRENT_EDIT_USER] != null && session[CommonConstants.IS_RIGHT_THUMB] != null && session[CommonConstants.CURRENT_FINGERPRINTDATA] != null)
+                if (session[CommonConstants.CURRENT_EDIT_USER] != null && session[CommonConstants.IS_RIGHT_THUMB] != null && session[CommonConstants.CURRENT_FINGERPRINT_DATA] != null)
                 {
-                    var user = (Trinity.BE.User)session[CommonConstants.CURRENT_EDIT_USER];
+                    var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
                     if ((bool)session[CommonConstants.IS_RIGHT_THUMB])
                     {
-                        user.RightThumbFingerprint = (byte[])session[CommonConstants.CURRENT_FINGERPRINTDATA];
+                        currentEditUser.User.RightThumbFingerprint = (byte[])session[CommonConstants.CURRENT_FINGERPRINT_DATA];
                     }
                     else
                     {
-                        user.LeftThumbFingerprint = (byte[])session[CommonConstants.CURRENT_FINGERPRINTDATA];
+                        currentEditUser.User.LeftThumbFingerprint = (byte[])session[CommonConstants.CURRENT_FINGERPRINT_DATA];
                     }
-                    CSCallJS.LoadPageHtml(this.LayerWeb, "PrintSmartCard.html", user);
+                    session[CommonConstants.CURRENT_EDIT_USER] = currentEditUser;
                 }
 
             }

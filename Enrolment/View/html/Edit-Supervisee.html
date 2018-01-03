@@ -19,23 +19,23 @@
 									<div class="row">								
 										<div class="col">
 											<img class="avatar" id="userPhoto1" src="" />
-											<button  type="button" id="updatePhoto1">Update Photos</button>
+											<button  type="button" id="updatePhoto1" onclick="api.server.OpenPictureCaptureForm('1')">Update Photos</button>
 										</div>
 										<div class="col">
-											<img class="avatar" id="userPhoto2" src="../images/usr-default.jpg" />
-											<button type="button" id="updatePhoto2">Update Photos</button>
+											<img class="avatar" id="userPhoto2" src="" />
+											<button type="button" id="updatePhoto2" onclick="api.server.OpenPictureCaptureForm('2')">Update Photos</button>
 										</div>
 									</div>
 								</div>
 								<div class="col-5">
 									<div class="row">
 										<div class="col">
-											<img class="avatar" src="../images/fingerprint.png" style="max-width:70%" />
-											<button type="button">Update Fingerprints</button>
+											<img class="avatar" src="" style="max-width:70%" />
+											<button type="button" onclick="api.server.OpenFingerprintCaptureForm('1')">Update Fingerprints</button>
 										</div>
 										<div class="col">
 											<img class="avatar" src="../images/fingerprint.png" style="max-width:70%" />
-											<button type="button">Update Fingerprints</button>
+											<button type="button"  onclick="api.server.OpenFingerprintCaptureForm('2')">Update Fingerprints</button>
 										</div>
 									</div>
 								</div>
