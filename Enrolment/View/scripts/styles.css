@@ -123,6 +123,9 @@
 	background:#e5e5e5;
 	border:1px solid #000
 }
+.form-supervisee .tab-content form input {
+	background:#fff
+}
 .nav-tabs .nav-link{
 	border:1px solid #000;
 	border-radius:none;
@@ -151,7 +154,7 @@
 .avatar{
 	width:100%
 }
-.s_blodata{
+.s_label{
 	cursor:pointer;
 	width: 100%;
     padding: 3px;    
@@ -159,11 +162,14 @@
     border: 1px solid #000;
 	display:block;
 	color:#757575;
+	margin-top:10px;
+}
+.s_detail{
+	display:none;
+	border:1px solid #000;
+	border-top:none;
+	padding:5px;	
 }
 .detail_s_blodata{
 	display:block;
-	border:1px solid #000;
-	border-top:none;
-	padding:5px;
-	
 }
