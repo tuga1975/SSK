@@ -236,5 +236,33 @@ namespace Trinity.DAL
                 Console.WriteLine(ex.Message);
             }
         }
+
+        public void ChangeAccessFailedCount(string userId, int count)
+        {
+            var localUserRepo = _localUnitOfWork.GetRepository<Membership_Users>();
+            var centralUserRepo = _centralizedUnitOfWork.GetRepository<Membership_Users>();
+            UpdateAccessFailedCount(userId, count, localUserRepo);
+            UpdateAccessFailedCount(userId, count, centralUserRepo);
+            _localUnitOfWork.Save();
+            _centralizedUnitOfWork.Save();
+        }
+
+        private void UpdateAccessFailedCount(string userId, int count, IRepository<Membership_Users> userRepo)
+        {
+            try
+            {
+                var dbUser = userRepo.GetById(userId);
+                if (dbUser != null)
+                {
+                    dbUser.AccessFailedCount = count;
+                    userRepo.Update(dbUser);
+
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
     }
 }

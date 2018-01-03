@@ -271,6 +271,10 @@ namespace Enrolment
             ApplicationUser appUser = userManager.Find(username, password);
             if (appUser != null)
             {
+                if (appUser.AccessFailedCount >= 3) {
+                    eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.LOGIN_FAILED, Message = "attemp login failed 3 times, please reset your password and try again" });
+                    return;
+                }
                 // Authenticated successfully
                 // Check if the current user is an Enrolment Officer or not
                 if (userManager.IsInRole(appUser.Id, EnumUserRoles.EnrolmentOfficer))
@@ -302,6 +306,11 @@ namespace Enrolment
             }
             else
             {
+                ApplicationUser user = userManager.FindByName(username);
+                if (user !=null) {
+                    var dalUser = new DAL_User();
+                    dalUser.ChangeAccessFailedCount(user.Id, user.AccessFailedCount+1);
+                }
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.LOGIN_FAILED, Message = "Your username or password is incorrect." });
             }
         }
