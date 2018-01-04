@@ -140,7 +140,7 @@ namespace Enrolment
         private void OnEnrollmentComplete(bool bSuccess, int nResult)
         {
             Session session = Session.Instance;
-            var isLeft = session[CommonConstants.CURRENT_FINGERPRINT_DATA] == null ? true : (bool)session[CommonConstants.CURRENT_FINGERPRINT_DATA];
+            var isRight = session[CommonConstants.IS_RIGHT_THUMB] != null ? true : false;
             StringBuilder szMessage = new StringBuilder();
             if (bSuccess)
             {
@@ -151,14 +151,32 @@ namespace Enrolment
                 Console.WriteLine(szMessage);
 
                 //set data for curent edit user
-                //_currentUser.RightThumbFingerprint = _futronicEnrollment.Template;
+                var profileModel = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
+                if (profileModel!=null)
+                {
+                    if (isRight)
+                    {
+                        profileModel.User.RightThumbFingerprint = _futronicEnrollment.Template;
+                        
+                    }
+                    else
+                    {
+                        profileModel.User.LeftThumbFingerprint = _futronicEnrollment.Template;
+                    }
+                    session[CommonConstants.CURRENT_FINGERPRINT_DATA] = _futronicEnrollment.Template;
 
-                LayerWeb.InvokeScript("changeMessageServerCall", isLeft, "Your fingerprint was scanned successfully!", Color.Blue.ToString());
+                      
+                        session[CommonConstants.CURRENT_EDIT_USER] = profileModel;
+                    
+                }
+                //_currentUser.RightThumbFingerprint = _futronicEnrollment.Template;
+                LayerWeb.InvokeScript("enableClearBtnServerCall", isRight);
+                LayerWeb.InvokeScript("changeMessageServerCall", isRight, "Your fingerprint was scanned successfully!", Color.Blue.ToString());
 
             }
             else
             {
-                LayerWeb.InvokeScript("changeMessageServerCall", isLeft, FutronicSdkBase.SdkRetCode2Message(nResult), Color.Red.ToString());
+                LayerWeb.InvokeScript("changeMessageServerCall", isRight, FutronicSdkBase.SdkRetCode2Message(nResult), Color.Red.ToString());
             }
 
             // unregister events
@@ -174,23 +192,23 @@ namespace Enrolment
         private bool OnFakeSource(FTR_PROGRESS Progress)
         {
             Session session = Session.Instance;
-            var isLeft = session[CommonConstants.CURRENT_FINGERPRINT_DATA] == null ? true : (bool)session[CommonConstants.CURRENT_FINGERPRINT_DATA];
-            LayerWeb.InvokeScript("changeMessageServerCall", isLeft, "Fake source detected. Continue ...", Color.Red.ToString());
+            var isRight = session[CommonConstants.IS_RIGHT_THUMB] != null ? true : false;
+            LayerWeb.InvokeScript("changeMessageServerCall", isRight, "Fake source detected. Continue ...", Color.Red.ToString());
             return false;
         }
 
         private void OnTakeOff(FTR_PROGRESS Progress)
         {
             Session session = Session.Instance;
-            var isLeft = session[CommonConstants.CURRENT_FINGERPRINT_DATA] == null ? true : (bool)session[CommonConstants.CURRENT_FINGERPRINT_DATA];
-            LayerWeb.InvokeScript("changeMessageServerCall", isLeft, "Take off finger from device, please ...", Color.Yellow.ToString());
+            var isRight = session[CommonConstants.IS_RIGHT_THUMB] != null ? true : false;
+            LayerWeb.InvokeScript("changeMessageServerCall", isRight, "Take off finger from device, please ...", Color.Yellow.ToString());
         }
 
         private void OnPutOn(FTR_PROGRESS Progress)
         {
             Session session = Session.Instance;
-            var isLeft = session[CommonConstants.CURRENT_FINGERPRINT_DATA] == null ? true : (bool)session[CommonConstants.CURRENT_FINGERPRINT_DATA];
-            LayerWeb.InvokeScript("changeMessageServerCall", isLeft, "Put finger into device, please ...", Color.Yellow.ToString());
+            var isRight = session[CommonConstants.IS_RIGHT_THUMB] != null ? true : false;
+            LayerWeb.InvokeScript("changeMessageServerCall", isRight, "Put finger into device, please ...", Color.Yellow.ToString());
         }
 
         #endregion
@@ -396,21 +414,7 @@ namespace Enrolment
             else if (e.Name == EventNames.CONFIRM_CAPTURE_FINGERPRINT)
             {
                 StartToScanFingerprint();
-                Session session = Session.Instance;
-                if (session[CommonConstants.CURRENT_EDIT_USER] != null && session[CommonConstants.IS_RIGHT_THUMB] != null && session[CommonConstants.CURRENT_FINGERPRINT_DATA] != null)
-                {
-                    var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
-                    if ((bool)session[CommonConstants.IS_RIGHT_THUMB])
-                    {
-                        currentEditUser.User.RightThumbFingerprint = (byte[])session[CommonConstants.CURRENT_FINGERPRINT_DATA];
-                    }
-                    else
-                    {
-                        currentEditUser.User.LeftThumbFingerprint = (byte[])session[CommonConstants.CURRENT_FINGERPRINT_DATA];
-                    }
-                    session[CommonConstants.CURRENT_EDIT_USER] = currentEditUser;
-                }
-
+              
             }
 
 
