@@ -197,10 +197,10 @@ namespace DutyOfficer
         {
             LayerWeb.InvokeScript("createEvent", JsonConvert.SerializeObject(_jsCallCS.GetType().GetMethods().Where(d => d.IsPublic && !d.IsVirtual && !d.IsSecuritySafeCritical).ToArray().Select(d => d.Name)));
             //NavigateTo(NavigatorEnums.Authentication_SmartCard);
-            //var dalNotify = new DAL_Notification();
-            //var data = dalNotify.GetNotificationsSentToDutyOfficer(false);
-            //LayerWeb.LoadPageHtml("AlertTab.html", data);
-            LayerWeb.LoadPageHtml("Queue.html");
+            var dalNotify = new DAL_Notification();
+            var data = dalNotify.GetNotificationsSentToDutyOfficer(false);
+            LayerWeb.LoadPageHtml("Alerts.html", data);
+            //LayerWeb.LoadPageHtml("Queue.html");
         }
     }
 }

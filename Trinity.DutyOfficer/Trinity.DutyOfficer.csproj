@@ -192,7 +192,7 @@
   <ItemGroup>
     <Content Include="Libs\ftrSDKHelper13.dll" />
     <Content Include="Libs\pcsc-sharp.dll" />
-    <Content Include="View\html\AlertTab.html" />
+    <Content Include="View\html\Alerts.html" />
     <Content Include="View\html\Authentication\FingerPrint.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
