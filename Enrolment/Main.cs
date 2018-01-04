@@ -375,18 +375,9 @@ namespace Enrolment
             }
         }
 
-        protected override void OnFormClosing(FormClosingEventArgs e)
+        private void Main_Load(object sender, EventArgs e)
         {
-            String path = AppDomain.CurrentDomain.BaseDirectory.ToString();
-            if (File.Exists(path + "image1.jpg"))
-            {
-                //File.Delete(path+"image1.jpg");
-            }
-            if (File.Exists(path + "image2.jpg"))
-            {
-                //File.Delete(path + "image2.jpg");
-            }
-            base.OnFormClosing(e);
+
         }
     }
 }
