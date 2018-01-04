@@ -20,13 +20,24 @@
         <div class="logout glyphicon glyphicon-log-out" title="Logout" onclick="confirm('Are you sure you want to logout?') == true ? api.server.LogOut() : null" id="btn-logout"></div>
     </div>
     <div id="parent-content">
-        <div id="content">
-
+        <div id="menu">
+            <span item-menu="Queue"></span>
+            <span item-menu="Alerts"></span>
+            <span item-menu="Appointments"></span>
+            <span item-menu="Bloked"></span>
+            <span item-menu="Statistics"></span>
+            <span item-menu="MUB/TT Lablels"></span>
+            <span item-menu="UB Lablels"></span>
+            <span item-menu="Settings"></span>
         </div>
+        <div id="content"></div>
     </div>
-    
+
     <div class="loading">
         <span class="loader"></span>
     </div>
+    <div id="panel-popup">
+    </div>
+    
 </body>
 </html>

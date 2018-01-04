@@ -173,7 +173,8 @@ namespace Enrolment
             }
             else if (e.Name.Equals(EventNames.LOGIN_FAILED))
             {
-                MessageBox.Show(e.Message, "Login Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                LayerWeb.InvokeScript("Alert", e.Message);
+                //MessageBox.Show(e.Message, "Login Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             else if (e.Name == EventNames.LOGOUT_SUCCEEDED)
             {
@@ -375,18 +376,9 @@ namespace Enrolment
             }
         }
 
-        protected override void OnFormClosing(FormClosingEventArgs e)
+        private void Main_Load(object sender, EventArgs e)
         {
-            String path = AppDomain.CurrentDomain.BaseDirectory.ToString();
-            if (File.Exists(path + "image1.jpg"))
-            {
-                //File.Delete(path+"image1.jpg");
-            }
-            if (File.Exists(path + "image2.jpg"))
-            {
-                //File.Delete(path + "image2.jpg");
-            }
-            base.OnFormClosing(e);
+
         }
     }
 }

@@ -52,7 +52,7 @@ namespace Trinity.DAL
                             join mur in _centralizedUnitOfWork.DataContext.Membership_UserRoles on mu.UserId equals mur.UserId
                             join mr in _centralizedUnitOfWork.DataContext.Membership_Roles on mur.RoleId equals mr.Id
                             where mu.SmartCardId == smartCardId
-                            select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, SmartCardId = mu.SmartCardId, RightThumbFingerprint = mu.RightThumbFingerprint, LeftThumbFingerprint = mu.LeftThumbFingerprint, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name, IsFirstAttempt = mu.IsFirstAttempt });
+                            select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, SmartCardId = mu.SmartCardId, RightThumbFingerprint = mu.RightThumbFingerprint, LeftThumbFingerprint = mu.LeftThumbFingerprint, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name, IsFirstAttempt = mu.IsFirstAttempt, AccessFailedCount = mu.AccessFailedCount });
                 return user.FirstOrDefault();
             }
         }
@@ -65,7 +65,7 @@ namespace Trinity.DAL
                             join mur in _localUnitOfWork.DataContext.Membership_UserRoles on mu.UserId equals mur.UserId
                             join mr in _localUnitOfWork.DataContext.Membership_Roles on mur.RoleId equals mr.Id
                             where mu.UserId == userId
-                            select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, SmartCardId = mu.SmartCardId, RightThumbFingerprint = mu.RightThumbFingerprint, LeftThumbFingerprint = mu.LeftThumbFingerprint, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name, IsFirstAttempt = mu.IsFirstAttempt });
+                            select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, SmartCardId = mu.SmartCardId, RightThumbFingerprint = mu.RightThumbFingerprint, LeftThumbFingerprint = mu.LeftThumbFingerprint, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name, IsFirstAttempt = mu.IsFirstAttempt, AccessFailedCount = mu.AccessFailedCount });
                 return user.FirstOrDefault();
             }
             else
@@ -227,6 +227,34 @@ namespace Trinity.DAL
                 if (dbUser != null)
                 {
                     dbUser.Status = status;
+                    userRepo.Update(dbUser);
+
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+
+        public void ChangeAccessFailedCount(string userId, int count)
+        {
+            var localUserRepo = _localUnitOfWork.GetRepository<Membership_Users>();
+            var centralUserRepo = _centralizedUnitOfWork.GetRepository<Membership_Users>();
+            UpdateAccessFailedCount(userId, count, localUserRepo);
+            UpdateAccessFailedCount(userId, count, centralUserRepo);
+            _localUnitOfWork.Save();
+            _centralizedUnitOfWork.Save();
+        }
+
+        private void UpdateAccessFailedCount(string userId, int count, IRepository<Membership_Users> userRepo)
+        {
+            try
+            {
+                var dbUser = userRepo.GetById(userId);
+                if (dbUser != null)
+                {
+                    dbUser.AccessFailedCount = count;
                     userRepo.Update(dbUser);
 
                 }

@@ -55,7 +55,12 @@ namespace DutyOfficer
             ThreadPool.QueueUserWorkItem(new WaitCallback(actionThread), new object[] { method, guidEvent, pram });
         }
 
-        
+        #region Queue
+        public void LoadPopupQueue()
+        {
+            this._web.LoadPopupHtml("QueuePopupDetail.html");
+        }
+        #endregion
     }
 
     #region Custom Events

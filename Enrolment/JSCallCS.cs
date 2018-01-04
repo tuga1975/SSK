@@ -245,14 +245,16 @@ namespace Enrolment
         public void SaveSupervisee(string param, bool primaryInfoChange) {
             try
             {
+                Session session = Session.Instance;
                 var rawData = JsonConvert.DeserializeObject<Trinity.BE.ProfileRawMData>(param);
                 var data = new Trinity.BE.ProfileRawMData().ToProfileModel(rawData);
                 var dalUser = new Trinity.DAL.DAL_User();
                 var dalUserprofile = new Trinity.DAL.DAL_UserProfile();
+                var ProfileModel = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
                 if (primaryInfoChange)
                 {
 
-                    dalUser.UpdateUser(data.User, data.User.UserId, true);
+                    dalUser.UpdateUser(data.User, ProfileModel.User.UserId, true);
 
                     dalUserprofile.UpdateUserProfile(data.UserProfile, data.User.UserId, true);
                     //send notifiy to duty officer
@@ -270,7 +272,7 @@ namespace Enrolment
             }
             catch (Exception)
             {
-                LoadPage("Supervisee.html");
+                LoadPage("Login.html");
             }
         }
 
@@ -317,12 +319,19 @@ namespace Enrolment
         public void Login(string username, string password)
         {
             EventCenter eventCenter = EventCenter.Default;
-
+            var dalUser = new DAL_User();
             UserManager<ApplicationUser> userManager = ApplicationIdentityManager.GetUserManager();
             ApplicationUser appUser = userManager.Find(username, password);
             if (appUser != null)
             {
+                var userInfo = dalUser.GetUserByUserId(appUser.Id, true);
+                if (userInfo.AccessFailedCount >= 3) {
+                    eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.LOGIN_FAILED, Message = "You have exceeded the maximum amount of tries to Login. Please go to Forget Password to reset your password" });
+                    return;
+                }
                 // Authenticated successfully
+                // Reset AccessFailedCount
+                dalUser.ChangeAccessFailedCount(appUser.Id, 0);
                 // Check if the current user is an Enrolment Officer or not
                 if (userManager.IsInRole(appUser.Id, EnumUserRoles.EnrolmentOfficer))
                 {
@@ -353,6 +362,11 @@ namespace Enrolment
             }
             else
             {
+                ApplicationUser user = userManager.FindByName(username);
+                if (user !=null) {
+                    var userInfo = dalUser.GetUserByUserId(user.Id, true);
+                    dalUser.ChangeAccessFailedCount(user.Id, userInfo.AccessFailedCount+1);
+                }
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.LOGIN_FAILED, Message = "Your username or password is incorrect." });
             }
         }

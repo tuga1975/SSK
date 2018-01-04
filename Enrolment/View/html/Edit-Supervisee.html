@@ -42,6 +42,10 @@
 							</div>
 						</div>
 					</div>
+					<select name="" id="s_address">
+						<option>address 1</option>
+						<option>address 2</option>
+					</select>
 					<input class="s_address" type="text" value="" name="" placeholder="Supervisee's Address" />
 					<input class="s_other_address" type="text" value="" placeholder="Other Address" />
 					<span class="s_label s_next_of_kin">Next Of Kin</span>
@@ -204,19 +208,7 @@
 
     });
 
-	$("#superviseeFrm").submit(function (e) {
-
-        var $form = $("#profileFrm");
-        var data = getFormData($form);
-        var json = JSON.stringify(data);
-
-        //for testing purpose
-        api.server.SaveProfile(json, true);
-
-        //api.server.SaveProfile(json, false);
-
-        e.preventDefault(); // avoid to execute the actual submit of the form.
-    });
+	
 
 	$('#SaveBtn').click(function () {
 		var $form = $("#superviseeFrm");

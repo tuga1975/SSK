@@ -37,5 +37,8 @@ namespace Trinity.BE
 
         [DataMember]
         public Nullable<bool> IsFirstAttempt { get; set; }
+
+        [DataMember]
+        public int AccessFailedCount { get; set; }
     }
 }
