@@ -236,7 +236,8 @@ namespace Enrolment
             {
                 User = dbUser,
                 UserProfile = dalUserProfile.GetUserProfileByUserId(userId, true),
-                Addresses = dalUserProfile.GetAddressByUserId(userId, true)
+                Addresses = dalUserProfile.GetAddressByUserId(userId, true),
+                ListAddress = dalA
             };
             session[CommonConstants.CURRENT_EDIT_USER] = profileModel;
             _web.LoadPageHtml("Edit-Supervisee.html", profileModel);
@@ -245,14 +246,16 @@ namespace Enrolment
         public void SaveSupervisee(string param, bool primaryInfoChange) {
             try
             {
+                Session session = Session.Instance;
                 var rawData = JsonConvert.DeserializeObject<Trinity.BE.ProfileRawMData>(param);
                 var data = new Trinity.BE.ProfileRawMData().ToProfileModel(rawData);
                 var dalUser = new Trinity.DAL.DAL_User();
                 var dalUserprofile = new Trinity.DAL.DAL_UserProfile();
+                var ProfileModel = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
                 if (primaryInfoChange)
                 {
 
-                    dalUser.UpdateUser(data.User, data.User.UserId, true);
+                    dalUser.UpdateUser(data.User, ProfileModel.User.UserId, true);
 
                     dalUserprofile.UpdateUserProfile(data.UserProfile, data.User.UserId, true);
                     //send notifiy to duty officer
@@ -270,7 +273,7 @@ namespace Enrolment
             }
             catch (Exception)
             {
-                LoadPage("Supervisee.html");
+                LoadPage("Login.html");
             }
         }
 
