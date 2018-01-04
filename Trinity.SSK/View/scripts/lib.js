@@ -123,8 +123,17 @@ function displayLogoutButton(display) {
 }
 
 function refreshQueueNumbers(currentQueueNumber, nextQueueNumberList) {
+    alert(currentQueueNumber, nextQueueNumberList);
     if (currentQueueNumber) {
-        $('[show-queue]').text(currentQueueNumber);
+        var split = currentQueueNumber.split('-');
+        var queue = "";
+        for (var i = 0; i < split.length; i++) {
+            if (split[i].length > 0) {
+                queue += "<div class='box-child'><span>" + split[i] + "</span></div>";
+            }
+            $('[show-queue]').html(queue);
+        }
+
     } else {
         $('[show-queue]').text('');
     }
