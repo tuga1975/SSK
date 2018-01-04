@@ -64,7 +64,13 @@ namespace DutyOfficer
             var data = dalNotify.GetNotificationsSentToDutyOfficer(false);
             _web.LoadPageHtml("AlertTab.html", data);
         }
-        
+
+        #region Queue
+        public void LoadPopupQueue()
+        {
+            this._web.LoadPopupHtml("QueuePopupDetail.html");
+        }
+        #endregion
     }
 
     #region Custom Events

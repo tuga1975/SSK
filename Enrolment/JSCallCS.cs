@@ -319,16 +319,19 @@ namespace Enrolment
         public void Login(string username, string password)
         {
             EventCenter eventCenter = EventCenter.Default;
-
+            var dalUser = new DAL_User();
             UserManager<ApplicationUser> userManager = ApplicationIdentityManager.GetUserManager();
             ApplicationUser appUser = userManager.Find(username, password);
             if (appUser != null)
             {
-                if (appUser.AccessFailedCount >= 3) {
-                    eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.LOGIN_FAILED, Message = "attemp login failed 3 times, please reset your password and try again" });
+                var userInfo = dalUser.GetUserByUserId(appUser.Id, true);
+                if (userInfo.AccessFailedCount >= 3) {
+                    eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.LOGIN_FAILED, Message = "You have exceeded the maximum amount of tries to Login. Please go to Forget Password to reset your password" });
                     return;
                 }
                 // Authenticated successfully
+                // Reset AccessFailedCount
+                dalUser.ChangeAccessFailedCount(appUser.Id, 0);
                 // Check if the current user is an Enrolment Officer or not
                 if (userManager.IsInRole(appUser.Id, EnumUserRoles.EnrolmentOfficer))
                 {
@@ -361,8 +364,8 @@ namespace Enrolment
             {
                 ApplicationUser user = userManager.FindByName(username);
                 if (user !=null) {
-                    var dalUser = new DAL_User();
-                    dalUser.ChangeAccessFailedCount(user.Id, user.AccessFailedCount+1);
+                    var userInfo = dalUser.GetUserByUserId(user.Id, true);
+                    dalUser.ChangeAccessFailedCount(user.Id, userInfo.AccessFailedCount+1);
                 }
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.LOGIN_FAILED, Message = "Your username or password is incorrect." });
             }

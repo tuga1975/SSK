@@ -29,14 +29,26 @@
         });
     }
 }
-
+function activemenu(name) {
+    $('[item-menu]').removeClass('active');
+    $('[item-menu="' + name + '"]').addClass('active');
+}
 function AddContentPage(html, model) {
     if (model != null)
         api.model = JSON.parse(model);
     else
         api.model = null;
-    var content = $('#content');
-    content.html('<div class="chi-content">' + html + '</div>');
+    $('#content').html('<div class="chi-content">' + html + '</div>');
+}
+function AddContentPopup(html, model,id) {
+    if (model != null)
+        api.model = JSON.parse(model);
+    else
+        api.model = null;
+    if ($('#panel-popup > [id="' + id + '"]').length>0)
+        $('#panel-popup > [id="' + id + '"]').replaceWith(html);
+    else
+        $('#panel-popup').append(html);
 }
 function pushNoti(count) {
     api.countNoti = count;

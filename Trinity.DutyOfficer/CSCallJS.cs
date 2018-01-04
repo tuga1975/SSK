@@ -14,6 +14,15 @@ namespace DutyOfficer
         public static readonly string curDir = Directory.GetCurrentDirectory().ToLower().Replace("\\bin\\debug", string.Empty);
 
 
+        public static void LoadPopupHtml(this WebBrowser web, string file)
+        {
+            web.InvokeScript("AddContentPopup", "<div id=\""+ file + "\">"+ File.ReadAllText(String.Format("{1}/View/html/{0}", file, CSCallJS.curDir), Encoding.UTF8)+ "</div>",null, file);
+        }
+        public static void LoadPopupHtml(this WebBrowser web, string file, object model)
+        {
+            web.InvokeScript("AddContentPopup", "<div id=\"" + file + "\">" + File.ReadAllText(String.Format("{1}/View/html/{0}", file, CSCallJS.curDir), Encoding.UTF8)+ "</div>", JsonConvert.SerializeObject(model, Formatting.Indented, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore }), file);
+        }
+
         public static void LoadPageHtml(this WebBrowser web, string file)
         {
             web.InvokeScript("AddContentPage", File.ReadAllText(String.Format("{1}/View/html/{0}", file, CSCallJS.curDir), Encoding.UTF8));
