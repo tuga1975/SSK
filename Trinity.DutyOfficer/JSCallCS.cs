@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNet.Identity;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
+using Trinity.BE;
 using Trinity.Common;
 using Trinity.Common.Common;
 using Trinity.DAL;
@@ -55,6 +57,13 @@ namespace DutyOfficer
             ThreadPool.QueueUserWorkItem(new WaitCallback(actionThread), new object[] { method, guidEvent, pram });
         }
 
+
+        public void getAlertsSendToDutyOfficer()
+        {
+            var dalNotify = new DAL_Notification();
+            var data = dalNotify.GetNotificationsSentToDutyOfficer(false);
+            _web.LoadPageHtml("AlertTab.html", data);
+        }
         
     }
 

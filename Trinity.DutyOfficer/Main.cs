@@ -59,8 +59,9 @@ namespace DutyOfficer
         {
             LayerWeb.InvokeScript("createEvent", JsonConvert.SerializeObject(_jsCallCS.GetType().GetMethods().Where(d => d.IsPublic && !d.IsVirtual && !d.IsSecuritySafeCritical).ToArray().Select(d => d.Name)));
 
-
-            LayerWeb.LoadPageHtml("Table.html");
+            var dalNotify = new DAL_Notification();
+            var data = dalNotify.GetNotificationsSentToDutyOfficer(false);
+            LayerWeb.LoadPageHtml("AlertTab.html", data);
         }
     }
 }
