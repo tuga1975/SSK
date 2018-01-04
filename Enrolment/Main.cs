@@ -173,7 +173,8 @@ namespace Enrolment
             }
             else if (e.Name.Equals(EventNames.LOGIN_FAILED))
             {
-                MessageBox.Show(e.Message, "Login Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                LayerWeb.InvokeScript("Alert", e.Message);
+                //MessageBox.Show(e.Message, "Login Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             else if (e.Name == EventNames.LOGOUT_SUCCEEDED)
             {
