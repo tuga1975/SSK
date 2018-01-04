@@ -123,7 +123,6 @@ function displayLogoutButton(display) {
 }
 
 function refreshQueueNumbers(currentQueueNumber, nextQueueNumberList) {
-    alert(currentQueueNumber, nextQueueNumberList);
     if (currentQueueNumber) {
         var split = currentQueueNumber.split('-');
         var queue = "";
