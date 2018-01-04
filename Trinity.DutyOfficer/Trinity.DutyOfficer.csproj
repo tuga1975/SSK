@@ -219,6 +219,7 @@
     <Content Include="View\html\hourglass.gif" />
     <Content Include="View\html\Layout.html" />
     <Content Include="View\html\Queue.html" />
+    <Content Include="View\html\AlertPopupDetail.html" />
     <Content Include="View\html\QueuePopupDetail.html" />
     <Content Include="View\html\Table.html" />
     <Content Include="View\img\Logo.png" />

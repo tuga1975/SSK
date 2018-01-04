@@ -109,8 +109,16 @@
                 halign: "center"
             }],
             data: dataSource,
-            rowStyle: rowStyle
+            rowStyle: rowStyle,
+            onDblClickRow : onRowDblClick
         });
+
+        function onRowDblClick(row, index) {
+            var data = JSON.stringify(row);
+            api.server.LoadPopupAlert(data, function() {
+                $('#alertPopup').modal();
+            });
+        }
     });
     activemenu('Alerts');
 

@@ -1,0 +1,67 @@
+﻿<div class="modal fade" role="dialog" id="alertPopup">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Alert Detail</h5>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon">Message Source</span>
+                        <input readonly="readonly" type="text" class="form-control pri" id="msgVal">
+                    </div>
+                    <br />
+                    <div class="input-group">
+                        <span class="input-group-addon">Date/Time</span>
+                        <input readonly="readonly" type="text" class="form-control pri" id="dateTimeVal">
+                    </div>
+                    <br />
+                    <div class="input-group">
+                        <span class="input-group-addon">Statues</span>
+                        <input readonly="readonly" type="text" class="form-control pri" id="statusVal">
+                    </div>
+                    <br />
+                    <div class="input-group">
+                        <span class="input-group-addon">Details:</span>
+                        <input readonly="readonly" type="text" class="form-control pri">
+                    </div>
+                    <br />
+                    <div class="input-group">
+                        <span>Lorems ipsum dolor sit amet</span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var Type = {
+            error : "ERROR",
+            notification : "Notification",
+            caution : "Caution"
+        };
+    $(document).ready(function() {
+        var data = JSON.parse(api.model);
+        if(data){
+            $("#msgVal").val(data.message);
+            $("#dateTimeVal").val(data.dateTime);
+            $("#statusVal").val(data.type);
+            switch(data.type){
+                case Type.error :
+                    $("#statusVal").css("background-color", "red" );
+                    break;
+                case Type.notification:
+                    $("#statusVal").css("background-color", "#66ff33");
+                    break;
+                case Type.Caution:
+                    $("#statusVal").css("background-color", "yellow" );
+                    break;
+            }
+            
+        }
+    });
+
+</script>

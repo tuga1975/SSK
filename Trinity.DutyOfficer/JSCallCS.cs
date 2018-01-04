@@ -70,6 +70,11 @@ namespace DutyOfficer
         {
             this._web.LoadPopupHtml("QueuePopupDetail.html");
         }
+
+        public void LoadPopupAlert(string jsonData)
+        {
+            this._web.LoadPopupHtml("AlertPopupDetail.html", jsonData);
+        }
         #endregion
     }
 
