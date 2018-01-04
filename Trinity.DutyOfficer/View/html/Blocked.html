@@ -1,0 +1,90 @@
+﻿
+<div style="display:block; padding:10px;">
+    <span style=" font-size:22px; float:left; text-align:left;"><b>Blocked</b></span>
+    <div class="d-inline" style="right:10px; float:right; display:inline;">
+        <select class="form-control" id="pageSize" style="width:70px; display:inline;">
+            <option>10</option>
+            <option>2</option>
+            <option>3</option>
+        </select>
+        <span style="display:inline;">entries</span>
+
+        <input type="text" class="form-control" style="width:180px; display:inline;" id="textSearch" />
+        <button type="button" class="btn btn-primary">Search</button>
+    </div>
+</div>
+<br />
+<table id="table"></table>
+<script type="text/javascript">
+    $(document).ready(function () {
+        activemenu('Blocked');
+
+        var pageSize = $('#pageSize');
+        if (pageSize)
+            pageSize = 10;
+
+        loadTable(pageSize);
+    });
+    $('#pageSize').change(function () {
+        pageSize = $("#pageSize option:selected").text();
+        $('#table').bootstrapTable('refreshOptions', {
+            pagination: true,
+            //search: true,
+            pageSize: pageSize
+        });
+    });
+
+    function loadTable(page) {
+        $('#table').bootstrapTable({
+            pagination: true,
+            pageSize: page,
+            //search:true,
+            onClickCell: function (field, value, row, $element) {
+                if (field == 'Action') {
+                    api.server.LoadPopupBlock(function () {
+                        $('#idBlock').modal();
+                    });
+                }
+            },
+            columns: [{
+                field: 'NRIC',
+                title: 'NRIC',
+                sortable: true,
+                width: '20%',
+                align: 'center'
+            }, {
+                field: 'Name',
+                title: 'Name',
+                sortable: true,
+                width: '40%',
+                align: 'center'
+            }, {
+                field: 'Reason',
+                title: 'Reason',
+                width: '40%',
+                align: 'center'
+            }, {
+                field: 'Action',
+                title: 'Action',
+                width: '20%',
+                align: 'center',
+                formatter: function (value, row, index, field) {
+                    return '<button class=\'btn btn-dark \' >Unblock</button> ';
+                }
+            }],
+            data: [{
+                NRIC: 'S99999991X',
+                Name: 'Dong Phuong Bat Bai',
+                Reason: 'Absented more then 3 times'
+            }, {
+                NRIC: 'S99999992X',
+                Name: 'Lenh Ho Xung',
+                Reason: 'Absented more then 3 times'
+            }, {
+                NRIC: 'S99999993X',
+                Name: 'Chau Chi Nhuoc',
+                Reason: 'Absented more then 3 times'
+            }]
+        });
+    }
+</script>
