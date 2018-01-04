@@ -1,0 +1,144 @@
+﻿<script>
+	$(function ()
+	{
+		$("#wizard").steps({
+			headerTag: "h2",
+			bodyTag: "section",
+			transitionEffect: "slideLeft"
+		});
+
+		$("input[type='image']").click(function() {
+			$("input[id='my_file']").click();
+		});
+	});
+</script>
+<div style="width:100%; padding:10px;">
+    <div class="header">
+        <img class="logo" src="../images/logo.png" />
+        <h3>Add New Supervisee</h3>
+        <div class="clear"></div>
+    </div>
+    <div class="form-supervisee">
+        <input class="name-supervisee" type="text" value="Erol Supervisee" />
+        <nav class="nav nav-tabs" id="myTab" role="tablist">
+            <a class="nav-item nav-link active" data-toggle="tab" href="#print-card" role="tab" aria-controls="nav-home" aria-selected="true">Print Card</a>
+            <a class="nav-item nav-link" data-toggle="tab" href="#supervisee-details" role="tab" aria-controls="nav-profile" aria-selected="false">Supervisee Details</a>
+        </nav>
+        <div class="tab-content" id="nav-tabContent">
+            <div class="tab-pane fade show active" id="print-card" role="tabpanel" aria-labelledby="nav-home-tab">
+                <div id="wizard">
+                    <h2>TAKE PHOTOS</h2>
+                    <section>
+                        <div class="row">
+                            <div class="col">
+                                <img id="image1" class="avatar" src="../images/usr-default.jpg" style="max-width:45%" />
+                                <br />
+                                <button type="button" onclick="api.server.OpenPictureCaptureForm('1')">Get Image</button>
+                            </div>
+                            <div class="col" style="height:90%">
+                                <img id="image2" class="avatar" src="../images/usr-default.jpg" style="max-width:45%"/>
+                                <br />
+                                <button type="button" onclick="api.server.OpenPictureCaptureForm('2')">Get Image</button>
+                            </div>
+                            <!--<div class="col">
+                                <img class="avatar" src="../images/usr-default.jpg" />
+
+                                <button type="button">Get Image</button>
+                            </div>-->
+                        </div>
+                    </section>
+
+                    <h2>GET FINGERPRINTS</h2>
+                    <section>
+                        <div class="row">
+                            <div class="col" id="leftThumbDiv">
+                                <div style="border:1px solid #000000" id="leftProcessMessage">Place left thumb onto scanner</div>
+                                <div><button style="float:left" id="leftThumbScanBtn">Scan</button><button style="float:right;" id="leftThumbClearBtn">Clear</button></div>
+                                <br />
+                                <div> <img class="avatar" src="../images/fingerprint.png" style="max-width:35%;" /></div>
+                                <br />
+                                <!--<button type="button" onclick="api.server.OpenFingerprintCaptureForm('1')">Left Fingerprint Preview</button>-->
+                                <div style="border:1px solid #000000">Left Fingerprint Preview</div>
+                            </div>
+                            <div class="col" id="rightThumbDiv">
+                                <div style="border:1px solid #000000" id="rightProcessMessage">Place right thumb onto scanner</div>
+                                <div><button style="float:left" id="rightThumbScanBtn">Scan</button><button style="float:right;" id="rightThumbClearBtn">Clear</button></div>
+                                <br />
+                                <div> <img class="avatar" src="../images/fingerprint.png" style="max-width:35%" /></div>
+                                <br />
+                                <!--<button type="button" onclick="api.server.OpenFingerprintCaptureForm('2')">Right Fingerprint Preview</button>-->
+                                <div style="border:1px solid #000000">Right Fingerprint Preview</div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <h2>VERIFY CARD</h2>
+                    <section>
+                        789
+                    </section>
+
+                    <h2>PRINT CARD</h2>
+                    <section>
+                        34567
+                    </section>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="supervisee-details" role="tabpanel" aria-labelledby="nav-profile-tab">
+                <input class="" type="text" value="" placeholder="Supervisee's Blodata" />
+                <input class="" type="text" value="" placeholder="Supervisee's Address" />
+                <input class="" type="text" value="" placeholder="Other Address" />
+                <input class="" type="text" value="" placeholder="Next Of Kin" />
+                <input class="" type="text" value="" placeholder="Employment details" />
+                <div class="btn-group">
+                    <button type="submit" class="btn-form">Save</button>
+                    <button type="submit" class="btn-form">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function setImg(number,src) {
+        image = document.getElementById('image'+number);
+        image.src = src;
+    }
+    $(document).ready(function () {
+        $('#leftThumbClearBtn').attr('disabled', 'disabled');
+        $('#rightThumbClearBtn').attr('disabled', 'disabled');
+    });
+    $('#leftThumbScanBtn').click(function () {
+        $('#rightThumbDiv').find('button').attr('disabled', 'disabled');
+    });
+
+    $('#rightThumbScanBtn').click(function () {
+        $('#leftThumbDiv').find('button').attr('disabled', 'disabled');
+    });
+    function enableServerCall(isRight) {
+
+        if (isRight) {
+            $('#rightThumbDiv').find('button').removeAttr('disbaled');
+        }
+        else {
+            $('#leftThumbDiv').find('button').removeAttr('disbaled');
+          
+        }
+
+    }
+
+    function changeMessageServerCall(isRight,message,color) {
+        if (isRight) {
+            $('#rightProcessMessage').text(message).css('color', color);
+           
+        }
+        else {
+            $('#leftProcessMessage').text(message).css('color', color);
+        }
+    }
+
+    $('#leftThumbClearBtn').click(function () {
+        api.server.CancelCaptureFingerprint();
+    });
+    $('#rightThumbClearBtn').click(function () {
+        api.server.CancelCaptureFingerprint();
+    });
+</script>

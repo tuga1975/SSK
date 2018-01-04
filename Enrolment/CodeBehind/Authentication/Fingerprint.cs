@@ -13,7 +13,7 @@ namespace Enrolment.CodeBehind.Authentication
         public event Action OnFingerprintSucceeded;
         public event EventHandler<FingerprintEventArgs> OnFingerprintFailed;
         public event EventHandler<ShowMessageEventArgs> OnShowMessage;
-
+        public event EventHandler<FingerprintEventArgs> OnScanSuccess;
         WebBrowser _web;
 
         public Fingerprint(WebBrowser web)
@@ -113,6 +113,11 @@ namespace Enrolment.CodeBehind.Authentication
                 // Use the () operator to raise the event.
                 handler(this, e);
             }
+        }
+
+        public virtual void RaiseOnScanSuccess(FingerprintEventArgs e)
+        {
+            OnScanSuccess?.Invoke(this, e);
         }
     }
 
