@@ -1,0 +1,48 @@
+﻿<h3>UB Labels</h3>
+<table id="UBlabel" data-click-to-select="true">
+    <thead>
+        <tr>
+            <th data-field="state" data-checkbox="true">Select</th>
+            <th data-field="nric" data-sortable="true">NRIC</th>
+            <th data-field="name" data-sortable="true">Name</th>
+            <th data-field="lastStation">Last Station</th>
+        </tr>
+    </thead>
+</table>
+<br />
+<div id="PrintUBlabel" class="text-right">
+    <button id="PrintUBbutton" class="btn btn-default">Print</button>
+</div>
+
+<script type="text/javascript">
+    $('#UBlabel').bootstrapTable({
+        //pagination: true,
+        //pageSize:2,
+        //search: true,
+        pageList: [1, 2, 4, 6],
+        data: [{
+            nric: 'S99999999X',
+            name: 'Tan Ah Guo',
+            lastStation: 'SSK'
+        }, {
+            nric: 'S99999998X',
+            name: 'Chen Ah Ming',
+            lastStation: 'SSK'
+        }, {
+            nric: 'S99999997X',
+            name: 'Koh Mok Yao',
+            lastStation: 'SSK'
+        }, {
+            nric: 'S99999996X',
+            name: 'Quek Yew Ming',
+            lastStation: 'SSK'
+        }]
+    });
+    activemenu('UB Lablels');
+
+    $('#PrintUBbutton').click(function () {
+        api.server.LoadPopupUBLabel(function () {
+            $('#popupUBLabel').modal();
+        })
+    })
+</script>
