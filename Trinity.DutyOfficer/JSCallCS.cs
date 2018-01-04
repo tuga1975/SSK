@@ -81,6 +81,16 @@ namespace DutyOfficer
         {
             this._web.LoadPopupHtml("BlockedPopupDetail.html");
         }
+
+        public void LoadPopupMUBAndTTLabel()
+        {
+            this._web.LoadPopupHtml("MUBAndTTPopup.html");
+        }
+
+        public void LoadPopupUBLabel()
+        {
+            this._web.LoadPopupHtml("UBPopup.html");
+        }
     }
 
     #region Custom Events
