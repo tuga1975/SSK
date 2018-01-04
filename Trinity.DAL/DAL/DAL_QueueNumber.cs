@@ -75,5 +75,14 @@ namespace Trinity.DAL
             var today = DateTime.Now.Date;
             return _localUnitOfWork.DataContext.QueueNumbers.Include(u => u.Appointment).Count(d => DbFunctions.TruncateTime(d.CreatedTime).Value == today && d.Appointment.UserId == userId && d.Status == status);
         }
+
+        public void UpdateQueueStatus(Guid queueId, string status)
+        {
+            var queueRepo = _localUnitOfWork.GetRepository<QueueNumber>();
+            var dbqueue = queueRepo.Get(q => q.ID == queueId);
+            dbqueue.Status = status;
+            queueRepo.Update(dbqueue);
+            _localUnitOfWork.Save();
+        }
     }
 }
