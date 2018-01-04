@@ -277,6 +277,7 @@
     <Content Include="View\bootstrap-datepicker\locales\bootstrap-datepicker.zh-CN.min.js" />
     <Content Include="View\bootstrap-datepicker\locales\bootstrap-datepicker.zh-TW.min.js" />
     <Content Include="View\html\Appointments.html" />
+    <Content Include="View\html\Alerts.html" />
     <Content Include="View\html\Authentication\FingerPrint.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

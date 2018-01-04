@@ -20,12 +20,12 @@ namespace Trinity.DAL
             var setting = _localUnitOfWork.DataContext.Environments.Where(d => d.DateOfWeek == DateOfWeek && d.Frequency == EnumFrequency.Weekly).FirstOrDefault();
             if (setting != null)
             {
-                var allTimeBooked = _localUnitOfWork.DataContext.Appointments.Where(d => d.Date == date.Date && d.FromTime.HasValue && d.ToTime.HasValue).Select(d => d.FromTime.Value.Hours + d.FromTime.Value.Minutes + d.ToTime.Value.Hours + d.ToTime.Value.Minutes).Distinct().ToList();
+
                 var morningTimeSpan = new TimeSpan(12, 0, 0);
                 var eveningTimeSpan = new TimeSpan(17, 0, 0);
                 while (setting.StartTime < setting.EndTime)
                 {
-                    var setTime = SetEnviromentTime(setting, allTimeBooked);
+                    var setTime = SetEnviromentTime(setting);
                     if (setTime.EndTime <= morningTimeSpan)
                     {
                         appointmentTime.Morning.Add(setTime);
@@ -46,16 +46,24 @@ namespace Trinity.DAL
             return appointmentTime;
         }
 
-        private static BE.EnvironmentTime SetEnviromentTime(DBContext.Environment setting, List<int> allTimeBooked)
+        private static BE.EnvironmentTime SetEnviromentTime(DBContext.Environment setting)
         {
 
             var environmentTime = new BE.EnvironmentTime()
             {
                 StartTime = setting.StartTime,
                 EndTime = setting.StartTime.Add(TimeSpan.FromMinutes(setting.Duration)),
-                IsAvailble = !allTimeBooked.Contains(setting.StartTime.Hours + setting.StartTime.Minutes + setting.StartTime.Add(TimeSpan.FromMinutes(setting.Duration)).Hours + setting.StartTime.Add(TimeSpan.FromMinutes(setting.Duration)).Minutes)
+                IsAvailble = true,
+                IsSelected = false
             };
             return environmentTime;
+        }
+
+        public DBContext.Environment GetTodayEnvironmentSetting()
+        {
+            var today = DateTime.Now;
+            int DateOfWeek = today.DayOfWeek();
+            return  _localUnitOfWork.DataContext.Environments.Where(d => d.DateOfWeek == DateOfWeek && d.Frequency == EnumFrequency.Weekly).FirstOrDefault();
         }
     }
 }
