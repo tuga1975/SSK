@@ -1,5 +1,6 @@
-﻿<div style="display:block; padding:10px;">
-    <span style=" font-size:22px; float:left; text-align:left;"><b>Appointments</b></span>
+﻿
+<div style="display:block; padding:10px;">
+    <span style=" font-size:22px; float:left; text-align:left;"><b>Statistics</b></span>
     <div class="form-inline" style="right:10px; float:right; padding-bottom:10px;">
         <select class="form-control" id="pageSize" style="width:70px; display:inline-block;">
             <option>10</option>
@@ -23,7 +24,7 @@
 <table id="table"></table>
 <script type="text/javascript">
     $(document).ready(function () {
-        activemenu('Appointments');
+        activemenu('Statistics');
 
         var pageSize = $('#pageSize');
         if (pageSize)
@@ -51,54 +52,72 @@
             pageSize: page,
             //search:true,
             columns: [{
-                field: 'TimeSlot',
-                title: 'Time Slot',
+                field: 'StartTime',
+                title: 'Start Time',
                 sortable: true,
-                width: '15%',
+                width: '10%',
                 align: 'center'
             }, {
-                field: 'NRIC',
-                title: 'NRIC',
+                field: 'EndTime',
+                title: 'End Time',
                 sortable: true,
-                width: '15%',
+                width: '10%',
                 align: 'center'
             }, {
-                field: 'Name',
-                title: 'Name',
-                sortable: true,
-                width: '40%',
+                field: 'Max',
+                title: 'Max',
+                width: '10%',
                 align: 'center'
             }, {
-                field: 'ReportTime',
-                title: 'Report Time',
-                sortable: true,
-                width: '15%',
+                field: 'Booked',
+                title: 'Booked',
+                width: '10%',
                 align: 'center'
             }, {
-                field: 'Status',
-                title: 'Status',
-                sortable: true,
-                width: '15%',
+                field: 'Reported',
+                title: 'Reported',
+                width: '10%',
+                align: 'center'
+            }, {
+                field: 'NoShow',
+                title: 'No-show',
+                width: '10%',
+                align: 'center'
+            }, {
+                field: 'Available',
+                title: 'Available',
+                width: '10%',
+                align: 'center'
+            }, {
+                field: '',
+                title: '',
+                width: '30%',
                 align: 'center'
             }],
             data: [{
-                TimeSlot: '04:50',
-                NRIC: 'S99999991X',
-                Name: 'Quach Phu Phu',
-                ReportTime: '12:11',
-                Status: 'Reported'
+                StartTime: '04:50',
+                EndTime: '06:10',
+                Max: '99',
+                Booked: '11',
+                Reported: '30',
+                NoShow: '5',
+                Available: '1'
             }, {
-                TimeSlot: '05:15',
-                NRIC: 'S99999992X',
-                Name: 'Duong Qua',
-                ReportTime: '12:11',
-                Status: 'Booked'
+                StartTime: '14:04',
+                EndTime: '17:30',
+                Max: '99',
+                Booked: '11',
+                Reported: '30',
+                NoShow: '5',
+                Available: '1'
             }, {
-                TimeSlot: '11:10',
-                NRIC: 'S99999993X',
-                Name: 'Tieu Long Nu',
-                ReportTime: '14:40',
-                Status: 'No-show'
+                StartTime: '09:50',
+                EndTime: '11:35',
+                Max: '99',
+                Booked: '11',
+                Reported: '26',
+                NoShow: '10',
+                Available: '6'
             }]
         });
     }

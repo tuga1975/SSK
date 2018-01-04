@@ -61,6 +61,11 @@ namespace DutyOfficer
             this._web.LoadPopupHtml("QueuePopupDetail.html");
         }
         #endregion
+
+        public void LoadPopupBlock()
+        {
+            this._web.LoadPopupHtml("BlockedPopupDetail.html");
+        }
     }
 
     #region Custom Events

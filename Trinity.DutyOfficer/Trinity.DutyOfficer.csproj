@@ -300,10 +300,13 @@
     <Content Include="View\bootstrap\fonts\fontawesome-webfont.svg" />
     <Content Include="View\bootstrap\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="View\bootstrap\js\bootstrap.min.js" />
+    <Content Include="View\html\Blocked.html" />
+    <Content Include="View\html\BlockedPopupDetail.html" />
     <Content Include="View\html\hourglass.gif" />
     <Content Include="View\html\Layout.html" />
     <Content Include="View\html\Queue.html" />
     <Content Include="View\html\QueuePopupDetail.html" />
+    <Content Include="View\html\Statistics.html" />
     <Content Include="View\html\Table.html" />
     <Content Include="View\img\Logo.png" />
     <Content Include="View\scripts\jquery-1.10.2.min.js" />
