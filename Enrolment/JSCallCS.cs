@@ -236,8 +236,7 @@ namespace Enrolment
             {
                 User = dbUser,
                 UserProfile = dalUserProfile.GetUserProfileByUserId(userId, true),
-                Addresses = dalUserProfile.GetAddressByUserId(userId, true),
-                ListAddress = dalA
+                Addresses = dalUserProfile.GetAddressByUserId(userId, true)
             };
             session[CommonConstants.CURRENT_EDIT_USER] = profileModel;
             _web.LoadPageHtml("Edit-Supervisee.html", profileModel);
