@@ -368,22 +368,25 @@ namespace Enrolment
             else if (e.Name.Equals(EventNames.OPEN_PICTURE_CAPTURE_FORM))
             {
                 //pictureBox1.Image.Save(AppDomain.CurrentDomain.BaseDirectory.ToString() + "/image" + _imgBox + ".jpg");
-                NavigateTo(NavigatorEnums.WebcamCapture);
                 if (InvokeRequired)
                 {
                     Invoke(new Action(() =>
                     {
-                        _imgBox = e.Message;
-                        pictureBox1.Show();
-                        webcam.InitializeWebCam();
-                        webcam.startWebcam();
+                        try
+                        {
+                            webcam.InitializeWebCam();
+                            webcam.startWebcam();
+                            _imgBox = e.Message;
+                            pictureBox1.Show();
+                            NavigateTo(NavigatorEnums.WebcamCapture);
+                        }
+                        catch
+                        {
+                            LayerWeb.InvokeScript("Alert", "Cant find this device camera!");
+                        }
                     }));
                     return;
                 }
-            }
-            else if (e.Name.Equals(EventNames.OPEN_PICTURE_CAPTURE_FORM_FAILED))
-            {
-                LayerWeb.InvokeScript("Alert", "Cant find this device camera!");
             }
             else if (e.Name.Equals(EventNames.CAPTURE_PICTURE))
             {
