@@ -30,7 +30,6 @@ namespace DutyOfficer.CodeBehind.Authentication
 
             // StartCardMonitor
             Trinity.Common.Monitor.SCardMonitor sCardMonitor = Trinity.Common.Monitor.SCardMonitor.Instance;
-            sCardMonitor.Start();
             sCardMonitor.StartCardMonitor(OnCardInitialized, OnCardInserted, OnCardRemoved);
         }
 

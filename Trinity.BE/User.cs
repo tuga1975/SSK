@@ -40,5 +40,8 @@ namespace Trinity.BE
 
         [DataMember]
         public int AccessFailedCount { get; set; }
+
+        public byte[] User_Photo1 { get; set; }
+        public byte[] User_Photo2 { get; set; }
     }
 }
