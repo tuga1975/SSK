@@ -1,16 +1,15 @@
 ﻿<script>
-	$(function ()
-	{
-		$("#wizard").steps({
-			headerTag: "h2",
-			bodyTag: "section",
-			transitionEffect: "slideLeft"
-		});
+    $(function () {
+        $("#wizard").steps({
+            headerTag: "h2",
+            bodyTag: "section",
+            transitionEffect: "slideLeft"
+        });
 
-		$("input[type='image']").click(function() {
-			$("input[id='my_file']").click();
-		});
-	});
+        $("input[type='image']").click(function () {
+            $("input[id='my_file']").click();
+        });
+    });
 </script>
 <div style="width:100%; padding:10px;">
     <div class="header">
@@ -36,7 +35,7 @@
                                 <button type="button" onclick="api.server.OpenPictureCaptureForm('1')">Get Image</button>
                             </div>
                             <div class="col" style="height:90%">
-                                <img id="image2" class="avatar" src="../images/usr-default.jpg" style="max-width:45%"/>
+                                <img id="image2" class="avatar" src="../images/usr-default.jpg" style="max-width:45%" />
                                 <br />
                                 <button type="button" onclick="api.server.OpenPictureCaptureForm('2')">Get Image</button>
                             </div>
@@ -52,19 +51,19 @@
                     <section>
                         <div class="row">
                             <div class="col" id="leftThumbDiv">
-                                <div style="border:1px solid #000000" id="leftProcessMessage">Place left thumb onto scanner</div>
+                                <div style="border:1px solid #000000;color:#000000" id="leftProcessMessage">Place left thumb onto scanner</div>
                                 <div><button style="float:left" id="leftThumbScanBtn">Scan</button><button style="float:right;" id="leftThumbClearBtn">Clear</button></div>
                                 <br />
-                                <div> <img class="avatar" id="leftFingerprint" src="" style="max-width:35%;" /></div>
+                                <div> <img class="avatar" id="leftFingerprint"  style="max-width:35%;" /></div>
                                 <br />
                                 <!--<button type="button" onclick="api.server.OpenFingerprintCaptureForm('1')">Left Fingerprint Preview</button>-->
                                 <div style="border:1px solid #000000">Left Fingerprint Preview</div>
                             </div>
                             <div class="col" id="rightThumbDiv">
-                                <div style="border:1px solid #000000" id="rightProcessMessage">Place right thumb onto scanner</div>
+                                <div style="border:1px solid #000000;color:#000000" id="rightProcessMessage">Place right thumb onto scanner</div>
                                 <div><button style="float:left" id="rightThumbScanBtn">Scan</button><button style="float:right;" id="rightThumbClearBtn">Clear</button></div>
                                 <br />
-                                <div> <img class="avatar" id="rightFingerprint" src="" style="max-width:35%" /></div>
+                                <div> <img class="avatar" id="rightFingerprint"  style="max-width:35%" /></div>
                                 <br />
                                 <!--<button type="button" onclick="api.server.OpenFingerprintCaptureForm('2')">Right Fingerprint Preview</button>-->
                                 <div style="border:1px solid #000000">Right Fingerprint Preview</div>
@@ -74,7 +73,22 @@
 
                     <h2>VERIFY CARD</h2>
                     <section>
-                        789
+                        <div>
+                            <div class="row" style="width:40%;float:left;">
+                                <div class="col">
+                                    <div style="width:250px;height:150px;border:1px solid #000000">
+
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" style="width:50%">
+                                <div class="col">
+                                    <div style="width:250px;height:150px;border:1px solid #000000"></div>
+                                </div>
+                            </div>
+                            <div style="clear:both"></div>
+                        </div>
                     </section>
 
                     <h2>PRINT CARD</h2>
@@ -98,51 +112,56 @@
     </div>
 </div>
 <script>
-    function setImg(number,src) {
-        image = document.getElementById('image'+number);
+    function setImg(number, src) {
+        image = document.getElementById('image' + number);
         image.src = src;
     }
     $(document).ready(function () {
         $('#leftThumbClearBtn').attr('disabled', 'disabled');
         $('#rightThumbClearBtn').attr('disabled', 'disabled');
 
-        var leftFingerPrintData = 'data:image/JPEG;base64,' + base64ArrayBuffer(api.model.User.LeftThumbFingerprint);
-        var rightFingerPrintData = 'data:image/JPEG;base64,' + base64ArrayBuffer(api.model.User.RightThumbFingerprint);
+     
         //alert(leftFingerPrintData);
+
        
-        $('#leftFingerprint').attr('src', leftFingerPrintData);
-        $('#rightFingerprint').attr('src', rightFingerPrintData);
     });
     $('#leftThumbScanBtn').click(function () {
         $('#rightThumbDiv').find('button').attr('disabled', 'disabled');
+        api.server.CaptureFingerPrint(false);
+        
     });
 
     $('#rightThumbScanBtn').click(function () {
         $('#leftThumbDiv').find('button').attr('disabled', 'disabled');
+        api.server.CaptureFingerPrint(true);
     });
     function enableClearBtnServerCall(isRight) {
 
         if (isRight) {
-            $('#rightThumbDiv').find('button').removeAttr('disabled');
+            $('#rightThumbClearBtn').removeAttr('disabled');
+            $('#rightThumbScanBtn').attr('disabled', 'disabled');
+            $('#leftThumbDiv').find('button').removeAttr('disabled');
         }
         else {
-            $('#leftThumbDiv').find('button').removeAttr('disabled');
-          
+            $('#leftThumbClearBtn').removeAttr('disabled');
+            $('#leftThumbScanBtn').attr('disabled', 'disabled');
+            $('#rightThumbDiv').find('button').removeAttr('disabled');
+
         }
 
     }
 
-    function changeMessageServerCall(isRight,message,color) {
+    function changeMessageServerCall(isRight, message, color) {
         if (isRight) {
             $('#rightProcessMessage').text(message).css('color', color);
-           
+
         }
         else {
             $('#leftProcessMessage').text(message).css('color', color);
         }
     }
 
-    function setFingerprintImage(isRight,base64String) {
+    function setFingerprintImage(isRight, base64String) {
         if (isRight) {
             $('#rightProcessMessage').text(message).css('color', color);
 
@@ -158,4 +177,16 @@
     $('#rightThumbClearBtn').click(function () {
         api.server.CancelCaptureFingerprint();
     });
+
+    function setBase64FingerprintOnloadServerCall(isRight, fingerPrintData) {
+        if (isRight) {
+            $('#rightFingerprint').attr('src', 'data:image/png;base64,' + fingerPrintData);
+        }
+        else {
+            $('#leftFingerprint').attr('src', 'data:image/png;base64,' + fingerPrintData);
+        }
+       
+       
+      
+    }
 </script>

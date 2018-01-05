@@ -201,9 +201,18 @@ namespace Enrolment
 
 
         }
-        public void CaptureFingerPrint()
+        public void CaptureFingerPrint(bool isRight)
         {
             EventCenter eventCenter = EventCenter.Default;
+            Session session = Session.Instance;
+            if (isRight)
+            {
+                session[CommonConstants.IS_RIGHT_THUMB] = true;
+            }
+            else
+            {
+                session[CommonConstants.IS_RIGHT_THUMB] = false;
+            }
 
             eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.CONFIRM_CAPTURE_FINGERPRINT });
         }
@@ -247,7 +256,13 @@ namespace Enrolment
             session[CommonConstants.CURRENT_EDIT_USER] = profileModel;
             if (dbUser.Status == "NEW")
             {
-                _web.LoadPageHtml("UpdateSuperviseeBiodata.html", profileModel);
+                
+
+                EventCenter eventCenter = EventCenter.Default;
+
+                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.LOAD_UPDATE_SUPERVISEE_BIODATA,Data=profileModel });
+
+                
             }
             else
             {
