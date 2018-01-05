@@ -4,7 +4,7 @@
             <a href="javascript:;"  onclick="api.server.ReportingForQueueNumber();">
                 <img src="https://www.reninc.com/wp-content/uploads/2016/12/Reporting-Icon-300x300.png">
                 <div class="caption">
-                    <p>Reporting for Queue Number</p>
+                    <p title-queue>Reporting for Queue Number</p>
                 </div>
             </a>
         </div>
@@ -57,5 +57,13 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $('[notinumber]').text(api.countNoti == 0 ? '' : api.countNoti);
+
+        api.server.GetCountMyAbsence(function (count) {
+            if (count == 0) {
+                $('p[title-queue]').text('Get Queue Number');
+            } else {
+                $('p[title-queue]').text('Reporting for Queue Number');
+            }
+        });
     });
 </script>

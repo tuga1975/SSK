@@ -279,6 +279,19 @@ namespace SSK
             nric.NRICAuthentication(strNRIC);
         }
 
+        public int GetCountMyAbsence()
+        {
+            Session session = Session.Instance;
+            Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+
+            // if duty officcer override, set supervisee info into user
+            if (user.Role == EnumUserRoles.DutyOfficer)
+            {
+                user = (Trinity.BE.User)session[CommonConstants.SUPERVISEE];
+            }
+            return new DAL_Appointments().CountMyAbsence(user.UserId);
+        }
+
         // Reporting for Queue Number
         public void ReportingForQueueNumber()
         {

@@ -3,7 +3,20 @@
         $("#wizard").steps({
             headerTag: "h2",
             bodyTag: "section",
-            transitionEffect: "slideLeft"
+            transitionEffect: "slideLeft",
+            onStepChanging: function (event, currentIndex, newIndex) {
+
+                //0 - photo
+                //1 - fingerprint
+                //2 - verify
+                //3 - print
+
+                if (currentIndex==2) {
+                    //update to db
+                    api.server.UpdateSuperviseeBiodata();
+                }
+                return true;
+            }
         });
 
         $("input[type='image']").click(function () {
@@ -14,7 +27,7 @@
 <div style="width:100%; padding:10px;">
     <div class="header">
         <img class="logo" src="../images/logo.png" />
-        <h3>Add New Supervisee</h3>
+        <h3>Update Supervisee</h3>
         <div class="clear"></div>
     </div>
     <div class="form-supervisee">
@@ -54,7 +67,7 @@
                                 <div style="border:1px solid #000000;color:#000000" id="leftProcessMessage">Place left thumb onto scanner</div>
                                 <div><button style="float:left" id="leftThumbScanBtn">Scan</button><button style="float:right;" id="leftThumbClearBtn">Clear</button></div>
                                 <br />
-                                <div> <img class="avatar" id="leftFingerprint"  style="max-width:35%;" /></div>
+                                <div> <img class="avatar" id="leftFingerprint" style="max-width:35%;" /></div>
                                 <br />
                                 <!--<button type="button" onclick="api.server.OpenFingerprintCaptureForm('1')">Left Fingerprint Preview</button>-->
                                 <div style="border:1px solid #000000">Left Fingerprint Preview</div>
@@ -63,7 +76,7 @@
                                 <div style="border:1px solid #000000;color:#000000" id="rightProcessMessage">Place right thumb onto scanner</div>
                                 <div><button style="float:left" id="rightThumbScanBtn">Scan</button><button style="float:right;" id="rightThumbClearBtn">Clear</button></div>
                                 <br />
-                                <div> <img class="avatar" id="rightFingerprint"  style="max-width:35%" /></div>
+                                <div> <img class="avatar" id="rightFingerprint" style="max-width:35%" /></div>
                                 <br />
                                 <!--<button type="button" onclick="api.server.OpenFingerprintCaptureForm('2')">Right Fingerprint Preview</button>-->
                                 <div style="border:1px solid #000000">Right Fingerprint Preview</div>
@@ -74,40 +87,54 @@
                     <h2>VERIFY CARD</h2>
                     <section>
                         <div>
-                            <div class="row" style="width:40%;float:left;">
+                            <div class="row">
                                 <div class="col">
-                                    <div style="width:250px;height:150px;border:1px solid #000000">
-
-
+                                    <div style="width:250px;height:150px;border:1px solid #000;float:right">
+                                        <div style="float:left">
+                                            <img src="../images/usr-default.jpg" width="80" height="100" />
+                                        </div>
+                                        <div>Name :</div>
+                                        <div>NRIC : </div>
+                                        <div>DOB : </div>
+                                        <div style="clear:both"></div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div style="width:250px;height:150px;border:1px solid #000">
+                                        <div style="float:left">
+                                            <div>
+                                                <img src="../images/fingerprint.png" width="40" height="60" />
+                                            </div>
+                                            <br />
+                                            <div>
+                                                <img src="../images/fingerprint.png" width="40" height="60" />
+                                            </div>
+                                        </div>
+                                        <div>Issue from   /  to   /   </div>
+                                        <div style="clear:both"></div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="row" style="width:50%">
-                                <div class="col">
-                                    <div style="width:250px;height:150px;border:1px solid #000000"></div>
-                                </div>
-                            </div>
-                            <div style="clear:both"></div>
                         </div>
                     </section>
 
                     <h2>PRINT CARD</h2>
                     <section>
-                        34567
+                        <div class="row">
+                            <div class="col" style="text-align:center">
+                                <div style="width:100%;border:1px solid #000000;font-size:15px">Smart Card was printed successfully. Please collect the smart card from printer and place on the reader to verify.</div>
+                                <div style="width:250px;height:150px;border:1px solid #000; margin:10px auto">
+                                    Smart card Information
+                                </div>
+                            </div>
+                            <!--<button type="submit" class="btn-form">Save</button>-->
+
+                        </div>
                     </section>
                 </div>
             </div>
-            <div class="tab-pane fade" id="supervisee-details" role="tabpanel" aria-labelledby="nav-profile-tab">
-                <input class="" type="text" value="" placeholder="Supervisee's Blodata" />
-                <input class="" type="text" value="" placeholder="Supervisee's Address" />
-                <input class="" type="text" value="" placeholder="Other Address" />
-                <input class="" type="text" value="" placeholder="Next Of Kin" />
-                <input class="" type="text" value="" placeholder="Employment details" />
-                <div class="btn-group">
-                    <button type="submit" class="btn-form">Save</button>
-                    <button type="submit" class="btn-form">Cancel</button>
-                </div>
-            </div>
+
+
         </div>
     </div>
 </div>
@@ -120,15 +147,15 @@
         $('#leftThumbClearBtn').attr('disabled', 'disabled');
         $('#rightThumbClearBtn').attr('disabled', 'disabled');
 
-     
+
         //alert(leftFingerPrintData);
 
-       
+
     });
     $('#leftThumbScanBtn').click(function () {
         $('#rightThumbDiv').find('button').attr('disabled', 'disabled');
         api.server.CaptureFingerPrint(false);
-        
+
     });
 
     $('#rightThumbScanBtn').click(function () {
@@ -185,8 +212,17 @@
         else {
             $('#leftFingerprint').attr('src', 'data:image/png;base64,' + fingerPrintData);
         }
-       
-       
-      
+
+
+
+    }
+
+    function setAvatar(base64Str1,base64Str2) {
+        if (base64Str1) {
+            $('#image1').attr('src', 'data:image/jpg;base64,' + base64Str1);
+        }
+         if (base64Str2) {
+            $('#image2').attr('src', 'data:image/jpg;base64,' + base64Str2);
+        }
     }
 </script>

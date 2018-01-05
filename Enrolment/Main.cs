@@ -271,7 +271,7 @@ namespace Enrolment
                 session["CountPutOn"] = countPutOn;
                 LayerWeb.InvokeScript("changeMessageServerCall", isRight, "Put finger into device, please ...(" + countPutOn + ")", EnumColors.Yellow);
             }
-             
+
         }
 
         #endregion
@@ -390,15 +390,14 @@ namespace Enrolment
             }
             else if (e.Name.Equals(EventNames.CAPTURE_PICTURE))
             {
-                //for testing purpose
-                Session session = Session.Instance;
-                using (var ms = new MemoryStream())
+                if(InvokeRequired)
                 {
-                    pictureBox1.Image.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
-                    session[CommonConstants.CURRENT_PHOTO_DATA] = ms.ToArray();
-
+                    Invoke(new Action(() =>
+                    {
+                        webcam.stopWebcam();
+                        LayerWeb.InvokeScript("confirmMode");
+                    }));
                 }
-
             }
             else if (e.Name.Equals(EventNames.CONFIRM_CAPTURE_PICTURE))
             {
@@ -412,43 +411,47 @@ namespace Enrolment
                         webcam.stopWebcam();
                         using (MemoryStream mStream = new MemoryStream())
                         {
-                            pictureBox1.Image.Save(mStream, pictureBox1.Image.RawFormat);
-                            if (_imgBox == "1") { image1 =  mStream.ToArray(); }
+                            pictureBox1.Image.Save(mStream,System.Drawing.Imaging.ImageFormat.Jpeg);
+                            if (_imgBox == "1") { image1 = mStream.ToArray(); }
                             if (_imgBox == "2") { image2 = mStream.ToArray(); }
                         }
-                        var currentPage = session[CommonConstants.CURRENT_PAGE];
-                        var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
-                        var isPrimaryPhoto = session[CommonConstants.IS_PRIMARY_PHOTO];
-                        //for testing purpose
-                        var tempBase64String = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAMSURBVBhXY/j//z8ABf4C/qc1gYQAAAAASUVORK5CYII=";
-                        var converToByte = Convert.FromBase64String(tempBase64String);
-                        var captureImage = session[CommonConstants.CURRENT_PHOTO_DATA];
-
-                        if (currentPage != null && currentPage.ToString() == "EditSupervise" && currentEditUser != null)
-                        {
-                            if (captureImage != null)
-                            {
-                                if (isPrimaryPhoto != null && (bool)isPrimaryPhoto)
-                                {
-                                    // currentEditUser.UserProfile.User_Photo1 = (byte[])captureImage;
-                                    currentEditUser.UserProfile.User_Photo1 = converToByte;
-                                }
-                                else
-                                {
-                                    currentEditUser.UserProfile.User_Photo2 = (byte[])captureImage;
-                                }
-
-                            }
-
-                            CSCallJS.LoadPageHtml(this.LayerWeb, "Edit-Supervisee.html", currentEditUser);
-                        }
-                        else
-                        {
-                            LayerWeb.LoadPageHtml("New-Supervisee.html");
-                        }
-
                     }));
-                    return;
+                    var currentPage = session[CommonConstants.CURRENT_PAGE];
+                    var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
+                    var isPrimaryPhoto = session[CommonConstants.IS_PRIMARY_PHOTO];
+                    //for testing purpose
+                    var tempBase64String = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAMSURBVBhXY/j//z8ABf4C/qc1gYQAAAAASUVORK5CYII=";
+                    var converToByte = Convert.FromBase64String(tempBase64String);
+                    
+                    var base64Str1 = "";
+                    var base64Str2 = "";
+                    if (currentPage != null && currentPage.ToString() == "EditSupervisee" && currentEditUser != null)
+                    {
+                        
+                            if (isPrimaryPhoto != null && (bool)isPrimaryPhoto)
+                            {
+                                // currentEditUser.UserProfile.User_Photo1 = (byte[])captureImage;
+                                currentEditUser.UserProfile.User_Photo1 = image1;
+                                base64Str1 = Convert.ToBase64String(image1);
+                            
+                        }
+                            else
+                            {
+                                currentEditUser.UserProfile.User_Photo2 = image2;
+                                base64Str2 = Convert.ToBase64String(image2);
+                            
+                        }
+
+                        
+                        session[CommonConstants.CURRENT_EDIT_USER] = currentEditUser;
+
+                        CSCallJS.LoadPageHtml(this.LayerWeb, "UpdateSuperviseeBiodata.html", currentEditUser);
+                        LayerWeb.InvokeScript("setAvatar", base64Str1, base64Str2);
+                    }
+                    else
+                    {
+                        LayerWeb.LoadPageHtml("New-Supervisee.html");
+                    }
                 }
             }
             else if (e.Name.Equals(EventNames.CANCEL_CAPTURE_PICTURE))
@@ -463,6 +466,18 @@ namespace Enrolment
                         LayerWeb.LoadPageHtml("New-Supervisee.html");
                     }));
                     return;
+                }
+            }
+            else if (e.Name.Equals(EventNames.CANCEL_CONFIRM_CAPTURE_PICTURE))
+            {
+                if (InvokeRequired)
+                {
+                    Invoke(new Action(() =>
+                    {
+                        webcam.InitializeWebCam();
+                        webcam.startWebcam();
+                        LayerWeb.InvokeScript("captureMode");
+                    }));
                 }
             }
             else if (e.Name == EventNames.PHOTO_CAPTURE_FAILED)
@@ -504,6 +519,16 @@ namespace Enrolment
 
                 }
 
+
+            }
+            else if (e.Name == EventNames.UPDATE_SUPERVISEE_BIODATA)
+            {
+                var profileModel = (Trinity.BE.ProfileModel)e.Data;
+                var dalUser = new DAL_User();
+                dalUser.UpdateUser(profileModel.User, profileModel.User.UserId, true);
+
+                new DAL_UserProfile().UpdateUserProfile(profileModel.UserProfile, profileModel.User.UserId, true);
+                dalUser.ChangeUserStatus(profileModel.User.UserId, EnumUserStatuses.Enrolled);
 
             }
 

@@ -128,6 +128,7 @@ namespace Trinity.Common
         public const string CANCEL_PRINT_SMARTCARD = "CancelPrintSmartCard";
         public const string CONFIRM_CAPTURE_FINGERPRINT = "ConfirmCaptureFingerprint";
         public const string LOAD_UPDATE_SUPERVISEE_BIODATA = "LoadUpdateSuperviseeBiodata";
+        public const string UPDATE_SUPERVISEE_BIODATA = "UpdateSuperviseeBiodata";
     }
 
     public class EventInfo
