@@ -29,15 +29,7 @@ namespace Enrolment
             if (videosources != null)
             {
                 //For example use first video device. You may check if this is your webcam.
-                try
-                {
-                    videoSource = new VideoCaptureDevice(videosources[0].MonikerString);
-                }
-                catch {
-                    EventCenter eventCenter = EventCenter.Default;
-                    eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.OPEN_PICTURE_CAPTURE_FORM_FAILED });
-                    return;
-                }
+                videoSource = new VideoCaptureDevice(videosources[0].MonikerString);
                 try
                 {
                     //Check if the video device provides a list of supported resolutions
@@ -62,9 +54,12 @@ namespace Enrolment
         {
             //Create NewFrame event handler
             //(This one triggers every time a new frame/image is captured
-            videoSource.NewFrame += new AForge.Video.NewFrameEventHandler(videoSource_NewFrame);
-            //Start recording
-            videoSource.Start();
+            if (videoSource != null)
+            {
+                videoSource.NewFrame += new AForge.Video.NewFrameEventHandler(videoSource_NewFrame);
+                //Start recording
+                videoSource.Start();
+            }
         }
 
         void videoSource_NewFrame(object sender, AForge.Video.NewFrameEventArgs eventArgs)
@@ -82,6 +77,7 @@ namespace Enrolment
                 videoSource.NewFrame -= new AForge.Video.NewFrameEventHandler(videoSource_NewFrame);
                 videoSource = null;
             }
+                
         }
     }
 }

@@ -8,12 +8,12 @@
                 <div class="form-group">
                     <div class="input-group">
                         <span class="input-group-addon">Officer NRIC</span>
-                        <input readonly="readonly" type="text" class="form-control pri">
+                        <input readonly="readonly" type="text" class="form-control pri" id="NRIC">
                     </div>
                     <br />
                     <div class="input-group">
                         <span class="input-group-addon">Officer Name</span>
-                        <input readonly="readonly" type="text" class="form-control pri">
+                        <input readonly="readonly" type="text" class="form-control pri" id="Name">
                     </div>
                     <br />
                     <span class="input-group-addon"  style="width:120px;">Reason:</span>
@@ -27,3 +27,10 @@
         </div>
     </div>
 </div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#NRIC').val(api.model.NRIC);
+        $('#Name').val(api.model.Name);
+    });
+    
+</script>

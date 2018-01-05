@@ -99,9 +99,10 @@ namespace SSA
             RaiseLogOutCompletedEvent();
         }
 
-        public void PrintingMUBAndTTLabels()
+        public void PrintingMUBAndTTLabels(string json)
         {
-            _printTTLabel.Start();
+            var userInfo = JsonConvert.DeserializeObject<UserInfo>(json);
+            _printTTLabel.Start(userInfo);
         }
 
         private void PrintMUBAndTTLabels_OnPrintTTLabelSucceeded()

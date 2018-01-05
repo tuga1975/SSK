@@ -134,10 +134,18 @@ namespace DutyOfficer
         }
 
         #endregion
-
-        public void LoadPopupBlock()
+        #region Settings
+        public void PopupAddHoliday()
         {
-            this._web.LoadPopupHtml("BlockedPopupDetail.html");
+            this._web.LoadPopupHtml("PopupAddHoliday.html");
+        }
+        #endregion
+
+        public void LoadPopupBlock(string json)
+        {
+            var rawData = JsonConvert.DeserializeObject<object>(json);
+
+            this._web.LoadPopupHtml("BlockedPopupDetail.html", rawData);
         }
 
         public void LoadPopupMUBAndTTLabel()
