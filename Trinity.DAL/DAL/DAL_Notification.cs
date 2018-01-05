@@ -124,6 +124,35 @@ namespace Trinity.DAL
             }
         }
 
+        public void InsertNotification(string subject, string content, string fromUserId, string toUserId, bool isFromSupervisee, bool isLocal, NotificationType notifyType)
+        {
+            Trinity.DAL.DBContext.Notification notifcation = new DBContext.Notification()
+            {
+                Content = content,
+                Date = DateTime.Now,
+                FromUserId = fromUserId,
+                IsFromSupervisee = isFromSupervisee,
+                IsRead = false,
+                Subject = subject,
+                ToUserId = toUserId,
+                NotifyType = notifyType,
+                ID = Guid.NewGuid()
+            };
+            IRepository<Trinity.DAL.DBContext.Notification> notificationRepo = null;
+            if (isLocal)
+            {
+                notificationRepo = _localUnitOfWork.GetRepository<Trinity.DAL.DBContext.Notification>();
+                notificationRepo.Add(notifcation);
+                _localUnitOfWork.Save();
+            }
+            else
+            {
+                notificationRepo = _centralizedUnitOfWork.GetRepository<Trinity.DAL.DBContext.Notification>();
+                notificationRepo.Add(notifcation);
+                _centralizedUnitOfWork.Save();
+            }
+        }
+
         public Trinity.DAL.DBContext.Notification GetNotification(Guid notificationId, bool isLocal)
         {
             if (isLocal)

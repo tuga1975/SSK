@@ -201,5 +201,9 @@ public enum EnumDeviceStatuses
     Disconnected = -1
 }
 
+public enum NotificationType
+{
+    Error, Notification, Caution
+}
 
 

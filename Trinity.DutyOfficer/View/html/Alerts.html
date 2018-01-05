@@ -25,60 +25,49 @@
 
 <script type="text/javascript">
 
-    var dataSource;
+    api.server.getAlertsSendToDutyOfficer();
 
-    $(document).ready(function() {
-        dataSource = api.model;
-        if (dataSource == null) {
-            dataSource = [
-                {
-                    source : "ESP",
-                    type: "ERROR",
-                    dateTime: "11/01/2018 14:31",
-                    message : "Leakage detected on UB1"
-                },
-                {
-                    source: "UHP",
-                    type: "Notification",
-                    dateTime: "11/01/2018 14:31",
-                    message: "Rack A is ready for collection"
-                },
-                {
-                    source: "ESP",
-                    type: "Caution",
-                    dateTime: "11/01/2018 14:31",
-                    message: "Out of plastic wrapper"
-                },
-                {
-                    source: "Result",
-                    type: "Caution",
-                    dateTime: "11/01/2018 14:31",
-                    message: "Supervisee tested postive"
-                }
-            ];
+    function getDataCallback(response) {
+        var data = JSON.parse(response);
+        var dataSource = [];
+        if (data) {
+            data.forEach(function (element, index) {
+                dataSource.push({
+                    source: element.Subject,
+                    type: element.Type,
+                    dateTime: element.Date,
+                    message: element.Content
+                });
+            });
         }
-
-        var Type = {
-            error : "ERROR",
-            notification : "Notification",
-            caution : "Caution"
+       var Type = {
+            Code : {
+                error : 0,
+                notification : 1,
+                caution : 2
+            },
+            Message : {
+                error : "Error",
+                notification : "Notification",
+                caution : "Caution"
+            } 
         };
 
         var rowStyle = function (row, index) {
             var type = row.type;
             switch (type) {
-            case Type.error:
-                return {
-                    classes : "error"
-                };
-            case Type.notification:
-                return {
-                    classes : "notification"
-                };
-            case Type.caution:
-                return {
-                    classes : "caution"
-                };
+                case Type.Code.error:
+                    return {
+                        classes: "error"
+                    };
+                case Type.Code.notification:
+                    return {
+                        classes: "notification"
+                    };
+                case Type.Code.caution:
+                    return {
+                        classes: "caution"
+                    };
             }
             return {};
         }
@@ -91,12 +80,22 @@
                 field: 'source',
                 title: 'Source',
                 sortable: true,
-                halign : "center"
+                halign: "center"
             }, {
                 field: 'type',
                 title: 'Type',
                 sortable: true,
-                halign: "center"
+                halign: "center",
+                formatter : function (value, row, index, field) {
+                    switch (value) {
+                        case Type.Code.error:
+                            return Type.Message.error;
+                        case Type.Code.notification:
+                            return Type.Message.notification;
+                        case Type.Code.caution:
+                            return Type.Message.caution;
+                    }
+                }
             }, {
                 field: 'dateTime',
                 title: 'Date/Time',
@@ -110,16 +109,16 @@
             }],
             data: dataSource,
             rowStyle: rowStyle,
-            onDblClickRow : onRowDblClick
+            onDblClickRow: onRowDblClick
         });
 
         function onRowDblClick(row, index) {
             var data = JSON.stringify(row);
-            api.server.LoadPopupAlert(data, function() {
+            api.server.LoadPopupAlert(data, function () {
                 $('#alertPopup').modal();
             });
         }
-    });
+    };
     activemenu('Alerts');
 
 </script>
