@@ -21,8 +21,9 @@ namespace Trinity.DAL.DBContext
         public string Subject { get; set; }
         public string Content { get; set; }
         public bool IsRead { get; set; }
-        public NotificationType NotifyType { get; set; }
         public Nullable<bool> IsFromSupervisee { get; set; }
+        public Nullable<int> Type { get; set; }
+        public string Source { get; set; }
     
         public virtual Membership_Users Membership_Users { get; set; }
         public virtual Membership_Users Membership_Users1 { get; set; }

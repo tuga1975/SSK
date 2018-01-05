@@ -65,7 +65,7 @@ namespace Enrolment.Utils
             }
         }
 
-        public void SendNotificationToDutyOfficer(string subject, string content, NotificationType notificationType)
+        public void SendNotificationToDutyOfficer(string subject, string content, NotificationType notificationType, string source)
         {
             Session session = Session.Instance;
             User user = (User)session[CommonConstants.USER_LOGIN];
@@ -76,7 +76,7 @@ namespace Enrolment.Utils
             }
             DAL_Notification dalNotification = new DAL_Notification();
             // Insert notification to local DB and also CentralizedDB
-            dalNotification.InsertNotification(subject, content, user.UserId, null, true, true, notificationType);
+            dalNotification.InsertNotification(subject, content, user.UserId, null, true, true, notificationType, source);
             //dalNotification.InsertNotification(subject, content, user.UserId, null, true, false);
 
             try

@@ -66,52 +66,6 @@ namespace DutyOfficer
             var dalNotify = new DAL_Notification();
 
             List<Notification> data = dalNotify.GetNotificationsSentToDutyOfficer(true);
-            //TODO : Should be remove dummy data
-            if (data == null)
-            {
-                IFormatProvider culture = new CultureInfo("en-US", true);
-                DateTime dateVal = DateTime.ParseExact("11/01/2018 14:31", "dd/MM/yyyy HH:mm", culture);
-
-                data = new List<Notification>();
-                Notification notification = new Notification();
-                notification.Type = NotificationType.Error;
-                notification.Content = "Out of wrapper";
-                notification.Date = dateVal;
-                notification.Subject = "EPS";
-
-                Notification notification2 = new Notification();
-                notification2.Type = NotificationType.Notification;
-                notification2.Content = "Supervisee tested postive";
-                notification2.Date = dateVal;
-                notification2.Subject = "UHP";
-
-
-                Notification notification3 = new Notification();
-                notification3.Type = NotificationType.Caution;
-                notification3.Content = "Out of plastic wrapper";
-                notification3.Date = dateVal;
-                notification3.Subject = "EPS";
-
-
-                Notification notification4 = new Notification();
-                notification4.Type = NotificationType.Notification;
-                notification4.Content = "Rack A is ready for collection";
-                notification4.Date = dateVal;
-                notification4.Subject = "Result";
-
-                Notification notification5 = new Notification();
-                notification5.Type = NotificationType.Error;
-                notification5.Content = "Leakage detected on UB1";
-                notification5.Date = dateVal;
-                notification5.Subject = "UHP";
-
-                data.Add(notification);
-                data.Add(notification2);
-                data.Add(notification3);
-                data.Add(notification4);
-                data.Add(notification5);
-            }
-
             object result = JsonConvert.SerializeObject(data, Formatting.Indented,
                 new JsonSerializerSettings {ReferenceLoopHandling = ReferenceLoopHandling.Ignore});
             _web.InvokeScript("getDataCallback", result);

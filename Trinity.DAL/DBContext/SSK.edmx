@@ -173,6 +173,8 @@
           <Property Name="Content" Type="nvarchar" MaxLength="500" Nullable="false" />
           <Property Name="IsRead" Type="bit" Nullable="false" />
           <Property Name="IsFromSupervisee" Type="bit" />
+          <Property Name="Type" Type="int" />
+          <Property Name="Source" Type="nvarchar" MaxLength="128" />
         </EntityType>
         <EntityType Name="QueueNumbers">
           <Key>
@@ -743,6 +745,8 @@
           <Property Name="IsFromSupervisee" Type="Boolean" />
           <NavigationProperty Name="Membership_Users" Relationship="SSKModel.FK_Notifications_Membership_Users" FromRole="Notification" ToRole="Membership_Users" />
           <NavigationProperty Name="Membership_Users1" Relationship="SSKModel.FK_Notifications_Membership_Users1" FromRole="Notification" ToRole="Membership_Users" />
+          <Property Name="Type" Type="Int32" />
+          <Property Name="Source" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="QueueNumber">
           <Key>
@@ -1144,6 +1148,8 @@
           <EntitySetMapping Name="Notifications">
             <EntityTypeMapping TypeName="SSKModel.Notification">
               <MappingFragment StoreEntitySet="Notifications">
+                <ScalarProperty Name="Source" ColumnName="Source" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
                 <ScalarProperty Name="IsFromSupervisee" ColumnName="IsFromSupervisee" />
                 <ScalarProperty Name="IsRead" ColumnName="IsRead" />
                 <ScalarProperty Name="Content" ColumnName="Content" />
