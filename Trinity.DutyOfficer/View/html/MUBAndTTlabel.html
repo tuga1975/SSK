@@ -62,8 +62,13 @@
         }]
     });
     activemenu('MUB/TT Lablels');
-
+    var checkedRows = [];
+    $('#MUBAndTTlabel').on('check.bs.table', function (field, value, row, $element) {
+        checkedRows.push({ nric: row.nric, name: row.name });
+        alert(checkedRows);
+    })
     $('#PrintMUBAndTTbutton').click(function () {
+        
         api.server.LoadPopupMUBAndTTLabel(function () {
             $('#popupMUBandTTLabel').modal();
         })

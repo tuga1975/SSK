@@ -83,11 +83,9 @@ namespace DutyOfficer
         }
         #endregion
 
-        public void LoadPopupBlock(string json)
+        public void LoadPopupBlock()
         {
-            var rawData = JsonConvert.DeserializeObject<object>(json);
-
-            this._web.LoadPopupHtml("BlockedPopupDetail.html", rawData);
+            this._web.LoadPopupHtml("BlockedPopupDetail.html");
         }
 
         public void LoadPopupMUBAndTTLabel()
