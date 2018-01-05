@@ -510,9 +510,11 @@ namespace Enrolment
             else if (e.Name == EventNames.UPDATE_SUPERVISEE_BIODATA)
             {
                 var profileModel = (Trinity.BE.ProfileModel)e.Data;
-                new DAL_User().UpdateUser(profileModel.User, profileModel.User.UserId, true);
+                var dalUser = new DAL_User();
+                dalUser.UpdateUser(profileModel.User, profileModel.User.UserId, true);
 
                 new DAL_UserProfile().UpdateUserProfile(profileModel.UserProfile, profileModel.User.UserId, true);
+                dalUser.ChangeUserStatus(profileModel.User.UserId, EnumUserStatuses.Enrolled);
 
             }
 
