@@ -305,11 +305,17 @@
     <Content Include="View\html\BlockedPopupDetail.html" />
     <Content Include="View\html\hourglass.gif" />
     <Content Include="View\html\Layout.html" />
+    <Content Include="View\html\MUBAndTTlabel.html" />
+    <Content Include="View\html\MUBandTTPopup.html" />
+    <Content Include="View\html\PopupAddHoliday.html" />
+    <Content Include="View\html\Settings.html" />
     <Content Include="View\html\Queue.html" />
     <Content Include="View\html\AlertPopupDetail.html" />
     <Content Include="View\html\QueuePopupDetail.html" />
     <Content Include="View\html\Statistics.html" />
     <Content Include="View\html\Table.html" />
+    <Content Include="View\html\UBlabel.html" />
+    <Content Include="View\html\UBPopup.html" />
     <Content Include="View\img\Logo.png" />
     <Content Include="View\scripts\jquery-1.10.2.min.js" />
     <Content Include="View\scripts\lib.js" />

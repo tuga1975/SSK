@@ -130,8 +130,8 @@ namespace SSK
         {
             var setting = new DAL_Environment().GetTodayEnvironmentSetting();
 
-            this.timer.Interval = 1000 * 60 * setting.Duration;
-            //this.timer.Interval = 10000;
+            //this.timer.Interval = 1000 * 60 * setting.Duration;
+            this.timer.Interval = 60000;
             this.timer.Enabled = true;
             this.RefreshQueueNumbers();
         }

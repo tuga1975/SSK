@@ -22,17 +22,17 @@
         <div class="logo" title="logo">Logo</div>
         <div class="logout glyphicon glyphicon-log-out" title="Logout" onclick="confirm('Are you sure you want to logout?') == true ? api.server.LogOut() : null" id="btn-logout"></div>
     </div>
+    <div id="menu">
+        <span item-menu="Queue" onclick="api.server.LoadPage('Queue.html')"></span>
+        <span item-menu="Alerts" onclick="api.server.LoadPage('Alerts.html')"></span>
+        <span item-menu="Appointments" onclick="api.server.LoadPage('Appointments.html')"></span>
+        <span item-menu="Blocked" onclick="api.server.LoadPage('Blocked.html')"></span>
+        <span item-menu="Statistics" onclick="api.server.LoadPage('Statistics.html')"></span>
+        <span item-menu="MUB/TT Lablels" onclick="api.server.LoadPage('MUBAndTTlabel.html')"></span>
+        <span item-menu="UB Lablels" onclick="api.server.LoadPage('UBlabel.html')"></span>
+        <span item-menu="Settings" onclick="api.server.LoadPage('Settings.html')"></span>
+    </div>
     <div id="parent-content">
-        <div id="menu">
-            <span item-menu="Queue"></span>
-            <span item-menu="Alerts"></span>
-            <span item-menu="Appointments"></span>
-            <span item-menu="Blocked"></span>
-            <span item-menu="Statistics"></span>
-            <span item-menu="MUB/TT Lablels"></span>
-            <span item-menu="UB Lablels"></span>
-            <span item-menu="Settings"></span>
-        </div>
         <div id="content"></div>
     </div>
 
@@ -41,6 +41,6 @@
     </div>
     <div id="panel-popup">
     </div>
-    
+
 </body>
 </html>

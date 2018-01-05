@@ -16,6 +16,8 @@ using AForge.Video;
 using AForge.Video.DirectShow;
 using System.Drawing;
 using System.IO;
+using Futronic.SDKHelper;
+using System.Text;
 
 namespace Enrolment
 {
@@ -37,6 +39,7 @@ namespace Enrolment
         private string image1;
         private string image2;
         private bool _displayLoginButtonStatus = false;
+        private FutronicEnrollment _futronicEnrollment = null;
         public Main()
         {
             InitializeComponent();
@@ -62,9 +65,7 @@ namespace Enrolment
             _webcamCapture = new CodeBehind.WebcamCapture(LayerWeb);
 
             // Fingerprint
-            _fingerprint = new CodeBehind.Authentication.Fingerprint(LayerWeb);
-            _fingerprint.OnFingerprintSucceeded += Fingerprint_OnFingerprintSucceeded;
-            _fingerprint.OnFingerprintFailed += Fingerprint_OnFingerprintFailed;
+
 
             #endregion
 
@@ -85,20 +86,195 @@ namespace Enrolment
             timer.Elapsed += PeriodCheck; ;
             timer.Start();
         }
-        private void Fingerprint_OnFingerprintSucceeded()
+        //private void Fingerprint_OnFingerprintSucceeded(object sender, CodeBehind.Authentication.FingerprintEventArgs e)
+        //{
+        //    Session session = Session.Instance;
+
+        //    if (session[CommonConstants.CURRENT_FINGERPRINT_DATA] != null)
+        //    {
+        //        var fingerprintData = (byte[])session[CommonConstants.CURRENT_FINGERPRINT_DATA];
+        //        CSCallJS.LoadPageHtml(LayerWeb, "FingerprintCapture.html", fingerprintData);
+        //    }
+        //}
+
+        //private void Fingerprint_OnFingerprintFailed(object sender, CodeBehind.Authentication.FingerprintEventArgs e)
+        //{
+
+        //}
+
+        #region Fingerprint
+
+        private void StartToScanFingerprint()
         {
             Session session = Session.Instance;
-            if (session[CommonConstants.CURRENT_FINGERPRINT_DATA] != null)
+            session[CommonConstants.CURRENT_FINGERPRINT_DATA] = true;
+            EnrollmentFingerprint();
+        }
+        private bool m_bExit;
+        delegate void SetImageCallback(Bitmap hBitmap);
+        private void UpdateScreenImage(Bitmap hBitmap)
+        {
+            Session session = Session.Instance;
+            // Do not change the state control during application closing.
+            if (m_bExit)
+                return;
+
+            if (this.InvokeRequired)
             {
-                var fingerprintData = (byte[])session[CommonConstants.CURRENT_FINGERPRINT_DATA];
-                CSCallJS.LoadPageHtml(LayerWeb, "FingerprintCapture.html", fingerprintData);
+                SetImageCallback d = new SetImageCallback(this.UpdateScreenImage);
+                this.Invoke(d, new object[] { hBitmap });
+            }
+            else
+            {
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    hBitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Bmp);
+                    var byteData = ms.ToArray();
+
+                    var base64Str = Convert.ToBase64String(byteData);
+
+
+                    if (session[CommonConstants.CURRENT_FINGERPRINT_DATA] != null)
+                    {
+
+                        if (session[CommonConstants.IS_RIGHT_THUMB] != null)
+                        {
+                            var isRight = (bool)session[CommonConstants.IS_RIGHT_THUMB];
+                            LayerWeb.InvokeScript("setBase64FingerprintOnloadServerCall", isRight, base64Str);
+                        }
+                    }
+
+
+                }
+
             }
         }
 
-        private void Fingerprint_OnFingerprintFailed(object sender, CodeBehind.Authentication.FingerprintEventArgs e)
+        private void EnrollmentFingerprint()
         {
+            _futronicEnrollment = new FutronicEnrollment();
 
+            // Set control properties
+            _futronicEnrollment.FakeDetection = true;
+            _futronicEnrollment.FFDControl = true;
+            _futronicEnrollment.FARN = 200;
+            _futronicEnrollment.Version = VersionCompatible.ftr_version_compatible;
+            _futronicEnrollment.FastMode = true;
+            _futronicEnrollment.MIOTControlOff = false;
+            _futronicEnrollment.MaxModels = 5;
+            _futronicEnrollment.MinMinuitaeLevel = 3;
+            _futronicEnrollment.MinOverlappedLevel = 3;
+
+
+            // register events
+            _futronicEnrollment.OnPutOn += OnPutOn;
+            _futronicEnrollment.OnTakeOff += OnTakeOff;
+            _futronicEnrollment.UpdateScreenImage += new UpdateScreenImageHandler(UpdateScreenImage);
+            _futronicEnrollment.OnFakeSource += OnFakeSource;
+            _futronicEnrollment.OnEnrollmentComplete += OnEnrollmentComplete;
+
+            // start enrollment process
+            _futronicEnrollment.Enrollment();
         }
+        private void OnEnrollmentComplete(bool bSuccess, int nResult)
+        {
+            Session session = Session.Instance;
+            var isRight = session[CommonConstants.IS_RIGHT_THUMB] != null ? (bool)session[CommonConstants.IS_RIGHT_THUMB] : (bool)session[CommonConstants.IS_RIGHT_THUMB];
+            StringBuilder szMessage = new StringBuilder();
+            if (bSuccess)
+            {
+                // set status string
+                szMessage.Append("Enrollment process finished successfully.");
+                szMessage.Append("Quality: ");
+                szMessage.Append(_futronicEnrollment.Quality.ToString());
+                Console.WriteLine(szMessage);
+
+                //set data for curent edit user
+                var profileModel = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
+                if (profileModel != null)
+                {
+                    if (isRight)
+                    {
+                        profileModel.User.RightThumbFingerprint = _futronicEnrollment.Template;
+
+                    }
+                    else
+                    {
+                        profileModel.User.LeftThumbFingerprint = _futronicEnrollment.Template;
+                    }
+                    session[CommonConstants.CURRENT_FINGERPRINT_DATA] = _futronicEnrollment.Template;
+
+
+                    session[CommonConstants.CURRENT_EDIT_USER] = profileModel;
+
+                }
+                //_currentUser.RightThumbFingerprint = _futronicEnrollment.Template;
+                LayerWeb.InvokeScript("enableClearBtnServerCall", isRight);
+                LayerWeb.InvokeScript("changeMessageServerCall", isRight, "Your fingerprint was scanned successfully!", EnumColors.Green);
+
+                session["CountPutOn"] = null;
+
+            }
+            else
+            {
+                LayerWeb.InvokeScript("changeMessageServerCall", isRight, FutronicSdkBase.SdkRetCode2Message(nResult), EnumColors.Red);
+            }
+
+            // unregister events
+            _futronicEnrollment.OnPutOn -= OnPutOn;
+            _futronicEnrollment.OnTakeOff -= OnTakeOff;
+            _futronicEnrollment.UpdateScreenImage -= new UpdateScreenImageHandler(UpdateScreenImage);
+            _futronicEnrollment.OnFakeSource -= OnFakeSource;
+            _futronicEnrollment.OnEnrollmentComplete -= OnEnrollmentComplete;
+
+            _futronicEnrollment = null;
+        }
+
+        private bool OnFakeSource(FTR_PROGRESS Progress)
+        {
+            Session session = Session.Instance;
+            var isRight = session[CommonConstants.IS_RIGHT_THUMB] != null ? (bool)session[CommonConstants.IS_RIGHT_THUMB] : (bool)session[CommonConstants.IS_RIGHT_THUMB];
+            //if (session["CountPutOn"] != null)
+            //{
+            //    var count = (int)session["CountPutOn"];
+            //    count--;
+            //    session["CountPutOn"] = count;
+            //}
+            LayerWeb.InvokeScript("changeMessageServerCall", isRight, "Fake source detected. Continue ...", EnumColors.Red);
+            return false;
+        }
+
+        private void OnTakeOff(FTR_PROGRESS Progress)
+        {
+            Session session = Session.Instance;
+            var isRight = session[CommonConstants.IS_RIGHT_THUMB] != null ? (bool)session[CommonConstants.IS_RIGHT_THUMB] : (bool)session[CommonConstants.IS_RIGHT_THUMB];
+            if (session["CountPutOn"] != null)
+            {
+                var count = (int)session["CountPutOn"];
+                count++;
+                session["CountPutOn"] = count;
+            }
+            LayerWeb.InvokeScript("changeMessageServerCall", isRight, "Take off finger from device, please ...", EnumColors.Yellow);
+        }
+        int countPutOn = 1;
+        private void OnPutOn(FTR_PROGRESS Progress)
+        {
+            Session session = Session.Instance;
+            var isRight = session[CommonConstants.IS_RIGHT_THUMB] != null ? (bool)session[CommonConstants.IS_RIGHT_THUMB] : (bool)session[CommonConstants.IS_RIGHT_THUMB];
+
+            if (session["CountPutOn"] != null)
+            {
+                LayerWeb.InvokeScript("changeMessageServerCall", isRight, "Put finger into device, please ...(" + (int)session["CountPutOn"] + ")", EnumColors.Yellow);
+            }
+            else
+            {
+                session["CountPutOn"] = countPutOn;
+                LayerWeb.InvokeScript("changeMessageServerCall", isRight, "Put finger into device, please ...(" + countPutOn + ")", EnumColors.Yellow);
+            }
+             
+        }
+
+        #endregion
 
         private void PeriodCheck(object sender, System.Timers.ElapsedEventArgs e)
         {
@@ -300,23 +476,24 @@ namespace Enrolment
             }
             else if (e.Name == EventNames.CONFIRM_CAPTURE_FINGERPRINT)
             {
-                Session session = Session.Instance;
-                if (session[CommonConstants.CURRENT_EDIT_USER] != null && session[CommonConstants.IS_RIGHT_THUMB] != null && session[CommonConstants.CURRENT_FINGERPRINT_DATA] != null)
-                {
-                    var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
-                    if ((bool)session[CommonConstants.IS_RIGHT_THUMB])
-                    {
-                        currentEditUser.User.RightThumbFingerprint = (byte[])session[CommonConstants.CURRENT_FINGERPRINT_DATA];
-                    }
-                    else
-                    {
-                        currentEditUser.User.LeftThumbFingerprint = (byte[])session[CommonConstants.CURRENT_FINGERPRINT_DATA];
-                    }
-                    session[CommonConstants.CURRENT_EDIT_USER] = currentEditUser;
-                }
+                StartToScanFingerprint();
 
             }
+            else if (e.Name == EventNames.LOAD_UPDATE_SUPERVISEE_BIODATA)
+            {
+                var profileModel = (Trinity.BE.ProfileModel)e.Data;
+                CSCallJS.LoadPageHtml(this.LayerWeb, "UpdateSuperviseeBiodata.html", profileModel);
+                if (profileModel.User.LeftThumbFingerprint != null && profileModel.User.RightThumbFingerprint != null)
+                {
+                    var leftFingerprint = Convert.ToBase64String(profileModel.User.LeftThumbFingerprint);
+                    var rightFingerprint = Convert.ToBase64String(profileModel.User.RightThumbFingerprint);
 
+                    LayerWeb.InvokeScript("setBase64FingerprintOnloadServerCall", leftFingerprint, rightFingerprint);
+
+                }
+
+
+            }
 
         }
 
