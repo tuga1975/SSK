@@ -16,5 +16,10 @@ namespace Trinity.BE
         public string Status { get; set; }
 
         public string QueueNumber { get; set; }
+
+        public Guid AppointmentId { get; set; }
+
+        public Guid ID { get; set; }
+
     }
 }

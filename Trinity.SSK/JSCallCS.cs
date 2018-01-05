@@ -122,7 +122,8 @@ namespace SSK
             var maxAppPerTimeslot = System.Configuration.ConfigurationManager.AppSettings.Get("MaxAppointmentPerTimeslot");
             foreach (var selectedItem in selectedTimes)
             {
-                if (dalAppointment.CountListAppointmentByTimeslot(selectedItem.StartTime, selectedItem.EndTime) >= Convert.ToInt32(maxAppPerTimeslot))
+                var count = dalAppointment.CountListAppointmentByTimeslot(selectedItem.StartTime, selectedItem.EndTime);
+                if (count >= Convert.ToInt32(maxAppPerTimeslot))
                 {
                     selectedItem.IsAvailble = false;
                 }

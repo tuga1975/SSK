@@ -78,7 +78,7 @@ namespace SSK
 
             //15 minutes
             var timer = new System.Timers.Timer(1000 * 60 * 15);
-
+            
             timer.Elapsed += PeriodCheck; ;
             timer.Start();
             //
@@ -153,7 +153,7 @@ namespace SSK
             //NavigateTo(NavigatorEnums.Authentication_Fingerprint);
             //Session session = Session.Instance;
             ////Supervisee
-            //Trinity.BE.User user = new DAL_User().GetUserByUserId("656ebbb1-190b-4c8a-9d77-ffa4ff4c9e93", true);
+            //Trinity.BE.User user = new DAL_User().GetUserByUserId("3498eb1b-d907-4ad4-a16f-4a477b154c34", true);
             //// Duty Officer
             //Trinity.BE.User user = new DAL_User().GetUserByUserId("ead039f9-b9a1-45bb-8186-0bb7248aafac", true);
             //session[CommonConstants.USER_LOGIN] = user;
