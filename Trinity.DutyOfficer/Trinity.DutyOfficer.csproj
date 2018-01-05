@@ -217,6 +217,8 @@
     <Content Include="View\bootstrap\js\bootstrap.min.js" />
     <Content Include="View\html\hourglass.gif" />
     <Content Include="View\html\Layout.html" />
+    <Content Include="View\html\PopupAddHoliday.html" />
+    <Content Include="View\html\Settings.html" />
     <Content Include="View\html\Queue.html" />
     <Content Include="View\html\QueuePopupDetail.html" />
     <Content Include="View\html\Table.html" />
