@@ -80,14 +80,20 @@ namespace Trinity.DAL
                 //queryNotifications = _localUnitOfWork.DataContext.Notifications.Where(n => n.ToUserId == null);
                 queryNotifications = (from n in _localUnitOfWork.DataContext.Notifications
                                       join u in _localUnitOfWork.DataContext.Membership_Users on n.FromUserId equals u.UserId
-                                      select new Trinity.BE.Notification() { FromUserName = u.Name, Subject = n.Subject, Content = n.Content, Date = n.Date });
+                                      select new Trinity.BE.Notification() { FromUserName = u.Name, Subject = n.Subject, Content = n.Content, Date = 
+                                          n.Date, Type = (NotificationType) n.Type,
+                                          Source = n.Source
+                                      });
             }
             else
             {
                 //queryNotifications = _centralizedUnitOfWork.DataContext.Notifications.Where(n => n.ToUserId == null);
                 queryNotifications = (from n in _centralizedUnitOfWork.DataContext.Notifications
                                       join u in _centralizedUnitOfWork.DataContext.Membership_Users on n.FromUserId equals u.UserId
-                                      select new Trinity.BE.Notification() { FromUserName = u.Name, Subject = n.Subject, Content = n.Content, Date = n.Date });
+                                      select new Trinity.BE.Notification() { FromUserName = u.Name, Subject = n.Subject, Content = n.Content,
+                                          Date = n.Date, Type = (NotificationType) n.Type,
+                                          Source = n.Source
+                                      });
             }
             if (queryNotifications.Count() > 0)
             {
@@ -108,6 +114,38 @@ namespace Trinity.DAL
                 Subject = subject,
                 ToUserId = toUserId,
                 ID= Guid.NewGuid()
+            };
+            IRepository<Trinity.DAL.DBContext.Notification> notificationRepo = null;
+            if (isLocal)
+            {
+                notificationRepo = _localUnitOfWork.GetRepository<Trinity.DAL.DBContext.Notification>();
+                notificationRepo.Add(notifcation);
+                _localUnitOfWork.Save();
+            }
+            else
+            {
+                notificationRepo = _centralizedUnitOfWork.GetRepository<Trinity.DAL.DBContext.Notification>();
+                notificationRepo.Add(notifcation);
+                _centralizedUnitOfWork.Save();
+            }
+        }
+
+        public void InsertNotification(string subject, string content, string fromUserId,
+            string toUserId, bool isFromSupervisee, bool isLocal, NotificationType notifyType,
+            string source)
+        {
+            Trinity.DAL.DBContext.Notification notifcation = new DBContext.Notification()
+            {
+                Content = content,
+                Date = DateTime.Now,
+                FromUserId = fromUserId,
+                IsFromSupervisee = isFromSupervisee,
+                IsRead = false,
+                Subject = subject,
+                ToUserId = toUserId,
+                Type = (int) notifyType,
+                Source = source,
+                ID = Guid.NewGuid()
             };
             IRepository<Trinity.DAL.DBContext.Notification> notificationRepo = null;
             if (isLocal)

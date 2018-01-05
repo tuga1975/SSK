@@ -2,7 +2,10 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using System.Reflection;
+using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using Trinity.BE;
@@ -61,9 +64,13 @@ namespace DutyOfficer
         public void getAlertsSendToDutyOfficer()
         {
             var dalNotify = new DAL_Notification();
-            var data = dalNotify.GetNotificationsSentToDutyOfficer(false);
-            _web.LoadPageHtml("AlertTab.html", data);
+
+            List<Notification> data = dalNotify.GetNotificationsSentToDutyOfficer(true);
+            object result = JsonConvert.SerializeObject(data, Formatting.Indented,
+                new JsonSerializerSettings {ReferenceLoopHandling = ReferenceLoopHandling.Ignore});
+            _web.InvokeScript("getDataCallback", result);
         }
+
 
         #region Queue
         public void LoadPopupQueue()
@@ -71,10 +78,15 @@ namespace DutyOfficer
             this._web.LoadPopupHtml("QueuePopupDetail.html");
         }
 
+        #endregion
+
+        #region Alert & Notification Popup Detail
+
         public void LoadPopupAlert(string jsonData)
         {
             this._web.LoadPopupHtml("AlertPopupDetail.html", jsonData);
         }
+
         #endregion
         #region Settings
         public void PopupAddHoliday()

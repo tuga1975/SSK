@@ -1,4 +1,73 @@
-﻿<div class="modal fade" role="dialog" id="alertPopup">
+﻿<style>
+    *,
+    ::after,
+    ::before {
+        box-sizing: border-box;
+    }
+
+    form {
+        border: 1px solid #000;
+        padding: 20px;
+        width: 100%;
+    }
+
+    .form_gr {
+        margin-bottom: 20px;
+    }
+
+    .form-ct {
+        width: 100%;
+        height: 34px;
+        border: 1px solid #000;
+        color: #000;
+        padding: 0 15px;
+    }
+
+    .form-txt {
+        width: 100%;
+        border: 1px solid #000;
+        color: #000;
+        padding: 15px;
+    }
+
+    .gr-frm-top:after {
+        content: "";
+        clear: both;
+        display: table;
+    }
+
+    .left {
+        width: 30%;
+        float: left;
+        text-align: center;
+    }
+
+    .right {
+        padding-left: 20px;
+        float: left;
+        width: 70%;
+        text-align: center;
+    }
+
+    .right .form-ct {
+        text-align: center;
+    }
+
+    .error {
+        background-color: red;
+    }
+
+    .close {
+        text-align: right;
+    }
+    .close button {
+        width: 100px;
+        height: 34px;
+        border: 1px solid #000;
+        background-color: #d8e5e5;
+    }
+</style>
+<div class="modal fade" role="dialog" id="alertPopup">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -6,30 +75,38 @@
             </div>
             <div class="modal-body">
                 <div class="form-group">
-                    <div class="input-group">
-                        <span class="input-group-addon">Message Source</span>
-                        <input readonly="readonly" type="text" class="form-control pri" id="msgVal">
+                    <div class="gr-frm-top">
+                    <div class="left">
+                      <div class="form_gr">
+                        <label class="form-ct" type="text" placeholder="Message Soure">Message Soure</label>
+                      </div>
+                      <div class="form_gr">
+                        <label class="form-ct" type="text" placeholder="Date / Time">Date / Time</label>
+                      </div>
+                      <div class="form_gr">
+                        <label class="form-ct" type="text" placeholder="Statues">Statues</label>
+                      </div>
+                      <div class="form_gr">
+                        <label class="form-ct" type="text" placeholder="Details:">Details:</label>
+                      </div>
                     </div>
-                    <br />
-                    <div class="input-group">
-                        <span class="input-group-addon">Date/Time</span>
-                        <input readonly="readonly" type="text" class="form-control pri" id="dateTimeVal">
+                    <!--/.left-->
+                    <div class="right">
+                      <div class="form_gr">
+                        <label class="form-ct" type="text" id="valMessageSource">
+                      </div>
+                      <div class="form_gr">
+                        <label class="form-ct" type="text" id="valDateTime">
+                      </div>
+                      <div class="form_gr">
+                        <label class="form-ct error" type="text" id="valType">
+                      </div>
                     </div>
-                    <br />
-                    <div class="input-group">
-                        <span class="input-group-addon">Statues</span>
-                        <input readonly="readonly" type="text" class="form-control pri" id="statusVal">
-                    </div>
-                    <br />
-                    <div class="input-group">
-                        <span class="input-group-addon">Details:</span>
-                        <input readonly="readonly" type="text" class="form-control pri">
-                    </div>
-                    <br />
-                    <div class="input-group">
-                        <span>Lorems ipsum dolor sit amet</span>
-                    </div>
-                </div>
+                    <!--/.right-->
+                  </div>
+                  <div class="form_gr">
+                    <textarea class="form-txt" name="" cols="30" rows="10" id="valContent"></textarea>
+                  </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
@@ -39,28 +116,53 @@
 </div>
 <script>
     var Type = {
-            error : "ERROR",
+        Code : {
+            error : 0,
+            notification : 1,
+            caution : 2
+        },
+        Message : {
+            error : "Error",
             notification : "Notification",
             caution : "Caution"
-        };
+        } 
+    };
     $(document).ready(function() {
         var data = JSON.parse(api.model);
         if(data){
-            $("#msgVal").val(data.message);
-            $("#dateTimeVal").val(data.dateTime);
-            $("#statusVal").val(data.type);
+            $("#valMessageSource").text(data.source);
+            $("#valDateTime").text(formatDate(data.dateTime));
+            $("#valContent").val(data.message);
             switch(data.type){
-                case Type.error :
-                    $("#statusVal").css("background-color", "red" );
+                case Type.Code.error :
+                    $("#valType").text(Type.Message.error);
+                    $("#valType").css("background-color", "red" );
                     break;
-                case Type.notification:
-                    $("#statusVal").css("background-color", "#66ff33");
+                case Type.Code.notification:
+                    $("#valType").text(Type.Message.notification);
+                    $("#valType").css("background-color", "#66ff33");
                     break;
-                case Type.Caution:
-                    $("#statusVal").css("background-color", "yellow" );
+                case Type.Code.caution:
+                    $("#valType").text(Type.Message.caution);
+                    $("#valType").css("background-color", "yellow" );
                     break;
             }
             
+        }
+        function formatDate(strDate) {
+            var date = new Date(Date.parse(strDate)),
+            year = date.getFullYear(),
+            month = (date.getMonth() + 1).toString(),
+            formatedMonth = (month.length === 1) ? ("0" + month) : month,
+            day = date.getDate().toString(),
+            formatedDay = (day.length === 1) ? ("0" + day) : day,
+            hour = date.getHours().toString(),
+            formatedHour = (hour.length === 1) ? ("0" + hour) : hour,
+            minute = date.getMinutes().toString(),
+            formatedMinute = (minute.length === 1) ? ("0" + minute) : minute,
+            second = date.getSeconds().toString(),
+            formatedSecond = (second.length === 1) ? ("0" + second) : second;
+            return formatedMonth + "/" + formatedDay + "/" + year + " " + formatedHour + ':' + formatedMinute;
         }
     });
 
