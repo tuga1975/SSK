@@ -16,17 +16,17 @@
         <br />
         <div class="input-group">
             <span class="input-group-addon">Name:</span>
-            <input id="ParticularsName" type="text" class="form-control pri" name="ParticularsName" disabled="disabled" />
+            <input id="UserName" type="text" class="form-control pri" name="UserName" readonly="readonly" />
         </div>
         <br />
         <div class="input-group">
             <span class="input-group-addon">NRIC No.:</span>
-            <input id="ParticularsNRICNo" type="text" class="form-control pri" name="ParticularsNRICNo" disabled="disabled" />
+            <input id="NRIC" type="text" class="form-control pri" name="NRIC" readonly="readonly" />
         </div>
         <br />
         <div class="input-group">
             <span class="input-group-addon">Date:</span>
-            <input id="ParticularsDate" type="text" class="form-control pri" name="ParticularsDate" disabled="disabled" />
+            <input id="Date" type="text" class="form-control pri" name="Date" readonly="readonly" />
         </div>
         <br />
         <div class="input-group">
@@ -36,11 +36,11 @@
         <br />
         <div class="input-group">
             <span class="input-group-addon">Marking Number:</span>
-            <input id="ParticularsMarkingNumber" type="text" class="form-control pri" name="ParticularsMarkingNumber" disabled="disabled" />
+            <input id="MarkingNumber" type="text" class="form-control pri" name="MarkingNumber" readonly="readonly" />
         </div>
 
         <div style="display:block;float:right; margin-top:20px;" id="divSave">
-            <button type="button" class="btn btn-primary" id="ConfirmBtn">Confirm</button>
+            <button type="submit" class="btn btn-primary" id="ConfirmBtn">Confirm</button>
             <button type="button" class="btn btn-dark" style="margin-left:10px;" id="CancelBtn">Cancel</button>
         </div>
     </div>
@@ -48,21 +48,22 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-        $('#ParticularsName').val(api.model.UserName);
-        $('#ParticularsNRICNo').val(api.model.NRIC);
-        $('#ParticularsDate').val(api.model.DOB);
-        $('#ParticularsStatus').val(api.model.Status);
-        $('#ParticularsMarkingNumber').val(api.model.MarkingNumber);
+        $('#UserName').val(api.model.UserName);
+        $('#NRIC').val(api.model.NRIC);
+        $('#Date').val(api.model.Date);
+        $('#MarkingNumber').val(api.model.MarkingNumber);
         var srcQRCode = "../img/QRCode_" + api.model.NRIC + ".png";
         $("#imgQRCode").attr("src", srcQRCode);
     });
-
-    $('#ConfirmBtn').click(function () {
-        api.server.PrintingMUBAndTTLabels();
+    
+    $("#particularsFrm").submit(function (e) {        
+        var json = JSON.stringify(api.model);
+        api.server.PrintingMUBAndTTLabels(json);
+        e.preventDefault(); // avoid to execute the actual submit of the form.
     });
 
     $('#CancelBtn').click(function () {
         api.server.DeleteQRCodeImageFile();
         api.server.LogOut();
-    });
+    });    
 </script>
