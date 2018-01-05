@@ -34,15 +34,14 @@ namespace SSA.CodeBehind
                     {
                         UserName = user.Name,
                         NRIC = user.NRIC,
-                        DOB = userProfile.DOB.HasValue ? userProfile.DOB.Value.ToString("dd/MM/yyyy") : "",
-                        Status = user.Status,
+                        Date = DateTime.Now.ToString("dd/MM/yyyy"),//userProfile.DOB.HasValue ? userProfile.DOB.Value.ToString("dd/MM/yyyy") : "",
                         MarkingNumber = CommonUtil.GenerateMarkingNumber()
                     };
 
                     byte[] byteArrayQRCode = null;
-                    if (userProfile.QRCode != null)
-                        byteArrayQRCode = userProfile.QRCode;
-                    else
+                    //if (userProfile.QRCode != null)
+                    //    byteArrayQRCode = userProfile.QRCode;
+                    //else
                         byteArrayQRCode = CommonUtil.CreateQRCode(userInfo);
                     
                     // test qr code bang file image, chua goi printer

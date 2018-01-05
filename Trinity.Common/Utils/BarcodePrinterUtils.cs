@@ -73,7 +73,7 @@ namespace Trinity.Common.Utils
                 // 20~ units per char => 700~ units per line
                 int x = (35 - userInfo.UserName.Length) / 2;
                 TSCLIB_DLL.windowsfont(x * 17, 150, 40, 0, 0, 0, "ARIAL", userInfo.UserName);  //Draw windows font
-                TSCLIB_DLL.windowsfont(210, 200, 36, 0, 0, 0, "ARIAL", userInfo.DOB);  //Draw windows font
+                TSCLIB_DLL.windowsfont(210, 200, 36, 0, 0, 0, "ARIAL", userInfo.Date);  //Draw windows font
                 TSCLIB_DLL.downloadpcx("UL.PCX", "UL.PCX");                                         //Download PCX file into printer
                 TSCLIB_DLL.sendcommand("PUTPCX 100,400,\"UL.PCX\"");                                //Drawing PCX graphic
                 TSCLIB_DLL.printlabel("1", "1");                                                    //Print labels

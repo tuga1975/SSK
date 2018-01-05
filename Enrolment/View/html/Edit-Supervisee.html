@@ -8,185 +8,255 @@
 		<form id="superviseeFrm">
 			<input class="name-supervisee" type="text" value="Erol Supervisee" />
 			<nav class="nav nav-tabs" id="myTab" role="tablist">
-				<a class="nav-item nav-link active" data-toggle="tab" href="#print-card" role="tab" aria-controls="nav-home" aria-selected="true">Print Card</a>
-				<a class="nav-item nav-link" data-toggle="tab" href="#supervisee-details" role="tab" aria-controls="nav-profile" aria-selected="false">Supervisee Details</a>
+				<a class="nav-item nav-link active" data-toggle="tab" href="#supervisee-details" role="tab" aria-controls="nav-home" aria-selected="true">Supervisee Details</a>
+				<a class="nav-item nav-link" data-toggle="tab" href="#issued-cards" role="tab" aria-controls="nav-profile" aria-selected="false">Issued Cards</a>
 			</nav>
 			<div class="tab-content" id="nav-tabContent">
-				<div class="tab-pane fade show active" id="print-card" role="tabpanel" aria-labelledby="nav-home-tab">
-					<span class="s_label s_blodata" >Supervisee's Biodata</span>
-					<div class="s_detail detail_s_blodata">
-						<div class="row">								
-							<div class="col-7">
-								<div class="row">								
-									<div class="col">
-										<img class="avatar" id="userPhoto1" src="../images/usr-default.jpg" />
-										<button  type="button" id="updatePhoto1" onclick="api.server.OpenPictureCaptureForm('1')">Update Photos</button>
-									</div>
-									<div class="col">
-										<img class="avatar" id="userPhoto2" src="../images/usr-default.jpg" />
-										<button type="button" id="updatePhoto2" onclick="api.server.OpenPictureCaptureForm('2')">Update Photos</button>
-									</div>
+			<input type="hidden" name="userId" class="userId"  />
+			<div class="tab-pane fade show active" id="supervisee-details" role="tabpanel" aria-labelledby="nav-home-tab">
+				<span class="s_label" >Supervisee's Biodata</span>
+				<div class="s_detail">
+					<div class="row">								
+						<div class="col-7">
+							<div class="row">								
+								<div class="col">
+									<img class="avatar" id="userPhoto1" src="../images/usr-default.jpg" />
+									
+								</div>
+								<div class="col">
+									<img class="avatar" id="userPhoto2" src="../images/usr-default.jpg" />
+									
 								</div>
 							</div>
-							<div class="col-5">
-								<div class="row">
-									<div class="col">
-										<img class="avatar" src="../images/fingerprint.png" style="max-width:70%" />
-										<button type="button" onclick="api.server.OpenFingerprintCaptureForm('1')">Update Fingerprints</button>
-									</div>
-									<div class="col">
-										<img class="avatar" src="../images/fingerprint.png" style="max-width:70%" />
-										<button type="button"  onclick="api.server.OpenFingerprintCaptureForm('2')">Update Fingerprints</button>
-									</div>
+						</div>
+						<div class="col-5">
+							<div class="row">
+								<div class="col">
+									<img class="avatar" src="../images/fingerprint.png" style="max-width:70%" />
+								</div>
+								<div class="col">
+									<img class="avatar" src="../images/fingerprint.png" style="max-width:70%" />
 								</div>
 							</div>
 						</div>
 					</div>
-					<select name="" id="s_address">
-						<option>address 1</option>
-						<option>address 2</option>
-					</select>
-					<input class="s_address" type="text" value="" name="" placeholder="Supervisee's Address" />
-					<input class="s_other_address" type="text" value="" placeholder="Other Address" />
-					<span class="s_label s_next_of_kin">Next Of Kin</span>
-					<div class="s_detail detail_s_next_of_kin">
-						<div class="row">
-							<div class="col">
-								<div class="form-group row">
-									<label class="col-sm-4 col-form-label">NextOfKin Name</label>
-									<div class="col-sm-8">
-										<input type="text" class="nok_name" name="NextOfKin_Name" value="" />
-									</div>
-								</div>
-								<div class="form-group row">
-									<label class="col-sm-4 col-form-label">NextOfKin Contact Number</label>
-									<div class="col-sm-8">
-										<input type="text" class="nok_contact_number" name="NextOfKin_Contact_Number" value="" />
-									</div>
-								</div>
-								<div class="form-group row">
-									<label class="col-sm-4 col-form-label">NextOfKin Relationship</label>
-									<div class="col-sm-8">
-										<input type="text" class="nok_relationship" name="NextOfKin_Relationship" value="" />
-									</div>
-								</div>
-								<div class="form-group row">
-									<label class="col-sm-4 col-form-label">NextOfKin BlkHouse Number</label>
-									<div class="col-sm-8">
-										<input type="text" class="nok_blkhousr_number" name="NextOfKin_BlkHouse_Number" value="" />
-									</div>
-								</div>
-								<div class="form-group row">
-									<label class="col-sm-4 col-form-label">NextOfKin FlrUnit Number</label>
-									<div class="col-sm-8">
-										<input type="text" class="nok_flrunit_number" name="NextOfKin_FlrUnit_Number" value="" />
-									</div>
-								</div>
-								<div class="form-group row">
-									<label class="col-sm-4 col-form-label">NextOfKin Street Name</label>
-									<div class="col-sm-8">
-										<input type="text" class="nok_street_name" name="NextOfKin_Street_Name" value="" />
-									</div>
-								</div>
-								<div class="form-group row">
-									<label class="col-sm-4 col-form-label">NextOfKin Country</label>
-									<div class="col-sm-8">
-										<input type="text" class="nok_country" name="NextOfKin_Country" value="" />
-									</div>
-								</div>
-								<div class="form-group row">
-									<label class="col-sm-4 col-form-label">NextOfKin PostalCode</label>
-									<div class="col-sm-8">
-										<input type="text" class="nok_postalcode" name="NextOfKin_PostalCode" value="" />
-									</div>
-								</div>
-							</div>
+					<div class="row">								
+						<div class="col-7" style="text-align:center;padding-top:5px;">
+							<button type="button" id="updatePhoto2" onclick="api.server.OpenPictureCaptureForm('2')">Update Photos</button>
 						</div>
-					</div>
-					<span class="s_label s_employment_details">Employment details</span>
-					<div class="s_detail detail_s_employment_details">
-						<div class="row">
-							<div class="col">
-								<div class="form-group row">
-									<label class="col-sm-4 col-form-label">Employment Name</label>
-									<div class="col-sm-8">
-										<input type="text" class="e_name" name="EmployerName" value="" />
-									</div>
-								</div>
-								<div class="form-group row">
-									<label class="col-sm-4 col-form-label">Employment Contact Number</label>
-									<div class="col-sm-8">
-										<input type="text" class="e_contact_number" name="Employment_Contact_Number" value="" />
-									</div>
-								</div>
-								<div class="form-group row">
-									<label class="col-sm-4 col-form-label">Employment Company Name</label>
-									<div class="col-sm-8">
-										<input type="text" class="e_company_name" name="Employment_Company_Name" value="" />
-									</div>
-								</div>
-								<div class="form-group row">
-									<label class="col-sm-4 col-form-label">Employment Job Title</label>
-									<div class="col-sm-8">
-										<input type="text" class="e_job_title" name="Employment_Job_Title" value="" />
-									</div>
-								</div>
-								<div class="form-group row">
-									<label class="col-sm-4 col-form-label">Employment Start Date</label>
-									<div class="col-sm-8">
-										<input type="text" class="e_start_date" name="Employment_Start_Date" value="" />
-									</div>
-								</div>
-								<div class="form-group row">
-									<label class="col-sm-4 col-form-label">Employment End Date</label>
-									<div class="col-sm-8">
-										<input type="text" class="e_end_date" name="Employment_End_Date" value="" />
-									</div>
-								</div>
-								<div class="form-group row">
-									<label class="col-sm-4 col-form-label">Employment Remarks</label>
-									<div class="col-sm-8">
-										<input type="text" class="e_remarks" name="Employment_Remarks" value="" />
-									</div>
-								</div>
-							</div>
+						<div class="col-5" style="text-align:center;padding-top:5px;">
+							<button type="button"  onclick="api.server.OpenFingerprintCaptureForm('2')">Update Fingerprints</button>
 						</div>
-					</div>
-					<div class="btn-group">
-						<button type="submit" class="btn-form" id="SaveBtn">Save</button>
-						<button type="submit" class="btn-form">Cancel</button>
 					</div>
 				</div>
-				<div class="tab-pane fade" id="supervisee-details" role="tabpanel" aria-labelledby="nav-profile-tab">
-					<input class="" type="text" value="" placeholder="Supervisee's Blodata" />
-					<input class="" type="text" value="" placeholder="Supervisee's Address" />
-					<input class="" type="text" value="" placeholder="Other Address" />
-					<input class="" type="text" value="" placeholder="Next Of Kin" />
-					<input class="" type="text" value="" placeholder="Employment details" />
-					<div class="btn-group">
-						<button type="submit" class="btn-form" >Save</button>
-						<button type="submit" class="btn-form">Cancel</button>
+				<span class="s_label">Supervisee's Address</span>
+				<div class="s_detail">
+					<div class="row">
+						<input type="hidden" name="Address_ID" class="address_ID" />
+						<div class="col">
+							<div class="form-group row">
+								<label class="col-sm-4 col-form-label">BlkHouseNumber</label>
+								<div class="col-sm-8">
+									<input type="text" class="blkHouse_Number" name="BlkHouse_Number" />
+								</div>
+							</div>
+							<div class="form-group row">
+								<label class="col-sm-4 col-form-label">FlrUnit Number</label>
+								<div class="col-sm-8">
+									<input type="text" class="flrUnit_Number" name="FlrUnit_Number" />
+								</div>
+							</div>
+							<div class="form-group row">
+								<label class="col-sm-4 col-form-label">Street Name</label>
+								<div class="col-sm-8">
+									<input type="text" class="street_Name" name="Street_Name" />
+								</div>
+							</div>
+							<div class="form-group row">
+								<label class="col-sm-4 col-form-label">Country</label>
+								<div class="col-sm-8">
+									<input type="text" class="country" name="Country" />
+								</div>
+							</div>
+							<div class="form-group row">
+								<label class="col-sm-4 col-form-label">Postal Code</label>
+								<div class="col-sm-8">
+									<input type="text" class="postal_Code" name="Postal_Code" />
+								</div>
+							</div>
+						</div>
 					</div>
+				</div>
+				<span class="s_label">Other Address</span>
+				<div class="s_detail">
+					<div class="row">
+						<input type="hidden" name="Other_Address_ID" class="Other_Address_ID" />
+						<div class="col">
+							<div class="form-group row">
+								<label class="col-sm-4 col-form-label">BlkHouseNumber</label>
+								<div class="col-sm-8">
+									<input type="text" class="o_BlkHouse_Number" name="OBlkHouse_Number" />
+								</div>
+							</div>
+							<div class="form-group row">
+								<label class="col-sm-4 col-form-label">FlrUnit Number</label>
+								<div class="col-sm-8">
+									<input type="text" class="o_FlrUnit_Number" name="OFlrUnit_Number" />
+								</div>
+							</div>
+							<div class="form-group row">
+								<label class="col-sm-4 col-form-label">Street Name</label>
+								<div class="col-sm-8">
+									<input type="text" class="o_Street_Name" name="OStreet_Name" />
+								</div>
+							</div>
+							<div class="form-group row">
+								<label class="col-sm-4 col-form-label">Country</label>
+								<div class="col-sm-8">
+									<input type="text" class="o_Country" name="OCountry" />
+								</div>
+							</div>
+							<div class="form-group row">
+								<label class="col-sm-4 col-form-label">Postal Code</label>
+								<div class="col-sm-8">
+									<input type="text" class="o_Postal_Code" name="OPostal_Code" />
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<span class="s_label">Next Of Kin</span>
+				<div class="s_detail">
+					<div class="row">
+						<div class="col">
+							<div class="form-group row">
+								<label class="col-sm-4 col-form-label">NextOfKin Name</label>
+								<div class="col-sm-8">
+									<input type="text" class="nok_name" value="" name="NextOfKinDetailsName" />
+								</div>
+							</div>
+							<div class="form-group row">
+								<label class="col-sm-4 col-form-label">NextOfKin Contact Number</label>
+								<div class="col-sm-8">
+									<input type="text" class="nok_contact_number" value="" name="ContactNumber" />
+								</div>
+							</div>
+							<div class="form-group row">
+								<label class="col-sm-4 col-form-label">NextOfKin Relationship</label>
+								<div class="col-sm-8">
+									<input type="text" class="nok_relationship" value="" name="Relationship" />
+								</div>
+							</div>
+							<div class="form-group row">
+								<label class="col-sm-4 col-form-label">NextOfKin BlkHouse Number</label>
+								<div class="col-sm-8">
+									<input type="text" class="nok_blkhousr_number" value="" name="NextOfKinDetailsHouseNumber" />
+								</div>
+							</div>
+							<div class="form-group row">
+								<label class="col-sm-4 col-form-label">NextOfKin FlrUnit Number</label>
+								<div class="col-sm-8">
+									<input type="text" class="nok_flrunit_number" value="" name="NextOfKinDetailsUnitNumber" />
+								</div>
+							</div>
+							<div class="form-group row">
+								<label class="col-sm-4 col-form-label">NextOfKin Street Name</label>
+								<div class="col-sm-8">
+									<input type="text" class="nok_street_name" value="" name="NextOfKinDetailsStreetName" />
+								</div>
+							</div>
+							<div class="form-group row">
+								<label class="col-sm-4 col-form-label">NextOfKin Country</label>
+								<div class="col-sm-8">
+									<input type="text" class="nok_country" value="" name="NextOfKinDetailsCountry" />
+								</div>
+							</div>
+							<div class="form-group row">
+								<label class="col-sm-4 col-form-label">NextOfKin PostalCode</label>
+								<div class="col-sm-8">
+									<input type="text" class="nok_postalcode" value="" name="NextOfKinDetailsPostalCode" />
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<span class="s_label">Employment details</span>
+				<div class="s_detail">
+					<div class="row">
+						<div class="col">
+							<div class="form-group row">
+								<label class="col-sm-4 col-form-label">Employment Name</label>
+								<div class="col-sm-8">
+									<input type="text" class="e_name" value="" name="EmployerName" />
+								</div>
+							</div>
+							<div class="form-group row">
+								<label class="col-sm-4 col-form-label">Employment Contact Number</label>
+								<div class="col-sm-8">
+									<input type="text" class="e_contact_number" value="" name="EmployerContact" />
+								</div>
+							</div>
+							<div class="form-group row">
+								<label class="col-sm-4 col-form-label">Employment Company Name</label>
+								<div class="col-sm-8">
+									<input type="text" class="e_company_name" value="" name="CompanyName" />
+								</div>
+							</div>
+							<div class="form-group row">
+								<label class="col-sm-4 col-form-label">Employment Job Title</label>
+								<div class="col-sm-8">
+									<input type="text" class="e_job_title" value="" name="JobTitle" />
+								</div>
+							</div>
+							<div class="form-group row">
+								<label class="col-sm-4 col-form-label">Employment Start Date</label>
+								<div class="col-sm-8">
+									<input type="text" class="e_start_date" value="" name="StartDate" />
+								</div>
+							</div>
+							<div class="form-group row">
+								<label class="col-sm-4 col-form-label">Employment End Date</label>
+								<div class="col-sm-8">
+									<input type="text" class="e_end_date" value="" name="EndDate" />
+								</div>
+							</div>
+							<div class="form-group row">
+								<label class="col-sm-4 col-form-label">Employment Remarks</label>
+								<div class="col-sm-8">
+									<input type="text" class="e_remarks" value="" name="Remarks" />
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="btn-group">
+					<button type="submit" class="btn-form" id="SaveBtn">Save</button>
+					<button type="submit" class="btn-form">Cancel</button>
 				</div>
 			</div>
+			<div class="tab-pane fade" id="issued-cards" role="tabpanel" aria-labelledby="nav-profile-tab">
+				<input class="" type="text" value="" placeholder="Supervisee's Blodata" />
+				<input class="" type="text" value="" placeholder="Supervisee's Address" />
+				<input class="" type="text" value="" placeholder="Other Address" />
+				<input class="" type="text" value="" placeholder="Next Of Kin" />
+				<input class="" type="text" value="" placeholder="Employment details" />
+				<div class="btn-group">
+					<button type="submit" class="btn-form" >Save</button>
+					<button type="submit" class="btn-form">Cancel</button>
+				</div>
+			</div>
+		</div>
 		</form>
 	</div>
 </div>
 
 <script>
 	$(function() {
-		$(".s_blodata").click(function(){
-			$(".detail_s_blodata").fadeToggle('show');
-		});
-		$(".s_next_of_kin").click(function(){
-			$(".detail_s_next_of_kin").fadeToggle('show');
-		});
-		$(".s_employment_details").click(function(){
-			$(".detail_s_employment_details").fadeToggle('show');
+		$('.s_label').click(function(){
+			$(this).next().fadeToggle(200);
 		});
         if (api.model != null) {
-			$('.s_address').val(api.model.Addresses.Street_Name);
-			$('.s_other_address').val(api.model.Addresses.Street_Name);
+			$('.userId').val(api.model.User.UserId);
 			// NextOfKin
 			$('.nok_name').val(api.model.UserProfile.NextOfKin_Name);
 			$('.nok_contact_number').val(api.model.UserProfile.NextOfKin_Contact_Number);
@@ -204,6 +274,15 @@
 			$('.e_start_date').val(api.model.UserProfile.Employment_Start_Date);
 			$('.e_end_date').val(api.model.UserProfile.Employment_End_Date);
 			$('.e_remarks').val(api.model.UserProfile.Employment_Remarks);
+			// Residential Address
+			$('.address_ID').val(api.model.UserProfile.Residential_Addess_ID);
+			$('.other_Address_ID').val(api.model.UserProfile.Other_Address_ID);
+			$('.street_Name').val(api.model.Addresses.Street_Name);
+			$('.blkHouse_Number').val(api.model.Addresses.BlkHouse_Number);
+			$('.flrUnit_Number').val(api.model.Addresses.FlrUnit_Number);
+			$('.country').val(api.model.Addresses.Country);
+			$('.postal_Code').val(api.model.Addresses.Postal_Code);
+			// Other Address
         }
 
     });

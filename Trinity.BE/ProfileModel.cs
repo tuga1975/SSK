@@ -40,7 +40,7 @@ namespace Trinity.BE
         public int? Other_Address_ID { get; set; }
         public string Postal_Code { get; set; }
         public string NextOfKinDetailsName { get; set; }
-        public string ContactNumber { get; set; }
+        public string ContactNumber { get; set; }   // NextOfKinDetailsContactNumber
         public string Relationship { get; set; }
         public string NextOfKinDetailsHouseNumber { get; set; }
         public string NextOfKinDetailsUnitNumber { get; set; }
@@ -105,7 +105,6 @@ namespace Trinity.BE
                 },
                 Addresses = new Address
                 {
-
                 }
             };
             return profileModel;
