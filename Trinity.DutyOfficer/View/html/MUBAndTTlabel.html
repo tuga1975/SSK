@@ -1,4 +1,19 @@
-﻿<h3>MUB / TT Label</h3>
+﻿<div style="display:block; padding:10px;">
+    <span style=" font-size:22px; float:left; text-align:left;"><b>MUB / TT Label</b></span>
+    <div class="form-inline" style="right:10px; float:right; padding-bottom:10px;">
+        <select class="form-control" id="pageSize" style="width:70px; display:inline-block;">
+            <option>10</option>
+            <option>2</option>
+            <option>3</option>
+        </select>
+        <div style="display:inline-block;">entries</div>
+
+        <div style="display:inline-block;">
+            <input type="text" class="form-control" style="width:180px; display:inline;" id="textSearch" />
+            <button type="button" class="btn btn-primary">Search</button>
+        </div>
+    </div>
+</div>
 <table id="MUBAndTTlabel" data-click-to-select="true">
     <thead>
         <tr>
@@ -15,6 +30,14 @@
 </div>
 
 <script type="text/javascript">
+    $('#pageSize').change(function () {
+        pageSize = $("#pageSize option:selected").text();
+        $('#PrintMUBAndTTlabel').bootstrapTable('refreshOptions', {
+            pagination: true,
+            search: true,
+            pageSize: pageSize
+        });
+    });
     $('#MUBAndTTlabel').bootstrapTable({
         //pagination: true,
         //pageSize:2,
