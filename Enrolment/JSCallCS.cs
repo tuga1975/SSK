@@ -247,16 +247,28 @@ namespace Enrolment
             {
                 Session session = Session.Instance;
                 var rawData = JsonConvert.DeserializeObject<Trinity.BE.ProfileRawMData>(param);
+                var rawDataAddress = JsonConvert.DeserializeObject<Trinity.BE.Address>(param);
+                
                 var data = new Trinity.BE.ProfileRawMData().ToProfileModel(rawData);
                 var dalUser = new Trinity.DAL.DAL_User();
+                
                 var dalUserprofile = new Trinity.DAL.DAL_UserProfile();
                 var ProfileModel = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
-                if (primaryInfoChange)
-                {
+                var address = new DAL_Address();
 
+                // get address_ID insert or update
+                var residential_Addess_ID = address.SaveAddress(rawDataAddress, true);
+                data.UserProfile.Residential_Addess_ID = residential_Addess_ID;
+                data.UserProfile.Other_Address_ID = residential_Addess_ID;
+
+                // add some some old data not change
+                data.User.Name = ProfileModel.User.Name;
+                data.User.Status = ProfileModel.User.Status;
+                if (primaryInfoChange)
+                {                    
                     dalUser.UpdateUser(data.User, ProfileModel.User.UserId, true);
 
-                    dalUserprofile.UpdateUserProfile(data.UserProfile, data.User.UserId, true);
+                    dalUserprofile.UpdateUserProfile(data.UserProfile, ProfileModel.User.UserId, true);
                     //send notifiy to duty officer
                     APIUtils.SignalR.SendNotificationToDutyOfficer("A supervisee has updated profile.", "Please check Supervisee's information!");
                 }
@@ -268,7 +280,7 @@ namespace Enrolment
                 }
 
                 //load Supervisee page 
-                LoadPage("Supervisee.html");
+                LoadListSupervisee();
             }
             catch (Exception)
             {
