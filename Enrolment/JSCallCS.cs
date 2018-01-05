@@ -255,6 +255,8 @@ namespace Enrolment
             };
             if (profileModel.Addresses == null) {
                 profileModel.Addresses = new Trinity.BE.Address();
+                profileModel.UserProfile.Residential_Addess_ID = 0;
+                profileModel.UserProfile.Other_Address_ID = 0;
             }
             session[CommonConstants.CURRENT_EDIT_USER] = profileModel;
             if (dbUser.Status == "NEW")
