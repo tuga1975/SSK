@@ -1,0 +1,105 @@
+﻿<div style="display:block; padding:10px;">
+    <span style=" font-size:22px; float:left; text-align:left;"><b>Appointments</b></span>
+    <div class="form-inline" style="right:10px; float:right; padding-bottom:10px;">
+        <select class="form-control" id="pageSize" style="width:70px; display:inline-block;">
+            <option>10</option>
+            <option>2</option>
+            <option>3</option>
+        </select>
+        <div style="display:inline-block;">entries</div>
+
+        <div style="display:inline-block;">
+            <div class="input-group date" id="datetimepicker1" style="width:180px;">
+                <input type='text' class="form-control" />
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+        </div>
+        <div style="display:inline-block;">Date</div>
+    </div>
+</div>
+<br />
+<table id="table"></table>
+<script type="text/javascript">
+    $(document).ready(function () {
+        activemenu('Appointments');
+
+        var pageSize = $('#pageSize');
+        if (pageSize)
+            pageSize = 10;
+
+        $(function () {
+            $('#datetimepicker1').datepicker();
+        });
+
+        loadTable(pageSize);
+
+    });
+    $('#pageSize').change(function () {
+        pageSize = $("#pageSize option:selected").text();
+        $('#table').bootstrapTable('refreshOptions', {
+            pagination: true,
+            //search: true,
+            pageSize: pageSize
+        });
+    });
+
+    function loadTable(page) {
+        $('#table').bootstrapTable({
+            pagination: true,
+            pageSize: page,
+            //search:true,
+            columns: [{
+                field: 'TimeSlot',
+                title: 'Time Slot',
+                sortable: true,
+                width: '15%',
+                align: 'center'
+            }, {
+                field: 'NRIC',
+                title: 'NRIC',
+                sortable: true,
+                width: '15%',
+                align: 'center'
+            }, {
+                field: 'Name',
+                title: 'Name',
+                sortable: true,
+                width: '40%',
+                align: 'center'
+            }, {
+                field: 'ReportTime',
+                title: 'Report Time',
+                sortable: true,
+                width: '15%',
+                align: 'center'
+            }, {
+                field: 'Status',
+                title: 'Status',
+                sortable: true,
+                width: '15%',
+                align: 'center'
+            }],
+            data: [{
+                TimeSlot: '04:50',
+                NRIC: 'S99999991X',
+                Name: 'Quach Phu Phu',
+                ReportTime: '12:11',
+                Status: 'Reported'
+            }, {
+                TimeSlot: '05:15',
+                NRIC: 'S99999992X',
+                Name: 'Duong Qua',
+                ReportTime: '12:11',
+                Status: 'Booked'
+            }, {
+                TimeSlot: '11:10',
+                NRIC: 'S99999993X',
+                Name: 'Tieu Long Nu',
+                ReportTime: '14:40',
+                Status: 'No-show'
+            }]
+        });
+    }
+</script>

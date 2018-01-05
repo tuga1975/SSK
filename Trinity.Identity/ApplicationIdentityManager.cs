@@ -58,6 +58,7 @@ namespace Trinity.Identity
         public byte[] LeftThumbFingerprint { get; set; }
         public string Status { get; set; }
         public Nullable<bool> IsFirstAttempt { get; set; }
+        public int AccessFailedCount { get; set; }
     }
 
     public class ApplicationIdentityManager

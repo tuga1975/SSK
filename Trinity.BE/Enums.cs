@@ -47,7 +47,6 @@ public enum EnumAppointmentStatuses
     Booked = 1,
     Reported = 2,
     Completed = 3,
-    Processing= 4
 }
 public enum EnumAbsenceReasons
 {
@@ -88,6 +87,18 @@ public static class EnumDeviceTypes
     public const string BarcodeScanner = "BarcodeScanner";
     public const string LEDDisplayMonitor = "LEDDisplayMonitor";
     public const string Camera = "Camera";
+}
+
+
+public static class EnumColors
+{
+    public const string Red = "#ff0000";
+    public const string Yellow = "#ffd800";
+    public const string Blue = "#0026ff";
+    public const string White = "#ffffff";
+    public const string Black = "#000000";
+    public const string Green = "#00ff21";
+    
 }
 
 public enum EnumDeviceStatuses

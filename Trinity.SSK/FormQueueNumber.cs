@@ -4,6 +4,7 @@ using System.Linq;
 using Newtonsoft.Json;
 using System.Windows.Forms;
 using Trinity.DAL;
+using System.Collections.Generic;
 
 namespace SSK
 {
@@ -12,6 +13,7 @@ namespace SSK
         private WebBrowser wbQueueNumber = null;
         private static FormQueueNumber _instance = null;
         private JSCallCS _jsCallCS = null;
+        private System.Timers.Timer timer;
 
         public static FormQueueNumber GetInstance()
         {
@@ -23,7 +25,23 @@ namespace SSK
         }
         public FormQueueNumber()
         {
-            InitializeComponent();            
+            InitializeComponent();
+
+            this.timer = new System.Timers.Timer();
+            this.timer.AutoReset = false;
+            this.timer.Elapsed += RefreshQueueNumberTimer_Elapsed;
+            TimerStart();
+
+        }
+        public void TimerStart()
+        {
+            this.timer.Interval = 1;
+            //this.timer.Interval = 30000; 
+            this.timer.Enabled = true;
+        }
+        public void TimerStop()
+        {
+            this.timer.Enabled = false;
         }
 
         private void InitializeWebBrowser()
@@ -63,25 +81,59 @@ namespace SSK
         public void RefreshQueueNumbers()
         {
             DAL_QueueNumber dalQueue = new DAL_QueueNumber();
-            var arrayQueue = dalQueue.GetAllQueueNumberByDate(DateTime.Today).Select(d => new Trinity.BE.Queue()
-            {
-                Status = d.Status,
-                QueueNumber = d.QueuedNumber
-            }).ToArray();
+            var allQueue = GetAllQueueToday(dalQueue);
+
+            var setting = new DAL_Environment().GetTodayEnvironmentSetting();
+            var today = DateTime.Now;
 
             string currentQueueNumber = string.Empty;
-            for (int i = 0; i < arrayQueue.Length; i++)
+            var waitingQueueNumbers = new List<string>();
+            for (int i = 0; i < allQueue.Count; i++)
             {
-                if (arrayQueue[i].Status == EnumQueueStatuses.Processing)
+                var appointmentStartTime = new DAL_Appointments().GetAppointmentDetails(allQueue[i].AppointmentId);
+                var diffHour = appointmentStartTime.FromTime.Value.Hours - today.Hour;
+                var diffStartMin = appointmentStartTime.FromTime.Value.Minutes - today.Minute;
+                var diffEndHour = appointmentStartTime.ToTime.Value.Hours - today.Hour;
+                var diffEndMin = appointmentStartTime.ToTime.Value.Minutes - today.Minute;
+                if (allQueue[i].Status == EnumQueueStatuses.Waiting && diffHour == 0 && diffStartMin <= 0 && ((diffEndHour > 0 && diffEndMin <= 0) || (diffEndHour == 0 && diffEndMin >= 0)))
                 {
-                    currentQueueNumber = arrayQueue[i].QueueNumber;
-                    break;
+                    currentQueueNumber += allQueue[i].QueueNumber + "-";
+                }
+                else if (allQueue[i].Status == EnumQueueStatuses.Waiting && diffHour > 0)
+                {
+                    waitingQueueNumbers.Add(allQueue[i].QueueNumber);
+                }
+                else if (allQueue[i].Status == EnumQueueStatuses.Waiting && diffHour == 0 && diffStartMin > 0)
+                {
+                    waitingQueueNumbers.Add(allQueue[i].QueueNumber);
                 }
             }
-            string[] waitingQueueNumbers = arrayQueue.Where(q => q.Status == EnumQueueStatuses.Waiting).OrderByDescending(d => d.Time).Select(d => d.QueueNumber).ToArray();
-            wbQueueNumber.RefreshQueueNumbers(currentQueueNumber, waitingQueueNumbers);
+
+            wbQueueNumber.RefreshQueueNumbers(currentQueueNumber, waitingQueueNumbers.ToArray());
+
+        }
+
+        private static List<Trinity.BE.Queue> GetAllQueueToday(DAL_QueueNumber dalQueue)
+        {
+            return dalQueue.GetAllQueueNumberByDate(DateTime.Today).Select(d => new Trinity.BE.Queue()
+            {
+                ID = d.ID,
+                AppointmentId = d.Appointment_ID,
+                Status = d.Status,
+                QueueNumber = d.QueuedNumber,
+                Time = d.CreatedTime
+            }).ToList();
         }
 
 
+        private void RefreshQueueNumberTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            var setting = new DAL_Environment().GetTodayEnvironmentSetting();
+
+            //this.timer.Interval = 1000 * 60 * setting.Duration;
+            this.timer.Interval = 60000;
+            this.timer.Enabled = true;
+            this.RefreshQueueNumbers();
+        }
     }
 }

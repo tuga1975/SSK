@@ -153,6 +153,7 @@
     <Content Include="View\html\New-Supervisee.html" />
     <Content Include="View\html\PrintSmartCard.html" />
     <Content Include="View\html\Supervisee.html" />
+    <Content Include="View\html\UpdateSuperviseeBiodata.html" />
     <Content Include="View\html\WebcamCapture.html" />
     <Content Include="View\images\log-out.png" />
     <Content Include="View\images\logo.png" />

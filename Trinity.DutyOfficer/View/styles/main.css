@@ -2,42 +2,44 @@
     font-family: Verdana,sans-serif;
     font-size: 15px;
     line-height: 1.5;
-    margin:0px;
-    padding:0px;
+    margin: 0px;
+    padding: 0px;
 }
 
-input{
-    
-    border:1px solid #CCC;
+input {
+    border: 1px solid #CCC;
 }
+
 #parent-content {
     position: fixed;
     z-index: 1;
     width: 100%;
-    height: calc(100% - 75px);
-    top:75px;
-    left:0px;
-    overflow-x:hidden;
-    overflow-y:auto;
+    height: calc(100% - 110px);
+    top: 110px;
+    left: 0px;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
+
 #content {
     margin: 10px 10px 10px 10px;
     position: relative;
 }
-#content .chi-content{
-    
+
+    #content .chi-content {
+    }
+
+.loading {
+    position: fixed;
+    z-index: 100;
+    background-color: rgba(255,255,255,0.5);
+    width: 100%;
+    height: 100%;
+    top: 0px;
+    left: 0px;
+    display: none;
 }
 
-.loading{
-    position:fixed;
-    z-index:100;
-    background-color:rgba(255,255,255,0.5);
-    width:100%;
-    height:100%;
-    top:0px;
-    left:0px;
-    display:none;
-}
 .loader {
     border: 5px solid #f3f3f3; /* Light grey */
     border-top: 5px solid #3498db; /* Blue */
@@ -45,14 +47,19 @@ input{
     width: 50px;
     height: 50px;
     animation: spin 0.5s linear infinite;
-    position:absolute;
-    left:calc(50% - 25px);
-    top:calc(50% - 25px);
+    position: absolute;
+    left: calc(50% - 25px);
+    top: calc(50% - 25px);
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 #header {
@@ -60,10 +67,11 @@ input{
     z-index: 10;
     width: 100%;
     height: 75px;
-    background-color:#FFF;
-    top:0px;
-    left:0px;
-} 
+    background-color: #FFF;
+    top: 0px;
+    left: 0px;
+}
+
 .logo {
     position: absolute;
     width: 55px;
@@ -78,6 +86,7 @@ input{
     font-weight: bold;
     box-sizing: border-box;
 }
+
 .logout {
     position: absolute;
     width: 50px;
@@ -88,3 +97,42 @@ input{
     font-size: 45px;
     cursor: pointer;
 }
+
+#menu {
+    border: 1px solid #CCC;
+    border-left: none;
+    border-right: none;
+    position: fixed;
+    top: 75px;
+    width: 100%;
+    z-index: 10;
+}
+
+    #menu [item-menu] {
+        display: table-cell;
+        padding: 5px 10px;
+        position: relative;
+        cursor: pointer;
+    }
+
+        #menu [item-menu]::after {
+            content: " ";
+            border-right: 1px solid #CCC;
+            position: absolute;
+            right: 0px;
+            width: 1px;
+            height: 100%;
+            top: 0px;
+        }
+
+        #menu [item-menu]::before {
+            content: attr(item-menu);
+        }
+
+        #menu [item-menu]:hover {
+            background-color: #EEE;
+        }
+
+        #menu [item-menu].active {
+            background-color: #CCC;
+        }

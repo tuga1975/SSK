@@ -1,0 +1,36 @@
+﻿<div class="modal fade" role="dialog" id="idBlock">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Unblock Supervisee</h5>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon">Officer NRIC</span>
+                        <input readonly="readonly" type="text" class="form-control pri" id="NRIC">
+                    </div>
+                    <br />
+                    <div class="input-group">
+                        <span class="input-group-addon">Officer Name</span>
+                        <input readonly="readonly" type="text" class="form-control pri" id="Name">
+                    </div>
+                    <br />
+                    <span class="input-group-addon"  style="width:120px;">Reason:</span>
+                    <br />
+                    <textarea type="text" class="form-control pri" rows="4"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Unblock</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#NRIC').val(api.model.NRIC);
+        $('#Name').val(api.model.Name);
+    });
+    
+</script>

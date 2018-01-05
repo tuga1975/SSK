@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNet.Identity;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
+using Trinity.BE;
 using Trinity.Common;
 using Trinity.Common.Common;
 using Trinity.DAL;
@@ -55,7 +57,48 @@ namespace DutyOfficer
             ThreadPool.QueueUserWorkItem(new WaitCallback(actionThread), new object[] { method, guidEvent, pram });
         }
 
-        
+
+        public void getAlertsSendToDutyOfficer()
+        {
+            var dalNotify = new DAL_Notification();
+            var data = dalNotify.GetNotificationsSentToDutyOfficer(false);
+            _web.LoadPageHtml("AlertTab.html", data);
+        }
+
+        #region Queue
+        public void LoadPopupQueue()
+        {
+            this._web.LoadPopupHtml("QueuePopupDetail.html");
+        }
+
+        public void LoadPopupAlert(string jsonData)
+        {
+            this._web.LoadPopupHtml("AlertPopupDetail.html", jsonData);
+        }
+        #endregion
+        #region Settings
+        public void PopupAddHoliday()
+        {
+            this._web.LoadPopupHtml("PopupAddHoliday.html");
+        }
+        #endregion
+
+        public void LoadPopupBlock(string json)
+        {
+            var rawData = JsonConvert.DeserializeObject<object>(json);
+
+            this._web.LoadPopupHtml("BlockedPopupDetail.html", rawData);
+        }
+
+        public void LoadPopupMUBAndTTLabel()
+        {
+            this._web.LoadPopupHtml("MUBAndTTPopup.html");
+        }
+
+        public void LoadPopupUBLabel()
+        {
+            this._web.LoadPopupHtml("UBPopup.html");
+        }
     }
 
     #region Custom Events

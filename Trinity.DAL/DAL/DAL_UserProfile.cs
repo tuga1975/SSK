@@ -170,8 +170,8 @@ namespace Trinity.DAL
             var userInfo = new Trinity.Common.UserInfo
             {
                 NRIC = user.NRIC,
-                UserName = user.Name,
-                DOB = model.DOB.ToString()
+                UserName = user.Name//,
+                //Date = model.DOB.ToString()
             };
 
             dbUserProfile.QRCode = Common.CommonUtil.CreateQRCode(userInfo);

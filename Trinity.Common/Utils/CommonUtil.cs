@@ -29,7 +29,7 @@ namespace Trinity.Common
                 }
             };
 
-            var contentQRCode = "User Name: " + userInfo.UserName + "; NRIC: " + userInfo.NRIC + "; DOB: " + userInfo.DOB;
+            var contentQRCode = "User Name: " + userInfo.UserName + "; NRIC: " + userInfo.NRIC + "; Date: " + userInfo.Date;
             var encryptContent = CommonUtil.EncryptString(contentQRCode, AESKey);
             var pixelData = qrCodeWriter.Write(encryptContent);
             // creating a bitmap from the raw pixel data; if only black and white colors are used it makes no difference    
