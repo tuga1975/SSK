@@ -411,7 +411,7 @@ namespace Enrolment
                         webcam.stopWebcam();
                         using (MemoryStream mStream = new MemoryStream())
                         {
-                            pictureBox1.Image.Save(mStream, pictureBox1.Image.RawFormat);
+                            pictureBox1.Image.Save(mStream,System.Drawing.Imaging.ImageFormat.Jpeg);
                             if (_imgBox == "1") { image1 = mStream.ToArray(); }
                             if (_imgBox == "2") { image2 = mStream.ToArray(); }
                         }
