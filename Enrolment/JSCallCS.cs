@@ -246,7 +246,7 @@ namespace Enrolment
             var dalUserProfile = new DAL_UserProfile();
 
             var dbUser = dalUser.GetUserByUserId(userId, true);
-         
+
             var profileModel = new Trinity.BE.ProfileModel
             {
                 User = dbUser,
@@ -256,19 +256,19 @@ namespace Enrolment
             session[CommonConstants.CURRENT_EDIT_USER] = profileModel;
             if (dbUser.Status == "NEW")
             {
-                
+
 
                 EventCenter eventCenter = EventCenter.Default;
 
-                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.LOAD_UPDATE_SUPERVISEE_BIODATA,Data=profileModel });
+                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.LOAD_UPDATE_SUPERVISEE_BIODATA, Data = profileModel });
 
-                
+
             }
             else
             {
                 _web.LoadPageHtml("Edit-Supervisee.html", profileModel);
             }
-            
+
         }
 
         public void SaveSupervisee(string param, bool primaryInfoChange)
@@ -303,6 +303,23 @@ namespace Enrolment
             catch (Exception)
             {
                 LoadPage("Login.html");
+            }
+        }
+
+        public void UpdateSuperviseeBiodata()
+        {
+          
+
+            Session session = Session.Instance;
+            var dalUser = new Trinity.DAL.DAL_User();
+            var dalUserprofile = new Trinity.DAL.DAL_UserProfile();
+            var profileModel = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
+            if (profileModel != null)
+            {
+                EventCenter eventCenter = EventCenter.Default;
+
+                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.UPDATE_SUPERVISEE_BIODATA, Data = profileModel });
+                
             }
         }
 
