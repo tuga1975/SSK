@@ -36,8 +36,8 @@ namespace Enrolment
         private int _fingerprintFailed;
         private Webcam webcam;
         private string _imgBox;
-        private string image1;
-        private string image2;
+        private byte[] image1;
+        private byte[] image2;
         private bool _displayLoginButtonStatus = false;
         private FutronicEnrollment _futronicEnrollment = null;
         public Main()
@@ -381,9 +381,12 @@ namespace Enrolment
                     return;
                 }
             }
+            else if (e.Name.Equals(EventNames.OPEN_PICTURE_CAPTURE_FORM_FAILED))
+            {
+                LayerWeb.InvokeScript("Alert", "Cant find this device camera!");
+            }
             else if (e.Name.Equals(EventNames.CAPTURE_PICTURE))
             {
-                pictureBox1.Image.Save(AppDomain.CurrentDomain.BaseDirectory.ToString() + "/image" + _imgBox + ".jpg");
                 //for testing purpose
                 Session session = Session.Instance;
                 using (var ms = new MemoryStream())
@@ -404,6 +407,12 @@ namespace Enrolment
                     {
                         pictureBox1.Hide();
                         webcam.stopWebcam();
+                        using (MemoryStream mStream = new MemoryStream())
+                        {
+                            pictureBox1.Image.Save(mStream, pictureBox1.Image.RawFormat);
+                            if (_imgBox == "1") { image1 =  mStream.ToArray(); }
+                            if (_imgBox == "2") { image2 = mStream.ToArray(); }
+                        }
                         var currentPage = session[CommonConstants.CURRENT_PAGE];
                         var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
                         var isPrimaryPhoto = session[CommonConstants.IS_PRIMARY_PHOTO];
