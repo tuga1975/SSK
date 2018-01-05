@@ -390,15 +390,14 @@ namespace Enrolment
             }
             else if (e.Name.Equals(EventNames.CAPTURE_PICTURE))
             {
-                //for testing purpose
-                Session session = Session.Instance;
-                using (var ms = new MemoryStream())
+                if(InvokeRequired)
                 {
-                    pictureBox1.Image.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
-                    session[CommonConstants.CURRENT_PHOTO_DATA] = ms.ToArray();
-
+                    Invoke(new Action(() =>
+                    {
+                        webcam.stopWebcam();
+                        LayerWeb.InvokeScript("confirmMode");
+                    }));
                 }
-
             }
             else if (e.Name.Equals(EventNames.CONFIRM_CAPTURE_PICTURE))
             {
@@ -464,6 +463,18 @@ namespace Enrolment
                         LayerWeb.LoadPageHtml("New-Supervisee.html");
                     }));
                     return;
+                }
+            }
+            else if (e.Name.Equals(EventNames.CANCEL_CONFIRM_CAPTURE_PICTURE))
+            {
+                if (InvokeRequired)
+                {
+                    Invoke(new Action(() =>
+                    {
+                        webcam.InitializeWebCam();
+                        webcam.startWebcam();
+                        LayerWeb.InvokeScript("captureMode");
+                    }));
                 }
             }
             else if (e.Name == EventNames.PHOTO_CAPTURE_FAILED)
