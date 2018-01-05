@@ -354,6 +354,11 @@ namespace Enrolment
             {
                 session[CommonConstants.IS_PRIMARY_PHOTO] = true;
             }
+            else
+            {
+                session[CommonConstants.IS_PRIMARY_PHOTO] = false;
+            }
+                    
             eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.OPEN_PICTURE_CAPTURE_FORM, Message = number });
         }
         public void CancelCapturePicture()
