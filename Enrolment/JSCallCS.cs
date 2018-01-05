@@ -253,6 +253,9 @@ namespace Enrolment
                 UserProfile = dalUserProfile.GetUserProfileByUserId(userId, true),
                 Addresses = dalUserProfile.GetAddressByUserId(userId, true)
             };
+            if (profileModel.Addresses == null) {
+                profileModel.Addresses = new Trinity.BE.Address();
+            }
             session[CommonConstants.CURRENT_EDIT_USER] = profileModel;
             if (dbUser.Status == "NEW")
             {
