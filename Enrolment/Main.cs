@@ -271,7 +271,7 @@ namespace Enrolment
                 session["CountPutOn"] = countPutOn;
                 LayerWeb.InvokeScript("changeMessageServerCall", isRight, "Put finger into device, please ...(" + countPutOn + ")", EnumColors.Yellow);
             }
-             
+
         }
 
         #endregion
@@ -413,7 +413,7 @@ namespace Enrolment
                         using (MemoryStream mStream = new MemoryStream())
                         {
                             pictureBox1.Image.Save(mStream, pictureBox1.Image.RawFormat);
-                            if (_imgBox == "1") { image1 =  mStream.ToArray(); }
+                            if (_imgBox == "1") { image1 = mStream.ToArray(); }
                             if (_imgBox == "2") { image2 = mStream.ToArray(); }
                         }
                         var currentPage = session[CommonConstants.CURRENT_PAGE];
@@ -431,16 +431,17 @@ namespace Enrolment
                                 if (isPrimaryPhoto != null && (bool)isPrimaryPhoto)
                                 {
                                     // currentEditUser.UserProfile.User_Photo1 = (byte[])captureImage;
-                                    currentEditUser.UserProfile.User_Photo1 = converToByte;
+                                    currentEditUser.UserProfile.User_Photo1 = image1;
                                 }
                                 else
                                 {
-                                    currentEditUser.UserProfile.User_Photo2 = (byte[])captureImage;
+                                    currentEditUser.UserProfile.User_Photo2 = image2;
                                 }
 
                             }
+                            session[CommonConstants.CURRENT_EDIT_USER] = currentEditUser;
 
-                            CSCallJS.LoadPageHtml(this.LayerWeb, "Edit-Supervisee.html", currentEditUser);
+                            CSCallJS.LoadPageHtml(this.LayerWeb, "UpdateSuperviseeBiodata.html", currentEditUser);
                         }
                         else
                         {
@@ -504,6 +505,14 @@ namespace Enrolment
 
                 }
 
+
+            }
+            else if (e.Name == EventNames.UPDATE_SUPERVISEE_BIODATA)
+            {
+                var profileModel = (Trinity.BE.ProfileModel)e.Data;
+                new DAL_User().UpdateUser(profileModel.User, profileModel.User.UserId, true);
+
+                new DAL_UserProfile().UpdateUserProfile(profileModel.UserProfile, profileModel.User.UserId, true);
 
             }
 

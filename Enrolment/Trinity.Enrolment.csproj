@@ -155,6 +155,7 @@
     <Content Include="View\html\Supervisee.html" />
     <Content Include="View\html\UpdateSuperviseeBiodata.html" />
     <Content Include="View\html\WebcamCapture.html" />
+    <Content Include="View\images\fingerprint.png" />
     <Content Include="View\images\log-out.png" />
     <Content Include="View\images\logo.png" />
     <Content Include="View\images\usr-default.jpg" />
