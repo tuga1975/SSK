@@ -89,6 +89,18 @@ public static class EnumDeviceTypes
     public const string Camera = "Camera";
 }
 
+
+public static class EnumColors
+{
+    public const string Red = "#ff0000";
+    public const string Yellow = "#ffd800";
+    public const string Blue = "#0026ff";
+    public const string White = "#ffffff";
+    public const string Black = "#000000";
+    public const string Green = "#00ff21";
+    
+}
+
 public enum EnumDeviceStatuses
 {
     Connected = 10,

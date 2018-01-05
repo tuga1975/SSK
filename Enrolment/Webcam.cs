@@ -62,9 +62,12 @@ namespace Enrolment
         {
             //Create NewFrame event handler
             //(This one triggers every time a new frame/image is captured
-            videoSource.NewFrame += new AForge.Video.NewFrameEventHandler(videoSource_NewFrame);
-            //Start recording
-            videoSource.Start();
+            if (videoSource != null)
+            {
+                videoSource.NewFrame += new AForge.Video.NewFrameEventHandler(videoSource_NewFrame);
+                //Start recording
+                videoSource.Start();
+            }
         }
 
         void videoSource_NewFrame(object sender, AForge.Video.NewFrameEventArgs eventArgs)
