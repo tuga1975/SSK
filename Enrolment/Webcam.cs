@@ -79,12 +79,18 @@ namespace Enrolment
 
         public void stopWebcam()
         {
-            if (videoSource != null && videoSource.IsRunning)
+            try
             {
-                videoSource.SignalToStop();
-                videoSource.NewFrame -= new AForge.Video.NewFrameEventHandler(videoSource_NewFrame);
-                videoSource = null;
+                if (videoSource != null && videoSource.IsRunning)
+                {
+                    videoSource.SignalToStop();
+                    videoSource.NewFrame -= new AForge.Video.NewFrameEventHandler(videoSource_NewFrame);
+                    videoSource = null;
+                }
             }
+            catch
+            { return; }
+                
         }
     }
 }
