@@ -240,7 +240,7 @@ namespace Enrolment
         public void EditSupervisee(string userId)
         {
             Session session = Session.Instance;
-            session[CommonConstants.CURRENT_PAGE] = "EditSupervisee";
+           
 
             var dalUser = new DAL_User();
             var dalUserProfile = new DAL_UserProfile();
@@ -261,7 +261,7 @@ namespace Enrolment
             session[CommonConstants.CURRENT_EDIT_USER] = profileModel;
             if (dbUser.Status == "NEW")
             {
-
+                session[CommonConstants.CURRENT_PAGE] = "EditSupervisee";
 
                 EventCenter eventCenter = EventCenter.Default;
 
@@ -271,6 +271,7 @@ namespace Enrolment
             }
             else
             {
+                session[CommonConstants.CURRENT_PAGE] = "UpdateSupervisee";
                 _web.LoadPageHtml("Edit-Supervisee.html", profileModel);
             }
 

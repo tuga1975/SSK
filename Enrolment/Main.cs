@@ -446,7 +446,7 @@ namespace Enrolment
             {
                 Session session = Session.Instance;
                 var currentEditUser = session[CommonConstants.CURRENT_EDIT_USER];
-
+                var currentPage = session[CommonConstants.CURRENT_PAGE];
                 if (InvokeRequired)
                 {
                     CaptureAttempt(CommonConstants.CAPTURE_PHOTO_ATTEMPT);
@@ -454,9 +454,17 @@ namespace Enrolment
                     {
                         webcam.stopWebcam();
                         pictureBox1.Hide();
-                        if (currentEditUser != null)
+                        if (currentEditUser != null&& currentPage!=null)
                         {
-                            LayerWeb.LoadPageHtml("UpdateSuperviseeBiodata.html", (Trinity.BE.ProfileModel)currentEditUser);
+                            if (currentPage.ToString()=="EditSupervisee")
+                            {
+                                LayerWeb.LoadPageHtml("UpdateSuperviseeBiodata.html", (Trinity.BE.ProfileModel)currentEditUser);
+                            }
+                            else
+                            {
+                                LayerWeb.LoadPageHtml("Edit-Supervisee.html", (Trinity.BE.ProfileModel)currentEditUser);
+                            }
+                           
                         }
                        // LayerWeb.LoadPageHtml("New-Supervisee.html");
                     }));
