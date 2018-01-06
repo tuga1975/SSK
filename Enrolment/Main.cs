@@ -436,9 +436,17 @@ namespace Enrolment
                         CSCallJS.LoadPageHtml(this.LayerWeb, "UpdateSuperviseeBiodata.html", currentEditUser);
                         LayerWeb.InvokeScript("setAvatar", base64Str1, base64Str2);
                     }
-                    else
+                    else if (currentPage.ToString() == "UpdateSupervisee")
                     {
-                        LayerWeb.LoadPageHtml("New-Supervisee.html");
+                        LayerWeb.LoadPageHtml("Edit-Supervisee.html",currentEditUser);
+                    }
+                    else if (currentPage.ToString() == "UpdateSuperviseePhoto")
+                    {
+                        LayerWeb.LoadPageHtml("UpdateSuperviseePhoto.html", currentEditUser);
+                    }
+                    else if (currentPage.ToString() == "UpdateSuperviseeFinger")
+                    {
+                        LayerWeb.LoadPageHtml("UpdateSuperviseeFingerprint.html", currentEditUser);
                     }
                 }
             }
