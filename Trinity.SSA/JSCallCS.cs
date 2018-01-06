@@ -118,7 +118,7 @@ namespace SSA
             this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').hide(); ; ");
             this._web.RunScript("$('.status-text').css('color','#000').text('Sent problem to Duty Officer. Please wait to check !');");
             MessageBox.Show("Unable to print labels\nPlease report to the Duty Officer", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //APIUtils.SignalR.SendNotificationToDutyOfficer("A supervisee can't print label", e.Message);
+            APIUtils.SignalR.SendNotificationToDutyOfficer("MUB & TT", "Don't print MUB & TT, Please check !", NotificationType.Error, "SSA");
 
             DeleteQRCodeImageFile();
             LogOut();
@@ -129,7 +129,7 @@ namespace SSA
             this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').hide(); ; ");
             this._web.RunScript("$('.status-text').css('color','#000').text('Sent problem to Duty Officer. Please wait to check !');");
             MessageBox.Show(e.ErrorMessage, "", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //APIUtils.SignalR.SendNotificationToDutyOfficer("A supervisee can't print label", "Please check Supervisee's information!");
+            APIUtils.SignalR.SendNotificationToDutyOfficer("MUB & TT", "Don't print MUB & TT, Please check !", NotificationType.Error, "SSA");
 
             DeleteQRCodeImageFile();
             LogOut();

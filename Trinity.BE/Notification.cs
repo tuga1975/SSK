@@ -40,5 +40,11 @@ namespace Trinity.BE
 
         [DataMember]
         public bool IsFromSupervisee { get; set; }
+            
+        [DataMember]
+        public NotificationType Type { get; set; }
+
+        [DataMember]
+        public string Source { get; set; }
     }
 }

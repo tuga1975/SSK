@@ -377,8 +377,8 @@ namespace Enrolment
                             webcam.InitializeWebCam();
                             webcam.startWebcam();
                             _imgBox = e.Message;
-                            pictureBox1.Show();
                             NavigateTo(NavigatorEnums.WebcamCapture);
+                            pictureBox1.Show();
                         }
                         catch
                         {
@@ -425,24 +425,12 @@ namespace Enrolment
                     
                     var base64Str1 = "";
                     var base64Str2 = "";
+                    if(image1 != null) base64Str1 = Convert.ToBase64String(image1);
+                    if(image2 != null) base64Str2 = Convert.ToBase64String(image2);
+                    currentEditUser.UserProfile.User_Photo1 = image1;
+                    currentEditUser.UserProfile.User_Photo2 = image2;
                     if (currentPage != null && currentPage.ToString() == "EditSupervisee" && currentEditUser != null)
-                    {
-                        
-                            if (isPrimaryPhoto != null && (bool)isPrimaryPhoto)
-                            {
-                                // currentEditUser.UserProfile.User_Photo1 = (byte[])captureImage;
-                                currentEditUser.UserProfile.User_Photo1 = image1;
-                                base64Str1 = Convert.ToBase64String(image1);
-                            
-                        }
-                            else
-                            {
-                                currentEditUser.UserProfile.User_Photo2 = image2;
-                                base64Str2 = Convert.ToBase64String(image2);
-                            
-                        }
-
-                        
+                    {   
                         session[CommonConstants.CURRENT_EDIT_USER] = currentEditUser;
 
                         CSCallJS.LoadPageHtml(this.LayerWeb, "UpdateSuperviseeBiodata.html", currentEditUser);
