@@ -154,6 +154,7 @@
     <Content Include="View\html\PrintSmartCard.html" />
     <Content Include="View\html\Supervisee.html" />
     <Content Include="View\html\UpdateSuperviseeBiodata.html" />
+    <Content Include="View\html\UpdateSuperviseeFingerprint.html" />
     <Content Include="View\html\UpdateSuperviseePhoto.html" />
     <Content Include="View\html\WebcamCapture.html" />
     <Content Include="View\images\fingerprint.png" />

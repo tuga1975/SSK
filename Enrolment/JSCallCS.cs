@@ -325,7 +325,16 @@ namespace Enrolment
         }
 
         public void UpdateSuperviseePhoto() {
+            Session session = Session.Instance;
+            session[CommonConstants.CURRENT_PAGE] = "UpdateSuperviseePhoto";
             _web.LoadPageHtml("UpdateSuperviseePhoto.html");
+        }
+
+        public void UpdateSuperviseeFingerprint()
+        {
+            Session session = Session.Instance;
+            session[CommonConstants.CURRENT_PAGE] = "UpdateSuperviseeFinger";
+            _web.LoadPageHtml("UpdateSuperviseeFingerprint.html");
         }
 
         public void UpdateSuperviseeBiodata()

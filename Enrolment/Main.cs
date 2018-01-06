@@ -460,11 +460,19 @@ namespace Enrolment
                             {
                                 LayerWeb.LoadPageHtml("UpdateSuperviseeBiodata.html", (Trinity.BE.ProfileModel)currentEditUser);
                             }
-                            else
+                            else if(currentPage.ToString() == "UpdateSupervisee")
                             {
                                 LayerWeb.LoadPageHtml("Edit-Supervisee.html", (Trinity.BE.ProfileModel)currentEditUser);
                             }
-                           
+                            else if (currentPage.ToString() == "UpdateSuperviseePhoto")
+                            {
+                                LayerWeb.LoadPageHtml("UpdateSuperviseePhoto.html", (Trinity.BE.ProfileModel)currentEditUser);
+                            }
+                            else if (currentPage.ToString() == "UpdateSuperviseeFinger")
+                            {
+                                LayerWeb.LoadPageHtml("UpdateSuperviseeFingerprint.html", (Trinity.BE.ProfileModel)currentEditUser);
+                            }
+
                         }
                        // LayerWeb.LoadPageHtml("New-Supervisee.html");
                     }));
