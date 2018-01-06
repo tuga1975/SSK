@@ -150,7 +150,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="View\html\Login.html" />
-    <Content Include="View\html\New-Supervisee.html" />
     <Content Include="View\html\PrintSmartCard.html" />
     <Content Include="View\html\Supervisee.html" />
     <Content Include="View\html\UpdateSuperviseeBiodata.html" />

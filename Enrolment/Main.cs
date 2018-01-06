@@ -582,6 +582,7 @@ namespace Enrolment
             }
             else if (navigatorEnum == NavigatorEnums.Supervisee)
             {
+                this.LayerWeb.LoadPageHtml("Supervisee.html");
                 _suppervisee.Start();
             }
             else if (navigatorEnum == NavigatorEnums.Login)

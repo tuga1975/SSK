@@ -5,17 +5,20 @@
             bodyTag: "section",
             transitionEffect: "slideLeft",
             onStepChanging: function (event, currentIndex, newIndex) {
-
                 //0 - photo
                 //1 - fingerprint
                 //2 - verify
                 //3 - print
 
-                if (currentIndex==2) {
+                if (currentIndex == 2) {
                     //update to db
                     api.server.UpdateSuperviseeBiodata();
                 }
+
                 return true;
+            },
+            onFinished: function (event, currentIndex) {
+                api.server.LoadListSupervisee();
             }
         });
 
@@ -167,12 +170,12 @@
         if (isRight) {
             $('#rightThumbClearBtn').removeAttr('disabled');
             $('#rightThumbScanBtn').attr('disabled', 'disabled');
-            $('#leftThumbDiv').find('button').removeAttr('disabled');
+            $('#leftThumbScanBtn').removeAttr('disabled');
         }
         else {
             $('#leftThumbClearBtn').removeAttr('disabled');
             $('#leftThumbScanBtn').attr('disabled', 'disabled');
-            $('#rightThumbDiv').find('button').removeAttr('disabled');
+            $('#rightThumbScanBtn').removeAttr('disabled');
 
         }
 
@@ -201,10 +204,17 @@
     $('#leftThumbClearBtn').click(function () {
         api.server.CancelCaptureFingerprint();
         $('#leftFingerprint').attr('src', '');
+        $('#leftThumbClearBtn').attr('disabled', 'disabled');
+        $('#leftThumbScanBtn').removeAttr('disabled');
+        $('#leftProcessMessage').text('Place left thumb onto scanner').css('color', '#000');
+
     });
     $('#rightThumbClearBtn').click(function () {
         api.server.CancelCaptureFingerprint();
         $('#rightFingerprint').attr('src', '');
+        $('#rightThumbClearBtn').attr('disabled', 'disabled');
+        $('#rightThumbScanBtn').removeAttr('disabled');
+        $('#rightProcessMessage').text('Place right thumb onto scanner').css('color', '#000');
     });
 
     function setBase64FingerprintOnloadServerCall(isRight, fingerPrintData) {
@@ -219,7 +229,7 @@
 
     }
 
-    function setAvatar(base64Str1,base64Str2) {
+    function setAvatar(base64Str1, base64Str2) {
         if (base64Str1) {
             $('#image1').attr('src', 'data:image/jpg;base64,' + base64Str1);
         }
