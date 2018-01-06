@@ -102,13 +102,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CodeBehind\Authentication\Fingerprint.cs" />
     <Compile Include="CodeBehind\Authentication\NRIC.cs" />
-    <Compile Include="CodeBehind\Authentication\SmartCard.cs" />
     <Compile Include="CodeBehind\PrintMUBAndTTLabels.cs" />
     <Compile Include="CodeBehind\SupperviseeParticulars.cs" />
-    <Compile Include="Constants\CommonConstants.cs" />
-    <Compile Include="CSCallJS.cs" />
     <Compile Include="FormQueueNumber.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -193,7 +189,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Business\" />
-    <Folder Include="Common\" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
@@ -230,6 +225,7 @@
     <Content Include="View\html\PrintingTemplates\AppointmentDetailsTemplate.html" />
     <Content Include="View\html\QueueNumber.html" />
     <Content Include="View\html\SuperviseeParticulars.html" />
+    <Content Include="View\img\central_narco_logo.png" />
     <Content Include="View\img\Logo.png" />
     <Content Include="View\scripts\jquery-1.10.2.min.js" />
     <Content Include="View\scripts\lib.js" />

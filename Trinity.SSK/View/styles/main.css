@@ -63,7 +63,7 @@ input{
     background-color:#FFF;
     top:0px;
     left:0px;
-} 
+}
 .logo {
     position: absolute;
     width: 55px;
@@ -77,6 +77,10 @@ input{
     padding: 5px;
     font-weight: bold;
     box-sizing: border-box;
+    background-image: url('../img/central_narco_logo.png');
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: contain;
 }
 .logout {
     position: absolute;

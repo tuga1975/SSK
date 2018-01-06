@@ -81,8 +81,6 @@
     <Compile Include="AbsenceReporting.cs" />
     <Compile Include="DeviceStatus.cs" />
     <Compile Include="QueueNumber.cs" />
-    <Compile Include="Lib.cs" />
-    <Compile Include="Enums.cs" />
     <Compile Include="EnvironmentTime.cs" />
     <Compile Include="Notification.cs" />
     <Compile Include="ProfileModel.cs" />
@@ -90,6 +88,12 @@
     <Compile Include="User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserProfile.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Trinity.Common\Trinity.Common.csproj">
+      <Project>{6c023597-f6ba-4857-9c3b-82d91eb4b4a3}</Project>
+      <Name>Trinity.Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

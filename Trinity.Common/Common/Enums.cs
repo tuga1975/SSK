@@ -20,6 +20,8 @@ public enum NavigatorEnums
     WebcamCapture = 11
 };
 
+
+
 public static class EnumUserRoles
 {
     public const string DutyOfficer = "DutyOfficer";
@@ -67,9 +69,9 @@ public static class EnumQueueStatuses
 
 public static class EnumUserStatuses
 {
-    public const string New = "NEW";
-    public const string Enrolled = "ENROLLED";
-    public const string Active = "Active";
+    public const string New = "New";
+    public const string Enrolled = "Enrolled";
+    public const string Blocked = "Blocked";
 }
 
 public static class EnumFrequency
@@ -99,7 +101,7 @@ public static class EnumColors
     public const string White = "#ffffff";
     public const string Black = "#000000";
     public const string Green = "#00ff21";
-    
+
 }
 
 public enum EnumDeviceStatuses
@@ -218,5 +220,3 @@ public enum NotificationType
 {
     Error, Notification, Caution
 }
-
-

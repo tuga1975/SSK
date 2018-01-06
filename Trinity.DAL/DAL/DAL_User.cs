@@ -42,9 +42,8 @@ namespace Trinity.DAL
                 var user = (from mu in _localUnitOfWork.DataContext.Membership_Users
                             join mur in _localUnitOfWork.DataContext.Membership_UserRoles on mu.UserId equals mur.UserId
                             join mr in _localUnitOfWork.DataContext.Membership_Roles on mur.RoleId equals mr.Id
-                            join user_profile in _localUnitOfWork.DataContext.User_Profiles on mu.UserId equals user_profile.UserId
                             where mu.SmartCardId == smartCardId
-                            select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, SmartCardId = mu.SmartCardId, RightThumbFingerprint = mu.RightThumbFingerprint, LeftThumbFingerprint = mu.LeftThumbFingerprint, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name, IsFirstAttempt = mu.IsFirstAttempt, User_Photo1=user_profile.User_Photo1, User_Photo2 = user_profile.User_Photo2 });
+                            select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, SmartCardId = mu.SmartCardId, RightThumbFingerprint = mu.RightThumbFingerprint, LeftThumbFingerprint = mu.LeftThumbFingerprint, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name, IsFirstAttempt = mu.IsFirstAttempt, User_Photo1=mu.User_Profiles.User_Photo1, User_Photo2 = mu.User_Profiles.User_Photo2 });
                 return user.FirstOrDefault();
             }
             else
@@ -52,9 +51,8 @@ namespace Trinity.DAL
                 var user = (from mu in _centralizedUnitOfWork.DataContext.Membership_Users
                             join mur in _centralizedUnitOfWork.DataContext.Membership_UserRoles on mu.UserId equals mur.UserId
                             join mr in _centralizedUnitOfWork.DataContext.Membership_Roles on mur.RoleId equals mr.Id
-                            join user_profile in _localUnitOfWork.DataContext.User_Profiles on mu.UserId equals user_profile.UserId
                             where mu.SmartCardId == smartCardId
-                            select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, SmartCardId = mu.SmartCardId, RightThumbFingerprint = mu.RightThumbFingerprint, LeftThumbFingerprint = mu.LeftThumbFingerprint, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name, IsFirstAttempt = mu.IsFirstAttempt, AccessFailedCount = mu.AccessFailedCount, User_Photo1 = user_profile.User_Photo1, User_Photo2 = user_profile.User_Photo2 });
+                            select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, SmartCardId = mu.SmartCardId, RightThumbFingerprint = mu.RightThumbFingerprint, LeftThumbFingerprint = mu.LeftThumbFingerprint, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name, IsFirstAttempt = mu.IsFirstAttempt, AccessFailedCount = mu.AccessFailedCount, User_Photo1 = mu.User_Profiles.User_Photo1, User_Photo2 = mu.User_Profiles.User_Photo2 });
                 return user.FirstOrDefault();
             }
         }
