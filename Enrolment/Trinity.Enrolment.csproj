@@ -147,10 +147,11 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="View\html\Login.html" />
-    <Content Include="View\html\New-Supervisee.html" />
     <Content Include="View\html\PrintSmartCard.html" />
     <Content Include="View\html\Supervisee.html" />
     <Content Include="View\html\UpdateSuperviseeBiodata.html" />
+    <Content Include="View\html\UpdateSuperviseeFingerprint.html" />
+    <Content Include="View\html\UpdateSuperviseePhoto.html" />
     <Content Include="View\html\WebcamCapture.html" />
     <Content Include="View\images\central_narco_logo.png" />
     <Content Include="View\images\fingerprint.png" />

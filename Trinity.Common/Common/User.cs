@@ -12,5 +12,6 @@ namespace Trinity.Common
         public string NRIC { get; set; }
         public string Date { get; set; }
         public string MarkingNumber { get; set; }
+        public string DOB { get; set; }
     }
 }

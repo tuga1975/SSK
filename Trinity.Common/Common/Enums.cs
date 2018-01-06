@@ -71,6 +71,7 @@ public static class EnumUserStatuses
 {
     public const string Active = "NEW";
     public const string Enrolled = "ENROLLED";
+    public const string Active = "Active";
 }
 
 public static class EnumFrequency
