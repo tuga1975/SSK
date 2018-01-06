@@ -1,4 +1,4 @@
-﻿<div class="container">
+﻿<div style="width:100%; padding:10px;">
     <div class="header-landingPage">
         <h3>Supervisees</h3>
         <a onclick="api.server.LogOut()"><img class="logout" src="../images/log-out.png" /></a>
@@ -10,14 +10,14 @@
             <div class="col"></div>
             <div class="col-8 list-supervisees-search">
                 <form id="searchForm">
-                    <input type="text" name="nric" id="nric" placeholder="Please input keyword" />
+                    <input type="text" name="nric" id="nric" placeholder="Please input keyword" style="padding:4px 2px 5px 2px;float:left;margin-right:10px"/>
                     <button type="submit" class="btn-search">Search</button>
                 </form>
             </div>
             <div class="col"></div>
         </div>
         <!--<div class="wrap-list">-->
-        <table class="table">
+        <table class="table" style="border:1px solid #212529">
             <thead class="thead-dark">
                 <tr>
                     <th scope="col">#</th>
