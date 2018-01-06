@@ -330,7 +330,7 @@ namespace SSK
                 APIUtils.SignalR.SendNotificationToDutyOfficer("Supervisee got blocked for 3 or more absences", "Please check the Supervisee's information!");
                 var dalUser = new DAL_User();
                 //active the user
-                dalUser.ChangeUserStatus(user.UserId, EnumUserStatuses.Active);
+                dalUser.ChangeUserStatus(user.UserId, EnumUserStatuses.New);
 
                 //create absence reporting
 
