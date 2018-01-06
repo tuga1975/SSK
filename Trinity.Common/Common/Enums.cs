@@ -69,7 +69,7 @@ public static class EnumQueueStatuses
 
 public static class EnumUserStatuses
 {
-    public const string Active = "NEW";
+    public const string New = "NEW";
     public const string Enrolled = "ENROLLED";
     public const string Active = "Active";
 }
