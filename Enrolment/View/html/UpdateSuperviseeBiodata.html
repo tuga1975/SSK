@@ -45,12 +45,12 @@
                             <div class="col">
                                 <img id="image1" class="avatar" src="../images/usr-default.jpg" style="max-width:45%" />
                                 <br />
-                                <button type="button" onclick="api.server.OpenPictureCaptureForm('1')">Get Image</button>
+                                <button type="button" onclick="api.server.OpenPictureCaptureForm('1')">Take Picture 1</button>
                             </div>
                             <div class="col" style="height:90%">
                                 <img id="image2" class="avatar" src="../images/usr-default.jpg" style="max-width:45%" />
                                 <br />
-                                <button type="button" onclick="api.server.OpenPictureCaptureForm('2')">Get Image</button>
+                                <button type="button" onclick="api.server.OpenPictureCaptureForm('2')">Take Picture 2</button>
                             </div>
                             <!--<div class="col">
                                 <img class="avatar" src="../images/usr-default.jpg" />
@@ -200,9 +200,11 @@
 
     $('#leftThumbClearBtn').click(function () {
         api.server.CancelCaptureFingerprint();
+        $('#leftFingerprint').attr('src', '');
     });
     $('#rightThumbClearBtn').click(function () {
         api.server.CancelCaptureFingerprint();
+        $('#rightFingerprint').attr('src', '');
     });
 
     function setBase64FingerprintOnloadServerCall(isRight, fingerPrintData) {

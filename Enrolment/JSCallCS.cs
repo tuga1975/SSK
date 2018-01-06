@@ -63,6 +63,7 @@ namespace Enrolment
 
         public void LoadListSupervisee()
         {
+            
             EventCenter eventCenter = EventCenter.Default;
             Session session = Session.Instance;
             var dalUser = new DAL_User();
@@ -83,7 +84,6 @@ namespace Enrolment
                 }
 
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = 0, Name = EventNames.GET_LIST_SUPERVISEE_SUCCEEDED, Data = listSupervisee, Source = "Supervisee.html" });
-
                 //_web.LoadPageHtml("Supervisee.html", listSupervisee);
             }
             else
@@ -153,7 +153,7 @@ namespace Enrolment
             {
                 sessionAttempt++;
                 session[CommonConstants.CAPTURE_FINGERPRINT_ATTEMPT] = sessionAttempt;
-                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = 0, Name = EventNames.OPEN_FINGERPRINT_CAPTURE_FORM });
+                //eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = 0, Name = EventNames.OPEN_FINGERPRINT_CAPTURE_FORM });
             }
         }
 
