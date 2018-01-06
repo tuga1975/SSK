@@ -443,6 +443,7 @@ namespace Enrolment
                     else if (currentPage.ToString() == "UpdateSuperviseePhoto")
                     {
                         LayerWeb.LoadPageHtml("UpdateSuperviseePhoto.html", currentEditUser);
+                        LayerWeb.InvokeScript("setAvatar", base64Str1, base64Str2);
                     }
                     else if (currentPage.ToString() == "UpdateSuperviseeFinger")
                     {
