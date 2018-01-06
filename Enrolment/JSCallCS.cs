@@ -258,7 +258,10 @@ namespace Enrolment
                 profileModel.UserProfile.Residential_Addess_ID = 0;
                 profileModel.UserProfile.Other_Address_ID = 0;
             }
-            session[CommonConstants.CURRENT_EDIT_USER] = profileModel;
+            if (session[CommonConstants.CURRENT_EDIT_USER] != null) {
+                profileModel = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER] ;
+            }
+            
             if (dbUser.Status == "NEW")
             {
                 session[CommonConstants.CURRENT_PAGE] = "EditSupervisee";
@@ -272,7 +275,10 @@ namespace Enrolment
             else
             {
                 session[CommonConstants.CURRENT_PAGE] = "UpdateSupervisee";
-                _web.LoadPageHtml("Edit-Supervisee.html", profileModel);
+               // _web.LoadPageHtml("Edit-Supervisee.html", profileModel);
+                EventCenter eventCenter = EventCenter.Default;
+
+                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.LOAD_EDIT_SUPERVISEE, Data = profileModel });
             }
 
         }
@@ -324,8 +330,11 @@ namespace Enrolment
             }
         }
 
-        public void UpdateSuperviseePhoto() {
+        public void UpdateSuperviseePhoto(string param) {
+            var rawData = JsonConvert.DeserializeObject<Trinity.BE.ProfileRawMData>(param);
+            var data = new Trinity.BE.ProfileRawMData().ToProfileModel(rawData);
             Session session = Session.Instance;
+            session[CommonConstants.CURRENT_EDIT_USER] = data;
             session[CommonConstants.CURRENT_PAGE] = "UpdateSuperviseePhoto";
             _web.LoadPageHtml("UpdateSuperviseePhoto.html");
         }

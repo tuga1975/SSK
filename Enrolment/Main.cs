@@ -316,13 +316,14 @@ namespace Enrolment
                 return;
             }
         }
-
+       
         private void LayerWeb_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
+            
             LayerWeb.InvokeScript("createEvent", JsonConvert.SerializeObject(_jsCallCS.GetType().GetMethods().Where(d => d.IsPublic && !d.IsVirtual && !d.IsSecuritySafeCritical).ToArray().Select(d => d.Name)));
-
-            // Start page
+            //Start page
             NavigateTo(NavigatorEnums.Login);
+            // 
             //NavigateTo(NavigatorEnums.Supervisee);
 
         }
@@ -438,16 +439,10 @@ namespace Enrolment
                     }
                     else if (currentPage.ToString() == "UpdateSupervisee")
                     {
-                        LayerWeb.LoadPageHtml("Edit-Supervisee.html",currentEditUser);
-                    }
-                    else if (currentPage.ToString() == "UpdateSuperviseePhoto")
-                    {
-                        LayerWeb.LoadPageHtml("UpdateSuperviseePhoto.html", currentEditUser);
+                        LayerWeb.LoadPageHtml("Edit-Supervisee.html", currentEditUser);
+
+                        LayerWeb.InvokeScript("showPopUp");
                         LayerWeb.InvokeScript("setAvatar", base64Str1, base64Str2);
-                    }
-                    else if (currentPage.ToString() == "UpdateSuperviseeFinger")
-                    {
-                        LayerWeb.LoadPageHtml("UpdateSuperviseeFingerprint.html", currentEditUser);
                     }
                 }
             }
@@ -463,13 +458,13 @@ namespace Enrolment
                     {
                         webcam.stopWebcam();
                         pictureBox1.Hide();
-                        if (currentEditUser != null&& currentPage!=null)
+                        if (currentEditUser != null && currentPage != null)
                         {
-                            if (currentPage.ToString()=="EditSupervisee")
+                            if (currentPage.ToString() == "EditSupervisee")
                             {
                                 LayerWeb.LoadPageHtml("UpdateSuperviseeBiodata.html", (Trinity.BE.ProfileModel)currentEditUser);
                             }
-                            else if(currentPage.ToString() == "UpdateSupervisee")
+                            else if (currentPage.ToString() == "UpdateSupervisee")
                             {
                                 LayerWeb.LoadPageHtml("Edit-Supervisee.html", (Trinity.BE.ProfileModel)currentEditUser);
                             }
@@ -483,7 +478,7 @@ namespace Enrolment
                             }
 
                         }
-                       // LayerWeb.LoadPageHtml("New-Supervisee.html");
+                        // LayerWeb.LoadPageHtml("New-Supervisee.html");
                     }));
                     return;
                 }
@@ -552,6 +547,16 @@ namespace Enrolment
                 dalUser.ChangeUserStatus(profileModel.User.UserId, EnumUserStatuses.Enrolled);
 
             }
+            else if (e.Name == EventNames.LOAD_EDIT_SUPERVISEE)
+            {
+                var profileModel = (Trinity.BE.ProfileModel)e.Data;
+
+                Session session = Session.Instance;
+                session[CommonConstants.CURRENT_EDIT_USER] = profileModel;
+                CSCallJS.LoadPageHtml(this.LayerWeb, "Edit-Supervisee.html", profileModel);
+
+
+            }
 
         }
 
@@ -562,12 +567,27 @@ namespace Enrolment
             if (session[sessionAttemptName] != null)
             {
                 var attempt = (int)session[sessionAttemptName];
-                _jsCallCS.PreviewSuperviseeFingerprint(attempt);
+                if (sessionAttemptName == CommonConstants.CAPTURE_PHOTO_ATTEMPT)
+                {
+                    _jsCallCS.PreviewSuperviseePhoto(firstAttemp);
+                }
+                else
+                {
+                    _jsCallCS.PreviewSuperviseeFingerprint(firstAttemp);
+                }
             }
             else
             {
                 session[sessionAttemptName] = firstAttemp;
-                _jsCallCS.PreviewSuperviseeFingerprint(firstAttemp);
+                if (sessionAttemptName == CommonConstants.CAPTURE_PHOTO_ATTEMPT)
+                {
+                    _jsCallCS.PreviewSuperviseePhoto(firstAttemp);
+                }
+                else
+                {
+                    _jsCallCS.PreviewSuperviseeFingerprint(firstAttemp);
+                }
+
             }
         }
 
