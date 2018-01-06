@@ -323,6 +323,10 @@ namespace Enrolment
             }
         }
 
+        public void UpdateSuperviseePhoto() {
+            _web.LoadPageHtml("UpdateSuperviseePhoto.html");
+        }
+
         public void UpdateSuperviseeBiodata()
         {
           

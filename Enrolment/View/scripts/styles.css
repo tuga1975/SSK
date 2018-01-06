@@ -163,6 +163,7 @@
 	background:#e5e5e5;
 	border:1px solid #000;
 	padding:3px 20px;
+	cursor:pointer
 }
 .avatar{
 	width:100%;
@@ -192,4 +193,11 @@
 }
 .table td, .table th{
 	border-color:#32383e;
+}
+.updateSuperviseePhoto .col{
+	text-align:center
+}
+.updateSuperviseePhoto .btn-form{
+	margin:10px auto;
+	width:100%;
 }

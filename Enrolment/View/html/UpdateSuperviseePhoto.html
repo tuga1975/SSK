@@ -1,0 +1,81 @@
+<div style="width:100%;">
+	<div class="header header-form-supervisee">
+		<img class="logo" src="../images/logo.png" />
+		<h3>Edit Supervisee</h3>
+		<div class="clear"></div>
+	</div>
+	<div class="form-supervisee">
+		<form id="superviseeFrm">
+			<input class="name-supervisee" type="text" value="Update Photo" disabled="disabled" />
+			<div class="tab-content" id="nav-tabContent">
+				<input type="hidden" name="userId" class="userId"  />
+				<div class="tab-pane fade show active" id="supervisee-details" role="tabpanel" aria-labelledby="nav-home-tab">
+					<div class="row updateSuperviseePhoto">	
+						<div class="col-2"></div>
+						<div class="col-4">
+							<img class="avatar" id="userPhoto1" src="../images/usr-default.jpg" />
+							<button type="button" class="btn-form" id="updatePhoto2" onclick="api.server.OpenPictureCaptureForm('1')">Take Picture 1</button>
+						</div>
+						<div class="col-4">
+							<img class="avatar" id="userPhoto2" src="../images/usr-default.jpg" />
+							<button type="button" class="btn-form" id="updatePhoto2" onclick="api.server.OpenPictureCaptureForm('2')">Take Picture 2</button>
+						</div>
+						<div class="col-2"></div>
+					</div>				
+				</div>
+			</div>
+			
+			<div class="btn-group">
+				<button type="submit" class="btn-form" id="SaveBtn">Update</button>
+				<button type="submit" class="btn-form">Cancel</button>
+			</div>
+		</form>
+	</div>
+</div>
+
+<script>
+	$(function() {
+		$('.s_label').click(function(){
+			$(this).next().fadeToggle(200);
+		});
+        if (api.model != null) {
+			$('.userId').val(api.model.User.UserId);
+			// NextOfKin
+			$('.nok_name').val(api.model.UserProfile.NextOfKin_Name);
+			$('.nok_contact_number').val(api.model.UserProfile.NextOfKin_Contact_Number);
+			$('.nok_relationship').val(api.model.UserProfile.NextOfKin_Relationship);
+			$('.nok_blkhousr_number').val(api.model.UserProfile.NextOfKin_BlkHouse_Number);
+			$('.nok_flrunit_number').val(api.model.UserProfile.NextOfKin_FlrUnit_Number);
+			$('.nok_street_name').val(api.model.UserProfile.NextOfKin_Street_Name);
+			$('.nok_country').val(api.model.UserProfile.NextOfKin_Country);
+			$('.nok_postalcode').val(api.model.UserProfile.NextOfKin_PostalCode);
+			// Employment
+			$('.e_name').val(api.model.UserProfile.Employment_Name);
+			$('.e_contact_number').val(api.model.UserProfile.Employment_Contact_Number);
+			$('.e_company_name').val(api.model.UserProfile.Employment_Company_Name);
+			$('.e_job_title').val(api.model.UserProfile.Employment_Job_Title);
+			$('.e_start_date').val(api.model.UserProfile.Employment_Start_Date);
+			$('.e_end_date').val(api.model.UserProfile.Employment_End_Date);
+			$('.e_remarks').val(api.model.UserProfile.Employment_Remarks);
+			// Residential Address
+			$('.address_ID').val(api.model.UserProfile.Residential_Addess_ID);
+			$('.other_Address_ID').val(api.model.UserProfile.Other_Address_ID);
+			$('.street_Name').val(api.model.Addresses.Street_Name);
+			$('.blkHouse_Number').val(api.model.Addresses.BlkHouse_Number);
+			$('.flrUnit_Number').val(api.model.Addresses.FlrUnit_Number);
+			$('.country').val(api.model.Addresses.Country);
+			$('.postal_Code').val(api.model.Addresses.Postal_Code);
+			// Other Address
+        }
+
+    });
+
+	
+
+	$('#SaveBtn').click(function () {
+		var $form = $("#superviseeFrm");
+        var data = getFormData($form);
+        var json = JSON.stringify(data);
+        api.server.SaveSupervisee(json, true);
+	});
+</script>
