@@ -1,5 +1,4 @@
 ﻿using PCSC;
-using SSK.Contstants;
 using System;
 using System.Diagnostics;
 using System.Threading;

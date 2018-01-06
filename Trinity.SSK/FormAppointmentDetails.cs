@@ -50,7 +50,7 @@ namespace SSK
 
             Trinity.Common.UserInfo userInfo = new Trinity.Common.UserInfo()
             {
-                DOB = "07-04-1982",
+                Date = "07-04-1982",
                 NRIC = "022234343",
                 UserName = "minhdq"
             };

@@ -9,6 +9,7 @@ using Trinity.Common.Common;
 using Trinity.Common.DeviceMonitor;
 using Trinity.Common.Monitor;
 using Trinity.Common.Utils;
+using Trinity.DAL;
 
 namespace DocumentScannerTest
 {
@@ -25,7 +26,36 @@ namespace DocumentScannerTest
             // StartBarcodeScanner();
 
             // PrinterMonitor checkstatus
-            ReportPrinterStatus();
+            //ReportPrinterStatus();
+
+            // StartIdentification
+            TestStartIdentification();
+            TestStartIdentification();
+            TestStartIdentification();
+        }
+
+        private static void TestStartIdentification()
+        {
+            Console.WriteLine("Starting TestStartIdentification ...");
+            DAL_User dAL_User = new DAL_User();
+            var users = dAL_User.GetAllSupervisees(true);
+
+            List<byte[]> lstFingerprint_Templates = new List<byte[]>();
+            foreach (var item in users)
+            {
+                lstFingerprint_Templates.Add(item.LeftThumbFingerprint);
+                lstFingerprint_Templates.Add(item.RightThumbFingerprint);
+            }
+
+            Trinity.Common.FingerprintReaderUtils fingerprintReaderUtils = Trinity.Common.FingerprintReaderUtils.Instance;
+            fingerprintReaderUtils.StartIdentification(lstFingerprint_Templates, IdentificationCompleted);
+
+            Console.ReadKey();
+        }
+
+        private static void IdentificationCompleted(bool result)
+        {
+            Console.WriteLine("return value: " + result);
         }
 
         private static void ReportPrinterStatus()
@@ -85,7 +115,7 @@ namespace DocumentScannerTest
                 {
                     UserName = "Avril Lavigne",
                     NRIC = "S1234567G",
-                    DOB = "01/01/1970"
+                    Date = "01/01/1970"
                 };
 
                 foreach (var item in barcodeScannerUtils.GetDeviceStatus())

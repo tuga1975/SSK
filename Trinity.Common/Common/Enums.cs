@@ -20,6 +20,8 @@ public enum NavigatorEnums
     WebcamCapture = 11
 };
 
+
+
 public static class EnumUserRoles
 {
     public const string DutyOfficer = "DutyOfficer";
@@ -99,7 +101,7 @@ public static class EnumColors
     public const string White = "#ffffff";
     public const string Black = "#000000";
     public const string Green = "#00ff21";
-    
+
 }
 
 public enum EnumDeviceStatuses
@@ -218,5 +220,3 @@ public enum NotificationType
 {
     Error, Notification, Caution
 }
-
-

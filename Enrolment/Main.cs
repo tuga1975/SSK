@@ -1,7 +1,4 @@
-﻿
-using Newtonsoft.Json;
-using Enrolment.Common;
-using Enrolment.Contstants;
+﻿using Newtonsoft.Json;
 using System;
 using System.Data;
 using System.Linq;
@@ -443,6 +440,7 @@ namespace Enrolment
                     else if (currentPage.ToString() == "UpdateSuperviseePhoto")
                     {
                         LayerWeb.LoadPageHtml("UpdateSuperviseePhoto.html", currentEditUser);
+                        LayerWeb.InvokeScript("setAvatar", base64Str1, base64Str2);
                     }
                     else if (currentPage.ToString() == "UpdateSuperviseeFinger")
                     {

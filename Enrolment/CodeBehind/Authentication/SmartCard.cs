@@ -1,5 +1,4 @@
 ﻿using PCSC;
-using Enrolment.Contstants;
 using System;
 using System.Diagnostics;
 using System.Threading;

@@ -1,7 +1,5 @@
 ﻿using Newtonsoft.Json;
 using SSK.CodeBehind.Authentication;
-using SSK.Common;
-using SSK.Contstants;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -155,7 +153,7 @@ namespace SSK
                 Session session = Session.Instance;
                 if (session.IsAuthenticated)
                 {
-                    Trinity.BE.User user = (Trinity.BE.User)session[Contstants.CommonConstants.USER_LOGIN];
+                    Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
 
                     var dalUser = new Trinity.DAL.DAL_User();
                     var dalUserprofile = new Trinity.DAL.DAL_UserProfile();
@@ -214,7 +212,7 @@ namespace SSK
             try
             {
                 Session session = Session.Instance;
-                session[Contstants.CommonConstants.PROFILE_DATA] = jsonData;
+                session[CommonConstants.PROFILE_DATA] = jsonData;
                 APIUtils.SignalR.SendNotificationToDutyOfficer("Supervisee's information changed!", "Please check the Supervisee's information!");
                 LoadPage("Document.html");
 
@@ -234,7 +232,7 @@ namespace SSK
                 var dalAbsence = new DAL_AbsenceReporting();
                 var reasonModel = JsonConvert.DeserializeObject<Trinity.BE.Reason>(reason);
                 var absenceModel = dalAbsence.SetInfo(reasonModel);
-                session[Contstants.CommonConstants.ABSENCE_REPORTING_DATA] = absenceModel;
+                session[CommonConstants.ABSENCE_REPORTING_DATA] = absenceModel;
 
                 LoadPage("DocumentFromQueue.html");
 
@@ -248,7 +246,7 @@ namespace SSK
         public void UpdateProfileAfterScanDoc()
         {
             Session session = Session.Instance;
-            var jsonData = session[Contstants.CommonConstants.PROFILE_DATA];
+            var jsonData = session[CommonConstants.PROFILE_DATA];
 
             SaveProfile(jsonData.ToString(), true);
         }

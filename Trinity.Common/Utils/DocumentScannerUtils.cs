@@ -7,7 +7,6 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using Trinity.Common.Common;
-using Trinity.BE;
 using WIA;
 
 namespace Trinity.Common.Utils
