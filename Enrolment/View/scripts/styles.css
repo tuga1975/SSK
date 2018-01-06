@@ -10,10 +10,6 @@
 }
 .header-login img, .header img{
 	width:100px;
-	border:3px solid #000;
-	-webkit-border-radius: 50%;
-	-moz-border-radius: 50%;
-	border-radius: 50%;
 	float:left;
 	margin-right:10px;
 	padding:6px
