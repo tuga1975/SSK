@@ -1,6 +1,4 @@
 ﻿using Newtonsoft.Json;
-using SSK.Common;
-using SSK.Contstants;
 using System;
 using System.Data;
 using System.Linq;
@@ -17,7 +15,6 @@ namespace SSK
     public partial class Main : Form
     {
         private JSCallCS _jsCallCS;
-        private CodeBehind.Authentication.SmartCard _smartCard;
         private CodeBehind.Authentication.Fingerprint _fingerprint;
         private CodeBehind.Authentication.NRIC _nric;
         private CodeBehind.Suppervisee _suppervisee;
@@ -26,6 +23,7 @@ namespace SSK
 
         private int _smartCardFailed;
         private int _fingerprintFailed;
+        private int _facedetectFailed = 0;
         private bool _displayLoginButtonStatus = false;
 
         public Main()
@@ -45,15 +43,11 @@ namespace SSK
             _jsCallCS.OnLogOutCompleted += JSCallCS_OnLogOutCompleted;
 
             // SmartCard
-            _smartCard = new CodeBehind.Authentication.SmartCard(LayerWeb);
-            _smartCard.OnSmartCardSucceeded += SmartCard_OnSmartCardSucceeded;
-            _smartCard.OnSmartCardFailed += SmartCard_OnSmartCardFailed;
-
+            Trinity.Common.Authentication.SmartCard.Instance.GetCardInfoSucceeded += GetCardInfoSucceeded;
             // Fingerprint
-            _fingerprint = new CodeBehind.Authentication.Fingerprint(LayerWeb);
-            _fingerprint.OnFingerprintSucceeded += Fingerprint_OnFingerprintSucceeded;
-            _fingerprint.OnFingerprintFailed += Fingerprint_OnFingerprintFailed;
-            _fingerprint.OnShowMessage += OnShowMessage;
+            Trinity.Common.Authentication.Fingerprint.Instance.GetVerification += GetVerificationFingerprint;
+            Trinity.Common.Authentication.Fingerprint.Instance.GetHealthMonitor += GetHealthMonitorFingerprint;
+
 
             // NRIC
             _nric = CodeBehind.Authentication.NRIC.GetInstance(LayerWeb);
@@ -79,7 +73,7 @@ namespace SSK
             //15 minutes
             var timer = new System.Timers.Timer(1000 * 60 * 15);
             
-            timer.Elapsed += PeriodCheck; ;
+            timer.Elapsed += PeriodCheck;
             timer.Start();
             //
             // For testing purpose only
@@ -93,7 +87,55 @@ namespace SSK
             //APIUtils.SignalR.SendNotificationToDutyOfficer("Hello Mr. Duty Officer!", "Hello Mr. Duty Officer! I'm a Supervisee");
 
         }
+        private void GetHealthMonitorFingerprint(bool status)
+        {
+            if (!status)
+            {
+                _fingerprintFailed = 3;
+                Fingerprint_OnFingerprintFailed("The fingerprint does not work");
+            }
+        }
+        private void GetVerificationFingerprint(bool bVerificationSuccess)
+        {
+            if (!bVerificationSuccess)
+            {
+                Fingerprint_OnFingerprintFailed("Unable to read your fingerprint. Please report to the Duty Officer");
+            }
+            else
+            {
+                Fingerprint_OnFingerprintSucceeded();
+            }
+        }
+        private void GetCardInfoSucceeded(string cardUID)
+        {
+            // get local user info
+            DAL_User dAL_User = new DAL_User();
+            var user = dAL_User.GetUserBySmartCardId(cardUID, true);
 
+            // if local user is null, get user from centralized, and sync db
+            if (user == null)
+            {
+                user = dAL_User.GetUserBySmartCardId(cardUID, false);
+            }
+
+            if (user != null)
+            {
+                Session session = Session.Instance;
+                session.IsSmartCardAuthenticated = true;
+                session[CommonConstants.USER_LOGIN] = user;
+                this.LayerWeb.RunScript("$('.status-text').css('color','#000').text('Your smart card is authenticated.');");
+                // Stop SCardMonitor
+                Trinity.Common.Monitor.SCardMonitor sCardMonitor = Trinity.Common.Monitor.SCardMonitor.Instance;
+                sCardMonitor.Stop();
+                // raise succeeded event
+                SmartCard_OnSmartCardSucceeded();
+            }
+            else
+            {
+                // raise failed event
+                SmartCard_OnSmartCardFailed("Unable to read your smart card. Please report to the Duty Officer");
+            }
+        }
 
         private void PeriodCheck(object sender, System.Timers.ElapsedEventArgs e)
         {
@@ -207,7 +249,7 @@ namespace SSK
             NavigateTo(NavigatorEnums.Authentication_Fingerprint);
         }
 
-        private void SmartCard_OnSmartCardFailed(object sender, CodeBehind.Authentication.SmartCardEventArgs e)
+        private void SmartCard_OnSmartCardFailed(string message)
         {
             // increase counter
             _smartCardFailed++;
@@ -216,17 +258,13 @@ namespace SSK
             if (_smartCardFailed > 3)
             {
                 // Send Notification to duty officer
-                APIUtils.SignalR.SendNotificationToDutyOfficer(e.Message, e.Message);
-
+                APIUtils.SignalR.SendNotificationToDutyOfficer(message, message);
                 // show message box to user
-                MessageBox.Show(e.Message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
+                MessageBox.Show(message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 // reset counter
                 _smartCardFailed = 0;
-
                 // display failed on UI
                 LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please place your smart card on the reader.');");
-
                 return;
             }
 
@@ -234,7 +272,46 @@ namespace SSK
             LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please place your smart card on the reader. Failed: " + _smartCardFailed + "');");
         }
 
-        private void Fingerprint_OnFingerprintFailed(object sender, CodeBehind.Authentication.FingerprintEventArgs e)
+        private void FaceDetectSucceeded()
+        {
+            _facedetectFailed = 0;
+            FacialRecognition.Instance.FaceDetectFailed -= FaceDetectFailed;
+            FacialRecognition.Instance.FaceDetectSucceeded -= FaceDetectSucceeded;
+            FacialRecognition.Instance.Dispose();
+            Fingerprint_OnFingerprintSucceeded();
+        }
+        private void FaceDetectFailed()
+        {
+            Session session = Session.Instance;
+            Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+            _facedetectFailed++;
+            if (_facedetectFailed==2)
+            {
+                // Send Notification to duty officer
+                APIUtils.SignalR.SendNotificationToDutyOfficer("Fingerprint scans and facial identification failed", "Fingerprint scans and facial identification failed");
+
+                // show message box to user
+                MessageBox.Show("Fingerprint scans and facial identification failed", "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                // navigate to smartcard login page
+                NavigateTo(NavigatorEnums.Authentication_SmartCard);
+
+                // reset counter
+                _fingerprintFailed = 0;
+                _facedetectFailed = 0;
+                FacialRecognition.Instance.FaceDetectFailed -= FaceDetectFailed;
+                FacialRecognition.Instance.FaceDetectSucceeded -= FaceDetectSucceeded;
+                FacialRecognition.Instance.Dispose();
+            }else if (_facedetectFailed<2 && user.User_Photo1!=null && user.User_Photo2!=null)
+            {
+                FacialRecognition.Instance.Compare(user.User_Photo2);
+            }
+            else
+            {
+                FaceDetectFailed();
+            }
+        }
+        private void Fingerprint_OnFingerprintFailed(string message)
         {
             // increase counter
             _fingerprintFailed++;
@@ -242,18 +319,19 @@ namespace SSK
             // exceeded max failed
             if (_fingerprintFailed > 3)
             {
-                // Send Notification to duty officer
-                APIUtils.SignalR.SendNotificationToDutyOfficer(e.Message, e.Message);
-
-                // show message box to user
-                MessageBox.Show(e.Message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-                // navigate to smartcard login page
-                NavigateTo(NavigatorEnums.Authentication_SmartCard);
-
-                // reset counter
-                _fingerprintFailed = 0;
-
+                Session session = Session.Instance;
+                Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+                if(user.User_Photo1==null && user.User_Photo2 == null)
+                {
+                    _facedetectFailed++;
+                    FaceDetectFailed();
+                }
+                else
+                {
+                    FacialRecognition.Instance.FaceDetectFailed += FaceDetectFailed;
+                    FacialRecognition.Instance.FaceDetectSucceeded += FaceDetectSucceeded;
+                    FacialRecognition.Instance.Compare(user.User_Photo1??user.User_Photo2);
+                }
                 return;
             }
 
@@ -288,7 +366,9 @@ namespace SSK
             // navigate
             if (navigatorEnum == NavigatorEnums.Authentication_SmartCard)
             {
-                _smartCard.Start();
+                LayerWeb.LoadPageHtml("Authentication/SmartCard.html");
+                LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please place your smart card on the reader.');");
+                Trinity.Common.Authentication.SmartCard.Instance.Start();
             }
             else if (navigatorEnum == NavigatorEnums.Authentication_Fingerprint)
             {

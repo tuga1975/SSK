@@ -105,8 +105,6 @@
   <ItemGroup>
     <Compile Include="CodeBehind\Authentication\Fingerprint.cs" />
     <Compile Include="CodeBehind\Authentication\SmartCard.cs" />
-    <Compile Include="Constants\CommonConstants.cs" />
-    <Compile Include="CSCallJS.cs" />
     <Compile Include="JSCallCS.cs" />
     <Compile Include="Main.cs">
       <SubType>Form</SubType>
@@ -186,10 +184,7 @@
       <Name>Trinity.Identity</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Business\" />
-    <Folder Include="Common\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
       <Visible>False</Visible>
@@ -316,6 +311,7 @@
     <Content Include="View\html\Table.html" />
     <Content Include="View\html\UBlabel.html" />
     <Content Include="View\html\UBPopup.html" />
+    <Content Include="View\img\central_narco_logo.png" />
     <Content Include="View\img\Logo.png" />
     <Content Include="View\scripts\jquery-1.10.2.min.js" />
     <Content Include="View\scripts\lib.js" />

@@ -85,7 +85,7 @@ namespace DocumentScannerTest
                 {
                     UserName = "Avril Lavigne",
                     NRIC = "S1234567G",
-                    DOB = "01/01/1970"
+                    Date = "01/01/1970"
                 };
 
                 foreach (var item in barcodeScannerUtils.GetDeviceStatus())

@@ -1,5 +1,4 @@
-﻿using DutyOfficer.Contstants;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 using System.Data;
 using System.Linq;
@@ -196,9 +195,7 @@ namespace DutyOfficer
         private void LayerWeb_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
             LayerWeb.InvokeScript("createEvent", JsonConvert.SerializeObject(_jsCallCS.GetType().GetMethods().Where(d => d.IsPublic && !d.IsVirtual && !d.IsSecuritySafeCritical).ToArray().Select(d => d.Name)));
-            NavigateTo(NavigatorEnums.Authentication_SmartCard);
             //NavigateTo(NavigatorEnums.Authentication_SmartCard);
-
             LayerWeb.LoadPageHtml("MUBAndTTlabel.html");
         }
     }

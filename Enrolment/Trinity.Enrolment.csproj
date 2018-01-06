@@ -90,9 +90,6 @@
     <Compile Include="CodeBehind\Login.cs" />
     <Compile Include="CodeBehind\Suppervisee.cs" />
     <Compile Include="CodeBehind\WebcamCapture.cs" />
-    <Compile Include="Common\Enums.cs" />
-    <Compile Include="Contstants\CommonConstants.cs" />
-    <Compile Include="CSCallJS.cs" />
     <Compile Include="JSCallCS.cs" />
     <Compile Include="Main.cs">
       <SubType>Form</SubType>
@@ -155,6 +152,7 @@
     <Content Include="View\html\Supervisee.html" />
     <Content Include="View\html\UpdateSuperviseeBiodata.html" />
     <Content Include="View\html\WebcamCapture.html" />
+    <Content Include="View\images\central_narco_logo.png" />
     <Content Include="View\images\fingerprint.png" />
     <Content Include="View\images\log-out.png" />
     <Content Include="View\images\logo.png" />

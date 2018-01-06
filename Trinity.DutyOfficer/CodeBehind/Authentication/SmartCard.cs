@@ -1,5 +1,4 @@
-﻿using DutyOfficer.Contstants;
-using PCSC;
+﻿using PCSC;
 using System;
 using System.Diagnostics;
 using System.Threading;

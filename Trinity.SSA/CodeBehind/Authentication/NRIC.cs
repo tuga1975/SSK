@@ -1,5 +1,4 @@
-﻿using SSA.Constants;
-using System;
+﻿using System;
 using System.Windows.Forms;
 using Trinity.Common;
 using Trinity.DAL;

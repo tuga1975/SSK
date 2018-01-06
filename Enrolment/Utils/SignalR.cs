@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNet.SignalR.Client;
-using Enrolment.Contstants;
 using System;
 using System.Collections.Generic;
 using Trinity.BE;

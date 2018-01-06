@@ -1,5 +1,4 @@
 ﻿using PCSC;
-using SSA.Constants;
 using System;
 using System.Diagnostics;
 using System.Threading;
