@@ -41,10 +41,21 @@ namespace Trinity.Common.Authentication
 
         public event Action<bool> GetVerification;
         public event Action<bool> GetHealthMonitor;
-        public void Start(ICollection<byte[]> FingerprintArray)
+
+        private List<byte[]> fingerprintArray;
+        public void Start(List<byte[]> fingerprintArray)
         {
-            
-            
+            this.fingerprintArray = fingerprintArray;
+            Trinity.Common.FingerprintReaderUtils.Instance.GetDeviceStatus(GetHealthMonitorEvent);
+        }
+        private void GetHealthMonitorEvent(bool bSuccess, int nResult, bool bVerificationSuccess)
+        {
+            if (bSuccess)
+            {
+                Trinity.Common.FingerprintReaderUtils.Instance.StartIdentification(this.fingerprintArray, OnVerificationComplete);
+            }
+            if (GetHealthMonitor != null)
+                GetHealthMonitor(bSuccess);
         }
         private void OnVerificationComplete(bool bVerificationSuccess)
         {

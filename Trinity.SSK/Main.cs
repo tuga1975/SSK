@@ -15,7 +15,6 @@ namespace SSK
     public partial class Main : Form
     {
         private JSCallCS _jsCallCS;
-        private CodeBehind.Authentication.Fingerprint _fingerprint;
         private CodeBehind.Authentication.NRIC _nric;
         private CodeBehind.Suppervisee _suppervisee;
         private NavigatorEnums _currentPage;
@@ -374,7 +373,11 @@ namespace SSK
             {
                 try
                 {
-                    _fingerprint.Start();
+                    Session session = Session.Instance;
+                    Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+                    LayerWeb.LoadPageHtml("Authentication/FingerPrint.html");
+                    LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please place your finger on the reader.');");
+                    Trinity.Common.Authentication.Fingerprint.Instance.Start(new System.Collections.Generic.List<byte[]>() { user.LeftThumbFingerprint, user.RightThumbFingerprint });
                 }
                 catch (System.IO.FileNotFoundException ex)
                 {

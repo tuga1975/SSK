@@ -41,8 +41,7 @@ namespace Trinity.Common.Authentication
         public void Start()
         {
             // StartCardMonitor
-            Trinity.Common.Monitor.SCardMonitor sCardMonitor = Trinity.Common.Monitor.SCardMonitor.Instance;
-            sCardMonitor.StartCardMonitor(OnCardInitialized, OnCardInserted, OnCardRemoved);
+            Trinity.Common.Monitor.SCardMonitor.Instance.StartCardMonitor(OnCardInitialized, OnCardInserted, OnCardRemoved);
         }
 
         

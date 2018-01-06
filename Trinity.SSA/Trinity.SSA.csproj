@@ -102,9 +102,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CodeBehind\Authentication\Fingerprint.cs" />
     <Compile Include="CodeBehind\Authentication\NRIC.cs" />
-    <Compile Include="CodeBehind\Authentication\SmartCard.cs" />
     <Compile Include="CodeBehind\PrintMUBAndTTLabels.cs" />
     <Compile Include="CodeBehind\SupperviseeParticulars.cs" />
     <Compile Include="FormQueueNumber.cs">
