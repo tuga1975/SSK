@@ -17,5 +17,7 @@ namespace Trinity.DAL.DBContext
         public System.DateTime Holiday1 { get; set; }
         public bool IsSingHoliday { get; set; }
         public Nullable<bool> IsMalayHoliday { get; set; }
+        public string ShortDesc { get; set; }
+        public string Notes { get; set; }
     }
 }

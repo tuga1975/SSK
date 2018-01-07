@@ -12,12 +12,13 @@ namespace Trinity.DAL.DBContext
     using System;
     using System.Collections.Generic;
     
-    public partial class Environment
+    public partial class QueueDetail
     {
-        public int DateOfWeek { get; set; }
-        public string Frequency { get; set; }
-        public System.TimeSpan StartTime { get; set; }
-        public System.TimeSpan EndTime { get; set; }
-        public int Duration { get; set; }
+        public System.Guid Queue_ID { get; set; }
+        public string Station { get; set; }
+        public string Status { get; set; }
+        public string Message { get; set; }
+    
+        public virtual Queue Queue { get; set; }
     }
 }

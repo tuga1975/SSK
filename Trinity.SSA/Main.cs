@@ -95,6 +95,17 @@ namespace SSA
 
             if (user != null)
             {
+                // Only enrolled supervisees are allowed to login
+                if (user.Status == EnumUserStatuses.Blocked)
+                {
+                    SmartCard_OnSmartCardFailed("You have been blocked.");
+                    return;
+                }
+                if (user.Status == EnumUserStatuses.New)
+                {
+                    SmartCard_OnSmartCardFailed("You haven't enrolled yet.");
+                    return;
+                }
                 Session session = Session.Instance;
                 session.IsSmartCardAuthenticated = true;
                 session[CommonConstants.USER_LOGIN] = user;
