@@ -60,7 +60,6 @@ namespace Trinity.DAL
                     Gender = dbUserProfile.Gender,
                     Race = dbUserProfile.Race,
                     SerialNumber = dbUserProfile.Serial_Number,
-                    QRCode = dbUserProfile.QRCode
                 };
                 return userProfile;
             }
@@ -173,8 +172,6 @@ namespace Trinity.DAL
                 UserName = user.Name//,
                 //Date = model.DOB.ToString()
             };
-
-            dbUserProfile.QRCode = Common.CommonUtil.CreateQRCode(userInfo);
 
         }
         public Trinity.BE.Address GetAddressByUserId(string userId, bool isLocal)

@@ -81,9 +81,9 @@ namespace SSK
         public void RefreshQueueNumbers()
         {
             DAL_QueueNumber dalQueue = new DAL_QueueNumber();
-            var allQueue = GetAllQueueToday(dalQueue);
+            var allQueue = GetAllQueueToday(dalQueue,EnumStations.SSK);
 
-            var setting = new DAL_Environment().GetTodayEnvironmentSetting();
+            var setting = new DAL_Setting().GetTodayEnvironmentSetting();
             var today = DateTime.Now;
 
             string currentQueueNumber = string.Empty;
@@ -91,10 +91,10 @@ namespace SSK
             for (int i = 0; i < allQueue.Count; i++)
             {
                 var appointmentStartTime = new DAL_Appointments().GetAppointmentDetails(allQueue[i].AppointmentId);
-                var diffHour = appointmentStartTime.FromTime.Value.Hours - today.Hour;
-                var diffStartMin = appointmentStartTime.FromTime.Value.Minutes - today.Minute;
-                var diffEndHour = appointmentStartTime.ToTime.Value.Hours - today.Hour;
-                var diffEndMin = appointmentStartTime.ToTime.Value.Minutes - today.Minute;
+                var diffHour = appointmentStartTime.StartTime.Value.Hours - today.Hour;
+                var diffStartMin = appointmentStartTime.StartTime.Value.Minutes - today.Minute;
+                var diffEndHour = appointmentStartTime.EndTime.Value.Hours - today.Hour;
+                var diffEndMin = appointmentStartTime.EndTime.Value.Minutes - today.Minute;
                 if (allQueue[i].Status == EnumQueueStatuses.Waiting && diffHour == 0 && diffStartMin <= 0 && ((diffEndHour > 0 && diffEndMin <= 0) || (diffEndHour == 0 && diffEndMin >= 0)))
                 {
                     currentQueueNumber += allQueue[i].QueueNumber + "-";
@@ -113,13 +113,13 @@ namespace SSK
 
         }
 
-        private static List<Trinity.BE.Queue> GetAllQueueToday(DAL_QueueNumber dalQueue)
+        private static List<Trinity.BE.Queue> GetAllQueueToday(DAL_QueueNumber dalQueue,string station)
         {
-            return dalQueue.GetAllQueueNumberByDate(DateTime.Today).Select(d => new Trinity.BE.Queue()
+            return dalQueue.GetAllQueueNumberByDate(DateTime.Today,station).Select(d => new Trinity.BE.Queue()
             {
-                ID = d.ID,
+                ID = d.Queue_ID,
                 AppointmentId = d.Appointment_ID,
-                Status = d.Status,
+                Status = d.QueueDetails.FirstOrDefault(qd => qd.Queue_ID == d.Queue_ID && qd.Station == EnumStations.SSK).Status,
                 QueueNumber = d.QueuedNumber,
                 Time = d.CreatedTime
             }).ToList();
@@ -128,7 +128,7 @@ namespace SSK
 
         private void RefreshQueueNumberTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
-            var setting = new DAL_Environment().GetTodayEnvironmentSetting();
+            var setting = new DAL_Setting().GetTodayEnvironmentSetting();
 
             //this.timer.Interval = 1000 * 60 * setting.Duration;
             this.timer.Interval = 60000;
