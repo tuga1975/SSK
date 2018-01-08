@@ -78,9 +78,10 @@ public static class EnumQueueStatuses
 
 public static class EnumUserStatuses
 {
-    public const string New = "New";
-    public const string Enrolled = "Enrolled";
-    public const string Blocked = "Blocked";
+    public const string New = "NEW";
+    public const string Enrolled = "ENROLLED";
+    public const string Blocked = "BLOCKED";
+    public const string ReEnrolled = "RE-ENROLLED";
 }
 
 public static class EnumFrequency
