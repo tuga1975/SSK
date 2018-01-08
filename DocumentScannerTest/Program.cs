@@ -111,18 +111,18 @@ namespace DocumentScannerTest
                 var test = DeviceManagement.GetUSBDevices();
 
                 BarcodePrinterUtils barcodeScannerUtils = BarcodePrinterUtils.Instance;
-                UserInfo userInfo = new UserInfo()
+                LabelInfo labelInfo = new LabelInfo()
                 {
-                    UserName = "Avril Lavigne",
+                    Name = "Avril Lavigne",
                     NRIC = "S1234567G",
-                    Date = "01/01/1970"
+                    Date = Convert.ToDateTime("01/01/1970")
                 };
 
                 foreach (var item in barcodeScannerUtils.GetDeviceStatus())
                 {
                     if (item == EnumDeviceStatuses.Connected)
                     {
-                        printerMonitor.PrintLabel(userInfo);
+                        printerMonitor.PrintLabel(labelInfo);
                     }
                     else
                     {
@@ -139,7 +139,7 @@ namespace DocumentScannerTest
             }
         }
 
-        private static void OnPrintUserInfo_BarcodeSucceeded()
+        private static void OnPrintUserInfo_BarcodeSucceeded(object sender, PrintMUBAndTTLabelsSucceedEventArgs e)
         {
             Console.WriteLine("StartBarcodeScanner is succeeded...");
         }

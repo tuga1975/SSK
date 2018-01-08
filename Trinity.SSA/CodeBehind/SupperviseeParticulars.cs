@@ -26,28 +26,26 @@ namespace SSA.CodeBehind
                 if (session.IsAuthenticated)
                 {
                     Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.SUPERVISEE];
-
-                    var dalUserprofile = new Trinity.DAL.DAL_UserProfile();
-                    var userProfile = dalUserprofile.GetUserProfileByUserId(user.UserId, true);
-
-                    var userInfo = new Trinity.Common.UserInfo
+                    
+                    var labelInfo = new LabelInfo
                     {
-                        UserName = user.Name,
+                        UserId = user.UserId,
+                        Name = user.Name, 
                         NRIC = user.NRIC,
-                        Date = DateTime.Now.ToString("dd/MM/yyyy"),//userProfile.DOB.HasValue ? userProfile.DOB.Value.ToString("dd/MM/yyyy") : "",
-                        MarkingNumber = CommonUtil.GenerateMarkingNumber()
+                        Label_Type = EnumLabelType.MUB,
+                        Date = System.DateTime.Now,
+                        CompanyName = CommonConstants.COMPANY_NAME,
+                        LastStation = EnumStations.SSA,
+                        MarkingNo = CommonUtil.GenerateMarkingNumber()
                     };
 
                     byte[] byteArrayQRCode = null;
-                    //if (userProfile.QRCode != null)
-                    //    byteArrayQRCode = userProfile.QRCode;
-                    //else
-                        byteArrayQRCode = CommonUtil.CreateQRCode(userInfo);
-                    
-                    // test qr code bang file image, chua goi printer
+                    byteArrayQRCode = CommonUtil.CreateLabelQRCode(labelInfo);
+                    labelInfo.QRCode = byteArrayQRCode;
+
                     using (var ms = new System.IO.MemoryStream(byteArrayQRCode))
                     {
-                        string fileName = String.Format("{0}/View/img/{1}", CSCallJS.curDir, "QRCode_" + user.NRIC + ".png");
+                        string fileName = String.Format("{0}/Temp/{1}", CSCallJS.curDir, "QRCode_" + user.NRIC + ".png");
                         if (System.IO.File.Exists(fileName))
                             System.IO.File.Delete(fileName);
 
@@ -56,7 +54,7 @@ namespace SSA.CodeBehind
                     }
 
                     //profile model 
-                    _web.LoadPageHtml("SuperviseeParticulars.html", userInfo);
+                    _web.LoadPageHtml("SuperviseeParticulars.html", labelInfo);
                 }
             }
             catch (Exception ex)

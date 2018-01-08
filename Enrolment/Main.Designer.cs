@@ -41,6 +41,7 @@
             this.LayerWeb.Margin = new System.Windows.Forms.Padding(4);
             this.LayerWeb.MinimumSize = new System.Drawing.Size(27, 25);
             this.LayerWeb.Name = "LayerWeb";
+            this.LayerWeb.ScriptErrorsSuppressed = true;
             this.LayerWeb.Size = new System.Drawing.Size(1201, 716);
             this.LayerWeb.TabIndex = 0;
             this.LayerWeb.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.LayerWeb_DocumentCompleted);

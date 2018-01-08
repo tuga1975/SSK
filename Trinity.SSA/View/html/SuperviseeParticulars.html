@@ -48,22 +48,22 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-        $('#UserName').val(api.model.UserName);
+        $('#UserName').val(api.model.Name);
         $('#NRIC').val(api.model.NRIC);
         $('#Date').val(api.model.Date);
-        $('#MarkingNumber').val(api.model.MarkingNumber);
-        var srcQRCode = "../img/QRCode_" + api.model.NRIC + ".png";
+        $('#MarkingNumber').val(api.model.MarkingNo);
+        var srcQRCode = "../../Temp/QRCode_" + api.model.NRIC + ".png";
         $("#imgQRCode").attr("src", srcQRCode);
     });
     
-    $("#particularsFrm").submit(function (e) {        
+    $("#ConfirmBtn").click(function (e) {        
         var json = JSON.stringify(api.model);
         api.server.PrintingMUBAndTTLabels(json);
         e.preventDefault(); // avoid to execute the actual submit of the form.
     });
 
     $('#CancelBtn').click(function () {
-        api.server.DeleteQRCodeImageFile();
+        api.server.DeleteQRCodeImageFileTemp();
         api.server.LogOut();
     });    
 </script>

@@ -85,16 +85,16 @@
           <Property Name="Label_ID" Type="uniqueidentifier" Nullable="false" />
           <Property Name="Label_Type" Type="varchar" MaxLength="5" Nullable="false" />
           <Property Name="CompanyName" Type="nvarchar" MaxLength="100" Nullable="false" />
-          <Property Name="MarkingNo" Type="nchar" MaxLength="10" Nullable="false" />
+          <Property Name="MarkingNo" Type="varchar" MaxLength="15" Nullable="false" />
           <Property Name="DrugType" Type="varchar" MaxLength="10" />
           <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
-          <Property Name="NRIC" Type="nchar" MaxLength="10" Nullable="false" />
-          <Property Name="Name" Type="nchar" MaxLength="10" Nullable="false" />
+          <Property Name="NRIC" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="Date" Type="datetime" Nullable="false" />
           <Property Name="QRCode" Type="varbinary(max)" />
           <Property Name="LastStation" Type="varchar" MaxLength="10" Nullable="false" />
           <Property Name="PrintCount" Type="int" Nullable="false" />
-          <Property Name="ReprintReason" Type="nvarchar" MaxLength="50" />
+          <Property Name="ReprintReason" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="Membership_RoleClaims">
           <Key>
@@ -423,18 +423,6 @@ warning 6002: The table/view 'SSK.dbo.Settings' does not have a primary key defi
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Labels_Membership_Users">
-          <End Role="Membership_Users" Type="Self.Membership_Users" Multiplicity="1" />
-          <End Role="Labels" Type="Self.Labels" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Membership_Users">
-              <PropertyRef Name="UserId" />
-            </Principal>
-            <Dependent Role="Labels">
-              <PropertyRef Name="UserId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_Membership_RoleClaims_Membership_Roles">
           <End Role="Membership_Roles" Type="Self.Membership_Roles" Multiplicity="1" />
           <End Role="Membership_RoleClaims" Type="Self.Membership_RoleClaims" Multiplicity="*" />
@@ -619,10 +607,6 @@ warning 6002: The table/view 'SSK.dbo.Settings' does not have a primary key defi
           <AssociationSet Name="FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId">
             <End Role="Membership_Users" EntitySet="Membership_Users" />
             <End Role="Membership_UserRoles" EntitySet="Membership_UserRoles" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Labels_Membership_Users" Association="Self.FK_Labels_Membership_Users">
-            <End Role="Membership_Users" EntitySet="Membership_Users" />
-            <End Role="Labels" EntitySet="Labels" />
           </AssociationSet>
           <AssociationSet Name="FK_Membership_RoleClaims_Membership_Roles" Association="Self.FK_Membership_RoleClaims_Membership_Roles">
             <End Role="Membership_Roles" EntitySet="Membership_Roles" />
@@ -849,16 +833,16 @@ warning 6002: The table/view 'SSK.dbo.Settings' does not have a primary key defi
           <Property Name="Label_ID" Type="Guid" Nullable="false" />
           <Property Name="Label_Type" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="false" />
           <Property Name="CompanyName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="MarkingNo" Type="String" Nullable="false" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="MarkingNo" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
           <Property Name="DrugType" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="NRIC" Type="String" Nullable="false" MaxLength="10" FixedLength="true" Unicode="true" />
-          <Property Name="Name" Type="String" Nullable="false" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="NRIC" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Date" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="QRCode" Type="Binary" MaxLength="Max" FixedLength="false" />
           <Property Name="LastStation" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="PrintCount" Type="Int32" Nullable="false" />
-          <Property Name="ReprintReason" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ReprintReason" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Membership_Users" Relationship="SSKModel.FK_Labels_Membership_Users" FromRole="Label" ToRole="Membership_Users" />
         </EntityType>
         <EntityType Name="Membership_RoleClaims">

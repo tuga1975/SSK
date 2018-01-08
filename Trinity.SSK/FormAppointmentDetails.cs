@@ -48,13 +48,13 @@ namespace SSK
         {
             BarcodePrinterUtils printerUtil = BarcodePrinterUtils.Instance;
 
-            Trinity.Common.UserInfo userInfo = new Trinity.Common.UserInfo()
+            Trinity.Common.LabelInfo labelInfo = new Trinity.Common.LabelInfo()
             {
-                Date = "07-04-1982",
+                Date = Convert.ToDateTime("07-04-1982"),
                 NRIC = "022234343",
-                UserName = "minhdq"
+                Name = "minhdq"
             };
-            printerUtil.PrintUserInfo(userInfo);
+            printerUtil.PrintUserInfo(labelInfo);
             //if (documentLoaded)
             //{
             //    webBrowserAppointmentDetails.Print();
