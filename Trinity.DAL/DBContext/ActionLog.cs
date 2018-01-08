@@ -12,12 +12,15 @@ namespace Trinity.DAL.DBContext
     using System;
     using System.Collections.Generic;
     
-    public partial class ApplicationDevice_Status
+    public partial class ActionLog
     {
-        public System.Guid ID { get; set; }
-        public string Station { get; set; }
-        public Nullable<int> DeviceID { get; set; }
-        public int StatusCode { get; set; }
-        public string StatusMessage { get; set; }
+        public System.Guid Action_ID { get; set; }
+        public string ActionName { get; set; }
+        public string PerformedBy { get; set; }
+        public Nullable<System.DateTime> PerformedDate { get; set; }
+        public string Note { get; set; }
+    
+        public virtual Membership_Users Membership_Users { get; set; }
+        public virtual Membership_Users Membership_Users1 { get; set; }
     }
 }

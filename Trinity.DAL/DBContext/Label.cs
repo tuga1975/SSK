@@ -12,20 +12,22 @@ namespace Trinity.DAL.DBContext
     using System;
     using System.Collections.Generic;
     
-    public partial class Notification
+    public partial class Label
     {
-        public System.Guid ID { get; set; }
+        public System.Guid Label_ID { get; set; }
+        public string Label_Type { get; set; }
+        public string CompanyName { get; set; }
+        public string MarkingNo { get; set; }
+        public string DrugType { get; set; }
+        public string UserId { get; set; }
+        public string NRIC { get; set; }
+        public string Name { get; set; }
         public System.DateTime Date { get; set; }
-        public string FromUserId { get; set; }
-        public string ToUserId { get; set; }
-        public string Subject { get; set; }
-        public string Content { get; set; }
-        public bool IsRead { get; set; }
-        public Nullable<bool> IsFromSupervisee { get; set; }
-        public string Source { get; set; }
-        public string Type { get; set; }
+        public byte[] QRCode { get; set; }
+        public string LastStation { get; set; }
+        public int PrintCount { get; set; }
+        public string ReprintReason { get; set; }
     
         public virtual Membership_Users Membership_Users { get; set; }
-        public virtual Membership_Users Membership_Users1 { get; set; }
     }
 }

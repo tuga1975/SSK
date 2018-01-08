@@ -12,27 +12,20 @@ namespace Trinity.DAL.DBContext
     using System;
     using System.Collections.Generic;
     
-    public partial class Appointment
+    public partial class Timeslot
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Appointment()
+        public Timeslot()
         {
-            this.Queues = new HashSet<Queue>();
+            this.Appointments = new HashSet<Appointment>();
         }
     
-        public System.Guid ID { get; set; }
-        public Nullable<int> Timeslot_ID { get; set; }
-        public Nullable<System.Guid> AbsenceReporting_ID { get; set; }
-        public string UserId { get; set; }
-        public System.DateTime Date { get; set; }
-        public short ChangedCount { get; set; }
-        public int Status { get; set; }
-        public Nullable<System.DateTime> ReportTime { get; set; }
+        public int Timeslot_ID { get; set; }
+        public Nullable<int> DateOfWeek { get; set; }
+        public Nullable<System.TimeSpan> StartTime { get; set; }
+        public Nullable<System.TimeSpan> EndTime { get; set; }
     
-        public virtual AbsenceReporting AbsenceReporting { get; set; }
-        public virtual Membership_Users Membership_Users { get; set; }
-        public virtual Timeslot Timeslot { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Queue> Queues { get; set; }
+        public virtual ICollection<Appointment> Appointments { get; set; }
     }
 }

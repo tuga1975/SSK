@@ -12,14 +12,23 @@ namespace Trinity.DAL.DBContext
     using System;
     using System.Collections.Generic;
     
-    public partial class QueueNumber
+    public partial class Queue
     {
-        public System.Guid ID { get; set; }
-        public string QueuedNumber { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public Queue()
+        {
+            this.QueueDetails = new HashSet<QueueDetail>();
+        }
+    
+        public System.Guid Queue_ID { get; set; }
         public System.Guid Appointment_ID { get; set; }
+        public string CurrentStation { get; set; }
+        public string Outcome { get; set; }
         public System.DateTime CreatedTime { get; set; }
-        public string Status { get; set; }
+        public string QueuedNumber { get; set; }
     
         public virtual Appointment Appointment { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<QueueDetail> QueueDetails { get; set; }
     }
 }

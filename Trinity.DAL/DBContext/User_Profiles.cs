@@ -45,7 +45,8 @@ namespace Trinity.DAL.DBContext
         public Nullable<System.DateTime> Date_of_Issue { get; set; }
         public string Gender { get; set; }
         public string Race { get; set; }
-        public byte[] QRCode { get; set; }
+        public byte[] RightThumbImage { get; set; }
+        public byte[] LeftThumbImage { get; set; }
     
         public virtual Address Address { get; set; }
         public virtual Address Address1 { get; set; }
