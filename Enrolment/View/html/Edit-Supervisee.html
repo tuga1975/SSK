@@ -279,14 +279,13 @@
 				</div>
 			
 				<div class="btn-group">
-					<button type="submit" class="btn-form" onclick="hidePopUp()" >Update</button>
+					<button type="button" class="btn-form" onclick="hidePopUp()" >Update</button>
 					<button type="submit" class="btn-form" onclick="api.server.CancelCapturePicture();">Cancel</button>
 				</div>
 			</form>
 		</div>
 	</div>
 </div>
-
 <script>
 	$(function() {
 		$('.s_label').click(function(){
@@ -324,14 +323,20 @@
 
     });
 
-	
-
-	$('#SaveBtn').click(function () {
+	$("#superviseeFrm").submit(function(e){
 		var $form = $("#superviseeFrm");
         var data = getFormData($form);
         var json = JSON.stringify(data);
         api.server.SaveSupervisee(json, true);
+		e.preventDefault();
 	});
+
+	/*$('#SaveBtn').click(function () {
+		var $form = $("#superviseeFrm");
+        var data = getFormData($form);
+        var json = JSON.stringify(data);
+        api.server.SaveSupervisee(json, true);
+	});*/
 
 	$("#updatePhoto2").click(function(){
 		showPopUp();
