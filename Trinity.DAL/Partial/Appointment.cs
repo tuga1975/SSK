@@ -22,14 +22,14 @@ namespace Trinity.DAL.DBContext
         {
             get
             {
-                return FromTime.HasValue ? string.Format("{0:D2}:{1:D2}", FromTime.Value.Hours, FromTime.Value.Minutes): string.Empty;
+                return Timeslot.StartTime.HasValue ? string.Format("{0:D2}:{1:D2}", Timeslot.StartTime.Value.Hours, Timeslot.StartTime.Value.Minutes) : string.Empty;
             }
         }
         public string ToTimeTxt
         {
             get
             {
-                return ToTime.HasValue ? string.Format("{0:D2}:{1:D2}", ToTime.Value.Hours, ToTime.Value.Minutes) : string.Empty;
+                return Timeslot.EndTime.HasValue ? string.Format("{0:D2}:{1:D2}", Timeslot.EndTime.Value.Hours, Timeslot.EndTime.Value.Minutes) : string.Empty;
             }
         }
     }

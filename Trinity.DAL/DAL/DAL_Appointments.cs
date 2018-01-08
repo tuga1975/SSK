@@ -19,7 +19,7 @@ namespace Trinity.DAL
 
         public Trinity.BE.Appointment GetAppointmentDetails(Guid ID)
         {
-            Appointment appointment = _localUnitOfWork.DataContext.Appointments.FirstOrDefault(d => d.ID == ID);
+            Appointment appointment = _localUnitOfWork.DataContext.Appointments.Include("TimeSlot").FirstOrDefault(d => d.ID == ID);
             if (appointment != null)
             {
                 Membership_Users user = _localUnitOfWork.DataContext.Membership_Users.FirstOrDefault(u => u.UserId == appointment.UserId);
@@ -28,11 +28,13 @@ namespace Trinity.DAL
                     UserId = appointment.UserId,
                     AppointmentDate = appointment.Date,
                     ChangedCount = appointment.ChangedCount,
-                    FromTime = appointment.FromTime,
+                    Timeslot_ID = appointment.Timeslot_ID,
                     Name = user.Name,
                     NRIC = user.NRIC,
                     Status = (EnumAppointmentStatuses)appointment.Status,
-                    ToTime = appointment.ToTime
+                    ReportTime = appointment.ReportTime,
+                    StartTime = appointment.Timeslot.StartTime,
+                    EndTime = appointment.Timeslot.EndTime
                 };
                 return result;
             }
@@ -49,13 +51,18 @@ namespace Trinity.DAL
         }
         public Appointment GetMyAppointmentCurrent(string UserId)
         {
-            return _localUnitOfWork.DataContext.Appointments.Where(d => d.UserId == UserId && d.Date >= DateTime.Today).OrderBy(d => d.Date).FirstOrDefault();
+            return _localUnitOfWork.DataContext.Appointments.Include("Timeslot").Where(d => d.UserId == UserId && d.Date >= DateTime.Today).OrderBy(d => d.Date).FirstOrDefault();
         }
         public Appointment UpdateBookTime(string IDAppointment, string timeStart, string timeEnd)
         {
             Trinity.DAL.DBContext.Appointment appointment = GetMyAppointmentByID(new Guid(IDAppointment));
-            appointment.FromTime = TimeSpan.Parse(timeStart);
-            appointment.ToTime = TimeSpan.Parse(timeEnd);
+
+            var timeSlot = GetTodayTimeslotByStartAndEndTime(TimeSpan.Parse(timeStart), TimeSpan.Parse(timeEnd));
+            if (timeSlot != null)
+            {
+                appointment.Timeslot_ID = timeSlot.Timeslot_ID;
+            }
+
             appointment.ChangedCount += 1;
             appointment.Status = (int)EnumAppointmentStatuses.Booked;
             _localUnitOfWork.GetRepository<Appointment>().Update(appointment);
@@ -105,7 +112,21 @@ namespace Trinity.DAL
 
         public int CountListAppointmentByTimeslot(TimeSpan fromTime, TimeSpan toTime)
         {
-            return _localUnitOfWork.DataContext.Appointments.Count(a => a.FromTime >= fromTime && a.ToTime <= toTime && System.Data.Entity.DbFunctions.DiffDays(a.Date, DateTime.Now) == 0);
+            var timeSlot = GetTodayTimeslotByStartAndEndTime(fromTime, toTime);
+            if (timeSlot != null)
+            {
+
+                return _localUnitOfWork.DataContext.Appointments.Count(a => a.Timeslot_ID == timeSlot.Timeslot_ID);
+            }
+            return 0;
+
+        }
+
+        private Timeslot GetTodayTimeslotByStartAndEndTime(TimeSpan startTime, TimeSpan endTime)
+        {
+            var dayOfWeek = (int)DateTime.Now.DayOfWeek;
+            var timeSlotEnt = _localUnitOfWork.DataContext.Timeslots.FirstOrDefault(t => t.StartTime == startTime && t.EndTime == endTime && t.DateOfWeek == dayOfWeek);
+            return timeSlotEnt;
         }
     }
 }

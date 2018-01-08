@@ -220,3 +220,19 @@ public enum NotificationType
 {
     Error, Notification, Caution
 }
+
+public static class EnumStations
+{
+    public const string SSK = "SSK";
+    public const string SSA = "SSA";
+    public const string UHP = "UHP";
+    public const string APS = "APS";
+    public const string HSA = "HSA";
+    public const string ESP = "ESP";
+
+    public static List<string> GetListStation()
+    {
+        return new List<string>() { SSK,SSA,UHP,APS,HSA,ESP};
+    }
+
+}
