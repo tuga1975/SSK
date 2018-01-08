@@ -143,3 +143,12 @@ function refreshQueueNumbers(currentQueueNumber, nextQueueNumberList) {
 }
 
 
+$(document).ready(function () {
+    $('body').on('click', 'a[href]', function (event) {
+        event.preventDefault();
+        var href = $(this).attr('href');
+        if (typeof href != 'undefined' && $.trim(href).length > 0) {
+            eval(href);
+        }
+    });
+});

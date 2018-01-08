@@ -62,9 +62,18 @@ public enum EnumAbsenceReasons
 
 public static class EnumQueueStatuses
 {
+
+    [Color("red")]
     public const string Missed = "Missed";
+    [Color("white")]
     public const string Waiting = "Waiting";
+    [Color("white")]
     public const string Processing = "Processing";
+    [Color("red")]
+    public const string Errors = "Errors";
+    [Color("green")]
+    public const string Finished = "Finished";
+
 }
 
 public static class EnumUserStatuses
