@@ -45,7 +45,7 @@ namespace Trinity.DAL
             foreach (var item in model.StatusCode)
             {
                 var deviceStatus = new ApplicationDevice_Status();
-                deviceStatus.ApplicationType = model.ApplicationType;
+                deviceStatus.Station = model.Station;
                 deviceStatus.DeviceID = model.DeviceID;
                 deviceStatus.ID = Guid.NewGuid();
                 deviceStatus.StatusCode = (int)item;
@@ -58,7 +58,7 @@ namespace Trinity.DAL
         {
             return new BE.DeviceStatus
             {
-                ApplicationType = appName,
+                Station = appName,
                 DeviceID= deviceId,
                 StatusCode=statusCode
             };

@@ -38,29 +38,31 @@
             // 
             this.LayerWeb.Dock = System.Windows.Forms.DockStyle.Fill;
             this.LayerWeb.Location = new System.Drawing.Point(0, 0);
-            this.LayerWeb.MinimumSize = new System.Drawing.Size(20, 20);
+            this.LayerWeb.Margin = new System.Windows.Forms.Padding(4);
+            this.LayerWeb.MinimumSize = new System.Drawing.Size(27, 25);
             this.LayerWeb.Name = "LayerWeb";
-            this.LayerWeb.Size = new System.Drawing.Size(901, 582);
+            this.LayerWeb.ScriptErrorsSuppressed = true;
+            this.LayerWeb.Size = new System.Drawing.Size(1201, 716);
             this.LayerWeb.TabIndex = 0;
             this.LayerWeb.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.LayerWeb_DocumentCompleted);
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Location = new System.Drawing.Point(9, 10);
-            this.pictureBox1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.pictureBox1.Location = new System.Drawing.Point(12, 12);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(766, 562);
+            this.pictureBox1.Size = new System.Drawing.Size(1022, 692);
             this.pictureBox1.TabIndex = 1;
             this.pictureBox1.TabStop = false;
             // 
             // Main
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(901, 582);
+            this.ClientSize = new System.Drawing.Size(1201, 716);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.LayerWeb);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "Main";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Trinity Enrolment";

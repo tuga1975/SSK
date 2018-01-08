@@ -80,8 +80,14 @@ namespace Trinity.DAL
                 //queryNotifications = _localUnitOfWork.DataContext.Notifications.Where(n => n.ToUserId == null);
                 queryNotifications = (from n in _localUnitOfWork.DataContext.Notifications
                                       join u in _localUnitOfWork.DataContext.Membership_Users on n.FromUserId equals u.UserId
-                                      select new Trinity.BE.Notification() { FromUserName = u.Name, Subject = n.Subject, Content = n.Content, Date = 
-                                          n.Date, Type = (NotificationType) n.Type,
+                                      select new Trinity.BE.Notification()
+                                      {
+                                          FromUserName = u.Name,
+                                          Subject = n.Subject,
+                                          Content = n.Content,
+                                          Date =
+                                          n.Date,
+                                          Type = n.Type,
                                           Source = n.Source
                                       });
             }
@@ -90,8 +96,13 @@ namespace Trinity.DAL
                 //queryNotifications = _centralizedUnitOfWork.DataContext.Notifications.Where(n => n.ToUserId == null);
                 queryNotifications = (from n in _centralizedUnitOfWork.DataContext.Notifications
                                       join u in _centralizedUnitOfWork.DataContext.Membership_Users on n.FromUserId equals u.UserId
-                                      select new Trinity.BE.Notification() { FromUserName = u.Name, Subject = n.Subject, Content = n.Content,
-                                          Date = n.Date, Type = (NotificationType) n.Type,
+                                      select new Trinity.BE.Notification()
+                                      {
+                                          FromUserName = u.Name,
+                                          Subject = n.Subject,
+                                          Content = n.Content,
+                                          Date = n.Date,
+                                          Type = n.Type,
                                           Source = n.Source
                                       });
             }
@@ -113,7 +124,7 @@ namespace Trinity.DAL
                 IsRead = false,
                 Subject = subject,
                 ToUserId = toUserId,
-                ID= Guid.NewGuid()
+                ID = Guid.NewGuid()
             };
             IRepository<Trinity.DAL.DBContext.Notification> notificationRepo = null;
             if (isLocal)
@@ -143,7 +154,7 @@ namespace Trinity.DAL
                 IsRead = false,
                 Subject = subject,
                 ToUserId = toUserId,
-                Type = (int) notifyType,
+                Type = notifyType.ToString(),
                 Source = source,
                 ID = Guid.NewGuid()
             };

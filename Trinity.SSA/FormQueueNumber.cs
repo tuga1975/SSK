@@ -63,9 +63,9 @@ namespace SSA
         public void RefreshQueueNumbers()
         {
             DAL_QueueNumber dalQueue = new DAL_QueueNumber();
-            var arrayQueue = dalQueue.GetAllQueueNumberByDate(DateTime.Today).Select(d => new Trinity.BE.Queue()
+            var arrayQueue = dalQueue.GetAllQueueNumberByDate(DateTime.Today, EnumStations.SSK).Select(d => new Trinity.BE.Queue()
             {
-                Status = d.Status,
+                Status = d.QueueDetails.FirstOrDefault(qd => qd.Queue_ID == d.Queue_ID && qd.Station == EnumStations.SSK).Status,
                 QueueNumber = d.QueuedNumber
             }).ToArray();
 

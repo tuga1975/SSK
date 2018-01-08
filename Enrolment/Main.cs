@@ -313,13 +313,15 @@ namespace Enrolment
                 return;
             }
         }
-       
+
         private void LayerWeb_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
-            
             LayerWeb.InvokeScript("createEvent", JsonConvert.SerializeObject(_jsCallCS.GetType().GetMethods().Where(d => d.IsPublic && !d.IsVirtual && !d.IsSecuritySafeCritical).ToArray().Select(d => d.Name)));
-            //Start page
+
+            // Start page
             NavigateTo(NavigatorEnums.Login);
+            //NavigateTo(NavigatorEnums.Supervisee);
+            LayerWeb.DocumentCompleted -= LayerWeb_DocumentCompleted;
         }
 
         private void NRIC_OnNRICSucceeded()
@@ -438,6 +440,15 @@ namespace Enrolment
                         LayerWeb.InvokeScript("showPopUp");
                         LayerWeb.InvokeScript("setAvatar", base64Str1, base64Str2);
                     }
+                    else if (currentPage.ToString() == "UpdateSuperviseePhoto")
+                    {
+                        LayerWeb.LoadPageHtml("UpdateSuperviseePhoto.html", currentEditUser);
+                        LayerWeb.InvokeScript("setAvatar", base64Str1, base64Str2);
+                    }
+                    else if (currentPage.ToString() == "UpdateSuperviseeFinger")
+                    {
+                        LayerWeb.LoadPageHtml("UpdateSuperviseeFingerprint.html", currentEditUser);
+                    }
                 }
             }
             else if (e.Name.Equals(EventNames.CANCEL_CAPTURE_PICTURE))
@@ -472,7 +483,7 @@ namespace Enrolment
                             }
 
                         }
-                        // LayerWeb.LoadPageHtml("New-Supervisee.html");
+                       // LayerWeb.LoadPageHtml("New-Supervisee.html");
                     }));
                     return;
                 }

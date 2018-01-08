@@ -91,7 +91,7 @@ namespace SSK
 
             DAL_Appointments DAL_Appointments = new DAL_Appointments();
 
-            DAL_Environment DAL_Environment = new DAL_Environment();
+            DAL_Setting DAL_Environment = new DAL_Setting();
 
             Trinity.DAL.DBContext.Appointment appointment = DAL_Appointments.GetMyAppointmentCurrent(user.UserId);
             var selectedTimes = new Trinity.BE.EnvironmentTimeDetail();
@@ -105,14 +105,16 @@ namespace SSK
             }
             else
             {
-                MessageBox.Show("You have no appointment");
+                var eventCenter = Trinity.Common.Common.EventCenter.Default;
+                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_NO_APPOINTMENT, Message = "You have no appointment" });
+
             }
         }
 
         private static void SetSelectedTime(Appointment appointment, List<Trinity.BE.EnvironmentTime> selectedTimes)
         {
             var dalAppointment = new DAL_Appointments();
-            var item = selectedTimes.Where(d => appointment.FromTime != null && d.StartTime == appointment.FromTime.Value && d.EndTime == appointment.ToTime.Value).FirstOrDefault();
+            var item = selectedTimes.Where(d => appointment.Timeslot.StartTime != null && d.StartTime == appointment.Timeslot.StartTime.Value && d.EndTime == appointment.Timeslot.EndTime.Value).FirstOrDefault();
             if (item != null)
             {
                 item.IsSelected = true;
@@ -219,7 +221,8 @@ namespace SSK
             }
             catch (Exception)
             {
-                MessageBox.Show("Something wrong happened!");
+                var eventCenter = Trinity.Common.Common.EventCenter.Default;
+                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.SOMETHING_WENT_WRONG, Message = "Something wrong happened!" });
                 LoadProfile();
             }
         }
@@ -239,7 +242,8 @@ namespace SSK
             }
             catch (Exception)
             {
-                MessageBox.Show("Something wrong happened!");
+                var eventCenter = Trinity.Common.Common.EventCenter.Default;
+                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.SOMETHING_WENT_WRONG, Message = "Something wrong happened!" });
                 LoadProfile();
             }
         }
@@ -323,8 +327,8 @@ namespace SSK
             }
             else if (countAbsence >= 3)
             {
-                MessageBox.Show("You have been blocked for 3 or more absences \n Please report to the Duty Officer");
-
+                var eventCenter = Trinity.Common.Common.EventCenter.Default;
+                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ABSENCE_MORE_THAN_3, Message = "You have been blocked for 3 or more absences \n Please report to the Duty Officer" });
                 //for testing purpose
                 //notify to officer
                 APIUtils.SignalR.SendNotificationToDutyOfficer("Supervisee got blocked for 3 or more absences", "Please check the Supervisee's information!");
@@ -341,7 +345,8 @@ namespace SSK
             {
                 var listAppointment = dalAppointment.GetMyAbsentAppointments(user.UserId);
 
-                MessageBox.Show("You have been absent for " + countAbsence + " times.\nPlease provide reasons and the supporting documents.");
+                var eventCenter = Trinity.Common.Common.EventCenter.Default;
+                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ABSENCE_LESS_THAN_3, Message = "You have been absent for " + countAbsence + " times.\nPlease provide reasons and the supporting documents." });
 
                 this._web.LoadPageHtml("ReasonsForQueue.html", listAppointment);
             }
@@ -356,17 +361,18 @@ namespace SSK
             Trinity.DAL.DBContext.Appointment appointment = _Appointment.GetMyAppointmentByDate(user.UserId, DateTime.Today);
             if (appointment == null)
             {
-                MessageBox.Show("You have no appointment today");
+                var eventCenter = Trinity.Common.Common.EventCenter.Default;
+                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_NO_APPOINTMENT, Message = "You have no appointment today" });
             }
             else
             {
                 var _dalQueue = new DAL_QueueNumber();
-                Trinity.DAL.DBContext.QueueNumber QueueNumber = null;
+                Trinity.DAL.DBContext.Queue queueNumber = null;
                 //check queue exist
-                if (!_dalQueue.CheckQueueExistToday(appointment.UserId))
+                if (!_dalQueue.CheckQueueExistToday(appointment.UserId, EnumStations.SSK))
                 {
-                    QueueNumber = _dalQueue.InsertQueueNumber(appointment.ID, appointment.UserId);
-                    RaiseOnShowMessageEvent(new ShowMessageEventArgs("Your queue number is: " + QueueNumber.QueuedNumber, "Queue Number", MessageBoxButtons.OK, MessageBoxIcon.Information));
+                    queueNumber = _dalQueue.InsertQueueNumber(appointment.ID, appointment.UserId, EnumStations.SSK);
+                    RaiseOnShowMessageEvent(new ShowMessageEventArgs("Your queue number is: " + queueNumber.QueuedNumber, "Queue Number", MessageBoxButtons.OK, MessageBoxIcon.Information));
                 }
                 //var model = _dalQueue.GetAllQueueNumberByDate(DateTime.Today).Select(d => new Trinity.BE.Queue()
                 //{

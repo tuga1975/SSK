@@ -19,7 +19,7 @@ namespace Trinity.BE
         [DataMember]
         public Guid ID { get; set; }
         [DataMember]
-        public string ApplicationType { get; set; }
+        public string Station { get; set; }
         [DataMember]
         public Nullable<int> DeviceID { get; set; }
         [DataMember]
