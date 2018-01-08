@@ -111,6 +111,7 @@
     <Compile Include="DAL\DAL_DeviceStatus.cs" />
     <Compile Include="DAL\DAL_Environment.cs" />
     <Compile Include="DAL\DAL_Appointments.cs" />
+    <Compile Include="DAL\DAL_Labels.cs" />
     <Compile Include="DAL\DAL_QueueNumber.cs" />
     <Compile Include="DAL\DAL_Notification.cs" />
     <Compile Include="DAL\DAL_AbsenceReporting.cs" />

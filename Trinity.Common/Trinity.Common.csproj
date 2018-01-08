@@ -91,6 +91,7 @@
     <Compile Include="Common\ErrorInfo.cs" />
     <Compile Include="Common\EventAgrs.cs" />
     <Compile Include="Common\EventCenter.cs" />
+    <Compile Include="Common\LabelInfo.cs" />
     <Compile Include="Common\Results.cs" />
     <Compile Include="Common\User.cs" />
     <Compile Include="Constants\CommonConstants.cs" />

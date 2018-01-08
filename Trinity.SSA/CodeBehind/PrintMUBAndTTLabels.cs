@@ -13,7 +13,7 @@ namespace SSA.CodeBehind
 {
     public class PrintMUBAndTTLabels
     {
-        public event Action OnPrintMUBAndTTLabelsSucceeded;
+        public event EventHandler<PrintMUBAndTTLabelsSucceedEventArgs> OnPrintMUBAndTTLabelsSucceeded;
         public event EventHandler<PrintMUBAndTTLabelsEventArgs> OnPrintMUBAndTTLabelsFailed;
         public event EventHandler<ExceptionArgs> OnPrintMUBAndTTLabelsException;
 
@@ -24,7 +24,7 @@ namespace SSA.CodeBehind
             _web = web;
         }
 
-        internal void Start(UserInfo userInfo)
+        internal void Start(LabelInfo labelInfo)
         {
             try
             {
@@ -35,7 +35,7 @@ namespace SSA.CodeBehind
                 System.Threading.Thread.Sleep(1500);
 
                 PrinterMonitor printerMonitor = PrinterMonitor.Instance;
-                printerMonitor.OnPrintLabelSucceeded += RaisePrintMUBAndTTLabelsSucceededEvent;
+                printerMonitor.OnPrintLabelSucceeded += OnPrintMUBAndTTLabelsSucceeded;//RaisePrintMUBAndTTLabelsSucceededEvent;
                 printerMonitor.OnMonitorException += OnPrintMUBAndTTLabelsException;
 
                 BarcodePrinterUtils barcodeScannerUtils = BarcodePrinterUtils.Instance;
@@ -43,28 +43,16 @@ namespace SSA.CodeBehind
                 Session session = Session.Instance;
                 if (session.IsAuthenticated)
                 {
-                    //Trinity.BE.User user = (Trinity.BE.User)session[Constants.CommonConstants.SUPERVISEE];
-
-                    //var dalUser = new Trinity.DAL.DAL_User();
-                    //var dalUserprofile = new Trinity.DAL.DAL_UserProfile();
-                    
-                    //var userInfo = new UserInfo
-                    //{
-                    //    UserName = user.Name,
-                    //    NRIC = user.NRIC,
-                    //    Date = DateTime.Now.ToString("dd/MM/yyyy") //dalUserprofile.GetUserProfileByUserId(user.UserId, true).DOB.HasValue ? dalUserprofile.GetUserProfileByUserId(user.UserId, true).DOB.ToString() : ""
-                    //};
-
                     // Print BarCode and QR Code
                     foreach (var item in barcodeScannerUtils.GetDeviceStatus())
                     {
-                        if (item == EnumDeviceStatuses.Connected)
+                        if (item == EnumDeviceStatuses.Connected) 
                         {
-                            printerMonitor.PrintLabel(userInfo);
+                            printerMonitor.PrintLabel(labelInfo);
                         }
                         else
                         {
-                            RaisePrintMUBAndTTLabelsFailedEvent(new PrintMUBAndTTLabelsEventArgs("Printer have problem: " + item));
+                            RaisePrintMUBAndTTLabelsFailedEvent(new PrintMUBAndTTLabelsEventArgs("Printer have problem: " + CommonUtil.GetDeviceStatusText(item)));
                             
                             Console.WriteLine("Barcode printer is not connected.");
                         }
@@ -85,18 +73,18 @@ namespace SSA.CodeBehind
 
         // Wrap event invocations inside a protected virtual method
         // to allow derived classes to override the event invocation behavior
-        protected virtual void RaisePrintMUBAndTTLabelsSucceededEvent()
+        protected virtual void RaisePrintMUBAndTTLabelsSucceededEvent(PrintMUBAndTTLabelsSucceedEventArgs e)
         {
             // Make a temporary copy of the event to avoid possibility of
             // a race condition if the last subscriber unsubscribes
             // immediately after the null check and before the event is raised.
-            Action handler = OnPrintMUBAndTTLabelsSucceeded;
+            EventHandler<PrintMUBAndTTLabelsSucceedEventArgs> handler = OnPrintMUBAndTTLabelsSucceeded;
 
             // Event will be null if there are no subscribers
             if (handler != null)
             {
                 // Use the () operator to raise the event.
-                handler();
+                handler(this, e);
             }
         }
 
@@ -145,6 +133,6 @@ namespace SSA.CodeBehind
             }
         }
     }
-
+    
     #endregion
 }
