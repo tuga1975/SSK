@@ -1,20 +1,16 @@
-﻿using Newtonsoft.Json;
+﻿using Futronic.SDKHelper;
+using Newtonsoft.Json;
 using System;
 using System.Data;
+using System.Drawing;
+using System.IO;
 using System.Linq;
-using System.Threading;
+using System.Text;
 using System.Windows.Forms;
 using Trinity.BE;
 using Trinity.Common;
 using Trinity.Common.Common;
-using Trinity.Common.Monitor;
 using Trinity.DAL;
-using AForge.Video;
-using AForge.Video.DirectShow;
-using System.Drawing;
-using System.IO;
-using Futronic.SDKHelper;
-using System.Text;
 
 namespace Enrolment
 {
