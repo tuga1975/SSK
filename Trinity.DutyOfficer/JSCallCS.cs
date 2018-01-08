@@ -100,14 +100,17 @@ namespace DutyOfficer
             this._web.LoadPopupHtml("BlockedPopupDetail.html");
         }
 
-        public void LoadPopupMUBAndTTLabel()
+        public void LoadPopupMUBAndTTLabel(string json)
         {
-            this._web.LoadPopupHtml("MUBAndTTPopup.html");
+            var rawdata = JsonConvert.DeserializeObject <Object>(json);
+            this._web.LoadPopupHtml("MUBAndTTPopup.html", rawdata);
+            
         }
 
-        public void LoadPopupUBLabel()
+        public void LoadPopupUBLabel(string json)
         {
-            this._web.LoadPopupHtml("UBPopup.html");
+            var rawdata = JsonConvert.DeserializeObject<Object>(json);
+            this._web.LoadPopupHtml("UBlabelPopup.html", rawdata);
         }
     }
 
