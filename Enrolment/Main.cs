@@ -527,7 +527,7 @@ namespace Enrolment
                 StartToScanFingerprint();
 
             }
-            else if (e.Name == EventNames.LOAD_UPDATE_SUPERVISEE_BIODATA)
+            else if (e.Name == EventNames.LOAD_UPDATE_SUPERVISEE_BIODATA_SUCCEEDED)
             {
                 var profileModel = (Trinity.BE.ProfileModel)e.Data;
                 CSCallJS.LoadPageHtml(this.LayerWeb, "UpdateSuperviseeBiodata.html", profileModel);
@@ -552,7 +552,7 @@ namespace Enrolment
                 dalUser.ChangeUserStatus(profileModel.User.UserId, EnumUserStatuses.Enrolled);
 
             }
-            else if (e.Name == EventNames.LOAD_EDIT_SUPERVISEE)
+            else if (e.Name == EventNames.LOAD_EDIT_SUPERVISEE_SUCCEEDED)
             {
                 var profileModel = (Trinity.BE.ProfileModel)e.Data;
 

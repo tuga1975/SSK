@@ -265,7 +265,7 @@ namespace Enrolment
 
                 EventCenter eventCenter = EventCenter.Default;
 
-                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.LOAD_UPDATE_SUPERVISEE_BIODATA, Data = profileModel });
+                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.LOAD_UPDATE_SUPERVISEE_BIODATA_SUCCEEDED, Data = profileModel });
 
 
             }
@@ -275,7 +275,7 @@ namespace Enrolment
                // _web.LoadPageHtml("Edit-Supervisee.html", profileModel);
                 EventCenter eventCenter = EventCenter.Default;
 
-                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.LOAD_EDIT_SUPERVISEE, Data = profileModel });
+                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.LOAD_EDIT_SUPERVISEE_SUCCEEDED, Data = profileModel });
             }
 
         }
