@@ -96,7 +96,14 @@ namespace SSK
             {
                 LayerWeb.InvokeScript("alertBookAppointment", e.Message);
             }
-            
+            else if (e.Name == EventNames.ABSENCE_LESS_THAN_3)
+            {
+                LayerWeb.InvokeScript("alertBookAppointment", e.Message);
+            }
+            else if (e.Name == EventNames.ABSENCE_MORE_THAN_3)
+            {
+                LayerWeb.InvokeScript("alertBookAppointment", e.Message);
+            }
 
         }
         private void GetHealthMonitorFingerprint(bool status)

@@ -49,12 +49,12 @@ namespace Trinity.Common.Utils
         /// <param name="nric">nric (e.g S1234567G)</param>
         /// <param name="dob">date of birth (dd/MM/yyyy)</param>
         /// <returns>call printer success or not</returns>
-        public bool PrintUserInfo(UserInfo userInfo)
+        public bool PrintUserInfo(LabelInfo labelInfo)
         {
             try
             {
                 // user name can not be null
-                if (string.IsNullOrEmpty(userInfo.UserName) || string.IsNullOrEmpty(userInfo.NRIC))
+                if (string.IsNullOrEmpty(labelInfo.Name) || string.IsNullOrEmpty(labelInfo.NRIC))
                 {
                     return false;
                 }
@@ -67,13 +67,13 @@ namespace Trinity.Common.Utils
                 // actually 71.12mm x 42.5mm
                 TSCLIB_DLL.setup("71.12", "42.5", "4", "8", "0", "0", "0");                           //Setup the media size and sensor type info
                 TSCLIB_DLL.clearbuffer();                                                           //Clear image buffer
-                TSCLIB_DLL.barcode("170", "0", "128", "100", "1", "0", "2", "6", userInfo.NRIC); //Drawing barcode
+                TSCLIB_DLL.barcode("170", "0", "128", "100", "1", "0", "2", "6", labelInfo.NRIC); //Drawing barcode
                 //TSCLIB_DLL.printerfont("100", "300", "3", "0", "1", "1", "Print Font Test");        //Drawing printer font
                 // max 35 chars per line
                 // 20~ units per char => 700~ units per line
-                int x = (35 - userInfo.UserName.Length) / 2;
-                TSCLIB_DLL.windowsfont(x * 17, 150, 40, 0, 0, 0, "ARIAL", userInfo.UserName);  //Draw windows font
-                TSCLIB_DLL.windowsfont(210, 200, 36, 0, 0, 0, "ARIAL", userInfo.Date);  //Draw windows font
+                int x = (35 - labelInfo.Name.Length) / 2;
+                TSCLIB_DLL.windowsfont(x * 17, 150, 40, 0, 0, 0, "ARIAL", labelInfo.Name);  //Draw windows font
+                TSCLIB_DLL.windowsfont(210, 200, 36, 0, 0, 0, "ARIAL", labelInfo.Date.ToString());  //Draw windows font
                 TSCLIB_DLL.downloadpcx("UL.PCX", "UL.PCX");                                         //Download PCX file into printer
                 TSCLIB_DLL.sendcommand("PUTPCX 100,400,\"UL.PCX\"");                                //Drawing PCX graphic
                 TSCLIB_DLL.printlabel("1", "1");                                                    //Print labels
@@ -88,18 +88,18 @@ namespace Trinity.Common.Utils
             }
         }
 
-        public bool PrintQRCodeUserInfo(UserInfo userInfo)
+        public bool PrintQRCodeUserInfo(LabelInfo labelInfo)
         {
             try
             {
                 // user name can not be null
-                if (string.IsNullOrEmpty(userInfo.UserName) || string.IsNullOrEmpty(userInfo.NRIC))
+                if (string.IsNullOrEmpty(labelInfo.Name) || string.IsNullOrEmpty(labelInfo.NRIC))
                 {
                     return false;
                 }
                 
                 // The path of file imge contain QRCode
-                string fileName = String.Format("{0}/View/img/{1}", System.IO.Directory.GetCurrentDirectory().ToLower().Replace("\\bin\\debug", string.Empty), "QRCode_" + userInfo.NRIC + ".png");
+                string fileName = String.Format("{0}/Temp/{1}", System.IO.Directory.GetCurrentDirectory().ToLower().Replace("\\bin\\debug", string.Empty), "QRCode_" + labelInfo.NRIC + ".png");
 
                 return true;
             }

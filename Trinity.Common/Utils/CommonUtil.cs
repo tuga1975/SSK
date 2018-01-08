@@ -10,7 +10,7 @@ namespace Trinity.Common
 {
     public class CommonUtil
     {
-        public static byte[] CreateQRCode(UserInfo userInfo)
+        public static byte[] CreateLabelQRCode(LabelInfo labelInfo)
         {
             // get AESKey from API return
             string AESKey = "AESKey";
@@ -29,7 +29,7 @@ namespace Trinity.Common
                 }
             };
 
-            var contentQRCode = "User Name: " + userInfo.UserName + "; NRIC: " + userInfo.NRIC + "; Date: " + userInfo.Date;
+            var contentQRCode = "User Name: " + labelInfo.Name + "; NRIC: " + labelInfo.NRIC + "; Date: " + labelInfo.Date + "; CompanyName: " + labelInfo.CompanyName + "; Marking No: " + labelInfo.MarkingNo + "; Drug Type:" + labelInfo.DrugType;
             var encryptContent = CommonUtil.EncryptString(contentQRCode, AESKey);
             var pixelData = qrCodeWriter.Write(encryptContent);
             // creating a bitmap from the raw pixel data; if only black and white colors are used it makes no difference    
@@ -105,7 +105,8 @@ namespace Trinity.Common
             var currentDate = DateTime.Now;
             var rand = new Random(Guid.NewGuid().GetHashCode());
 
-            return currentDate.Year.ToString() + currentDate.Month.ToString() + currentDate.Day.ToString() + "_" + rand.Next().ToString();
+            //return currentDate.Year.ToString() + currentDate.Month.ToString() + currentDate.Day.ToString() + "_" + rand.Next().ToString();
+            return rand.Next().ToString();
         }
 
         public static string GetDeviceStatusText(EnumDeviceStatuses deviceStatus)

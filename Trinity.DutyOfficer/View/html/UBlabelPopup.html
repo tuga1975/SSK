@@ -1,4 +1,4 @@
-﻿<div class="modal fade" role="dialog" id="popupUBLabel">
+﻿<div class="modal fade" role="dialog" id="UBLabelpopup">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -8,12 +8,12 @@
                 <div class="form-group">
                     <div class="input-group">
                         <span class="input-group-addon">Officer NRIC</span>
-                        <input readonly="readonly" type="text" class="form-control pri">
+                        <input readonly="readonly" type="text" class="form-control pri" id="NRIC">
                     </div>
                     <br />
                     <div class="input-group">
                         <span class="input-group-addon">Officer Name</span>
-                        <input readonly="readonly" type="text" class="form-control pri">
+                        <input readonly="readonly" type="text" class="form-control pri" id="Name">
                     </div>
                     <br />
                     <div class="input-group">
@@ -28,3 +28,10 @@
         </div>
     </div>
 </div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#NRIC').val(api.model.nric);
+        $('#Name').val(api.model.name);
+    });
+
+</script>

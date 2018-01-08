@@ -22,4 +22,5 @@ public static class CommonConstants
     public const string IS_RIGHT_THUMB = "CurrentFinger";
     public const string IS_PRIMARY_PHOTO = "CurrentPhoto";
     public const string CURRENT_EDIT_USER = "CurrentEditUser";
+    public const string COMPANY_NAME = "CENTRAL NARCOTICS BUREAU";
 }

@@ -100,16 +100,34 @@ namespace SSA
 
         public void PrintingMUBAndTTLabels(string json)
         {
-            var userInfo = JsonConvert.DeserializeObject<UserInfo>(json);
-            _printTTLabel.Start(userInfo);
+            var labelInfo = JsonConvert.DeserializeObject<LabelInfo>(json);
+            _printTTLabel.Start(labelInfo);
         }
 
-        private void PrintMUBAndTTLabels_OnPrintTTLabelSucceeded()
+        private void PrintMUBAndTTLabels_OnPrintTTLabelSucceeded(object sender, PrintMUBAndTTLabelsSucceedEventArgs e)
         {
+            var labelInfo = new Trinity.BE.Label
+            {
+                UserId = e.LabelInfo.UserId,
+                Label_Type = e.LabelInfo.Label_Type,
+                CompanyName = e.LabelInfo.CompanyName,
+                MarkingNo = e.LabelInfo.MarkingNo,
+                DrugType = e.LabelInfo.DrugType,
+                NRIC = e.LabelInfo.NRIC,
+                Name = e.LabelInfo.Name,
+                Date = e.LabelInfo.Date,
+                QRCode = e.LabelInfo.QRCode,
+                LastStation = e.LabelInfo.LastStation,
+                PrintCount = e.LabelInfo.PrintCount,
+                ReprintReason = e.LabelInfo.ReprintReason
+            };
+
+            var dalLabel = new DAL_Labels();
+            dalLabel.UpdateLabel(labelInfo, labelInfo.UserId);
             this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').show(); ; ");
             this._web.RunScript("$('.status-text').css('color','#000').text('Please collect your labels');");
 
-            DeleteQRCodeImageFile();
+            DeleteQRCodeImageFileTemp();
         }
 
         private void PrintMUBAndTTLabels_OnPrintTTLabelFailed(object sender, CodeBehind.PrintMUBAndTTLabelsEventArgs e)
@@ -119,7 +137,7 @@ namespace SSA
             MessageBox.Show("Unable to print labels\nPlease report to the Duty Officer", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
             APIUtils.SignalR.SendNotificationToDutyOfficer("MUB & TT", "Don't print MUB & TT, Please check !", NotificationType.Error, EnumStations.SSA);
 
-            DeleteQRCodeImageFile();
+            DeleteQRCodeImageFileTemp();
             LogOut();
         }
 
@@ -130,7 +148,7 @@ namespace SSA
             MessageBox.Show(e.ErrorMessage, "", MessageBoxButtons.OK, MessageBoxIcon.Error);
             APIUtils.SignalR.SendNotificationToDutyOfficer("MUB & TT", "Don't print MUB & TT, Please check !", NotificationType.Error, EnumStations.SSA);
 
-            DeleteQRCodeImageFile();
+            DeleteQRCodeImageFileTemp();
             LogOut();
         }
 
@@ -178,11 +196,11 @@ namespace SSA
         }
 
         // Delete file image QRCode after print Supervisee particulars to avoid over memory. The image QRCode is auto generate to show on view SuperviseeParticulars
-        public void DeleteQRCodeImageFile()
+        public void DeleteQRCodeImageFileTemp()
         {
             Session session = Session.Instance;
             Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.SUPERVISEE];
-            string fileName = String.Format("{0}/View/img/{1}", CSCallJS.curDir, "QRCode_" + user. NRIC + ".png");
+            string fileName = String.Format("{0}/Temp/{1}", CSCallJS.curDir, "QRCode_" + user. NRIC + ".png");
             if (System.IO.File.Exists(fileName))
                 System.IO.File.Delete(fileName);
         }

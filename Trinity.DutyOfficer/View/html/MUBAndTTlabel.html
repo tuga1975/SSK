@@ -28,7 +28,7 @@
 <div id="PrintMUBAndTTlabel" class="text-right">
     <button id="PrintMUBAndTTbutton" class="btn btn-default">Print</button>
 </div>
-
+<ul id="output"></ul>
 <script type="text/javascript">
     $('#pageSize').change(function () {
         pageSize = $("#pageSize option:selected").text();
@@ -62,10 +62,33 @@
         }]
     });
     activemenu('MUB/TT Lablels');
+    
+    var checkedRows = [];
 
-    $('#PrintMUBAndTTbutton').click(function () {
-        api.server.LoadPopupMUBAndTTLabel(function () {
+    $('#MUBAndTTlabel').on('check.bs.table', function (e, row) {
+        checkedRows.push({ nric: row.nric, name: row.name, lastStation: row.lastStation });
+        console.log(checkedRows);
+    });
+
+    $('#MUBAndTTlabel').on('uncheck.bs.table', function (e, row) {
+        $.each(checkedRows, function (index, value) {
+            if (value.id === row.id) {
+                checkedRows.splice(index, 1);
+            }
+        });
+        console.log(checkedRows);
+    });    
+
+    var model;
+
+    $('#PrintMUBAndTTbutton').click(function () { 
+        $.each(checkedRows, function (index, value) {
+            model = value;
+        });
+        var data = JSON.stringify(model);
+            api.server.LoadPopupMUBAndTTLabel(data, function () {
             $('#popupMUBandTTLabel').modal();
+
         })
     })
 </script>

@@ -62,16 +62,26 @@ public enum EnumAbsenceReasons
 
 public static class EnumQueueStatuses
 {
+
+    [Color("red")]
     public const string Missed = "Missed";
+    [Color("white")]
     public const string Waiting = "Waiting";
+    [Color("white")]
     public const string Processing = "Processing";
+    [Color("red")]
+    public const string Errors = "Errors";
+    [Color("green")]
+    public const string Finished = "Finished";
+
 }
 
 public static class EnumUserStatuses
 {
-    public const string New = "New";
-    public const string Enrolled = "Enrolled";
-    public const string Blocked = "Blocked";
+    public const string New = "NEW";
+    public const string Enrolled = "ENROLLED";
+    public const string Blocked = "BLOCKED";
+    public const string ReEnrolled = "RE-ENROLLED";
 }
 
 public static class EnumFrequency
@@ -238,3 +248,10 @@ public static class EnumStations
     }
 
 }
+
+public static class EnumLabelType
+{
+    public const string MUB = "MUB";
+    public const string TT = "TT";
+    public const string UB = "UB";
+};

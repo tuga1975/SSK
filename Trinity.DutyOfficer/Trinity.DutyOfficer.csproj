@@ -310,7 +310,7 @@
     <Content Include="View\html\Statistics.html" />
     <Content Include="View\html\Table.html" />
     <Content Include="View\html\UBlabel.html" />
-    <Content Include="View\html\UBPopup.html" />
+    <Content Include="View\html\UBlabelPopup.html" />
     <Content Include="View\img\central_narco_logo.png" />
     <Content Include="View\img\Logo.png" />
     <Content Include="View\scripts\jquery-1.10.2.min.js" />

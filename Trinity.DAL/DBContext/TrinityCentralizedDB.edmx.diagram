@@ -45,6 +45,7 @@
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_Notifications_Membership_Users1" />
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_User_Profiles_Membership_Users" />
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_QueueDetails_Queues" />
+        <AssociationConnector Association="TrinityCentralizedDBModel.FK_ApplicationDevice_Status_Devices" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
