@@ -32,8 +32,8 @@ namespace Enrolment.Utils
             documentText = documentText.Replace("{%Name%}", appointmentInfo.Name);
             documentText = documentText.Replace("{%NRIC%}", appointmentInfo.NRIC);
             documentText = documentText.Replace("{%AppointmentDate%}", appointmentInfo.AppointmentDate.Value.ToString("dd/MM/yyyy"));
-            documentText = documentText.Replace("{%FromTime%}", appointmentInfo.FromTime.Value.ToString());
-            documentText = documentText.Replace("{%ToTime%}", appointmentInfo.ToTime.Value.ToString());
+            documentText = documentText.Replace("{%FromTime%}", appointmentInfo.StartTime.Value.ToString());
+            documentText = documentText.Replace("{%ToTime%}", appointmentInfo.EndTime.Value.ToString());
             File.WriteAllText(String.Format("{0}/View/html/temp.html", CSCallJS.curDir), documentText, Encoding.UTF8);
             Uri uri = new Uri(String.Format("file:///{0}/View/html/temp.html", CSCallJS.curDir));
             webBrowserForPrinting.Navigate(uri);

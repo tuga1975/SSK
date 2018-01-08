@@ -129,6 +129,10 @@ namespace Trinity.Common
         public const string CONFIRM_CAPTURE_FINGERPRINT = "ConfirmCaptureFingerprint";
         public const string LOAD_UPDATE_SUPERVISEE_BIODATA = "LoadUpdateSuperviseeBiodata";
         public const string UPDATE_SUPERVISEE_BIODATA = "UpdateSuperviseeBiodata";
+        public const string ALERT_NO_APPOINTMENT = "AlertNoAppointment";
+        public const string ABSENCE_MORE_THAN_3 = "AbsenceMoreThan3";
+        public const string ABSENCE_LESS_THAN_3 = "AbsenceLessThan3";
+        public const string SOMETHING_WENT_WRONG = "SomethingWentWrong";
     }
 
     public class EventInfo

@@ -24,15 +24,23 @@ namespace Trinity.BE
         public Nullable<System.DateTime> AppointmentDate { get; set; }
 
         [DataMember]
-        public Nullable<System.TimeSpan> FromTime { get; set; }
+        public Nullable<System.DateTime> ReportTime { get; set; }
 
-        [DataMember]
-        public Nullable<System.TimeSpan> ToTime { get; set; }
 
         [DataMember]
         public Nullable<short> ChangedCount { get; set; }
 
         [DataMember]
         public EnumAppointmentStatuses Status { get; set; }
+
+        [DataMember]
+        public int? Timeslot_ID { get; set; }
+
+        [DataMember]
+        public Nullable<System.TimeSpan> StartTime { get; set; }
+
+        [DataMember]
+        public Nullable<System.TimeSpan> EndTime { get; set; }
+
     }
 }

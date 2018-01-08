@@ -106,7 +106,5 @@ namespace Trinity.BE
         [DataMember]
         public byte[] User_Photo2 { get; set; }
 
-        [DataMember]
-        public byte[] QRCode { get; set; }
     }
 }
