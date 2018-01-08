@@ -236,3 +236,10 @@ public static class EnumStations
     }
 
 }
+
+public static class EnumLabelType
+{
+    public const string MUB = "MUB";
+    public const string TT = "TT";
+    public const string UB = "UB";
+};

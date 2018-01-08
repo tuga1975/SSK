@@ -32,10 +32,10 @@ namespace SSA.CodeBehind
                         UserId = user.UserId,
                         Name = user.Name, 
                         NRIC = user.NRIC,
-                        Label_Type = "",
+                        Label_Type = EnumLabelType.MUB,
                         Date = System.DateTime.Now,
-                        CompanyName = "",
-                        LastStation = "",
+                        CompanyName = CommonConstants.COMPANY_NAME,
+                        LastStation = EnumStations.SSA,
                         MarkingNo = CommonUtil.GenerateMarkingNumber()
                     };
 
