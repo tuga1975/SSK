@@ -216,9 +216,11 @@ public enum EnumDeviceStatuses
     Disconnected = -1
 }
 
-public enum NotificationType
+public static class NotificationType
 {
-    Error, Notification, Caution
+    public const string Error = "Error";
+    public const string Notification = "Notification";
+    public const string Caution = "Caution";
 }
 
 public static class EnumStations
