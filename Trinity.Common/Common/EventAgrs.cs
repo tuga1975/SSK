@@ -120,6 +120,7 @@ namespace Trinity.Common
         public const string CONFIRM_CAPTURE_PICTURE = "ConfirmCapturePicture";
         public const string CANCEL_CONFIRM_CAPTURE_PICTURE = "CancelConfirmCapturePicture";
         public const string CANCEL_CAPTURE_PICTURE = "CancelCapturePicture";
+        public const string SUPERVISEE_DATA_UPDATE_CANCELED = "SuperviseeDataUpdateCanceled";
         public const string OPEN_FINGERPRINT_CAPTURE_FORM = "OpenFingerprintCaptureForm";
         public const string PHOTO_CAPTURE_FAILED = "PhotoCaptureFailed";
         public const string FINGERPRINT_CAPTURE_FAILED = "FingerCaptureFailed";

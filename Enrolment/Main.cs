@@ -37,6 +37,8 @@ namespace Enrolment
         private byte[] image2;
         private bool _displayLoginButtonStatus = false;
         private FutronicEnrollment _futronicEnrollment = null;
+        private bool _isFirstTimeLoaded = true;
+
         public Main()
         {
             InitializeComponent();
@@ -318,10 +320,13 @@ namespace Enrolment
         {
             LayerWeb.InvokeScript("createEvent", JsonConvert.SerializeObject(_jsCallCS.GetType().GetMethods().Where(d => d.IsPublic && !d.IsVirtual && !d.IsSecuritySafeCritical).ToArray().Select(d => d.Name)));
 
-            // Start page
-            NavigateTo(NavigatorEnums.Login);
-            //NavigateTo(NavigatorEnums.Supervisee);
-            LayerWeb.DocumentCompleted -= LayerWeb_DocumentCompleted;
+            if (_isFirstTimeLoaded)
+            {
+                // Set Start page = Login
+                NavigateTo(NavigatorEnums.Login);
+                //NavigateTo(NavigatorEnums.Supervisee);
+                _isFirstTimeLoaded = false;
+            }
         }
 
         private void NRIC_OnNRICSucceeded()
@@ -483,7 +488,7 @@ namespace Enrolment
                             }
 
                         }
-                       // LayerWeb.LoadPageHtml("New-Supervisee.html");
+                        // LayerWeb.LoadPageHtml("New-Supervisee.html");
                     }));
                     return;
                 }
@@ -562,7 +567,10 @@ namespace Enrolment
 
 
             }
-
+            else if (e.Name == EventNames.SUPERVISEE_DATA_UPDATE_CANCELED)
+            {
+                NavigateTo(NavigatorEnums.Supervisee);
+            }
         }
 
         private void CaptureAttempt(string sessionAttemptName)
