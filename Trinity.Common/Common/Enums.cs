@@ -62,16 +62,26 @@ public enum EnumAbsenceReasons
 
 public static class EnumQueueStatuses
 {
+
+    [Color("red")]
     public const string Missed = "Missed";
+    [Color("white")]
     public const string Waiting = "Waiting";
+    [Color("white")]
     public const string Processing = "Processing";
+    [Color("red")]
+    public const string Errors = "Errors";
+    [Color("green")]
+    public const string Finished = "Finished";
+
 }
 
 public static class EnumUserStatuses
 {
-    public const string New = "New";
-    public const string Enrolled = "Enrolled";
-    public const string Blocked = "Blocked";
+    public const string New = "NEW";
+    public const string Enrolled = "ENROLLED";
+    public const string Blocked = "BLOCKED";
+    public const string ReEnrolled = "RE-ENROLLED";
 }
 
 public static class EnumFrequency
@@ -216,9 +226,11 @@ public enum EnumDeviceStatuses
     Disconnected = -1
 }
 
-public enum NotificationType
+public static class NotificationType
 {
-    Error, Notification, Caution
+    public const string Error = "Error";
+    public const string Notification = "Notification";
+    public const string Caution = "Caution";
 }
 
 public static class EnumStations
@@ -232,18 +244,14 @@ public static class EnumStations
 
     public static List<string> GetListStation()
     {
-        return new List<string>() { SSK, SSA, UHP, APS, HSA, ESP };
+        return new List<string>() { SSK,SSA,UHP,APS,HSA,ESP};
     }
 
 }
 
-public enum EnumDayOfWeek
+public static class EnumLabelType
 {
-    Monday = 2,
-    Tuesday = 3,
-    Wednesday = 4,
-    Thursday = 5,
-    Friday = 6,
-    Saturday = 7,
-    Sunday = 8,
-}
+    public const string MUB = "MUB";
+    public const string TT = "TT";
+    public const string UB = "UB";
+};

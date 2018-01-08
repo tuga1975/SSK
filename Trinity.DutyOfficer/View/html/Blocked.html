@@ -41,8 +41,7 @@
             //search:true,
             onClickCell: function (field, value, row, $element) {
                 if (field == 'Action') {
-                    var data = JSON.stringify(row);
-                    api.server.LoadPopupBlock(data, function () {
+                    api.server.LoadPopupBlock(function () {
                         $('#idBlock').modal();
                     });
                 }

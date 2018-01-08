@@ -26,8 +26,8 @@
 			</div>
 			
 			<div class="btn-group">
-				<button type="submit" class="btn-form" id="SaveBtn">Update</button>
-				<button type="submit" class="btn-form">Cancel</button>
+				<button type="submit" class="btn-form" id="SaveBtn" >Update</button>
+				<button type="submit" class="btn-form" onclick="api.server.CancelCapturePicture();">Cancel</button>
 			</div>
 		</form>
 	</div>
@@ -70,12 +70,16 @@
 
     });
 
-	
-
-	$('#SaveBtn').click(function () {
-		var $form = $("#superviseeFrm");
-        var data = getFormData($form);
-        var json = JSON.stringify(data);
-        api.server.SaveSupervisee(json, true);
+	$("#SaveBtn").click(function(){
+		api.server.EditSupervisee(api.model.User.UserId);
 	});
+
+	function setAvatar(base64Str1, base64Str2) {
+        if (base64Str1) {
+            $('#userPhoto1').attr('src', 'data:image/jpg;base64,' + base64Str1);
+        }
+        if (base64Str2) {
+            $('#userPhoto2').attr('src', 'data:image/jpg;base64,' + base64Str2);
+        }
+    }
 </script>

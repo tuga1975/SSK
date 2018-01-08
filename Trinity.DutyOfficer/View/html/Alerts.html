@@ -21,9 +21,23 @@
     }
 </style>
 
+<div style="display:block; padding:10px;">
+    <span style=" font-size:22px; float:left; text-align:left;"><b>Alerts</b></span>
+    <div class="form-inline" style="position: absolute; right: 200px; top: 30px">
+        <select class="form-control" id="pageSize" style="width:70px; display:inline-block;">
+            <option>10</option>
+            <option>2</option>
+            <option>3</option>
+        </select>
+        <div style="display:inline-block;">entries</div>
+    </div>
+</div>
+
 <table id="alertNotificationTable" class="tableContent"></table>
 
 <script type="text/javascript">
+
+    var $table = $('#alertNotificationTable');
 
     api.server.getAlertsSendToDutyOfficer();
 
@@ -42,9 +56,9 @@
         }
        var Type = {
             Code : {
-                error : 0,
-                notification : 1,
-                caution : 2
+                error : "Error",
+                notification : "Notification",
+                caution : "Caution"
             },
             Message : {
                 error : "Error",
@@ -72,7 +86,16 @@
             return {};
         }
 
-        $('#alertNotificationTable').bootstrapTable({
+        $('#pageSize').change(function () {
+            pageSize = $("#pageSize option:selected").text();
+            $table.bootstrapTable('refreshOptions', {
+                pagination: true,
+                //search: true,
+                pageSize: pageSize
+            });
+        });
+
+        $table.bootstrapTable({
             pagination: true,
             search: true,
             pageSize: 10,
@@ -86,6 +109,7 @@
                 title: 'Type',
                 sortable: true,
                 halign: "center",
+                sortable : true,
                 formatter : function (value, row, index, field) {
                     switch (value) {
                         case Type.Code.error:
@@ -111,6 +135,7 @@
                 }
             }, {
                 field: 'message',
+                sortable : true,
                 title: 'Message',
                 sortable: false,
                 halign: "center"

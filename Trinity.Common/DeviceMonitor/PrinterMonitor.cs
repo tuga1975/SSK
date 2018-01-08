@@ -37,15 +37,15 @@ namespace Trinity.Common.DeviceMonitor
         }
         #endregion
 
-        public event Action OnPrintLabelSucceeded;
+        public event EventHandler<PrintMUBAndTTLabelsSucceedEventArgs> OnPrintLabelSucceeded;
         public event EventHandler<ExceptionArgs> OnMonitorException;
 
-        protected virtual void RaisePrintLabelSucceededEvent()
+        protected virtual void RaisePrintLabelSucceededEvent(PrintMUBAndTTLabelsSucceedEventArgs e)
         {
             // Make a temporary copy of the event to avoid possibility of
             // a race condition if the last subscriber unsubscribes
             // immediately after the null check and before the event is raised.
-            OnPrintLabelSucceeded?.Invoke();
+            OnPrintLabelSucceeded?.Invoke(this, e);
         }
 
         protected virtual void RaiseMonitorExceptionEvent(ExceptionArgs e)
@@ -56,10 +56,10 @@ namespace Trinity.Common.DeviceMonitor
             OnMonitorException?.Invoke(this, e);
         }
 
-        public void PrintLabel(UserInfo userInfo)
+        public void PrintLabel(LabelInfo labelInfo)
         {
             // validation
-            if (string.IsNullOrEmpty(userInfo.UserName))
+            if (string.IsNullOrEmpty(labelInfo.Name))
             {
                 // username is null
                 RaiseMonitorExceptionEvent(new ExceptionArgs(new FailedInfo()
@@ -70,7 +70,7 @@ namespace Trinity.Common.DeviceMonitor
 
                 return;
             }
-            else if (string.IsNullOrEmpty(userInfo.NRIC))
+            else if (string.IsNullOrEmpty(labelInfo.NRIC))
             {
                 // NRIC is null
                 RaiseMonitorExceptionEvent(new ExceptionArgs(new FailedInfo()
@@ -84,13 +84,13 @@ namespace Trinity.Common.DeviceMonitor
 
             // print label
             BarcodePrinterUtils barcodeScannerUtils = BarcodePrinterUtils.Instance;
-            if (barcodeScannerUtils.PrintUserInfo(userInfo))
+            if (barcodeScannerUtils.PrintUserInfo(labelInfo))
             {
                 // Print TT Label succeeded, then continue printing MUB Label
-                if (barcodeScannerUtils.PrintQRCodeUserInfo(userInfo))
+                if (barcodeScannerUtils.PrintQRCodeUserInfo(labelInfo))
                 {
                     // raise succeeded event
-                    RaisePrintLabelSucceededEvent();
+                    RaisePrintLabelSucceededEvent(new PrintMUBAndTTLabelsSucceedEventArgs(labelInfo));
                 }
                 else
                 {

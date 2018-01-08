@@ -85,16 +85,16 @@
           <Property Name="Label_ID" Type="uniqueidentifier" Nullable="false" />
           <Property Name="Label_Type" Type="varchar" MaxLength="5" Nullable="false" />
           <Property Name="CompanyName" Type="nvarchar" MaxLength="100" Nullable="false" />
-          <Property Name="MarkingNo" Type="nchar" MaxLength="10" Nullable="false" />
+          <Property Name="MarkingNo" Type="varchar" MaxLength="15" Nullable="false" />
           <Property Name="DrugType" Type="varchar" MaxLength="10" />
           <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
-          <Property Name="NRIC" Type="nchar" MaxLength="10" Nullable="false" />
-          <Property Name="Name" Type="nchar" MaxLength="10" Nullable="false" />
+          <Property Name="NRIC" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="Date" Type="datetime" Nullable="false" />
           <Property Name="QRCode" Type="varbinary(max)" />
           <Property Name="LastStation" Type="varchar" MaxLength="10" Nullable="false" />
           <Property Name="PrintCount" Type="int" Nullable="false" />
-          <Property Name="ReprintReason" Type="nvarchar" MaxLength="50" />
+          <Property Name="ReprintReason" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="Membership_RoleClaims">
           <Key>
@@ -328,6 +328,18 @@ warning 6002: The table/view 'TrinityCentralizedDB.dbo.Settings' does not have a
             </Principal>
             <Dependent Role="ActionLog">
               <PropertyRef Name="PerformedBy" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ApplicationDevice_Status_Devices">
+          <End Role="Devices" Type="Self.Devices" Multiplicity="0..1" />
+          <End Role="ApplicationDevice_Status" Type="Self.ApplicationDevice_Status" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Devices">
+              <PropertyRef Name="DeviceID" />
+            </Principal>
+            <Dependent Role="ApplicationDevice_Status">
+              <PropertyRef Name="DeviceID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -592,6 +604,10 @@ warning 6002: The table/view 'TrinityCentralizedDB.dbo.Settings' does not have a
             <End Role="Membership_Users" EntitySet="Membership_Users" />
             <End Role="ActionLog" EntitySet="ActionLog" />
           </AssociationSet>
+          <AssociationSet Name="FK_ApplicationDevice_Status_Devices" Association="Self.FK_ApplicationDevice_Status_Devices">
+            <End Role="Devices" EntitySet="Devices" />
+            <End Role="ApplicationDevice_Status" EntitySet="ApplicationDevice_Status" />
+          </AssociationSet>
           <AssociationSet Name="FK_Appointments_AbsenceReporting" Association="Self.FK_Appointments_AbsenceReporting">
             <End Role="AbsenceReporting" EntitySet="AbsenceReporting" />
             <End Role="Appointments" EntitySet="Appointments" />
@@ -759,6 +775,10 @@ warning 6002: The table/view 'TrinityCentralizedDB.dbo.Settings' does not have a
             <End Role="Queue" EntitySet="Queues" />
             <End Role="QueueDetail" EntitySet="QueueDetails" />
           </AssociationSet>
+          <AssociationSet Name="FK_ApplicationDevice_Status_Devices" Association="TrinityCentralizedDBModel.FK_ApplicationDevice_Status_Devices">
+            <End Role="Device" EntitySet="Devices" />
+            <End Role="ApplicationDevice_Status" EntitySet="ApplicationDevice_Status" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="AbsenceReporting">
           <Key>
@@ -806,6 +826,7 @@ warning 6002: The table/view 'TrinityCentralizedDB.dbo.Settings' does not have a
           <Property Name="DeviceID" Type="Int32" />
           <Property Name="StatusCode" Type="Int32" Nullable="false" />
           <Property Name="StatusMessage" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Device" Relationship="TrinityCentralizedDBModel.FK_ApplicationDevice_Status_Devices" FromRole="ApplicationDevice_Status" ToRole="Device" />
         </EntityType>
         <EntityType Name="Appointment">
           <Key>
@@ -831,6 +852,7 @@ warning 6002: The table/view 'TrinityCentralizedDB.dbo.Settings' does not have a
           <Property Name="DeviceID" Type="Int32" Nullable="false" />
           <Property Name="DeviceName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Details" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ApplicationDevice_Status" Relationship="TrinityCentralizedDBModel.FK_ApplicationDevice_Status_Devices" FromRole="Device" ToRole="ApplicationDevice_Status" />
         </EntityType>
         <EntityType Name="Holiday">
           <Key>
@@ -849,16 +871,16 @@ warning 6002: The table/view 'TrinityCentralizedDB.dbo.Settings' does not have a
           <Property Name="Label_ID" Type="Guid" Nullable="false" />
           <Property Name="Label_Type" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="false" />
           <Property Name="CompanyName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="MarkingNo" Type="String" Nullable="false" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="MarkingNo" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
           <Property Name="DrugType" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="NRIC" Type="String" Nullable="false" MaxLength="10" FixedLength="true" Unicode="true" />
-          <Property Name="Name" Type="String" Nullable="false" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="NRIC" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Date" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="QRCode" Type="Binary" MaxLength="Max" FixedLength="false" />
           <Property Name="LastStation" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="PrintCount" Type="Int32" Nullable="false" />
-          <Property Name="ReprintReason" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ReprintReason" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Membership_Users" Relationship="TrinityCentralizedDBModel.FK_Labels_Membership_Users" FromRole="Label" ToRole="Membership_Users" />
         </EntityType>
         <EntityType Name="Membership_RoleClaims">
@@ -1319,6 +1341,18 @@ warning 6002: The table/view 'TrinityCentralizedDB.dbo.Settings' does not have a
             </Principal>
             <Dependent Role="QueueDetail">
               <PropertyRef Name="Queue_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ApplicationDevice_Status_Devices">
+          <End Type="TrinityCentralizedDBModel.Device" Role="Device" Multiplicity="0..1" />
+          <End Type="TrinityCentralizedDBModel.ApplicationDevice_Status" Role="ApplicationDevice_Status" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Device">
+              <PropertyRef Name="DeviceID" />
+            </Principal>
+            <Dependent Role="ApplicationDevice_Status">
+              <PropertyRef Name="DeviceID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>

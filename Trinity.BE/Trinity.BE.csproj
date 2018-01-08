@@ -80,6 +80,7 @@
   <ItemGroup>
     <Compile Include="AbsenceReporting.cs" />
     <Compile Include="DeviceStatus.cs" />
+    <Compile Include="Label.cs" />
     <Compile Include="QueueNumber.cs" />
     <Compile Include="EnvironmentTime.cs" />
     <Compile Include="Notification.cs" />
