@@ -63,9 +63,28 @@
     });
     activemenu('UB Lablels');
 
+    var checkedRows = [];
+    $('#UBlabel').on('check.bs.table', function (e, row) {
+        checkedRows.push({ nric: row.nric, name: row.name, lastStation: row.lastStation });
+    });
+
+    $('#UBlabel').on('uncheck.bs.table', function (e, row) {
+        $.each(checkedRows, function (index, value) {
+            if (value.id === row.id) {
+                checkedRows.splice(index, 1);
+            }
+        });
+    });    
+
+    var model;
+
     $('#PrintUBbutton').click(function () {
-        api.server.LoadPopupUBLabel(function () {
-            $('#popupUBLabel').modal();
+        $.each(checkedRows, function (index, value) {
+            model = value;
+        })
+        var data = JSON.stringify(model);
+        api.server.LoadPopupUBLabel(data, function () {
+            $('#UBLabelpopup').modal();
         })
     })
 </script>

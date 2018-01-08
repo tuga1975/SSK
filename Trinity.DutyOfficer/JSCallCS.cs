@@ -95,21 +95,22 @@ namespace DutyOfficer
         }
         #endregion
 
-        public void LoadPopupBlock(string json)
+        public void LoadPopupBlock()
         {
-            var rawData = JsonConvert.DeserializeObject<object>(json);
-
-            this._web.LoadPopupHtml("BlockedPopupDetail.html", rawData);
+            this._web.LoadPopupHtml("BlockedPopupDetail.html");
         }
 
-        public void LoadPopupMUBAndTTLabel()
+        public void LoadPopupMUBAndTTLabel(string json)
         {
-            this._web.LoadPopupHtml("MUBAndTTPopup.html");
+            var rawdata = JsonConvert.DeserializeObject <Object>(json);
+            this._web.LoadPopupHtml("MUBAndTTPopup.html", rawdata);
+            
         }
 
-        public void LoadPopupUBLabel()
+        public void LoadPopupUBLabel(string json)
         {
-            this._web.LoadPopupHtml("UBPopup.html");
+            var rawdata = JsonConvert.DeserializeObject<Object>(json);
+            this._web.LoadPopupHtml("UBlabelPopup.html", rawdata);
         }
     }
 
