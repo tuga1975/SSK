@@ -321,7 +321,7 @@ namespace Enrolment
             // Start page
             NavigateTo(NavigatorEnums.Login);
             //NavigateTo(NavigatorEnums.Supervisee);
-
+            LayerWeb.DocumentCompleted -= LayerWeb_DocumentCompleted;
         }
 
         private void NRIC_OnNRICSucceeded()
@@ -435,7 +435,7 @@ namespace Enrolment
                     }
                     else if (currentPage.ToString() == "UpdateSupervisee")
                     {
-                        LayerWeb.LoadPageHtml("Edit-Supervisee.html",currentEditUser);
+                        LayerWeb.LoadPageHtml("Edit-Supervisee.html", currentEditUser);
                     }
                     else if (currentPage.ToString() == "UpdateSuperviseePhoto")
                     {
@@ -460,13 +460,13 @@ namespace Enrolment
                     {
                         webcam.stopWebcam();
                         pictureBox1.Hide();
-                        if (currentEditUser != null&& currentPage!=null)
+                        if (currentEditUser != null && currentPage != null)
                         {
-                            if (currentPage.ToString()=="EditSupervisee")
+                            if (currentPage.ToString() == "EditSupervisee")
                             {
                                 LayerWeb.LoadPageHtml("UpdateSuperviseeBiodata.html", (Trinity.BE.ProfileModel)currentEditUser);
                             }
-                            else if(currentPage.ToString() == "UpdateSupervisee")
+                            else if (currentPage.ToString() == "UpdateSupervisee")
                             {
                                 LayerWeb.LoadPageHtml("Edit-Supervisee.html", (Trinity.BE.ProfileModel)currentEditUser);
                             }
@@ -480,7 +480,7 @@ namespace Enrolment
                             }
 
                         }
-                       // LayerWeb.LoadPageHtml("New-Supervisee.html");
+                        // LayerWeb.LoadPageHtml("New-Supervisee.html");
                     }));
                     return;
                 }
