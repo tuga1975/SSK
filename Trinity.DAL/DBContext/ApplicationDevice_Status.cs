@@ -15,7 +15,7 @@ namespace Trinity.DAL.DBContext
     public partial class ApplicationDevice_Status
     {
         public System.Guid ID { get; set; }
-        public string ApplicationType { get; set; }
+        public string Station { get; set; }
         public Nullable<int> DeviceID { get; set; }
         public int StatusCode { get; set; }
         public string StatusMessage { get; set; }

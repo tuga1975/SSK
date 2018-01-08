@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNet.SignalR.Client;
-using SSA.Constants;
 using System;
 using System.Collections.Generic;
 using Trinity.BE;

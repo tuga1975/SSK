@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNet.Identity;
 using Newtonsoft.Json;
 using SSA.CodeBehind.Authentication;
-using SSA.Constants;
 using System;
 using System.Reflection;
 using System.Threading;
@@ -182,7 +181,7 @@ namespace SSA
         public void DeleteQRCodeImageFile()
         {
             Session session = Session.Instance;
-            Trinity.BE.User user = (Trinity.BE.User)session[Constants.CommonConstants.SUPERVISEE];
+            Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.SUPERVISEE];
             string fileName = String.Format("{0}/View/img/{1}", CSCallJS.curDir, "QRCode_" + user. NRIC + ".png");
             if (System.IO.File.Exists(fileName))
                 System.IO.File.Delete(fileName);

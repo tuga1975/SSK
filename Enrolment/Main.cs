@@ -1,7 +1,4 @@
-﻿
-using Newtonsoft.Json;
-using Enrolment.Common;
-using Enrolment.Contstants;
+﻿using Newtonsoft.Json;
 using System;
 using System.Data;
 using System.Linq;
@@ -377,8 +374,8 @@ namespace Enrolment
                             webcam.InitializeWebCam();
                             webcam.startWebcam();
                             _imgBox = e.Message;
-                            pictureBox1.Show();
                             NavigateTo(NavigatorEnums.WebcamCapture);
+                            pictureBox1.Show();
                         }
                         catch
                         {
@@ -390,7 +387,7 @@ namespace Enrolment
             }
             else if (e.Name.Equals(EventNames.CAPTURE_PICTURE))
             {
-                if(InvokeRequired)
+                if (InvokeRequired)
                 {
                     Invoke(new Action(() =>
                     {
@@ -411,7 +408,7 @@ namespace Enrolment
                         webcam.stopWebcam();
                         using (MemoryStream mStream = new MemoryStream())
                         {
-                            pictureBox1.Image.Save(mStream,System.Drawing.Imaging.ImageFormat.Jpeg);
+                            pictureBox1.Image.Save(mStream, System.Drawing.Imaging.ImageFormat.Jpeg);
                             if (_imgBox == "1") { image1 = mStream.ToArray(); }
                             if (_imgBox == "2") { image2 = mStream.ToArray(); }
                         }
@@ -422,40 +419,40 @@ namespace Enrolment
                     //for testing purpose
                     var tempBase64String = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAMSURBVBhXY/j//z8ABf4C/qc1gYQAAAAASUVORK5CYII=";
                     var converToByte = Convert.FromBase64String(tempBase64String);
-                    
+
                     var base64Str1 = "";
                     var base64Str2 = "";
+                    if (image1 != null) base64Str1 = Convert.ToBase64String(image1);
+                    if (image2 != null) base64Str2 = Convert.ToBase64String(image2);
+                    currentEditUser.UserProfile.User_Photo1 = image1;
+                    currentEditUser.UserProfile.User_Photo2 = image2;
                     if (currentPage != null && currentPage.ToString() == "EditSupervisee" && currentEditUser != null)
                     {
-                        
-                            if (isPrimaryPhoto != null && (bool)isPrimaryPhoto)
-                            {
-                                // currentEditUser.UserProfile.User_Photo1 = (byte[])captureImage;
-                                currentEditUser.UserProfile.User_Photo1 = image1;
-                                base64Str1 = Convert.ToBase64String(image1);
-                            
-                        }
-                            else
-                            {
-                                currentEditUser.UserProfile.User_Photo2 = image2;
-                                base64Str2 = Convert.ToBase64String(image2);
-                            
-                        }
-
-                        
                         session[CommonConstants.CURRENT_EDIT_USER] = currentEditUser;
 
                         CSCallJS.LoadPageHtml(this.LayerWeb, "UpdateSuperviseeBiodata.html", currentEditUser);
                         LayerWeb.InvokeScript("setAvatar", base64Str1, base64Str2);
                     }
-                    else
+                    else if (currentPage.ToString() == "UpdateSupervisee")
                     {
-                        LayerWeb.LoadPageHtml("New-Supervisee.html");
+                        LayerWeb.LoadPageHtml("Edit-Supervisee.html",currentEditUser);
+                    }
+                    else if (currentPage.ToString() == "UpdateSuperviseePhoto")
+                    {
+                        LayerWeb.LoadPageHtml("UpdateSuperviseePhoto.html", currentEditUser);
+                        LayerWeb.InvokeScript("setAvatar", base64Str1, base64Str2);
+                    }
+                    else if (currentPage.ToString() == "UpdateSuperviseeFinger")
+                    {
+                        LayerWeb.LoadPageHtml("UpdateSuperviseeFingerprint.html", currentEditUser);
                     }
                 }
             }
             else if (e.Name.Equals(EventNames.CANCEL_CAPTURE_PICTURE))
             {
+                Session session = Session.Instance;
+                var currentEditUser = session[CommonConstants.CURRENT_EDIT_USER];
+                var currentPage = session[CommonConstants.CURRENT_PAGE];
                 if (InvokeRequired)
                 {
                     CaptureAttempt(CommonConstants.CAPTURE_PHOTO_ATTEMPT);
@@ -463,7 +460,27 @@ namespace Enrolment
                     {
                         webcam.stopWebcam();
                         pictureBox1.Hide();
-                        LayerWeb.LoadPageHtml("New-Supervisee.html");
+                        if (currentEditUser != null&& currentPage!=null)
+                        {
+                            if (currentPage.ToString()=="EditSupervisee")
+                            {
+                                LayerWeb.LoadPageHtml("UpdateSuperviseeBiodata.html", (Trinity.BE.ProfileModel)currentEditUser);
+                            }
+                            else if(currentPage.ToString() == "UpdateSupervisee")
+                            {
+                                LayerWeb.LoadPageHtml("Edit-Supervisee.html", (Trinity.BE.ProfileModel)currentEditUser);
+                            }
+                            else if (currentPage.ToString() == "UpdateSuperviseePhoto")
+                            {
+                                LayerWeb.LoadPageHtml("UpdateSuperviseePhoto.html", (Trinity.BE.ProfileModel)currentEditUser);
+                            }
+                            else if (currentPage.ToString() == "UpdateSuperviseeFinger")
+                            {
+                                LayerWeb.LoadPageHtml("UpdateSuperviseeFingerprint.html", (Trinity.BE.ProfileModel)currentEditUser);
+                            }
+
+                        }
+                       // LayerWeb.LoadPageHtml("New-Supervisee.html");
                     }));
                     return;
                 }
@@ -500,6 +517,7 @@ namespace Enrolment
             else if (e.Name == EventNames.CANCEL_CAPTURE_FINGERPRINT)
             {
                 CaptureAttempt(CommonConstants.CAPTURE_FINGERPRINT_ATTEMPT);
+
             }
             else if (e.Name == EventNames.CONFIRM_CAPTURE_FINGERPRINT)
             {
@@ -561,6 +579,7 @@ namespace Enrolment
             }
             else if (navigatorEnum == NavigatorEnums.Supervisee)
             {
+                this.LayerWeb.LoadPageHtml("Supervisee.html");
                 _suppervisee.Start();
             }
             else if (navigatorEnum == NavigatorEnums.Login)

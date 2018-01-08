@@ -71,7 +71,7 @@ namespace OfficerDesktopApp
             user.NRIC = _currentUser.NRIC;
             user.PhoneNumber = txtPrimaryPhone.Text;
             user.SmartCardId = _currentUser.SmartCardId;
-            user.Status = EnumUserStatuses.Active;
+            user.Status = EnumUserStatuses.New;
 
             UserManager<ApplicationUser> userManager = ApplicationIdentityManager.GetUserManager();
             Trinity.DAL.DAL_User dalUser = new Trinity.DAL.DAL_User();

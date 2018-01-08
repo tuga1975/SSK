@@ -16,6 +16,8 @@ namespace SSA
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+
+            Trinity.Common.Monitor.DeviceMonitor.Start();
             Application.Run(new Main());
         }
     }

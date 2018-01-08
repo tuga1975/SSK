@@ -17,7 +17,10 @@ namespace Trinity.DAL.DBContext
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Membership_Users()
         {
+            this.ActionLogs = new HashSet<ActionLog>();
+            this.ActionLogs1 = new HashSet<ActionLog>();
             this.Appointments = new HashSet<Appointment>();
+            this.Labels = new HashSet<Label>();
             this.Membership_UserClaims = new HashSet<Membership_UserClaims>();
             this.Membership_UserDevices = new HashSet<Membership_UserDevices>();
             this.Membership_UserLogins = new HashSet<Membership_UserLogins>();
@@ -46,9 +49,16 @@ namespace Trinity.DAL.DBContext
         public byte[] LeftThumbFingerprint { get; set; }
         public string Status { get; set; }
         public Nullable<bool> IsFirstAttempt { get; set; }
+        public string Note { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ActionLog> ActionLogs { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ActionLog> ActionLogs1 { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Appointment> Appointments { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Label> Labels { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Membership_UserClaims> Membership_UserClaims { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

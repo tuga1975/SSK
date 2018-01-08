@@ -1,12 +1,12 @@
-<div style="width:100%; padding:10px;">
-	<div class="header">
+<div style="width:100%;">
+	<div class="header header-form-supervisee">
 		<img class="logo" src="../images/logo.png" />
 		<h3>Edit Supervisee</h3>
 		<div class="clear"></div>
 	</div>
 	<div class="form-supervisee">
 		<form id="superviseeFrm">
-			<input class="name-supervisee" type="text" value="Erol Supervisee" />
+			<input class="name-supervisee" type="text" value="Edit Supervisee" disabled="disabled" />
 			<nav class="nav nav-tabs" id="myTab" role="tablist">
 				<a class="nav-item nav-link active" data-toggle="tab" href="#supervisee-details" role="tab" aria-controls="nav-home" aria-selected="true">Supervisee Details</a>
 				<a class="nav-item nav-link" data-toggle="tab" href="#issued-cards" role="tab" aria-controls="nav-profile" aria-selected="false">Issued Cards</a>
@@ -42,10 +42,10 @@
 					</div>
 					<div class="row">								
 						<div class="col-7" style="text-align:center;padding-top:5px;">
-							<button type="button" id="updatePhoto2" onclick="api.server.OpenPictureCaptureForm('2')">Update Photos</button>
+							<button type="button" class="btn-form" id="updatePhoto2" onclick="api.server.UpdateSuperviseePhoto()">Update Photos</button>
 						</div>
 						<div class="col-5" style="text-align:center;padding-top:5px;">
-							<button type="button"  onclick="api.server.OpenFingerprintCaptureForm('2')">Update Fingerprints</button>
+							<button type="button" class="btn-form" onclick="api.server.OpenFingerprintCaptureForm('2')">Update Fingerprints</button>
 						</div>
 					</div>
 				</div>

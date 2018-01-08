@@ -1,7 +1,4 @@
-﻿
-using Enrolment.CodeBehind.Authentication;
-using Enrolment.Common;
-using Enrolment.Contstants;
+﻿using Enrolment.CodeBehind.Authentication;
 using Microsoft.AspNet.Identity;
 using Newtonsoft.Json;
 using System;
@@ -63,6 +60,7 @@ namespace Enrolment
 
         public void LoadListSupervisee()
         {
+            
             EventCenter eventCenter = EventCenter.Default;
             Session session = Session.Instance;
             var dalUser = new DAL_User();
@@ -83,7 +81,6 @@ namespace Enrolment
                 }
 
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = 0, Name = EventNames.GET_LIST_SUPERVISEE_SUCCEEDED, Data = listSupervisee, Source = "Supervisee.html" });
-
                 //_web.LoadPageHtml("Supervisee.html", listSupervisee);
             }
             else
@@ -153,7 +150,7 @@ namespace Enrolment
             {
                 sessionAttempt++;
                 session[CommonConstants.CAPTURE_FINGERPRINT_ATTEMPT] = sessionAttempt;
-                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = 0, Name = EventNames.OPEN_FINGERPRINT_CAPTURE_FORM });
+                //eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = 0, Name = EventNames.OPEN_FINGERPRINT_CAPTURE_FORM });
             }
         }
 
@@ -240,7 +237,7 @@ namespace Enrolment
         public void EditSupervisee(string userId)
         {
             Session session = Session.Instance;
-            session[CommonConstants.CURRENT_PAGE] = "EditSupervisee";
+           
 
             var dalUser = new DAL_User();
             var dalUserProfile = new DAL_UserProfile();
@@ -261,7 +258,7 @@ namespace Enrolment
             session[CommonConstants.CURRENT_EDIT_USER] = profileModel;
             if (dbUser.Status == "NEW")
             {
-
+                session[CommonConstants.CURRENT_PAGE] = "EditSupervisee";
 
                 EventCenter eventCenter = EventCenter.Default;
 
@@ -271,6 +268,7 @@ namespace Enrolment
             }
             else
             {
+                session[CommonConstants.CURRENT_PAGE] = "UpdateSupervisee";
                 _web.LoadPageHtml("Edit-Supervisee.html", profileModel);
             }
 
@@ -321,6 +319,19 @@ namespace Enrolment
             {
                 LoadPage("Login.html");
             }
+        }
+
+        public void UpdateSuperviseePhoto() {
+            Session session = Session.Instance;
+            session[CommonConstants.CURRENT_PAGE] = "UpdateSuperviseePhoto";
+            _web.LoadPageHtml("UpdateSuperviseePhoto.html");
+        }
+
+        public void UpdateSuperviseeFingerprint()
+        {
+            Session session = Session.Instance;
+            session[CommonConstants.CURRENT_PAGE] = "UpdateSuperviseeFinger";
+            _web.LoadPageHtml("UpdateSuperviseeFingerprint.html");
         }
 
         public void UpdateSuperviseeBiodata()
