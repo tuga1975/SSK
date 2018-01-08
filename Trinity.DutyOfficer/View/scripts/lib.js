@@ -159,7 +159,11 @@ $(document).ready(function () {
         event.preventDefault();
         var href = $(this).attr('href');
         if (typeof href != 'undefined' && $.trim(href).length > 0) {
-            eval(href);
+            try {
+                eval(href);
+            } catch (e) {
+
+            }
         }
     });
 });
