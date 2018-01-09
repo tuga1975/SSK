@@ -294,24 +294,41 @@ namespace Enrolment
                 var dalUser = new Trinity.DAL.DAL_User();
 
                 var dalUserprofile = new Trinity.DAL.DAL_UserProfile();
-                var ProfileModel = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
+                var profileModel = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
                 var address = new DAL_Address();
 
                 // get address_ID insert or update
                 var residential_Addess_ID = address.SaveAddress(rawDataAddress, true);
                 data.UserProfile.Residential_Addess_ID = residential_Addess_ID;
                 data.UserProfile.Other_Address_ID = residential_Addess_ID;
-                data.UserProfile.User_Photo1 = ProfileModel.UserProfile.User_Photo1;
-                data.UserProfile.User_Photo2 = ProfileModel.UserProfile.User_Photo2;
+                data.UserProfile.User_Photo1 = profileModel.UserProfile.User_Photo1;
+                data.UserProfile.User_Photo2 = profileModel.UserProfile.User_Photo2;
+                data.UserProfile.SerialNumber = profileModel.UserProfile.SerialNumber;
+                data.UserProfile.DateOfIssue = profileModel.UserProfile.DateOfIssue;
+                data.UserProfile.Gender = profileModel.UserProfile.Gender;
+                data.UserProfile.Race = profileModel.UserProfile.Race;
+                //data.UserProfile.RightThumbImage = profileModel.UserProfile.RightThumbImage;
+                //data.UserProfile.LeftThumbImage = profileModel.UserProfile.LeftThumbImage;
+                data.UserProfile.Primary_Phone = profileModel.UserProfile.Primary_Phone;
+                data.UserProfile.Secondary_Phone = profileModel.UserProfile.Secondary_Phone;
+                data.UserProfile.Primary_Email = profileModel.UserProfile.Primary_Email;
+                data.UserProfile.Secondary_Email = profileModel.UserProfile.Secondary_Email;
+                data.UserProfile.DOB = profileModel.UserProfile.DOB;
+                data.UserProfile.Nationality = profileModel.UserProfile.Nationality;
+                data.UserProfile.Maritial_Status = profileModel.UserProfile.Maritial_Status;
+
+                data.User.NRIC = profileModel.User.NRIC;
+                data.User.SmartCardId = profileModel.User.SmartCardId;
+                data.User.IsFirstAttempt = profileModel.User.IsFirstAttempt;
 
                 // add some some old data not change
-                data.User.Name = ProfileModel.User.Name;
-                data.User.Status = ProfileModel.User.Status;
+                data.User.Name = profileModel.User.Name;
+                data.User.Status = profileModel.User.Status;
                 if (primaryInfoChange)
                 {
-                    dalUser.UpdateUser(data.User, ProfileModel.User.UserId, true);
+                    dalUser.UpdateUser(data.User, profileModel.User.UserId, true);
 
-                    dalUserprofile.UpdateUserProfile(data.UserProfile, ProfileModel.User.UserId, true);
+                    dalUserprofile.UpdateUserProfile(data.UserProfile, profileModel.User.UserId, true);
                     //send notifiy to duty officer
                     APIUtils.SignalR.SendNotificationToDutyOfficer("A supervisee has updated profile.", "Please check Supervisee's information!");
                 }
@@ -322,6 +339,7 @@ namespace Enrolment
                     APIUtils.SignalR.SendNotificationToDutyOfficer("A supervisee has updated profile.", "Please check Supervisee's information!");
                 }
 
+                session[CommonConstants.CURRENT_EDIT_USER] = data;
                 //load Supervisee page 
                 LoadListSupervisee();
             }
