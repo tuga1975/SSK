@@ -311,6 +311,10 @@
     <Folder Include="Business\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\FacialRecognition\FacialRecognition.csproj">
+      <Project>{57b6577e-b550-4ed1-abe3-14928c72995b}</Project>
+      <Name>FacialRecognition</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Trinity.BE\Trinity.BE.csproj">
       <Project>{4321fa96-3a53-49c1-89ef-8a2f6e9b81c7}</Project>
       <Name>Trinity.BE</Name>

@@ -89,9 +89,6 @@
     <Content Include="cudart64_75.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="cudnn64_5.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="curand64_75.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
