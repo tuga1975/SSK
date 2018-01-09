@@ -155,12 +155,12 @@ namespace SSK
             if (user != null)
             {
                 // Only enrolled supervisees are allowed to login
-                if (user.Status == EnumUserStatuses.Blocked)
+                if (user.Status.Equals(EnumUserStatuses.Blocked, StringComparison.InvariantCultureIgnoreCase))
                 {
                     SmartCard_OnSmartCardFailed("You have been blocked.");
                     return;
                 }
-                if (user.Status == EnumUserStatuses.New)
+                if (user.Status.Equals(EnumUserStatuses.New, StringComparison.InvariantCultureIgnoreCase))
                 {
                     SmartCard_OnSmartCardFailed("You haven't enrolled yet.");
                     return;
@@ -233,27 +233,29 @@ namespace SSK
         {
             LayerWeb.InvokeScript("createEvent", JsonConvert.SerializeObject(_jsCallCS.GetType().GetMethods().Where(d => d.IsPublic && !d.IsVirtual && !d.IsSecuritySafeCritical).ToArray().Select(d => d.Name)));
 
-            if (_isFirstTimeLoaded)
-            {
-                // Start page
-                //NavigateTo(NavigatorEnums.Authentication_SmartCard);
+            //if (_isFirstTimeLoaded)
+            //{
+            //    // Start page
+            //    //NavigateTo(NavigatorEnums.Authentication_SmartCard);
 
-                // For testing purpose
-                Session session = Session.Instance;
-                ////Supervisee
-                Trinity.BE.User user = new DAL_User().GetUserByUserId("bb67863c-c330-41aa-b397-c220428ad16f", true);
-                //// Duty Officer
-                //Trinity.BE.User user = new DAL_User().GetUserByUserId("ead039f9-b9a1-45bb-8186-0bb7248aafac", true);
-                session[CommonConstants.USER_LOGIN] = user;
-                session.IsSmartCardAuthenticated = true;
-                session.IsFingerprintAuthenticated = true;
+            //    // For testing purpose
+            //    Session session = Session.Instance;
+            //    ////Supervisee
+            //    Trinity.BE.User user = new DAL_User().GetUserByUserId("bb67863c-c330-41aa-b397-c220428ad16f", true);
+            //    //// Duty Officer
+            //    //Trinity.BE.User user = new DAL_User().GetUserByUserId("ead039f9-b9a1-45bb-8186-0bb7248aafac", true);
+            //    session[CommonConstants.USER_LOGIN] = user;
+            //    session.IsSmartCardAuthenticated = true;
+            //    session.IsFingerprintAuthenticated = true;
 
-                NavigateTo(NavigatorEnums.Authentication_Fingerprint);
-                //NavigateTo(NavigatorEnums.Supervisee);
-                //NavigateTo(NavigatorEnums.Authentication_NRIC);
+            //    NavigateTo(NavigatorEnums.Authentication_SmartCard);
+            //    //NavigateTo(NavigatorEnums.Supervisee);
+            //    //NavigateTo(NavigatorEnums.Authentication_NRIC);
 
-                _isFirstTimeLoaded = false;
-            }
+            //    _isFirstTimeLoaded = false;
+            //}
+            FacialRecognition a = FacialRecognition.Instance;
+            a.Compare(null);
         }
 
         private void NRIC_OnNRICSucceeded()
@@ -297,7 +299,10 @@ namespace SSK
             Thread.Sleep(1000);
 
             // navigate to next page: Authentication_Fingerprint
-            NavigateTo(NavigatorEnums.Authentication_Fingerprint);
+            //NavigateTo(NavigatorEnums.Authentication_Fingerprint);
+
+            _fingerprintFailed = 4;
+            Fingerprint_OnFingerprintFailed();
         }
 
         private void SmartCard_OnSmartCardFailed(string message)
@@ -340,10 +345,10 @@ namespace SSK
             if (_facedetectFailed == 2)
             {
                 // Send Notification to duty officer
-                APIUtils.SignalR.SendNotificationToDutyOfficer("Fingerprint scans and facial identification failed", "Fingerprint scans and facial identification failed", NotificationType.Error, EnumStations.SSK);
+                APIUtils.SignalR.SendNotificationToDutyOfficer("Facial Authentication failed", user.Name + " couldn't complete facial authentication.", NotificationType.Error, EnumStations.SSK);
 
                 // show message box to user
-                MessageBox.Show("Fingerprint scans and facial identification failed", "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(user.Name + " couldn't complete facial authentication.", "Facial Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
                 // navigate to smartcard login page
                 NavigateTo(NavigatorEnums.Authentication_SmartCard);
