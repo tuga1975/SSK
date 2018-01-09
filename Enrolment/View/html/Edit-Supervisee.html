@@ -291,11 +291,6 @@
 		});
         if (api.model != null) {
 			$('.userId').val(api.model.User.UserId);
-			// Biodata
-			
-			/*$('#userPhoto2').attr("src",Convert.ToBase64String(api.model.User.LeftThumbFingerprint));
-			$('#userPhoto2').attr("src",Convert.ToBase64String(api.model.User.RightThumbFingerprint));
-			*/
 			// NextOfKin
 			$('.nok_name').val(api.model.UserProfile.NextOfKin_Name);
 			$('.nok_contact_number').val(api.model.UserProfile.NextOfKin_Contact_Number);
@@ -326,8 +321,8 @@
 
     });
 	function setPhotoServerCall(photo1, photo2){
-		$('#userPhoto1').attr("src", 'data:image/jpg;base64,' + photo1);
-		$('#userPhoto2').attr("src", 'data:image/jpg;base64,' + photo2);
+		$('#userPhoto1').attr("src", photo1);
+		$('#userPhoto2').attr("src", photo2);
 	}
 
 	$("#SaveBtn").on('click', function(){
