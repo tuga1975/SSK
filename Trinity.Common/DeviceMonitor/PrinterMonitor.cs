@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -39,6 +40,7 @@ namespace Trinity.Common.DeviceMonitor
 
         public event EventHandler<PrintMUBAndTTLabelsSucceedEventArgs> OnPrintLabelSucceeded;
         public event EventHandler<ExceptionArgs> OnMonitorException;
+        public event Action OnPrintBarcodeSucceeded;
 
         protected virtual void RaisePrintLabelSucceededEvent(PrintMUBAndTTLabelsSucceedEventArgs e)
         {
@@ -56,7 +58,22 @@ namespace Trinity.Common.DeviceMonitor
             OnMonitorException?.Invoke(this, e);
         }
 
-        public void PrintLabel(LabelInfo labelInfo)
+        protected virtual void RaisePrintBarcodeSucceededEvent()
+        {
+            // Make a temporary copy of the event to avoid possibility of
+            // a race condition if the last subscriber unsubscribes
+            // immediately after the null check and before the event is raised.
+            Action handler = OnPrintBarcodeSucceeded;
+
+            // Event will be null if there are no subscribers
+            if (handler != null)
+            {
+                // Use the () operator to raise the event.
+                handler();
+            }
+        }
+
+        public void PrintBarcodeLabel(LabelInfo labelInfo)
         {
             // validation
             if (string.IsNullOrEmpty(labelInfo.Name))
@@ -83,24 +100,11 @@ namespace Trinity.Common.DeviceMonitor
             }
 
             // print label
-            BarcodePrinterUtils barcodeScannerUtils = BarcodePrinterUtils.Instance;
-            if (barcodeScannerUtils.PrintUserInfo(labelInfo))
+            BarcodePrinterUtils printerUtils = BarcodePrinterUtils.Instance;
+            if (printerUtils.PrintBarcodeUserInfo(labelInfo))
             {
-                // Print TT Label succeeded, then continue printing MUB Label
-                if (barcodeScannerUtils.PrintQRCodeUserInfo(labelInfo))
-                {
-                    // raise succeeded event
-                    RaisePrintLabelSucceededEvent(new PrintMUBAndTTLabelsSucceedEventArgs(labelInfo));
-                }
-                else
-                {
-                    // raise failed event
-                    RaiseMonitorExceptionEvent(new ExceptionArgs(new FailedInfo()
-                    {
-                        ErrorCode = (int)EnumErrorCodes.UnknownError,
-                        ErrorMessage = new ErrorInfo().GetErrorMessage(EnumErrorCodes.UnknownError)
-                    }));
-                }
+                // raise succeeded event
+                RaisePrintBarcodeSucceededEvent();
             }
             else
             {
@@ -113,9 +117,58 @@ namespace Trinity.Common.DeviceMonitor
             }
         }
 
+        public void PrintMUBLabel(LabelInfo labelInfo)
+        {
+            // validation
+            if (string.IsNullOrEmpty(labelInfo.Name))
+            {
+                // username is null
+                RaiseMonitorExceptionEvent(new ExceptionArgs(new FailedInfo()
+                {
+                    ErrorCode = (int)EnumErrorCodes.UserNameNull,
+                    ErrorMessage = new ErrorInfo().GetErrorMessage(EnumErrorCodes.UserNameNull)
+                }));
+
+                return;
+            }
+            else if (string.IsNullOrEmpty(labelInfo.NRIC))
+            {
+                // NRIC is null
+                RaiseMonitorExceptionEvent(new ExceptionArgs(new FailedInfo()
+                {
+                    ErrorCode = (int)EnumErrorCodes.NRICNull,
+                    ErrorMessage = new ErrorInfo().GetErrorMessage(EnumErrorCodes.NRICNull)
+                }));
+
+                return;
+            }
+
+            // print label
+            BarcodePrinterUtils printerUtils = BarcodePrinterUtils.Instance;
+
+            // Print TT Label succeeded, then continue printing MUB Label
+            if (printerUtils.PrintQRCodeUserInfo(labelInfo))
+            {
+                // raise succeeded event
+                RaisePrintLabelSucceededEvent(new PrintMUBAndTTLabelsSucceedEventArgs(labelInfo));
+            }
+            else
+            {
+                // raise failed event
+                RaiseMonitorExceptionEvent(new ExceptionArgs(new FailedInfo()
+                {
+                    ErrorCode = (int)EnumErrorCodes.UnknownError,
+                    ErrorMessage = new ErrorInfo().GetErrorMessage(EnumErrorCodes.UnknownError)
+                }));
+            }
+
+        }
+
         public EnumDeviceStatuses[] GetBarcodePrinterStatus()
         {
-            return BarcodePrinterUtils.Instance.GetDeviceStatus();
+            // get barcodePrinter name from appconfig
+            string barcodePrinterName = ConfigurationManager.AppSettings["BarcodePrinterName"].ToUpper();
+            return BarcodePrinterUtils.Instance.GetDeviceStatus(barcodePrinterName);
         }
     }
 }

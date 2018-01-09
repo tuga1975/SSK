@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -43,21 +44,47 @@ namespace SSA.CodeBehind
                 Session session = Session.Instance;
                 if (session.IsAuthenticated)
                 {
-                    // Print BarCode and QR Code
-                    foreach (var item in barcodeScannerUtils.GetDeviceStatus())
-                    {
-                        if (item == EnumDeviceStatuses.Connected) 
-                        {
-                            printerMonitor.PrintLabel(labelInfo);
-                        }
-                        else
-                        {
-                            RaisePrintMUBAndTTLabelsFailedEvent(new PrintMUBAndTTLabelsEventArgs("Printer have problem: " + CommonUtil.GetDeviceStatusText(item)));
-                            
-                            Console.WriteLine("Barcode printer is not connected.");
-                        }
-                    }
+                    #region Print Barcode
+                    // Check status of Barcode printer
+                    string barcodePrinterName = ConfigurationManager.AppSettings["BarcodePrinterName"].ToUpper();
+                    var statusPrinterBarcode = barcodeScannerUtils.GetDeviceStatus(barcodePrinterName);
 
+                    if (statusPrinterBarcode.Count() == 1 && statusPrinterBarcode[0] == EnumDeviceStatuses.Connected)
+                        printerMonitor.PrintBarcodeLabel(labelInfo);
+                    else
+                    {
+                        // Printer disconnect, get list status of the causes disconnected
+                        string causeOfPrintFailure = "";
+                        foreach (var item in statusPrinterBarcode)
+                        {
+                            causeOfPrintFailure = causeOfPrintFailure + CommonUtil.GetDeviceStatusText(item) + "; ";
+                        }
+
+                        RaisePrintMUBAndTTLabelsFailedEvent(new PrintMUBAndTTLabelsEventArgs("Barcode Printer have problem: " + causeOfPrintFailure));
+
+                        return;
+                    }
+                    #endregion
+
+                    #region Print MUB (QRCode)
+                    // Check status of Barcode printer
+                    string MUBPrinterName = ConfigurationManager.AppSettings["MUBPrinterName"].ToUpper();
+                    var statusPrinterMUB = barcodeScannerUtils.GetDeviceStatus(MUBPrinterName);
+
+                    if (statusPrinterMUB.Count() == 1 && statusPrinterMUB[0] == EnumDeviceStatuses.Connected)
+                        printerMonitor.PrintMUBLabel(labelInfo);
+                    else
+                    {
+                        // Printer disconnect, get list status of the causes disconnected
+                        string causeOfPrintMUBFailure = "";
+                        foreach (var item in statusPrinterMUB)
+                        {
+                            causeOfPrintMUBFailure = causeOfPrintMUBFailure + CommonUtil.GetDeviceStatusText(item) + "; ";
+                        }
+
+                        RaisePrintMUBAndTTLabelsFailedEvent(new PrintMUBAndTTLabelsEventArgs("MUB Printer have problem: " + causeOfPrintMUBFailure));
+                    }
+                    #endregion
                 }
             }
             catch (Exception ex)
@@ -133,6 +160,6 @@ namespace SSA.CodeBehind
             }
         }
     }
-    
+
     #endregion
 }

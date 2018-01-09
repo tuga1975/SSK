@@ -565,6 +565,17 @@ namespace Enrolment
                 session[CommonConstants.CURRENT_EDIT_USER] = profileModel;
                 CSCallJS.LoadPageHtml(this.LayerWeb, "Edit-Supervisee.html", profileModel);
 
+                var photo1 = "../images/usr-default.jpg";
+                var photo2 = "../images/usr-default.jpg";
+                if (profileModel.UserProfile.User_Photo1 != null)
+                {
+                    photo1 = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(profileModel.UserProfile.User_Photo1));
+                }
+                if (profileModel.UserProfile.User_Photo2 != null)
+                {
+                    photo2 = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(profileModel.UserProfile.User_Photo2));
+                }
+                LayerWeb.InvokeScript("setPhotoServerCall", photo1, photo2);
 
             }
             else if (e.Name == EventNames.SUPERVISEE_DATA_UPDATE_CANCELED)

@@ -249,17 +249,16 @@ namespace Enrolment
                 UserProfile = dalUserProfile.GetUserProfileByUserId(userId, true),
                 Addresses = dalUserProfile.GetAddressByUserId(userId, true)
             };
-            if (profileModel.Addresses == null)
+                        
+            
+            if (session[CommonConstants.CURRENT_EDIT_USER] != null)
             {
-                profileModel.Addresses = new Trinity.BE.Address();
-                profileModel.UserProfile.Residential_Addess_ID = 0;
-                profileModel.UserProfile.Other_Address_ID = 0;
+                profileModel = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
             }
-            //if (session[CommonConstants.CURRENT_EDIT_USER] != null)
-            //{
-            //    profileModel = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
-            //}
-            session[CommonConstants.CURRENT_EDIT_USER] = profileModel;
+            else
+            {
+                session[CommonConstants.CURRENT_EDIT_USER] = profileModel;
+            }            
 
             if (dbUser.Status.Equals(EnumUserStatuses.New, StringComparison.InvariantCultureIgnoreCase))
             {
@@ -269,6 +268,12 @@ namespace Enrolment
             }
             else
             {
+                if (profileModel.Addresses == null)
+                {
+                    profileModel.Addresses = new Trinity.BE.Address();
+                    profileModel.UserProfile.Residential_Addess_ID = 0;
+                    profileModel.UserProfile.Other_Address_ID = 0;
+                }
                 session[CommonConstants.CURRENT_PAGE] = "UpdateSupervisee";
                 // _web.LoadPageHtml("Edit-Supervisee.html", profileModel);
                 EventCenter eventCenter = EventCenter.Default;
@@ -295,6 +300,8 @@ namespace Enrolment
                 var residential_Addess_ID = address.SaveAddress(rawDataAddress, true);
                 data.UserProfile.Residential_Addess_ID = residential_Addess_ID;
                 data.UserProfile.Other_Address_ID = residential_Addess_ID;
+                data.UserProfile.User_Photo1 = ProfileModel.UserProfile.User_Photo1;
+                data.UserProfile.User_Photo2 = ProfileModel.UserProfile.User_Photo2;
 
                 // add some some old data not change
                 data.User.Name = ProfileModel.User.Name;

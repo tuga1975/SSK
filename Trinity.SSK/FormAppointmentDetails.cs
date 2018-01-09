@@ -54,7 +54,7 @@ namespace SSK
                 NRIC = "022234343",
                 Name = "minhdq"
             };
-            printerUtil.PrintUserInfo(labelInfo);
+            printerUtil.PrintBarcodeUserInfo(labelInfo);
             //if (documentLoaded)
             //{
             //    webBrowserAppointmentDetails.Print();
