@@ -107,12 +107,13 @@ namespace Enrolment
                 };
                 session[CommonConstants.SUPERVISEE] = dbUser;
                 listSupervisee.Add(model);
-                _web.LoadPageHtml("Supervisee.html", listSupervisee);
+              //  _web.LoadPageHtml("Supervisee.html", listSupervisee);
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = 0, Name = EventNames.GET_LIST_SUPERVISEE_SUCCEEDED, Data = listSupervisee, Source = "Supervisee.html" });
             }
             else
             {
-                LoadListSupervisee();
+                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.GET_LIST_SUPERVISEE_SUCCEEDED, Data = listSupervisee, Source = "Supervisee.html" });
+               // LoadListSupervisee();
             }
         }
 
@@ -250,13 +251,14 @@ namespace Enrolment
                 Addresses = dalUserProfile.GetAddressByUserId(userId, true)
             };
                         
-            
+            //session passing from other event like confirm capture photo
             if (session[CommonConstants.CURRENT_EDIT_USER] != null)
             {
                 profileModel = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
             }
             else
             {
+                //first load set model to session 
                 session[CommonConstants.CURRENT_EDIT_USER] = profileModel;
             }            
 
