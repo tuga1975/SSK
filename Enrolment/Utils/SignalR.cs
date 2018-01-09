@@ -64,7 +64,7 @@ namespace Enrolment.Utils
             }
         }
 
-        public void SendNotificationToDutyOfficer(string subject, string content, NotificationType notificationType, string source)
+        public void SendNotificationToDutyOfficer(string subject, string content, string notificationType, string source)
         {
             Session session = Session.Instance;
             User user = (User)session[CommonConstants.USER_LOGIN];

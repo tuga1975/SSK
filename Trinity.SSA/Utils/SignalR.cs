@@ -64,7 +64,14 @@ namespace SSA.Utils
             }
         }
 
-        public void SendNotificationToDutyOfficer(string subject, string content, NotificationType notificationType, string source)
+        /// <summary>
+        /// Send notification to duty officer
+        /// </summary>
+        /// <param name="subject">Subject</param>
+        /// <param name="content">Content</param>
+        /// <param name="notificationType">NotificationType : {Error, Notification, Caution}</param>
+        /// <param name="source">EnumStations : {SSA, SSK, UHP, ASP, HSA, ASP}</param>
+        public void SendNotificationToDutyOfficer(string subject, string content, string notificationType, string source)
         {
             Session session = Session.Instance;
             User user = (User)session[CommonConstants.SUPERVISEE];

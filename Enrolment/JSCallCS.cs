@@ -60,7 +60,7 @@ namespace Enrolment
 
         public void LoadListSupervisee()
         {
-            
+
             EventCenter eventCenter = EventCenter.Default;
             Session session = Session.Instance;
             var dalUser = new DAL_User();
@@ -237,7 +237,6 @@ namespace Enrolment
         public void EditSupervisee(string userId)
         {
             Session session = Session.Instance;
-           
 
             var dalUser = new DAL_User();
             var dalUserProfile = new DAL_UserProfile();
@@ -250,28 +249,32 @@ namespace Enrolment
                 UserProfile = dalUserProfile.GetUserProfileByUserId(userId, true),
                 Addresses = dalUserProfile.GetAddressByUserId(userId, true)
             };
-            if (profileModel.Addresses == null) {
+                        
+            if (profileModel.Addresses == null)
+            {
                 profileModel.Addresses = new Trinity.BE.Address();
                 profileModel.UserProfile.Residential_Addess_ID = 0;
                 profileModel.UserProfile.Other_Address_ID = 0;
             }
+            //if (session[CommonConstants.CURRENT_EDIT_USER] != null)
+            //{
+            //    profileModel = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
+            //}
             session[CommonConstants.CURRENT_EDIT_USER] = profileModel;
-            if (dbUser.Status == "NEW")
+
+            if (dbUser.Status.Equals(EnumUserStatuses.New, StringComparison.InvariantCultureIgnoreCase))
             {
                 session[CommonConstants.CURRENT_PAGE] = "EditSupervisee";
-
                 EventCenter eventCenter = EventCenter.Default;
-
-                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.LOAD_UPDATE_SUPERVISEE_BIODATA, Data = profileModel });
-
-
+                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.LOAD_UPDATE_SUPERVISEE_BIODATA_SUCCEEDED, Data = profileModel });
             }
             else
             {
                 session[CommonConstants.CURRENT_PAGE] = "UpdateSupervisee";
-                _web.LoadPageHtml("Edit-Supervisee.html", profileModel);
+                // _web.LoadPageHtml("Edit-Supervisee.html", profileModel);
+                EventCenter eventCenter = EventCenter.Default;
+                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.LOAD_EDIT_SUPERVISEE_SUCCEEDED, Data = profileModel });
             }
-
         }
 
         public void SaveSupervisee(string param, bool primaryInfoChange)
@@ -281,10 +284,10 @@ namespace Enrolment
                 Session session = Session.Instance;
                 var rawData = JsonConvert.DeserializeObject<Trinity.BE.ProfileRawMData>(param);
                 var rawDataAddress = JsonConvert.DeserializeObject<Trinity.BE.Address>(param);
-                
+
                 var data = new Trinity.BE.ProfileRawMData().ToProfileModel(rawData);
                 var dalUser = new Trinity.DAL.DAL_User();
-                
+
                 var dalUserprofile = new Trinity.DAL.DAL_UserProfile();
                 var ProfileModel = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
                 var address = new DAL_Address();
@@ -293,12 +296,14 @@ namespace Enrolment
                 var residential_Addess_ID = address.SaveAddress(rawDataAddress, true);
                 data.UserProfile.Residential_Addess_ID = residential_Addess_ID;
                 data.UserProfile.Other_Address_ID = residential_Addess_ID;
+                data.UserProfile.User_Photo1 = ProfileModel.UserProfile.User_Photo1;
+                data.UserProfile.User_Photo2 = ProfileModel.UserProfile.User_Photo2;
 
                 // add some some old data not change
                 data.User.Name = ProfileModel.User.Name;
                 data.User.Status = ProfileModel.User.Status;
                 if (primaryInfoChange)
-                {                    
+                {
                     dalUser.UpdateUser(data.User, ProfileModel.User.UserId, true);
 
                     dalUserprofile.UpdateUserProfile(data.UserProfile, ProfileModel.User.UserId, true);
@@ -321,8 +326,12 @@ namespace Enrolment
             }
         }
 
-        public void UpdateSuperviseePhoto() {
+        public void UpdateSuperviseePhoto(string param)
+        {
+            var rawData = JsonConvert.DeserializeObject<Trinity.BE.ProfileRawMData>(param);
+            var data = new Trinity.BE.ProfileRawMData().ToProfileModel(rawData);
             Session session = Session.Instance;
+            session[CommonConstants.CURRENT_EDIT_USER] = data;
             session[CommonConstants.CURRENT_PAGE] = "UpdateSuperviseePhoto";
             _web.LoadPageHtml("UpdateSuperviseePhoto.html");
         }
@@ -336,7 +345,7 @@ namespace Enrolment
 
         public void UpdateSuperviseeBiodata()
         {
-          
+
 
             Session session = Session.Instance;
             var dalUser = new Trinity.DAL.DAL_User();
@@ -347,7 +356,7 @@ namespace Enrolment
                 EventCenter eventCenter = EventCenter.Default;
 
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.UPDATE_SUPERVISEE_BIODATA, Data = profileModel });
-                
+
             }
         }
 
@@ -369,9 +378,16 @@ namespace Enrolment
             {
                 session[CommonConstants.IS_PRIMARY_PHOTO] = false;
             }
-                    
+
             eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.OPEN_PICTURE_CAPTURE_FORM, Message = number });
         }
+
+        public void CancelEditSupervisee()
+        {
+            EventCenter eventCenter = EventCenter.Default;
+            eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.SUPERVISEE_DATA_UPDATE_CANCELED });
+        }
+
         public void CancelCapturePicture()
         {
             EventCenter eventCenter = EventCenter.Default;

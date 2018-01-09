@@ -1,20 +1,16 @@
-﻿using Newtonsoft.Json;
+﻿using Futronic.SDKHelper;
+using Newtonsoft.Json;
 using System;
 using System.Data;
+using System.Drawing;
+using System.IO;
 using System.Linq;
-using System.Threading;
+using System.Text;
 using System.Windows.Forms;
 using Trinity.BE;
 using Trinity.Common;
 using Trinity.Common.Common;
-using Trinity.Common.Monitor;
 using Trinity.DAL;
-using AForge.Video;
-using AForge.Video.DirectShow;
-using System.Drawing;
-using System.IO;
-using Futronic.SDKHelper;
-using System.Text;
 
 namespace Enrolment
 {
@@ -37,6 +33,8 @@ namespace Enrolment
         private byte[] image2;
         private bool _displayLoginButtonStatus = false;
         private FutronicEnrollment _futronicEnrollment = null;
+        private bool _isFirstTimeLoaded = true;
+
         public Main()
         {
             InitializeComponent();
@@ -318,10 +316,13 @@ namespace Enrolment
         {
             LayerWeb.InvokeScript("createEvent", JsonConvert.SerializeObject(_jsCallCS.GetType().GetMethods().Where(d => d.IsPublic && !d.IsVirtual && !d.IsSecuritySafeCritical).ToArray().Select(d => d.Name)));
 
-            // Start page
-            NavigateTo(NavigatorEnums.Login);
-            //NavigateTo(NavigatorEnums.Supervisee);
-            LayerWeb.DocumentCompleted -= LayerWeb_DocumentCompleted;
+            if (_isFirstTimeLoaded)
+            {
+                // Set Start page = Login
+                NavigateTo(NavigatorEnums.Login);
+                //NavigateTo(NavigatorEnums.Supervisee);
+                _isFirstTimeLoaded = false;
+            }
         }
 
         private void NRIC_OnNRICSucceeded()
@@ -436,6 +437,9 @@ namespace Enrolment
                     else if (currentPage.ToString() == "UpdateSupervisee")
                     {
                         LayerWeb.LoadPageHtml("Edit-Supervisee.html", currentEditUser);
+
+                        LayerWeb.InvokeScript("showPopUp");
+                        LayerWeb.InvokeScript("setAvatar", base64Str1, base64Str2);
                     }
                     else if (currentPage.ToString() == "UpdateSuperviseePhoto")
                     {
@@ -524,7 +528,7 @@ namespace Enrolment
                 StartToScanFingerprint();
 
             }
-            else if (e.Name == EventNames.LOAD_UPDATE_SUPERVISEE_BIODATA)
+            else if (e.Name == EventNames.LOAD_UPDATE_SUPERVISEE_BIODATA_SUCCEEDED)
             {
                 var profileModel = (Trinity.BE.ProfileModel)e.Data;
                 CSCallJS.LoadPageHtml(this.LayerWeb, "UpdateSuperviseeBiodata.html", profileModel);
@@ -549,7 +553,23 @@ namespace Enrolment
                 dalUser.ChangeUserStatus(profileModel.User.UserId, EnumUserStatuses.Enrolled);
 
             }
+            else if (e.Name == EventNames.LOAD_EDIT_SUPERVISEE_SUCCEEDED)
+            {
+                var profileModel = (Trinity.BE.ProfileModel)e.Data;
 
+                Session session = Session.Instance;
+                session[CommonConstants.CURRENT_EDIT_USER] = profileModel;
+                CSCallJS.LoadPageHtml(this.LayerWeb, "Edit-Supervisee.html", profileModel);
+
+                var photo1 = Convert.ToBase64String(profileModel.UserProfile.User_Photo1);
+                var photo2 = Convert.ToBase64String(profileModel.UserProfile.User_Photo2);
+                LayerWeb.InvokeScript("setPhotoServerCall", photo1, photo2);
+
+            }
+            else if (e.Name == EventNames.SUPERVISEE_DATA_UPDATE_CANCELED)
+            {
+                NavigateTo(NavigatorEnums.Supervisee);
+            }
         }
 
         private void CaptureAttempt(string sessionAttemptName)
@@ -559,12 +579,27 @@ namespace Enrolment
             if (session[sessionAttemptName] != null)
             {
                 var attempt = (int)session[sessionAttemptName];
-                _jsCallCS.PreviewSuperviseeFingerprint(attempt);
+                if (sessionAttemptName == CommonConstants.CAPTURE_PHOTO_ATTEMPT)
+                {
+                    _jsCallCS.PreviewSuperviseePhoto(firstAttemp);
+                }
+                else
+                {
+                    _jsCallCS.PreviewSuperviseeFingerprint(firstAttemp);
+                }
             }
             else
             {
                 session[sessionAttemptName] = firstAttemp;
-                _jsCallCS.PreviewSuperviseeFingerprint(firstAttemp);
+                if (sessionAttemptName == CommonConstants.CAPTURE_PHOTO_ATTEMPT)
+                {
+                    _jsCallCS.PreviewSuperviseePhoto(firstAttemp);
+                }
+                else
+                {
+                    _jsCallCS.PreviewSuperviseeFingerprint(firstAttemp);
+                }
+
             }
         }
 
@@ -572,6 +607,7 @@ namespace Enrolment
 
         private void NavigateTo(NavigatorEnums navigatorEnum)
         {
+            LayerWeb.InvokeScript("createEvent", JsonConvert.SerializeObject(_jsCallCS.GetType().GetMethods().Where(d => d.IsPublic && !d.IsVirtual && !d.IsSecuritySafeCritical).ToArray().Select(d => d.Name)));
             // navigate
             if (navigatorEnum == NavigatorEnums.Authentication_NRIC)
             {

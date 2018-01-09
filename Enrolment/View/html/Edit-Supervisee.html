@@ -15,34 +15,34 @@
 			<input type="hidden" name="userId" class="userId"  />
 			<div class="tab-pane fade show active" id="supervisee-details" role="tabpanel" aria-labelledby="nav-home-tab">
 				<span class="s_label" >Supervisee's Biodata</span>
-				<div class="s_detail">
+				<div class="s_detail" style="display:block">
 					<div class="row">								
 						<div class="col-7">
 							<div class="row">								
 								<div class="col">
-									<img class="avatar" id="userPhoto1" src="../images/usr-default.jpg" />
-									
+									<img class="avatar" id="userPhoto1" src="../images/usr-default.jpg" />									
+									<input type="hidden" name="User_Photo1" id="User_Photo1" value="" />									
 								</div>
 								<div class="col">
 									<img class="avatar" id="userPhoto2" src="../images/usr-default.jpg" />
-									
+									<input type="hidden" name="User_Photo1" id="User_Photo2" value="" />									
 								</div>
 							</div>
 						</div>
 						<div class="col-5">
 							<div class="row">
 								<div class="col">
-									<img class="avatar" src="../images/fingerprint.png" style="max-width:70%" />
+									<img class="avatar" id="LeftThumbFingerprint" src="../images/fingerprint.png" style="max-width:70%" />
 								</div>
 								<div class="col">
-									<img class="avatar" src="../images/fingerprint.png" style="max-width:70%" />
+									<img class="avatar" id="RightThumbFingerprint" src="../images/fingerprint.png" style="max-width:70%" />
 								</div>
 							</div>
 						</div>
 					</div>
 					<div class="row">								
 						<div class="col-7" style="text-align:center;padding-top:5px;">
-							<button type="button" class="btn-form" id="updatePhoto2" onclick="api.server.UpdateSuperviseePhoto()">Update Photos</button>
+							<button type="button" class="btn-form" id="updatePhoto2">Update Photos</button>
 						</div>
 						<div class="col-5" style="text-align:center;padding-top:5px;">
 							<button type="button" class="btn-form" onclick="api.server.OpenFingerprintCaptureForm('2')">Update Fingerprints</button>
@@ -230,8 +230,8 @@
 					</div>
 				</div>
 				<div class="btn-group">
-					<button type="submit" class="btn-form" id="SaveBtn">Save</button>
-					<button type="submit" class="btn-form">Cancel</button>
+					<button type="button" class="btn-form" id="SaveBtn">Save</button>
+					<button type="button" class="btn-form" onclick="api.server.CancelEditSupervisee();">Cancel</button>
 				</div>
 			</div>
 			<div class="tab-pane fade" id="issued-cards" role="tabpanel" aria-labelledby="nav-profile-tab">
@@ -241,8 +241,8 @@
 				<input class="" type="text" value="" placeholder="Next Of Kin" />
 				<input class="" type="text" value="" placeholder="Employment details" />
 				<div class="btn-group">
-					<button type="submit" class="btn-form" >Save</button>
-					<button type="submit" class="btn-form">Cancel</button>
+					<button type="submit" class="btn-form" id="submitEditSupervise" >Save</button>
+					<button type="button" class="btn-form">Cancel</button>
 				</div>
 			</div>
 		</div>
@@ -250,6 +250,40 @@
 	</div>
 </div>
 
+<div id="pageUpdatePhotos">
+	<div style="width:100%;">
+		<div class="header header-form-supervisee">
+			<img class="logo" src="../images/logo.png" />
+			<h3>Edit Supervisee</h3>
+			<div class="clear"></div>
+		</div>
+		<div class="form-supervisee">
+			<input class="name-supervisee" type="text" value="Update Photo" disabled="disabled" />
+				<div class="tab-content" id="nav-tabContent">
+				<input type="hidden" name="userId" class="userId"  />
+				<div class="tab-pane fade show active" id="supervisee-details" role="tabpanel" aria-labelledby="nav-home-tab">
+					<div class="row updateSuperviseePhoto">	
+						<div class="col-2"></div>
+						<div class="col-4">
+							<img class="avatar" id="PopupUserPhoto1" src="../images/usr-default.jpg" />
+							<button type="button" class="btn-form" id="updatePhoto2" onclick="api.server.OpenPictureCaptureForm('1')">Take Picture 1</button>
+						</div>
+						<div class="col-4">
+							<img class="avatar" id="PopupUserPhoto2" src="../images/usr-default.jpg" />
+							<button type="button" class="btn-form" id="updatePhoto2" onclick="api.server.OpenPictureCaptureForm('2')">Take Picture 2</button>
+						</div>
+						<div class="col-2"></div>
+					</div>				
+				</div>
+			</div>
+			
+			<div class="btn-group">
+				<button type="button" class="btn-form" onclick="hidePopUp()" >Update</button>
+				<button type="button" class="btn-form" onclick="api.server.CancelCapturePicture();">Cancel</button>
+			</div>
+		</div>
+	</div>
+</div>
 <script>
 	$(function() {
 		$('.s_label').click(function(){
@@ -257,6 +291,11 @@
 		});
         if (api.model != null) {
 			$('.userId').val(api.model.User.UserId);
+			// Biodata
+			
+			/*$('#userPhoto2').attr("src",Convert.ToBase64String(api.model.User.LeftThumbFingerprint));
+			$('#userPhoto2').attr("src",Convert.ToBase64String(api.model.User.RightThumbFingerprint));
+			*/
 			// NextOfKin
 			$('.nok_name').val(api.model.UserProfile.NextOfKin_Name);
 			$('.nok_contact_number').val(api.model.UserProfile.NextOfKin_Contact_Number);
@@ -286,13 +325,56 @@
         }
 
     });
+	function setPhotoServerCall(photo1, photo2){
+		$('#userPhoto1').attr("src", 'data:image/jpg;base64,' + photo1);
+		$('#userPhoto2').attr("src", 'data:image/jpg;base64,' + photo2);
+	}
 
-	
-
-	$('#SaveBtn').click(function () {
+	$("#SaveBtn").on('click', function(){
+		$("#superviseeFrm").trigger('submit');
+	});
+	$("#superviseeFrm").submit(function(e){
 		var $form = $("#superviseeFrm");
         var data = getFormData($form);
         var json = JSON.stringify(data);
         api.server.SaveSupervisee(json, true);
+		e.preventDefault();
 	});
+
+	/*$('#SaveBtn').click(function () {
+		var $form = $("#superviseeFrm");
+        var data = getFormData($form);
+        var json = JSON.stringify(data);
+        api.server.SaveSupervisee(json, true);
+	});*/
+
+	$("#updatePhoto2").click(function(){
+		showPopUp();
+		/*var $form = $("#superviseeFrm");
+        var data = getFormData($form);
+        var json = JSON.stringify(data);
+		api.server.UpdateSuperviseePhoto(json);*/
+	});
+	$("#Close_popup").click(function(){
+		hidePopUp();
+	})
+
+	function showPopUp(){
+		$("#pageUpdatePhotos").show();
+	}
+	function hidePopUp(){
+		$("#pageUpdatePhotos").hide();
+	}
+
+	function setAvatar(base64Str1, base64Str2) {
+        if (base64Str1) {
+            $('#PopupUserPhoto1').attr('src', 'data:image/jpg;base64,' + base64Str1);
+            $('#userPhoto1').attr('src', 'data:image/jpg;base64,' + base64Str1);
+        }
+        if (base64Str2) {
+            $('#PopupUserPhoto2').attr('src', 'data:image/jpg;base64,' + base64Str2);
+            $('#userPhoto2').attr('src', 'data:image/jpg;base64,' + base64Str2);
+        }
+    }
+
 </script>

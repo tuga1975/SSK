@@ -226,9 +226,11 @@ public enum EnumDeviceStatuses
     Disconnected = -1
 }
 
-public enum NotificationType
+public static class NotificationType
 {
-    Error, Notification, Caution
+    public const string Error = "Error";
+    public const string Notification = "Notification";
+    public const string Caution = "Caution";
 }
 
 public static class EnumStations
@@ -253,3 +255,13 @@ public static class EnumLabelType
     public const string TT = "TT";
     public const string UB = "UB";
 };
+public enum EnumDayOfWeek
+{
+    Monday = 2,
+    Tuesday = 3,
+    Wednesday = 4,
+    Thursday = 5,
+    Friday = 6,
+    Saturday = 7,
+    Sunday = 8,
+}

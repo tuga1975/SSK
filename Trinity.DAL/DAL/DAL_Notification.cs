@@ -79,17 +79,16 @@ namespace Trinity.DAL
             {
                 //queryNotifications = _localUnitOfWork.DataContext.Notifications.Where(n => n.ToUserId == null);
                 queryNotifications = (from n in _localUnitOfWork.DataContext.Notifications
-                                      join u in _localUnitOfWork.DataContext.Membership_Users on n.FromUserId equals u.UserId
-                                      select new Trinity.BE.Notification()
-                                      {
-                                          FromUserName = u.Name,
-                                          Subject = n.Subject,
-                                          Content = n.Content,
-                                          Date =
-                                          n.Date,
-                                          Type = n.Type,
-                                          Source = n.Source
-                                      });
+                    join u in _localUnitOfWork.DataContext.Membership_Users on n.FromUserId equals u.UserId
+                    select new Trinity.BE.Notification()
+                    {
+                        FromUserName = u.Name,
+                        Subject = n.Subject,
+                        Content = n.Content,
+                        Date = n.Date,
+                        Type = n.Type,
+                        Source = n.Source
+                    });
             }
             else
             {
@@ -112,6 +111,48 @@ namespace Trinity.DAL
             }
             return null;
         }
+
+        public List<Notification> GetNotificationsSentToDutyOfficer(bool isLocal, List<string> modules)
+        {
+            IQueryable<Trinity.BE.Notification> queryNotifications = null;
+            if (isLocal)
+            {
+                //queryNotifications = _localUnitOfWork.DataContext.Notifications.Where(n => n.ToUserId == null);
+                queryNotifications = (from n in _localUnitOfWork.DataContext.Notifications
+                                      join u in _localUnitOfWork.DataContext.Membership_Users on n.FromUserId equals u.UserId
+                                      select new Trinity.BE.Notification()
+                                      {
+                                          FromUserName = u.Name,
+                                          Subject = n.Subject,
+                                          Content = n.Content,
+                                          Date =
+                                          n.Date,
+                                          Type = n.Type,
+                                          Source = n.Source
+                                      }).Where(x => modules.Contains(x.Source));
+            }
+            else
+            {
+                //queryNotifications = _centralizedUnitOfWork.DataContext.Notifications.Where(n => n.ToUserId == null);
+                queryNotifications = (from n in _centralizedUnitOfWork.DataContext.Notifications
+                                      join u in _centralizedUnitOfWork.DataContext.Membership_Users on n.FromUserId equals u.UserId
+                                      select new Trinity.BE.Notification()
+                                      {
+                                          FromUserName = u.Name,
+                                          Subject = n.Subject,
+                                          Content = n.Content,
+                                          Date = n.Date,
+                                          Type = n.Type,
+                                          Source = n.Source
+                                      }).Where(x => modules.Contains(x.Source));
+            }
+            if (queryNotifications.Count() > 0)
+            {
+                return queryNotifications.ToList<Notification>();
+            }
+            return null;
+        }
+
 
         public void InsertNotification(string subject, string content, string fromUserId, string toUserId, bool isFromSupervisee, bool isLocal)
         {
@@ -141,8 +182,19 @@ namespace Trinity.DAL
             }
         }
 
+        /// <summary>
+        /// Add notification
+        /// </summary>
+        /// <param name="subject"></param>
+        /// <param name="content"></param>
+        /// <param name="fromUserId"></param>
+        /// <param name="toUserId"></param>
+        /// <param name="isFromSupervisee"></param>
+        /// <param name="isLocal"></param>
+        /// <param name="notifyType">NotificationType : {Error : 'E', Notification : 'N', Caution : 'C'}</param>
+        /// <param name="source">EnumStations : {SSA, SSK, UHP, ASP, HSA, ASP}</param>
         public void InsertNotification(string subject, string content, string fromUserId,
-            string toUserId, bool isFromSupervisee, bool isLocal, NotificationType notifyType,
+            string toUserId, bool isFromSupervisee, bool isLocal, string notifyType,
             string source)
         {
             Trinity.DAL.DBContext.Notification notifcation = new DBContext.Notification()
@@ -154,7 +206,7 @@ namespace Trinity.DAL
                 IsRead = false,
                 Subject = subject,
                 ToUserId = toUserId,
-                Type = notifyType.ToString(),
+                Type = notifyType,
                 Source = source,
                 ID = Guid.NewGuid()
             };

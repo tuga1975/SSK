@@ -21,9 +21,23 @@
     }
 </style>
 
+<div style="display:block; padding:10px;">
+    <span style=" font-size:22px; float:left; text-align:left;"><b>Alerts</b></span>
+    <div class="form-inline" style="position: absolute; right: 200px; top: 30px">
+        <select class="form-control" id="pageSize" style="width:70px; display:inline-block;">
+            <option>10</option>
+            <option>2</option>
+            <option>3</option>
+        </select>
+        <div style="display:inline-block;">entries</div>
+    </div>
+</div>
+
 <table id="alertNotificationTable" class="tableContent"></table>
 
 <script type="text/javascript">
+
+    var $table = $('#alertNotificationTable');
 
     api.server.getAlertsSendToDutyOfficer();
 
@@ -40,31 +54,24 @@
                 });
             });
         }
-       var Type = {
-            Code : {
-                error : 0,
-                notification : 1,
-                caution : 2
-            },
-            Message : {
-                error : "Error",
-                notification : "Notification",
-                caution : "Caution"
-            } 
+        var Type = {
+            error : "Error",
+            notification : "Notification",
+            caution : "Caution"
         };
 
         var rowStyle = function (row, index) {
             var type = row.type;
             switch (type) {
-                case Type.Code.error:
+                case Type.error:
                     return {
                         classes: "error"
                     };
-                case Type.Code.notification:
+                case Type.notification:
                     return {
                         classes: "notification"
                     };
-                case Type.Code.caution:
+                case Type.caution:
                     return {
                         classes: "caution"
                     };
@@ -72,7 +79,16 @@
             return {};
         }
 
-        $('#alertNotificationTable').bootstrapTable({
+        $('#pageSize').change(function () {
+            pageSize = $("#pageSize option:selected").text();
+            $table.bootstrapTable('refreshOptions', {
+                pagination: true,
+                //search: true,
+                pageSize: pageSize
+            });
+        });
+
+        $table.bootstrapTable({
             pagination: true,
             search: true,
             pageSize: 10,
@@ -86,14 +102,15 @@
                 title: 'Type',
                 sortable: true,
                 halign: "center",
+                sortable : true,
                 formatter : function (value, row, index, field) {
                     switch (value) {
-                        case Type.Code.error:
-                            return Type.Message.error;
-                        case Type.Code.notification:
-                            return Type.Message.notification;
-                        case Type.Code.caution:
-                            return Type.Message.caution;
+                        case Type.error:
+                            return Type.error;
+                        case Type.notification:
+                            return Type.notification;
+                        case Type.caution:
+                            return Type.caution;
                         default :
                             return "";
                     }
@@ -111,6 +128,7 @@
                 }
             }, {
                 field: 'message',
+                sortable : true,
                 title: 'Message',
                 sortable: false,
                 halign: "center"

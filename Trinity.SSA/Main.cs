@@ -21,6 +21,7 @@ namespace SSA
         private int _smartCardFailed;
         private int _fingerprintFailed;
         private bool _displayLoginButtonStatus = false;
+        private bool _isFirstTimeLoaded = true;
 
         public Main()
         {
@@ -140,21 +141,26 @@ namespace SSA
         {
             LayerWeb.InvokeScript("createEvent", JsonConvert.SerializeObject(_jsCallCS.GetType().GetMethods().Where(d => d.IsPublic && !d.IsVirtual && !d.IsSecuritySafeCritical).ToArray().Select(d => d.Name)));
 
-            // Start page
-            //NavigateTo(NavigatorEnums.Authentication_SmartCard);
+            if (_isFirstTimeLoaded)
+            {
+                // Start page
+                //NavigateTo(NavigatorEnums.Authentication_SmartCard);
 
-            // For testing purpose
-            Session session = Session.Instance;
-            // Supervisee
-            Trinity.BE.User user = new DAL_User().GetUserByUserId("bb67863c-c330-41aa-b397-c220428ad16f", true);
-            session[CommonConstants.SUPERVISEE] = user;
-            // Duty Officer
-            //Trinity.BE.User user = new DAL_User().GetUserByUserId("dfbb2a6a-9e45-4a76-9f75-af1a7824a947", true);
-            //session[CommonConstants.USER_LOGIN] = user;
-            session.IsSmartCardAuthenticated = true;
-            session.IsFingerprintAuthenticated = true;
-            NavigateTo(NavigatorEnums.Supervisee_Particulars);
-            //NavigateTo(NavigatorEnums.Authentication_NRIC);
+                // For testing purpose
+                Session session = Session.Instance;
+                // Supervisee
+                Trinity.BE.User user = new DAL_User().GetUserByUserId("bb67863c-c330-41aa-b397-c220428ad16f", true);
+                session[CommonConstants.SUPERVISEE] = user;
+                // Duty Officer
+                //Trinity.BE.User user = new DAL_User().GetUserByUserId("dfbb2a6a-9e45-4a76-9f75-af1a7824a947", true);
+                //session[CommonConstants.USER_LOGIN] = user;
+                session.IsSmartCardAuthenticated = true;
+                session.IsFingerprintAuthenticated = true;
+                NavigateTo(NavigatorEnums.Supervisee_Particulars);
+                //NavigateTo(NavigatorEnums.Authentication_NRIC);
+
+                _isFirstTimeLoaded = false;
+            }
         }
 
         private void JSCallCS_OnLogOutCompleted()
@@ -217,7 +223,7 @@ namespace SSA
             if (_smartCardFailed > 3)
             {
                 // Send Notification to duty officer
-                APIUtils.SignalR.SendNotificationToDutyOfficer(message, message);
+                APIUtils.SignalR.SendNotificationToDutyOfficer(message, message, NotificationType.Error, EnumStations.SSA);
 
                 // show message box to user
                 MessageBox.Show(message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -244,7 +250,7 @@ namespace SSA
             if (_fingerprintFailed > 3)
             {
                 // Send Notification to duty officer
-                APIUtils.SignalR.SendNotificationToDutyOfficer(message, message);
+                APIUtils.SignalR.SendNotificationToDutyOfficer(message, message, NotificationType.Error, EnumStations.SSA);
 
                 // show message box to user
                 MessageBox.Show(message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -273,7 +279,6 @@ namespace SSA
                 //NavigateTo(NavigatorEnums.Authentication_NRIC);
                 MessageBox.Show(e.Message, "Login Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-
         }
 
         #region events

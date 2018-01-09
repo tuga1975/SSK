@@ -64,10 +64,15 @@ namespace DutyOfficer
         public void getAlertsSendToDutyOfficer()
         {
             var dalNotify = new DAL_Notification();
-
-            List<Notification> data = dalNotify.GetNotificationsSentToDutyOfficer(true);
-            object result = JsonConvert.SerializeObject(data, Formatting.Indented,
-                new JsonSerializerSettings {ReferenceLoopHandling = ReferenceLoopHandling.Ignore});
+            //Receive alerts and notifications from APS, SSK, SSA, UHP and ESP 
+            List<string> modules = new List<string>() { "APS", "SSK", "SSA", "UHP", "ESP" };
+            List<Notification> data = dalNotify.GetNotificationsSentToDutyOfficer(true, modules);
+            object result = null;
+            if (data != null)
+            {
+                result = JsonConvert.SerializeObject(data, Formatting.Indented,
+                    new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
+            }
             _web.InvokeScript("getDataCallback", result);
         }
 
@@ -95,9 +100,11 @@ namespace DutyOfficer
         }
         #endregion
 
-        public void LoadPopupBlock()
+        public void LoadPopupBlock(string json)
         {
-            this._web.LoadPopupHtml("BlockedPopupDetail.html");
+            var rawData = JsonConvert.DeserializeObject<object>(json);
+
+            this._web.LoadPopupHtml("BlockedPopupDetail.html", rawData);
         }
 
         public void LoadPopupMUBAndTTLabel(string json)
