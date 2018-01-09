@@ -271,6 +271,7 @@ namespace Enrolment
                 if (profileModel.Addresses == null)
                 {
                     profileModel.Addresses = new Trinity.BE.Address();
+                    // if address == null then set Residential_Addess_ID and Other_Address_ID = 0 to insert new record
                     profileModel.UserProfile.Residential_Addess_ID = 0;
                     profileModel.UserProfile.Other_Address_ID = 0;
                 }
