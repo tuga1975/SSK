@@ -32,4 +32,56 @@ namespace Trinity.Common
         
         public string ReprintReason { get; set; }
     }
+
+    public class TTLabelInfo
+    {
+        /// <summary>
+        /// not null
+        /// </summary>
+        public string ID { get; set; }
+        /// <summary>
+        /// not null
+        /// </summary>
+        public string Name { get; set; }
+        /// <summary>
+        /// not null
+        /// </summary>
+        public string MarkingNumber { get; set; }
+
+        internal bool IsValid()
+        {
+            if (string.IsNullOrEmpty(ID) || string.IsNullOrEmpty(Name) || string.IsNullOrEmpty(MarkingNumber))
+            {
+                return false;
+            }
+
+            return true;
+        }
+    }
+
+    public class MUBLabelInfo
+    {
+        /// <summary>
+        /// not null
+        /// </summary>
+        public string ID { get; set; }
+        /// <summary>
+        /// not null
+        /// </summary>
+        public string Name { get; set; }
+        /// <summary>
+        /// not null
+        /// </summary>
+        public string MarkingNumber { get; set; }
+
+        internal bool IsValid()
+        {
+            if (string.IsNullOrEmpty(ID) || string.IsNullOrEmpty(Name) || string.IsNullOrEmpty(MarkingNumber))
+            {
+                return false;
+            }
+
+            return true;
+        }
+    }
 }
