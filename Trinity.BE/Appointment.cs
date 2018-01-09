@@ -42,5 +42,6 @@ namespace Trinity.BE
         [DataMember]
         public Nullable<System.TimeSpan> EndTime { get; set; }
 
+        public Nullable<System.TimeSpan> TimeSlot { get; set; }
     }
 }

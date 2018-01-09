@@ -38,6 +38,7 @@ namespace Trinity.DAL
                     dbLabel.Date = model.Date.Value;
                     dbLabel.QRCode = model.QRCode;
                     dbLabel.LastStation = model.LastStation;
+                    dbLabel.ReprintReason = model.ReprintReason;
                     dbLabel.PrintCount = 1;
 
                     locallabelRepo.Add(dbLabel);

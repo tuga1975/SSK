@@ -9,8 +9,8 @@
         <div style="display:inline-block;">entries</div>
 
         <div style="display:inline-block;">
-            <div class="input-group date" id="datetimepicker1" style="width:180px;">
-                <input type='text' class="form-control" />
+            <div class="input-group date" id="datetimepicker" style="width:180px;">
+                <input type='text' class="form-control" id="dateSearch" />
                 <span class="input-group-addon">
                     <span class="glyphicon glyphicon-calendar"></span>
                 </span>
@@ -23,32 +23,28 @@
 <table id="table"></table>
 <script type="text/javascript">
     activemenu('Appointments');
-    $(document).ready(function () {
 
-        var pageSize = $('#pageSize');
-        if (pageSize)
-            pageSize = 10;
+    var dataSource = [];
+    function getDataCallback(response) {
+        var data = JSON.parse(response);
+        if (data) {
+            data.forEach(function (element, index) {
+                dataSource.push({
+                    TimeSlot: element.TimeSlot,
+                    NRIC: element.NRIC,
+                    Name: element.Name,
+                    ReportTime: element.ReportTime,
+                    Status: element.Status,
+                    Date: element.AppointmentDate,
+                    StartTime: element.StartTime,
+                    EndTime: element.EndTime
+                });
+            });
+        }
 
-        $(function () {
-            $('#datetimepicker1').datepicker();
-        });
-
-        loadTable(pageSize);
-
-    });
-    $('#pageSize').change(function () {
-        pageSize = $("#pageSize option:selected").text();
-        $('#table').bootstrapTable('refreshOptions', {
-            pagination: true,
-            //search: true,
-            pageSize: pageSize
-        });
-    });
-
-    function loadTable(page) {
         $('#table').bootstrapTable({
             pagination: true,
-            pageSize: page,
+            pageSize: 10,
             //search:true,
             columns: [{
                 field: 'TimeSlot',
@@ -73,33 +69,124 @@
                 title: 'Report Time',
                 sortable: true,
                 width: '15%',
-                align: 'center'
+                align: 'center',
+                formatter: function (value, row, index, field) {
+                    if (value) {
+                        return formatDate(value);
+                    }
+                    return "";
+                }
             }, {
                 field: 'Status',
                 title: 'Status',
                 sortable: true,
                 width: '15%',
-                align: 'center'
+                align: 'center',
+                formatter: function (value, row, index, field) {
+                    switch (value) {
+                        case 1:
+                            return 'Booked';
+                        case 2:
+                            return 'Reported';
+                        default:
+                            return "No-show";
+                    }
+                }
             }],
-            data: [{
-                TimeSlot: '04:50',
-                NRIC: 'S99999991X',
-                Name: 'Quach Phu Phu',
-                ReportTime: '12:11',
-                Status: 'Reported'
-            }, {
-                TimeSlot: '05:15',
-                NRIC: 'S99999992X',
-                Name: 'Duong Qua',
-                ReportTime: '12:11',
-                Status: 'Booked'
-            }, {
-                TimeSlot: '11:10',
-                NRIC: 'S99999993X',
-                Name: 'Tieu Long Nu',
-                ReportTime: '14:40',
-                Status: 'No-show'
-            }]
+            data: dataSource
+            //[{
+            //    TimeSlot: '04:50',
+            //    NRIC: 'S99999991X',
+            //    Name: 'Quach Phu Phu',
+            //    ReportTime: '12:11',
+            //    Status: 'Reported'
+            //}, {
+            //    TimeSlot: '05:15',
+            //    NRIC: 'S99999992X',
+            //    Name: 'Duong Qua',
+            //    ReportTime: '12:11',
+            //    Status: 'Booked'
+            //}, {
+            //    TimeSlot: '11:10',
+            //    NRIC: 'S99999993X',
+            //    Name: 'Tieu Long Nu',
+            //    ReportTime: '14:40',
+            //    Status: 'No-show'
+            //}]
         });
+    };
+
+    $(document).ready(function () {
+
+        var pageSize = $('#pageSize');
+        if (pageSize)
+            pageSize = 10;
+
+        $(function () {
+            $('#datetimepicker').datepicker();
+        });
+
+        api.server.GetAllAppoinments();
+        //loadTable(pageSize);
+
+    });
+
+    $('#pageSize').change(function () {
+        pageSize = $("#pageSize option:selected").text();
+        $('#table').bootstrapTable('refreshOptions', {
+            pagination: true,
+            //search: true,
+            pageSize: pageSize
+        });
+    });
+
+    $('#dateSearch').change(function () {
+        var source = [];
+        var dateSearch = $('#dateSearch').val();
+        for (var i = 0; i < dataSource.length; i++) {
+            if (Date.parse(dataSource[i].Date) == Date.parse(dateSearch)) {
+                source.push({
+                    TimeSlot: dataSource[i].TimeSlot,
+                    NRIC: dataSource[i].NRIC,
+                    Name: dataSource[i].Name,
+                    ReportTime: dataSource[i].ReportTime,
+                    Status: dataSource[i].Status,
+                    Date: dataSource[i].AppointmentDate,
+                    StartTime: dataSource[i].StartTime,
+                    EndTime: dataSource[i].EndTime
+                });
+            }
+        }
+
+        if (!dateSearch) {
+            source = dataSource;
+        }
+        $('#table').bootstrapTable('refreshOptions', {
+            pagination: true,
+            data: source
+        });
+    });
+
+    function formatDate(strDate) {
+        var date = new Date(Date.parse(strDate)),
+            year = date.getFullYear(),
+            month = (date.getMonth() + 1).toString(),
+            formatedMonth = (month.length === 1) ? ("0" + month) : month,
+            day = date.getDate().toString(),
+            formatedDay = (day.length === 1) ? ("0" + day) : day,
+            hour = date.getHours().toString(),
+            formatedHour = (hour.length === 1) ? ("0" + hour) : hour,
+            minute = date.getMinutes().toString(),
+            formatedMinute = (minute.length === 1) ? ("0" + minute) : minute,
+            second = date.getSeconds().toString(),
+            formatedSecond = (second.length === 1) ? ("0" + second) : second;
+        return formatedMonth + "/" + formatedDay + "/" + year + " " + formatedHour + ':' + formatedMinute;
     }
+
+    function getDuration(startTime, endTime) {
+        var date1 = new Date(startTime);
+        var date2 = new Date(endTime);
+        return date2.getTime() - date1.getTime();
+    }
+
 </script>
