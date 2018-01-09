@@ -21,7 +21,6 @@ namespace SSK
         private EventCenter _eventCenter;
         private int _smartCardFailed;
         private int _fingerprintFailed;
-        private int _facedetectFailed = 0;
         private bool _displayLoginButtonStatus = false;
         private bool _isFirstTimeLoaded = true;
 
@@ -309,7 +308,6 @@ namespace SSK
 
         private void FaceDetectSucceeded()
         {
-            _facedetectFailed = 0;
             FacialRecognition.Instance.FaceDetectFailed -= FaceDetectFailed;
             FacialRecognition.Instance.FaceDetectSucceeded -= FaceDetectSucceeded;
             FacialRecognition.Instance.Dispose();
@@ -317,35 +315,20 @@ namespace SSK
         }
         private void FaceDetectFailed()
         {
-            Session session = Session.Instance;
-            Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-            _facedetectFailed++;
-            if (_facedetectFailed == 2)
-            {
-                // Send Notification to duty officer
-                APIUtils.SignalR.SendNotificationToDutyOfficer("Fingerprint scans and facial identification failed", "Fingerprint scans and facial identification failed");
+            APIUtils.SignalR.SendNotificationToDutyOfficer("Fingerprint scans and facial identification failed", "Fingerprint scans and facial identification failed");
 
-                // show message box to user
-                MessageBox.Show("Fingerprint scans and facial identification failed", "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            // show message box to user
+            MessageBox.Show("Fingerprint scans and facial identification failed", "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
-                // navigate to smartcard login page
-                NavigateTo(NavigatorEnums.Authentication_SmartCard);
+            // navigate to smartcard login page
+            NavigateTo(NavigatorEnums.Authentication_SmartCard);
 
-                // reset counter
-                _fingerprintFailed = 0;
-                _facedetectFailed = 0;
-                FacialRecognition.Instance.FaceDetectFailed -= FaceDetectFailed;
-                FacialRecognition.Instance.FaceDetectSucceeded -= FaceDetectSucceeded;
-                FacialRecognition.Instance.Dispose();
-            }
-            else if (_facedetectFailed < 2 && user.User_Photo1 != null && user.User_Photo2 != null)
-            {
-                FacialRecognition.Instance.Compare(user.User_Photo2);
-            }
-            else
-            {
-                FaceDetectFailed();
-            }
+            // reset counter
+            _fingerprintFailed = 0;
+
+            FacialRecognition.Instance.FaceDetectFailed -= FaceDetectFailed;
+            FacialRecognition.Instance.FaceDetectSucceeded -= FaceDetectSucceeded;
+            FacialRecognition.Instance.Dispose();
         }
         private void Fingerprint_OnFingerprintFailed(string message)
         {
@@ -370,17 +353,11 @@ namespace SSK
                 //#endregion
                 Session session = Session.Instance;
                 Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-                if (user.User_Photo1 == null && user.User_Photo2 == null)
-                {
-                    _facedetectFailed++;
-                    FaceDetectFailed();
-                }
-                else
-                {
-                    FacialRecognition.Instance.FaceDetectFailed += FaceDetectFailed;
-                    FacialRecognition.Instance.FaceDetectSucceeded += FaceDetectSucceeded;
-                    FacialRecognition.Instance.Compare(user.User_Photo1 ?? user.User_Photo2);
-                }
+
+                FacialRecognition.Instance.FaceDetectFailed += FaceDetectFailed;
+                FacialRecognition.Instance.FaceDetectSucceeded += FaceDetectSucceeded;
+                FacialRecognition.Instance.Compare(new System.Collections.Generic.List<byte[]>() { user.User_Photo1, user.User_Photo2 } );
+
                 return;
             }
 
