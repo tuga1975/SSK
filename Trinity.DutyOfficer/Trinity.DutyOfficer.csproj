@@ -103,6 +103,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CodeBehind\PrintMUBAndTTLabels.cs" />
     <Compile Include="JSCallCS.cs" />
     <Compile Include="Main.cs">
       <SubType>Form</SubType>
@@ -182,9 +183,7 @@
       <Name>Trinity.Identity</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="CodeBehind\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
       <Visible>False</Visible>
@@ -303,6 +302,7 @@
     <Content Include="View\html\MUBAndTTlabel.html" />
     <Content Include="View\html\MUBandTTPopup.html" />
     <Content Include="View\html\PopupAddHoliday.html" />
+    <Content Include="View\html\PrintingMUBAndTTLabels.html" />
     <Content Include="View\html\Settings.html" />
     <Content Include="View\html\Queue.html" />
     <Content Include="View\html\AlertPopupDetail.html" />

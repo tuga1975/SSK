@@ -23,7 +23,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Print</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal" id="PrintBtn">Print</button>
             </div>
         </div>
     </div>
@@ -32,6 +32,11 @@
     $(document).ready(function () {
         $('#NRIC').val(api.model.nric);
         $('#Name').val(api.model.name);
+    });
+    $("#PrintBtn").click(function (e) {
+        var json = JSON.stringify(api.model);
+        api.server.PrintingMUBAndTTLabels(json);
+        e.preventDefault(); // avoid to execute the actual submit of the form.
     });
 
 </script>
