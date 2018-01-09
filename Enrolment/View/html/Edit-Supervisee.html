@@ -20,12 +20,10 @@
 						<div class="col-7">
 							<div class="row">								
 								<div class="col">
-									<img class="avatar" id="userPhoto1" src="../images/usr-default.jpg" />									
-									<input type="hidden" name="User_Photo1" id="User_Photo1" value="" />									
+									<img class="avatar" id="userPhoto1" src="../images/usr-default.jpg" />
 								</div>
 								<div class="col">
-									<img class="avatar" id="userPhoto2" src="../images/usr-default.jpg" />
-									<input type="hidden" name="User_Photo1" id="User_Photo2" value="" />									
+									<img class="avatar" id="userPhoto2" src="../images/usr-default.jpg" />									
 								</div>
 							</div>
 						</div>
@@ -42,10 +40,10 @@
 					</div>
 					<div class="row">								
 						<div class="col-7" style="text-align:center;padding-top:5px;">
-							<button type="button" class="btn-form" id="updatePhoto2">Update Photos</button>
+							<button type="button" class="btn-form" id="updatePhotos">Update Photos</button>
 						</div>
 						<div class="col-5" style="text-align:center;padding-top:5px;">
-							<button type="button" class="btn-form" onclick="api.server.OpenFingerprintCaptureForm('2')">Update Fingerprints</button>
+							<button type="button" class="btn-form" id="updateFingerprints">Update Fingerprints</button>
 						</div>
 					</div>
 				</div>
@@ -235,11 +233,6 @@
 				</div>
 			</div>
 			<div class="tab-pane fade" id="issued-cards" role="tabpanel" aria-labelledby="nav-profile-tab">
-				<input class="" type="text" value="" placeholder="Supervisee's Blodata" />
-				<input class="" type="text" value="" placeholder="Supervisee's Address" />
-				<input class="" type="text" value="" placeholder="Other Address" />
-				<input class="" type="text" value="" placeholder="Next Of Kin" />
-				<input class="" type="text" value="" placeholder="Employment details" />
 				<div class="btn-group">
 					<button type="submit" class="btn-form" id="submitEditSupervise" >Save</button>
 					<button type="button" class="btn-form">Cancel</button>
@@ -270,6 +263,40 @@
 						</div>
 						<div class="col-4">
 							<img class="avatar" id="PopupUserPhoto2" src="../images/usr-default.jpg" />
+							<button type="button" class="btn-form" id="updatePhoto2" onclick="api.server.OpenPictureCaptureForm('2')">Take Picture 2</button>
+						</div>
+						<div class="col-2"></div>
+					</div>				
+				</div>
+			</div>
+			
+			<div class="btn-group">
+				<button type="button" class="btn-form" onclick="hidePopUp()" >Update</button>
+				<button type="button" class="btn-form" onclick="api.server.CancelCapturePicture();">Cancel</button>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="pageUpdateFingerprints">
+	<div style="width:100%;">
+		<div class="header header-form-supervisee">
+			<img class="logo" src="../images/logo.png" />
+			<h3>Edit Supervisee</h3>
+			<div class="clear"></div>
+		</div>
+		<div class="form-supervisee">
+			<input class="name-supervisee" type="text" value="Update Photo" disabled="disabled" />
+				<div class="tab-content" id="nav-tabContent">
+				<input type="hidden" name="userId" class="userId"  />
+				<div class="tab-pane fade show active" id="supervisee-details" role="tabpanel" aria-labelledby="nav-home-tab">
+					<div class="row updateSuperviseePhoto">	
+						<div class="col-2"></div>
+						<div class="col-4">
+							<img class="avatar" id="PopupUserPhoto1" src="../images/fingerprint.png" />
+							<button type="button" class="btn-form" id="updatePhoto2" onclick="api.server.OpenPictureCaptureForm('1')">Take Picture 1</button>
+						</div>
+						<div class="col-4">
+							<img class="avatar" id="PopupUserPhoto2" src="../images/fingerprint.png" />
 							<button type="button" class="btn-form" id="updatePhoto2" onclick="api.server.OpenPictureCaptureForm('2')">Take Picture 2</button>
 						</div>
 						<div class="col-2"></div>
@@ -318,11 +345,17 @@
 			$('.postal_Code').val(api.model.Addresses.Postal_Code);
 			// Other Address
         }
-
     });
 	function setPhotoServerCall(photo1, photo2){
 		$('#userPhoto1').attr("src", photo1);
+		$('#PopupUserPhoto1').attr("src", photo1);
 		$('#userPhoto2').attr("src", photo2);
+		$('#PopupUserPhoto2').attr("src", photo2);
+
+	}
+
+	function setFingerprintServerCall(fingerprintLeft, fingerprintRight){
+		// ...
 	}
 
 	$("#SaveBtn").on('click', function(){
@@ -343,22 +376,21 @@
         api.server.SaveSupervisee(json, true);
 	});*/
 
-	$("#updatePhoto2").click(function(){
-		showPopUp();
-		/*var $form = $("#superviseeFrm");
-        var data = getFormData($form);
-        var json = JSON.stringify(data);
-		api.server.UpdateSuperviseePhoto(json);*/
+	$("#updatePhotos").click(function(){
+		showPopUp("pageUpdatePhotos");
+	});
+	$("#updateFingerprints").click(function(){
+		showPopUp("pageUpdateFingerprints");
 	});
 	$("#Close_popup").click(function(){
 		hidePopUp();
 	})
-
-	function showPopUp(){
-		$("#pageUpdatePhotos").show();
+	function showPopUp(elem_id){
+		$("#" + elem_id).show();
 	}
 	function hidePopUp(){
 		$("#pageUpdatePhotos").hide();
+		$("#pageUpdateFingerprints").hide();
 	}
 
 	function setAvatar(base64Str1, base64Str2) {

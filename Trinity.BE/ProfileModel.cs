@@ -60,6 +60,12 @@ namespace Trinity.BE
         public bool? IsFirstAttempt { get; set; }
         public byte[] User_Photo1 { get; set; }
         public byte[] User_Photo2 { get; set; }
+        public string RightThumbImage { get; set; }
+        public string LeftThumbImage { get; set; }
+        public string Gender { get; set; }
+        public string SerialNumber { get; set; }
+        public string Race { get; set; }
+        public DateTime? DateOfIssue { get; set; }
 
 
         public ProfileModel ToProfileModel(ProfileRawMData rawData)
@@ -105,7 +111,14 @@ namespace Trinity.BE
                     Residential_Addess_ID = rawData.Residential_Addess_ID,
                     Other_Address_ID = rawData.Other_Address_ID,
                     User_Photo1 = rawData.User_Photo1,
-                    User_Photo2 = rawData.User_Photo2
+                    User_Photo2 = rawData.User_Photo2,
+                    LeftThumbImage = rawData.LeftThumbImage,
+                    RightThumbImage = rawData.RightThumbImage,
+                    DateOfIssue = rawData.DateOfIssue,
+                    Gender = rawData.Gender,
+                    Race = rawData.Race,
+                    SerialNumber = rawData.SerialNumber
+
                 },
                 Addresses = new Address
                 {

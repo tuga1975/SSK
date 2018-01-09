@@ -1,32 +1,4 @@
-﻿<script>
-    $(function () {
-        $("#wizard").steps({
-            headerTag: "h2",
-            bodyTag: "section",
-            transitionEffect: "slideLeft",
-            onStepChanging: function (event, currentIndex, newIndex) {
-                //0 - photo
-                //1 - fingerprint
-                //2 - verify
-                //3 - print
-
-                if (currentIndex == 2) {
-                    //update to db
-                    api.server.UpdateSuperviseeBiodata();
-                }
-
-                return true;
-            },
-            onFinished: function (event, currentIndex) {
-                api.server.LoadListSupervisee();
-            }
-        });
-
-        $("input[type='image']").click(function () {
-            $("input[id='my_file']").click();
-        });
-    });
-</script>
+﻿
 <div style="width:100%">
     <div class="header  header-form-supervisee">
         <img class="logo" src="../images/logo.png" />
@@ -46,12 +18,12 @@
                     <section>
                         <div class="row">
                             <div class="col">
-                                <img id="image1" class="avatar" src="../images/usr-default.jpg" style="max-width:45%" />
+                                <img id="image1" class="avatar" src="../images/usr-default.jpg" style="width:44%;height:auto" />
                                 <br />
                                 <button type="button" onclick="api.server.OpenPictureCaptureForm('1')">Take Picture 1</button>
                             </div>
-                            <div class="col" style="height:90%">
-                                <img id="image2" class="avatar" src="../images/usr-default.jpg" style="max-width:45%" />
+                            <div class="col">
+                                <img id="image2" class="avatar" src="../images/usr-default.jpg" style="width:44%;height:auto" />
                                 <br />
                                 <button type="button" onclick="api.server.OpenPictureCaptureForm('2')">Take Picture 2</button>
                             </div>
@@ -92,28 +64,28 @@
                         <div>
                             <div class="row">
                                 <div class="col">
-                                    <div style="width:250px;height:150px;border:1px solid #000;float:right">
+                                    <div style="width:300px;height:180px;border:1px solid #000;float:right">
                                         <div style="float:left">
-                                            <img src="../images/usr-default.jpg" width="80" height="100" />
+                                            <img src="../images/usr-default.jpg" width="80" height="100" id="verifyPhoto" />
                                         </div>
-                                        <div>Name :</div>
-                                        <div>NRIC : </div>
-                                        <div>DOB : </div>
+                                        <div>Name :<span id="verifyName"></span></div>
+                                        <div>NRIC :<span id="verifyNRIC"></span></div>
+                                        <div>DOB :<span id="verifyDOB"></span></div>
                                         <div style="clear:both"></div>
                                     </div>
                                 </div>
                                 <div class="col">
-                                    <div style="width:250px;height:150px;border:1px solid #000">
+                                    <div style="width:300px;height:180px;border:1px solid #000">
                                         <div style="float:left">
                                             <div>
-                                                <img src="../images/fingerprint.png" width="40" height="60" />
+                                                <img src="../images/fingerprint.png" width="40" height="60" id="leftFingerThumb" />
                                             </div>
                                             <br />
                                             <div>
-                                                <img src="../images/fingerprint.png" width="40" height="60" />
+                                                <img src="../images/fingerprint.png" width="40" height="60" id="rightFingerThumb" />
                                             </div>
                                         </div>
-                                        <div>Issue from   /  to   /   </div>
+                                        <div> Issue date  <span id="issueDate"></span>  </div>
                                         <div style="clear:both"></div>
                                     </div>
                                 </div>
@@ -135,6 +107,7 @@
                         </div>
                     </section>
                 </div>
+
             </div>
 
 
@@ -237,4 +210,76 @@
             $('#image2').attr('src', 'data:image/jpg;base64,' + base64Str2);
         }
     }
+</script>
+<script>
+    
+    $(function () {
+        var isUpdated = false;
+        $("#wizard").steps({
+            headerTag: "h2",
+            bodyTag: "section",
+            transitionEffect: "slideLeft",
+            //enableCancelButton: true,
+            onInit: function (event, currentIndex) {
+                var cancelA = $("<a>").attr("href", "#").attr("onclick", "api.server.LoadListSupervisee()").addClass("cancelBtn").text("Cancel");
+                var cancelBtn = $("<li>").attr("aria-disabled", false).append(cancelA);
+
+                $(document).find(".actions ul").prepend(cancelBtn)
+
+            },
+            //onContentLoaded: function (event, currentIndex) {
+
+            //},
+            onStepChanging: function (event, currentIndex, newIndex) {
+                //0 - photo
+                //1 - fingerprint
+                //2 - verify
+                //3 - print
+                if (newIndex == 2) {
+                    $('#verifyName').text(api.model.User.Name);
+                    var dob = api.model.UserProfile.DOB.replace("T00:00:00", "");
+                    $('#verifyDOB').text(dob);
+                    $('#verifyNRIC').text(api.model.User.NRIC);
+                    if (api.model.UserProfile.User_Photo1 != "") {
+                        $('#verifyPhoto').attr('src', 'data:image/jpg;base64,' + api.model.UserProfile.User_Photo1);
+                    }
+                    if (api.model.UserProfile.DateOfIssue != "") {
+
+                        $('#issueDate').text(api.model.UserProfile.DateOfIssue.replace("T00:00:00", ""));
+                    }
+
+                    if (api.model.UserProfile.LeftThumbImage != "") {
+                        $('#leftFingerThumb').attr('src', 'data:image/jpg;base64,' + api.model.UserProfile.LeftThumbImage);
+                    }
+                    if (api.model.UserProfile.RightThumbImage != "") {
+                        $('#rightFingerThumb').attr('src', 'data:image/jpg;base64,' + api.model.UserProfile.RightThumbImage);
+                    }
+
+                }
+               
+
+                if (currentIndex == 2) {
+                    //update to db
+                    if (isUpdated === false) {
+                        api.server.UpdateSuperviseeBiodata();
+                        isUpdated = true;
+                    }
+                    else {
+                        return true;
+                    }
+                   
+
+                }
+
+                return true;
+            },
+            onFinishing: function (event, currentIndex) {
+                api.server.LoadListSupervisee();
+            }
+        });
+
+        $("input[type='image']").click(function () {
+            $("input[id='my_file']").click();
+        });
+    });
 </script>

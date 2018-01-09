@@ -113,31 +113,27 @@ namespace Trinity.Common.DeviceMonitor
 
         public HealthStatus GetHealthStatus()
         {
-             healthStatus =  HealthStatus.Instance;
-            _fingerprintMonitor = FingerprintMonitor.Instance;
-            _fingerprintMonitor.OnGetDeviceStatusCompleted += _fingerprintMonitor_OnGetDeviceStatusCompleted; ;
-            _fingerprintMonitor.StartCheckingDeviceStatus();
+            // fingerprint monitor
+            //_fingerprintMonitor = FingerprintMonitor.Instance;
+            //_fingerprintMonitor.OnGetDeviceStatusCompleted += _fingerprintMonitor_OnGetDeviceStatusCompleted;
+            //_fingerprintMonitor.StartCheckingDeviceStatus();
+
+            // smart card monitor
             _sCardMonitor = SCardMonitor.Instance;
             _printerMonitor = PrinterMonitor.Instance;
+
+            // document scanner monitor
             _documentScannerMonitor = DocumentScannerMonitor.Instance;
+
+            // healthStatus
+            healthStatus = HealthStatus.Instance;
+            healthStatus.FPrintStatus = FingerprintReaderUtils.Instance.GetDeviceStatus();
             healthStatus.SCardStatus = _sCardMonitor.GetDeviceStatus();
             healthStatus.DocStatus = _documentScannerMonitor.GetDocumentScannerStatus();
             healthStatus.PrintStatus = _printerMonitor.GetBarcodePrinterStatus();
+
+            // return value
             return healthStatus;
-
-
-        }
-
-        private void _fingerprintMonitor_OnGetDeviceStatusCompleted(object sender, GetDeviceStatusCompletedArgs e)
-        {
-            if (e.IsConnected)
-            {
-                healthStatus.FPrintStatus = new EnumDeviceStatuses[]{EnumDeviceStatuses.Connected };
-            }
-            else
-            {
-                healthStatus.FPrintStatus = new EnumDeviceStatuses[] { EnumDeviceStatuses.Disconnected };
-            }
         }
     }
 }

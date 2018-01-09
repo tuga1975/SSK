@@ -83,7 +83,6 @@
             pageSize = $("#pageSize option:selected").text();
             $table.bootstrapTable('refreshOptions', {
                 pagination: true,
-                //search: true,
                 pageSize: pageSize
             });
         });
@@ -96,13 +95,13 @@
                 field: 'source',
                 title: 'Source',
                 sortable: true,
+                searchable : true,
                 halign: "center"
             }, {
                 field: 'type',
                 title: 'Type',
                 sortable: true,
                 halign: "center",
-                sortable : true,
                 formatter : function (value, row, index, field) {
                     switch (value) {
                         case Type.error:
@@ -119,6 +118,7 @@
                 field: 'dateTime',
                 title: 'Date/Time',
                 sortable: true,
+                searchable : true,
                 halign: "center",
                 formatter : function(value, row, index, field){
                     if(value){
@@ -129,8 +129,8 @@
             }, {
                 field: 'message',
                 sortable : true,
+                searchable : true,
                 title: 'Message',
-                sortable: false,
                 halign: "center"
             }],
             data: dataSource,
@@ -160,6 +160,8 @@
             formatedSecond = (second.length === 1) ? ("0" + second) : second;
             return formatedMonth + "/" + formatedDay + "/" + year + " " + formatedHour + ':' + formatedMinute;
         }
+
+        
     };
     activemenu('Alerts');
 
