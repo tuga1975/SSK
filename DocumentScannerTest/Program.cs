@@ -59,16 +59,16 @@ namespace DocumentScannerTest
             Console.WriteLine("return value: " + result);
         }
 
-        private static void ReportPrinterStatus()
-        {
-            Console.WriteLine("ReportPrinterStatus is starting...");
-            FingerprintMonitor fingerprintMonitor = FingerprintMonitor.Instance;
-            fingerprintMonitor.OnGetDeviceStatusCompleted += OnGetDeviceStatusCompleted;
-            //fingerprintMonitor.StartVerification(OnVerificationComplete, new byte[10]);
-            fingerprintMonitor.StartCheckingDeviceStatus();
+        //private static void ReportPrinterStatus()
+        //{
+        //    Console.WriteLine("ReportPrinterStatus is starting...");
+        //    FingerprintMonitor fingerprintMonitor = FingerprintMonitor.Instance;
+        //    fingerprintMonitor.OnGetDeviceStatusCompleted += OnGetDeviceStatusCompleted;
+        //    //fingerprintMonitor.StartVerification(OnVerificationComplete, new byte[10]);
+        //    fingerprintMonitor.StartCheckingDeviceStatus();
 
-            Console.ReadKey();
-        }
+        //    Console.ReadKey();
+        //}
 
         private static void OnVerificationComplete(bool bSuccess, int nResult, bool bVerificationSuccess)
         {
