@@ -49,7 +49,7 @@ namespace Trinity.Common.Utils
         /// <param name="nric">nric (e.g S1234567G)</param>
         /// <param name="dob">date of birth (dd/MM/yyyy)</param>
         /// <returns>call printer success or not</returns>
-        public bool PrintUserInfo(LabelInfo labelInfo)
+        public bool PrintBarcodeUserInfo(LabelInfo labelInfo)
         {
             try
             {
@@ -114,13 +114,10 @@ namespace Trinity.Common.Utils
         /// get barcode printer status
         /// </summary>
         /// <returns>PrinterStatus</returns>
-        public EnumDeviceStatuses[] GetDeviceStatus()
+        public EnumDeviceStatuses[] GetDeviceStatus(string printerName)
         {
-            // get barcodePrinter name from appconfig
-            string barcodePrinterName = ConfigurationManager.AppSettings["BarcodePrinterName"].ToUpper();
-
             // check printer is connected or not
-            if (IsPrinterConnected(barcodePrinterName))
+            if (IsPrinterConnected(printerName))
             {
                 return new EnumDeviceStatuses[] { EnumDeviceStatuses.Connected };
             }
@@ -131,7 +128,7 @@ namespace Trinity.Common.Utils
             var printQueues = printServer.GetPrintQueues(new[] { EnumeratedPrintQueueTypes.Local, EnumeratedPrintQueueTypes.Connections });
 
             // Get barcode printer
-            PrintQueue printQueue = printQueues.FirstOrDefault(p => p.Name.ToUpper() == barcodePrinterName);
+            PrintQueue printQueue = printQueues.FirstOrDefault(p => p.Name.ToUpper() == printerName);
            
             // if barcode printer is null, return disconnected
             if (printQueue == null)
