@@ -340,7 +340,7 @@ namespace Enrolment
                     //send notifiy to case officer
                     APIUtils.SignalR.SendNotificationToDutyOfficer("A supervisee has updated profile.", "Please check Supervisee's information!");
                 }
-
+                data.Addresses = rawDataAddress;
                 session[CommonConstants.CURRENT_EDIT_USER] = data;
                 //load Supervisee page 
                 LoadListSupervisee();

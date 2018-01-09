@@ -13,16 +13,23 @@ namespace Trinity.DAL
         Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
         public int SaveAddress(BE.Address model, bool isLocal) {
             try
-            {                
+            {
                 if (isLocal)
                 {
-                    //var localUserRepo = _localUnitOfWork.GetRepository<Trinity.DAL.DBContext.Address>();
-                    return ProcessSaveAddress(model, _localUnitOfWork);
+                    int LastestId = ProcessSaveAddress(model, _localUnitOfWork);
+                    if (LastestId == 0) {
+                        LastestId = _localUnitOfWork.DataContext.Addresses.Max(a => a.Address_ID);
+                    }
+                    return LastestId;
                 }
                 else
                 {
-                    //var centralUserRepo = _centralizedUnitOfWork.GetRepository<Trinity.DAL.DBContext.Address>();
-                    return ProcessSaveAddress(model, _centralizedUnitOfWork);
+                    int LastestId = ProcessSaveAddress(model, _centralizedUnitOfWork);
+                    if (LastestId == 0)
+                    {
+                        LastestId = _centralizedUnitOfWork.DataContext.Addresses.Max(a => a.Address_ID);
+                    }
+                    return LastestId;
                 }
 
             }
@@ -62,10 +69,7 @@ namespace Trinity.DAL
                     dbAddress.Postal_Code = model.Postal_Code;
                     Repo.Add(dbAddress);
                     unitOfWork.Save();
-                    return 2;
-                    // get lastest id and return;
-                    //var address = unitOfWork.DataContext.Addresses.LastOrDefault();                    
-                    //if (address != null) return address.Address_ID;
+                    return 0;
                 }
             }
             catch (Exception ex)

@@ -494,8 +494,8 @@ namespace Enrolment
                         if (session[CommonConstants.CURRENT_EDIT_USER] != null && currentPage != null)
                         {
                             var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
-                            string photo1 = "";
-                            string photo2 = "";
+                            string photo1 = "../images/usr-default.jpg";
+                            string photo2 = "../images/usr-default.jpg";
                             if (currentEditUser.UserProfile.User_Photo1!=null)
                             {
                                 photo1 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo1);
