@@ -239,7 +239,7 @@
                     var dob = api.model.UserProfile.DOB.replace("T00:00:00", "");
                     $('#verifyDOB').text(dob);
                     $('#verifyNRIC').text(api.model.User.NRIC);
-                    if (api.model.UserProfile.User_Photo1.trim() != "") {
+                    if (api.model.UserProfile.User_Photo1 != "") {
                         $('#verifyPhoto').attr('src','data:image/jpg;base64,'+api.model.UserProfile.User_Photo1);
                     }
                     if (api.model.UserProfile.DateOfIssue != null) {
