@@ -330,7 +330,7 @@ namespace Enrolment
                 dalUser.UpdateUser(data.User, profileModel.User.UserId, true);
 
                 dalUserprofile.UpdateUserProfile(data.UserProfile, profileModel.User.UserId, true);
-                //send notifiy to case officer
+                ////send notifiy to case officer
                 APIUtils.SignalR.SendNotificationToDutyOfficer("A supervisee has updated profile.", "Please check Supervisee's information!");
 
                 data.Addresses = rawDataAddress;
