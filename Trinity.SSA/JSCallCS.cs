@@ -115,7 +115,7 @@ namespace SSA
                 DrugType = e.LabelInfo.DrugType,
                 NRIC = e.LabelInfo.NRIC,
                 Name = e.LabelInfo.Name,
-                Date = e.LabelInfo.Date,
+                Date = Convert.ToDateTime(e.LabelInfo.Date),
                 QRCode = e.LabelInfo.QRCode,
                 LastStation = e.LabelInfo.LastStation,
                 PrintCount = e.LabelInfo.PrintCount,

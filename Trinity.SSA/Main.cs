@@ -232,7 +232,7 @@ namespace SSA
             if (_smartCardFailed > 3)
             {
                 // Send Notification to duty officer
-                APIUtils.SignalR.SendNotificationToDutyOfficer(message, message);
+                APIUtils.SignalR.SendNotificationToDutyOfficer(message, message, NotificationType.Error, EnumStations.SSA);
 
                 // show message box to user
                 MessageBox.Show(message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -262,7 +262,7 @@ namespace SSA
                 string message = "Unable to read your fingerprint. Please report to the Duty Officer!";
 
                 // Send Notification to duty officer
-                APIUtils.SignalR.SendNotificationToDutyOfficer(message, message);
+                APIUtils.SignalR.SendNotificationToDutyOfficer(message, message, NotificationType.Error, EnumStations.SSA);
 
                 // show message box to user
                 MessageBox.Show(message, "Authentication failed!", MessageBoxButtons.OK, MessageBoxIcon.Error);

@@ -425,8 +425,12 @@ namespace Enrolment
                     var base64Str2 = "";
                     if (image1 != null) base64Str1 = Convert.ToBase64String(image1);
                     if (image2 != null) base64Str2 = Convert.ToBase64String(image2);
-                    currentEditUser.UserProfile.User_Photo1 = image1;
-                    currentEditUser.UserProfile.User_Photo2 = image2;
+                    if (currentEditUser!=null)
+                    {
+                        currentEditUser.UserProfile.User_Photo1 = image1;
+                        currentEditUser.UserProfile.User_Photo2 = image2;
+                    }
+                  
                     if (currentPage != null && currentPage.ToString() == "EditSupervisee" && currentEditUser != null)
                     {
                         session[CommonConstants.CURRENT_EDIT_USER] = currentEditUser;
@@ -561,6 +565,17 @@ namespace Enrolment
                 session[CommonConstants.CURRENT_EDIT_USER] = profileModel;
                 CSCallJS.LoadPageHtml(this.LayerWeb, "Edit-Supervisee.html", profileModel);
 
+                var photo1 = "../images/usr-default.jpg";
+                var photo2 = "../images/usr-default.jpg";
+                if (profileModel.UserProfile.User_Photo1 != null)
+                {
+                    photo1 = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(profileModel.UserProfile.User_Photo1));
+                }
+                if (profileModel.UserProfile.User_Photo2 != null)
+                {
+                    photo2 = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(profileModel.UserProfile.User_Photo2));
+                }
+                LayerWeb.InvokeScript("setPhotoServerCall", photo1, photo2);
 
             }
             else if (e.Name == EventNames.SUPERVISEE_DATA_UPDATE_CANCELED)

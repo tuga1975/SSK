@@ -16,8 +16,8 @@
 <br />
 <table id="table"></table>
 <script type="text/javascript">
+    activemenu('Blocked');
     $(document).ready(function () {
-        activemenu('Blocked');
 
         var pageSize = $('#pageSize');
         if (pageSize)
@@ -41,7 +41,8 @@
             //search:true,
             onClickCell: function (field, value, row, $element) {
                 if (field == 'Action') {
-                    api.server.LoadPopupBlock(function () {
+                    var data = JSON.stringify(row);
+                    api.server.LoadPopupBlock(data, function () {
                         $('#idBlock').modal();
                     });
                 }

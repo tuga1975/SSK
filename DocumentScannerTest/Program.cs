@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -115,19 +116,19 @@ namespace DocumentScannerTest
                 {
                     Name = "Avril Lavigne",
                     NRIC = "S1234567G",
-                    Date = Convert.ToDateTime("01/01/1970")
+                    Date = "01/01/1970"
                 };
 
-                foreach (var item in barcodeScannerUtils.GetDeviceStatus())
+                string barcodePrinterName = ConfigurationManager.AppSettings["BarcodePrinterName"].ToUpper();
+                var statusPrinterBarcode = barcodeScannerUtils.GetDeviceStatus(barcodePrinterName);
+
+                if (statusPrinterBarcode.Count() == 1 && statusPrinterBarcode[0] == EnumDeviceStatuses.Connected)
                 {
-                    if (item == EnumDeviceStatuses.Connected)
-                    {
-                        printerMonitor.PrintLabel(labelInfo);
-                    }
-                    else
-                    {
-                        Console.WriteLine("Barcode printer is not connected.");
-                    }
+                    printerMonitor.PrintBarcodeLabel(labelInfo);
+                }
+                else
+                {
+                    Console.WriteLine("Barcode printer is not connected.");
                 }
 
                 Console.ReadKey();

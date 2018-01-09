@@ -33,14 +33,15 @@ namespace SSA.CodeBehind
                         Name = user.Name, 
                         NRIC = user.NRIC,
                         Label_Type = EnumLabelType.MUB,
-                        Date = System.DateTime.Now,
+                        Date = DateTime.Now.ToString("dd/MM/yyyy"),
                         CompanyName = CommonConstants.COMPANY_NAME,
                         LastStation = EnumStations.SSA,
-                        MarkingNo = CommonUtil.GenerateMarkingNumber()
+                        MarkingNo = CommonUtil.GenerateMarkingNumber(),
+                        DrugType = "NA"
                     };
 
                     byte[] byteArrayQRCode = null;
-                    byteArrayQRCode = CommonUtil.CreateLabelQRCode(labelInfo);
+                    byteArrayQRCode = CommonUtil.CreateLabelQRCode(labelInfo, "AESKey");
                     labelInfo.QRCode = byteArrayQRCode;
 
                     using (var ms = new System.IO.MemoryStream(byteArrayQRCode))
