@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Runtime.InteropServices;
-using System.Windows.Forms;
 using System.Linq;
-using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Threading;
 
 public class FacialRecognition
@@ -18,10 +17,6 @@ public class FacialRecognition
     private FacialRecognition()
     {
         libFace = new AT_Facial_API.Library();
-        
-        //formAvarta = new Form();
-        //formAvarta.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-        //formAvarta.StartPosition = FormStartPosition.Manual;
     }
 
     public static FacialRecognition Instance
@@ -96,35 +91,12 @@ public class FacialRecognition
                     OnFacialRecognitionFailed();
                 }
             }
-            //if (_faceDetectSucceeded == 2 || _faceDetectFailed == 2)
-            //{
-            //    if (_faceDetectSucceeded == 2 && FaceDetectSucceeded != null)
-            //    {
-            //        FaceDetectSucceeded();
-            //    }
-            //    else if (_faceDetectFailed == 2 && FaceDetectFailed != null)
-            //    {
-            //        if (this.FaceJpg.Count > 0)
-            //        {
-            //            libFace.StopTracking();
-            //            libFace.Photo_JPG = this.FaceJpg[0];
-            //            libFace.StartTracking();
-            //            this.FaceJpg.RemoveAt(0);
-            //        }
-            //        else
-            //        {
-            //            FaceDetectFailed();
-            //        }
-            //    }
-            //    _faceDetectSucceeded = 0;
-            //    _faceDetectFailed = 0;
-            //}
         }
         Debug.WriteLine("Face_QualityScore:" + Face_QualityScore + ", Matching_Score:" + Matching_Score);
     }
 
 
-    public void StartFacialRecognition(List<byte[]> FaceJpg)
+    public void StartFacialRecognition(Point formLocation, List<byte[]> FaceJpg)
     {
         _failedCount = 0;
         _suceededCount = 0;
@@ -133,9 +105,8 @@ public class FacialRecognition
         {
             isStartTracking = true;
             libFace.Init();
-            //libFace.Show_Window(new System.Drawing.Point(0, 0), System.Windows.Forms.Screen.PrimaryScreen.Bounds.Size);
 
-            libFace.Show_Window(new System.Drawing.Point(100, 100), new Size(400, 400));
+            libFace.Show_Window(formLocation, new Size(400, 400));
             OnFacialRecognitionProcessing();
             Thread.Sleep(1000);
             libFace.FaceDetect += new AT_Facial_API.Library.FaceDetected(lib_FaceDetect);
@@ -149,10 +120,7 @@ public class FacialRecognition
         }
 
     }
-    //public void Compare(byte[] FaceJpg)
-    //{
-    //    Compare(new List<byte[]>() { FaceJpg });
-    //}
+
     private Bitmap CreateBitmapFromByte(byte[] FaceJpg)
     {
         Bitmap bmp;
@@ -162,30 +130,6 @@ public class FacialRecognition
         }
         return bmp;
     }
-    //private void ThreadCompare(object _FaceJpg)
-    //{
-    //    byte[] FaceJpg = (byte[])_FaceJpg;
-    //    if (libFace != null && !isStartTracking)
-    //    {
-    //        isStartTracking = true;
-    //        libFace.Init();
-    //        libFace.Show_Window(new System.Drawing.Point(0, 0), System.Windows.Forms.Screen.PrimaryScreen.Bounds.Size);
-    //    }
-
-    //    libFace.StartTracking();
-    //    libFace.Photo_JPG = FaceJpg;
-    //    var img = CreateBitmapFromByte(FaceJpg);
-    //    formAvarta.Width = img.Width;
-    //    formAvarta.Height = img.Height;
-    //    formAvarta.Location = new Point(Screen.PrimaryScreen.WorkingArea.Width - formAvarta.Width,
-    //                           Screen.PrimaryScreen.WorkingArea.Height - formAvarta.Height);
-    //    formAvarta.BackgroundImage = Image.FromHbitmap(img.GetHbitmap());
-    //    formAvarta.Refresh();
-    //    formAvarta.Show();
-    //    System.Threading.Thread.Sleep(100);
-    //    SetWindowPos(formAvarta.Handle, HWND_TOPMOST, 0, 0, 0, 0, TOPMOST_FLAGS);
-    //}
-
 
     public void Dispose()
     {

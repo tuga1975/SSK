@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
@@ -352,9 +353,10 @@ namespace SSK
             {
                 FacialRecognition.Instance.Dispose();
             }));
-
-
-            APIUtils.SignalR.SendNotificationToDutyOfficer("Facial authentication failed", "Facial authentication failed");
+            Session session = Session.Instance;
+            Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+            string errorMessage = "User '" + user.Name + "' cannot complete facial authentication";
+            APIUtils.SignalR.SendNotificationToDutyOfficer("Facial authentication failed", errorMessage);
 
             // show message box to user
             MessageBox.Show("Facial authentication failed", "Facial Authentication", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -364,7 +366,6 @@ namespace SSK
 
             // reset counter
             _fingerprintFailed = 0;
-
         }
 
         #endregion
@@ -412,8 +413,15 @@ namespace SSK
             // exceeded max failed
             if (_fingerprintFailed > 3)
             {
+                // set message
+                string errorMessage = "Unable to read " + user.Name + "'s fingerprint.";
+
+                // Send Notification to duty officer
+                APIUtils.SignalR.SendNotificationToDutyOfficer("Fingerprint Authentication failed", errorMessage, NotificationType.Error, EnumStations.SSA);
+
                 // Pause for 1 second and goto Facial Login Screen
                 Thread.Sleep(1000);
+                _fingerprintFailed = 0;
 
                 // Navigate to next page: Facial Authentication
                 NavigateTo(NavigatorEnums.Authentication_Facial);
@@ -500,7 +508,8 @@ namespace SSK
 
                 this.Invoke((MethodInvoker)(() =>
                 {
-                    FacialRecognition.Instance.StartFacialRecognition(new System.Collections.Generic.List<byte[]>() { user.User_Photo1, user.User_Photo2 });
+                    Point startLocation = new Point((Screen.PrimaryScreen.Bounds.Size.Width / 2) - 400 / 2, (Screen.PrimaryScreen.Bounds.Size.Height / 2) - 400 / 2);
+                    FacialRecognition.Instance.StartFacialRecognition(startLocation, new System.Collections.Generic.List<byte[]>() { user.User_Photo1, user.User_Photo2 });
                 }));
             }
             else if (navigatorEnum == NavigatorEnums.Authentication_NRIC)
