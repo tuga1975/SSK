@@ -192,10 +192,10 @@ namespace SSA
             Thread.Sleep(1000);
 
             // navigate to next page: Authentication_Fingerprint
-            //NavigateTo(NavigatorEnums.Authentication_Fingerprint);
+            NavigateTo(NavigatorEnums.Authentication_Fingerprint);
 
             // For testing purpose only
-            NavigateTo(NavigatorEnums.Authentication_Facial);
+            //NavigateTo(NavigatorEnums.Authentication_Facial);
         }
 
         private void SmartCard_OnSmartCardFailed(string message)

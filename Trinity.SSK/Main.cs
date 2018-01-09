@@ -269,10 +269,10 @@ namespace SSK
             Thread.Sleep(1000);
 
             // navigate to next page: Authentication_Fingerprint
-            //NavigateTo(NavigatorEnums.Authentication_Fingerprint);
+            NavigateTo(NavigatorEnums.Authentication_Fingerprint);
 
             // Testing purpose
-            NavigateTo(NavigatorEnums.Authentication_Facial);
+            //NavigateTo(NavigatorEnums.Authentication_Facial);
         }
 
         private void SmartCard_OnSmartCardFailed(string message)
