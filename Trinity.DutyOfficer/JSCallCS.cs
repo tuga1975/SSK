@@ -21,6 +21,7 @@ namespace DutyOfficer
     {
         private WebBrowser _web = null;
         private Type _thisType = null;
+        private CodeBehind.PrintMUBAndTTLabels _printTTLabel;
 
         public event EventHandler<NRICEventArgs> OnNRICFailed;
         public event EventHandler<ShowMessageEventArgs> OnShowMessage;
@@ -31,6 +32,11 @@ namespace DutyOfficer
         {
             this._web = web;
             _thisType = this.GetType();
+
+            _printTTLabel = new CodeBehind.PrintMUBAndTTLabels(web);
+            //_printTTLabel.OnPrintMUBAndTTLabelsSucceeded += PrintMUBAndTTLabels_OnPrintTTLabelSucceeded;
+            //_printTTLabel.OnPrintMUBAndTTLabelsFailed += PrintMUBAndTTLabels_OnPrintTTLabelFailed;
+            //_printTTLabel.OnPrintMUBAndTTLabelsException += PrintMUBAndTTLabels_OnPrintTTLabelException;
         }
 
         
@@ -119,6 +125,87 @@ namespace DutyOfficer
             var rawdata = JsonConvert.DeserializeObject<Object>(json);
             this._web.LoadPopupHtml("UBlabelPopup.html", rawdata);
         }
+
+        public void PrintingMUBAndTTLabels(string json)
+        {
+            var labelInfo = JsonConvert.DeserializeObject<LabelInfo>(json);
+            _printTTLabel.Start(labelInfo);
+        }
+
+        private void PrintMUBAndTTLabels_OnPrintTTLabelSucceeded(object sender, PrintMUBAndTTLabelsSucceedEventArgs e)
+        {
+            var labelInfo = new Trinity.BE.Label
+            {
+                UserId = e.LabelInfo.UserId,
+                Label_Type = e.LabelInfo.Label_Type,
+                CompanyName = e.LabelInfo.CompanyName,
+                MarkingNo = e.LabelInfo.MarkingNo,
+                DrugType = e.LabelInfo.DrugType,
+                NRIC = e.LabelInfo.NRIC,
+                Name = e.LabelInfo.Name,
+                Date = Convert.ToDateTime(e.LabelInfo.Date),
+                QRCode = e.LabelInfo.QRCode,
+                LastStation = e.LabelInfo.LastStation,
+                PrintCount = e.LabelInfo.PrintCount,
+                ReprintReason = e.LabelInfo.ReprintReason
+            };
+
+            var dalLabel = new DAL_Labels();
+            dalLabel.UpdateLabel(labelInfo, labelInfo.UserId);
+            this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').show(); ; ");
+            this._web.RunScript("$('.status-text').css('color','#000').text('Please collect your labels');");
+
+            DeleteQRCodeImageFileTemp();
+        }
+
+        private void PrintMUBAndTTLabels_OnPrintTTLabelFailed(object sender, CodeBehind.PrintMUBAndTTLabelsEventArgs e)
+        {
+            this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').hide(); ; ");
+            this._web.RunScript("$('.status-text').css('color','#000').text('Sent problem to Duty Officer. Please wait to check !');");
+            MessageBox.Show("Unable to print labels\nPlease report to the Duty Officer", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            APIUtils.SignalR.SendNotificationToDutyOfficer("MUB & TT", "Don't print MUB & TT, Please check !");
+
+            DeleteQRCodeImageFileTemp();
+            LogOut();
+        }
+
+        private void PrintMUBAndTTLabels_OnPrintTTLabelException(object sender, ExceptionArgs e)
+        {
+            this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').hide(); ; ");
+            this._web.RunScript("$('.status-text').css('color','#000').text('Sent problem to Duty Officer. Please wait to check !');");
+            MessageBox.Show(e.ErrorMessage, "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //APIUtils.SignalR.SendNotificationToDutyOfficer("MUB & TT", "Don't print MUB & TT, Please check !", NotificationType.Error, EnumStations.SSA);
+
+            DeleteQRCodeImageFileTemp();
+            LogOut();
+        }
+        public void DeleteQRCodeImageFileTemp()
+        {
+            Session session = Session.Instance;
+            Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.SUPERVISEE];
+            string fileName = String.Format("{0}/Temp/{1}", CSCallJS.curDir, "QRCode_" + user.NRIC + ".png");
+            if (System.IO.File.Exists(fileName))
+                System.IO.File.Delete(fileName);
+        }
+
+        public void LogOut()
+        {
+            // reset session value
+            Session session = Session.Instance;
+            session.IsSmartCardAuthenticated = false;
+            session.IsFingerprintAuthenticated = false;
+            session[CommonConstants.USER_LOGIN] = null;
+            session[CommonConstants.PROFILE_DATA] = null;
+
+            //
+            // RaiseLogOutCompletedEvent
+            RaiseLogOutCompletedEvent();
+        }
+
+        protected virtual void RaiseLogOutCompletedEvent()
+        {
+            OnLogOutCompleted?.Invoke();
+        }
     }
 
     #region Custom Events
@@ -182,4 +269,6 @@ namespace DutyOfficer
         }
     }
     #endregion
+
+    
 }

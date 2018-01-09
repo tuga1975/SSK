@@ -82,9 +82,15 @@
         $.each(checkedRows, function (index, value) {
             model = value;
         })
-        var data = JSON.stringify(model);
-        api.server.LoadPopupUBLabel(data, function () {
-            $('#UBLabelpopup').modal();
-        })
+        if (model != null) {
+            var data = JSON.stringify(model);
+            api.server.LoadPopupUBLabel(data, function () {
+                $('#UBLabelpopup').modal();
+            })
+        }
+        else {
+            alert('Please choose the supervisee you want to print');
+        }
+
     })
 </script>
