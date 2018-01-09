@@ -10,17 +10,15 @@ namespace Trinity.Common
 {
     public class CommonUtil
     {
-        public static byte[] CreateLabelQRCode(LabelInfo labelInfo)
+        public static byte[] CreateLabelQRCode(LabelInfo labelInfo, string AESKey)
         {
-            // get AESKey from API return
-            string AESKey = "AESKey";
-
-            var width = 250; // width of the Qr Code    
-            var height = 250; // height of the Qr Code    
+            var width = 200; // width of the Qr Code    
+            var height = 200; // height of the Qr Code    
             var margin = 0;
             var qrCodeWriter = new ZXing.BarcodeWriterPixelData
             {
-                Format = ZXing.BarcodeFormat.QR_CODE,
+                Format=ZXing.BarcodeFormat.DATA_MATRIX,
+                //Format = ZXing.BarcodeFormat.QR_CODE,
                 Options = new QrCodeEncodingOptions
                 {
                     Height = height,
@@ -29,7 +27,7 @@ namespace Trinity.Common
                 }
             };
 
-            var contentQRCode = "User Name: " + labelInfo.Name + "; NRIC: " + labelInfo.NRIC + "; Date: " + labelInfo.Date + "; CompanyName: " + labelInfo.CompanyName + "; Marking No: " + labelInfo.MarkingNo + "; Drug Type:" + labelInfo.DrugType;
+            var contentQRCode = labelInfo.MarkingNo + "*" + labelInfo.NRIC + "*" + labelInfo.Name + "*" + labelInfo.DrugType + "*SA*URINE";
             var encryptContent = CommonUtil.EncryptString(contentQRCode, AESKey);
             var pixelData = qrCodeWriter.Write(encryptContent);
             // creating a bitmap from the raw pixel data; if only black and white colors are used it makes no difference    

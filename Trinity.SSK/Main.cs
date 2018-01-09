@@ -75,7 +75,7 @@ namespace SSK
 
             //15 minutes
             var timer = new System.Timers.Timer(1000 * 60 * 15);
-            
+
             timer.Elapsed += PeriodCheck;
             timer.Start();
             //
@@ -309,52 +309,19 @@ namespace SSK
 
         private void FaceDetectSucceeded()
         {
-            //_facedetectFailed = 0;
-            //FacialRecognition.Instance.FaceDetectFailed -= FaceDetectFailed;
-            //FacialRecognition.Instance.FaceDetectSucceeded -= FaceDetectSucceeded;
-            //FacialRecognition.Instance.Dispose();
-            //Fingerprint_OnFingerprintSucceeded();
+            _facedetectFailed = 0;
+            FacialRecognition.Instance.FaceDetectFailed -= FaceDetectFailed;
+            FacialRecognition.Instance.FaceDetectSucceeded -= FaceDetectSucceeded;
+            FacialRecognition.Instance.Dispose();
+            Fingerprint_OnFingerprintSucceeded();
         }
         private void FaceDetectFailed()
         {
-            //Session session = Session.Instance;
-            //Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-            //_facedetectFailed++;
-            //if (_facedetectFailed==2)
-            //{
-            //    // Send Notification to duty officer
-            //    APIUtils.SignalR.SendNotificationToDutyOfficer("Fingerprint scans and facial identification failed", "Fingerprint scans and facial identification failed");
-
-            //    // show message box to user
-            //    MessageBox.Show("Fingerprint scans and facial identification failed", "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-            //    // navigate to smartcard login page
-            //    NavigateTo(NavigatorEnums.Authentication_SmartCard);
-
-            //    // reset counter
-            //    _fingerprintFailed = 0;
-            //    _facedetectFailed = 0;
-            //    FacialRecognition.Instance.FaceDetectFailed -= FaceDetectFailed;
-            //    FacialRecognition.Instance.FaceDetectSucceeded -= FaceDetectSucceeded;
-            //    FacialRecognition.Instance.Dispose();
-            //}else if (_facedetectFailed<2 && user.User_Photo1!=null && user.User_Photo2!=null)
-            //{
-            //    FacialRecognition.Instance.Compare(user.User_Photo2);
-            //}
-            //else
-            //{
-            //    FaceDetectFailed();
-            //}
-        }
-        private void Fingerprint_OnFingerprintFailed(string message)
-        {
-            // increase counter
-            _fingerprintFailed++;
-
-            // exceeded max failed
-            if (_fingerprintFailed > 3)
+            Session session = Session.Instance;
+            Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+            _facedetectFailed++;
+            if (_facedetectFailed == 2)
             {
-                #region Remove Khi có Face Scan
                 // Send Notification to duty officer
                 APIUtils.SignalR.SendNotificationToDutyOfficer("Fingerprint scans and facial identification failed", "Fingerprint scans and facial identification failed", NotificationType.Error, EnumStations.SSK);
 
@@ -366,20 +333,54 @@ namespace SSK
 
                 // reset counter
                 _fingerprintFailed = 0;
-                #endregion
-                //Session session = Session.Instance;
-                //Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-                //if(user.User_Photo1==null && user.User_Photo2 == null)
-                //{
-                //    _facedetectFailed++;
-                //    FaceDetectFailed();
-                //}
-                //else
-                //{
-                //    FacialRecognition.Instance.FaceDetectFailed += FaceDetectFailed;
-                //    FacialRecognition.Instance.FaceDetectSucceeded += FaceDetectSucceeded;
-                //    FacialRecognition.Instance.Compare(user.User_Photo1??user.User_Photo2);
-                //}
+                _facedetectFailed = 0;
+                FacialRecognition.Instance.FaceDetectFailed -= FaceDetectFailed;
+                FacialRecognition.Instance.FaceDetectSucceeded -= FaceDetectSucceeded;
+                FacialRecognition.Instance.Dispose();
+            }
+            else if (_facedetectFailed < 2 && user.User_Photo1 != null && user.User_Photo2 != null)
+            {
+                FacialRecognition.Instance.Compare(user.User_Photo2);
+            }
+            else
+            {
+                FaceDetectFailed();
+            }
+        }
+        private void Fingerprint_OnFingerprintFailed(string message)
+        {
+            // increase counter
+            _fingerprintFailed++;
+
+            // exceeded max failed
+            if (_fingerprintFailed > 3)
+            {
+                //#region Remove Khi có Face Scan
+                //// Send Notification to duty officer
+                //APIUtils.SignalR.SendNotificationToDutyOfficer("Fingerprint scans and facial identification failed", "Fingerprint scans and facial identification failed");
+
+                //// show message box to user
+                //MessageBox.Show("Fingerprint scans and facial identification failed", "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                //// navigate to smartcard login page
+                //NavigateTo(NavigatorEnums.Authentication_SmartCard);
+
+                //// reset counter
+                //_fingerprintFailed = 0;
+                //#endregion
+                Session session = Session.Instance;
+                Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+                if (user.User_Photo1 == null && user.User_Photo2 == null)
+                {
+                    _facedetectFailed++;
+                    FaceDetectFailed();
+                }
+                else
+                {
+                    FacialRecognition.Instance.FaceDetectFailed += FaceDetectFailed;
+                    FacialRecognition.Instance.FaceDetectSucceeded += FaceDetectSucceeded;
+                    FacialRecognition.Instance.Compare(user.User_Photo1 ?? user.User_Photo2);
+                }
                 return;
             }
 

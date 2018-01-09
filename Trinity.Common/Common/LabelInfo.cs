@@ -22,7 +22,7 @@ namespace Trinity.Common
         
         public string Name { get; set; }
         
-        public DateTime? Date { get; set; }
+        public string Date { get; set; }
         
         public byte[] QRCode { get; set; }
         

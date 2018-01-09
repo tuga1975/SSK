@@ -50,7 +50,7 @@ namespace SSK
 
             Trinity.Common.LabelInfo labelInfo = new Trinity.Common.LabelInfo()
             {
-                Date = Convert.ToDateTime("07-04-1982"),
+                Date = "07-04-1982",
                 NRIC = "022234343",
                 Name = "minhdq"
             };
