@@ -7,7 +7,6 @@ using System.Windows.Forms;
 using Trinity.BE;
 using Trinity.Common;
 using Trinity.Common.Common;
-using Trinity.Common.Monitor;
 using Trinity.DAL;
 
 namespace SSK
@@ -24,6 +23,7 @@ namespace SSK
         private int _fingerprintFailed;
         private int _facedetectFailed = 0;
         private bool _displayLoginButtonStatus = false;
+        private bool _isFirstTimeLoaded = true;
 
         public Main()
         {
@@ -218,21 +218,26 @@ namespace SSK
         {
             LayerWeb.InvokeScript("createEvent", JsonConvert.SerializeObject(_jsCallCS.GetType().GetMethods().Where(d => d.IsPublic && !d.IsVirtual && !d.IsSecuritySafeCritical).ToArray().Select(d => d.Name)));
 
-            // Start page
-            //NavigateTo(NavigatorEnums.Authentication_SmartCard);
+            if (_isFirstTimeLoaded)
+            {
+                // Start page
+                //NavigateTo(NavigatorEnums.Authentication_SmartCard);
 
-            // For testing purpose
-            //NavigateTo(NavigatorEnums.Authentication_Fingerprint);
-            Session session = Session.Instance;
-            ////Supervisee
-            Trinity.BE.User user = new DAL_User().GetUserByUserId("3498eb1b-d907-4ad4-a16f-4a477b154c34", true);
-            //// Duty Officer
-            //Trinity.BE.User user = new DAL_User().GetUserByUserId("ead039f9-b9a1-45bb-8186-0bb7248aafac", true);
-            session[CommonConstants.USER_LOGIN] = user;
-            session.IsSmartCardAuthenticated = true;
-            session.IsFingerprintAuthenticated = true;
-            NavigateTo(NavigatorEnums.Supervisee);
-            //NavigateTo(NavigatorEnums.Authentication_NRIC);
+                // For testing purpose
+                Session session = Session.Instance;
+                ////Supervisee
+                Trinity.BE.User user = new DAL_User().GetUserByUserId("bb67863c-c330-41aa-b397-c220428ad16f", true);
+                //// Duty Officer
+                //Trinity.BE.User user = new DAL_User().GetUserByUserId("ead039f9-b9a1-45bb-8186-0bb7248aafac", true);
+                session[CommonConstants.USER_LOGIN] = user;
+                session.IsSmartCardAuthenticated = true;
+                session.IsFingerprintAuthenticated = true;
+                NavigateTo(NavigatorEnums.Authentication_Fingerprint);
+                //NavigateTo(NavigatorEnums.Supervisee);
+                //NavigateTo(NavigatorEnums.Authentication_NRIC);
+
+                _isFirstTimeLoaded = false;
+            }
         }
 
         private void NRIC_OnNRICSucceeded()

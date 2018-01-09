@@ -115,7 +115,7 @@ namespace SSA
                 DrugType = e.LabelInfo.DrugType,
                 NRIC = e.LabelInfo.NRIC,
                 Name = e.LabelInfo.Name,
-                Date = e.LabelInfo.Date,
+                Date = Convert.ToDateTime(e.LabelInfo.Date),
                 QRCode = e.LabelInfo.QRCode,
                 LastStation = e.LabelInfo.LastStation,
                 PrintCount = e.LabelInfo.PrintCount,
@@ -135,7 +135,7 @@ namespace SSA
             this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').hide(); ; ");
             this._web.RunScript("$('.status-text').css('color','#000').text('Sent problem to Duty Officer. Please wait to check !');");
             MessageBox.Show("Unable to print labels\nPlease report to the Duty Officer", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            APIUtils.SignalR.SendNotificationToDutyOfficer("MUB & TT", "Don't print MUB & TT, Please check !", NotificationType.Error, "SSA");
+            APIUtils.SignalR.SendNotificationToDutyOfficer("MUB & TT", "Don't print MUB & TT, Please check !", NotificationType.Error, EnumStations.SSA);
 
             DeleteQRCodeImageFileTemp();
             LogOut();
@@ -146,7 +146,7 @@ namespace SSA
             this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').hide(); ; ");
             this._web.RunScript("$('.status-text').css('color','#000').text('Sent problem to Duty Officer. Please wait to check !');");
             MessageBox.Show(e.ErrorMessage, "", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            APIUtils.SignalR.SendNotificationToDutyOfficer("MUB & TT", "Don't print MUB & TT, Please check !", NotificationType.Error, "SSA");
+            APIUtils.SignalR.SendNotificationToDutyOfficer("MUB & TT", "Don't print MUB & TT, Please check !", NotificationType.Error, EnumStations.SSA);
 
             DeleteQRCodeImageFileTemp();
             LogOut();

@@ -141,8 +141,19 @@ namespace Trinity.DAL
             }
         }
 
+        /// <summary>
+        /// Add notification
+        /// </summary>
+        /// <param name="subject"></param>
+        /// <param name="content"></param>
+        /// <param name="fromUserId"></param>
+        /// <param name="toUserId"></param>
+        /// <param name="isFromSupervisee"></param>
+        /// <param name="isLocal"></param>
+        /// <param name="notifyType">NotificationType : {Error : 'E', Notification : 'N', Caution : 'C'}</param>
+        /// <param name="source">EnumStations : {SSA, SSK, UHP, ASP, HSA, ASP}</param>
         public void InsertNotification(string subject, string content, string fromUserId,
-            string toUserId, bool isFromSupervisee, bool isLocal, NotificationType notifyType,
+            string toUserId, bool isFromSupervisee, bool isLocal, string notifyType,
             string source)
         {
             Trinity.DAL.DBContext.Notification notifcation = new DBContext.Notification()
@@ -154,7 +165,7 @@ namespace Trinity.DAL
                 IsRead = false,
                 Subject = subject,
                 ToUserId = toUserId,
-                Type = notifyType.ToString(),
+                Type = notifyType,
                 Source = source,
                 ID = Guid.NewGuid()
             };

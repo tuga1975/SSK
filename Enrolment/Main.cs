@@ -1,20 +1,16 @@
-﻿using Newtonsoft.Json;
+﻿using Futronic.SDKHelper;
+using Newtonsoft.Json;
 using System;
 using System.Data;
+using System.Drawing;
+using System.IO;
 using System.Linq;
-using System.Threading;
+using System.Text;
 using System.Windows.Forms;
 using Trinity.BE;
 using Trinity.Common;
 using Trinity.Common.Common;
-using Trinity.Common.Monitor;
 using Trinity.DAL;
-using AForge.Video;
-using AForge.Video.DirectShow;
-using System.Drawing;
-using System.IO;
-using Futronic.SDKHelper;
-using System.Text;
 
 namespace Enrolment
 {
@@ -37,6 +33,8 @@ namespace Enrolment
         private byte[] image2;
         private bool _displayLoginButtonStatus = false;
         private FutronicEnrollment _futronicEnrollment = null;
+        private bool _isFirstTimeLoaded = true;
+
         public Main()
         {
             InitializeComponent();
@@ -318,10 +316,13 @@ namespace Enrolment
         {
             LayerWeb.InvokeScript("createEvent", JsonConvert.SerializeObject(_jsCallCS.GetType().GetMethods().Where(d => d.IsPublic && !d.IsVirtual && !d.IsSecuritySafeCritical).ToArray().Select(d => d.Name)));
 
-            // Start page
-            NavigateTo(NavigatorEnums.Login);
-            //NavigateTo(NavigatorEnums.Supervisee);
-            LayerWeb.DocumentCompleted -= LayerWeb_DocumentCompleted;
+            if (_isFirstTimeLoaded)
+            {
+                // Set Start page = Login
+                NavigateTo(NavigatorEnums.Login);
+                //NavigateTo(NavigatorEnums.Supervisee);
+                _isFirstTimeLoaded = false;
+            }
         }
 
         private void NRIC_OnNRICSucceeded()
@@ -483,7 +484,7 @@ namespace Enrolment
                             }
 
                         }
-                       // LayerWeb.LoadPageHtml("New-Supervisee.html");
+                        // LayerWeb.LoadPageHtml("New-Supervisee.html");
                     }));
                     return;
                 }
@@ -527,7 +528,7 @@ namespace Enrolment
                 StartToScanFingerprint();
 
             }
-            else if (e.Name == EventNames.LOAD_UPDATE_SUPERVISEE_BIODATA)
+            else if (e.Name == EventNames.LOAD_UPDATE_SUPERVISEE_BIODATA_SUCCEEDED)
             {
                 var profileModel = (Trinity.BE.ProfileModel)e.Data;
                 CSCallJS.LoadPageHtml(this.LayerWeb, "UpdateSuperviseeBiodata.html", profileModel);
@@ -552,7 +553,7 @@ namespace Enrolment
                 dalUser.ChangeUserStatus(profileModel.User.UserId, EnumUserStatuses.Enrolled);
 
             }
-            /*else if (e.Name == EventNames.LOAD_EDIT_SUPERVISEE)
+            else if (e.Name == EventNames.LOAD_EDIT_SUPERVISEE_SUCCEEDED)
             {
                 var profileModel = (Trinity.BE.ProfileModel)e.Data;
 
@@ -561,8 +562,11 @@ namespace Enrolment
                 CSCallJS.LoadPageHtml(this.LayerWeb, "Edit-Supervisee.html", profileModel);
 
 
-            }*/
-
+            }
+            else if (e.Name == EventNames.SUPERVISEE_DATA_UPDATE_CANCELED)
+            {
+                NavigateTo(NavigatorEnums.Supervisee);
+            }
         }
 
         private void CaptureAttempt(string sessionAttemptName)

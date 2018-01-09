@@ -115,7 +115,7 @@ namespace DocumentScannerTest
                 {
                     Name = "Avril Lavigne",
                     NRIC = "S1234567G",
-                    Date = Convert.ToDateTime("01/01/1970")
+                    Date = "01/01/1970"
                 };
 
                 foreach (var item in barcodeScannerUtils.GetDeviceStatus())

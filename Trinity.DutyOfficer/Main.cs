@@ -20,6 +20,7 @@ namespace DutyOfficer
         private int _smartCardFailed;
         private int _fingerprintFailed;
         private bool _displayLoginButtonStatus = false;
+        private bool _isFirstTimeLoaded = true;
 
         public Main()
         {
@@ -244,7 +245,13 @@ namespace DutyOfficer
         private void LayerWeb_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
             LayerWeb.InvokeScript("createEvent", JsonConvert.SerializeObject(_jsCallCS.GetType().GetMethods().Where(d => d.IsPublic && !d.IsVirtual && !d.IsSecuritySafeCritical).ToArray().Select(d => d.Name)));
-            NavigateTo(NavigatorEnums.Authentication_SmartCard);
+
+            if (_isFirstTimeLoaded)
+            {
+                NavigateTo(NavigatorEnums.Authentication_SmartCard);
+
+                _isFirstTimeLoaded = false;
+            }
         }
     }
 }
