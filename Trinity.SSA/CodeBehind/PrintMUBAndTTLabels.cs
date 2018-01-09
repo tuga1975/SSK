@@ -46,11 +46,13 @@ namespace SSA.CodeBehind
                 {
                     #region Print Barcode
                     // Check status of Barcode printer
-                    string barcodePrinterName = ConfigurationManager.AppSettings["BarcodePrinterName"].ToUpper();
-                    var statusPrinterBarcode = barcodeScannerUtils.GetDeviceStatus(barcodePrinterName);
+                    string printerName = ConfigurationManager.AppSettings["TTLabelPrinterName"];
+                    var statusPrinterBarcode = barcodeScannerUtils.GetDeviceStatus(printerName);
 
-                    if (statusPrinterBarcode.Count() == 1 && statusPrinterBarcode[0] == EnumDeviceStatuses.Connected)
+                    if (statusPrinterBarcode.Contains(EnumDeviceStatuses.Connected))
+                    {
                         printerMonitor.PrintBarcodeLabel(labelInfo);
+                    }
                     else
                     {
                         // Printer disconnect, get list status of the causes disconnected
@@ -60,7 +62,7 @@ namespace SSA.CodeBehind
                             causeOfPrintFailure = causeOfPrintFailure + CommonUtil.GetDeviceStatusText(item) + "; ";
                         }
 
-                        RaisePrintMUBAndTTLabelsFailedEvent(new PrintMUBAndTTLabelsEventArgs("Barcode Printer have problem: " + causeOfPrintFailure));
+                        RaisePrintMUBAndTTLabelsFailedEvent(new PrintMUBAndTTLabelsEventArgs("TTLabel Printer have problem: " + causeOfPrintFailure));
 
                         return;
                     }
@@ -68,8 +70,8 @@ namespace SSA.CodeBehind
 
                     #region Print MUB (QRCode)
                     // Check status of Barcode printer
-                    string MUBPrinterName = ConfigurationManager.AppSettings["MUBPrinterName"].ToUpper();
-                    var statusPrinterMUB = barcodeScannerUtils.GetDeviceStatus(MUBPrinterName);
+                    string MUBLabelPrinterName = ConfigurationManager.AppSettings["MUBLabelPrinterName"];
+                    var statusPrinterMUB = barcodeScannerUtils.GetDeviceStatus(MUBLabelPrinterName);
 
                     if (statusPrinterMUB.Count() == 1 && statusPrinterMUB[0] == EnumDeviceStatuses.Connected)
                         printerMonitor.PrintMUBLabel(labelInfo);
