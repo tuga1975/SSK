@@ -258,7 +258,11 @@ namespace Enrolment
             if (session[CommonConstants.CURRENT_EDIT_USER] != null) {
                 profileModel = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER] ;
             }
-            
+            else
+            {
+                session[CommonConstants.CURRENT_EDIT_USER] = profileModel;
+            }
+
             if (dbUser.Status == "NEW")
             {
                 session[CommonConstants.CURRENT_PAGE] = "EditSupervisee";
@@ -272,10 +276,10 @@ namespace Enrolment
             else
             {
                 session[CommonConstants.CURRENT_PAGE] = "UpdateSupervisee";
-               // _web.LoadPageHtml("Edit-Supervisee.html", profileModel);
-                EventCenter eventCenter = EventCenter.Default;
+                _web.LoadPageHtml("Edit-Supervisee.html", profileModel);
+                //EventCenter eventCenter = EventCenter.Default;
 
-                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.LOAD_EDIT_SUPERVISEE, Data = profileModel });
+                //eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.LOAD_EDIT_SUPERVISEE, Data = profileModel });
             }
 
         }

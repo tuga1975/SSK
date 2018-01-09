@@ -552,7 +552,7 @@ namespace Enrolment
                 dalUser.ChangeUserStatus(profileModel.User.UserId, EnumUserStatuses.Enrolled);
 
             }
-            else if (e.Name == EventNames.LOAD_EDIT_SUPERVISEE)
+            /*else if (e.Name == EventNames.LOAD_EDIT_SUPERVISEE)
             {
                 var profileModel = (Trinity.BE.ProfileModel)e.Data;
 
@@ -561,7 +561,7 @@ namespace Enrolment
                 CSCallJS.LoadPageHtml(this.LayerWeb, "Edit-Supervisee.html", profileModel);
 
 
-            }
+            }*/
 
         }
 
