@@ -128,5 +128,31 @@ namespace Trinity.DAL
             var timeSlotEnt = _localUnitOfWork.DataContext.Timeslots.FirstOrDefault(t => t.StartTime == startTime && t.EndTime == endTime && t.DateOfWeek == dayOfWeek);
             return timeSlotEnt;
         }
+
+        public List<BE.Appointment> GetAllAppointments()
+        {
+            try
+            {
+                var lstModels = from a in _localUnitOfWork.DataContext.Appointments
+                                join tl in _localUnitOfWork.DataContext.Timeslots on a.Timeslot_ID equals tl.Timeslot_ID
+                                join u in _localUnitOfWork.DataContext.Membership_Users on a.UserId equals u.UserId
+                                select new BE.Appointment()
+                                {
+                                    NRIC = u.NRIC,
+                                    Name = u.Name,
+                                    ReportTime = a.ReportTime,
+                                    Status = (EnumAppointmentStatuses)a.Status,
+                                    AppointmentDate = a.Date,
+                                    StartTime = tl.StartTime,
+                                    EndTime = tl.EndTime
+                                };
+
+                return lstModels.ToList();
+            }
+            catch(Exception e)
+            {
+                return new List<BE.Appointment>();
+            }
+        }        
     }
 }

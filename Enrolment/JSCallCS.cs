@@ -60,9 +60,7 @@ namespace Enrolment
 
         public void LoadListSupervisee()
         {
-
             EventCenter eventCenter = EventCenter.Default;
-            Session session = Session.Instance;
             var dalUser = new DAL_User();
             var dalUserProfile = new DAL_UserProfile();
             var dbUsers = dalUser.GetAllSupervisees(true);
@@ -284,7 +282,7 @@ namespace Enrolment
             }
         }
 
-        public void SaveSupervisee(string param, bool primaryInfoChange)
+        public void SaveSupervisee(string param)
         {
             try
             {
@@ -326,21 +324,14 @@ namespace Enrolment
                 // add some some old data not change
                 data.User.Name = profileModel.User.Name;
                 data.User.Status = profileModel.User.Status;
-                if (primaryInfoChange)
-                {
-                    dalUser.UpdateUser(data.User, profileModel.User.UserId, true);
 
-                    dalUserprofile.UpdateUserProfile(data.UserProfile, profileModel.User.UserId, true);
-                    //send notifiy to duty officer
-                    APIUtils.SignalR.SendNotificationToDutyOfficer("A supervisee has updated profile.", "Please check Supervisee's information!");
-                }
-                else
-                {
-                    dalUserprofile.UpdateUserProfile(data.UserProfile, data.User.UserId, true);
-                    //send notifiy to case officer
-                    APIUtils.SignalR.SendNotificationToDutyOfficer("A supervisee has updated profile.", "Please check Supervisee's information!");
-                }
+                dalUser.UpdateUser(data.User, profileModel.User.UserId, true);
 
+                dalUserprofile.UpdateUserProfile(data.UserProfile, profileModel.User.UserId, true);
+                ////send notifiy to case officer
+                APIUtils.SignalR.SendNotificationToDutyOfficer("A supervisee has updated profile.", "Please check Supervisee's information!");
+
+                data.Addresses = rawDataAddress;
                 session[CommonConstants.CURRENT_EDIT_USER] = data;
                 //load Supervisee page 
                 LoadListSupervisee();

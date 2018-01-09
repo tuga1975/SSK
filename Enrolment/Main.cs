@@ -363,7 +363,7 @@ namespace Enrolment
         {
             if (e.Name == EventNames.LOGIN_SUCCEEDED)
             {
-                NavigateTo(NavigatorEnums.Supervisee);
+                new JSCallCS(this.LayerWeb).LoadListSupervisee();
             }
             else if (e.Name.Equals(EventNames.LOGIN_FAILED))
             {
@@ -494,8 +494,8 @@ namespace Enrolment
                         if (session[CommonConstants.CURRENT_EDIT_USER] != null && currentPage != null)
                         {
                             var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
-                            string photo1 = "";
-                            string photo2 = "";
+                            string photo1 = "../images/usr-default.jpg";
+                            string photo2 = "../images/usr-default.jpg";
                             if (currentEditUser.UserProfile.User_Photo1!=null)
                             {
                                 photo1 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo1);
@@ -585,6 +585,8 @@ namespace Enrolment
 
                 new DAL_UserProfile().UpdateUserProfile(profileModel.UserProfile, profileModel.User.UserId, true);
                 dalUser.ChangeUserStatus(profileModel.User.UserId, EnumUserStatuses.Enrolled);
+                Session session = Session.Instance;
+                session[CommonConstants.CURRENT_EDIT_USER] = profileModel;
 
             }
             else if (e.Name == EventNames.LOAD_EDIT_SUPERVISEE_SUCCEEDED)
@@ -668,7 +670,7 @@ namespace Enrolment
             }
             else if (navigatorEnum == NavigatorEnums.Supervisee)
             {
-                this.LayerWeb.LoadPageHtml("Supervisee.html");
+                //this.LayerWeb.LoadPageHtml("Supervisee.html");
                 _suppervisee.Start();
             }
             else if (navigatorEnum == NavigatorEnums.Login)

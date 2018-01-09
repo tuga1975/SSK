@@ -22,16 +22,16 @@
                                 <br />
                                 <button type="button" onclick="api.server.OpenPictureCaptureForm('1')">Take Picture 1</button>
                             </div>
-                            <div class="col" >
+                            <div class="col">
                                 <img id="image2" class="avatar" src="../images/usr-default.jpg" style="width:44%;height:auto" />
                                 <br />
                                 <button type="button" onclick="api.server.OpenPictureCaptureForm('2')">Take Picture 2</button>
                             </div>
                             <!--<div class="col">
-                <img class="avatar" src="../images/usr-default.jpg" />
+                                <img class="avatar" src="../images/usr-default.jpg" />
 
-                <button type="button">Get Image</button>
-            </div>-->
+                                <button type="button">Get Image</button>
+                            </div>-->
                         </div>
                     </section>
 
@@ -66,7 +66,7 @@
                                 <div class="col">
                                     <div style="width:300px;height:180px;border:1px solid #000;float:right">
                                         <div style="float:left">
-                                            <img src="../images/usr-default.jpg"  width="80" height="100" id="verifyPhoto" />
+                                            <img src="../images/usr-default.jpg" width="80" height="100" id="verifyPhoto" />
                                         </div>
                                         <div>Name :<span id="verifyName"></span></div>
                                         <div>NRIC :<span id="verifyNRIC"></span></div>
@@ -78,7 +78,7 @@
                                     <div style="width:300px;height:180px;border:1px solid #000">
                                         <div style="float:left">
                                             <div>
-                                                <img src="../images/fingerprint.png" width="40" height="60"  id="leftFingerThumb"/>
+                                                <img src="../images/fingerprint.png" width="40" height="60" id="leftFingerThumb" />
                                             </div>
                                             <br />
                                             <div>
@@ -107,9 +107,7 @@
                         </div>
                     </section>
                 </div>
-                <div class="btn-group">
-                    <button type="button" class="btn-form" onclick="api.server.CancelEditSupervisee();">Cancel</button>
-                </div>
+
             </div>
 
 
@@ -214,12 +212,14 @@
     }
 </script>
 <script>
-    var updated = false;
+    
     $(function () {
+        var isUpdated = false;
         $("#wizard").steps({
             headerTag: "h2",
             bodyTag: "section",
             transitionEffect: "slideLeft",
+            loading: "Processing ...",
             //enableCancelButton: true,
             onInit: function (event, currentIndex) {
                 var cancelA = $("<a>").attr("href", "#").attr("onclick", "api.server.LoadListSupervisee()").addClass("cancelBtn").text("Cancel");
@@ -242,25 +242,33 @@
                     $('#verifyDOB').text(dob);
                     $('#verifyNRIC').text(api.model.User.NRIC);
                     if (api.model.UserProfile.User_Photo1 != "") {
-                        $('#verifyPhoto').attr('src','data:image/jpg;base64,'+api.model.UserProfile.User_Photo1);
+                        $('#verifyPhoto').attr('src', 'data:image/jpg;base64,' + api.model.UserProfile.User_Photo1);
                     }
-                    if (api.model.UserProfile.DateOfIssue != null) {
-                        $('#issueDate').text(api.model.UserProfile.DateOfIssue);
+                    if (api.model.UserProfile.DateOfIssue != "") {
+
+                        $('#issueDate').text(api.model.UserProfile.DateOfIssue.replace("T00:00:00", ""));
                     }
-                    if (api.model.UserProfile.LeftThumbImage != null) {
-                        $('#leftFingerThumb').text(api.model.UserProfile.LeftThumbImage);
+
+                    if (api.model.UserProfile.LeftThumbImage != "") {
+                        $('#leftFingerThumb').attr('src', 'data:image/jpg;base64,' + api.model.UserProfile.LeftThumbImage);
                     }
-                    if (api.model.UserProfile.RightThumbImage != null) {
-                        $('#rightFingerThumb').text(api.model.UserProfile.RightThumbImage);
+                    if (api.model.UserProfile.RightThumbImage != "") {
+                        $('#rightFingerThumb').attr('src', 'data:image/jpg;base64,' + api.model.UserProfile.RightThumbImage);
                     }
 
                 }
+               
+
                 if (currentIndex == 2) {
                     //update to db
-                    if (!updated) {
+                    if (isUpdated === false) {
                         api.server.UpdateSuperviseeBiodata();
-                        updated = true;
+                        isUpdated = true;
                     }
+                    else {
+                        return true;
+                    }
+                   
 
                 }
 
