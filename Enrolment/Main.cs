@@ -128,13 +128,21 @@ namespace Enrolment
 
                     var base64Str = Convert.ToBase64String(byteData);
 
-
+                   
                     if (session[CommonConstants.CURRENT_FINGERPRINT_DATA] != null)
                     {
 
                         if (session[CommonConstants.IS_RIGHT_THUMB] != null)
                         {
                             var isRight = (bool)session[CommonConstants.IS_RIGHT_THUMB];
+                            if (isRight)
+                            {
+                                session[CommonConstants.CURRENT_RIGHT_FINGERPRINT_IMAGE] = base64Str;
+                            }
+                            else
+                            {
+                                session[CommonConstants.CURRENT_LEFT_FINGERPRINT_IMAGE] = base64Str;
+                            }
                             LayerWeb.InvokeScript("setBase64FingerprintOnloadServerCall", isRight, base64Str);
                         }
                     }
@@ -186,8 +194,19 @@ namespace Enrolment
 
                 //set data for curent edit user
                 var profileModel = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
+                var leftThumbImage = (string)session[CommonConstants.CURRENT_LEFT_FINGERPRINT_IMAGE];
+                var rightThumbImage = (string)session[CommonConstants.CURRENT_RIGHT_FINGERPRINT_IMAGE];
                 if (profileModel != null)
                 {
+                    if (!string.IsNullOrEmpty(leftThumbImage))
+                    {
+                        profileModel.UserProfile.LeftThumbImage = leftThumbImage;
+                    }
+                    if (!string.IsNullOrEmpty(rightThumbImage))
+                    {
+                        profileModel.UserProfile.RightThumbImage = rightThumbImage;
+                    }
+
                     if (isRight)
                     {
                         profileModel.User.RightThumbFingerprint = _futronicEnrollment.Template;
@@ -196,6 +215,7 @@ namespace Enrolment
                     else
                     {
                         profileModel.User.LeftThumbFingerprint = _futronicEnrollment.Template;
+
                     }
                     session[CommonConstants.CURRENT_FINGERPRINT_DATA] = _futronicEnrollment.Template;
 
@@ -418,15 +438,19 @@ namespace Enrolment
                     var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
                     var isPrimaryPhoto = session[CommonConstants.IS_PRIMARY_PHOTO];
                     //for testing purpose
-                    var tempBase64String = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAMSURBVBhXY/j//z8ABf4C/qc1gYQAAAAASUVORK5CYII=";
-                    var converToByte = Convert.FromBase64String(tempBase64String);
 
-                    var base64Str1 = "";
-                    var base64Str2 = "";
-                    if (image1 != null) base64Str1 = Convert.ToBase64String(image1);
-                    if (image2 != null) base64Str2 = Convert.ToBase64String(image2);
-                    currentEditUser.UserProfile.User_Photo1 = image1;
-                    currentEditUser.UserProfile.User_Photo2 = image2;
+                    string base64Str1 = "";
+                    string base64Str2 = "";
+                    if (image1 != null) { base64Str1 = Convert.ToBase64String(image1); }
+                        
+                    if (image2 != null) { base64Str2 = Convert.ToBase64String(image2); }
+                       
+                    if (currentEditUser != null)
+                    {
+                        currentEditUser.UserProfile.User_Photo1 = image1;
+                        currentEditUser.UserProfile.User_Photo2 = image2;
+                    }
+
                     if (currentPage != null && currentPage.ToString() == "EditSupervisee" && currentEditUser != null)
                     {
                         session[CommonConstants.CURRENT_EDIT_USER] = currentEditUser;
@@ -532,10 +556,10 @@ namespace Enrolment
             {
                 var profileModel = (Trinity.BE.ProfileModel)e.Data;
                 CSCallJS.LoadPageHtml(this.LayerWeb, "UpdateSuperviseeBiodata.html", profileModel);
-                if (profileModel.User.LeftThumbFingerprint != null && profileModel.User.RightThumbFingerprint != null)
+                if (profileModel.UserProfile.LeftThumbImage != null && profileModel.UserProfile.RightThumbImage != null)
                 {
-                    var leftFingerprint = Convert.ToBase64String(profileModel.User.LeftThumbFingerprint);
-                    var rightFingerprint = Convert.ToBase64String(profileModel.User.RightThumbFingerprint);
+                    var leftFingerprint = profileModel.UserProfile.LeftThumbImage;
+                    var rightFingerprint = profileModel.UserProfile.RightThumbImage;
 
                     LayerWeb.InvokeScript("setBase64FingerprintOnloadServerCall", leftFingerprint, rightFingerprint);
 
@@ -560,8 +584,30 @@ namespace Enrolment
                 Session session = Session.Instance;
                 session[CommonConstants.CURRENT_EDIT_USER] = profileModel;
                 CSCallJS.LoadPageHtml(this.LayerWeb, "Edit-Supervisee.html", profileModel);
-
-
+                // convert photo to base64 and add to html
+                string photo1 = "../images/usr-default.jpg";
+                string photo2 = "../images/usr-default.jpg";
+                if (profileModel.UserProfile.User_Photo1 != null)
+                {
+                    photo1 = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(profileModel.UserProfile.User_Photo1));
+                }
+                if (profileModel.UserProfile.User_Photo2 != null)
+                {
+                    photo2 = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(profileModel.UserProfile.User_Photo2));
+                }
+                LayerWeb.InvokeScript("setPhotoServerCall", photo1, photo2);
+                // convert fingerprint to base64 and add to html
+                string fingerprintLeft = "../images/fingerprint.png";
+                string fingerprintRight = "../images/fingerprint.png";
+                if (profileModel.User.LeftThumbFingerprint != null)
+                {
+                    fingerprintLeft = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(profileModel.User.LeftThumbFingerprint));
+                }
+                if (profileModel.User.RightThumbFingerprint != null)
+                {
+                    fingerprintRight = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(profileModel.User.RightThumbFingerprint));
+                }
+                LayerWeb.InvokeScript("setFingerprintServerCall", fingerprintLeft, fingerprintRight);
             }
             else if (e.Name == EventNames.SUPERVISEE_DATA_UPDATE_CANCELED)
             {

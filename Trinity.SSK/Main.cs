@@ -1,6 +1,8 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
@@ -43,8 +45,8 @@ namespace SSK
             // SmartCard
             Trinity.Common.Authentication.SmartCard.Instance.GetCardInfoSucceeded += GetCardInfoSucceeded;
             // Fingerprint
-            Trinity.Common.Authentication.Fingerprint.Instance.GetVerification += GetVerificationFingerprint;
-            Trinity.Common.Authentication.Fingerprint.Instance.GetHealthMonitor += GetHealthMonitorFingerprint;
+            Trinity.Common.Authentication.Fingerprint.Instance.OnIdentificationCompleted += Fingerprint_OnIdentificationCompleted;
+            Trinity.Common.Authentication.Fingerprint.Instance.OnDeviceDisconnected += Fingerprint_OnDeviceDisconnected;
 
 
             // NRIC
@@ -105,25 +107,38 @@ namespace SSK
             }
 
         }
-        private void GetHealthMonitorFingerprint(bool status)
+
+        /// <summary>
+        /// Fingerprint_OnDeviceDisconnected
+        /// </summary>
+        /// 
+        private void Fingerprint_OnDeviceDisconnected()
         {
-            if (!status)
-            {
-                _fingerprintFailed = 3;
-                Fingerprint_OnFingerprintFailed("The fingerprint does not work");
-            }
+            // set message
+            string message = "The fingerprint reader is not connected, please report to the Duty Officer!";
+
+            // Send Notification to duty officer
+            APIUtils.SignalR.SendNotificationToDutyOfficer("The fingerprinter is not connected", "The fingerprinter is not connected.");
+
+            // show message box to user
+            MessageBox.Show(message, "Authentication failed!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+            // navigate to smartcard login page
+            NavigateTo(NavigatorEnums.Authentication_SmartCard);
         }
-        private void GetVerificationFingerprint(bool bVerificationSuccess)
+
+        private void Fingerprint_OnIdentificationCompleted(bool bSuccess)
         {
-            if (!bVerificationSuccess)
+            if (!bSuccess)
             {
-                Fingerprint_OnFingerprintFailed("Unable to read your fingerprint. Please report to the Duty Officer");
+                Fingerprint_OnFingerprintFailed();
             }
             else
             {
                 Fingerprint_OnFingerprintSucceeded();
             }
         }
+
         private void GetCardInfoSucceeded(string cardUID)
         {
             // get local user info
@@ -231,6 +246,7 @@ namespace SSK
                 session[CommonConstants.USER_LOGIN] = user;
                 session.IsSmartCardAuthenticated = true;
                 session.IsFingerprintAuthenticated = true;
+
                 NavigateTo(NavigatorEnums.Authentication_Fingerprint);
                 //NavigateTo(NavigatorEnums.Supervisee);
                 //NavigateTo(NavigatorEnums.Authentication_NRIC);
@@ -292,7 +308,7 @@ namespace SSK
             if (_smartCardFailed > 3)
             {
                 // Send Notification to duty officer
-                APIUtils.SignalR.SendNotificationToDutyOfficer(message, message);
+                APIUtils.SignalR.SendNotificationToDutyOfficer(message, message, NotificationType.Error, EnumStations.SSK);
                 // show message box to user
                 MessageBox.Show(message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 // reset counter
@@ -313,6 +329,7 @@ namespace SSK
             FacialRecognition.Instance.Dispose();
             Fingerprint_OnFingerprintSucceeded();
         }
+
         private void FaceDetectFailed()
         {
             APIUtils.SignalR.SendNotificationToDutyOfficer("Fingerprint scans and facial identification failed", "Fingerprint scans and facial identification failed");
@@ -334,6 +351,10 @@ namespace SSK
         {
             // increase counter
             _fingerprintFailed++;
+
+            // get USER_LOGIN
+            Session session = Session.Instance;
+            Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
 
             // exceeded max failed
             if (_fingerprintFailed > 3)
@@ -363,6 +384,22 @@ namespace SSK
 
             // display failed on UI
             LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please place your finger on the reader. Failed: " + _fingerprintFailed + "');");
+
+            // restart identification
+            if (user != null)
+            {
+                List<byte[]> fingerprintTemplates = new List<byte[]>()
+                {
+                    user.LeftThumbFingerprint,
+                    user.RightThumbFingerprint
+                };
+
+                FingerprintReaderUtils.Instance.StartIdentification(fingerprintTemplates, Fingerprint_OnIdentificationCompleted);
+            }
+            else
+            {
+                Debug.WriteLine("Fingerprint_OnFingerprintFailed warning: USER_LOGIN is null, can not restart identification.");
+            }
         }
 
         private void Main_FormClosing(object sender, FormClosingEventArgs e)
