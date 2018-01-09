@@ -219,6 +219,7 @@
             headerTag: "h2",
             bodyTag: "section",
             transitionEffect: "slideLeft",
+            loading: "Processing ...",
             //enableCancelButton: true,
             onInit: function (event, currentIndex) {
                 var cancelA = $("<a>").attr("href", "#").attr("onclick", "api.server.LoadListSupervisee()").addClass("cancelBtn").text("Cancel");
@@ -273,7 +274,7 @@
 
                 return true;
             },
-            onFinishing: function (event, currentIndex) {
+            onFinished: function (event, currentIndex) {
                 api.server.LoadListSupervisee();
             }
         });
