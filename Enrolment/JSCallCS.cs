@@ -60,9 +60,7 @@ namespace Enrolment
 
         public void LoadListSupervisee()
         {
-
             EventCenter eventCenter = EventCenter.Default;
-            Session session = Session.Instance;
             var dalUser = new DAL_User();
             var dalUserProfile = new DAL_UserProfile();
             var dbUsers = dalUser.GetAllSupervisees(true);
