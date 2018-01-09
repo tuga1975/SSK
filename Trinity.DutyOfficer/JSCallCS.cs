@@ -107,6 +107,30 @@ namespace DutyOfficer
             this._web.LoadPopupHtml("BlockedPopupDetail.html", rawData);
         }
 
+        public void GetAllAppoinments()
+        {
+            var dalAppointment = new DAL_Appointments();
+            List<Appointment> data = dalAppointment.GetAllAppointments();
+
+            foreach(var item in data)
+            {
+                item.TimeSlot = GetDurationBetweenTwoTimespan(item.StartTime.Value, item.EndTime.Value);
+            }
+
+            object result = null;
+            if (data != null)
+            {
+                result = JsonConvert.SerializeObject(data, Formatting.Indented,
+                    new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
+            }
+            _web.InvokeScript("getDataCallback", result);
+        }
+        private TimeSpan GetDurationBetweenTwoTimespan(TimeSpan startTime, TimeSpan endTime)
+        {
+            TimeSpan duration = new TimeSpan(endTime.Ticks - startTime.Ticks);
+            return duration;
+        }
+
         public void LoadPopupMUBAndTTLabel(string json)
         {
             var rawdata = JsonConvert.DeserializeObject <Object>(json);
