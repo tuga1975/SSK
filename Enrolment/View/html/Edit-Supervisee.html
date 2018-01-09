@@ -20,22 +20,22 @@
 						<div class="col-7">
 							<div class="row">								
 								<div class="col">
-									<img class="avatar" id="userPhoto1" src="../images/usr-default.jpg" />
-									
+									<img class="avatar" id="userPhoto1" src="../images/usr-default.jpg" />									
+									<input type="hidden" name="User_Photo1" id="User_Photo1" value="" />									
 								</div>
 								<div class="col">
 									<img class="avatar" id="userPhoto2" src="../images/usr-default.jpg" />
-									
+									<input type="hidden" name="User_Photo1" id="User_Photo2" value="" />									
 								</div>
 							</div>
 						</div>
 						<div class="col-5">
 							<div class="row">
 								<div class="col">
-									<img class="avatar" src="../images/fingerprint.png" style="max-width:70%" />
+									<img class="avatar" id="LeftThumbFingerprint" src="../images/fingerprint.png" style="max-width:70%" />
 								</div>
 								<div class="col">
-									<img class="avatar" src="../images/fingerprint.png" style="max-width:70%" />
+									<img class="avatar" id="RightThumbFingerprint" src="../images/fingerprint.png" style="max-width:70%" />
 								</div>
 							</div>
 						</div>
@@ -241,7 +241,7 @@
 				<input class="" type="text" value="" placeholder="Next Of Kin" />
 				<input class="" type="text" value="" placeholder="Employment details" />
 				<div class="btn-group">
-					<button type="button" class="btn-form" >Save</button>
+					<button type="submit" class="btn-form" id="submitEditSupervise" >Save</button>
 					<button type="button" class="btn-form">Cancel</button>
 				</div>
 			</div>
@@ -258,31 +258,29 @@
 			<div class="clear"></div>
 		</div>
 		<div class="form-supervisee">
-			<form id="superviseeFrm">
-				<input class="name-supervisee" type="text" value="Update Photo" disabled="disabled" />
+			<input class="name-supervisee" type="text" value="Update Photo" disabled="disabled" />
 				<div class="tab-content" id="nav-tabContent">
-					<input type="hidden" name="userId" class="userId"  />
-					<div class="tab-pane fade show active" id="supervisee-details" role="tabpanel" aria-labelledby="nav-home-tab">
-						<div class="row updateSuperviseePhoto">	
-							<div class="col-2"></div>
-							<div class="col-4">
-								<img class="avatar" id="PopupUserPhoto1" src="../images/usr-default.jpg" />
-								<button type="button" class="btn-form" id="updatePhoto2" onclick="api.server.OpenPictureCaptureForm('1')">Take Picture 1</button>
-							</div>
-							<div class="col-4">
-								<img class="avatar" id="PopupUserPhoto2" src="../images/usr-default.jpg" />
-								<button type="button" class="btn-form" id="updatePhoto2" onclick="api.server.OpenPictureCaptureForm('2')">Take Picture 2</button>
-							</div>
-							<div class="col-2"></div>
-						</div>				
-					</div>
+				<input type="hidden" name="userId" class="userId"  />
+				<div class="tab-pane fade show active" id="supervisee-details" role="tabpanel" aria-labelledby="nav-home-tab">
+					<div class="row updateSuperviseePhoto">	
+						<div class="col-2"></div>
+						<div class="col-4">
+							<img class="avatar" id="PopupUserPhoto1" src="../images/usr-default.jpg" />
+							<button type="button" class="btn-form" id="updatePhoto2" onclick="api.server.OpenPictureCaptureForm('1')">Take Picture 1</button>
+						</div>
+						<div class="col-4">
+							<img class="avatar" id="PopupUserPhoto2" src="../images/usr-default.jpg" />
+							<button type="button" class="btn-form" id="updatePhoto2" onclick="api.server.OpenPictureCaptureForm('2')">Take Picture 2</button>
+						</div>
+						<div class="col-2"></div>
+					</div>				
 				</div>
+			</div>
 			
-				<div class="btn-group">
-					<button type="button" class="btn-form" onclick="hidePopUp()" >Update</button>
-					<button type="button" class="btn-form" onclick="api.server.CancelCapturePicture();">Cancel</button>
-				</div>
-			</form>
+			<div class="btn-group">
+				<button type="button" class="btn-form" onclick="hidePopUp()" >Update</button>
+				<button type="button" class="btn-form" onclick="api.server.CancelCapturePicture();">Cancel</button>
+			</div>
 		</div>
 	</div>
 </div>
@@ -293,6 +291,11 @@
 		});
         if (api.model != null) {
 			$('.userId').val(api.model.User.UserId);
+			// Biodata
+			
+			/*$('#userPhoto2').attr("src",Convert.ToBase64String(api.model.User.LeftThumbFingerprint));
+			$('#userPhoto2').attr("src",Convert.ToBase64String(api.model.User.RightThumbFingerprint));
+			*/
 			// NextOfKin
 			$('.nok_name').val(api.model.UserProfile.NextOfKin_Name);
 			$('.nok_contact_number').val(api.model.UserProfile.NextOfKin_Contact_Number);
@@ -322,7 +325,14 @@
         }
 
     });
+	function setPhotoServerCall(photo1, photo2){
+		$('#userPhoto1').attr("src", 'data:image/jpg;base64,' + photo1);
+		$('#userPhoto2').attr("src", 'data:image/jpg;base64,' + photo2);
+	}
 
+	$("#SaveBtn").on('click', function(){
+		$("#superviseeFrm").trigger('submit');
+	});
 	$("#superviseeFrm").submit(function(e){
 		var $form = $("#superviseeFrm");
         var data = getFormData($form);

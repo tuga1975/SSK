@@ -561,6 +561,9 @@ namespace Enrolment
                 session[CommonConstants.CURRENT_EDIT_USER] = profileModel;
                 CSCallJS.LoadPageHtml(this.LayerWeb, "Edit-Supervisee.html", profileModel);
 
+                var photo1 = Convert.ToBase64String(profileModel.UserProfile.User_Photo1);
+                var photo2 = Convert.ToBase64String(profileModel.UserProfile.User_Photo2);
+                LayerWeb.InvokeScript("setPhotoServerCall", photo1, photo2);
 
             }
             else if (e.Name == EventNames.SUPERVISEE_DATA_UPDATE_CANCELED)

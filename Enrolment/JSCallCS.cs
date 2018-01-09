@@ -249,6 +249,7 @@ namespace Enrolment
                 UserProfile = dalUserProfile.GetUserProfileByUserId(userId, true),
                 Addresses = dalUserProfile.GetAddressByUserId(userId, true)
             };
+                        
             if (profileModel.Addresses == null)
             {
                 profileModel.Addresses = new Trinity.BE.Address();
@@ -295,6 +296,8 @@ namespace Enrolment
                 var residential_Addess_ID = address.SaveAddress(rawDataAddress, true);
                 data.UserProfile.Residential_Addess_ID = residential_Addess_ID;
                 data.UserProfile.Other_Address_ID = residential_Addess_ID;
+                data.UserProfile.User_Photo1 = ProfileModel.UserProfile.User_Photo1;
+                data.UserProfile.User_Photo2 = ProfileModel.UserProfile.User_Photo2;
 
                 // add some some old data not change
                 data.User.Name = ProfileModel.User.Name;
