@@ -42,7 +42,7 @@ namespace SSA
             // SmartCard
             Trinity.Common.Authentication.SmartCard.Instance.GetCardInfoSucceeded += GetCardInfoSucceeded;
             // Fingerprint
-            Trinity.Common.Authentication.Fingerprint.Instance.GetVerification += GetVerificationFingerprint;
+            Trinity.Common.Authentication.Fingerprint.Instance.OnVerifiedCompleted += Fingerprint_OnVerifiedCompleted;
             Trinity.Common.Authentication.Fingerprint.Instance.GetHealthMonitor += GetHealthMonitorFingerprint;
 
             // NRIC
@@ -71,7 +71,7 @@ namespace SSA
                 Fingerprint_OnFingerprintFailed("The fingerprint does not work");
             }
         }
-        private void GetVerificationFingerprint(bool bVerificationSuccess)
+        private void Fingerprint_OnVerifiedCompleted(bool bVerificationSuccess)
         {
             if (!bVerificationSuccess)
             {

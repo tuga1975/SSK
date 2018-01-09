@@ -38,7 +38,7 @@ namespace DutyOfficer
             // SmartCard
             Trinity.Common.Authentication.SmartCard.Instance.GetCardInfoSucceeded += GetCardInfoSucceeded;
             // Fingerprint
-            Trinity.Common.Authentication.Fingerprint.Instance.GetVerification += GetVerificationFingerprint;
+            Trinity.Common.Authentication.Fingerprint.Instance.OnVerifiedCompleted += Fingerprint_OnVerifiedCompleted;
             Trinity.Common.Authentication.Fingerprint.Instance.GetHealthMonitor += GetHealthMonitorFingerprint;
 
             #endregion
@@ -57,7 +57,7 @@ namespace DutyOfficer
                 LayerWeb.RunScript("alert('The fingerprint does not work');");
             }
         }
-        private void GetVerificationFingerprint(bool bVerificationSuccess)
+        private void Fingerprint_OnVerifiedCompleted(bool bVerificationSuccess)
         {
             if (!bVerificationSuccess)
             {

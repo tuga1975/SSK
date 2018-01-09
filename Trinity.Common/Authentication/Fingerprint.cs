@@ -18,7 +18,7 @@ namespace Trinity.Common.Authentication
 
         private Fingerprint()
         {
-            
+
         }
 
         public static Fingerprint Instance
@@ -39,7 +39,7 @@ namespace Trinity.Common.Authentication
         #endregion
 
 
-        public event Action<bool> GetVerification;
+        public event Action<bool> OnVerifiedCompleted;
         public event Action<bool> GetHealthMonitor;
 
         private List<byte[]> fingerprintArray;
@@ -59,8 +59,10 @@ namespace Trinity.Common.Authentication
         }
         private void OnVerificationComplete(bool bVerificationSuccess)
         {
-            if (GetVerification != null)
-                GetVerification(bVerificationSuccess);
+            if (OnVerifiedCompleted != null)
+            {
+                OnVerifiedCompleted(bVerificationSuccess);
+            }
         }
     }
 }

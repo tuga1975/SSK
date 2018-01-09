@@ -44,7 +44,7 @@ namespace SSK
             // SmartCard
             Trinity.Common.Authentication.SmartCard.Instance.GetCardInfoSucceeded += GetCardInfoSucceeded;
             // Fingerprint
-            Trinity.Common.Authentication.Fingerprint.Instance.GetVerification += GetVerificationFingerprint;
+            Trinity.Common.Authentication.Fingerprint.Instance.OnVerifiedCompleted += Fingperprint_OnVerifiedCompleted;
             Trinity.Common.Authentication.Fingerprint.Instance.GetHealthMonitor += GetHealthMonitorFingerprint;
 
 
@@ -114,7 +114,7 @@ namespace SSK
                 Fingerprint_OnFingerprintFailed("The fingerprint does not work");
             }
         }
-        private void GetVerificationFingerprint(bool bVerificationSuccess)
+        private void Fingperprint_OnVerifiedCompleted(bool bVerificationSuccess)
         {
             if (!bVerificationSuccess)
             {
@@ -221,20 +221,20 @@ namespace SSK
             if (_isFirstTimeLoaded)
             {
                 // Start page
-                //NavigateTo(NavigatorEnums.Authentication_SmartCard);
+                NavigateTo(NavigatorEnums.Authentication_SmartCard);
 
                 // For testing purpose
-                Session session = Session.Instance;
-                ////Supervisee
-                Trinity.BE.User user = new DAL_User().GetUserByUserId("bb67863c-c330-41aa-b397-c220428ad16f", true);
-                //// Duty Officer
-                //Trinity.BE.User user = new DAL_User().GetUserByUserId("ead039f9-b9a1-45bb-8186-0bb7248aafac", true);
-                session[CommonConstants.USER_LOGIN] = user;
-                session.IsSmartCardAuthenticated = true;
-                session.IsFingerprintAuthenticated = true;
-                NavigateTo(NavigatorEnums.Authentication_Fingerprint);
-                //NavigateTo(NavigatorEnums.Supervisee);
-                //NavigateTo(NavigatorEnums.Authentication_NRIC);
+                //Session session = Session.Instance;
+                //////Supervisee
+                //Trinity.BE.User user = new DAL_User().GetUserByUserId("bb67863c-c330-41aa-b397-c220428ad16f", true);
+                ////// Duty Officer
+                ////Trinity.BE.User user = new DAL_User().GetUserByUserId("ead039f9-b9a1-45bb-8186-0bb7248aafac", true);
+                //session[CommonConstants.USER_LOGIN] = user;
+                //session.IsSmartCardAuthenticated = true;
+                //session.IsFingerprintAuthenticated = true;
+                //NavigateTo(NavigatorEnums.Authentication_Fingerprint);
+                ////NavigateTo(NavigatorEnums.Supervisee);
+                ////NavigateTo(NavigatorEnums.Authentication_NRIC);
 
                 _isFirstTimeLoaded = false;
             }
@@ -322,11 +322,16 @@ namespace SSK
             _facedetectFailed++;
             if (_facedetectFailed == 2)
             {
+                string errMsg = string.Empty;
+                if (user.User_Photo1 == null && user.User_Photo2 == null)
+                {
+                    errMsg = "The supervisee '" + user.Name + "' hasn't taken photo yet";
+                }
                 // Send Notification to duty officer
-                APIUtils.SignalR.SendNotificationToDutyOfficer("Fingerprint scans and facial identification failed", "Fingerprint scans and facial identification failed", NotificationType.Error, EnumStations.SSK);
+                APIUtils.SignalR.SendNotificationToDutyOfficer("Facial Authentication failed", errMsg, NotificationType.Error, EnumStations.SSK);
 
                 // show message box to user
-                MessageBox.Show("Fingerprint scans and facial identification failed", "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(errMsg, "Facial Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
                 // navigate to smartcard login page
                 NavigateTo(NavigatorEnums.Authentication_SmartCard);
@@ -347,6 +352,7 @@ namespace SSK
                 FaceDetectFailed();
             }
         }
+
         private void Fingerprint_OnFingerprintFailed(string message)
         {
             // increase counter
