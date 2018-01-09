@@ -19,6 +19,8 @@ public static class CommonConstants
     public const string CURRENT_PAGE = "CurrentPage";
     public const string CURRENT_PHOTO_DATA = "CurrentPhotoData";
     public const string CURRENT_FINGERPRINT_DATA = "CurrentFingerprintData";
+    public const string CURRENT_LEFT_FINGERPRINT_IMAGE = "CurrentLEFTFingerprintImage";
+    public const string CURRENT_RIGHT_FINGERPRINT_IMAGE = "CurrentRightFingerprintImage";
     public const string IS_RIGHT_THUMB = "CurrentFinger";
     public const string IS_PRIMARY_PHOTO = "CurrentPhoto";
     public const string CURRENT_EDIT_USER = "CurrentEditUser";
