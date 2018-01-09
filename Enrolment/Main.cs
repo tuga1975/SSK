@@ -128,13 +128,21 @@ namespace Enrolment
 
                     var base64Str = Convert.ToBase64String(byteData);
 
-
+                   
                     if (session[CommonConstants.CURRENT_FINGERPRINT_DATA] != null)
                     {
 
                         if (session[CommonConstants.IS_RIGHT_THUMB] != null)
                         {
                             var isRight = (bool)session[CommonConstants.IS_RIGHT_THUMB];
+                            if (isRight)
+                            {
+                                session[CommonConstants.CURRENT_RIGHT_FINGERPRINT_IMAGE] = base64Str;
+                            }
+                            else
+                            {
+                                session[CommonConstants.CURRENT_LEFT_FINGERPRINT_IMAGE] = base64Str;
+                            }
                             LayerWeb.InvokeScript("setBase64FingerprintOnloadServerCall", isRight, base64Str);
                         }
                     }
@@ -186,8 +194,19 @@ namespace Enrolment
 
                 //set data for curent edit user
                 var profileModel = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
+                var leftThumbImage = (string)session[CommonConstants.CURRENT_LEFT_FINGERPRINT_IMAGE];
+                var rightThumbImage = (string)session[CommonConstants.CURRENT_RIGHT_FINGERPRINT_IMAGE];
                 if (profileModel != null)
                 {
+                    if (!string.IsNullOrEmpty(leftThumbImage))
+                    {
+                        profileModel.UserProfile.LeftThumbImage = leftThumbImage;
+                    }
+                    if (!string.IsNullOrEmpty(rightThumbImage))
+                    {
+                        profileModel.UserProfile.RightThumbImage = rightThumbImage;
+                    }
+
                     if (isRight)
                     {
                         profileModel.User.RightThumbFingerprint = _futronicEnrollment.Template;
@@ -196,6 +215,7 @@ namespace Enrolment
                     else
                     {
                         profileModel.User.LeftThumbFingerprint = _futronicEnrollment.Template;
+
                     }
                     session[CommonConstants.CURRENT_FINGERPRINT_DATA] = _futronicEnrollment.Template;
 
