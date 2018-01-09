@@ -17,7 +17,8 @@ public enum NavigatorEnums
     Supervisee_NRIC = 8,
     Supervisee_Particulars = 9,
     Login = 10,
-    WebcamCapture = 11
+    WebcamCapture = 11,
+    Authentication_Facial = 12
 };
 
 
@@ -244,7 +245,7 @@ public static class EnumStations
 
     public static List<string> GetListStation()
     {
-        return new List<string>() { SSK,SSA,UHP,APS,HSA,ESP};
+        return new List<string>() { SSK, SSA, UHP, APS, HSA, ESP };
     }
 
 }

@@ -36,9 +36,12 @@ namespace Trinity.Common
 
         public bool IsFingerprintAuthenticated { get; set; }
 
+        public bool IsFacialAuthenticated { get; set; }
+
+
         public bool IsUserNamePasswordAuthenticated { get; set; }
 
-        public bool IsAuthenticated => (IsSmartCardAuthenticated & IsFingerprintAuthenticated) | IsUserNamePasswordAuthenticated;
+        public bool IsAuthenticated => (IsSmartCardAuthenticated & (IsFingerprintAuthenticated | IsFacialAuthenticated)) | IsUserNamePasswordAuthenticated;
 
         public string Role { get; set; }
 

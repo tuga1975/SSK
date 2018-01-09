@@ -218,7 +218,6 @@ namespace SSK
             }
             catch (Exception ex)
             {
-
                 return;
             }
         }
@@ -235,21 +234,21 @@ namespace SSK
             if (_isFirstTimeLoaded)
             {
                 // Start page
-                //NavigateTo(NavigatorEnums.Authentication_SmartCard);
+                NavigateTo(NavigatorEnums.Authentication_SmartCard);
 
-                // For testing purpose
-                Session session = Session.Instance;
-                ////Supervisee
-                Trinity.BE.User user = new DAL_User().GetUserByUserId("bb67863c-c330-41aa-b397-c220428ad16f", true);
-                //// Duty Officer
-                //Trinity.BE.User user = new DAL_User().GetUserByUserId("ead039f9-b9a1-45bb-8186-0bb7248aafac", true);
-                session[CommonConstants.USER_LOGIN] = user;
-                session.IsSmartCardAuthenticated = true;
-                session.IsFingerprintAuthenticated = true;
+                //// For testing purpose
+                //Session session = Session.Instance;
+                //////Supervisee
+                //Trinity.BE.User user = new DAL_User().GetUserByUserId("bb67863c-c330-41aa-b397-c220428ad16f", true);
+                ////// Duty Officer
+                ////Trinity.BE.User user = new DAL_User().GetUserByUserId("ead039f9-b9a1-45bb-8186-0bb7248aafac", true);
+                //session[CommonConstants.USER_LOGIN] = user;
+                //session.IsSmartCardAuthenticated = true;
+                //session.IsFingerprintAuthenticated = true;
 
-                NavigateTo(NavigatorEnums.Authentication_Fingerprint);
-                //NavigateTo(NavigatorEnums.Supervisee);
-                //NavigateTo(NavigatorEnums.Authentication_NRIC);
+                ////NavigateTo(NavigatorEnums.Authentication_Fingerprint);
+                ////NavigateTo(NavigatorEnums.Supervisee);
+                ////NavigateTo(NavigatorEnums.Authentication_NRIC);                
 
                 _isFirstTimeLoaded = false;
             }
@@ -260,6 +259,117 @@ namespace SSK
             // navigate to Supervisee page
             NavigateTo(NavigatorEnums.Supervisee);
         }
+
+
+        #region Smart Card Authentication
+        private void SmartCard_OnSmartCardSucceeded()
+        {
+            // Pause for 1 second and goto Fingerprint Login Screen
+            Thread.Sleep(1000);
+
+            // navigate to next page: Authentication_Fingerprint
+            //NavigateTo(NavigatorEnums.Authentication_Fingerprint);
+
+            // Testing purpose
+            NavigateTo(NavigatorEnums.Authentication_Facial);
+        }
+
+        private void SmartCard_OnSmartCardFailed(string message)
+        {
+            // increase counter
+            _smartCardFailed++;
+
+            // exceeded max failed
+            if (_smartCardFailed > 3)
+            {
+                // Send Notification to duty officer
+                APIUtils.SignalR.SendNotificationToDutyOfficer(message, message, NotificationType.Error, EnumStations.SSK);
+                // show message box to user
+                MessageBox.Show(message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                // reset counter
+                _smartCardFailed = 0;
+                // display failed on UI
+                LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please place your smart card on the reader.');");
+                return;
+            }
+
+            // display failed on UI
+            LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please place your smart card on the reader. Failed: " + _smartCardFailed + "');");
+        }
+
+        #endregion
+
+        #region Facial Authentication Event Handlers
+        private void Main_OnFacialRecognitionSucceeded()
+        {
+            LayerWeb.RunScript("$('.status-text').css('color','#000').text('You have been authenticated.');");
+            FacialRecognition.Instance.OnFacialRecognitionFailed -= Main_OnFacialRecognitionFailed;
+            FacialRecognition.Instance.OnFacialRecognitionSucceeded -= Main_OnFacialRecognitionSucceeded;
+            FacialRecognition.Instance.OnFacialRecognitionProcessing -= Main_OnFacialRecognitionProcessing;
+            this.Invoke((MethodInvoker)(() =>
+            {
+                FacialRecognition.Instance.Dispose();
+            }));
+
+            //
+            // Login successfully
+            //
+            // Create a session object to store UserLogin information
+            Session session = Session.Instance;
+            session.IsFacialAuthenticated = true;
+
+
+            APIUtils.SignalR.GetLatestNotifications();
+
+            Thread.Sleep(1000);
+
+            // if role = 0 (duty officer), redirect to NRIC.html
+            // else (supervisee), redirect to Supervisee.html
+            Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+            if (user.Role == EnumUserRoles.DutyOfficer)
+            {
+                // navigate to Authentication_NRIC
+                NavigateTo(NavigatorEnums.Authentication_NRIC);
+            }
+            else
+            {
+                // navigate to Supervisee page
+                NavigateTo(NavigatorEnums.Supervisee);
+            }
+        }
+
+        private void Main_OnFacialRecognitionProcessing()
+        {
+            LayerWeb.RunScript("$('.status-text').css('color','#000').text('Scanning your face...');");
+        }
+
+        private void Main_OnFacialRecognitionFailed()
+        {
+            FacialRecognition.Instance.OnFacialRecognitionFailed -= Main_OnFacialRecognitionFailed;
+            FacialRecognition.Instance.OnFacialRecognitionSucceeded -= Main_OnFacialRecognitionSucceeded;
+            FacialRecognition.Instance.OnFacialRecognitionProcessing -= Main_OnFacialRecognitionProcessing;
+            this.Invoke((MethodInvoker)(() =>
+            {
+                FacialRecognition.Instance.Dispose();
+            }));
+
+
+            APIUtils.SignalR.SendNotificationToDutyOfficer("Facial authentication failed", "Facial authentication failed");
+
+            // show message box to user
+            MessageBox.Show("Facial authentication failed", "Facial Authentication", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+            // navigate to smartcard login page
+            NavigateTo(NavigatorEnums.Authentication_SmartCard);
+
+            // reset counter
+            _fingerprintFailed = 0;
+
+        }
+
+        #endregion
+
+        #region Fingerprint Authentication Event Handlers
 
         private void Fingerprint_OnFingerprintSucceeded()
         {
@@ -290,64 +400,7 @@ namespace SSK
             }
         }
 
-        private void SmartCard_OnSmartCardSucceeded()
-        {
-            // Pause for 1 second and goto Fingerprint Login Screen
-            Thread.Sleep(1000);
-
-            // navigate to next page: Authentication_Fingerprint
-            NavigateTo(NavigatorEnums.Authentication_Fingerprint);
-        }
-
-        private void SmartCard_OnSmartCardFailed(string message)
-        {
-            // increase counter
-            _smartCardFailed++;
-
-            // exceeded max failed
-            if (_smartCardFailed > 3)
-            {
-                // Send Notification to duty officer
-                APIUtils.SignalR.SendNotificationToDutyOfficer(message, message, NotificationType.Error, EnumStations.SSK);
-                // show message box to user
-                MessageBox.Show(message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                // reset counter
-                _smartCardFailed = 0;
-                // display failed on UI
-                LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please place your smart card on the reader.');");
-                return;
-            }
-
-            // display failed on UI
-            LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please place your smart card on the reader. Failed: " + _smartCardFailed + "');");
-        }
-
-        private void FaceDetectSucceeded()
-        {
-            FacialRecognition.Instance.FaceDetectFailed -= FaceDetectFailed;
-            FacialRecognition.Instance.FaceDetectSucceeded -= FaceDetectSucceeded;
-            FacialRecognition.Instance.Dispose();
-            Fingerprint_OnFingerprintSucceeded();
-        }
-
-        private void FaceDetectFailed()
-        {
-            APIUtils.SignalR.SendNotificationToDutyOfficer("Fingerprint scans and facial identification failed", "Fingerprint scans and facial identification failed");
-
-            // show message box to user
-            MessageBox.Show("Fingerprint scans and facial identification failed", "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-            // navigate to smartcard login page
-            NavigateTo(NavigatorEnums.Authentication_SmartCard);
-
-            // reset counter
-            _fingerprintFailed = 0;
-
-            FacialRecognition.Instance.FaceDetectFailed -= FaceDetectFailed;
-            FacialRecognition.Instance.FaceDetectSucceeded -= FaceDetectSucceeded;
-            FacialRecognition.Instance.Dispose();
-        }
-        private void Fingerprint_OnFingerprintFailed(string message)
+        private void Fingerprint_OnFingerprintFailed()
         {
             // increase counter
             _fingerprintFailed++;
@@ -359,25 +412,11 @@ namespace SSK
             // exceeded max failed
             if (_fingerprintFailed > 3)
             {
-                //#region Remove Khi có Face Scan
-                //// Send Notification to duty officer
-                //APIUtils.SignalR.SendNotificationToDutyOfficer("Fingerprint scans and facial identification failed", "Fingerprint scans and facial identification failed");
+                // Pause for 1 second and goto Facial Login Screen
+                Thread.Sleep(1000);
 
-                //// show message box to user
-                //MessageBox.Show("Fingerprint scans and facial identification failed", "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-                //// navigate to smartcard login page
-                //NavigateTo(NavigatorEnums.Authentication_SmartCard);
-
-                //// reset counter
-                //_fingerprintFailed = 0;
-                //#endregion
-                Session session = Session.Instance;
-                Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-
-                FacialRecognition.Instance.FaceDetectFailed += FaceDetectFailed;
-                FacialRecognition.Instance.FaceDetectSucceeded += FaceDetectSucceeded;
-                FacialRecognition.Instance.Compare(new System.Collections.Generic.List<byte[]>() { user.User_Photo1, user.User_Photo2 } );
+                // Navigate to next page: Facial Authentication
+                NavigateTo(NavigatorEnums.Authentication_Facial);
 
                 return;
             }
@@ -401,6 +440,7 @@ namespace SSK
                 Debug.WriteLine("Fingerprint_OnFingerprintFailed warning: USER_LOGIN is null, can not restart identification.");
             }
         }
+        #endregion
 
         private void Main_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -448,6 +488,20 @@ namespace SSK
                     Console.WriteLine("File missing:\n");
                     Console.WriteLine(ex.FileName);
                 }
+            }
+            else if (navigatorEnum == NavigatorEnums.Authentication_Facial)
+            {
+                Session session = Session.Instance;
+                Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+                LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please wait while initializing camera...');");
+                FacialRecognition.Instance.OnFacialRecognitionFailed += Main_OnFacialRecognitionFailed;
+                FacialRecognition.Instance.OnFacialRecognitionSucceeded += Main_OnFacialRecognitionSucceeded;
+                FacialRecognition.Instance.OnFacialRecognitionProcessing += Main_OnFacialRecognitionProcessing;
+
+                this.Invoke((MethodInvoker)(() =>
+                {
+                    FacialRecognition.Instance.StartFacialRecognition(new System.Collections.Generic.List<byte[]>() { user.User_Photo1, user.User_Photo2 });
+                }));
             }
             else if (navigatorEnum == NavigatorEnums.Authentication_NRIC)
             {
