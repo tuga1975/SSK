@@ -425,8 +425,12 @@ namespace Enrolment
                     var base64Str2 = "";
                     if (image1 != null) base64Str1 = Convert.ToBase64String(image1);
                     if (image2 != null) base64Str2 = Convert.ToBase64String(image2);
-                    currentEditUser.UserProfile.User_Photo1 = image1;
-                    currentEditUser.UserProfile.User_Photo2 = image2;
+                    if (currentEditUser!=null)
+                    {
+                        currentEditUser.UserProfile.User_Photo1 = image1;
+                        currentEditUser.UserProfile.User_Photo2 = image2;
+                    }
+                  
                     if (currentPage != null && currentPage.ToString() == "EditSupervisee" && currentEditUser != null)
                     {
                         session[CommonConstants.CURRENT_EDIT_USER] = currentEditUser;
@@ -560,19 +564,30 @@ namespace Enrolment
                 Session session = Session.Instance;
                 session[CommonConstants.CURRENT_EDIT_USER] = profileModel;
                 CSCallJS.LoadPageHtml(this.LayerWeb, "Edit-Supervisee.html", profileModel);
-
-                string photo1 = string.Empty;
-                string photo2 = string.Empty;
-                if (profileModel.UserProfile != null && profileModel.UserProfile.User_Photo1 != null)
+                // convert photo to base64 and add to html
+                string photo1 = "../images/usr-default.jpg";
+                string photo2 = "../images/usr-default.jpg";
+                if (profileModel.UserProfile.User_Photo1 != null)
                 {
-                    photo1 = Convert.ToBase64String(profileModel.UserProfile.User_Photo1);
+                    photo1 = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(profileModel.UserProfile.User_Photo1));
                 }
-                if (profileModel.UserProfile != null && profileModel.UserProfile.User_Photo1 != null)
+                if (profileModel.UserProfile.User_Photo2 != null)
                 {
-                    photo2 = Convert.ToBase64String(profileModel.UserProfile.User_Photo2);
+                    photo2 = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(profileModel.UserProfile.User_Photo2));
                 }
                 LayerWeb.InvokeScript("setPhotoServerCall", photo1, photo2);
-
+                // convert fingerprint to base64 and add to html
+                string fingerprintLeft = "../images/fingerprint.png";
+                string fingerprintRight = "../images/fingerprint.png";
+                if (profileModel.User.LeftThumbFingerprint != null)
+                {
+                    fingerprintLeft = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(profileModel.User.LeftThumbFingerprint));
+                }
+                if (profileModel.User.RightThumbFingerprint != null)
+                {
+                    fingerprintRight = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(profileModel.User.RightThumbFingerprint));
+                }
+                LayerWeb.InvokeScript("setFingerprintServerCall", fingerprintLeft, fingerprintRight);
             }
             else if (e.Name == EventNames.SUPERVISEE_DATA_UPDATE_CANCELED)
             {

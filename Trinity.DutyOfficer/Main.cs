@@ -1,6 +1,8 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
@@ -38,8 +40,8 @@ namespace DutyOfficer
             // SmartCard
             Trinity.Common.Authentication.SmartCard.Instance.GetCardInfoSucceeded += GetCardInfoSucceeded;
             // Fingerprint
-            Trinity.Common.Authentication.Fingerprint.Instance.OnVerifiedCompleted += Fingerprint_OnVerifiedCompleted;
-            Trinity.Common.Authentication.Fingerprint.Instance.GetHealthMonitor += GetHealthMonitorFingerprint;
+            Trinity.Common.Authentication.Fingerprint.Instance.OnIdentificationCompleted += Fingerprint_OnIdentificationCompleted;
+            Trinity.Common.Authentication.Fingerprint.Instance.OnDeviceDisconnected += Fingerprint_OnDeviceDisconnected;
 
             #endregion
 
@@ -50,24 +52,23 @@ namespace DutyOfficer
 
         }
 
-        private void GetHealthMonitorFingerprint(bool status)
+        private void Fingerprint_OnDeviceDisconnected()
         {
-            if (!status)
-            {
-                LayerWeb.RunScript("alert('The fingerprint does not work');");
-            }
+            LayerWeb.RunScript("alert('The fingerprint does not work');");
         }
-        private void Fingerprint_OnVerifiedCompleted(bool bVerificationSuccess)
+
+        private void Fingerprint_OnIdentificationCompleted(bool bVerificationSuccess)
         {
             if (!bVerificationSuccess)
             {
-                Fingerprint_OnFingerprintFailed("Unable to read your fingerprint. Please report to the Duty Officer");
+                Fingerprint_OnFingerprintFailed();
             }
             else
             {
                 Fingerprint_OnFingerprintSucceeded();
             }
         }
+
         private void GetCardInfoSucceeded(string cardUID)
         {
             // get local user info
@@ -154,7 +155,7 @@ namespace DutyOfficer
             LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please place your smart card on the reader. Failed: " + _smartCardFailed + "');");
         }
 
-        private void Fingerprint_OnFingerprintFailed(string message)
+        private void Fingerprint_OnFingerprintFailed()
         {
             // increase counter
             _fingerprintFailed++;
@@ -162,6 +163,7 @@ namespace DutyOfficer
             // exceeded max failed
             if (_fingerprintFailed > 3)
             {
+                string message = "Unable to read your fingerprint. Please report to the Duty Officer";
                 // Send Notification to duty officer
                 APIUtils.SignalR.SendNotificationToDutyOfficer(message, message);
 
@@ -179,6 +181,23 @@ namespace DutyOfficer
 
             // display failed on UI
             LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please place your finger on the reader. Failed: " + _fingerprintFailed + "');");
+
+            // restart identification
+            Trinity.BE.User user = (Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN];
+            if (user != null)
+            {
+                List<byte[]> fingerprintTemplates = new List<byte[]>()
+                {
+                    user.LeftThumbFingerprint,
+                    user.RightThumbFingerprint
+                };
+
+                FingerprintReaderUtils.Instance.StartIdentification(fingerprintTemplates, Fingerprint_OnIdentificationCompleted);
+            }
+            else
+            {
+                Debug.WriteLine("Fingerprint_OnFingerprintFailed warning: USER_LOGIN is null, can not restart identification.");
+            }
         }
 
         private void NavigateTo(NavigatorEnums navigatorEnum)
@@ -225,10 +244,12 @@ namespace DutyOfficer
                 CSCallJS.DisplayLogoutButton(this.LayerWeb, _displayLoginButtonStatus);
             }
         }
+
         private void OnShowMessage(object sender, ShowMessageEventArgs e)
         {
             MessageBox.Show(e.Message, e.Caption, e.Button, e.Icon);
         }
+
         private void Main_Load(object sender, EventArgs e)
         {
             //FormQueueNumber f = FormQueueNumber.GetInstance();

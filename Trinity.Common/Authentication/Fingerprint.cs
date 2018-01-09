@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using Trinity.Common;
@@ -18,7 +19,7 @@ namespace Trinity.Common.Authentication
 
         private Fingerprint()
         {
-
+            
         }
 
         public static Fingerprint Instance
@@ -38,31 +39,38 @@ namespace Trinity.Common.Authentication
         }
         #endregion
 
+        public event Action<bool> OnIdentificationCompleted;
+        public event Action OnDeviceDisconnected;
 
-        public event Action<bool> OnVerifiedCompleted;
-        public event Action<bool> GetHealthMonitor;
+        private List<byte[]> _fingerprintTemplates;
 
-        private List<byte[]> fingerprintArray;
-        public void Start(List<byte[]> fingerprintArray)
+        public void Start(List<byte[]> fingerprintTemplates)
         {
-            this.fingerprintArray = fingerprintArray;
-            Trinity.Common.FingerprintReaderUtils.Instance.GetDeviceStatus(GetHealthMonitorEvent);
-        }
-        private void GetHealthMonitorEvent(bool bSuccess, int nResult, bool bVerificationSuccess)
-        {
-            if (bSuccess)
+            _fingerprintTemplates = fingerprintTemplates;
+
+            // get fingerprint reader status
+            var fingerprintReaderStatus = FingerprintReaderUtils.Instance.GetDeviceStatus();
+
+            // if status is disconnected, raise disconnected event
+            if (!fingerprintReaderStatus.Contains(EnumDeviceStatuses.Connected))
             {
-                Trinity.Common.FingerprintReaderUtils.Instance.StartIdentification(this.fingerprintArray, OnVerificationComplete);
+                RaiseDeviceDisconnectedEvent();
             }
-            if (GetHealthMonitor != null)
-                GetHealthMonitor(bSuccess);
-        }
-        private void OnVerificationComplete(bool bVerificationSuccess)
-        {
-            if (OnVerifiedCompleted != null)
+            else
             {
-                OnVerifiedCompleted(bVerificationSuccess);
+                // start identification
+                FingerprintReaderUtils.Instance.StartIdentification(_fingerprintTemplates, RaiseIdentificationCompletedEvent);
             }
+        }
+
+        private void RaiseIdentificationCompletedEvent(bool bVerificationSuccess)
+        {
+            OnIdentificationCompleted?.Invoke(bVerificationSuccess);
+        }
+
+        private void RaiseDeviceDisconnectedEvent()
+        {
+            OnDeviceDisconnected?.Invoke();
         }
     }
 }
