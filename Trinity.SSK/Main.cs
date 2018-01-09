@@ -370,6 +370,10 @@ namespace SSK
             // increase counter
             _fingerprintFailed++;
 
+            // get USER_LOGIN
+            Session session = Session.Instance;
+            Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+
             // exceeded max failed
             if (_fingerprintFailed > 3)
             {
@@ -386,8 +390,6 @@ namespace SSK
                 //// reset counter
                 //_fingerprintFailed = 0;
                 //#endregion
-                Session session = Session.Instance;
-                Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
                 if (user.User_Photo1 == null && user.User_Photo2 == null)
                 {
                     _facedetectFailed++;
@@ -406,7 +408,6 @@ namespace SSK
             LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please place your finger on the reader. Failed: " + _fingerprintFailed + "');");
 
             // restart identification
-            Trinity.BE.User user = (Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN];
             if (user != null)
             {
                 List<byte[]> fingerprintTemplates = new List<byte[]>()
