@@ -293,7 +293,7 @@ namespace SSK
             if (_smartCardFailed > 3)
             {
                 // Send Notification to duty officer
-                APIUtils.SignalR.SendNotificationToDutyOfficer(message, message);
+                APIUtils.SignalR.SendNotificationToDutyOfficer(message, message, NotificationType.Error, EnumStations.SSK);
                 // show message box to user
                 MessageBox.Show(message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 // reset counter
@@ -356,7 +356,7 @@ namespace SSK
             {
                 #region Remove Khi có Face Scan
                 // Send Notification to duty officer
-                APIUtils.SignalR.SendNotificationToDutyOfficer("Fingerprint scans and facial identification failed", "Fingerprint scans and facial identification failed");
+                APIUtils.SignalR.SendNotificationToDutyOfficer("Fingerprint scans and facial identification failed", "Fingerprint scans and facial identification failed", NotificationType.Error, EnumStations.SSK);
 
                 // show message box to user
                 MessageBox.Show("Fingerprint scans and facial identification failed", "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);

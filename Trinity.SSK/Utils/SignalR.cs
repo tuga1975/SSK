@@ -64,6 +64,29 @@ namespace SSK.Utils
             }
         }
 
+        public void SendNotificationToDutyOfficer(string subject, string content, string notificationType, string source)
+        {
+            Session session = Session.Instance;
+            User user = (User)session[CommonConstants.USER_LOGIN];
+            if (user == null)
+            {
+                // User hasn't authenticated yet
+                return;
+            }
+            DAL_Notification dalNotification = new DAL_Notification();
+            // Insert notification to local DB and also CentralizedDB
+            dalNotification.InsertNotification(subject, content, user.UserId, null, true, true, notificationType, source);
+            //dalNotification.InsertNotification(subject, content, user.UserId, null, true, false);
+
+            try
+            {
+                HubProxy.Invoke("SendNotification", subject, content, user.UserId, null, true);
+            }
+            catch (Exception)
+            {
+            }
+        }
+
         public void GetLatestNotifications()
         {
             Trinity.DAL.DAL_Notification dalNotification = new Trinity.DAL.DAL_Notification();

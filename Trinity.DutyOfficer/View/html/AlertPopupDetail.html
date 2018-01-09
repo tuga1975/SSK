@@ -105,7 +105,7 @@
                     <!--/.right-->
                   </div>
                   <div class="form_gr">
-                    <textarea class="form-txt" name="" cols="30" rows="10" id="valContent"></textarea>
+                    <textarea class="form-txt" name="" cols="30" rows="10" id="valContent" readonly></textarea>
                   </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -116,16 +116,9 @@
 </div>
 <script>
     var Type = {
-        Code : {
-            error : "Error",
-            notification : "Notification",
-            caution : "Caution"
-        },
-        Message : {
-            error : "Error",
-            notification : "Notification",
-            caution : "Caution"
-        } 
+        error : "Error",
+        notification : "Notification",
+        caution : "Caution"
     };
     $(document).ready(function() {
         var data = JSON.parse(api.model);
@@ -134,16 +127,16 @@
             $("#valDateTime").text(formatDate(data.dateTime));
             $("#valContent").val(data.message);
             switch(data.type){
-                case Type.Code.error :
-                    $("#valType").text(Type.Message.error);
+                case Type.error :
+                    $("#valType").text(Type.error);
                     $("#valType").css("background-color", "red" );
                     break;
-                case Type.Code.notification:
-                    $("#valType").text(Type.Message.notification);
+                case Type.notification:
+                    $("#valType").text(Type.notification);
                     $("#valType").css("background-color", "#66ff33");
                     break;
-                case Type.Code.caution:
-                    $("#valType").text(Type.Message.caution);
+                case Type.caution:
+                    $("#valType").text(Type.caution);
                     $("#valType").css("background-color", "yellow" );
                     break;
             }

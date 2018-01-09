@@ -69,7 +69,7 @@ namespace SSA.Utils
         /// </summary>
         /// <param name="subject">Subject</param>
         /// <param name="content">Content</param>
-        /// <param name="notificationType">NotificationType : {Error : 'E', Notification : 'N', Caution : 'C'}</param>
+        /// <param name="notificationType">NotificationType : {Error, Notification, Caution}</param>
         /// <param name="source">EnumStations : {SSA, SSK, UHP, ASP, HSA, ASP}</param>
         public void SendNotificationToDutyOfficer(string subject, string content, string notificationType, string source)
         {
