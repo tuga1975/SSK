@@ -197,7 +197,7 @@
 	margin:10px auto;
 	width:100%;
 }
-#pageUpdatePhotos{
+#pageUpdatePhotos, #pageUpdateFingerprints{
 	position:fixed;
 	z-index:99999999;
 	top:0;left:0;

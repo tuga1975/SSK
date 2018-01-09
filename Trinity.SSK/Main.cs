@@ -23,7 +23,6 @@ namespace SSK
         private EventCenter _eventCenter;
         private int _smartCardFailed;
         private int _fingerprintFailed;
-        private int _facedetectFailed = 0;
         private bool _displayLoginButtonStatus = false;
         private bool _isFirstTimeLoaded = true;
 
@@ -155,12 +154,12 @@ namespace SSK
             if (user != null)
             {
                 // Only enrolled supervisees are allowed to login
-                if (user.Status.Equals(EnumUserStatuses.Blocked, StringComparison.InvariantCultureIgnoreCase))
+                if (user.Status == EnumUserStatuses.Blocked)
                 {
                     SmartCard_OnSmartCardFailed("You have been blocked.");
                     return;
                 }
-                if (user.Status.Equals(EnumUserStatuses.New, StringComparison.InvariantCultureIgnoreCase))
+                if (user.Status == EnumUserStatuses.New)
                 {
                     SmartCard_OnSmartCardFailed("You haven't enrolled yet.");
                     return;
@@ -233,29 +232,27 @@ namespace SSK
         {
             LayerWeb.InvokeScript("createEvent", JsonConvert.SerializeObject(_jsCallCS.GetType().GetMethods().Where(d => d.IsPublic && !d.IsVirtual && !d.IsSecuritySafeCritical).ToArray().Select(d => d.Name)));
 
-            //if (_isFirstTimeLoaded)
-            //{
-            //    // Start page
-            //    //NavigateTo(NavigatorEnums.Authentication_SmartCard);
+            if (_isFirstTimeLoaded)
+            {
+                // Start page
+                //NavigateTo(NavigatorEnums.Authentication_SmartCard);
 
-            //    // For testing purpose
-            //    Session session = Session.Instance;
-            //    ////Supervisee
-            //    Trinity.BE.User user = new DAL_User().GetUserByUserId("bb67863c-c330-41aa-b397-c220428ad16f", true);
-            //    //// Duty Officer
-            //    //Trinity.BE.User user = new DAL_User().GetUserByUserId("ead039f9-b9a1-45bb-8186-0bb7248aafac", true);
-            //    session[CommonConstants.USER_LOGIN] = user;
-            //    session.IsSmartCardAuthenticated = true;
-            //    session.IsFingerprintAuthenticated = true;
+                // For testing purpose
+                Session session = Session.Instance;
+                ////Supervisee
+                Trinity.BE.User user = new DAL_User().GetUserByUserId("bb67863c-c330-41aa-b397-c220428ad16f", true);
+                //// Duty Officer
+                //Trinity.BE.User user = new DAL_User().GetUserByUserId("ead039f9-b9a1-45bb-8186-0bb7248aafac", true);
+                session[CommonConstants.USER_LOGIN] = user;
+                session.IsSmartCardAuthenticated = true;
+                session.IsFingerprintAuthenticated = true;
 
-            //    NavigateTo(NavigatorEnums.Authentication_SmartCard);
-            //    //NavigateTo(NavigatorEnums.Supervisee);
-            //    //NavigateTo(NavigatorEnums.Authentication_NRIC);
+                NavigateTo(NavigatorEnums.Authentication_Fingerprint);
+                //NavigateTo(NavigatorEnums.Supervisee);
+                //NavigateTo(NavigatorEnums.Authentication_NRIC);
 
-            //    _isFirstTimeLoaded = false;
-            //}
-            FacialRecognition a = FacialRecognition.Instance;
-            a.Compare(null);
+                _isFirstTimeLoaded = false;
+            }
         }
 
         private void NRIC_OnNRICSucceeded()
@@ -299,10 +296,7 @@ namespace SSK
             Thread.Sleep(1000);
 
             // navigate to next page: Authentication_Fingerprint
-            //NavigateTo(NavigatorEnums.Authentication_Fingerprint);
-
-            _fingerprintFailed = 4;
-            Fingerprint_OnFingerprintFailed();
+            NavigateTo(NavigatorEnums.Authentication_Fingerprint);
         }
 
         private void SmartCard_OnSmartCardFailed(string message)
@@ -330,7 +324,6 @@ namespace SSK
 
         private void FaceDetectSucceeded()
         {
-            _facedetectFailed = 0;
             FacialRecognition.Instance.FaceDetectFailed -= FaceDetectFailed;
             FacialRecognition.Instance.FaceDetectSucceeded -= FaceDetectSucceeded;
             FacialRecognition.Instance.Dispose();
@@ -339,38 +332,22 @@ namespace SSK
 
         private void FaceDetectFailed()
         {
-            Session session = Session.Instance;
-            Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-            _facedetectFailed++;
-            if (_facedetectFailed == 2)
-            {
-                // Send Notification to duty officer
-                APIUtils.SignalR.SendNotificationToDutyOfficer("Facial Authentication failed", user.Name + " couldn't complete facial authentication.", NotificationType.Error, EnumStations.SSK);
+            APIUtils.SignalR.SendNotificationToDutyOfficer("Fingerprint scans and facial identification failed", "Fingerprint scans and facial identification failed");
 
-                // show message box to user
-                MessageBox.Show(user.Name + " couldn't complete facial authentication.", "Facial Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            // show message box to user
+            MessageBox.Show("Fingerprint scans and facial identification failed", "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
-                // navigate to smartcard login page
-                NavigateTo(NavigatorEnums.Authentication_SmartCard);
+            // navigate to smartcard login page
+            NavigateTo(NavigatorEnums.Authentication_SmartCard);
 
-                // reset counter
-                _fingerprintFailed = 0;
-                _facedetectFailed = 0;
-                FacialRecognition.Instance.FaceDetectFailed -= FaceDetectFailed;
-                FacialRecognition.Instance.FaceDetectSucceeded -= FaceDetectSucceeded;
-                FacialRecognition.Instance.Dispose();
-            }
-            else if (_facedetectFailed < 2 && user.User_Photo1 != null && user.User_Photo2 != null)
-            {
-                FacialRecognition.Instance.Compare(user.User_Photo2);
-            }
-            else
-            {
-                FaceDetectFailed();
-            }
+            // reset counter
+            _fingerprintFailed = 0;
+
+            FacialRecognition.Instance.FaceDetectFailed -= FaceDetectFailed;
+            FacialRecognition.Instance.FaceDetectSucceeded -= FaceDetectSucceeded;
+            FacialRecognition.Instance.Dispose();
         }
-
-        private void Fingerprint_OnFingerprintFailed()
+        private void Fingerprint_OnFingerprintFailed(string message)
         {
             // increase counter
             _fingerprintFailed++;
@@ -395,17 +372,13 @@ namespace SSK
                 //// reset counter
                 //_fingerprintFailed = 0;
                 //#endregion
-                if (user.User_Photo1 == null && user.User_Photo2 == null)
-                {
-                    _facedetectFailed++;
-                    FaceDetectFailed();
-                }
-                else
-                {
-                    FacialRecognition.Instance.FaceDetectFailed += FaceDetectFailed;
-                    FacialRecognition.Instance.FaceDetectSucceeded += FaceDetectSucceeded;
-                    FacialRecognition.Instance.Compare(user.User_Photo1 ?? user.User_Photo2);
-                }
+                Session session = Session.Instance;
+                Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+
+                FacialRecognition.Instance.FaceDetectFailed += FaceDetectFailed;
+                FacialRecognition.Instance.FaceDetectSucceeded += FaceDetectSucceeded;
+                FacialRecognition.Instance.Compare(new System.Collections.Generic.List<byte[]>() { user.User_Photo1, user.User_Photo2 } );
+
                 return;
             }
 
