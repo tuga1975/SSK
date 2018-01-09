@@ -425,8 +425,12 @@ namespace Enrolment
                     var base64Str2 = "";
                     if (image1 != null) base64Str1 = Convert.ToBase64String(image1);
                     if (image2 != null) base64Str2 = Convert.ToBase64String(image2);
-                    currentEditUser.UserProfile.User_Photo1 = image1;
-                    currentEditUser.UserProfile.User_Photo2 = image2;
+                    if (currentEditUser!=null)
+                    {
+                        currentEditUser.UserProfile.User_Photo1 = image1;
+                        currentEditUser.UserProfile.User_Photo2 = image2;
+                    }
+                  
                     if (currentPage != null && currentPage.ToString() == "EditSupervisee" && currentEditUser != null)
                     {
                         session[CommonConstants.CURRENT_EDIT_USER] = currentEditUser;
