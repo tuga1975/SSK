@@ -309,8 +309,8 @@ namespace Enrolment
                 data.UserProfile.DateOfIssue = profileModel.UserProfile.DateOfIssue;
                 data.UserProfile.Gender = profileModel.UserProfile.Gender;
                 data.UserProfile.Race = profileModel.UserProfile.Race;
-                //data.UserProfile.RightThumbImage = profileModel.UserProfile.RightThumbImage;
-                //data.UserProfile.LeftThumbImage = profileModel.UserProfile.LeftThumbImage;
+                data.UserProfile.RightThumbImage = profileModel.UserProfile.RightThumbImage;
+                data.UserProfile.LeftThumbImage = profileModel.UserProfile.LeftThumbImage;
                 data.UserProfile.Primary_Phone = profileModel.UserProfile.Primary_Phone;
                 data.UserProfile.Secondary_Phone = profileModel.UserProfile.Secondary_Phone;
                 data.UserProfile.Primary_Email = profileModel.UserProfile.Primary_Email;
