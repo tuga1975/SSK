@@ -418,19 +418,19 @@ namespace Enrolment
                     var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
                     var isPrimaryPhoto = session[CommonConstants.IS_PRIMARY_PHOTO];
                     //for testing purpose
-                    var tempBase64String = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAMSURBVBhXY/j//z8ABf4C/qc1gYQAAAAASUVORK5CYII=";
-                    var converToByte = Convert.FromBase64String(tempBase64String);
 
-                    var base64Str1 = "";
-                    var base64Str2 = "";
-                    if (image1 != null) base64Str1 = Convert.ToBase64String(image1);
-                    if (image2 != null) base64Str2 = Convert.ToBase64String(image2);
-                    if (currentEditUser!=null)
+                    string base64Str1 = "";
+                    string base64Str2 = "";
+                    if (image1 != null) { base64Str1 = Convert.ToBase64String(image1); }
+                        
+                    if (image2 != null) { base64Str2 = Convert.ToBase64String(image2); }
+                       
+                    if (currentEditUser != null)
                     {
                         currentEditUser.UserProfile.User_Photo1 = image1;
                         currentEditUser.UserProfile.User_Photo2 = image2;
                     }
-                  
+
                     if (currentPage != null && currentPage.ToString() == "EditSupervisee" && currentEditUser != null)
                     {
                         session[CommonConstants.CURRENT_EDIT_USER] = currentEditUser;
@@ -536,10 +536,10 @@ namespace Enrolment
             {
                 var profileModel = (Trinity.BE.ProfileModel)e.Data;
                 CSCallJS.LoadPageHtml(this.LayerWeb, "UpdateSuperviseeBiodata.html", profileModel);
-                if (profileModel.User.LeftThumbFingerprint != null && profileModel.User.RightThumbFingerprint != null)
+                if (profileModel.UserProfile.LeftThumbImage != null && profileModel.UserProfile.RightThumbImage != null)
                 {
-                    var leftFingerprint = Convert.ToBase64String(profileModel.User.LeftThumbFingerprint);
-                    var rightFingerprint = Convert.ToBase64String(profileModel.User.RightThumbFingerprint);
+                    var leftFingerprint = profileModel.UserProfile.LeftThumbImage;
+                    var rightFingerprint = profileModel.UserProfile.RightThumbImage;
 
                     LayerWeb.InvokeScript("setBase64FingerprintOnloadServerCall", leftFingerprint, rightFingerprint);
 
