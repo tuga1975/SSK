@@ -442,7 +442,7 @@ namespace Enrolment
                     {
                         LayerWeb.LoadPageHtml("Edit-Supervisee.html", currentEditUser);
 
-                        LayerWeb.InvokeScript("showPopUp");
+                        LayerWeb.InvokeScript("showPopUp", "pageUpdatePhotos");
                         LayerWeb.InvokeScript("setAvatar", base64Str1, base64Str2);
                     }
                     else if (currentPage.ToString() == "UpdateSuperviseePhoto")
@@ -459,39 +459,49 @@ namespace Enrolment
             else if (e.Name.Equals(EventNames.CANCEL_CAPTURE_PICTURE))
             {
                 Session session = Session.Instance;
-                var currentEditUser = session[CommonConstants.CURRENT_EDIT_USER];
+                
                 var currentPage = session[CommonConstants.CURRENT_PAGE];
+               
+                    
+                   
                 if (InvokeRequired)
                 {
-                    CaptureAttempt(CommonConstants.CAPTURE_PHOTO_ATTEMPT);
                     Invoke(new Action(() =>
                     {
                         webcam.stopWebcam();
                         pictureBox1.Hide();
-                        if (currentEditUser != null && currentPage != null)
+                        // LayerWeb.LoadPageHtml("New-Supervisee.html");
+                        if (session[CommonConstants.CURRENT_EDIT_USER] != null && currentPage != null)
                         {
+                            var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
+                            string photo1 = "";
+                            string photo2 = "";
+                            if (currentEditUser.UserProfile.User_Photo1!=null)
+                            {
+                                photo1 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo1);
+                            }
+                            if (currentEditUser.UserProfile.User_Photo2 != null)
+                            {
+                                photo2 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo2);
+                            }
+                           
                             if (currentPage.ToString() == "EditSupervisee")
                             {
-                                LayerWeb.LoadPageHtml("UpdateSuperviseeBiodata.html", (Trinity.BE.ProfileModel)currentEditUser);
+                                LayerWeb.LoadPageHtml("UpdateSuperviseeBiodata.html", currentEditUser);
+                                LayerWeb.InvokeScript("setAvatar", photo1, photo2);
                             }
                             else if (currentPage.ToString() == "UpdateSupervisee")
                             {
-                                LayerWeb.LoadPageHtml("Edit-Supervisee.html", (Trinity.BE.ProfileModel)currentEditUser);
+                                LayerWeb.LoadPageHtml("Edit-Supervisee.html", currentEditUser);
+                               
+                                LayerWeb.InvokeScript("setAvatar", photo1, photo2);
                             }
-                            else if (currentPage.ToString() == "UpdateSuperviseePhoto")
-                            {
-                                LayerWeb.LoadPageHtml("UpdateSuperviseePhoto.html", (Trinity.BE.ProfileModel)currentEditUser);
-                            }
-                            else if (currentPage.ToString() == "UpdateSuperviseeFinger")
-                            {
-                                LayerWeb.LoadPageHtml("UpdateSuperviseeFingerprint.html", (Trinity.BE.ProfileModel)currentEditUser);
-                            }
-
+                            CaptureAttempt(CommonConstants.CAPTURE_PHOTO_ATTEMPT);
                         }
-                        // LayerWeb.LoadPageHtml("New-Supervisee.html");
                     }));
                     return;
                 }
+               
             }
             else if (e.Name.Equals(EventNames.CANCEL_CONFIRM_CAPTURE_PICTURE))
             {
@@ -601,7 +611,7 @@ namespace Enrolment
             var firstAttemp = 1;
             if (session[sessionAttemptName] != null)
             {
-                var attempt = (int)session[sessionAttemptName];
+                firstAttemp = (int)session[sessionAttemptName];
                 if (sessionAttemptName == CommonConstants.CAPTURE_PHOTO_ATTEMPT)
                 {
                     _jsCallCS.PreviewSuperviseePhoto(firstAttemp);
