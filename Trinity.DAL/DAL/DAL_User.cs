@@ -155,24 +155,26 @@ namespace Trinity.DAL
                 dbUser.SmartCardId = model.SmartCardId;
                 //dbUser.Role = model.Role;
                 dbUser.UserId = model.UserId;
-                if (model.RightThumbFingerprint != null)
-                {
-                    byte[] data = new byte[model.RightThumbFingerprint.Length];
-                    for (int i = 0; i < data.Length; i++)
-                    {
-                        data[i] = model.RightThumbFingerprint[i];
-                    }
-                    dbUser.RightThumbFingerprint = data;
-                }
-                if (model.LeftThumbFingerprint != null)
-                {
-                    byte[] data = new byte[model.LeftThumbFingerprint.Length];
-                    for (int i = 0; i < data.Length; i++)
-                    {
-                        data[i] = model.LeftThumbFingerprint[i];
-                    }
-                    dbUser.LeftThumbFingerprint = data;
-                }
+                //if (model.RightThumbFingerprint != null)
+                //{
+                //    byte[] data = new byte[model.RightThumbFingerprint.Length];
+                //    for (int i = 0; i < data.Length; i++)
+                //    {
+                //        data[i] = model.RightThumbFingerprint[i];
+                //    }
+                //    dbUser.RightThumbFingerprint = data;
+                //}
+                //if (model.LeftThumbFingerprint != null)
+                //{
+                //    byte[] data = new byte[model.LeftThumbFingerprint.Length];
+                //    for (int i = 0; i < data.Length; i++)
+                //    {
+                //        data[i] = model.LeftThumbFingerprint[i];
+                //    }
+                //    dbUser.LeftThumbFingerprint = data;
+                //}
+                dbUser.RightThumbFingerprint = model.RightThumbFingerprint;
+                dbUser.LeftThumbFingerprint = model.LeftThumbFingerprint;
                 dbUser.Status = model.Status;
                 dbUser.IsFirstAttempt = model.IsFirstAttempt;
             }

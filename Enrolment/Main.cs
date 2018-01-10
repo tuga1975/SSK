@@ -128,7 +128,7 @@ namespace Enrolment
 
                     var base64Str = Convert.ToBase64String(byteData);
 
-                   
+
                     if (session[CommonConstants.CURRENT_FINGERPRINT_DATA] != null)
                     {
 
@@ -420,6 +420,7 @@ namespace Enrolment
             else if (e.Name.Equals(EventNames.CONFIRM_CAPTURE_PICTURE))
             {
                 Session session = Session.Instance;
+                var currentPhotosSession = session[CommonConstants.CURRENT_PHOTOS];
                 if (InvokeRequired)
                 {
 
@@ -441,49 +442,97 @@ namespace Enrolment
 
                     string base64Str1 = "";
                     string base64Str2 = "";
-                    if (image1 != null) { base64Str1 = Convert.ToBase64String(image1); }
-                        
-                    if (image2 != null) { base64Str2 = Convert.ToBase64String(image2); }
-                       
+
+                    Tuple<string, string> currentOldPhotos = new Tuple<string, string>(string.Empty, string.Empty);
+                    Tuple<string, string> currentNewPhotos = new Tuple<string, string>(string.Empty, string.Empty);
+
                     if (currentEditUser != null)
                     {
-                        currentEditUser.UserProfile.User_Photo1 = image1;
-                        currentEditUser.UserProfile.User_Photo2 = image2;
+                        if (currentPhotosSession != null)
+                        {
+                            currentOldPhotos = (Tuple<string, string>)currentPhotosSession;
+                        }
+                        else
+                        {
+                            if (currentEditUser.UserProfile.User_Photo1 != null && currentEditUser.UserProfile.User_Photo2 != null)
+                            {
+                                var uPhoto1 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo1);
+                                var uPhoto2 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo2);
+                                currentOldPhotos = new Tuple<string, string>(uPhoto1, uPhoto2);
+
+                            }
+                            else if (currentEditUser.UserProfile.User_Photo1 == null && currentEditUser.UserProfile.User_Photo2 != null)
+                            {
+                                var uPhoto2 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo2);
+                                currentOldPhotos = new Tuple<string, string>(string.Empty, uPhoto2);
+                            }
+                            else if (currentEditUser.UserProfile.User_Photo1 != null && currentEditUser.UserProfile.User_Photo2 == null)
+                            {
+                                var uPhoto1 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo1);
+                                currentOldPhotos = new Tuple<string, string>(uPhoto1, string.Empty);
+                            }
+                        }
+
+                        if (image1 != null)
+                        {
+                            base64Str1 = Convert.ToBase64String(image1);
+
+                            currentEditUser.UserProfile.User_Photo1 = image1;
+
+                            currentNewPhotos = new Tuple<string, string>(base64Str1, currentOldPhotos.Item2);
+
+                        }
+
+                        if (image2 != null)
+                        {
+                            base64Str2 = Convert.ToBase64String(image2);
+
+                            currentEditUser.UserProfile.User_Photo2 = image2;
+
+                            currentNewPhotos = new Tuple<string, string>(currentOldPhotos.Item1, base64Str2);
+                        }
+
                     }
+
+                    session[CommonConstants.CURRENT_PHOTOS] = currentNewPhotos;
 
                     if (currentPage != null && currentPage.ToString() == "EditSupervisee" && currentEditUser != null)
                     {
                         session[CommonConstants.CURRENT_EDIT_USER] = currentEditUser;
 
                         CSCallJS.LoadPageHtml(this.LayerWeb, "UpdateSuperviseeBiodata.html", currentEditUser);
-                        LayerWeb.InvokeScript("setAvatar", base64Str1, base64Str2);
+                        LayerWeb.InvokeScript("setAvatar", currentNewPhotos.Item1, currentNewPhotos.Item2);
                     }
                     else if (currentPage.ToString() == "UpdateSupervisee")
                     {
                         LayerWeb.LoadPageHtml("Edit-Supervisee.html", currentEditUser);
-
+                        LayerWeb.InvokeScript("setPopUpPhotoServerCall", currentNewPhotos.Item1, currentNewPhotos.Item2);
                         LayerWeb.InvokeScript("showPopUp", "pageUpdatePhotos");
-                        LayerWeb.InvokeScript("setAvatar", base64Str1, base64Str2);
+
+                        LayerWeb.InvokeScript("setAvatar", currentNewPhotos.Item1, currentNewPhotos.Item2);
                     }
                     else if (currentPage.ToString() == "UpdateSuperviseePhoto")
                     {
                         LayerWeb.LoadPageHtml("UpdateSuperviseePhoto.html", currentEditUser);
-                        LayerWeb.InvokeScript("setAvatar", base64Str1, base64Str2);
+                        LayerWeb.InvokeScript("setAvatar", currentNewPhotos.Item1, currentNewPhotos.Item2);
                     }
                     else if (currentPage.ToString() == "UpdateSuperviseeFinger")
                     {
                         LayerWeb.LoadPageHtml("UpdateSuperviseeFingerprint.html", currentEditUser);
                     }
                 }
+                image1 = null;
+                image2 = null;
+                _imgBox = "";
             }
             else if (e.Name.Equals(EventNames.CANCEL_CAPTURE_PICTURE))
             {
                 Session session = Session.Instance;
-                
+
                 var currentPage = session[CommonConstants.CURRENT_PAGE];
-               
-                    
-                   
+
+
+
                 if (InvokeRequired)
                 {
                     Invoke(new Action(() =>
@@ -496,7 +545,7 @@ namespace Enrolment
                             var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
                             string photo1 = "../images/usr-default.jpg";
                             string photo2 = "../images/usr-default.jpg";
-                            if (currentEditUser.UserProfile.User_Photo1!=null)
+                            if (currentEditUser.UserProfile.User_Photo1 != null)
                             {
                                 photo1 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo1);
                             }
@@ -504,7 +553,7 @@ namespace Enrolment
                             {
                                 photo2 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo2);
                             }
-                           
+
                             if (currentPage.ToString() == "EditSupervisee")
                             {
                                 LayerWeb.LoadPageHtml("UpdateSuperviseeBiodata.html", currentEditUser);
@@ -513,7 +562,7 @@ namespace Enrolment
                             else if (currentPage.ToString() == "UpdateSupervisee")
                             {
                                 LayerWeb.LoadPageHtml("Edit-Supervisee.html", currentEditUser);
-                               
+
                                 LayerWeb.InvokeScript("setAvatar", photo1, photo2);
                             }
                             CaptureAttempt(CommonConstants.CAPTURE_PHOTO_ATTEMPT);
@@ -521,7 +570,7 @@ namespace Enrolment
                     }));
                     return;
                 }
-               
+
             }
             else if (e.Name.Equals(EventNames.CANCEL_CONFIRM_CAPTURE_PICTURE))
             {
@@ -613,13 +662,14 @@ namespace Enrolment
                 string photo2 = "../images/usr-default.jpg";
                 if (profileModel.UserProfile.User_Photo1 != null)
                 {
-                    photo1 = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(profileModel.UserProfile.User_Photo1));
+                    photo1 = Convert.ToBase64String(profileModel.UserProfile.User_Photo1);
                 }
                 if (profileModel.UserProfile.User_Photo2 != null)
                 {
-                    photo2 = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(profileModel.UserProfile.User_Photo2));
+                    photo2 = Convert.ToBase64String(profileModel.UserProfile.User_Photo2);
                 }
-                LayerWeb.InvokeScript("setPhotoServerCall", photo1, photo2);
+                LayerWeb.InvokeScript("setAvatar", photo1, photo2);
+                LayerWeb.InvokeScript("setPopUpPhotoServerCall", photo1, photo2);
                 // convert fingerprint to base64 and add to html
                 string fingerprintLeft = "../images/fingerprint.png";
                 string fingerprintRight = "../images/fingerprint.png";
