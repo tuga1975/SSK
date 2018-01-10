@@ -30,6 +30,7 @@ namespace Trinity.BE
         public string ParticularsName { get; set; }
         public string NRIC { get; set; }
         public DateTime? DOB { get; set; }
+        
         public string Nationality { get; set; }
         public string MaritalStatus { get; set; }
         public string PrimaryContact { get; set; }
@@ -83,7 +84,7 @@ namespace Trinity.BE
                     //Role = rawData.Role,
                     UserId = rawData.UserId,
                     IsFirstAttempt = rawData.IsFirstAttempt,
-                    Status= rawData.UserStatus
+                    Status = rawData.UserStatus
                 },
                 UserProfile = new UserProfile
                 {
