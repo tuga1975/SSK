@@ -31,6 +31,8 @@ namespace Trinity.Common
         public int PrintCount { get; set; }
         
         public string ReprintReason { get; set; }
+
+        public byte[] BitmapLabel { get; set; }
     }
 
     public class TTLabelInfo

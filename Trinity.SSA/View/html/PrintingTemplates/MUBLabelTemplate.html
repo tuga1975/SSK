@@ -1,0 +1,96 @@
+﻿<style>
+    .input-group {
+        line-height: 14px;
+    }
+
+    .holderGuide {
+        display: block;
+        width: 100px;
+        height: 28px;
+        border-left: 4px solid #000;
+        border-right: 4px solid #000;
+        margin-top: 5px;
+        float: right;
+        margin-right: 50px;
+    }
+
+    #canvas {
+        display: block;
+        position: relative;
+        width: 350px;
+        border: 1px solid #CCC;
+        background: #CCC;
+        overflow: hidden;
+        margin-top:900px;
+    }
+
+    .contentPrinting {
+        position: fixed;
+        width: calc(100% - 20px);
+        height: calc(100% - 140px);
+        left: 10px;
+        top: 80px;
+        border: 1px solid #CCC;
+        background-color: #e6ffff;
+    }
+</style>
+<div class="container contentPrinting text-center center-block" style="padding-top:110px;">
+    <div id="canvas">
+        <p style="text-align:center; font-size:18px; font-weight: bold"><span id="companyName">Company Name</span></p>
+        <p style="text-align:center; font-size:16px;"><span id="markingNo">Marking No: </span></p>
+        <div class="input-group" style="align-content:center">
+            <div class="col-xs-2">
+                <img id="imgQRCode" width="50" height="50" style="display: inline-block; margin-top: 5px;" />
+            </div>
+
+            <div style="display: inline-block; padding-left: 30px" class="col-xs-10">
+                <div class="input-group">
+                    <span style="width:90px;display: inline-block;font-size:12px;">Name:</span>
+                    <span id="name" style="display: inline-block;font-size:12px;">Name</span>
+                </div>
+                <div class="input-group">
+                    <span style="width:90px;display: inline-block;font-size:12px;">NRIC No.:</span>
+                    <span id="NRIC" style="display: inline-block;font-size:12px;">NRIC No</span>
+                </div>
+                <div class="input-group">
+                    <span style="width:90px;display: inline-block;font-size:12px;">Date:</span>
+                    <span id="date" style="display: inline-block;font-size:12px;">Date</span>
+                </div>
+                <div class="input-group">
+                    <span style="width:90px;display: inline-block;font-size:12px;">Marking No.:</span>
+                    <span id="markingNumber" style="display: inline-block;font-size:12px;">Marking No</span>
+                </div>
+            </div>
+        </div>
+        <div class="holderGuide"></div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#companyName').text(api.model.CompanyName);
+        $('#markingNo').text('Marking No: ' + api.model.MarkingNo);
+        $('#date').text(api.model.Date);
+        $('#name').text(api.model.Name);
+        $('#nric').text(api.model.NRIC);
+        $('#markingNumber').text(api.model.MarkingNo);
+        var srcQRCode = "../../Temp/QRCode_" + api.model.NRIC + ".png";
+        $("#imgQRCode").attr("src", srcQRCode);
+
+    });
+
+    html2canvas($("#canvas"), {
+        onrendered: function (canvas) {
+            theCanvas = canvas;
+            //document.body.appendChild(canvas);
+
+            //$("#img-out").append(canvas);
+            var json = JSON.stringify(api.model);
+            api.server.CallPrintingMUBAndTT(json, canvas.toDataURL());
+            // Clean up
+            //document.body.removeChild(canvas);
+        }
+    });
+
+</script>
