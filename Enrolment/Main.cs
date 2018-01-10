@@ -581,9 +581,10 @@ namespace Enrolment
             {
                 var profileModel = (Trinity.BE.ProfileModel)e.Data;
                 var dalUser = new DAL_User();
+                var dalUserProfile = new DAL_UserProfile();
                 dalUser.UpdateUser(profileModel.User, profileModel.User.UserId, true);
 
-                new DAL_UserProfile().UpdateUserProfile(profileModel.UserProfile, profileModel.User.UserId, true);
+                dalUserProfile.UpdateUserProfile(profileModel.UserProfile, profileModel.User.UserId, true);
                 dalUser.ChangeUserStatus(profileModel.User.UserId, EnumUserStatuses.Enrolled);
                 Session session = Session.Instance;
                 session[CommonConstants.CURRENT_EDIT_USER] = profileModel;
@@ -670,7 +671,7 @@ namespace Enrolment
             }
             else if (navigatorEnum == NavigatorEnums.Supervisee)
             {
-                //this.LayerWeb.LoadPageHtml("Supervisee.html");
+                this.LayerWeb.LoadPageHtml("Supervisee.html");
                 _suppervisee.Start();
             }
             else if (navigatorEnum == NavigatorEnums.Login)
