@@ -246,9 +246,10 @@ namespace Enrolment
             {
                 User = dbUser,
                 UserProfile = dalUserProfile.GetUserProfileByUserId(userId, true),
-                Addresses = dalUserProfile.GetAddressByUserId(userId, true)
-            };
-                        
+                Addresses = dalUserProfile.GetAddressByUserId(userId, true, false),
+                OtherAddress = dalUserProfile.GetAddressByUserId(userId, true, true)
+        };
+
             //session passing from other event like confirm capture photo
             if (session[CommonConstants.CURRENT_EDIT_USER] != null)
             {
@@ -289,6 +290,8 @@ namespace Enrolment
                 Session session = Session.Instance;
                 var rawData = JsonConvert.DeserializeObject<Trinity.BE.ProfileRawMData>(param);
                 var rawDataAddress = JsonConvert.DeserializeObject<Trinity.BE.Address>(param);
+                var rawDataOtherAddress = JsonConvert.DeserializeObject<Trinity.BE.OtherAddress>(param);
+
 
                 var data = new Trinity.BE.ProfileRawMData().ToProfileModel(rawData);
                 var dalUser = new Trinity.DAL.DAL_User();
@@ -296,11 +299,35 @@ namespace Enrolment
                 var dalUserprofile = new Trinity.DAL.DAL_UserProfile();
                 var profileModel = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
                 var address = new DAL_Address();
-
+                
                 // get address_ID insert or update
                 var residential_Addess_ID = address.SaveAddress(rawDataAddress, true);
+                var blkHouse_Number = rawDataAddress.BlkHouse_Number;
+                var flrUnit_Number = rawDataAddress.FlrUnit_Number;
+                var street_Name = rawDataAddress.Street_Name;
+                var country = rawDataAddress.Country;
+                var Postal_Code = rawDataAddress.Postal_Code;
+
+                // get Other address ID
+                rawDataAddress.Address_ID = rawDataOtherAddress.OAddress_ID;
+                rawDataAddress.BlkHouse_Number = rawDataOtherAddress.OBlkHouse_Number;
+                rawDataAddress.FlrUnit_Number = rawDataOtherAddress.OFlrUnit_Number;
+                rawDataAddress.Street_Name = rawDataOtherAddress.OStreet_Name;
+                rawDataAddress.Country = rawDataOtherAddress.OCountry;
+                rawDataAddress.Postal_Code = rawDataOtherAddress.OPostal_Code;
+
+                var other_Address_ID = address.SaveAddress(rawDataAddress, true);
+                data.OtherAddress = rawDataAddress;
+                // set address again to reload page
+                data.Addresses.Address_ID = residential_Addess_ID;
+                data.Addresses.BlkHouse_Number = blkHouse_Number;
+                data.Addresses.FlrUnit_Number = flrUnit_Number;
+                data.Addresses.Street_Name = street_Name;
+                data.Addresses.Country = country;
+                data.Addresses.Postal_Code = Postal_Code;
+                //
                 data.UserProfile.Residential_Addess_ID = residential_Addess_ID;
-                data.UserProfile.Other_Address_ID = residential_Addess_ID;
+                data.UserProfile.Other_Address_ID = other_Address_ID;
                 data.UserProfile.User_Photo1 = profileModel.UserProfile.User_Photo1;
                 data.UserProfile.User_Photo2 = profileModel.UserProfile.User_Photo2;
                 data.UserProfile.SerialNumber = profileModel.UserProfile.SerialNumber;
@@ -331,7 +358,7 @@ namespace Enrolment
                 ////send notifiy to case officer
                 APIUtils.SignalR.SendNotificationToDutyOfficer("A supervisee has updated profile.", "Please check Supervisee's information!");
 
-                data.Addresses = rawDataAddress;
+                
                 session[CommonConstants.CURRENT_EDIT_USER] = data;
                 //load Supervisee page 
                 LoadListSupervisee();

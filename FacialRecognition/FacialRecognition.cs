@@ -111,7 +111,18 @@ public class FacialRecognition
             Thread.Sleep(1000);
             libFace.FaceDetect += new AT_Facial_API.Library.FaceDetected(lib_FaceDetect);
             libFace.StartTracking();
-            libFace.Photo_JPG = this.FaceJpg[0];
+            try
+            {
+                libFace.Photo_JPG = this.FaceJpg[0];
+            }
+            catch (Exception ex)
+            {
+                if (this.FaceJpg.Count > 1)
+                {
+                    libFace.Photo_JPG = this.FaceJpg[1];
+                }
+            }
+            
             this.FaceJpg.RemoveAt(0);
         }
         else if (!isStartTracking && this.FaceJpg.Count == 0)

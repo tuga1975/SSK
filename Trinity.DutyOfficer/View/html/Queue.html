@@ -1,149 +1,106 @@
 ﻿<table id="table-queue"></table>
 <script type="text/javascript">
-    
-    $('#table-queue').bootstrapTable({
-        search: true,
-        pagination: true,
-        pageSize: 1,
-        pageList: [1, 2, 4, 6],
-        onDblClickCell: function (field, value, row, $element) {
-            if (field == 'Message') {
-                api.server.LoadPopupQueue(function () {
-                    $('#idQueue').modal();
-                });
-            }
-        },
-        columns: [
-            {
-                field: 'SN',
-                title: 'S/N',
-                align: 'center'
-            },
-            {
-                field: 'NRIC',
-                title: 'NRIC',
-                align: 'center',
-                sortable: true
-            },
-            {
-                field: 'Name',
-                title: 'Name',
-                align: 'center',
-                sortable: true
-            },
-            {
-                field: 'APS',
-                title: 'APS',
-                align: 'center',
-                formatter: function (value, row, index, field) {
-                    return '<span color="' + (value ? 'blue' : 'red') + '"></span>';
+
+    activemenu('Queue');
+
+    api.server.getDataQueue(function (data) {
+        $('#table-queue').bootstrapTable({
+            search: true,
+            pagination: true,
+            pageSize:10,
+            pageList: [10, 20, 40, 60,80,100],
+            onDblClickCell: function (field, value, row, $element) {
+                if (field == 'Message') {
+                    api.server.LoadPopupQueue(function () {
+                        $('#idQueue').modal();
+                    });
                 }
             },
-            {
-                field: 'SSK',
-                title: 'SSK',
-                align: 'center',
-                formatter: function (value, row, index, field) {
-                    return '<span color="' + (value ? 'blue' : 'red') + '"></span>';
+            columns: [
+                {
+                    field: 'SN',
+                    title: 'S/N',
+                    align: 'center',
+                    formatter: function (value, row, index) {
+                        return index + 1;
+                    }
+                },
+                {
+                    field: 'NRIC',
+                    title: 'NRIC',
+                    align: 'center',
+                    sortable: true
+                },
+                {
+                    field: 'Name',
+                    title: 'Name',
+                    align: 'center',
+                    sortable: true
+                },
+                {
+                    field: 'APS',
+                    title: 'APS',
+                    align: 'center',
+                    formatter: function (value, row, index, field) {
+                        return '<span color style="background-color:' + value + ';"></span>';
+                    }
+                },
+                {
+                    field: 'SSK',
+                    title: 'SSK',
+                    align: 'center',
+                    formatter: function (value, row, index, field) {
+                        return '<span color style="background-color:' + value + ';"></span>';
+                    }
+                },
+                {
+                    field: 'SSA',
+                    title: 'SSA',
+                    align: 'center',
+                    formatter: function (value, row, index, field) {
+                        return '<span color style="background-color:' + value + ';"></span>';
+                    }
+                },
+                {
+                    field: 'UHP',
+                    title: 'UHP',
+                    align: 'center',
+                    formatter: function (value, row, index, field) {
+                        return '<span color style="background-color:' + value + ';"></span>';
+                    }
+                },
+                {
+                    field: 'HSA',
+                    title: 'HSA',
+                    align: 'center', formatter: function (value, row, index, field) {
+                        return '<span style="display:inline-block;padding:2px 5px;border:1px solid #CCC;">' + value + '</span>';
+                    }
+                },
+                {
+                    field: 'ESP',
+                    title: 'ESP',
+                    align: 'center',
+                    formatter: function (value, row, index, field) {
+                        return '<span color="' + value + '" style="background-color:' + value + ';"></span>';
+                    }
+                },
+                {
+                    field: 'Outcome',
+                    title: 'Outcome',
+                    align: 'center'
+                },
+                {
+                    field: 'Message',
+                    title: 'Message',
+                    align: 'center',
+                    formatter: function (value, row, index, field) {
+                        return '<span>' + value.content + '</span>';
+                    }
                 }
-            },
-            {
-                field: 'SSA',
-                title: 'SSA',
-                align: 'center',
-                formatter: function (value, row, index, field) {
-                    return '<span color="' + (value ? 'blue' : 'red') + '"></span>';
-                }
-            },
-            {
-                field: 'UHP',
-                title: 'UHP',
-                align: 'center',
-                formatter: function (value, row, index, field) {
-                    return '<span color="' + (value ? 'blue' : 'red') + '"></span>';
-                }
-            },
-            {
-                field: 'HSA',
-                title: 'HSA',
-                align: 'center', formatter: function (value, row, index, field) {
-                    return '<span style="display:inline-block;padding:2px 5px;border:1px solid #CCC;">' + value + '</span>';
-                }
-            },
-            {
-                field: 'ESP',
-                title: 'ESP',
-                align: 'center',
-                formatter: function (value, row, index, field) {
-                    return '<span color="' + (value ? 'blue' : 'red') + '"></span>';
-                }
-            },
-            {
-                field: 'Outcome',
-                title: 'Outcome',
-                align: 'center'
-            },
-            {
-                field: 'Message',
-                title: 'Message',
-                align: 'center',
-                formatter: function (value, row, index, field) {
-                    return '<span>' + value.content + '</span>';
-                }
-            }
-        ],
-        data: [
-            {
-                SN: 'SN',
-                NRIC: 'NRIC',
-                Name: 'Name',
-                APS: true,
-                SSK: false,
-                SSA: true,
-                UHP: true,
-                HSA: 'HSA',
-                ESP: 'ESP',
-                Outcome: 'Outcome',
-                Message: {
-                    content: 'Message',
-                    status: 1
-                }
-            },
-            {
-                SN: 'SN',
-                NRIC: 'NRIC1',
-                Name: 'Name1',
-                APS: true,
-                SSK: false,
-                SSA: true,
-                UHP: true,
-                HSA: 'HSA',
-                ESP: 'ESP',
-                Outcome: 'Outcome',
-                Message: {
-                    content: 'Message',
-                    status: 1
-                }
-            },
-            {
-                SN: 'SN',
-                NRIC: 'NRIC2',
-                Name: 'Name2',
-                APS: true,
-                SSK: false,
-                SSA: true,
-                UHP: true,
-                HSA: 'HSA',
-                ESP: 'ESP',
-                Outcome: 'Outcome',
-                Message: {
-                    content: 'Message',
-                    status: 1
-                }
-            }
-        ]
+            ],
+            data: data
+        });
     });
-    //activemenu('Queue');
 </script>
 <style>
     span[color] {
@@ -151,13 +108,19 @@
         height: 20px;
         border-radius: 50%;
         display: inline-block;
+        border: 1px solid #333;
+        box-sizing: border-box;
     }
 
-    span[color="blue"] {
-        background-color: chartreuse;
+    span[color="notrequired"] {
+        background-color: white;
     }
 
-    span[color="red"] {
-        background-color: red;
-    }
+        span[color="notrequired"]::after {
+            content: "X";
+            line-height: 0px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: normal;
+        }
 </style>

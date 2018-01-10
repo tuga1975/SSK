@@ -5,51 +5,44 @@
                 <h5 class="modal-title">Supervisee Detail</h5>
             </div>
             <div class="modal-body">
-                <div class="form-group">
-                    <div class="input-group">
-                        <span class="input-group-addon">NRIC</span>
-                        <input readonly="readonly" type="text" class="form-control pri">
-                    </div>
-                    <br />
-                    <div class="input-group">
-                        <span class="input-group-addon">Name</span>
-                        <input readonly="readonly" type="text" class="form-control pri">
-                    </div>
-                    <br />
-                    <div class="input-group">
-                        <span class="input-group-addon">Curent Station</span>
-                        <input readonly="readonly" type="text" class="form-control pri">
-                    </div>
-                    <br />
-                    <div class="input-group">
-                        <span class="input-group-addon">Status</span>
-                        <input readonly="readonly" type="text" class="form-control pri">
-                    </div>
-                    <br />
-                    <div class="input-group">
-                        <span class="input-group-addon">Message</span>
-                        <input readonly="readonly" type="text" class="form-control pri">
-                    </div>
-                    <br />
-                    <table class="table table-bordered" style="width:100%;">
-                        <thead>
-                            <tr>
-                                <th>Station</th>
-                                <th>Message</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>ESP</td>
-                                <td>Message</td>
-                            </tr>
-                            <tr>
-                                <td>UHP</td>
-                                <td>Message</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div itemview>
+                    <span itemview-title title="NRIC"></span>
+                    <span itemview-content>NRIC</span>
                 </div>
+                <div itemview>
+                    <span itemview-title title="Name"></span>
+                    <span itemview-content>Name</span>
+                </div>
+                <div itemview>
+                    <span itemview-title title="Curent Station"></span>
+                    <span itemview-content></span>
+                </div>
+                <div itemview>
+                    <span itemview-title title="Status"></span>
+                    <span itemview-content>Status</span>
+                </div>
+                <div itemview>
+                    <span itemview-title title="Message:"></span>
+                </div>
+
+                <table class="table table-bordered" style="width:100%;">
+                    <thead>
+                        <tr>
+                            <th>Station</th>
+                            <th>Message</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>ESP</td>
+                            <td>Message</td>
+                        </tr>
+                        <tr>
+                            <td>UHP</td>
+                            <td>Message</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
