@@ -203,10 +203,10 @@
     }
 
     function setAvatar(base64Str1, base64Str2) {
-        if (base64Str1) {
+        if (base64Str1!="") {
             $('#image1').attr('src', 'data:image/jpg;base64,' + base64Str1);
         }
-        if (base64Str2) {
+        if (base64Str2 != "") {
             $('#image2').attr('src', 'data:image/jpg;base64,' + base64Str2);
         }
     }
@@ -220,67 +220,71 @@
             bodyTag: "section",
             transitionEffect: "slideLeft",
             loading: "Processing ...",
-            //enableCancelButton: true,
-            onInit: function (event, currentIndex) {
-                var cancelA = $("<a>").attr("href", "#").attr("onclick", "api.server.LoadListSupervisee()").addClass("cancelBtn").text("Cancel");
-                var cancelBtn = $("<li>").attr("aria-disabled", false).append(cancelA);
+            enableCancelButton: true,
+            //onInit: function (event, currentIndex) {
+            //    var cancelA = $("<a>").attr("href", "#").attr("onclick", "api.server.LoadListSupervisee()").addClass("cancelBtn").text("Cancel");
+            //    var cancelBtn = $("<li>").attr("aria-disabled", false).append(cancelA);
 
-                $(document).find(".actions ul").prepend(cancelBtn)
+            //    $(document).find(".actions ul").prepend(cancelBtn)
 
-            },
+            //},
             //onContentLoaded: function (event, currentIndex) {
 
             //},
-            onStepChanging: function (event, currentIndex, newIndex) {
+            //onStepChanging: function (event, currentIndex, newIndex) {
+                
+               
+                
+
+            //    return true;
+            //},
+            onStepChanged: function (event, currentIndex, priorIndex) {
                 //0 - photo
                 //1 - fingerprint
                 //2 - verify
                 //3 - print
-                if (newIndex == 2) {
-                    $('#verifyName').text(api.model.User.Name);
-                    var dob = api.model.UserProfile.DOB.replace("T00:00:00", "");
-                    $('#verifyDOB').text(dob);
-                    $('#verifyNRIC').text(api.model.User.NRIC);
-                    if (api.model.UserProfile.User_Photo1 != "") {
-                        $('#verifyPhoto').attr('src', 'data:image/jpg;base64,' + api.model.UserProfile.User_Photo1);
-                    }
-                    if (api.model.UserProfile.DateOfIssue != "") {
-
-                        $('#issueDate').text(api.model.UserProfile.DateOfIssue.replace("T00:00:00", ""));
-                    }
-
-                    if (api.model.UserProfile.LeftThumbImage != "") {
-                        $('#leftFingerThumb').attr('src', 'data:image/jpg;base64,' + api.model.UserProfile.LeftThumbImage);
-                    }
-                    if (api.model.UserProfile.RightThumbImage != "") {
-                        $('#rightFingerThumb').attr('src', 'data:image/jpg;base64,' + api.model.UserProfile.RightThumbImage);
-                    }
-
-                }
-               
-
-                if (currentIndex == 2) {
+                if (currentIndex == 3) {
                     //update to db
                     if (isUpdated === false) {
                         api.server.UpdateSuperviseeBiodata();
                         isUpdated = true;
                     }
-                    else {
-                        return true;
-                    }
-                   
-
+                    
                 }
-
-                return true;
             },
             onFinished: function (event, currentIndex) {
                 api.server.LoadListSupervisee();
+            },
+            onCanceled: function (event) {
+                api.server.LoadListSupervisee();
             }
         });
+       
+
 
         $("input[type='image']").click(function () {
             $("input[id='my_file']").click();
         });
+    });
+
+    $(document).ready(function () {
+        $('#verifyName').text(api.model.User.Name);
+       // var dob = api.model.UserProfile.DOB.replace("T00:00:00", "");
+        $('#verifyDOB').text(api.model.UserProfile.DOB);
+        $('#verifyNRIC').text(api.model.User.NRIC);
+        if (api.model.UserProfile.User_Photo1 != "") {
+            $('#verifyPhoto').attr('src', 'data:image/jpg;base64,' + api.model.UserProfile.User_Photo1);
+        }
+        if (api.model.UserProfile.DateOfIssue != "") {
+
+            $('#issueDate').text(api.model.UserProfile.DateOfIssue.replace("T00:00:00", ""));
+        }
+
+        if (api.model.UserProfile.LeftThumbImage != "") {
+            $('#leftFingerThumb').attr('src', 'data:image/jpg;base64,' + api.model.UserProfile.LeftThumbImage);
+        }
+        if (api.model.UserProfile.RightThumbImage != "") {
+            $('#rightFingerThumb').attr('src', 'data:image/jpg;base64,' + api.model.UserProfile.RightThumbImage);
+        }
     });
 </script>
