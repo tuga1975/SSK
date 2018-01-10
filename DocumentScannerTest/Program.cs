@@ -32,19 +32,22 @@ namespace DocumentScannerTest
 
             // TSC Bar code scanner
             //ResetPagePossition();
-            string TTLabelPrinterName = ConfigurationManager.AppSettings["TTLabelPrinterName"];
-            TTLabelInfo labelInfo = new TTLabelInfo()
-            {
-                ID = "ABC20180107XYZ",
-                Name = "Ricardo Quaresma",
-                MarkingNumber = "CSA17000809"
-            };
+            //string TTLabelPrinterName = ConfigurationManager.AppSettings["TTLabelPrinterName"];
+            //TTLabelInfo labelInfo = new TTLabelInfo()
+            //{
+            //    ID = "ABC20180107XYZ",
+            //    Name = "Ricardo Quaresma",
+            //    MarkingNumber = "CSA17000809"
+            //};
             //BarcodePrinterUtils.Instance.ResetPagePossition(TTLabelPrinterName);
             //BarcodePrinterUtils.Instance.Print(labelInfo);
             //BarcodePrinterUtils.Instance.Print();
             //BarcodePrinterUtils.Instance.ResetPagePossition(TTLabelPrinterName);
             //StartBarcodeScanner();
             //StartBarcodeScanner2();
+
+            // print appointment details
+            PrintAppointmentDetails();
 
             // PrinterMonitor checkstatus
             //ReportPrinterStatus();
@@ -53,6 +56,27 @@ namespace DocumentScannerTest
             //TestStartIdentification();
             //TestStartIdentification();
             //TestStartIdentification();
+        }
+
+        private static void PrintAppointmentDetails()
+        {
+            Console.WriteLine("starting PrintAppointmentDetails...");
+
+            ReceiptPrinterUtils receiptPrinterUtils = ReceiptPrinterUtils.Instance;
+            var status = receiptPrinterUtils.GetDeviceStatus();
+
+            //BarcodePrinterUtils barcodePrinterUtils = BarcodePrinterUtils.Instance;
+            //barcodePrinterUtils.ResetPagePossition(ConfigurationManager.AppSettings["ReceiptPrinterName"]);
+            AppointmentDetails appointmentDetails = new AppointmentDetails()
+            {
+                Name = "Ricardo Quaresma",
+                NRICNo = "S1234567G",
+                Date = new DateTime(2018, 1, 11, 15, 30, 00)
+            };
+
+            receiptPrinterUtils.PrintAppointmentDetails(appointmentDetails);
+
+            Console.ReadKey();
         }
 
         private static void ResetPagePossition()

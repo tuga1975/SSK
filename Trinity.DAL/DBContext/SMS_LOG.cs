@@ -12,12 +12,15 @@ namespace Trinity.DAL.DBContext
     using System;
     using System.Collections.Generic;
     
-    public partial class ApplicationDevice_Status
+    public partial class SMS_LOG
     {
-        public System.Guid ID { get; set; }
-        public string Station { get; set; }
-        public Nullable<int> DeviceID { get; set; }
-        public int StatusCode { get; set; }
-        public string StatusMessage { get; set; }
+        public long SMS_LOG_ID { get; set; }
+        public string SMS_MSG { get; set; }
+        public string SMS_FROM_ADDR { get; set; }
+        public string SMS_TO_ADDR { get; set; }
+        public string CREATED_BY { get; set; }
+        public System.DateTime CREATED_TIME { get; set; }
+        public string LAST_UPDATED_BY { get; set; }
+        public System.DateTime LAST_UPDATED_TIME { get; set; }
     }
 }

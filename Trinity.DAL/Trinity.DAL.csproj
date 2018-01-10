@@ -68,7 +68,7 @@
     <OutputPath>bin\x64\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
@@ -135,7 +135,13 @@
     <Compile Include="DBContext\Device.cs">
       <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
     </Compile>
+    <Compile Include="DBContext\EMAIL_LOG.cs">
+      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
+    </Compile>
     <Compile Include="DBContext\Holiday.cs">
+      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBContext\IssuedCard.cs">
       <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\Label.cs">
@@ -171,7 +177,13 @@
     <Compile Include="DBContext\QueueDetail.cs">
       <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
     </Compile>
+    <Compile Include="DBContext\Security_QA.cs">
+      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
+    </Compile>
     <Compile Include="DBContext\Setting.cs">
+      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBContext\SMS_LOG.cs">
       <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\Timeslot.cs">

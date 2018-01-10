@@ -12,12 +12,16 @@ namespace Trinity.DAL.DBContext
     using System;
     using System.Collections.Generic;
     
-    public partial class ApplicationDevice_Status
+    public partial class Security_QA
     {
-        public System.Guid ID { get; set; }
-        public string Station { get; set; }
-        public Nullable<int> DeviceID { get; set; }
-        public int StatusCode { get; set; }
-        public string StatusMessage { get; set; }
+        public string UserId { get; set; }
+        public string Question { get; set; }
+        public string Answer { get; set; }
+        public string CreatedBy { get; set; }
+        public System.DateTime CreatedDate { get; set; }
+        public string LastUpdatedBy { get; set; }
+        public System.DateTime LastUpdatedDate { get; set; }
+    
+        public virtual Membership_Users Membership_Users { get; set; }
     }
 }

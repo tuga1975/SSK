@@ -101,7 +101,12 @@ namespace Trinity.Common.DeviceMonitor
 
             // print label
             BarcodePrinterUtils printerUtils = BarcodePrinterUtils.Instance;
-            if (printerUtils.PrintBarcodeUserInfo(labelInfo))
+            TTLabelInfo infoTTLabel = new TTLabelInfo();
+            infoTTLabel.ID = labelInfo.NRIC;
+            infoTTLabel.Name = labelInfo.Name;
+            infoTTLabel.MarkingNumber = labelInfo.MarkingNo;
+
+            if (printerUtils.PrintTTLabel(infoTTLabel))
             {
                 // raise succeeded event
                 RaisePrintBarcodeSucceededEvent();
@@ -146,8 +151,13 @@ namespace Trinity.Common.DeviceMonitor
             // print label
             BarcodePrinterUtils printerUtils = BarcodePrinterUtils.Instance;
 
-            // Print TT Label succeeded, then continue printing MUB Label
-            if (printerUtils.PrintQRCodeUserInfo(labelInfo))
+            System.Drawing.Bitmap bitmap = null;
+            using (var ms = new System.IO.MemoryStream(labelInfo.BitmapLabel))
+            {
+                bitmap = new System.Drawing.Bitmap(System.Drawing.Image.FromStream(ms));
+            }
+
+            if (printerUtils.PrintMUBLabel(bitmap))
             {
                 // raise succeeded event
                 RaisePrintLabelSucceededEvent(new PrintMUBAndTTLabelsSucceedEventArgs(labelInfo));

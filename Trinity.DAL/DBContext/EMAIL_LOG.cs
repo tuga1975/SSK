@@ -12,12 +12,15 @@ namespace Trinity.DAL.DBContext
     using System;
     using System.Collections.Generic;
     
-    public partial class ApplicationDevice_Status
+    public partial class EMAIL_LOG
     {
-        public System.Guid ID { get; set; }
-        public string Station { get; set; }
-        public Nullable<int> DeviceID { get; set; }
-        public int StatusCode { get; set; }
-        public string StatusMessage { get; set; }
+        public long EMAIL_LOG_ID { get; set; }
+        public string EMAIL_MSG { get; set; }
+        public string EMAIL_FROM_ADDR { get; set; }
+        public string EMAIL_TO_ADDR { get; set; }
+        public string CREATED_BY { get; set; }
+        public System.DateTime CREATED_TIME { get; set; }
+        public string LAST_UPDATED_BY { get; set; }
+        public System.DateTime LAST_UPDATED_ON { get; set; }
     }
 }
