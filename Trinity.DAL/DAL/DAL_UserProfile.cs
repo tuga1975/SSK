@@ -92,21 +92,29 @@ namespace Trinity.DAL
 
         private User_Profiles UpdateCentral(UserProfile model, string userId)
         {
-            User_Profiles dbUserProfile;
-            var centralUserProfileRepo = _centralizedUnitOfWork.GetRepository<User_Profiles>();
-            dbUserProfile = centralUserProfileRepo.GetById(userId);
-            if (dbUserProfile == null)
+            User_Profiles dbUserProfile = new User_Profiles() ;
+            try
             {
-                dbUserProfile = new User_Profiles();
-                SetInfo(dbUserProfile, model);
-                centralUserProfileRepo.Add(dbUserProfile);
+                var centralUserProfileRepo = _centralizedUnitOfWork.GetRepository<User_Profiles>();
+                dbUserProfile = centralUserProfileRepo.GetById(userId);
+                if (dbUserProfile == null)
+                {
+                    dbUserProfile = new User_Profiles();
+                    SetInfo(dbUserProfile, model);
+                    centralUserProfileRepo.Add(dbUserProfile);
+                }
+                else
+                {
+                    SetInfo(dbUserProfile, model);
+                    centralUserProfileRepo.Update(dbUserProfile);
+                }
+                _centralizedUnitOfWork.Save();
             }
-            else
+            catch (Exception ex)
             {
-                SetInfo(dbUserProfile, model);
-                centralUserProfileRepo.Update(dbUserProfile);
+
+                return dbUserProfile;
             }
-            _centralizedUnitOfWork.Save();
             return dbUserProfile;
         }
 

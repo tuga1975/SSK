@@ -66,6 +66,7 @@ namespace Trinity.BE
         public string SerialNumber { get; set; }
         public string Race { get; set; }
         public DateTime? DateOfIssue { get; set; }
+        public string UserStatus { get; set; }
 
 
         public ProfileModel ToProfileModel(ProfileRawMData rawData)
@@ -81,7 +82,8 @@ namespace Trinity.BE
                     SmartCardId = rawData.SmartCardId,
                     //Role = rawData.Role,
                     UserId = rawData.UserId,
-                    IsFirstAttempt = rawData.IsFirstAttempt
+                    IsFirstAttempt = rawData.IsFirstAttempt,
+                    Status= rawData.UserStatus
                 },
                 UserProfile = new UserProfile
                 {

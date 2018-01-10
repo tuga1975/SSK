@@ -139,27 +139,50 @@ namespace Trinity.DAL
             settingBE.Mon_Open_Time = setting.Mon_Open_Time;
             settingBE.Mon_Close_Time = setting.Mon_Close_Time;
             settingBE.Mon_Interval = setting.Mon_Interval;
+            settingBE.Mon_MaximumNum = setting.Mon_MaximumNum;
+            settingBE.Mon_ReservedForSpare = setting.Mon_ReservedForSpare;
+
             settingBE.Tue_Open_Time = setting.Tue_Open_Time;
             settingBE.Tue_Close_Time = setting.Tue_Close_Time;
             settingBE.Tue_Interval = setting.Tue_Interval;
+            settingBE.Tue_MaximumNum = setting.Tue_MaximumNum;
+            settingBE.Tue_ReservedForSpare = setting.Tue_ReservedForSpare;
+
             settingBE.Wed_Open_Time = setting.Wed_Open_Time;
             settingBE.Wed_Close_Time = setting.Wed_Close_Time;
             settingBE.Wed_Interval = setting.Wed_Interval;
+            settingBE.Wed_MaximumNum = setting.Wed_MaximumNum;
+            settingBE.Wed_ReservedForSpare = setting.Wed_ReservedForSpare;
+
             settingBE.Thu_Open_Time = setting.Thu_Open_Time;
             settingBE.Thu_Close_Time = setting.Thu_Close_Time;
             settingBE.Thu_Interval = setting.Thu_Interval;
+            settingBE.Thu_MaximumNum = setting.Thu_MaximumNum;
+            settingBE.Thu_ReservedForSpare = setting.Thu_ReservedForSpare;
+
+
             settingBE.Fri_Open_Time = setting.Fri_Open_Time;
             settingBE.Fri_Close_Time = setting.Fri_Close_Time;
             settingBE.Fri_Interval = setting.Fri_Interval;
+            settingBE.Fri_MaximumNum = setting.Fri_MaximumNum;
+            settingBE.Fri_ReservedForSpare = setting.Fri_ReservedForSpare;
+
             settingBE.Sat_Open_Time = setting.Sat_Open_Time;
             settingBE.Sat_Close_Time = setting.Sat_Close_Time;
             settingBE.Sat_Interval = setting.Sat_Interval;
+            settingBE.Sat_MaximumNum = setting.Sat_MaximumNum;
+            settingBE.Sat_ReservedForSpare = setting.Sat_ReservedForSpare;
+
             settingBE.Sun_Open_Time = setting.Sun_Open_Time;
             settingBE.Sun_Close_Time = setting.Sun_Close_Time;
             settingBE.Sun_Interval = setting.Sun_Interval;
+            settingBE.Sun_MaximumNum = setting.Sun_MaximumNum;
+            settingBE.Sun_ReservedForSpare = setting.Sun_ReservedForSpare;
+
+            settingBE.Last_Updated_By = setting.Last_Updated_By;
             settingBE.Last_Updated_Date = setting.Last_Updated_Date;
-            settingBE.MaxSuperviseePerTimeslot = setting.MaxSuperviseePerTimeslot;
-            settingBE.ReservedForSpare = setting.ReservedForSpare;
+            settingBE.Description = setting.Description;
+
         }
 
         private void SetInfoToSettingDB(BE.SettingBE settingBE, Setting setting)
@@ -167,27 +190,49 @@ namespace Trinity.DAL
             setting.Mon_Open_Time = settingBE.Mon_Open_Time;
             setting.Mon_Close_Time = settingBE.Mon_Close_Time;
             setting.Mon_Interval = settingBE.Mon_Interval;
+            setting.Mon_MaximumNum = settingBE.Mon_MaximumNum;
+            setting.Mon_ReservedForSpare = settingBE.Mon_ReservedForSpare;
+
             setting.Tue_Open_Time = settingBE.Tue_Open_Time;
             setting.Tue_Close_Time = settingBE.Tue_Close_Time;
             setting.Tue_Interval = settingBE.Tue_Interval;
+            setting.Tue_MaximumNum = settingBE.Tue_MaximumNum;
+            setting.Tue_ReservedForSpare = settingBE.Tue_ReservedForSpare;
+
             setting.Wed_Open_Time = settingBE.Wed_Open_Time;
             setting.Wed_Close_Time = settingBE.Wed_Close_Time;
             setting.Wed_Interval = settingBE.Wed_Interval;
+            setting.Wed_MaximumNum = settingBE.Wed_MaximumNum;
+            setting.Wed_ReservedForSpare = settingBE.Wed_ReservedForSpare;
+
             setting.Thu_Open_Time = settingBE.Thu_Open_Time;
             setting.Thu_Close_Time = settingBE.Thu_Close_Time;
             setting.Thu_Interval = settingBE.Thu_Interval;
+            setting.Thu_MaximumNum = settingBE.Thu_MaximumNum;
+            setting.Thu_ReservedForSpare = settingBE.Thu_ReservedForSpare;
+
+
             setting.Fri_Open_Time = settingBE.Fri_Open_Time;
             setting.Fri_Close_Time = settingBE.Fri_Close_Time;
             setting.Fri_Interval = settingBE.Fri_Interval;
+            setting.Fri_MaximumNum = settingBE.Fri_MaximumNum;
+            setting.Fri_ReservedForSpare = settingBE.Fri_ReservedForSpare;
+
             setting.Sat_Open_Time = settingBE.Sat_Open_Time;
             setting.Sat_Close_Time = settingBE.Sat_Close_Time;
             setting.Sat_Interval = settingBE.Sat_Interval;
+            setting.Sat_MaximumNum = settingBE.Sat_MaximumNum;
+            setting.Sat_ReservedForSpare = settingBE.Sat_ReservedForSpare;
+
             setting.Sun_Open_Time = settingBE.Sun_Open_Time;
             setting.Sun_Close_Time = settingBE.Sun_Close_Time;
             setting.Sun_Interval = settingBE.Sun_Interval;
+            setting.Sun_MaximumNum = settingBE.Sun_MaximumNum;
+            setting.Sun_ReservedForSpare = settingBE.Sun_ReservedForSpare;
+
+            setting.Last_Updated_By = settingBE.Last_Updated_By;
             setting.Last_Updated_Date = settingBE.Last_Updated_Date;
-            setting.MaxSuperviseePerTimeslot = settingBE.MaxSuperviseePerTimeslot;
-            setting.ReservedForSpare = settingBE.ReservedForSpare;
+            setting.Description = settingBE.Description;
         }
         private BE.SettingModel GetSetting()
         {
@@ -198,25 +243,21 @@ namespace Trinity.DAL
             return new BE.SettingBE().ToSettingModel(settingBE);
         }
 
-        public void UpdateTimeslot(int dayOfWeek, BE.SettingDetails model)
+        public void UpdateTimeslotForNewWeek()
         {
             var timeSlotRepo = _localUnitOfWork.GetRepository<Timeslot>();
 
             //delete
-            var listDbTimeslot = timeSlotRepo.GetMany(t => t.DateOfWeek == dayOfWeek).ToList();
+            var listDbTimeslot = timeSlotRepo.GetAll().ToList();
 
             foreach (var item in listDbTimeslot)
             {
-                if (_localUnitOfWork.DataContext.Appointments.Any(a => a.Timeslot_ID == item.Timeslot_ID))
-                {
-                    break;
-                }
                 timeSlotRepo.Delete(item);
             }
 
             _localUnitOfWork.Save();
             //add new
-            GenerateTimeSlotAndInsert(dayOfWeek, model);
+            GenerateTimeslot();
 
 
         }
@@ -228,6 +269,8 @@ namespace Trinity.DAL
 
             repo.Update(dbSetting);
             _localUnitOfWork.Save();
+            UpdateTimeslotForNewWeek();
+
 
         }
     }

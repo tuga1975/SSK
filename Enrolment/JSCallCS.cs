@@ -78,8 +78,8 @@ namespace Enrolment
                     listSupervisee.Add(model);
                 }
 
-                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = 0, Name = EventNames.GET_LIST_SUPERVISEE_SUCCEEDED, Data = listSupervisee, Source = "Supervisee.html" });
-                //_web.LoadPageHtml("Supervisee.html", listSupervisee);
+                //eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = 0, Name = EventNames.GET_LIST_SUPERVISEE_SUCCEEDED, Data = listSupervisee, Source = "Supervisee.html" });
+                _web.LoadPageHtml("Supervisee.html", listSupervisee);
             }
             else
             {
