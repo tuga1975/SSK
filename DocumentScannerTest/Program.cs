@@ -32,22 +32,23 @@ namespace DocumentScannerTest
 
             // TSC Bar code scanner
             //ResetPagePossition();
-            //string TTLabelPrinterName = ConfigurationManager.AppSettings["TTLabelPrinterName"];
-            //TTLabelInfo labelInfo = new TTLabelInfo()
-            //{
-            //    ID = "ABC20180107XYZ",
-            //    Name = "Ricardo Quaresma",
-            //    MarkingNumber = "CSA17000809"
-            //};
+            string TTLabelPrinterName = ConfigurationManager.AppSettings["TTLabelPrinterName"]?.ToUpper();
+            TTLabelInfo labelInfo = new TTLabelInfo()
+            {
+                ID = "ABC20180107XYZ",
+                Name = "Ricardo Quaresma",
+                MarkingNumber = "CSA17000809"
+            };
             //BarcodePrinterUtils.Instance.ResetPagePossition(TTLabelPrinterName);
-            //BarcodePrinterUtils.Instance.Print(labelInfo);
+            BarcodePrinterUtils.Instance.PrintTTLabel(labelInfo);
+            Console.ReadKey();
             //BarcodePrinterUtils.Instance.Print();
             //BarcodePrinterUtils.Instance.ResetPagePossition(TTLabelPrinterName);
             //StartBarcodeScanner();
             //StartBarcodeScanner2();
 
             // print appointment details
-            PrintAppointmentDetails();
+            //PrintAppointmentDetails();
 
             // PrinterMonitor checkstatus
             //ReportPrinterStatus();
@@ -225,7 +226,7 @@ namespace DocumentScannerTest
                     Date = "01/01/1970"
                 };
 
-                string printerName = ConfigurationManager.AppSettings["TTLabelPrinterName"];
+                string printerName = ConfigurationManager.AppSettings["TTLabelPrinterName"]?.ToUpper();
                 var statusPrinterBarcode = barcodeScannerUtils.GetDeviceStatus(printerName);
 
                 if (statusPrinterBarcode.Contains(EnumDeviceStatuses.Connected))

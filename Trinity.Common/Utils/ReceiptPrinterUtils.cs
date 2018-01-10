@@ -96,7 +96,7 @@ namespace Trinity.Common.Utils
 
         public override EnumDeviceStatuses[] GetDeviceStatus()
         {
-            if (IsPrinterConnected(_printerName))
+            if (IsPrinterConnected(_printerName?.ToUpper()))
             {
                 return new EnumDeviceStatuses[] { EnumDeviceStatuses.Connected };
             }

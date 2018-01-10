@@ -240,7 +240,7 @@ namespace Trinity.Common.Utils
 
             // check printer is connected or not
             // check with Win32_Printer
-            if (IsPrinterConnected(printerName))
+            if (IsPrinterConnected(printerName?.ToUpper()))
             {
                 return new EnumDeviceStatuses[] { EnumDeviceStatuses.Connected };
             }

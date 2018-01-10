@@ -46,7 +46,7 @@ namespace SSA.CodeBehind
                 {
                     #region Print Barcode
                     // Check status of Barcode printer
-                    string printerName = ConfigurationManager.AppSettings["TTLabelPrinterName"];
+                    string printerName = ConfigurationManager.AppSettings["TTLabelPrinterName"]?.ToUpper();
                     var statusPrinterBarcode = barcodeScannerUtils.GetDeviceStatus(printerName);
 
                     if (statusPrinterBarcode.Contains(EnumDeviceStatuses.Connected))
