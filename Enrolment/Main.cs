@@ -367,7 +367,7 @@ namespace Enrolment
             }
             else if (e.Name.Equals(EventNames.LOGIN_FAILED))
             {
-                LayerWeb.InvokeScript("loginFailAlert", e.Message);
+                LayerWeb.InvokeScript("failAlert", e.Message);
                 //MessageBox.Show(e.Message, "Login Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             else if (e.Name == EventNames.LOGOUT_SUCCEEDED)
@@ -400,7 +400,7 @@ namespace Enrolment
                         }
                         catch
                         {
-                            LayerWeb.InvokeScript("Alert", "Cant find this device camera!");
+                            LayerWeb.InvokeScript("failAlert", "Cant find this device camera!");
                         }
                     }));
                     return;

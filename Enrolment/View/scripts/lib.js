@@ -157,6 +157,6 @@ $(document).ready(function () {
     });
 });
 
-function loginFailAlert(message) {
+function failAlert(message) {
     alert(message);
 }
