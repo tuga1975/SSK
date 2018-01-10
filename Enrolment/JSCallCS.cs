@@ -431,6 +431,13 @@ namespace Enrolment
 
         public void CancelEditSupervisee()
         {
+            Session session = Session.Instance;
+            session[CommonConstants.CURRENT_EDIT_USER] = null;
+            session[CommonConstants.CURRENT_FINGERPRINT_DATA] = null;
+            session[CommonConstants.CURRENT_LEFT_FINGERPRINT_IMAGE] = null;
+            session[CommonConstants.CURRENT_RIGHT_FINGERPRINT_IMAGE] = null;
+            session[CommonConstants.CURRENT_PHOTO_DATA] = null;
+            
             EventCenter eventCenter = EventCenter.Default;
             eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.SUPERVISEE_DATA_UPDATE_CANCELED });
         }

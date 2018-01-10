@@ -156,3 +156,7 @@ $(document).ready(function () {
         }
     });
 });
+
+function failAlert(message) {
+    alert(message);
+}

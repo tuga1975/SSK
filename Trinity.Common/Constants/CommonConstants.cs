@@ -18,6 +18,7 @@ public static class CommonConstants
     public const string PRINT_SMARTCARD_ATTEMPT = "PrintSmartCardAttempt";
     public const string CURRENT_PAGE = "CurrentPage";
     public const string CURRENT_PHOTO_DATA = "CurrentPhotoData";
+    public const string CURRENT_PHOTOS = "CurrentPhotos";
     public const string CURRENT_FINGERPRINT_DATA = "CurrentFingerprintData";
     public const string CURRENT_LEFT_FINGERPRINT_IMAGE = "CurrentLEFTFingerprintImage";
     public const string CURRENT_RIGHT_FINGERPRINT_IMAGE = "CurrentRightFingerprintImage";
