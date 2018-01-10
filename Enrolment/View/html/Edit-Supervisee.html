@@ -285,25 +285,37 @@
 			<div class="clear"></div>
 		</div>
 		<div class="form-supervisee">
-			<input class="name-supervisee" type="text" value="Update Photo" disabled="disabled" />
-				<div class="tab-content" id="nav-tabContent">
-				<input type="hidden" name="userId" class="userId"  />
-				<div class="tab-pane fade show active" id="supervisee-details" role="tabpanel" aria-labelledby="nav-home-tab">
-					<div class="row updateSuperviseePhoto">	
-						<div class="col-2"></div>
-						<div class="col-4">
-							<img class="avatar" id="PopupUserPhoto1" src="../images/fingerprint.png" />
-							<button type="button" class="btn-form" id="updatePhoto2" onclick="api.server.OpenPictureCaptureForm('1')">Take Picture 1</button>
-						</div>
-						<div class="col-4">
-							<img class="avatar" id="PopupUserPhoto2" src="../images/fingerprint.png" />
-							<button type="button" class="btn-form" id="updatePhoto2" onclick="api.server.OpenPictureCaptureForm('2')">Take Picture 2</button>
-						</div>
-						<div class="col-2"></div>
-					</div>				
-				</div>
-			</div>
-			
+			<input class="name-supervisee" type="text" value="Update Fingerprint" disabled="disabled" />
+			<div class="row">
+                <div class="col" id="leftThumbDiv">
+                    <div style="border:1px solid #000000;color:#000;margin-bottom:5px" id="leftProcessMessage">Place left thumb onto scanner</div>
+                    <div>
+						<button style="float:left" class="btn-form" id="leftThumbScanBtn">Scan</button>
+						<button style="float:right;" id="leftThumbClearBtn" class="btn-form">Clear</button>
+					</div>
+                    <br />
+                    <div style="text-align:center"> 
+						<img class="avatar" id="leftFingerprint" style="max-width:50%" src="../images/fingerprint.png" />					
+					</div>
+                    <br />
+                    <!--<button type="button" onclick="api.server.OpenFingerprintCaptureForm('1')">Left Fingerprint Preview</button>-->
+                    <div style="border:1px solid #000000">Left Fingerprint Preview</div>
+                </div>
+                <div class="col" id="rightThumbDiv">
+                    <div style="border:1px solid #000000;color:#000;margin-bottom:5px" id="rightProcessMessage">Place right thumb onto scanner</div>
+                    <div>
+						<button style="float:left" class="btn-form" id="rightThumbScanBtn">Scan</button>
+						<button style="float:right;" class="btn-form" id="rightThumbClearBtn">Clear</button>
+					</div>
+                    <br />
+                    <div style="text-align:center">
+						<img class="avatar" id="rightFingerprint" style="max-width:50%" src="../images/fingerprint.png" />
+					</div>
+                    <br />
+                    <!--<button type="button" onclick="api.server.OpenFingerprintCaptureForm('2')">Right Fingerprint Preview</button>-->
+                    <div style="border:1px solid #000000">Right Fingerprint Preview</div>
+                </div>
+            </div>		
 			<div class="btn-group">
 				<button type="button" class="btn-form" onclick="hidePopUp()" >Update</button>
 				<button type="button" class="btn-form" onclick="api.server.CancelCapturePicture();">Cancel</button>
