@@ -36,7 +36,7 @@
 <div class="container contentPrinting text-center center-block" style="padding-top:110px;">
     <div id="canvas">
         <p style="text-align:center; font-size:18px; font-weight: bold"><span id="companyName">Company Name</span></p>
-        <p style="text-align:center; font-size:16px;"><span id="markingNo">Marking No: </span></p>
+        <!--<p style="text-align:center; font-size:16px;"><span id="markingNo">Marking No: </span></p>-->
         <div class="input-group" style="align-content:center">
             <div class="col-xs-2">
                 <img id="imgQRCode" width="50" height="50" style="display: inline-block; margin-top: 5px;" />
@@ -49,7 +49,7 @@
                 </div>
                 <div class="input-group">
                     <span style="width:90px;display: inline-block;font-size:12px;">NRIC No.:</span>
-                    <span id="NRIC" style="display: inline-block;font-size:12px;">NRIC No</span>
+                    <span id="nric" style="display: inline-block;font-size:12px;">NRIC No</span>
                 </div>
                 <div class="input-group">
                     <span style="width:90px;display: inline-block;font-size:12px;">Date:</span>
@@ -69,7 +69,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $('#companyName').text(api.model.CompanyName);
-        $('#markingNo').text('Marking No: ' + api.model.MarkingNo);
+        //$('#markingNo').text('Marking No: ' + api.model.MarkingNo);
         $('#date').text(api.model.Date);
         $('#name').text(api.model.Name);
         $('#nric').text(api.model.NRIC);
