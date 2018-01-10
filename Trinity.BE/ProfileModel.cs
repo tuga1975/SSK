@@ -12,6 +12,7 @@ namespace Trinity.BE
         public User User { get; set; }
         public UserProfile UserProfile { get; set; }
         public Address Addresses { get; set; }
+        public Address OtherAddress { get; set; }
 
         public ProfileModel()
         {
@@ -30,7 +31,7 @@ namespace Trinity.BE
         public string ParticularsName { get; set; }
         public string NRIC { get; set; }
         public DateTime? DOB { get; set; }
-        
+
         public string Nationality { get; set; }
         public string MaritalStatus { get; set; }
         public string PrimaryContact { get; set; }
@@ -125,6 +126,8 @@ namespace Trinity.BE
                 },
                 Addresses = new Address
                 {
+                },
+                OtherAddress = new Address {
                 }
             };
             return profileModel;
@@ -146,5 +149,21 @@ namespace Trinity.BE
         public string Country { get; set; }
         [DataMember]
         public string Postal_Code { get; set; }
+    }
+
+    public class OtherAddress
+    {
+        [DataMember]
+        public int OAddress_ID { get; set; }
+        [DataMember]
+        public string OBlkHouse_Number { get; set; }
+        [DataMember]
+        public string OFlrUnit_Number { get; set; }
+        [DataMember]
+        public string OStreet_Name { get; set; }
+        [DataMember]
+        public string OCountry { get; set; }
+        [DataMember]
+        public string OPostal_Code { get; set; }
     }
 }
