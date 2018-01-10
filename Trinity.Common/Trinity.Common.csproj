@@ -130,7 +130,9 @@
   <ItemGroup>
     <Content Include="Libs\Futronic Fingerprint Reader\ftrSDKHelper13.dll" />
     <Content Include="Libs\PCSC Smart Card Reader\pcsc-sharp.dll" />
-    <Content Include="Libs\TSC Barcode Printer\x64\TSCLIB.dll" />
+    <Content Include="Libs\TSC Barcode Printer\x64\TSCLIB.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Libs\TSC Barcode Printer\x86\TSCLIB.dll" />
     <Content Include="Libs\ZXing.Net.0.16.0.0\net4.5\zxing.dll" />
     <Content Include="Libs\ZXing.Net.0.16.0.0\net4.5\zxing.pdb" />
@@ -140,8 +142,12 @@
     <Content Include="Libs\ZXing.Net.0.16.0.0\net4.5\zxing.XML" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Libs\TSC Barcode Printer\x64\TSCLIB.lib" />
-    <None Include="Libs\TSC Barcode Printer\x64\UL.PCX" />
+    <None Include="Libs\TSC Barcode Printer\x64\TSCLIB.lib">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Libs\TSC Barcode Printer\x64\UL.PCX">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Libs\TSC Barcode Printer\x86\TSCLIB.lib" />
     <None Include="Libs\TSC Barcode Printer\x86\UL.PCX" />
   </ItemGroup>
