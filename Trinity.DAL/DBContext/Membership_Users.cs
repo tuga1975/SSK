@@ -28,6 +28,7 @@ namespace Trinity.DAL.DBContext
             this.Notifications = new HashSet<Notification>();
             this.Notifications1 = new HashSet<Notification>();
             this.Security_QA = new HashSet<Security_QA>();
+            this.IssuedCards = new HashSet<IssuedCard>();
         }
     
         public string UserId { get; set; }
@@ -74,6 +75,8 @@ namespace Trinity.DAL.DBContext
         public virtual ICollection<Notification> Notifications1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Security_QA> Security_QA { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<IssuedCard> IssuedCards { get; set; }
         public virtual User_Profiles User_Profiles { get; set; }
     }
 }

@@ -2,7 +2,9 @@
 using Newtonsoft.Json;
 using SSA.CodeBehind.Authentication;
 using System;
+using System.IO;
 using System.Reflection;
+using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using Trinity.Common;
@@ -98,9 +100,19 @@ namespace SSA
             RaiseLogOutCompletedEvent();
         }
 
-        public void PrintingMUBAndTTLabels(string json)
+        public void MappingTemplateMUBAndTTLabels(string json)
         {
             var labelInfo = JsonConvert.DeserializeObject<LabelInfo>(json);
+            _web.LoadPageHtml("PrintingTemplates/MUBLabelTemplate.html", labelInfo);
+        }
+
+        public void CallPrintingMUBAndTT(string jsonModel, string base64String)
+        {
+            string base64StringCanvas = base64String.Split(',')[1];
+            byte[] bitmapBytes = Convert.FromBase64String(base64StringCanvas);         
+
+            var labelInfo = JsonConvert.DeserializeObject<LabelInfo>(jsonModel);
+            labelInfo.BitmapLabel = bitmapBytes;
             _printTTLabel.Start(labelInfo);
         }
 

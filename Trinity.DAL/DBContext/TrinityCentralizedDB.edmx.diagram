@@ -28,12 +28,9 @@
         <EntityTypeShape EntityType="TrinityCentralizedDBModel.Setting" Width="1.5" PointX="1.5" PointY="0.75" />
         <EntityTypeShape EntityType="TrinityCentralizedDBModel.SMS_LOG" Width="1.5" PointX="8.75" PointY="8.875" />
         <EntityTypeShape EntityType="TrinityCentralizedDBModel.Timeslot" Width="1.5" PointX="3.75" PointY="4" />
-        <EntityTypeShape EntityType="TrinityCentralizedDBModel.User_Profiles" Width="1.5" PointX="3" PointY="22.25" />
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_Appointments_AbsenceReporting" />
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_ActionLog_Membership_Users" />
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_ActionLog_Membership_Users1" />
-        <AssociationConnector Association="TrinityCentralizedDBModel.FK_User_Profiles_Addresses2" />
-        <AssociationConnector Association="TrinityCentralizedDBModel.FK_User_Profiles_Addresses3" />
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_Appointments_Membership_Users" />
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_Appointments_Timeslots" />
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_Queues_Appointments" />
@@ -47,9 +44,14 @@
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_Notifications_Membership_Users" />
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_Notifications_Membership_Users1" />
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_PWD_QA_Membership_Users" />
-        <AssociationConnector Association="TrinityCentralizedDBModel.FK_User_Profiles_Membership_Users" />
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_QueueDetails_Queues" />
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_Timeslots_Settings" />
+        <EntityTypeShape EntityType="TrinityCentralizedDBModel.IssuedCard" Width="1.5" PointX="3" PointY="22.75" />
+        <EntityTypeShape EntityType="TrinityCentralizedDBModel.User_Profiles" Width="1.5" PointX="6" PointY="25.25" />
+        <AssociationConnector Association="TrinityCentralizedDBModel.FK_User_Profiles_Addresses2" />
+        <AssociationConnector Association="TrinityCentralizedDBModel.FK_User_Profiles_Addresses3" />
+        <AssociationConnector Association="TrinityCentralizedDBModel.FK_IssuedCards_Membership_Users" />
+        <AssociationConnector Association="TrinityCentralizedDBModel.FK_User_Profiles_Membership_Users" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
