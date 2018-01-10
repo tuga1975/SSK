@@ -78,6 +78,22 @@
           <Property Name="ShortDesc" Type="nvarchar" MaxLength="50" />
           <Property Name="Notes" Type="nvarchar" MaxLength="50" />
         </EntityType>
+        <EntityType Name="IssuedCards">
+          <Key>
+            <PropertyRef Name="UserId" />
+            <PropertyRef Name="SmartCardId" />
+          </Key>
+          <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="SmartCardId" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="NRIC" Type="nvarchar" MaxLength="20" />
+          <Property Name="Name" Type="nvarchar" MaxLength="128" />
+          <Property Name="Serial_Number" Type="varchar" MaxLength="50" />
+          <Property Name="Date_Of_Issue" Type="date" />
+          <Property Name="Status" Type="varchar" MaxLength="10" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="128" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="Reprint_Reason" Type="nvarchar" MaxLength="255" />
+        </EntityType>
         <EntityType Name="Labels">
           <Key>
             <PropertyRef Name="Label_ID" />
@@ -201,7 +217,7 @@
           </Key>
           <Property Name="Queue_ID" Type="uniqueidentifier" Nullable="false" />
           <Property Name="Station" Type="varchar" MaxLength="10" Nullable="false" />
-          <Property Name="Status" Type="varchar" MaxLength="10" />
+          <Property Name="Status" Type="varchar" MaxLength="20" />
           <Property Name="Message" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="Queues">
@@ -326,8 +342,6 @@
           <Property Name="Date_of_Issue" Type="date" />
           <Property Name="Gender" Type="varchar" MaxLength="6" />
           <Property Name="Race" Type="nvarchar" MaxLength="50" />
-          <Property Name="RightThumbImage" Type="varbinary(max)" />
-          <Property Name="LeftThumbImage" Type="varbinary(max)" />
         </EntityType>
         <Association Name="FK__Restauran__UserI__1CFC3D38">
           <End Role="Membership_Users" Type="Self.Membership_Users" Multiplicity="0..1" />
@@ -465,6 +479,18 @@
               <PropertyRef Name="UserId" />
             </Principal>
             <Dependent Role="Membership_UserRoles">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_IssuedCards_Membership_Users">
+          <End Role="Membership_Users" Type="Self.Membership_Users" Multiplicity="1" />
+          <End Role="IssuedCards" Type="Self.IssuedCards" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Membership_Users">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="IssuedCards">
               <PropertyRef Name="UserId" />
             </Dependent>
           </ReferentialConstraint>
@@ -609,6 +635,7 @@
           <EntitySet Name="Appointments" EntityType="Self.Appointments" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Devices" EntityType="Self.Devices" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Holidays" EntityType="Self.Holidays" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="IssuedCards" EntityType="Self.IssuedCards" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Labels" EntityType="Self.Labels" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Membership_RoleClaims" EntityType="Self.Membership_RoleClaims" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Membership_Roles" EntityType="Self.Membership_Roles" Schema="dbo" store:Type="Tables" />
@@ -667,6 +694,10 @@
           <AssociationSet Name="FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId">
             <End Role="Membership_Users" EntitySet="Membership_Users" />
             <End Role="Membership_UserRoles" EntitySet="Membership_UserRoles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_IssuedCards_Membership_Users" Association="Self.FK_IssuedCards_Membership_Users">
+            <End Role="Membership_Users" EntitySet="Membership_Users" />
+            <End Role="IssuedCards" EntitySet="IssuedCards" />
           </AssociationSet>
           <AssociationSet Name="FK_Labels_Membership_Users" Association="Self.FK_Labels_Membership_Users">
             <End Role="Membership_Users" EntitySet="Membership_Users" />
@@ -739,7 +770,6 @@
           <EntitySet Name="Security_QA" EntityType="SSKModel.Security_QA" />
           <EntitySet Name="Settings" EntityType="SSKModel.Setting" />
           <EntitySet Name="Timeslots" EntityType="SSKModel.Timeslot" />
-          <EntitySet Name="User_Profiles" EntityType="SSKModel.User_Profiles" />
           <AssociationSet Name="FK_Appointments_AbsenceReporting" Association="SSKModel.FK_Appointments_AbsenceReporting">
             <End Role="AbsenceReporting" EntitySet="AbsenceReportings" />
             <End Role="Appointment" EntitySet="Appointments" />
@@ -751,14 +781,6 @@
           <AssociationSet Name="FK_ActionLog_Membership_Users1" Association="SSKModel.FK_ActionLog_Membership_Users1">
             <End Role="Membership_Users" EntitySet="Membership_Users" />
             <End Role="ActionLog" EntitySet="ActionLogs" />
-          </AssociationSet>
-          <AssociationSet Name="FK_User_Profiles_Addresses2" Association="SSKModel.FK_User_Profiles_Addresses2">
-            <End Role="Address" EntitySet="Addresses" />
-            <End Role="User_Profiles" EntitySet="User_Profiles" />
-          </AssociationSet>
-          <AssociationSet Name="FK_User_Profiles_Addresses3" Association="SSKModel.FK_User_Profiles_Addresses3">
-            <End Role="Address" EntitySet="Addresses" />
-            <End Role="User_Profiles" EntitySet="User_Profiles" />
           </AssociationSet>
           <AssociationSet Name="FK_ApplicationDevice_Status_Devices" Association="SSKModel.FK_ApplicationDevice_Status_Devices">
             <End Role="Device" EntitySet="Devices" />
@@ -816,10 +838,6 @@
             <End Role="Membership_Users" EntitySet="Membership_Users" />
             <End Role="Security_QA" EntitySet="Security_QA" />
           </AssociationSet>
-          <AssociationSet Name="FK_User_Profiles_Membership_Users" Association="SSKModel.FK_User_Profiles_Membership_Users">
-            <End Role="Membership_Users" EntitySet="Membership_Users" />
-            <End Role="User_Profiles" EntitySet="User_Profiles" />
-          </AssociationSet>
           <AssociationSet Name="FK_QueueDetails_Queues" Association="SSKModel.FK_QueueDetails_Queues">
             <End Role="Queue" EntitySet="Queues" />
             <End Role="QueueDetail" EntitySet="QueueDetails" />
@@ -827,6 +845,24 @@
           <AssociationSet Name="FK_Timeslots_Settings" Association="SSKModel.FK_Timeslots_Settings">
             <End Role="Setting" EntitySet="Settings" />
             <End Role="Timeslot" EntitySet="Timeslots" />
+          </AssociationSet>
+          <EntitySet Name="IssuedCards" EntityType="SSKModel.IssuedCard" />
+          <EntitySet Name="User_Profiles" EntityType="SSKModel.User_Profiles" />
+          <AssociationSet Name="FK_User_Profiles_Addresses2" Association="SSKModel.FK_User_Profiles_Addresses2">
+            <End Role="Address" EntitySet="Addresses" />
+            <End Role="User_Profiles" EntitySet="User_Profiles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_User_Profiles_Addresses3" Association="SSKModel.FK_User_Profiles_Addresses3">
+            <End Role="Address" EntitySet="Addresses" />
+            <End Role="User_Profiles" EntitySet="User_Profiles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_IssuedCards_Membership_Users" Association="SSKModel.FK_IssuedCards_Membership_Users">
+            <End Role="Membership_Users" EntitySet="Membership_Users" />
+            <End Role="IssuedCard" EntitySet="IssuedCards" />
+          </AssociationSet>
+          <AssociationSet Name="FK_User_Profiles_Membership_Users" Association="SSKModel.FK_User_Profiles_Membership_Users">
+            <End Role="Membership_Users" EntitySet="Membership_Users" />
+            <End Role="User_Profiles" EntitySet="User_Profiles" />
           </AssociationSet>
         </EntityContainer>
         <EntityType Name="AbsenceReporting">
@@ -865,7 +901,7 @@
           <Property Name="Postal_Code" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="User_Profiles" Relationship="SSKModel.FK_User_Profiles_Addresses2" FromRole="Address" ToRole="User_Profiles" />
           <NavigationProperty Name="User_Profiles1" Relationship="SSKModel.FK_User_Profiles_Addresses3" FromRole="Address" ToRole="User_Profiles" />
-        </EntityType>
+          </EntityType>
         <EntityType Name="ApplicationDevice_Status">
           <Key>
             <PropertyRef Name="ID" />
@@ -1033,6 +1069,7 @@
           <NavigationProperty Name="Notifications" Relationship="SSKModel.FK_Notifications_Membership_Users" FromRole="Membership_Users" ToRole="Notification" />
           <NavigationProperty Name="Notifications1" Relationship="SSKModel.FK_Notifications_Membership_Users1" FromRole="Membership_Users" ToRole="Notification" />
           <NavigationProperty Name="Security_QA" Relationship="SSKModel.FK_PWD_QA_Membership_Users" FromRole="Membership_Users" ToRole="Security_QA" />
+          <NavigationProperty Name="IssuedCards" Relationship="SSKModel.FK_IssuedCards_Membership_Users" FromRole="Membership_Users" ToRole="IssuedCard" />
           <NavigationProperty Name="User_Profiles" Relationship="SSKModel.FK_User_Profiles_Membership_Users" FromRole="Membership_Users" ToRole="User_Profiles" />
         </EntityType>
         <EntityType Name="Notification">
@@ -1059,7 +1096,7 @@
           </Key>
           <Property Name="Queue_ID" Type="Guid" Nullable="false" />
           <Property Name="Station" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="Status" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="Status" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="Message" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Queue" Relationship="SSKModel.FK_QueueDetails_Queues" FromRole="QueueDetail" ToRole="Queue" />
         </EntityType>
@@ -1156,47 +1193,6 @@
           <NavigationProperty Name="Appointments" Relationship="SSKModel.FK_Appointments_Timeslots" FromRole="Timeslot" ToRole="Appointment" />
           <NavigationProperty Name="Setting" Relationship="SSKModel.FK_Timeslots_Settings" FromRole="Timeslot" ToRole="Setting" />
         </EntityType>
-        <EntityType Name="User_Profiles">
-          <Key>
-            <PropertyRef Name="UserId" />
-          </Key>
-          <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="Primary_Phone" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Secondary_Phone" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Primary_Email" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Secondary_Email" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="DOB" Type="DateTime" Precision="0" />
-          <Property Name="Nationality" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
-          <Property Name="Maritial_Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Residential_Addess_ID" Type="Int32" />
-          <Property Name="Other_Address_ID" Type="Int32" />
-          <Property Name="NextOfKin_Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="NextOfKin_Contact_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="NextOfKin_Relationship" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="NextOfKin_BlkHouse_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="NextOfKin_FlrUnit_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="NextOfKin_Street_Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="NextOfKin_Country" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="NextOfKin_PostalCode" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
-          <Property Name="Employment_Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Employment_Contact_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Employment_Company_Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Employment_Job_Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Employment_Start_Date" Type="DateTime" Precision="0" />
-          <Property Name="Employment_End_Date" Type="DateTime" Precision="0" />
-          <Property Name="Employment_Remarks" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="User_Photo1" Type="Binary" MaxLength="Max" FixedLength="false" />
-          <Property Name="User_Photo2" Type="Binary" MaxLength="Max" FixedLength="false" />
-          <Property Name="Serial_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Date_of_Issue" Type="DateTime" Precision="0" />
-          <Property Name="Gender" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
-          <Property Name="Race" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="RightThumbImage" Type="Binary" MaxLength="Max" FixedLength="false" />
-          <Property Name="LeftThumbImage" Type="Binary" MaxLength="Max" FixedLength="false" />
-          <NavigationProperty Name="Address" Relationship="SSKModel.FK_User_Profiles_Addresses2" FromRole="User_Profiles" ToRole="Address" />
-          <NavigationProperty Name="Address1" Relationship="SSKModel.FK_User_Profiles_Addresses3" FromRole="User_Profiles" ToRole="Address" />
-          <NavigationProperty Name="Membership_Users" Relationship="SSKModel.FK_User_Profiles_Membership_Users" FromRole="User_Profiles" ToRole="Membership_Users" />
-        </EntityType>
         <Association Name="FK_Appointments_AbsenceReporting">
           <End Type="SSKModel.AbsenceReporting" Role="AbsenceReporting" Multiplicity="0..1" />
           <End Type="SSKModel.Appointment" Role="Appointment" Multiplicity="*" />
@@ -1230,30 +1226,6 @@
             </Principal>
             <Dependent Role="ActionLog">
               <PropertyRef Name="PerformedBy" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_User_Profiles_Addresses2">
-          <End Type="SSKModel.Address" Role="Address" Multiplicity="0..1" />
-          <End Type="SSKModel.User_Profiles" Role="User_Profiles" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Address">
-              <PropertyRef Name="Address_ID" />
-            </Principal>
-            <Dependent Role="User_Profiles">
-              <PropertyRef Name="Other_Address_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_User_Profiles_Addresses3">
-          <End Type="SSKModel.Address" Role="Address" Multiplicity="0..1" />
-          <End Type="SSKModel.User_Profiles" Role="User_Profiles" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Address">
-              <PropertyRef Name="Address_ID" />
-            </Principal>
-            <Dependent Role="User_Profiles">
-              <PropertyRef Name="Residential_Addess_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1433,18 +1405,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_User_Profiles_Membership_Users">
-          <End Type="SSKModel.Membership_Users" Role="Membership_Users" Multiplicity="1" />
-          <End Type="SSKModel.User_Profiles" Role="User_Profiles" Multiplicity="0..1" />
-          <ReferentialConstraint>
-            <Principal Role="Membership_Users">
-              <PropertyRef Name="UserId" />
-            </Principal>
-            <Dependent Role="User_Profiles">
-              <PropertyRef Name="UserId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_QueueDetails_Queues">
           <End Type="SSKModel.Queue" Role="Queue" Multiplicity="1" />
           <End Type="SSKModel.QueueDetail" Role="QueueDetail" Multiplicity="*" />
@@ -1466,6 +1426,110 @@
             </Principal>
             <Dependent Role="Timeslot">
               <PropertyRef Name="Setting_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="IssuedCard">
+          <Key>
+            <PropertyRef Name="UserId" />
+            <PropertyRef Name="SmartCardId" />
+          </Key>
+          <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="SmartCardId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="NRIC" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Serial_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Date_Of_Issue" Type="DateTime" Precision="0" />
+          <Property Name="Status" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="Reprint_Reason" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Membership_Users" Relationship="SSKModel.FK_IssuedCards_Membership_Users" FromRole="IssuedCard" ToRole="Membership_Users" />
+        </EntityType>
+        <EntityType Name="User_Profiles">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Primary_Phone" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Secondary_Phone" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Primary_Email" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Secondary_Email" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="DOB" Type="DateTime" Precision="0" />
+          <Property Name="Nationality" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="Maritial_Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Residential_Addess_ID" Type="Int32" />
+          <Property Name="Other_Address_ID" Type="Int32" />
+          <Property Name="NextOfKin_Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="NextOfKin_Contact_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="NextOfKin_Relationship" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="NextOfKin_BlkHouse_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="NextOfKin_FlrUnit_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="NextOfKin_Street_Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="NextOfKin_Country" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="NextOfKin_PostalCode" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="Employment_Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Employment_Contact_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Employment_Company_Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Employment_Job_Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Employment_Start_Date" Type="DateTime" Precision="0" />
+          <Property Name="Employment_End_Date" Type="DateTime" Precision="0" />
+          <Property Name="Employment_Remarks" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="User_Photo1" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="User_Photo2" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="Serial_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Date_of_Issue" Type="DateTime" Precision="0" />
+          <Property Name="Gender" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
+          <Property Name="Race" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Address" Relationship="SSKModel.FK_User_Profiles_Addresses2" FromRole="User_Profiles" ToRole="Address" />
+          <NavigationProperty Name="Address1" Relationship="SSKModel.FK_User_Profiles_Addresses3" FromRole="User_Profiles" ToRole="Address" />
+          <NavigationProperty Name="Membership_Users" Relationship="SSKModel.FK_User_Profiles_Membership_Users" FromRole="User_Profiles" ToRole="Membership_Users" />
+        </EntityType>
+        <Association Name="FK_User_Profiles_Addresses2">
+          <End Type="SSKModel.Address" Role="Address" Multiplicity="0..1" />
+          <End Type="SSKModel.User_Profiles" Role="User_Profiles" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Address">
+              <PropertyRef Name="Address_ID" />
+            </Principal>
+            <Dependent Role="User_Profiles">
+              <PropertyRef Name="Other_Address_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_User_Profiles_Addresses3">
+          <End Type="SSKModel.Address" Role="Address" Multiplicity="0..1" />
+          <End Type="SSKModel.User_Profiles" Role="User_Profiles" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Address">
+              <PropertyRef Name="Address_ID" />
+            </Principal>
+            <Dependent Role="User_Profiles">
+              <PropertyRef Name="Residential_Addess_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_IssuedCards_Membership_Users">
+          <End Type="SSKModel.Membership_Users" Role="Membership_Users" Multiplicity="1" />
+          <End Type="SSKModel.IssuedCard" Role="IssuedCard" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Membership_Users">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="IssuedCard">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_User_Profiles_Membership_Users">
+          <End Type="SSKModel.Membership_Users" Role="Membership_Users" Multiplicity="1" />
+          <End Type="SSKModel.User_Profiles" Role="User_Profiles" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Membership_Users">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="User_Profiles">
+              <PropertyRef Name="UserId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1777,11 +1841,25 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="IssuedCards">
+            <EntityTypeMapping TypeName="SSKModel.IssuedCard">
+              <MappingFragment StoreEntitySet="IssuedCards">
+                <ScalarProperty Name="Reprint_Reason" ColumnName="Reprint_Reason" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Date_Of_Issue" ColumnName="Date_Of_Issue" />
+                <ScalarProperty Name="Serial_Number" ColumnName="Serial_Number" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="NRIC" ColumnName="NRIC" />
+                <ScalarProperty Name="SmartCardId" ColumnName="SmartCardId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="User_Profiles">
             <EntityTypeMapping TypeName="SSKModel.User_Profiles">
               <MappingFragment StoreEntitySet="User_Profiles">
-                <ScalarProperty Name="LeftThumbImage" ColumnName="LeftThumbImage" />
-                <ScalarProperty Name="RightThumbImage" ColumnName="RightThumbImage" />
                 <ScalarProperty Name="Race" ColumnName="Race" />
                 <ScalarProperty Name="Gender" ColumnName="Gender" />
                 <ScalarProperty Name="Date_of_Issue" ColumnName="Date_of_Issue" />

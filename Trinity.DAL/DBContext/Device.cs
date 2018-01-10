@@ -14,17 +14,8 @@ namespace Trinity.DAL.DBContext
     
     public partial class Device
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Device()
-        {
-            this.ApplicationDevice_Status = new HashSet<ApplicationDevice_Status>();
-        }
-    
         public int DeviceID { get; set; }
         public string DeviceName { get; set; }
         public string Details { get; set; }
-    
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ApplicationDevice_Status> ApplicationDevice_Status { get; set; }
     }
 }
