@@ -83,10 +83,10 @@ input {
     padding: 5px;
     font-weight: bold;
     box-sizing: border-box;
-    background-image:url('../img/central_narco_logo.png');
-    background-position:center center;
-    background-repeat:no-repeat;
-    background-size:contain;
+    background-image: url('../img/central_narco_logo.png');
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: contain;
 }
 
 .logout {
@@ -138,3 +138,44 @@ input {
         #menu [item-menu].active {
             background-color: #CCC;
         }
+
+
+[itemview] {
+    position: relative;
+    margin-bottom: 10px;
+    min-height: 40px;
+}
+
+    [itemview] [itemview-title] {
+        width: 150px;
+        height: 100%;
+        border: 1px solid #333;
+        vertical-align: middle;
+        text-align: left;
+        box-sizing: border-box;
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        padding: 0px 5px;
+    }
+
+        [itemview] [itemview-title]:before {
+            content: attr(title);
+            position: absolute;
+            top: 50%;
+            -webkit-transform: translate(0px, -50%);
+            -moz-transform: translate(0px, -50%);
+            -ms-transform: translate(0px, -50%);
+            -o-transform: translate(0px, -50%);
+            transform: translate(0px, -50%);
+        }
+
+    [itemview] [itemview-content] {
+        display: block;
+        width: calc(100% - 170px);
+        margin-left: 170px;
+        padding: 10px;
+        text-align: center;
+        border: 1px solid #333;
+        min-height: 40px;
+    }

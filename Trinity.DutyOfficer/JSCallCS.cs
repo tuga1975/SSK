@@ -13,6 +13,7 @@ using Trinity.Common;
 using Trinity.Common.Common;
 using Trinity.DAL;
 using Trinity.Identity;
+using System.Linq;
 
 namespace DutyOfficer
 {
@@ -78,11 +79,39 @@ namespace DutyOfficer
 
 
         #region Queue
+
+        public object getDataQueue()
+        {
+            MemberInfo[] members = typeof(EnumQueueStatuses).GetMembers(
+                BindingFlags.Public |
+                BindingFlags.NonPublic |
+                BindingFlags.Static |
+                BindingFlags.Instance |
+                BindingFlags.DeclaredOnly);
+
+            var data = new DAL_QueueNumber().GetAllQueueByDateIncludeDetail(DateTime.Now.Date)
+                .Select(queue => new
+                {
+                    NRIC = queue.Appointment.Membership_Users.NRIC,
+                    Name = queue.Appointment.Membership_Users.Name,
+                    APS = queue.QueueDetails.Where(c => c.Station == EnumStations.APS).FirstOrDefault().Color,
+                    SSK = queue.QueueDetails.Where(c => c.Station == EnumStations.SSK).FirstOrDefault().Color,
+                    SSA = queue.QueueDetails.Where(c => c.Station == EnumStations.SSA).FirstOrDefault().Color,
+                    UHP = queue.QueueDetails.Where(c => c.Station == EnumStations.UHP).FirstOrDefault().Color,
+                    HSA = queue.QueueDetails.Where(c => c.Station == EnumStations.UHP).FirstOrDefault().Message,
+                    ESP = queue.QueueDetails.Where(c => c.Station == EnumStations.ESP).FirstOrDefault().Color,
+                    Outcome = queue.Outcome,
+                    Message = new
+                    {
+                        content = queue.QueueDetails.Where(c => c.Station == queue.CurrentStation).FirstOrDefault().Message
+                    }
+                });
+            return data;
+        }
         public void LoadPopupQueue()
         {
             this._web.LoadPopupHtml("QueuePopupDetail.html");
         }
-
         #endregion
 
         #region Alert & Notification Popup Detail

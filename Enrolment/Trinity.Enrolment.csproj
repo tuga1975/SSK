@@ -170,6 +170,7 @@
     <Content Include="View\scripts\lib.js" />
     <Content Include="View\scripts\scripts.js" />
     <Content Include="View\scripts\styles.css" />
+    <Content Include="View\styles\main.css" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Business\" />
