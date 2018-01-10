@@ -18,7 +18,8 @@ public enum NavigatorEnums
     Supervisee_Particulars = 9,
     Login = 10,
     WebcamCapture = 11,
-    Authentication_Facial = 12
+    Authentication_Facial = 12,
+    Queue = 13
 };
 
 
@@ -64,16 +65,18 @@ public enum EnumAbsenceReasons
 public static class EnumQueueStatuses
 {
 
-    [Color("red")]
-    public const string Missed = "Missed";
-    [Color("white")]
+    [Custom(Color ="red")]
+    public static string Missed = "Missed";
+    [Custom(Color = "white")]
     public const string Waiting = "Waiting";
-    [Color("white")]
+    [Custom(Color = "white")]
     public const string Processing = "Processing";
-    [Color("red")]
+    [Custom(Color = "red")]
     public const string Errors = "Errors";
-    [Color("green")]
+    [Custom(Color = "green")]
     public const string Finished = "Finished";
+    [Custom(Color = "notrequired")]
+    public const string NotRequired = "NotRequired";
 
 }
 

@@ -87,7 +87,7 @@
   <ItemGroup>
     <Compile Include="Authentication\Fingerprint.cs" />
     <Compile Include="Authentication\SmartCard.cs" />
-    <Compile Include="Common\MyCustomAttribute.cs" />
+    <Compile Include="Common\CustomAttribute.cs" />
     <Compile Include="Common\Enums.cs" />
     <Compile Include="Common\ErrorInfo.cs" />
     <Compile Include="Common\EventAgrs.cs" />
