@@ -156,3 +156,7 @@ $(document).ready(function () {
         }
     });
 });
+
+function loginFailAlert(message) {
+    alert(message);
+}
