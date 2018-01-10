@@ -359,15 +359,15 @@
 	}
 
 	$("#SaveBtn").on('click', function(){
-		$("#superviseeFrm").trigger('submit');
-	});
-	$("#superviseeFrm").submit(function(e){
-		var $form = $("#superviseeFrm");
+        var $form = $("#superviseeFrm");
         var data = getFormData($form);
         var json = JSON.stringify(data);
-        api.server.SaveSupervisee(json, true);
-		e.preventDefault();
+        api.server.SaveSupervisee(json);
 	});
+	//$("#superviseeFrm").submit(function(e){
+	
+	//	e.preventDefault();
+	//});
 
 	/*$('#SaveBtn').click(function () {
 		var $form = $("#superviseeFrm");
