@@ -70,34 +70,34 @@ namespace Trinity.DAL
             return _localUnitOfWork.DataContext.Timeslots.Where(t => t.DateOfWeek == dayOfWeek).ToList();
         }
 
-        public void GenerateTimeslot()
+        public void GenerateTimeslot(string createBy)
         {
             var setting = GetSetting();
 
             //mon
-            GenerateTimeSlotAndInsert((int)EnumDayOfWeek.Monday, setting.Monday);
+            GenerateTimeSlotAndInsert((int)EnumDayOfWeek.Monday, setting.Monday, createBy);
 
             //tue
-            GenerateTimeSlotAndInsert((int)EnumDayOfWeek.Tuesday, setting.Tuesday);
+            GenerateTimeSlotAndInsert((int)EnumDayOfWeek.Tuesday, setting.Tuesday, createBy);
 
             //wed
-            GenerateTimeSlotAndInsert((int)EnumDayOfWeek.Wednesday, setting.WednesDay);
+            GenerateTimeSlotAndInsert((int)EnumDayOfWeek.Wednesday, setting.WednesDay, createBy);
 
             //thu
-            GenerateTimeSlotAndInsert((int)EnumDayOfWeek.Thursday, setting.Thursday);
+            GenerateTimeSlotAndInsert((int)EnumDayOfWeek.Thursday, setting.Thursday, createBy);
 
             //fri
-            GenerateTimeSlotAndInsert((int)EnumDayOfWeek.Friday, setting.Friday);
+            GenerateTimeSlotAndInsert((int)EnumDayOfWeek.Friday, setting.Friday, createBy);
 
             //sat
-            GenerateTimeSlotAndInsert((int)EnumDayOfWeek.Saturday, setting.Saturday);
+            GenerateTimeSlotAndInsert((int)EnumDayOfWeek.Saturday, setting.Saturday, createBy);
 
             //sun
-            GenerateTimeSlotAndInsert((int)EnumDayOfWeek.Sunday, setting.Sunday);
+            GenerateTimeSlotAndInsert((int)EnumDayOfWeek.Sunday, setting.Sunday, createBy);
 
         }
 
-        private void GenerateTimeSlotAndInsert(int dayOfWeek, Trinity.BE.SettingDetails model)
+        private void GenerateTimeSlotAndInsert(int dayOfWeek, Trinity.BE.SettingDetails model,string createBy)
         {
 
             if (model.StartTime.HasValue && model.EndTime.HasValue && model.Duration.HasValue)
@@ -105,15 +105,38 @@ namespace Trinity.DAL
                 var fromTime = model.StartTime;
                 var toTime = model.EndTime;
                 var id = _localUnitOfWork.DataContext.Timeslots.Any() ? _localUnitOfWork.DataContext.Timeslots.Max(t => t.Timeslot_ID) : 0;
+
+                var morningTimeSpan = new TimeSpan(12, 0, 0);
+                var eveningTimeSpan = new TimeSpan(17, 0, 0);
                 while (fromTime < toTime)
                 {
-                    var timeSlot = new BE.TimeslotDetails()
+                    var timeSlot = new BE.TimeslotDetails();
+
+                    timeSlot.Timeslot_ID = (id + 1);
+                    timeSlot.DateOfWeek = dayOfWeek;
+                    timeSlot.StartTime = fromTime;
+                    timeSlot.EndTime = fromTime.Value.Add(TimeSpan.FromMinutes(model.Duration.Value));
+                    if (timeSlot.EndTime <= morningTimeSpan)
                     {
-                        Timeslot_ID = (id + 1),
-                        DateOfWeek = dayOfWeek,
-                        StartTime = fromTime,
-                        EndTime = fromTime.Value.Add(TimeSpan.FromMinutes(model.Duration.Value))
-                    };
+                        timeSlot.Category = EnumTimeshift.Morning;
+                    }
+                    else if (timeSlot.EndTime > eveningTimeSpan)
+                    {
+                        timeSlot.Category = EnumTimeshift.Evening;
+                    }
+                    else
+                    {
+                        timeSlot.Category = EnumTimeshift.Afternoon;
+                    }
+                    timeSlot.CreatedDate = DateTime.Today;
+                    timeSlot.Description = string.Empty;
+                    timeSlot.Setting_ID = model.Setting_ID;
+                    timeSlot.CreatedBy = createBy;
+                    timeSlot.LastUpdatedBy = createBy;
+                    timeSlot.LastUpdatedDate = DateTime.Now;
+                    
+                    
+
                     fromTime = fromTime.Value.Add(TimeSpan.FromMinutes(model.Duration.Value));
 
                     _localUnitOfWork.GetRepository<Timeslot>().Add(SetInfo(new Timeslot(), timeSlot));
@@ -130,6 +153,13 @@ namespace Trinity.DAL
             dbTimeslot.StartTime = model.StartTime;
             dbTimeslot.EndTime = model.EndTime;
             dbTimeslot.DateOfWeek = model.DateOfWeek;
+            dbTimeslot.Setting_ID = model.Setting_ID;
+            dbTimeslot.Category = model.Category;
+            dbTimeslot.CreatedBy = model.CreatedBy;
+            dbTimeslot.CreatedDate = model.CreatedDate;
+            dbTimeslot.Description = model.Description;
+            dbTimeslot.LastUpdatedBy = model.LastUpdatedBy;
+            dbTimeslot.LastUpdatedDate = model.LastUpdatedDate;
 
             return dbTimeslot;
         }
@@ -243,7 +273,7 @@ namespace Trinity.DAL
             return new BE.SettingBE().ToSettingModel(settingBE);
         }
 
-        public void UpdateTimeslotForNewWeek()
+        public void UpdateTimeslotForNewWeek(string createBy)
         {
             var timeSlotRepo = _localUnitOfWork.GetRepository<Timeslot>();
 
@@ -257,11 +287,11 @@ namespace Trinity.DAL
 
             _localUnitOfWork.Save();
             //add new
-            GenerateTimeslot();
+            GenerateTimeslot(createBy);
 
 
         }
-        public void UpdateSetting(Trinity.BE.SettingBE model)
+        public void UpdateSetting(Trinity.BE.SettingBE model,string lastUpdateBy)
         {
             var repo = _localUnitOfWork.GetRepository<Setting>();
             var dbSetting = repo.GetAll().FirstOrDefault();
@@ -269,7 +299,7 @@ namespace Trinity.DAL
 
             repo.Update(dbSetting);
             _localUnitOfWork.Save();
-            UpdateTimeslotForNewWeek();
+            UpdateTimeslotForNewWeek(lastUpdateBy);
 
 
         }

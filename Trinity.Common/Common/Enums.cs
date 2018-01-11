@@ -259,6 +259,14 @@ public static class EnumLabelType
     public const string TT = "TT";
     public const string UB = "UB";
 };
+
+
+public static class EnumTimeshift
+{
+    public const string Morning = "Morning";
+    public const string Afternoon = "Afternoon";
+    public const string Evening = "Evening";
+};
 public enum EnumDayOfWeek
 {
     Monday = 2,

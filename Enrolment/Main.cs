@@ -323,7 +323,7 @@ namespace Enrolment
                     deviceId = dalDeviceStatus.GetDeviceId(EnumDeviceTypes.FingerprintScanner);
                     listDeviceStatusModel.Add(dalDeviceStatus.SetInfo(entryAppName, deviceId, e.FPrintStatus));
 
-                    dalDeviceStatus.Insert(listDeviceStatusModel);
+                    dalDeviceStatus.UpdateHealthStatus(listDeviceStatusModel);
                 }
             }
             catch (Exception ex)
