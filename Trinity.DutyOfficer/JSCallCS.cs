@@ -34,9 +34,9 @@ namespace DutyOfficer
             _thisType = this.GetType();
 
             _printTTLabel = new CodeBehind.PrintMUBAndTTLabels(web);
-            //_printTTLabel.OnPrintMUBAndTTLabelsSucceeded += PrintMUBAndTTLabels_OnPrintTTLabelSucceeded;
-            //_printTTLabel.OnPrintMUBAndTTLabelsFailed += PrintMUBAndTTLabels_OnPrintTTLabelFailed;
-            //_printTTLabel.OnPrintMUBAndTTLabelsException += PrintMUBAndTTLabels_OnPrintTTLabelException;
+            _printTTLabel.OnPrintMUBAndTTLabelsSucceeded += PrintMUBAndTTLabels_OnPrintTTLabelSucceeded;
+            _printTTLabel.OnPrintMUBAndTTLabelsFailed += PrintMUBAndTTLabels_OnPrintTTLabelFailed;
+            _printTTLabel.OnPrintMUBAndTTLabelsException += PrintMUBAndTTLabels_OnPrintTTLabelException;
         }
 
         
@@ -135,6 +135,96 @@ namespace DutyOfficer
         {
             TimeSpan duration = new TimeSpan(endTime.Ticks - startTime.Ticks);
             return duration;
+        }
+
+        public void GetAllMUBAndTTlabels()
+        {
+            var dalMUBAndTTlabels = new DAL_Labels();
+            List<Trinity.BE.Label> data = dalMUBAndTTlabels.GetAllLabels();
+
+            object result = null;
+            if (data.Count != 0)
+            {
+                result = JsonConvert.SerializeObject(data, Formatting.Indented,
+                    new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
+            }
+            else
+            {
+                Trinity.BE.Label label0 = new Trinity.BE.Label();
+                label0.NRIC = "S99999999X";
+                label0.Name = "Tan Ah Guo";
+                label0.LastStation = "SSA";
+
+                Trinity.BE.Label label1 = new Trinity.BE.Label();
+                label1.NRIC = "S99999998X";
+                label1.Name = "Chen Ah Ming";
+                label1.LastStation = "SSK";
+
+                Trinity.BE.Label label2 = new Trinity.BE.Label();
+                label2.NRIC = "S99999997X";
+                label2.Name = "Koh Mok Yao";
+                label2.LastStation = "ESP";
+
+                Trinity.BE.Label label3 = new Trinity.BE.Label();
+                label3.NRIC = "S99999996X";
+                label3.Name = "Quek Yew Ming";
+                label3.LastStation = "UHP";
+
+                data = new List<Trinity.BE.Label>();
+                data.Add(label0);
+                data.Add(label1);
+                data.Add(label2);
+                data.Add(label3);
+
+                result = JsonConvert.SerializeObject(data, Formatting.Indented,
+                    new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
+            }
+            _web.InvokeScript("getDataCallback", result);
+        }
+
+        public void GetAllUBlabels()
+        {
+            var dalMUBAndTTlabels = new DAL_Labels();
+            List<Trinity.BE.Label> data = dalMUBAndTTlabels.GetAllLabels();
+
+            object result = null;
+            if (data.Count != 0)
+            {
+                result = JsonConvert.SerializeObject(data, Formatting.Indented,
+                    new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
+            }
+            else
+            {
+                Trinity.BE.Label label0 = new Trinity.BE.Label();
+                label0.NRIC = "S99999999X";
+                label0.Name = "Tan Ah Guo";
+                label0.LastStation = "SSA";
+
+                Trinity.BE.Label label1 = new Trinity.BE.Label();
+                label1.NRIC = "S99999998X";
+                label1.Name = "Chen Ah Ming";
+                label1.LastStation = "SSK";
+
+                Trinity.BE.Label label2 = new Trinity.BE.Label();
+                label2.NRIC = "S99999997X";
+                label2.Name = "Koh Mok Yao";
+                label2.LastStation = "ESP";
+
+                Trinity.BE.Label label3 = new Trinity.BE.Label();
+                label3.NRIC = "S99999996X";
+                label3.Name = "Quek Yew Ming";
+                label3.LastStation = "UHP";
+
+                data = new List<Trinity.BE.Label>();
+                data.Add(label0);
+                data.Add(label1);
+                data.Add(label2);
+                data.Add(label3);
+
+                result = JsonConvert.SerializeObject(data, Formatting.Indented,
+                    new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
+            }
+            _web.InvokeScript("getDataCallback", result);
         }
 
         public void LoadPopupMUBAndTTLabel(string json)

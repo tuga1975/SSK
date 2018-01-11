@@ -70,5 +70,26 @@ namespace Trinity.DAL
             }
         }
 
+        public List<BE.Label> GetAllLabels()
+        {
+            try
+            {
+                var lstModels = from a in _localUnitOfWork.DataContext.Labels
+                                join u in _localUnitOfWork.DataContext.Membership_Users on a.UserId equals u.UserId
+                                select new BE.Label()
+                                {
+                                    NRIC = u.NRIC,
+                                    Name = u.Name,
+                                    LastStation = a.LastStation
+                                };
+
+                return lstModels.ToList();
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
     }
 }
