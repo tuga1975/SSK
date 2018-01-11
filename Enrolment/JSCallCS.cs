@@ -303,7 +303,7 @@ namespace Enrolment
                 var dalUserprofile = new Trinity.DAL.DAL_UserProfile();
                 var profileModel = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
                 var address = new DAL_Address();
-                
+
                 // get address_ID insert or update
                 var residential_Addess_ID = address.SaveAddress(rawDataAddress, true);
                 var blkHouse_Number = rawDataAddress.BlkHouse_Number;
@@ -362,7 +362,7 @@ namespace Enrolment
                 ////send notifiy to case officer
                 APIUtils.SignalR.SendNotificationToDutyOfficer("A supervisee has updated profile.", "Please check Supervisee's information!");
 
-                
+
                 session[CommonConstants.CURRENT_EDIT_USER] = data;
                 //load Supervisee page 
                 LoadListSupervisee();
@@ -437,7 +437,7 @@ namespace Enrolment
             session[CommonConstants.CURRENT_LEFT_FINGERPRINT_IMAGE] = null;
             session[CommonConstants.CURRENT_RIGHT_FINGERPRINT_IMAGE] = null;
             session[CommonConstants.CURRENT_PHOTO_DATA] = null;
-            
+
             EventCenter eventCenter = EventCenter.Default;
             eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.SUPERVISEE_DATA_UPDATE_CANCELED });
         }
@@ -542,8 +542,10 @@ namespace Enrolment
 
         #region Update Finger Prints
         private int FingerprintLeftRight = 0;
+        private int FingerprintNumber = 0;
 
-        public void SubmitUpdateFingerprints(string left,string right) {
+        public void SubmitUpdateFingerprints(string left, string right)
+        {
             Session session = Session.Instance;
             var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
             byte[] _left = Convert.FromBase64String(left);
@@ -561,9 +563,10 @@ namespace Enrolment
         }
         public void UpdateFingerprints()
         {
+            FingerprintNumber = 0;
             Session session = Session.Instance;
             var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
-            this._web.LoadPageHtml("UpdateSuperviseeFingerprint.html", new object[] { currentEditUser.User.LeftThumbFingerprint==null?null: Convert.ToBase64String(currentEditUser.User.LeftThumbFingerprint), currentEditUser.User.RightThumbFingerprint == null ? null : Convert.ToBase64String(currentEditUser.User.RightThumbFingerprint) });
+            this._web.LoadPageHtml("UpdateSuperviseeFingerprint.html", new object[] { currentEditUser.User.LeftThumbFingerprint == null ? null : Convert.ToBase64String(currentEditUser.User.LeftThumbFingerprint), currentEditUser.User.RightThumbFingerprint == null ? null : Convert.ToBase64String(currentEditUser.User.RightThumbFingerprint) });
         }
         public void CancelUpdateFingerprints()
         {
@@ -578,7 +581,8 @@ namespace Enrolment
         }
 
         #region Event Capture Fingerprint
-        private void UpdateScreenImage(System.Drawing.Bitmap hBitmap) {
+        private void UpdateScreenImage(System.Drawing.Bitmap hBitmap)
+        {
             using (System.IO.MemoryStream ms = new System.IO.MemoryStream())
             {
                 hBitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Bmp);
@@ -592,9 +596,14 @@ namespace Enrolment
             if (bSuccess)
             {
                 _web.InvokeScript("captureFingerprintMessage", FingerprintLeftRight, "Your fingerprint was scanned successfully!", EnumColors.Green);
+                FingerprintNumber = 0;
             }
-            else {
+            else
+            {
                 _web.InvokeScript("captureFingerprintMessage", FingerprintLeftRight, Futronic.SDKHelper.FutronicSdkBase.SdkRetCode2Message(nResult), EnumColors.Red);
+                FingerprintNumber++;
+                if (FingerprintNumber >= 3)
+                    _web.InvokeScript("moreThan3Fingerprint");
             }
             FingerprintCapture.Instance.Dispose();
         }
