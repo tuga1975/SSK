@@ -101,7 +101,7 @@ namespace Trinity.Common.Utils
                 {
                     return false;
                 }
-                
+
                 // The path of file imge contain QRCode
                 string fileName = String.Format("{0}/Temp/{1}", System.IO.Directory.GetCurrentDirectory().ToLower().Replace("\\bin\\debug", string.Empty), "QRCode_" + labelInfo.NRIC + ".png");
 
@@ -113,7 +113,7 @@ namespace Trinity.Common.Utils
                 return false;
             }
         }
-        
+
         /// <summary>
         /// print TTLabel
         /// </summary>
@@ -133,7 +133,7 @@ namespace Trinity.Common.Utils
                 string printerName = ConfigurationManager.AppSettings["TTLabelPrinterName"];
 
                 //Open specified printer driver
-                TSCLIB_DLL.openport(printerName);                                           
+                TSCLIB_DLL.openport(printerName);
 
                 //Setup the media size and sensor type info
                 // page size 2.8"x1.4"
@@ -158,7 +158,7 @@ namespace Trinity.Common.Utils
                 //Drawing PCX graphic
                 TSCLIB_DLL.sendcommand("PUTPCX 100,400,\"UL.PCX\"");
                 //Print labels
-                TSCLIB_DLL.printlabel("1", "1");                                                    
+                TSCLIB_DLL.printlabel("1", "1");
                 TSCLIB_DLL.closeport();
 
                 return true;
@@ -172,15 +172,14 @@ namespace Trinity.Common.Utils
 
         public void Test()
         {
-            Bitmap a = new Bitmap(@"d:\QueueNumber.png");
-            MemoryStream ms = new MemoryStream();
-            a.Save(ms, ImageFormat.Bmp);
+            //Bitmap a = new Bitmap(@"d:\QueueNumber.png");
+            //MemoryStream ms = new MemoryStream();
+            //a.Save(ms, ImageFormat.Bmp);
 
-            byte[] buffer = ms.ToArray();
-            string b = BitConverter.ToString(buffer);
+            //byte[] buffer = ms.ToArray();
+            //string b = BitConverter.ToString(buffer);
             // get printer name
             string printerName = ConfigurationManager.AppSettings["AppointmentPrinterName"];
-
             //Open specified printer driver
             TSCLIB_DLL.openport(printerName);
 
@@ -195,33 +194,62 @@ namespace Trinity.Common.Utils
             //Download PCX file into printer
             //TSCLIB_DLL.downloadpcx("UL.PCX", "UL.PCX");
             //Drawing PCX graphic
-            TSCLIB_DLL.sendcommand("BITMAP 10,10, 20,20,0, " + b);
+            TSCLIB_DLL.downloadpcx(@"D:\xxx.bmp", "xxx.bmp");  //Download PCX file into printer
+
+            TSCLIB_DLL.sendcommand("PUTBMP 1,1,\"xxx.bmp\"");                          //Drawing PCX graphic
+
             //Print labels
-            TSCLIB_DLL.printlabel("1", "1");
+            //TSCLIB_DLL.printlabel("1", "1");
+            TSCLIB_DLL.sendcommand("PRINT 1");
             TSCLIB_DLL.closeport();
         }
-        public bool PrintMUBLabel(Bitmap MUBLabelImage)
+        public bool PrintMUBLabel(string filePath, Bitmap MUBLabelImage)
         {
             try
             {
                 // get printer name
                 string printerName = ConfigurationManager.AppSettings["MUBLabelPrinterName"];
 
-                // create printDocument
-                PrintDocument printDocument = new PrintDocument();
-                printDocument.PrinterSettings.PrinterName = printerName;
-                printDocument.DefaultPageSettings.Landscape = true; //or false!
+                //// create printDocument
+                //PrintDocument printDocument = new PrintDocument();
+                //printDocument.PrinterSettings.PrinterName = printerName;
+                //printDocument.DefaultPageSettings.Landscape = true; //or false!
 
-                PrintDocument pd = new PrintDocument();
-                pd.PrintPage += (sender, args) =>
-                {
-                    //Image image = Image.FromFile("C://Users//DucTu//Desktop//printimage2.png");
-                    ////Point p = new Point(100, 100);
-                    //args.Graphics.DrawImage(image, 0, 0);
-                    args.Graphics.DrawImage(MUBLabelImage, 0, 0);
-                };
-                pd.Print();
+                //PrintDocument pd = new PrintDocument();
+                //pd.PrintPage += (sender, args) =>
+                //{
+                //    //Image image = Image.FromFile("C://Users//DucTu//Desktop//printimage2.png");
+                //    ////Point p = new Point(100, 100);
+                //    //args.Graphics.DrawImage(image, 0, 0);
+                //    args.Graphics.DrawImage(MUBLabelImage, 0, 0);
+                //};
+                //pd.Print();
 
+                //Open specified printer driver
+                TSCLIB_DLL.openport(printerName);
+
+                //Setup the media size and sensor type info
+                // page size 2.8"x1.4"
+                // actually 71.12mm x 42.5mm
+                //TSCLIB_DLL.setup("71.12", "42.5", "4", "8", "0", "0", "0");
+
+                //Clear image buffer
+                TSCLIB_DLL.clearbuffer();
+
+                // Download PCX file into printer
+                //TSCLIB_DLL.downloadpcx("UL.PCX", "UL.PCX");
+                //Drawing PCX graphic
+                TSCLIB_DLL.downloadpcx(filePath, "mublabel.bmp");  //Download PCX file into printer
+
+                TSCLIB_DLL.sendcommand("PUTBMP 1,1, \"mublabel.bmp\""); //Drawing PCX graphic
+
+                //Print labels
+                //TSCLIB_DLL.printlabel("1", "1");
+                TSCLIB_DLL.sendcommand("PRINT 1");
+                TSCLIB_DLL.closeport();
+
+                // Delete temp file
+                File.Delete(filePath);
                 return true;
             }
             catch (Exception ex)

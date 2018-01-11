@@ -22,7 +22,12 @@ public enum NavigatorEnums
     Queue = 13
 };
 
-
+public static class EnumSettingStatuses
+{
+    public const string Archived = "Archived";
+    public const string Active = "Active";
+    public const string Pending = "Pending";
+}
 
 public static class EnumUserRoles
 {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Trinity.BE;
 using Trinity.DAL.DBContext;
 using Trinity.DAL.Repository;
 
@@ -72,7 +73,19 @@ namespace Trinity.DAL
 
         public void GenerateTimeslot(string createBy)
         {
-            var setting = GetSetting();
+            SettingModel setting = GetSetting();
+
+            // Check if allow to change timeslot
+            if (!setting.Status.Equals(EnumSettingStatuses.Pending, StringComparison.InvariantCultureIgnoreCase) )
+            {
+                // Couldn't change timeslot
+                return;
+            }
+
+            // Delete old timeslot
+            List<Timeslot> timeslots = _localUnitOfWork.DataContext.Timeslots.Where(t => t.Setting_ID == setting.Setting_ID).ToList();
+            _localUnitOfWork.DataContext.Timeslots.RemoveRange(timeslots);
+            _localUnitOfWork.GetRepository<Timeslot>().Delete(t=>t.Setting_ID == setting.Setting_ID);
 
             //mon
             GenerateTimeSlotAndInsert((int)EnumDayOfWeek.Monday, setting.Monday, createBy);
@@ -166,6 +179,11 @@ namespace Trinity.DAL
 
         private void SetInfoToSettingBE(BE.SettingBE settingBE, Setting setting)
         {
+            settingBE.Setting_ID = setting.Setting_ID;
+            settingBE.Status = setting.Status;
+            settingBE.WeekNum = setting.WeekNum.Value;
+            settingBE.Year = setting.Year.Value;
+
             settingBE.Mon_Open_Time = setting.Mon_Open_Time;
             settingBE.Mon_Close_Time = setting.Mon_Close_Time;
             settingBE.Mon_Interval = setting.Mon_Interval;
@@ -266,7 +284,7 @@ namespace Trinity.DAL
         }
         private BE.SettingModel GetSetting()
         {
-            var dbSeting = _localUnitOfWork.DataContext.Settings.FirstOrDefault();
+            var dbSeting = _localUnitOfWork.DataContext.Settings.Where(s => s.Status == "Active").FirstOrDefault();
             var settingBE = new BE.SettingBE();
             SetInfoToSettingBE(settingBE, dbSeting);
 

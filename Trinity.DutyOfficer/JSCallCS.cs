@@ -129,11 +129,36 @@ namespace DutyOfficer
         }
         #endregion
 
+        public void GetAllSuperviseesBlocked()
+        {
+            var dalUser = new DAL_User();
+            List<User> data = dalUser.GetAllSuperviseeBlocked(true);
+            
+            object result = null;
+            if (data != null)
+            {
+                result = JsonConvert.SerializeObject(data, Formatting.Indented,
+                    new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
+            }
+            _web.InvokeScript("getDataCallback", result);
+        }
+
         public void LoadPopupBlock(string json)
         {
-            var rawData = JsonConvert.DeserializeObject<object>(json);
+            var rawData = JsonConvert.DeserializeObject<UserBlockedModel>(json);
+            Session session = Session.Instance;
+            Trinity.BE.User dutyOfficer = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+            rawData.OfficerNRIC = dutyOfficer.NRIC;
+            rawData.OfficerName = dutyOfficer.Name;
 
             this._web.LoadPopupHtml("BlockedPopupDetail.html", rawData);
+        }
+
+        public void UnblockSuperviseeByUserId(string userId, string reason)
+        {
+            var dalUser = new DAL_User();
+            dalUser.UnblockSuperviseeById(userId, reason);
+            
         }
 
         public void GetAllAppoinments()

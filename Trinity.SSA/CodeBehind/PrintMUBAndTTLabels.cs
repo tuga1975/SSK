@@ -98,7 +98,7 @@ namespace SSA.CodeBehind
                 }));
             }
         }
-
+        
 
         // Wrap event invocations inside a protected virtual method
         // to allow derived classes to override the event invocation behavior

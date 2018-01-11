@@ -43,5 +43,18 @@ namespace Trinity.BE
 
         public byte[] User_Photo1 { get; set; }
         public byte[] User_Photo2 { get; set; }
+
+        [DataMember]
+        public string Note { get; set; }
+    }
+
+    public class UserBlockedModel
+    {
+        public string UserId { get; set; }
+        public string NRIC { get; set; }
+        public string Name { get; set; }
+        public string Reason { get; set; }
+        public string OfficerNRIC { get; set; }
+        public string OfficerName { get; set; }
     }
 }
