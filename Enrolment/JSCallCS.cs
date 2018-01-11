@@ -105,13 +105,13 @@ namespace Enrolment
                 };
                 session[CommonConstants.SUPERVISEE] = dbUser;
                 listSupervisee.Add(model);
-              //  _web.LoadPageHtml("Supervisee.html", listSupervisee);
+                //  _web.LoadPageHtml("Supervisee.html", listSupervisee);
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = 0, Name = EventNames.GET_LIST_SUPERVISEE_SUCCEEDED, Data = listSupervisee, Source = "Supervisee.html" });
             }
             else
             {
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.GET_LIST_SUPERVISEE_SUCCEEDED, Data = listSupervisee, Source = "Supervisee.html" });
-               // LoadListSupervisee();
+                // LoadListSupervisee();
             }
         }
 
@@ -242,14 +242,8 @@ namespace Enrolment
 
             var dbUser = dalUser.GetUserByUserId(userId, true);
 
-            var profileModel = new Trinity.BE.ProfileModel
-            {
-                User = dbUser,
-                UserProfile = dalUserProfile.GetUserProfileByUserId(userId, true),
-                Addresses = dalUserProfile.GetAddressByUserId(userId, true, false),
-                OtherAddress = dalUserProfile.GetAddressByUserId(userId, true, true)
-        };
 
+            Trinity.BE.ProfileModel profileModel = null;
             //session passing from other event like confirm capture photo
             if (session[CommonConstants.CURRENT_EDIT_USER] != null)
             {
@@ -257,9 +251,16 @@ namespace Enrolment
             }
             else
             {
+                profileModel = new Trinity.BE.ProfileModel
+                {
+                    User = dbUser,
+                    UserProfile = dalUserProfile.GetUserProfileByUserId(userId, true),
+                    Addresses = dalUserProfile.GetAddressByUserId(userId, true),
+                    OtherAddress= dalUserProfile.GetAddressByUserId(userId,true,true)
+                };
                 //first load set model to session 
                 session[CommonConstants.CURRENT_EDIT_USER] = profileModel;
-            }            
+            }
 
             if (dbUser.Status.Equals(EnumUserStatuses.New, StringComparison.InvariantCultureIgnoreCase))
             {
@@ -296,14 +297,13 @@ namespace Enrolment
                 var rawDataAddress = JsonConvert.DeserializeObject<Trinity.BE.Address>(param);
                 var rawDataOtherAddress = JsonConvert.DeserializeObject<Trinity.BE.OtherAddress>(param);
 
-
                 var data = new Trinity.BE.ProfileRawMData().ToProfileModel(rawData);
                 var dalUser = new Trinity.DAL.DAL_User();
 
                 var dalUserprofile = new Trinity.DAL.DAL_UserProfile();
                 var profileModel = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
                 var address = new DAL_Address();
-                
+
                 // get address_ID insert or update
                 var residential_Addess_ID = address.SaveAddress(rawDataAddress, true);
                 var blkHouse_Number = rawDataAddress.BlkHouse_Number;
@@ -355,6 +355,8 @@ namespace Enrolment
                 // add some some old data not change
                 data.User.Name = profileModel.User.Name;
                 data.User.Status = profileModel.User.Status;
+                data.User.LeftThumbFingerprint = profileModel.User.LeftThumbFingerprint;
+                data.User.RightThumbFingerprint = profileModel.User.RightThumbFingerprint;
 
                 dalUser.UpdateUser(data.User, profileModel.User.UserId, true);
 
@@ -362,14 +364,50 @@ namespace Enrolment
                 ////send notifiy to case officer
                 APIUtils.SignalR.SendNotificationToDutyOfficer("A supervisee has updated profile.", "Please check Supervisee's information!");
 
-                
-                session[CommonConstants.CURRENT_EDIT_USER] = data;
+
+                //session[CommonConstants.CURRENT_EDIT_USER] = data;
+                session[CommonConstants.CURRENT_EDIT_USER] = null;
                 //load Supervisee page 
                 LoadListSupervisee();
             }
             catch (Exception)
             {
                 LoadPage("Login.html");
+            }
+        }
+
+        public void saveNewDataToSession(string param)
+        {
+            try
+            {
+                Session session = Session.Instance;
+                var rawData = JsonConvert.DeserializeObject<Trinity.BE.ProfileRawMData>(param);
+                var rawDataAddress = JsonConvert.DeserializeObject<Trinity.BE.Address>(param);
+                var rawDataOtherAddress = JsonConvert.DeserializeObject<Trinity.BE.OtherAddress>(param);
+
+                var data = new Trinity.BE.ProfileRawMData().ToProfileModel(rawData);
+                data.Addresses = rawDataAddress;
+                data.OtherAddress.Address_ID = rawDataOtherAddress.OAddress_ID;
+                data.OtherAddress.BlkHouse_Number = rawDataOtherAddress.OBlkHouse_Number;
+                data.OtherAddress.FlrUnit_Number = rawDataOtherAddress.OFlrUnit_Number;
+                data.OtherAddress.Street_Name = rawDataOtherAddress.OStreet_Name;
+                data.OtherAddress.Country = rawDataOtherAddress.OCountry;
+                data.OtherAddress.Postal_Code = rawDataOtherAddress.OPostal_Code;
+
+                var profileModel = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
+
+                ////////
+                //session["TempPhotos"] = new Tuple<string, string>(Convert.ToBase64String(profileModel.UserProfile.User_Photo1), Convert.ToBase64String(profileModel.UserProfile.User_Photo2));
+                   ////////
+                data.UserProfile.User_Photo1 = profileModel.UserProfile.User_Photo1;
+                data.UserProfile.User_Photo2 = profileModel.UserProfile.User_Photo2;
+                data.UserProfile.Residential_Addess_ID = profileModel.UserProfile.Residential_Addess_ID;
+                data.UserProfile.Other_Address_ID = profileModel.UserProfile.Other_Address_ID;
+                session[CommonConstants.CURRENT_EDIT_USER] = data;
+
+            }
+            catch {
+
             }
         }
 
@@ -437,7 +475,7 @@ namespace Enrolment
             session[CommonConstants.CURRENT_LEFT_FINGERPRINT_IMAGE] = null;
             session[CommonConstants.CURRENT_RIGHT_FINGERPRINT_IMAGE] = null;
             session[CommonConstants.CURRENT_PHOTO_DATA] = null;
-            
+
             EventCenter eventCenter = EventCenter.Default;
             eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.SUPERVISEE_DATA_UPDATE_CANCELED });
         }
@@ -537,6 +575,91 @@ namespace Enrolment
             EventCenter eventCenter = EventCenter.Default;
             eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = 0, Name = EventNames.LOGOUT_SUCCEEDED });
         }
+
+        #endregion
+
+        #region Update Finger Prints
+        private int FingerprintLeftRight = 0;
+        private int FingerprintNumber = 0;
+
+        public void SubmitUpdateFingerprints(string left, string right)
+        {
+            Session session = Session.Instance;
+            var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
+            byte[] _left = Convert.FromBase64String(left);
+            byte[] _right = Convert.FromBase64String(right);
+            new DAL_User().UpdateFingerprint(currentEditUser.UserProfile.UserId, _left, _right);
+            if (_left.Length > 0)
+            {
+                currentEditUser.User.LeftThumbFingerprint = _left;
+            }
+            if (_right.Length > 0)
+            {
+                currentEditUser.User.RightThumbFingerprint = _right;
+            }
+            EditSupervisee(currentEditUser.UserProfile.UserId);
+        }
+        public void UpdateFingerprints()
+        {
+            FingerprintNumber = 0;
+            Session session = Session.Instance;
+            var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
+            this._web.LoadPageHtml("UpdateSuperviseeFingerprint.html", new object[] { currentEditUser.User.LeftThumbFingerprint == null ? null : Convert.ToBase64String(currentEditUser.User.LeftThumbFingerprint), currentEditUser.User.RightThumbFingerprint == null ? null : Convert.ToBase64String(currentEditUser.User.RightThumbFingerprint) });
+        }
+        public void CancelUpdateFingerprints()
+        {
+            FingerprintCapture.Instance.Dispose();
+            Session session = Session.Instance;
+            EditSupervisee(((Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER]).UserProfile.UserId);
+        }
+        public void CaptureFingerprint(int LeftOrRight)
+        {
+            FingerprintLeftRight = LeftOrRight;
+            FingerprintCapture.Instance.StartCapture(OnPutOn, OnTakeOff, UpdateScreenImage, OnFakeSource, OnEnrollmentComplete);
+        }
+
+        #region Event Capture Fingerprint
+        private void UpdateScreenImage(System.Drawing.Bitmap hBitmap)
+        {
+            using (System.IO.MemoryStream ms = new System.IO.MemoryStream())
+            {
+                hBitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Bmp);
+                var byteData = ms.ToArray();
+                var base64Str = Convert.ToBase64String(byteData);
+                _web.InvokeScript("setImageFingerprint", FingerprintLeftRight, base64Str);
+            }
+        }
+        private void OnEnrollmentComplete(bool bSuccess, int nResult)
+        {
+            if (bSuccess)
+            {
+                _web.InvokeScript("captureFingerprintMessage", FingerprintLeftRight, "Your fingerprint was scanned successfully!", EnumColors.Green);
+                FingerprintNumber = 0;
+            }
+            else
+            {
+                _web.InvokeScript("captureFingerprintMessage", FingerprintLeftRight, Futronic.SDKHelper.FutronicSdkBase.SdkRetCode2Message(nResult), EnumColors.Red);
+                FingerprintNumber++;
+                if (FingerprintNumber >= 3)
+                    _web.InvokeScript("moreThan3Fingerprint");
+            }
+            FingerprintCapture.Instance.Dispose();
+        }
+        private bool OnFakeSource(Futronic.SDKHelper.FTR_PROGRESS Progress)
+        {
+            _web.InvokeScript("captureFingerprintMessage", FingerprintLeftRight, "Fake source detected. Continue ...", EnumColors.Red);
+            return false;
+        }
+        private void OnTakeOff(Futronic.SDKHelper.FTR_PROGRESS Progress)
+        {
+            _web.InvokeScript("captureFingerprintMessage", FingerprintLeftRight, "Take off finger from device, please ...", EnumColors.Yellow);
+        }
+        private void OnPutOn(Futronic.SDKHelper.FTR_PROGRESS Progress)
+        {
+            _web.InvokeScript("captureFingerprintMessage", FingerprintLeftRight, "Put finger into device, please ...", EnumColors.Yellow);
+        }
+        #endregion
+
 
         #endregion
     }
