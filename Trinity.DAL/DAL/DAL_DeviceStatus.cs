@@ -13,7 +13,7 @@ namespace Trinity.DAL
         Local_UnitOfWork _localUnitOfWork = new Local_UnitOfWork();
         Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
 
-        public bool Insert(List<BE.DeviceStatus> listModel)
+        public bool UpdateHealthStatus(List<BE.DeviceStatus> listModel)
         {
             try
             {
@@ -21,16 +21,37 @@ namespace Trinity.DAL
                 var centralRepo = _centralizedUnitOfWork.GetRepository<ApplicationDevice_Status>();
 
                 var listdbDeviceStatus = new List<ApplicationDevice_Status>();
-                foreach (var item in listModel)
-                {
-                    SetInfoToInsert(item, listdbDeviceStatus);
-                }
 
-                centralRepo.AddRange(listdbDeviceStatus);
-                localRepo.AddRange(listdbDeviceStatus);
-                _centralizedUnitOfWork.Save();
-                _localUnitOfWork.Save();
-                return true;
+                if (!_localUnitOfWork.DataContext.ApplicationDevice_Status.Any())
+                {
+
+
+                    foreach (var item in listModel)
+                    {
+                        SetInfoToInsert(item, listdbDeviceStatus);
+                    }
+
+                    centralRepo.AddRange(listdbDeviceStatus);
+                    localRepo.AddRange(listdbDeviceStatus);
+                    _centralizedUnitOfWork.Save();
+                    _localUnitOfWork.Save();
+                    return true;
+                }
+                else
+                {
+
+                    foreach (var item in listModel)
+                    {
+                        var dbDeviceStatus = localRepo.Get(d => d.DeviceID == item.DeviceID);
+                        if (dbDeviceStatus != null)
+                        {
+                            SetInfoToUpdate(item, dbDeviceStatus);
+                            localRepo.Update(dbDeviceStatus);
+                            _localUnitOfWork.Save();
+                        }
+                    }
+                    return true;
+                }
             }
             catch (Exception ex)
             {
@@ -54,13 +75,26 @@ namespace Trinity.DAL
             }
         }
 
+        private void SetInfoToUpdate(BE.DeviceStatus model, ApplicationDevice_Status dbDeviceStatus)
+        {
+            foreach (var item in model.StatusCode)
+            {
+                var deviceStatus = new ApplicationDevice_Status();
+                deviceStatus.Station = model.Station;
+                deviceStatus.DeviceID = model.DeviceID;
+                deviceStatus.StatusCode = (int)item;
+                deviceStatus.StatusMessage = CommonUtil.GetDeviceStatusText(item);
+
+            }
+        }
+
         public BE.DeviceStatus SetInfo(string appName, int? deviceId, EnumDeviceStatuses[] statusCode)
         {
             return new BE.DeviceStatus
             {
                 Station = appName,
-                DeviceID= deviceId,
-                StatusCode=statusCode
+                DeviceID = deviceId,
+                StatusCode = statusCode
             };
         }
 
