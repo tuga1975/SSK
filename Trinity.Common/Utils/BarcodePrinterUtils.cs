@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Drawing.Printing;
+using System.IO;
 using System.Linq;
 using System.Management;
 using System.Printing;
@@ -168,6 +170,36 @@ namespace Trinity.Common.Utils
             }
         }
 
+        public void Test()
+        {
+            Bitmap a = new Bitmap(@"d:\QueueNumber.png");
+            MemoryStream ms = new MemoryStream();
+            a.Save(ms, ImageFormat.Bmp);
+
+            byte[] buffer = ms.ToArray();
+            string b = BitConverter.ToString(buffer);
+            // get printer name
+            string printerName = ConfigurationManager.AppSettings["AppointmentPrinterName"];
+
+            //Open specified printer driver
+            TSCLIB_DLL.openport(printerName);
+
+            //Setup the media size and sensor type info
+            // page size 2.8"x1.4"
+            // actually 71.12mm x 42.5mm
+            TSCLIB_DLL.setup("71.12", "42.5", "4", "8", "0", "0", "0");
+
+            //Clear image buffer
+            TSCLIB_DLL.clearbuffer();
+
+            //Download PCX file into printer
+            //TSCLIB_DLL.downloadpcx("UL.PCX", "UL.PCX");
+            //Drawing PCX graphic
+            TSCLIB_DLL.sendcommand("BITMAP 10,10, 20,20,0, " + b);
+            //Print labels
+            TSCLIB_DLL.printlabel("1", "1");
+            TSCLIB_DLL.closeport();
+        }
         public bool PrintMUBLabel(Bitmap MUBLabelImage)
         {
             try
