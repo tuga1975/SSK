@@ -237,6 +237,20 @@ namespace Trinity.DAL
             }
         }
 
+        public void UpdateFingerprint(string userId,byte[] left, byte[] right)
+        {
+            Membership_Users user = this._localUnitOfWork.DataContext.Membership_Users.FirstOrDefault(d=>d.UserId== userId);
+            if (left.Length > 0)
+                user.LeftThumbFingerprint = left;
+            if (right.Length > 0)
+                user.RightThumbFingerprint = right;
+            if (left.Length > 0 || right.Length > 0)
+            {
+                this._localUnitOfWork.GetRepository<Membership_Users>().Update(user);
+                this._localUnitOfWork.Save();
+            }
+        }
+
         public void ChangeAccessFailedCount(string userId, int count)
         {
             var localUserRepo = _localUnitOfWork.GetRepository<Membership_Users>();

@@ -105,13 +105,13 @@ namespace Enrolment
                 };
                 session[CommonConstants.SUPERVISEE] = dbUser;
                 listSupervisee.Add(model);
-              //  _web.LoadPageHtml("Supervisee.html", listSupervisee);
+                //  _web.LoadPageHtml("Supervisee.html", listSupervisee);
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = 0, Name = EventNames.GET_LIST_SUPERVISEE_SUCCEEDED, Data = listSupervisee, Source = "Supervisee.html" });
             }
             else
             {
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.GET_LIST_SUPERVISEE_SUCCEEDED, Data = listSupervisee, Source = "Supervisee.html" });
-               // LoadListSupervisee();
+                // LoadListSupervisee();
             }
         }
 
@@ -242,13 +242,8 @@ namespace Enrolment
 
             var dbUser = dalUser.GetUserByUserId(userId, true);
 
-            var profileModel = new Trinity.BE.ProfileModel
-            {
-                User = dbUser,
-                UserProfile = dalUserProfile.GetUserProfileByUserId(userId, true),
-                Addresses = dalUserProfile.GetAddressByUserId(userId, true)
-            };
-                        
+
+            Trinity.BE.ProfileModel profileModel = null;
             //session passing from other event like confirm capture photo
             if (session[CommonConstants.CURRENT_EDIT_USER] != null)
             {
@@ -256,9 +251,15 @@ namespace Enrolment
             }
             else
             {
+                profileModel = new Trinity.BE.ProfileModel
+                {
+                    User = dbUser,
+                    UserProfile = dalUserProfile.GetUserProfileByUserId(userId, true),
+                    Addresses = dalUserProfile.GetAddressByUserId(userId, true)
+                };
                 //first load set model to session 
                 session[CommonConstants.CURRENT_EDIT_USER] = profileModel;
-            }            
+            }
 
             if (dbUser.Status.Equals(EnumUserStatuses.New, StringComparison.InvariantCultureIgnoreCase))
             {
@@ -499,6 +500,85 @@ namespace Enrolment
             EventCenter eventCenter = EventCenter.Default;
             eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = 0, Name = EventNames.LOGOUT_SUCCEEDED });
         }
+
+        #endregion
+
+        #region Update Finger Prints
+        private int FingerprintLeftRight = 0;
+
+        public void SubmitUpdateFingerprints(string left,string right) {
+            Session session = Session.Instance;
+            var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
+            byte[] _left = Convert.FromBase64String(left);
+            byte[] _right = Convert.FromBase64String(right);
+            new DAL_User().UpdateFingerprint(currentEditUser.UserProfile.UserId, _left, _right);
+            if (_left.Length > 0)
+            {
+                currentEditUser.User.LeftThumbFingerprint = _left;
+            }
+            if (_right.Length > 0)
+            {
+                currentEditUser.User.RightThumbFingerprint = _right;
+            }
+            EditSupervisee(currentEditUser.UserProfile.UserId);
+        }
+        public void UpdateFingerprints()
+        {
+            Session session = Session.Instance;
+            var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
+
+            string LeftThumbFingerprint = Convert.ToBase64String(currentEditUser.User.LeftThumbFingerprint);
+            string RightThumbFingerprint = Convert.ToBase64String(currentEditUser.User.RightThumbFingerprint);
+            this._web.LoadPageHtml("UpdateSuperviseeFingerprint.html", new object[] { LeftThumbFingerprint, RightThumbFingerprint });
+        }
+        public void CancelUpdateFingerprints()
+        {
+            FingerprintCapture.Instance.Dispose();
+            Session session = Session.Instance;
+            EditSupervisee(((Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER]).UserProfile.UserId);
+        }
+        public void CaptureFingerprint(int LeftOrRight)
+        {
+            FingerprintLeftRight = LeftOrRight;
+            FingerprintCapture.Instance.StartCapture(OnPutOn, OnTakeOff, UpdateScreenImage, OnFakeSource, OnEnrollmentComplete);
+        }
+
+        #region Event Capture Fingerprint
+        private void UpdateScreenImage(System.Drawing.Bitmap hBitmap) {
+            using (System.IO.MemoryStream ms = new System.IO.MemoryStream())
+            {
+                hBitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Bmp);
+                var byteData = ms.ToArray();
+                var base64Str = Convert.ToBase64String(byteData);
+                _web.InvokeScript("setImageFingerprint", FingerprintLeftRight, base64Str);
+            }
+        }
+        private void OnEnrollmentComplete(bool bSuccess, int nResult)
+        {
+            if (bSuccess)
+            {
+                _web.InvokeScript("captureFingerprintMessage", FingerprintLeftRight, "Your fingerprint was scanned successfully!", EnumColors.Green);
+            }
+            else {
+                _web.InvokeScript("captureFingerprintMessage", FingerprintLeftRight, Futronic.SDKHelper.FutronicSdkBase.SdkRetCode2Message(nResult), EnumColors.Red);
+            }
+            FingerprintCapture.Instance.Dispose();
+        }
+        private bool OnFakeSource(Futronic.SDKHelper.FTR_PROGRESS Progress)
+        {
+            _web.InvokeScript("captureFingerprintMessage", FingerprintLeftRight, "Fake source detected. Continue ...", EnumColors.Red);
+            return false;
+        }
+        private void OnTakeOff(Futronic.SDKHelper.FTR_PROGRESS Progress)
+        {
+            _web.InvokeScript("captureFingerprintMessage", FingerprintLeftRight, "Take off finger from device, please ...", EnumColors.Yellow);
+        }
+        private void OnPutOn(Futronic.SDKHelper.FTR_PROGRESS Progress)
+        {
+            _web.InvokeScript("captureFingerprintMessage", FingerprintLeftRight, "Put finger into device, please ...", EnumColors.Yellow);
+        }
+        #endregion
+
 
         #endregion
     }
