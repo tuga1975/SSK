@@ -260,6 +260,7 @@ namespace Enrolment
                 };
                 //first load set model to session 
                 session[CommonConstants.CURRENT_EDIT_USER] = profileModel;
+                session["TEMP_USER"] = profileModel;
             }
 
             if (dbUser.Status.Equals(EnumUserStatuses.New, StringComparison.InvariantCultureIgnoreCase))
@@ -367,6 +368,7 @@ namespace Enrolment
 
                 //session[CommonConstants.CURRENT_EDIT_USER] = data;
                 session[CommonConstants.CURRENT_EDIT_USER] = null;
+                session["TEMP_USER"] = null;
                 //load Supervisee page 
                 LoadListSupervisee();
             }
@@ -395,9 +397,12 @@ namespace Enrolment
                 data.OtherAddress.Postal_Code = rawDataOtherAddress.OPostal_Code;
 
                 var profileModel = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
-
+                var tempProfileModel = (Trinity.BE.ProfileModel)session["TEMP_USER"];
+                
+                var photo1 = tempProfileModel.UserProfile.User_Photo1 != null ? Convert.ToBase64String(tempProfileModel.UserProfile.User_Photo1) : null;
+                var photo2 = tempProfileModel.UserProfile.User_Photo2 != null ? Convert.ToBase64String(tempProfileModel.UserProfile.User_Photo2) : null;
                 ////////
-                //session["TempPhotos"] = new Tuple<string, string>(Convert.ToBase64String(profileModel.UserProfile.User_Photo1), Convert.ToBase64String(profileModel.UserProfile.User_Photo2));
+                session["TempPhotos"] = new Tuple<string, string>(photo1, photo2);
                    ////////
                 data.UserProfile.User_Photo1 = profileModel.UserProfile.User_Photo1;
                 data.UserProfile.User_Photo2 = profileModel.UserProfile.User_Photo2;
@@ -409,6 +414,15 @@ namespace Enrolment
             catch {
 
             }
+        }
+
+        public void ReplaceOldPhotos() {
+            Session session = Session.Instance;
+            var profileModel = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
+            var tempUser = (Trinity.BE.ProfileModel)session["TEMP_USER"];
+            tempUser.UserProfile.User_Photo1 = profileModel.UserProfile.User_Photo1;
+            tempUser.UserProfile.User_Photo2 = profileModel.UserProfile.User_Photo2;
+            session["TEMP_USER"] = tempUser;
         }
 
         public void UpdateSuperviseePhoto(string param)
