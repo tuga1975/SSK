@@ -21,8 +21,8 @@ namespace Trinity.DAL.DBContext
         }
     
         public System.Guid Setting_ID { get; set; }
-        public Nullable<int> WeekNum { get; set; }
-        public Nullable<int> Year { get; set; }
+        public int WeekNum { get; set; }
+        public int Year { get; set; }
         public string Status { get; set; }
         public Nullable<System.TimeSpan> Mon_Open_Time { get; set; }
         public Nullable<System.TimeSpan> Mon_Close_Time { get; set; }

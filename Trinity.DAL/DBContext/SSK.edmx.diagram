@@ -25,7 +25,6 @@
         <EntityTypeShape EntityType="SSKModel.QueueDetail" Width="1.5" PointX="7.5" PointY="29" />
         <EntityTypeShape EntityType="SSKModel.Queue" Width="1.5" PointX="5.25" PointY="28.75" />
         <EntityTypeShape EntityType="SSKModel.Security_QA" Width="1.5" PointX="3" PointY="41.25" />
-        <EntityTypeShape EntityType="SSKModel.Setting" Width="1.5" PointX="1.5" PointY="53.875" />
         <EntityTypeShape EntityType="SSKModel.Timeslot" Width="1.5" PointX="0.75" PointY="31.75" />
         <EntityTypeShape EntityType="SSKModel.User_Profiles" Width="1.5" PointX="6" PointY="20.125" />
         <AssociationConnector Association="SSKModel.FK_Appointments_AbsenceReporting" />
@@ -50,6 +49,7 @@
         <AssociationConnector Association="SSKModel.FK_PWD_QA_Membership_Users" />
         <AssociationConnector Association="SSKModel.FK_User_Profiles_Membership_Users" />
         <AssociationConnector Association="SSKModel.FK_QueueDetails_Queues" />
+        <EntityTypeShape EntityType="SSKModel.Setting" Width="1.5" PointX="0.75" PointY="40.875" />
         <AssociationConnector Association="SSKModel.FK_Timeslots_Settings" />
       </Diagram>
     </edmx:Diagrams>

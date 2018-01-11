@@ -770,7 +770,6 @@
           <EntitySet Name="QueueDetails" EntityType="SSKModel.QueueDetail" />
           <EntitySet Name="Queues" EntityType="SSKModel.Queue" />
           <EntitySet Name="Security_QA" EntityType="SSKModel.Security_QA" />
-          <EntitySet Name="Settings" EntityType="SSKModel.Setting" />
           <EntitySet Name="Timeslots" EntityType="SSKModel.Timeslot" />
           <EntitySet Name="User_Profiles" EntityType="SSKModel.User_Profiles" />
           <AssociationSet Name="FK_Appointments_AbsenceReporting" Association="SSKModel.FK_Appointments_AbsenceReporting">
@@ -861,6 +860,7 @@
             <End Role="Queue" EntitySet="Queues" />
             <End Role="QueueDetail" EntitySet="QueueDetails" />
           </AssociationSet>
+          <EntitySet Name="Settings" EntityType="SSKModel.Setting" />
           <AssociationSet Name="FK_Timeslots_Settings" Association="SSKModel.FK_Timeslots_Settings">
             <End Role="Setting" EntitySet="Settings" />
             <End Role="Timeslot" EntitySet="Timeslots" />
@@ -1144,54 +1144,6 @@
           <Property Name="LastUpdatedBy" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="LastUpdatedDate" Type="DateTime" Nullable="false" Precision="3" />
           <NavigationProperty Name="Membership_Users" Relationship="SSKModel.FK_PWD_QA_Membership_Users" FromRole="Security_QA" ToRole="Membership_Users" />
-        </EntityType>
-        <EntityType Name="Setting">
-          <Key>
-            <PropertyRef Name="Setting_ID" />
-          </Key>
-          <Property Name="Setting_ID" Type="Guid" Nullable="false" />
-          <Property Name="WeekNum" Type="Int32" Nullable="false" />
-          <Property Name="Year" Type="Int32" Nullable="false" />
-          <Property Name="Status" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="Mon_Open_Time" Type="Time" Precision="7" />
-          <Property Name="Mon_Close_Time" Type="Time" Precision="7" />
-          <Property Name="Mon_Interval" Type="Int32" />
-          <Property Name="Mon_MaximumNum" Type="Int32" />
-          <Property Name="Mon_ReservedForSpare" Type="Int32" />
-          <Property Name="Tue_Open_Time" Type="Time" Precision="7" />
-          <Property Name="Tue_Close_Time" Type="Time" Precision="7" />
-          <Property Name="Tue_Interval" Type="Int32" />
-          <Property Name="Tue_MaximumNum" Type="Int32" />
-          <Property Name="Tue_ReservedForSpare" Type="Int32" />
-          <Property Name="Wed_Open_Time" Type="Time" Precision="7" />
-          <Property Name="Wed_Close_Time" Type="Time" Precision="7" />
-          <Property Name="Wed_Interval" Type="Int32" />
-          <Property Name="Wed_MaximumNum" Type="Int32" />
-          <Property Name="Wed_ReservedForSpare" Type="Int32" />
-          <Property Name="Thu_Open_Time" Type="Time" Precision="7" />
-          <Property Name="Thu_Close_Time" Type="Time" Precision="7" />
-          <Property Name="Thu_MaximumNum" Type="Int32" />
-          <Property Name="Thu_Interval" Type="Int32" />
-          <Property Name="Thu_ReservedForSpare" Type="Int32" />
-          <Property Name="Fri_Open_Time" Type="Time" Precision="7" />
-          <Property Name="Fri_Close_Time" Type="Time" Precision="7" />
-          <Property Name="Fri_Interval" Type="Int32" />
-          <Property Name="Fri_MaximumNum" Type="Int32" />
-          <Property Name="Fri_ReservedForSpare" Type="Int32" />
-          <Property Name="Sat_Open_Time" Type="Time" Precision="7" />
-          <Property Name="Sat_Close_Time" Type="Time" Precision="7" />
-          <Property Name="Sat_Interval" Type="Int32" />
-          <Property Name="Sat_MaximumNum" Type="Int32" />
-          <Property Name="Sat_ReservedForSpare" Type="Int32" />
-          <Property Name="Sun_Open_Time" Type="Time" Precision="7" />
-          <Property Name="Sun_Close_Time" Type="Time" Precision="7" />
-          <Property Name="Sun_Interval" Type="Int32" />
-          <Property Name="Sun_MaximumNum" Type="Int32" />
-          <Property Name="Sun_ReservedForSpare" Type="Int32" />
-          <Property Name="Last_Updated_By" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="Last_Updated_Date" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Timeslots" Relationship="SSKModel.FK_Timeslots_Settings" FromRole="Setting" ToRole="Timeslot" />
         </EntityType>
         <EntityType Name="Timeslot">
           <Key>
@@ -1523,6 +1475,54 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="Setting">
+          <Key>
+            <PropertyRef Name="Setting_ID" />
+          </Key>
+          <Property Name="Setting_ID" Type="Guid" Nullable="false" />
+          <Property Name="WeekNum" Type="Int32" Nullable="false" />
+          <Property Name="Year" Type="Int32" Nullable="false" />
+          <Property Name="Status" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="Mon_Open_Time" Type="Time" Precision="7" />
+          <Property Name="Mon_Close_Time" Type="Time" Precision="7" />
+          <Property Name="Mon_Interval" Type="Int32" />
+          <Property Name="Mon_MaximumNum" Type="Int32" />
+          <Property Name="Mon_ReservedForSpare" Type="Int32" />
+          <Property Name="Tue_Open_Time" Type="Time" Precision="7" />
+          <Property Name="Tue_Close_Time" Type="Time" Precision="7" />
+          <Property Name="Tue_Interval" Type="Int32" />
+          <Property Name="Tue_MaximumNum" Type="Int32" />
+          <Property Name="Tue_ReservedForSpare" Type="Int32" />
+          <Property Name="Wed_Open_Time" Type="Time" Precision="7" />
+          <Property Name="Wed_Close_Time" Type="Time" Precision="7" />
+          <Property Name="Wed_Interval" Type="Int32" />
+          <Property Name="Wed_MaximumNum" Type="Int32" />
+          <Property Name="Wed_ReservedForSpare" Type="Int32" />
+          <Property Name="Thu_Open_Time" Type="Time" Precision="7" />
+          <Property Name="Thu_Close_Time" Type="Time" Precision="7" />
+          <Property Name="Thu_MaximumNum" Type="Int32" />
+          <Property Name="Thu_Interval" Type="Int32" />
+          <Property Name="Thu_ReservedForSpare" Type="Int32" />
+          <Property Name="Fri_Open_Time" Type="Time" Precision="7" />
+          <Property Name="Fri_Close_Time" Type="Time" Precision="7" />
+          <Property Name="Fri_Interval" Type="Int32" />
+          <Property Name="Fri_MaximumNum" Type="Int32" />
+          <Property Name="Fri_ReservedForSpare" Type="Int32" />
+          <Property Name="Sat_Open_Time" Type="Time" Precision="7" />
+          <Property Name="Sat_Close_Time" Type="Time" Precision="7" />
+          <Property Name="Sat_Interval" Type="Int32" />
+          <Property Name="Sat_MaximumNum" Type="Int32" />
+          <Property Name="Sat_ReservedForSpare" Type="Int32" />
+          <Property Name="Sun_Open_Time" Type="Time" Precision="7" />
+          <Property Name="Sun_Close_Time" Type="Time" Precision="7" />
+          <Property Name="Sun_Interval" Type="Int32" />
+          <Property Name="Sun_MaximumNum" Type="Int32" />
+          <Property Name="Sun_ReservedForSpare" Type="Int32" />
+          <Property Name="Last_Updated_By" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Last_Updated_Date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Timeslots" Relationship="SSKModel.FK_Timeslots_Settings" FromRole="Setting" ToRole="Timeslot" />
+        </EntityType>
         <Association Name="FK_Timeslots_Settings">
           <End Type="SSKModel.Setting" Role="Setting" Multiplicity="0..1" />
           <End Type="SSKModel.Timeslot" Role="Timeslot" Multiplicity="*" />
@@ -1794,54 +1794,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Settings">
-            <EntityTypeMapping TypeName="SSKModel.Setting">
-              <MappingFragment StoreEntitySet="Settings">
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="Last_Updated_Date" ColumnName="Last_Updated_Date" />
-                <ScalarProperty Name="Last_Updated_By" ColumnName="Last_Updated_By" />
-                <ScalarProperty Name="Sun_ReservedForSpare" ColumnName="Sun_ReservedForSpare" />
-                <ScalarProperty Name="Sun_MaximumNum" ColumnName="Sun_MaximumNum" />
-                <ScalarProperty Name="Sun_Interval" ColumnName="Sun_Interval" />
-                <ScalarProperty Name="Sun_Close_Time" ColumnName="Sun_Close_Time" />
-                <ScalarProperty Name="Sun_Open_Time" ColumnName="Sun_Open_Time" />
-                <ScalarProperty Name="Sat_ReservedForSpare" ColumnName="Sat_ReservedForSpare" />
-                <ScalarProperty Name="Sat_MaximumNum" ColumnName="Sat_MaximumNum" />
-                <ScalarProperty Name="Sat_Interval" ColumnName="Sat_Interval" />
-                <ScalarProperty Name="Sat_Close_Time" ColumnName="Sat_Close_Time" />
-                <ScalarProperty Name="Sat_Open_Time" ColumnName="Sat_Open_Time" />
-                <ScalarProperty Name="Fri_ReservedForSpare" ColumnName="Fri_ReservedForSpare" />
-                <ScalarProperty Name="Fri_MaximumNum" ColumnName="Fri_MaximumNum" />
-                <ScalarProperty Name="Fri_Interval" ColumnName="Fri_Interval" />
-                <ScalarProperty Name="Fri_Close_Time" ColumnName="Fri_Close_Time" />
-                <ScalarProperty Name="Fri_Open_Time" ColumnName="Fri_Open_Time" />
-                <ScalarProperty Name="Thu_ReservedForSpare" ColumnName="Thu_ReservedForSpare" />
-                <ScalarProperty Name="Thu_Interval" ColumnName="Thu_Interval" />
-                <ScalarProperty Name="Thu_MaximumNum" ColumnName="Thu_MaximumNum" />
-                <ScalarProperty Name="Thu_Close_Time" ColumnName="Thu_Close_Time" />
-                <ScalarProperty Name="Thu_Open_Time" ColumnName="Thu_Open_Time" />
-                <ScalarProperty Name="Wed_ReservedForSpare" ColumnName="Wed_ReservedForSpare" />
-                <ScalarProperty Name="Wed_MaximumNum" ColumnName="Wed_MaximumNum" />
-                <ScalarProperty Name="Wed_Interval" ColumnName="Wed_Interval" />
-                <ScalarProperty Name="Wed_Close_Time" ColumnName="Wed_Close_Time" />
-                <ScalarProperty Name="Wed_Open_Time" ColumnName="Wed_Open_Time" />
-                <ScalarProperty Name="Tue_ReservedForSpare" ColumnName="Tue_ReservedForSpare" />
-                <ScalarProperty Name="Tue_MaximumNum" ColumnName="Tue_MaximumNum" />
-                <ScalarProperty Name="Tue_Interval" ColumnName="Tue_Interval" />
-                <ScalarProperty Name="Tue_Close_Time" ColumnName="Tue_Close_Time" />
-                <ScalarProperty Name="Tue_Open_Time" ColumnName="Tue_Open_Time" />
-                <ScalarProperty Name="Mon_ReservedForSpare" ColumnName="Mon_ReservedForSpare" />
-                <ScalarProperty Name="Mon_MaximumNum" ColumnName="Mon_MaximumNum" />
-                <ScalarProperty Name="Mon_Interval" ColumnName="Mon_Interval" />
-                <ScalarProperty Name="Mon_Close_Time" ColumnName="Mon_Close_Time" />
-                <ScalarProperty Name="Mon_Open_Time" ColumnName="Mon_Open_Time" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="Year" ColumnName="Year" />
-                <ScalarProperty Name="WeekNum" ColumnName="WeekNum" />
-                <ScalarProperty Name="Setting_ID" ColumnName="Setting_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Timeslots">
             <EntityTypeMapping TypeName="SSKModel.Timeslot">
               <MappingFragment StoreEntitySet="Timeslots">
@@ -1894,6 +1846,54 @@
                 <ScalarProperty Name="Secondary_Phone" ColumnName="Secondary_Phone" />
                 <ScalarProperty Name="Primary_Phone" ColumnName="Primary_Phone" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Settings">
+            <EntityTypeMapping TypeName="SSKModel.Setting">
+              <MappingFragment StoreEntitySet="Settings">
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Last_Updated_Date" ColumnName="Last_Updated_Date" />
+                <ScalarProperty Name="Last_Updated_By" ColumnName="Last_Updated_By" />
+                <ScalarProperty Name="Sun_ReservedForSpare" ColumnName="Sun_ReservedForSpare" />
+                <ScalarProperty Name="Sun_MaximumNum" ColumnName="Sun_MaximumNum" />
+                <ScalarProperty Name="Sun_Interval" ColumnName="Sun_Interval" />
+                <ScalarProperty Name="Sun_Close_Time" ColumnName="Sun_Close_Time" />
+                <ScalarProperty Name="Sun_Open_Time" ColumnName="Sun_Open_Time" />
+                <ScalarProperty Name="Sat_ReservedForSpare" ColumnName="Sat_ReservedForSpare" />
+                <ScalarProperty Name="Sat_MaximumNum" ColumnName="Sat_MaximumNum" />
+                <ScalarProperty Name="Sat_Interval" ColumnName="Sat_Interval" />
+                <ScalarProperty Name="Sat_Close_Time" ColumnName="Sat_Close_Time" />
+                <ScalarProperty Name="Sat_Open_Time" ColumnName="Sat_Open_Time" />
+                <ScalarProperty Name="Fri_ReservedForSpare" ColumnName="Fri_ReservedForSpare" />
+                <ScalarProperty Name="Fri_MaximumNum" ColumnName="Fri_MaximumNum" />
+                <ScalarProperty Name="Fri_Interval" ColumnName="Fri_Interval" />
+                <ScalarProperty Name="Fri_Close_Time" ColumnName="Fri_Close_Time" />
+                <ScalarProperty Name="Fri_Open_Time" ColumnName="Fri_Open_Time" />
+                <ScalarProperty Name="Thu_ReservedForSpare" ColumnName="Thu_ReservedForSpare" />
+                <ScalarProperty Name="Thu_Interval" ColumnName="Thu_Interval" />
+                <ScalarProperty Name="Thu_MaximumNum" ColumnName="Thu_MaximumNum" />
+                <ScalarProperty Name="Thu_Close_Time" ColumnName="Thu_Close_Time" />
+                <ScalarProperty Name="Thu_Open_Time" ColumnName="Thu_Open_Time" />
+                <ScalarProperty Name="Wed_ReservedForSpare" ColumnName="Wed_ReservedForSpare" />
+                <ScalarProperty Name="Wed_MaximumNum" ColumnName="Wed_MaximumNum" />
+                <ScalarProperty Name="Wed_Interval" ColumnName="Wed_Interval" />
+                <ScalarProperty Name="Wed_Close_Time" ColumnName="Wed_Close_Time" />
+                <ScalarProperty Name="Wed_Open_Time" ColumnName="Wed_Open_Time" />
+                <ScalarProperty Name="Tue_ReservedForSpare" ColumnName="Tue_ReservedForSpare" />
+                <ScalarProperty Name="Tue_MaximumNum" ColumnName="Tue_MaximumNum" />
+                <ScalarProperty Name="Tue_Interval" ColumnName="Tue_Interval" />
+                <ScalarProperty Name="Tue_Close_Time" ColumnName="Tue_Close_Time" />
+                <ScalarProperty Name="Tue_Open_Time" ColumnName="Tue_Open_Time" />
+                <ScalarProperty Name="Mon_ReservedForSpare" ColumnName="Mon_ReservedForSpare" />
+                <ScalarProperty Name="Mon_MaximumNum" ColumnName="Mon_MaximumNum" />
+                <ScalarProperty Name="Mon_Interval" ColumnName="Mon_Interval" />
+                <ScalarProperty Name="Mon_Close_Time" ColumnName="Mon_Close_Time" />
+                <ScalarProperty Name="Mon_Open_Time" ColumnName="Mon_Open_Time" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Year" ColumnName="Year" />
+                <ScalarProperty Name="WeekNum" ColumnName="WeekNum" />
+                <ScalarProperty Name="Setting_ID" ColumnName="Setting_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
