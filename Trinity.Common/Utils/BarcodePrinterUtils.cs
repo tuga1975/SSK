@@ -203,7 +203,7 @@ namespace Trinity.Common.Utils
             TSCLIB_DLL.sendcommand("PRINT 1");
             TSCLIB_DLL.closeport();
         }
-        public bool PrintMUBLabel(string filePath, Bitmap MUBLabelImage)
+        public bool PrintMUBLabel(string filePath)
         {
             try
             {
@@ -231,7 +231,7 @@ namespace Trinity.Common.Utils
                 //Setup the media size and sensor type info
                 // page size 2.8"x1.4"
                 // actually 71.12mm x 42.5mm
-                //TSCLIB_DLL.setup("71.12", "42.5", "4", "8", "0", "0", "0");
+                TSCLIB_DLL.setup("71.12", "42.5", "4", "8", "0", "0", "0");
 
                 //Clear image buffer
                 TSCLIB_DLL.clearbuffer();
