@@ -27,7 +27,10 @@
         <input type="hidden" name="EnrolledDate" id="EnrolledDate" />
         <input type="hidden" name="Role" id="Role" />
         <input type="hidden" name="SmartCardId" id="SmartCardId" />
-        <input type="hidden" name="Fingerprint" id="Fingerprint" />
+        <input type="hidden" name="LeftFingerprint" id="LeftFingerprint" />
+        <input type="hidden" name="RightFingerprint" id="RightFingerprint" />
+        <input type="hidden" name="User_Photo1" id="User_Photo1" />
+        <input type="hidden" name="User_Photo2" id="User_Photo2" />
         <input type="hidden" name="UserStatus" id="UserStatus" />
         <div id="Particulars" class="tab-pane fade in active" onclick="activeTab('Particulars');" style="height:350px;overflow:auto;">
             <div class="input-group">
@@ -219,7 +222,10 @@
         _maritalStatus = api.model.UserProfile.Maritial_Status;
 
         $('#UserId').val(api.model.User.UserId);
-        $('#Fingerprint').val(api.model.User.Fingerprint);
+        $('#LeftFingerprint').val(api.model.User.LeftThumbFingerprint);
+        $('#RightFingerprint').val(api.model.User.RightThumbFingerprint);
+        $('#User_Photo1').val(api.model.User.User_Photo1);
+        $('#User_Photo2').val(api.model.User.User_Photo2);
         $('#UserStatus').val(api.model.User.Status);
         //user inforation
         $('#ParticularsName').val(api.model.User.Name);

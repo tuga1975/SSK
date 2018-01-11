@@ -40,10 +40,9 @@ namespace DocumentScannerTest
                 MarkingNumber = "CSA17000809"
             };
             //BarcodePrinterUtils.Instance.ResetPagePossition(TTLabelPrinterName);
-            BarcodePrinterUtils.Instance.PrintTTLabel(labelInfo);
-            Console.ReadKey();
+            //BarcodePrinterUtils.Instance.PrintTTLabel(labelInfo);
             //BarcodePrinterUtils.Instance.Print();
-            //BarcodePrinterUtils.Instance.ResetPagePossition(TTLabelPrinterName);
+            BarcodePrinterUtils.Instance.ResetPagePossition(TTLabelPrinterName);
             //StartBarcodeScanner();
             //StartBarcodeScanner2();
 
@@ -57,6 +56,7 @@ namespace DocumentScannerTest
             //TestStartIdentification();
             //TestStartIdentification();
             //TestStartIdentification();
+            Console.ReadKey();
         }
 
         private static void PrintAppointmentDetails()

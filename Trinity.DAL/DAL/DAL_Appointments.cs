@@ -136,6 +136,7 @@ namespace Trinity.DAL
                 var lstModels = from a in _localUnitOfWork.DataContext.Appointments
                                 join tl in _localUnitOfWork.DataContext.Timeslots on a.Timeslot_ID equals tl.Timeslot_ID
                                 join u in _localUnitOfWork.DataContext.Membership_Users on a.UserId equals u.UserId
+                                orderby tl.StartTime
                                 select new BE.Appointment()
                                 {
                                     NRIC = u.NRIC,
@@ -153,6 +154,73 @@ namespace Trinity.DAL
             {
                 return new List<BE.Appointment>();
             }
-        }        
+        }
+        
+        public List<BE.Statistics> GetAllStatistics()
+        {
+            var model = from tl in _localUnitOfWork.DataContext.Timeslots
+                        join a in _localUnitOfWork.DataContext.Appointments on tl.Timeslot_ID equals a.Timeslot_ID
+                        select new BE.Statistics()
+                        {
+                            Timeslot_ID = tl.Timeslot_ID,
+                            StartTime = tl.StartTime,
+                            EndTime = tl.EndTime,
+                            Date = a.Date//,
+                            //Max = GetMaximumNumberOfTimeslot(tl.Timeslot_ID),
+                            //Booked = CountAppointmentBookedByTimeslot(tl.Timeslot_ID),
+                            //Reported = CountAppointmentReportedByTimeslot(tl.Timeslot_ID),
+                            //No_Show = CountAppointmentNoShowByTimeslot(tl.Timeslot_ID),
+                            //Available = GetMaximumNumberOfTimeslot(tl.Timeslot_ID) - CountAppointmentBookedByTimeslot(tl.Timeslot_ID) - CountAppointmentReportedByTimeslot(tl.Timeslot_ID) - CountAppointmentNoShowByTimeslot(tl.Timeslot_ID)
+                        };
+            return model.Distinct().ToList();
+        }
+
+        public int CountAppointmentBookedByTimeslot(int timeslotID)
+        {
+            return _localUnitOfWork.DataContext.Appointments.Count(a => a.Timeslot_ID == timeslotID && a.Status == (int)EnumAppointmentStatuses.Booked);
+        }
+
+        public int CountAppointmentReportedByTimeslot(int timeslotID)
+        {
+            return _localUnitOfWork.DataContext.Appointments.Count(a => a.Timeslot_ID == timeslotID && a.Status == (int)EnumAppointmentStatuses.Reported);
+        }
+
+        public int CountAppointmentNoShowByTimeslot(int timeslotID)
+        {
+            return _localUnitOfWork.DataContext.Appointments.Count(a => a.Timeslot_ID == timeslotID && a.Status != (int)EnumAppointmentStatuses.Booked && a.Status != (int)EnumAppointmentStatuses.Reported);
+        }
+
+        public int GetMaximumNumberOfTimeslot(int timeslotID)
+        {
+            try
+            {
+                var timeslot = _localUnitOfWork.DataContext.Timeslots.FirstOrDefault(t => t.Timeslot_ID == timeslotID);
+                var settingTimeslot = _localUnitOfWork.DataContext.Settings.FirstOrDefault(s => s.Setting_ID == timeslot.Setting_ID);
+
+                switch (timeslot.DateOfWeek)
+                {
+                    case (int)EnumDayOfWeek.Monday:
+                        return settingTimeslot.Mon_MaximumNum.Value;
+                    case (int)EnumDayOfWeek.Tuesday:
+                        return settingTimeslot.Tue_MaximumNum.Value;
+                    case (int)EnumDayOfWeek.Wednesday:
+                        return settingTimeslot.Wed_MaximumNum.Value;
+                    case (int)EnumDayOfWeek.Thursday:
+                        return settingTimeslot.Thu_MaximumNum.Value;
+                    case (int)EnumDayOfWeek.Friday:
+                        return settingTimeslot.Fri_MaximumNum.Value;
+                    case (int)EnumDayOfWeek.Saturday:
+                        return settingTimeslot.Sat_MaximumNum.Value;
+                    case (int)EnumDayOfWeek.Sunday:
+                        return settingTimeslot.Sun_MaximumNum.Value;
+                    default:
+                        return 0;
+                }
+            }
+            catch (Exception e)
+            {
+                return 0;
+            }
+        }
     }
 }

@@ -44,12 +44,12 @@ namespace SSA.CodeBehind
                 Session session = Session.Instance;
                 if (session.IsAuthenticated)
                 {
-                    #region Print Barcode
+                    #region Print TTLabel
                     // Check status of Barcode printer
-                    string printerName = ConfigurationManager.AppSettings["TTLabelPrinterName"]?.ToUpper();
-                    var statusPrinterBarcode = barcodeScannerUtils.GetDeviceStatus(printerName);
+                    string ttLabelPrinterName = ConfigurationManager.AppSettings["TTLabelPrinterName"];
+                    var ttLabelPrinterStatus = barcodeScannerUtils.GetDeviceStatus(ttLabelPrinterName);
 
-                    if (statusPrinterBarcode.Contains(EnumDeviceStatuses.Connected))
+                    if (ttLabelPrinterStatus.Contains(EnumDeviceStatuses.Connected))
                     {
                         printerMonitor.PrintBarcodeLabel(labelInfo);
                     }
@@ -57,7 +57,7 @@ namespace SSA.CodeBehind
                     {
                         // Printer disconnect, get list status of the causes disconnected
                         string causeOfPrintFailure = "";
-                        foreach (var item in statusPrinterBarcode)
+                        foreach (var item in ttLabelPrinterStatus)
                         {
                             causeOfPrintFailure = causeOfPrintFailure + CommonUtil.GetDeviceStatusText(item) + "; ";
                         }
@@ -68,18 +68,20 @@ namespace SSA.CodeBehind
                     }
                     #endregion
 
-                    #region Print MUB (QRCode)
+                    #region Print MUBLabel
                     // Check status of Barcode printer
-                    string MUBLabelPrinterName = ConfigurationManager.AppSettings["MUBLabelPrinterName"];
-                    var statusPrinterMUB = barcodeScannerUtils.GetDeviceStatus(MUBLabelPrinterName);
+                    string mubLabelPrinterName = ConfigurationManager.AppSettings["MUBLabelPrinterName"];
+                    var mubLabelPrinterStatus = barcodeScannerUtils.GetDeviceStatus(mubLabelPrinterName);
 
-                    if (statusPrinterMUB.Count() == 1 && statusPrinterMUB[0] == EnumDeviceStatuses.Connected)
+                    if (mubLabelPrinterStatus.Contains(EnumDeviceStatuses.Connected))
+                    {
                         printerMonitor.PrintMUBLabel(labelInfo);
+                    }
                     else
                     {
                         // Printer disconnect, get list status of the causes disconnected
-                        string causeOfPrintMUBFailure = "";
-                        foreach (var item in statusPrinterMUB)
+                        string causeOfPrintMUBFailure = string.Empty;
+                        foreach (var item in mubLabelPrinterStatus)
                         {
                             causeOfPrintMUBFailure = causeOfPrintMUBFailure + CommonUtil.GetDeviceStatusText(item) + "; ";
                         }
@@ -98,7 +100,7 @@ namespace SSA.CodeBehind
                 }));
             }
         }
-
+        
 
         // Wrap event invocations inside a protected virtual method
         // to allow derived classes to override the event invocation behavior
