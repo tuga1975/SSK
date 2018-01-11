@@ -17,10 +17,17 @@ public enum NavigatorEnums
     Supervisee_NRIC = 8,
     Supervisee_Particulars = 9,
     Login = 10,
-    WebcamCapture = 11
+    WebcamCapture = 11,
+    Authentication_Facial = 12,
+    Queue = 13
 };
 
-
+public static class EnumSettingStatuses
+{
+    public const string Archived = "Archived";
+    public const string Active = "Active";
+    public const string Pending = "Pending";
+}
 
 public static class EnumUserRoles
 {
@@ -63,16 +70,18 @@ public enum EnumAbsenceReasons
 public static class EnumQueueStatuses
 {
 
-    [Color("red")]
-    public const string Missed = "Missed";
-    [Color("white")]
+    [Custom(Color ="red")]
+    public static string Missed = "Missed";
+    [Custom(Color = "white")]
     public const string Waiting = "Waiting";
-    [Color("white")]
+    [Custom(Color = "white")]
     public const string Processing = "Processing";
-    [Color("red")]
+    [Custom(Color = "red")]
     public const string Errors = "Errors";
-    [Color("green")]
+    [Custom(Color = "green")]
     public const string Finished = "Finished";
+    [Custom(Color = "notrequired")]
+    public const string NotRequired = "NotRequired";
 
 }
 
@@ -244,7 +253,7 @@ public static class EnumStations
 
     public static List<string> GetListStation()
     {
-        return new List<string>() { SSK,SSA,UHP,APS,HSA,ESP};
+        return new List<string>() { SSK, SSA, UHP, APS, HSA, ESP };
     }
 
 }
@@ -254,6 +263,14 @@ public static class EnumLabelType
     public const string MUB = "MUB";
     public const string TT = "TT";
     public const string UB = "UB";
+};
+
+
+public static class EnumTimeshift
+{
+    public const string Morning = "Morning";
+    public const string Afternoon = "Afternoon";
+    public const string Evening = "Evening";
 };
 public enum EnumDayOfWeek
 {

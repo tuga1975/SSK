@@ -46,7 +46,7 @@ namespace Trinity.DAL
             {
                 var Repo = unitOfWork.GetRepository<Trinity.DAL.DBContext.Address>();
                 if (model.Address_ID > 0)
-                {                    
+                {
                     // Update
                     var dbAddress = Repo.GetById(model.Address_ID);
                     dbAddress.BlkHouse_Number = model.BlkHouse_Number;

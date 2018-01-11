@@ -85,6 +85,14 @@ namespace Trinity.DAL
             }
             return null;
         }
+
+
+        public List<Trinity.DAL.DBContext.Queue> GetAllQueueByDateIncludeDetail(DateTime today)
+        {
+            today = today.Date;
+            return _localUnitOfWork.DataContext.Queues.Include("QueueDetails").Include("Appointment").Include("Appointment.Membership_Users").Where(d => DbFunctions.TruncateTime(d.CreatedTime).Value == today).OrderByDescending(d => d.CreatedTime).ToList();
+        }
+
         public bool CheckQueueExistToday(string userId, string station)
         {
             if (CountQueueByStatus(userId, EnumQueueStatuses.Waiting, station) > 0 || CountQueueByStatus(userId, EnumQueueStatuses.Processing, station) > 0)

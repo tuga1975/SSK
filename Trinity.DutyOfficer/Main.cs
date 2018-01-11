@@ -224,11 +224,14 @@ namespace DutyOfficer
                     Console.WriteLine("File missing:\n");
                     Console.WriteLine(ex.FileName);
                 }
+            }else if (navigatorEnum == NavigatorEnums.Queue)
+            {
+                LayerWeb.LoadPageHtml("Queue.html");
             }
-            
 
-            // set current page
-            _currentPage = navigatorEnum;
+
+                // set current page
+                _currentPage = navigatorEnum;
 
             // display options in Authentication_SmartCard page
             if (_displayLoginButtonStatus && _currentPage == NavigatorEnums.Authentication_SmartCard)
@@ -267,12 +270,22 @@ namespace DutyOfficer
         {
             LayerWeb.InvokeScript("createEvent", JsonConvert.SerializeObject(_jsCallCS.GetType().GetMethods().Where(d => d.IsPublic && !d.IsVirtual && !d.IsSecuritySafeCritical).ToArray().Select(d => d.Name)));
 
-            if (_isFirstTimeLoaded)
-            {
-                NavigateTo(NavigatorEnums.Authentication_SmartCard);
+            //if (_isFirstTimeLoaded)
+            //{
+            //    NavigateTo(NavigatorEnums.Authentication_SmartCard);
 
-                _isFirstTimeLoaded = false;
-            }
+            //    _isFirstTimeLoaded = false;
+            //}
+
+            // For testing purpose
+            Session session = Session.Instance;
+            // Duty Officer
+            Trinity.BE.User user = new DAL_User().GetUserByUserId("dfbb2a6a-9e45-4a76-9f75-af1a7824a947", true);
+            session[CommonConstants.USER_LOGIN] = user;
+            session.IsSmartCardAuthenticated = true;
+            session.IsFingerprintAuthenticated = true;
+
+            NavigateTo(NavigatorEnums.Queue);
         }
     }
 }

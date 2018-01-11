@@ -87,6 +87,7 @@
     <Compile Include="CodeBehind\Authentication\NRIC.cs" />
     <Compile Include="CodeBehind\Authentication\SmartCard.cs" />
     <Compile Include="CodeBehind\Document.cs" />
+    <Compile Include="CodeBehind\FingerprintCapture.cs" />
     <Compile Include="CodeBehind\Login.cs" />
     <Compile Include="CodeBehind\Suppervisee.cs" />
     <Compile Include="CodeBehind\WebcamCapture.cs" />
@@ -170,6 +171,7 @@
     <Content Include="View\scripts\lib.js" />
     <Content Include="View\scripts\scripts.js" />
     <Content Include="View\scripts\styles.css" />
+    <Content Include="View\styles\main.css" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Business\" />

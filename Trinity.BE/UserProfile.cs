@@ -29,6 +29,15 @@ namespace Trinity.BE
         [DataMember]
         public Nullable<System.DateTime> DOB { get; set; }
 
+
+        public string DOBTxt
+        {
+            get
+            {
+                return this.DOB.HasValue ? DOB.Value.ToString("dd/MM/yyyy") : string.Empty;
+            }
+        }
+
         [DataMember]
         public string Nationality { get; set; }
 

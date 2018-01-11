@@ -1,6 +1,10 @@
-﻿using System;
+﻿using ImageConvertor;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -101,7 +105,12 @@ namespace Trinity.Common.DeviceMonitor
 
             // print label
             BarcodePrinterUtils printerUtils = BarcodePrinterUtils.Instance;
-            if (printerUtils.PrintBarcodeUserInfo(labelInfo))
+            TTLabelInfo infoTTLabel = new TTLabelInfo();
+            infoTTLabel.ID = labelInfo.NRIC;
+            infoTTLabel.Name = labelInfo.Name;
+            infoTTLabel.MarkingNumber = labelInfo.MarkingNo;
+
+            if (printerUtils.PrintTTLabel(infoTTLabel))
             {
                 // raise succeeded event
                 RaisePrintBarcodeSucceededEvent();
@@ -146,8 +155,30 @@ namespace Trinity.Common.DeviceMonitor
             // print label
             BarcodePrinterUtils printerUtils = BarcodePrinterUtils.Instance;
 
-            // Print TT Label succeeded, then continue printing MUB Label
-            if (printerUtils.PrintQRCodeUserInfo(labelInfo))
+            // create image file to print
+            string filePath = string.Empty;
+            string fileName = string.Empty;
+            using (var ms = new System.IO.MemoryStream(labelInfo.BitmapLabel))
+            {
+                Bitmap bitmap = new System.Drawing.Bitmap(System.Drawing.Image.FromStream(ms));
+                string curDir = Directory.GetCurrentDirectory();
+
+                // create directory
+                if (!Directory.Exists(curDir + "\\Temp"))
+                {
+                    Directory.CreateDirectory(curDir + "\\Temp");
+                }
+
+                // set file path
+                filePath = curDir + "\\Temp\\mublabel.bmp";
+
+                // create image file (bit depth must be 8)
+                Bitmap target = Convertor1.ConvertTo8bppFormat(bitmap);
+                target.Save(filePath, ImageFormat.Bmp);
+            }
+
+            // print mub label
+            if (printerUtils.PrintMUBLabel(filePath))
             {
                 // raise succeeded event
                 RaisePrintLabelSucceededEvent(new PrintMUBAndTTLabelsSucceedEventArgs(labelInfo));
@@ -161,14 +192,13 @@ namespace Trinity.Common.DeviceMonitor
                     ErrorMessage = new ErrorInfo().GetErrorMessage(EnumErrorCodes.UnknownError)
                 }));
             }
-
         }
 
         public EnumDeviceStatuses[] GetBarcodePrinterStatus()
         {
-            // get barcodePrinter name from appconfig
-            string barcodePrinterName = ConfigurationManager.AppSettings["BarcodePrinterName"].ToUpper();
-            return BarcodePrinterUtils.Instance.GetDeviceStatus(barcodePrinterName);
+            // get printerName name from appconfig
+            string printerName = ConfigurationManager.AppSettings["TTLabelPrinterName"];
+            return BarcodePrinterUtils.Instance.GetDeviceStatus(printerName);
         }
     }
 }

@@ -68,7 +68,7 @@
     <OutputPath>bin\x64\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
@@ -109,6 +109,7 @@
   <ItemGroup>
     <Compile Include="DAL\DAL_Address.cs" />
     <Compile Include="DAL\DAL_DeviceStatus.cs" />
+    <Compile Include="DAL\DAL_IssueCard.cs" />
     <Compile Include="DAL\DAL_Setting.cs" />
     <Compile Include="DAL\DAL_Appointments.cs" />
     <Compile Include="DAL\DAL_Labels.cs" />
@@ -135,7 +136,13 @@
     <Compile Include="DBContext\Device.cs">
       <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
     </Compile>
+    <Compile Include="DBContext\EMAIL_LOG.cs">
+      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
+    </Compile>
     <Compile Include="DBContext\Holiday.cs">
+      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBContext\IssuedCard.cs">
       <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\Label.cs">
@@ -171,7 +178,13 @@
     <Compile Include="DBContext\QueueDetail.cs">
       <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
     </Compile>
+    <Compile Include="DBContext\Security_QA.cs">
+      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
+    </Compile>
     <Compile Include="DBContext\Setting.cs">
+      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBContext\SMS_LOG.cs">
       <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\Timeslot.cs">
@@ -195,6 +208,7 @@
     <Compile Include="DBContext\User_Profiles.cs">
       <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
     </Compile>
+    <Compile Include="Partial\QueueDetail.cs" />
     <Compile Include="Partial\Appointment.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DBContext\SSK.Context.cs">

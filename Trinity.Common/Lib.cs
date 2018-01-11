@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -24,5 +25,19 @@ public static class Lib
         string LastChar = nric.Substring(1, nric.Length - 1);
         string CharRemove = LastChar.Remove(0, LastChar.Length - (nric.Length < 4 ? nric.Length : 4));
         return nric.Substring(0, 1) + string.Empty.PadLeft(LastChar.Length - CharRemove.Length, '*') + CharRemove;
+    }
+    public static CustomAttribute GetMyCustomAttributes(this MemberInfo type)
+    {
+        object[] attributes = type.GetCustomAttributes(true);
+        if (attributes.Length != 0)
+        {
+            foreach (object attribute in attributes)
+            {
+                CustomAttribute cusAttr = attribute as CustomAttribute;
+                if (cusAttr != null)
+                    return cusAttr;
+            }
+        }
+        return null;
     }
 }

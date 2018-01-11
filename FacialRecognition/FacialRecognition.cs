@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Runtime.InteropServices;
-using System.Windows.Forms;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Threading;
 
 public class FacialRecognition
 {
@@ -16,10 +17,6 @@ public class FacialRecognition
     private FacialRecognition()
     {
         libFace = new AT_Facial_API.Library();
-        libFace.FaceDetect += new AT_Facial_API.Library.FaceDetected(lib_FaceDetect);
-        //formAvarta = new Form();
-        //formAvarta.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-        //formAvarta.StartPosition = FormStartPosition.Manual;
     }
 
     public static FacialRecognition Instance
@@ -39,10 +36,10 @@ public class FacialRecognition
     }
     #endregion
 
-
+    private static int _failedCount = 0;
+    private static int _suceededCount = 0;
     private AT_Facial_API.Library libFace = null;
     private bool isStartTracking = false;
-    private Form formAvarta = null;
 
     [DllImport("User32.dll")]
     static extern IntPtr GetDC(IntPtr hwnd);
@@ -63,11 +60,10 @@ public class FacialRecognition
     /// int Matching Score 
     /// Matching Score > 2800 Face Detect Success
     /// </summary>
-    public event Action FaceDetectSucceeded;
-    public event Action FaceDetectFailed;
-    private int MatchingScore = 2800;
-    private int _faceDetectSucceeded = 0;
-    private int _faceDetectFailed = 0;
+    public event Action OnFacialRecognitionSucceeded;
+    public event Action OnFacialRecognitionFailed;
+    public event Action OnFacialRecognitionProcessing;
+    private int _matchingScore = 2800;
     private List<byte[]> FaceJpg = new List<byte[]>();
 
 
@@ -75,60 +71,67 @@ public class FacialRecognition
     {
         if (isStartTracking && libFace != null && libFace.Photo_JPG != null)
         {
-            if (MatchingScore >= Matching_Score)
-                _faceDetectSucceeded++;
-            else
-                _faceDetectFailed++;
-            if (_faceDetectSucceeded == 2 || _faceDetectFailed == 2)
+            if (Matching_Score >= _matchingScore)
             {
-                if (_faceDetectSucceeded == 2 && FaceDetectSucceeded != null)
+                _suceededCount++;
+            }
+            else
+            {
+                _failedCount++;
+            }
+            if (_suceededCount > 1)
+            {
+                Thread.Sleep(1000);
+                OnFacialRecognitionSucceeded();
+            }
+            else
+            {
+                if (_failedCount > 10)
                 {
-                    FaceDetectSucceeded();
-                    Dispose();
+                    OnFacialRecognitionFailed();
                 }
-                else if (_faceDetectFailed == 2 && FaceDetectFailed != null)
-                {
-                    if (this.FaceJpg.Count>0)
-                    {
-                        libFace.StopTracking();
-                        libFace.Photo_JPG = this.FaceJpg[0];
-                        libFace.StartTracking();
-                        this.FaceJpg.RemoveAt(0);
-                    }
-                    else
-                    {
-                        FaceDetectFailed();
-                        Dispose();
-                    }
-                }
-                _faceDetectSucceeded = 0;
-                _faceDetectFailed = 0;
             }
         }
+        Debug.WriteLine("Face_QualityScore:" + Face_QualityScore + ", Matching_Score:" + Matching_Score);
     }
 
 
-
-    public void Compare(List<byte[]> FaceJpg)
+    public void StartFacialRecognition(Point formLocation, List<byte[]> FaceJpg)
     {
-        this.FaceJpg = (FaceJpg != null ? FaceJpg : new List<byte[]>()).Where(d=>d!=null).ToList();
-        if (libFace != null && !isStartTracking && this.FaceJpg.Count>0)
+        _failedCount = 0;
+        _suceededCount = 0;
+        this.FaceJpg = (FaceJpg != null ? FaceJpg : new List<byte[]>()).Where(d => d != null).ToList();
+        if (libFace != null && !isStartTracking && this.FaceJpg.Count > 0)
         {
-
             isStartTracking = true;
             libFace.Init();
-            //libFace.Show_Window(new System.Drawing.Point(0, 0), System.Windows.Forms.Screen.PrimaryScreen.Bounds.Size);
-            libFace.Show_Window(new System.Drawing.Point(0, 0), new Size(200,200));
+
+            libFace.Show_Window(formLocation, new Size(400, 400));
+            OnFacialRecognitionProcessing();
+            Thread.Sleep(1000);
+            libFace.FaceDetect += new AT_Facial_API.Library.FaceDetected(lib_FaceDetect);
             libFace.StartTracking();
-            libFace.Photo_JPG = this.FaceJpg[0];
+            try
+            {
+                libFace.Photo_JPG = this.FaceJpg[0];
+            }
+            catch (Exception ex)
+            {
+                if (this.FaceJpg.Count > 1)
+                {
+                    libFace.Photo_JPG = this.FaceJpg[1];
+                }
+            }
+            
             this.FaceJpg.RemoveAt(0);
+        }
+        else if (!isStartTracking && this.FaceJpg.Count == 0)
+        {
+            OnFacialRecognitionFailed();
         }
 
     }
-    public void Compare(byte[] FaceJpg)
-    {
-        Compare(new List<byte[]>() { FaceJpg });
-    }
+
     private Bitmap CreateBitmapFromByte(byte[] FaceJpg)
     {
         Bitmap bmp;
@@ -138,45 +141,20 @@ public class FacialRecognition
         }
         return bmp;
     }
-    //private void ThreadCompare(object _FaceJpg)
-    //{
-    //    byte[] FaceJpg = (byte[])_FaceJpg;
-    //    if (libFace != null && !isStartTracking)
-    //    {
-    //        isStartTracking = true;
-    //        libFace.Init();
-    //        libFace.Show_Window(new System.Drawing.Point(0, 0), System.Windows.Forms.Screen.PrimaryScreen.Bounds.Size);
-    //    }
-
-    //    libFace.StartTracking();
-    //    libFace.Photo_JPG = FaceJpg;
-    //    var img = CreateBitmapFromByte(FaceJpg);
-    //    formAvarta.Width = img.Width;
-    //    formAvarta.Height = img.Height;
-    //    formAvarta.Location = new Point(Screen.PrimaryScreen.WorkingArea.Width - formAvarta.Width,
-    //                           Screen.PrimaryScreen.WorkingArea.Height - formAvarta.Height);
-    //    formAvarta.BackgroundImage = Image.FromHbitmap(img.GetHbitmap());
-    //    formAvarta.Refresh();
-    //    formAvarta.Show();
-    //    System.Threading.Thread.Sleep(100);
-    //    SetWindowPos(formAvarta.Handle, HWND_TOPMOST, 0, 0, 0, 0, TOPMOST_FLAGS);
-    //}
-
 
     public void Dispose()
     {
         if (isStartTracking && libFace != null)
         {
             //formAvarta.Hide();
-            libFace.Close_Window();
             libFace.StopTracking();
+            libFace.Close_Window();
             libFace.Photo_JPG = null;
             libFace.Deinit();
-            _faceDetectSucceeded = 0;
-            _faceDetectFailed = 0;
+            _failedCount = 0;
+            _failedCount = 0;
         }
         isStartTracking = false;
     }
-
 }
 

@@ -92,21 +92,29 @@ namespace Trinity.DAL
 
         private User_Profiles UpdateCentral(UserProfile model, string userId)
         {
-            User_Profiles dbUserProfile;
-            var centralUserProfileRepo = _centralizedUnitOfWork.GetRepository<User_Profiles>();
-            dbUserProfile = centralUserProfileRepo.GetById(userId);
-            if (dbUserProfile == null)
+            User_Profiles dbUserProfile = new User_Profiles() ;
+            try
             {
-                dbUserProfile = new User_Profiles();
-                SetInfo(dbUserProfile, model);
-                centralUserProfileRepo.Add(dbUserProfile);
+                var centralUserProfileRepo = _centralizedUnitOfWork.GetRepository<User_Profiles>();
+                dbUserProfile = centralUserProfileRepo.GetById(userId);
+                if (dbUserProfile == null)
+                {
+                    dbUserProfile = new User_Profiles();
+                    SetInfo(dbUserProfile, model);
+                    centralUserProfileRepo.Add(dbUserProfile);
+                }
+                else
+                {
+                    SetInfo(dbUserProfile, model);
+                    centralUserProfileRepo.Update(dbUserProfile);
+                }
+                _centralizedUnitOfWork.Save();
             }
-            else
+            catch (Exception ex)
             {
-                SetInfo(dbUserProfile, model);
-                centralUserProfileRepo.Update(dbUserProfile);
+
+                return dbUserProfile;
             }
-            _centralizedUnitOfWork.Save();
             return dbUserProfile;
         }
 
@@ -174,7 +182,7 @@ namespace Trinity.DAL
             };
 
         }
-        public Trinity.BE.Address GetAddressByUserId(string userId, bool isLocal)
+        public Trinity.BE.Address GetAddressByUserId(string userId, bool isLocal, bool isOther=false)
         {
             User_Profiles dbUserProfile = null;
             DBContext.Address dbAddress = null;
@@ -183,7 +191,12 @@ namespace Trinity.DAL
                 dbUserProfile = _localUnitOfWork.DataContext.User_Profiles.FirstOrDefault(u => u.UserId == userId);
                 if (dbUserProfile != null)
                 {
-                    dbAddress = _localUnitOfWork.DataContext.Addresses.FirstOrDefault(a => a.Address_ID == dbUserProfile.Residential_Addess_ID);
+                    var addressId = dbUserProfile.Residential_Addess_ID;
+                    if (isOther)
+                    {
+                        addressId = dbUserProfile.Other_Address_ID;
+                    }
+                    dbAddress = _localUnitOfWork.DataContext.Addresses.FirstOrDefault(a => a.Address_ID == addressId);
                 }
 
             }
@@ -192,8 +205,12 @@ namespace Trinity.DAL
                 dbUserProfile = _centralizedUnitOfWork.DataContext.User_Profiles.FirstOrDefault(u => u.UserId == userId);
                 if (dbUserProfile != null)
                 {
-
-                    dbAddress = _centralizedUnitOfWork.DataContext.Addresses.FirstOrDefault(a => a.Address_ID == dbUserProfile.Residential_Addess_ID);
+                    var addressId = dbUserProfile.Residential_Addess_ID;
+                    if (isOther)
+                    {
+                        addressId = dbUserProfile.Other_Address_ID;
+                    }
+                    dbAddress = _centralizedUnitOfWork.DataContext.Addresses.FirstOrDefault(a => a.Address_ID == addressId);
                 }
             }
 

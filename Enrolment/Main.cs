@@ -128,7 +128,7 @@ namespace Enrolment
 
                     var base64Str = Convert.ToBase64String(byteData);
 
-                   
+
                     if (session[CommonConstants.CURRENT_FINGERPRINT_DATA] != null)
                     {
 
@@ -323,7 +323,7 @@ namespace Enrolment
                     deviceId = dalDeviceStatus.GetDeviceId(EnumDeviceTypes.FingerprintScanner);
                     listDeviceStatusModel.Add(dalDeviceStatus.SetInfo(entryAppName, deviceId, e.FPrintStatus));
 
-                    dalDeviceStatus.Insert(listDeviceStatusModel);
+                    dalDeviceStatus.UpdateHealthStatus(listDeviceStatusModel);
                 }
             }
             catch (Exception ex)
@@ -367,7 +367,7 @@ namespace Enrolment
             }
             else if (e.Name.Equals(EventNames.LOGIN_FAILED))
             {
-                LayerWeb.InvokeScript("Alert", e.Message);
+                LayerWeb.InvokeScript("failAlert", e.Message);
                 //MessageBox.Show(e.Message, "Login Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             else if (e.Name == EventNames.LOGOUT_SUCCEEDED)
@@ -400,7 +400,7 @@ namespace Enrolment
                         }
                         catch
                         {
-                            LayerWeb.InvokeScript("Alert", "Cant find this device camera!");
+                            LayerWeb.InvokeScript("failAlert", "Cant find this device camera!");
                         }
                     }));
                     return;
@@ -420,9 +420,10 @@ namespace Enrolment
             else if (e.Name.Equals(EventNames.CONFIRM_CAPTURE_PICTURE))
             {
                 Session session = Session.Instance;
+                var currentPhotosSession = session[CommonConstants.CURRENT_PHOTOS];
                 if (InvokeRequired)
                 {
-
+                    
                     Invoke(new Action(() =>
                     {
                         pictureBox1.Hide();
@@ -441,49 +442,97 @@ namespace Enrolment
 
                     string base64Str1 = "";
                     string base64Str2 = "";
-                    if (image1 != null) { base64Str1 = Convert.ToBase64String(image1); }
-                        
-                    if (image2 != null) { base64Str2 = Convert.ToBase64String(image2); }
-                       
+
+                    Tuple<string, string> currentOldPhotos = new Tuple<string, string>(string.Empty, string.Empty);
+                    Tuple<string, string> currentNewPhotos = new Tuple<string, string>(string.Empty, string.Empty);
+
                     if (currentEditUser != null)
                     {
-                        currentEditUser.UserProfile.User_Photo1 = image1;
-                        currentEditUser.UserProfile.User_Photo2 = image2;
+                        if (currentPhotosSession != null)
+                        {
+                            currentOldPhotos = (Tuple<string, string>)currentPhotosSession;
+                        }
+                        else
+                        {
+                            if (currentEditUser.UserProfile.User_Photo1 != null && currentEditUser.UserProfile.User_Photo2 != null)
+                            {
+                                var uPhoto1 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo1);
+                                var uPhoto2 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo2);
+                                currentOldPhotos = new Tuple<string, string>(uPhoto1, uPhoto2);
+
+                            }
+                            else if (currentEditUser.UserProfile.User_Photo1 == null && currentEditUser.UserProfile.User_Photo2 != null)
+                            {
+                                var uPhoto2 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo2);
+                                currentOldPhotos = new Tuple<string, string>(string.Empty, uPhoto2);
+                            }
+                            else if (currentEditUser.UserProfile.User_Photo1 != null && currentEditUser.UserProfile.User_Photo2 == null)
+                            {
+                                var uPhoto1 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo1);
+                                currentOldPhotos = new Tuple<string, string>(uPhoto1, string.Empty);
+                            }
+                        }
+
+                        if (image1 != null)
+                        {
+                            base64Str1 = Convert.ToBase64String(image1);
+
+                            currentEditUser.UserProfile.User_Photo1 = image1;
+
+                            currentNewPhotos = new Tuple<string, string>(base64Str1, currentOldPhotos.Item2);
+
+                        }
+
+                        if (image2 != null)
+                        {
+                            base64Str2 = Convert.ToBase64String(image2);
+
+                            currentEditUser.UserProfile.User_Photo2 = image2;
+
+                            currentNewPhotos = new Tuple<string, string>(currentOldPhotos.Item1, base64Str2);
+                        }
+
                     }
+
+                    session[CommonConstants.CURRENT_PHOTOS] = currentNewPhotos;
 
                     if (currentPage != null && currentPage.ToString() == "EditSupervisee" && currentEditUser != null)
                     {
                         session[CommonConstants.CURRENT_EDIT_USER] = currentEditUser;
 
                         CSCallJS.LoadPageHtml(this.LayerWeb, "UpdateSuperviseeBiodata.html", currentEditUser);
-                        LayerWeb.InvokeScript("setAvatar", base64Str1, base64Str2);
+                        LayerWeb.InvokeScript("setAvatar", currentNewPhotos.Item1, currentNewPhotos.Item2);
                     }
                     else if (currentPage.ToString() == "UpdateSupervisee")
                     {
                         LayerWeb.LoadPageHtml("Edit-Supervisee.html", currentEditUser);
-
+                        LayerWeb.InvokeScript("setPopUpPhotoServerCall", currentNewPhotos.Item1, currentNewPhotos.Item2);
                         LayerWeb.InvokeScript("showPopUp", "pageUpdatePhotos");
-                        LayerWeb.InvokeScript("setAvatar", base64Str1, base64Str2);
+
+                        LayerWeb.InvokeScript("setAvatar", currentNewPhotos.Item1, currentNewPhotos.Item2);
                     }
                     else if (currentPage.ToString() == "UpdateSuperviseePhoto")
                     {
                         LayerWeb.LoadPageHtml("UpdateSuperviseePhoto.html", currentEditUser);
-                        LayerWeb.InvokeScript("setAvatar", base64Str1, base64Str2);
+                        LayerWeb.InvokeScript("setAvatar", currentNewPhotos.Item1, currentNewPhotos.Item2);
                     }
                     else if (currentPage.ToString() == "UpdateSuperviseeFinger")
                     {
                         LayerWeb.LoadPageHtml("UpdateSuperviseeFingerprint.html", currentEditUser);
                     }
                 }
+                image1 = null;
+                image2 = null;
+                _imgBox = "";
             }
             else if (e.Name.Equals(EventNames.CANCEL_CAPTURE_PICTURE))
             {
                 Session session = Session.Instance;
-                
+
                 var currentPage = session[CommonConstants.CURRENT_PAGE];
-               
-                    
-                   
+
+
+
                 if (InvokeRequired)
                 {
                     Invoke(new Action(() =>
@@ -494,17 +543,30 @@ namespace Enrolment
                         if (session[CommonConstants.CURRENT_EDIT_USER] != null && currentPage != null)
                         {
                             var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
+                            var oldPhotos = session["TempPhotos"];
                             string photo1 = "../images/usr-default.jpg";
                             string photo2 = "../images/usr-default.jpg";
-                            if (currentEditUser.UserProfile.User_Photo1!=null)
+                            /*if (currentEditUser.UserProfile.User_Photo1 != null)
                             {
                                 photo1 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo1);
                             }
                             if (currentEditUser.UserProfile.User_Photo2 != null)
                             {
                                 photo2 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo2);
+                            }*/
+                            var photos = (Tuple<string, string>)session["TempPhotos"];
+                            if (photos.Item1 != null) {
+                                photo1 = photos.Item1;
                             }
-                           
+                            if(photos.Item2 != null)
+                            {
+                                photo2 = photos.Item2;
+                            }
+                            session[CommonConstants.CURRENT_PHOTOS] = null;
+
+                            currentEditUser.UserProfile.User_Photo1 = Convert.FromBase64String(photo1);
+                            currentEditUser.UserProfile.User_Photo2 = Convert.FromBase64String(photo2);
+                            session[CommonConstants.CURRENT_EDIT_USER] = currentEditUser;
                             if (currentPage.ToString() == "EditSupervisee")
                             {
                                 LayerWeb.LoadPageHtml("UpdateSuperviseeBiodata.html", currentEditUser);
@@ -513,7 +575,7 @@ namespace Enrolment
                             else if (currentPage.ToString() == "UpdateSupervisee")
                             {
                                 LayerWeb.LoadPageHtml("Edit-Supervisee.html", currentEditUser);
-                               
+
                                 LayerWeb.InvokeScript("setAvatar", photo1, photo2);
                             }
                             CaptureAttempt(CommonConstants.CAPTURE_PHOTO_ATTEMPT);
@@ -521,7 +583,7 @@ namespace Enrolment
                     }));
                     return;
                 }
-               
+
             }
             else if (e.Name.Equals(EventNames.CANCEL_CONFIRM_CAPTURE_PICTURE))
             {
@@ -574,18 +636,46 @@ namespace Enrolment
                     LayerWeb.InvokeScript("setBase64FingerprintOnloadServerCall", leftFingerprint, rightFingerprint);
 
                 }
+                string photo1 = "../images/usr-default.jpg";
+                string photo2 = "../images/usr-default.jpg";
+                if (profileModel.UserProfile.User_Photo1 != null)
+                {
+                    photo1 = Convert.ToBase64String(profileModel.UserProfile.User_Photo1);
+                }
+                if (profileModel.UserProfile.User_Photo2 != null)
+                {
+                    photo2 = Convert.ToBase64String(profileModel.UserProfile.User_Photo2);
+                }
+                LayerWeb.InvokeScript("setAvatar", photo1, photo2);
 
 
             }
             else if (e.Name == EventNames.UPDATE_SUPERVISEE_BIODATA)
             {
+                Session session = Session.Instance;
                 var profileModel = (Trinity.BE.ProfileModel)e.Data;
                 var dalUser = new DAL_User();
+                var dalUserProfile = new DAL_UserProfile();
                 dalUser.UpdateUser(profileModel.User, profileModel.User.UserId, true);
 
-                new DAL_UserProfile().UpdateUserProfile(profileModel.UserProfile, profileModel.User.UserId, true);
+                dalUserProfile.UpdateUserProfile(profileModel.UserProfile, profileModel.User.UserId, true);
                 dalUser.ChangeUserStatus(profileModel.User.UserId, EnumUserStatuses.Enrolled);
-                Session session = Session.Instance;
+
+                //print card here
+                //update to issue card 
+                //var dalIssueCard = new DAL_IssueCard();
+                //var issueCardModel = dalIssueCard.GetIssueCardById(profileModel.User.SmartCardId);
+                //var userLogin = new Trinity.BE.User();
+                //if (session[CommonConstants.USER_LOGIN]!=null)
+                //{
+                //    userLogin=(Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+                //    issueCardModel.CreatedBy = userLogin.Name;//officer name 
+                //    issueCardModel.Status = EnumUserStatuses.ReEnrolled;
+                //    dalIssueCard.Update(profileModel.User.SmartCardId, profileModel.User.UserId, issueCardModel);
+                //}
+               
+                
+               
                 session[CommonConstants.CURRENT_EDIT_USER] = profileModel;
 
             }
@@ -601,13 +691,14 @@ namespace Enrolment
                 string photo2 = "../images/usr-default.jpg";
                 if (profileModel.UserProfile.User_Photo1 != null)
                 {
-                    photo1 = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(profileModel.UserProfile.User_Photo1));
+                    photo1 = Convert.ToBase64String(profileModel.UserProfile.User_Photo1);
                 }
                 if (profileModel.UserProfile.User_Photo2 != null)
                 {
-                    photo2 = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(profileModel.UserProfile.User_Photo2));
+                    photo2 = Convert.ToBase64String(profileModel.UserProfile.User_Photo2);
                 }
-                LayerWeb.InvokeScript("setPhotoServerCall", photo1, photo2);
+                LayerWeb.InvokeScript("setAvatar", photo1, photo2);
+                LayerWeb.InvokeScript("setPopUpPhotoServerCall", photo1, photo2);
                 // convert fingerprint to base64 and add to html
                 string fingerprintLeft = "../images/fingerprint.png";
                 string fingerprintRight = "../images/fingerprint.png";
@@ -670,7 +761,7 @@ namespace Enrolment
             }
             else if (navigatorEnum == NavigatorEnums.Supervisee)
             {
-                //this.LayerWeb.LoadPageHtml("Supervisee.html");
+                this.LayerWeb.LoadPageHtml("Supervisee.html");
                 _suppervisee.Start();
             }
             else if (navigatorEnum == NavigatorEnums.Login)

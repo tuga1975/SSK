@@ -53,7 +53,7 @@
     <OutputPath>bin\x64\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
@@ -80,6 +80,7 @@
   <ItemGroup>
     <Compile Include="AbsenceReporting.cs" />
     <Compile Include="DeviceStatus.cs" />
+    <Compile Include="IssueCard.cs" />
     <Compile Include="Label.cs" />
     <Compile Include="QueueNumber.cs" />
     <Compile Include="EnvironmentTime.cs" />

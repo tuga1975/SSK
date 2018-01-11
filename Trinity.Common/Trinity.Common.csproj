@@ -49,7 +49,7 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <PlatformTarget>x64</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <OutputPath>bin\x64\Debug\</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
@@ -87,7 +87,7 @@
   <ItemGroup>
     <Compile Include="Authentication\Fingerprint.cs" />
     <Compile Include="Authentication\SmartCard.cs" />
-    <Compile Include="Common\MyCustomAttribute.cs" />
+    <Compile Include="Common\CustomAttribute.cs" />
     <Compile Include="Common\Enums.cs" />
     <Compile Include="Common\ErrorInfo.cs" />
     <Compile Include="Common\EventAgrs.cs" />
@@ -109,6 +109,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\BarcodePrinterUtils.cs" />
     <Compile Include="Utils\CommonUtil.cs" />
+    <Compile Include="Utils\Convertor1.cs" />
+    <Compile Include="Utils\Convertor2.cs" />
     <Compile Include="Utils\DeviceManagement.cs" />
     <Compile Include="Utils\DeviceUtils.cs" />
     <Compile Include="Utils\DocumentScannerUtils.cs" />
@@ -130,6 +132,7 @@
   <ItemGroup>
     <Content Include="Libs\Futronic Fingerprint Reader\ftrSDKHelper13.dll" />
     <Content Include="Libs\PCSC Smart Card Reader\pcsc-sharp.dll" />
+    <Content Include="Libs\TSC Barcode Printer\x64\TSCLIB.dll" />
     <Content Include="Libs\TSC Barcode Printer\x86\TSCLIB.dll" />
     <Content Include="Libs\ZXing.Net.0.16.0.0\net4.5\zxing.dll" />
     <Content Include="Libs\ZXing.Net.0.16.0.0\net4.5\zxing.pdb" />
@@ -139,6 +142,8 @@
     <Content Include="Libs\ZXing.Net.0.16.0.0\net4.5\zxing.XML" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Libs\TSC Barcode Printer\x64\TSCLIB.lib" />
+    <None Include="Libs\TSC Barcode Printer\x64\UL.PCX" />
     <None Include="Libs\TSC Barcode Printer\x86\TSCLIB.lib" />
     <None Include="Libs\TSC Barcode Printer\x86\UL.PCX" />
   </ItemGroup>

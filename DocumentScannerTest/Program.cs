@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Drawing;
+using System.Drawing.Printing;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -16,6 +19,10 @@ namespace DocumentScannerTest
 {
     class Program
     {
+        static private Font printFont;
+        static private StreamReader streamToPrint;
+        static string filePath;
+
         static void Main(string[] args)
         {
             // for testing only
@@ -24,15 +31,115 @@ namespace DocumentScannerTest
             // StartDocumentScannerMonitor();
 
             // TSC Bar code scanner
-            // StartBarcodeScanner();
+            //ResetPagePossition();
+            string TTLabelPrinterName = ConfigurationManager.AppSettings["TTLabelPrinterName"]?.ToUpper();
+            TTLabelInfo labelInfo = new TTLabelInfo()
+            {
+                ID = "ABC20180107XYZ",
+                Name = "Ricardo Quaresma",
+                MarkingNumber = "CSA17000809"
+            };
+            //BarcodePrinterUtils.Instance.ResetPagePossition(TTLabelPrinterName);
+            //BarcodePrinterUtils.Instance.PrintTTLabel(labelInfo);
+            //BarcodePrinterUtils.Instance.Print();
+            BarcodePrinterUtils.Instance.ResetPagePossition(TTLabelPrinterName);
+            //StartBarcodeScanner();
+            //StartBarcodeScanner2();
+
+            // print appointment details
+            //PrintAppointmentDetails();
 
             // PrinterMonitor checkstatus
             //ReportPrinterStatus();
 
             // StartIdentification
-            TestStartIdentification();
-            TestStartIdentification();
-            TestStartIdentification();
+            //TestStartIdentification();
+            //TestStartIdentification();
+            //TestStartIdentification();
+            Console.ReadKey();
+        }
+
+        private static void PrintAppointmentDetails()
+        {
+            Console.WriteLine("starting PrintAppointmentDetails...");
+
+            ReceiptPrinterUtils receiptPrinterUtils = ReceiptPrinterUtils.Instance;
+            var status = receiptPrinterUtils.GetDeviceStatus();
+
+            //BarcodePrinterUtils barcodePrinterUtils = BarcodePrinterUtils.Instance;
+            //barcodePrinterUtils.ResetPagePossition(ConfigurationManager.AppSettings["ReceiptPrinterName"]);
+            AppointmentDetails appointmentDetails = new AppointmentDetails()
+            {
+                Name = "Ricardo Quaresma",
+                NRICNo = "S1234567G",
+                Date = new DateTime(2018, 1, 11, 15, 30, 00)
+            };
+
+            receiptPrinterUtils.PrintAppointmentDetails(appointmentDetails);
+
+            Console.ReadKey();
+        }
+
+        private static void ResetPagePossition()
+        {
+            try
+            {
+                string TTLabelPrinterName = ConfigurationManager.AppSettings["TTLabelPrinterName"];
+                    
+                PrintDocument printDocument = new PrintDocument();
+                printDocument.PrinterSettings.PrinterName = TTLabelPrinterName;
+                printDocument.PrintPage += new PrintPageEventHandler(pd_PrintPage);
+
+                // Print the document.
+                printDocument.Print();
+            }
+            catch (Exception ex)
+            {
+                //MessageBox.Show(ex.Message);
+            }
+        }
+
+        private static void pd_PrintPage(object sender, PrintPageEventArgs ev)
+        {
+            float linesPerPage = 0;
+            float yPos = 0;
+            int count = 0;
+            float leftMargin = ev.MarginBounds.Left;
+            float topMargin = ev.MarginBounds.Top;
+            String line = null;
+
+            ev.Graphics.DrawString("reset position", new Font("Arial", 10), Brushes.Black, PointF.Empty);
+
+            // Calculate the number of lines per page.
+            //linesPerPage = ev.MarginBounds.Height /
+            //   printFont.GetHeight(ev.Graphics);
+
+            // Iterate over the file, printing each line.
+            //while (count < linesPerPage &&
+            //   ((line = streamToPrint.ReadLine()) != null))
+            //{
+            //    yPos = topMargin + (count * printFont.GetHeight(ev.Graphics));
+            //    ev.Graphics.DrawString(line, printFont, Brushes.Black,
+            //       leftMargin, yPos, new StringFormat());
+            //    count++;
+            //}
+
+            // If more lines exist, print another page.
+            //if (line != null)
+            //    ev.HasMorePages = true;
+            //else
+            //    ev.HasMorePages = false;
+        }
+
+        private static void StartBarcodeScanner2()
+        {
+            Console.WriteLine("starting StartBarcodeScanner2...");
+
+
+            string printerName = ConfigurationManager.AppSettings["TTLabelPrinterName"];
+            var status = BarcodePrinterUtils.Instance.GetDeviceStatus(printerName);
+
+            Console.ReadKey();
         }
 
         private static void TestStartIdentification()
@@ -119,10 +226,10 @@ namespace DocumentScannerTest
                     Date = "01/01/1970"
                 };
 
-                string barcodePrinterName = ConfigurationManager.AppSettings["BarcodePrinterName"].ToUpper();
-                var statusPrinterBarcode = barcodeScannerUtils.GetDeviceStatus(barcodePrinterName);
+                string printerName = ConfigurationManager.AppSettings["TTLabelPrinterName"]?.ToUpper();
+                var statusPrinterBarcode = barcodeScannerUtils.GetDeviceStatus(printerName);
 
-                if (statusPrinterBarcode.Count() == 1 && statusPrinterBarcode[0] == EnumDeviceStatuses.Connected)
+                if (statusPrinterBarcode.Contains(EnumDeviceStatuses.Connected))
                 {
                     printerMonitor.PrintBarcodeLabel(labelInfo);
                 }

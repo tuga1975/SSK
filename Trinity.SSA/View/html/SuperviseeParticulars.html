@@ -31,7 +31,7 @@
         <br />
         <div class="input-group">
             <span class="input-group-addon">QR Code:</span>
-            <img id="imgQRCode" src="../img/QRCode.png" width="120" height="120" style="margin-left:12px;">
+            <img id="imgQRCode" width="120" height="120" style="margin-left:12px;">
         </div>
         <br />
         <div class="input-group">
@@ -58,7 +58,7 @@
     
     $("#ConfirmBtn").click(function (e) {        
         var json = JSON.stringify(api.model);
-        api.server.PrintingMUBAndTTLabels(json);
+        api.server.MappingTemplateMUBAndTTLabels(json);
         e.preventDefault(); // avoid to execute the actual submit of the form.
     });
 
