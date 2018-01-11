@@ -9,7 +9,7 @@
 			<input class="name-supervisee" type="text" value="Edit Supervisee" disabled="disabled" />
 			<nav class="nav nav-tabs" id="myTab" role="tablist">
 				<a class="nav-item nav-link active" data-toggle="tab" href="#supervisee-details" role="tab" aria-controls="nav-home" aria-selected="true">Supervisee Details</a>
-				<a class="nav-item nav-link" data-toggle="tab" href="#issued-cards" role="tab" aria-controls="nav-profile" aria-selected="false">Issued Cards</a>
+				<a class="nav-item nav-link" data-toggle="tab" role="tab" aria-controls="nav-profile" aria-selected="false" href="javascript:showIssuedCards();">Issued Cards</a>
 			</nav>
 			<div class="tab-content" id="nav-tabContent">
 			<input type="hidden" name="userId" class="userId"  />
@@ -234,6 +234,27 @@
 				</div>
 			</div>
 			<div class="tab-pane fade" id="issued-cards" role="tabpanel" aria-labelledby="nav-profile-tab">
+                <div>
+                    <table class="table table-bordered">
+                        <colgroup>
+
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>NRIC</th>
+                                <th>Name</th>
+                                <th>Issued Date</th>
+                                <th>Expired Date</th>
+                                <th>Card Number</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                </div>
 				<div class="btn-group">
 					<button type="submit" class="btn-form" id="submitEditSupervise" >Save</button>
 					<button type="button" class="btn-form">Cancel</button>
@@ -325,6 +346,14 @@
     </div>
 </div>
 <script>
+    function showIssuedCards() {
+        $('.form-supervisee .tab-pane').removeClass('fade').removeClass('show').removeClass('active');
+        $('.form-supervisee #issued-cards').addClass('fade').addClass('show').addClass('active');
+
+        api.server.GetDataIssuedCards(function (data) {
+
+        });
+    }
     $(function () {
         $('.s_label').click(function () {
             $(this).next().fadeToggle(200);
