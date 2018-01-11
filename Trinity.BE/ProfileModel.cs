@@ -14,6 +14,9 @@ namespace Trinity.BE
         public Address Addresses { get; set; }
         public Address OtherAddress { get; set; }
 
+        public Membership_Users Membership_Users { get; set; }
+
+
         public ProfileModel()
         {
 

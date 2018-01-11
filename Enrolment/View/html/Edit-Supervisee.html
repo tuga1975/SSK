@@ -8,8 +8,8 @@
 		<form id="superviseeFrm">
 			<input class="name-supervisee" type="text" value="Edit Supervisee" disabled="disabled" />
 			<nav class="nav nav-tabs" id="myTab" role="tablist">
-				<a class="nav-item nav-link active" data-toggle="tab" href="#supervisee-details" role="tab" aria-controls="nav-home" aria-selected="true">Supervisee Details</a>
-				<a class="nav-item nav-link" data-toggle="tab" role="tab" aria-controls="nav-profile" aria-selected="false" href="javascript:showIssuedCards();">Issued Cards</a>
+				<a class="nav-item nav-link active" data-toggle="tab" href="#supervisee-details" role="tab" aria-controls="nav-home" aria-selected="true" valid="superviseedetails" onclick="$('#myTab [data-toggle=tab]').removeClass('active'); $('#myTab [data-toggle=tab][valid=superviseedetails]').addClass('active');">Supervisee Details</a>
+				<a class="nav-item nav-link" data-toggle="tab" role="tab" aria-controls="nav-profile" aria-selected="false" href="javascript:showIssuedCards();" valid="issuedcards">Issued Cards</a>
 			</nav>
 			<div class="tab-content" id="nav-tabContent">
 			<input type="hidden" name="userId" class="userId"  />
@@ -237,7 +237,7 @@
 			</div>
 			<div class="tab-pane fade" id="issued-cards" role="tabpanel" aria-labelledby="nav-profile-tab">
                 <div>
-                    <table class="table table-bordered">
+                    <table class="table table-bordered" id="data-issuedcards">
                         <colgroup>
 
                         </colgroup>
@@ -249,18 +249,20 @@
                                 <th>Expired Date</th>
                                 <th>Card Number</th>
                                 <th>Status</th>
-                                <th>Action</th>
+                                <th style="text-align:center;">Action</th>
                             </tr>
                         </thead>
                         <tbody>
-
+                            
                         </tbody>
                     </table>
+                    <div enterreprint style="display:none;margin-top:10px;">
+                        <span style="height:30px;display:inline-block;vertical-align:middle;box-sizing:border-box;padding:0px 10px;border:1px solid #333;line-height:30px;float:left;">Enter resson to reprint:</span>
+                        <input type="text" name="reprint" style="height:30px;display:inline-block;vertical-align:middle;box-sizing:border-box;padding:0px 10px;border:1px solid #333;width:calc(100% - 280px);float:left;margin:0px 10px;"/>
+                        <button type="button" style="border:1px solid #333; float:right;" onclick="PriterIssuedCard();">Reprint</button>
+                        <div style="clear:both;"></div>
+                    </div>
                 </div>
-				<div class="btn-group">
-					<button type="submit" class="btn-form" id="submitEditSupervise" >Save</button>
-					<button type="button" class="btn-form">Cancel</button>
-				</div>
 			</div>
 		</div>
 		</form>
@@ -303,12 +305,25 @@
 </div>
 <script>
     function showIssuedCards() {
-        $('.form-supervisee .tab-pane').removeClass('fade').removeClass('show').removeClass('active');
-        $('.form-supervisee #issued-cards').addClass('fade').addClass('show').addClass('active');
-
         api.server.GetDataIssuedCards(function (data) {
-
+            $('.form-supervisee .tab-pane').removeClass('fade').removeClass('show').removeClass('active');
+            $('.form-supervisee #issued-cards').addClass('fade').addClass('show').addClass('active');
+            $('#myTab [data-toggle=tab]').removeClass('active');
+            $('#myTab [data-toggle=tab][valid=issuedcards]').addClass('active');
+            $.each(data, function (index, item) {
+                $('#data-issuedcards tbody').append(api.DumpDataToTxt('<tr><td>{NRIC}</td><td>{Name}</td><td>{Date_Of_Issue_Txt}</td><td>{Expired_Date_Card_Txt}</td><td>{Serial_Number}</td><td>{Status}</td><td style="text-align:center;">' + (index == 0 ?'<a href="javascript:ShowPriterIssuedCard();"><img style="cursor:pointer;" src="../images/printer.png"/></a>':'')+'</td></tr>', item));
+            });
         });
+    }
+    function PriterIssuedCard() {
+        api.server.PriterIssuedCard($('[name="reprint"]').val(),function (item) {
+            $('#data-issuedcards tbody td img').remove();
+            $('#data-issuedcards tbody').prepend(api.DumpDataToTxt('<tr><td>{NRIC}</td><td>{Name}</td><td>{Date_Of_Issue_Txt}</td><td>{Expired_Date_Card_Txt}</td><td>{Serial_Number}</td><td>{Status}</td><td  style="text-align:center;"><a href="javascript:ShowPriterIssuedCard();"><img style="cursor:pointer;" src="../images/printer.png"/></a></td></tr>', item))
+            $('[enterreprint]').css('display', 'none');
+        });
+    }
+    function ShowPriterIssuedCard() {
+        $('[enterreprint]').css('display', 'block');
     }
     $(function () {
         $('.s_label').click(function () {

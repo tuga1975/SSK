@@ -20,6 +20,10 @@ namespace Trinity.DAL
             issueCardRepo.Add(dbIssueCard);
             _localUnitOfWork.Save();
         }
+        public void UpdateStatusByUserId(string userId, string Status)
+        {
+            _localUnitOfWork.DataContext.Database.ExecuteSqlCommand("Update IssuedCards set Status='" + Status + "' where UserId='" + userId + "'");
+        }
         public void Update(string smartCardId, string userId, BE.IssueCard model)
         {
             var issueCardRepo = _localUnitOfWork.GetRepository<DBContext.IssuedCard>();
@@ -36,6 +40,12 @@ namespace Trinity.DAL
         {
             var dbIssueCard = _localUnitOfWork.DataContext.IssuedCards.Find(issueCardId);
             return SetInfoForBE(new BE.IssueCard(), dbIssueCard);
+
+        }
+        public List<BE.IssueCard> GetMyIssueCard(string UserId)
+        {
+            var dbIssueCard = _localUnitOfWork.DataContext.IssuedCards.Where(d=>d.UserId==UserId).OrderByDescending(d=>d.CreatedDate);
+            return dbIssueCard.ToList().Select(d=> SetInfoForBE(new BE.IssueCard(), d)).ToList();
 
         }
 

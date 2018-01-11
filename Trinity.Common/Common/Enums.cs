@@ -269,3 +269,9 @@ public enum EnumDayOfWeek
     Saturday = 7,
     Sunday = 8,
 }
+
+public static class EnumIssuedCards
+{
+    public const string Active = "Active";
+    public const string Deactivate = "Deactivate";
+};
