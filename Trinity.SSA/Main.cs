@@ -155,7 +155,6 @@ namespace SSA
             {
                 // Start page
                 NavigateTo(NavigatorEnums.Authentication_SmartCard);
-
                 //// For testing purpose
                 //Session session = Session.Instance;
                 //// Supervisee
