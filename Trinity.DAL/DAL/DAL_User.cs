@@ -266,5 +266,56 @@ namespace Trinity.DAL
                 Console.WriteLine(ex.Message);
             }
         }
+
+        public List<Trinity.BE.User> GetAllSuperviseeBlocked(bool isLocal)
+        {
+            if (isLocal)
+            {
+                var user = (from mu in _localUnitOfWork.DataContext.Membership_Users
+                            join mur in _localUnitOfWork.DataContext.Membership_UserRoles on mu.UserId equals mur.UserId
+                            join mr in _localUnitOfWork.DataContext.Membership_Roles on mur.RoleId equals mr.Id
+                            where mu.Status == EnumUserStatuses.Blocked && mr.Name == EnumUserRoles.Supervisee
+                            select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name, IsFirstAttempt = mu.IsFirstAttempt, Note = mu.Note });
+                return user.ToList();
+            }
+            else
+            {
+                var user = (from mu in _centralizedUnitOfWork.DataContext.Membership_Users
+                            join mur in _centralizedUnitOfWork.DataContext.Membership_UserRoles on mu.UserId equals mur.UserId
+                            join mr in _centralizedUnitOfWork.DataContext.Membership_Roles on mur.RoleId equals mr.Id
+                            where mu.Status == EnumUserStatuses.Blocked && mr.Name == EnumUserRoles.Supervisee
+                            select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name, IsFirstAttempt = mu.IsFirstAttempt, Note = mu.Note });
+                return user.ToList();
+            }
+        }
+
+        public void UnblockSuperviseeById(string userId, string reason)
+        {
+            var localUserRepo = _localUnitOfWork.GetRepository<Membership_Users>();
+            var centralUserRepo = _centralizedUnitOfWork.GetRepository<Membership_Users>();
+            UpdateStatusAndReasonSuperviseeUnblock(userId, reason, localUserRepo);
+            UpdateStatusAndReasonSuperviseeUnblock(userId, reason, centralUserRepo);
+            _localUnitOfWork.Save();
+            _centralizedUnitOfWork.Save();
+        }
+
+        private void UpdateStatusAndReasonSuperviseeUnblock(string userId, string reason, IRepository<Membership_Users> userRepo)
+        {
+            try
+            {
+                var dbUser = userRepo.GetById(userId);
+                if (dbUser != null)
+                {
+                    dbUser.Status = EnumUserStatuses.Enrolled;
+                    dbUser.Note = reason;
+                    userRepo.Update(dbUser);
+
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
     }
 }
