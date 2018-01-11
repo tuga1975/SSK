@@ -11,7 +11,7 @@
 
         <div style="display:inline-block;">
             <div class="input-group date" id="datetimepicker1" style="width:180px;">
-                <input type='text' class="form-control" />
+                <input type='text' class="form-control" id="dateSearch" />
                 <span class="input-group-addon">
                     <span class="glyphicon glyphicon-calendar"></span>
                 </span>
@@ -34,22 +34,31 @@
             $('#datetimepicker1').datepicker();
         });
 
-        loadTable(pageSize);
+        api.server.GetStatistics();
 
     });
-    $('#pageSize').change(function () {
-        pageSize = $("#pageSize option:selected").text();
-        $('#table').bootstrapTable('refreshOptions', {
-            pagination: true,
-            //search: true,
-            pageSize: pageSize
-        });
-    });
 
-    function loadTable(page) {
+    var dataSource = [];
+    function getDataCallback(response) {
+        var data = JSON.parse(response);
+        if (data) {
+            data.forEach(function (element, index) {
+                dataSource.push({
+                    StartTime: element.StartTime,
+                    EndTime: element.EndTime,
+                    Max: element.Max,
+                    Booked: element.Booked,
+                    Reported: element.Reported,
+                    NoShow: element.No_Show,
+                    Available: element.Available,
+                    Date: element.Date
+                });
+            });
+        }
+
         $('#table').bootstrapTable({
             pagination: true,
-            pageSize: page,
+            pageSize: 10,
             //search:true,
             columns: [{
                 field: 'StartTime',
@@ -94,31 +103,118 @@
                 width: '30%',
                 align: 'center'
             }],
-            data: [{
-                StartTime: '04:50',
-                EndTime: '06:10',
-                Max: '99',
-                Booked: '11',
-                Reported: '30',
-                NoShow: '5',
-                Available: '1'
-            }, {
-                StartTime: '14:04',
-                EndTime: '17:30',
-                Max: '99',
-                Booked: '11',
-                Reported: '30',
-                NoShow: '5',
-                Available: '1'
-            }, {
-                StartTime: '09:50',
-                EndTime: '11:35',
-                Max: '99',
-                Booked: '11',
-                Reported: '26',
-                NoShow: '10',
-                Available: '6'
-            }]
+            data: dataSource
         });
-    }
+    };
+
+    $('#pageSize').change(function () {
+        pageSize = $("#pageSize option:selected").text();
+        $('#table').bootstrapTable('refreshOptions', {
+            pagination: true,
+            //search: true,
+            pageSize: pageSize
+        });
+    });
+
+    $('#dateSearch').change(function () {
+        var source = [];
+        var dateSearch = $('#dateSearch').val();
+        for (var i = 0; i < dataSource.length; i++) {
+            if (Date.parse(dataSource[i].Date) == Date.parse(dateSearch)) {
+                source.push({
+                    StartTime: dataSource[i].StartTime,
+                    EndTime: dataSource[i].EndTime,
+                    Max: dataSource[i].Max,
+                    Booked: dataSource[i].Booked,
+                    Reported: dataSource[i].Reported,
+                    NoShow: dataSource[i].No_Show,
+                    Available: dataSource[i].Available
+                });
+            }
+        }
+
+        if (!dateSearch) {
+            source = dataSource;
+        }
+        $('#table').bootstrapTable('refreshOptions', {
+            pagination: true,
+            data: source
+        });
+    });
+
+    //function loadTable(page) {
+    //    $('#table').bootstrapTable({
+    //        pagination: true,
+    //        pageSize: page,
+    //        //search:true,
+    //        columns: [{
+    //            field: 'StartTime',
+    //            title: 'Start Time',
+    //            sortable: true,
+    //            width: '10%',
+    //            align: 'center'
+    //        }, {
+    //            field: 'EndTime',
+    //            title: 'End Time',
+    //            sortable: true,
+    //            width: '10%',
+    //            align: 'center'
+    //        }, {
+    //            field: 'Max',
+    //            title: 'Max',
+    //            width: '10%',
+    //            align: 'center'
+    //        }, {
+    //            field: 'Booked',
+    //            title: 'Booked',
+    //            width: '10%',
+    //            align: 'center'
+    //        }, {
+    //            field: 'Reported',
+    //            title: 'Reported',
+    //            width: '10%',
+    //            align: 'center'
+    //        }, {
+    //            field: 'NoShow',
+    //            title: 'No-show',
+    //            width: '10%',
+    //            align: 'center'
+    //        }, {
+    //            field: 'Available',
+    //            title: 'Available',
+    //            width: '10%',
+    //            align: 'center'
+    //        }, {
+    //            field: '',
+    //            title: '',
+    //            width: '30%',
+    //            align: 'center'
+    //        }],
+    //        data: [{
+    //            StartTime: '04:50',
+    //            EndTime: '06:10',
+    //            Max: '99',
+    //            Booked: '11',
+    //            Reported: '30',
+    //            NoShow: '5',
+    //            Available: '1'
+    //        }, {
+    //            StartTime: '14:04',
+    //            EndTime: '17:30',
+    //            Max: '99',
+    //            Booked: '11',
+    //            Reported: '30',
+    //            NoShow: '5',
+    //            Available: '1'
+    //        }, {
+    //            StartTime: '09:50',
+    //            EndTime: '11:35',
+    //            Max: '99',
+    //            Booked: '11',
+    //            Reported: '26',
+    //            NoShow: '10',
+    //            Available: '6'
+    //        }]
+    //    });
+    //}
 </script>
