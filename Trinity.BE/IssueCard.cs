@@ -14,6 +14,23 @@ namespace Trinity.BE
         public string Name { get; set; }
         public string Serial_Number { get; set; }
         public Nullable<System.DateTime> Date_Of_Issue { get; set; }
+
+        public string Date_Of_Issue_Txt
+        {
+            get
+            {
+                return Date_Of_Issue.HasValue ? Date_Of_Issue.Value.ToString("dd/MM/yyyy") : string.Empty;
+            }
+        }
+        public Nullable<System.DateTime> Expired_Date_Card { get; set; }
+        public string Expired_Date_Card_Txt
+        {
+            get
+            {
+                return Expired_Date_Card.HasValue ? Expired_Date_Card.Value.ToString("dd/MM/yyyy") : string.Empty;
+            }
+        }
+
         public string Status { get; set; }
         public string CreatedBy { get; set; }
         public Nullable<System.DateTime> CreatedDate { get; set; }

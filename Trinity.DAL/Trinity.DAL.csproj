@@ -116,6 +116,7 @@
     <Compile Include="DAL\DAL_QueueNumber.cs" />
     <Compile Include="DAL\DAL_Notification.cs" />
     <Compile Include="DAL\DAL_AbsenceReporting.cs" />
+    <Compile Include="DAL\DAL_Membership_Users.cs" />
     <Compile Include="DAL\DAL_User.cs" />
     <Compile Include="DAL\DAL_UserProfile.cs" />
     <Compile Include="DBContext\AbsenceReporting.cs">
