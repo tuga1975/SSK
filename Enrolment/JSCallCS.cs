@@ -563,10 +563,7 @@ namespace Enrolment
         {
             Session session = Session.Instance;
             var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
-
-            string LeftThumbFingerprint = Convert.ToBase64String(currentEditUser.User.LeftThumbFingerprint);
-            string RightThumbFingerprint = Convert.ToBase64String(currentEditUser.User.RightThumbFingerprint);
-            this._web.LoadPageHtml("UpdateSuperviseeFingerprint.html", new object[] { LeftThumbFingerprint, RightThumbFingerprint });
+            this._web.LoadPageHtml("UpdateSuperviseeFingerprint.html", new object[] { currentEditUser.User.LeftThumbFingerprint==null?null: Convert.ToBase64String(currentEditUser.User.LeftThumbFingerprint), currentEditUser.User.RightThumbFingerprint == null ? null : Convert.ToBase64String(currentEditUser.User.RightThumbFingerprint) });
         }
         public void CancelUpdateFingerprints()
         {

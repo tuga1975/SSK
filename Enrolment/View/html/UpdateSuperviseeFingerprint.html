@@ -43,10 +43,10 @@
     </div>
 </div>
 <script type="text/javascript">
-    $('[capturefingerprint-img="0"]').attr('src', 'data:image/png;base64,' + api.model[0]);
-    $('[capturefingerprint-img="1"]').attr('src', 'data:image/png;base64,' + api.model[1]);
+    clearFingerprint(0);
+    clearFingerprint(1);
     function clearFingerprint(LeftOrRight) {
-        $('[capturefingerprint-img="' + LeftOrRight + '"]').attr('src', 'data:image/png;base64,' + api.model[LeftOrRight]).attr('soure','');
+        $('[capturefingerprint-img="' + LeftOrRight + '"]').attr('src', api.model[LeftOrRight] == null ?'../images/fingerprint.png':'data:image/png;base64,' + api.model[LeftOrRight]).attr('soure','');
     }
     function captureFingerprintMessage(LeftOrRight, Message, color) {
         $('[capturefingerprint-message="' + LeftOrRight + '"]').text(Message).css('color', color);
