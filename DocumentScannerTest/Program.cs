@@ -32,17 +32,17 @@ namespace DocumentScannerTest
 
             // TSC Bar code scanner
             //ResetPagePossition();
-            string TTLabelPrinterName = ConfigurationManager.AppSettings["TTLabelPrinterName"]?.ToUpper();
-            TTLabelInfo labelInfo = new TTLabelInfo()
-            {
-                ID = "ABC20180107XYZ",
-                Name = "Ricardo Quaresma",
-                MarkingNumber = "CSA17000809"
-            };
+            //string TTLabelPrinterName = ConfigurationManager.AppSettings["TTLabelPrinterName"]?.ToUpper();
+            //TTLabelInfo labelInfo = new TTLabelInfo()
+            //{
+            //    ID = "ABC20180107XYZ",
+            //    Name = "Ricardo Quaresma",
+            //    MarkingNumber = "CSA17000809"
+            //};
             //BarcodePrinterUtils.Instance.ResetPagePossition(TTLabelPrinterName);
             //BarcodePrinterUtils.Instance.PrintTTLabel(labelInfo);
             //BarcodePrinterUtils.Instance.Print();
-            BarcodePrinterUtils.Instance.ResetPagePossition(TTLabelPrinterName);
+            //BarcodePrinterUtils.Instance.ResetPagePossition(TTLabelPrinterName);
             //StartBarcodeScanner();
             //StartBarcodeScanner2();
 
@@ -56,6 +56,25 @@ namespace DocumentScannerTest
             //TestStartIdentification();
             //TestStartIdentification();
             //TestStartIdentification();
+
+            // TestSmartCardPrinter
+            TestSmartCardPrinter();
+
+            Console.ReadKey();
+        }
+
+        private static void TestSmartCardPrinter()
+        {
+            Console.WriteLine("starting TestSmartCardPrinter...");
+
+            SmartCardPrinterUtils smartCardPrinterUtils = SmartCardPrinterUtils.Instance;
+
+            smartCardPrinterUtils.PrintAndWriteSmartcardData(new PrintAndWriteSmartcardInfo(), OnCompleted);
+        }
+
+        private static void OnCompleted(PrintAndWriteSmartcardResult result)
+        {
+            Console.WriteLine(result.Success);
             Console.ReadKey();
         }
 

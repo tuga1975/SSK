@@ -94,6 +94,7 @@
     <Compile Include="Common\EventCenter.cs" />
     <Compile Include="Common\LabelInfo.cs" />
     <Compile Include="Common\Results.cs" />
+    <Compile Include="Common\SmartCard.cs" />
     <Compile Include="Common\User.cs" />
     <Compile Include="Constants\CommonConstants.cs" />
     <Compile Include="CSCallJS.cs" />
@@ -116,6 +117,7 @@
     <Compile Include="Utils\DocumentScannerUtils.cs" />
     <Compile Include="Utils\FingerprintReaderUtils.cs" />
     <Compile Include="Utils\ReceiptPrinterUtils.cs" />
+    <Compile Include="Utils\SmartCardPrinterUtils.cs" />
     <Compile Include="Utils\SmartCardReaderUtils.cs" />
   </ItemGroup>
   <ItemGroup>
