@@ -423,7 +423,7 @@ namespace Enrolment
                 var currentPhotosSession = session[CommonConstants.CURRENT_PHOTOS];
                 if (InvokeRequired)
                 {
-
+                    
                     Invoke(new Action(() =>
                     {
                         pictureBox1.Hide();
