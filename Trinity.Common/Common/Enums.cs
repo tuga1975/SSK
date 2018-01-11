@@ -22,7 +22,12 @@ public enum NavigatorEnums
     Queue = 13
 };
 
-
+public static class EnumSettingStatuses
+{
+    public const string Archived = "Archived";
+    public const string Active = "Active";
+    public const string Pending = "Pending";
+}
 
 public static class EnumUserRoles
 {
@@ -258,6 +263,14 @@ public static class EnumLabelType
     public const string MUB = "MUB";
     public const string TT = "TT";
     public const string UB = "UB";
+};
+
+
+public static class EnumTimeshift
+{
+    public const string Morning = "Morning";
+    public const string Afternoon = "Afternoon";
+    public const string Evening = "Evening";
 };
 public enum EnumDayOfWeek
 {

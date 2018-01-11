@@ -327,6 +327,10 @@
             $('#PopupUserPhoto1').attr('src', 'data:image/jpg;base64,' + photo1);
             $('#PopupUserPhoto2').attr('src', 'data:image/jpg;base64,' + photo2);  
     }
+	function setFingerprintServerCall(finger1, finger2) {
+            $('#LeftThumbFingerprint').attr('src', finger1);
+            $('#RightThumbFingerprint').attr('src', finger2);  
+    }
 
 	function saveNewDataToSession(){
 		var $form = $("#superviseeFrm");
@@ -364,6 +368,7 @@
         $("#" + elem_id).show();
     }
     function hidePopUp() {
+		api.server.ReplaceOldPhotos();
         $("#pageUpdatePhotos").hide();
     }
 

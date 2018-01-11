@@ -1,6 +1,10 @@
-﻿using System;
+﻿using ImageConvertor;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -151,13 +155,30 @@ namespace Trinity.Common.DeviceMonitor
             // print label
             BarcodePrinterUtils printerUtils = BarcodePrinterUtils.Instance;
 
-            System.Drawing.Bitmap bitmap = null;
+            // create image file to print
+            string filePath = string.Empty;
+            string fileName = string.Empty;
             using (var ms = new System.IO.MemoryStream(labelInfo.BitmapLabel))
             {
-                bitmap = new System.Drawing.Bitmap(System.Drawing.Image.FromStream(ms));
+                Bitmap bitmap = new System.Drawing.Bitmap(System.Drawing.Image.FromStream(ms));
+                string curDir = Directory.GetCurrentDirectory();
+
+                // create directory
+                if (!Directory.Exists(curDir + "\\Temp"))
+                {
+                    Directory.CreateDirectory(curDir + "\\Temp");
+                }
+
+                // set file path
+                filePath = curDir + "\\Temp\\mublabel.bmp";
+
+                // create image file (bit depth must be 8)
+                Bitmap target = Convertor1.ConvertTo8bppFormat(bitmap);
+                target.Save(filePath, ImageFormat.Bmp);
             }
 
-            if (printerUtils.PrintMUBLabel(bitmap))
+            // print mub label
+            if (printerUtils.PrintMUBLabel(filePath))
             {
                 // raise succeeded event
                 RaisePrintLabelSucceededEvent(new PrintMUBAndTTLabelsSucceedEventArgs(labelInfo));
@@ -171,7 +192,6 @@ namespace Trinity.Common.DeviceMonitor
                     ErrorMessage = new ErrorInfo().GetErrorMessage(EnumErrorCodes.UnknownError)
                 }));
             }
-
         }
 
         public EnumDeviceStatuses[] GetBarcodePrinterStatus()

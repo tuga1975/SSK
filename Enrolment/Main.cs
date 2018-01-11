@@ -323,7 +323,7 @@ namespace Enrolment
                     deviceId = dalDeviceStatus.GetDeviceId(EnumDeviceTypes.FingerprintScanner);
                     listDeviceStatusModel.Add(dalDeviceStatus.SetInfo(entryAppName, deviceId, e.FPrintStatus));
 
-                    dalDeviceStatus.Insert(listDeviceStatusModel);
+                    dalDeviceStatus.UpdateHealthStatus(listDeviceStatusModel);
                 }
             }
             catch (Exception ex)
@@ -543,17 +543,30 @@ namespace Enrolment
                         if (session[CommonConstants.CURRENT_EDIT_USER] != null && currentPage != null)
                         {
                             var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
+                            var oldPhotos = session["TempPhotos"];
                             string photo1 = "../images/usr-default.jpg";
                             string photo2 = "../images/usr-default.jpg";
-                            if (currentEditUser.UserProfile.User_Photo1 != null)
+                            /*if (currentEditUser.UserProfile.User_Photo1 != null)
                             {
                                 photo1 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo1);
                             }
                             if (currentEditUser.UserProfile.User_Photo2 != null)
                             {
                                 photo2 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo2);
+                            }*/
+                            var photos = (Tuple<string, string>)session["TempPhotos"];
+                            if (photos.Item1 != null) {
+                                photo1 = photos.Item1;
                             }
+                            if(photos.Item2 != null)
+                            {
+                                photo2 = photos.Item2;
+                            }
+                            session[CommonConstants.CURRENT_PHOTOS] = null;
 
+                            currentEditUser.UserProfile.User_Photo1 = Convert.FromBase64String(photo1);
+                            currentEditUser.UserProfile.User_Photo2 = Convert.FromBase64String(photo2);
+                            session[CommonConstants.CURRENT_EDIT_USER] = currentEditUser;
                             if (currentPage.ToString() == "EditSupervisee")
                             {
                                 LayerWeb.LoadPageHtml("UpdateSuperviseeBiodata.html", currentEditUser);
