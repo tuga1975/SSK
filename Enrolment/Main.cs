@@ -71,7 +71,7 @@ namespace Enrolment
             //health check
             healthMonitor = Trinity.Common.DeviceMonitor.HealthMonitor.Instance;
             healthMonitor.OnHealthCheck += OnHealthMonitor;
-
+           
             //for testing
             //var timer = new System.Timers.Timer(30000);
 

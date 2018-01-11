@@ -21,10 +21,8 @@ namespace Trinity.DAL
                 var centralRepo = _centralizedUnitOfWork.GetRepository<ApplicationDevice_Status>();
 
                 var listdbDeviceStatus = new List<ApplicationDevice_Status>();
-
                 if (!_localUnitOfWork.DataContext.ApplicationDevice_Status.Any())
                 {
-
 
                     foreach (var item in listModel)
                     {

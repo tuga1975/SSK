@@ -32,6 +32,7 @@ namespace Trinity.DAL.DBContext
         public virtual DbSet<Appointment> Appointments { get; set; }
         public virtual DbSet<Device> Devices { get; set; }
         public virtual DbSet<Holiday> Holidays { get; set; }
+        public virtual DbSet<IssuedCard> IssuedCards { get; set; }
         public virtual DbSet<Label> Labels { get; set; }
         public virtual DbSet<Membership_RoleClaims> Membership_RoleClaims { get; set; }
         public virtual DbSet<Membership_Roles> Membership_Roles { get; set; }
@@ -46,7 +47,6 @@ namespace Trinity.DAL.DBContext
         public virtual DbSet<Security_QA> Security_QA { get; set; }
         public virtual DbSet<Setting> Settings { get; set; }
         public virtual DbSet<Timeslot> Timeslots { get; set; }
-        public virtual DbSet<IssuedCard> IssuedCards { get; set; }
         public virtual DbSet<User_Profiles> User_Profiles { get; set; }
     }
 }
