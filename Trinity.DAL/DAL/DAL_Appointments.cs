@@ -150,12 +150,12 @@ namespace Trinity.DAL
 
                 return lstModels.ToList();
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return new List<BE.Appointment>();
             }
         }
-        
+
         public List<BE.Statistics> GetAllStatistics()
         {
             var model = from tl in _localUnitOfWork.DataContext.Timeslots
@@ -221,6 +221,28 @@ namespace Trinity.DAL
             {
                 return 0;
             }
+        }
+
+        public void CreateAppointmentsForAllUsers(DateTime date)
+        {
+            _localUnitOfWork.GetRepository<Appointment>().Delete(t => t.Date.Year == date.Year && t.Date.Month == date.Month && t.Date.Day == date.Day);
+            _localUnitOfWork.Save();
+
+            List<string> userIds = _localUnitOfWork.DataContext.Membership_Users.Select(u => u.UserId).ToList();
+            var repoAppointment = _localUnitOfWork.GetRepository<Appointment>();
+            foreach (string userId in userIds)
+            {
+                Appointment appointment = new Appointment()
+                {
+                    ID = Guid.NewGuid(),
+                    UserId = userId,
+                    ChangedCount = 0,
+                    Date = date,
+                    Status = (int)EnumAppointmentStatuses.Pending
+                };
+                repoAppointment.Add(appointment);
+            }
+            _localUnitOfWork.Save();
         }
     }
 }

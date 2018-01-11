@@ -235,7 +235,7 @@ namespace SSK
             if (_isFirstTimeLoaded)
             {
                 // Start page
-                NavigateTo(NavigatorEnums.Authentication_SmartCard);
+                //NavigateTo(NavigatorEnums.Authentication_SmartCard);
 
                 //// For testing purpose
                 Session session = Session.Instance;

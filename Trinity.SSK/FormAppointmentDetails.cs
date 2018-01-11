@@ -49,9 +49,6 @@ namespace SSK
         {
             BarcodePrinterUtils printerUtil = BarcodePrinterUtils.Instance;
             printerUtil.Test();
-
-            //DAL_Setting dalSetting = new DAL_Setting();
-            //dalSetting.GenerateTimeslot();
             return;
             Trinity.Common.LabelInfo labelInfo = new Trinity.Common.LabelInfo()
             {
@@ -59,12 +56,32 @@ namespace SSK
                 NRIC = "022234343",
                 Name = "minhdq"
             };
-            printerUtil.PrintBarcodeUserInfo(labelInfo);
+            //printerUtil.PrintBarcodeUserInfo(labelInfo);
             //if (documentLoaded)
             //{
             //    webBrowserAppointmentDetails.Print();
             //    //webBrowserAppointmentDetails.ShowPrintPreviewDialog();
             //}
+        }
+
+        private void btnGenerateTimeslots_Click(object sender, EventArgs e)
+        {
+            DAL_Setting dalSetting = new DAL_Setting();
+            dalSetting.GenerateTimeslots("dfbb2a6a-9e45-4a76-9f75-af1a7824a947");
+        }
+
+        private void btnGenerateAppointments_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                DAL_Appointments dalAppointment = new DAL_Appointments();
+                dalAppointment.CreateAppointmentsForAllUsers(dateTimePicker1.Value);
+                MessageBox.Show("OK");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi", ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }

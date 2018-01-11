@@ -31,6 +31,9 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormAppointmentDetails));
             this.btnPrint = new System.Windows.Forms.Button();
             this.webBrowserAppointmentDetails = new System.Windows.Forms.WebBrowser();
+            this.btnGenerateTimeslots = new System.Windows.Forms.Button();
+            this.btnGenerateAppointments = new System.Windows.Forms.Button();
+            this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
             this.SuspendLayout();
             // 
             // btnPrint
@@ -49,23 +52,57 @@
             this.webBrowserAppointmentDetails.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.webBrowserAppointmentDetails.Location = new System.Drawing.Point(13, 65);
+            this.webBrowserAppointmentDetails.Location = new System.Drawing.Point(13, 147);
             this.webBrowserAppointmentDetails.MinimumSize = new System.Drawing.Size(20, 20);
             this.webBrowserAppointmentDetails.Name = "webBrowserAppointmentDetails";
             this.webBrowserAppointmentDetails.ScriptErrorsSuppressed = true;
-            this.webBrowserAppointmentDetails.Size = new System.Drawing.Size(694, 521);
+            this.webBrowserAppointmentDetails.Size = new System.Drawing.Size(694, 439);
             this.webBrowserAppointmentDetails.TabIndex = 1;
             // 
-            // FormAnnouncementDetails
+            // btnGenerateTimeslots
+            // 
+            this.btnGenerateTimeslots.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnGenerateTimeslots.Location = new System.Drawing.Point(171, 14);
+            this.btnGenerateTimeslots.Name = "btnGenerateTimeslots";
+            this.btnGenerateTimeslots.Size = new System.Drawing.Size(160, 46);
+            this.btnGenerateTimeslots.TabIndex = 2;
+            this.btnGenerateTimeslots.Text = "Generate Timeslots";
+            this.btnGenerateTimeslots.UseVisualStyleBackColor = true;
+            this.btnGenerateTimeslots.Click += new System.EventHandler(this.btnGenerateTimeslots_Click);
+            // 
+            // btnGenerateAppointments
+            // 
+            this.btnGenerateAppointments.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnGenerateAppointments.Location = new System.Drawing.Point(13, 65);
+            this.btnGenerateAppointments.Name = "btnGenerateAppointments";
+            this.btnGenerateAppointments.Size = new System.Drawing.Size(201, 46);
+            this.btnGenerateAppointments.TabIndex = 3;
+            this.btnGenerateAppointments.Text = "Create Appointment";
+            this.btnGenerateAppointments.UseVisualStyleBackColor = true;
+            this.btnGenerateAppointments.Click += new System.EventHandler(this.btnGenerateAppointments_Click);
+            // 
+            // dateTimePicker1
+            // 
+            this.dateTimePicker1.CustomFormat = "dd/MM/yyyy";
+            this.dateTimePicker1.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.dateTimePicker1.Location = new System.Drawing.Point(220, 75);
+            this.dateTimePicker1.Name = "dateTimePicker1";
+            this.dateTimePicker1.Size = new System.Drawing.Size(200, 22);
+            this.dateTimePicker1.TabIndex = 4;
+            // 
+            // FormAppointmentDetails
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.ClientSize = new System.Drawing.Size(719, 598);
+            this.Controls.Add(this.dateTimePicker1);
+            this.Controls.Add(this.btnGenerateAppointments);
+            this.Controls.Add(this.btnGenerateTimeslots);
             this.Controls.Add(this.webBrowserAppointmentDetails);
             this.Controls.Add(this.btnPrint);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "FormAnnouncementDetails";
+            this.Name = "FormAppointmentDetails";
             this.Text = "Appointment Details";
             this.Load += new System.EventHandler(this.FormLabelPrint_Load);
             this.ResumeLayout(false);
@@ -76,5 +113,8 @@
 
         private System.Windows.Forms.Button btnPrint;
         private System.Windows.Forms.WebBrowser webBrowserAppointmentDetails;
+        private System.Windows.Forms.Button btnGenerateTimeslots;
+        private System.Windows.Forms.Button btnGenerateAppointments;
+        private System.Windows.Forms.DateTimePicker dateTimePicker1;
     }
 }

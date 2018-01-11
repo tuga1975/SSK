@@ -71,7 +71,7 @@ namespace Trinity.DAL
             return _localUnitOfWork.DataContext.Timeslots.Where(t => t.DateOfWeek == dayOfWeek).ToList();
         }
 
-        public void GenerateTimeslot(string createBy)
+        public void GenerateTimeslots(string createdBy)
         {
             SettingModel setting = GetSetting();
             //SettingModel setting = GetSetting("Pending");
@@ -83,31 +83,29 @@ namespace Trinity.DAL
             }
 
             // Delete old timeslot
-            List<Timeslot> timeslots = _localUnitOfWork.DataContext.Timeslots.Where(t => t.Setting_ID == setting.Setting_ID).ToList();
-            _localUnitOfWork.DataContext.Timeslots.RemoveRange(timeslots);
             _localUnitOfWork.GetRepository<Timeslot>().Delete(t=>t.Setting_ID == setting.Setting_ID);
+            _localUnitOfWork.Save();
 
-           
             //mon
-            GenerateTimeSlotAndInsert((int)EnumDayOfWeek.Monday, setting.Monday, createBy);
+            GenerateTimeSlotAndInsert((int)EnumDayOfWeek.Monday, setting.Monday, createdBy);
 
             //tue
-            GenerateTimeSlotAndInsert((int)EnumDayOfWeek.Tuesday, setting.Tuesday, createBy);
+            GenerateTimeSlotAndInsert((int)EnumDayOfWeek.Tuesday, setting.Tuesday, createdBy);
 
             //wed
-            GenerateTimeSlotAndInsert((int)EnumDayOfWeek.Wednesday, setting.WednesDay, createBy);
+            GenerateTimeSlotAndInsert((int)EnumDayOfWeek.Wednesday, setting.WednesDay, createdBy);
 
             //thu
-            GenerateTimeSlotAndInsert((int)EnumDayOfWeek.Thursday, setting.Thursday, createBy);
+            GenerateTimeSlotAndInsert((int)EnumDayOfWeek.Thursday, setting.Thursday, createdBy);
 
             //fri
-            GenerateTimeSlotAndInsert((int)EnumDayOfWeek.Friday, setting.Friday, createBy);
+            GenerateTimeSlotAndInsert((int)EnumDayOfWeek.Friday, setting.Friday, createdBy);
 
             //sat
-            GenerateTimeSlotAndInsert((int)EnumDayOfWeek.Saturday, setting.Saturday, createBy);
+            GenerateTimeSlotAndInsert((int)EnumDayOfWeek.Saturday, setting.Saturday, createdBy);
 
             //sun
-            GenerateTimeSlotAndInsert((int)EnumDayOfWeek.Sunday, setting.Sunday, createBy);
+            GenerateTimeSlotAndInsert((int)EnumDayOfWeek.Sunday, setting.Sunday, createdBy);
 
         }
 
@@ -285,7 +283,7 @@ namespace Trinity.DAL
         }
         private BE.SettingModel GetSetting()
         {
-            var dbSeting = _localUnitOfWork.DataContext.Settings.Where(s => s.Status == "Active").FirstOrDefault();
+            var dbSeting = _localUnitOfWork.DataContext.Settings.Where(s => s.Status.Equals(EnumSettingStatuses.Pending, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
             var settingBE = new BE.SettingBE();
             SetInfoToSettingBE(settingBE, dbSeting);
 
@@ -315,7 +313,7 @@ namespace Trinity.DAL
 
             _localUnitOfWork.Save();
             //add new
-            GenerateTimeslot(createBy);
+            GenerateTimeslots(createBy);
 
 
         }
