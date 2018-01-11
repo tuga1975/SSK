@@ -131,15 +131,17 @@ namespace Trinity.BE
             {
                 Monday = new SettingDetails
                 {
+                    Setting_ID = rawData.Setting_ID,
                     EndTime = rawData.Mon_Close_Time,
                     StartTime = rawData.Mon_Open_Time,
                     Duration = rawData.Mon_Interval,
-                    MaximumAppointment=rawData.Mon_MaximumNum,
-                    ReservedForSpare=rawData.Mon_ReservedForSpare
+                    MaximumAppointment = rawData.Mon_MaximumNum,
+                    ReservedForSpare = rawData.Mon_ReservedForSpare
 
                 },
                 Tuesday = new SettingDetails
                 {
+                    Setting_ID = rawData.Setting_ID,
                     EndTime = rawData.Tue_Close_Time,
                     StartTime = rawData.Tue_Open_Time,
                     Duration = rawData.Tue_Interval,
@@ -149,6 +151,7 @@ namespace Trinity.BE
                 },
                 WednesDay = new SettingDetails
                 {
+                    Setting_ID = rawData.Setting_ID,
                     EndTime = rawData.Wed_Close_Time,
                     StartTime = rawData.Wed_Open_Time,
                     Duration = rawData.Wed_Interval,
@@ -158,6 +161,7 @@ namespace Trinity.BE
                 },
                 Thursday = new SettingDetails
                 {
+                    Setting_ID = rawData.Setting_ID,
                     EndTime = rawData.Thu_Close_Time,
                     StartTime = rawData.Thu_Open_Time,
                     Duration = rawData.Thu_Interval,
@@ -167,6 +171,7 @@ namespace Trinity.BE
                 },
                 Friday = new SettingDetails
                 {
+                    Setting_ID = rawData.Setting_ID,
                     EndTime = rawData.Fri_Close_Time,
                     StartTime = rawData.Fri_Open_Time,
                     Duration = rawData.Fri_Interval,
@@ -176,6 +181,7 @@ namespace Trinity.BE
                 },
                 Saturday = new SettingDetails
                 {
+                    Setting_ID = rawData.Setting_ID,
                     EndTime = rawData.Sat_Close_Time,
                     StartTime = rawData.Sat_Open_Time,
                     Duration = rawData.Sat_Interval,
@@ -185,6 +191,7 @@ namespace Trinity.BE
                 },
                 Sunday = new SettingDetails
                 {
+                    Setting_ID = rawData.Setting_ID,
                     EndTime = rawData.Sun_Close_Time,
                     StartTime = rawData.Sun_Open_Time,
                     Duration = rawData.Sun_Interval,
@@ -192,10 +199,10 @@ namespace Trinity.BE
                     ReservedForSpare = rawData.Sun_ReservedForSpare
 
                 },
-                WeekNum=rawData.WeekNum,
-                Setting_ID=rawData.Setting_ID,
-                Status=rawData.Status,
-                Year=rawData.Year,
+                WeekNum = rawData.WeekNum,
+                Setting_ID = rawData.Setting_ID,
+                Status = rawData.Status,
+                Year = rawData.Year,
                 Last_Updated_Date = rawData.Last_Updated_Date,
                 Last_Updated_By = rawData.Last_Updated_By,
                 Description = rawData.Description

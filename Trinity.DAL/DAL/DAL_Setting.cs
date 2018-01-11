@@ -74,7 +74,7 @@ namespace Trinity.DAL
         public void GenerateTimeslot(string createBy)
         {
             SettingModel setting = GetSetting();
-
+            //SettingModel setting = GetSetting("Pending");
             // Check if allow to change timeslot
             if (!setting.Status.Equals(EnumSettingStatuses.Pending, StringComparison.InvariantCultureIgnoreCase) )
             {
@@ -87,6 +87,7 @@ namespace Trinity.DAL
             _localUnitOfWork.DataContext.Timeslots.RemoveRange(timeslots);
             _localUnitOfWork.GetRepository<Timeslot>().Delete(t=>t.Setting_ID == setting.Setting_ID);
 
+           
             //mon
             GenerateTimeSlotAndInsert((int)EnumDayOfWeek.Monday, setting.Monday, createBy);
 
@@ -285,6 +286,15 @@ namespace Trinity.DAL
         private BE.SettingModel GetSetting()
         {
             var dbSeting = _localUnitOfWork.DataContext.Settings.Where(s => s.Status == "Active").FirstOrDefault();
+            var settingBE = new BE.SettingBE();
+            SetInfoToSettingBE(settingBE, dbSeting);
+
+            return new BE.SettingBE().ToSettingModel(settingBE);
+        }
+
+        private BE.SettingModel GetSetting(string status)
+        {
+            var dbSeting = _localUnitOfWork.DataContext.Settings.Where(s => s.Status == status).FirstOrDefault();
             var settingBE = new BE.SettingBE();
             SetInfoToSettingBE(settingBE, dbSeting);
 
