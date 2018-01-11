@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Trinity.Common.Utils;
+using Trinity.DAL;
 
 namespace SSK
 {
@@ -47,7 +48,11 @@ namespace SSK
         private void btnPrint_Click(object sender, EventArgs e)
         {
             BarcodePrinterUtils printerUtil = BarcodePrinterUtils.Instance;
+            printerUtil.Test();
 
+            //DAL_Setting dalSetting = new DAL_Setting();
+            //dalSetting.GenerateTimeslot();
+            return;
             Trinity.Common.LabelInfo labelInfo = new Trinity.Common.LabelInfo()
             {
                 Date = "07-04-1982",
