@@ -1,4 +1,70 @@
-﻿<div><h1>Processing:</h1></div>
+﻿<span style="display: inline-block;font-size:20px;border:1px solid #CCC;background-color:#FFF;padding:10px;border-bottom:none;">LOGO</span>
+
+<span  style="display: inline-block;font-size:20px;border:1px solid #CCC;background-color:#FFF;padding:10px;border-bottom:none;float:right;">DD/MM/YYYY HH:MM</span>
+
+<div style="overflow:auto;height:300px;">
+    <div style="width:20%;padding:10px;margin-top:10px;float:left">
+        <div><p style="text-align:center;"><strong>NOW SERVING</strong></p></div>
+        <div style="" add-time-Morning>
+        </div>
+    </div>
+    <div style="width:20%;padding:10px;margin-top:10px;float:left">
+        <div><p style="text-align:center;"><strong>HH:MM xm- HH:MM xm</strong></p></div>
+        <div add-time-Afternoon>
+        </div>
+    </div>
+    <div style="width:20%;padding:10px;margin-top:10px;float:left">
+        <div><p style="text-align:center;"><strong>HH:MM xm - HH:MM xm</strong></p></div>
+        <div add-time-Evening>
+        </div>
+    </div>
+    <div style="width:20%;padding:10px;margin-top:10px;float:left">
+        <div><p style="text-align:center;"><strong>HOLDING LIST</strong></p></div>
+        <div add-time-Evening>
+        </div>
+    </div>
+    <div style="clear:both;"></div>
+</div>
+
+<style type="text/css">
+    .input-group-addon {
+        padding: 10px;
+    }
+
+    [item-select-time] {
+        display: inline-block;
+        width: calc(25% - 24px);
+        margin: 5px 10px;
+        border: 1px solid #CCC;
+        border-radius: 5px;
+        padding: 5px 10px;
+        box-sizing: border-box;
+        text-align: center;
+        cursor: pointer;
+    }
+
+        [item-select-time]:hover {
+            background-color: #CCC;
+        }
+
+        [item-select-time][selecttime="true"] {
+            background-color: deepskyblue !important;
+            pointer-events: none;
+        }
+
+        [item-select-time][selecttime="true"] {
+            background-color: deepskyblue !important;
+            pointer-events: none;
+        }
+
+        [item-select-time][availble="false"] {
+            background-color: #999;
+            pointer-events: none;
+        }
+</style>
+
+
+<div><h1>Processing:</h1></div>
 <div show-queue class="box">
 </div>
 <div show-queue-list>
@@ -12,7 +78,7 @@
         font-size: 50px;
         font-weight: bold;
         text-align: center;
-        
+
         justify-content: center;
         align-items: center;
         border: 1px solid #CCC;
@@ -20,17 +86,19 @@
     }*/
     .box {
     }
-    .box-child{
+
+    .box-child {
         margin: 10px;
         width: 23%;
         float: left;
-        font-size:35px;
-        text-align:center
+        font-size: 35px;
+        text-align: center
     }
+
         .box-child span {
             border: 1px solid;
-            display:inline-block;
-            padding:5px 15px
+            display: inline-block;
+            padding: 5px 15px
         }
 
     [show-queue-list] {
