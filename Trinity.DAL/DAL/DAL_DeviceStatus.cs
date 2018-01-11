@@ -31,8 +31,8 @@ namespace Trinity.DAL
 
                     centralRepo.AddRange(listdbDeviceStatus);
                     localRepo.AddRange(listdbDeviceStatus);
-                    _centralizedUnitOfWork.Save();
                     _localUnitOfWork.Save();
+                    _centralizedUnitOfWork.Save();
                     return true;
                 }
                 else
