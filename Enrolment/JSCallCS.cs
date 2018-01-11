@@ -255,7 +255,8 @@ namespace Enrolment
                 {
                     User = dbUser,
                     UserProfile = dalUserProfile.GetUserProfileByUserId(userId, true),
-                    Addresses = dalUserProfile.GetAddressByUserId(userId, true)
+                    Addresses = dalUserProfile.GetAddressByUserId(userId, true),
+                    OtherAddress= dalUserProfile.GetAddressByUserId(userId,true,true)
                 };
                 //first load set model to session 
                 session[CommonConstants.CURRENT_EDIT_USER] = profileModel;
@@ -295,7 +296,6 @@ namespace Enrolment
                 var rawData = JsonConvert.DeserializeObject<Trinity.BE.ProfileRawMData>(param);
                 var rawDataAddress = JsonConvert.DeserializeObject<Trinity.BE.Address>(param);
                 var rawDataOtherAddress = JsonConvert.DeserializeObject<Trinity.BE.OtherAddress>(param);
-
 
                 var data = new Trinity.BE.ProfileRawMData().ToProfileModel(rawData);
                 var dalUser = new Trinity.DAL.DAL_User();
@@ -355,6 +355,8 @@ namespace Enrolment
                 // add some some old data not change
                 data.User.Name = profileModel.User.Name;
                 data.User.Status = profileModel.User.Status;
+                data.User.LeftThumbFingerprint = profileModel.User.LeftThumbFingerprint;
+                data.User.RightThumbFingerprint = profileModel.User.RightThumbFingerprint;
 
                 dalUser.UpdateUser(data.User, profileModel.User.UserId, true);
 
@@ -363,13 +365,49 @@ namespace Enrolment
                 APIUtils.SignalR.SendNotificationToDutyOfficer("A supervisee has updated profile.", "Please check Supervisee's information!");
 
 
-                session[CommonConstants.CURRENT_EDIT_USER] = data;
+                //session[CommonConstants.CURRENT_EDIT_USER] = data;
+                session[CommonConstants.CURRENT_EDIT_USER] = null;
                 //load Supervisee page 
                 LoadListSupervisee();
             }
             catch (Exception)
             {
                 LoadPage("Login.html");
+            }
+        }
+
+        public void saveNewDataToSession(string param)
+        {
+            try
+            {
+                Session session = Session.Instance;
+                var rawData = JsonConvert.DeserializeObject<Trinity.BE.ProfileRawMData>(param);
+                var rawDataAddress = JsonConvert.DeserializeObject<Trinity.BE.Address>(param);
+                var rawDataOtherAddress = JsonConvert.DeserializeObject<Trinity.BE.OtherAddress>(param);
+
+                var data = new Trinity.BE.ProfileRawMData().ToProfileModel(rawData);
+                data.Addresses = rawDataAddress;
+                data.OtherAddress.Address_ID = rawDataOtherAddress.OAddress_ID;
+                data.OtherAddress.BlkHouse_Number = rawDataOtherAddress.OBlkHouse_Number;
+                data.OtherAddress.FlrUnit_Number = rawDataOtherAddress.OFlrUnit_Number;
+                data.OtherAddress.Street_Name = rawDataOtherAddress.OStreet_Name;
+                data.OtherAddress.Country = rawDataOtherAddress.OCountry;
+                data.OtherAddress.Postal_Code = rawDataOtherAddress.OPostal_Code;
+
+                var profileModel = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
+
+                ////////
+                //session["TempPhotos"] = new Tuple<string, string>(Convert.ToBase64String(profileModel.UserProfile.User_Photo1), Convert.ToBase64String(profileModel.UserProfile.User_Photo2));
+                   ////////
+                data.UserProfile.User_Photo1 = profileModel.UserProfile.User_Photo1;
+                data.UserProfile.User_Photo2 = profileModel.UserProfile.User_Photo2;
+                data.UserProfile.Residential_Addess_ID = profileModel.UserProfile.Residential_Addess_ID;
+                data.UserProfile.Other_Address_ID = profileModel.UserProfile.Other_Address_ID;
+                session[CommonConstants.CURRENT_EDIT_USER] = data;
+
+            }
+            catch {
+
             }
         }
 

@@ -1,5 +1,5 @@
 ﻿
-<div style="display:block; padding:10px;">
+<!--<div style="display:block; padding:10px;">
     <span style=" font-size:22px; float:left; text-align:left;"><b>Blocked</b></span>
     <div class="d-inline" style="right:10px; float:right; display:inline;">
         <select class="form-control" id="pageSize" style="width:70px; display:inline;">
@@ -13,7 +13,20 @@
         <button type="button" class="btn btn-primary">Search</button>
     </div>
 </div>
-<br />
+<br />-->
+
+<div style="display:block; padding:10px;">
+    <span style=" font-size:22px; float:left; text-align:left;"><b>Blocked</b></span>
+    <div class="form-inline" style="position: absolute; right: 200px; top: 30px">
+        <select class="form-control" id="pageSize" style="width:70px; display:inline-block;">
+            <option>10</option>
+            <option>2</option>
+            <option>3</option>
+        </select>
+        <div style="display:inline-block;">entries</div>
+    </div>
+</div>
+
 <table id="table"></table>
 <script type="text/javascript">
     activemenu('Blocked');
@@ -23,16 +36,72 @@
         if (pageSize)
             pageSize = 10;
 
-        loadTable(pageSize);
+        api.server.GetAllSuperviseesBlocked();
     });
     $('#pageSize').change(function () {
         pageSize = $("#pageSize option:selected").text();
         $('#table').bootstrapTable('refreshOptions', {
             pagination: true,
-            //search: true,
+            search: true,
             pageSize: pageSize
         });
     });
+
+    var dataSource = [];
+    function getDataCallback(response) {
+        var data = JSON.parse(response);
+        if (data) {
+            data.forEach(function (element, index) {
+                dataSource.push({
+                    NRIC: element.NRIC,
+                    Name: element.Name,
+                    Reason: element.Note,
+                    UserId: element.UserId
+                });
+            });
+        }
+
+        $('#table').bootstrapTable({
+            pagination: true,
+            pageSize: 10,
+            search:true,
+            onClickCell: function (field, value, row, $element) {
+                if (field == 'Action') {
+                    var data = JSON.stringify(row);
+                    api.server.LoadPopupBlock(data, function () {
+                        $('#idBlock').modal();
+                    });
+                }
+            },
+            columns: [{
+                field: 'NRIC',
+                title: 'NRIC',
+                sortable: true,
+                width: '10%',
+                align: 'center'
+            }, {
+                field: 'Name',
+                title: 'Name',
+                sortable: true,
+                width: '40%',
+                align: 'center'
+            }, {
+                field: 'Reason',
+                title: 'Reason',
+                width: '40%',
+                align: 'center'
+            }, {
+                field: 'Action',
+                title: 'Action',
+                width: '10%',
+                align: 'center',
+                formatter: function (value, row, index, field) {
+                    return '<button class=\'btn btn-dark \' >Unblock</button> ';
+                }
+            }],
+            data: dataSource
+        });
+    };
 
     function loadTable(page) {
         $('#table').bootstrapTable({

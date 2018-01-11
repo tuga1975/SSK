@@ -18,19 +18,29 @@
                     <br />
                     <span class="input-group-addon"  style="width:120px;">Reason:</span>
                     <br />
-                    <textarea type="text" class="form-control pri" rows="4"></textarea>
+                    <textarea type="text" class="form-control pri" rows="4" id="Reason"></textarea>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Unblock</button>
+                <button type="button" id="UnblockBtn" class="btn btn-default" >Unblock</button>
             </div>
         </div>
     </div>
 </div>
 <script type="text/javascript">
     $(document).ready(function () {
-        $('#NRIC').val(api.model.NRIC);
-        $('#Name').val(api.model.Name);
+        $('#NRIC').val(api.model.OfficerNRIC);
+        $('#Name').val(api.model.OfficerName);
     });
-    
+
+    $("#UnblockBtn").click(function (e) {
+        api.server.UnblockSuperviseeByUserId(api.model.UserId, $('#Reason').val());
+        // Waiting 1 second to update DB then refresh
+        setTimeout(function () {
+            api.server.LoadPage('Blocked.html')
+            $('#idBlock').modal('toggle');
+        }, 1000);
+        e.preventDefault(); // avoid to execute the actual submit of the form.
+    });
+
 </script>

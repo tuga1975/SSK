@@ -182,11 +182,5 @@
             formatedSecond = (second.length === 1) ? ("0" + second) : second;
         return formatedMonth + "/" + formatedDay + "/" + year + " " + formatedHour + ':' + formatedMinute;
     }
-
-    function getDuration(startTime, endTime) {
-        var date1 = new Date(startTime);
-        var date2 = new Date(endTime);
-        return date2.getTime() - date1.getTime();
-    }
-
+    
 </script>
