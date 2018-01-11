@@ -68,12 +68,9 @@ function createEvent(arrayFun) {
             }
         }
     });
-
-
-    setTimeout(function () {
-        api.server.Test();
-    },5000);
 }
+
+
 function callEventCallBack(guid, model) {
     var call = api.callback[guid];
     if (typeof item != 'undefined') {
