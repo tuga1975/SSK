@@ -255,7 +255,8 @@ namespace Enrolment
                 {
                     User = dbUser,
                     UserProfile = dalUserProfile.GetUserProfileByUserId(userId, true),
-                    Addresses = dalUserProfile.GetAddressByUserId(userId, true)
+                    Addresses = dalUserProfile.GetAddressByUserId(userId, true),
+                    OtherAddress= dalUserProfile.GetAddressByUserId(userId,true,true)
                 };
                 //first load set model to session 
                 session[CommonConstants.CURRENT_EDIT_USER] = profileModel;
