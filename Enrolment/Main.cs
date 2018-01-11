@@ -423,7 +423,7 @@ namespace Enrolment
                 var currentPhotosSession = session[CommonConstants.CURRENT_PHOTOS];
                 if (InvokeRequired)
                 {
-
+                    
                     Invoke(new Action(() =>
                     {
                         pictureBox1.Hide();
@@ -646,6 +646,13 @@ namespace Enrolment
 
                 dalUserProfile.UpdateUserProfile(profileModel.UserProfile, profileModel.User.UserId, true);
                 dalUser.ChangeUserStatus(profileModel.User.UserId, EnumUserStatuses.Enrolled);
+
+                //call print card here
+                //update to issue card 
+                var issueCardModel = new Trinity.BE.IssueCard();
+                issueCardModel.CreatedBy = profileModel.UserProfile.UserId;
+                var dalIssueCard = new DAL_IssueCard();
+                dalIssueCard.Insert(issueCardModel);
                 Session session = Session.Instance;
                 session[CommonConstants.CURRENT_EDIT_USER] = profileModel;
 
