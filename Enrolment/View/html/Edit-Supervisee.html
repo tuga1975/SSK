@@ -21,9 +21,11 @@
 							<div class="row">								
 								<div class="col">
 									<img class="avatar" id="userPhoto1" src="../images/usr-default.jpg" />
+									<input type="hidden" id="User_Photo1" name="User_Photo1" />
 								</div>
 								<div class="col">
 									<img class="avatar" id="userPhoto2" src="../images/usr-default.jpg" />									
+									<input type="hidden" id="User_Photo2" name="User_Photo2" />
 								</div>
 							</div>
 						</div>
@@ -278,52 +280,6 @@
         </div>
     </div>
 </div>
-<div id="pageUpdateFingerprints">
-    <div style="width:100%;">
-        <div class="header header-form-supervisee">
-            <img class="logo" src="../images/logo.png" />
-            <h3>Edit Supervisee</h3>
-            <div class="clear"></div>
-        </div>
-        <div class="form-supervisee">
-            <input class="name-supervisee" type="text" value="Update Fingerprint" disabled="disabled" />
-            <div class="row">
-                <div class="col" id="leftThumbDiv">
-                    <div style="border:1px solid #000000;color:#000;margin-bottom:5px" id="leftProcessMessage">Place left thumb onto scanner</div>
-                    <div>
-                        <button style="float:left" class="btn-form" id="leftThumbScanBtn">Scan</button>
-                        <button style="float:right;" id="leftThumbClearBtn" class="btn-form">Clear</button>
-                    </div>
-                    <br />
-                    <div style="text-align:center">
-                        <img class="avatar" id="leftFingerprint" style="max-width:50%" src="../images/fingerprint.png" />
-                    </div>
-                    <br />
-                    <!--<button type="button" onclick="api.server.OpenFingerprintCaptureForm('1')">Left Fingerprint Preview</button>-->
-                    <div style="border:1px solid #000000">Left Fingerprint Preview</div>
-                </div>
-                <div class="col" id="rightThumbDiv">
-                    <div style="border:1px solid #000000;color:#000;margin-bottom:5px" id="rightProcessMessage">Place right thumb onto scanner</div>
-                    <div>
-                        <button style="float:left" class="btn-form" id="rightThumbScanBtn">Scan</button>
-                        <button style="float:right;" class="btn-form" id="rightThumbClearBtn">Clear</button>
-                    </div>
-                    <br />
-                    <div style="text-align:center">
-                        <img class="avatar" id="rightFingerprint" style="max-width:50%" src="../images/fingerprint.png" />
-                    </div>
-                    <br />
-                    <!--<button type="button" onclick="api.server.OpenFingerprintCaptureForm('2')">Right Fingerprint Preview</button>-->
-                    <div style="border:1px solid #000000">Right Fingerprint Preview</div>
-                </div>
-            </div>
-            <div class="btn-group">
-                <button type="button" class="btn-form" onclick="hidePopUp()">Update</button>
-                <button type="button" class="btn-form" onclick="api.server.CancelCapturePicture();">Cancel</button>
-            </div>
-        </div>
-    </div>
-</div>
 <script>
     $(function () {
         $('.s_label').click(function () {
@@ -362,23 +318,22 @@
 			$('.o_flrUnit_Number').val(api.model.OtherAddress.FlrUnit_Number);
 			$('.o_country').val(api.model.OtherAddress.Country);
 			$('.o_postal_Code').val(api.model.OtherAddress.Postal_Code);
+			// photo
+			$('#User_Photo1').val(api.model.UserProfile.User_Photo1);
+			$('#User_Photo2').val(api.model.UserProfile.User_Photo2);
         }
     });
     function setPopUpPhotoServerCall(photo1, photo2) {
-        
-        
             $('#PopupUserPhoto1').attr('src', 'data:image/jpg;base64,' + photo1);
-        
-   
-            $('#PopupUserPhoto2').attr('src', 'data:image/jpg;base64,' + photo2);
-        
-
-
+            $('#PopupUserPhoto2').attr('src', 'data:image/jpg;base64,' + photo2);  
     }
 
-    function setFingerprintServerCall(fingerprintLeft, fingerprintRight) {
-        // ...
-    }
+	function saveNewDataToSession(){
+		var $form = $("#superviseeFrm");
+        var data = getFormData($form);
+        var json = JSON.stringify(data);
+        api.server.saveNewDataToSession(json);
+	}
 
     $("#SaveBtn").on('click', function () {
         var $form = $("#superviseeFrm");
@@ -401,28 +356,23 @@
     $("#updatePhotos").click(function () {
         showPopUp("pageUpdatePhotos");
     });
-    $("#updateFingerprints").click(function () {
-        showPopUp("pageUpdateFingerprints");
-    });
     $("#Close_popup").click(function () {
         hidePopUp();
     })
     function showPopUp(elem_id) {
+		saveNewDataToSession();
         $("#" + elem_id).show();
     }
     function hidePopUp() {
         $("#pageUpdatePhotos").hide();
-        $("#pageUpdateFingerprints").hide();
     }
 
     function setAvatar(base64Str1, base64Str2) {
         if (base64Str1 != "") {
-
             $('#userPhoto1').attr('src', 'data:image/jpg;base64,' + base64Str1);
             $('#PopupUserPhoto1').attr('src', 'data:image/jpg;base64,' + base64Str1);
         }
         if (base64Str2 != "") {
-
             $('#userPhoto2').attr('src', 'data:image/jpg;base64,' + base64Str2);
             $('#PopupUserPhoto2').attr('src', 'data:image/jpg;base64,' + base64Str2);
         }
