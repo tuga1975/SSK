@@ -355,6 +355,8 @@ namespace Enrolment
                 // add some some old data not change
                 data.User.Name = profileModel.User.Name;
                 data.User.Status = profileModel.User.Status;
+                data.User.LeftThumbFingerprint = profileModel.User.LeftThumbFingerprint;
+                data.User.RightThumbFingerprint = profileModel.User.RightThumbFingerprint;
 
                 dalUser.UpdateUser(data.User, profileModel.User.UserId, true);
 
