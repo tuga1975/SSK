@@ -30,7 +30,7 @@
         if (data) {
             data.forEach(function (element, index) {
                 dataSource.push({
-                    TimeSlot: element.TimeSlot,
+                    TimeSlot: element.StartTime + ' - ' + element.EndTime,
                     NRIC: element.NRIC,
                     Name: element.Name,
                     ReportTime: element.ReportTime,

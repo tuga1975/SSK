@@ -158,6 +158,7 @@
     <Content Include="View\images\fingerprint.png" />
     <Content Include="View\images\log-out.png" />
     <Content Include="View\images\logo.png" />
+    <Content Include="View\images\printer.png" />
     <Content Include="View\images\usr-default.jpg" />
     <Content Include="View\scripts\bootstrap\bootstrap.min.css" />
     <Content Include="View\scripts\bootstrap\bootstrap.min.js" />

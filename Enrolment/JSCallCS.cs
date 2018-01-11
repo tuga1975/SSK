@@ -239,6 +239,7 @@ namespace Enrolment
 
             var dalUser = new DAL_User();
             var dalUserProfile = new DAL_UserProfile();
+            var dalUserMembership = new DAL_Membership_Users();
 
             var dbUser = dalUser.GetUserByUserId(userId, true);
 
@@ -256,7 +257,8 @@ namespace Enrolment
                     User = dbUser,
                     UserProfile = dalUserProfile.GetUserProfileByUserId(userId, true),
                     Addresses = dalUserProfile.GetAddressByUserId(userId, true),
-                    OtherAddress= dalUserProfile.GetAddressByUserId(userId,true,true)
+                    OtherAddress = dalUserProfile.GetAddressByUserId(userId, true, true),
+                    Membership_Users = dalUserMembership.GetByUserId(userId)
                 };
                 //first load set model to session 
                 session[CommonConstants.CURRENT_EDIT_USER] = profileModel;
@@ -605,7 +607,7 @@ namespace Enrolment
             var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
             byte[] _left = Convert.FromBase64String(left);
             byte[] _right = Convert.FromBase64String(right);
-            new DAL_User().UpdateFingerprint(currentEditUser.UserProfile.UserId, _left, _right);
+            new DAL_Membership_Users().UpdateFingerprint(currentEditUser.UserProfile.UserId, _left, _right);
             if (_left.Length > 0)
             {
                 currentEditUser.User.LeftThumbFingerprint = _left;
@@ -678,6 +680,53 @@ namespace Enrolment
         #endregion
 
 
+        #endregion
+
+        #region Issued Cards
+        public List<Trinity.BE.IssueCard> GetDataIssuedCards()
+        {
+            Session session = Session.Instance;
+            var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
+            List<Trinity.BE.IssueCard> array = new Trinity.DAL.DAL_IssueCard().GetMyIssueCard(currentEditUser.UserProfile.UserId);
+            ////Mở ra nếu IssueCard ko có dữ liệu (Do dữ liệu test, tao ko đúng luồng)
+            //array.Insert(0, new Trinity.BE.IssueCard() {
+            //    CreatedDate = currentEditUser.UserProfile.DateOfIssue,
+            //    Date_Of_Issue = currentEditUser.UserProfile.DateOfIssue,
+            //    Name = currentEditUser.Membership_Users.Name,
+            //    NRIC = currentEditUser.Membership_Users.NRIC,
+            //    Serial_Number = currentEditUser.UserProfile.SerialNumber,
+            //    SmartCardId = currentEditUser.Membership_Users.SmartCardId,
+            //    Status = EnumIssuedCards.Active,
+            //    UserId = currentEditUser.Membership_Users.UserId
+            //});
+            return array;
+        }
+        public Trinity.BE.IssueCard PriterIssuedCard(string reprint)
+        {
+            Session session = Session.Instance;
+            var userLogin = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+            var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
+            DAL_IssueCard dalIssueCard = new Trinity.DAL.DAL_IssueCard();
+            string SmartID = Guid.NewGuid().ToString().Trim();
+            Trinity.BE.IssueCard IssueCard = new Trinity.BE.IssueCard() {
+                //CreatedBy = userLogin.UserId,
+                CreatedDate = DateTime.Now,
+                Date_Of_Issue = currentEditUser.UserProfile.DateOfIssue,
+                Name = currentEditUser.Membership_Users.Name,
+                NRIC = currentEditUser.Membership_Users.NRIC,
+                Reprint_Reason = reprint,
+                Serial_Number = currentEditUser.UserProfile.SerialNumber,
+                Status = EnumIssuedCards.Active,
+                SmartCardId = SmartID,
+                UserId = currentEditUser.UserProfile.UserId
+            };
+            dalIssueCard.UpdateStatusByUserId(currentEditUser.UserProfile.UserId, EnumIssuedCards.Deactivate);
+            dalIssueCard.Insert(IssueCard);
+            new DAL_Membership_Users().UpdateSmartCardId(currentEditUser.UserProfile.UserId, SmartID);
+            currentEditUser.Membership_Users.SmartCardId = SmartID;
+
+            return IssueCard;
+        }
         #endregion
     }
 }

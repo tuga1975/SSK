@@ -181,8 +181,8 @@ namespace Trinity.DAL
         {
             settingBE.Setting_ID = setting.Setting_ID;
             settingBE.Status = setting.Status;
-            settingBE.WeekNum = setting.WeekNum.Value;
-            settingBE.Year = setting.Year.Value;
+            settingBE.WeekNum = setting.WeekNum;
+            settingBE.Year = setting.Year;
 
             settingBE.Mon_Open_Time = setting.Mon_Open_Time;
             settingBE.Mon_Close_Time = setting.Mon_Close_Time;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -39,5 +40,26 @@ public static class Lib
             }
         }
         return null;
+    }
+
+    public static TConvert Map<TConvert>(this object entity) where TConvert : new()
+    {
+        var convert = new TConvert();
+        var sourceProps = entity.GetType().GetProperties().Where(x => x.CanRead).ToList();
+        var destProps = typeof(TConvert).GetProperties()
+                .Where(x => x.CanWrite)
+                .ToList();
+        foreach (var sourceProp in sourceProps)
+        {
+            if (destProps.Any(x => x.Name == sourceProp.Name))
+            {
+                var p = destProps.First(x => x.Name == sourceProp.Name);
+                if (p.CanWrite)
+                {
+                    p.SetValue(convert, sourceProp.GetValue(entity, null), null);
+                }
+            }
+        }
+        return convert;
     }
 }
