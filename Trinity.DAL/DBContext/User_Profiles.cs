@@ -43,7 +43,7 @@ namespace Trinity.DAL.DBContext
         public byte[] User_Photo2 { get; set; }
         public string Serial_Number { get; set; }
         public Nullable<System.DateTime> Date_of_Issue { get; set; }
-        public Nullable<System.DateTime> Expired_Date_Card { get; set; }
+        public Nullable<System.DateTime> Expired_Date { get; set; }
         public string Gender { get; set; }
         public string Race { get; set; }
     

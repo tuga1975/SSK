@@ -89,6 +89,7 @@
           <Property Name="Name" Type="nvarchar" MaxLength="128" />
           <Property Name="Serial_Number" Type="varchar" MaxLength="50" />
           <Property Name="Date_Of_Issue" Type="date" />
+          <Property Name="Expired_Date" Type="date" />
           <Property Name="Status" Type="varchar" MaxLength="10" />
           <Property Name="CreatedBy" Type="nvarchar" MaxLength="128" />
           <Property Name="CreatedDate" Type="datetime" />
@@ -340,7 +341,7 @@
           <Property Name="User_Photo2" Type="varbinary(max)" />
           <Property Name="Serial_Number" Type="varchar" MaxLength="50" />
           <Property Name="Date_of_Issue" Type="date" />
-          <Property Name="Expired_Date_Card" Type="date" />
+          <Property Name="Expired_Date" Type="date" />
           <Property Name="Gender" Type="varchar" MaxLength="6" />
           <Property Name="Race" Type="nvarchar" MaxLength="50" />
         </EntityType>
@@ -770,6 +771,7 @@
           <EntitySet Name="QueueDetails" EntityType="SSKModel.QueueDetail" />
           <EntitySet Name="Queues" EntityType="SSKModel.Queue" />
           <EntitySet Name="Security_QA" EntityType="SSKModel.Security_QA" />
+          <EntitySet Name="Settings" EntityType="SSKModel.Setting" />
           <EntitySet Name="Timeslots" EntityType="SSKModel.Timeslot" />
           <EntitySet Name="User_Profiles" EntityType="SSKModel.User_Profiles" />
           <AssociationSet Name="FK_Appointments_AbsenceReporting" Association="SSKModel.FK_Appointments_AbsenceReporting">
@@ -860,7 +862,6 @@
             <End Role="Queue" EntitySet="Queues" />
             <End Role="QueueDetail" EntitySet="QueueDetails" />
           </AssociationSet>
-          <EntitySet Name="Settings" EntityType="SSKModel.Setting" />
           <AssociationSet Name="FK_Timeslots_Settings" Association="SSKModel.FK_Timeslots_Settings">
             <End Role="Setting" EntitySet="Settings" />
             <End Role="Timeslot" EntitySet="Timeslots" />
@@ -961,6 +962,7 @@
           <Property Name="Name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="Serial_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Date_Of_Issue" Type="DateTime" Precision="0" />
+          <Property Name="Expired_Date" Type="DateTime" Precision="0" />
           <Property Name="Status" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="CreatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="CreatedDate" Type="DateTime" Precision="3" />
@@ -1145,6 +1147,54 @@
           <Property Name="LastUpdatedDate" Type="DateTime" Nullable="false" Precision="3" />
           <NavigationProperty Name="Membership_Users" Relationship="SSKModel.FK_PWD_QA_Membership_Users" FromRole="Security_QA" ToRole="Membership_Users" />
         </EntityType>
+        <EntityType Name="Setting">
+          <Key>
+            <PropertyRef Name="Setting_ID" />
+          </Key>
+          <Property Name="Setting_ID" Type="Guid" Nullable="false" />
+          <Property Name="WeekNum" Type="Int32" Nullable="false" />
+          <Property Name="Year" Type="Int32" Nullable="false" />
+          <Property Name="Status" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="Mon_Open_Time" Type="Time" Precision="7" />
+          <Property Name="Mon_Close_Time" Type="Time" Precision="7" />
+          <Property Name="Mon_Interval" Type="Int32" />
+          <Property Name="Mon_MaximumNum" Type="Int32" />
+          <Property Name="Mon_ReservedForSpare" Type="Int32" />
+          <Property Name="Tue_Open_Time" Type="Time" Precision="7" />
+          <Property Name="Tue_Close_Time" Type="Time" Precision="7" />
+          <Property Name="Tue_Interval" Type="Int32" />
+          <Property Name="Tue_MaximumNum" Type="Int32" />
+          <Property Name="Tue_ReservedForSpare" Type="Int32" />
+          <Property Name="Wed_Open_Time" Type="Time" Precision="7" />
+          <Property Name="Wed_Close_Time" Type="Time" Precision="7" />
+          <Property Name="Wed_Interval" Type="Int32" />
+          <Property Name="Wed_MaximumNum" Type="Int32" />
+          <Property Name="Wed_ReservedForSpare" Type="Int32" />
+          <Property Name="Thu_Open_Time" Type="Time" Precision="7" />
+          <Property Name="Thu_Close_Time" Type="Time" Precision="7" />
+          <Property Name="Thu_MaximumNum" Type="Int32" />
+          <Property Name="Thu_Interval" Type="Int32" />
+          <Property Name="Thu_ReservedForSpare" Type="Int32" />
+          <Property Name="Fri_Open_Time" Type="Time" Precision="7" />
+          <Property Name="Fri_Close_Time" Type="Time" Precision="7" />
+          <Property Name="Fri_Interval" Type="Int32" />
+          <Property Name="Fri_MaximumNum" Type="Int32" />
+          <Property Name="Fri_ReservedForSpare" Type="Int32" />
+          <Property Name="Sat_Open_Time" Type="Time" Precision="7" />
+          <Property Name="Sat_Close_Time" Type="Time" Precision="7" />
+          <Property Name="Sat_Interval" Type="Int32" />
+          <Property Name="Sat_MaximumNum" Type="Int32" />
+          <Property Name="Sat_ReservedForSpare" Type="Int32" />
+          <Property Name="Sun_Open_Time" Type="Time" Precision="7" />
+          <Property Name="Sun_Close_Time" Type="Time" Precision="7" />
+          <Property Name="Sun_Interval" Type="Int32" />
+          <Property Name="Sun_MaximumNum" Type="Int32" />
+          <Property Name="Sun_ReservedForSpare" Type="Int32" />
+          <Property Name="Last_Updated_By" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Last_Updated_Date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Timeslots" Relationship="SSKModel.FK_Timeslots_Settings" FromRole="Setting" ToRole="Timeslot" />
+        </EntityType>
         <EntityType Name="Timeslot">
           <Key>
             <PropertyRef Name="Timeslot_ID" />
@@ -1196,7 +1246,7 @@
           <Property Name="User_Photo2" Type="Binary" MaxLength="Max" FixedLength="false" />
           <Property Name="Serial_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Date_of_Issue" Type="DateTime" Precision="0" />
-          <Property Name="Expired_Date_Card" Type="DateTime" Precision="0" />
+          <Property Name="Expired_Date" Type="DateTime" Precision="0" />
           <Property Name="Gender" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
           <Property Name="Race" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Address" Relationship="SSKModel.FK_User_Profiles_Addresses2" FromRole="User_Profiles" ToRole="Address" />
@@ -1475,54 +1525,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="Setting">
-          <Key>
-            <PropertyRef Name="Setting_ID" />
-          </Key>
-          <Property Name="Setting_ID" Type="Guid" Nullable="false" />
-          <Property Name="WeekNum" Type="Int32" Nullable="false" />
-          <Property Name="Year" Type="Int32" Nullable="false" />
-          <Property Name="Status" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="Mon_Open_Time" Type="Time" Precision="7" />
-          <Property Name="Mon_Close_Time" Type="Time" Precision="7" />
-          <Property Name="Mon_Interval" Type="Int32" />
-          <Property Name="Mon_MaximumNum" Type="Int32" />
-          <Property Name="Mon_ReservedForSpare" Type="Int32" />
-          <Property Name="Tue_Open_Time" Type="Time" Precision="7" />
-          <Property Name="Tue_Close_Time" Type="Time" Precision="7" />
-          <Property Name="Tue_Interval" Type="Int32" />
-          <Property Name="Tue_MaximumNum" Type="Int32" />
-          <Property Name="Tue_ReservedForSpare" Type="Int32" />
-          <Property Name="Wed_Open_Time" Type="Time" Precision="7" />
-          <Property Name="Wed_Close_Time" Type="Time" Precision="7" />
-          <Property Name="Wed_Interval" Type="Int32" />
-          <Property Name="Wed_MaximumNum" Type="Int32" />
-          <Property Name="Wed_ReservedForSpare" Type="Int32" />
-          <Property Name="Thu_Open_Time" Type="Time" Precision="7" />
-          <Property Name="Thu_Close_Time" Type="Time" Precision="7" />
-          <Property Name="Thu_MaximumNum" Type="Int32" />
-          <Property Name="Thu_Interval" Type="Int32" />
-          <Property Name="Thu_ReservedForSpare" Type="Int32" />
-          <Property Name="Fri_Open_Time" Type="Time" Precision="7" />
-          <Property Name="Fri_Close_Time" Type="Time" Precision="7" />
-          <Property Name="Fri_Interval" Type="Int32" />
-          <Property Name="Fri_MaximumNum" Type="Int32" />
-          <Property Name="Fri_ReservedForSpare" Type="Int32" />
-          <Property Name="Sat_Open_Time" Type="Time" Precision="7" />
-          <Property Name="Sat_Close_Time" Type="Time" Precision="7" />
-          <Property Name="Sat_Interval" Type="Int32" />
-          <Property Name="Sat_MaximumNum" Type="Int32" />
-          <Property Name="Sat_ReservedForSpare" Type="Int32" />
-          <Property Name="Sun_Open_Time" Type="Time" Precision="7" />
-          <Property Name="Sun_Close_Time" Type="Time" Precision="7" />
-          <Property Name="Sun_Interval" Type="Int32" />
-          <Property Name="Sun_MaximumNum" Type="Int32" />
-          <Property Name="Sun_ReservedForSpare" Type="Int32" />
-          <Property Name="Last_Updated_By" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="Last_Updated_Date" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Timeslots" Relationship="SSKModel.FK_Timeslots_Settings" FromRole="Setting" ToRole="Timeslot" />
-        </EntityType>
         <Association Name="FK_Timeslots_Settings">
           <End Type="SSKModel.Setting" Role="Setting" Multiplicity="0..1" />
           <End Type="SSKModel.Timeslot" Role="Timeslot" Multiplicity="*" />
@@ -1628,6 +1630,7 @@
                 <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Expired_Date" ColumnName="Expired_Date" />
                 <ScalarProperty Name="Date_Of_Issue" ColumnName="Date_Of_Issue" />
                 <ScalarProperty Name="Serial_Number" ColumnName="Serial_Number" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
@@ -1794,61 +1797,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Timeslots">
-            <EntityTypeMapping TypeName="SSKModel.Timeslot">
-              <MappingFragment StoreEntitySet="Timeslots">
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="LastUpdatedDate" ColumnName="LastUpdatedDate" />
-                <ScalarProperty Name="LastUpdatedBy" ColumnName="LastUpdatedBy" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="EndTime" ColumnName="EndTime" />
-                <ScalarProperty Name="StartTime" ColumnName="StartTime" />
-                <ScalarProperty Name="DateOfWeek" ColumnName="DateOfWeek" />
-                <ScalarProperty Name="Category" ColumnName="Category" />
-                <ScalarProperty Name="Setting_ID" ColumnName="Setting_ID" />
-                <ScalarProperty Name="Timeslot_ID" ColumnName="Timeslot_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="User_Profiles">
-            <EntityTypeMapping TypeName="SSKModel.User_Profiles">
-              <MappingFragment StoreEntitySet="User_Profiles">
-                <ScalarProperty Name="Race" ColumnName="Race" />
-                <ScalarProperty Name="Gender" ColumnName="Gender" />
-                <ScalarProperty Name="Expired_Date_Card" ColumnName="Expired_Date_Card" />
-                <ScalarProperty Name="Date_of_Issue" ColumnName="Date_of_Issue" />
-                <ScalarProperty Name="Serial_Number" ColumnName="Serial_Number" />
-                <ScalarProperty Name="User_Photo2" ColumnName="User_Photo2" />
-                <ScalarProperty Name="User_Photo1" ColumnName="User_Photo1" />
-                <ScalarProperty Name="Employment_Remarks" ColumnName="Employment_Remarks" />
-                <ScalarProperty Name="Employment_End_Date" ColumnName="Employment_End_Date" />
-                <ScalarProperty Name="Employment_Start_Date" ColumnName="Employment_Start_Date" />
-                <ScalarProperty Name="Employment_Job_Title" ColumnName="Employment_Job_Title" />
-                <ScalarProperty Name="Employment_Company_Name" ColumnName="Employment_Company_Name" />
-                <ScalarProperty Name="Employment_Contact_Number" ColumnName="Employment_Contact_Number" />
-                <ScalarProperty Name="Employment_Name" ColumnName="Employment_Name" />
-                <ScalarProperty Name="NextOfKin_PostalCode" ColumnName="NextOfKin_PostalCode" />
-                <ScalarProperty Name="NextOfKin_Country" ColumnName="NextOfKin_Country" />
-                <ScalarProperty Name="NextOfKin_Street_Name" ColumnName="NextOfKin_Street_Name" />
-                <ScalarProperty Name="NextOfKin_FlrUnit_Number" ColumnName="NextOfKin_FlrUnit_Number" />
-                <ScalarProperty Name="NextOfKin_BlkHouse_Number" ColumnName="NextOfKin_BlkHouse_Number" />
-                <ScalarProperty Name="NextOfKin_Relationship" ColumnName="NextOfKin_Relationship" />
-                <ScalarProperty Name="NextOfKin_Contact_Number" ColumnName="NextOfKin_Contact_Number" />
-                <ScalarProperty Name="NextOfKin_Name" ColumnName="NextOfKin_Name" />
-                <ScalarProperty Name="Other_Address_ID" ColumnName="Other_Address_ID" />
-                <ScalarProperty Name="Residential_Addess_ID" ColumnName="Residential_Addess_ID" />
-                <ScalarProperty Name="Maritial_Status" ColumnName="Maritial_Status" />
-                <ScalarProperty Name="Nationality" ColumnName="Nationality" />
-                <ScalarProperty Name="DOB" ColumnName="DOB" />
-                <ScalarProperty Name="Secondary_Email" ColumnName="Secondary_Email" />
-                <ScalarProperty Name="Primary_Email" ColumnName="Primary_Email" />
-                <ScalarProperty Name="Secondary_Phone" ColumnName="Secondary_Phone" />
-                <ScalarProperty Name="Primary_Phone" ColumnName="Primary_Phone" />
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Settings">
             <EntityTypeMapping TypeName="SSKModel.Setting">
               <MappingFragment StoreEntitySet="Settings">
@@ -1894,6 +1842,61 @@
                 <ScalarProperty Name="Year" ColumnName="Year" />
                 <ScalarProperty Name="WeekNum" ColumnName="WeekNum" />
                 <ScalarProperty Name="Setting_ID" ColumnName="Setting_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Timeslots">
+            <EntityTypeMapping TypeName="SSKModel.Timeslot">
+              <MappingFragment StoreEntitySet="Timeslots">
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="LastUpdatedDate" ColumnName="LastUpdatedDate" />
+                <ScalarProperty Name="LastUpdatedBy" ColumnName="LastUpdatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="EndTime" ColumnName="EndTime" />
+                <ScalarProperty Name="StartTime" ColumnName="StartTime" />
+                <ScalarProperty Name="DateOfWeek" ColumnName="DateOfWeek" />
+                <ScalarProperty Name="Category" ColumnName="Category" />
+                <ScalarProperty Name="Setting_ID" ColumnName="Setting_ID" />
+                <ScalarProperty Name="Timeslot_ID" ColumnName="Timeslot_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="User_Profiles">
+            <EntityTypeMapping TypeName="SSKModel.User_Profiles">
+              <MappingFragment StoreEntitySet="User_Profiles">
+                <ScalarProperty Name="Race" ColumnName="Race" />
+                <ScalarProperty Name="Gender" ColumnName="Gender" />
+                <ScalarProperty Name="Expired_Date" ColumnName="Expired_Date" />
+                <ScalarProperty Name="Date_of_Issue" ColumnName="Date_of_Issue" />
+                <ScalarProperty Name="Serial_Number" ColumnName="Serial_Number" />
+                <ScalarProperty Name="User_Photo2" ColumnName="User_Photo2" />
+                <ScalarProperty Name="User_Photo1" ColumnName="User_Photo1" />
+                <ScalarProperty Name="Employment_Remarks" ColumnName="Employment_Remarks" />
+                <ScalarProperty Name="Employment_End_Date" ColumnName="Employment_End_Date" />
+                <ScalarProperty Name="Employment_Start_Date" ColumnName="Employment_Start_Date" />
+                <ScalarProperty Name="Employment_Job_Title" ColumnName="Employment_Job_Title" />
+                <ScalarProperty Name="Employment_Company_Name" ColumnName="Employment_Company_Name" />
+                <ScalarProperty Name="Employment_Contact_Number" ColumnName="Employment_Contact_Number" />
+                <ScalarProperty Name="Employment_Name" ColumnName="Employment_Name" />
+                <ScalarProperty Name="NextOfKin_PostalCode" ColumnName="NextOfKin_PostalCode" />
+                <ScalarProperty Name="NextOfKin_Country" ColumnName="NextOfKin_Country" />
+                <ScalarProperty Name="NextOfKin_Street_Name" ColumnName="NextOfKin_Street_Name" />
+                <ScalarProperty Name="NextOfKin_FlrUnit_Number" ColumnName="NextOfKin_FlrUnit_Number" />
+                <ScalarProperty Name="NextOfKin_BlkHouse_Number" ColumnName="NextOfKin_BlkHouse_Number" />
+                <ScalarProperty Name="NextOfKin_Relationship" ColumnName="NextOfKin_Relationship" />
+                <ScalarProperty Name="NextOfKin_Contact_Number" ColumnName="NextOfKin_Contact_Number" />
+                <ScalarProperty Name="NextOfKin_Name" ColumnName="NextOfKin_Name" />
+                <ScalarProperty Name="Other_Address_ID" ColumnName="Other_Address_ID" />
+                <ScalarProperty Name="Residential_Addess_ID" ColumnName="Residential_Addess_ID" />
+                <ScalarProperty Name="Maritial_Status" ColumnName="Maritial_Status" />
+                <ScalarProperty Name="Nationality" ColumnName="Nationality" />
+                <ScalarProperty Name="DOB" ColumnName="DOB" />
+                <ScalarProperty Name="Secondary_Email" ColumnName="Secondary_Email" />
+                <ScalarProperty Name="Primary_Email" ColumnName="Primary_Email" />
+                <ScalarProperty Name="Secondary_Phone" ColumnName="Secondary_Phone" />
+                <ScalarProperty Name="Primary_Phone" ColumnName="Primary_Phone" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

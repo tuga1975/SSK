@@ -60,6 +60,17 @@
           <Property Name="Status" Type="int" Nullable="false" />
           <Property Name="ReportTime" Type="datetime" />
         </EntityType>
+        <EntityType Name="APS_USER_ACT_LOG">
+          <Key>
+            <PropertyRef Name="USER_ACT_LOG_ID" />
+          </Key>
+          <Property Name="USER_ACT_LOG_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserId" Type="nvarchar" MaxLength="128" />
+          <Property Name="USER_ACT_LOG" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="USER_NAME" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="CREATED_BY" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="CREATED_TIME" Type="datetime" Nullable="false" />
+        </EntityType>
         <EntityType Name="Devices">
           <Key>
             <PropertyRef Name="DeviceID" />
@@ -102,6 +113,7 @@
           <Property Name="Name" Type="nvarchar" MaxLength="128" />
           <Property Name="Serial_Number" Type="varchar" MaxLength="50" />
           <Property Name="Date_Of_Issue" Type="date" />
+          <Property Name="Expired_Date" Type="date" />
           <Property Name="Status" Type="varchar" MaxLength="10" />
           <Property Name="CreatedBy" Type="nvarchar" MaxLength="128" />
           <Property Name="CreatedDate" Type="datetime" />
@@ -366,6 +378,7 @@
           <Property Name="User_Photo2" Type="varbinary(max)" />
           <Property Name="Serial_Number" Type="varchar" MaxLength="50" />
           <Property Name="Date_of_Issue" Type="date" />
+          <Property Name="Expired_Date" Type="date" />
           <Property Name="Gender" Type="varchar" MaxLength="6" />
           <Property Name="Race" Type="nvarchar" MaxLength="50" />
         </EntityType>
@@ -438,6 +451,18 @@
             </Principal>
             <Dependent Role="Appointments">
               <PropertyRef Name="Timeslot_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_APS_USER_ACT_LOG_User_Profiles">
+          <End Role="User_Profiles" Type="Self.User_Profiles" Multiplicity="0..1" />
+          <End Role="APS_USER_ACT_LOG" Type="Self.APS_USER_ACT_LOG" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User_Profiles">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="APS_USER_ACT_LOG">
+              <PropertyRef Name="UserId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -647,6 +672,7 @@
           <EntitySet Name="Addresses" EntityType="Self.Addresses" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ApplicationDevice_Status" EntityType="Self.ApplicationDevice_Status" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Appointments" EntityType="Self.Appointments" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="APS_USER_ACT_LOG" EntityType="Self.APS_USER_ACT_LOG" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Devices" EntityType="Self.Devices" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EMAIL_LOG" EntityType="Self.EMAIL_LOG" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Holidays" EntityType="Self.Holidays" Schema="dbo" store:Type="Tables" />
@@ -690,6 +716,10 @@
           <AssociationSet Name="FK_Appointments_Timeslots" Association="Self.FK_Appointments_Timeslots">
             <End Role="Timeslots" EntitySet="Timeslots" />
             <End Role="Appointments" EntitySet="Appointments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_APS_USER_ACT_LOG_User_Profiles" Association="Self.FK_APS_USER_ACT_LOG_User_Profiles">
+            <End Role="User_Profiles" EntitySet="User_Profiles" />
+            <End Role="APS_USER_ACT_LOG" EntitySet="APS_USER_ACT_LOG" />
           </AssociationSet>
           <AssociationSet Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
             <End Role="Membership_Users" EntitySet="Membership_Users" />
@@ -766,9 +796,11 @@
           <EntitySet Name="Addresses" EntityType="TrinityCentralizedDBModel.Address" />
           <EntitySet Name="ApplicationDevice_Status" EntityType="TrinityCentralizedDBModel.ApplicationDevice_Status" />
           <EntitySet Name="Appointments" EntityType="TrinityCentralizedDBModel.Appointment" />
+          <EntitySet Name="APS_USER_ACT_LOG" EntityType="TrinityCentralizedDBModel.APS_USER_ACT_LOG" />
           <EntitySet Name="Devices" EntityType="TrinityCentralizedDBModel.Device" />
           <EntitySet Name="EMAIL_LOG" EntityType="TrinityCentralizedDBModel.EMAIL_LOG" />
           <EntitySet Name="Holidays" EntityType="TrinityCentralizedDBModel.Holiday" />
+          <EntitySet Name="IssuedCards" EntityType="TrinityCentralizedDBModel.IssuedCard" />
           <EntitySet Name="Labels" EntityType="TrinityCentralizedDBModel.Label" />
           <EntitySet Name="Membership_RoleClaims" EntityType="TrinityCentralizedDBModel.Membership_RoleClaims" />
           <EntitySet Name="Membership_Roles" EntityType="TrinityCentralizedDBModel.Membership_Roles" />
@@ -784,6 +816,7 @@
           <EntitySet Name="Settings" EntityType="TrinityCentralizedDBModel.Setting" />
           <EntitySet Name="SMS_LOG" EntityType="TrinityCentralizedDBModel.SMS_LOG" />
           <EntitySet Name="Timeslots" EntityType="TrinityCentralizedDBModel.Timeslot" />
+          <EntitySet Name="User_Profiles" EntityType="TrinityCentralizedDBModel.User_Profiles" />
           <AssociationSet Name="FK_Appointments_AbsenceReporting" Association="TrinityCentralizedDBModel.FK_Appointments_AbsenceReporting">
             <End Role="AbsenceReporting" EntitySet="AbsenceReportings" />
             <End Role="Appointment" EntitySet="Appointments" />
@@ -796,6 +829,14 @@
             <End Role="Membership_Users" EntitySet="Membership_Users" />
             <End Role="ActionLog" EntitySet="ActionLogs" />
           </AssociationSet>
+          <AssociationSet Name="FK_User_Profiles_Addresses2" Association="TrinityCentralizedDBModel.FK_User_Profiles_Addresses2">
+            <End Role="Address" EntitySet="Addresses" />
+            <End Role="User_Profiles" EntitySet="User_Profiles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_User_Profiles_Addresses3" Association="TrinityCentralizedDBModel.FK_User_Profiles_Addresses3">
+            <End Role="Address" EntitySet="Addresses" />
+            <End Role="User_Profiles" EntitySet="User_Profiles" />
+          </AssociationSet>
           <AssociationSet Name="FK_Appointments_Membership_Users" Association="TrinityCentralizedDBModel.FK_Appointments_Membership_Users">
             <End Role="Membership_Users" EntitySet="Membership_Users" />
             <End Role="Appointment" EntitySet="Appointments" />
@@ -807,6 +848,14 @@
           <AssociationSet Name="FK_Queues_Appointments" Association="TrinityCentralizedDBModel.FK_Queues_Appointments">
             <End Role="Appointment" EntitySet="Appointments" />
             <End Role="Queue" EntitySet="Queues" />
+          </AssociationSet>
+          <AssociationSet Name="FK_APS_USER_ACT_LOG_User_Profiles" Association="TrinityCentralizedDBModel.FK_APS_USER_ACT_LOG_User_Profiles">
+            <End Role="User_Profiles" EntitySet="User_Profiles" />
+            <End Role="APS_USER_ACT_LOG" EntitySet="APS_USER_ACT_LOG" />
+          </AssociationSet>
+          <AssociationSet Name="FK_IssuedCards_Membership_Users" Association="TrinityCentralizedDBModel.FK_IssuedCards_Membership_Users">
+            <End Role="Membership_Users" EntitySet="Membership_Users" />
+            <End Role="IssuedCard" EntitySet="IssuedCards" />
           </AssociationSet>
           <AssociationSet Name="FK_Labels_Membership_Users" Association="TrinityCentralizedDBModel.FK_Labels_Membership_Users">
             <End Role="Membership_Users" EntitySet="Membership_Users" />
@@ -848,6 +897,10 @@
             <End Role="Membership_Users" EntitySet="Membership_Users" />
             <End Role="Security_QA" EntitySet="Security_QA" />
           </AssociationSet>
+          <AssociationSet Name="FK_User_Profiles_Membership_Users" Association="TrinityCentralizedDBModel.FK_User_Profiles_Membership_Users">
+            <End Role="Membership_Users" EntitySet="Membership_Users" />
+            <End Role="User_Profiles" EntitySet="User_Profiles" />
+          </AssociationSet>
           <AssociationSet Name="FK_QueueDetails_Queues" Association="TrinityCentralizedDBModel.FK_QueueDetails_Queues">
             <End Role="Queue" EntitySet="Queues" />
             <End Role="QueueDetail" EntitySet="QueueDetails" />
@@ -855,24 +908,6 @@
           <AssociationSet Name="FK_Timeslots_Settings" Association="TrinityCentralizedDBModel.FK_Timeslots_Settings">
             <End Role="Setting" EntitySet="Settings" />
             <End Role="Timeslot" EntitySet="Timeslots" />
-          </AssociationSet>
-          <EntitySet Name="IssuedCards" EntityType="TrinityCentralizedDBModel.IssuedCard" />
-          <EntitySet Name="User_Profiles" EntityType="TrinityCentralizedDBModel.User_Profiles" />
-          <AssociationSet Name="FK_User_Profiles_Addresses2" Association="TrinityCentralizedDBModel.FK_User_Profiles_Addresses2">
-            <End Role="Address" EntitySet="Addresses" />
-            <End Role="User_Profiles" EntitySet="User_Profiles" />
-          </AssociationSet>
-          <AssociationSet Name="FK_User_Profiles_Addresses3" Association="TrinityCentralizedDBModel.FK_User_Profiles_Addresses3">
-            <End Role="Address" EntitySet="Addresses" />
-            <End Role="User_Profiles" EntitySet="User_Profiles" />
-          </AssociationSet>
-          <AssociationSet Name="FK_IssuedCards_Membership_Users" Association="TrinityCentralizedDBModel.FK_IssuedCards_Membership_Users">
-            <End Role="Membership_Users" EntitySet="Membership_Users" />
-            <End Role="IssuedCard" EntitySet="IssuedCards" />
-          </AssociationSet>
-          <AssociationSet Name="FK_User_Profiles_Membership_Users" Association="TrinityCentralizedDBModel.FK_User_Profiles_Membership_Users">
-            <End Role="Membership_Users" EntitySet="Membership_Users" />
-            <End Role="User_Profiles" EntitySet="User_Profiles" />
           </AssociationSet>
         </EntityContainer>
         <EntityType Name="AbsenceReporting">
@@ -911,7 +946,7 @@
           <Property Name="Postal_Code" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="User_Profiles" Relationship="TrinityCentralizedDBModel.FK_User_Profiles_Addresses2" FromRole="Address" ToRole="User_Profiles" />
           <NavigationProperty Name="User_Profiles1" Relationship="TrinityCentralizedDBModel.FK_User_Profiles_Addresses3" FromRole="Address" ToRole="User_Profiles" />
-          </EntityType>
+        </EntityType>
         <EntityType Name="ApplicationDevice_Status">
           <Key>
             <PropertyRef Name="ID" />
@@ -938,6 +973,18 @@
           <NavigationProperty Name="Membership_Users" Relationship="TrinityCentralizedDBModel.FK_Appointments_Membership_Users" FromRole="Appointment" ToRole="Membership_Users" />
           <NavigationProperty Name="Timeslot" Relationship="TrinityCentralizedDBModel.FK_Appointments_Timeslots" FromRole="Appointment" ToRole="Timeslot" />
           <NavigationProperty Name="Queues" Relationship="TrinityCentralizedDBModel.FK_Queues_Appointments" FromRole="Appointment" ToRole="Queue" />
+        </EntityType>
+        <EntityType Name="APS_USER_ACT_LOG">
+          <Key>
+            <PropertyRef Name="USER_ACT_LOG_ID" />
+          </Key>
+          <Property Name="USER_ACT_LOG_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="USER_ACT_LOG" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="USER_NAME" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CREATED_TIME" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="User_Profiles" Relationship="TrinityCentralizedDBModel.FK_APS_USER_ACT_LOG_User_Profiles" FromRole="APS_USER_ACT_LOG" ToRole="User_Profiles" />
         </EntityType>
         <EntityType Name="Device">
           <Key>
@@ -969,6 +1016,24 @@
           <Property Name="IsMalayHoliday" Type="Boolean" />
           <Property Name="ShortDesc" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Notes" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="IssuedCard">
+          <Key>
+            <PropertyRef Name="UserId" />
+            <PropertyRef Name="SmartCardId" />
+          </Key>
+          <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="SmartCardId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="NRIC" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Serial_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Date_Of_Issue" Type="DateTime" Precision="0" />
+          <Property Name="Expired_Date" Type="DateTime" Precision="0" />
+          <Property Name="Status" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="Reprint_Reason" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Membership_Users" Relationship="TrinityCentralizedDBModel.FK_IssuedCards_Membership_Users" FromRole="IssuedCard" ToRole="Membership_Users" />
         </EntityType>
         <EntityType Name="Label">
           <Key>
@@ -1082,6 +1147,7 @@
           <NavigationProperty Name="ActionLogs" Relationship="TrinityCentralizedDBModel.FK_ActionLog_Membership_Users" FromRole="Membership_Users" ToRole="ActionLog" />
           <NavigationProperty Name="ActionLogs1" Relationship="TrinityCentralizedDBModel.FK_ActionLog_Membership_Users1" FromRole="Membership_Users" ToRole="ActionLog" />
           <NavigationProperty Name="Appointments" Relationship="TrinityCentralizedDBModel.FK_Appointments_Membership_Users" FromRole="Membership_Users" ToRole="Appointment" />
+          <NavigationProperty Name="IssuedCards" Relationship="TrinityCentralizedDBModel.FK_IssuedCards_Membership_Users" FromRole="Membership_Users" ToRole="IssuedCard" />
           <NavigationProperty Name="Labels" Relationship="TrinityCentralizedDBModel.FK_Labels_Membership_Users" FromRole="Membership_Users" ToRole="Label" />
           <NavigationProperty Name="Membership_UserClaims" Relationship="TrinityCentralizedDBModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" FromRole="Membership_Users" ToRole="Membership_UserClaims" />
           <NavigationProperty Name="Membership_UserDevices" Relationship="TrinityCentralizedDBModel.FK__Restauran__UserI__1CFC3D38" FromRole="Membership_Users" ToRole="Membership_UserDevices" />
@@ -1090,7 +1156,6 @@
           <NavigationProperty Name="Notifications" Relationship="TrinityCentralizedDBModel.FK_Notifications_Membership_Users" FromRole="Membership_Users" ToRole="Notification" />
           <NavigationProperty Name="Notifications1" Relationship="TrinityCentralizedDBModel.FK_Notifications_Membership_Users1" FromRole="Membership_Users" ToRole="Notification" />
           <NavigationProperty Name="Security_QA" Relationship="TrinityCentralizedDBModel.FK_PWD_QA_Membership_Users" FromRole="Membership_Users" ToRole="Security_QA" />
-          <NavigationProperty Name="IssuedCards" Relationship="TrinityCentralizedDBModel.FK_IssuedCards_Membership_Users" FromRole="Membership_Users" ToRole="IssuedCard" />
           <NavigationProperty Name="User_Profiles" Relationship="TrinityCentralizedDBModel.FK_User_Profiles_Membership_Users" FromRole="Membership_Users" ToRole="User_Profiles" />
         </EntityType>
         <EntityType Name="Notification">
@@ -1227,6 +1292,47 @@
           <NavigationProperty Name="Appointments" Relationship="TrinityCentralizedDBModel.FK_Appointments_Timeslots" FromRole="Timeslot" ToRole="Appointment" />
           <NavigationProperty Name="Setting" Relationship="TrinityCentralizedDBModel.FK_Timeslots_Settings" FromRole="Timeslot" ToRole="Setting" />
         </EntityType>
+        <EntityType Name="User_Profiles">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Primary_Phone" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Secondary_Phone" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Primary_Email" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Secondary_Email" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="DOB" Type="DateTime" Precision="0" />
+          <Property Name="Nationality" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="Maritial_Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Residential_Addess_ID" Type="Int32" />
+          <Property Name="Other_Address_ID" Type="Int32" />
+          <Property Name="NextOfKin_Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="NextOfKin_Contact_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="NextOfKin_Relationship" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="NextOfKin_BlkHouse_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="NextOfKin_FlrUnit_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="NextOfKin_Street_Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="NextOfKin_Country" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="NextOfKin_PostalCode" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="Employment_Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Employment_Contact_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Employment_Company_Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Employment_Job_Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Employment_Start_Date" Type="DateTime" Precision="0" />
+          <Property Name="Employment_End_Date" Type="DateTime" Precision="0" />
+          <Property Name="Employment_Remarks" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="User_Photo1" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="User_Photo2" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="Serial_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Date_of_Issue" Type="DateTime" Precision="0" />
+          <Property Name="Expired_Date" Type="DateTime" Precision="0" />
+          <Property Name="Gender" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
+          <Property Name="Race" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Address" Relationship="TrinityCentralizedDBModel.FK_User_Profiles_Addresses2" FromRole="User_Profiles" ToRole="Address" />
+          <NavigationProperty Name="Address1" Relationship="TrinityCentralizedDBModel.FK_User_Profiles_Addresses3" FromRole="User_Profiles" ToRole="Address" />
+          <NavigationProperty Name="APS_USER_ACT_LOG" Relationship="TrinityCentralizedDBModel.FK_APS_USER_ACT_LOG_User_Profiles" FromRole="User_Profiles" ToRole="APS_USER_ACT_LOG" />
+          <NavigationProperty Name="Membership_Users" Relationship="TrinityCentralizedDBModel.FK_User_Profiles_Membership_Users" FromRole="User_Profiles" ToRole="Membership_Users" />
+        </EntityType>
         <Association Name="FK_Appointments_AbsenceReporting">
           <End Type="TrinityCentralizedDBModel.AbsenceReporting" Role="AbsenceReporting" Multiplicity="0..1" />
           <End Type="TrinityCentralizedDBModel.Appointment" Role="Appointment" Multiplicity="*" />
@@ -1263,6 +1369,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_User_Profiles_Addresses2">
+          <End Type="TrinityCentralizedDBModel.Address" Role="Address" Multiplicity="0..1" />
+          <End Type="TrinityCentralizedDBModel.User_Profiles" Role="User_Profiles" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Address">
+              <PropertyRef Name="Address_ID" />
+            </Principal>
+            <Dependent Role="User_Profiles">
+              <PropertyRef Name="Other_Address_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_User_Profiles_Addresses3">
+          <End Type="TrinityCentralizedDBModel.Address" Role="Address" Multiplicity="0..1" />
+          <End Type="TrinityCentralizedDBModel.User_Profiles" Role="User_Profiles" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Address">
+              <PropertyRef Name="Address_ID" />
+            </Principal>
+            <Dependent Role="User_Profiles">
+              <PropertyRef Name="Residential_Addess_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Appointments_Membership_Users">
           <End Type="TrinityCentralizedDBModel.Membership_Users" Role="Membership_Users" Multiplicity="1" />
           <End Type="TrinityCentralizedDBModel.Appointment" Role="Appointment" Multiplicity="*" />
@@ -1296,6 +1426,30 @@
             </Principal>
             <Dependent Role="Queue">
               <PropertyRef Name="Appointment_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_APS_USER_ACT_LOG_User_Profiles">
+          <End Type="TrinityCentralizedDBModel.User_Profiles" Role="User_Profiles" Multiplicity="0..1" />
+          <End Type="TrinityCentralizedDBModel.APS_USER_ACT_LOG" Role="APS_USER_ACT_LOG" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User_Profiles">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="APS_USER_ACT_LOG">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_IssuedCards_Membership_Users">
+          <End Type="TrinityCentralizedDBModel.Membership_Users" Role="Membership_Users" Multiplicity="1" />
+          <End Type="TrinityCentralizedDBModel.IssuedCard" Role="IssuedCard" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Membership_Users">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="IssuedCard">
+              <PropertyRef Name="UserId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1427,6 +1581,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_User_Profiles_Membership_Users">
+          <End Type="TrinityCentralizedDBModel.Membership_Users" Role="Membership_Users" Multiplicity="1" />
+          <End Type="TrinityCentralizedDBModel.User_Profiles" Role="User_Profiles" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Membership_Users">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="User_Profiles">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_QueueDetails_Queues">
           <End Type="TrinityCentralizedDBModel.Queue" Role="Queue" Multiplicity="1" />
           <End Type="TrinityCentralizedDBModel.QueueDetail" Role="QueueDetail" Multiplicity="*" />
@@ -1448,110 +1614,6 @@
             </Principal>
             <Dependent Role="Timeslot">
               <PropertyRef Name="Setting_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <EntityType Name="IssuedCard">
-          <Key>
-            <PropertyRef Name="UserId" />
-            <PropertyRef Name="SmartCardId" />
-          </Key>
-          <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="SmartCardId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="NRIC" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="Name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="Serial_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Date_Of_Issue" Type="DateTime" Precision="0" />
-          <Property Name="Status" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="CreatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
-          <Property Name="Reprint_Reason" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Membership_Users" Relationship="TrinityCentralizedDBModel.FK_IssuedCards_Membership_Users" FromRole="IssuedCard" ToRole="Membership_Users" />
-        </EntityType>
-        <EntityType Name="User_Profiles">
-          <Key>
-            <PropertyRef Name="UserId" />
-          </Key>
-          <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="Primary_Phone" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Secondary_Phone" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Primary_Email" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Secondary_Email" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="DOB" Type="DateTime" Precision="0" />
-          <Property Name="Nationality" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
-          <Property Name="Maritial_Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Residential_Addess_ID" Type="Int32" />
-          <Property Name="Other_Address_ID" Type="Int32" />
-          <Property Name="NextOfKin_Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="NextOfKin_Contact_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="NextOfKin_Relationship" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="NextOfKin_BlkHouse_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="NextOfKin_FlrUnit_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="NextOfKin_Street_Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="NextOfKin_Country" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="NextOfKin_PostalCode" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
-          <Property Name="Employment_Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Employment_Contact_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Employment_Company_Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Employment_Job_Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Employment_Start_Date" Type="DateTime" Precision="0" />
-          <Property Name="Employment_End_Date" Type="DateTime" Precision="0" />
-          <Property Name="Employment_Remarks" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="User_Photo1" Type="Binary" MaxLength="Max" FixedLength="false" />
-          <Property Name="User_Photo2" Type="Binary" MaxLength="Max" FixedLength="false" />
-          <Property Name="Serial_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Date_of_Issue" Type="DateTime" Precision="0" />
-          <Property Name="Gender" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
-          <Property Name="Race" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Address" Relationship="TrinityCentralizedDBModel.FK_User_Profiles_Addresses2" FromRole="User_Profiles" ToRole="Address" />
-          <NavigationProperty Name="Address1" Relationship="TrinityCentralizedDBModel.FK_User_Profiles_Addresses3" FromRole="User_Profiles" ToRole="Address" />
-          <NavigationProperty Name="Membership_Users" Relationship="TrinityCentralizedDBModel.FK_User_Profiles_Membership_Users" FromRole="User_Profiles" ToRole="Membership_Users" />
-        </EntityType>
-        <Association Name="FK_User_Profiles_Addresses2">
-          <End Type="TrinityCentralizedDBModel.Address" Role="Address" Multiplicity="0..1" />
-          <End Type="TrinityCentralizedDBModel.User_Profiles" Role="User_Profiles" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Address">
-              <PropertyRef Name="Address_ID" />
-            </Principal>
-            <Dependent Role="User_Profiles">
-              <PropertyRef Name="Other_Address_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_User_Profiles_Addresses3">
-          <End Type="TrinityCentralizedDBModel.Address" Role="Address" Multiplicity="0..1" />
-          <End Type="TrinityCentralizedDBModel.User_Profiles" Role="User_Profiles" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Address">
-              <PropertyRef Name="Address_ID" />
-            </Principal>
-            <Dependent Role="User_Profiles">
-              <PropertyRef Name="Residential_Addess_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_IssuedCards_Membership_Users">
-          <End Type="TrinityCentralizedDBModel.Membership_Users" Role="Membership_Users" Multiplicity="1" />
-          <End Type="TrinityCentralizedDBModel.IssuedCard" Role="IssuedCard" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Membership_Users">
-              <PropertyRef Name="UserId" />
-            </Principal>
-            <Dependent Role="IssuedCard">
-              <PropertyRef Name="UserId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_User_Profiles_Membership_Users">
-          <End Type="TrinityCentralizedDBModel.Membership_Users" Role="Membership_Users" Multiplicity="1" />
-          <End Type="TrinityCentralizedDBModel.User_Profiles" Role="User_Profiles" Multiplicity="0..1" />
-          <ReferentialConstraint>
-            <Principal Role="Membership_Users">
-              <PropertyRef Name="UserId" />
-            </Principal>
-            <Dependent Role="User_Profiles">
-              <PropertyRef Name="UserId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1621,6 +1683,18 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="APS_USER_ACT_LOG">
+            <EntityTypeMapping TypeName="TrinityCentralizedDBModel.APS_USER_ACT_LOG">
+              <MappingFragment StoreEntitySet="APS_USER_ACT_LOG">
+                <ScalarProperty Name="CREATED_TIME" ColumnName="CREATED_TIME" />
+                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+                <ScalarProperty Name="USER_NAME" ColumnName="USER_NAME" />
+                <ScalarProperty Name="USER_ACT_LOG" ColumnName="USER_ACT_LOG" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="USER_ACT_LOG_ID" ColumnName="USER_ACT_LOG_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Devices">
             <EntityTypeMapping TypeName="TrinityCentralizedDBModel.Device">
               <MappingFragment StoreEntitySet="Devices">
@@ -1652,6 +1726,23 @@
                 <ScalarProperty Name="IsMalayHoliday" ColumnName="IsMalayHoliday" />
                 <ScalarProperty Name="IsSingHoliday" ColumnName="IsSingHoliday" />
                 <ScalarProperty Name="Holiday1" ColumnName="Holiday" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="IssuedCards">
+            <EntityTypeMapping TypeName="TrinityCentralizedDBModel.IssuedCard">
+              <MappingFragment StoreEntitySet="IssuedCards">
+                <ScalarProperty Name="Reprint_Reason" ColumnName="Reprint_Reason" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Expired_Date" ColumnName="Expired_Date" />
+                <ScalarProperty Name="Date_Of_Issue" ColumnName="Date_Of_Issue" />
+                <ScalarProperty Name="Serial_Number" ColumnName="Serial_Number" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="NRIC" ColumnName="NRIC" />
+                <ScalarProperty Name="SmartCardId" ColumnName="SmartCardId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1891,27 +1982,12 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="IssuedCards">
-            <EntityTypeMapping TypeName="TrinityCentralizedDBModel.IssuedCard">
-              <MappingFragment StoreEntitySet="IssuedCards">
-                <ScalarProperty Name="Reprint_Reason" ColumnName="Reprint_Reason" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="Date_Of_Issue" ColumnName="Date_Of_Issue" />
-                <ScalarProperty Name="Serial_Number" ColumnName="Serial_Number" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="NRIC" ColumnName="NRIC" />
-                <ScalarProperty Name="SmartCardId" ColumnName="SmartCardId" />
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="User_Profiles">
             <EntityTypeMapping TypeName="TrinityCentralizedDBModel.User_Profiles">
               <MappingFragment StoreEntitySet="User_Profiles">
                 <ScalarProperty Name="Race" ColumnName="Race" />
                 <ScalarProperty Name="Gender" ColumnName="Gender" />
+                <ScalarProperty Name="Expired_Date" ColumnName="Expired_Date" />
                 <ScalarProperty Name="Date_of_Issue" ColumnName="Date_of_Issue" />
                 <ScalarProperty Name="Serial_Number" ColumnName="Serial_Number" />
                 <ScalarProperty Name="User_Photo2" ColumnName="User_Photo2" />

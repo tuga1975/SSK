@@ -20,6 +20,7 @@ namespace Trinity.DAL.DBContext
         public string Name { get; set; }
         public string Serial_Number { get; set; }
         public Nullable<System.DateTime> Date_Of_Issue { get; set; }
+        public Nullable<System.DateTime> Expired_Date { get; set; }
         public string Status { get; set; }
         public string CreatedBy { get; set; }
         public Nullable<System.DateTime> CreatedDate { get; set; }
