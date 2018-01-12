@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using Newtonsoft.Json;
+using System;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 public static class Lib
 {
@@ -12,6 +10,15 @@ public static class Lib
     {
         return (int)date.DayOfWeek == 0 ? 8 : ((int)date.DayOfWeek) + 1;
     }
+
+    public static int WeekNum(this DateTime date)
+    {
+        DateTimeFormatInfo dfi = DateTimeFormatInfo.CurrentInfo;
+        Calendar cal = dfi.Calendar;
+        int weekNum = cal.GetWeekOfYear(date, CalendarWeekRule.FirstDay, System.DayOfWeek.Monday);
+        return weekNum;
+    }
+
     public static string GetQueueNumber(this string nric)
     {
         if (String.IsNullOrEmpty(nric))
@@ -61,5 +68,9 @@ public static class Lib
             }
         }
         return convert;
+    }
+    public static string JsonString(this object data)
+    {
+        return JsonConvert.SerializeObject(data, Formatting.Indented, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
     }
 }

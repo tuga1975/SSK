@@ -3,6 +3,7 @@ using Microsoft.AspNet.Identity;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -338,10 +339,10 @@ namespace Enrolment
                 data.UserProfile.Other_Address_ID = other_Address_ID;
                 data.UserProfile.User_Photo1 = profileModel.UserProfile.User_Photo1;
                 data.UserProfile.User_Photo2 = profileModel.UserProfile.User_Photo2;
-                
+
                 data.User.LeftThumbFingerprint = profileModel.User.LeftThumbFingerprint;
                 data.User.RightThumbFingerprint = profileModel.User.RightThumbFingerprint;
-                
+
                 // add some some old data not change in form
                 data.UserProfile.SerialNumber = tempUser.UserProfile.SerialNumber;
                 data.UserProfile.DateOfIssue = tempUser.UserProfile.DateOfIssue;
@@ -403,12 +404,12 @@ namespace Enrolment
 
                 var profileModel = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
                 var tempProfileModel = (Trinity.BE.ProfileModel)session["TEMP_USER"];
-                
+
                 var photo1 = tempProfileModel.UserProfile.User_Photo1 != null ? Convert.ToBase64String(tempProfileModel.UserProfile.User_Photo1) : null;
                 var photo2 = tempProfileModel.UserProfile.User_Photo2 != null ? Convert.ToBase64String(tempProfileModel.UserProfile.User_Photo2) : null;
                 ////////
                 session["TempPhotos"] = new Tuple<string, string>(photo1, photo2);
-                   ////////
+                ////////
                 data.UserProfile.User_Photo1 = profileModel.UserProfile.User_Photo1;
                 data.UserProfile.User_Photo2 = profileModel.UserProfile.User_Photo2;
                 data.UserProfile.Residential_Addess_ID = profileModel.UserProfile.Residential_Addess_ID;
@@ -416,12 +417,14 @@ namespace Enrolment
                 session[CommonConstants.CURRENT_EDIT_USER] = data;
 
             }
-            catch {
+            catch
+            {
 
             }
         }
 
-        public void ReplaceOldPhotos() {
+        public void ReplaceOldPhotos()
+        {
             Session session = Session.Instance;
             var profileModel = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
             var tempUser = (Trinity.BE.ProfileModel)session["TEMP_USER"];
@@ -627,14 +630,14 @@ namespace Enrolment
         }
         public void CancelUpdateFingerprints()
         {
-            FingerprintCapture.Instance.Dispose();
+            FingerprintReaderUtils.Instance.DisposeCapture();
             Session session = Session.Instance;
             EditSupervisee(((Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER]).UserProfile.UserId);
         }
         public void CaptureFingerprint(int LeftOrRight)
         {
             FingerprintLeftRight = LeftOrRight;
-            FingerprintCapture.Instance.StartCapture(OnPutOn, OnTakeOff, UpdateScreenImage, OnFakeSource, OnEnrollmentComplete);
+            FingerprintReaderUtils.Instance.StartCapture(OnPutOn, OnTakeOff, UpdateScreenImage, OnFakeSource, OnEnrollmentComplete);
         }
 
         #region Event Capture Fingerprint
@@ -662,7 +665,14 @@ namespace Enrolment
                 if (FingerprintNumber >= 3)
                     _web.InvokeScript("moreThan3Fingerprint");
             }
-            FingerprintCapture.Instance.Dispose();
+            try
+            {
+                FingerprintReaderUtils.Instance.DisposeCapture();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error in Trinity.Enrolment.JSCallCS.OnEnrollmentComplete. Details: " + ex.Message);
+            }
         }
         private bool OnFakeSource(Futronic.SDKHelper.FTR_PROGRESS Progress)
         {
@@ -683,7 +693,8 @@ namespace Enrolment
         #endregion
 
         #region Issued Cards
-        public List<Trinity.BE.IssueCard> GetDataIssuedCards()
+        private string reprintTxt = string.Empty;
+        public object[] GetDataIssuedCards()
         {
             Session session = Session.Instance;
             var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
@@ -699,33 +710,45 @@ namespace Enrolment
             //    Status = EnumIssuedCards.Active,
             //    UserId = currentEditUser.Membership_Users.UserId
             //});
-            return array;
+            return new object[] { array, currentEditUser.UserProfile.UserId };
         }
-        public Trinity.BE.IssueCard PriterIssuedCard(string reprint)
+        public void PriterIssuedCard(string reprint)
         {
-            Session session = Session.Instance;
-            var userLogin = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-            var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
-            DAL_IssueCard dalIssueCard = new Trinity.DAL.DAL_IssueCard();
-            string SmartID = Guid.NewGuid().ToString().Trim();
-            Trinity.BE.IssueCard IssueCard = new Trinity.BE.IssueCard() {
-                //CreatedBy = userLogin.UserId,
-                CreatedDate = DateTime.Now,
-                Date_Of_Issue = currentEditUser.UserProfile.DateOfIssue,
-                Name = currentEditUser.Membership_Users.Name,
-                NRIC = currentEditUser.Membership_Users.NRIC,
-                Reprint_Reason = reprint,
-                Serial_Number = currentEditUser.UserProfile.SerialNumber,
-                Status = EnumIssuedCards.Active,
-                SmartCardId = SmartID,
-                UserId = currentEditUser.UserProfile.UserId
-            };
-            dalIssueCard.UpdateStatusByUserId(currentEditUser.UserProfile.UserId, EnumIssuedCards.Deactivate);
-            dalIssueCard.Insert(IssueCard);
-            new DAL_Membership_Users().UpdateSmartCardId(currentEditUser.UserProfile.UserId, SmartID);
-            currentEditUser.Membership_Users.SmartCardId = SmartID;
-
-            return IssueCard;
+            reprintTxt = reprint;
+            Trinity.Common.Utils.SmartCardPrinterUtils.Instance.PrintAndWriteSmartcardData(null, PriterIssuedCardOnCompleted);
+        }
+        private void PriterIssuedCardOnCompleted(PrintAndWriteSmartcardResult result)
+        {
+            if (result.Success)
+            {
+                Session session = Session.Instance;
+                var userLogin = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+                var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
+                DAL_IssueCard dalIssueCard = new Trinity.DAL.DAL_IssueCard();
+                string SmartID = Guid.NewGuid().ToString().Trim();
+                Trinity.BE.IssueCard IssueCard = new Trinity.BE.IssueCard()
+                {
+                    //CreatedBy = userLogin.UserId,
+                    CreatedDate = DateTime.Now,
+                    Date_Of_Issue = currentEditUser.UserProfile.DateOfIssue,
+                    Name = currentEditUser.Membership_Users.Name,
+                    NRIC = currentEditUser.Membership_Users.NRIC,
+                    Reprint_Reason = reprintTxt,
+                    Serial_Number = currentEditUser.UserProfile.SerialNumber,
+                    Status = EnumIssuedCards.Active,
+                    SmartCardId = SmartID,
+                    UserId = currentEditUser.UserProfile.UserId
+                };
+                dalIssueCard.UpdateStatusByUserId(currentEditUser.UserProfile.UserId, EnumIssuedCards.Deactivate);
+                dalIssueCard.Insert(IssueCard);
+                new DAL_Membership_Users().UpdateSmartCardId(currentEditUser.UserProfile.UserId, SmartID);
+                currentEditUser.Membership_Users.SmartCardId = SmartID;
+                _web.InvokeScript("OnPriterIssuedCardCompleted", true, IssueCard.JsonString());
+            }
+            else
+            {
+                _web.InvokeScript("OnPriterIssuedCardCompleted", false, null);
+            }
         }
         #endregion
     }

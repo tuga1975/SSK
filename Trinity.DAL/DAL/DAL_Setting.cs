@@ -17,8 +17,7 @@ namespace Trinity.DAL
         public Trinity.BE.EnvironmentTimeDetail GetEnvironmentTime(DateTime date)
         {
             var appointmentTime = new Trinity.BE.EnvironmentTimeDetail();
-            int dateOfWeek = date.DayOfWeek();
-            var listTimeSlot = GetListTimeslotByDayOfWeek(dateOfWeek);
+            var listTimeSlot = GetTimeslots(date);
             if (listTimeSlot.Count > 0)
             {
 
@@ -48,7 +47,6 @@ namespace Trinity.DAL
 
         private static BE.EnvironmentTime SetEnviromentTime(DBContext.Timeslot timeSlot)
         {
-
             var environmentTime = new BE.EnvironmentTime()
             {
                 StartTime = timeSlot.StartTime.Value,
@@ -59,59 +57,58 @@ namespace Trinity.DAL
             return environmentTime;
         }
 
-        public Trinity.BE.EnvironmentTimeDetail GetTodayEnvironmentSetting()
+        public Trinity.BE.EnvironmentTimeDetail GetCurrentEnvironmentSetting()
         {
             var today = DateTime.Now;
-            int DateOfWeek = today.DayOfWeek();
             return GetEnvironmentTime(today);
         }
 
-        public List<Timeslot> GetListTimeslotByDayOfWeek(int dayOfWeek)
+        public List<Timeslot> GetTimeslots(DateTime date)
         {
-            return _localUnitOfWork.DataContext.Timeslots.Where(t => t.DateOfWeek == dayOfWeek).ToList();
+            SettingModel setting = GetSettings(date);
+            int dayOfWeek = date.DayOfWeek();
+            return _localUnitOfWork.DataContext.Timeslots.Where(t => t.DateOfWeek == dayOfWeek && t.Setting_ID == setting.Setting_ID).ToList();
         }
 
         public void GenerateTimeslots(string createdBy)
         {
-            SettingModel setting = GetSetting();
-            //SettingModel setting = GetSetting("Pending");
-            // Check if allow to change timeslot
-            if (!setting.Status.Equals(EnumSettingStatuses.Pending, StringComparison.InvariantCultureIgnoreCase) )
+            // Allow to change pending settings only
+            SettingModel settings = GetSettings(EnumSettingStatuses.Pending);
+            if (settings == null)
             {
                 // Couldn't change timeslot
                 return;
             }
 
             // Delete old timeslot
-            _localUnitOfWork.GetRepository<Timeslot>().Delete(t=>t.Setting_ID == setting.Setting_ID);
+            _localUnitOfWork.GetRepository<Timeslot>().Delete(t => t.Setting_ID == settings.Setting_ID);
             _localUnitOfWork.Save();
 
             //mon
-            GenerateTimeSlotAndInsert((int)EnumDayOfWeek.Monday, setting.Monday, createdBy);
+            GenerateTimeslotAndInsert((int)EnumDayOfWeek.Monday, settings.Monday, createdBy);
 
             //tue
-            GenerateTimeSlotAndInsert((int)EnumDayOfWeek.Tuesday, setting.Tuesday, createdBy);
+            GenerateTimeslotAndInsert((int)EnumDayOfWeek.Tuesday, settings.Tuesday, createdBy);
 
             //wed
-            GenerateTimeSlotAndInsert((int)EnumDayOfWeek.Wednesday, setting.WednesDay, createdBy);
+            GenerateTimeslotAndInsert((int)EnumDayOfWeek.Wednesday, settings.WednesDay, createdBy);
 
             //thu
-            GenerateTimeSlotAndInsert((int)EnumDayOfWeek.Thursday, setting.Thursday, createdBy);
+            GenerateTimeslotAndInsert((int)EnumDayOfWeek.Thursday, settings.Thursday, createdBy);
 
             //fri
-            GenerateTimeSlotAndInsert((int)EnumDayOfWeek.Friday, setting.Friday, createdBy);
+            GenerateTimeslotAndInsert((int)EnumDayOfWeek.Friday, settings.Friday, createdBy);
 
             //sat
-            GenerateTimeSlotAndInsert((int)EnumDayOfWeek.Saturday, setting.Saturday, createdBy);
+            GenerateTimeslotAndInsert((int)EnumDayOfWeek.Saturday, settings.Saturday, createdBy);
 
             //sun
-            GenerateTimeSlotAndInsert((int)EnumDayOfWeek.Sunday, setting.Sunday, createdBy);
+            GenerateTimeslotAndInsert((int)EnumDayOfWeek.Sunday, settings.Sunday, createdBy);
 
         }
 
-        private void GenerateTimeSlotAndInsert(int dayOfWeek, Trinity.BE.SettingDetails model,string createBy)
+        private void GenerateTimeslotAndInsert(int dayOfWeek, Trinity.BE.SettingDetails model, string createBy)
         {
-
             if (model.StartTime.HasValue && model.EndTime.HasValue && model.Duration.HasValue)
             {
                 var fromTime = model.StartTime;
@@ -146,8 +143,8 @@ namespace Trinity.DAL
                     timeSlot.CreatedBy = createBy;
                     timeSlot.LastUpdatedBy = createBy;
                     timeSlot.LastUpdatedDate = DateTime.Now;
-                    
-                    
+
+
 
                     fromTime = fromTime.Value.Add(TimeSpan.FromMinutes(model.Duration.Value));
 
@@ -155,9 +152,7 @@ namespace Trinity.DAL
                     _localUnitOfWork.Save();
                 }
             }
-
         }
-
 
         private Timeslot SetInfo(Timeslot dbTimeslot, BE.TimeslotDetails model)
         {
@@ -281,25 +276,29 @@ namespace Trinity.DAL
             setting.Last_Updated_Date = settingBE.Last_Updated_Date;
             setting.Description = settingBE.Description;
         }
-        private BE.SettingModel GetSetting()
+
+        private BE.SettingModel GetSettings(string status)
         {
-            var dbSeting = _localUnitOfWork.DataContext.Settings.Where(s => s.Status.Equals(EnumSettingStatuses.Pending, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
+            var dbSeting = _localUnitOfWork.DataContext.Settings.Where(s => s.Status.Equals(status, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
             var settingBE = new BE.SettingBE();
             SetInfoToSettingBE(settingBE, dbSeting);
 
             return new BE.SettingBE().ToSettingModel(settingBE);
         }
 
-        private BE.SettingModel GetSetting(string status)
+        private BE.SettingModel GetSettings(DateTime date)
         {
-            var dbSeting = _localUnitOfWork.DataContext.Settings.Where(s => s.Status == status).FirstOrDefault();
+            int dayOfWeek = date.DayOfWeek();
+            int year = date.Year;
+            int weekNum = date.WeekNum();
+            var dbSeting = _localUnitOfWork.DataContext.Settings.Where(s => s.Year == year && s.WeekNum == weekNum).FirstOrDefault();
             var settingBE = new BE.SettingBE();
             SetInfoToSettingBE(settingBE, dbSeting);
 
             return new BE.SettingBE().ToSettingModel(settingBE);
         }
 
-        public void UpdateTimeslotForNewWeek(string createBy)
+        public void UpdateTimeslotForNewWeek(string createdBy)
         {
             var timeSlotRepo = _localUnitOfWork.GetRepository<Timeslot>();
 
@@ -313,11 +312,11 @@ namespace Trinity.DAL
 
             _localUnitOfWork.Save();
             //add new
-            GenerateTimeslots(createBy);
+            GenerateTimeslots(createdBy);
 
 
         }
-        public void UpdateSetting(Trinity.BE.SettingBE model,string lastUpdateBy)
+        public void UpdateSettings(Trinity.BE.SettingBE model, string lastUpdateBy)
         {
             var repo = _localUnitOfWork.GetRepository<Setting>();
             var dbSetting = repo.GetAll().FirstOrDefault();
@@ -326,8 +325,13 @@ namespace Trinity.DAL
             repo.Update(dbSetting);
             _localUnitOfWork.Save();
             UpdateTimeslotForNewWeek(lastUpdateBy);
+        }
 
+        public Timeslot GetTimeslot(Guid settingId, DateTime currentDate)
+        {
+            int dayOfWeek = currentDate.DayOfWeek();
 
+            return _localUnitOfWork.DataContext.Timeslots.Where(t => t.DateOfWeek == dayOfWeek && t.Setting_ID == settingId).FirstOrDefault();
         }
     }
 }
