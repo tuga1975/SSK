@@ -683,6 +683,7 @@ namespace Enrolment
         #endregion
 
         #region Issued Cards
+        private string reprintTxt = string.Empty;
         public List<Trinity.BE.IssueCard> GetDataIssuedCards()
         {
             Session session = Session.Instance;
@@ -701,31 +702,43 @@ namespace Enrolment
             //});
             return array;
         }
-        public Trinity.BE.IssueCard PriterIssuedCard(string reprint)
+        public void PriterIssuedCard(string reprint)
         {
-            Session session = Session.Instance;
-            var userLogin = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-            var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
-            DAL_IssueCard dalIssueCard = new Trinity.DAL.DAL_IssueCard();
-            string SmartID = Guid.NewGuid().ToString().Trim();
-            Trinity.BE.IssueCard IssueCard = new Trinity.BE.IssueCard() {
-                //CreatedBy = userLogin.UserId,
-                CreatedDate = DateTime.Now,
-                Date_Of_Issue = currentEditUser.UserProfile.DateOfIssue,
-                Name = currentEditUser.Membership_Users.Name,
-                NRIC = currentEditUser.Membership_Users.NRIC,
-                Reprint_Reason = reprint,
-                Serial_Number = currentEditUser.UserProfile.SerialNumber,
-                Status = EnumIssuedCards.Active,
-                SmartCardId = SmartID,
-                UserId = currentEditUser.UserProfile.UserId
-            };
-            dalIssueCard.UpdateStatusByUserId(currentEditUser.UserProfile.UserId, EnumIssuedCards.Deactivate);
-            dalIssueCard.Insert(IssueCard);
-            new DAL_Membership_Users().UpdateSmartCardId(currentEditUser.UserProfile.UserId, SmartID);
-            currentEditUser.Membership_Users.SmartCardId = SmartID;
-
-            return IssueCard;
+            reprintTxt = reprint;
+            Trinity.Common.Utils.SmartCardPrinterUtils.Instance.PrintAndWriteSmartcardData(null, PriterIssuedCardOnCompleted);
+        }
+        private void PriterIssuedCardOnCompleted(PrintAndWriteSmartcardResult result)
+        {
+            if (result.Success)
+            {
+                Session session = Session.Instance;
+                var userLogin = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+                var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
+                DAL_IssueCard dalIssueCard = new Trinity.DAL.DAL_IssueCard();
+                string SmartID = Guid.NewGuid().ToString().Trim();
+                Trinity.BE.IssueCard IssueCard = new Trinity.BE.IssueCard()
+                {
+                    //CreatedBy = userLogin.UserId,
+                    CreatedDate = DateTime.Now,
+                    Date_Of_Issue = currentEditUser.UserProfile.DateOfIssue,
+                    Name = currentEditUser.Membership_Users.Name,
+                    NRIC = currentEditUser.Membership_Users.NRIC,
+                    Reprint_Reason = reprintTxt,
+                    Serial_Number = currentEditUser.UserProfile.SerialNumber,
+                    Status = EnumIssuedCards.Active,
+                    SmartCardId = SmartID,
+                    UserId = currentEditUser.UserProfile.UserId
+                };
+                dalIssueCard.UpdateStatusByUserId(currentEditUser.UserProfile.UserId, EnumIssuedCards.Deactivate);
+                dalIssueCard.Insert(IssueCard);
+                new DAL_Membership_Users().UpdateSmartCardId(currentEditUser.UserProfile.UserId, SmartID);
+                currentEditUser.Membership_Users.SmartCardId = SmartID;
+                _web.InvokeScript("OnPriterIssuedCardCompleted", true, IssueCard.JsonString());
+            }
+            else
+            {
+                _web.InvokeScript("OnPriterIssuedCardCompleted",false,null);
+            }
         }
         #endregion
     }
