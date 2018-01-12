@@ -369,7 +369,7 @@ namespace DocumentScannerTest
                 //BarcodeScannerUtils.closeport();
 
                 PrinterMonitor printerMonitor = PrinterMonitor.Instance;
-                printerMonitor.OnPrintLabelSucceeded += OnPrintUserInfo_BarcodeSucceeded;
+                printerMonitor.OnPrintTTLabelSucceeded += OnPrintUserInfo_BarcodeSucceeded;
                 printerMonitor.OnMonitorException += OnMonitorException;
 
                 var test = DeviceManagement.GetUSBDevices();

@@ -15,7 +15,7 @@
                 </div>
                 <br />
                 <div style="text-align:center">
-                    <img class="avatar" style="max-width:50%;height:395px;" src="../images/fingerprint.png" capturefingerprint-img="0"  soure=""/>
+                    <img class="avatar" style="max-width:50%;height:395px;" src="../images/fingerprint.png" capturefingerprint-img="0"  soure="" data=""/>
                 </div>
                 <br />
                 <!--<button type="button" onclick="api.server.OpenFingerprintCaptureForm('1')">Left Fingerprint Preview</button>-->
@@ -29,7 +29,7 @@
                 </div>
                 <br />
                 <div style="text-align:center">
-                    <img class="avatar" style="max-width:50%;height:395px;" src="../images/fingerprint.png"  capturefingerprint-img="1" soure=""/>
+                    <img class="avatar" style="max-width:50%;height:395px;" src="../images/fingerprint.png"  capturefingerprint-img="1" soure="" data=""/>
                 </div>
                 <br />
                 <!--<button type="button" onclick="api.server.OpenFingerprintCaptureForm('2')">Right Fingerprint Preview</button>-->
@@ -46,7 +46,7 @@
     clearFingerprint(0);
     clearFingerprint(1);
     function clearFingerprint(LeftOrRight) {
-        $('[capturefingerprint-img="' + LeftOrRight + '"]').attr('src', api.model[LeftOrRight] == null ?'../images/fingerprint.png':'data:image/png;base64,' + api.model[LeftOrRight]).attr('soure','');
+        $('[capturefingerprint-img="' + LeftOrRight + '"]').attr('src', api.model[LeftOrRight] == null ? '../images/fingerprint.png' : 'data:image/png;base64,' + api.model[LeftOrRight]).attr('soure', '').attr('data', '');
     }
     function captureFingerprintMessage(LeftOrRight, Message, color) {
         $('[capturefingerprint-message="' + LeftOrRight + '"]').text(Message).css('color', color);
@@ -54,10 +54,17 @@
     function setImageFingerprint(LeftOrRight,img) {
         $('[capturefingerprint-img="' + LeftOrRight + '"]').attr('src', 'data:image/png;base64,' + img).attr('soure', img);
     }
+    function setDataFingerprint(LeftOrRight, base) {
+        $('[capturefingerprint-img="' + LeftOrRight + '"]').attr('src', 'data:image/png;base64,' + img).attr('data', base);
+    }
     function SubmitUpdateFingerprints() {
-        var left = $('[capturefingerprint-img="0"]').attr('soure');
-        var right = $('[capturefingerprint-img="1"]').attr('soure');
-        api.server.SubmitUpdateFingerprints(left, right);
+        var left = $('[capturefingerprint-img="0"]').attr('data');
+        var right = $('[capturefingerprint-img="1"]').attr('data');
+        if (left.length > 0 || right.length > 0) {
+            api.server.SubmitUpdateFingerprints(left, $('[capturefingerprint-img="0"]').attr('soure'), right, $('[capturefingerprint-img="1"]').attr('soure'));
+        } else {
+            alert('No data updated');
+        }
     }
     function moreThan3Fingerprint() {
         alert('Supervisee has failed more than 3 times in finger prints!');

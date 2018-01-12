@@ -137,11 +137,11 @@ namespace Enrolment
                             var isRight = (bool)session[CommonConstants.IS_RIGHT_THUMB];
                             if (isRight)
                             {
-                                session[CommonConstants.CURRENT_RIGHT_FINGERPRINT_IMAGE] = base64Str;
+                                session[CommonConstants.CURRENT_RIGHT_FINGERPRINT_IMAGE] = byteData;
                             }
                             else
                             {
-                                session[CommonConstants.CURRENT_LEFT_FINGERPRINT_IMAGE] = base64Str;
+                                session[CommonConstants.CURRENT_LEFT_FINGERPRINT_IMAGE] = byteData;
                             }
                             LayerWeb.InvokeScript("setBase64FingerprintOnloadServerCall", isRight, base64Str);
                         }
@@ -194,15 +194,15 @@ namespace Enrolment
 
                 //set data for curent edit user
                 var profileModel = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
-                var leftThumbImage = (string)session[CommonConstants.CURRENT_LEFT_FINGERPRINT_IMAGE];
-                var rightThumbImage = (string)session[CommonConstants.CURRENT_RIGHT_FINGERPRINT_IMAGE];
+                var leftThumbImage = (byte[])session[CommonConstants.CURRENT_LEFT_FINGERPRINT_IMAGE];
+                var rightThumbImage = (byte[])session[CommonConstants.CURRENT_RIGHT_FINGERPRINT_IMAGE];
                 if (profileModel != null)
                 {
-                    if (!string.IsNullOrEmpty(leftThumbImage))
+                    if (leftThumbImage!=null && leftThumbImage.Length>0)
                     {
                         profileModel.UserProfile.LeftThumbImage = leftThumbImage;
                     }
-                    if (!string.IsNullOrEmpty(rightThumbImage))
+                    if (rightThumbImage!=null && rightThumbImage.Length>0)
                     {
                         profileModel.UserProfile.RightThumbImage = rightThumbImage;
                     }
@@ -423,7 +423,7 @@ namespace Enrolment
                 var currentPhotosSession = session[CommonConstants.CURRENT_PHOTOS];
                 if (InvokeRequired)
                 {
-                    
+
                     Invoke(new Action(() =>
                     {
                         pictureBox1.Hide();
@@ -528,11 +528,7 @@ namespace Enrolment
             else if (e.Name.Equals(EventNames.CANCEL_CAPTURE_PICTURE))
             {
                 Session session = Session.Instance;
-
                 var currentPage = session[CommonConstants.CURRENT_PAGE];
-
-
-
                 if (InvokeRequired)
                 {
                     Invoke(new Action(() =>
@@ -555,10 +551,11 @@ namespace Enrolment
                                 photo2 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo2);
                             }*/
                             var photos = (Tuple<string, string>)session["TempPhotos"];
-                            if (photos.Item1 != null) {
+                            if (photos != null && photos.Item1 != null)
+                            {
                                 photo1 = photos.Item1;
                             }
-                            if(photos.Item2 != null)
+                            if (photos != null && photos.Item2 != null)
                             {
                                 photo2 = photos.Item2;
                             }
@@ -583,7 +580,6 @@ namespace Enrolment
                     }));
                     return;
                 }
-
             }
             else if (e.Name.Equals(EventNames.CANCEL_CONFIRM_CAPTURE_PICTURE))
             {
@@ -673,9 +669,9 @@ namespace Enrolment
                 //    issueCardModel.Status = EnumUserStatuses.ReEnrolled;
                 //    dalIssueCard.Update(profileModel.User.SmartCardId, profileModel.User.UserId, issueCardModel);
                 //}
-               
-                
-               
+
+
+
                 session[CommonConstants.CURRENT_EDIT_USER] = profileModel;
 
             }
