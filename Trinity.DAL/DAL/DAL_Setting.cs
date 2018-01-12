@@ -339,21 +339,120 @@ namespace Trinity.DAL
         }
 
         // Save Setting from DutyOfficer
-        public void SaveSetting (Trinity.BE.SettingModel model, string lastUpdateBy)
+        public bool SaveSetting (Trinity.BE.SettingModel model, string lastUpdateBy)
         {
-            var repo = _localUnitOfWork.GetRepository<Setting>();
-            var setting = _localUnitOfWork.DataContext.Settings.FirstOrDefault(s => s.Setting_ID == model.Setting_ID);
-            if (setting == null)
+            try
             {
-                setting = new Setting();
-                setting.Status = EnumSettingStatuses.Pending;
+                var repo = _localUnitOfWork.GetRepository<Setting>();
+                var settingLastest = _localUnitOfWork.DataContext.Settings.OrderBy(s => s.Year).ThenBy(s => s.WeekNum).FirstOrDefault();
+                var setting = _localUnitOfWork.DataContext.Settings.FirstOrDefault(s => s.Setting_ID == model.Setting_ID);
+                if (setting == null)
+                {
+                    setting = new Setting();
+                    setting.Setting_ID = Guid.NewGuid();
+                    setting.Status = EnumSettingStatuses.Pending;
+                    setting.Last_Updated_By = lastUpdateBy;
+                    setting.Last_Updated_Date = DateTime.Now;
 
-                // Dang lam chua xong, quay qua fix bug print MUB and TT succeeded xong se quay lai lam tiep
+                    if (settingLastest != null)
+                    {
+                        if (settingLastest.WeekNum == 52)
+                        {
+                            setting.WeekNum = 1;
+                            setting.Year = settingLastest.Year + 1;
+                        }
+                        else
+                        {
+                            setting.WeekNum = settingLastest.WeekNum + 1;
+                            setting.Year = settingLastest.Year;
+                        }
+                    }
+                    else
+                    {
+                        setting.WeekNum = DateTime.Now.WeekNum();
+                        setting.Year = DateTime.Now.Year;
+                    }
+
+                    SetSettingModelToSetting(model, setting);
+
+                    repo.Add(setting);
+                }
+                else
+                {
+                    setting.Status = EnumSettingStatuses.Pending;
+                    setting.Last_Updated_By = lastUpdateBy;
+                    setting.Last_Updated_Date = DateTime.Now;
+                    setting.WeekNum = model.WeekNum;
+                    setting.Year = model.Year;
+
+                    SetSettingModelToSetting(model, setting);
+
+                    repo.Update(setting);
+                }
+
+                _localUnitOfWork.Save();
+
+                // Generate Timeslote here
+                GenerateTimeslots(lastUpdateBy);
+
+                return true;
             }
-            else
+            catch(Exception e)
             {
-
+                return false;
             }
+        }
+
+        private void SetSettingModelToSetting(SettingModel model, Setting setting)
+        {
+            //Monday
+            setting.Mon_Open_Time = model.Monday.StartTime;
+            setting.Mon_Close_Time = model.Monday.EndTime;
+            setting.Mon_Interval = model.Monday.Duration;
+            setting.Mon_MaximumNum = model.Monday.MaximumAppointment;
+            setting.Mon_ReservedForSpare = model.Monday.ReservedForSpare;
+
+            //Tuesday
+            setting.Tue_Open_Time = model.Tuesday.StartTime;
+            setting.Tue_Close_Time = model.Tuesday.EndTime;
+            setting.Tue_Interval = model.Tuesday.Duration;
+            setting.Tue_MaximumNum = model.Tuesday.MaximumAppointment;
+            setting.Tue_ReservedForSpare = model.Tuesday.ReservedForSpare;
+
+            //Wednesday
+            setting.Wed_Open_Time = model.WednesDay.StartTime;
+            setting.Wed_Close_Time = model.WednesDay.EndTime;
+            setting.Wed_Interval = model.WednesDay.Duration;
+            setting.Wed_MaximumNum = model.WednesDay.MaximumAppointment;
+            setting.Wed_ReservedForSpare = model.WednesDay.ReservedForSpare;
+
+            //Thursday
+            setting.Thu_Open_Time = model.Thursday.StartTime;
+            setting.Thu_Close_Time = model.Thursday.EndTime;
+            setting.Thu_Interval = model.Thursday.Duration;
+            setting.Thu_MaximumNum = model.Thursday.MaximumAppointment;
+            setting.Thu_ReservedForSpare = model.Thursday.ReservedForSpare;
+
+            //Friday
+            setting.Fri_Open_Time = model.Friday.StartTime;
+            setting.Fri_Close_Time = model.Friday.EndTime;
+            setting.Fri_Interval = model.Friday.Duration;
+            setting.Fri_MaximumNum = model.Friday.MaximumAppointment;
+            setting.Fri_ReservedForSpare = model.Friday.ReservedForSpare;
+
+            //Saturday
+            setting.Sat_Open_Time = model.Saturday.StartTime;
+            setting.Sat_Close_Time = model.Saturday.EndTime;
+            setting.Sat_Interval = model.Saturday.Duration;
+            setting.Sat_MaximumNum = model.Saturday.MaximumAppointment;
+            setting.Sat_ReservedForSpare = model.Saturday.ReservedForSpare;
+
+            //Sunday
+            setting.Sun_Open_Time = model.Sunday.StartTime;
+            setting.Sun_Close_Time = model.Sunday.EndTime;
+            setting.Sun_Interval = model.Sunday.Duration;
+            setting.Sun_MaximumNum = model.Sunday.MaximumAppointment;
+            setting.Sun_ReservedForSpare = model.Sunday.ReservedForSpare;
         }
     }
 }
