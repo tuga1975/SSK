@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="e17ce6b5c6f94759bc5b75d0af8983e3" Name="Diagram1" ZoomLevel="99">
+      <Diagram DiagramId="e17ce6b5c6f94759bc5b75d0af8983e3" Name="Diagram1" ZoomLevel="74">
         <EntityTypeShape EntityType="TrinityCentralizedDBModel.AbsenceReporting" Width="1.5" PointX="3.75" PointY="28.125" />
         <EntityTypeShape EntityType="TrinityCentralizedDBModel.ActionLog" Width="1.5" PointX="3" PointY="24.875" />
         <EntityTypeShape EntityType="TrinityCentralizedDBModel.Address" Width="1.5" PointX="6.75" PointY="26.875" />
@@ -27,7 +27,6 @@
         <EntityTypeShape EntityType="TrinityCentralizedDBModel.QueueDetail" Width="1.5" PointX="10.5" PointY="17.25" />
         <EntityTypeShape EntityType="TrinityCentralizedDBModel.Queue" Width="1.5" PointX="8.25" PointY="17" />
         <EntityTypeShape EntityType="TrinityCentralizedDBModel.Security_QA" Width="1.5" PointX="3" PointY="50.75" />
-        <EntityTypeShape EntityType="TrinityCentralizedDBModel.Setting" Width="1.5" PointX="1.5" PointY="28.75" />
         <EntityTypeShape EntityType="TrinityCentralizedDBModel.SMS_LOG" Width="1.5" PointX="0.75" PointY="6.75" />
         <EntityTypeShape EntityType="TrinityCentralizedDBModel.Timeslot" Width="1.5" PointX="3.75" PointY="3" />
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_Appointments_AbsenceReporting" />
@@ -48,12 +47,13 @@
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_Notifications_Membership_Users1" />
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_PWD_QA_Membership_Users" />
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_QueueDetails_Queues" />
-        <AssociationConnector Association="TrinityCentralizedDBModel.FK_Timeslots_Settings" />
         <EntityTypeShape EntityType="TrinityCentralizedDBModel.User_Profiles" Width="1.5" PointX="9" PointY="20.875" />
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_User_Profiles_Addresses2" />
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_User_Profiles_Addresses3" />
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_APS_USER_ACT_LOG_User_Profiles" />
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_User_Profiles_Membership_Users" />
+        <EntityTypeShape EntityType="TrinityCentralizedDBModel.Setting" Width="1.5" PointX="1.5" PointY="29.75" />
+        <AssociationConnector Association="TrinityCentralizedDBModel.FK_Timeslots_Settings" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

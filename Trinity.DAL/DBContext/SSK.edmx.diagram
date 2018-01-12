@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="8d20fa7148f941f48dc517cdb36815f0" Name="Diagram1">
+      <Diagram DiagramId="8d20fa7148f941f48dc517cdb36815f0" Name="Diagram1" ZoomLevel="85">
         <EntityTypeShape EntityType="SSKModel.AbsenceReporting" Width="1.5" PointX="0.75" PointY="37" />
         <EntityTypeShape EntityType="SSKModel.ActionLog" Width="1.5" PointX="3" PointY="43.625" />
         <EntityTypeShape EntityType="SSKModel.Address" Width="1.5" PointX="3.75" PointY="6.75" />
@@ -25,7 +25,6 @@
         <EntityTypeShape EntityType="SSKModel.QueueDetail" Width="1.5" PointX="7.5" PointY="29.125" />
         <EntityTypeShape EntityType="SSKModel.Queue" Width="1.5" PointX="5.25" PointY="28.875" />
         <EntityTypeShape EntityType="SSKModel.Security_QA" Width="1.5" PointX="3" PointY="34.5" />
-        <EntityTypeShape EntityType="SSKModel.Setting" Width="1.5" PointX="1.5" PointY="54" />
         <EntityTypeShape EntityType="SSKModel.Timeslot" Width="1.5" PointX="0.75" PointY="31.875" />
         <AssociationConnector Association="SSKModel.FK_Appointments_AbsenceReporting" />
         <AssociationConnector Association="SSKModel.FK_ActionLog_Membership_Users" />
@@ -46,11 +45,12 @@
         <AssociationConnector Association="SSKModel.FK_Notifications_Membership_Users1" />
         <AssociationConnector Association="SSKModel.FK_PWD_QA_Membership_Users" />
         <AssociationConnector Association="SSKModel.FK_QueueDetails_Queues" />
-        <AssociationConnector Association="SSKModel.FK_Timeslots_Settings" />
         <EntityTypeShape EntityType="SSKModel.User_Profiles" Width="1.5" PointX="6" PointY="13.25" />
         <AssociationConnector Association="SSKModel.FK_User_Profiles_Addresses2" />
         <AssociationConnector Association="SSKModel.FK_User_Profiles_Addresses3" />
         <AssociationConnector Association="SSKModel.FK_User_Profiles_Membership_Users" />
+        <EntityTypeShape EntityType="SSKModel.Setting" Width="1.5" PointX="0.75" PointY="40" />
+        <AssociationConnector Association="SSKModel.FK_Timeslots_Settings" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

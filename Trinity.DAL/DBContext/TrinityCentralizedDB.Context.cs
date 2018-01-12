@@ -47,9 +47,9 @@ namespace Trinity.DAL.DBContext
         public virtual DbSet<QueueDetail> QueueDetails { get; set; }
         public virtual DbSet<Queue> Queues { get; set; }
         public virtual DbSet<Security_QA> Security_QA { get; set; }
-        public virtual DbSet<Setting> Settings { get; set; }
         public virtual DbSet<SMS_LOG> SMS_LOG { get; set; }
         public virtual DbSet<Timeslot> Timeslots { get; set; }
         public virtual DbSet<User_Profiles> User_Profiles { get; set; }
+        public virtual DbSet<Setting> Settings { get; set; }
     }
 }
