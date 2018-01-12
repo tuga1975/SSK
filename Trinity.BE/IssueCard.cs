@@ -22,12 +22,12 @@ namespace Trinity.BE
                 return Date_Of_Issue.HasValue ? Date_Of_Issue.Value.ToString("dd/MM/yyyy") : string.Empty;
             }
         }
-        public Nullable<System.DateTime> Expired_Date_Card { get; set; }
-        public string Expired_Date_Card_Txt
+        public Nullable<System.DateTime> Expired_Date { get; set; }
+        public string Expired_Date_Txt
         {
             get
             {
-                return Expired_Date_Card.HasValue ? Expired_Date_Card.Value.ToString("dd/MM/yyyy") : string.Empty;
+                return Expired_Date.HasValue ? Expired_Date.Value.ToString("dd/MM/yyyy") : string.Empty;
             }
         }
 

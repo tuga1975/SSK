@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -67,5 +68,9 @@ public static class Lib
             }
         }
         return convert;
+    }
+    public static string JsonString(this object data)
+    {
+        return JsonConvert.SerializeObject(data, Formatting.Indented, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
     }
 }

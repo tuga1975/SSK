@@ -304,6 +304,16 @@
     </div>
 </div>
 <script>
+    function OnPriterIssuedCardCompleted(status,item) {
+        if (status) {
+            item = JSON.parse(item);
+            $('#data-issuedcards tbody td img').remove();
+            $('#data-issuedcards tbody').prepend(api.DumpDataToTxt('<tr><td>{NRIC}</td><td>{Name}</td><td>{Date_Of_Issue_Txt}</td><td>{Expired_Date_Txt}</td><td>{Serial_Number}</td><td>{Status}</td><td  style="text-align:center;"><a href="javascript:ShowPriterIssuedCard();"><img style="cursor:pointer;" src="../images/printer.png"/></a></td></tr>', item))
+            $('[enterreprint]').css('display', 'none');
+        } else {
+            alert('Card enrollment failed. Please try again!');
+        }
+    }
     function showIssuedCards() {
         api.server.GetDataIssuedCards(function (data) {
             $('.form-supervisee .tab-pane').removeClass('fade').removeClass('show').removeClass('active');
@@ -311,16 +321,12 @@
             $('#myTab [data-toggle=tab]').removeClass('active');
             $('#myTab [data-toggle=tab][valid=issuedcards]').addClass('active');
             $.each(data, function (index, item) {
-                $('#data-issuedcards tbody').append(api.DumpDataToTxt('<tr><td>{NRIC}</td><td>{Name}</td><td>{Date_Of_Issue_Txt}</td><td>{Expired_Date_Card_Txt}</td><td>{Serial_Number}</td><td>{Status}</td><td style="text-align:center;">' + (index == 0 ?'<a href="javascript:ShowPriterIssuedCard();"><img style="cursor:pointer;" src="../images/printer.png"/></a>':'')+'</td></tr>', item));
+                $('#data-issuedcards tbody').append(api.DumpDataToTxt('<tr><td>{NRIC}</td><td>{Name}</td><td>{Date_Of_Issue_Txt}</td><td>{Expired_Date_Txt}</td><td>{Serial_Number}</td><td>{Status}</td><td style="text-align:center;">' + (index == 0 ?'<a href="javascript:ShowPriterIssuedCard();"><img style="cursor:pointer;" src="../images/printer.png"/></a>':'')+'</td></tr>', item));
             });
         });
     }
     function PriterIssuedCard() {
-        api.server.PriterIssuedCard($('[name="reprint"]').val(),function (item) {
-            $('#data-issuedcards tbody td img').remove();
-            $('#data-issuedcards tbody').prepend(api.DumpDataToTxt('<tr><td>{NRIC}</td><td>{Name}</td><td>{Date_Of_Issue_Txt}</td><td>{Expired_Date_Card_Txt}</td><td>{Serial_Number}</td><td>{Status}</td><td  style="text-align:center;"><a href="javascript:ShowPriterIssuedCard();"><img style="cursor:pointer;" src="../images/printer.png"/></a></td></tr>', item))
-            $('[enterreprint]').css('display', 'none');
-        });
+        api.server.PriterIssuedCard($('[name="reprint"]').val());
     }
     function ShowPriterIssuedCard() {
         $('[enterreprint]').css('display', 'block');
