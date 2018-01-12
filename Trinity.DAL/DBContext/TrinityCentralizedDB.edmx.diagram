@@ -4,36 +4,43 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="e17ce6b5c6f94759bc5b75d0af8983e3" Name="Diagram1">
-        <EntityTypeShape EntityType="TrinityCentralizedDBModel.AbsenceReporting" Width="1.5" PointX="3.75" PointY="34.125" />
-        <EntityTypeShape EntityType="TrinityCentralizedDBModel.ActionLog" Width="1.5" PointX="3" PointY="19.125" />
-        <EntityTypeShape EntityType="TrinityCentralizedDBModel.Address" Width="1.5" PointX="0.75" PointY="27.75" />
-        <EntityTypeShape EntityType="TrinityCentralizedDBModel.ApplicationDevice_Status" Width="1.5" PointX="5.75" PointY="1.875" />
-        <EntityTypeShape EntityType="TrinityCentralizedDBModel.Appointment" Width="1.5" PointX="6" PointY="17.5" />
-        <EntityTypeShape EntityType="TrinityCentralizedDBModel.Device" Width="1.5" PointX="5.75" PointY="4.875" />
-        <EntityTypeShape EntityType="TrinityCentralizedDBModel.EMAIL_LOG" Width="1.5" PointX="7.75" PointY="1.875" />
-        <EntityTypeShape EntityType="TrinityCentralizedDBModel.Holiday" Width="1.5" PointX="8.75" PointY="5.875" />
-        <EntityTypeShape EntityType="TrinityCentralizedDBModel.Label" Width="1.5" PointX="3" PointY="14.625" />
-        <EntityTypeShape EntityType="TrinityCentralizedDBModel.Membership_RoleClaims" Width="1.5" PointX="6" PointY="8.125" />
-        <EntityTypeShape EntityType="TrinityCentralizedDBModel.Membership_Roles" Width="1.5" PointX="3.75" PointY="8.25" />
-        <EntityTypeShape EntityType="TrinityCentralizedDBModel.Membership_UserClaims" Width="1.5" PointX="3" PointY="11.625" />
-        <EntityTypeShape EntityType="TrinityCentralizedDBModel.Membership_UserDevices" Width="1.5" PointX="3" PointY="47.75" />
-        <EntityTypeShape EntityType="TrinityCentralizedDBModel.Membership_UserLogins" Width="1.5" PointX="3" PointY="30.875" />
-        <EntityTypeShape EntityType="TrinityCentralizedDBModel.Membership_UserRoles" Width="1.5" PointX="6" PointY="22.125" />
-        <EntityTypeShape EntityType="TrinityCentralizedDBModel.Membership_Users" Width="1.5" PointX="0.75" PointY="19.5" />
-        <EntityTypeShape EntityType="TrinityCentralizedDBModel.Notification" Width="1.5" PointX="3" PointY="40.375" />
-        <EntityTypeShape EntityType="TrinityCentralizedDBModel.QueueDetail" Width="1.5" PointX="10.5" PointY="18.125" />
-        <EntityTypeShape EntityType="TrinityCentralizedDBModel.Queue" Width="1.5" PointX="8.25" PointY="17.875" />
-        <EntityTypeShape EntityType="TrinityCentralizedDBModel.Security_QA" Width="1.5" PointX="3" PointY="44.5" />
-        <EntityTypeShape EntityType="TrinityCentralizedDBModel.Setting" Width="1.5" PointX="1.5" PointY="0.75" />
-        <EntityTypeShape EntityType="TrinityCentralizedDBModel.SMS_LOG" Width="1.5" PointX="8.75" PointY="8.875" />
-        <EntityTypeShape EntityType="TrinityCentralizedDBModel.Timeslot" Width="1.5" PointX="3.75" PointY="4" />
+      <Diagram DiagramId="e17ce6b5c6f94759bc5b75d0af8983e3" Name="Diagram1" ZoomLevel="99">
+        <EntityTypeShape EntityType="TrinityCentralizedDBModel.AbsenceReporting" Width="1.5" PointX="3.75" PointY="28.125" />
+        <EntityTypeShape EntityType="TrinityCentralizedDBModel.ActionLog" Width="1.5" PointX="3" PointY="24.875" />
+        <EntityTypeShape EntityType="TrinityCentralizedDBModel.Address" Width="1.5" PointX="6.75" PointY="26.875" />
+        <EntityTypeShape EntityType="TrinityCentralizedDBModel.ApplicationDevice_Status" Width="1.5" PointX="0.75" PointY="0.75" />
+        <EntityTypeShape EntityType="TrinityCentralizedDBModel.Appointment" Width="1.5" PointX="6" PointY="18.625" />
+        <EntityTypeShape EntityType="TrinityCentralizedDBModel.APS_USER_ACT_LOG" Width="1.5" PointX="11.25" PointY="23" />
+        <EntityTypeShape EntityType="TrinityCentralizedDBModel.Device" Width="1.5" PointX="0.75" PointY="3.75" />
+        <EntityTypeShape EntityType="TrinityCentralizedDBModel.EMAIL_LOG" Width="1.5" PointX="5.75" PointY="0.75" />
+        <EntityTypeShape EntityType="TrinityCentralizedDBModel.Holiday" Width="1.5" PointX="5.75" PointY="4.75" />
+        <EntityTypeShape EntityType="TrinityCentralizedDBModel.IssuedCard" Width="1.5" PointX="3" PointY="18.125" />
+        <EntityTypeShape EntityType="TrinityCentralizedDBModel.Label" Width="1.5" PointX="3" PointY="13.625" />
+        <EntityTypeShape EntityType="TrinityCentralizedDBModel.Membership_RoleClaims" Width="1.5" PointX="6" PointY="15.25" />
+        <EntityTypeShape EntityType="TrinityCentralizedDBModel.Membership_Roles" Width="1.5" PointX="3.75" PointY="22.375" />
+        <EntityTypeShape EntityType="TrinityCentralizedDBModel.Membership_UserClaims" Width="1.5" PointX="3" PointY="10.75" />
+        <EntityTypeShape EntityType="TrinityCentralizedDBModel.Membership_UserDevices" Width="1.5" PointX="3" PointY="40.75" />
+        <EntityTypeShape EntityType="TrinityCentralizedDBModel.Membership_UserLogins" Width="1.5" PointX="3" PointY="43.875" />
+        <EntityTypeShape EntityType="TrinityCentralizedDBModel.Membership_UserRoles" Width="1.5" PointX="6" PointY="23.25" />
+        <EntityTypeShape EntityType="TrinityCentralizedDBModel.Membership_Users" Width="1.5" PointX="0.75" PointY="20.5" />
+        <EntityTypeShape EntityType="TrinityCentralizedDBModel.Notification" Width="1.5" PointX="3" PointY="46.625" />
+        <EntityTypeShape EntityType="TrinityCentralizedDBModel.QueueDetail" Width="1.5" PointX="10.5" PointY="17.25" />
+        <EntityTypeShape EntityType="TrinityCentralizedDBModel.Queue" Width="1.5" PointX="8.25" PointY="17" />
+        <EntityTypeShape EntityType="TrinityCentralizedDBModel.Security_QA" Width="1.5" PointX="3" PointY="50.75" />
+        <EntityTypeShape EntityType="TrinityCentralizedDBModel.Setting" Width="1.5" PointX="1.5" PointY="28.75" />
+        <EntityTypeShape EntityType="TrinityCentralizedDBModel.SMS_LOG" Width="1.5" PointX="0.75" PointY="6.75" />
+        <EntityTypeShape EntityType="TrinityCentralizedDBModel.Timeslot" Width="1.5" PointX="3.75" PointY="3" />
+        <EntityTypeShape EntityType="TrinityCentralizedDBModel.User_Profiles" Width="1.5" PointX="9" PointY="20.25" />
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_Appointments_AbsenceReporting" />
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_ActionLog_Membership_Users" />
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_ActionLog_Membership_Users1" />
+        <AssociationConnector Association="TrinityCentralizedDBModel.FK_User_Profiles_Addresses2" />
+        <AssociationConnector Association="TrinityCentralizedDBModel.FK_User_Profiles_Addresses3" />
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_Appointments_Membership_Users" />
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_Appointments_Timeslots" />
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_Queues_Appointments" />
+        <AssociationConnector Association="TrinityCentralizedDBModel.FK_APS_USER_ACT_LOG_User_Profiles" />
+        <AssociationConnector Association="TrinityCentralizedDBModel.FK_IssuedCards_Membership_Users" />
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_Labels_Membership_Users" />
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_Membership_RoleClaims_Membership_Roles" />
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId" />
@@ -44,14 +51,9 @@
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_Notifications_Membership_Users" />
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_Notifications_Membership_Users1" />
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_PWD_QA_Membership_Users" />
+        <AssociationConnector Association="TrinityCentralizedDBModel.FK_User_Profiles_Membership_Users" />
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_QueueDetails_Queues" />
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_Timeslots_Settings" />
-        <EntityTypeShape EntityType="TrinityCentralizedDBModel.IssuedCard" Width="1.5" PointX="3" PointY="22.75" />
-        <EntityTypeShape EntityType="TrinityCentralizedDBModel.User_Profiles" Width="1.5" PointX="6" PointY="25.25" />
-        <AssociationConnector Association="TrinityCentralizedDBModel.FK_User_Profiles_Addresses2" />
-        <AssociationConnector Association="TrinityCentralizedDBModel.FK_User_Profiles_Addresses3" />
-        <AssociationConnector Association="TrinityCentralizedDBModel.FK_IssuedCards_Membership_Users" />
-        <AssociationConnector Association="TrinityCentralizedDBModel.FK_User_Profiles_Membership_Users" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

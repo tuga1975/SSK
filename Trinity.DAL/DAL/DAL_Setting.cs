@@ -71,10 +71,10 @@ namespace Trinity.DAL
             return _localUnitOfWork.DataContext.Timeslots.Where(t => t.DateOfWeek == dayOfWeek).ToList();
         }
 
-        public void GenerateTimeslot(string createBy)
+        public void GenerateTimeslots(string createdBy)
         {
             SettingModel setting = GetSetting();
-
+            //SettingModel setting = GetSetting("Pending");
             // Check if allow to change timeslot
             if (!setting.Status.Equals(EnumSettingStatuses.Pending, StringComparison.InvariantCultureIgnoreCase) )
             {
@@ -83,30 +83,29 @@ namespace Trinity.DAL
             }
 
             // Delete old timeslot
-            List<Timeslot> timeslots = _localUnitOfWork.DataContext.Timeslots.Where(t => t.Setting_ID == setting.Setting_ID).ToList();
-            _localUnitOfWork.DataContext.Timeslots.RemoveRange(timeslots);
             _localUnitOfWork.GetRepository<Timeslot>().Delete(t=>t.Setting_ID == setting.Setting_ID);
+            _localUnitOfWork.Save();
 
             //mon
-            GenerateTimeSlotAndInsert((int)EnumDayOfWeek.Monday, setting.Monday, createBy);
+            GenerateTimeSlotAndInsert((int)EnumDayOfWeek.Monday, setting.Monday, createdBy);
 
             //tue
-            GenerateTimeSlotAndInsert((int)EnumDayOfWeek.Tuesday, setting.Tuesday, createBy);
+            GenerateTimeSlotAndInsert((int)EnumDayOfWeek.Tuesday, setting.Tuesday, createdBy);
 
             //wed
-            GenerateTimeSlotAndInsert((int)EnumDayOfWeek.Wednesday, setting.WednesDay, createBy);
+            GenerateTimeSlotAndInsert((int)EnumDayOfWeek.Wednesday, setting.WednesDay, createdBy);
 
             //thu
-            GenerateTimeSlotAndInsert((int)EnumDayOfWeek.Thursday, setting.Thursday, createBy);
+            GenerateTimeSlotAndInsert((int)EnumDayOfWeek.Thursday, setting.Thursday, createdBy);
 
             //fri
-            GenerateTimeSlotAndInsert((int)EnumDayOfWeek.Friday, setting.Friday, createBy);
+            GenerateTimeSlotAndInsert((int)EnumDayOfWeek.Friday, setting.Friday, createdBy);
 
             //sat
-            GenerateTimeSlotAndInsert((int)EnumDayOfWeek.Saturday, setting.Saturday, createBy);
+            GenerateTimeSlotAndInsert((int)EnumDayOfWeek.Saturday, setting.Saturday, createdBy);
 
             //sun
-            GenerateTimeSlotAndInsert((int)EnumDayOfWeek.Sunday, setting.Sunday, createBy);
+            GenerateTimeSlotAndInsert((int)EnumDayOfWeek.Sunday, setting.Sunday, createdBy);
 
         }
 
@@ -181,8 +180,8 @@ namespace Trinity.DAL
         {
             settingBE.Setting_ID = setting.Setting_ID;
             settingBE.Status = setting.Status;
-            settingBE.WeekNum = setting.WeekNum.Value;
-            settingBE.Year = setting.Year.Value;
+            settingBE.WeekNum = setting.WeekNum;
+            settingBE.Year = setting.Year;
 
             settingBE.Mon_Open_Time = setting.Mon_Open_Time;
             settingBE.Mon_Close_Time = setting.Mon_Close_Time;
@@ -284,7 +283,16 @@ namespace Trinity.DAL
         }
         private BE.SettingModel GetSetting()
         {
-            var dbSeting = _localUnitOfWork.DataContext.Settings.Where(s => s.Status == "Active").FirstOrDefault();
+            var dbSeting = _localUnitOfWork.DataContext.Settings.Where(s => s.Status.Equals(EnumSettingStatuses.Pending, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
+            var settingBE = new BE.SettingBE();
+            SetInfoToSettingBE(settingBE, dbSeting);
+
+            return new BE.SettingBE().ToSettingModel(settingBE);
+        }
+
+        private BE.SettingModel GetSetting(string status)
+        {
+            var dbSeting = _localUnitOfWork.DataContext.Settings.Where(s => s.Status == status).FirstOrDefault();
             var settingBE = new BE.SettingBE();
             SetInfoToSettingBE(settingBE, dbSeting);
 
@@ -305,7 +313,7 @@ namespace Trinity.DAL
 
             _localUnitOfWork.Save();
             //add new
-            GenerateTimeslot(createBy);
+            GenerateTimeslots(createBy);
 
 
         }

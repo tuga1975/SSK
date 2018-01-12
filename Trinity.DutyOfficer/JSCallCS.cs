@@ -172,9 +172,32 @@ namespace DutyOfficer
             var dalAppointment = new DAL_Appointments();
             List<Appointment> data = dalAppointment.GetAllAppointments();
 
+            //foreach(var item in data)
+            //{
+            //    item.TimeSlot = GetDurationBetweenTwoTimespan(item.StartTime.Value, item.EndTime.Value);
+            //}
+
+            object result = null;
+            if (data != null)
+            {
+                result = JsonConvert.SerializeObject(data, Formatting.Indented,
+                    new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
+            }
+            _web.InvokeScript("getDataCallback", result);
+        }
+
+        public void GetStatistics()
+        {
+            var dalAppointment = new DAL_Appointments();
+            List<Statistics> data = dalAppointment.GetAllStatistics();
+
             foreach(var item in data)
             {
-                item.TimeSlot = GetDurationBetweenTwoTimespan(item.StartTime.Value, item.EndTime.Value);
+                item.Max = dalAppointment.GetMaximumNumberOfTimeslot(item.Timeslot_ID);
+                item.Booked = dalAppointment.CountAppointmentBookedByTimeslot(item.Timeslot_ID);
+                item.Reported = dalAppointment.CountAppointmentReportedByTimeslot(item.Timeslot_ID);
+                item.No_Show = dalAppointment.CountAppointmentNoShowByTimeslot(item.Timeslot_ID);
+                item.Available = item.Max - item.Booked - item.Reported - item.No_Show;
             }
 
             object result = null;
@@ -185,6 +208,7 @@ namespace DutyOfficer
             }
             _web.InvokeScript("getDataCallback", result);
         }
+
         private TimeSpan GetDurationBetweenTwoTimespan(TimeSpan startTime, TimeSpan endTime)
         {
             TimeSpan duration = new TimeSpan(endTime.Ticks - startTime.Ticks);
