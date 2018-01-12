@@ -372,7 +372,7 @@ namespace DutyOfficer
                     Label_Type = EnumLabelType.MUB,
                     Date = DateTime.Now.ToString("dd/MM/yyyy"),
                     CompanyName = CommonConstants.COMPANY_NAME,
-                    LastStation = EnumStations.DUTYOFFICER,
+                    //LastStation = EnumStations.DUTYOFFICER,
                     MarkingNo = CommonUtil.GenerateMarkingNumber(),
                     DrugType = "NA",
                     ReprintReason = reason
@@ -492,7 +492,7 @@ namespace DutyOfficer
                 Label_Type = EnumLabelType.MUB,
                 Date = DateTime.Now.ToString("dd/MM/yyyy"),
                 CompanyName = CommonConstants.COMPANY_NAME,
-                LastStation = EnumStations.DUTYOFFICER,
+                //LastStation = EnumStations.DUTYOFFICER,
                 MarkingNo = CommonUtil.GenerateMarkingNumber(),
                 DrugType = "NA",
                 ReprintReason = reason
@@ -541,7 +541,7 @@ namespace DutyOfficer
             };
 
             var dalLabel = new DAL_Labels();
-            dalLabel.UpdateLabel(labelInfo, labelInfo.UserId);
+            dalLabel.UpdateLabel(labelInfo, labelInfo.UserId, EnumLabelType.MUB);
             //this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').show(); ; ");
             //this._web.RunScript("$('.status-text').css('color','#000').text('Please collect your labels');");
 

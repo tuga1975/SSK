@@ -42,16 +42,16 @@ namespace Trinity.Common.DeviceMonitor
         }
         #endregion
 
-        public event EventHandler<PrintMUBAndTTLabelsSucceedEventArgs> OnPrintLabelSucceeded;
+        public event EventHandler<PrintMUBAndTTLabelsSucceedEventArgs> OnPrintMUBLabelSucceeded;
         public event EventHandler<ExceptionArgs> OnMonitorException;
-        public event Action OnPrintBarcodeSucceeded;
+        public event EventHandler<PrintMUBAndTTLabelsSucceedEventArgs> OnPrintTTLabelSucceeded;
 
-        protected virtual void RaisePrintLabelSucceededEvent(PrintMUBAndTTLabelsSucceedEventArgs e)
+        protected virtual void RaisePrintMUBLabelSucceededEvent(PrintMUBAndTTLabelsSucceedEventArgs e)
         {
             // Make a temporary copy of the event to avoid possibility of
             // a race condition if the last subscriber unsubscribes
             // immediately after the null check and before the event is raised.
-            OnPrintLabelSucceeded?.Invoke(this, e);
+            OnPrintMUBLabelSucceeded?.Invoke(this, e);
         }
 
         protected virtual void RaiseMonitorExceptionEvent(ExceptionArgs e)
@@ -62,19 +62,12 @@ namespace Trinity.Common.DeviceMonitor
             OnMonitorException?.Invoke(this, e);
         }
 
-        protected virtual void RaisePrintBarcodeSucceededEvent()
+        protected virtual void RaisePrintTTLabelSucceededEvent(PrintMUBAndTTLabelsSucceedEventArgs e)
         {
             // Make a temporary copy of the event to avoid possibility of
             // a race condition if the last subscriber unsubscribes
             // immediately after the null check and before the event is raised.
-            Action handler = OnPrintBarcodeSucceeded;
-
-            // Event will be null if there are no subscribers
-            if (handler != null)
-            {
-                // Use the () operator to raise the event.
-                handler();
-            }
+            OnPrintTTLabelSucceeded?.Invoke(this, e);
         }
 
         public void PrintBarcodeLabel(LabelInfo labelInfo)
@@ -113,7 +106,7 @@ namespace Trinity.Common.DeviceMonitor
             if (printerUtils.PrintTTLabel(infoTTLabel))
             {
                 // raise succeeded event
-                RaisePrintBarcodeSucceededEvent();
+                RaisePrintTTLabelSucceededEvent(new PrintMUBAndTTLabelsSucceedEventArgs(labelInfo));
             }
             else
             {
@@ -181,7 +174,7 @@ namespace Trinity.Common.DeviceMonitor
             if (printerUtils.PrintMUBLabel(filePath))
             {
                 // raise succeeded event
-                RaisePrintLabelSucceededEvent(new PrintMUBAndTTLabelsSucceedEventArgs(labelInfo));
+                RaisePrintMUBLabelSucceededEvent(new PrintMUBAndTTLabelsSucceedEventArgs(labelInfo));
             }
             else
             {
