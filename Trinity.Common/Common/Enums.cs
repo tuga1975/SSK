@@ -70,7 +70,7 @@ public enum EnumAbsenceReasons
 public static class EnumQueueStatuses
 {
 
-    [Custom(Color ="red")]
+    [Custom(Color = "red")]
     public static string Missed = "Missed";
     [Custom(Color = "white")]
     public const string Waiting = "Waiting";
@@ -250,6 +250,8 @@ public static class EnumStations
     public const string APS = "APS";
     public const string HSA = "HSA";
     public const string ESP = "ESP";
+    public const string ENROLMENT = "ENROLMENT";
+    public const string DUTYOFFICER = "DUTYOFFICER";
 
     public static List<string> GetListStation()
     {

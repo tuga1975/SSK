@@ -611,7 +611,7 @@ namespace Enrolment
             byte[] _left = Convert.FromBase64String(left);
             byte[] _right = Convert.FromBase64String(right);
 
-            byte[] _leftImg = Convert.FromBase64String(left);
+            byte[] _leftImg = Convert.FromBase64String(leftImg);
             byte[] _rightImg = Convert.FromBase64String(rightImg);
             new DAL_Membership_Users().UpdateFingerprint(currentEditUser.UserProfile.UserId, _left, _right);
             new DAL_UserProfile().UpdateFingerprintImg(currentEditUser.UserProfile.UserId, _leftImg, _rightImg);
