@@ -372,7 +372,7 @@ namespace DutyOfficer
                     Label_Type = EnumLabelType.MUB,
                     Date = DateTime.Now.ToString("dd/MM/yyyy"),
                     CompanyName = CommonConstants.COMPANY_NAME,
-                    LastStation = EnumStations.DUTYOFFICER,
+                    //LastStation = EnumStations.DUTYOFFICER,
                     MarkingNo = CommonUtil.GenerateMarkingNumber(),
                     DrugType = "NA",
                     ReprintReason = reason
@@ -492,7 +492,7 @@ namespace DutyOfficer
                 Label_Type = EnumLabelType.MUB,
                 Date = DateTime.Now.ToString("dd/MM/yyyy"),
                 CompanyName = CommonConstants.COMPANY_NAME,
-                LastStation = EnumStations.DUTYOFFICER,
+                //LastStation = EnumStations.DUTYOFFICER,
                 MarkingNo = CommonUtil.GenerateMarkingNumber(),
                 DrugType = "NA",
                 ReprintReason = reason

@@ -36,7 +36,7 @@ namespace DutyOfficer.CodeBehind
                 System.Threading.Thread.Sleep(1500);
 
                 PrinterMonitor printerMonitor = PrinterMonitor.Instance;
-                printerMonitor.OnPrintLabelSucceeded += OnPrintMUBAndTTLabelsSucceeded;//RaisePrintMUBAndTTLabelsSucceededEvent;
+                printerMonitor.OnPrintMUBLabelSucceeded += OnPrintMUBAndTTLabelsSucceeded;//RaisePrintMUBAndTTLabelsSucceededEvent;
                 printerMonitor.OnMonitorException += OnPrintMUBAndTTLabelsException;
 
                 BarcodePrinterUtils barcodeScannerUtils = BarcodePrinterUtils.Instance;
