@@ -175,7 +175,8 @@ namespace SSK
                     {
                         User = dalUser.GetUserByUserId(user.UserId, true),
                         UserProfile = dalUserprofile.GetUserProfileByUserId(user.UserId, true),
-                        Addresses = dalUserprofile.GetAddressByUserId(user.UserId, true)
+                        Addresses = dalUserprofile.GetAddressByUserId(user.UserId, true),
+                        OtherAddress = dalUserprofile.GetAddressByUserId(user.UserId, true, true)
                     };
 
                     //profile model 

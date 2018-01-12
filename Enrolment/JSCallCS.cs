@@ -3,6 +3,7 @@ using Microsoft.AspNet.Identity;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -338,10 +339,10 @@ namespace Enrolment
                 data.UserProfile.Other_Address_ID = other_Address_ID;
                 data.UserProfile.User_Photo1 = profileModel.UserProfile.User_Photo1;
                 data.UserProfile.User_Photo2 = profileModel.UserProfile.User_Photo2;
-                
+
                 data.User.LeftThumbFingerprint = profileModel.User.LeftThumbFingerprint;
                 data.User.RightThumbFingerprint = profileModel.User.RightThumbFingerprint;
-                
+
                 // add some some old data not change in form
                 data.UserProfile.SerialNumber = tempUser.UserProfile.SerialNumber;
                 data.UserProfile.DateOfIssue = tempUser.UserProfile.DateOfIssue;
@@ -403,12 +404,12 @@ namespace Enrolment
 
                 var profileModel = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
                 var tempProfileModel = (Trinity.BE.ProfileModel)session["TEMP_USER"];
-                
+
                 var photo1 = tempProfileModel.UserProfile.User_Photo1 != null ? Convert.ToBase64String(tempProfileModel.UserProfile.User_Photo1) : null;
                 var photo2 = tempProfileModel.UserProfile.User_Photo2 != null ? Convert.ToBase64String(tempProfileModel.UserProfile.User_Photo2) : null;
                 ////////
                 session["TempPhotos"] = new Tuple<string, string>(photo1, photo2);
-                   ////////
+                ////////
                 data.UserProfile.User_Photo1 = profileModel.UserProfile.User_Photo1;
                 data.UserProfile.User_Photo2 = profileModel.UserProfile.User_Photo2;
                 data.UserProfile.Residential_Addess_ID = profileModel.UserProfile.Residential_Addess_ID;
@@ -416,12 +417,14 @@ namespace Enrolment
                 session[CommonConstants.CURRENT_EDIT_USER] = data;
 
             }
-            catch {
+            catch
+            {
 
             }
         }
 
-        public void ReplaceOldPhotos() {
+        public void ReplaceOldPhotos()
+        {
             Session session = Session.Instance;
             var profileModel = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
             var tempUser = (Trinity.BE.ProfileModel)session["TEMP_USER"];
@@ -601,20 +604,26 @@ namespace Enrolment
         private int FingerprintLeftRight = 0;
         private int FingerprintNumber = 0;
 
-        public void SubmitUpdateFingerprints(string left, string right)
+        public void SubmitUpdateFingerprints(string left, string leftImg, string right, string rightImg)
         {
             Session session = Session.Instance;
             var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
             byte[] _left = Convert.FromBase64String(left);
             byte[] _right = Convert.FromBase64String(right);
+
+            byte[] _leftImg = Convert.FromBase64String(leftImg);
+            byte[] _rightImg = Convert.FromBase64String(rightImg);
             new DAL_Membership_Users().UpdateFingerprint(currentEditUser.UserProfile.UserId, _left, _right);
+            new DAL_UserProfile().UpdateFingerprintImg(currentEditUser.UserProfile.UserId, _leftImg, _rightImg);
             if (_left.Length > 0)
             {
                 currentEditUser.User.LeftThumbFingerprint = _left;
+                currentEditUser.UserProfile.LeftThumbImage = _leftImg;
             }
             if (_right.Length > 0)
             {
                 currentEditUser.User.RightThumbFingerprint = _right;
+                currentEditUser.UserProfile.RightThumbImage = _rightImg;
             }
             EditSupervisee(currentEditUser.UserProfile.UserId);
         }
@@ -623,18 +632,18 @@ namespace Enrolment
             FingerprintNumber = 0;
             Session session = Session.Instance;
             var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
-            this._web.LoadPageHtml("UpdateSuperviseeFingerprint.html", new object[] { currentEditUser.User.LeftThumbFingerprint == null ? null : Convert.ToBase64String(currentEditUser.User.LeftThumbFingerprint), currentEditUser.User.RightThumbFingerprint == null ? null : Convert.ToBase64String(currentEditUser.User.RightThumbFingerprint) });
+            this._web.LoadPageHtml("UpdateSuperviseeFingerprint.html", new object[] { currentEditUser.UserProfile.LeftThumbImage == null ? null : Convert.ToBase64String(currentEditUser.UserProfile.LeftThumbImage), currentEditUser.UserProfile.RightThumbImage == null ? null : Convert.ToBase64String(currentEditUser.UserProfile.RightThumbImage) });
         }
         public void CancelUpdateFingerprints()
         {
-            FingerprintCapture.Instance.Dispose();
+            FingerprintReaderUtils.Instance.DisposeCapture();
             Session session = Session.Instance;
             EditSupervisee(((Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER]).UserProfile.UserId);
         }
         public void CaptureFingerprint(int LeftOrRight)
         {
             FingerprintLeftRight = LeftOrRight;
-            FingerprintCapture.Instance.StartCapture(OnPutOn, OnTakeOff, UpdateScreenImage, OnFakeSource, OnEnrollmentComplete);
+            FingerprintReaderUtils.Instance.StartCapture(OnPutOn, OnTakeOff, UpdateScreenImage, OnFakeSource, OnEnrollmentComplete);
         }
 
         #region Event Capture Fingerprint
@@ -652,6 +661,7 @@ namespace Enrolment
         {
             if (bSuccess)
             {
+                _web.InvokeScript("setDataFingerprint", FingerprintLeftRight, Convert.ToBase64String(FingerprintReaderUtils.Instance.GetTemplate()));
                 _web.InvokeScript("captureFingerprintMessage", FingerprintLeftRight, "Your fingerprint was scanned successfully!", EnumColors.Green);
                 FingerprintNumber = 0;
             }
@@ -662,7 +672,14 @@ namespace Enrolment
                 if (FingerprintNumber >= 3)
                     _web.InvokeScript("moreThan3Fingerprint");
             }
-            FingerprintCapture.Instance.Dispose();
+            try
+            {
+                FingerprintReaderUtils.Instance.DisposeCapture();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error in Trinity.Enrolment.JSCallCS.OnEnrollmentComplete. Details: " + ex.Message);
+            }
         }
         private bool OnFakeSource(Futronic.SDKHelper.FTR_PROGRESS Progress)
         {
@@ -684,7 +701,7 @@ namespace Enrolment
 
         #region Issued Cards
         private string reprintTxt = string.Empty;
-        public List<Trinity.BE.IssueCard> GetDataIssuedCards()
+        public object[] GetDataIssuedCards()
         {
             Session session = Session.Instance;
             var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
@@ -700,7 +717,7 @@ namespace Enrolment
             //    Status = EnumIssuedCards.Active,
             //    UserId = currentEditUser.Membership_Users.UserId
             //});
-            return array;
+            return new object[] { array, currentEditUser.UserProfile.UserId };
         }
         public void PriterIssuedCard(string reprint)
         {
@@ -737,7 +754,7 @@ namespace Enrolment
             }
             else
             {
-                _web.InvokeScript("OnPriterIssuedCardCompleted",false,null);
+                _web.InvokeScript("OnPriterIssuedCardCompleted", false, null);
             }
         }
         #endregion

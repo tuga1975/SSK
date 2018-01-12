@@ -60,6 +60,8 @@ namespace Trinity.DAL
                     Gender = dbUserProfile.Gender,
                     Race = dbUserProfile.Race,
                     SerialNumber = dbUserProfile.Serial_Number,
+                    LeftThumbImage = dbUserProfile.LeftThumb_Photo,
+                    RightThumbImage = dbUserProfile.RightThumb_Photo,
                 };
                 return userProfile;
             }
@@ -233,6 +235,20 @@ namespace Trinity.DAL
             }
 
             return null;
+        }
+
+        public void UpdateFingerprintImg(string userId, byte[] left, byte[] right)
+        {
+            User_Profiles user = this._localUnitOfWork.DataContext.User_Profiles.FirstOrDefault(d => d.UserId == userId);
+            if (left != null && left.Length > 0)
+                user.LeftThumb_Photo = left;
+            if (right != null && right.Length > 0)
+                user.RightThumb_Photo = right;
+            if ((left != null && left.Length > 0) || (right != null && right.Length > 0))
+            {
+                this._localUnitOfWork.GetRepository<User_Profiles>().Update(user);
+                this._localUnitOfWork.Save();
+            }
         }
     }
 }
