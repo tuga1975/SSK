@@ -13,21 +13,22 @@ namespace Trinity.DAL
         Local_UnitOfWork _localUnitOfWork = new Local_UnitOfWork();
         Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
 
-        public Label GetLabelByUserId(string userId)
+        public Label GetLabelByUserIdAndType(string userId, string labelType)
         {
-            return _localUnitOfWork.DataContext.Labels.FirstOrDefault(d => d.UserId == userId);
+            return _localUnitOfWork.DataContext.Labels.FirstOrDefault(d => d.UserId == userId && d.Label_Type.Equals(labelType));
         }
 
-        public bool UpdateLabel(BE.Label model, string userId)
+        public bool UpdateLabel(BE.Label model, string userId, string labelType)
         {
             try
             {
                 Label dbLabel;
                 var locallabelRepo = _localUnitOfWork.GetRepository<Label>();
-                dbLabel = GetLabelByUserId(userId);
+                dbLabel = GetLabelByUserIdAndType(userId, labelType);
                 if (dbLabel == null)
                 {
                     dbLabel = new Label();
+                    dbLabel.Label_ID = Guid.NewGuid();
                     dbLabel.Label_Type = model.Label_Type;
                     dbLabel.CompanyName = model.CompanyName;
                     dbLabel.MarkingNo = model.MarkingNo;

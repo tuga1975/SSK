@@ -19,7 +19,7 @@ namespace SSA
     {
         private WebBrowser _web = null;
         private Type _thisType = null;
-        private CodeBehind.PrintMUBAndTTLabels _printTTLabel;
+        private CodeBehind.PrintMUBAndTTLabels _printMUBAndTTLabel;
 
         public event EventHandler<NRICEventArgs> OnNRICFailed;
         public event EventHandler<ShowMessageEventArgs> OnShowMessage;
@@ -30,10 +30,12 @@ namespace SSA
         {
             this._web = web;
             _thisType = this.GetType();
-            _printTTLabel = new CodeBehind.PrintMUBAndTTLabels(web);
-            _printTTLabel.OnPrintMUBAndTTLabelsSucceeded += PrintMUBAndTTLabels_OnPrintTTLabelSucceeded;
-            _printTTLabel.OnPrintMUBAndTTLabelsFailed += PrintMUBAndTTLabels_OnPrintTTLabelFailed;
-            _printTTLabel.OnPrintMUBAndTTLabelsException += PrintMUBAndTTLabels_OnPrintTTLabelException;
+            _printMUBAndTTLabel = new CodeBehind.PrintMUBAndTTLabels(web);
+            _printMUBAndTTLabel.OnPrintMUBLabelsSucceeded += PrintMUBLabels_OnPrintMUBLabelSucceeded;
+            _printMUBAndTTLabel.OnPrintMUBLabelsFailed += PrintMUBLabels_OnPrintMUBLabelFailed;
+            _printMUBAndTTLabel.OnPrintTTLabelsSucceeded += PrintTTLabels_OnPrintTTLabelSucceeded;
+            _printMUBAndTTLabel.OnPrintTTLabelsFailed += PrintTTLabels_OnPrintTTLabelFailed;
+            _printMUBAndTTLabel.OnPrintMUBAndTTLabelsException += PrintMUBAndTTLabels_OnPrintTTLabelException;
         }
 
         #region virtual events
@@ -113,15 +115,15 @@ namespace SSA
 
             var labelInfo = JsonConvert.DeserializeObject<LabelInfo>(jsonModel);
             labelInfo.BitmapLabel = bitmapBytes;
-            _printTTLabel.Start(labelInfo);
+            _printMUBAndTTLabel.Start(labelInfo);
         }
 
-        private void PrintMUBAndTTLabels_OnPrintTTLabelSucceeded(object sender, PrintMUBAndTTLabelsSucceedEventArgs e)
+        private void PrintMUBLabels_OnPrintMUBLabelSucceeded(object sender, PrintMUBAndTTLabelsSucceedEventArgs e)
         {
             var labelInfo = new Trinity.BE.Label
             {
                 UserId = e.LabelInfo.UserId,
-                Label_Type = e.LabelInfo.Label_Type,
+                Label_Type = EnumLabelType.MUB,
                 CompanyName = e.LabelInfo.CompanyName,
                 MarkingNo = e.LabelInfo.MarkingNo,
                 DrugType = e.LabelInfo.DrugType,
@@ -135,19 +137,55 @@ namespace SSA
             };
 
             var dalLabel = new DAL_Labels();
-            dalLabel.UpdateLabel(labelInfo, labelInfo.UserId);
+            dalLabel.UpdateLabel(labelInfo, labelInfo.UserId, EnumLabelType.MUB);
             this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').show(); ; ");
             this._web.RunScript("$('.status-text').css('color','#000').text('Please collect your labels');");
 
             DeleteQRCodeImageFileTemp();
         }
 
-        private void PrintMUBAndTTLabels_OnPrintTTLabelFailed(object sender, CodeBehind.PrintMUBAndTTLabelsEventArgs e)
+        private void PrintMUBLabels_OnPrintMUBLabelFailed(object sender, CodeBehind.PrintMUBAndTTLabelsEventArgs e)
         {
             this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').hide(); ; ");
             this._web.RunScript("$('.status-text').css('color','#000').text('Sent problem to Duty Officer. Please wait to check !');");
-            MessageBox.Show("Unable to print labels\nPlease report to the Duty Officer", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            APIUtils.SignalR.SendNotificationToDutyOfficer("MUB & TT", "Don't print MUB & TT, Please check !", NotificationType.Error, EnumStations.SSA);
+            MessageBox.Show("Unable to print MUB labels\nPlease report to the Duty Officer", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            APIUtils.SignalR.SendNotificationToDutyOfficer("Print MUB Label", "Don't print MUB, Please check !", NotificationType.Error, EnumStations.SSA);
+
+            DeleteQRCodeImageFileTemp();
+            LogOut();
+        }
+
+        private void PrintTTLabels_OnPrintTTLabelSucceeded(object sender, PrintMUBAndTTLabelsSucceedEventArgs e)
+        {
+            var labelInfo = new Trinity.BE.Label
+            {
+                UserId = e.LabelInfo.UserId,
+                Label_Type = EnumLabelType.TT,
+                CompanyName = e.LabelInfo.CompanyName,
+                MarkingNo = e.LabelInfo.MarkingNo,
+                //DrugType = e.LabelInfo.DrugType,
+                NRIC = e.LabelInfo.NRIC,
+                Name = e.LabelInfo.Name,
+                Date = Convert.ToDateTime(e.LabelInfo.Date),
+                LastStation = e.LabelInfo.LastStation,
+                PrintCount = e.LabelInfo.PrintCount,
+                ReprintReason = e.LabelInfo.ReprintReason
+            };
+
+            var dalLabel = new DAL_Labels();
+            dalLabel.UpdateLabel(labelInfo, labelInfo.UserId, EnumLabelType.TT);
+            this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').show(); ; ");
+            this._web.RunScript("$('.status-text').css('color','#000').text('Please collect your labels');");
+
+            DeleteQRCodeImageFileTemp();
+        }
+
+        private void PrintTTLabels_OnPrintTTLabelFailed(object sender, CodeBehind.PrintMUBAndTTLabelsEventArgs e)
+        {
+            this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').hide(); ; ");
+            this._web.RunScript("$('.status-text').css('color','#000').text('Sent problem to Duty Officer. Please wait to check !');");
+            MessageBox.Show("Unable to print TT labels\nPlease report to the Duty Officer", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            APIUtils.SignalR.SendNotificationToDutyOfficer("Print TT Label", "Don't print MUB, Please check !", NotificationType.Error, EnumStations.SSA);
 
             DeleteQRCodeImageFileTemp();
             LogOut();
