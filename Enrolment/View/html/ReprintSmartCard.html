@@ -50,7 +50,7 @@
     api.server.GetDataIssuedCards(function (data) {
         UserID = data[1];
         $.each(data[0], function (index, item) {
-            $('#data-issuedcards tbody').append(api.DumpDataToTxt('<tr><td>{NRIC}</td><td>{Name}</td><td>{Date_Of_Issue_Txt}</td><td>{Expired_Date_Txt}</td><td>{Serial_Number}</td><td>{Status}</td><td style="text-align:center;">' + (index == 0 ? '<a href="javascript:ShowPriterIssuedCard();"><img style="cursor:pointer;" src="../images/printer.png"/></a>' : '') + '</td></tr>', item));
+            $('#data-issuedcards tbody').append(api.DumpDataToTxt('<tr><td>{NRIC}</td><td>{Name}</td><td>{Date_Of_Issue_Txt}</td><td>{Expired_Date_Txt}</td><td>{Serial_Number}</td><td reprintsmartcard-status>{Status}</td><td style="text-align:center;">' + (index == 0 ? '<a href="javascript:ShowPriterIssuedCard();"><img style="cursor:pointer;" src="../images/printer.png"/></a>' : '') + '</td></tr>', item));
         });
     });
     function LoadSuperviseeDetails() {
@@ -59,8 +59,9 @@
     function OnPriterIssuedCardCompleted(status,item) {
         if (status) {
             item = JSON.parse(item);
+            $('#data-issuedcards tbody [reprintsmartcard-status]').text('Deactivate');
             $('#data-issuedcards tbody td img').remove();
-            $('#data-issuedcards tbody').prepend(api.DumpDataToTxt('<tr><td>{NRIC}</td><td>{Name}</td><td>{Date_Of_Issue_Txt}</td><td>{Expired_Date_Txt}</td><td>{Serial_Number}</td><td>{Status}</td><td  style="text-align:center;"><a href="javascript:ShowPriterIssuedCard();"><img style="cursor:pointer;" src="../images/printer.png"/></a></td></tr>', item))
+            $('#data-issuedcards tbody').prepend(api.DumpDataToTxt('<tr><td>{NRIC}</td><td>{Name}</td><td>{Date_Of_Issue_Txt}</td><td>{Expired_Date_Txt}</td><td>{Serial_Number}</td><td reprintsmartcard-status>{Status}</td><td  style="text-align:center;"><a href="javascript:ShowPriterIssuedCard();"><img style="cursor:pointer;" src="../images/printer.png"/></a></td></tr>', item))
             $('[enterreprint]').css('display', 'none');
         } else {
             alert('Card enrollment failed. Please try again!');
