@@ -684,7 +684,7 @@ namespace Enrolment
 
         #region Issued Cards
         private string reprintTxt = string.Empty;
-        public List<Trinity.BE.IssueCard> GetDataIssuedCards()
+        public object[] GetDataIssuedCards()
         {
             Session session = Session.Instance;
             var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
@@ -700,7 +700,7 @@ namespace Enrolment
             //    Status = EnumIssuedCards.Active,
             //    UserId = currentEditUser.Membership_Users.UserId
             //});
-            return array;
+            return new object[] { array, currentEditUser.UserProfile.UserId };
         }
         public void PriterIssuedCard(string reprint)
         {
