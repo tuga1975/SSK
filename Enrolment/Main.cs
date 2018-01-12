@@ -137,11 +137,11 @@ namespace Enrolment
                             var isRight = (bool)session[CommonConstants.IS_RIGHT_THUMB];
                             if (isRight)
                             {
-                                session[CommonConstants.CURRENT_RIGHT_FINGERPRINT_IMAGE] = base64Str;
+                                session[CommonConstants.CURRENT_RIGHT_FINGERPRINT_IMAGE] = byteData;
                             }
                             else
                             {
-                                session[CommonConstants.CURRENT_LEFT_FINGERPRINT_IMAGE] = base64Str;
+                                session[CommonConstants.CURRENT_LEFT_FINGERPRINT_IMAGE] = byteData;
                             }
                             LayerWeb.InvokeScript("setBase64FingerprintOnloadServerCall", isRight, base64Str);
                         }
@@ -194,15 +194,15 @@ namespace Enrolment
 
                 //set data for curent edit user
                 var profileModel = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
-                var leftThumbImage = (string)session[CommonConstants.CURRENT_LEFT_FINGERPRINT_IMAGE];
-                var rightThumbImage = (string)session[CommonConstants.CURRENT_RIGHT_FINGERPRINT_IMAGE];
+                var leftThumbImage = (byte[])session[CommonConstants.CURRENT_LEFT_FINGERPRINT_IMAGE];
+                var rightThumbImage = (byte[])session[CommonConstants.CURRENT_RIGHT_FINGERPRINT_IMAGE];
                 if (profileModel != null)
                 {
-                    if (!string.IsNullOrEmpty(leftThumbImage))
+                    if (leftThumbImage!=null && leftThumbImage.Length>0)
                     {
                         profileModel.UserProfile.LeftThumbImage = leftThumbImage;
                     }
-                    if (!string.IsNullOrEmpty(rightThumbImage))
+                    if (rightThumbImage!=null && rightThumbImage.Length>0)
                     {
                         profileModel.UserProfile.RightThumbImage = rightThumbImage;
                     }

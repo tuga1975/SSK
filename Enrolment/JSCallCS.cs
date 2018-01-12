@@ -614,14 +614,16 @@ namespace Enrolment
             byte[] _leftImg = Convert.FromBase64String(left);
             byte[] _rightImg = Convert.FromBase64String(rightImg);
             new DAL_Membership_Users().UpdateFingerprint(currentEditUser.UserProfile.UserId, _left, _right);
-
+            new DAL_UserProfile().UpdateFingerprintImg(currentEditUser.UserProfile.UserId, _leftImg, _rightImg);
             if (_left.Length > 0)
             {
                 currentEditUser.User.LeftThumbFingerprint = _left;
+                currentEditUser.UserProfile.LeftThumbImage = _leftImg;
             }
             if (_right.Length > 0)
             {
                 currentEditUser.User.RightThumbFingerprint = _right;
+                currentEditUser.UserProfile.RightThumbImage = _rightImg;
             }
             EditSupervisee(currentEditUser.UserProfile.UserId);
         }
@@ -630,7 +632,7 @@ namespace Enrolment
             FingerprintNumber = 0;
             Session session = Session.Instance;
             var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
-            this._web.LoadPageHtml("UpdateSuperviseeFingerprint.html", new object[] { currentEditUser.User.LeftThumbFingerprint == null ? null : Convert.ToBase64String(currentEditUser.User.LeftThumbFingerprint), currentEditUser.User.RightThumbFingerprint == null ? null : Convert.ToBase64String(currentEditUser.User.RightThumbFingerprint) });
+            this._web.LoadPageHtml("UpdateSuperviseeFingerprint.html", new object[] { currentEditUser.UserProfile.LeftThumbImage == null ? null : Convert.ToBase64String(currentEditUser.UserProfile.LeftThumbImage), currentEditUser.UserProfile.RightThumbImage == null ? null : Convert.ToBase64String(currentEditUser.UserProfile.RightThumbImage) });
         }
         public void CancelUpdateFingerprints()
         {
