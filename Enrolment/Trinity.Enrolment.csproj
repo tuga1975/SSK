@@ -90,7 +90,6 @@
     <Compile Include="CodeBehind\Authentication\NRIC.cs" />
     <Compile Include="CodeBehind\Authentication\SmartCard.cs" />
     <Compile Include="CodeBehind\Document.cs" />
-    <Compile Include="CodeBehind\FingerprintCapture.cs" />
     <Compile Include="CodeBehind\Login.cs" />
     <Compile Include="CodeBehind\Suppervisee.cs" />
     <Compile Include="CodeBehind\WebcamCapture.cs" />
@@ -144,6 +143,7 @@
     <Content Include="Libs\pcsc-sharp.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="View\html\ReprintSmartCard.html" />
     <Content Include="View\html\Edit-Supervisee.html" />
     <Content Include="View\html\FailToCapture.html" />
     <Content Include="View\html\FingerprintCapture.html" />
