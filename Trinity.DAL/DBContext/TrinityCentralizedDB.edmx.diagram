@@ -30,16 +30,12 @@
         <EntityTypeShape EntityType="TrinityCentralizedDBModel.Setting" Width="1.5" PointX="1.5" PointY="28.75" />
         <EntityTypeShape EntityType="TrinityCentralizedDBModel.SMS_LOG" Width="1.5" PointX="0.75" PointY="6.75" />
         <EntityTypeShape EntityType="TrinityCentralizedDBModel.Timeslot" Width="1.5" PointX="3.75" PointY="3" />
-        <EntityTypeShape EntityType="TrinityCentralizedDBModel.User_Profiles" Width="1.5" PointX="9" PointY="20.25" />
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_Appointments_AbsenceReporting" />
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_ActionLog_Membership_Users" />
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_ActionLog_Membership_Users1" />
-        <AssociationConnector Association="TrinityCentralizedDBModel.FK_User_Profiles_Addresses2" />
-        <AssociationConnector Association="TrinityCentralizedDBModel.FK_User_Profiles_Addresses3" />
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_Appointments_Membership_Users" />
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_Appointments_Timeslots" />
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_Queues_Appointments" />
-        <AssociationConnector Association="TrinityCentralizedDBModel.FK_APS_USER_ACT_LOG_User_Profiles" />
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_IssuedCards_Membership_Users" />
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_Labels_Membership_Users" />
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_Membership_RoleClaims_Membership_Roles" />
@@ -51,9 +47,13 @@
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_Notifications_Membership_Users" />
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_Notifications_Membership_Users1" />
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_PWD_QA_Membership_Users" />
-        <AssociationConnector Association="TrinityCentralizedDBModel.FK_User_Profiles_Membership_Users" />
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_QueueDetails_Queues" />
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_Timeslots_Settings" />
+        <EntityTypeShape EntityType="TrinityCentralizedDBModel.User_Profiles" Width="1.5" PointX="9" PointY="20.875" />
+        <AssociationConnector Association="TrinityCentralizedDBModel.FK_User_Profiles_Addresses2" />
+        <AssociationConnector Association="TrinityCentralizedDBModel.FK_User_Profiles_Addresses3" />
+        <AssociationConnector Association="TrinityCentralizedDBModel.FK_APS_USER_ACT_LOG_User_Profiles" />
+        <AssociationConnector Association="TrinityCentralizedDBModel.FK_User_Profiles_Membership_Users" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

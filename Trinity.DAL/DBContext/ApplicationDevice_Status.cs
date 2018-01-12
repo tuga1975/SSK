@@ -19,7 +19,5 @@ namespace Trinity.DAL.DBContext
         public Nullable<int> DeviceID { get; set; }
         public int StatusCode { get; set; }
         public string StatusMessage { get; set; }
-    
-        public virtual Device Device { get; set; }
     }
 }

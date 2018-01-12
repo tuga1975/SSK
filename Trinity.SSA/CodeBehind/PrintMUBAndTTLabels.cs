@@ -33,7 +33,7 @@ namespace SSA.CodeBehind
                 this._web.LoadPageHtml("PrintingMUBAndTTLabels.html");
                 this._web.RunScript("$('.status-text').css('color','#000').text('Please wait');");
 
-                System.Threading.Thread.Sleep(1500);
+                System.Threading.Thread.Sleep(1000);
 
                 PrinterMonitor printerMonitor = PrinterMonitor.Instance;
                 printerMonitor.OnPrintLabelSucceeded += OnPrintMUBAndTTLabelsSucceeded;//RaisePrintMUBAndTTLabelsSucceededEvent;

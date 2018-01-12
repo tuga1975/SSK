@@ -14,6 +14,12 @@ namespace Trinity.DAL.DBContext
     
     public partial class User_Profiles
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public User_Profiles()
+        {
+            this.APS_USER_ACT_LOG = new HashSet<APS_USER_ACT_LOG>();
+        }
+    
         public string UserId { get; set; }
         public string Primary_Phone { get; set; }
         public string Secondary_Phone { get; set; }
@@ -46,9 +52,13 @@ namespace Trinity.DAL.DBContext
         public Nullable<System.DateTime> Expired_Date { get; set; }
         public string Gender { get; set; }
         public string Race { get; set; }
+        public byte[] RightThumb_Photo { get; set; }
+        public byte[] LeftThumb_Photo { get; set; }
     
         public virtual Address Address { get; set; }
         public virtual Address Address1 { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<APS_USER_ACT_LOG> APS_USER_ACT_LOG { get; set; }
         public virtual Membership_Users Membership_Users { get; set; }
     }
 }

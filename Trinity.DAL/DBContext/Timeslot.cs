@@ -21,7 +21,7 @@ namespace Trinity.DAL.DBContext
         }
     
         public int Timeslot_ID { get; set; }
-        public Nullable<System.Guid> Setting_ID { get; set; }
+        public System.Guid Setting_ID { get; set; }
         public string Category { get; set; }
         public Nullable<int> DateOfWeek { get; set; }
         public Nullable<System.TimeSpan> StartTime { get; set; }
