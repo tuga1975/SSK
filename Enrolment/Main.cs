@@ -561,8 +561,8 @@ namespace Enrolment
                             }
                             session[CommonConstants.CURRENT_PHOTOS] = null;
 
-                            currentEditUser.UserProfile.User_Photo1 = Convert.FromBase64String(photo1);
-                            currentEditUser.UserProfile.User_Photo2 = Convert.FromBase64String(photo2);
+                            currentEditUser.UserProfile.User_Photo1 = photos.Item1!= null ? Convert.FromBase64String(photo1) : null;
+                            currentEditUser.UserProfile.User_Photo2 = photos.Item2 != null ? Convert.FromBase64String(photo2) : null;
                             session[CommonConstants.CURRENT_EDIT_USER] = currentEditUser;
                             if (currentPage.ToString() == "EditSupervisee")
                             {

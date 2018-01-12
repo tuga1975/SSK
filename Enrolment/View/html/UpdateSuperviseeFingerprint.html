@@ -15,7 +15,7 @@
                 </div>
                 <br />
                 <div style="text-align:center">
-                    <img class="avatar" style="max-width:50%;height:395px;" src="../images/fingerprint.png" capturefingerprint-img="0"  soure="" data=""/>
+                    <img class="avatar" style="max-width:50%;height:395px;" src="../images/fingerprint.png" capturefingerprint-img="0"  soure="" data-fingerprint=""/>
                 </div>
                 <br />
                 <!--<button type="button" onclick="api.server.OpenFingerprintCaptureForm('1')">Left Fingerprint Preview</button>-->
@@ -29,7 +29,7 @@
                 </div>
                 <br />
                 <div style="text-align:center">
-                    <img class="avatar" style="max-width:50%;height:395px;" src="../images/fingerprint.png"  capturefingerprint-img="1" soure="" data=""/>
+                    <img class="avatar" style="max-width:50%;height:395px;" src="../images/fingerprint.png"  capturefingerprint-img="1" soure="" data-fingerprint=""/>
                 </div>
                 <br />
                 <!--<button type="button" onclick="api.server.OpenFingerprintCaptureForm('2')">Right Fingerprint Preview</button>-->
@@ -58,8 +58,8 @@
         $('[capturefingerprint-img="' + LeftOrRight + '"]').attr('src', 'data:image/png;base64,' + img).attr('data', base);
     }
     function SubmitUpdateFingerprints() {
-        var left = $('[capturefingerprint-img="0"]').attr('data');
-        var right = $('[capturefingerprint-img="1"]').attr('data');
+        var left = $('[capturefingerprint-img="0"]').attr('data-fingerprint');
+        var right = $('[capturefingerprint-img="1"]').attr('data-fingerprint');
         if (left.length > 0 || right.length > 0) {
             api.server.SubmitUpdateFingerprints(left, $('[capturefingerprint-img="0"]').attr('soure'), right, $('[capturefingerprint-img="1"]').attr('soure'));
         } else {
