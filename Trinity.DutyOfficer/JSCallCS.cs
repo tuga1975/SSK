@@ -203,6 +203,26 @@ namespace DutyOfficer
             _web.InvokeScript("getDataCallback", result);
         }
 
+        public void GetSettings()
+        {
+            var dalSetting = new DAL_Setting();
+            SettingModel data = dalSetting.GetSettings(EnumSettingStatuses.Pending);
+            
+            object result = null;
+            if (data != null)
+            {
+                result = JsonConvert.SerializeObject(data, Formatting.Indented,
+                    new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
+            }
+            _web.InvokeScript("getDataCallback", result);
+        }
+
+        public void UpdateSetting(string json)
+        {
+            var model = JsonConvert.DeserializeObject<SettingModel>(json);
+            // chua lam xong, quay qua fix bug print MUB and TT Succeed xong se quay lai lam tiep
+        }
+
         private TimeSpan GetDurationBetweenTwoTimespan(TimeSpan startTime, TimeSpan endTime)
         {
             TimeSpan duration = new TimeSpan(endTime.Ticks - startTime.Ticks);
