@@ -698,13 +698,13 @@ namespace Enrolment
                 // convert fingerprint to base64 and add to html
                 string fingerprintLeft = "../images/fingerprint.png";
                 string fingerprintRight = "../images/fingerprint.png";
-                if (profileModel.User.LeftThumbFingerprint != null)
+                if (profileModel.UserProfile.LeftThumbImage != null)
                 {
-                    fingerprintLeft = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(profileModel.User.LeftThumbFingerprint));
+                    fingerprintLeft = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(profileModel.UserProfile.LeftThumbImage));
                 }
-                if (profileModel.User.RightThumbFingerprint != null)
+                if (profileModel.UserProfile.RightThumbImage != null)
                 {
-                    fingerprintRight = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(profileModel.User.RightThumbFingerprint));
+                    fingerprintRight = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(profileModel.UserProfile.RightThumbImage));
                 }
                 LayerWeb.InvokeScript("setFingerprintServerCall", fingerprintLeft, fingerprintRight);
             }
