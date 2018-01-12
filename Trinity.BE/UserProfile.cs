@@ -116,10 +116,10 @@ namespace Trinity.BE
         public byte[] User_Photo2 { get; set; }
 
         [DataMember]
-        public string RightThumbImage { get; set; }
+        public byte[] RightThumbImage { get; set; }
 
         [DataMember]
-        public string LeftThumbImage { get; set; }
+        public byte[] LeftThumbImage { get; set; }
 
     }
 }
