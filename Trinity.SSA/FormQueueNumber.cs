@@ -79,7 +79,7 @@ namespace SSA
                 }
             }
             string[] waitingQueueNumbers = arrayQueue.Where(q => q.Status == EnumQueueStatuses.Waiting).OrderByDescending(d => d.Time).Select(d => d.QueueNumber).ToArray();
-            wbQueueNumber.RefreshQueueNumbers(currentQueueNumber, waitingQueueNumbers);
+           // wbQueueNumber.RefreshQueueNumbers(currentQueueNumber, waitingQueueNumbers);
         }
     }
 }

@@ -22,7 +22,8 @@ namespace Trinity.DAL
                 Queue_ID = Guid.NewGuid(),
                 CreatedTime = DateTime.Now,
                 QueuedNumber = generateQNo,
-                CurrentStation = station
+                CurrentStation = station,
+                Outcome = EnumOutcome.Processing
             };
             _localUnitOfWork.GetRepository<Trinity.DAL.DBContext.Queue>().Add(dataInsert);
             _localUnitOfWork.Save();
@@ -76,10 +77,26 @@ namespace Trinity.DAL
             return listDbQueue;
         }
 
+        public List<Trinity.DAL.DBContext.Queue> GetAllQueueByNextimeslot(TimeSpan timeSlot, string station)
+        {
+           
+            var listDbQueue = (from q in _localUnitOfWork.DataContext.Queues
+                               join qd in _localUnitOfWork.DataContext.QueueDetails
+                               on q.Queue_ID equals qd.Queue_ID
+                               join apm in _localUnitOfWork.DataContext.Appointments
+                               on q.Appointment_ID equals apm.ID
+                               join ts in _localUnitOfWork.DataContext.Timeslots
+                               on apm.Timeslot_ID equals ts.Timeslot_ID
+                               where ts.StartTime.Value == timeSlot && qd.Station == station && qd.Status == EnumQueueStatuses.Waiting 
+                               select q).ToList();
+
+            return listDbQueue;
+        }
+
         public string GetQueueStatusByStation(Guid queueId, string station)
         {
-            var dbQueueDetail=  _localUnitOfWork.DataContext.QueueDetails.FirstOrDefault(qd => qd.Queue_ID == queueId && qd.Station == station);
-            if (dbQueueDetail!=null)
+            var dbQueueDetail = _localUnitOfWork.DataContext.QueueDetails.FirstOrDefault(qd => qd.Queue_ID == queueId && qd.Station == station);
+            if (dbQueueDetail != null)
             {
                 return dbQueueDetail.Status;
             }
@@ -139,6 +156,8 @@ namespace Trinity.DAL
             queueRepo.Update(dbQueue);
             _localUnitOfWork.Save();
         }
+
+
 
     }
 }

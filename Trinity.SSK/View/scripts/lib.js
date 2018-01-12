@@ -124,19 +124,40 @@ function displayLogoutButton(display) {
     }
 }
 
-function refreshQueueNumbers(currentQueueNumber, nextQueueNumberList) {
+function getToday() {
+    var today = new Date();
+    var dd = today.getDate();
+    var MM = today.getMonth() + 1; //January is 0!
+    var yyyy = today.getFullYear();
+    var hh = today.getHours();
+    var mm = today.getMinutes();
+
+    if (dd < 10) {
+        dd = '0' + dd
+    }
+
+    if (mm < 10) {
+        mm = '0' + mm
+    }
+
+    today = dd + '/' + MM + '/' + yyyy + '  ' + hh + ':' + mm;
+    return today;
+}
+function refreshQueueNumbers(currentQueueNumber, nextQueueNumberList,holdingList) {
+    var today = getToday();
+    $('#currentDateTime').text(today);
     if (currentQueueNumber) {
         var split = currentQueueNumber.split('-');
         var queue = "";
         for (var i = 0; i < split.length; i++) {
             if (split[i].length > 0) {
-                queue += "<div class='box-child'><span>" + split[i] + "</span></div>";
+                queue += "<li class='box-child'><span><i>" + (i++) +"</i><b>" + split[i] + "</b></span></li>";
             }
-            $('[show-queue]').html(queue);
+            $('[add-time-NowServing]').html(queue);
         }
 
     } else {
-        $('[show-queue]').text('');
+        $('[add-time-NowServing]').text('');
     }
     var nextQueueNumbers;
     if (nextQueueNumberList != null)
@@ -144,10 +165,10 @@ function refreshQueueNumbers(currentQueueNumber, nextQueueNumberList) {
     else
         nextQueueNumbers = null;
 
-    $('[show-queue-list] span').remove();
+    $('[add-time-NextTimeslot] span').remove();
     if (nextQueueNumbers != null && nextQueueNumbers.length > 0) {
         for (var i = 0; i < nextQueueNumbers.length; i++) {
-            $('[show-queue-list]').append('<span>' + nextQueueNumbers[i] + '</span>');
+            $('[add-time-NextTimeslot]').append('< li class="box-child" > <span><i>' + (i++) +'</i><b>' + nextQueueNumbers[i] + '</b></span></li >');
         }
     }
 }

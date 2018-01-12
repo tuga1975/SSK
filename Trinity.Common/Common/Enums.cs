@@ -288,3 +288,9 @@ public static class EnumIssuedCards
     public const string Active = "Active";
     public const string Deactivate = "Deactivate";
 };
+
+public static class EnumOutcome
+{
+    public const string Processing = "Processing...";
+   
+};

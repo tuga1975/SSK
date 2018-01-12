@@ -95,10 +95,10 @@ namespace SSK
             DAL_Setting DAL_Environment = new DAL_Setting();
 
             Trinity.DAL.DBContext.Appointment appointment = DAL_Appointments.GetMyAppointmentCurrent(user.UserId);
-            var selectedTimes = new Trinity.BE.EnvironmentTimeDetail();
+            var selectedTimes = new Trinity.BE.AppointmentTime();
             if (appointment != null)
             {
-                selectedTimes = DAL_Environment.GetEnvironmentTime(appointment.Date);
+                selectedTimes = DAL_Environment.GetAppointmentTime(appointment.Date);
                 SetSelectedTime(appointment, selectedTimes.Morning);
                 SetSelectedTime(appointment, selectedTimes.Afternoon);
                 SetSelectedTime(appointment, selectedTimes.Evening);
@@ -111,7 +111,7 @@ namespace SSK
             }
         }
 
-        private static void SetSelectedTime(Appointment appointment, List<Trinity.BE.EnvironmentTime> selectedTimes)
+        private static void SetSelectedTime(Appointment appointment, List<Trinity.BE.AppointmentTimeDetails> selectedTimes)
         {
             DateTimeFormatInfo dfi = DateTimeFormatInfo.CurrentInfo;
             Calendar cal = dfi.Calendar;
@@ -125,15 +125,21 @@ namespace SSK
             {
                 item.IsSelected = true;
             }
-            //var maxAppPerTimeslot = System.Configuration.ConfigurationManager.AppSettings.Get("MaxAppointmentPerTimeslot");
-            //foreach (var selectedItem in selectedTimes)
-            //{
-            //    var count = dalAppointment.CountListAppointmentByTimeslot(selectedItem.StartTime, selectedItem.EndTime);
-            //    if (count >= Convert.ToInt32(maxAppPerTimeslot))
-            //    {
-            //        selectedItem.IsAvailble = false;
-            //    }
-            //}
+
+            if (appointment.Timeslot_ID.HasValue)
+            {
+
+
+                var maxAppPerTimeslot = dalAppointment.GetMaximumNumberOfTimeslot(appointment.Timeslot_ID.Value);
+                foreach (var selectedItem in selectedTimes)
+                {
+                    var count = dalAppointment.CountListAppointmentByTimeslot(appointment.Date, selectedItem.StartTime, selectedItem.EndTime);
+                    if (count >= Convert.ToInt32(maxAppPerTimeslot))
+                    {
+                        selectedItem.IsAvailble = false;
+                    }
+                }
+            }
         }
 
         public string UpdateTimeAppointment(string IDAppointment, string timeStart, string timeEnd)
@@ -378,7 +384,8 @@ namespace SSK
                 if (!_dalQueue.CheckQueueExistToday(appointment.UserId, EnumStations.SSK))
                 {
                     queueNumber = _dalQueue.InsertQueueNumber(appointment.ID, appointment.UserId, EnumStations.SSK);
-                    RaiseOnShowMessageEvent(new ShowMessageEventArgs("Your queue number is: " + queueNumber.QueuedNumber, "Queue Number", MessageBoxButtons.OK, MessageBoxIcon.Information));
+                    _web.InvokeScript("showAlertMessage", "Your queue number is:"+ queueNumber.QueuedNumber);
+                    //RaiseOnShowMessageEvent(new ShowMessageEventArgs("Your queue number is: " + queueNumber.QueuedNumber, "Queue Number", MessageBoxButtons.OK, MessageBoxIcon.Information));
                 }
                 //var model = _dalQueue.GetAllQueueNumberByDate(DateTime.Today).Select(d => new Trinity.BE.Queue()
                 //{

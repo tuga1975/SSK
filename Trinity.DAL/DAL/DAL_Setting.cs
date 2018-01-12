@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using Trinity.BE;
 using Trinity.DAL.DBContext;
@@ -14,9 +15,9 @@ namespace Trinity.DAL
         Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
 
 
-        public Trinity.BE.EnvironmentTimeDetail GetEnvironmentTime(DateTime date)
+        public Trinity.BE.AppointmentTime GetAppointmentTime(DateTime date)
         {
-            var appointmentTime = new Trinity.BE.EnvironmentTimeDetail();
+            var appointmentTime = new Trinity.BE.AppointmentTime();
             var listTimeSlot = GetTimeslots(date);
             if (listTimeSlot.Count > 0)
             {
@@ -26,7 +27,7 @@ namespace Trinity.DAL
 
                 foreach (var item in listTimeSlot)
                 {
-                    var setTime = SetEnviromentTime(item);
+                    var setTime = SetAppointmentTime(item);
                     if (setTime.EndTime <= morningTimeSpan)
                     {
                         appointmentTime.Morning.Add(setTime);
@@ -45,9 +46,9 @@ namespace Trinity.DAL
             return appointmentTime;
         }
 
-        private static BE.EnvironmentTime SetEnviromentTime(DBContext.Timeslot timeSlot)
+        private static BE.AppointmentTimeDetails SetAppointmentTime(DBContext.Timeslot timeSlot)
         {
-            var environmentTime = new BE.EnvironmentTime()
+            var environmentTime = new BE.AppointmentTimeDetails()
             {
                 StartTime = timeSlot.StartTime.Value,
                 EndTime = timeSlot.EndTime.Value,
@@ -57,17 +58,18 @@ namespace Trinity.DAL
             return environmentTime;
         }
 
-        public Trinity.BE.EnvironmentTimeDetail GetCurrentEnvironmentSetting()
+        public Trinity.BE.AppointmentTime GetCurrentAppointmentTime()
         {
             var today = DateTime.Now;
-            return GetEnvironmentTime(today);
+            return GetAppointmentTime(today);
         }
 
         public List<Timeslot> GetTimeslots(DateTime date)
         {
             SettingModel setting = GetSettings(date);
+
             int dayOfWeek = date.DayOfWeek();
-            return _localUnitOfWork.DataContext.Timeslots.Where(t => t.DateOfWeek == dayOfWeek && t.Setting_ID == setting.Setting_ID).ToList();
+            return _localUnitOfWork.DataContext.Timeslots.Where(t => t.DateOfWeek == dayOfWeek && t.Setting_ID.HasValue && t.Setting_ID.Value == setting.Setting_ID).ToList();
         }
 
         public void GenerateTimeslots(string createdBy)
@@ -79,10 +81,6 @@ namespace Trinity.DAL
                 // Couldn't change timeslot
                 return;
             }
-
-            // Delete old timeslot
-            _localUnitOfWork.GetRepository<Timeslot>().Delete(t => t.Setting_ID == settings.Setting_ID);
-            _localUnitOfWork.Save();
 
             //mon
             GenerateTimeslotAndInsert((int)EnumDayOfWeek.Monday, settings.Monday, createdBy);
@@ -277,7 +275,7 @@ namespace Trinity.DAL
             setting.Description = settingBE.Description;
         }
 
-        private BE.SettingModel GetSettings(string status)
+        public BE.SettingModel GetSettings(string status)
         {
             var dbSeting = _localUnitOfWork.DataContext.Settings.Where(s => s.Status.Equals(status, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
             var settingBE = new BE.SettingBE();
@@ -286,7 +284,7 @@ namespace Trinity.DAL
             return new BE.SettingBE().ToSettingModel(settingBE);
         }
 
-        private BE.SettingModel GetSettings(DateTime date)
+        public BE.SettingModel GetSettings(DateTime date)
         {
             int dayOfWeek = date.DayOfWeek();
             int year = date.Year;
@@ -332,6 +330,39 @@ namespace Trinity.DAL
             int dayOfWeek = currentDate.DayOfWeek();
 
             return _localUnitOfWork.DataContext.Timeslots.Where(t => t.DateOfWeek == dayOfWeek && t.Setting_ID == settingId).FirstOrDefault();
+        }
+
+        public SettingDetails GetSettingDetails(EnumDayOfWeek dayOfWeek)
+        {
+            switch (dayOfWeek)
+            {
+                case EnumDayOfWeek.Monday:
+                    return GetSettings(DateTime.Now).Monday;
+                case EnumDayOfWeek.Tuesday:
+                    return GetSettings(DateTime.Now).Tuesday;
+                case EnumDayOfWeek.Wednesday:
+                    return GetSettings(DateTime.Now).WednesDay;
+                case EnumDayOfWeek.Thursday:
+                    return GetSettings(DateTime.Now).Thursday;
+                case EnumDayOfWeek.Friday:
+                    return GetSettings(DateTime.Now).Friday;
+                case EnumDayOfWeek.Saturday:
+                    return GetSettings(DateTime.Now).Saturday;
+                case EnumDayOfWeek.Sunday:
+                    return GetSettings(DateTime.Now).Sunday;
+                default:
+                    return null;
+            }
+
+        }
+
+        public Timeslot GetNextTimeslotToday(TimeSpan currentTime)
+        {
+          
+            var dateOfWeek = Common.CommonUtil.ConvertToCustomDateOfWeek(DateTime.Now.DayOfWeek);
+            var setting = GetSettingDetails(dateOfWeek);
+            var nextTimeslot = _localUnitOfWork.DataContext.Timeslots.Where(t => t.StartTime == DbFunctions.AddMinutes(currentTime, setting.Duration) && t.DateOfWeek == (int)dateOfWeek && t.Setting_ID == setting.Setting_ID).FirstOrDefault();
+            return nextTimeslot;
         }
     }
 }

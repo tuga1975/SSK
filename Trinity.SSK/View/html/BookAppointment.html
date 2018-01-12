@@ -86,7 +86,7 @@
     $(document).ready(function () {
         $('[app-date]').text(api.model[0].GetDateTxt);
 
-        if (api.model[0].FromTime != null) {
+        if (api.model[0].FromTimeTxt != null) {
             $('[info-notime]').remove();
             $('[app-time]').text(api.model[0].FromTimeTxt);
         }

@@ -51,13 +51,13 @@ namespace Trinity.DAL
         }
         public Appointment GetMyAppointmentCurrent(string UserId)
         {
-            return _localUnitOfWork.DataContext.Appointments.Include("Timeslot").Where(d => d.UserId == UserId && d.Date >= DateTime.Today).OrderBy(d => d.Date).FirstOrDefault();
+            return _localUnitOfWork.DataContext.Appointments.Where(d => d.UserId == UserId && d.Date >= DateTime.Today).OrderBy(d => d.Date).FirstOrDefault();
         }
         public Appointment UpdateBookTime(string IDAppointment, string timeStart, string timeEnd)
         {
             Trinity.DAL.DBContext.Appointment appointment = GetMyAppointmentByID(new Guid(IDAppointment));
 
-            var timeSlot = GetTodayTimeslotByStartAndEndTime(TimeSpan.Parse(timeStart), TimeSpan.Parse(timeEnd));
+            var timeSlot = GetTimeslotByAppointmentDate(appointment.Date, TimeSpan.Parse(timeStart), TimeSpan.Parse(timeEnd));
             if (timeSlot != null)
             {
                 appointment.Timeslot_ID = timeSlot.Timeslot_ID;
@@ -110,21 +110,21 @@ namespace Trinity.DAL
             return localDbAppointment;
         }
 
-        public int CountListAppointmentByTimeslot(TimeSpan fromTime, TimeSpan toTime)
+        public int CountListAppointmentByTimeslot(DateTime appointmentDate, TimeSpan fromTime, TimeSpan toTime)
         {
-            var timeSlot = GetTodayTimeslotByStartAndEndTime(fromTime, toTime);
+            var timeSlot = GetTimeslotByAppointmentDate(appointmentDate, fromTime, toTime);
             if (timeSlot != null)
             {
 
-                return _localUnitOfWork.DataContext.Appointments.Count(a => a.Timeslot_ID == timeSlot.Timeslot_ID);
+                return _localUnitOfWork.DataContext.Appointments.Count(a => a.Timeslot_ID == timeSlot.Timeslot_ID && a.Date == appointmentDate);
             }
             return 0;
 
         }
 
-        private Timeslot GetTodayTimeslotByStartAndEndTime(TimeSpan startTime, TimeSpan endTime)
+        private Timeslot GetTimeslotByAppointmentDate(DateTime AppointmentDate, TimeSpan startTime, TimeSpan endTime)
         {
-            var dayOfWeek = (int)DateTime.Now.DayOfWeek;
+            var dayOfWeek = (int)Common.CommonUtil.ConvertToCustomDateOfWeek(AppointmentDate.DayOfWeek);
             var timeSlotEnt = _localUnitOfWork.DataContext.Timeslots.FirstOrDefault(t => t.StartTime == startTime && t.EndTime == endTime && t.DateOfWeek == dayOfWeek);
             return timeSlotEnt;
         }
