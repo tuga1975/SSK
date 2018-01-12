@@ -46,7 +46,7 @@
     clearFingerprint(0);
     clearFingerprint(1);
     function clearFingerprint(LeftOrRight) {
-        $('[capturefingerprint-img="' + LeftOrRight + '"]').attr('src', api.model[LeftOrRight] == null ? '../images/fingerprint.png' : 'data:image/png;base64,' + api.model[LeftOrRight]).attr('soure', '').attr('data', '');
+        $('[capturefingerprint-img="' + LeftOrRight + '"]').attr('src', api.model[LeftOrRight] == null ? '../images/fingerprint.png' : 'data:image/png;base64,' + api.model[LeftOrRight]).attr('soure', '').attr('data', 'aaaaaa');
     }
     function captureFingerprintMessage(LeftOrRight, Message, color) {
         $('[capturefingerprint-message="' + LeftOrRight + '"]').text(Message).css('color', color);
@@ -60,6 +60,7 @@
     function SubmitUpdateFingerprints() {
         var left = $('[capturefingerprint-img="0"]').attr('data-fingerprint');
         var right = $('[capturefingerprint-img="1"]').attr('data-fingerprint');
+        alert(right.length);
         if (left.length > 0 || right.length > 0) {
             api.server.SubmitUpdateFingerprints(left, $('[capturefingerprint-img="0"]').attr('soure'), right, $('[capturefingerprint-img="1"]').attr('soure'));
         } else {
