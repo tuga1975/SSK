@@ -343,7 +343,13 @@ namespace Trinity.Common
             // callback
             _identificationCompleted(success);
         }
+        public byte[] GetTemplate()
+        {
+            if (_futronicEnrollment == null)
+                return new byte[] { };
 
+            return _futronicEnrollment.Template;
+        }
         public void StartCapture(OnPutOnHandler OnPutOn, OnTakeOffHandler OnTakeOff, UpdateScreenImageHandler UpdateScreenImage, OnFakeSourceHandler OnFakeSource, OnEnrollmentCompleteHandler OnEnrollmentComplete)
         {
             DisposeCapture();

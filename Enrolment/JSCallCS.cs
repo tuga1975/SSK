@@ -601,13 +601,17 @@ namespace Enrolment
         private int FingerprintLeftRight = 0;
         private int FingerprintNumber = 0;
 
-        public void SubmitUpdateFingerprints(string left, string right)
+        public void SubmitUpdateFingerprints(string left, string leftImg, string right, string rightImg)
         {
             Session session = Session.Instance;
             var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
             byte[] _left = Convert.FromBase64String(left);
             byte[] _right = Convert.FromBase64String(right);
+
+            byte[] _leftImg = Convert.FromBase64String(left);
+            byte[] _rightImg = Convert.FromBase64String(rightImg);
             new DAL_Membership_Users().UpdateFingerprint(currentEditUser.UserProfile.UserId, _left, _right);
+
             if (_left.Length > 0)
             {
                 currentEditUser.User.LeftThumbFingerprint = _left;
@@ -652,6 +656,7 @@ namespace Enrolment
         {
             if (bSuccess)
             {
+                _web.InvokeScript("setDataFingerprint", FingerprintLeftRight, Convert.ToBase64String(FingerprintReaderUtils.Instance.GetTemplate()));
                 _web.InvokeScript("captureFingerprintMessage", FingerprintLeftRight, "Your fingerprint was scanned successfully!", EnumColors.Green);
                 FingerprintNumber = 0;
             }
