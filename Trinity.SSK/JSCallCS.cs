@@ -2,6 +2,7 @@
 using SSK.CodeBehind.Authentication;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -107,27 +108,32 @@ namespace SSK
             {
                 var eventCenter = Trinity.Common.Common.EventCenter.Default;
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_NO_APPOINTMENT, Message = "You have no appointment" });
-
             }
         }
 
         private static void SetSelectedTime(Appointment appointment, List<Trinity.BE.EnvironmentTime> selectedTimes)
         {
+            DateTimeFormatInfo dfi = DateTimeFormatInfo.CurrentInfo;
+            Calendar cal = dfi.Calendar;
+            int year = appointment.Date.Year;
+            int weekNum = appointment.Date.WeekNum();
+
+            DAL_Setting dalSetting = new DAL_Setting();
             var dalAppointment = new DAL_Appointments();
-            var item = selectedTimes.Where(d => appointment.Timeslot.StartTime != null && d.StartTime == appointment.Timeslot.StartTime.Value && d.EndTime == appointment.Timeslot.EndTime.Value).FirstOrDefault();
+            var item = selectedTimes.Where(d => appointment.Timeslot != null && appointment.Timeslot.StartTime != null && d.StartTime == appointment.Timeslot.StartTime.Value && d.EndTime == appointment.Timeslot.EndTime.Value).FirstOrDefault();
             if (item != null)
             {
                 item.IsSelected = true;
             }
-            var maxAppPerTimeslot = System.Configuration.ConfigurationManager.AppSettings.Get("MaxAppointmentPerTimeslot");
-            foreach (var selectedItem in selectedTimes)
-            {
-                var count = dalAppointment.CountListAppointmentByTimeslot(selectedItem.StartTime, selectedItem.EndTime);
-                if (count >= Convert.ToInt32(maxAppPerTimeslot))
-                {
-                    selectedItem.IsAvailble = false;
-                }
-            }
+            //var maxAppPerTimeslot = System.Configuration.ConfigurationManager.AppSettings.Get("MaxAppointmentPerTimeslot");
+            //foreach (var selectedItem in selectedTimes)
+            //{
+            //    var count = dalAppointment.CountListAppointmentByTimeslot(selectedItem.StartTime, selectedItem.EndTime);
+            //    if (count >= Convert.ToInt32(maxAppPerTimeslot))
+            //    {
+            //        selectedItem.IsAvailble = false;
+            //    }
+            //}
         }
 
         public string UpdateTimeAppointment(string IDAppointment, string timeStart, string timeEnd)

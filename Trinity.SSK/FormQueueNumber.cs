@@ -83,7 +83,7 @@ namespace SSK
             DAL_QueueNumber dalQueue = new DAL_QueueNumber();
             var allQueue = GetAllQueueToday(dalQueue,EnumStations.SSK);
 
-            var setting = new DAL_Setting().GetTodayEnvironmentSetting();
+            var setting = new DAL_Setting().GetCurrentEnvironmentSetting();
             var today = DateTime.Now;
 
             string currentQueueNumber = string.Empty;
@@ -128,7 +128,7 @@ namespace SSK
 
         private void RefreshQueueNumberTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
-            var setting = new DAL_Setting().GetTodayEnvironmentSetting();
+            var setting = new DAL_Setting().GetCurrentEnvironmentSetting();
 
             //this.timer.Interval = 1000 * 60 * setting.Duration;
             this.timer.Interval = 60000;
