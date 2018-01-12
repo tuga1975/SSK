@@ -27,12 +27,9 @@
         <EntityTypeShape EntityType="SSKModel.Security_QA" Width="1.5" PointX="3" PointY="34.5" />
         <EntityTypeShape EntityType="SSKModel.Setting" Width="1.5" PointX="1.5" PointY="54" />
         <EntityTypeShape EntityType="SSKModel.Timeslot" Width="1.5" PointX="0.75" PointY="31.875" />
-        <EntityTypeShape EntityType="SSKModel.User_Profiles" Width="1.5" PointX="6" PointY="20.25" />
         <AssociationConnector Association="SSKModel.FK_Appointments_AbsenceReporting" />
         <AssociationConnector Association="SSKModel.FK_ActionLog_Membership_Users" />
         <AssociationConnector Association="SSKModel.FK_ActionLog_Membership_Users1" />
-        <AssociationConnector Association="SSKModel.FK_User_Profiles_Addresses2" />
-        <AssociationConnector Association="SSKModel.FK_User_Profiles_Addresses3" />
         <AssociationConnector Association="SSKModel.FK_ApplicationDevice_Status_Devices" />
         <AssociationConnector Association="SSKModel.FK_Appointments_Membership_Users" />
         <AssociationConnector Association="SSKModel.FK_Appointments_Timeslots" />
@@ -48,9 +45,12 @@
         <AssociationConnector Association="SSKModel.FK_Notifications_Membership_Users" />
         <AssociationConnector Association="SSKModel.FK_Notifications_Membership_Users1" />
         <AssociationConnector Association="SSKModel.FK_PWD_QA_Membership_Users" />
-        <AssociationConnector Association="SSKModel.FK_User_Profiles_Membership_Users" />
         <AssociationConnector Association="SSKModel.FK_QueueDetails_Queues" />
         <AssociationConnector Association="SSKModel.FK_Timeslots_Settings" />
+        <EntityTypeShape EntityType="SSKModel.User_Profiles" Width="1.5" PointX="6" PointY="13.25" />
+        <AssociationConnector Association="SSKModel.FK_User_Profiles_Addresses2" />
+        <AssociationConnector Association="SSKModel.FK_User_Profiles_Addresses3" />
+        <AssociationConnector Association="SSKModel.FK_User_Profiles_Membership_Users" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

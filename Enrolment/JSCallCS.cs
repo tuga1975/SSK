@@ -3,6 +3,7 @@ using Microsoft.AspNet.Identity;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -338,10 +339,10 @@ namespace Enrolment
                 data.UserProfile.Other_Address_ID = other_Address_ID;
                 data.UserProfile.User_Photo1 = profileModel.UserProfile.User_Photo1;
                 data.UserProfile.User_Photo2 = profileModel.UserProfile.User_Photo2;
-                
+
                 data.User.LeftThumbFingerprint = profileModel.User.LeftThumbFingerprint;
                 data.User.RightThumbFingerprint = profileModel.User.RightThumbFingerprint;
-                
+
                 // add some some old data not change in form
                 data.UserProfile.SerialNumber = tempUser.UserProfile.SerialNumber;
                 data.UserProfile.DateOfIssue = tempUser.UserProfile.DateOfIssue;
@@ -403,12 +404,12 @@ namespace Enrolment
 
                 var profileModel = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
                 var tempProfileModel = (Trinity.BE.ProfileModel)session["TEMP_USER"];
-                
+
                 var photo1 = tempProfileModel.UserProfile.User_Photo1 != null ? Convert.ToBase64String(tempProfileModel.UserProfile.User_Photo1) : null;
                 var photo2 = tempProfileModel.UserProfile.User_Photo2 != null ? Convert.ToBase64String(tempProfileModel.UserProfile.User_Photo2) : null;
                 ////////
                 session["TempPhotos"] = new Tuple<string, string>(photo1, photo2);
-                   ////////
+                ////////
                 data.UserProfile.User_Photo1 = profileModel.UserProfile.User_Photo1;
                 data.UserProfile.User_Photo2 = profileModel.UserProfile.User_Photo2;
                 data.UserProfile.Residential_Addess_ID = profileModel.UserProfile.Residential_Addess_ID;
@@ -416,12 +417,14 @@ namespace Enrolment
                 session[CommonConstants.CURRENT_EDIT_USER] = data;
 
             }
-            catch {
+            catch
+            {
 
             }
         }
 
-        public void ReplaceOldPhotos() {
+        public void ReplaceOldPhotos()
+        {
             Session session = Session.Instance;
             var profileModel = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
             var tempUser = (Trinity.BE.ProfileModel)session["TEMP_USER"];
@@ -667,7 +670,14 @@ namespace Enrolment
                 if (FingerprintNumber >= 3)
                     _web.InvokeScript("moreThan3Fingerprint");
             }
-            FingerprintReaderUtils.Instance.DisposeCapture();
+            try
+            {
+                FingerprintReaderUtils.Instance.DisposeCapture();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error in Trinity.Enrolment.JSCallCS.OnEnrollmentComplete. Details: " + ex.Message);
+            }
         }
         private bool OnFakeSource(Futronic.SDKHelper.FTR_PROGRESS Progress)
         {
@@ -742,7 +752,7 @@ namespace Enrolment
             }
             else
             {
-                _web.InvokeScript("OnPriterIssuedCardCompleted",false,null);
+                _web.InvokeScript("OnPriterIssuedCardCompleted", false, null);
             }
         }
         #endregion

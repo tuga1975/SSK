@@ -277,11 +277,15 @@ namespace Trinity.DAL
             setting.Description = settingBE.Description;
         }
 
-        private BE.SettingModel GetSettings(string status)
+        public BE.SettingModel GetSettings(string status)
         {
             var dbSeting = _localUnitOfWork.DataContext.Settings.Where(s => s.Status.Equals(status, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
             var settingBE = new BE.SettingBE();
-            SetInfoToSettingBE(settingBE, dbSeting);
+
+            if (dbSeting != null)
+            {
+                SetInfoToSettingBE(settingBE, dbSeting);
+            }
 
             return new BE.SettingBE().ToSettingModel(settingBE);
         }
@@ -332,6 +336,24 @@ namespace Trinity.DAL
             int dayOfWeek = currentDate.DayOfWeek();
 
             return _localUnitOfWork.DataContext.Timeslots.Where(t => t.DateOfWeek == dayOfWeek && t.Setting_ID == settingId).FirstOrDefault();
+        }
+
+        // Save Setting from DutyOfficer
+        public void SaveSetting (Trinity.BE.SettingModel model, string lastUpdateBy)
+        {
+            var repo = _localUnitOfWork.GetRepository<Setting>();
+            var setting = _localUnitOfWork.DataContext.Settings.FirstOrDefault(s => s.Setting_ID == model.Setting_ID);
+            if (setting == null)
+            {
+                setting = new Setting();
+                setting.Status = EnumSettingStatuses.Pending;
+
+                // Dang lam chua xong, quay qua fix bug print MUB and TT succeeded xong se quay lai lam tiep
+            }
+            else
+            {
+
+            }
         }
     }
 }

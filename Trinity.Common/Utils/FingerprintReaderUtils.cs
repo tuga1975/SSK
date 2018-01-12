@@ -194,7 +194,7 @@ namespace Trinity.Common
                 //_futronicVerification_GetDeviceStatus.UpdateScreenImage += new UpdateScreenImageHandler(this.UpdateScreenImage);
                 futronicVerification_GetDeviceStatus.OnFakeSource += OnFakeSource;
                 futronicVerification_GetDeviceStatus.OnVerificationComplete += GetDeviceStatus_OnVerificationComplete;
-                
+
                 // start verification process
                 futronicVerification_GetDeviceStatus.Verification();
 
@@ -352,47 +352,54 @@ namespace Trinity.Common
         }
         public void StartCapture(OnPutOnHandler OnPutOn, OnTakeOffHandler OnTakeOff, UpdateScreenImageHandler UpdateScreenImage, OnFakeSourceHandler OnFakeSource, OnEnrollmentCompleteHandler OnEnrollmentComplete)
         {
-            DisposeCapture();
-            _futronicEnrollment = new FutronicEnrollment();
+            lock (syncRoot)
+            {
+                //DisposeCapture();
+                _futronicEnrollment = new FutronicEnrollment();
 
-            // Set control properties
-            _futronicEnrollment.FakeDetection = true;
-            _futronicEnrollment.FFDControl = true;
-            _futronicEnrollment.FARN = 200;
-            _futronicEnrollment.Version = VersionCompatible.ftr_version_compatible;
-            _futronicEnrollment.FastMode = true;
-            _futronicEnrollment.MIOTControlOff = false;
-            _futronicEnrollment.MaxModels = 5;
-            _futronicEnrollment.MinMinuitaeLevel = 3;
-            _futronicEnrollment.MinOverlappedLevel = 3;
+                // Set control properties
+                _futronicEnrollment.FakeDetection = true;
+                _futronicEnrollment.FFDControl = true;
+                _futronicEnrollment.FARN = 200;
+                _futronicEnrollment.Version = VersionCompatible.ftr_version_compatible;
+                _futronicEnrollment.FastMode = true;
+                _futronicEnrollment.MIOTControlOff = false;
+                _futronicEnrollment.MaxModels = 5;
+                _futronicEnrollment.MinMinuitaeLevel = 3;
+                _futronicEnrollment.MinOverlappedLevel = 3;
 
 
-            // register events
-            OnPutOn_Enrollment = OnPutOn;
-            OnTakeOff_Enrollment = OnTakeOff;
-            UpdateScreenImage_Enrollment = UpdateScreenImage;
-            OnFakeSource_Enrollment = OnFakeSource;
-            OnEnrollmentComplete_Enrollment = OnEnrollmentComplete;
+                // register events
+                OnPutOn_Enrollment = OnPutOn;
+                OnTakeOff_Enrollment = OnTakeOff;
+                UpdateScreenImage_Enrollment = UpdateScreenImage;
+                OnFakeSource_Enrollment = OnFakeSource;
+                OnEnrollmentComplete_Enrollment = OnEnrollmentComplete;
 
-            _futronicEnrollment.OnPutOn += OnPutOn_Enrollment;
-            _futronicEnrollment.OnTakeOff += OnTakeOff_Enrollment;
-            _futronicEnrollment.UpdateScreenImage += UpdateScreenImage_Enrollment;
-            _futronicEnrollment.OnFakeSource += OnFakeSource_Enrollment;
-            _futronicEnrollment.OnEnrollmentComplete += OnEnrollmentComplete_Enrollment;
+                _futronicEnrollment.OnPutOn += OnPutOn_Enrollment;
+                _futronicEnrollment.OnTakeOff += OnTakeOff_Enrollment;
+                _futronicEnrollment.UpdateScreenImage += UpdateScreenImage_Enrollment;
+                _futronicEnrollment.OnFakeSource += OnFakeSource_Enrollment;
+                _futronicEnrollment.OnEnrollmentComplete += OnEnrollmentComplete_Enrollment;
 
-            // start enrollment process
-            _futronicEnrollment.Enrollment();
+                // start enrollment process
+                _futronicEnrollment.Enrollment();
+            }
         }
         public void DisposeCapture()
         {
-            if (_futronicEnrollment != null)
+            lock (syncRoot)
             {
-                _futronicEnrollment.OnPutOn -= OnPutOn_Enrollment;
-                _futronicEnrollment.OnTakeOff -= OnTakeOff_Enrollment;
-                _futronicEnrollment.UpdateScreenImage -= UpdateScreenImage_Enrollment;
-                _futronicEnrollment.OnFakeSource -= OnFakeSource_Enrollment;
-                _futronicEnrollment.OnEnrollmentComplete -= OnEnrollmentComplete_Enrollment;
-                _futronicEnrollment.Dispose();
+                if (_futronicEnrollment != null)
+                {
+                    _futronicEnrollment.OnPutOn -= OnPutOn_Enrollment;
+                    _futronicEnrollment.OnTakeOff -= OnTakeOff_Enrollment;
+                    _futronicEnrollment.UpdateScreenImage -= UpdateScreenImage_Enrollment;
+                    _futronicEnrollment.OnFakeSource -= OnFakeSource_Enrollment;
+                    _futronicEnrollment.OnEnrollmentComplete -= OnEnrollmentComplete_Enrollment;
+                    //_futronicEnrollment.Dispose();
+                    _futronicEnrollment = null;
+                }
             }
         }
     }

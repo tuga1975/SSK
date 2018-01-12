@@ -316,7 +316,29 @@
 			$('#User_Photo1').val(api.model.UserProfile.User_Photo1);
 			$('#User_Photo2').val(api.model.UserProfile.User_Photo2);
         }
+
+		validate();		
+		$('#SaveBtn').click(function() {
+			if($("#superviseeFrm").valid()){
+				var $form = $("#superviseeFrm");
+				var data = getFormData($form);
+				var json = JSON.stringify(data);
+				api.server.SaveSupervisee(json);
+			}
+		});
     });
+	function validate(){
+		$("#superviseeFrm").validate({
+			rules: {
+				StartDate: {date : true},
+				EndDate: {date : true}
+			},
+			messages: {
+				StartDate: { date : "Please input type Date or Empty" },
+				EndDate: { date : "Please input type Date or Empty" }
+			}
+		});
+	}
     function setPopUpPhotoServerCall(photo1, photo2) {
             $('#PopupUserPhoto1').attr('src', 'data:image/jpg;base64,' + photo1);
             $('#PopupUserPhoto2').attr('src', 'data:image/jpg;base64,' + photo2);  
@@ -333,12 +355,12 @@
         api.server.saveNewDataToSession(json);
 	}
 
-    $("#SaveBtn").on('click', function () {
+    /*$("#SaveBtn").on('click', function () {
         var $form = $("#superviseeFrm");
         var data = getFormData($form);
         var json = JSON.stringify(data);
-        api.server.SaveSupervisee(json);
-    });
+        //api.server.SaveSupervisee(json);
+    });*/
     //$("#superviseeFrm").submit(function(e){
 
     //	e.preventDefault();

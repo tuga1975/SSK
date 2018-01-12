@@ -423,7 +423,7 @@ namespace Enrolment
                 var currentPhotosSession = session[CommonConstants.CURRENT_PHOTOS];
                 if (InvokeRequired)
                 {
-                    
+
                     Invoke(new Action(() =>
                     {
                         pictureBox1.Hide();
@@ -528,11 +528,7 @@ namespace Enrolment
             else if (e.Name.Equals(EventNames.CANCEL_CAPTURE_PICTURE))
             {
                 Session session = Session.Instance;
-
                 var currentPage = session[CommonConstants.CURRENT_PAGE];
-
-
-
                 if (InvokeRequired)
                 {
                     Invoke(new Action(() =>
@@ -555,10 +551,11 @@ namespace Enrolment
                                 photo2 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo2);
                             }*/
                             var photos = (Tuple<string, string>)session["TempPhotos"];
-                            if (photos.Item1 != null) {
+                            if (photos != null && photos.Item1 != null)
+                            {
                                 photo1 = photos.Item1;
                             }
-                            if(photos.Item2 != null)
+                            if (photos != null && photos.Item2 != null)
                             {
                                 photo2 = photos.Item2;
                             }
@@ -583,7 +580,6 @@ namespace Enrolment
                     }));
                     return;
                 }
-
             }
             else if (e.Name.Equals(EventNames.CANCEL_CONFIRM_CAPTURE_PICTURE))
             {
@@ -673,9 +669,9 @@ namespace Enrolment
                 //    issueCardModel.Status = EnumUserStatuses.ReEnrolled;
                 //    dalIssueCard.Update(profileModel.User.SmartCardId, profileModel.User.UserId, issueCardModel);
                 //}
-               
-                
-               
+
+
+
                 session[CommonConstants.CURRENT_EDIT_USER] = profileModel;
 
             }
