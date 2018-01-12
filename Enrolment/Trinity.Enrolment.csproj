@@ -14,7 +14,7 @@
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>x64</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -32,6 +32,9 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AForge.Video, Version=2.2.5.0, Culture=neutral, PublicKeyToken=cbfb6e07d173c401, processorArchitecture=MSIL">
@@ -140,6 +143,7 @@
     <Content Include="Libs\pcsc-sharp.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="View\html\ReprintSmartCard.html" />
     <Content Include="View\html\Edit-Supervisee.html" />
     <Content Include="View\html\FailToCapture.html" />
     <Content Include="View\html\FingerprintCapture.html" />
@@ -168,6 +172,7 @@
     <Content Include="View\scripts\jquery-ui.min.js" />
     <Content Include="View\scripts\jquery.steps.css" />
     <Content Include="View\scripts\jquery.steps.min.js" />
+    <Content Include="View\scripts\jquery.validate.min.js" />
     <Content Include="View\scripts\lib.js" />
     <Content Include="View\scripts\scripts.js" />
     <Content Include="View\scripts\styles.css" />

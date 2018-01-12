@@ -1,26 +1,50 @@
-﻿<div style="display:block; padding:10px;">
-    <span style=" font-size:22px; float:left; text-align:left;"><b>MUB / TT Label</b></span>
-    <div class="form-inline" style="right:10px; float:right; padding-bottom:10px;">
-        <select class="form-control" id="pageSize" style="width:70px; display:inline-block;">
+﻿<style>
+    .formWrapper {
+        display: block;
+        padding: 10px;
+    }
+
+    .formHeader {
+        font-size: 22px;
+        position: absolute;
+        left: 0;
+        top: 30px;
+    }
+
+    .formEntries {
+        position: absolute;
+        right: 200px;
+        top: 30px
+    }
+
+    #pageSize {
+        width: 70px;
+        display: inline-block;
+    }
+
+    #MUBAndTTlabel,
+    #MUBAndTTlabel th {
+        text-align: center;
+    }
+</style>
+<div class="formWrapper">
+    <span class="formHeader"><b>MUB / TT Label</b></span>
+    <div class="form-inline formEntries">
+        <select class="form-control" id="pageSize">
             <option>10</option>
             <option>2</option>
             <option>3</option>
         </select>
         <div style="display:inline-block;">entries</div>
-
-        <div style="display:inline-block;">
-            <input type="text" class="form-control" style="width:180px; display:inline;" id="textSearch" />
-            <button type="button" class="btn btn-primary">Search</button>
-        </div>
     </div>
 </div>
 <table id="MUBAndTTlabel" data-click-to-select="true">
     <thead>
         <tr>
-            <th data-field="state" data-checkbox="true">Select</th>
-            <th data-field="nric" data-sortable="true">NRIC</th>
-            <th data-field="name" data-sortable="true">Name</th>
-            <th data-field="lastStation">Last Station</th>
+            <th data-field="state" data-checkbox="true" class="col-xs-1">Select</th>
+            <th data-field="NRIC" data-sortable="true" class="col-xs-3">NRIC</th>
+            <th data-field="Name" data-sortable="true" class="col-xs-6">Name</th>
+            <th data-field="LastStation" class="col-xs-2">Last Station</th>
         </tr>
     </thead>
 </table>
@@ -29,66 +53,82 @@
     <button id="PrintMUBAndTTbutton" class="btn btn-default">Print</button>
 </div>
 <ul id="output"></ul>
+
 <script type="text/javascript">
-    $('#pageSize').change(function () {
-        pageSize = $("#pageSize option:selected").text();
-        $('#PrintMUBAndTTlabel').bootstrapTable('refreshOptions', {
-            pagination: true,
+ 
+
+    var dataSource = [];
+
+    api.server.GetAllMUBAndTTlabels();
+
+    function getDataCallback(response) {
+
+        var data = JSON.parse(response);        
+        if (data) {
+            data.forEach(function (element, index) {
+                dataSource.push({
+                    NRIC: element.NRIC,
+                    Name: element.Name,
+                    LastStation: element.LastStation,
+                    UserId: element.UserId
+                });
+            });
+        }
+
+        $('#MUBAndTTlabel').bootstrapTable({
+            //pagination: true,
             search: true,
-            pageSize: pageSize
+            pageSize: 10,
+            singleSelect: true,
+            data: dataSource
         });
-    });
-    $('#MUBAndTTlabel').bootstrapTable({
-        //pagination: true,
-        //pageSize:2,
-        //search: true,
-        pageList: [1, 2, 4, 6],
-        data: [{
-            nric: 'S99999999X',
-            name: 'Tan Ah Guo',
-            lastStation: 'SSK'
-        }, {
-            nric: 'S99999998X',
-            name: 'Chen Ah Ming',
-            lastStation: 'SSK'
-        }, {
-            nric: 'S99999997X',
-            name: 'Koh Mok Yao',
-            lastStation: 'SSK'
-        }, {
-            nric: 'S99999996X',
-            name: 'Quek Yew Ming',
-            lastStation: 'SSK'
-        }]
-    });
-    activemenu('MUB/TT Lablels');
-    
-    var checkedRows = [];
+    } 
 
-    $('#MUBAndTTlabel').on('check.bs.table', function (e, row) {
-        checkedRows.push({ nric: row.nric, name: row.name, lastStation: row.lastStation });
-        console.log(checkedRows);
-    });
 
-    $('#MUBAndTTlabel').on('uncheck.bs.table', function (e, row) {
-        $.each(checkedRows, function (index, value) {
-            if (value.id === row.id) {
-                checkedRows.splice(index, 1);
+    $(window).ready(function () {
+
+        $('#pageSize').change(function () {
+            pageSize = $("#pageSize option:selected").text();
+            $('#MUBAndTTlabel').bootstrapTable('refreshOptions', {
+                pagination: true,
+                pageSize: pageSize
+            });
+        });
+
+        var checkedRows = [];
+
+        $('#MUBAndTTlabel').on('check.bs.table', function (e, row) {
+            checkedRows.push({ NRIC: row.NRIC, Name: row.Name, LastStation: row.LastStation });
+        });
+
+        $('#MUBAndTTlabel').on('uncheck.bs.table', function (e, row) {
+            $.each(checkedRows, function (index, value) {
+                if (value.id === row.id) {
+                    checkedRows.splice(index, 1);
+                }
+            });
+        });
+
+        var model;
+
+        $('#PrintMUBAndTTbutton').click(function () {
+            $.each(checkedRows, function (index, value) {
+                model = value;
+
+            });
+            if (model != null) {
+                var data = JSON.stringify(model);
+                api.server.LoadPopupMUBAndTTLabel(data, function () {
+                    $('#popupMUBandTTLabel').modal();
+
+                })
             }
-        });
-        console.log(checkedRows);
-    });    
-
-    var model;
-
-    $('#PrintMUBAndTTbutton').click(function () { 
-        $.each(checkedRows, function (index, value) {
-            model = value;
-        });
-        var data = JSON.stringify(model);
-            api.server.LoadPopupMUBAndTTLabel(data, function () {
-            $('#popupMUBandTTLabel').modal();
+            else {
+                alert('Please choose the supervisee you want to print');
+            }
 
         })
+        activemenu('MUB/TT Lablels');
     })
+    
 </script>
