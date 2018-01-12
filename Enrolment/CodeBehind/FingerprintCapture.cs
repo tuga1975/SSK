@@ -85,7 +85,7 @@ public class FingerprintCapture
             _futronicEnrollment.UpdateScreenImage -= new UpdateScreenImageHandler(UpdateScreenImage);
             _futronicEnrollment.OnFakeSource -= OnFakeSource;
             _futronicEnrollment.OnEnrollmentComplete -= OnEnrollmentComplete;
-            _futronicEnrollment = null;
+            _futronicEnrollment.Dispose();
         }
     }
 }
