@@ -18,7 +18,7 @@
                     <br />
                     <div class="input-group">
                         <span class="input-group-addon">Reason:</span>
-                        <textarea type="text" class="form-control pri" rows="5"></textarea>
+                        <textarea type="text" class="form-control pri" rows="5" id="Reason"></textarea>
                     </div>
                 </div>
             </div>
@@ -30,12 +30,17 @@
 </div>
 <script type="text/javascript">
     $(document).ready(function () {
-        $('#NRIC').val(api.model.nric);
-        $('#Name').val(api.model.name);
+        $('#NRIC').val(api.model.OfficerNRIC);
+        $('#Name').val(api.model.OfficerName);
     });
     $("#PrintBtn").click(function (e) {
+        //var json = JSON.stringify(api.model);
+
+        //api.server.PrintingMUBAndTTLabels(api.model.UserId, $('#Reason').val());
+
         var json = JSON.stringify(api.model);
-        api.server.PrintingMUBAndTTLabels(json);
+        api.server.MappingTemplateMUBAndTTLabels(json, $('#Reason').val());
+
         e.preventDefault(); // avoid to execute the actual submit of the form.
     });
 

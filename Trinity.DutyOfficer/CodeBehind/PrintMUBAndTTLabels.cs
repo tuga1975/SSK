@@ -30,8 +30,8 @@ namespace DutyOfficer.CodeBehind
             try
             {
                 _web.SetLoading(false);
-                this._web.LoadPageHtml("PrintingMUBAndTTLabels.html");
-                this._web.RunScript("$('.status-text').css('color','#000').text('Please wait');");
+                this._web.LoadPageHtml("MUBAndTTlabel.html");
+                //this._web.RunScript("$('.status-text').css('color','#000').text('Please wait');");
 
                 System.Threading.Thread.Sleep(1500);
 

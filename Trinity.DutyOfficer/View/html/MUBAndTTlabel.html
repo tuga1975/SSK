@@ -42,9 +42,9 @@
     <thead>
         <tr>
             <th data-field="state" data-checkbox="true" class="col-xs-1">Select</th>
-            <th data-field="nric" data-sortable="true" class="col-xs-3">NRIC</th>
-            <th data-field="name" data-sortable="true" class="col-xs-6">Name</th>
-            <th data-field="lastStation" class="col-xs-2">Last Station</th>
+            <th data-field="NRIC" data-sortable="true" class="col-xs-3">NRIC</th>
+            <th data-field="Name" data-sortable="true" class="col-xs-6">Name</th>
+            <th data-field="LastStation" class="col-xs-2">Last Station</th>
         </tr>
     </thead>
 </table>
@@ -67,9 +67,10 @@
         if (data) {
             data.forEach(function (element, index) {
                 dataSource.push({
-                    nric: element.NRIC,
-                    name: element.Name,
-                    lastStation: element.LastStation
+                    NRIC: element.NRIC,
+                    Name: element.Name,
+                    LastStation: element.LastStation,
+                    UserId: element.UserId
                 });
             });
         }
@@ -81,23 +82,23 @@
             singleSelect: true,
             data: dataSource
         });
-    }
-
-    $('#pageSize').change(function () {
-        pageSize = $("#pageSize option:selected").text();
-        $('#MUBAndTTlabel').bootstrapTable('refreshOptions', {
-            pagination: true,
-            pageSize: pageSize
-        });
-    });
+    } 
 
 
     $(window).ready(function () {
+
+        $('#pageSize').change(function () {
+            pageSize = $("#pageSize option:selected").text();
+            $('#MUBAndTTlabel').bootstrapTable('refreshOptions', {
+                pagination: true,
+                pageSize: pageSize
+            });
+        });
+
         var checkedRows = [];
 
         $('#MUBAndTTlabel').on('check.bs.table', function (e, row) {
-            checkedRows.push({ nric: row.nric, name: row.name, lastStation: row.lastStation });
-            console.log(checkedRows);
+            checkedRows.push({ NRIC: row.NRIC, Name: row.Name, LastStation: row.LastStation });
         });
 
         $('#MUBAndTTlabel').on('uncheck.bs.table', function (e, row) {
@@ -106,7 +107,6 @@
                     checkedRows.splice(index, 1);
                 }
             });
-            console.log(checkedRows);
         });
 
         var model;
