@@ -143,17 +143,22 @@ function getToday() {
     today = dd + '/' + MM + '/' + yyyy + '  ' + hh + ':' + mm;
     return today;
 }
-function refreshQueueNumbers(currentQueueNumber, nextQueueNumberList,holdingList) {
+function refreshQueueNumbers(currentQueueNumber, nextQueueNumberList, holdingList) {
+
     var today = getToday();
     $('#currentDateTime').text(today);
-    if (currentQueueNumber) {
+    if (currentQueueNumber.trim().length > 0) {
         var split = currentQueueNumber.split('-');
+
         var queue = "";
         for (var i = 0; i < split.length; i++) {
             if (split[i].length > 0) {
-                queue += "<li class='box-child'><span><i>" + (i++) +"</i><b>" + split[i] + "</b></span></li>";
+
+                queue += "<li class='box-child'><span style='margin-top:-8px' ><i>" + (i + 1) + "</i><b>" + split[i] + "</b></span></li>";
+
             }
             $('[add-time-NowServing]').html(queue);
+            $('[add-time-CurrentTimeslot]').html(queue);
         }
 
     } else {
@@ -167,12 +172,31 @@ function refreshQueueNumbers(currentQueueNumber, nextQueueNumberList,holdingList
 
     $('[add-time-NextTimeslot] span').remove();
     if (nextQueueNumbers != null && nextQueueNumbers.length > 0) {
+
         for (var i = 0; i < nextQueueNumbers.length; i++) {
-            $('[add-time-NextTimeslot]').append('< li class="box-child" > <span><i>' + (i++) +'</i><b>' + nextQueueNumbers[i] + '</b></span></li >');
+            $('[add-time-NextTimeslot]').append('<li class="box-child" > <span style="margin-top:-8px"><i>' + (i + 1) + '</i><b>' + nextQueueNumbers[i] + '</b></span></li >');
         }
     }
+    var holdingQueueNumbers;
+    if (holdingList != null) {
+        holdingQueueNumbers = JSON.parse(holdingList);
+    }
+    else { holdingQueueNumbers = null; }
+
+    $('[add-time-HoldingList] span').remove();
+    if (holdingQueueNumbers != null && holdingQueueNumbers.length > 0) {
+        
+        for (var i = 0; i < holdingQueueNumbers.length; i++) {
+            $('[add-time-HoldingList]').append('<li class="box-child" > <span style="margin-top:-8px"><i>' + (i + 1) + '</i><b>' + holdingQueueNumbers[i] + '</b></span></li >');
+        }
+    }
+
 }
 
+function setTimeslot(currentTimeslot, nextTimeslot) {
+    $('#currentTimeslot').text(currentTimeslot);
+    $('#nextTimeslot').text(nextTimeslot);
+}
 
 $(document).ready(function () {
     $('body').on('click', 'a[href]', function (event) {
