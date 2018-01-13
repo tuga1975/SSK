@@ -246,6 +246,11 @@ namespace Enrolment
 
 
             Trinity.BE.ProfileModel profileModel = null;
+            if (session[CommonConstants.CURRENT_EDIT_USER] != null && ((Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER]).UserProfile.UserId!= userId)
+            {
+                session[CommonConstants.CURRENT_EDIT_USER] = null;
+            }
+
             //session passing from other event like confirm capture photo
             if (session[CommonConstants.CURRENT_EDIT_USER] != null)
             {
@@ -661,7 +666,7 @@ namespace Enrolment
         {
             if (bSuccess)
             {
-                _web.InvokeScript("setDataFingerprint", FingerprintLeftRight, Convert.ToBase64String(FingerprintReaderUtils.Instance.GetTemplate()));
+                _web.InvokeScript("setDataFingerprint", FingerprintLeftRight, Convert.ToBase64String(FingerprintReaderUtils.Instance.GetTemplate));
                 _web.InvokeScript("captureFingerprintMessage", FingerprintLeftRight, "Your fingerprint was scanned successfully!", EnumColors.Green);
                 FingerprintNumber = 0;
             }
@@ -735,13 +740,14 @@ namespace Enrolment
                 string SmartID = Guid.NewGuid().ToString().Trim();
                 Trinity.BE.IssueCard IssueCard = new Trinity.BE.IssueCard()
                 {
-                    //CreatedBy = userLogin.UserId,
+                    CreatedBy = userLogin.UserId,
                     CreatedDate = DateTime.Now,
                     Date_Of_Issue = currentEditUser.UserProfile.DateOfIssue,
                     Name = currentEditUser.Membership_Users.Name,
                     NRIC = currentEditUser.Membership_Users.NRIC,
                     Reprint_Reason = reprintTxt,
                     Serial_Number = currentEditUser.UserProfile.SerialNumber,
+                    Expired_Date = currentEditUser.UserProfile.Expired_Date,
                     Status = EnumIssuedCards.Active,
                     SmartCardId = SmartID,
                     UserId = currentEditUser.UserProfile.UserId

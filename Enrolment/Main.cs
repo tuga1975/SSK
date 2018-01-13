@@ -190,7 +190,7 @@ namespace Enrolment
                 // set status string
                 szMessage.Append("Enrollment process finished successfully.");
                 szMessage.Append("Quality: ");
-                szMessage.Append(_futronicEnrollment.Quality.ToString());
+                szMessage.Append(FingerprintReaderUtils.Instance.GetQuality.ToString());
                 Console.WriteLine(szMessage);
 
                 //set data for curent edit user
@@ -210,15 +210,15 @@ namespace Enrolment
 
                     if (isRight)
                     {
-                        profileModel.User.RightThumbFingerprint = _futronicEnrollment.Template;
+                        profileModel.User.RightThumbFingerprint = FingerprintReaderUtils.Instance.GetTemplate;
 
                     }
                     else
                     {
-                        profileModel.User.LeftThumbFingerprint = _futronicEnrollment.Template;
+                        profileModel.User.LeftThumbFingerprint = FingerprintReaderUtils.Instance.GetTemplate;
 
                     }
-                    session[CommonConstants.CURRENT_FINGERPRINT_DATA] = _futronicEnrollment.Template;
+                    session[CommonConstants.CURRENT_FINGERPRINT_DATA] = FingerprintReaderUtils.Instance.GetTemplate;
 
 
                     session[CommonConstants.CURRENT_EDIT_USER] = profileModel;
@@ -342,6 +342,11 @@ namespace Enrolment
 
             if (_isFirstTimeLoaded)
             {
+
+                Session session = Session.Instance;
+                Trinity.BE.User user = new DAL_User().GetUserByUserId("bb67863c-c330-41aa-b397-c220428ad16f", true);
+                session[CommonConstants.USER_LOGIN] = user;
+
                 // Set Start page = Login
                 NavigateTo(NavigatorEnums.Login);
                 //NavigateTo(NavigatorEnums.Supervisee);
@@ -633,7 +638,7 @@ namespace Enrolment
                     var leftFingerprint = profileModel.UserProfile.LeftThumbImage;
                     var rightFingerprint = profileModel.UserProfile.RightThumbImage;
 
-                    LayerWeb.InvokeScript("setBase64FingerprintOnloadServerCall", leftFingerprint, rightFingerprint);
+                    LayerWeb.InvokeScript("setBase64FingerprintOnloadServerCall", Convert.ToBase64String(leftFingerprint), Convert.ToBase64String(rightFingerprint));
 
                 }
                 string photo1 = "../images/usr-default.jpg";
@@ -663,6 +668,9 @@ namespace Enrolment
 
                 dalUserProfile.UpdateUserProfile(profileModel.UserProfile, profileModel.User.UserId, true);
                 dalUser.ChangeUserStatus(profileModel.User.UserId, EnumUserStatuses.Enrolled);
+
+                new DAL_Membership_Users().UpdateFingerprint(profileModel.User.UserId, profileModel.User.LeftThumbFingerprint, profileModel.User.RightThumbFingerprint);
+                new DAL_UserProfile().UpdateFingerprintImg(profileModel.User.UserId, profileModel.UserProfile.LeftThumbImage, profileModel.UserProfile.RightThumbImage);
 
                 //check print succecss
                 Trinity.Common.Utils.SmartCardPrinterUtils.Instance.PrintAndWriteSmartcardData(null, PriterIssuedCardOnCompleted);
@@ -820,6 +828,7 @@ namespace Enrolment
                     NRIC = currentEditUser.Membership_Users.NRIC,
                     Reprint_Reason = string.Empty,
                     Serial_Number = currentEditUser.UserProfile.SerialNumber,
+                    Expired_Date = currentEditUser.UserProfile.Expired_Date,
                     Status = EnumIssuedCards.Active,
                     SmartCardId = SmartID,
                     UserId = currentEditUser.UserProfile.UserId

@@ -62,6 +62,7 @@ namespace Trinity.DAL
                     SerialNumber = dbUserProfile.Serial_Number,
                     LeftThumbImage = dbUserProfile.LeftThumb_Photo,
                     RightThumbImage = dbUserProfile.RightThumb_Photo,
+                    Expired_Date = dbUserProfile.Expired_Date,
                 };
                 return userProfile;
             }

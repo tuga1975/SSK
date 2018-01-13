@@ -67,7 +67,7 @@ namespace Trinity.DAL
         public List<Timeslot> GetTimeslots(DateTime date)
         {
             SettingModel setting = GetSettings(date);
-
+            //GenerateTimeslots("dfbb2a6a-9e45-4a76-9f75-af1a7824a947");
             int dayOfWeek = date.DayOfWeek();
             return _localUnitOfWork.DataContext.Timeslots.Where(t => t.DateOfWeek == dayOfWeek && t.Setting_ID.HasValue && t.Setting_ID.Value == setting.Setting_ID).ToList();
         }

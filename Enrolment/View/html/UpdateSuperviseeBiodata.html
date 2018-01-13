@@ -70,10 +70,13 @@
                                         </div>
                                         <div>Name :<span id="verifyName"></span></div>
                                         <div>NRIC :<span id="verifyNRIC"></span></div>
-                                        <div>DOB :<span id="verifyDOB"></span></div>
+                                        
+                                        <div>Issue date:  <span id="issueDate"></span></div>
+                                        <div>Serial Number:  <span id="serialNumber"></span></div>
+                                        <div>Issue date:  <span id="issueDate"></span></div>
                                         <div style="clear:both"></div>
                                     </div>
-                                </div>
+                                    </div>
                                 <div class="col">
                                     <div style="width:300px;height:180px;border:1px solid #000">
                                         <div style="float:left">
@@ -85,7 +88,13 @@
                                                 <img src="../images/fingerprint.png" width="40" height="60" id="rightFingerThumb" />
                                             </div>
                                         </div>
-                                        <div> Issue date  <span id="issueDate"></span>  </div>
+                                        <div>Serial Number:  <span id="serialNumber"></span></div>
+                                        <div>Date of Birth :<span id="verifyDOB"></span></div>
+                                        <div>Sex :<span id="verifyGender"></span></div>
+                                        <div>Nationality :<span id="verifyNation"></span></div>
+                                        <div>Issue date:  <span id="issueDate"></span></div>
+
+                                    </div>
                                         <div style="clear:both"></div>
                                     </div>
                                 </div>
@@ -276,21 +285,24 @@
     $(document).ready(function () {
         $('#verifyName').text(api.model.User.Name);
        // var dob = api.model.UserProfile.DOB.replace("T00:00:00", "");
-        $('#verifyDOB').text(api.model.UserProfile.DOB);
+        $('#verifyDOB').text(api.model.UserProfile.DOBTxt);
         $('#verifyNRIC').text(api.model.User.NRIC);
-        if (api.model.UserProfile.User_Photo1 != "") {
-            $('#verifyPhoto').attr('src', 'data:image/jpg;base64,' + api.model.UserProfile.User_Photo1);
-        }
+        $('#serialNumber').text(api.model.UserProfile.SerialNumber);
+        $('#verifyGender').text(api.model.UserProfile.Gender);
+        $('#verifyNation').text(api.model.UserProfile.Nationality);
+        //if (api.model.UserProfile.User_Photo1 != "") {
+        //    $('#verifyPhoto').attr('src', 'data:image/jpg;base64,' + api.model.UserProfile.User_Photo1);
+        //}
         if (api.model.UserProfile.DateOfIssue != "") {
 
             $('#issueDate').text(api.model.UserProfile.DateOfIssue);
         }
 
-        if (api.model.UserProfile.LeftThumbImage != "") {
-            $('#leftFingerThumb').attr('src', 'data:image/jpg;base64,' + api.model.UserProfile.LeftThumbImage);
-        }
-        if (api.model.UserProfile.RightThumbImage != "") {
-            $('#rightFingerThumb').attr('src', 'data:image/jpg;base64,' + api.model.UserProfile.RightThumbImage);
-        }
+        //if (api.model.UserProfile.LeftThumbImage != "") {
+        //    $('#leftFingerThumb').attr('src', 'data:image/jpg;base64,' + api.model.UserProfile.LeftThumbImage);
+        //}
+        //if (api.model.UserProfile.RightThumbImage != "") {
+        //    $('#rightFingerThumb').attr('src', 'data:image/jpg;base64,' + api.model.UserProfile.RightThumbImage);
+        //}
     });
 </script>
