@@ -121,5 +121,8 @@ namespace Trinity.BE
         [DataMember]
         public byte[] LeftThumbImage { get; set; }
 
+        [DataMember]
+        public Nullable<DateTime> Expired_Date { get; set; }
+
     }
 }

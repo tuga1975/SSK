@@ -828,6 +828,7 @@ namespace Enrolment
                     NRIC = currentEditUser.Membership_Users.NRIC,
                     Reprint_Reason = string.Empty,
                     Serial_Number = currentEditUser.UserProfile.SerialNumber,
+                    Expired_Date = currentEditUser.UserProfile.Expired_Date,
                     Status = EnumIssuedCards.Active,
                     SmartCardId = SmartID,
                     UserId = currentEditUser.UserProfile.UserId
