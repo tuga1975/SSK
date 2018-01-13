@@ -79,7 +79,7 @@ namespace SSK
             InitializeWebBrowser();
         }
         public void RefreshQueueNumbers()
-        {
+         {
             DAL_QueueNumber dalQueue = new DAL_QueueNumber();
             var allQueue = GetAllQueueToday(dalQueue, EnumStations.SSK);
 

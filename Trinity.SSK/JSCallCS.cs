@@ -385,7 +385,7 @@ namespace SSK
                 if (!_dalQueue.CheckQueueExistToday(appointment.UserId, EnumStations.SSK))
                 {
                     queueNumber = _dalQueue.InsertQueueNumber(appointment.ID, appointment.UserId, EnumStations.SSK);
-                    _web.InvokeScript("showAlertMessage", "Your queue number is:"+ queueNumber.QueuedNumber);
+                    _web.InvokeScript("showAlertMessage", "Your queue number is:" + queueNumber.QueuedNumber);
                     //RaiseOnShowMessageEvent(new ShowMessageEventArgs("Your queue number is: " + queueNumber.QueuedNumber, "Queue Number", MessageBoxButtons.OK, MessageBoxIcon.Information));
                 }
                 //var model = _dalQueue.GetAllQueueNumberByDate(DateTime.Today).Select(d => new Trinity.BE.Queue()

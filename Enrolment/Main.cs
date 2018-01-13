@@ -638,7 +638,7 @@ namespace Enrolment
                     var leftFingerprint = profileModel.UserProfile.LeftThumbImage;
                     var rightFingerprint = profileModel.UserProfile.RightThumbImage;
 
-                    LayerWeb.InvokeScript("setBase64FingerprintOnloadServerCall", leftFingerprint, rightFingerprint);
+                    LayerWeb.InvokeScript("setBase64FingerprintOnloadServerCall", Convert.ToBase64String(leftFingerprint), Convert.ToBase64String(rightFingerprint));
 
                 }
                 string photo1 = "../images/usr-default.jpg";
