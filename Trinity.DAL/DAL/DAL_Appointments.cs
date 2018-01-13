@@ -36,7 +36,7 @@ namespace Trinity.DAL
                     ReportTime = appointment.ReportTime,
                     StartTime = appointment.Timeslot.StartTime,
                     EndTime = appointment.Timeslot.EndTime,
-                    
+
                 };
                 return result;
             }
@@ -51,9 +51,14 @@ namespace Trinity.DAL
         {
             return _localUnitOfWork.DataContext.Appointments.Where(d => d.UserId == UserId && d.Date >= DateTime.Today).ToList();
         }
-        public Appointment GetMyAppointmentCurrent(string UserId)
+        public Appointment GetTodayAppointment(string UserId)
         {
-            return _localUnitOfWork.DataContext.Appointments.Where(d => d.UserId == UserId && d.Date >= DateTime.Today).OrderBy(d => d.Date).FirstOrDefault();
+            return _localUnitOfWork.DataContext.Appointments.Where(d => d.UserId == UserId && d.Date == DateTime.Today).OrderBy(d => d.Date).FirstOrDefault();
+        }
+
+        public Appointment GetNearestAppointment(string UserId)
+        {
+            return _localUnitOfWork.DataContext.Appointments.Where(d => d.UserId == UserId && d.Date > DateTime.Today).OrderBy(d => d.Date).FirstOrDefault();
         }
         public Appointment UpdateBookTime(string IDAppointment, string timeStart, string timeEnd)
         {
@@ -63,9 +68,14 @@ namespace Trinity.DAL
             if (timeSlot != null)
             {
                 appointment.Timeslot_ID = timeSlot.Timeslot_ID;
+                appointment.ChangedCount += 1;
+            }
+            else
+            {
+                appointment.ChangedCount = 1;
             }
 
-            appointment.ChangedCount += 1;
+
             appointment.Status = (int)EnumAppointmentStatuses.Booked;
             _localUnitOfWork.GetRepository<Appointment>().Update(appointment);
             _localUnitOfWork.Save();
