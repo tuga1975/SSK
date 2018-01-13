@@ -19,6 +19,7 @@ namespace Trinity.DAL
 
         public Trinity.BE.Appointment GetAppointmentDetails(Guid ID)
         {
+            var setting = new DAL_Setting().GetSettings(EnumSettingStatuses.Active);
             Appointment appointment = _localUnitOfWork.DataContext.Appointments.Include("TimeSlot").FirstOrDefault(d => d.ID == ID);
             if (appointment != null)
             {
@@ -34,7 +35,8 @@ namespace Trinity.DAL
                     Status = (EnumAppointmentStatuses)appointment.Status,
                     ReportTime = appointment.ReportTime,
                     StartTime = appointment.Timeslot.StartTime,
-                    EndTime = appointment.Timeslot.EndTime
+                    EndTime = appointment.Timeslot.EndTime,
+                    
                 };
                 return result;
             }
