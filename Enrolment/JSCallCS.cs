@@ -246,6 +246,11 @@ namespace Enrolment
 
 
             Trinity.BE.ProfileModel profileModel = null;
+            if (session[CommonConstants.CURRENT_EDIT_USER] != null && ((Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER]).UserProfile.UserId!= userId)
+            {
+                session[CommonConstants.CURRENT_EDIT_USER] = null;
+            }
+
             //session passing from other event like confirm capture photo
             if (session[CommonConstants.CURRENT_EDIT_USER] != null)
             {
@@ -735,7 +740,7 @@ namespace Enrolment
                 string SmartID = Guid.NewGuid().ToString().Trim();
                 Trinity.BE.IssueCard IssueCard = new Trinity.BE.IssueCard()
                 {
-                    //CreatedBy = userLogin.UserId,
+                    CreatedBy = userLogin.UserId,
                     CreatedDate = DateTime.Now,
                     Date_Of_Issue = currentEditUser.UserProfile.DateOfIssue,
                     Name = currentEditUser.Membership_Users.Name,

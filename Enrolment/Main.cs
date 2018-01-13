@@ -342,6 +342,11 @@ namespace Enrolment
 
             if (_isFirstTimeLoaded)
             {
+
+                Session session = Session.Instance;
+                Trinity.BE.User user = new DAL_User().GetUserByUserId("bb67863c-c330-41aa-b397-c220428ad16f", true);
+                session[CommonConstants.USER_LOGIN] = user;
+
                 // Set Start page = Login
                 NavigateTo(NavigatorEnums.Login);
                 //NavigateTo(NavigatorEnums.Supervisee);
@@ -664,6 +669,9 @@ namespace Enrolment
                 dalUserProfile.UpdateUserProfile(profileModel.UserProfile, profileModel.User.UserId, true);
                 dalUser.ChangeUserStatus(profileModel.User.UserId, EnumUserStatuses.Enrolled);
 
+                new DAL_Membership_Users().UpdateFingerprint(profileModel.User.UserId, profileModel.User.LeftThumbFingerprint, profileModel.User.RightThumbFingerprint);
+                new DAL_UserProfile().UpdateFingerprintImg(profileModel.User.UserId, profileModel.UserProfile.LeftThumbImage, profileModel.UserProfile.RightThumbImage);
+
                 //check print succecss
                 Trinity.Common.Utils.SmartCardPrinterUtils.Instance.PrintAndWriteSmartcardData(null, PriterIssuedCardOnCompleted);
 
@@ -813,7 +821,7 @@ namespace Enrolment
                 string SmartID = Guid.NewGuid().ToString().Trim();
                 Trinity.BE.IssueCard IssueCard = new Trinity.BE.IssueCard()
                 {
-                    //CreatedBy = userLogin.UserId,
+                    CreatedBy = userLogin.UserId,
                     CreatedDate = DateTime.Now,
                     Date_Of_Issue = currentEditUser.UserProfile.DateOfIssue,
                     Name = currentEditUser.Membership_Users.Name,
