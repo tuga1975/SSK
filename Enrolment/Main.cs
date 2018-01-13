@@ -838,10 +838,11 @@ namespace Enrolment
 
                 currentEditUser.Membership_Users.SmartCardId = SmartID;
 
-
+                LayerWeb.InvokeScript("showPrintMessage", "Smart Card was printed successfully! Please collect the smart card from printer and place on the reader to verify.");
             }
             else
             {
+                LayerWeb.InvokeScript("showPrintMessage", "Smart Card was failed to print! Please collect the smart card from printer and try again.");
                 //printer fail
                 //_web.InvokeScript("OnPriterIssuedCardCompleted", false, null);
             }
