@@ -813,7 +813,7 @@ namespace Enrolment
                 string SmartID = Guid.NewGuid().ToString().Trim();
                 Trinity.BE.IssueCard IssueCard = new Trinity.BE.IssueCard()
                 {
-                    CreatedBy = userLogin.UserId,
+                    //CreatedBy = userLogin.UserId,
                     CreatedDate = DateTime.Now,
                     Date_Of_Issue = currentEditUser.UserProfile.DateOfIssue,
                     Name = currentEditUser.Membership_Users.Name,
