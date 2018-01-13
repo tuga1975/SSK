@@ -190,7 +190,7 @@ namespace Enrolment
                 // set status string
                 szMessage.Append("Enrollment process finished successfully.");
                 szMessage.Append("Quality: ");
-                szMessage.Append(_futronicEnrollment.Quality.ToString());
+                szMessage.Append(FingerprintReaderUtils.Instance.GetQuality.ToString());
                 Console.WriteLine(szMessage);
 
                 //set data for curent edit user
@@ -210,15 +210,15 @@ namespace Enrolment
 
                     if (isRight)
                     {
-                        profileModel.User.RightThumbFingerprint = _futronicEnrollment.Template;
+                        profileModel.User.RightThumbFingerprint = FingerprintReaderUtils.Instance.GetTemplate;
 
                     }
                     else
                     {
-                        profileModel.User.LeftThumbFingerprint = _futronicEnrollment.Template;
+                        profileModel.User.LeftThumbFingerprint = FingerprintReaderUtils.Instance.GetTemplate;
 
                     }
-                    session[CommonConstants.CURRENT_FINGERPRINT_DATA] = _futronicEnrollment.Template;
+                    session[CommonConstants.CURRENT_FINGERPRINT_DATA] = FingerprintReaderUtils.Instance.GetTemplate;
 
 
                     session[CommonConstants.CURRENT_EDIT_USER] = profileModel;

@@ -661,7 +661,7 @@ namespace Enrolment
         {
             if (bSuccess)
             {
-                _web.InvokeScript("setDataFingerprint", FingerprintLeftRight, Convert.ToBase64String(FingerprintReaderUtils.Instance.GetTemplate()));
+                _web.InvokeScript("setDataFingerprint", FingerprintLeftRight, Convert.ToBase64String(FingerprintReaderUtils.Instance.GetTemplate));
                 _web.InvokeScript("captureFingerprintMessage", FingerprintLeftRight, "Your fingerprint was scanned successfully!", EnumColors.Green);
                 FingerprintNumber = 0;
             }

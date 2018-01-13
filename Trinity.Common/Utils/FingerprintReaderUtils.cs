@@ -343,13 +343,23 @@ namespace Trinity.Common
             // callback
             _identificationCompleted(success);
         }
-        public byte[] GetTemplate()
-        {
-            if (_futronicEnrollment == null)
-                return new byte[] { };
+        public byte[] GetTemplate {
+            get
+            {
+                if (_futronicEnrollment == null)
+                    return new byte[] { };
 
-            return _futronicEnrollment.Template;
+                return _futronicEnrollment.Template;
+            }
         }
+        public uint GetQuality
+        {
+            get
+            {
+                return _futronicEnrollment.Quality;
+            }
+        }
+        
         public void StartCapture(OnPutOnHandler OnPutOn, OnTakeOffHandler OnTakeOff, UpdateScreenImageHandler UpdateScreenImage, OnFakeSourceHandler OnFakeSource, OnEnrollmentCompleteHandler OnEnrollmentComplete)
         {
             lock (syncRoot)
