@@ -155,29 +155,30 @@ namespace Enrolment
 
         private void EnrollmentFingerprint()
         {
-            _futronicEnrollment = new FutronicEnrollment();
+            FingerprintReaderUtils.Instance.StartCapture(OnPutOn, OnTakeOff, UpdateScreenImage, OnFakeSource, OnEnrollmentComplete);
+            //_futronicEnrollment = new FutronicEnrollment();
 
-            // Set control properties
-            _futronicEnrollment.FakeDetection = true;
-            _futronicEnrollment.FFDControl = true;
-            _futronicEnrollment.FARN = 200;
-            _futronicEnrollment.Version = VersionCompatible.ftr_version_compatible;
-            _futronicEnrollment.FastMode = true;
-            _futronicEnrollment.MIOTControlOff = false;
-            _futronicEnrollment.MaxModels = 5;
-            _futronicEnrollment.MinMinuitaeLevel = 3;
-            _futronicEnrollment.MinOverlappedLevel = 3;
+            //// Set control properties
+            //_futronicEnrollment.FakeDetection = true;
+            //_futronicEnrollment.FFDControl = true;
+            //_futronicEnrollment.FARN = 200;
+            //_futronicEnrollment.Version = VersionCompatible.ftr_version_compatible;
+            //_futronicEnrollment.FastMode = true;
+            //_futronicEnrollment.MIOTControlOff = false;
+            //_futronicEnrollment.MaxModels = 5;
+            //_futronicEnrollment.MinMinuitaeLevel = 3;
+            //_futronicEnrollment.MinOverlappedLevel = 3;
 
 
-            // register events
-            _futronicEnrollment.OnPutOn += OnPutOn;
-            _futronicEnrollment.OnTakeOff += OnTakeOff;
-            _futronicEnrollment.UpdateScreenImage += new UpdateScreenImageHandler(UpdateScreenImage);
-            _futronicEnrollment.OnFakeSource += OnFakeSource;
-            _futronicEnrollment.OnEnrollmentComplete += OnEnrollmentComplete;
+            //// register events
+            //_futronicEnrollment.OnPutOn += OnPutOn;
+            //_futronicEnrollment.OnTakeOff += OnTakeOff;
+            //_futronicEnrollment.UpdateScreenImage += new UpdateScreenImageHandler(UpdateScreenImage);
+            //_futronicEnrollment.OnFakeSource += OnFakeSource;
+            //_futronicEnrollment.OnEnrollmentComplete += OnEnrollmentComplete;
 
-            // start enrollment process
-            _futronicEnrollment.Enrollment();
+            //// start enrollment process
+            //_futronicEnrollment.Enrollment();
         }
         private void OnEnrollmentComplete(bool bSuccess, int nResult)
         {
@@ -189,7 +190,7 @@ namespace Enrolment
                 // set status string
                 szMessage.Append("Enrollment process finished successfully.");
                 szMessage.Append("Quality: ");
-                szMessage.Append(_futronicEnrollment.Quality.ToString());
+                szMessage.Append(FingerprintReaderUtils.Instance.GetQuality.ToString());
                 Console.WriteLine(szMessage);
 
                 //set data for curent edit user
@@ -209,15 +210,15 @@ namespace Enrolment
 
                     if (isRight)
                     {
-                        profileModel.User.RightThumbFingerprint = _futronicEnrollment.Template;
+                        profileModel.User.RightThumbFingerprint = FingerprintReaderUtils.Instance.GetTemplate;
 
                     }
                     else
                     {
-                        profileModel.User.LeftThumbFingerprint = _futronicEnrollment.Template;
+                        profileModel.User.LeftThumbFingerprint = FingerprintReaderUtils.Instance.GetTemplate;
 
                     }
-                    session[CommonConstants.CURRENT_FINGERPRINT_DATA] = _futronicEnrollment.Template;
+                    session[CommonConstants.CURRENT_FINGERPRINT_DATA] = FingerprintReaderUtils.Instance.GetTemplate;
 
 
                     session[CommonConstants.CURRENT_EDIT_USER] = profileModel;
@@ -232,17 +233,20 @@ namespace Enrolment
             }
             else
             {
+                LayerWeb.InvokeScript("enableClearBtnServerCall", isRight);
                 LayerWeb.InvokeScript("changeMessageServerCall", isRight, FutronicSdkBase.SdkRetCode2Message(nResult), EnumColors.Red);
             }
 
-            // unregister events
-            _futronicEnrollment.OnPutOn -= OnPutOn;
-            _futronicEnrollment.OnTakeOff -= OnTakeOff;
-            _futronicEnrollment.UpdateScreenImage -= new UpdateScreenImageHandler(UpdateScreenImage);
-            _futronicEnrollment.OnFakeSource -= OnFakeSource;
-            _futronicEnrollment.OnEnrollmentComplete -= OnEnrollmentComplete;
+            FingerprintReaderUtils.Instance.DisposeCapture();
 
-            _futronicEnrollment = null;
+            //// unregister events
+            //_futronicEnrollment.OnPutOn -= OnPutOn;
+            //_futronicEnrollment.OnTakeOff -= OnTakeOff;
+            //_futronicEnrollment.UpdateScreenImage -= new UpdateScreenImageHandler(UpdateScreenImage);
+            //_futronicEnrollment.OnFakeSource -= OnFakeSource;
+            //_futronicEnrollment.OnEnrollmentComplete -= OnEnrollmentComplete;
+
+            //_futronicEnrollment = null;
         }
 
         private bool OnFakeSource(FTR_PROGRESS Progress)
@@ -338,6 +342,11 @@ namespace Enrolment
 
             if (_isFirstTimeLoaded)
             {
+
+                Session session = Session.Instance;
+                Trinity.BE.User user = new DAL_User().GetUserByUserId("bb67863c-c330-41aa-b397-c220428ad16f", true);
+                session[CommonConstants.USER_LOGIN] = user;
+
                 // Set Start page = Login
                 NavigateTo(NavigatorEnums.Login);
                 //NavigateTo(NavigatorEnums.Supervisee);
@@ -660,6 +669,9 @@ namespace Enrolment
                 dalUserProfile.UpdateUserProfile(profileModel.UserProfile, profileModel.User.UserId, true);
                 dalUser.ChangeUserStatus(profileModel.User.UserId, EnumUserStatuses.Enrolled);
 
+                new DAL_Membership_Users().UpdateFingerprint(profileModel.User.UserId, profileModel.User.LeftThumbFingerprint, profileModel.User.RightThumbFingerprint);
+                new DAL_UserProfile().UpdateFingerprintImg(profileModel.User.UserId, profileModel.UserProfile.LeftThumbImage, profileModel.UserProfile.RightThumbImage);
+
                 //check print succecss
                 Trinity.Common.Utils.SmartCardPrinterUtils.Instance.PrintAndWriteSmartcardData(null, PriterIssuedCardOnCompleted);
 
@@ -816,6 +828,7 @@ namespace Enrolment
                     NRIC = currentEditUser.Membership_Users.NRIC,
                     Reprint_Reason = string.Empty,
                     Serial_Number = currentEditUser.UserProfile.SerialNumber,
+                    Expired_Date = currentEditUser.UserProfile.Expired_Date,
                     Status = EnumIssuedCards.Active,
                     SmartCardId = SmartID,
                     UserId = currentEditUser.UserProfile.UserId
