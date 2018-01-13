@@ -303,6 +303,7 @@ namespace SSK
         #region Facial Authentication Event Handlers
         private void Main_OnFacialRecognitionSucceeded()
         {
+            _fingerprintFailed = 0;
             LayerWeb.RunScript("$('.status-text').css('color','#000').text('You have been authenticated.');");
             FacialRecognition.Instance.OnFacialRecognitionFailed -= Main_OnFacialRecognitionFailed;
             FacialRecognition.Instance.OnFacialRecognitionSucceeded -= Main_OnFacialRecognitionSucceeded;
@@ -378,6 +379,8 @@ namespace SSK
             // Login successfully
             //
             // Create a session object to store UserLogin information
+            _fingerprintFailed = 0;
+
             Session session = Session.Instance;
             session.IsFingerprintAuthenticated = true;
 

@@ -155,29 +155,30 @@ namespace Enrolment
 
         private void EnrollmentFingerprint()
         {
-            _futronicEnrollment = new FutronicEnrollment();
+            FingerprintReaderUtils.Instance.StartCapture(OnPutOn, OnTakeOff, UpdateScreenImage, OnFakeSource, OnEnrollmentComplete);
+            //_futronicEnrollment = new FutronicEnrollment();
 
-            // Set control properties
-            _futronicEnrollment.FakeDetection = true;
-            _futronicEnrollment.FFDControl = true;
-            _futronicEnrollment.FARN = 200;
-            _futronicEnrollment.Version = VersionCompatible.ftr_version_compatible;
-            _futronicEnrollment.FastMode = true;
-            _futronicEnrollment.MIOTControlOff = false;
-            _futronicEnrollment.MaxModels = 5;
-            _futronicEnrollment.MinMinuitaeLevel = 3;
-            _futronicEnrollment.MinOverlappedLevel = 3;
+            //// Set control properties
+            //_futronicEnrollment.FakeDetection = true;
+            //_futronicEnrollment.FFDControl = true;
+            //_futronicEnrollment.FARN = 200;
+            //_futronicEnrollment.Version = VersionCompatible.ftr_version_compatible;
+            //_futronicEnrollment.FastMode = true;
+            //_futronicEnrollment.MIOTControlOff = false;
+            //_futronicEnrollment.MaxModels = 5;
+            //_futronicEnrollment.MinMinuitaeLevel = 3;
+            //_futronicEnrollment.MinOverlappedLevel = 3;
 
 
-            // register events
-            _futronicEnrollment.OnPutOn += OnPutOn;
-            _futronicEnrollment.OnTakeOff += OnTakeOff;
-            _futronicEnrollment.UpdateScreenImage += new UpdateScreenImageHandler(UpdateScreenImage);
-            _futronicEnrollment.OnFakeSource += OnFakeSource;
-            _futronicEnrollment.OnEnrollmentComplete += OnEnrollmentComplete;
+            //// register events
+            //_futronicEnrollment.OnPutOn += OnPutOn;
+            //_futronicEnrollment.OnTakeOff += OnTakeOff;
+            //_futronicEnrollment.UpdateScreenImage += new UpdateScreenImageHandler(UpdateScreenImage);
+            //_futronicEnrollment.OnFakeSource += OnFakeSource;
+            //_futronicEnrollment.OnEnrollmentComplete += OnEnrollmentComplete;
 
-            // start enrollment process
-            _futronicEnrollment.Enrollment();
+            //// start enrollment process
+            //_futronicEnrollment.Enrollment();
         }
         private void OnEnrollmentComplete(bool bSuccess, int nResult)
         {
@@ -236,14 +237,16 @@ namespace Enrolment
                 LayerWeb.InvokeScript("changeMessageServerCall", isRight, FutronicSdkBase.SdkRetCode2Message(nResult), EnumColors.Red);
             }
 
-            // unregister events
-            _futronicEnrollment.OnPutOn -= OnPutOn;
-            _futronicEnrollment.OnTakeOff -= OnTakeOff;
-            _futronicEnrollment.UpdateScreenImage -= new UpdateScreenImageHandler(UpdateScreenImage);
-            _futronicEnrollment.OnFakeSource -= OnFakeSource;
-            _futronicEnrollment.OnEnrollmentComplete -= OnEnrollmentComplete;
+            FingerprintReaderUtils.Instance.DisposeCapture();
 
-            _futronicEnrollment = null;
+            //// unregister events
+            //_futronicEnrollment.OnPutOn -= OnPutOn;
+            //_futronicEnrollment.OnTakeOff -= OnTakeOff;
+            //_futronicEnrollment.UpdateScreenImage -= new UpdateScreenImageHandler(UpdateScreenImage);
+            //_futronicEnrollment.OnFakeSource -= OnFakeSource;
+            //_futronicEnrollment.OnEnrollmentComplete -= OnEnrollmentComplete;
+
+            //_futronicEnrollment = null;
         }
 
         private bool OnFakeSource(FTR_PROGRESS Progress)
