@@ -232,6 +232,7 @@ namespace Enrolment
             }
             else
             {
+                LayerWeb.InvokeScript("enableClearBtnServerCall", isRight);
                 LayerWeb.InvokeScript("changeMessageServerCall", isRight, FutronicSdkBase.SdkRetCode2Message(nResult), EnumColors.Red);
             }
 

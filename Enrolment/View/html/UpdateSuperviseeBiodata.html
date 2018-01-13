@@ -40,7 +40,7 @@
                         <div class="row">
                             <div class="col" id="leftThumbDiv">
                                 <div style="border:1px solid #000000;color:#000000" id="leftProcessMessage">Place left thumb onto scanner</div>
-                                <div><button style="float:left" class="btn-form" id="leftThumbScanBtn">Scan</button><button style="float:right;" id="leftThumbClearBtn" class="btn-form">Clear</button></div>
+                                <div><button style="float:left" class="btn-form" id="leftThumbScanBtn" onclick="ActionScanFingerPrint(false)">Scan</button><button style="float:right;" id="leftThumbClearBtn" class="btn-form">Clear</button></div>
                                 <br />
                                 <div> <img class="avatar" id="leftFingerprint" style="max-width:35%;" /></div>
                                 <br />
@@ -49,7 +49,7 @@
                             </div>
                             <div class="col" id="rightThumbDiv">
                                 <div style="border:1px solid #000000;color:#000000" id="rightProcessMessage">Place right thumb onto scanner</div>
-                                <div><button style="float:left" id="rightThumbScanBtn" class="btn-form">Scan</button><button style="float:right;" id="rightThumbClearBtn" class="btn-form">Clear</button></div>
+                                <div><button style="float:left" id="rightThumbScanBtn" class="btn-form" onclick="ActionScanFingerPrint(true)">Scan</button><button style="float:right;" id="rightThumbClearBtn" class="btn-form">Clear</button></div>
                                 <br />
                                 <div> <img class="avatar" id="rightFingerprint" style="max-width:35%" /></div>
                                 <br />
@@ -126,31 +126,37 @@
 
         //alert(leftFingerPrintData);
 
-
+        $('#leftThumbScanBtn').on("click", function () {
+            alert(1);
+        });
     });
-    $('#leftThumbScanBtn').click(function () {
-        $('#rightThumbDiv').find('button').attr('disabled', 'disabled');
-        api.server.CaptureFingerPrint(false);
+    function ActionScanFingerPrint(isRight) {
+        if (isRight) {
+            $('#leftThumbDiv').find('button').attr('disabled', 'disabled');
+        } else {
+            $('#rightThumbDiv').find('button').attr('disabled', 'disabled');
+        }
+        api.server.CaptureFingerPrint(isRight);
+    }
+    //$('#leftThumbScanBtn').click(function () {
+    //    $('#rightThumbDiv').find('button').attr('disabled', 'disabled');
+    //    api.server.CaptureFingerPrint(false);
 
-    });
+    //});
 
-    $('#rightThumbScanBtn').click(function () {
-        $('#leftThumbDiv').find('button').attr('disabled', 'disabled');
-        api.server.CaptureFingerPrint(true);
-    });
+    //$('#rightThumbScanBtn').click(function () {
+    //    $('#leftThumbDiv').find('button').attr('disabled', 'disabled');
+    //    api.server.CaptureFingerPrint(true);
+    //});
+    
     function enableClearBtnServerCall(isRight) {
 
-        if (isRight) {
-            $('#rightThumbClearBtn').removeAttr('disabled');
-            $('#rightThumbScanBtn').attr('disabled', 'disabled');
-            $('#leftThumbScanBtn').removeAttr('disabled');
-        }
-        else {
-            $('#leftThumbClearBtn').removeAttr('disabled');
-            $('#leftThumbScanBtn').attr('disabled', 'disabled');
-            $('#rightThumbScanBtn').removeAttr('disabled');
+        $('#rightThumbClearBtn').removeAttr('disabled');
+        $('#leftThumbScanBtn').removeAttr('disabled');
+        $('#leftThumbClearBtn').removeAttr('disabled');
+        $('#rightThumbScanBtn').removeAttr('disabled');
 
-        }
+        
 
     }
 
