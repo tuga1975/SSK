@@ -92,23 +92,43 @@ namespace SSK
 
             DAL_Appointments DAL_Appointments = new DAL_Appointments();
 
-            DAL_Setting DAL_Environment = new DAL_Setting();
+            DAL_Setting dalSettting = new DAL_Setting();
 
-            Trinity.DAL.DBContext.Appointment appointment = DAL_Appointments.GetMyAppointmentCurrent(user.UserId);
+            Trinity.DAL.DBContext.Appointment appointment;
+            Trinity.DAL.DBContext.Appointment nearestAppointment;
             var selectedTimes = new Trinity.BE.AppointmentTime();
+            appointment = DAL_Appointments.GetTodayAppointment(user.UserId);
             if (appointment != null)
             {
-                selectedTimes = DAL_Environment.GetAppointmentTime(appointment.Date);
-                SetSelectedTime(appointment, selectedTimes.Morning);
-                SetSelectedTime(appointment, selectedTimes.Afternoon);
-                SetSelectedTime(appointment, selectedTimes.Evening);
-                this._web.LoadPageHtml("BookAppointment.html", new object[] { appointment, selectedTimes });
+
+                selectedTimes = SetSelectedTimes(dalSettting, appointment);
             }
             else
             {
-                var eventCenter = Trinity.Common.Common.EventCenter.Default;
-                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_NO_APPOINTMENT, Message = "You have no appointment" });
+                nearestAppointment = DAL_Appointments.GetNearestAppointment(user.UserId);
+                if (nearestAppointment != null)
+                {
+                    selectedTimes = SetSelectedTimes(dalSettting, nearestAppointment);
+                }
+                else
+                {
+                    var eventCenter = Trinity.Common.Common.EventCenter.Default;
+                    eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_NO_APPOINTMENT, Message = "You have no appointment" });
+                }
+
             }
+
+        }
+
+        private Trinity.BE.AppointmentTime SetSelectedTimes(DAL_Setting dalSettting, Appointment appointment)
+        {
+            var date = appointment.Date;
+            Trinity.BE.AppointmentTime selectedTimes = dalSettting.GetAppointmentTime(date);
+            SetSelectedTime(appointment, selectedTimes.Morning);
+            SetSelectedTime(appointment, selectedTimes.Afternoon);
+            SetSelectedTime(appointment, selectedTimes.Evening);
+            this._web.LoadPageHtml("BookAppointment.html", new object[] { appointment, selectedTimes });
+            return selectedTimes;
         }
 
         private static void SetSelectedTime(Appointment appointment, List<Trinity.BE.AppointmentTimeDetails> selectedTimes)
