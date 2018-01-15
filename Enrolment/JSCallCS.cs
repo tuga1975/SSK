@@ -455,10 +455,8 @@ namespace Enrolment
             _web.LoadPageHtml("UpdateSuperviseeFingerprint.html");
         }
 
-        public void UpdateSuperviseeBiodata()
+        public void UpdateSuperviseeBiodata(string frontBase64, string backBase64)
         {
-
-
             Session session = Session.Instance;
             var dalUser = new Trinity.DAL.DAL_User();
             var dalUserprofile = new Trinity.DAL.DAL_UserProfile();
@@ -467,8 +465,7 @@ namespace Enrolment
             {
                 EventCenter eventCenter = EventCenter.Default;
 
-                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.UPDATE_SUPERVISEE_BIODATA, Data = profileModel });
-
+                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.UPDATE_SUPERVISEE_BIODATA, Data = new object[] { profileModel, frontBase64, backBase64 } });
             }
         }
         public object loadDataVerify()
@@ -476,7 +473,7 @@ namespace Enrolment
             Session session = Session.Instance;
             return session[CommonConstants.CURRENT_EDIT_USER];
         }
-        public void PriterSmartCart(string frontBase64, string backBase64)
+        public void PrintSmartCart(string frontBase64, string backBase64)
         {
             this._web.InvokeScript("showPrintMessage", null, "Printing card please wait ...");
             frontBase64 = frontBase64.Replace("data:image/png;base64,", string.Empty);
@@ -491,7 +488,6 @@ namespace Enrolment
 
             PrintAndWriteSmartcardInfo infoPrinter = new PrintAndWriteSmartcardInfo()
             {
-                
                 BackCardImagePath = ImgBack,
                 FrontCardImagePath = ImgFront,
                 SmartCardData = new SmartCardData()
@@ -511,9 +507,9 @@ namespace Enrolment
                 }
             };
 
-            Trinity.Common.Utils.SmartCardPrinterUtils.Instance.PrintAndWriteSmartcardData(infoPrinter, PriterCardNewSuperviseeOnCompleted);
+            Trinity.Common.Utils.SmartCardPrinterUtils.Instance.PrintAndWriteSmartcardData(infoPrinter, OnNewCardPrintedSuccessfully);
         }
-        private void PriterCardNewSuperviseeOnCompleted(PrintAndWriteSmartcardResult result)
+        private void OnNewCardPrintedSuccessfully(PrintAndWriteSmartcardResult result)
         {
             if (result.Success)
             {
@@ -541,7 +537,7 @@ namespace Enrolment
                 new DAL_User().ChangeUserStatus(currentEditUser.User.UserId, EnumUserStatuses.Enrolled);
                 dalIssueCard.Insert(IssueCard);
                 currentEditUser.Membership_Users.SmartCardId = SmartID;
-                this._web.InvokeScript("showPrintMessage",true, "Smart Card was printed successfully! Please collect the smart card from printer and place on the reader to verify.");
+                this._web.InvokeScript("showPrintMessage", true, "Smart Card was printed successfully! Please collect the smart card from printer and place on the reader to verify.");
             }
             else
             {
