@@ -5,8 +5,10 @@ using System.Diagnostics;
 using System.Linq;
 using System.Management;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Trinity.Common.Common;
+using ZMOTIFPRINTERLib;
 
 namespace Trinity.Common.Utils
 {
@@ -48,15 +50,17 @@ namespace Trinity.Common.Utils
         {
             try
             {
-                PrintAndWriteSmartcardResult printAndWriteSmartcardResult = new PrintAndWriteSmartcardResult()
-                {
-                    Success = true,
-                    Description = string.Empty,
-                    SmartCardData = new SmartCardData()
-                    {
-                        CardInfo = new CardInfo() { UID = "sample-UID", CreatedBy = "sample-userID", CreatedDate = DateTime.Now }
-                    }
-                };
+                //PrintAndWriteSmartcardResult printAndWriteSmartcardResult = new PrintAndWriteSmartcardResult()
+                //{
+                //    Success = true,
+                //    Description = string.Empty,
+                //    SmartCardData = new SmartCardData()
+                //    {
+                //        CardInfo = new CardInfo() { UID = "sample-UID", CreatedBy = "sample-userID", CreatedDate = DateTime.Now }
+                //    }
+                //};
+
+                PrintAndWriteSmartcardResult printAndWriteSmartcardResult = PrintCard(printAndWriteSmartcardInfo);
 
                 OnCompleted(printAndWriteSmartcardResult);
             }
@@ -65,6 +69,114 @@ namespace Trinity.Common.Utils
                 Debug.WriteLine("PrintAndWriteSmartcardData exception: " + ex.ToString());
 
                 OnCompleted(new PrintAndWriteSmartcardResult() { Success = false, Description = "Oops!.. Something went wrong ..." });
+            }
+        }
+
+        private PrintAndWriteSmartcardResult PrintCard(PrintAndWriteSmartcardInfo data)
+        {
+            PrintAndWriteSmartcardResult printAndWriteSmartcardResult = new PrintAndWriteSmartcardResult()
+            {
+                Success = false
+            };
+
+            Job job = new Job();
+
+            // Begin SDK communication with printer (using ZMotif SDK)
+            //string deviceSerialNumber = "06C104500004";
+            string deviceSerialNumber = EnumDeviceNames.SmartCardPrinterSerialNumber;
+            job.Open(deviceSerialNumber);
+
+            // Move card to smart card reader and suspend ZMotif SDK control of printer (using ZMotif SDK)
+            int actionID = 0;
+            job.JobControl.SmartCardConfiguration(SideEnum.Front, SmartCardTypeEnum.MIFARE, true);
+            job.SmartCardDataOnly(1, out actionID);
+
+            // refer: https://km.zebra.com/kb/index?page=content&id=SA280&actp=LIST
+            //  The goal of this program is to establish a connection with 
+            // a Mifare 4k contactless microprocessor smart card through a ZXP printer.
+
+            // Wait while card moves into encode position 
+            Thread.Sleep(4000);
+
+            try
+            {
+                // write data
+                SmartCardReaderUtils smartCardReaderUtils = SmartCardReaderUtils.Instance;
+                //PrintAndWriteSmartcardInfo_Demo data_Demo = new PrintAndWriteSmartcardInfo_Demo()
+                //{
+                //    Name = data.SmartCardData.CardHolderInfo.Name,
+                //    PrintedDate = DateTime.Now
+                //};
+                string readerName = EnumDeviceNames.SmartCardPrinterContactlessReader;
+                //bool writeSuccessful = smartCardReaderUtils.WriteData(readerName, data_Demo);
+                //if (!writeSuccessful)
+                //{
+                //    // Resume ZMotif SDK control of printer (using ZMotif SDK)
+                //    job.JobResume();
+
+                //    // Close ZMotif SDK control of job (using ZMotif SDK)
+                //    job.Close();
+
+                //    // return value
+                //    return null;
+                //}
+
+                // read data for self verification
+                //string getData = smartCardReaderUtils.ReadAllData_MifareClassic(readerName);
+
+                // implement checking later
+
+                // get card UID
+                string cardUID = SmartCardPrinterUtils.Instance.GetMifareCardUID(readerName);
+
+                // set cardUID and success flag 
+                if (!string.IsNullOrEmpty(cardUID))
+                {
+                    printAndWriteSmartcardResult.SmartCardData = new SmartCardData()
+                    {
+                        CardInfo = new CardInfo() { UID = cardUID }
+                    };
+                    printAndWriteSmartcardResult.Success = true;
+                }
+
+                //// Resume ZMotif SDK control of printer (using ZMotif SDK)
+                //job.JobResume();
+
+                //// Close ZMotif SDK control of job (using ZMotif SDK)
+                //job.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return null;
+            }
+            finally
+            {
+                // Resume ZMotif SDK control of printer (using ZMotif SDK)
+                job.JobResume();
+
+                // Close ZMotif SDK control of job (using ZMotif SDK)
+                job.Close();
+
+                // Wait while eject the card
+                Thread.Sleep(2000);
+            }
+
+            return printAndWriteSmartcardResult;
+        }
+
+        public string GetMifareCardUID(string cardReaderName)
+        {
+            try
+            {
+                string cardUID = SmartCardReaderUtils.Instance.GetCardUID(cardReaderName);
+
+                return cardUID;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("GetMifareCardUID: " + ex.ToString());
+                return string.Empty;
             }
         }
 

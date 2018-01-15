@@ -7,6 +7,12 @@ using System.Threading.Tasks;
 
 namespace Trinity.Common.Common
 {
+    public class PrintAndWriteSmartcardInfo_Demo
+    {
+        public string Name { get; set; }
+        public DateTime PrintedDate { get; set; }
+    }
+
     public class PrintAndWriteSmartcardInfo
     {
         public Bitmap FrontCard { get; set; }

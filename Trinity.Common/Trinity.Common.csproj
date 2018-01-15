@@ -60,6 +60,10 @@
     <Reference Include="ftrSDKHelper13">
       <HintPath>..\Trinity.SSK\Libs\ftrSDKHelper13.dll</HintPath>
     </Reference>
+    <Reference Include="Interop.ZMOTIFPRINTERLib">
+      <HintPath>..\DocumentScannerTest\obj\x64\Debug\Interop.ZMOTIFPRINTERLib.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -93,6 +97,7 @@
     <Compile Include="Common\EventAgrs.cs" />
     <Compile Include="Common\EventCenter.cs" />
     <Compile Include="Common\LabelInfo.cs" />
+    <Compile Include="Common\MifareCard.cs" />
     <Compile Include="Common\Results.cs" />
     <Compile Include="Common\SmartCard.cs" />
     <Compile Include="Common\User.cs" />

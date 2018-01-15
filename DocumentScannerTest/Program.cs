@@ -70,13 +70,49 @@ namespace DocumentScannerTest
             //TestStartIdentification();
 
             // TestSmartCardPrinter
-            //TestSmartCardPrinter();
-            SmartCardReaderUtils smartCardReaderUtils = SmartCardReaderUtils.Instance;
-            smartCardReaderUtils.StartSmartCardReaderMonitor();
-            smartCardReaderUtils.StartSmartCardMonitor(onCardInitialized, onCardInserted, onCardRemoved);
-            TestEncodeContactlessSCard();
+            //SmartCardReaderUtils smartCardReaderUtils = SmartCardReaderUtils.Instance;
+            //smartCardReaderUtils.StartSmartCardReaderMonitor();
+            //smartCardReaderUtils.StartSmartCardMonitor(onCardInitialized, onCardInserted, onCardRemoved);
+            //TestEncodeContactlessSCard();
 
+            // read/write smart card
+            // write data
+            PrintAndWriteSmartcardInfo_Demo data = new PrintAndWriteSmartcardInfo_Demo()
+            {
+                Name = "Ricardo Quaresma xxx",
+                PrintedDate = DateTime.Now
+            };
+
+            //SmartCardReaderUtils smartCardReaderUtils = SmartCardReaderUtils.Instance;
+            //bool writeSuccessful = smartCardReaderUtils.WriteData(data);
+
+            //string getData = smartCardReaderUtils.ReadAllData_MifareClassic();
+            //Console.WriteLine(getData);
+
+            //ReleaseCard();
+            TestSmartCardPrinter();
             Console.ReadKey();
+        }
+
+        private static void ReleaseCard()
+        {
+            Job job = new Job();
+
+            // Begin SDK communication with printer (using ZMotif SDK)
+            //string deviceSerialNumber = "06C104500004";
+            string deviceSerialNumber = EnumDeviceNames.SmartCardPrinterSerialNumber;
+            job.Open(deviceSerialNumber);
+
+            // Move card to smart card reader and suspend ZMotif SDK control of printer (using ZMotif SDK)
+            int actionID = 0;
+            job.JobControl.SmartCardConfiguration(SideEnum.Front, SmartCardTypeEnum.MIFARE, true);
+            job.SmartCardDataOnly(1, out actionID);
+
+            // Resume ZMotif SDK control of printer (using ZMotif SDK)
+            job.JobResume();
+
+            // Close ZMotif SDK control of job (using ZMotif SDK)
+            job.Close();
         }
 
         private static void onCardRemoved(object sender, CardStatusEventArgs e)
@@ -94,7 +130,7 @@ namespace DocumentScannerTest
             Debug.WriteLine("initialize: " + e.ReaderName);
         }
 
-        private static void TestEncodeContactlessSCard()
+        private static void TestEncodeContactlessSCard(PrintAndWriteSmartcardInfo_Demo data)
         {
             try
             {
@@ -105,7 +141,7 @@ namespace DocumentScannerTest
 
                 // Begin SDK communication with printer (using ZMotif SDK)
                 //string deviceSerialNumber = "06C104500004";
-                string deviceSerialNumber = "Z9J171200014";
+                string deviceSerialNumber = EnumDeviceNames.SmartCardPrinterSerialNumber;
                 job.Open(deviceSerialNumber);
 
                 // Move card to smart card reader and suspend ZMotif SDK control of printer (using ZMotif SDK)
@@ -115,6 +151,8 @@ namespace DocumentScannerTest
 
                 // Wait while card moves into encode position 
                 Thread.Sleep(4000);
+
+                string cardUID = SmartCardPrinterUtils.Instance.GetMifareCardUID("");
 
                 //string cardUID = GetCardUID();
 
@@ -188,25 +226,23 @@ namespace DocumentScannerTest
             }
         }
 
-        private static string GetCardUID()
-        {
-            try
-            {
-                return string.Empty;
-            }
-            catch (Exception ex)
-            {
-                return ex.ToString();
-            }
-        }
-
         private static void TestSmartCardPrinter()
         {
             Console.WriteLine("starting TestSmartCardPrinter...");
+            PrintAndWriteSmartcardInfo printAndWriteSmartcardInfo = new PrintAndWriteSmartcardInfo()
+            {
+                SmartCardData = new SmartCardData()
+                {
+                    CardHolderInfo = new CardHolderInfo()
+                    {
+                        Name = "TuDD test smart card printer"
+                    }
+                }
+            };
 
             SmartCardPrinterUtils smartCardPrinterUtils = SmartCardPrinterUtils.Instance;
 
-            smartCardPrinterUtils.PrintAndWriteSmartcardData(new PrintAndWriteSmartcardInfo(), OnCompleted);
+            smartCardPrinterUtils.PrintAndWriteSmartcardData(printAndWriteSmartcardInfo, OnCompleted);
         }
 
         private static void OnCompleted(PrintAndWriteSmartcardResult result)
