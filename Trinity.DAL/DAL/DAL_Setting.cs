@@ -337,7 +337,7 @@ namespace Trinity.DAL
         }
 
         // Save Setting from DutyOfficer
-        public bool SaveSetting (Trinity.BE.SettingModel model, string lastUpdateBy)
+        public bool SaveSetting(Trinity.BE.SettingModel model, string lastUpdateBy)
         {
             try
             {
@@ -395,7 +395,7 @@ namespace Trinity.DAL
 
                 return true;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return false;
             }
@@ -458,19 +458,19 @@ namespace Trinity.DAL
             switch (dayOfWeek)
             {
                 case EnumDayOfWeek.Monday:
-                    return GetSettings(DateTime.Now).Monday;
+                    return GetSettings(EnumSettingStatuses.Active).Monday;
                 case EnumDayOfWeek.Tuesday:
-                    return GetSettings(DateTime.Now).Tuesday;
+                    return GetSettings(EnumSettingStatuses.Active).Tuesday;
                 case EnumDayOfWeek.Wednesday:
-                    return GetSettings(DateTime.Now).WednesDay;
+                    return GetSettings(EnumSettingStatuses.Active).WednesDay;
                 case EnumDayOfWeek.Thursday:
-                    return GetSettings(DateTime.Now).Thursday;
+                    return GetSettings(EnumSettingStatuses.Active).Thursday;
                 case EnumDayOfWeek.Friday:
-                    return GetSettings(DateTime.Now).Friday;
+                    return GetSettings(EnumSettingStatuses.Active).Friday;
                 case EnumDayOfWeek.Saturday:
-                    return GetSettings(DateTime.Now).Saturday;
+                    return GetSettings(EnumSettingStatuses.Active).Saturday;
                 case EnumDayOfWeek.Sunday:
-                    return GetSettings(DateTime.Now).Sunday;
+                    return GetSettings(EnumSettingStatuses.Active).Sunday;
                 default:
                     return null;
             }
@@ -479,11 +479,20 @@ namespace Trinity.DAL
 
         public Timeslot GetNextTimeslotToday(TimeSpan currentTime)
         {
-          
+
             var dateOfWeek = Common.CommonUtil.ConvertToCustomDateOfWeek(DateTime.Now.DayOfWeek);
             var setting = GetSettingDetails(dateOfWeek);
             var nextTimeslot = _localUnitOfWork.DataContext.Timeslots.Where(t => t.StartTime == DbFunctions.AddMinutes(currentTime, setting.Duration) && t.DateOfWeek == (int)dateOfWeek && t.Setting_ID == setting.Setting_ID).FirstOrDefault();
             return nextTimeslot;
+        }
+
+        public List<Timeslot> GetListTodayTimeslot()
+        {
+            var dayOfWeek = Common.CommonUtil.ConvertToCustomDateOfWeek(DateTime.Now.DayOfWeek);
+            var setting = GetSettingDetails(dayOfWeek);
+            var listTimeslot = _localUnitOfWork.DataContext.Timeslots.Where(t => t.DateOfWeek == (int)dayOfWeek && t.Setting_ID == setting.Setting_ID).ToList();
+            return listTimeslot;
+
         }
     }
 }
