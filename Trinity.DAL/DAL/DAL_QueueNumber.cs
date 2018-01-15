@@ -29,14 +29,33 @@ namespace Trinity.DAL
             _localUnitOfWork.Save();
             //insert to queue details
             var listStation = EnumStations.GetListStation();
+            var today = DateTime.Now;
+            var appointmentDetails = new DAL_Appointments().GetAppointmentDetails(appointmentID);
+            var diffHour = appointmentDetails.StartTime.Value.Hours - today.Hour;
+            var diffStartMin = appointmentDetails.StartTime.Value.Minutes - today.Minute;
+            var diffEndHour = appointmentDetails.EndTime.Value.Hours - today.Hour;
+            var diffEndMin = appointmentDetails.EndTime.Value.Minutes - today.Minute;
             foreach (var item in listStation)
             {
                 var queueDetails = new QueueDetail { Queue_ID = dataInsert.Queue_ID, Station = item, Status = EnumQueueStatuses.Waiting };
 
                 _localUnitOfWork.GetRepository<Trinity.DAL.DBContext.QueueDetail>().Add(queueDetails);
+                _localUnitOfWork.Save();
             }
+            var queueDetailsRepo = _localUnitOfWork.GetRepository<QueueDetail>();
 
+            if (diffHour == 0 && diffStartMin <= 0 && ((diffEndHour > 0 && diffEndMin <= 0) || (diffEndHour == 0 && diffEndMin >= 0)))
+            {
+                var currentStationQueue = queueDetailsRepo.Get(s => s.Station == station && s.Queue_ID == dataInsert.Queue_ID);
+                if (currentStationQueue != null)
+                {
+                    currentStationQueue.Status = EnumQueueStatuses.Processing;
+                }
+                queueDetailsRepo.Update(currentStationQueue);
+
+            }
             _localUnitOfWork.Save();
+
             return dataInsert;
         }
 

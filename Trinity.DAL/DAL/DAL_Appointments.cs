@@ -56,6 +56,12 @@ namespace Trinity.DAL
             return _localUnitOfWork.DataContext.Appointments.Where(d => d.UserId == UserId && d.Date == DateTime.Today).OrderBy(d => d.Date).FirstOrDefault();
         }
 
+        public List<Appointment> GetAllCurrentTimeslotAppointment(TimeSpan currentTime)
+        {
+            return _localUnitOfWork.DataContext.Appointments.Include("Queues").Include("Timeslot").Where(d => d.Date == DateTime.Today && d.Timeslot_ID.HasValue && d.Timeslot.StartTime.Value == currentTime && d.Queues.Any(q => q.Appointment_ID == d.ID)==false).OrderBy(d => d.Date).ToList();
+
+        }
+
         public Appointment GetNearestAppointment(string UserId)
         {
             return _localUnitOfWork.DataContext.Appointments.Where(d => d.UserId == UserId && d.Date > DateTime.Today).OrderBy(d => d.Date).FirstOrDefault();

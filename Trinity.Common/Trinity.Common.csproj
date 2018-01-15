@@ -60,6 +60,10 @@
     <Reference Include="ftrSDKHelper13">
       <HintPath>..\Trinity.SSK\Libs\ftrSDKHelper13.dll</HintPath>
     </Reference>
+    <Reference Include="Interop.ZMOTIFPRINTERLib">
+      <HintPath>E:\Interop.ZMOTIFPRINTERLib.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
