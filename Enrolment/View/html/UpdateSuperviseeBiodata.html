@@ -64,43 +64,46 @@
                         <div>
                             <div class="row">
                                 <div class="col">
-                                    <div style="width:300px;height:180px;border:1px solid #000;float:right">
-                                        <div style="float:left">
-                                            <img src="../images/usr-default.jpg" width="80" height="100" id="verifyPhoto" />
+                                    <div style="width:300px;height:182px;border:1px solid #000;float:right;position:relative;" id="frontCard">
+                                        <div style="height:87px;width:100px;position:absolute;top:2px;left:2px;border:1px solid #CCC;text-align:center;padding:1px;">
+                                            <img src="../images/usr-default.jpg" id="verifyPhoto" style="height:100%;max-width:100%;" />
                                         </div>
-                                        <div>Name :<span id="verifyName"></span></div>
-                                        <div>NRIC :<span id="verifyNRIC"></span></div>
-
-                                        <div>Issue date:  <span id="issueDate"></span></div>
-                                        <div>Expire date:  <span id="expireDate"></span></div>
-                                        <div>Serial Number:  <span id="serialNumber"></span></div>
-
+                                        <div style="height:87px;width:100px;position:absolute;bottom:2px;left:2px;border:1px solid #CCC;text-align:center;padding:1px;">
+                                            <img src="../images/usr-default.jpg" id="verifyPhoto2" style="height:100%;max-width:100%;" />
+                                        </div>
+                                        <div style="margin-left:100px;padding:10px;font-size:12px;">
+                                            <div><b>Name : </b><span name="verifyName"></span></div>
+                                            <div><b>NRIC : </b><span name="verifyNRIC"></span></div>
+                                            <div><b>Issue date: </b><span name="issueDate"></span></div>
+                                            <div><b>Expire date: </b><span name="expireDate"></span></div>
+                                            <div><b>Serial Number: </b><span name="serialNumber"></span></div>
+                                        </div>
                                         <div style="clear:both"></div>
                                     </div>
                                 </div>
                                 <div class="col">
-                                    <div style="width:300px;height:180px;border:1px solid #000">
-                                        <div style="float:left">
-                                            <div>
-                                                <img src="../images/fingerprint.png" width="40" height="60" id="verifyLeftFinger" />
-                                            </div>
-                                            <br />
-                                            <div>
-                                                <img src="../images/fingerprint.png" width="40" height="60" id="verifyRightFinger" />
-                                            </div>
+                                    <div style="width:300px;height:182px;border:1px solid #000;float:right;position:relative;" id="backCard">
+                                        <div style="height:87px;width:100px;position:absolute;top:2px;left:2px;border:1px solid #CCC;text-align:center;padding:1px;display:none;">
+                                            <img src="../images/fingerprint.jpg" id="verifyLeftFinger" style="height:100%;max-width:100%;" />
                                         </div>
-                                        <div>Date of Birth :<span id="verifyDOB"></span></div>
-
-
-                                        <div>Sex :<span id="verifyGender"></span></div>
-
-                                        <div>Nationality :<span id="verifyNation"></span></div>
-                                        <div>Issue date:  <span id="issueDateBack"></span></div>
-                                        <div>Serial Number:  <span id="serialNumberBack"></span></div>
-
+                                        <div style="height:87px;width:100px;position:absolute;bottom:2px;left:2px;border:1px solid #CCC;text-align:center;padding:1px;display:none;">
+                                            <img src="../images/fingerprint.jpg" id="verifyRightFinger" style="height:100%;max-width:100%;" />
+                                        </div>
+                                        <div style="margin-left:0px;padding:10px;font-size:12px;">
+                                            <div><b>Name : </b><span name="verifyName"></span></div>
+                                            <div><b>NRIC : </b><span name="verifyNRIC"></span></div>
+                                            <div><b>Date of Birth : </b><span name="verifyDOB"></span></div>
+                                            <div><b>Sex : </b><span name="verifyGender"></span></div>
+                                            <div><b>Nationality : </b><span name="verifyNation"></span></div>
+                                            <div><b>Race : </b><span name="verifyRace"></span></div>
+                                            <div><b>Issue date: </b><span name="issueDate"></span></div>
+                                            <div><b>Expire date: </b><span name="expireDate"></span></div>
+                                            <div><b>Serial Number: </b><span name="serialNumber"></span></div>
+                                        </div>
+                                        <div style="clear:both"></div>
                                     </div>
-                                    <div style="clear:both"></div>
                                 </div>
+                                <div style="clear:both;"></div>
                             </div>
 
                         </div>
@@ -110,9 +113,13 @@
                     <section>
                         <div class="row">
                             <div class="col" style="text-align:center">
-                                <div style="width:100%;border:1px solid #000000;font-size:15px;display:none" id="printSuccessMessage" ></div>
-                                <div style="width:250px;height:150px;border:1px solid #000; margin:10px auto" id="reCheckSCard">
-                                    Smart card Information
+                                <div style="width:100%;border:1px solid #000000;font-size:15px;display:none" id="printSuccessMessage"></div>
+                                <div style="text-align:center;margin-top:10px;display:none;" id="rePrinter">
+                                    <input type="button" value="Reprint" onclick="api.server.PriterSmartCart(frontCardImg, backCardImg);"/>
+                                </div>
+                                <div style="margin:10px auto;display:none;text-align:center;" id="reCheckSCard">
+                                    <img src="" style="margin-left:10px;" id="frontCardImg"/>
+                                    <img src="" style="margin-left:10px;"  id="backCardImg"/>
                                 </div>
                             </div>
                             <!--<button type="submit" class="btn-form">Save</button>-->
@@ -128,20 +135,19 @@
     </div>
 </div>
 <script>
+
     function setImg(number, src) {
         image = document.getElementById('image' + number);
         image.src = src;
     }
+
+    function Test() {
+        
+    }
     $(document).ready(function () {
         $('#leftThumbClearBtn').attr('disabled', 'disabled');
         $('#rightThumbClearBtn').attr('disabled', 'disabled');
-
-
-        //alert(leftFingerPrintData);
-
-        $('#leftThumbScanBtn').on("click", function () {
-            alert(1);
-        });
+        
     });
     function ActionScanFingerPrint(isRight) {
         if (isRight) {
@@ -228,11 +234,13 @@
         }
         if (base64Str2 != "") {
             $('#image2').attr('src', 'data:image/jpg;base64,' + base64Str2);
+            $('#verifyPhoto2').attr('src', 'data:image/jpg;base64,' + base64Str2);
         }
     }
 </script>
 <script>
-
+    var frontCardImg = null;
+    var backCardImg = null;
     $(function () {
         var isUpdated = false;
         $("#wizard").steps({
@@ -251,25 +259,62 @@
             //onContentLoaded: function (event, currentIndex) {
 
             //},
-            //onStepChanging: function (event, currentIndex, newIndex) {
+            onStepChanging: function (event, currentIndex, newIndex) {
 
 
+                if (newIndex == 2) {
+                    api.server.loadDataVerify(function (model) {
+                        $('[name="verifyName"]').text(model.User.Name);
+                        if (model.UserProfile.DOB != null) {
+                            $('[name="verifyDOB"]').text(model.UserProfile.DOBTxt);
+                        }
 
+                        $('[name="verifyNRIC"]').text(model.User.NRIC);
+                        $('[name="serialNumber"]').text(model.UserProfile.Serial_Number);
+                        $('[name="serialNumberBack"]').text(model.UserProfile.Serial_Number);
+                        $('[name="verifyGender"]').text(model.UserProfile.Gender == null ? '' : model.UserProfile.Gender);
+                        $('[name="verifyNation"]').text(model.UserProfile.Nationality);
+                        if (model.UserProfile.DateOfIssue != null) {
 
-            //    return true;
-            //},
+                            $('[name="issueDate"]').text(model.UserProfile.DateOfIssueTxt);
+                            $('[name="issueDateBack"]').text(model.UserProfile.DateOfIssueTxt);
+                        }
+                        if (model.UserProfile.Expired_Date != null) {
+                            $('[name="expireDate"]').text(model.UserProfile.Expired_DateTxt);
+                        }
+                        $('[name="verifyRace"]').text(model.UserProfile.Race == null ? '' : model.UserProfile.Race);
+                    });
+                }else if (newIndex == 3) {
+                    //if (frontCardImg == null && backCardImg == null) {
+                        
+                    //    return false;
+                    //}   
+                    html2canvas($('#frontCard'), {
+                        onrendered: function (froncanvas) {
+                            html2canvas($('#backCard'), {
+                                onrendered: function (backcanvas) {
+                                    frontCardImg = froncanvas.toDataURL("image/png");
+                                    backCardImg = backcanvas.toDataURL("image/png");
+                                }
+                            });
+                        }
+                    });
+                }
+                return true;
+            },
             onStepChanged: function (event, currentIndex, priorIndex) {
                 //0 - photo
                 //1 - fingerprint
                 //2 - verify
                 //3 - print
+                
                 if (currentIndex == 3) {
                     //update to db
-                    if (isUpdated === false) {
-                        api.server.UpdateSuperviseeBiodata();
-                        isUpdated = true;
-                    }
-
+                    api.server.UpdateSuperviseeBiodata(function () {
+                        $('#frontCardImg').attr('src', frontCardImg);
+                        $('#backCardImg').attr('src', backCardImg);
+                        api.server.PriterSmartCart(frontCardImg, backCardImg);
+                    });
                 }
             },
             onFinished: function (event, currentIndex) {
@@ -288,39 +333,20 @@
     });
 
     $(document).ready(function () {
-        $('#verifyName').text(api.model.User.Name);
-        // var dob = api.model.UserProfile.DOB.replace("T00:00:00", "");
-        if (api.model.UserProfile.DOB != null) {
-            $('#verifyDOB').text(api.model.UserProfile.DOBTxt);
-        }
-
-        $('#verifyNRIC').text(api.model.User.NRIC);
-        $('#serialNumber').text(api.model.UserProfile.Serial_Number);
-        $('#serialNumberBack').text(api.model.UserProfile.Serial_Number);
-        $('#verifyGender').text(api.model.UserProfile.Gender);
-        $('#verifyNation').text(api.model.UserProfile.Nationality);
-        //if (api.model.UserProfile.User_Photo1 != "") {
-        //    $('#verifyPhoto').attr('src', 'data:image/jpg;base64,' + api.model.UserProfile.User_Photo1);
-        //}
-        if (api.model.UserProfile.DateOfIssue != null) {
-
-            $('#issueDate').text(api.model.UserProfile.DateOfIssueTxt);
-            $('#issueDateBack').text(api.model.UserProfile.DateOfIssueTxt);
-        }
-        if (api.model.UserProfile.Expired_Date != null) {
-
-            $('#expireDate').text(api.model.UserProfile.Expired_DateTxt);
-        }
-        //if (api.model.UserProfile.LeftThumbImage != "") {
-        //    $('#leftFingerThumb').attr('src', 'data:image/jpg;base64,' + api.model.UserProfile.LeftThumbImage);
-        //}
-        //if (api.model.UserProfile.RightThumbImage != "") {
-        //    $('#rightFingerThumb').attr('src', 'data:image/jpg;base64,' + api.model.UserProfile.RightThumbImage);
-        //}
+        
     });
-
-    function showPrintMessage(message) {
+    
+    function showPrintMessage(status, message) {
+        if (status != null) {
+            if (status) {
+                $('#rePrinter').css('display', 'none');
+                $('#reCheckSCard').css('display', 'block');
+                $('.actions > ul > li:first-child').attr('style', 'display:none');
+            } else {
+                $('#rePrinter').css('display', 'block');
+                $('#reCheckSCard').css('display', 'none');
+            }
+        }
         $('#printSuccessMessage').text(message).show();
-
     }
 </script>

@@ -49,7 +49,7 @@ namespace Trinity.Common.Common
         public string UserId { get; set; }
         public string Name { get; set; }
         public string NRIC { get; set; }
-        public DateTime DOB { get; set; }
+        public Nullable<DateTime> DOB { get; set; }
     }
 
     public class CardHolderActivity

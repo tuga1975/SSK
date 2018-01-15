@@ -113,7 +113,7 @@ namespace SSK
                 else
                 {
                     var eventCenter = Trinity.Common.Common.EventCenter.Default;
-                    eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_NO_APPOINTMENT, Message = "You have no appointment" });
+                    eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_MESSAGE, Message = "You have no appointment" });
                 }
 
             }
@@ -166,10 +166,11 @@ namespace SSK
         {
             DAL_Appointments DAL_Appointments = new DAL_Appointments();
             DAL_Appointments.UpdateBookTime(IDAppointment, timeStart, timeEnd);
-
+           
             Trinity.BE.Appointment appointment = DAL_Appointments.GetAppointmentDetails(new Guid(IDAppointment));
             APIUtils.Printer.PrintAppointmentDetails("AppointmentDetailsTemplate.html", appointment);
-
+            _web.InvokeScript("showMessage", "Booking appointment successfully!");
+            //LoadPage("Supervisee.html");
             return timeStart;
         }
 
@@ -395,7 +396,7 @@ namespace SSK
             if (appointment == null)
             {
                 var eventCenter = Trinity.Common.Common.EventCenter.Default;
-                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_NO_APPOINTMENT, Message = "You have no appointment today" });
+                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_MESSAGE, Message = "You have no appointment today" });
             }
             else
             {
@@ -404,9 +405,26 @@ namespace SSK
                 //check queue exist
                 if (!_dalQueue.CheckQueueExistToday(appointment.UserId, EnumStations.SSK))
                 {
-                    queueNumber = _dalQueue.InsertQueueNumber(appointment.ID, appointment.UserId, EnumStations.SSK);
-                    _web.InvokeScript("showAlertMessage", "Your queue number is:" + queueNumber.QueuedNumber);
+                    if (appointment.Timeslot_ID != null)
+                    {
+                        queueNumber = _dalQueue.InsertQueueNumber(appointment.ID, appointment.UserId, EnumStations.SSK);
+
+                        var eventCenter = Trinity.Common.Common.EventCenter.Default;
+                        eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_MESSAGE, Message = "Your queue number is:" + queueNumber.QueuedNumber });
+                    }
+                    else
+                    {
+                        var eventCenter = Trinity.Common.Common.EventCenter.Default;
+                        eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_MESSAGE, Message = "You have not selected the timeslot!\n Please go to Book Appointment page to select a timeslot." });
+                        //BookAppointment();
+                    }
+
                     //RaiseOnShowMessageEvent(new ShowMessageEventArgs("Your queue number is: " + queueNumber.QueuedNumber, "Queue Number", MessageBoxButtons.OK, MessageBoxIcon.Information));
+                }
+                else
+                {
+                    var eventCenter = Trinity.Common.Common.EventCenter.Default;
+                    eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_MESSAGE, Message = "You have already queued!\n Please wait for your turn." });
                 }
                 //var model = _dalQueue.GetAllQueueNumberByDate(DateTime.Today).Select(d => new Trinity.BE.Queue()
                 //{
@@ -442,19 +460,23 @@ namespace SSK
             }
             //create absence report 
             var dalAbsence = new DAL_AbsenceReporting();
-            var absenceModel = dalAbsence.SetInfo(reasonModel);
-            var create = dalAbsence.CreateAbsenceReporting(absenceModel, true);
-            if (create)
+
+
+            var dalAppointment = new DAL_Appointments();
+
+            var listSelectedDate = dalAppointment.GetListAppointmentFromSelectedDate(listSplitID);
+
+            foreach (var item in listSelectedDate)
             {
-                var dalAppointment = new DAL_Appointments();
-
-                var listSelectedDate = dalAppointment.GetListAppointmentFromSelectedDate(listSplitID);
-
-                foreach (var item in listSelectedDate)
+                var absenceModel = dalAbsence.SetInfo(reasonModel);
+                var create = dalAbsence.CreateAbsenceReporting(absenceModel, true);
+                if (create)
                 {
                     dalAppointment.UpdateReason(item.ID, absenceModel.ID);
                 }
+
             }
+
             //send notify to case officer
             Session currentSession = Session.Instance;
             Trinity.BE.User user = (Trinity.BE.User)currentSession[CommonConstants.USER_LOGIN];
