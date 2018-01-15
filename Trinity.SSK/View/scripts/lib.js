@@ -143,10 +143,28 @@ function getToday() {
     today = dd + '/' + MM + '/' + yyyy + '  ' + hh + ':' + mm;
     return today;
 }
-function refreshQueueNumbers(currentQueueNumber, nextQueueNumberList, holdingList) {
+function refreshQueueNumbers(servingQueueNumber,currentQueueNumber, nextQueueNumberList, holdingList) {
 
     var today = getToday();
     $('#currentDateTime').text(today);
+    if (servingQueueNumber.trim().length > 0) {
+        var split = servingQueueNumber.split('-');
+
+        var queue = "";
+        for (var i = 0; i < split.length; i++) {
+            if (split[i].length > 0) {
+
+                queue += "<li class='box-child'><span style='margin-top:-8px' ><i>" + (i + 1) + "</i><b>" + split[i] + "</b></span></li>";
+
+            }
+         
+            $('[add-time-NowServing]').html(queue);
+        }
+
+    }
+    else {
+        $('[add-time-NowServing]').html('');
+    }
     if (currentQueueNumber.trim().length > 0) {
         var split = currentQueueNumber.split('-');
 
@@ -157,12 +175,12 @@ function refreshQueueNumbers(currentQueueNumber, nextQueueNumberList, holdingLis
                 queue += "<li class='box-child'><span style='margin-top:-8px' ><i>" + (i + 1) + "</i><b>" + split[i] + "</b></span></li>";
 
             }
-            $('[add-time-NowServing]').html(queue);
+         
             $('[add-time-CurrentTimeslot]').html(queue);
         }
 
     } else {
-        $('[add-time-NowServing]').text('');
+        $('[add-time-CurrentTimeslot]').text('');
     }
     var nextQueueNumbers;
     if (nextQueueNumberList != null)
@@ -211,3 +229,7 @@ $(document).ready(function () {
         }
     });
 });
+
+function showMessage(message) {
+    alert(message);
+}

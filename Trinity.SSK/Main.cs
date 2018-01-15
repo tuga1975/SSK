@@ -94,7 +94,7 @@ namespace SSK
         }
         private void EventCenter_OnNewEvent(object sender, EventInfo e)
         {
-            if (e.Name == EventNames.ALERT_NO_APPOINTMENT)
+            if (e.Name == EventNames.ALERT_MESSAGE)
             {
                 LayerWeb.InvokeScript("alertBookAppointment", e.Message);
             }
@@ -125,7 +125,8 @@ namespace SSK
             MessageBox.Show(message, "Authentication failed!", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
             // navigate to smartcard login page
-            NavigateTo(NavigatorEnums.Authentication_SmartCard);
+            //NavigateTo(NavigatorEnums.Authentication_SmartCard);
+            NavigateTo(NavigatorEnums.Authentication_Facial);
         }
 
         private void Fingerprint_OnIdentificationCompleted(bool bSuccess)

@@ -82,7 +82,7 @@ public static class CSCallJS
     {
         var nextQueue = JsonConvert.SerializeObject(nextQueueNumberList, Formatting.Indented, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
         var holdList = JsonConvert.SerializeObject(holdingList, Formatting.Indented, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
-        web.InvokeScript("refreshQueueNumbers", currentQueueNumber, nextQueue, holdList);
+        web.InvokeScript("refreshQueueNumbers", servingQueueNumber, currentQueueNumber, nextQueue, holdList);
     }
     
     #endregion
