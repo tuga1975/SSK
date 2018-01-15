@@ -211,10 +211,12 @@
         <button type="button" class="btn btn-dark" style="position:fixed;bottom:10px;left:10px;" onclick="api.server.LoadPage('Supervisee.html');">Back</button>
         <button type="button" class="btn btn-success" style="position:fixed;bottom:10px;right:10px; float:right;" id="SaveBtn">Save</button>
     </div>
-	<input type="text" name="SerialNumber" id="SerialNumber" />
-	<input type="text" name="DateOfIssue" id="DateOfIssue" />
-	<input type="text" name="Gender" id="Gender" />
-	<input type="text" name="Race" id="Race" />
+    <div style="display:none">
+        <input type="text" name="SerialNumber" id="SerialNumber" />
+        <input type="text" name="DateOfIssue" id="DateOfIssue" />
+        <input type="text" name="Gender" id="Gender" />
+        <input type="text" name="Race" id="Race" />
+    </div>
 </form>
 <script type="text/javascript">
     var _particularName, _nric, _dob, _nationality, _maritalStatus = "";
