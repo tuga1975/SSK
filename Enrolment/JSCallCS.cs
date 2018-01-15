@@ -643,7 +643,7 @@ namespace Enrolment
         {
             FingerprintReaderUtils.Instance.DisposeCapture();
             Session session = Session.Instance;
-            EditSupervisee(((Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER]).UserProfile.UserId);
+            EditSupervisee(((Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER]).User.UserId);
         }
         public void CaptureFingerprint(int LeftOrRight)
         {
