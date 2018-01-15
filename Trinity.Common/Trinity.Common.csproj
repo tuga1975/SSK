@@ -60,10 +60,6 @@
     <Reference Include="ftrSDKHelper13">
       <HintPath>..\Trinity.SSK\Libs\ftrSDKHelper13.dll</HintPath>
     </Reference>
-    <Reference Include="Interop.ZMOTIFPRINTERLib">
-      <HintPath>E:\Interop.ZMOTIFPRINTERLib.dll</HintPath>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -147,6 +143,7 @@
     <Content Include="Libs\TSC Barcode Printer\x86\TSCLIB.dll" />
     <Content Include="Libs\Zerbra XZP Serries 9\ZMotifGraphics.dll" />
     <Content Include="Libs\Zerbra XZP Serries 9\ZMotifPrinter.dll" />
+    <Content Include="Libs\ZMOTIFPRINTERLib.dll" />
     <Content Include="Libs\ZXing.Net.0.16.0.0\net4.5\zxing.dll" />
     <Content Include="Libs\ZXing.Net.0.16.0.0\net4.5\zxing.pdb" />
     <Content Include="Libs\ZXing.Net.0.16.0.0\net4.5\zxing.presentation.dll" />
