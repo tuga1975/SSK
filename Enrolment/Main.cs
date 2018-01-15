@@ -343,9 +343,9 @@ namespace Enrolment
             if (_isFirstTimeLoaded)
             {
 
-                Session session = Session.Instance;
-                Trinity.BE.User user = new DAL_User().GetUserByUserId("bb67863c-c330-41aa-b397-c220428ad16f", true);
-                session[CommonConstants.USER_LOGIN] = user;
+                //Session session = Session.Instance;
+                //Trinity.BE.User user = new DAL_User().GetUserByUserId("bb67863c-c330-41aa-b397-c220428ad16f", true);
+                //session[CommonConstants.USER_LOGIN] = user;
 
                 // Set Start page = Login
                 NavigateTo(NavigatorEnums.Login);

@@ -484,12 +484,16 @@ namespace Enrolment
             Session session = Session.Instance;
             var userLogin = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
             var profileModel = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
-
+            var ImgFront = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".png";
+            var ImgBack = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".png";
+            new System.Drawing.Bitmap(new System.IO.MemoryStream(Convert.FromBase64String(frontBase64))).Save(ImgFront);
+            new System.Drawing.Bitmap(new System.IO.MemoryStream(Convert.FromBase64String(backBase64))).Save(ImgBack);
 
             PrintAndWriteSmartcardInfo infoPrinter = new PrintAndWriteSmartcardInfo()
             {
-                FrontCard = new System.Drawing.Bitmap(new System.IO.MemoryStream(Convert.FromBase64String(frontBase64))),
-                BackCard = new System.Drawing.Bitmap(new System.IO.MemoryStream(Convert.FromBase64String(backBase64))),
+                
+                BackCardImagePath = ImgBack,
+                FrontCardImagePath = ImgFront,
                 SmartCardData = new SmartCardData()
                 {
                     CardHolderInfo = new CardHolderInfo()
