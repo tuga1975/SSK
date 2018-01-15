@@ -186,19 +186,20 @@
         <div style="text-align:left;margin-bottom:10px;">
             <span style="padding:4px 10px;border:1px solid #CCC;">Public Holiday and Non-Operational Days</span>
         </div>
-        <table class="table table-bordered" style="width:calc(100% - 30px);">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Short Description</th>
-                    <th>Notes</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
+        <div style="width:calc(100% - 30px);" >
+            <table class="display" id="holidayTable">
+                <!--<thead>
+                    <tr>
+                        <th data-field="Holiday1">Date</th>
+                        <th data-field="ShortDesc">Short Description</th>
+                        <th data-field="Notes">Notes</th>
+                    </tr>
+                </thead>-->
+            </table>
+        </div>
         <span class="glyphicon glyphicon-plus" style="position:absolute;top:42px;right:0px;font-size:18px;height:30px;width:30px;text-align:center;line-height:30px;border:1px solid #CCC;cursor:pointer;" onclick="api.server.PopupAddHoliday(function () {$('#idAddHoliday').modal(); });">
         </span>
-        <span class="glyphicon glyphicon-minus" style="position:absolute;top:90px;right:0px;font-size:18px;height:30px;width:30px;text-align:center;line-height:30px;border:1px solid #CCC;cursor:pointer;">
+        <span class="glyphicon glyphicon-minus" style="position:absolute;top:90px;right:0px;font-size:18px;height:30px;width:30px;text-align:center;line-height:30px;border:1px solid #CCC;cursor:pointer;" id="deleteBtn">
         </span>
     </div>
     <div style="margin-top:20px;border-top:1px solid #CCC;padding:10px;position:relative;">
@@ -217,7 +218,7 @@
     var optionsHH = ["00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23"];
     var optionsMM = ["00", "05", "10", "15", "20", "25", "30", "35", "40", "45", "50", "55"];
     var optionsXM = ["00", "10", "20", "30", "40", "50"];
-    var optionsInterval = ["15", "30", "45", "60"];
+    var optionsInterval = ["00", "15", "30", "45", "60"];
 
     $(document).ready(function () {
 
@@ -287,6 +288,7 @@
     });
 
     var model = [];
+    var holidaySelected;
     function getDataCallback(response) {
         model = JSON.parse(response);
 
@@ -431,9 +433,51 @@
             $('#sun-interval').val(sunDay.Duration);
             $('#sun-Max').val(sunDay.MaximumAppointment);
             $('#sun-Reserved').val(sunDay.ReservedForSpare);
+
+            $('#holidayTable').bootstrapTable({
+                pagination: true,
+                pageSize: 5,
+                columns: [{
+                    field: 'Holiday1',
+                    title: 'Date',
+                    width: '25%',
+                    align: 'center',
+                    formatter: function (value, row, index, field) {
+                        if (value) {
+                            return formatDate(value);
+                        }
+                        return "";
+                    }
+                }, {
+                    field: 'ShortDesc',
+                    title: 'Short Description',
+                    width: '35%',
+                    align: 'center'
+                }, {
+                    field: 'Notes',
+                    title: 'Notes',
+                    width: '40%',
+                    align: 'center'
+                }],
+                data: model.HoliDays,
+                onClickRow: onRowClick
+            });
+            $('#holidayTable').on('click', 'tr', function (event) {
+                //if ($(this).hasClass('active')) {
+                //    $(this).removeClass('active');
+                //} else {
+                    $(this).addClass('active').siblings().removeClass('active');
+                //}
+            });
+
+
+            function onRowClick(row, index) {
+                var data = JSON.stringify(row);
+                holidaySelected = row.Holiday1;
+            };
         }
     };
-
+    
     $("#UpdateBtn").click(function (e) {
 
         // Monday
@@ -493,7 +537,6 @@
         // Sunday
         var sunStart = $('#sun-start-HH').val() + ':' + $('#sun-start-MM').val() + ':' + $("#sun-start-XM").val();
         var sunEnd = $('#sun-end-HH').val() + ':' + $('#sun-end-MM').val() + ':' + $("#sun-end-XM").val();
-        debugger;
         model.Sunday.StartTime = sunStart;
         model.Sunday.EndTime = sunEnd;
         model.Sunday.Duration = $('#sun-interval').val();
@@ -502,7 +545,39 @@
 
         var json = JSON.stringify(model);
         api.server.UpdateSetting(json);
-        e.preventDefault(); 
+        e.preventDefault();
     });
+
+    $("#deleteBtn").click(function (e) {
+        
+        if (holidaySelected) {
+            model.HoliDays.forEach(function (element, index) {
+                if (Date.parse(element.Holiday1) == Date.parse(holidaySelected)) {
+                    model.HoliDays.splice(index, 1);
+                }
+            });
+
+            $('#holidayTable').bootstrapTable('refreshOptions', {
+                pagination: true,
+                pageSize: 5,
+                data: model.HoliDays
+            });            
+        }
+        e.preventDefault();
+    });
+
+    function formatDate(strDate) {
+        var date = new Date(Date.parse(strDate)),
+            year = date.getFullYear(),
+            month = (date.getMonth() + 1).toString(),
+            formatedMonth = (month.length === 1) ? ("0" + month) : month,
+            day = date.getDate().toString(),
+            formatedDay = (day.length === 1) ? ("0" + day) : day;
+        return formatedDay + "/" + formatedMonth + "/" + year;
+    };
+
+    function showMessageBox(message) {
+        alert(message);
+    };
 
 </script>
