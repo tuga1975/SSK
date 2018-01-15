@@ -541,7 +541,7 @@ namespace Enrolment
             }
             else
             {
-                this._web.InvokeScript("showPrintMessage", false, "Smart card printing failed");
+                this._web.InvokeScript("showPrintMessage", false, result.Description);
             }
         }
         public void AddNewSupervisee()
@@ -799,6 +799,28 @@ namespace Enrolment
         public void PriterIssuedCard(string reprint)
         {
             reprintTxt = reprint;
+            Session session = Session.Instance;
+            var userLogin = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+            var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
+            PrintAndWriteSmartcardInfo infoPrinter = new PrintAndWriteSmartcardInfo()
+            {
+                SmartCardData = new SmartCardData()
+                {
+                    CardHolderInfo = new CardHolderInfo()
+                    {
+                        DOB = currentEditUser.UserProfile.DOB,
+                        Name = currentEditUser.User.Name,
+                        NRIC = currentEditUser.User.NRIC,
+                        UserId = currentEditUser.User.UserId,
+                    },
+                    CardInfo = new CardInfo()
+                    {
+                        CreatedBy = userLogin.UserId,
+                        CreatedDate = DateTime.Now
+                    }
+                }
+            };
+
             Trinity.Common.Utils.SmartCardPrinterUtils.Instance.PrintAndWriteSmartcardData(null, PriterIssuedCardOnCompleted);
         }
         private void PriterIssuedCardOnCompleted(PrintAndWriteSmartcardResult result)
@@ -809,7 +831,7 @@ namespace Enrolment
                 var userLogin = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
                 var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
                 DAL_IssueCard dalIssueCard = new Trinity.DAL.DAL_IssueCard();
-                string SmartID = Guid.NewGuid().ToString().Trim();
+                string SmartID = result.SmartCardData.CardInfo.UID;
                 Trinity.BE.IssueCard IssueCard = new Trinity.BE.IssueCard()
                 {
                     CreatedBy = userLogin.UserId,
