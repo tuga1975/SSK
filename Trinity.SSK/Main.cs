@@ -94,7 +94,7 @@ namespace SSK
         }
         private void EventCenter_OnNewEvent(object sender, EventInfo e)
         {
-            if (e.Name == EventNames.ALERT_NO_APPOINTMENT)
+            if (e.Name == EventNames.ALERT_MESSAGE)
             {
                 LayerWeb.InvokeScript("alertBookAppointment", e.Message);
             }

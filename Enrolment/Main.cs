@@ -199,11 +199,11 @@ namespace Enrolment
                 var rightThumbImage = (byte[])session[CommonConstants.CURRENT_RIGHT_FINGERPRINT_IMAGE];
                 if (profileModel != null)
                 {
-                    if (leftThumbImage != null && leftThumbImage.Length > 0)
+                    if (leftThumbImage!=null && leftThumbImage.Length>0)
                     {
                         profileModel.UserProfile.LeftThumbImage = leftThumbImage;
                     }
-                    if (rightThumbImage != null && rightThumbImage.Length > 0)
+                    if (rightThumbImage!=null && rightThumbImage.Length>0)
                     {
                         profileModel.UserProfile.RightThumbImage = rightThumbImage;
                     }
@@ -342,9 +342,10 @@ namespace Enrolment
 
             if (_isFirstTimeLoaded)
             {
-                //Session session = Session.Instance;
-                //Trinity.BE.User user = new DAL_User().GetUserByUserId("bb67863c-c330-41aa-b397-c220428ad16f", true);
-                //session[CommonConstants.USER_LOGIN] = user;
+
+                Session session = Session.Instance;
+                Trinity.BE.User user = new DAL_User().GetUserByUserId("bb67863c-c330-41aa-b397-c220428ad16f", true);
+                session[CommonConstants.USER_LOGIN] = user;
 
                 // Set Start page = Login
                 NavigateTo(NavigatorEnums.Login);
@@ -569,7 +570,7 @@ namespace Enrolment
                             }
                             session[CommonConstants.CURRENT_PHOTOS] = null;
 
-                            currentEditUser.UserProfile.User_Photo1 = photos.Item1 != null ? Convert.FromBase64String(photo1) : null;
+                            currentEditUser.UserProfile.User_Photo1 = photos.Item1!= null ? Convert.FromBase64String(photo1) : null;
                             currentEditUser.UserProfile.User_Photo2 = photos.Item2 != null ? Convert.FromBase64String(photo2) : null;
                             session[CommonConstants.CURRENT_EDIT_USER] = currentEditUser;
                             if (currentPage.ToString() == "EditSupervisee")
@@ -656,6 +657,9 @@ namespace Enrolment
             }
             else if (e.Name == EventNames.UPDATE_SUPERVISEE_BIODATA)
             {
+               
+
+
                 Session session = Session.Instance;
                 var profileModel = (Trinity.BE.ProfileModel)e.Data;
                 var dalUser = new DAL_User();
@@ -663,15 +667,14 @@ namespace Enrolment
                 dalUser.UpdateUser(profileModel.User, profileModel.User.UserId, true);
 
                 dalUserProfile.UpdateUserProfile(profileModel.UserProfile, profileModel.User.UserId, true);
-                dalUser.ChangeUserStatus(profileModel.User.UserId, EnumUserStatuses.Enrolled);
+                dalUser.ChangeUserStatus(profileModel.User.UserId, EnumUserStatuses.New);
 
                 new DAL_Membership_Users().UpdateFingerprint(profileModel.User.UserId, profileModel.User.LeftThumbFingerprint, profileModel.User.RightThumbFingerprint);
                 new DAL_UserProfile().UpdateFingerprintImg(profileModel.User.UserId, profileModel.UserProfile.LeftThumbImage, profileModel.UserProfile.RightThumbImage);
 
-                //check print succecss
-                Trinity.Common.Utils.SmartCardPrinterUtils.Instance.PrintAndWriteSmartcardData(null, OnCardPrinted);
 
 
+              
                 //create to issue card 
                 //var dalIssueCard = new DAL_IssueCard();
                 //var issueCardModel = dalIssueCard.GetIssueCardById(profileModel.User.SmartCardId);
@@ -683,7 +686,11 @@ namespace Enrolment
                 //    issueCardModel.Status = EnumUserStatuses.ReEnrolled;
                 //    dalIssueCard.Update(profileModel.User.SmartCardId, profileModel.User.UserId, issueCardModel);
                 //}
+
+
+
                 session[CommonConstants.CURRENT_EDIT_USER] = profileModel;
+
             }
             else if (e.Name == EventNames.LOAD_EDIT_SUPERVISEE_SUCCEEDED)
             {
@@ -751,6 +758,7 @@ namespace Enrolment
                 {
                     _jsCallCS.PreviewSuperviseeFingerprint(firstAttemp);
                 }
+
             }
         }
 
@@ -801,43 +809,6 @@ namespace Enrolment
 
         }
 
-        private void OnCardPrinted(PrintAndWriteSmartcardResult result)
-        {
-            if (result.Success)
-            {
-                Session session = Session.Instance;
-                var userLogin = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-                var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
-                DAL_IssueCard dalIssueCard = new Trinity.DAL.DAL_IssueCard();
-                string SmartID = Guid.NewGuid().ToString().Trim();
-                Trinity.BE.IssueCard IssueCard = new Trinity.BE.IssueCard()
-                {
-                    CreatedBy = userLogin.UserId,
-                    CreatedDate = DateTime.Now,
-                    Date_Of_Issue = currentEditUser.UserProfile.DateOfIssue,
-                    Name = currentEditUser.Membership_Users.Name,
-                    NRIC = currentEditUser.Membership_Users.NRIC,
-                    Reprint_Reason = string.Empty,
-                    Serial_Number = currentEditUser.UserProfile.SerialNumber,
-                    Expired_Date = currentEditUser.UserProfile.Expired_Date,
-                    Status = EnumIssuedCards.Active,
-                    SmartCardId = SmartID,
-                    UserId = currentEditUser.UserProfile.UserId
-                };
-                dalIssueCard.UpdateStatusByUserId(currentEditUser.UserProfile.UserId, EnumIssuedCards.Deactivate);
-                dalIssueCard.Insert(IssueCard);
-
-                currentEditUser.Membership_Users.SmartCardId = SmartID;
-
-                LayerWeb.InvokeScript("showPrintMessage", "Smart Card was printed successfully! Please collect the smart card from printer and place on the reader to verify.");
-            }
-            else
-            {
-                LayerWeb.InvokeScript("showPrintMessage", "Smart Card was failed to print! Please collect the smart card from printer and try again.");
-                //printer fail
-                //_web.InvokeScript("OnPriterIssuedCardCompleted", false, null);
-            }
-        }
     }
 }
 

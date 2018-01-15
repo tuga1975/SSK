@@ -42,4 +42,32 @@ namespace Trinity.DAL.DBContext
             }
         }
     }
+
+    public partial class Timeslot
+    {
+      
+        public string FromTimeTxt
+        {
+            get
+            {
+                if (this.StartTime != null)
+                {
+                    return string.Format("{0:D2}:{1:D2}", StartTime.Value.Hours, StartTime.Value.Minutes);
+                }
+                return string.Empty;
+
+            }
+        }
+        public string ToTimeTxt
+        {
+            get
+            {
+                if (EndTime != null)
+                {
+                    return string.Format("{0:D2}:{1:D2}", EndTime.Value.Hours, EndTime.Value.Minutes);
+                }
+                return string.Empty;
+            }
+        }
+    }
 }
