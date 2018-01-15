@@ -43,47 +43,47 @@ namespace DutyOfficer.Utils
 
         public void SendNotificationToDutyOfficer(string subject, string content)
         {
-            //Session session = Session.Instance;
-            //User user = (User)session[CommonConstants.SUPERVISEE];
-            //if (user == null)
-            //{
-            //    // User hasn't authenticated yet
-            //    return;
-            //}
-            //DAL_Notification dalNotification = new DAL_Notification();
-            //// Insert notification to local DB and also CentralizedDB
-            //dalNotification.InsertNotification(subject, content, user.UserId, null, true, true);
-            ////dalNotification.InsertNotification(subject, content, user.UserId, null, true, false);
+            Session session = Session.Instance;
+            User user = (User)session[CommonConstants.SUPERVISEE];
+            if (user == null)
+            {
+                // User hasn't authenticated yet
+                return;
+            }
+            DAL_Notification dalNotification = new DAL_Notification();
+            // Insert notification to local DB and also CentralizedDB
+            dalNotification.InsertNotification(subject, content, user.UserId, null, true, true);
+            //dalNotification.InsertNotification(subject, content, user.UserId, null, true, false);
 
-            //try
-            //{
-            //    HubProxy.Invoke("SendNotification", subject, content, user.UserId, null, true);
-            //}
-            //catch (Exception)
-            //{
-            //}
+            try
+            {
+                HubProxy.Invoke("SendNotification", subject, content, user.UserId, null, true);
+            }
+            catch (Exception)
+            {
+            }
         }
 
         public void GetLatestNotifications()
         {
-            //Trinity.DAL.DAL_Notification dalNotification = new Trinity.DAL.DAL_Notification();
+            Trinity.DAL.DAL_Notification dalNotification = new Trinity.DAL.DAL_Notification();
 
-            //// Get notifications from local db
-            //// In this demo we get notifications from centralized db directly
-            //Session currentSession = Session.Instance;
-            //User user = (User)currentSession[CommonConstants.USER_LOGIN];
-            //if (user != null)
-            //{
-            //    List<Notification> myNotifications = dalNotification.GetMyNotifications(user.UserId, false);
-            //    if (myNotifications != null)
-            //    {
-            //        var unReadCount = myNotifications.Count;
-            //        APIUtils.LayerWeb.Invoke((System.Windows.Forms.MethodInvoker)(() =>
-            //        {
-            //            APIUtils.LayerWeb.PushNoti(unReadCount);
-            //        }));
-            //    }
-            //}
+            // Get notifications from local db
+            // In this demo we get notifications from centralized db directly
+            Session currentSession = Session.Instance;
+            User user = (User)currentSession[CommonConstants.USER_LOGIN];
+            if (user != null)
+            {
+                List<Notification> myNotifications = dalNotification.GetMyNotifications(user.UserId, false);
+                if (myNotifications != null)
+                {
+                    var unReadCount = myNotifications.Count;
+                    APIUtils.LayerWeb.Invoke((System.Windows.Forms.MethodInvoker)(() =>
+                    {
+                        APIUtils.LayerWeb.PushNoti(unReadCount);
+                    }));
+                }
+            }
         }
     }
 }

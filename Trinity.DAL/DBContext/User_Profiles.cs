@@ -46,6 +46,8 @@ namespace Trinity.DAL.DBContext
         public Nullable<System.DateTime> Expired_Date { get; set; }
         public string Gender { get; set; }
         public string Race { get; set; }
+        public byte[] RightThumb_Photo { get; set; }
+        public byte[] LeftThumb_Photo { get; set; }
     
         public virtual Address Address { get; set; }
         public virtual Address Address1 { get; set; }

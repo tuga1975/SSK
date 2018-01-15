@@ -108,6 +108,13 @@ namespace Trinity.BE
 
         [DataMember]
         public DateTime? DateOfIssue { get; set; }
+        public string DateOfIssueTxt
+        {
+            get
+            {
+                return this.DateOfIssue.HasValue ? DateOfIssue.Value.ToString("dd/MM/yyyy") : string.Empty;
+            }
+        }
 
         [DataMember]
         public byte[] User_Photo1 { get; set; }
@@ -116,10 +123,20 @@ namespace Trinity.BE
         public byte[] User_Photo2 { get; set; }
 
         [DataMember]
-        public string RightThumbImage { get; set; }
+        public byte[] RightThumbImage { get; set; }
 
         [DataMember]
-        public string LeftThumbImage { get; set; }
+        public byte[] LeftThumbImage { get; set; }
+
+        [DataMember]
+        public Nullable<DateTime> Expired_Date { get; set; }
+        public string Expired_DateTxt
+        {
+            get
+            {
+                return this.Expired_Date.HasValue ? Expired_Date.Value.ToString("dd/MM/yyyy") : string.Empty;
+            }
+        }
 
     }
 }

@@ -2,11 +2,11 @@
 <div style="width:100%">
     <div class="header  header-form-supervisee">
         <img class="logo" src="../images/logo.png" />
-        <h3>Update Supervisee</h3>
+        <h3>Enrol New Supervisee</h3>
         <div class="clear"></div>
     </div>
     <div class="form-supervisee">
-        <input class="name-supervisee" type="text" value="Erol Supervisee" />
+        <input class="name-supervisee" type="text" value="Enrol Supervisee" />
         <nav class="nav nav-tabs" id="myTab" role="tablist">
             <a class="nav-item nav-link active" data-toggle="tab" href="#print-card" role="tab" aria-controls="nav-home" aria-selected="true">Print Card</a>
             <a class="nav-item nav-link" data-toggle="tab" href="#supervisee-details" role="tab" aria-controls="nav-profile" aria-selected="false">Supervisee Details</a>
@@ -40,7 +40,7 @@
                         <div class="row">
                             <div class="col" id="leftThumbDiv">
                                 <div style="border:1px solid #000000;color:#000000" id="leftProcessMessage">Place left thumb onto scanner</div>
-                                <div><button style="float:left" class="btn-form" id="leftThumbScanBtn">Scan</button><button style="float:right;" id="leftThumbClearBtn" class="btn-form">Clear</button></div>
+                                <div><button style="float:left" class="btn-form" id="leftThumbScanBtn" onclick="ActionScanFingerPrint(false)">Scan</button><button style="float:right;" id="leftThumbClearBtn" class="btn-form">Clear</button></div>
                                 <br />
                                 <div> <img class="avatar" id="leftFingerprint" style="max-width:35%;" /></div>
                                 <br />
@@ -49,7 +49,7 @@
                             </div>
                             <div class="col" id="rightThumbDiv">
                                 <div style="border:1px solid #000000;color:#000000" id="rightProcessMessage">Place right thumb onto scanner</div>
-                                <div><button style="float:left" id="rightThumbScanBtn" class="btn-form">Scan</button><button style="float:right;" id="rightThumbClearBtn" class="btn-form">Clear</button></div>
+                                <div><button style="float:left" id="rightThumbScanBtn" class="btn-form" onclick="ActionScanFingerPrint(true)">Scan</button><button style="float:right;" id="rightThumbClearBtn" class="btn-form">Clear</button></div>
                                 <br />
                                 <div> <img class="avatar" id="rightFingerprint" style="max-width:35%" /></div>
                                 <br />
@@ -70,7 +70,11 @@
                                         </div>
                                         <div>Name :<span id="verifyName"></span></div>
                                         <div>NRIC :<span id="verifyNRIC"></span></div>
-                                        <div>DOB :<span id="verifyDOB"></span></div>
+
+                                        <div>Issue date:  <span id="issueDate"></span></div>
+                                        <div>Expire date:  <span id="expireDate"></span></div>
+                                        <div>Serial Number:  <span id="serialNumber"></span></div>
+
                                         <div style="clear:both"></div>
                                     </div>
                                 </div>
@@ -78,18 +82,27 @@
                                     <div style="width:300px;height:180px;border:1px solid #000">
                                         <div style="float:left">
                                             <div>
-                                                <img src="../images/fingerprint.png" width="40" height="60" id="leftFingerThumb" />
+                                                <img src="../images/fingerprint.png" width="40" height="60" id="verifyLeftFinger" />
                                             </div>
                                             <br />
                                             <div>
-                                                <img src="../images/fingerprint.png" width="40" height="60" id="rightFingerThumb" />
+                                                <img src="../images/fingerprint.png" width="40" height="60" id="verifyRightFinger" />
                                             </div>
                                         </div>
-                                        <div> Issue date  <span id="issueDate"></span>  </div>
-                                        <div style="clear:both"></div>
+                                        <div>Date of Birth :<span id="verifyDOB"></span></div>
+
+
+                                        <div>Sex :<span id="verifyGender"></span></div>
+
+                                        <div>Nationality :<span id="verifyNation"></span></div>
+                                        <div>Issue date:  <span id="issueDateBack"></span></div>
+                                        <div>Serial Number:  <span id="serialNumberBack"></span></div>
+
                                     </div>
+                                    <div style="clear:both"></div>
                                 </div>
                             </div>
+
                         </div>
                     </section>
 
@@ -97,8 +110,8 @@
                     <section>
                         <div class="row">
                             <div class="col" style="text-align:center">
-                                <div style="width:100%;border:1px solid #000000;font-size:15px">Smart Card was printed successfully. Please collect the smart card from printer and place on the reader to verify.</div>
-                                <div style="width:250px;height:150px;border:1px solid #000; margin:10px auto">
+                                <div style="width:100%;border:1px solid #000000;font-size:15px;display:none" id="printSuccessMessage" ></div>
+                                <div style="width:250px;height:150px;border:1px solid #000; margin:10px auto" id="reCheckSCard">
                                     Smart card Information
                                 </div>
                             </div>
@@ -126,31 +139,37 @@
 
         //alert(leftFingerPrintData);
 
-
+        $('#leftThumbScanBtn').on("click", function () {
+            alert(1);
+        });
     });
-    $('#leftThumbScanBtn').click(function () {
-        $('#rightThumbDiv').find('button').attr('disabled', 'disabled');
-        api.server.CaptureFingerPrint(false);
+    function ActionScanFingerPrint(isRight) {
+        if (isRight) {
+            $('#leftThumbDiv').find('button').attr('disabled', 'disabled');
+        } else {
+            $('#rightThumbDiv').find('button').attr('disabled', 'disabled');
+        }
+        api.server.CaptureFingerPrint(isRight);
+    }
+    //$('#leftThumbScanBtn').click(function () {
+    //    $('#rightThumbDiv').find('button').attr('disabled', 'disabled');
+    //    api.server.CaptureFingerPrint(false);
 
-    });
+    //});
 
-    $('#rightThumbScanBtn').click(function () {
-        $('#leftThumbDiv').find('button').attr('disabled', 'disabled');
-        api.server.CaptureFingerPrint(true);
-    });
+    //$('#rightThumbScanBtn').click(function () {
+    //    $('#leftThumbDiv').find('button').attr('disabled', 'disabled');
+    //    api.server.CaptureFingerPrint(true);
+    //});
+
     function enableClearBtnServerCall(isRight) {
 
-        if (isRight) {
-            $('#rightThumbClearBtn').removeAttr('disabled');
-            $('#rightThumbScanBtn').attr('disabled', 'disabled');
-            $('#leftThumbScanBtn').removeAttr('disabled');
-        }
-        else {
-            $('#leftThumbClearBtn').removeAttr('disabled');
-            $('#leftThumbScanBtn').attr('disabled', 'disabled');
-            $('#rightThumbScanBtn').removeAttr('disabled');
+        $('#rightThumbClearBtn').removeAttr('disabled');
+        $('#leftThumbScanBtn').removeAttr('disabled');
+        $('#leftThumbClearBtn').removeAttr('disabled');
+        $('#rightThumbScanBtn').removeAttr('disabled');
 
-        }
+
 
     }
 
@@ -190,21 +209,22 @@
         $('#rightProcessMessage').text('Place right thumb onto scanner').css('color', '#000');
     });
 
-    function setBase64FingerprintOnloadServerCall(isRight, fingerPrintData) {
-        if (isRight) {
-            $('#rightFingerprint').attr('src', 'data:image/png;base64,' + fingerPrintData);
+    function setBase64FingerprintOnloadServerCall(leftFinger, rightFinger) {
+        if (leftFinger) {
+            $('#rightFingerprint').attr('src', 'data:image/png;base64,' + rightFinger);
+            $('#verifyRightFinger').attr('src', 'data:image/png;base64,' + rightFinger);
         }
-        else {
-            $('#leftFingerprint').attr('src', 'data:image/png;base64,' + fingerPrintData);
+        if (rightFinger) {
+            $('#leftFingerprint').attr('src', 'data:image/png;base64,' + leftFinger);
+            $('#verifyLeftFinger').attr('src', 'data:image/png;base64,' + leftFinger);
         }
-
-
 
     }
 
     function setAvatar(base64Str1, base64Str2) {
-        if (base64Str1!="") {
+        if (base64Str1 != "") {
             $('#image1').attr('src', 'data:image/jpg;base64,' + base64Str1);
+            $('#verifyPhoto').attr('src', 'data:image/jpg;base64,' + base64Str1);
         }
         if (base64Str2 != "") {
             $('#image2').attr('src', 'data:image/jpg;base64,' + base64Str2);
@@ -212,7 +232,7 @@
     }
 </script>
 <script>
-    
+
     $(function () {
         var isUpdated = false;
         $("#wizard").steps({
@@ -232,9 +252,9 @@
 
             //},
             //onStepChanging: function (event, currentIndex, newIndex) {
-                
-               
-                
+
+
+
 
             //    return true;
             //},
@@ -249,7 +269,7 @@
                         api.server.UpdateSuperviseeBiodata();
                         isUpdated = true;
                     }
-                    
+
                 }
             },
             onFinished: function (event, currentIndex) {
@@ -259,7 +279,7 @@
                 api.server.LoadListSupervisee();
             }
         });
-       
+
 
 
         $("input[type='image']").click(function () {
@@ -269,22 +289,38 @@
 
     $(document).ready(function () {
         $('#verifyName').text(api.model.User.Name);
-       // var dob = api.model.UserProfile.DOB.replace("T00:00:00", "");
-        $('#verifyDOB').text(api.model.UserProfile.DOB);
+        // var dob = api.model.UserProfile.DOB.replace("T00:00:00", "");
+        if (api.model.UserProfile.DOB != null) {
+            $('#verifyDOB').text(api.model.UserProfile.DOBTxt);
+        }
+
         $('#verifyNRIC').text(api.model.User.NRIC);
-        if (api.model.UserProfile.User_Photo1 != "") {
-            $('#verifyPhoto').attr('src', 'data:image/jpg;base64,' + api.model.UserProfile.User_Photo1);
-        }
-        if (api.model.UserProfile.DateOfIssue != "") {
+        $('#serialNumber').text(api.model.UserProfile.Serial_Number);
+        $('#serialNumberBack').text(api.model.UserProfile.Serial_Number);
+        $('#verifyGender').text(api.model.UserProfile.Gender);
+        $('#verifyNation').text(api.model.UserProfile.Nationality);
+        //if (api.model.UserProfile.User_Photo1 != "") {
+        //    $('#verifyPhoto').attr('src', 'data:image/jpg;base64,' + api.model.UserProfile.User_Photo1);
+        //}
+        if (api.model.UserProfile.DateOfIssue != null) {
 
-            $('#issueDate').text(api.model.UserProfile.DateOfIssue);
+            $('#issueDate').text(api.model.UserProfile.DateOfIssueTxt);
+            $('#issueDateBack').text(api.model.UserProfile.DateOfIssueTxt);
         }
+        if (api.model.UserProfile.Expired_Date != null) {
 
-        if (api.model.UserProfile.LeftThumbImage != "") {
-            $('#leftFingerThumb').attr('src', 'data:image/jpg;base64,' + api.model.UserProfile.LeftThumbImage);
+            $('#expireDate').text(api.model.UserProfile.Expired_DateTxt);
         }
-        if (api.model.UserProfile.RightThumbImage != "") {
-            $('#rightFingerThumb').attr('src', 'data:image/jpg;base64,' + api.model.UserProfile.RightThumbImage);
-        }
+        //if (api.model.UserProfile.LeftThumbImage != "") {
+        //    $('#leftFingerThumb').attr('src', 'data:image/jpg;base64,' + api.model.UserProfile.LeftThumbImage);
+        //}
+        //if (api.model.UserProfile.RightThumbImage != "") {
+        //    $('#rightFingerThumb').attr('src', 'data:image/jpg;base64,' + api.model.UserProfile.RightThumbImage);
+        //}
     });
+
+    function showPrintMessage(message) {
+        $('#printSuccessMessage').text(message).show();
+
+    }
 </script>

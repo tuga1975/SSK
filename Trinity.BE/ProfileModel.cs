@@ -65,8 +65,8 @@ namespace Trinity.BE
         public bool? IsFirstAttempt { get; set; }
         public byte[] User_Photo1 { get; set; }
         public byte[] User_Photo2 { get; set; }
-        public string RightThumbImage { get; set; }
-        public string LeftThumbImage { get; set; }
+        public byte[] RightThumbImage { get; set; }
+        public byte[] LeftThumbImage { get; set; }
         public string Gender { get; set; }
         public string SerialNumber { get; set; }
         public string Race { get; set; }

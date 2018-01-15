@@ -14,7 +14,7 @@
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>x64</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -33,6 +33,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="AForge.Video, Version=2.2.5.0, Culture=neutral, PublicKeyToken=cbfb6e07d173c401, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -48,7 +51,7 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
-    <Reference Include="ftrSDKHelper13, Version=4.5.0.0, Culture=neutral, processorArchitecture=x86">
+    <Reference Include="ftrSDKHelper13, Version=4.5.0.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Libs\ftrSDKHelper13.dll</HintPath>
     </Reference>
@@ -134,12 +137,11 @@
   <ItemGroup>
     <Content Include="Libs\AForge.Video.DirectShow.dll" />
     <Content Include="Libs\AForge.Video.dll" />
-    <Content Include="Libs\ftrSDKHelper13.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <Content Include="Libs\ftrSDKHelper13.dll" />
     <Content Include="Libs\pcsc-sharp.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="View\html\ReprintSmartCard.html" />
     <Content Include="View\html\Edit-Supervisee.html" />
     <Content Include="View\html\FailToCapture.html" />
     <Content Include="View\html\FingerprintCapture.html" />
@@ -168,6 +170,7 @@
     <Content Include="View\scripts\jquery-ui.min.js" />
     <Content Include="View\scripts\jquery.steps.css" />
     <Content Include="View\scripts\jquery.steps.min.js" />
+    <Content Include="View\scripts\jquery.validate.min.js" />
     <Content Include="View\scripts\lib.js" />
     <Content Include="View\scripts\scripts.js" />
     <Content Include="View\scripts\styles.css" />
@@ -193,6 +196,9 @@
       <Project>{b25053fb-2050-4115-9441-8edf5c03fb1d}</Project>
       <Name>Trinity.Identity</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -17,7 +17,7 @@ namespace Trinity.Common
             var margin = 0;
             var qrCodeWriter = new ZXing.BarcodeWriterPixelData
             {
-                Format=ZXing.BarcodeFormat.DATA_MATRIX,
+                Format = ZXing.BarcodeFormat.DATA_MATRIX,
                 //Format = ZXing.BarcodeFormat.QR_CODE,
                 Options = new QrCodeEncodingOptions
                 {
@@ -199,6 +199,29 @@ namespace Trinity.Common
                     break;
             }
             return "Unknown status";
+        }
+
+        public static EnumDayOfWeek ConvertToCustomDateOfWeek(DayOfWeek dayOfWeek)
+        {
+            switch (dayOfWeek)
+            {
+                case DayOfWeek.Sunday:
+                    return EnumDayOfWeek.Sunday;
+                case DayOfWeek.Monday:
+                    return EnumDayOfWeek.Monday;
+                case DayOfWeek.Tuesday:
+                    return EnumDayOfWeek.Tuesday;
+                case DayOfWeek.Wednesday:
+                    return EnumDayOfWeek.Wednesday;
+                case DayOfWeek.Thursday:
+                    return EnumDayOfWeek.Thursday;
+                case DayOfWeek.Friday:
+                    return EnumDayOfWeek.Friday;
+                case DayOfWeek.Saturday:
+                    return EnumDayOfWeek.Saturday;
+                default:
+                    return 0;
+            }
         }
     }
 }

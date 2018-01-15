@@ -79,15 +79,20 @@ namespace SSK
             InitializeWebBrowser();
         }
         public void RefreshQueueNumbers()
-        {
+         {
             DAL_QueueNumber dalQueue = new DAL_QueueNumber();
-            var allQueue = GetAllQueueToday(dalQueue,EnumStations.SSK);
+            var allQueue = GetAllQueueToday(dalQueue, EnumStations.SSK);
 
-            var setting = new DAL_Setting().GetCurrentEnvironmentSetting();
+            var setting = new DAL_Setting().GetCurrentAppointmentTime();
             var today = DateTime.Now;
-
+            var nextTimesloteQueue = new List<Trinity.BE.Queue>();
             string currentQueueNumber = string.Empty;
             var waitingQueueNumbers = new List<string>();
+            var holdingList = new List<string>();
+
+            var currentTimeslot = string.Empty;
+            var nextTimeslot = string.Empty;
+            
             for (int i = 0; i < allQueue.Count; i++)
             {
                 var appointmentStartTime = new DAL_Appointments().GetAppointmentDetails(allQueue[i].AppointmentId);
@@ -95,27 +100,59 @@ namespace SSK
                 var diffStartMin = appointmentStartTime.StartTime.Value.Minutes - today.Minute;
                 var diffEndHour = appointmentStartTime.EndTime.Value.Hours - today.Hour;
                 var diffEndMin = appointmentStartTime.EndTime.Value.Minutes - today.Minute;
+                //current queue - serving
                 if (allQueue[i].Status == EnumQueueStatuses.Waiting && diffHour == 0 && diffStartMin <= 0 && ((diffEndHour > 0 && diffEndMin <= 0) || (diffEndHour == 0 && diffEndMin >= 0)))
                 {
+                    var appointment = new DAL_Appointments().GetMyAppointmentByID(allQueue[i].AppointmentId);
+                    currentTimeslot = appointment.FromTimeTxt + " - " + appointment.ToTimeTxt;
                     currentQueueNumber += allQueue[i].QueueNumber + "-";
                 }
+                //waiting - next
                 else if (allQueue[i].Status == EnumQueueStatuses.Waiting && diffHour > 0)
                 {
-                    waitingQueueNumbers.Add(allQueue[i].QueueNumber);
+                    nextTimesloteQueue.Add(allQueue[i]);
                 }
-                else if (allQueue[i].Status == EnumQueueStatuses.Waiting && diffHour == 0 && diffStartMin > 0)
+                //waiting -next
+                else if (allQueue[i].Status == EnumQueueStatuses.Waiting && diffHour == 0 && (diffStartMin > 0 || (diffEndHour > 0 && diffEndMin <= 0)))
                 {
-                    waitingQueueNumbers.Add(allQueue[i].QueueNumber);
+                    nextTimesloteQueue.Add(allQueue[i]);
                 }
+
             }
 
-            wbQueueNumber.RefreshQueueNumbers(currentQueueNumber, waitingQueueNumbers.ToArray());
+            if (nextTimesloteQueue.Count > 0)
+            {
+                var appointment = new DAL_Appointments().GetMyAppointmentByID(nextTimesloteQueue[0].AppointmentId);
+                nextTimeslot = appointment.FromTimeTxt + " - " + appointment.ToTimeTxt;
+                List<Trinity.DAL.DBContext.Queue> allNextQueue = GetAllNextQueue(nextTimesloteQueue);
+                foreach (var item in allNextQueue)
+                {
+                    waitingQueueNumbers.Add(item.QueuedNumber);
+                }
 
+            }
+            var blockedUserQueue = new DAL_QueueNumber().GetAllQueueNumberByBlockedUser(DateTime.Now, EnumStations.SSK);
+
+            foreach (var item in blockedUserQueue)
+            {
+                holdingList.Add(item.QueuedNumber);
+            }
+            //serving  //current //next  //holding-blocked user
+            wbQueueNumber.RefreshQueueNumbers(currentQueueNumber, currentQueueNumber, waitingQueueNumbers.Distinct().ToArray(), holdingList.ToArray());
+            wbQueueNumber.InvokeScript("setTimeslot", currentTimeslot, nextTimeslot);
         }
 
-        private static List<Trinity.BE.Queue> GetAllQueueToday(DAL_QueueNumber dalQueue,string station)
+        private static List<Trinity.DAL.DBContext.Queue> GetAllNextQueue(List<Trinity.BE.Queue> allQueue)
         {
-            return dalQueue.GetAllQueueNumberByDate(DateTime.Today,station).Select(d => new Trinity.BE.Queue()
+            var appointment = new DAL_Appointments().GetMyAppointmentByID(allQueue[0].AppointmentId);
+            //var nextTimeslot = new DAL_Setting().GetNextTimeslotToday(appointment.Timeslot.StartTime.Value);
+            var allNextQueue = new DAL_QueueNumber().GetAllQueueByNextimeslot(appointment.Timeslot.StartTime.Value, EnumStations.SSK);
+            return allNextQueue;
+        }
+
+        private static List<Trinity.BE.Queue> GetAllQueueToday(DAL_QueueNumber dalQueue, string station)
+        {
+            return dalQueue.GetAllQueueNumberByDate(DateTime.Today, station).Select(d => new Trinity.BE.Queue()
             {
                 ID = d.Queue_ID,
                 AppointmentId = d.Appointment_ID,
@@ -128,10 +165,10 @@ namespace SSK
 
         private void RefreshQueueNumberTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
-            var setting = new DAL_Setting().GetCurrentEnvironmentSetting();
+            var setting = new DAL_Setting().GetCurrentAppointmentTime();
 
             //this.timer.Interval = 1000 * 60 * setting.Duration;
-            this.timer.Interval = 60000;
+            this.timer.Interval = 30000;
             this.timer.Enabled = true;
             this.RefreshQueueNumbers();
         }

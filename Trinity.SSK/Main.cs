@@ -235,21 +235,21 @@ namespace SSK
             if (_isFirstTimeLoaded)
             {
                 // Start page
-                //NavigateTo(NavigatorEnums.Authentication_SmartCard);
+                NavigateTo(NavigatorEnums.Authentication_SmartCard);
 
-                //// For testing purpose
-                Session session = Session.Instance;
-                //////Supervisee
-                Trinity.BE.User user = new DAL_User().GetUserByUserId("bb67863c-c330-41aa-b397-c220428ad16f", true);
-                ////// Duty Officer
-                ////Trinity.BE.User user = new DAL_User().GetUserByUserId("ead039f9-b9a1-45bb-8186-0bb7248aafac", true);
-                session[CommonConstants.USER_LOGIN] = user;
-                session.IsSmartCardAuthenticated = true;
-                session.IsFingerprintAuthenticated = true;
+                ////// For testing purpose
+                //Session session = Session.Instance;
+                ////////Supervisee
+                //Trinity.BE.User user = new DAL_User().GetUserByUserId("bb67863c-c330-41aa-b397-c220428ad16f", true);
+                //////// Duty Officer
+                //////Trinity.BE.User user = new DAL_User().GetUserByUserId("ead039f9-b9a1-45bb-8186-0bb7248aafac", true);
+                //session[CommonConstants.USER_LOGIN] = user;
+                //session.IsSmartCardAuthenticated = true;
+                //session.IsFingerprintAuthenticated = true;
 
-                ////NavigateTo(NavigatorEnums.Authentication_Fingerprint);
-                NavigateTo(NavigatorEnums.Supervisee);
-                ////NavigateTo(NavigatorEnums.Authentication_NRIC);                
+                //////NavigateTo(NavigatorEnums.Authentication_Fingerprint);
+                //NavigateTo(NavigatorEnums.Supervisee);
+                //////NavigateTo(NavigatorEnums.Authentication_NRIC);                
 
                 _isFirstTimeLoaded = false;
             }
@@ -303,6 +303,7 @@ namespace SSK
         #region Facial Authentication Event Handlers
         private void Main_OnFacialRecognitionSucceeded()
         {
+            _fingerprintFailed = 0;
             LayerWeb.RunScript("$('.status-text').css('color','#000').text('You have been authenticated.');");
             FacialRecognition.Instance.OnFacialRecognitionFailed -= Main_OnFacialRecognitionFailed;
             FacialRecognition.Instance.OnFacialRecognitionSucceeded -= Main_OnFacialRecognitionSucceeded;
@@ -378,6 +379,8 @@ namespace SSK
             // Login successfully
             //
             // Create a session object to store UserLogin information
+            _fingerprintFailed = 0;
+
             Session session = Session.Instance;
             session.IsFingerprintAuthenticated = true;
 

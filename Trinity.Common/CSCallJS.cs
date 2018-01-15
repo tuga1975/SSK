@@ -78,10 +78,11 @@ public static class CSCallJS
     }
 
     #region Queue Number
-    public static void RefreshQueueNumbers(this WebBrowser web, string currentQueueNumber, string[] nextQueueNumberList)
+    public static void RefreshQueueNumbers(this WebBrowser web, string servingQueueNumber,string currentQueueNumber, string[] nextQueueNumberList,string[] holdingList)
     {
-        var model = JsonConvert.SerializeObject(nextQueueNumberList, Formatting.Indented, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
-        web.InvokeScript("refreshQueueNumbers", currentQueueNumber, model);
+        var nextQueue = JsonConvert.SerializeObject(nextQueueNumberList, Formatting.Indented, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
+        var holdList = JsonConvert.SerializeObject(holdingList, Formatting.Indented, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
+        web.InvokeScript("refreshQueueNumbers", currentQueueNumber, nextQueue, holdList);
     }
     
     #endregion

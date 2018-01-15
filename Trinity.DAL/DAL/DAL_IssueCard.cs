@@ -44,9 +44,7 @@ namespace Trinity.DAL
         }
         public List<BE.IssueCard> GetMyIssueCard(string UserId)
         {
-            var dbIssueCard = _localUnitOfWork.DataContext.IssuedCards.Where(d=>d.UserId==UserId).OrderByDescending(d=>d.CreatedDate);
-            return dbIssueCard.ToList().Select(d=> SetInfoForBE(new BE.IssueCard(), d)).ToList();
-
+            return _localUnitOfWork.DataContext.IssuedCards.Where(d => d.UserId == UserId).OrderByDescending(d => d.CreatedDate).ToList().Select(d=> d.Map<BE.IssueCard>()).ToList();
         }
 
 
@@ -55,6 +53,7 @@ namespace Trinity.DAL
             dbIssueCard.CreatedBy = model.CreatedBy;
             dbIssueCard.CreatedDate = model.CreatedDate;
             dbIssueCard.Date_Of_Issue = model.Date_Of_Issue;
+            dbIssueCard.Expired_Date = model.Expired_Date;
             dbIssueCard.Name = model.Name;
             dbIssueCard.NRIC = model.NRIC;
             dbIssueCard.Reprint_Reason = model.Reprint_Reason;
