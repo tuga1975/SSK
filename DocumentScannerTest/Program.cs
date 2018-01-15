@@ -93,10 +93,23 @@ namespace DocumentScannerTest
             //TestSmartCardPrinter();
             string status = string.Empty;
             //SmartCardPrinterUtils.Instance.Print_Type1(EnumDeviceNames.SmartCardPrinterSerialNumber, null, "Front.bmp", "Back.bmp", ref status);
-            SmartCardPrinterUtils.Instance.Print_Label(EnumDeviceNames.SmartCardPrinterSerialNumber, "Front.bmp", "Back.bmp", ref status);
+            //SmartCardPrinterUtils.Instance.Print_Label(EnumDeviceNames.SmartCardPrinterSerialNumber, "Front.bmp", "Back.bmp", ref status);
+            //SmartCardPrinterUtils.Instance.PrintLabel("Front.bmp", "Back.bmp", PrintLabelCompleted);
+
+            SmartCardPrinterUtils.Instance.WriteData(WriteDataCompleted);
             Console.ReadKey();
+
         }
 
+        private static void WriteDataCompleted(string result)
+        {
+            Console.WriteLine("WriteData: " + result);
+        }
+
+            private static void PrintLabelCompleted(bool result)
+        {
+            Console.WriteLine("PrintLabel: " + result);
+        }
         private static void ReleaseCard()
         {
             Job job = new Job();
@@ -155,7 +168,7 @@ namespace DocumentScannerTest
                 // Wait while card moves into encode position 
                 Thread.Sleep(4000);
 
-                string cardUID = SmartCardPrinterUtils.Instance.GetMifareCardUID("");
+                //string cardUID = SmartCardPrinterUtils.Instance.GetMifareCardUID("");
 
                 //string cardUID = GetCardUID();
 
