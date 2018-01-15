@@ -90,7 +90,7 @@ namespace SSK
             string servingQueueNumber = string.Empty;
             string currentQueueNumber = string.Empty;
             var waitingQueueNumbers = new List<string>();
-            var holdingList = new List<string>();
+            //var holdingList = new List<string>();
 
             Trinity.DAL.DBContext.Timeslot _currentTs = null;
             Trinity.DAL.DBContext.Timeslot _nextTs = null;
@@ -190,17 +190,20 @@ namespace SSK
                 {
                     waitingQueueNumbers.Add(item.QueuedNumber);
                 }
-
             }
 
-            var blockedUserQueue = new DAL_QueueNumber().GetAllQueueNumberByBlockedUser(DateTime.Now, EnumStations.SSK);
-
-            foreach (var item in blockedUserQueue)
+            List<string> holdingList = new DAL_QueueNumber().GetHoldingListByDate(DateTime.Now);
+            List<string> todayHoldingList = new List<string>();
+            if (holdingList!= null && holdingList.Count>0)
             {
-                holdingList.Add(item.QueuedNumber);
+                for (int i = 0; i < holdingList.Count; i++)
+                {
+                    todayHoldingList.Add(Trinity.Common.CommonUtil.GetQueueNumber(holdingList[i]));
+                }
             }
+            
             //serving  //current //next  //holding-blocked user
-            wbQueueNumber.RefreshQueueNumbers(servingQueueNumber, currentQueueNumber, waitingQueueNumbers.Distinct().ToArray(), holdingList.ToArray());
+            wbQueueNumber.RefreshQueueNumbers(servingQueueNumber, currentQueueNumber, waitingQueueNumbers.Distinct().ToArray(), todayHoldingList.ToArray());
             wbQueueNumber.InvokeScript("setTimeslot", currentTimeslot, nextTimeslot);
         }
 
