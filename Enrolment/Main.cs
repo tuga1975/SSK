@@ -667,13 +667,12 @@ namespace Enrolment
                 dalUser.UpdateUser(profileModel.User, profileModel.User.UserId, true);
 
                 dalUserProfile.UpdateUserProfile(profileModel.UserProfile, profileModel.User.UserId, true);
-                dalUser.ChangeUserStatus(profileModel.User.UserId, EnumUserStatuses.Enrolled);
+                dalUser.ChangeUserStatus(profileModel.User.UserId, EnumUserStatuses.New);
 
                 new DAL_Membership_Users().UpdateFingerprint(profileModel.User.UserId, profileModel.User.LeftThumbFingerprint, profileModel.User.RightThumbFingerprint);
                 new DAL_UserProfile().UpdateFingerprintImg(profileModel.User.UserId, profileModel.UserProfile.LeftThumbImage, profileModel.UserProfile.RightThumbImage);
 
-                //check print succecss
-                Trinity.Common.Utils.SmartCardPrinterUtils.Instance.PrintAndWriteSmartcardData(null, PriterIssuedCardOnCompleted);
+
 
               
                 //create to issue card 
@@ -810,43 +809,6 @@ namespace Enrolment
 
         }
 
-        private void PriterIssuedCardOnCompleted(PrintAndWriteSmartcardResult result)
-        {
-            if (result.Success)
-            {
-                Session session = Session.Instance;
-                var userLogin = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-                var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
-                DAL_IssueCard dalIssueCard = new Trinity.DAL.DAL_IssueCard();
-                string SmartID = Guid.NewGuid().ToString().Trim();
-                Trinity.BE.IssueCard IssueCard = new Trinity.BE.IssueCard()
-                {
-                    CreatedBy = userLogin.UserId,
-                    CreatedDate = DateTime.Now,
-                    Date_Of_Issue = currentEditUser.UserProfile.DateOfIssue,
-                    Name = currentEditUser.Membership_Users.Name,
-                    NRIC = currentEditUser.Membership_Users.NRIC,
-                    Reprint_Reason = string.Empty,
-                    Serial_Number = currentEditUser.UserProfile.SerialNumber,
-                    Expired_Date = currentEditUser.UserProfile.Expired_Date,
-                    Status = EnumIssuedCards.Active,
-                    SmartCardId = SmartID,
-                    UserId = currentEditUser.UserProfile.UserId
-                };
-                dalIssueCard.UpdateStatusByUserId(currentEditUser.UserProfile.UserId, EnumIssuedCards.Deactivate);
-                dalIssueCard.Insert(IssueCard);
-
-                currentEditUser.Membership_Users.SmartCardId = SmartID;
-
-                LayerWeb.InvokeScript("showPrintMessage", "Smart Card was printed successfully! Please collect the smart card from printer and place on the reader to verify.");
-            }
-            else
-            {
-                LayerWeb.InvokeScript("showPrintMessage", "Smart Card was failed to print! Please collect the smart card from printer and try again.");
-                //printer fail
-                //_web.InvokeScript("OnPriterIssuedCardCompleted", false, null);
-            }
-        }
     }
 }
 
