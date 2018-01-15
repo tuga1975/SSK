@@ -216,11 +216,11 @@
     });
 
     function setBase64FingerprintOnloadServerCall(leftFinger, rightFinger) {
-        if (leftFinger) {
+        if (leftFinger!="") {
             $('#leftFingerprint').attr('src', 'data:image/png;base64,' + leftFinger);
             $('#verifyLeftFinger').attr('src', 'data:image/png;base64,' + leftFinger);
         }
-        if (rightFinger) {
+        if (rightFinger != "") {
             $('#rightFingerprint').attr('src', 'data:image/png;base64,' + rightFinger);
             $('#verifyRightFinger').attr('src', 'data:image/png;base64,' + rightFinger);
           
