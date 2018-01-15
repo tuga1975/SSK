@@ -68,6 +68,7 @@ namespace Trinity.BE
         public int WeekNum { get; set; }
         public int Year { get; set; }
         public string Status { get; set; }
+        public List<Trinity.BE.Holiday> HoliDays { get; set; }
 
     }
 
@@ -205,7 +206,8 @@ namespace Trinity.BE
                 Year = rawData.Year,
                 Last_Updated_Date = rawData.Last_Updated_Date,
                 Last_Updated_By = rawData.Last_Updated_By,
-                Description = rawData.Description
+                Description = rawData.Description,
+                HoliDays = new List<Holiday>()
             };
 
             return settingModel;

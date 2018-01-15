@@ -300,12 +300,13 @@ namespace Trinity.DAL
             return new BE.SettingBE().ToSettingModel(settingBE);
         }
 
-        public void UpdateTimeslotForNewWeek(string createdBy)
+        public void UpdateTimeslotForNewWeek(Guid settingID, string createdBy)
         {
             var timeSlotRepo = _localUnitOfWork.GetRepository<Timeslot>();
 
             //delete
-            var listDbTimeslot = timeSlotRepo.GetAll().ToList();
+            //var listDbTimeslot = timeSlotRepo.GetAll().ToList();
+            var listDbTimeslot = _localUnitOfWork.DataContext.Timeslots.Where(t => t.Setting_ID == settingID).ToList();
 
             foreach (var item in listDbTimeslot)
             {
@@ -326,7 +327,7 @@ namespace Trinity.DAL
 
             repo.Update(dbSetting);
             _localUnitOfWork.Save();
-            UpdateTimeslotForNewWeek(lastUpdateBy);
+            UpdateTimeslotForNewWeek(dbSetting.Setting_ID, lastUpdateBy);
         }
 
         public Timeslot GetTimeslot(Guid settingId, DateTime currentDate)
@@ -390,8 +391,11 @@ namespace Trinity.DAL
 
                 _localUnitOfWork.Save();
 
+                // Save HoliDays
+                SaveHolidays(model.HoliDays);
+
                 // Generate Timeslote here
-                GenerateTimeslots(lastUpdateBy);
+                UpdateTimeslotForNewWeek(setting.Setting_ID, lastUpdateBy);
 
                 return true;
             }
@@ -451,6 +455,60 @@ namespace Trinity.DAL
             setting.Sun_Interval = model.Sunday.Duration;
             setting.Sun_MaximumNum = model.Sunday.MaximumAppointment;
             setting.Sun_ReservedForSpare = model.Sunday.ReservedForSpare;
+        }
+
+        public List<BE.Holiday> GetHolidays()
+        {
+            List<BE.Holiday> results = new List<BE.Holiday>();
+            var repoHolidays = _localUnitOfWork.GetRepository<DBContext.Holiday>();
+            var lstHolidays = repoHolidays.GetAll().ToList();
+
+            foreach (var item in lstHolidays)
+            {
+                BE.Holiday holiday = new BE.Holiday();
+                holiday.Holiday1 = item.Holiday1;
+                holiday.IsSingHoliday = item.IsSingHoliday;
+                holiday.IsMalayHoliday = item.IsMalayHoliday;
+                holiday.ShortDesc = item.ShortDesc;
+                holiday.Notes = item.Notes;
+
+                results.Add(holiday);
+            }
+
+            return results;
+        }
+
+        private void SaveHolidays(List<BE.Holiday> lstHolidays)
+        {
+            try
+            {
+                var repo = _localUnitOfWork.GetRepository<DBContext.Holiday>();
+
+                //delete all holiday before update and insert from new list
+                var listExistHolidays = repo.GetAll().ToList();
+
+                foreach (var item in listExistHolidays)
+                {
+                    repo.Delete(item);
+                }
+
+                foreach (var item in lstHolidays)
+                {
+                    DBContext.Holiday holiday = new DBContext.Holiday();
+                    holiday.Holiday1 = item.Holiday1;
+                    holiday.IsSingHoliday = item.IsSingHoliday;
+                    holiday.IsMalayHoliday = item.IsMalayHoliday;
+                    holiday.ShortDesc = item.ShortDesc;
+                    holiday.Notes = item.Notes;
+
+                    repo.Add(holiday);
+                }
+                _localUnitOfWork.Save();
+
+            }
+            catch (Exception e)
+            {
+            }
         }
 
         public SettingDetails GetSettingDetails(EnumDayOfWeek dayOfWeek)

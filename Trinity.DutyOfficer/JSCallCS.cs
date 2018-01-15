@@ -215,6 +215,7 @@ namespace DutyOfficer
         {
             var dalSetting = new DAL_Setting();
             SettingModel data = dalSetting.GetSettings(EnumSettingStatuses.Pending);
+            data.HoliDays = dalSetting.GetHolidays();
             
             object result = null;
             if (data != null)
@@ -228,7 +229,17 @@ namespace DutyOfficer
         public void UpdateSetting(string json)
         {
             var model = JsonConvert.DeserializeObject<SettingModel>(json);
-            // chua lam xong, quay qua fix bug print MUB and TT Succeed xong se quay lai lam tiep
+            Session session = Session.Instance;
+            Trinity.BE.User dutyOfficer = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+            var dalSetting = new DAL_Setting();
+            if (dalSetting.SaveSetting(model, dutyOfficer.UserId))
+            {
+                _web.InvokeScript("showMessageBox", "Update successful!");
+            }
+            else
+            {
+                _web.InvokeScript("showMessageBox", "Update faied!");
+            }
         }
 
         private TimeSpan GetDurationBetweenTwoTimespan(TimeSpan startTime, TimeSpan endTime)
