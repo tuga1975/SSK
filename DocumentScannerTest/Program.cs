@@ -89,8 +89,11 @@ namespace DocumentScannerTest
             //string getData = smartCardReaderUtils.ReadAllData_MifareClassic();
             //Console.WriteLine(getData);
 
-            //ReleaseCard();
-            TestSmartCardPrinter();
+            ////ReleaseCard();
+            //TestSmartCardPrinter();
+            //string status = string.Empty;
+            //SmartCardPrinterUtils.Instance.Print_Type1(EnumDeviceNames.SmartCardPrinterSerialNumber, null, "Front.bmp", "Back.bmp", ref status);
+            SmartCardPrinterUtils.Instance.Print_Label(EnumDeviceNames.SmartCardPrinterSerialNumber, null, "Front.bmp", "Back.bmp", ref status);
             Console.ReadKey();
         }
 
@@ -231,6 +234,8 @@ namespace DocumentScannerTest
             Console.WriteLine("starting TestSmartCardPrinter...");
             PrintAndWriteSmartcardInfo printAndWriteSmartcardInfo = new PrintAndWriteSmartcardInfo()
             {
+                FrontCardImagePath = "Front.bmp",
+                BackCardImagePath = "Back.bmp",
                 SmartCardData = new SmartCardData()
                 {
                     CardHolderInfo = new CardHolderInfo()

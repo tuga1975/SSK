@@ -15,8 +15,8 @@ namespace Trinity.Common.Common
 
     public class PrintAndWriteSmartcardInfo
     {
-        public Bitmap FrontCard { get; set; }
-        public Bitmap BackCard { get; set; }
+        public string FrontCardImagePath { get; set; }
+        public string BackCardImagePath { get; set; }
         public SmartCardData SmartCardData { get; set; }
     }
 
