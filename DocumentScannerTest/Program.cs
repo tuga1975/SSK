@@ -91,9 +91,9 @@ namespace DocumentScannerTest
 
             ////ReleaseCard();
             //TestSmartCardPrinter();
-            //string status = string.Empty;
+            string status = string.Empty;
             //SmartCardPrinterUtils.Instance.Print_Type1(EnumDeviceNames.SmartCardPrinterSerialNumber, null, "Front.bmp", "Back.bmp", ref status);
-            SmartCardPrinterUtils.Instance.Print_Label(EnumDeviceNames.SmartCardPrinterSerialNumber, null, "Front.bmp", "Back.bmp", ref status);
+            SmartCardPrinterUtils.Instance.Print_Label(EnumDeviceNames.SmartCardPrinterSerialNumber, "Front.bmp", "Back.bmp", ref status);
             Console.ReadKey();
         }
 
