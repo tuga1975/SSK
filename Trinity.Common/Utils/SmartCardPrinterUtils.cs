@@ -20,6 +20,7 @@ namespace Trinity.Common.Utils
         private short _alarm = 0;
         private DestinationTypeEnum _destination = DestinationTypeEnum.Eject;
         private FeederSourceEnum _feeder = FeederSourceEnum.ATMSlot;
+
         private struct JobStatusStruct
         {
             public int copiesCompleted,
@@ -76,6 +77,141 @@ namespace Trinity.Common.Utils
                 Debug.WriteLine("PrintAndWriteSmartcardData exception: " + ex.ToString());
 
                 OnCompleted(new PrintAndWriteSmartcardResult() { Success = false, Description = "Oops!.. Something went wrong ..." });
+            }
+        }
+
+        public void PrintLabel(string frontImagePath, string backImagePath, Action<bool> OnCompleted)
+        {
+            string printerName = EnumDeviceNames.SmartCardPrinterSerialNumber;
+
+            bool bRet = false;
+            byte[] img = null;
+            byte[] bmpFront = null;
+            byte[] bmpBack = null;
+            Job job = null;
+            ZMotifGraphics g = null;
+            try
+            {
+                // Opens a connection with a ZXP Printer
+                //     if it is in an alarm condition, exit function
+                // -------------------------------------------------
+                job = new Job();
+                g = new ZMotifGraphics();
+
+                if (!Connect(printerName, ref job))
+                {
+                    Debug.WriteLine("Unable to open device [" + printerName + "]\r\n");
+                    OnCompleted(bRet);
+                    return;
+                }
+
+                if (_alarm != 0)
+                {
+                    Debug.WriteLine("Printer is in alarm condition\r\n" + "Error: " + job.Device.GetStatusMessageString(_alarm));
+                    OnCompleted(bRet);
+                    return;
+                }
+
+                #region Builds the front side image (color)
+                g.InitGraphics(0, 0, ZMotifGraphics.ImageOrientationEnum.Landscape, ZMotifGraphics.RibbonTypeEnum.Color);
+
+                img = g.ImageFileToByteArray(frontImagePath);
+                g.DrawImage(ref img, ZMotifGraphics.ImagePositionEnum.Centered, 0, 0, 0);
+                int dataLen;
+
+                bmpFront = g.CreateBitmap(out dataLen);
+                g.ClearGraphics();
+                #endregion
+
+                #region Builds the front side image (color)
+                g.InitGraphics(0, 0, ZMotifGraphics.ImageOrientationEnum.Landscape, ZMotifGraphics.RibbonTypeEnum.MonoK);
+
+                img = g.ImageFileToByteArray(backImagePath);
+                g.DrawImage(ref img, ZMotifGraphics.ImagePositionEnum.Centered, 0, 0, 0);
+
+                bmpBack = g.CreateBitmap(out dataLen);
+                g.ClearGraphics();
+                #endregion
+
+                #region Print the images
+                job.JobControl.FeederSource = FeederSourceEnum.CardFeeder;
+                job.JobControl.Destination = DestinationTypeEnum.Eject;
+
+                job.BuildGraphicsLayers(SideEnum.Front, PrintTypeEnum.Color, 0, 0, 0, -1, GraphicTypeEnum.BMP, bmpFront);
+
+                job.BuildGraphicsLayers(SideEnum.Back, PrintTypeEnum.MonoK, 0, 0, 0, -1, GraphicTypeEnum.BMP, bmpBack);
+
+
+                int actionID = 0;
+                job.PrintGraphicsLayers(1, out actionID);
+
+                job.ClearGraphicsLayers();
+
+                string status = string.Empty;
+                JobWait(ref job, actionID, 180, out status, out bRet);
+
+                Debug.WriteLine(bRet);
+                #endregion
+
+                OnCompleted(bRet);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("PrintLabel exception: " + ex.ToString());
+                OnCompleted(bRet);
+            }
+        }
+
+        public void WriteData(Action<string> OnCompleted)
+        {
+            try
+            {
+                string cardUID = string.Empty;
+
+                Job job = new Job();
+
+                // Move card to smart card reader and suspend ZMotif SDK control of printer (using ZMotif SDK)
+                int actionID = 0;
+                job.JobControl.SmartCardConfiguration(SideEnum.Front, SmartCardTypeEnum.MIFARE, true);
+                job.SmartCardDataOnly(1, out actionID);
+                // refer: https://km.zebra.com/kb/index?page=content&id=SA280&actp=LIST
+                //  The goal of this program is to establish a connection with 
+                // a Mifare 4k contactless microprocessor smart card through a ZXP printer.
+
+                // Wait while card moves into encode position 
+                Thread.Sleep(4000);
+
+                try
+                {
+                    // write data
+                    SmartCardReaderUtils smartCardReaderUtils = SmartCardReaderUtils.Instance;
+                    string readerName = EnumDeviceNames.SmartCardPrinterContactlessReader;
+
+                    // get card UID
+                    cardUID = GetMifareCardUID(readerName);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.ToString());
+                }
+                finally
+                {
+                    // Resume ZMotif SDK control of printer (using ZMotif SDK)
+                    job.JobResume();
+
+                    // Close ZMotif SDK control of job (using ZMotif SDK)
+                    job.Close();
+
+                    // Wait while eject the card
+                    Thread.Sleep(2000);
+                }
+
+                OnCompleted(cardUID);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("WriteData exception: " + ex.ToString());
+                OnCompleted(string.Empty);
             }
         }
 
@@ -172,7 +308,7 @@ namespace Trinity.Common.Utils
             return printAndWriteSmartcardResult;
         }
 
-        public string GetMifareCardUID(string cardReaderName)
+        private string GetMifareCardUID(string cardReaderName)
         {
             try
             {
@@ -267,7 +403,7 @@ namespace Trinity.Common.Utils
             }
         }
 
-        public bool Print_Label(string printerName, string frontImagePath, string backImagePath, ref string status)
+        private bool Print_Label(string printerName, string frontImagePath, string backImagePath, ref string status)
         {
             bool bRet = true;
 
@@ -351,7 +487,7 @@ namespace Trinity.Common.Utils
 
                 job.ClearGraphicsLayers();
 
-                JobWait(ref job, actionID, 180, out status);
+                JobWait(ref job, actionID, 180, out status, out bRet);
                 #endregion
 
                 //return true;
@@ -388,7 +524,6 @@ namespace Trinity.Common.Utils
         }
 
         #region Identify ZXP Printer Type
-
         private void IdentifyZMotifPrinter(ref Job job)
         {
             try
@@ -446,14 +581,14 @@ namespace Trinity.Common.Utils
                 throw new Exception(ex.Message);
             }
         }
-
         #endregion Identify ZXP Printer Type
 
         // Waits for a job to complete
         // --------------------------------------------------------------------------------------------------
-        public void JobWait(ref Job job, int actionID, int loops, out string status)
+        private void JobWait(ref Job job, int actionID, int loops, out string status, out bool bRet)
         {
             status = string.Empty;
+            bRet = false;
 
             try
             {
@@ -471,6 +606,7 @@ namespace Trinity.Common.Utils
                         if (js.printingStatus == "done_ok" || js.printingStatus == "cleaning_up")
                         {
                             status = js.printingStatus + ": " + "Indicates a job completed successfully";
+                            bRet = true;
                             break;
                         }
                         else if (js.printingStatus.Contains("cancelled"))

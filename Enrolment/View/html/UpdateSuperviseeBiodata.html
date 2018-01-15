@@ -76,7 +76,7 @@
                                             <div><b>NRIC : </b><span name="verifyNRIC"></span></div>
                                             <div><b>Issue date: </b><span name="issueDate"></span></div>
                                             <div><b>Expire date: </b><span name="expireDate"></span></div>
-                                            <div><b>Serial Number: </b><span name="serialNumber"></span></div>
+                                            <!--<div><b>Serial Number: </b><span name="serialNumber"></span></div>-->
                                         </div>
                                         <div style="clear:both"></div>
                                     </div>
@@ -98,7 +98,7 @@
                                             <div><b>Race : </b><span name="verifyRace"></span></div>
                                             <div><b>Issue date: </b><span name="issueDate"></span></div>
                                             <div><b>Expire date: </b><span name="expireDate"></span></div>
-                                            <div><b>Serial Number: </b><span name="serialNumber"></span></div>
+                                            <!--<div><b>Serial Number: </b><span name="serialNumber"></span></div>-->
                                         </div>
                                         <div style="clear:both"></div>
                                     </div>
@@ -216,13 +216,14 @@
     });
 
     function setBase64FingerprintOnloadServerCall(leftFinger, rightFinger) {
-        if (leftFinger) {
-            $('#rightFingerprint').attr('src', 'data:image/png;base64,' + rightFinger);
-            $('#verifyRightFinger').attr('src', 'data:image/png;base64,' + rightFinger);
-        }
-        if (rightFinger) {
+        if (leftFinger!="") {
             $('#leftFingerprint').attr('src', 'data:image/png;base64,' + leftFinger);
             $('#verifyLeftFinger').attr('src', 'data:image/png;base64,' + leftFinger);
+        }
+        if (rightFinger != "") {
+            $('#rightFingerprint').attr('src', 'data:image/png;base64,' + rightFinger);
+            $('#verifyRightFinger').attr('src', 'data:image/png;base64,' + rightFinger);
+          
         }
 
     }
