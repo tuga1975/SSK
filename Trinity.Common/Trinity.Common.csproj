@@ -60,10 +60,6 @@
     <Reference Include="ftrSDKHelper13">
       <HintPath>..\Trinity.SSK\Libs\ftrSDKHelper13.dll</HintPath>
     </Reference>
-    <Reference Include="Interop.ZMOTIFPRINTERLib">
-      <HintPath>..\DocumentScannerTest\obj\x64\Debug\Interop.ZMOTIFPRINTERLib.dll</HintPath>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -135,12 +131,23 @@
       <Isolated>False</Isolated>
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </COMReference>
+    <COMReference Include="ZMOTIFPRINTERLib">
+      <Guid>{1D2498AA-D4EB-4F0C-975E-C7B157B0C2DA}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Libs\Futronic Fingerprint Reader\ftrSDKHelper13.dll" />
     <Content Include="Libs\PCSC Smart Card Reader\pcsc-sharp.dll" />
     <Content Include="Libs\TSC Barcode Printer\x64\TSCLIB.dll" />
     <Content Include="Libs\TSC Barcode Printer\x86\TSCLIB.dll" />
+    <Content Include="Libs\Zerbra XZP Serries 9\ZMotifGraphics.dll" />
+    <Content Include="Libs\Zerbra XZP Serries 9\ZMotifPrinter.dll" />
     <Content Include="Libs\ZXing.Net.0.16.0.0\net4.5\zxing.dll" />
     <Content Include="Libs\ZXing.Net.0.16.0.0\net4.5\zxing.pdb" />
     <Content Include="Libs\ZXing.Net.0.16.0.0\net4.5\zxing.presentation.dll" />

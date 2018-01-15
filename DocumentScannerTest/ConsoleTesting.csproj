@@ -64,8 +64,9 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="ZMotifGraphics">
-      <HintPath>.\ZMotifGraphics.dll</HintPath>
+    <Reference Include="ZMotifGraphics, Version=1.8.4100.0, Culture=neutral, PublicKeyToken=e38255d558fcaa39, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Trinity.Common\Libs\Zerbra XZP Serries 9\ZMotifGraphics.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
