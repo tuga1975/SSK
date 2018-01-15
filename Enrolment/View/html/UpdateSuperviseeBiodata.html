@@ -291,7 +291,7 @@
         $('#verifyName').text(api.model.User.Name);
         // var dob = api.model.UserProfile.DOB.replace("T00:00:00", "");
         if (api.model.UserProfile.DOB != null) {
-            $('#verifyDOB').text(api.model.UserProfile.DOBTxt);
+            $('#verifyDOB').text(api.model.UserProfile.DOBAsString);
         }
 
         $('#verifyNRIC').text(api.model.User.NRIC);

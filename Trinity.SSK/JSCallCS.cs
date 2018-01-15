@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
 using Trinity.Common;
+using Trinity.Common.Utils;
 using Trinity.DAL;
 using Trinity.DAL.DBContext;
 
@@ -168,7 +169,13 @@ namespace SSK
             DAL_Appointments.UpdateBookTime(IDAppointment, timeStart, timeEnd);
 
             Trinity.BE.Appointment appointment = DAL_Appointments.GetAppointmentDetails(new Guid(IDAppointment));
-            APIUtils.Printer.PrintAppointmentDetails("AppointmentDetailsTemplate.html", appointment);
+            ReceiptPrinterUtils.Instance.PrintAppointmentDetails(new AppointmentDetails()
+            {
+                Date = appointment.AppointmentDate.Value,
+                Name = appointment.Name,
+                NRICNo = appointment.NRIC
+            });
+            //APIUtils.Printer.PrintAppointmentDetails("AppointmentDetailsTemplate.html", appointment);
 
             return timeStart;
         }
@@ -177,7 +184,13 @@ namespace SSK
         {
             var dalAppointment = new DAL_Appointments();
             Trinity.BE.Appointment appointment = dalAppointment.GetAppointmentDetails(Guid.Parse(appointmentId));
-            APIUtils.Printer.PrintAppointmentDetails("AppointmentDetailsTemplate.html", appointment);
+            ReceiptPrinterUtils.Instance.PrintAppointmentDetails(new AppointmentDetails()
+            {
+                Date = appointment.AppointmentDate.Value,
+                Name = appointment.Name,
+                NRICNo = appointment.NRIC
+            });
+            //APIUtils.Printer.PrintAppointmentDetails("AppointmentDetailsTemplate.html", appointment);
         }
         #endregion
         public void LoadProfile()

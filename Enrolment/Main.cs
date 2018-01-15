@@ -199,11 +199,11 @@ namespace Enrolment
                 var rightThumbImage = (byte[])session[CommonConstants.CURRENT_RIGHT_FINGERPRINT_IMAGE];
                 if (profileModel != null)
                 {
-                    if (leftThumbImage!=null && leftThumbImage.Length>0)
+                    if (leftThumbImage != null && leftThumbImage.Length > 0)
                     {
                         profileModel.UserProfile.LeftThumbImage = leftThumbImage;
                     }
-                    if (rightThumbImage!=null && rightThumbImage.Length>0)
+                    if (rightThumbImage != null && rightThumbImage.Length > 0)
                     {
                         profileModel.UserProfile.RightThumbImage = rightThumbImage;
                     }
@@ -342,10 +342,9 @@ namespace Enrolment
 
             if (_isFirstTimeLoaded)
             {
-
-                Session session = Session.Instance;
-                Trinity.BE.User user = new DAL_User().GetUserByUserId("bb67863c-c330-41aa-b397-c220428ad16f", true);
-                session[CommonConstants.USER_LOGIN] = user;
+                //Session session = Session.Instance;
+                //Trinity.BE.User user = new DAL_User().GetUserByUserId("bb67863c-c330-41aa-b397-c220428ad16f", true);
+                //session[CommonConstants.USER_LOGIN] = user;
 
                 // Set Start page = Login
                 NavigateTo(NavigatorEnums.Login);
@@ -570,7 +569,7 @@ namespace Enrolment
                             }
                             session[CommonConstants.CURRENT_PHOTOS] = null;
 
-                            currentEditUser.UserProfile.User_Photo1 = photos.Item1!= null ? Convert.FromBase64String(photo1) : null;
+                            currentEditUser.UserProfile.User_Photo1 = photos.Item1 != null ? Convert.FromBase64String(photo1) : null;
                             currentEditUser.UserProfile.User_Photo2 = photos.Item2 != null ? Convert.FromBase64String(photo2) : null;
                             session[CommonConstants.CURRENT_EDIT_USER] = currentEditUser;
                             if (currentPage.ToString() == "EditSupervisee")
@@ -657,9 +656,6 @@ namespace Enrolment
             }
             else if (e.Name == EventNames.UPDATE_SUPERVISEE_BIODATA)
             {
-               
-
-
                 Session session = Session.Instance;
                 var profileModel = (Trinity.BE.ProfileModel)e.Data;
                 var dalUser = new DAL_User();
@@ -673,9 +669,9 @@ namespace Enrolment
                 new DAL_UserProfile().UpdateFingerprintImg(profileModel.User.UserId, profileModel.UserProfile.LeftThumbImage, profileModel.UserProfile.RightThumbImage);
 
                 //check print succecss
-                Trinity.Common.Utils.SmartCardPrinterUtils.Instance.PrintAndWriteSmartcardData(null, PriterIssuedCardOnCompleted);
+                Trinity.Common.Utils.SmartCardPrinterUtils.Instance.PrintAndWriteSmartcardData(null, OnCardPrinted);
 
-              
+
                 //create to issue card 
                 //var dalIssueCard = new DAL_IssueCard();
                 //var issueCardModel = dalIssueCard.GetIssueCardById(profileModel.User.SmartCardId);
@@ -687,11 +683,7 @@ namespace Enrolment
                 //    issueCardModel.Status = EnumUserStatuses.ReEnrolled;
                 //    dalIssueCard.Update(profileModel.User.SmartCardId, profileModel.User.UserId, issueCardModel);
                 //}
-
-
-
                 session[CommonConstants.CURRENT_EDIT_USER] = profileModel;
-
             }
             else if (e.Name == EventNames.LOAD_EDIT_SUPERVISEE_SUCCEEDED)
             {
@@ -759,7 +751,6 @@ namespace Enrolment
                 {
                     _jsCallCS.PreviewSuperviseeFingerprint(firstAttemp);
                 }
-
             }
         }
 
@@ -810,7 +801,7 @@ namespace Enrolment
 
         }
 
-        private void PriterIssuedCardOnCompleted(PrintAndWriteSmartcardResult result)
+        private void OnCardPrinted(PrintAndWriteSmartcardResult result)
         {
             if (result.Success)
             {

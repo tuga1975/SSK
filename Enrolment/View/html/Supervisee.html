@@ -40,7 +40,7 @@
 
             for (var i = 0; i < api.model.length; i++) {
 				var uId = '"' + api.model[i].User.UserId + '"';
-                $('#listSupervisee').append("<tr> <th scope='row'>" + (i + 1) + "</th><td>" + api.model[i].User.Name + "</td><td>" + api.model[i].User.NRIC + "</td><td>" + api.model[i].UserProfile.DOB + "</td><td><a href='#' onclick='api.server.EditSupervisee(" + uId + ");'>" + api.model[i].User.Status + "</a></td></tr>");
+                $('#listSupervisee').append("<tr> <th scope='row'>" + (i + 1) + "</th><td>" + api.model[i].User.Name + "</td><td>" + api.model[i].User.NRIC + "</td><td>" + api.model[i].UserProfile.DOBAsString + "</td><td><a href='#' onclick='api.server.EditSupervisee(" + uId + ");'>" + api.model[i].User.Status + "</a></td></tr>");
             }
         }
 
