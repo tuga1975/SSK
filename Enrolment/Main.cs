@@ -138,12 +138,14 @@ namespace Enrolment
                             if (isRight)
                             {
                                 session[CommonConstants.CURRENT_RIGHT_FINGERPRINT_IMAGE] = byteData;
+                                LayerWeb.InvokeScript("setBase64FingerprintOnloadServerCall", string.Empty, base64Str);
                             }
                             else
                             {
                                 session[CommonConstants.CURRENT_LEFT_FINGERPRINT_IMAGE] = byteData;
+                                LayerWeb.InvokeScript("setBase64FingerprintOnloadServerCall", base64Str, string.Empty);
                             }
-                            LayerWeb.InvokeScript("setBase64FingerprintOnloadServerCall", isRight, base64Str);
+                           
                         }
                     }
 

@@ -92,7 +92,7 @@ namespace Trinity.DAL
                                on q.Queue_ID equals qd.Queue_ID
                                join ts in _localUnitOfWork.DataContext.Timeslots
                                on apm.Timeslot_ID equals ts.Timeslot_ID
-                               where DbFunctions.TruncateTime(q.CreatedTime).Value == date && qd.Station == station && (qd.Status.Equals(EnumQueueStatuses.Waiting, StringComparison.InvariantCultureIgnoreCase) || qd.Status.Equals(EnumQueueStatuses.Processing, StringComparison.InvariantCultureIgnoreCase)) && usr.Status.Equals(EnumUserStatuses.Blocked, StringComparison.InvariantCultureIgnoreCase) == false
+                               where DbFunctions.TruncateTime(q.CreatedTime).Value == date && qd.Station == station && (qd.Status.Equals(EnumQueueStatuses.Waiting, StringComparison.InvariantCultureIgnoreCase) || qd.Status.Equals(EnumQueueStatuses.Processing, StringComparison.InvariantCultureIgnoreCase))
                                select q).ToList();
 
             return listDbQueue;
@@ -110,7 +110,7 @@ namespace Trinity.DAL
                                on q.Queue_ID equals qd.Queue_ID
                                join ts in _localUnitOfWork.DataContext.Timeslots
                                on apm.Timeslot_ID equals ts.Timeslot_ID
-                               where ts.StartTime.Value == timeSlot && qd.Station == station && qd.Status.Equals(EnumQueueStatuses.Waiting, StringComparison.InvariantCultureIgnoreCase) && usr.Status.Equals(EnumUserStatuses.Blocked, StringComparison.InvariantCultureIgnoreCase) == false
+                               where ts.StartTime.Value == timeSlot && qd.Station == station && qd.Status.Equals(EnumQueueStatuses.Waiting, StringComparison.InvariantCultureIgnoreCase)
                                select q).ToList();
 
             return listDbQueue;
