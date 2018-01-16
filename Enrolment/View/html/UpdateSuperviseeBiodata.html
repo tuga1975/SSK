@@ -76,7 +76,7 @@
                                             <div><b>NRIC : </b><span name="verifyNRIC"></span></div>
                                             <div><b>Issue date: </b><span name="issueDate"></span></div>
                                             <div><b>Expire date: </b><span name="expireDate"></span></div>
-                                            <div><b>Serial Number: </b><span name="serialNumber"></span></div>
+                                            <!--<div><b>Serial Number: </b><span name="serialNumber"></span></div>-->
                                         </div>
                                         <div style="clear:both"></div>
                                     </div>
@@ -98,7 +98,7 @@
                                             <div><b>Race : </b><span name="verifyRace"></span></div>
                                             <div><b>Issue date: </b><span name="issueDate"></span></div>
                                             <div><b>Expire date: </b><span name="expireDate"></span></div>
-                                            <div><b>Serial Number: </b><span name="serialNumber"></span></div>
+                                            <!--<div><b>Serial Number: </b><span name="serialNumber"></span></div>-->
                                         </div>
                                         <div style="clear:both"></div>
                                     </div>
@@ -115,7 +115,7 @@
                             <div class="col" style="text-align:center">
                                 <div style="width:100%;border:1px solid #000000;font-size:15px;display:none" id="printSuccessMessage"></div>
                                 <div style="text-align:center;margin-top:10px;display:none;" id="rePrinter">
-                                    <input type="button" value="Reprint" onclick="api.server.PriterSmartCart(frontCardImg, backCardImg);"/>
+                                    <input type="button" value="Reprint" onclick="api.server.PrintSmartCart(frontCardImg, backCardImg);"/>
                                 </div>
                                 <div style="margin:10px auto;display:none;text-align:center;" id="reCheckSCard">
                                     <img src="" style="margin-left:10px;" id="frontCardImg"/>
@@ -216,13 +216,14 @@
     });
 
     function setBase64FingerprintOnloadServerCall(leftFinger, rightFinger) {
-        if (leftFinger) {
-            $('#rightFingerprint').attr('src', 'data:image/png;base64,' + rightFinger);
-            $('#verifyRightFinger').attr('src', 'data:image/png;base64,' + rightFinger);
-        }
-        if (rightFinger) {
+        if (leftFinger!="") {
             $('#leftFingerprint').attr('src', 'data:image/png;base64,' + leftFinger);
             $('#verifyLeftFinger').attr('src', 'data:image/png;base64,' + leftFinger);
+        }
+        if (rightFinger != "") {
+            $('#rightFingerprint').attr('src', 'data:image/png;base64,' + rightFinger);
+            $('#verifyRightFinger').attr('src', 'data:image/png;base64,' + rightFinger);
+          
         }
 
     }
@@ -283,22 +284,31 @@
                             $('[name="expireDate"]').text(model.UserProfile.Expired_DateTxt);
                         }
                         $('[name="verifyRace"]').text(model.UserProfile.Race == null ? '' : model.UserProfile.Race);
+                        frontCardImg = null;
+                        backCardImg = null
                     });
                 }else if (newIndex == 3) {
                     //if (frontCardImg == null && backCardImg == null) {
                         
                     //    return false;
                     //}   
-                    html2canvas($('#frontCard'), {
-                        onrendered: function (froncanvas) {
-                            html2canvas($('#backCard'), {
-                                onrendered: function (backcanvas) {
-                                    frontCardImg = froncanvas.toDataURL("image/png");
-                                    backCardImg = backcanvas.toDataURL("image/png");
-                                }
-                            });
-                        }
-                    });
+                    if (frontCardImg == null || backCardImg == null) {
+                        html2canvas($('#frontCard'), {
+                            onrendered: function (froncanvas) {
+                                html2canvas($('#backCard'), {
+                                    onrendered: function (backcanvas) {
+                                        frontCardImg = froncanvas.toDataURL("image/png");
+                                        backCardImg = backcanvas.toDataURL("image/png");
+                                        $('.actions > ul > li > a[href="#next"]').click();
+                                    }
+                                });
+                            }
+                        });
+                        api.loading(true);
+                        return false;
+                    } else {
+                        api.loading(false);
+                    }
                 }
                 return true;
             },
@@ -310,11 +320,12 @@
                 
                 if (currentIndex == 3) {
                     //update to db
-                    api.server.UpdateSuperviseeBiodata(function () {
-                        $('#frontCardImg').attr('src', frontCardImg);
-                        $('#backCardImg').attr('src', backCardImg);
-                        api.server.PriterSmartCart(frontCardImg, backCardImg);
-                    });
+                    //api.server.UpdateSuperviseeBiodata(function () {
+                    //    $('#frontCardImg').attr('src', frontCardImg);
+                    //    $('#backCardImg').attr('src', backCardImg);
+                    //    api.server.PrintSmartCart(frontCardImg, backCardImg);
+                    //});
+                    api.server.UpdateSuperviseeBiodata(frontCardImg, backCardImg);
                 }
             },
             onFinished: function (event, currentIndex) {
@@ -342,11 +353,17 @@
                 $('#rePrinter').css('display', 'none');
                 $('#reCheckSCard').css('display', 'block');
                 $('.actions > ul > li:first-child').attr('style', 'display:none');
+
             } else {
                 $('#rePrinter').css('display', 'block');
                 $('#reCheckSCard').css('display', 'none');
             }
         }
         $('#printSuccessMessage').text(message).show();
+    }
+
+    function showCardImages() {
+        $('#frontCardImg').attr('src', frontCardImg);
+        $('#backCardImg').attr('src', backCardImg);
     }
 </script>

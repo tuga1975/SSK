@@ -15,7 +15,7 @@ namespace Trinity.DAL
 
         public Trinity.DAL.DBContext.Queue InsertQueueNumber(Guid appointmentID, string userId, string station)
         {
-            var generateQNo = GenerateQueueNumber(_localUnitOfWork.DataContext.Membership_Users.Find(userId).NRIC);
+            var generateQNo = Trinity.Common.CommonUtil.GetQueueNumber(_localUnitOfWork.DataContext.Membership_Users.Find(userId).NRIC);
             Trinity.DAL.DBContext.Queue dataInsert = new Trinity.DAL.DBContext.Queue()
             {
                 Appointment_ID = appointmentID,
@@ -60,25 +60,7 @@ namespace Trinity.DAL
         }
 
 
-        public string GenerateQueueNumber(string baseOnNRIC)
-        {
-            string queueNumber = "";
-            if (!string.IsNullOrEmpty(baseOnNRIC) && baseOnNRIC.Length > 6)
-            {
-                queueNumber += baseOnNRIC.Substring(0, 1) + baseOnNRIC.Substring(baseOnNRIC.Length - 5, 5).PadLeft(8, '*');
-            }
-            else if (!string.IsNullOrEmpty(baseOnNRIC) && baseOnNRIC.Length <= 6)
-            {
-                queueNumber += baseOnNRIC.Substring(0, 1) + baseOnNRIC.PadLeft(8, '*');
-            }
-            else
-            {
-                queueNumber += null;
-            }
-
-            return queueNumber;
-
-        }
+        
         public List<Trinity.DAL.DBContext.Queue> GetAllQueueNumberByDate(DateTime date, string station)
         {
             date = date.Date;
@@ -92,7 +74,7 @@ namespace Trinity.DAL
                                on q.Queue_ID equals qd.Queue_ID
                                join ts in _localUnitOfWork.DataContext.Timeslots
                                on apm.Timeslot_ID equals ts.Timeslot_ID
-                               where DbFunctions.TruncateTime(q.CreatedTime).Value == date && qd.Station == station && (qd.Status.Equals(EnumQueueStatuses.Waiting, StringComparison.InvariantCultureIgnoreCase) || qd.Status.Equals(EnumQueueStatuses.Processing, StringComparison.InvariantCultureIgnoreCase)) && usr.Status.Equals(EnumUserStatuses.Blocked, StringComparison.InvariantCultureIgnoreCase) == false
+                               where DbFunctions.TruncateTime(q.CreatedTime).Value == date && qd.Station == station && (qd.Status.Equals(EnumQueueStatuses.Waiting, StringComparison.InvariantCultureIgnoreCase) || qd.Status.Equals(EnumQueueStatuses.Processing, StringComparison.InvariantCultureIgnoreCase))
                                select q).ToList();
 
             return listDbQueue;
@@ -110,7 +92,7 @@ namespace Trinity.DAL
                                on q.Queue_ID equals qd.Queue_ID
                                join ts in _localUnitOfWork.DataContext.Timeslots
                                on apm.Timeslot_ID equals ts.Timeslot_ID
-                               where ts.StartTime.Value == timeSlot && qd.Station == station && qd.Status.Equals(EnumQueueStatuses.Waiting, StringComparison.InvariantCultureIgnoreCase) && usr.Status.Equals(EnumUserStatuses.Blocked, StringComparison.InvariantCultureIgnoreCase) == false
+                               where ts.StartTime.Value == timeSlot && qd.Station == station && qd.Status.Equals(EnumQueueStatuses.Waiting, StringComparison.InvariantCultureIgnoreCase)
                                select q).ToList();
 
             return listDbQueue;
@@ -180,23 +162,33 @@ namespace Trinity.DAL
             _localUnitOfWork.Save();
         }
 
-        public List<Trinity.DAL.DBContext.Queue> GetAllQueueNumberByBlockedUser(DateTime date, string station)
+        /// <summary>
+        ///      Return the list of supervisees those who have to report by today but are being blocked because of absence more than 3 times
+        /// </summary>
+        /// <param name="date"></param>
+        /// <returns></returns>
+        public List<string> GetHoldingListByDate(DateTime date)
         {
             date = date.Date;
 
-            var listDbQueue = (from apm in _localUnitOfWork.DataContext.Appointments
-                               join usr in _localUnitOfWork.DataContext.Membership_Users
-                                 on apm.UserId equals usr.UserId
-                               join q in _localUnitOfWork.DataContext.Queues
-                                on apm.ID equals q.Appointment_ID
-                               join qd in _localUnitOfWork.DataContext.QueueDetails
-                               on q.Queue_ID equals qd.Queue_ID
-                               join ts in _localUnitOfWork.DataContext.Timeslots
-                               on apm.Timeslot_ID equals ts.Timeslot_ID
-                               where DbFunctions.TruncateTime(q.CreatedTime).Value == date && qd.Station == station && usr.Status.Equals(EnumUserStatuses.Blocked, StringComparison.InvariantCultureIgnoreCase)
-                               select q).Distinct().ToList();
+            //var listDbQueue = (from apm in _localUnitOfWork.DataContext.Appointments
+            //                   join usr in _localUnitOfWork.DataContext.Membership_Users
+            //                     on apm.UserId equals usr.UserId
+            //                   join q in _localUnitOfWork.DataContext.Queues
+            //                    on apm.ID equals q.Appointment_ID
+            //                   join qd in _localUnitOfWork.DataContext.QueueDetails
+            //                   on q.Queue_ID equals qd.Queue_ID
+            //                   join ts in _localUnitOfWork.DataContext.Timeslots
+            //                   on apm.Timeslot_ID equals ts.Timeslot_ID
+            //                   where DbFunctions.TruncateTime(q.CreatedTime).Value == date && qd.Station == station && usr.Status.Equals(EnumUserStatuses.Blocked, StringComparison.InvariantCultureIgnoreCase)
+            //                   select q).Distinct().ToList();
+            List<string> holdingList = (from apm in _localUnitOfWork.DataContext.Appointments
+                                        join usr in _localUnitOfWork.DataContext.Membership_Users
+                                        on apm.UserId equals usr.UserId
+                                        where DbFunctions.TruncateTime(apm.Date).Value == date && usr.Status.Equals(EnumUserStatuses.Blocked, StringComparison.InvariantCultureIgnoreCase)
+                                        select usr.NRIC).Distinct().ToList();
 
-            return listDbQueue;
+            return holdingList;
         }
     }
 }

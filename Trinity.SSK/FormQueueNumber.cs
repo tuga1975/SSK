@@ -85,15 +85,15 @@ namespace SSK
 
             var setting = new DAL_Setting().GetCurrentAppointmentTime();
             var today = DateTime.Now;
-            var currentTimeslotQueue = new List<Trinity.BE.Queue>();
-            var nextTimesloteQueue = new List<Trinity.BE.Queue>();
+            List<Trinity.BE.Queue> currentTimeslotQueue = new List<Trinity.BE.Queue>();
+            List<Trinity.BE.Queue> nextTimesloteQueue = new List<Trinity.BE.Queue>();
             string servingQueueNumber = string.Empty;
             string currentQueueNumber = string.Empty;
             var waitingQueueNumbers = new List<string>();
-            var holdingList = new List<string>();
+            //var holdingList = new List<string>();
 
-            var _currentTs=new Trinity.DAL.DBContext.Timeslot();
-            var _nextTs = new Trinity.DAL.DBContext.Timeslot();
+            Trinity.DAL.DBContext.Timeslot _currentTs = null;
+            Trinity.DAL.DBContext.Timeslot _nextTs = null;
 
             var currentTimeslot = string.Empty;
             var nextTimeslot = string.Empty;
@@ -101,7 +101,7 @@ namespace SSK
             var listTodayTimeslot = new DAL_Setting().GetListTodayTimeslot();
             for (int i = 0; i < listTodayTimeslot.Count; i++)
             {
-               var timeSlot = listTodayTimeslot[i];
+                var timeSlot = listTodayTimeslot[i];
                 var diffHour = timeSlot.StartTime.Value.Hours - today.Hour;
                 var diffStartMin = timeSlot.StartTime.Value.Minutes - today.Minute;
                 var diffEndHour = timeSlot.EndTime.Value.Hours - today.Hour;
@@ -127,7 +127,7 @@ namespace SSK
                 var diffEndHour = appointmentStartTime.EndTime.Value.Hours - today.Hour;
                 var diffEndMin = appointmentStartTime.EndTime.Value.Minutes - today.Minute;
                 //queue - serving
-                if (allQueue[i].Status == EnumQueueStatuses.Processing && diffHour == 0 && diffStartMin <= 0 && ((diffEndHour > 0 && diffEndMin <= 0) || (diffEndHour == 0 && diffEndMin >= 0)))
+                if (allQueue[i].Status == EnumQueueStatuses.Processing)
                 {
                     var appointment = new DAL_Appointments().GetMyAppointmentByID(allQueue[i].AppointmentId);
                     servingQueueNumber += allQueue[i].QueueNumber + "-";
@@ -145,9 +145,6 @@ namespace SSK
                     {
                         nextTimesloteQueue.Add(allQueue[i]);
                     }
-
-
-
                 }
                 //waiting -next
                 else if (allQueue[i].Status == EnumQueueStatuses.Waiting && diffHour == 0 && (diffStartMin > 0 || (diffEndHour > 0 && diffEndMin <= 0)))
@@ -159,23 +156,23 @@ namespace SSK
                 }
 
             }
-            if (currentTimeslotQueue.Count > 0)
-            {
-                for (int i = 0; i < currentTimeslotQueue.Count; i++)
-                {
-                    var currentTs = currentTimeslotQueue[i];
-                    
-                        var appointment = new DAL_Appointments().GetMyAppointmentByID(currentTs.AppointmentId);
-                        new DAL_QueueNumber().UpdateQueueStatus(currentTs.ID, EnumQueueStatuses.Processing, EnumStations.SSK);
-                    
-                    //    currentQueueNumber += currentTs.QueueNumber + "-";
-                    
+            //if (currentTimeslotQueue.Count > 0)
+            //{
+            //    for (int i = 0; i < currentTimeslotQueue.Count; i++)
+            //    {
+            //        var currentTs = currentTimeslotQueue[i];
 
-                }
+            //            var appointment = new DAL_Appointments().GetMyAppointmentByID(currentTs.AppointmentId);
+            //            new DAL_QueueNumber().UpdateQueueStatus(currentTs.ID, EnumQueueStatuses.Processing, EnumStations.SSK);
 
-            }
+            //        //    currentQueueNumber += currentTs.QueueNumber + "-";
+
+
+            //    }
+
+            //}
             //get NRIC for booked current timeslot and have not queued
-            if (_currentTs!=null)
+            if (_currentTs != null)
             {
                 var todayAppointment = new DAL_Appointments().GetAllCurrentTimeslotAppointment(_currentTs.StartTime.Value);
                 foreach (var item in todayAppointment)
@@ -184,9 +181,7 @@ namespace SSK
                     var qNumber = userNRIC;
                     currentQueueNumber += qNumber + "-";
                 }
-
             }
-           
 
             if (nextTimesloteQueue.Count > 0)
             {
@@ -195,17 +190,20 @@ namespace SSK
                 {
                     waitingQueueNumbers.Add(item.QueuedNumber);
                 }
-
             }
 
-            var blockedUserQueue = new DAL_QueueNumber().GetAllQueueNumberByBlockedUser(DateTime.Now, EnumStations.SSK);
-
-            foreach (var item in blockedUserQueue)
+            List<string> holdingList = new DAL_QueueNumber().GetHoldingListByDate(DateTime.Now);
+            List<string> todayHoldingList = new List<string>();
+            if (holdingList!= null && holdingList.Count>0)
             {
-                holdingList.Add(item.QueuedNumber);
+                for (int i = 0; i < holdingList.Count; i++)
+                {
+                    todayHoldingList.Add(Trinity.Common.CommonUtil.GetQueueNumber(holdingList[i]));
+                }
             }
+            
             //serving  //current //next  //holding-blocked user
-            wbQueueNumber.RefreshQueueNumbers(servingQueueNumber, currentQueueNumber, waitingQueueNumbers.Distinct().ToArray(), holdingList.ToArray());
+            wbQueueNumber.RefreshQueueNumbers(servingQueueNumber, currentQueueNumber, waitingQueueNumbers.Distinct().ToArray(), todayHoldingList.ToArray());
             wbQueueNumber.InvokeScript("setTimeslot", currentTimeslot, nextTimeslot);
         }
 
