@@ -129,13 +129,13 @@ namespace SSK
                 //queue - serving
                 if (allQueue[i].Status == EnumQueueStatuses.Processing)
                 {
-                    var appointment = new DAL_Appointments().GetMyAppointmentByID(allQueue[i].AppointmentId);
                     servingQueueNumber += allQueue[i].QueueNumber + "-";
                 }
                 //queue - current
-                if (allQueue[i].Status == EnumQueueStatuses.Waiting && diffHour == 0 && diffStartMin <= 0 && ((diffEndHour > 0 && diffEndMin <= 0) || (diffEndHour == 0 && diffEndMin >= 0)))
+                if ((allQueue[i].Status == EnumQueueStatuses.Waiting|| allQueue[i].Status == EnumQueueStatuses.Processing) && diffHour == 0 && diffStartMin <= 0 && ((diffEndHour > 0 && diffEndMin <= 0) || (diffEndHour == 0 && diffEndMin >= 0)))
                 {
                     currentTimeslotQueue.Add(allQueue[i]);
+                    servingQueueNumber += allQueue[i].QueueNumber + "-";
 
                 }
                 //waiting - next
@@ -156,21 +156,21 @@ namespace SSK
                 }
 
             }
-            //if (currentTimeslotQueue.Count > 0)
-            //{
-            //    for (int i = 0; i < currentTimeslotQueue.Count; i++)
-            //    {
-            //        var currentTs = currentTimeslotQueue[i];
+            if (currentTimeslotQueue.Count > 0)
+            {
+                for (int i = 0; i < currentTimeslotQueue.Count; i++)
+                {
+                    var currentTs = currentTimeslotQueue[i];
 
-            //            var appointment = new DAL_Appointments().GetMyAppointmentByID(currentTs.AppointmentId);
-            //            new DAL_QueueNumber().UpdateQueueStatus(currentTs.ID, EnumQueueStatuses.Processing, EnumStations.SSK);
+                    var appointment = new DAL_Appointments().GetMyAppointmentByID(currentTs.AppointmentId);
+                    new DAL_QueueNumber().UpdateQueueStatus(currentTs.ID, EnumQueueStatuses.Processing, EnumStations.SSK);
 
-            //        //    currentQueueNumber += currentTs.QueueNumber + "-";
+                        currentQueueNumber += currentTs.QueueNumber + "-";
 
 
-            //    }
+                }
 
-            //}
+            }
             //get NRIC for booked current timeslot and have not queued
             if (_currentTs != null)
             {
@@ -193,11 +193,11 @@ namespace SSK
 
             }
 
-            var blockedUserQueue = new DAL_QueueNumber().GetAllQueueNumberByBlockedUser(DateTime.Now, EnumStations.SSK);
+            var blockedUser = new DAL_User().GetAllSuperviseeBlocked(true);
 
-            foreach (var item in blockedUserQueue)
+            foreach (var item in blockedUser)
             {
-                holdingList.Add(item.QueuedNumber);
+                holdingList.Add(item.NRIC);
             }
             //serving  //current //next  //holding-blocked user
             wbQueueNumber.RefreshQueueNumbers(servingQueueNumber, currentQueueNumber, waitingQueueNumbers.Distinct().ToArray(), holdingList.ToArray());
