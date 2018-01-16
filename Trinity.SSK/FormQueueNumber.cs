@@ -162,8 +162,8 @@ namespace SSK
                 {
                     var currentTs = currentTimeslotQueue[i];
 
-                    var appointment = new DAL_Appointments().GetMyAppointmentByID(currentTs.AppointmentId);
-                    new DAL_QueueNumber().UpdateQueueStatus(currentTs.ID, EnumQueueStatuses.Processing, EnumStations.SSK);
+                   // var appointment = new DAL_Appointments().GetMyAppointmentByID(currentTs.AppointmentId);
+                    //new DAL_QueueNumber().UpdateQueueStatus(currentTs.ID, EnumQueueStatuses.Processing, EnumStations.SSK);
 
                         currentQueueNumber += currentTs.QueueNumber + "-";
 
