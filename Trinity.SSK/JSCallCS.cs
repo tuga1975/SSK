@@ -163,15 +163,29 @@ namespace SSK
             }
         }
 
-        public string UpdateTimeAppointment(string IDAppointment, string timeStart, string timeEnd)
+        public bool UpdateTimeAppointment(string IDAppointment, string timeStart, string timeEnd)
         {
-            DAL_Appointments DAL_Appointments = new DAL_Appointments();
-            DAL_Appointments.UpdateBookTime(IDAppointment, timeStart, timeEnd);
-           
-            Trinity.BE.Appointment appointment = DAL_Appointments.GetAppointmentDetails(new Guid(IDAppointment));
-            APIUtils.Printer.PrintAppointmentDetails("AppointmentDetailsTemplate.html", appointment);
+            DAL_Appointments dalAppointments = new DAL_Appointments();
+            var dbAppointment = dalAppointments.GetMyAppointmentByID(Guid.Parse(IDAppointment));
+            //check exist queue
+            var dalQueue = new DAL_QueueNumber();
+            if (dbAppointment != null)
+            {
+                if (!dalQueue.CheckQueueExistToday(dbAppointment.UserId, EnumStations.SSK))
+                {
+                    dalAppointments.UpdateBookTime(IDAppointment, timeStart, timeEnd);
 
-            return timeStart;
+                    Trinity.BE.Appointment appointment = dalAppointments.GetAppointmentDetails(new Guid(IDAppointment));
+                    APIUtils.Printer.PrintAppointmentDetails("AppointmentDetailsTemplate.html", appointment);
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+
+            }
+            return false;
         }
 
         public void PrintAppointmentDetails(string appointmentId)
