@@ -246,6 +246,11 @@ namespace Enrolment
 
 
             Trinity.BE.ProfileModel profileModel = null;
+            if (session[CommonConstants.CURRENT_EDIT_USER] != null && ((Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER]).UserProfile.UserId != userId)
+            {
+                session[CommonConstants.CURRENT_EDIT_USER] = null;
+            }
+
             //session passing from other event like confirm capture photo
             if (session[CommonConstants.CURRENT_EDIT_USER] != null)
             {
@@ -466,7 +471,79 @@ namespace Enrolment
 
             }
         }
+        public object loadDataVerify()
+        {
+            Session session = Session.Instance;
+            return session[CommonConstants.CURRENT_EDIT_USER];
+        }
+        public void PriterSmartCart(string frontBase64, string backBase64)
+        {
+            this._web.InvokeScript("showPrintMessage", null, "Printing card please wait ...");
+            frontBase64 = frontBase64.Replace("data:image/png;base64,", string.Empty);
+            backBase64 = backBase64.Replace("data:image/png;base64,", string.Empty);
+            Session session = Session.Instance;
+            var userLogin = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+            var profileModel = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
 
+
+            PrintAndWriteSmartcardInfo infoPrinter = new PrintAndWriteSmartcardInfo()
+            {
+                FrontCard = new System.Drawing.Bitmap(new System.IO.MemoryStream(Convert.FromBase64String(frontBase64))),
+                BackCard = new System.Drawing.Bitmap(new System.IO.MemoryStream(Convert.FromBase64String(backBase64))),
+                SmartCardData = new SmartCardData()
+                {
+                    CardHolderInfo = new CardHolderInfo()
+                    {
+                        DOB = profileModel.UserProfile.DOB,
+                        Name = profileModel.User.Name,
+                        NRIC = profileModel.User.NRIC,
+                        UserId = profileModel.User.UserId,
+                    },
+                    CardInfo = new CardInfo()
+                    {
+                        CreatedBy = userLogin.UserId,
+                        CreatedDate = DateTime.Now
+                    }
+                }
+            };
+
+            Trinity.Common.Utils.SmartCardPrinterUtils.Instance.PrintAndWriteSmartcardData(infoPrinter, PriterCardNewSuperviseeOnCompleted);
+        }
+        private void PriterCardNewSuperviseeOnCompleted(PrintAndWriteSmartcardResult result)
+        {
+            if (result.Success)
+            {
+                Session session = Session.Instance;
+                var userLogin = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+                var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
+                DAL_IssueCard dalIssueCard = new Trinity.DAL.DAL_IssueCard();
+                string SmartID = result.SmartCardData.CardInfo.UID;
+                Trinity.BE.IssueCard IssueCard = new Trinity.BE.IssueCard()
+                {
+                    CreatedBy = userLogin.UserId,
+                    CreatedDate = DateTime.Now,
+                    Date_Of_Issue = currentEditUser.UserProfile.DateOfIssue,
+                    Name = currentEditUser.Membership_Users.Name,
+                    NRIC = currentEditUser.Membership_Users.NRIC,
+                    Reprint_Reason = string.Empty,
+                    Serial_Number = currentEditUser.UserProfile.SerialNumber,
+                    Expired_Date = currentEditUser.UserProfile.Expired_Date,
+                    Status = EnumIssuedCards.Active,
+                    SmartCardId = SmartID,
+                    UserId = currentEditUser.UserProfile.UserId
+                };
+                dalIssueCard.UpdateStatusByUserId(currentEditUser.UserProfile.UserId, EnumIssuedCards.Deactivate);
+                new DAL_Membership_Users().UpdateSmartCardId(currentEditUser.User.UserId, SmartID);
+                new DAL_User().ChangeUserStatus(currentEditUser.User.UserId, EnumUserStatuses.Enrolled);
+                dalIssueCard.Insert(IssueCard);
+                currentEditUser.Membership_Users.SmartCardId = SmartID;
+                this._web.InvokeScript("showPrintMessage",true, "Smart Card was printed successfully! Please collect the smart card from printer and place on the reader to verify.");
+            }
+            else
+            {
+                this._web.InvokeScript("showPrintMessage", false, result.Description);
+            }
+        }
         public void AddNewSupervisee()
         {
             _web.LoadPageHtml("New-Supervisee.html");
@@ -604,20 +681,26 @@ namespace Enrolment
         private int FingerprintLeftRight = 0;
         private int FingerprintNumber = 0;
 
-        public void SubmitUpdateFingerprints(string left, string right)
+        public void SubmitUpdateFingerprints(string left, string leftImg, string right, string rightImg)
         {
             Session session = Session.Instance;
             var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
             byte[] _left = Convert.FromBase64String(left);
             byte[] _right = Convert.FromBase64String(right);
+
+            byte[] _leftImg = Convert.FromBase64String(leftImg);
+            byte[] _rightImg = Convert.FromBase64String(rightImg);
             new DAL_Membership_Users().UpdateFingerprint(currentEditUser.UserProfile.UserId, _left, _right);
+            new DAL_UserProfile().UpdateFingerprintImg(currentEditUser.UserProfile.UserId, _leftImg, _rightImg);
             if (_left.Length > 0)
             {
                 currentEditUser.User.LeftThumbFingerprint = _left;
+                currentEditUser.UserProfile.LeftThumbImage = _leftImg;
             }
             if (_right.Length > 0)
             {
                 currentEditUser.User.RightThumbFingerprint = _right;
+                currentEditUser.UserProfile.RightThumbImage = _rightImg;
             }
             EditSupervisee(currentEditUser.UserProfile.UserId);
         }
@@ -626,13 +709,13 @@ namespace Enrolment
             FingerprintNumber = 0;
             Session session = Session.Instance;
             var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
-            this._web.LoadPageHtml("UpdateSuperviseeFingerprint.html", new object[] { currentEditUser.User.LeftThumbFingerprint == null ? null : Convert.ToBase64String(currentEditUser.User.LeftThumbFingerprint), currentEditUser.User.RightThumbFingerprint == null ? null : Convert.ToBase64String(currentEditUser.User.RightThumbFingerprint) });
+            this._web.LoadPageHtml("UpdateSuperviseeFingerprint.html", new object[] { currentEditUser.UserProfile.LeftThumbImage == null ? null : Convert.ToBase64String(currentEditUser.UserProfile.LeftThumbImage), currentEditUser.UserProfile.RightThumbImage == null ? null : Convert.ToBase64String(currentEditUser.UserProfile.RightThumbImage) });
         }
         public void CancelUpdateFingerprints()
         {
             FingerprintReaderUtils.Instance.DisposeCapture();
             Session session = Session.Instance;
-            EditSupervisee(((Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER]).UserProfile.UserId);
+            EditSupervisee(((Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER]).User.UserId);
         }
         public void CaptureFingerprint(int LeftOrRight)
         {
@@ -655,6 +738,7 @@ namespace Enrolment
         {
             if (bSuccess)
             {
+                _web.InvokeScript("setDataFingerprint", FingerprintLeftRight, Convert.ToBase64String(FingerprintReaderUtils.Instance.GetTemplate));
                 _web.InvokeScript("captureFingerprintMessage", FingerprintLeftRight, "Your fingerprint was scanned successfully!", EnumColors.Green);
                 FingerprintNumber = 0;
             }
@@ -715,6 +799,28 @@ namespace Enrolment
         public void PriterIssuedCard(string reprint)
         {
             reprintTxt = reprint;
+            Session session = Session.Instance;
+            var userLogin = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+            var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
+            PrintAndWriteSmartcardInfo infoPrinter = new PrintAndWriteSmartcardInfo()
+            {
+                SmartCardData = new SmartCardData()
+                {
+                    CardHolderInfo = new CardHolderInfo()
+                    {
+                        DOB = currentEditUser.UserProfile.DOB,
+                        Name = currentEditUser.User.Name,
+                        NRIC = currentEditUser.User.NRIC,
+                        UserId = currentEditUser.User.UserId,
+                    },
+                    CardInfo = new CardInfo()
+                    {
+                        CreatedBy = userLogin.UserId,
+                        CreatedDate = DateTime.Now
+                    }
+                }
+            };
+
             Trinity.Common.Utils.SmartCardPrinterUtils.Instance.PrintAndWriteSmartcardData(null, PriterIssuedCardOnCompleted);
         }
         private void PriterIssuedCardOnCompleted(PrintAndWriteSmartcardResult result)
@@ -725,16 +831,17 @@ namespace Enrolment
                 var userLogin = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
                 var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
                 DAL_IssueCard dalIssueCard = new Trinity.DAL.DAL_IssueCard();
-                string SmartID = Guid.NewGuid().ToString().Trim();
+                string SmartID = result.SmartCardData.CardInfo.UID;
                 Trinity.BE.IssueCard IssueCard = new Trinity.BE.IssueCard()
                 {
-                    //CreatedBy = userLogin.UserId,
+                    CreatedBy = userLogin.UserId,
                     CreatedDate = DateTime.Now,
                     Date_Of_Issue = currentEditUser.UserProfile.DateOfIssue,
                     Name = currentEditUser.Membership_Users.Name,
                     NRIC = currentEditUser.Membership_Users.NRIC,
                     Reprint_Reason = reprintTxt,
                     Serial_Number = currentEditUser.UserProfile.SerialNumber,
+                    Expired_Date = currentEditUser.UserProfile.Expired_Date,
                     Status = EnumIssuedCards.Active,
                     SmartCardId = SmartID,
                     UserId = currentEditUser.UserProfile.UserId

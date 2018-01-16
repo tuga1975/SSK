@@ -173,8 +173,8 @@ namespace Trinity.DAL
                 //    }
                 //    dbUser.LeftThumbFingerprint = data;
                 //}
-                dbUser.RightThumbFingerprint = model.RightThumbFingerprint;
-                dbUser.LeftThumbFingerprint = model.LeftThumbFingerprint;
+                //dbUser.RightThumbFingerprint = model.RightThumbFingerprint;
+                //dbUser.LeftThumbFingerprint = model.LeftThumbFingerprint;
                 dbUser.Status = model.Status;
                 dbUser.IsFirstAttempt = model.IsFirstAttempt;
             }

@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
 using Trinity.Common;
+using Trinity.Common.Utils;
 using Trinity.DAL;
 using Trinity.DAL.DBContext;
 
@@ -92,26 +93,46 @@ namespace SSK
 
             DAL_Appointments DAL_Appointments = new DAL_Appointments();
 
-            DAL_Setting DAL_Environment = new DAL_Setting();
+            DAL_Setting dalSettting = new DAL_Setting();
 
-            Trinity.DAL.DBContext.Appointment appointment = DAL_Appointments.GetMyAppointmentCurrent(user.UserId);
-            var selectedTimes = new Trinity.BE.EnvironmentTimeDetail();
+            Trinity.DAL.DBContext.Appointment appointment;
+            Trinity.DAL.DBContext.Appointment nearestAppointment;
+            var selectedTimes = new Trinity.BE.AppointmentTime();
+            appointment = DAL_Appointments.GetTodayAppointment(user.UserId);
             if (appointment != null)
             {
-                selectedTimes = DAL_Environment.GetEnvironmentTime(appointment.Date);
-                SetSelectedTime(appointment, selectedTimes.Morning);
-                SetSelectedTime(appointment, selectedTimes.Afternoon);
-                SetSelectedTime(appointment, selectedTimes.Evening);
-                this._web.LoadPageHtml("BookAppointment.html", new object[] { appointment, selectedTimes });
+
+                selectedTimes = SetSelectedTimes(dalSettting, appointment);
             }
             else
             {
-                var eventCenter = Trinity.Common.Common.EventCenter.Default;
-                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_NO_APPOINTMENT, Message = "You have no appointment" });
+                nearestAppointment = DAL_Appointments.GetNearestAppointment(user.UserId);
+                if (nearestAppointment != null)
+                {
+                    selectedTimes = SetSelectedTimes(dalSettting, nearestAppointment);
+                }
+                else
+                {
+                    var eventCenter = Trinity.Common.Common.EventCenter.Default;
+                    eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_MESSAGE, Message = "You have no appointment" });
+                }
+
             }
+
         }
 
-        private static void SetSelectedTime(Appointment appointment, List<Trinity.BE.EnvironmentTime> selectedTimes)
+        private Trinity.BE.AppointmentTime SetSelectedTimes(DAL_Setting dalSettting, Appointment appointment)
+        {
+            var date = appointment.Date;
+            Trinity.BE.AppointmentTime selectedTimes = dalSettting.GetAppointmentTime(date);
+            SetSelectedTime(appointment, selectedTimes.Morning);
+            SetSelectedTime(appointment, selectedTimes.Afternoon);
+            SetSelectedTime(appointment, selectedTimes.Evening);
+            this._web.LoadPageHtml("BookAppointment.html", new object[] { appointment, selectedTimes });
+            return selectedTimes;
+        }
+
+        private static void SetSelectedTime(Appointment appointment, List<Trinity.BE.AppointmentTimeDetails> selectedTimes)
         {
             DateTimeFormatInfo dfi = DateTimeFormatInfo.CurrentInfo;
             Calendar cal = dfi.Calendar;
@@ -125,22 +146,28 @@ namespace SSK
             {
                 item.IsSelected = true;
             }
-            //var maxAppPerTimeslot = System.Configuration.ConfigurationManager.AppSettings.Get("MaxAppointmentPerTimeslot");
-            //foreach (var selectedItem in selectedTimes)
-            //{
-            //    var count = dalAppointment.CountListAppointmentByTimeslot(selectedItem.StartTime, selectedItem.EndTime);
-            //    if (count >= Convert.ToInt32(maxAppPerTimeslot))
-            //    {
-            //        selectedItem.IsAvailble = false;
-            //    }
-            //}
+
+            if (appointment.Timeslot_ID.HasValue)
+            {
+
+
+                var maxAppPerTimeslot = dalAppointment.GetMaximumNumberOfTimeslot(appointment.Timeslot_ID.Value);
+                foreach (var selectedItem in selectedTimes)
+                {
+                    var count = dalAppointment.CountListAppointmentByTimeslot(appointment.Date, selectedItem.StartTime, selectedItem.EndTime);
+                    if (count >= Convert.ToInt32(maxAppPerTimeslot))
+                    {
+                        selectedItem.IsAvailble = false;
+                    }
+                }
+            }
         }
 
         public string UpdateTimeAppointment(string IDAppointment, string timeStart, string timeEnd)
         {
             DAL_Appointments DAL_Appointments = new DAL_Appointments();
             DAL_Appointments.UpdateBookTime(IDAppointment, timeStart, timeEnd);
-
+           
             Trinity.BE.Appointment appointment = DAL_Appointments.GetAppointmentDetails(new Guid(IDAppointment));
             APIUtils.Printer.PrintAppointmentDetails("AppointmentDetailsTemplate.html", appointment);
 
@@ -151,7 +178,13 @@ namespace SSK
         {
             var dalAppointment = new DAL_Appointments();
             Trinity.BE.Appointment appointment = dalAppointment.GetAppointmentDetails(Guid.Parse(appointmentId));
-            APIUtils.Printer.PrintAppointmentDetails("AppointmentDetailsTemplate.html", appointment);
+            ReceiptPrinterUtils.Instance.PrintAppointmentDetails(new AppointmentDetails()
+            {
+                Date = appointment.AppointmentDate.Value,
+                Name = appointment.Name,
+                NRICNo = appointment.NRIC
+            });
+            //APIUtils.Printer.PrintAppointmentDetails("AppointmentDetailsTemplate.html", appointment);
         }
         #endregion
         public void LoadProfile()
@@ -169,7 +202,8 @@ namespace SSK
                     {
                         User = dalUser.GetUserByUserId(user.UserId, true),
                         UserProfile = dalUserprofile.GetUserProfileByUserId(user.UserId, true),
-                        Addresses = dalUserprofile.GetAddressByUserId(user.UserId, true)
+                        Addresses = dalUserprofile.GetAddressByUserId(user.UserId, true),
+                        OtherAddress = dalUserprofile.GetAddressByUserId(user.UserId, true, true)
                     };
 
                     //profile model 
@@ -368,7 +402,7 @@ namespace SSK
             if (appointment == null)
             {
                 var eventCenter = Trinity.Common.Common.EventCenter.Default;
-                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_NO_APPOINTMENT, Message = "You have no appointment today" });
+                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_MESSAGE, Message = "You have no appointment today" });
             }
             else
             {
@@ -377,8 +411,26 @@ namespace SSK
                 //check queue exist
                 if (!_dalQueue.CheckQueueExistToday(appointment.UserId, EnumStations.SSK))
                 {
-                    queueNumber = _dalQueue.InsertQueueNumber(appointment.ID, appointment.UserId, EnumStations.SSK);
-                    RaiseOnShowMessageEvent(new ShowMessageEventArgs("Your queue number is: " + queueNumber.QueuedNumber, "Queue Number", MessageBoxButtons.OK, MessageBoxIcon.Information));
+                    if (appointment.Timeslot_ID != null)
+                    {
+                        queueNumber = _dalQueue.InsertQueueNumber(appointment.ID, appointment.UserId, EnumStations.SSK);
+
+                        var eventCenter = Trinity.Common.Common.EventCenter.Default;
+                        eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_MESSAGE, Message = "Your queue number is:" + queueNumber.QueuedNumber });
+                    }
+                    else
+                    {
+                        var eventCenter = Trinity.Common.Common.EventCenter.Default;
+                        eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_MESSAGE, Message = "You have not selected the timeslot!\n Please go to Book Appointment page to select a timeslot." });
+                        //BookAppointment();
+                    }
+
+                    //RaiseOnShowMessageEvent(new ShowMessageEventArgs("Your queue number is: " + queueNumber.QueuedNumber, "Queue Number", MessageBoxButtons.OK, MessageBoxIcon.Information));
+                }
+                else
+                {
+                    var eventCenter = Trinity.Common.Common.EventCenter.Default;
+                    eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_MESSAGE, Message = "You have already queued!\n Please wait for your turn." });
                 }
                 //var model = _dalQueue.GetAllQueueNumberByDate(DateTime.Today).Select(d => new Trinity.BE.Queue()
                 //{
@@ -414,19 +466,23 @@ namespace SSK
             }
             //create absence report 
             var dalAbsence = new DAL_AbsenceReporting();
-            var absenceModel = dalAbsence.SetInfo(reasonModel);
-            var create = dalAbsence.CreateAbsenceReporting(absenceModel, true);
-            if (create)
+
+
+            var dalAppointment = new DAL_Appointments();
+
+            var listSelectedDate = dalAppointment.GetListAppointmentFromSelectedDate(listSplitID);
+
+            foreach (var item in listSelectedDate)
             {
-                var dalAppointment = new DAL_Appointments();
-
-                var listSelectedDate = dalAppointment.GetListAppointmentFromSelectedDate(listSplitID);
-
-                foreach (var item in listSelectedDate)
+                var absenceModel = dalAbsence.SetInfo(reasonModel);
+                var create = dalAbsence.CreateAbsenceReporting(absenceModel, true);
+                if (create)
                 {
                     dalAppointment.UpdateReason(item.ID, absenceModel.ID);
                 }
+
             }
+
             //send notify to case officer
             Session currentSession = Session.Instance;
             Trinity.BE.User user = (Trinity.BE.User)currentSession[CommonConstants.USER_LOGIN];

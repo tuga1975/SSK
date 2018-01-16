@@ -45,7 +45,38 @@
 		</form>
 	</div>
 </div>
+<!--<div style="">
+    <div style="width:300px;height:182px;border:1px solid #000;float:right;position:relative;" id="backCard">
+        <div style="height:87px;width:100px;position:absolute;top:2px;left:2px;border:1px solid #CCC;text-align:center;padding:1px;display:none;">
+            <img src="../images/fingerprint.jpg" id="verifyLeftFinger" style="height:100%;max-width:100%;" />
+        </div>
+        <div style="height:87px;width:100px;position:absolute;bottom:2px;left:2px;border:1px solid #CCC;text-align:center;padding:1px;display:none;">
+            <img src="../images/fingerprint.jpg" id="verifyRightFinger" style="height:100%;max-width:100%;" />
+        </div>
+        <div style="margin-left:0px;padding:10px;font-size:12px;">
+            <div><b>Name : </b><span name="verifyName"></span></div>
+            <div><b>NRIC : </b><span name="verifyNRIC"></span></div>
+            <div><b>Date of Birth : </b><span name="verifyDOB"></span></div>
+            <div><b>Sex : </b><span name="verifyGender"></span></div>
+            <div><b>Nationality : </b><span name="verifyNation"></span></div>
+            <div><b>Race : </b><span name="verifyRace"></span></div>
+            <div><b>Issue date: </b><span name="issueDate"></span></div>
+            <div><b>Expire date: </b><span name="expireDate"></span></div>
+            <div><b>Serial Number: </b><span name="serialNumber"></span></div>
+        </div>
+        <div style="clear:both"></div>
+        <img a src="" />
+    </div>
+</div>
+<input type="button" onclick="TestIN()"/>-->
 <script>
+    //function TestIN() {
+    //    html2canvas($('#backCard'), {
+    //        onrendered: function (backcanvas) {
+    //            $('[a]').attr('src', backcanvas.toDataURL("image/png"));
+    //        }
+    //    });
+    //}
     var UserID = null;
     api.server.GetDataIssuedCards(function (data) {
         UserID = data[1];

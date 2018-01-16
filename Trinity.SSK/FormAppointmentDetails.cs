@@ -66,8 +66,16 @@ namespace SSK
 
         private void btnGenerateTimeslots_Click(object sender, EventArgs e)
         {
-            DAL_Setting dalSetting = new DAL_Setting();
-            dalSetting.GenerateTimeslots("dfbb2a6a-9e45-4a76-9f75-af1a7824a947");
+            try
+            {
+                DAL_Setting dalSetting = new DAL_Setting();
+                dalSetting.GenerateTimeslots("dfbb2a6a-9e45-4a76-9f75-af1a7824a947");
+                MessageBox.Show("OK");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi", ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void btnGenerateAppointments_Click(object sender, EventArgs e)

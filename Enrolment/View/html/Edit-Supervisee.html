@@ -253,16 +253,16 @@
                 <input type="hidden" name="userId" class="userId" />
                 <div class="tab-pane fade show active" id="supervisee-details" role="tabpanel" aria-labelledby="nav-home-tab">
                     <div class="row updateSuperviseePhoto">
-                        <div class="col-2"></div>
-                        <div class="col-4">
-                            <img class="avatar" id="PopupUserPhoto1" src="../images/usr-default.jpg" />
+                        <div class="col-6" style="text-align:center;vertical-align:top;">
+                            <div id="PopupUserPhoto1" style="background-position:center center;background-repeat:no-repeat;background-size:cover;height:200px;width:100%;background-image:url(../images/usr-default.jpg);"></div>
+                            <!--<img class="avatar" id="PopupUserPhoto1" style="min-height:300px;max-height:300px;width:auto !important;" src="../images/usr-default.jpg" />-->
                             <button type="button" class="btn-form" id="updatePhoto2" onclick="api.server.OpenPictureCaptureForm('1')">Take Picture 1</button>
                         </div>
-                        <div class="col-4">
-                            <img class="avatar" id="PopupUserPhoto2" src="../images/usr-default.jpg" />
+                        <div class="col-6"style="text-align:center;vertical-align:top;">
+                            <div id="PopupUserPhoto2" style="background-position:center center;background-repeat:no-repeat;background-size:cover;height:200px;width:100%;background-image:url(../images/usr-default.jpg);"></div>
+                            <!--<img class="avatar" id="PopupUserPhoto2" style="min-height:300px;max-height:300px;width:auto !important;" src="http://3.bp.blogspot.com/-iFUz_2u-CEg/U-grZTCf7iI/AAAAAAAABwc/AIRhqn2ocmw/7.jpg?imgmax=16383" />-->
                             <button type="button" class="btn-form" id="updatePhoto2" onclick="api.server.OpenPictureCaptureForm('2')">Take Picture 2</button>
                         </div>
-                        <div class="col-2"></div>
                     </div>
                 </div>
             </div>
@@ -295,8 +295,8 @@
 			$('.e_contact_number').val(api.model.UserProfile.Employment_Contact_Number);
 			$('.e_company_name').val(api.model.UserProfile.Employment_Company_Name);
 			$('.e_job_title').val(api.model.UserProfile.Employment_Job_Title);
-			$('.e_start_date').val(api.model.UserProfile.Employment_Start_Date);
-			$('.e_end_date').val(api.model.UserProfile.Employment_End_Date);
+			$('.e_start_date').val(api.model.UserProfile.Employment_Start_Date_Text);
+			$('.e_end_date').val(api.model.UserProfile.Employment_End_Date_Text);
 			$('.e_remarks').val(api.model.UserProfile.Employment_Remarks);
 			// Residential Address
 			$('.address_ID').val(api.model.UserProfile.Residential_Addess_ID);
@@ -316,10 +316,32 @@
 			$('#User_Photo1').val(api.model.UserProfile.User_Photo1);
 			$('#User_Photo2').val(api.model.UserProfile.User_Photo2);
         }
+
+		validate();		
+		$('#SaveBtn').click(function() {
+			if($("#superviseeFrm").valid()){
+				var $form = $("#superviseeFrm");
+				var data = getFormData($form);
+				var json = JSON.stringify(data);
+				api.server.SaveSupervisee(json);
+			}
+		});
     });
+	function validate(){
+		$("#superviseeFrm").validate({
+			rules: {
+				StartDate: {date : true},
+				EndDate: {date : true}
+			},
+			messages: {
+				StartDate: { date : "Please input type Date or Empty" },
+				EndDate: { date : "Please input type Date or Empty" }
+			}
+		});
+	}
     function setPopUpPhotoServerCall(photo1, photo2) {
-            $('#PopupUserPhoto1').attr('src', 'data:image/jpg;base64,' + photo1);
-            $('#PopupUserPhoto2').attr('src', 'data:image/jpg;base64,' + photo2);  
+        $('#PopupUserPhoto1').css('background-image', 'url(data:image/jpg;base64,' + photo1+')');
+        $('#PopupUserPhoto2').css('background-image', 'url(data:image/jpg;base64,' + photo2 + ')');
     }
 	function setFingerprintServerCall(finger1, finger2) {
             $('#LeftThumbFingerprint').attr('src', finger1);
@@ -333,12 +355,12 @@
         api.server.saveNewDataToSession(json);
 	}
 
-    $("#SaveBtn").on('click', function () {
+    /*$("#SaveBtn").on('click', function () {
         var $form = $("#superviseeFrm");
         var data = getFormData($form);
         var json = JSON.stringify(data);
-        api.server.SaveSupervisee(json);
-    });
+        //api.server.SaveSupervisee(json);
+    });*/
     //$("#superviseeFrm").submit(function(e){
 
     //	e.preventDefault();
@@ -369,11 +391,11 @@
     function setAvatar(base64Str1, base64Str2) {
         if (base64Str1 != "") {
             $('#userPhoto1').attr('src', 'data:image/jpg;base64,' + base64Str1);
-            $('#PopupUserPhoto1').attr('src', 'data:image/jpg;base64,' + base64Str1);
+            $('#PopupUserPhoto1').css('background-image', 'url(data:image/jpg;base64,' + base64Str1 + ')');
         }
         if (base64Str2 != "") {
             $('#userPhoto2').attr('src', 'data:image/jpg;base64,' + base64Str2);
-            $('#PopupUserPhoto2').attr('src', 'data:image/jpg;base64,' + base64Str2);
+            $('#PopupUserPhoto2').css('background-image', 'url(data:image/jpg;base64,' + base64Str2 + ')');
         }
     }
 

@@ -9,7 +9,7 @@ namespace Trinity.BE
 {
 
     [Serializable]
-    public class EnvironmentTime
+    public class AppointmentTimeDetails
     {
         public bool IsAvailble { get; set; }
         public bool IsSelected { get; set; }
@@ -39,16 +39,16 @@ namespace Trinity.BE
         }
     }
 
-    public class EnvironmentTimeDetail
+    public class AppointmentTime
     {
-        public List<EnvironmentTime> Morning { get; set; }
-        public List<EnvironmentTime> Afternoon { get; set; }
-        public List<EnvironmentTime> Evening { get; set; }
-        public EnvironmentTimeDetail()
+        public List<AppointmentTimeDetails> Morning { get; set; }
+        public List<AppointmentTimeDetails> Afternoon { get; set; }
+        public List<AppointmentTimeDetails> Evening { get; set; }
+        public AppointmentTime()
         {
-            Morning = new List<EnvironmentTime>();
-            Afternoon = new List<EnvironmentTime>();
-            Evening = new List<EnvironmentTime>();
+            Morning = new List<AppointmentTimeDetails>();
+            Afternoon = new List<AppointmentTimeDetails>();
+            Evening = new List<AppointmentTimeDetails>();
         }
     }
 
@@ -68,6 +68,7 @@ namespace Trinity.BE
         public int WeekNum { get; set; }
         public int Year { get; set; }
         public string Status { get; set; }
+        public List<Trinity.BE.Holiday> HoliDays { get; set; }
 
     }
 
@@ -205,7 +206,8 @@ namespace Trinity.BE
                 Year = rawData.Year,
                 Last_Updated_Date = rawData.Last_Updated_Date,
                 Last_Updated_By = rawData.Last_Updated_By,
-                Description = rawData.Description
+                Description = rawData.Description,
+                HoliDays = new List<Holiday>()
             };
 
             return settingModel;

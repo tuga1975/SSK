@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using Trinity.BE;
 using Trinity.DAL.DBContext;
@@ -14,9 +15,9 @@ namespace Trinity.DAL
         Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
 
 
-        public Trinity.BE.EnvironmentTimeDetail GetEnvironmentTime(DateTime date)
+        public Trinity.BE.AppointmentTime GetAppointmentTime(DateTime date)
         {
-            var appointmentTime = new Trinity.BE.EnvironmentTimeDetail();
+            var appointmentTime = new Trinity.BE.AppointmentTime();
             var listTimeSlot = GetTimeslots(date);
             if (listTimeSlot.Count > 0)
             {
@@ -26,7 +27,7 @@ namespace Trinity.DAL
 
                 foreach (var item in listTimeSlot)
                 {
-                    var setTime = SetEnviromentTime(item);
+                    var setTime = SetAppointmentTime(item);
                     if (setTime.EndTime <= morningTimeSpan)
                     {
                         appointmentTime.Morning.Add(setTime);
@@ -45,9 +46,9 @@ namespace Trinity.DAL
             return appointmentTime;
         }
 
-        private static BE.EnvironmentTime SetEnviromentTime(DBContext.Timeslot timeSlot)
+        private static BE.AppointmentTimeDetails SetAppointmentTime(DBContext.Timeslot timeSlot)
         {
-            var environmentTime = new BE.EnvironmentTime()
+            var environmentTime = new BE.AppointmentTimeDetails()
             {
                 StartTime = timeSlot.StartTime.Value,
                 EndTime = timeSlot.EndTime.Value,
@@ -57,17 +58,18 @@ namespace Trinity.DAL
             return environmentTime;
         }
 
-        public Trinity.BE.EnvironmentTimeDetail GetCurrentEnvironmentSetting()
+        public Trinity.BE.AppointmentTime GetCurrentAppointmentTime()
         {
             var today = DateTime.Now;
-            return GetEnvironmentTime(today);
+            return GetAppointmentTime(today);
         }
 
         public List<Timeslot> GetTimeslots(DateTime date)
         {
-            SettingModel setting = GetSettings(date);
+            SettingModel setting = GetSettings(EnumSettingStatuses.Active);
+            //GenerateTimeslots("dfbb2a6a-9e45-4a76-9f75-af1a7824a947");
             int dayOfWeek = date.DayOfWeek();
-            return _localUnitOfWork.DataContext.Timeslots.Where(t => t.DateOfWeek == dayOfWeek && t.Setting_ID == setting.Setting_ID).ToList();
+            return _localUnitOfWork.DataContext.Timeslots.Where(t => t.DateOfWeek == dayOfWeek && t.Setting_ID.HasValue && t.Setting_ID.Value == setting.Setting_ID).ToList();
         }
 
         public void GenerateTimeslots(string createdBy)
@@ -79,10 +81,6 @@ namespace Trinity.DAL
                 // Couldn't change timeslot
                 return;
             }
-
-            // Delete old timeslot
-            _localUnitOfWork.GetRepository<Timeslot>().Delete(t => t.Setting_ID == settings.Setting_ID);
-            _localUnitOfWork.Save();
 
             //mon
             GenerateTimeslotAndInsert((int)EnumDayOfWeek.Monday, settings.Monday, createdBy);
@@ -277,16 +275,20 @@ namespace Trinity.DAL
             setting.Description = settingBE.Description;
         }
 
-        private BE.SettingModel GetSettings(string status)
+        public BE.SettingModel GetSettings(string status)
         {
             var dbSeting = _localUnitOfWork.DataContext.Settings.Where(s => s.Status.Equals(status, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
             var settingBE = new BE.SettingBE();
-            SetInfoToSettingBE(settingBE, dbSeting);
+
+            if (dbSeting != null)
+            {
+                SetInfoToSettingBE(settingBE, dbSeting);
+            }
 
             return new BE.SettingBE().ToSettingModel(settingBE);
         }
 
-        private BE.SettingModel GetSettings(DateTime date)
+        public BE.SettingModel GetSettings(DateTime date)
         {
             int dayOfWeek = date.DayOfWeek();
             int year = date.Year;
@@ -298,12 +300,13 @@ namespace Trinity.DAL
             return new BE.SettingBE().ToSettingModel(settingBE);
         }
 
-        public void UpdateTimeslotForNewWeek(string createdBy)
+        public void UpdateTimeslotForNewWeek(Guid settingID, string createdBy)
         {
             var timeSlotRepo = _localUnitOfWork.GetRepository<Timeslot>();
 
             //delete
-            var listDbTimeslot = timeSlotRepo.GetAll().ToList();
+            //var listDbTimeslot = timeSlotRepo.GetAll().ToList();
+            var listDbTimeslot = _localUnitOfWork.DataContext.Timeslots.Where(t => t.Setting_ID == settingID).ToList();
 
             foreach (var item in listDbTimeslot)
             {
@@ -324,7 +327,7 @@ namespace Trinity.DAL
 
             repo.Update(dbSetting);
             _localUnitOfWork.Save();
-            UpdateTimeslotForNewWeek(lastUpdateBy);
+            UpdateTimeslotForNewWeek(dbSetting.Setting_ID, lastUpdateBy);
         }
 
         public Timeslot GetTimeslot(Guid settingId, DateTime currentDate)
@@ -332,6 +335,222 @@ namespace Trinity.DAL
             int dayOfWeek = currentDate.DayOfWeek();
 
             return _localUnitOfWork.DataContext.Timeslots.Where(t => t.DateOfWeek == dayOfWeek && t.Setting_ID == settingId).FirstOrDefault();
+        }
+
+        // Save Setting from DutyOfficer
+        public bool SaveSetting(Trinity.BE.SettingModel model, string lastUpdateBy)
+        {
+            try
+            {
+                var repo = _localUnitOfWork.GetRepository<Setting>();
+                var settingLastest = _localUnitOfWork.DataContext.Settings.OrderBy(s => s.Year).ThenBy(s => s.WeekNum).FirstOrDefault();
+                var setting = _localUnitOfWork.DataContext.Settings.FirstOrDefault(s => s.Setting_ID == model.Setting_ID);
+                if (setting == null)
+                {
+                    setting = new Setting();
+                    setting.Setting_ID = Guid.NewGuid();
+                    setting.Status = EnumSettingStatuses.Pending;
+                    setting.Last_Updated_By = lastUpdateBy;
+                    setting.Last_Updated_Date = DateTime.Now;
+
+                    if (settingLastest != null)
+                    {
+                        if (settingLastest.WeekNum == 52)
+                        {
+                            setting.WeekNum = 1;
+                            setting.Year = settingLastest.Year + 1;
+                        }
+                        else
+                        {
+                            setting.WeekNum = settingLastest.WeekNum + 1;
+                            setting.Year = settingLastest.Year;
+                        }
+                    }
+                    else
+                    {
+                        setting.WeekNum = DateTime.Now.WeekNum();
+                        setting.Year = DateTime.Now.Year;
+                    }
+
+                    SetSettingModelToSetting(model, setting);
+
+                    repo.Add(setting);
+                }
+                else
+                {
+                    setting.Status = EnumSettingStatuses.Pending;
+                    setting.Last_Updated_By = lastUpdateBy;
+                    setting.Last_Updated_Date = DateTime.Now;
+                    setting.WeekNum = model.WeekNum;
+                    setting.Year = model.Year;
+
+                    SetSettingModelToSetting(model, setting);
+
+                    repo.Update(setting);
+                }
+
+                _localUnitOfWork.Save();
+
+                // Save HoliDays
+                SaveHolidays(model.HoliDays);
+
+                // Generate Timeslote here
+                UpdateTimeslotForNewWeek(setting.Setting_ID, lastUpdateBy);
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+        }
+
+        private void SetSettingModelToSetting(SettingModel model, Setting setting)
+        {
+            //Monday
+            setting.Mon_Open_Time = model.Monday.StartTime;
+            setting.Mon_Close_Time = model.Monday.EndTime;
+            setting.Mon_Interval = model.Monday.Duration;
+            setting.Mon_MaximumNum = model.Monday.MaximumAppointment;
+            setting.Mon_ReservedForSpare = model.Monday.ReservedForSpare;
+
+            //Tuesday
+            setting.Tue_Open_Time = model.Tuesday.StartTime;
+            setting.Tue_Close_Time = model.Tuesday.EndTime;
+            setting.Tue_Interval = model.Tuesday.Duration;
+            setting.Tue_MaximumNum = model.Tuesday.MaximumAppointment;
+            setting.Tue_ReservedForSpare = model.Tuesday.ReservedForSpare;
+
+            //Wednesday
+            setting.Wed_Open_Time = model.WednesDay.StartTime;
+            setting.Wed_Close_Time = model.WednesDay.EndTime;
+            setting.Wed_Interval = model.WednesDay.Duration;
+            setting.Wed_MaximumNum = model.WednesDay.MaximumAppointment;
+            setting.Wed_ReservedForSpare = model.WednesDay.ReservedForSpare;
+
+            //Thursday
+            setting.Thu_Open_Time = model.Thursday.StartTime;
+            setting.Thu_Close_Time = model.Thursday.EndTime;
+            setting.Thu_Interval = model.Thursday.Duration;
+            setting.Thu_MaximumNum = model.Thursday.MaximumAppointment;
+            setting.Thu_ReservedForSpare = model.Thursday.ReservedForSpare;
+
+            //Friday
+            setting.Fri_Open_Time = model.Friday.StartTime;
+            setting.Fri_Close_Time = model.Friday.EndTime;
+            setting.Fri_Interval = model.Friday.Duration;
+            setting.Fri_MaximumNum = model.Friday.MaximumAppointment;
+            setting.Fri_ReservedForSpare = model.Friday.ReservedForSpare;
+
+            //Saturday
+            setting.Sat_Open_Time = model.Saturday.StartTime;
+            setting.Sat_Close_Time = model.Saturday.EndTime;
+            setting.Sat_Interval = model.Saturday.Duration;
+            setting.Sat_MaximumNum = model.Saturday.MaximumAppointment;
+            setting.Sat_ReservedForSpare = model.Saturday.ReservedForSpare;
+
+            //Sunday
+            setting.Sun_Open_Time = model.Sunday.StartTime;
+            setting.Sun_Close_Time = model.Sunday.EndTime;
+            setting.Sun_Interval = model.Sunday.Duration;
+            setting.Sun_MaximumNum = model.Sunday.MaximumAppointment;
+            setting.Sun_ReservedForSpare = model.Sunday.ReservedForSpare;
+        }
+
+        public List<BE.Holiday> GetHolidays()
+        {
+            List<BE.Holiday> results = new List<BE.Holiday>();
+            var repoHolidays = _localUnitOfWork.GetRepository<DBContext.Holiday>();
+            var lstHolidays = repoHolidays.GetAll().ToList();
+
+            foreach (var item in lstHolidays)
+            {
+                BE.Holiday holiday = new BE.Holiday();
+                holiday.Holiday1 = item.Holiday1;
+                holiday.IsSingHoliday = item.IsSingHoliday;
+                holiday.IsMalayHoliday = item.IsMalayHoliday;
+                holiday.ShortDesc = item.ShortDesc;
+                holiday.Notes = item.Notes;
+
+                results.Add(holiday);
+            }
+
+            return results;
+        }
+
+        private void SaveHolidays(List<BE.Holiday> lstHolidays)
+        {
+            try
+            {
+                var repo = _localUnitOfWork.GetRepository<DBContext.Holiday>();
+
+                //delete all holiday before update and insert from new list
+                var listExistHolidays = repo.GetAll().ToList();
+
+                foreach (var item in listExistHolidays)
+                {
+                    repo.Delete(item);
+                }
+
+                foreach (var item in lstHolidays)
+                {
+                    DBContext.Holiday holiday = new DBContext.Holiday();
+                    holiday.Holiday1 = item.Holiday1;
+                    holiday.IsSingHoliday = item.IsSingHoliday;
+                    holiday.IsMalayHoliday = item.IsMalayHoliday;
+                    holiday.ShortDesc = item.ShortDesc;
+                    holiday.Notes = item.Notes;
+
+                    repo.Add(holiday);
+                }
+                _localUnitOfWork.Save();
+
+            }
+            catch (Exception e)
+            {
+            }
+        }
+
+        public SettingDetails GetSettingDetails(EnumDayOfWeek dayOfWeek)
+        {
+            switch (dayOfWeek)
+            {
+                case EnumDayOfWeek.Monday:
+                    return GetSettings(EnumSettingStatuses.Active).Monday;
+                case EnumDayOfWeek.Tuesday:
+                    return GetSettings(EnumSettingStatuses.Active).Tuesday;
+                case EnumDayOfWeek.Wednesday:
+                    return GetSettings(EnumSettingStatuses.Active).WednesDay;
+                case EnumDayOfWeek.Thursday:
+                    return GetSettings(EnumSettingStatuses.Active).Thursday;
+                case EnumDayOfWeek.Friday:
+                    return GetSettings(EnumSettingStatuses.Active).Friday;
+                case EnumDayOfWeek.Saturday:
+                    return GetSettings(EnumSettingStatuses.Active).Saturday;
+                case EnumDayOfWeek.Sunday:
+                    return GetSettings(EnumSettingStatuses.Active).Sunday;
+                default:
+                    return null;
+            }
+
+        }
+
+        public Timeslot GetNextTimeslotToday(TimeSpan currentTime)
+        {
+
+            var dateOfWeek = Common.CommonUtil.ConvertToCustomDateOfWeek(DateTime.Now.DayOfWeek);
+            var setting = GetSettingDetails(dateOfWeek);
+            var nextTimeslot = _localUnitOfWork.DataContext.Timeslots.Where(t => t.StartTime == DbFunctions.AddMinutes(currentTime, setting.Duration) && t.DateOfWeek == (int)dateOfWeek && t.Setting_ID == setting.Setting_ID).FirstOrDefault();
+            return nextTimeslot;
+        }
+
+        public List<Timeslot> GetListTodayTimeslot()
+        {
+            var dayOfWeek = Common.CommonUtil.ConvertToCustomDateOfWeek(DateTime.Now.DayOfWeek);
+            var setting = GetSettingDetails(dayOfWeek);
+            var listTimeslot = _localUnitOfWork.DataContext.Timeslots.Where(t => t.DateOfWeek == (int)dayOfWeek && t.Setting_ID == setting.Setting_ID).ToList();
+            return listTimeslot;
+
         }
     }
 }

@@ -81,6 +81,7 @@
   <ItemGroup>
     <Compile Include="AbsenceReporting.cs" />
     <Compile Include="DeviceStatus.cs" />
+    <Compile Include="Holiday.cs" />
     <Compile Include="IssueCard.cs" />
     <Compile Include="Label.cs" />
     <Compile Include="QueueNumber.cs" />

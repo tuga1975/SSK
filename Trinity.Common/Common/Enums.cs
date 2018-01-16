@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -70,7 +71,7 @@ public enum EnumAbsenceReasons
 public static class EnumQueueStatuses
 {
 
-    [Custom(Color ="red")]
+    [Custom(Color = "red")]
     public static string Missed = "Missed";
     [Custom(Color = "white")]
     public const string Waiting = "Waiting";
@@ -235,6 +236,44 @@ public enum EnumDeviceStatuses
     Disconnected = -1
 }
 
+public static class EnumDeviceNames
+{
+    public static string TTLabelPrinter
+    {
+        get { return ConfigurationManager.AppSettings["TTLabelPrinterName"]; }
+    }
+
+    public static string MUBLabelPrinter
+    {
+        get { return ConfigurationManager.AppSettings["MUBLabelPrinterName"]; }
+    }
+
+    public static string ReceiptPrinter
+    {
+        get { return ConfigurationManager.AppSettings["ReceiptPrinterName"]; }
+    }
+
+    public static string SmartCardContactlessReader
+    {
+        get { return ConfigurationManager.AppSettings["SmartCardContactlessReaderName"]; }
+    }
+
+    public static string SmartCardPrinterContactlessReader
+    {
+        get { return ConfigurationManager.AppSettings["SmartCardPrinterContactlessReaderName"]; }
+    }
+
+    public static string SmartCardPrinterContactReader
+    {
+        get { return ConfigurationManager.AppSettings["SmartCardPrinterContactReaderName"]; }
+    }
+
+    public static string SmartCardPrinterSerialNumber
+    {
+        get { return ConfigurationManager.AppSettings["SmartCardPrinterSerialNumber"]; }
+    }
+}
+
 public static class NotificationType
 {
     public const string Error = "Error";
@@ -250,6 +289,8 @@ public static class EnumStations
     public const string APS = "APS";
     public const string HSA = "HSA";
     public const string ESP = "ESP";
+
+    public const string ENROLMENT = "ENROLMENT";
     public const string DUTYOFFICER = "DUTYOFFICER";
 
     public static List<string> GetListStation()
@@ -288,4 +329,10 @@ public static class EnumIssuedCards
 {
     public const string Active = "Active";
     public const string Deactivate = "Deactivate";
+};
+
+public static class EnumOutcome
+{
+    public const string Processing = "Processing...";
+   
 };

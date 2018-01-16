@@ -7,10 +7,16 @@ using System.Threading.Tasks;
 
 namespace Trinity.Common.Common
 {
+    public class PrintAndWriteSmartcardInfo_Demo
+    {
+        public string Name { get; set; }
+        public DateTime PrintedDate { get; set; }
+    }
+
     public class PrintAndWriteSmartcardInfo
     {
-        public Bitmap FrontCard { get; set; }
-        public Bitmap BackCard { get; set; }
+        public string FrontCardImagePath { get; set; }
+        public string BackCardImagePath { get; set; }
         public SmartCardData SmartCardData { get; set; }
     }
 
@@ -43,7 +49,7 @@ namespace Trinity.Common.Common
         public string UserId { get; set; }
         public string Name { get; set; }
         public string NRIC { get; set; }
-        public DateTime DOB { get; set; }
+        public Nullable<DateTime> DOB { get; set; }
     }
 
     public class CardHolderActivity

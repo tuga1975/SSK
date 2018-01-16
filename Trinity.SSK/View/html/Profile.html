@@ -211,6 +211,10 @@
         <button type="button" class="btn btn-dark" style="position:fixed;bottom:10px;left:10px;" onclick="api.server.LoadPage('Supervisee.html');">Back</button>
         <button type="button" class="btn btn-success" style="position:fixed;bottom:10px;right:10px; float:right;" id="SaveBtn">Save</button>
     </div>
+	<input type="text" name="SerialNumber" id="SerialNumber" />
+	<input type="text" name="DateOfIssue" id="DateOfIssue" />
+	<input type="text" name="Gender" id="Gender" />
+	<input type="text" name="Race" id="Race" />
 </form>
 <script type="text/javascript">
     var _particularName, _nric, _dob, _nationality, _maritalStatus = "";
@@ -237,6 +241,10 @@
         $('#SmartCardId').val(api.model.User.SmartCardId);
         // profile
         $('#Nationality').val(api.model.UserProfile.Nationality);
+        $('#SerialNumber').val(api.model.UserProfile.SerialNumber);
+        $('#DateOfIssue').val(api.model.UserProfile.DateOfIssue);
+        $('#Gender').val(api.model.UserProfile.Gender);
+        $('#Race').val(api.model.UserProfile.Race);
         $('#MaritalStatus').val(api.model.UserProfile.Maritial_Status);
         $('#PrimaryContact').val(api.model.UserProfile.Primary_Phone);
         $('#SecondaryContact').val(api.model.UserProfile.Secondary_Phone);
@@ -246,7 +254,7 @@
 
             //address information
             $('#Residential_Addess_ID').val(api.model.Addresses.Address_ID);
-            $('#Other_Address_ID').val(api.model.Addresses.Address_ID);
+            $('#Other_Address_ID').val(api.model.OtherAddress.Address_ID);
             $('#AddressHouseNumber').val(api.model.Addresses.BlkHouse_Number);
             $('#AddressUnitNumber').val(api.model.Addresses.FlrUnit_Number);
             $('#AddressStreetName').val(api.model.Addresses.Street_Name);
@@ -268,8 +276,8 @@
         $('#EmployerContact').val(api.model.UserProfile.Employment_Contact_Number);
         $('#CompanyName').val(api.model.UserProfile.Employment_Company_Name);
         $('#JobTitle').val(api.model.UserProfile.Employment_Job_Title);
-        $('#StartDate').val(api.model.UserProfile.Employment_Start_Date);
-        $('#EndDate').val(api.model.UserProfile.Employment_End_Date);
+        $('#StartDate').val(api.model.UserProfile.Employment_Start_Date_Text);
+        $('#EndDate').val(api.model.UserProfile.Employment_End_Date_Text);
         $('#Remarks').val(api.model.UserProfile.Employment_Remarks);
 
     });
