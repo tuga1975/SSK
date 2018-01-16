@@ -154,7 +154,7 @@ namespace Trinity.DAL
                 var lstModels = from a in _localUnitOfWork.DataContext.Appointments
                                 join tl in _localUnitOfWork.DataContext.Timeslots on a.Timeslot_ID equals tl.Timeslot_ID
                                 join u in _localUnitOfWork.DataContext.Membership_Users on a.UserId equals u.UserId
-                                orderby tl.StartTime
+                                orderby a.Date descending, tl.StartTime
                                 select new BE.Appointment()
                                 {
                                     NRIC = u.NRIC,
