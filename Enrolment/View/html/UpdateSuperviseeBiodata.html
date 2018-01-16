@@ -115,11 +115,11 @@
                             <div class="col" style="text-align:center">
                                 <div style="width:100%;border:1px solid #000000;font-size:15px;display:none" id="printSuccessMessage"></div>
                                 <div style="text-align:center;margin-top:10px;display:none;" id="rePrinter">
-                                    <input type="button" value="Reprint" onclick="api.server.PrintSmartCart(frontCardImg, backCardImg);"/>
+                                    <input type="button" value="Reprint" onclick="api.server.PrintSmartCart(frontCardImg, backCardImg);" />
                                 </div>
                                 <div style="margin:10px auto;display:none;text-align:center;" id="reCheckSCard">
-                                    <img src="" style="margin-left:10px;" id="frontCardImg"/>
-                                    <img src="" style="margin-left:10px;"  id="backCardImg"/>
+                                    <img src="" style="margin-left:10px;" id="frontCardImg" />
+                                    <img src="" style="margin-left:10px;" id="backCardImg" />
                                 </div>
                             </div>
                             <!--<button type="submit" class="btn-form">Save</button>-->
@@ -142,12 +142,12 @@
     }
 
     function Test() {
-        
+
     }
     $(document).ready(function () {
         $('#leftThumbClearBtn').attr('disabled', 'disabled');
         $('#rightThumbClearBtn').attr('disabled', 'disabled');
-        
+
     });
     function ActionScanFingerPrint(isRight) {
         if (isRight) {
@@ -216,14 +216,14 @@
     });
 
     function setBase64FingerprintOnloadServerCall(leftFinger, rightFinger) {
-        if (leftFinger!="") {
+        if (leftFinger != "") {
             $('#leftFingerprint').attr('src', 'data:image/png;base64,' + leftFinger);
             $('#verifyLeftFinger').attr('src', 'data:image/png;base64,' + leftFinger);
         }
         if (rightFinger != "") {
             $('#rightFingerprint').attr('src', 'data:image/png;base64,' + rightFinger);
             $('#verifyRightFinger').attr('src', 'data:image/png;base64,' + rightFinger);
-          
+
         }
 
     }
@@ -288,11 +288,11 @@
                         frontCardImg = null;
                         backCardImg = null
                     });
-                }else if (newIndex == 3) {
+                } else if (newIndex == 3) {
                     //if (frontCardImg == null && backCardImg == null) {
-                        
+
                     //    return false;
-                    //}   
+                    //}
                     if (frontCardImg == null || backCardImg == null) {
                         html2canvas($('#frontCard'), {
                             onrendered: function (froncanvas) {
@@ -318,7 +318,7 @@
                 //1 - fingerprint
                 //2 - verify
                 //3 - print
-                
+
                 if (currentIndex == 3) {
                     //update to db
                     //api.server.UpdateSuperviseeBiodata(function () {
@@ -326,6 +326,12 @@
                     //    $('#backCardImg').attr('src', backCardImg);
                     //    api.server.PrintSmartCart(frontCardImg, backCardImg);
                     //});
+                    if (frontCardImg == null) {
+                        frontCardImg = '';
+                    }
+                    if (backCardImg == null) {
+                        backCardImg = '';
+                    }
                     api.server.UpdateSuperviseeBiodata(frontCardImg, backCardImg);
                 }
             },
@@ -347,7 +353,7 @@
     $(document).ready(function () {
         countPrinterSmartCard = 0;
     });
-    
+
     function showPrintMessage(status, message) {
         if (status != null) {
             if (status) {
