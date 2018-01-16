@@ -111,14 +111,22 @@
             } else {
                 var re = confirm('You have selected the time slot\n' + startTime + ' on ' + api.model[0].GetDateTxt + '\nConfirm time slot?', 'Warning');
                 if (re == true) {
-                    api.server.UpdateTimeAppointment(api.model[0].ID, startTime, endTime, function (time) {
-                        api.model[0].ChangedCount += 1;
-                        //$('[item-select-time][selecttime="true"]').removeAttr('selecttime').removeAttr('availble');
-                        //_this.attr('availble', false).attr('selecttime', true);
-                        $('[item-select-time][selecttime="true"]').removeAttr('selecttime');
-                        _this.attr('selecttime', true);
-                        $('[app-time]').text(time);
-                        $('[info-notime]').remove();
+                    api.server.UpdateTimeAppointment(api.model[0].ID, startTime, endTime, function (isUpdated) {
+                        if (isUpdated) {
+                            api.model[0].ChangedCount += 1;
+                            //$('[item-select-time][selecttime="true"]').removeAttr('selecttime').removeAttr('availble');
+                            //_this.attr('availble', false).attr('selecttime', true);
+                            $('[item-select-time][selecttime="true"]').removeAttr('selecttime');
+                            _this.attr('selecttime', true);
+                            $('[app-time]').text(startTime);
+                            $('[info-notime]').remove();
+                        }
+                        else {
+                            alert("You have already queued!\n The timeslot cannot be changed.");
+                        }
+
+                     
+                      
                     });
                 }
             }
