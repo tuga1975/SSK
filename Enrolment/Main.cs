@@ -145,7 +145,7 @@ namespace Enrolment
                                 session[CommonConstants.CURRENT_LEFT_FINGERPRINT_IMAGE] = byteData;
                                 LayerWeb.InvokeScript("setBase64FingerprintOnloadServerCall", base64Str, string.Empty);
                             }
-                           
+
                         }
                     }
 
@@ -201,11 +201,11 @@ namespace Enrolment
                 var rightThumbImage = (byte[])session[CommonConstants.CURRENT_RIGHT_FINGERPRINT_IMAGE];
                 if (profileModel != null)
                 {
-                    if (leftThumbImage!=null && leftThumbImage.Length>0)
+                    if (leftThumbImage != null && leftThumbImage.Length > 0)
                     {
                         profileModel.UserProfile.LeftThumbImage = leftThumbImage;
                     }
-                    if (rightThumbImage!=null && rightThumbImage.Length>0)
+                    if (rightThumbImage != null && rightThumbImage.Length > 0)
                     {
                         profileModel.UserProfile.RightThumbImage = rightThumbImage;
                     }
@@ -572,8 +572,12 @@ namespace Enrolment
                             }
                             session[CommonConstants.CURRENT_PHOTOS] = null;
 
-                            currentEditUser.UserProfile.User_Photo1 = photos.Item1!= null ? Convert.FromBase64String(photo1) : null;
-                            currentEditUser.UserProfile.User_Photo2 = photos.Item2 != null ? Convert.FromBase64String(photo2) : null;
+                            if (photos != null)
+                            {
+                                currentEditUser.UserProfile.User_Photo1 = photos.Item1 != null ? Convert.FromBase64String(photo1) : null;
+                                currentEditUser.UserProfile.User_Photo2 = photos.Item2 != null ? Convert.FromBase64String(photo2) : null;
+                            }
+
                             session[CommonConstants.CURRENT_EDIT_USER] = currentEditUser;
                             if (currentPage.ToString() == "EditSupervisee")
                             {
@@ -654,16 +658,14 @@ namespace Enrolment
                     photo2 = Convert.ToBase64String(profileModel.UserProfile.User_Photo2);
                 }
                 LayerWeb.InvokeScript("setAvatar", photo1, photo2);
-
-
             }
             else if (e.Name == EventNames.UPDATE_SUPERVISEE_BIODATA)
             {
-               
-
-
                 Session session = Session.Instance;
-                var profileModel = (Trinity.BE.ProfileModel)e.Data;
+                object[] data = (object[])e.Data;
+                var profileModel = (Trinity.BE.ProfileModel)data[0];
+                string frontBase64 = (string)data[1];
+                string backBase64 = (string)data[2];
                 var dalUser = new DAL_User();
                 var dalUserProfile = new DAL_UserProfile();
                 dalUser.UpdateUser(profileModel.User, profileModel.User.UserId, true);
@@ -674,9 +676,6 @@ namespace Enrolment
                 new DAL_Membership_Users().UpdateFingerprint(profileModel.User.UserId, profileModel.User.LeftThumbFingerprint, profileModel.User.RightThumbFingerprint);
                 new DAL_UserProfile().UpdateFingerprintImg(profileModel.User.UserId, profileModel.UserProfile.LeftThumbImage, profileModel.UserProfile.RightThumbImage);
 
-
-
-              
                 //create to issue card 
                 //var dalIssueCard = new DAL_IssueCard();
                 //var issueCardModel = dalIssueCard.GetIssueCardById(profileModel.User.SmartCardId);
@@ -688,11 +687,10 @@ namespace Enrolment
                 //    issueCardModel.Status = EnumUserStatuses.ReEnrolled;
                 //    dalIssueCard.Update(profileModel.User.SmartCardId, profileModel.User.UserId, issueCardModel);
                 //}
-
-
-
                 session[CommonConstants.CURRENT_EDIT_USER] = profileModel;
 
+                // Start to print smart card
+                PrintSmartCart(frontBase64, backBase64);
             }
             else if (e.Name == EventNames.LOAD_EDIT_SUPERVISEE_SUCCEEDED)
             {
@@ -732,6 +730,81 @@ namespace Enrolment
                 NavigateTo(NavigatorEnums.Supervisee);
             }
         }
+
+        #region Print Smart Card
+        public void PrintSmartCart(string frontBase64, string backBase64)
+        {
+            LayerWeb.InvokeScript("showPrintMessage", null, "Printing card please wait ...");
+            frontBase64 = frontBase64.Replace("data:image/png;base64,", string.Empty);
+            backBase64 = backBase64.Replace("data:image/png;base64,", string.Empty);
+            Session session = Session.Instance;
+            var userLogin = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+            var profileModel = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
+            var ImgFront = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".png";
+            var ImgBack = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".png";
+            new System.Drawing.Bitmap(new System.IO.MemoryStream(Convert.FromBase64String(frontBase64))).Save(ImgFront);
+            new System.Drawing.Bitmap(new System.IO.MemoryStream(Convert.FromBase64String(backBase64))).Save(ImgBack);
+
+            PrintAndWriteSmartcardInfo infoPrinter = new PrintAndWriteSmartcardInfo()
+            {
+                BackCardImagePath = ImgBack,
+                FrontCardImagePath = ImgFront,
+                SmartCardData = new SmartCardData()
+                {
+                    CardHolderInfo = new CardHolderInfo()
+                    {
+                        DOB = profileModel.UserProfile.DOB,
+                        Name = profileModel.User.Name,
+                        NRIC = profileModel.User.NRIC,
+                        UserId = profileModel.User.UserId,
+                    },
+                    CardInfo = new CardInfo()
+                    {
+                        CreatedBy = userLogin.UserId,
+                        CreatedDate = DateTime.Now
+                    }
+                }
+            };
+
+            Trinity.Common.Utils.SmartCardPrinterUtils.Instance.PrintAndWriteSmartcardData(infoPrinter, OnNewCardPrintedSuccessfully);
+        }
+        private void OnNewCardPrintedSuccessfully(PrintAndWriteSmartcardResult result)
+        {
+            if (result.Success)
+            {
+                Session session = Session.Instance;
+                var userLogin = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+                var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
+                DAL_IssueCard dalIssueCard = new Trinity.DAL.DAL_IssueCard();
+                string SmartID = result.SmartCardData.CardInfo.UID;
+                Trinity.BE.IssueCard IssueCard = new Trinity.BE.IssueCard()
+                {
+                    CreatedBy = userLogin.UserId,
+                    CreatedDate = DateTime.Now,
+                    Date_Of_Issue = currentEditUser.UserProfile.DateOfIssue,
+                    Name = currentEditUser.Membership_Users.Name,
+                    NRIC = currentEditUser.Membership_Users.NRIC,
+                    Reprint_Reason = string.Empty,
+                    Serial_Number = currentEditUser.UserProfile.SerialNumber,
+                    Expired_Date = currentEditUser.UserProfile.Expired_Date,
+                    Status = EnumIssuedCards.Active,
+                    SmartCardId = SmartID,
+                    UserId = currentEditUser.UserProfile.UserId
+                };
+                dalIssueCard.UpdateStatusByUserId(currentEditUser.UserProfile.UserId, EnumIssuedCards.Deactivate);
+                new DAL_Membership_Users().UpdateSmartCardId(currentEditUser.User.UserId, SmartID);
+                new DAL_User().ChangeUserStatus(currentEditUser.User.UserId, EnumUserStatuses.Enrolled);
+                dalIssueCard.Insert(IssueCard);
+                currentEditUser.Membership_Users.SmartCardId = SmartID;
+                LayerWeb.InvokeScript("showPrintMessage", true, "Smart Card was printed successfully! Please collect the smart card from printer and place on the reader to verify.");
+                LayerWeb.InvokeScript("showCardImages");
+            }
+            else
+            {
+                LayerWeb.InvokeScript("showPrintMessage", false, result.Description);
+            }
+        }
+        #endregion
 
         private void CaptureAttempt(string sessionAttemptName)
         {

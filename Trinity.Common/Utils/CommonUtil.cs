@@ -223,5 +223,23 @@ namespace Trinity.Common
                     return 0;
             }
         }
+
+        public static string GetQueueNumber(string baseOnNRIC)
+        {
+            string queueNumber = "";
+            if (!string.IsNullOrEmpty(baseOnNRIC) && baseOnNRIC.Length > 6)
+            {
+                queueNumber += baseOnNRIC.Substring(0, 1) + baseOnNRIC.Substring(baseOnNRIC.Length - 5, 5).PadLeft(8, '*');
+            }
+            else if (!string.IsNullOrEmpty(baseOnNRIC) && baseOnNRIC.Length <= 6)
+            {
+                queueNumber += baseOnNRIC.Substring(0, 1) + baseOnNRIC.PadLeft(8, '*');
+            }
+            else
+            {
+                queueNumber += null;
+            }
+            return queueNumber;
+        }
     }
 }

@@ -115,7 +115,7 @@
                             <div class="col" style="text-align:center">
                                 <div style="width:100%;border:1px solid #000000;font-size:15px;display:none" id="printSuccessMessage"></div>
                                 <div style="text-align:center;margin-top:10px;display:none;" id="rePrinter">
-                                    <input type="button" value="Reprint" onclick="api.server.PriterSmartCart(frontCardImg, backCardImg);"/>
+                                    <input type="button" value="Reprint" onclick="api.server.PrintSmartCart(frontCardImg, backCardImg);"/>
                                 </div>
                                 <div style="margin:10px auto;display:none;text-align:center;" id="reCheckSCard">
                                     <img src="" style="margin-left:10px;" id="frontCardImg"/>
@@ -284,22 +284,31 @@
                             $('[name="expireDate"]').text(model.UserProfile.Expired_DateTxt);
                         }
                         $('[name="verifyRace"]').text(model.UserProfile.Race == null ? '' : model.UserProfile.Race);
+                        frontCardImg = null;
+                        backCardImg = null
                     });
                 }else if (newIndex == 3) {
                     //if (frontCardImg == null && backCardImg == null) {
                         
                     //    return false;
                     //}   
-                    html2canvas($('#frontCard'), {
-                        onrendered: function (froncanvas) {
-                            html2canvas($('#backCard'), {
-                                onrendered: function (backcanvas) {
-                                    frontCardImg = froncanvas.toDataURL("image/png");
-                                    backCardImg = backcanvas.toDataURL("image/png");
-                                }
-                            });
-                        }
-                    });
+                    if (frontCardImg == null || backCardImg == null) {
+                        html2canvas($('#frontCard'), {
+                            onrendered: function (froncanvas) {
+                                html2canvas($('#backCard'), {
+                                    onrendered: function (backcanvas) {
+                                        frontCardImg = froncanvas.toDataURL("image/png");
+                                        backCardImg = backcanvas.toDataURL("image/png");
+                                        $('.actions > ul > li > a[href="#next"]').click();
+                                    }
+                                });
+                            }
+                        });
+                        api.loading(true);
+                        return false;
+                    } else {
+                        api.loading(false);
+                    }
                 }
                 return true;
             },
@@ -311,11 +320,12 @@
                 
                 if (currentIndex == 3) {
                     //update to db
-                    api.server.UpdateSuperviseeBiodata(function () {
-                        $('#frontCardImg').attr('src', frontCardImg);
-                        $('#backCardImg').attr('src', backCardImg);
-                        api.server.PriterSmartCart(frontCardImg, backCardImg);
-                    });
+                    //api.server.UpdateSuperviseeBiodata(function () {
+                    //    $('#frontCardImg').attr('src', frontCardImg);
+                    //    $('#backCardImg').attr('src', backCardImg);
+                    //    api.server.PrintSmartCart(frontCardImg, backCardImg);
+                    //});
+                    api.server.UpdateSuperviseeBiodata(frontCardImg, backCardImg);
                 }
             },
             onFinished: function (event, currentIndex) {
@@ -343,11 +353,17 @@
                 $('#rePrinter').css('display', 'none');
                 $('#reCheckSCard').css('display', 'block');
                 $('.actions > ul > li:first-child').attr('style', 'display:none');
+
             } else {
                 $('#rePrinter').css('display', 'block');
                 $('#reCheckSCard').css('display', 'none');
             }
         }
         $('#printSuccessMessage').text(message).show();
+    }
+
+    function showCardImages() {
+        $('#frontCardImg').attr('src', frontCardImg);
+        $('#backCardImg').attr('src', backCardImg);
     }
 </script>
