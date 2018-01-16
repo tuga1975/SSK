@@ -81,7 +81,8 @@ namespace Trinity.DAL
                                 {
                                     NRIC = u.NRIC,
                                     Name = u.Name,
-                                    LastStation = a.LastStation
+                                    LastStation = a.LastStation,
+                                    UserId = a.UserId
                                 };
 
                 return lstModels.ToList();

@@ -157,6 +157,9 @@ namespace Enrolment
 
         private void EnrollmentFingerprint()
         {
+            Session session = Session.Instance;
+            if (session["CountPutOn"] == null)
+                session["CountPutOn"] = 0;
             FingerprintReaderUtils.Instance.StartCapture(OnPutOn, OnTakeOff, UpdateScreenImage, OnFakeSource, OnEnrollmentComplete);
             //_futronicEnrollment = new FutronicEnrollment();
 
@@ -230,13 +233,20 @@ namespace Enrolment
                 LayerWeb.InvokeScript("enableClearBtnServerCall", isRight);
                 LayerWeb.InvokeScript("changeMessageServerCall", isRight, "Your fingerprint was scanned successfully!", EnumColors.Green);
 
-                session["CountPutOn"] = null;
+                session["CountPutOn"] = 0;
 
             }
             else
             {
+                var count = (int)session["CountPutOn"]+1;
+                session["CountPutOn"] = count;
                 LayerWeb.InvokeScript("enableClearBtnServerCall", isRight);
                 LayerWeb.InvokeScript("changeMessageServerCall", isRight, FutronicSdkBase.SdkRetCode2Message(nResult), EnumColors.Red);
+                if (count >= 3)
+                {
+                    session["CountPutOn"] = 0;
+                    LayerWeb.InvokeScript("showMessageFingerprintFalse3");
+                }
             }
 
             FingerprintReaderUtils.Instance.DisposeCapture();
@@ -255,12 +265,6 @@ namespace Enrolment
         {
             Session session = Session.Instance;
             var isRight = session[CommonConstants.IS_RIGHT_THUMB] != null ? (bool)session[CommonConstants.IS_RIGHT_THUMB] : (bool)session[CommonConstants.IS_RIGHT_THUMB];
-            //if (session["CountPutOn"] != null)
-            //{
-            //    var count = (int)session["CountPutOn"];
-            //    count--;
-            //    session["CountPutOn"] = count;
-            //}
             LayerWeb.InvokeScript("changeMessageServerCall", isRight, "Fake source detected. Continue ...", EnumColors.Red);
             return false;
         }
@@ -269,30 +273,13 @@ namespace Enrolment
         {
             Session session = Session.Instance;
             var isRight = session[CommonConstants.IS_RIGHT_THUMB] != null ? (bool)session[CommonConstants.IS_RIGHT_THUMB] : (bool)session[CommonConstants.IS_RIGHT_THUMB];
-            if (session["CountPutOn"] != null)
-            {
-                var count = (int)session["CountPutOn"];
-                count++;
-                session["CountPutOn"] = count;
-            }
             LayerWeb.InvokeScript("changeMessageServerCall", isRight, "Take off finger from device, please ...", EnumColors.Yellow);
         }
-        int countPutOn = 1;
         private void OnPutOn(FTR_PROGRESS Progress)
         {
             Session session = Session.Instance;
             var isRight = session[CommonConstants.IS_RIGHT_THUMB] != null ? (bool)session[CommonConstants.IS_RIGHT_THUMB] : (bool)session[CommonConstants.IS_RIGHT_THUMB];
-
-            if (session["CountPutOn"] != null)
-            {
-                LayerWeb.InvokeScript("changeMessageServerCall", isRight, "Put finger into device, please ...(" + (int)session["CountPutOn"] + ")", EnumColors.Yellow);
-            }
-            else
-            {
-                session["CountPutOn"] = countPutOn;
-                LayerWeb.InvokeScript("changeMessageServerCall", isRight, "Put finger into device, please ...(" + countPutOn + ")", EnumColors.Yellow);
-            }
-
+            LayerWeb.InvokeScript("changeMessageServerCall", isRight, "Put finger into device, please ...", EnumColors.Yellow);
         }
 
         #endregion
@@ -740,10 +727,19 @@ namespace Enrolment
             Session session = Session.Instance;
             var userLogin = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
             var profileModel = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
-            var ImgFront = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".png";
-            var ImgBack = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".png";
-            new System.Drawing.Bitmap(new System.IO.MemoryStream(Convert.FromBase64String(frontBase64))).Save(ImgFront);
-            new System.Drawing.Bitmap(new System.IO.MemoryStream(Convert.FromBase64String(backBase64))).Save(ImgBack);
+
+            string ImgFront = null;
+            string ImgBack = null;
+            if (!string.IsNullOrEmpty(frontBase64))
+            {
+                ImgFront = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".png";
+                new System.Drawing.Bitmap(new System.IO.MemoryStream(Convert.FromBase64String(frontBase64))).Save(ImgFront);
+            }
+            if (!string.IsNullOrEmpty(backBase64))
+            {
+                ImgBack = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".png";
+                new System.Drawing.Bitmap(new System.IO.MemoryStream(Convert.FromBase64String(backBase64))).Save(ImgBack);
+            }
 
             PrintAndWriteSmartcardInfo infoPrinter = new PrintAndWriteSmartcardInfo()
             {

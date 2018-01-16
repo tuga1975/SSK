@@ -98,7 +98,7 @@
         var checkedRows = [];
 
         $('#MUBAndTTlabel').on('check.bs.table', function (e, row) {
-            checkedRows.push({ NRIC: row.NRIC, Name: row.Name, LastStation: row.LastStation });
+            checkedRows.push({ NRIC: row.NRIC, Name: row.Name, LastStation: row.LastStation, UserId: row.UserId });
         });
 
         $('#MUBAndTTlabel').on('uncheck.bs.table', function (e, row) {

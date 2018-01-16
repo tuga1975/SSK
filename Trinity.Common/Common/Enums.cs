@@ -289,8 +289,9 @@ public static class EnumStations
     public const string APS = "APS";
     public const string HSA = "HSA";
     public const string ESP = "ESP";
+
     public const string ENROLMENT = "ENROLMENT";
-    public const string DUTYOFFICER = "DUTYOFFICER";
+    public const string DUTYOFFICER = "DOFFICER";
 
     public static List<string> GetListStation()
     {

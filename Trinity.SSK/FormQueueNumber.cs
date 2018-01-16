@@ -194,14 +194,14 @@ namespace SSK
 
             List<string> holdingList = new DAL_QueueNumber().GetHoldingListByDate(DateTime.Now);
             List<string> todayHoldingList = new List<string>();
-            if (holdingList!= null && holdingList.Count>0)
+            if (holdingList != null && holdingList.Count > 0)
             {
                 for (int i = 0; i < holdingList.Count; i++)
                 {
                     todayHoldingList.Add(Trinity.Common.CommonUtil.GetQueueNumber(holdingList[i]));
                 }
             }
-            
+
             //serving  //current //next  //holding-blocked user
             wbQueueNumber.RefreshQueueNumbers(servingQueueNumber, currentQueueNumber, waitingQueueNumbers.Distinct().ToArray(), todayHoldingList.ToArray());
             wbQueueNumber.InvokeScript("setTimeslot", currentTimeslot, nextTimeslot);
