@@ -284,22 +284,31 @@
                             $('[name="expireDate"]').text(model.UserProfile.Expired_DateTxt);
                         }
                         $('[name="verifyRace"]').text(model.UserProfile.Race == null ? '' : model.UserProfile.Race);
+                        frontCardImg = null;
+                        backCardImg = null
                     });
                 }else if (newIndex == 3) {
                     //if (frontCardImg == null && backCardImg == null) {
                         
                     //    return false;
                     //}   
-                    html2canvas($('#frontCard'), {
-                        onrendered: function (froncanvas) {
-                            html2canvas($('#backCard'), {
-                                onrendered: function (backcanvas) {
-                                    frontCardImg = froncanvas.toDataURL("image/png");
-                                    backCardImg = backcanvas.toDataURL("image/png");
-                                }
-                            });
-                        }
-                    });
+                    if (frontCardImg == null || backCardImg == null) {
+                        html2canvas($('#frontCard'), {
+                            onrendered: function (froncanvas) {
+                                html2canvas($('#backCard'), {
+                                    onrendered: function (backcanvas) {
+                                        frontCardImg = froncanvas.toDataURL("image/png");
+                                        backCardImg = backcanvas.toDataURL("image/png");
+                                        $('.actions > ul > li > a[href="#next"]').click();
+                                    }
+                                });
+                            }
+                        });
+                        api.loading(true);
+                        return false;
+                    } else {
+                        api.loading(false);
+                    }
                 }
                 return true;
             },
@@ -344,6 +353,7 @@
                 $('#rePrinter').css('display', 'none');
                 $('#reCheckSCard').css('display', 'block');
                 $('.actions > ul > li:first-child').attr('style', 'display:none');
+
             } else {
                 $('#rePrinter').css('display', 'block');
                 $('#reCheckSCard').css('display', 'none');
