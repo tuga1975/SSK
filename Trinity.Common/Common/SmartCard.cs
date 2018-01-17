@@ -19,6 +19,30 @@ namespace Trinity.Common.Common
             get { return _cardUID; }
         }
 
+        public string UserRole
+        {
+            get
+            {
+                if (DutyOfficerData != null)
+                {
+                    return EnumUserRoles.DutyOfficer;
+                }
+                else if (SuperviseeBiodata != null)
+                {
+                    return EnumUserRoles.Supervisee;
+                }
+                else
+                {
+                    return string.Empty;
+                }
+            }
+        }
+
+        public DutyOfficerData DutyOfficerData
+        {
+            get { return _cardData_Original?.DutyOfficerData; }
+        }
+
         public SuperviseeBiodata SuperviseeBiodata
         {
             get { return _cardData_Original?.SuperviseeBiodata; }
@@ -76,9 +100,14 @@ namespace Trinity.Common.Common
                 // get card data
                 SmartCardData_Original smartCardData_Original = null;
                 bool readDataResult = smartCardReaderUtils.ReadAllData_MifareClassic(ref smartCardData_Original);
-                if (!readDataResult || smartCardData_Original == null)
+                if (!readDataResult)
                 {
                     throw new Exception("Can not get card data");
+                }
+
+                if (smartCardData_Original == null)
+                {
+                    throw new Exception("Card data is null");
                 }
 
                 _cardUID = cardUID;
@@ -175,9 +204,15 @@ namespace Trinity.Common.Common
 
     public class SmartCardData_Original
     {
-        //public CardInfo CardInfo { get; set; }
+        public DutyOfficerData DutyOfficerData { get; set; }
         public SuperviseeBiodata SuperviseeBiodata { get; set; }
         public List<HistoricalRecord> HistoricalRecords { get; set; }
+    }
+
+    public class DutyOfficerData
+    {
+        public string Name { get; set; }
+        public string NRIC { get; set; }
     }
 
     public class SuperviseeBiodata

@@ -675,7 +675,63 @@ namespace Trinity.Common
             }
         }
 
-        public bool WriteSuperviseeBiodata(SmartCardData_Original cardData, SuperviseeBiodata data)
+        public bool WriteDutyOfficerData(DutyOfficerData data)
+        {
+            try
+            {
+                // get list blocks will be read/write
+                List<MifareCard_Block> lstBlocks = GetAll_Blocks_MifareClassic(EnumSmartCardTypes.MifareClassic4K);
+                if (lstBlocks == null || lstBlocks.Count() == 0)
+                {
+                    throw new Exception("Can not get card blocks");
+                }
+
+                // calculate storage size of smartcard
+                int totalBytes = lstBlocks.Count(block => block.BlockType == EnumBlockTypes.Data) * 16;
+
+                SmartCardData_Original cardData = new SmartCardData_Original()
+                {
+                    DutyOfficerData = data
+                };
+                
+                // convert object to json
+                var jsonData = JsonConvert.SerializeObject(cardData);
+
+                // encrypting
+                var encryptedString = CommonUtil.EncryptString(jsonData, _passphrase);
+
+                // check length of encryptContent, remove last HistoricalRecord
+                while (encryptedString.Length > totalBytes)
+                {
+                    // remove last activities
+                    if (cardData.HistoricalRecords != null || cardData.HistoricalRecords.Count() > 0)
+                    {
+                        cardData.HistoricalRecords.Remove(cardData.HistoricalRecords.Last());
+                    }
+
+                    // convert new data to json
+                    jsonData = JsonConvert.SerializeObject(cardData);
+
+                    // encrypting
+                    encryptedString = CommonUtil.EncryptString(jsonData, _passphrase);
+                }
+
+                // data to write
+                byte[] byteData = Encoding.ASCII.GetBytes(jsonData);
+
+                bool result = WriteData_MifareClassic(byteData);
+
+                // return value
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("WriteData_MifareClassic exception: " + ex.ToString());
+                return false;
+            }
+        }
+
+        public bool WriteSuperviseeBiodata(SuperviseeBiodata data)
         {
             try
             {
@@ -690,17 +746,10 @@ namespace Trinity.Common
                 int totalBytes = lstBlocks.Count(block => block.BlockType == EnumBlockTypes.Data) * 16;
 
                 // create SmartCardData object
-                if (cardData == null)
+                SmartCardData_Original cardData = new SmartCardData_Original()
                 {
-                    cardData = new SmartCardData_Original()
-                    {
-                        SuperviseeBiodata = data
-                    };
-                }
-                else
-                {
-                    cardData.SuperviseeBiodata = data;
-                }
+                    SuperviseeBiodata = data
+                };
 
                 // convert object to json
                 var jsonData = JsonConvert.SerializeObject(cardData);

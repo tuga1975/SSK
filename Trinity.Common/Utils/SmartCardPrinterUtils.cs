@@ -188,7 +188,7 @@ namespace Trinity.Common.Utils
                     string readerName = EnumDeviceNames.SmartCardPrinterContactlessReader;
 
                     // get card UID
-                    cardUID = GetMifareCardUID();
+                    cardUID = SmartCardReaderUtils.Instance.GetCardUID(EnumDeviceNames.SmartCardPrinterContactlessReader);
                     string cardData = string.Empty;
                     bool readCardResult = smartCardReaderUtils.ReadAllData_MifareClassic_ZXPSeries9(ref cardData);
                     Console.WriteLine(cardData);
@@ -274,7 +274,7 @@ namespace Trinity.Common.Utils
                 //string getData = smartCardReaderUtils.ReadAllData_MifareClassic(readerName);
 
                 // get card UID
-                string cardUID = GetMifareCardUID();
+                string cardUID = SmartCardReaderUtils.Instance.GetCardUID(EnumDeviceNames.SmartCardPrinterContactlessReader);
 
                 // set cardUID and success flag 
                 if (!string.IsNullOrEmpty(cardUID))
@@ -309,22 +309,6 @@ namespace Trinity.Common.Utils
             }
 
             return printAndWriteSmartcardResult;
-        }
-
-        private string GetMifareCardUID()
-        {
-            try
-            {
-
-                string cardUID = SmartCardReaderUtils.Instance.GetCardUID(EnumDeviceNames.SmartCardPrinterContactlessReader);
-
-                return cardUID;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("GetMifareCardUID: " + ex.ToString());
-                return string.Empty;
-            }
         }
 
         public override EnumDeviceStatuses[] GetDeviceStatus()

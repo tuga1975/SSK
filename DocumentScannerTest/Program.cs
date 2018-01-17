@@ -106,6 +106,14 @@ namespace DocumentScannerTest
             //bool result2 = smartCardReaderUtils.ReadAllData_MifareClassic();
             //bool result = smartCardReaderUtils.WriteSuperviseeBiodata(superviseeBiodata);
 
+            //DutyOfficerData dutyOfficerData = new DutyOfficerData()
+            //{
+            //    Name = "Theo Walcott",
+            //    NRIC = "S7777777G"
+            //};
+
+            //bool writeOfficerData = SmartCardReaderUtils.Instance.WriteDutyOfficerData(dutyOfficerData);
+
             HistoricalRecord historicalRecord2 = new HistoricalRecord()
             {
                 ReportingDate = DateTime.Now,
@@ -114,12 +122,13 @@ namespace DocumentScannerTest
                 IUTResult = "something"
             };
             SmartCardData smartCardData = SmartCardData.Instance;
+
             DateTime startRead = DateTime.Now;
             smartCardData.ReadData_FromSmartCard();
 
-            DateTime startWrite = DateTime.Now;
-            bool writeResult = smartCardData.WriteHistoricalRecord(historicalRecord2);
-            DateTime endWrite = DateTime.Now;
+            //DateTime startWrite = DateTime.Now;
+            //bool writeResult = smartCardData.WriteHistoricalRecord(historicalRecord2);
+            //DateTime endWrite = DateTime.Now;
 
             string uid = smartCardData.CardUID;
 
