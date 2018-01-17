@@ -754,24 +754,15 @@ namespace Enrolment
                 new System.Drawing.Bitmap(new System.IO.MemoryStream(Convert.FromBase64String(backBase64))).Save(ImgBack);
             }
 
-            PrintAndWriteSmartcardInfo infoPrinter = new PrintAndWriteSmartcardInfo()
+            PrintAndWriteSmartCardInfo infoPrinter = new PrintAndWriteSmartCardInfo()
             {
                 BackCardImagePath = ImgBack,
                 FrontCardImagePath = ImgFront,
-                SmartCardData = new SmartCardData()
+                SuperviseeBiodata = new SuperviseeBiodata()
                 {
-                    CardHolderInfo = new CardHolderInfo()
-                    {
-                        DOB = profileModel.UserProfile.DOB,
-                        Name = profileModel.User.Name,
-                        NRIC = profileModel.User.NRIC,
-                        UserId = profileModel.User.UserId,
-                    },
-                    CardInfo = new CardInfo()
-                    {
-                        CreatedBy = userLogin.UserId,
-                        CreatedDate = DateTime.Now
-                    }
+                    Name = profileModel.User.Name,
+                    NRIC = profileModel.User.NRIC,
+                    UserId = profileModel.User.UserId,
                 }
             };
 
@@ -785,7 +776,7 @@ namespace Enrolment
                 var userLogin = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
                 var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
                 DAL_IssueCard dalIssueCard = new Trinity.DAL.DAL_IssueCard();
-                string SmartID = result.SmartCardData.CardInfo.UID;
+                string SmartID = result.CardUID;
                 Trinity.BE.IssueCard IssueCard = new Trinity.BE.IssueCard()
                 {
                     CreatedBy = userLogin.UserId,
