@@ -140,6 +140,7 @@ namespace SSA
             dalLabel.UpdateLabel(labelInfo, labelInfo.UserId, EnumLabelType.MUB);
             this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').show(); ; ");
             this._web.RunScript("$('.status-text').css('color','#000').text('Please collect your labels');");
+            this._web.InvokeScript("countdownLogout");
 
             DeleteQRCodeImageFileTemp();
         }
