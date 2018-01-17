@@ -11,7 +11,9 @@
     </div>
     <div id="CompletedSection">
         <div id="texts" style="display:inline;">
-            <span style="font-size:42px;padding:5px;">Collect Master Urine Bottle <br/> and Test Tube Video</span>
+            <span style="font-size:42px;padding:5px;">Collect Master Urine Bottle <br/> and Test Tube Video.</span>
+            <br/> <br/>
+            <p style="font-size:38px;">System will be logout in <span style="font-size:42px;" id="countdown">5</span> seconds</p>
         </div>
     </div>
 </div>
@@ -45,5 +47,16 @@
         $('#WaitingSection').show();
         $('#CompletedSection').hide();
     });
-    
+
+    function countdownLogout() {
+        var timeleft = 5;
+        var downloadTimer = setInterval(function () {
+            timeleft--;
+            document.getElementById("countdown").textContent = timeleft;
+            if (timeleft <= 0) {
+                clearInterval(downloadTimer);
+                api.server.LogOut();
+            }
+        }, 1000);
+    };
 </script>
