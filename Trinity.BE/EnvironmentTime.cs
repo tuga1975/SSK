@@ -15,7 +15,7 @@ namespace Trinity.BE
         public bool IsSelected { get; set; }
         public System.TimeSpan StartTime { get; set; }
         public System.TimeSpan EndTime { get; set; }
-
+        public string Category { get; set; }
         public string StartTimeTxt
         {
             get

@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using System.Windows.Forms;
 using Trinity.DAL;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace SSK
 {
@@ -80,6 +81,8 @@ namespace SSK
         }
         public void RefreshQueueNumbers()
         {
+            Stopwatch stopWatch = new Stopwatch();
+            stopWatch.Start();
             DAL_QueueNumber dalQueue = new DAL_QueueNumber();
             var allQueue = GetAllQueueToday(dalQueue, EnumStations.SSK);
 
@@ -132,7 +135,7 @@ namespace SSK
                     servingQueueNumber += allQueue[i].QueueNumber + "-";
                 }
                 //queue - current
-                if ((allQueue[i].Status == EnumQueueStatuses.Waiting|| allQueue[i].Status == EnumQueueStatuses.Processing) && diffHour == 0 && diffStartMin <= 0 && ((diffEndHour > 0 && diffEndMin <= 0) || (diffEndHour == 0 && diffEndMin >= 0)))
+                if (allQueue[i].Status == EnumQueueStatuses.Waiting && diffHour == 0 && diffStartMin <= 0 && ((diffEndHour > 0 && diffEndMin <= 0) || (diffEndHour == 0 && diffEndMin >= 0)))
                 {
                     currentTimeslotQueue.Add(allQueue[i]);
                     servingQueueNumber += allQueue[i].QueueNumber + "-";
@@ -178,7 +181,7 @@ namespace SSK
                 foreach (var item in todayAppointment)
                 {
                     var userNRIC = new DAL_User().GetUserByUserId(item.UserId, true).NRIC;
-                    var qNumber = userNRIC;
+                    var qNumber = userNRIC.GetLast(5);
                     currentQueueNumber += qNumber + "-";
                 }
             }
@@ -201,10 +204,12 @@ namespace SSK
                     todayHoldingList.Add(Trinity.Common.CommonUtil.GetQueueNumber(holdingList[i]));
                 }
             }
-
+           
             //serving  //current //next  //holding-blocked user
             wbQueueNumber.RefreshQueueNumbers(servingQueueNumber, currentQueueNumber, waitingQueueNumbers.Distinct().ToArray(), todayHoldingList.ToArray());
             wbQueueNumber.InvokeScript("setTimeslot", currentTimeslot, nextTimeslot);
+            stopWatch.Stop();
+            Console.WriteLine(stopWatch.Elapsed.TotalSeconds+"--"+ stopWatch.Elapsed.TotalSeconds);
         }
 
         //private static string SetNextTimeslotTxt(List<Trinity.BE.Queue> allQueue, string nextTimeslot, int i)
