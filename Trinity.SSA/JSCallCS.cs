@@ -111,7 +111,7 @@ namespace SSA
         public void CallPrintingMUBAndTT(string jsonModel, string base64String)
         {
             string base64StringCanvas = base64String.Split(',')[1];
-            byte[] bitmapBytes = Convert.FromBase64String(base64StringCanvas);         
+            byte[] bitmapBytes = Convert.FromBase64String(base64StringCanvas);
 
             var labelInfo = JsonConvert.DeserializeObject<LabelInfo>(jsonModel);
             labelInfo.BitmapLabel = bitmapBytes;
@@ -140,6 +140,7 @@ namespace SSA
             dalLabel.UpdateLabel(labelInfo, labelInfo.UserId, EnumLabelType.MUB);
             this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').show(); ; ");
             this._web.RunScript("$('.status-text').css('color','#000').text('Please collect your labels');");
+            this._web.InvokeScript("countdownLogout");
 
             DeleteQRCodeImageFileTemp();
         }
@@ -178,6 +179,17 @@ namespace SSA
             this._web.RunScript("$('.status-text').css('color','#000').text('Please collect your labels');");
 
             DeleteQRCodeImageFileTemp();
+
+            var dalAppointment = new DAL_Appointments();
+            var dalQueue = new DAL_QueueNumber();
+            var appointment = dalAppointment.GetTodayAppointment(labelInfo.UserId);
+
+            var sskQueue = new DAL_QueueNumber().GetQueueDetailByAppointent(appointment, EnumStations.SSK);
+
+            dalQueue.UpdateQueueStatus(sskQueue.Queue_ID, EnumQueueStatuses.Finished, EnumStations.SSK);
+            dalQueue.UpdateQueueStatus(sskQueue.Queue_ID, EnumQueueStatuses.Processing, EnumStations.SSA);
+
+
         }
 
         private void PrintTTLabels_OnPrintTTLabelFailed(object sender, CodeBehind.PrintMUBAndTTLabelsEventArgs e)
@@ -250,7 +262,7 @@ namespace SSA
         {
             Session session = Session.Instance;
             Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.SUPERVISEE];
-            string fileName = String.Format("{0}/Temp/{1}", CSCallJS.curDir, "QRCode_" + user. NRIC + ".png");
+            string fileName = String.Format("{0}/Temp/{1}", CSCallJS.curDir, "QRCode_" + user.NRIC + ".png");
             if (System.IO.File.Exists(fileName))
                 System.IO.File.Delete(fileName);
         }

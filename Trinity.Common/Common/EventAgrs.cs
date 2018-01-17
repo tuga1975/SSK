@@ -165,4 +165,25 @@ namespace Trinity.Common
             }
         }
     }
+
+    //Print UB
+    public class PrintUBLabelsSucceedEventArgs
+    {
+        private LabelInfo _labelInfo;
+        public PrintUBLabelsSucceedEventArgs(LabelInfo labeInfo)
+        {
+            _labelInfo = labeInfo;
+        }
+        public LabelInfo LabelInfo
+        {
+            get
+            {
+                return _labelInfo;
+            }
+            set
+            {
+                _labelInfo = value;
+            }
+        }
+    }
 }

@@ -242,6 +242,7 @@
 <script>
     var frontCardImg = null;
     var backCardImg = null;
+    var countPrinterSmartCard = 0;
     $(function () {
         var isUpdated = false;
         $("#wizard").steps({
@@ -350,7 +351,7 @@
     });
 
     $(document).ready(function () {
-
+        countPrinterSmartCard = 0;
     });
 
     function showPrintMessage(status, message) {
@@ -363,6 +364,10 @@
             } else {
                 $('#rePrinter').css('display', 'block');
                 $('#reCheckSCard').css('display', 'none');
+                countPrinterSmartCard++;
+                if (countPrinterSmartCard >= 3) {
+                    alert('Unable to print Smart Card');
+                }
             }
         }
         $('#printSuccessMessage').text(message).show();
@@ -371,5 +376,8 @@
     function showCardImages() {
         $('#frontCardImg').attr('src', frontCardImg);
         $('#backCardImg').attr('src', backCardImg);
+    }
+    function showMessageFingerprintFalse3() {
+        alert('Unable to print Fingerprint');
     }
 </script>
