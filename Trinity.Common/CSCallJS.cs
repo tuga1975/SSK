@@ -10,7 +10,7 @@ using System.Dynamic;
 
 public static class CSCallJS
 {
-    public static readonly string curDir = Directory.GetCurrentDirectory().ToLower().Replace("\\bin\\debug", string.Empty);
+    public static readonly string curDir = Directory.GetCurrentDirectory().ToLower();
 
     public static void LoadPopupHtml(this WebBrowser web, string file)
     {

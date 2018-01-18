@@ -38,6 +38,7 @@ namespace Enrolment
         public Main()
         {
             InitializeComponent();
+            new DAL_Appointments().GetAllStatistics();
             pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
             // setup variables
             _smartCardFailed = 0;
@@ -359,6 +360,7 @@ namespace Enrolment
 
         private void EventCenter_OnNewEvent(object sender, EventInfo e)
         {
+            
             if (e.Name == EventNames.LOGIN_SUCCEEDED)
             {
                 new JSCallCS(this.LayerWeb).LoadListSupervisee();
@@ -741,7 +743,7 @@ namespace Enrolment
                 new System.Drawing.Bitmap(new System.IO.MemoryStream(Convert.FromBase64String(backBase64))).Save(ImgBack);
             }
 
-            PrintAndWriteSmartCardInfo infoPrinter = new PrintAndWriteSmartCardInfo()
+            SuperviseeCardInfo infoPrinter = new SuperviseeCardInfo()
             {
                 BackCardImagePath = ImgBack,
                 FrontCardImagePath = ImgFront,
@@ -753,9 +755,9 @@ namespace Enrolment
                 }
             };
 
-            Trinity.Common.Utils.SmartCardPrinterUtils.Instance.PrintAndWriteSmartcardData(infoPrinter, OnNewCardPrintedSuccessfully);
+            Trinity.Common.Utils.SmartCardPrinterUtils.Instance.PrintAndWriteSuperviseeSmartCard(infoPrinter, OnNewCardPrintedSuccessfully);
         }
-        private void OnNewCardPrintedSuccessfully(PrintAndWriteSmartcardResult result)
+        private void OnNewCardPrintedSuccessfully(PrintAndWriteCardResult result)
         {
             if (result.Success)
             {

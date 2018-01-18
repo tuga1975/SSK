@@ -17,42 +17,18 @@ using Trinity.Identity;
 namespace Enrolment
 {
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    public class JSCallCS
+    public class JSCallCS: JSCallCSBase
     {
-        private WebBrowser _web = null;
-        private Type _thisType = null;
-
+        
         public JSCallCS(WebBrowser web)
         {
             this._web = web;
             _thisType = this.GetType();
         }
-
-        public void LoadPage(string file)
+        public void LoadPopupQueue()
         {
-            _web.LoadPageHtml(file);
+            this._web.LoadPopupHtml("QueuePopupDetail.html");
         }
-
-        private void actionThread(object pram)
-        {
-
-            var data = (object[])pram;
-            var method = data[0].ToString();
-
-            MethodInfo theMethod = _thisType.GetMethod(method);
-            var dataReturn = theMethod.Invoke(this, (object[])data[2]);
-            if (data[1] != null)
-            {
-                this._web.InvokeScript("callEventCallBack", data[1], JsonConvert.SerializeObject(dataReturn, Formatting.Indented, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore }));
-            }
-            _web.SetLoading(false);
-        }
-
-        public void ClientCallServer(string method, string guidEvent, params object[] pram)
-        {
-            ThreadPool.QueueUserWorkItem(new WaitCallback(actionThread), new object[] { method, guidEvent, pram });
-        }
-
         public void SubmitNRIC(string strNRIC)
         {
             NRIC nric = NRIC.GetInstance(_web);
@@ -486,7 +462,7 @@ namespace Enrolment
             new System.Drawing.Bitmap(new System.IO.MemoryStream(Convert.FromBase64String(frontBase64))).Save(ImgFront);
             new System.Drawing.Bitmap(new System.IO.MemoryStream(Convert.FromBase64String(backBase64))).Save(ImgBack);
 
-            PrintAndWriteSmartCardInfo infoPrinter = new PrintAndWriteSmartCardInfo()
+            SuperviseeCardInfo infoPrinter = new SuperviseeCardInfo()
             {
                 BackCardImagePath = ImgBack,
                 FrontCardImagePath = ImgFront,
@@ -498,9 +474,9 @@ namespace Enrolment
                 }
             };
 
-            Trinity.Common.Utils.SmartCardPrinterUtils.Instance.PrintAndWriteSmartcardData(infoPrinter, OnNewCardPrintedSuccessfully);
+            Trinity.Common.Utils.SmartCardPrinterUtils.Instance.PrintAndWriteSuperviseeSmartCard(infoPrinter, OnNewCardPrintedSuccessfully);
         }
-        private void OnNewCardPrintedSuccessfully(PrintAndWriteSmartcardResult result)
+        private void OnNewCardPrintedSuccessfully(PrintAndWriteCardResult result)
         {
             if (result.Success)
             {
@@ -793,7 +769,7 @@ namespace Enrolment
             Session session = Session.Instance;
             var userLogin = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
             var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
-            PrintAndWriteSmartCardInfo infoPrinter = new PrintAndWriteSmartCardInfo()
+            SuperviseeCardInfo infoPrinter = new SuperviseeCardInfo()
             {
                 SuperviseeBiodata = new SuperviseeBiodata()
                 {
@@ -803,9 +779,9 @@ namespace Enrolment
                 }
             };
 
-            Trinity.Common.Utils.SmartCardPrinterUtils.Instance.PrintAndWriteSmartcardData(null, PriterIssuedCardOnCompleted);
+            Trinity.Common.Utils.SmartCardPrinterUtils.Instance.PrintAndWriteSuperviseeSmartCard(null, PriterIssuedCardOnCompleted);
         }
-        private void PriterIssuedCardOnCompleted(PrintAndWriteSmartcardResult result)
+        private void PriterIssuedCardOnCompleted(PrintAndWriteCardResult result)
         {
             if (result.Success)
             {

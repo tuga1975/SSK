@@ -28,8 +28,10 @@
 
     <script>
         var formData, json = null;
-        $(document).ready(function () {
-         
+        api.ready(function (model) {
+            $('#btnOK').click(function () {
+                api.server.UpdateProfileAfterScanDoc();
+            }); 
         });
         var setSuccess = setTimeout(showMessage, 5000);
         function showMessage() {
@@ -37,8 +39,6 @@
             $('#divConfirm').show();
         }
         
-        $('#btnOK').click(function () {
-            api.server.UpdateProfileAfterScanDoc();
-        });
+        
        
     </script>

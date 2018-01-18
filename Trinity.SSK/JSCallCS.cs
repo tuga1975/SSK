@@ -15,7 +15,7 @@ using Trinity.DAL.DBContext;
 namespace SSK
 {
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    public class JSCallCS
+    public class JSCallCS: JSCallCSBase
     {
         private WebBrowser _web = null;
         private Type _thisType = null;
@@ -49,10 +49,6 @@ namespace SSK
         }
         #endregion
 
-        public void LoadPage(string file)
-        {
-            _web.LoadPageHtml(file);
-        }
 
         public void LoadNotications()
         {
@@ -308,26 +304,6 @@ namespace SSK
             var jsonData = session[CommonConstants.PROFILE_DATA];
 
             SaveProfile(jsonData.ToString(), true);
-        }
-
-        private void actionThread(object pram)
-        {
-
-            var data = (object[])pram;
-            var method = data[0].ToString();
-
-            MethodInfo theMethod = _thisType.GetMethod(method);
-            var dataReturn = theMethod.Invoke(this, (object[])data[2]);
-            if (data[1] != null)
-            {
-                this._web.InvokeScript("callEventCallBack", data[1], JsonConvert.SerializeObject(dataReturn, Formatting.Indented, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore }));
-            }
-            _web.SetLoading(false);
-        }
-
-        public void ClientCallServer(string method, string guidEvent, params object[] pram)
-        {
-            ThreadPool.QueueUserWorkItem(new WaitCallback(actionThread), new object[] { method, guidEvent, pram });
         }
 
         public void SubmitNRIC(string strNRIC)

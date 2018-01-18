@@ -83,22 +83,22 @@
 <button type="button" class="btn btn-dark" style="position:fixed;bottom:10px;right:20px;" onclick="window.external.LoadPage('Supervisee.html');">Back</button>
 
 <script type="text/javascript">
-    $(document).ready(function () {
-        $('[app-date]').text(api.model[0].GetDateTxt);
+    api.ready(function (model) {
+        $('[app-date]').text(model[0].GetDateTxt);
 
-        if (api.model[0].FromTimeTxt != null) {
+        if (model[0].FromTimeTxt != null) {
             $('[info-notime]').remove();
-            $('[app-time]').text(api.model[0].FromTimeTxt);
+            $('[app-time]').text(model[0].FromTimeTxt);
         }
         //
-        $.each(api.model[1].Morning, function (index, item) {
+        $.each(model[1].Morning, function (index, item) {
             $('[add-time-Morning]').append('<span style="width:100%" item-select-time availble="' + item.IsAvailble + '" selecttime="' + item.IsSelected + '" start="' + item.StartTimeTxt + '" end="' + item.EndTimeTxt + '">' + item.StartTimeTxt + ' to ' + item.EndTimeTxt + '</span>');
         });
 
-        $.each(api.model[1].Afternoon, function (index, item) {
+        $.each(model[1].Afternoon, function (index, item) {
             $('[add-time-Afternoon]').append('<span style="width:100%" item-select-time availble="' + item.IsAvailble + '" selecttime="' + item.IsSelected + '" start="' + item.StartTimeTxt + '" end="' + item.EndTimeTxt + '">' + item.StartTimeTxt + ' to ' + item.EndTimeTxt + '</span>');
         });
-        $.each(api.model[1].Evening, function (index, item) {
+        $.each(model[1].Evening, function (index, item) {
             $('[add-time-Evening]').append('<span style="width:100%" item-select-time availble="' + item.IsAvailble + '" selecttime="' + item.IsSelected + '" start="' + item.StartTimeTxt + '" end="' + item.EndTimeTxt + '">' + item.StartTimeTxt + ' to ' + item.EndTimeTxt + '</span>');
         });
 
@@ -106,14 +106,14 @@
             var _this = $(this);
             var startTime = _this.attr('start');
             var endTime = _this.attr('end');
-            if (api.model[0].ChangedCount >= 3) {
-                alert('You have exceeded the number of times allowed for time slot change. Please keep to your timeslot ' + startTime + ' on ' + api.model[0].GetDateTxt + '. Otherwise, please contact your case officer.');
+            if (model[0].ChangedCount >= 3) {
+                alert('You have exceeded the number of times allowed for time slot change. Please keep to your timeslot ' + startTime + ' on ' + model[0].GetDateTxt + '. Otherwise, please contact your case officer.');
             } else {
-                var re = confirm('You have selected the time slot\n' + startTime + ' on ' + api.model[0].GetDateTxt + '\nConfirm time slot?', 'Warning');
+                var re = confirm('You have selected the time slot\n' + startTime + ' on ' + model[0].GetDateTxt + '\nConfirm time slot?', 'Warning');
                 if (re == true) {
-                    api.server.UpdateTimeAppointment(api.model[0].ID, startTime, endTime, function (isUpdated) {
+                    api.server.UpdateTimeAppointment(model[0].ID, startTime, endTime, function (isUpdated) {
                         if (isUpdated) {
-                            api.model[0].ChangedCount += 1;
+                            model[0].ChangedCount += 1;
                             //$('[item-select-time][selecttime="true"]').removeAttr('selecttime').removeAttr('availble');
                             //_this.attr('availble', false).attr('selecttime', true);
                             $('[item-select-time][selecttime="true"]').removeAttr('selecttime');
@@ -131,11 +131,8 @@
                 }
             }
         });
+        $('#btnPrintDetail').click(function () {
+            api.server.PrintAppointmentDetails(model[0].ID)
+        });
     });
-    $('#btnPrintDetail').click(function () {
-
-        api.server.PrintAppointmentDetails(api.model[0].ID)
-    });
-
-    
 </script>

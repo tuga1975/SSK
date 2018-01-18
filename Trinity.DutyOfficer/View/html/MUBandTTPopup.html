@@ -29,19 +29,20 @@
     </div>
 </div>
 <script type="text/javascript">
-    $(document).ready(function () {
-        $('#NRIC').val(api.model.OfficerNRIC);
-        $('#Name').val(api.model.OfficerName);
+    api.ready(function (model) {
+        $('#NRIC').val(model.OfficerNRIC);
+        $('#Name').val(model.OfficerName);
+        $("#PrintBtn").click(function (e) {
+            //var json = JSON.stringify(api.model);
+
+            //api.server.PrintingMUBAndTTLabels(api.model.UserId, $('#Reason').val());
+
+            var json = JSON.stringify(model);
+            api.server.MappingTemplateMUBAndTTLabels(json, $('#Reason').val());
+
+            e.preventDefault(); // avoid to execute the actual submit of the form.
+        });
     });
-    $("#PrintBtn").click(function (e) {
-        //var json = JSON.stringify(api.model);
-
-        //api.server.PrintingMUBAndTTLabels(api.model.UserId, $('#Reason').val());
-
-        var json = JSON.stringify(api.model);
-        api.server.MappingTemplateMUBAndTTLabels(json, $('#Reason').val());
-
-        e.preventDefault(); // avoid to execute the actual submit of the form.
-    });
+    
 
 </script>

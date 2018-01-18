@@ -14,13 +14,7 @@ namespace Trinity.DAL
 
         public List<AbsenceReporting> GetByUserID(string userId)
         {
-            var _absenceReporting = from ab in _localUnitOfWork.DataContext.AbsenceReportings
-                                    join appoint in _localUnitOfWork.DataContext.Appointments on ab.ID equals appoint.AbsenceReporting_ID
-                                    join usr in _localUnitOfWork.DataContext.Membership_Users on appoint.UserId equals usr.UserId
-                                    where usr.UserId == userId
-                                    select ab;
-
-            return _absenceReporting.ToList();
+            return _localUnitOfWork.DataContext.AbsenceReportings.Include("Appointments").Where(d => d.Appointments.Any(c => c.UserId == userId)).ToList();
         }
 
         public int SaveAbsendReporing(AbsenceReporting absenceReporting)

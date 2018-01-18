@@ -8,6 +8,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Trinity.Common;
+using Trinity.Common.Authentication;
 using Trinity.Common.Utils;
 using Trinity.DAL;
 
@@ -89,6 +91,56 @@ namespace SSK
             catch (Exception ex)
             {
                 MessageBox.Show("Lỗi", ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        SuperviseeBiodata _superviseeBiodata = null;
+
+        private void btnWriteDataToSmartCard_Click(object sender, EventArgs e)
+        {
+            _superviseeBiodata = new SuperviseeBiodata()
+            {
+
+                DrugProfile = "",
+                Name = "Minh",
+                NRIC = "033082000012",
+                SupervisionContactNo = "0988482445",
+                SupervisionFrom = DateTime.Now,
+                SupervisionTo = DateTime.Now.AddYears(2),
+                SupervisionOfficer = "Kong",
+                UserId = "1234567890"
+            };
+            bool result = SmartCardUtil.UpdateSuperviseeBiodata(_superviseeBiodata);
+            if (result)
+            {
+                MessageBox.Show("Update data successfully");
+            }
+            else
+            {
+                MessageBox.Show("Update data failed");
+            }
+        }
+
+        private void btnReaderData_Click(object sender, EventArgs e)
+        {
+            if (SmartCardUtil.ReadData())
+            {
+                SuperviseeBiodata superviseeBioData = SmartCardUtil.GetSuperviseeBiodata();
+                if (superviseeBioData != null && _superviseeBiodata != null)
+                {
+                    if (superviseeBioData.Name.Equals(_superviseeBiodata.Name) &&
+                        superviseeBioData.NRIC.Equals(_superviseeBiodata.NRIC) &&
+                        superviseeBioData.SupervisionContactNo.Equals(_superviseeBiodata.SupervisionContactNo) &&
+                        superviseeBioData.SupervisionFrom.Equals(_superviseeBiodata.SupervisionFrom) &&
+                        superviseeBioData.SupervisionOfficer.Equals(_superviseeBiodata.SupervisionOfficer) &&
+                        superviseeBioData.SupervisionTo.Equals(_superviseeBiodata.SupervisionTo) &&
+                        superviseeBioData.UserId.Equals(_superviseeBiodata.UserId) &&
+                        superviseeBioData.DrugProfile.Equals(_superviseeBiodata.DrugProfile))
+                    {
+                        MessageBox.Show("Verified");
+                        return;
+                    }
+                }
+                MessageBox.Show("failed");
             }
         }
     }
