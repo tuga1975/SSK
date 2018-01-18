@@ -1,13 +1,14 @@
 ﻿
 <div style="display:block; padding:10px;">
     <span style=" font-size:22px; float:left; text-align:left;"><b>Statistics</b></span>
+    <br/>
     <div class="form-inline" style="right:10px; float:right; padding-bottom:10px;">
         <select class="form-control" id="pageSize" style="width:70px; display:inline-block;">
             <option>10</option>
             <option>2</option>
             <option>3</option>
         </select>
-        <div style="display:inline-block;">entries</div>
+        <div style="display:inline-block;">Entries</div>
 
         <div style="display:inline-block;">
             <div class="input-group date" id="datetimepicker1" style="width:180px;">
@@ -39,6 +40,23 @@
     });
 
     var dataSource = [];
+    var searchSource = [];
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth() + 1; //January is 0!
+    var yyyy = today.getFullYear();
+
+    if (dd < 10) {
+        dd = '0' + dd
+    }
+
+    if (mm < 10) {
+        mm = '0' + mm
+    }
+
+    today = mm + '/' + dd + '/' + yyyy;
+    $('#dateSearch').val(today);
+
     function getDataCallback(response) {
         var data = JSON.parse(response);
         if (data) {
@@ -53,6 +71,19 @@
                     Available: element.Available,
                     Date: element.Date
                 });
+
+                if (Date.parse(element.Date) == Date.parse(today)) {
+                    searchSource.push({
+                        StartTime: element.StartTime,
+                        EndTime: element.EndTime,
+                        Max: element.Max,
+                        Booked: element.Booked,
+                        Reported: element.Reported,
+                        NoShow: element.No_Show,
+                        Available: element.Available,
+                        Date: element.Date
+                    });
+                }
             });
         }
 
@@ -103,7 +134,7 @@
                 width: '30%',
                 align: 'center'
             }],
-            data: dataSource
+            data: searchSource
         });
     };
 

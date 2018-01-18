@@ -163,7 +163,8 @@ namespace Trinity.DAL
                                     Status = (EnumAppointmentStatuses)a.Status,
                                     AppointmentDate = a.Date,
                                     StartTime = tl.StartTime,
-                                    EndTime = tl.EndTime
+                                    EndTime = tl.EndTime,
+                                    Category = tl.Category
                                 };
 
                 return lstModels.ToList();
@@ -176,21 +177,16 @@ namespace Trinity.DAL
 
         public List<BE.Statistics> GetAllStatistics()
         {
-            var model = from tl in _localUnitOfWork.DataContext.Timeslots
-                        join a in _localUnitOfWork.DataContext.Appointments on tl.Timeslot_ID equals a.Timeslot_ID
+            var model = from a in _localUnitOfWork.DataContext.Appointments
+                        join tl in _localUnitOfWork.DataContext.Timeslots on a.Timeslot_ID equals tl.Timeslot_ID
                         select new BE.Statistics()
                         {
                             Timeslot_ID = tl.Timeslot_ID,
                             StartTime = tl.StartTime,
                             EndTime = tl.EndTime,
-                            Date = a.Date//,
-                            //Max = GetMaximumNumberOfTimeslot(tl.Timeslot_ID),
-                            //Booked = CountAppointmentBookedByTimeslot(tl.Timeslot_ID),
-                            //Reported = CountAppointmentReportedByTimeslot(tl.Timeslot_ID),
-                            //No_Show = CountAppointmentNoShowByTimeslot(tl.Timeslot_ID),
-                            //Available = GetMaximumNumberOfTimeslot(tl.Timeslot_ID) - CountAppointmentBookedByTimeslot(tl.Timeslot_ID) - CountAppointmentReportedByTimeslot(tl.Timeslot_ID) - CountAppointmentNoShowByTimeslot(tl.Timeslot_ID)
+                            Date = a.Date
                         };
-            return model.Distinct().ToList();
+            return model.Distinct().OrderByDescending(m=>m.Date.Value).ThenBy(m=>m.StartTime.Value).ToList();
         }
 
         public int CountAppointmentBookedByTimeslot(int timeslotID)

@@ -1,14 +1,25 @@
 ﻿<div style="display:block; padding:10px;">
     <span style=" font-size:22px; float:left; text-align:left;"><b>Appointments</b></span>
+    <br/>
     <div class="form-inline" style="right:10px; float:right; padding-bottom:10px;">
         <select class="form-control" id="pageSize" style="width:70px; display:inline-block;">
             <option>10</option>
             <option>2</option>
             <option>3</option>
         </select>
-        <div style="display:inline-block;">entries</div>
-
-        <div style="display:inline-block;">
+        <div style="display:inline-block;">Entries</div>
+        <select class="form-control" id="period" style="width:170px; display:inline-block; margin-left:20px;">
+            <option>All Day</option>
+            <option>Morning</option>
+            <option>Afternoon</option>
+            <option>Evening</option>
+        </select>
+        <div style="display:inline-block;">Period</div>
+        <select class="form-control" id="timeslot" style="width:220px; display:inline-block; margin-left:20px;">
+            <option>All</option>
+        </select>
+        <div style="display:inline-block;">Timeslot</div>
+        <div style="display:inline-block; margin-left:20px;">
             <div class="input-group date" id="datetimepicker" style="width:180px;">
                 <input type='text' class="form-control" id="dateSearch" />
                 <span class="input-group-addon">
@@ -25,6 +36,23 @@
     activemenu('Appointments');
 
     var dataSource = [];
+    var searchSource = [];
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth() + 1; //January is 0!
+    var yyyy = today.getFullYear();
+
+    if (dd < 10) {
+        dd = '0' + dd
+    }
+
+    if (mm < 10) {
+        mm = '0' + mm
+    }
+
+    today = mm + '/' + dd + '/' + yyyy;
+    $('#dateSearch').val(today);
+
     function getDataCallback(response) {
         var data = JSON.parse(response);
         if (data) {
@@ -37,8 +65,27 @@
                     Status: element.Status,
                     Date: element.AppointmentDate,
                     StartTime: element.StartTime,
-                    EndTime: element.EndTime
+                    EndTime: element.EndTime,
+                    Category: element.Category
                 });
+
+                if (Date.parse(element.AppointmentDate) == Date.parse(today)) {
+                    searchSource.push({
+                        TimeSlot: element.StartTime + ' to ' + element.EndTime,
+                        NRIC: element.NRIC,
+                        Name: element.Name,
+                        ReportTime: element.ReportTime,
+                        Status: element.Status,
+                        Date: element.AppointmentDate,
+                        StartTime: element.StartTime,
+                        EndTime: element.EndTime,
+                        Category: element.Category
+                    });
+                }
+            });
+
+            searchSource.forEach(function (element, index) {
+                $('#timeslot').append($('<option></option>').val(element.TimeSlot).html(element.TimeSlot));
             });
         }
 
@@ -93,7 +140,7 @@
                     }
                 }
             }],
-            data: dataSource
+            data: searchSource
             //[{
             //    TimeSlot: '04:50',
             //    NRIC: 'S99999991X',
@@ -140,12 +187,29 @@
         });
     });
 
+    $('#period').change(function () {
+        searchAppointment();
+    });
+
+    $('#timeslot').change(function () {
+        searchAppointment();
+    });
+
     $('#dateSearch').change(function () {
-        var source = [];
+        $('#timeslot').val('All');
+        searchAppointment();
+        getTimeslot();
+    });
+
+    function searchAppointment() {
+        searchSource = [];
+        var category = $("#period option:selected").text();
+        var timeslot = $('#timeslot option:selected').text();
         var dateSearch = $('#dateSearch').val();
+
         for (var i = 0; i < dataSource.length; i++) {
-            if (Date.parse(dataSource[i].Date) == Date.parse(dateSearch)) {
-                source.push({
+            if ((Date.parse(dataSource[i].Date) == Date.parse(dateSearch) || dateSearch == '') && (dataSource[i].Category == category || category == 'All Day') && (dataSource[i].TimeSlot == timeslot || timeslot == 'All')) {
+                searchSource.push({
                     TimeSlot: dataSource[i].TimeSlot,
                     NRIC: dataSource[i].NRIC,
                     Name: dataSource[i].Name,
@@ -157,15 +221,21 @@
                 });
             }
         }
-
-        if (!dateSearch) {
-            source = dataSource;
-        }
+        
         $('#table').bootstrapTable('refreshOptions', {
             pagination: true,
-            data: source
+            data: searchSource
         });
-    });
+    };
+
+    function getTimeslot() {
+        $('#timeslot').empty();
+        $('#timeslot').append($('<option></option>').val('All').html('All'));
+
+        searchSource.forEach(function (element, index) {
+            $('#timeslot').append($('<option></option>').val(element.TimeSlot).html(element.TimeSlot));
+        });
+    };
 
     function formatDate(strDate) {
         var date = new Date(Date.parse(strDate)),
@@ -180,7 +250,7 @@
             formatedMinute = (minute.length === 1) ? ("0" + minute) : minute,
             second = date.getSeconds().toString(),
             formatedSecond = (second.length === 1) ? ("0" + second) : second;
-        return formatedMonth + "/" + formatedDay + "/" + year + " " + formatedHour + ':' + formatedMinute;
+        return formatedMonth + "/" + formatedDay + "/" + year;
     }
     
 </script>
