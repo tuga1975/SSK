@@ -137,6 +137,11 @@ namespace DutyOfficer
             this._web.LoadPopupHtml("PopupAddHoliday.html");
         }
 
+        public void PopupEditOperationalDate(string dayOfWeek)
+        {
+            this._web.LoadPopupHtml("PopupEditOperationalDate.html", dayOfWeek);
+        }
+
         public void GetSettings()
         {
             var dalSetting = new DAL_Setting();
@@ -185,13 +190,14 @@ namespace DutyOfficer
             _web.InvokeScript("getDataCallback", result);
         }
 
-        public void LoadPopupBlock(string json)
+        public void LoadPopupBlock(string userId)
         {
-            var rawData = JsonConvert.DeserializeObject<UserBlockedModel>(json);
+            UserBlockedModel rawData = new UserBlockedModel();
             Session session = Session.Instance;
             Trinity.BE.User dutyOfficer = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
             rawData.OfficerNRIC = dutyOfficer.NRIC;
             rawData.OfficerName = dutyOfficer.Name;
+            rawData.UserId = userId;
 
             this._web.LoadPopupHtml("BlockedPopupDetail.html", rawData);
         }
