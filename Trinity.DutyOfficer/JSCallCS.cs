@@ -18,10 +18,8 @@ using System.Linq;
 namespace DutyOfficer
 {
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    public class JSCallCS
+    public class JSCallCS:JSCallCSBase
     {
-        private WebBrowser _web = null;
-        private Type _thisType = null;
         private CodeBehind.PrintMUBAndTTLabels _printTTLabel;
 
         public event EventHandler<NRICEventArgs> OnNRICFailed;
@@ -31,43 +29,17 @@ namespace DutyOfficer
 
         public JSCallCS(WebBrowser web)
         {
-            this._web = web;
+            _web = web;
             _thisType = this.GetType();
-
             _printTTLabel = new CodeBehind.PrintMUBAndTTLabels(web);
             _printTTLabel.OnPrintMUBAndTTLabelsSucceeded += PrintMUBAndTTLabels_OnPrintTTLabelSucceeded;
             _printTTLabel.OnPrintMUBAndTTLabelsFailed += PrintMUBAndTTLabels_OnPrintTTLabelFailed;
             _printTTLabel.OnPrintMUBAndTTLabelsException += PrintMUBAndTTLabels_OnPrintTTLabelException;
-
-
         }
 
 
 
-        public void LoadPage(string file)
-        {
-            _web.LoadPageHtml(file);
-        }
-
-        private void actionThread(object pram)
-        {
-
-            var data = (object[])pram;
-            var method = data[0].ToString();
-
-            MethodInfo theMethod = _thisType.GetMethod(method);
-            var dataReturn = theMethod.Invoke(this, (object[])data[2]);
-            if (data[1] != null)
-            {
-                this._web.InvokeScript("callEventCallBack", data[1], JsonConvert.SerializeObject(dataReturn, Formatting.Indented, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore }));
-            }
-            _web.SetLoading(false);
-        }
-
-        public void ClientCallServer(string method, string guidEvent, params object[] pram)
-        {
-            ThreadPool.QueueUserWorkItem(new WaitCallback(actionThread), new object[] { method, guidEvent, pram });
-        }
+        
 
 
         public void getAlertsSendToDutyOfficer()

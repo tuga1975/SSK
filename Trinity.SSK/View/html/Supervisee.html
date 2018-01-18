@@ -55,7 +55,7 @@
     }
 </style>
 <script type="text/javascript">
-    $(document).ready(function () {
+    api.ready(function () {
         $('[notinumber]').text(api.countNoti == 0 ? '' : api.countNoti);
 
         api.server.GetCountMyAbsence(function (count) {

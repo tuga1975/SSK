@@ -38,6 +38,7 @@ namespace Enrolment
         public Main()
         {
             InitializeComponent();
+            new DAL_Appointments().GetAllStatistics();
             pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
             // setup variables
             _smartCardFailed = 0;
@@ -359,6 +360,7 @@ namespace Enrolment
 
         private void EventCenter_OnNewEvent(object sender, EventInfo e)
         {
+            
             if (e.Name == EventNames.LOGIN_SUCCEEDED)
             {
                 new JSCallCS(this.LayerWeb).LoadListSupervisee();

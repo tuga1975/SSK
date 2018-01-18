@@ -45,6 +45,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <RunPostBuildEvent>Always</RunPostBuildEvent>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -146,21 +149,6 @@
     <None Include="View\bootstrap-datepicker\css\bootstrap-datepicker3.min.css.map" />
     <None Include="View\bootstrap-datepicker\css\bootstrap-datepicker3.standalone.css.map" />
     <None Include="View\bootstrap-datepicker\css\bootstrap-datepicker3.standalone.min.css.map" />
-    <None Include="View\bootstrap\css\bootstrap-grid.css.map" />
-    <None Include="View\bootstrap\css\bootstrap-grid.min.css.map" />
-    <None Include="View\bootstrap\css\bootstrap-reboot.css.map" />
-    <None Include="View\bootstrap\css\bootstrap-reboot.min.css.map" />
-    <None Include="View\bootstrap\css\bootstrap.css.map" />
-    <None Include="View\bootstrap\css\bootstrap.min.css.map" />
-    <None Include="View\bootstrap\fonts\fontawesome-webfont.eot" />
-    <None Include="View\bootstrap\fonts\fontawesome-webfont.ttf" />
-    <None Include="View\bootstrap\fonts\fontawesome-webfont.woff" />
-    <None Include="View\bootstrap\fonts\fontawesome-webfont.woff2" />
-    <None Include="View\bootstrap\fonts\FontAwesome.otf" />
-    <None Include="View\bootstrap\fonts\glyphicons-halflings-regular.eot" />
-    <None Include="View\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
-    <None Include="View\bootstrap\fonts\glyphicons-halflings-regular.woff" />
-    <None Include="View\bootstrap\fonts\glyphicons-halflings-regular.woff2" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -284,17 +272,6 @@
     <Content Include="View\html\Authentication\SmartCard.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="View\bootstrap\css\bootstrap-grid.css" />
-    <Content Include="View\bootstrap\css\bootstrap-grid.min.css" />
-    <Content Include="View\bootstrap\css\bootstrap-reboot.css" />
-    <Content Include="View\bootstrap\css\bootstrap-reboot.min.css" />
-    <Content Include="View\bootstrap\css\bootstrap.css" />
-    <Content Include="View\bootstrap\css\bootstrap.min.css" />
-    <Content Include="View\bootstrap\css\font-awesome.css" />
-    <Content Include="View\bootstrap\css\font-awesome.min.css" />
-    <Content Include="View\bootstrap\fonts\fontawesome-webfont.svg" />
-    <Content Include="View\bootstrap\fonts\glyphicons-halflings-regular.svg" />
-    <Content Include="View\bootstrap\js\bootstrap.min.js" />
     <Content Include="View\html\Blocked.html" />
     <Content Include="View\html\BlockedPopupDetail.html" />
     <Content Include="View\html\hourglass.gif" />
@@ -313,11 +290,16 @@
     <Content Include="View\html\UBlabelPopup.html" />
     <Content Include="View\img\central_narco_logo.png" />
     <Content Include="View\img\Logo.png" />
-    <Content Include="View\scripts\jquery-1.10.2.min.js" />
     <Content Include="View\scripts\lib.js" />
     <Content Include="View\styles\main.css" />
     <Content Include="View\table\bootstrap-table.css" />
     <Content Include="View\table\bootstrap-table.js" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>XCOPY "$(ProjectDir)View" "$(TargetDir)View" /E /I /F /Y</PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>XCOPY "$(ProjectDir)View" "$(TargetDir)View" /E /I /F /Y</PostBuildEvent>
+  </PropertyGroup>
 </Project>
