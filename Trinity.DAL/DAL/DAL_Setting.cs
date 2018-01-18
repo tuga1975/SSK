@@ -46,14 +46,15 @@ namespace Trinity.DAL
             return appointmentTime;
         }
 
-        private static BE.AppointmentTimeDetails SetAppointmentTime(DBContext.Timeslot timeSlot)
+        public  BE.AppointmentTimeDetails SetAppointmentTime(DBContext.Timeslot timeSlot)
         {
             var environmentTime = new BE.AppointmentTimeDetails()
             {
                 StartTime = timeSlot.StartTime.Value,
                 EndTime = timeSlot.EndTime.Value,
                 IsAvailble = true,
-                IsSelected = false
+                IsSelected = false,
+                Category= timeSlot.Category
             };
             return environmentTime;
         }
@@ -277,7 +278,7 @@ namespace Trinity.DAL
 
         public BE.SettingModel GetSettings(string status)
         {
-            var dbSeting = _localUnitOfWork.DataContext.Settings.Where(s => s.Status.Equals(status, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
+            var dbSeting = _localUnitOfWork.DataContext.Settings.FirstOrDefault(s => s.Status.Equals(status, StringComparison.InvariantCultureIgnoreCase));
             var settingBE = new BE.SettingBE();
 
             if (dbSeting != null)

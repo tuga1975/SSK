@@ -38,6 +38,7 @@ namespace Enrolment
         public Main()
         {
             InitializeComponent();
+            new DAL_Appointments().GetAllStatistics();
             pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
             // setup variables
             _smartCardFailed = 0;
@@ -359,6 +360,7 @@ namespace Enrolment
 
         private void EventCenter_OnNewEvent(object sender, EventInfo e)
         {
+            
             if (e.Name == EventNames.LOGIN_SUCCEEDED)
             {
                 new JSCallCS(this.LayerWeb).LoadListSupervisee();
@@ -741,30 +743,21 @@ namespace Enrolment
                 new System.Drawing.Bitmap(new System.IO.MemoryStream(Convert.FromBase64String(backBase64))).Save(ImgBack);
             }
 
-            PrintAndWriteSmartcardInfo infoPrinter = new PrintAndWriteSmartcardInfo()
+            SuperviseeCardInfo infoPrinter = new SuperviseeCardInfo()
             {
                 BackCardImagePath = ImgBack,
                 FrontCardImagePath = ImgFront,
-                SmartCardData = new SmartCardData()
+                SuperviseeBiodata = new SuperviseeBiodata()
                 {
-                    CardHolderInfo = new CardHolderInfo()
-                    {
-                        DOB = profileModel.UserProfile.DOB,
-                        Name = profileModel.User.Name,
-                        NRIC = profileModel.User.NRIC,
-                        UserId = profileModel.User.UserId,
-                    },
-                    CardInfo = new CardInfo()
-                    {
-                        CreatedBy = userLogin.UserId,
-                        CreatedDate = DateTime.Now
-                    }
+                    Name = profileModel.User.Name,
+                    NRIC = profileModel.User.NRIC,
+                    UserId = profileModel.User.UserId,
                 }
             };
 
-            Trinity.Common.Utils.SmartCardPrinterUtils.Instance.PrintAndWriteSmartcardData(infoPrinter, OnNewCardPrintedSuccessfully);
+            Trinity.Common.Utils.SmartCardPrinterUtils.Instance.PrintAndWriteSuperviseeSmartCard(infoPrinter, OnNewCardPrintedSuccessfully);
         }
-        private void OnNewCardPrintedSuccessfully(PrintAndWriteSmartcardResult result)
+        private void OnNewCardPrintedSuccessfully(PrintAndWriteCardResult result)
         {
             if (result.Success)
             {
@@ -772,7 +765,7 @@ namespace Enrolment
                 var userLogin = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
                 var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
                 DAL_IssueCard dalIssueCard = new Trinity.DAL.DAL_IssueCard();
-                string SmartID = result.SmartCardData.CardInfo.UID;
+                string SmartID = result.CardUID;
                 Trinity.BE.IssueCard IssueCard = new Trinity.BE.IssueCard()
                 {
                     CreatedBy = userLogin.UserId,

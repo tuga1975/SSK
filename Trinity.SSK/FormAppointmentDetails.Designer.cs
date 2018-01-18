@@ -34,6 +34,8 @@
             this.btnGenerateTimeslots = new System.Windows.Forms.Button();
             this.btnGenerateAppointments = new System.Windows.Forms.Button();
             this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
+            this.btnWriteDataToSmartCard = new System.Windows.Forms.Button();
+            this.btnReaderData = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnPrint
@@ -52,11 +54,11 @@
             this.webBrowserAppointmentDetails.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.webBrowserAppointmentDetails.Location = new System.Drawing.Point(13, 147);
+            this.webBrowserAppointmentDetails.Location = new System.Drawing.Point(13, 287);
             this.webBrowserAppointmentDetails.MinimumSize = new System.Drawing.Size(20, 20);
             this.webBrowserAppointmentDetails.Name = "webBrowserAppointmentDetails";
             this.webBrowserAppointmentDetails.ScriptErrorsSuppressed = true;
-            this.webBrowserAppointmentDetails.Size = new System.Drawing.Size(694, 439);
+            this.webBrowserAppointmentDetails.Size = new System.Drawing.Size(694, 299);
             this.webBrowserAppointmentDetails.TabIndex = 1;
             // 
             // btnGenerateTimeslots
@@ -90,12 +92,36 @@
             this.dateTimePicker1.Size = new System.Drawing.Size(200, 22);
             this.dateTimePicker1.TabIndex = 4;
             // 
+            // btnWriteDataToSmartCard
+            // 
+            this.btnWriteDataToSmartCard.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnWriteDataToSmartCard.Location = new System.Drawing.Point(13, 158);
+            this.btnWriteDataToSmartCard.Name = "btnWriteDataToSmartCard";
+            this.btnWriteDataToSmartCard.Size = new System.Drawing.Size(201, 46);
+            this.btnWriteDataToSmartCard.TabIndex = 5;
+            this.btnWriteDataToSmartCard.Text = "Write data to smart card";
+            this.btnWriteDataToSmartCard.UseVisualStyleBackColor = true;
+            this.btnWriteDataToSmartCard.Click += new System.EventHandler(this.btnWriteDataToSmartCard_Click);
+            // 
+            // btnReaderData
+            // 
+            this.btnReaderData.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnReaderData.Location = new System.Drawing.Point(237, 158);
+            this.btnReaderData.Name = "btnReaderData";
+            this.btnReaderData.Size = new System.Drawing.Size(201, 46);
+            this.btnReaderData.TabIndex = 6;
+            this.btnReaderData.Text = "Read data";
+            this.btnReaderData.UseVisualStyleBackColor = true;
+            this.btnReaderData.Click += new System.EventHandler(this.btnReaderData_Click);
+            // 
             // FormAppointmentDetails
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.ClientSize = new System.Drawing.Size(719, 598);
+            this.Controls.Add(this.btnReaderData);
+            this.Controls.Add(this.btnWriteDataToSmartCard);
             this.Controls.Add(this.dateTimePicker1);
             this.Controls.Add(this.btnGenerateAppointments);
             this.Controls.Add(this.btnGenerateTimeslots);
@@ -116,5 +142,7 @@
         private System.Windows.Forms.Button btnGenerateTimeslots;
         private System.Windows.Forms.Button btnGenerateAppointments;
         private System.Windows.Forms.DateTimePicker dateTimePicker1;
+        private System.Windows.Forms.Button btnWriteDataToSmartCard;
+        private System.Windows.Forms.Button btnReaderData;
     }
 }

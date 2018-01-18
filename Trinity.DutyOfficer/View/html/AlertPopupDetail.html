@@ -120,8 +120,9 @@
         notification : "Notification",
         caution : "Caution"
     };
-    $(document).ready(function() {
-        var data = JSON.parse(api.model);
+    
+    api.ready(function (model) {
+        var data = JSON.parse(model);
         if(data){
             $("#valMessageSource").text(data.source);
             $("#valDateTime").text(formatDate(data.dateTime));

@@ -59,8 +59,13 @@ namespace Trinity.DAL
             return dataInsert;
         }
 
+        public Trinity.DAL.DBContext.QueueDetail GetQueueDetailByAppointent(Appointment appointment,string station)
+        {
+            var today = DateTime.Now;
+            var queueDetail= _localUnitOfWork.DataContext.Queues.Include("QueueDetails").Where(q => q.Appointment_ID == appointment.ID && DbFunctions.TruncateTime(appointment.Date) == today.Date).Select(qd=>qd.QueueDetails.FirstOrDefault(s=>s.Station==station)).FirstOrDefault();
+            return queueDetail;
+        }
 
-        
         public List<Trinity.DAL.DBContext.Queue> GetAllQueueNumberByDate(DateTime date, string station)
         {
             date = date.Date;

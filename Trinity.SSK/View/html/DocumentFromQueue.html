@@ -28,19 +28,16 @@
 
 <script>
     var formData, json = null;
-    $(document).ready(function () {
-
+    api.ready(function (model) {
+        $('#btnOK').click(function () {
+            api.server.UpdateAbsenceAfterScanDoc();
+        });
     });
     var setSuccess = setTimeout(showMessage, 5000);
     function showMessage() {
         $('#divMessage').show();
         $('#divConfirm').show();
     }
-
-    $('#btnOK').click(function () {
-        api.server.UpdateAbsenceAfterScanDoc();
-    });
-
 </script>
 
 <!--<script>

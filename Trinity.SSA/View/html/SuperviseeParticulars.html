@@ -47,23 +47,23 @@
 </form>
 
 <script type="text/javascript">
-    $(document).ready(function () {
-        $('#UserName').val(api.model.Name);
-        $('#NRIC').val(api.model.NRIC);
-        $('#Date').val(api.model.Date);
-        $('#MarkingNumber').val(api.model.MarkingNo);
-        var srcQRCode = "../../Temp/QRCode_" + api.model.NRIC + ".png";
+    api.ready(function (model) {
+        $('#UserName').val(model.Name);
+        $('#NRIC').val(model.NRIC);
+        $('#Date').val(model.Date);
+        $('#MarkingNumber').val(model.MarkingNo);
+        var srcQRCode = "../../Temp/QRCode_" + model.NRIC + ".png";
         $("#imgQRCode").attr("src", srcQRCode);
-    });
-    
-    $("#ConfirmBtn").click(function (e) {        
-        var json = JSON.stringify(api.model);
-        api.server.MappingTemplateMUBAndTTLabels(json);
-        e.preventDefault(); // avoid to execute the actual submit of the form.
-    });
 
-    $('#CancelBtn').click(function () {
-        api.server.DeleteQRCodeImageFileTemp();
-        api.server.LogOut();
-    });    
+        $("#ConfirmBtn").click(function (e) {
+            var json = JSON.stringify(model);
+            api.server.MappingTemplateMUBAndTTLabels(json);
+            e.preventDefault(); // avoid to execute the actual submit of the form.
+        });
+
+        $('#CancelBtn').click(function () {
+            api.server.DeleteQRCodeImageFileTemp();
+            api.server.LogOut();
+        });    
+    });
 </script>

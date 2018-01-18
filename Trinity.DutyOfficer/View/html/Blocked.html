@@ -23,7 +23,7 @@
             <option>2</option>
             <option>3</option>
         </select>
-        <div style="display:inline-block;">entries</div>
+        <div style="display:inline-block;">Entries</div>
     </div>
 </div>
 
@@ -65,14 +65,14 @@
             pagination: true,
             pageSize: 10,
             search:true,
-            onClickCell: function (field, value, row, $element) {
-                if (field == 'Action') {
-                    var data = JSON.stringify(row);
-                    api.server.LoadPopupBlock(data, function () {
-                        $('#idBlock').modal();
-                    });
-                }
-            },
+            //onClickCell: function (field, value, row, $element) {
+            //    if (field == 'Action') {
+            //        var data = JSON.stringify(row);
+            //        api.server.LoadPopupBlock(data, function () {
+            //            $('#idBlock').modal();
+            //        });
+            //    }
+            //},
             columns: [{
                 field: 'NRIC',
                 title: 'NRIC',
@@ -96,12 +96,18 @@
                 width: '10%',
                 align: 'center',
                 formatter: function (value, row, index, field) {
-                    return '<button class=\'btn btn-dark \' >Unblock</button> ';
+                    return '<button class="btn btn-info " onclick = "openPopup(\''+ row.UserId + '\');">Unblock</button> ';
                 }
             }],
             data: dataSource
         });
     };
+
+    function openPopup(userId) {
+        api.server.LoadPopupBlock(userId, function () {
+            $('#idBlock').modal();
+        });
+    };    
 
     function loadTable(page) {
         $('#table').bootstrapTable({

@@ -104,8 +104,7 @@
                 NRIC: row.NRIC,
                 Name: row.Name,
                 LastStation: row.LastStation
-            });
-            
+            });            
         })
 
         $('#MUBAndTTlabel').on('uncheck.bs.table', function (e, row) {
@@ -127,7 +126,6 @@
                 var data = JSON.stringify(model);
                 api.server.LoadPopupMUBAndTTLabel(data, function () {
                     $('#popupMUBandTTLabel').modal();
-
                 })
             }
             else {
