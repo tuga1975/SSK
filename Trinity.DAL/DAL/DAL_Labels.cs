@@ -79,7 +79,8 @@ namespace Trinity.DAL
                 {
                     NRIC = d.Membership_Users.NRIC,
                     Name = d.Membership_Users.Name,
-                    LastStation = d.LastStation
+                    LastStation = d.LastStation,
+                    UserId = d.UserId
                 });
                 //var lstModels = from a in _localUnitOfWork.DataContext.Labels
                 //                join u in _localUnitOfWork.DataContext.Membership_Users on a.UserId equals u.UserId
