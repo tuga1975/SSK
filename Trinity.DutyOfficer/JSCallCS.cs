@@ -20,7 +20,7 @@ namespace DutyOfficer
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public class JSCallCS:JSCallCSBase
     {
-        private CodeBehind.PrintMUBAndTTLabels _printTTLabel;
+        private CodeBehind.PrintMUBAndTTLabels _printMUBAndTTLabel;
 
         public event EventHandler<NRICEventArgs> OnNRICFailed;
         public event EventHandler<ShowMessageEventArgs> OnShowMessage;
@@ -29,28 +29,16 @@ namespace DutyOfficer
 
         public JSCallCS(WebBrowser web)
         {
-            _web = web;
+            this._web = web;
             _thisType = this.GetType();
 
-            _printTTLabel = new CodeBehind.PrintMUBAndTTLabels(web);
-            _printTTLabel.OnPrintMUBAndTTLabelsSucceeded += PrintMUBAndTTLabels_OnPrintTTLabelSucceeded;
-            _printTTLabel.OnPrintMUBAndTTLabelsFailed += PrintMUBAndTTLabels_OnPrintTTLabelFailed;
-            _printTTLabel.OnPrintMUBAndTTLabelsException += PrintMUBAndTTLabels_OnPrintTTLabelException;
-
-
+            _printMUBAndTTLabel = new CodeBehind.PrintMUBAndTTLabels(web);
+            _printMUBAndTTLabel.OnPrintMUBLabelsSucceeded += PrintMUBLabels_OnPrintMUBLabelSucceeded;
+            _printMUBAndTTLabel.OnPrintMUBLabelsFailed += PrintMUBLabels_OnPrintMUBLabelFailed;
+            _printMUBAndTTLabel.OnPrintTTLabelsSucceeded += PrintTTLabels_OnPrintTTLabelSucceeded;
+            _printMUBAndTTLabel.OnPrintTTLabelsFailed += PrintTTLabels_OnPrintTTLabelFailed;
+            _printMUBAndTTLabel.OnPrintMUBAndTTLabelsException += PrintMUBAndTTLabels_OnPrintTTLabelException;
         }
-
-
-
-        public void LoadPage(string file)
-        {
-            _web.LoadPageHtml(file);
-        }
-
-
-
-        
-
 
         public void getAlertsSendToDutyOfficer()
         {
@@ -416,7 +404,7 @@ namespace DutyOfficer
 
             }
         }
-        
+
         //Call Printing MUB and TT labels
         public void CallPrintingMUBAndTT(string jsonModel, string base64String)
         {
@@ -469,7 +457,7 @@ namespace DutyOfficer
 
             DAL_Labels dalLabel = new DAL_Labels();
             dalLabel.UpdateLabel(labelInfo, labelInfo.UserId, EnumLabelType.MUB);
-            
+
             MessageBox.Show("Print successful.", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
             DeleteQRCodeImageFileTemp();
