@@ -70,37 +70,37 @@
 <input type="hidden" id="reasonValue" />
 <input type="hidden" id="selectedAbsenceDate" />
 <script type="text/javascript">
-    $(document).ready(function () {
+    api.ready(function (model) {
       
-            $("#countdate").text(api.model.length);
-            $.each(api.model, function (index, item) {
+            $("#countdate").text(model.length);
+            $.each(model, function (index, item) {
                 $('#choosedate').append(' <input type="checkbox" id="dateChoice' + (index + 1) + '" value= "' + item.ID + '" > <label for="dateChoice' + (index + 1) + '">' + item.GetDateTxt + '</label>');
             });
-        
+            var _reason = "";
+            $('.reason').click(function () {
+                $('.reason').removeClass("btn-primary");
+                $(this).removeClass("btn-default").addClass("btn-primary");
+                $('#reasonDetail').val("" + $(this).text());
+                $('#reasonValue').val($(this).attr('id'));
+                _reason = '{"Value":"' + $('#reasonValue').val() + '", "Detail":" ' + $('#reasonDetail').val() + '"}';
+            });
+
+
+            $("#saveReason").click(function () {
+                var selectedID = "";
+                $('input[type=checkbox]').each(function () {
+                    selectedID += (this.checked ? $(this).val() + "," : "");
+                });
+
+                api.server.SaveReasonForQueue(_reason, selectedID);
+            });
+
+            $('#btnAbsenceScan').click(function () {
+                api.server.LoadScanDocumentForAbsence(JSON.stringify(model), _reason);
+            });
        
     });
 
-    var _reason = "";
-    $('.reason').click(function () {
-        $('.reason').removeClass("btn-primary");
-        $(this).removeClass("btn-default").addClass("btn-primary");
-        $('#reasonDetail').val(""+$(this).text());
-        $('#reasonValue').val($(this).attr('id'));
-        _reason = '{"Value":"' + $('#reasonValue').val() + '", "Detail":" ' + $('#reasonDetail').val() + '"}';
-    });
-
-
-    $("#saveReason").click(function () {
-        var selectedID = "";
-        $('input[type=checkbox]').each(function () {
-             selectedID += (this.checked ? $(this).val()+"," : "");
-        });
-
-        api.server.SaveReasonForQueue(_reason,selectedID);
-    });
-
-    $('#btnAbsenceScan').click(function () {
-        api.server.LoadScanDocumentForAbsence(JSON.stringify(api.model), _reason);
-    });
+    
 
 </script>

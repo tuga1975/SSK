@@ -278,7 +278,7 @@ namespace Trinity.DAL
 
         public BE.SettingModel GetSettings(string status)
         {
-            var dbSeting = _localUnitOfWork.DataContext.Settings.Where(s => s.Status.Equals(status, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
+            var dbSeting = _localUnitOfWork.DataContext.Settings.FirstOrDefault(s => s.Status.Equals(status, StringComparison.InvariantCultureIgnoreCase));
             var settingBE = new BE.SettingBE();
 
             if (dbSeting != null)

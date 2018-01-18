@@ -99,6 +99,9 @@
   <PropertyGroup>
     <SignManifests>true</SignManifests>
   </PropertyGroup>
+  <PropertyGroup>
+    <RunPostBuildEvent>Always</RunPostBuildEvent>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
@@ -222,21 +225,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <None Include="View\bootstrap\css\bootstrap-grid.css.map" />
-    <None Include="View\bootstrap\css\bootstrap-grid.min.css.map" />
-    <None Include="View\bootstrap\css\bootstrap-reboot.css.map" />
-    <None Include="View\bootstrap\css\bootstrap-reboot.min.css.map" />
-    <None Include="View\bootstrap\css\bootstrap.css.map" />
-    <None Include="View\bootstrap\css\bootstrap.min.css.map" />
-    <None Include="View\bootstrap\fonts\fontawesome-webfont.eot" />
-    <None Include="View\bootstrap\fonts\fontawesome-webfont.ttf" />
-    <None Include="View\bootstrap\fonts\fontawesome-webfont.woff" />
-    <None Include="View\bootstrap\fonts\fontawesome-webfont.woff2" />
-    <None Include="View\bootstrap\fonts\FontAwesome.otf" />
-    <None Include="View\bootstrap\fonts\glyphicons-halflings-regular.eot" />
-    <None Include="View\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
-    <None Include="View\bootstrap\fonts\glyphicons-halflings-regular.woff" />
-    <None Include="View\bootstrap\fonts\glyphicons-halflings-regular.woff2" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
@@ -250,17 +238,6 @@
     <Content Include="Libs\pcsc-sharp.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="View\bootstrap\css\bootstrap-grid.css" />
-    <Content Include="View\bootstrap\css\bootstrap-grid.min.css" />
-    <Content Include="View\bootstrap\css\bootstrap-reboot.css" />
-    <Content Include="View\bootstrap\css\bootstrap-reboot.min.css" />
-    <Content Include="View\bootstrap\css\bootstrap.css" />
-    <Content Include="View\bootstrap\css\bootstrap.min.css" />
-    <Content Include="View\bootstrap\css\font-awesome.css" />
-    <Content Include="View\bootstrap\css\font-awesome.min.css" />
-    <Content Include="View\bootstrap\fonts\fontawesome-webfont.svg" />
-    <Content Include="View\bootstrap\fonts\glyphicons-halflings-regular.svg" />
-    <Content Include="View\bootstrap\js\bootstrap.min.js" />
     <Content Include="View\html\Authentication\NRIC.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -351,6 +328,12 @@
     <Error Condition="!Exists('..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" Text="This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=317567." HelpKeyword="BCLBUILD2001" />
     <Error Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" Text="The build restored NuGet packages. Build the project again to include these packages in the build. For more information, see http://go.microsoft.com/fwlink/?LinkID=317568." HelpKeyword="BCLBUILD2002" />
   </Target>
+  <PropertyGroup>
+    <PreBuildEvent>XCOPY "$(ProjectDir)View" "$(TargetDir)View" /E /I /F /Y</PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>XCOPY "$(ProjectDir)View" "$(TargetDir)View" /E /I /F /Y</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

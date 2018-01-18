@@ -28,19 +28,20 @@
     </div>
 </div>
 <script type="text/javascript">
-    $(document).ready(function () {
-        $('#NRIC').val(api.model.OfficerNRIC);
-        $('#Name').val(api.model.OfficerName);
+    api.ready(function (model) {
+        $('#NRIC').val(model.OfficerNRIC);
+        $('#Name').val(model.OfficerName);
+        $("#UnblockBtn").click(function (e) {
+            api.server.UnblockSuperviseeByUserId(model.UserId, $('#Reason').val());
+            // Waiting 1 second to update DB then refresh
+            setTimeout(function () {
+                api.server.LoadPage('Blocked.html')
+                $('#idBlock').modal('toggle');
+            }, 1000);
+            e.preventDefault(); // avoid to execute the actual submit of the form.
+        });
     });
 
-    $("#UnblockBtn").click(function (e) {
-        api.server.UnblockSuperviseeByUserId(api.model.UserId, $('#Reason').val());
-        // Waiting 1 second to update DB then refresh
-        setTimeout(function () {
-            api.server.LoadPage('Blocked.html')
-            $('#idBlock').modal('toggle');
-        }, 1000);
-        e.preventDefault(); // avoid to execute the actual submit of the form.
-    });
+    
 
 </script>
