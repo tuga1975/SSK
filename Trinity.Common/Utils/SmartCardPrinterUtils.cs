@@ -18,8 +18,6 @@ namespace Trinity.Common.Utils
     {
         private string _smartCardPrinterName;
         private short _alarm = 0;
-        private DestinationTypeEnum _destination = DestinationTypeEnum.Eject;
-        private FeederSourceEnum _feeder = FeederSourceEnum.ATMSlot;
 
         private struct JobStatusStruct
         {
@@ -64,7 +62,7 @@ namespace Trinity.Common.Utils
         }
         #endregion
 
-        public void PrintAndWriteSmartcardData(PrintAndWriteSmartcardInfo printAndWriteSmartcardInfo, Action<PrintAndWriteSmartcardResult> OnCompleted)
+        public void PrintAndWriteSmartcardData(PrintAndWriteSmartCardInfo printAndWriteSmartcardInfo, Action<PrintAndWriteSmartcardResult> OnCompleted)
         {
             try
             {
@@ -167,8 +165,10 @@ namespace Trinity.Common.Utils
             try
             {
                 string cardUID = string.Empty;
+                string deviceSerialNumber = EnumDeviceNames.SmartCardPrinterSerialNumber;
 
                 Job job = new Job();
+                job.Open(deviceSerialNumber);
 
                 // Move card to smart card reader and suspend ZMotif SDK control of printer (using ZMotif SDK)
                 int actionID = 0;
@@ -188,7 +188,10 @@ namespace Trinity.Common.Utils
                     string readerName = EnumDeviceNames.SmartCardPrinterContactlessReader;
 
                     // get card UID
-                    cardUID = GetMifareCardUID(readerName);
+                    cardUID = SmartCardReaderUtils.Instance.GetCardUID(EnumDeviceNames.SmartCardPrinterContactlessReader);
+                    string cardData = string.Empty;
+                    bool readCardResult = smartCardReaderUtils.ReadAllData_MifareClassic_ZXPSeries9(ref cardData);
+                    Console.WriteLine(cardData);
                 }
                 catch (Exception ex)
                 {
@@ -215,7 +218,7 @@ namespace Trinity.Common.Utils
             }
         }
 
-        private PrintAndWriteSmartcardResult PrintCard(PrintAndWriteSmartcardInfo data)
+        private PrintAndWriteSmartcardResult PrintCard(PrintAndWriteSmartCardInfo data)
         {
             PrintAndWriteSmartcardResult printAndWriteSmartcardResult = new PrintAndWriteSmartcardResult()
             {
@@ -271,14 +274,14 @@ namespace Trinity.Common.Utils
                 //string getData = smartCardReaderUtils.ReadAllData_MifareClassic(readerName);
 
                 // get card UID
-                string cardUID = SmartCardPrinterUtils.Instance.GetMifareCardUID(readerName);
+                string cardUID = SmartCardReaderUtils.Instance.GetCardUID(EnumDeviceNames.SmartCardPrinterContactlessReader);
 
                 // set cardUID and success flag 
                 if (!string.IsNullOrEmpty(cardUID))
                 {
-                    printAndWriteSmartcardResult.SmartCardData = new SmartCardData()
+                    printAndWriteSmartcardResult.SmartCardData = new SmartCardData_Original()
                     {
-                        CardInfo = new CardInfo() { UID = cardUID }
+                        //CardInfo = new CardInfo() { UID = cardUID }
                     };
                     printAndWriteSmartcardResult.Success = true;
                 }
@@ -306,21 +309,6 @@ namespace Trinity.Common.Utils
             }
 
             return printAndWriteSmartcardResult;
-        }
-
-        private string GetMifareCardUID(string cardReaderName)
-        {
-            try
-            {
-                string cardUID = SmartCardReaderUtils.Instance.GetCardUID(cardReaderName);
-
-                return cardUID;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("GetMifareCardUID: " + ex.ToString());
-                return string.Empty;
-            }
         }
 
         public override EnumDeviceStatuses[] GetDeviceStatus()

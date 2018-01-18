@@ -46,14 +46,15 @@ namespace Trinity.DAL
             return appointmentTime;
         }
 
-        private static BE.AppointmentTimeDetails SetAppointmentTime(DBContext.Timeslot timeSlot)
+        public  BE.AppointmentTimeDetails SetAppointmentTime(DBContext.Timeslot timeSlot)
         {
             var environmentTime = new BE.AppointmentTimeDetails()
             {
                 StartTime = timeSlot.StartTime.Value,
                 EndTime = timeSlot.EndTime.Value,
                 IsAvailble = true,
-                IsSelected = false
+                IsSelected = false,
+                Category= timeSlot.Category
             };
             return environmentTime;
         }

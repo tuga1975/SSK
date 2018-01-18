@@ -106,6 +106,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CodeBehind\PrintUBLabels.cs" />
     <Compile Include="CodeBehind\PrintMUBAndTTLabels.cs" />
     <Compile Include="JSCallCS.cs" />
     <Compile Include="Main.cs">
@@ -275,11 +276,17 @@
     <Content Include="View\html\Blocked.html" />
     <Content Include="View\html\BlockedPopupDetail.html" />
     <Content Include="View\html\hourglass.gif" />
+    <Content Include="View\html\html2canvas\html2canvas.js" />
+    <Content Include="View\html\html2canvas\jquery.plugin.html2canvas.js" />
     <Content Include="View\html\Layout.html" />
     <Content Include="View\html\MUBAndTTlabel.html" />
     <Content Include="View\html\MUBandTTPopup.html" />
     <Content Include="View\html\PopupAddHoliday.html" />
+    <Content Include="View\html\PopupEditOperationalDate.html" />
+    <Content Include="View\html\PrintingUBLabels.html" />
     <Content Include="View\html\PrintingMUBAndTTLabels.html" />
+    <Content Include="View\html\PrintingTemplates\UBLabelTemplate .html" />
+    <Content Include="View\html\PrintingTemplates\MUBLabelTemplate.html" />
     <Content Include="View\html\Settings.html" />
     <Content Include="View\html\Queue.html" />
     <Content Include="View\html\AlertPopupDetail.html" />

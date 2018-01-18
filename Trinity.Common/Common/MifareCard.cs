@@ -138,4 +138,31 @@ namespace Trinity.Common.Common
             return new[] { Version, MSB, LSB, (byte)KeyType, KeyNumber };
         }
     }
+
+    public class MifareCard_Block
+    {
+        public int Sector_Index { get; set; }
+        /// <summary>
+        /// index of block within sector in Decimal (using for display)
+        /// </summary>
+        public int Block_Index_Dec { get; set; }
+        /// <summary>
+        /// index of block within card in Hex (using for card command)
+        /// </summary>
+        public byte Block_Index_Hex { get; set; }
+        public EnumBlockTypes BlockType { get; set; }
+    }
+
+    public enum EnumBlockTypes
+    {
+        ManufacturerBlock = 0,
+        Data = 1,
+        SectorTrailer = 2
+    }
+
+    public enum EnumSmartCardTypes
+    {
+        MifareClassic1K = 1,
+        MifareClassic4K = 2
+    }
 }

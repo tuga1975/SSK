@@ -224,22 +224,17 @@ namespace Trinity.Common
             }
         }
 
-        public static string GetQueueNumber(string baseOnNRIC)
+        public static string GetQueueNumber(string nric)
         {
-            string queueNumber = "";
-            if (!string.IsNullOrEmpty(baseOnNRIC) && baseOnNRIC.Length > 6)
+            if (string.IsNullOrEmpty(nric))
             {
-                queueNumber += baseOnNRIC.Substring(0, 1) + baseOnNRIC.Substring(baseOnNRIC.Length - 5, 5).PadLeft(8, '*');
+                return string.Empty;
             }
-            else if (!string.IsNullOrEmpty(baseOnNRIC) && baseOnNRIC.Length <= 6)
+            if (nric.Length <= 5)
             {
-                queueNumber += baseOnNRIC.Substring(0, 1) + baseOnNRIC.PadLeft(8, '*');
+                return nric;
             }
-            else
-            {
-                queueNumber += null;
-            }
-            return queueNumber;
+            return nric.Substring(nric.Length - 5);
         }
     }
 }

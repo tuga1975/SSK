@@ -7,17 +7,17 @@
             <div class="modal-body">
                 <div class="form-group">
                     <div class="form-inline" style="margin-bottom:10px;">
-                        <span style="display:inline-block;width:150px;box-sizing:border-box;border:1px solid #CCC;text-align:center;">Date</span>
+                        <span style="display:inline-block;width:150px;height:33px; padding-top:3px;box-sizing:border-box;border:1px solid #CCC;text-align:center;">Date</span>
                         <select class="form-control" style="width:70px;" id="day"><option>15</option></select> -
                         <select class="form-control" style="width:70px;" id="month"><option>01</option><option>02</option><option>03</option></select> -
                         <select class="form-control" style="width:95px;" id="year"><option>2018</option></select>
                     </div>
                     <div class="form-inline" style="margin-bottom:10px;">
-                        <span class="control-label" style="display:inline-block;width:150px;box-sizing:border-box;border:1px solid #CCC;text-align:center;">Short Description</span>
+                        <span class="control-label" style="display:inline-block;width:150px;height:33px; padding-top:5px;box-sizing:border-box;border:1px solid #CCC;text-align:center;">Short Description</span>
                         <input type="text" class="form-control" style="width:400px;" id="description" />
                     </div>
                     <div style="margin-bottom:10px;">
-                        <span class="control-label" style="display:inline-block;width:150px;box-sizing:border-box;border:1px solid #CCC;text-align:center;">Notes</span>
+                        <span class="control-label" style="display:inline-block;width:150px;height:33px; padding-top:5px;box-sizing:border-box;border:1px solid #CCC;text-align:center;">Notes</span>
                         <textarea class="form-control" style="width:555px; margin-top:10px;" rows="3" id="note"></textarea>
                     </div>
                 </div>
@@ -52,10 +52,9 @@
 
     $("#AddBtn").click(function (e) {
         var date = new Date($('#year').val(), $('#month').val() - 1, $('#day').val());
-        date.setHours(date.getHours() - date.getTimezoneOffset() / 60);
+        //date.setHours(date.getHours() - date.getTimezoneOffset() / 60);
         var checkExist = false;
         model.HoliDays.forEach(function (element, index) {
-
             if (Date.parse(element.Holiday1) == Date.parse(date)) {
                 alert('Date is duplicate!');
                 checkExist = true;

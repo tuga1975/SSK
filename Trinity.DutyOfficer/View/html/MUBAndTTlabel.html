@@ -35,7 +35,7 @@
             <option>2</option>
             <option>3</option>
         </select>
-        <div style="display:inline-block;">entries</div>
+        <div style="display:inline-block;">Entries</div>
     </div>
 </div>
 <table id="MUBAndTTlabel" data-click-to-select="true">
@@ -98,7 +98,7 @@
         var checkedRows = [];
 
         $('#MUBAndTTlabel').on('check.bs.table', function (e, row) {
-            checkedRows.push({ NRIC: row.NRIC, Name: row.Name, LastStation: row.LastStation });
+            checkedRows.push({ NRIC: row.NRIC, Name: row.Name, LastStation: row.LastStation, UserId: row.UserId });
         });
 
         $('#MUBAndTTlabel').on('uncheck.bs.table', function (e, row) {

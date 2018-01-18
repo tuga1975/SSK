@@ -84,6 +84,7 @@ namespace SSK
         #region BookAppointment
         public void BookAppointment()
         {
+
             Session session = Session.Instance;
             Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
 
@@ -93,12 +94,15 @@ namespace SSK
 
             Trinity.DAL.DBContext.Appointment appointment;
             Trinity.DAL.DBContext.Appointment nearestAppointment;
+            DateTime today = DateTime.Now.Date;
             var selectedTimes = new Trinity.BE.AppointmentTime();
             appointment = DAL_Appointments.GetTodayAppointment(user.UserId);
+
             if (appointment != null)
             {
-
+               
                 selectedTimes = SetSelectedTimes(dalSettting, appointment);
+
             }
             else
             {
@@ -130,11 +134,6 @@ namespace SSK
 
         private static void SetSelectedTime(Appointment appointment, List<Trinity.BE.AppointmentTimeDetails> selectedTimes)
         {
-            DateTimeFormatInfo dfi = DateTimeFormatInfo.CurrentInfo;
-            Calendar cal = dfi.Calendar;
-            int year = appointment.Date.Year;
-            int weekNum = appointment.Date.WeekNum();
-
             DAL_Setting dalSetting = new DAL_Setting();
             var dalAppointment = new DAL_Appointments();
             var item = selectedTimes.Where(d => appointment.Timeslot != null && appointment.Timeslot.StartTime != null && d.StartTime == appointment.Timeslot.StartTime.Value && d.EndTime == appointment.Timeslot.EndTime.Value).FirstOrDefault();
@@ -151,7 +150,7 @@ namespace SSK
                 foreach (var selectedItem in selectedTimes)
                 {
                     var count = dalAppointment.CountListAppointmentByTimeslot(appointment.Date, selectedItem.StartTime, selectedItem.EndTime);
-                    if (count >= Convert.ToInt32(maxAppPerTimeslot))
+                    if (count >= maxAppPerTimeslot)
                     {
                         selectedItem.IsAvailble = false;
                     }
@@ -173,6 +172,8 @@ namespace SSK
 
                     Trinity.BE.Appointment appointment = dalAppointments.GetAppointmentDetails(new Guid(IDAppointment));
                     APIUtils.Printer.PrintAppointmentDetails("AppointmentDetailsTemplate.html", appointment);
+                    FormQueueNumber f = FormQueueNumber.GetInstance();
+                    f.RefreshQueueNumbers();
                     return true;
                 }
                 else

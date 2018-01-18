@@ -51,6 +51,7 @@ namespace Trinity.DAL
         }
         public Appointment GetTodayAppointment(string UserId)
         {
+            
             return _localUnitOfWork.DataContext.Appointments.Where(d => d.UserId == UserId && d.Date == DateTime.Today).OrderBy(d => d.Date).FirstOrDefault();
         }
 

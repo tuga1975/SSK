@@ -23,7 +23,22 @@
 <body>
     <div id="header">
         <div class="logo" title="logo"></div>
+        <div style="position:absolute; left:75px;top:30px; ">
+            <span style="padding:14px 10px;border:1px solid #CCC;"><b>Central Narcotics Bureau</b></span>
+        </div>
         <div class="logout glyphicon glyphicon-log-out" title="Logout" onclick="confirm('Are you sure you want to logout?') == true ? api.server.LogOut() : null" id="btn-logout"></div>
+        <div style="position:absolute; right:80px;top:15px;">
+            <span color style="background-color:chartreuse"></span>
+            <span color style="background-color:chartreuse; margin-left:20px;"></span>
+            <span color style="background-color:yellow; margin-left:20px;"></span>
+            <span color style="background-color:red; margin-left:20px;"></span>
+        </div>
+        <div style="position:absolute; right:75px;top:35px;">
+            <span>SSK</span>
+            <span style="margin-left:10px;">SSA</span>
+            <span style="margin-left:10px;">UHP</span>
+            <span style="margin-left:10px;">ESP</span>
+        </div>
     </div>
     <div id="menu">
         <span item-menu="Queue" onclick="api.server.LoadPage('Queue.html')"></span>
@@ -49,3 +64,13 @@
 
 </body>
 </html>
+<style>
+    span[color] {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        display: inline-block;
+        border: 1px solid #333;
+        box-sizing: border-box;
+    }
+</style>

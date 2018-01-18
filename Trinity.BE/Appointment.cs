@@ -43,5 +43,7 @@ namespace Trinity.BE
         public Nullable<System.TimeSpan> EndTime { get; set; }
 
         public Nullable<System.TimeSpan> TimeSlot { get; set; }
+
+        public string Category { get; set; }
     }
 }

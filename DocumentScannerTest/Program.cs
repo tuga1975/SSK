@@ -74,15 +74,7 @@ namespace DocumentScannerTest
             //smartCardReaderUtils.StartSmartCardReaderMonitor();
             //smartCardReaderUtils.StartSmartCardMonitor(onCardInitialized, onCardInserted, onCardRemoved);
             //TestEncodeContactlessSCard();
-
-            // read/write smart card
-            // write data
-            PrintAndWriteSmartcardInfo_Demo data = new PrintAndWriteSmartcardInfo_Demo()
-            {
-                Name = "Ricardo Quaresma xxx",
-                PrintedDate = DateTime.Now
-            };
-
+            
             //SmartCardReaderUtils smartCardReaderUtils = SmartCardReaderUtils.Instance;
             //bool writeSuccessful = smartCardReaderUtils.WriteData(data);
 
@@ -96,7 +88,67 @@ namespace DocumentScannerTest
             //SmartCardPrinterUtils.Instance.Print_Label(EnumDeviceNames.SmartCardPrinterSerialNumber, "Front.bmp", "Back.bmp", ref status);
             //SmartCardPrinterUtils.Instance.PrintLabel("Front.bmp", "Back.bmp", PrintLabelCompleted);
 
-            SmartCardPrinterUtils.Instance.WriteData(WriteDataCompleted);
+            //SmartCardPrinterUtils.Instance.WriteData(WriteDataCompleted);
+
+            SuperviseeBiodata superviseeBiodata = new SuperviseeBiodata()
+            {
+                UserId = Guid.NewGuid().ToString(),
+                Name = "Wong Teck Seng",
+                NRIC = "S999999G",
+                SupervisionFrom = new DateTime(2018, 1, 1),
+                SupervisionTo = new DateTime(2020, 1, 1),
+                DrugProfile = "Cannabis NPS",
+                SupervisionOfficer = "Lim Yong Tai",
+                SupervisionContactNo = "81234567"
+            };
+
+            //SmartCardReaderUtils smartCardReaderUtils = SmartCardReaderUtils.Instance;
+            //bool result2 = smartCardReaderUtils.ReadAllData_MifareClassic();
+            //bool result = smartCardReaderUtils.WriteSuperviseeBiodata(superviseeBiodata);
+
+            //DutyOfficerData dutyOfficerData = new DutyOfficerData()
+            //{
+            //    Name = "Theo Walcott",
+            //    NRIC = "S7777777G"
+            //};
+
+            //bool writeOfficerData = SmartCardReaderUtils.Instance.WriteDutyOfficerData(dutyOfficerData);
+
+            HistoricalRecord historicalRecord2 = new HistoricalRecord()
+            {
+                ReportingDate = DateTime.Now,
+                CNB = "OK",
+                HSAResult = "test",
+                IUTResult = "something"
+            };
+            SmartCardData smartCardData = SmartCardData.Instance;
+
+            DateTime startRead = DateTime.Now;
+            smartCardData.ReadData_FromSmartCard();
+
+            //DateTime startWrite = DateTime.Now;
+            //bool writeResult = smartCardData.WriteHistoricalRecord(historicalRecord2);
+            //DateTime endWrite = DateTime.Now;
+
+            string uid = smartCardData.CardUID;
+
+
+            //DateTime date = new DateTime(2018, 1, 1);
+            //for (int i = 0; i < 1000; i++)
+            //{
+            //    HistoricalRecord historicalRecord = new HistoricalRecord()
+            //    {
+            //        ReportingDate = date.AddDays(i),
+            //        CNB = "OK" + i,
+            //        HSAResult = "test",
+            //        IUTResult = "something"
+            //    };
+
+            //    bool result1 = smartCardReaderUtils.WriteHistoricalRecord(historicalRecord);
+            //    Console.WriteLine(i + ": " + result1);
+            //}
+
+
             Console.ReadKey();
 
         }
@@ -144,123 +196,6 @@ namespace DocumentScannerTest
         private static void onCardInitialized(object sender, CardStatusEventArgs e)
         {
             Debug.WriteLine("initialize: " + e.ReaderName);
-        }
-
-        private static void TestEncodeContactlessSCard(PrintAndWriteSmartcardInfo_Demo data)
-        {
-            try
-            {
-                //  The goal of this program is to establish a connection with 
-                // a Mifare 4k contactless microprocessor smart card through a ZXP printer.
-
-                Job job = new Job();
-
-                // Begin SDK communication with printer (using ZMotif SDK)
-                //string deviceSerialNumber = "06C104500004";
-                string deviceSerialNumber = EnumDeviceNames.SmartCardPrinterSerialNumber;
-                job.Open(deviceSerialNumber);
-
-                // Move card to smart card reader and suspend ZMotif SDK control of printer (using ZMotif SDK)
-                int actionID = 0;
-                job.JobControl.SmartCardConfiguration(SideEnum.Front, SmartCardTypeEnum.MIFARE, true);
-                job.SmartCardDataOnly(1, out actionID);
-
-                // Wait while card moves into encode position 
-                Thread.Sleep(4000);
-
-                //string cardUID = SmartCardPrinterUtils.Instance.GetMifareCardUID("");
-
-                //string cardUID = GetCardUID();
-
-                //// Establish connection with encoder (using WinSCard.dll)
-                //int encoderContext = 0;
-                //SCardEstablishContext(0, 0, 0, ref encoderContext);
-
-                //// At this point, call SCardListReaders to get available readers (code not included).
-                //// Alternatively, refer to 'device manager >> smart card encoders' when printer is on.
-                //string encoderName = "SCM Microsystems Inc. SDI010 Contactless Reader 0";
-
-                //// Establish connection with card (using WinSCard.dll)
-                //int cardContext = 0;
-                //uint activeProtocol = 0;
-                //SCardConnect(encoderContext, encoderName, 0x02, 0x02 | 0x01, ref cardContext, ref activeProtocol);
-
-                //// Prepare to communicate with card.  sIO is a simple struct that contains the two elements (protocol and pciLength).
-                //SCARD_IO_REQUEST sIO = new SCARD_IO_REQUEST();
-                //sIO.dwProtocol = activeProtocol;
-                //sIO.cbPciLength = 8;
-
-                //// Choose which block to read/write
-                //byte block = 0x01;
-
-                //// Load key '0xFFFFFFFFFFFF' (A common default Mifare 4k key) into reader as Key A (using WinSCard.dll)
-                //Console.WriteLine("Loading key into reader.");
-                //byte[] key = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
-                //int response0Size = 2;
-                //byte[] response0 = new byte[response0Size];
-                //byte[] loadKeyCommand = { 0xFF, 0x82, 0x00, 0x60, (byte)key.Length, key[0], key[1], key[2], key[3], key[4], key[5] };
-                //SCardTransmit(cardContext, ref sIO, ref loadKeyCommand[0], loadKeyCommand.Length, ref sIO, ref response0[0], ref response0Size); 0
-
-
-                //// Authenticate connection by recalling key A (using WinSCard.dll)
-                //int response1Size = 2;
-                //byte[] response1 = new byte[response1Size];
-                //byte[] authenticateCmd = { 0xFF, 0x86, 0x00, 0x00, 0x05, 0x01, 0x00, block, 0x60, 0x01 };
-                //SCardTransmit(cardContext, ref sIO, ref authenticateCmd[0], authenticateCmd.Length, ref sIO, ref response1[0], ref response1Size);
-
-                //// Mifare 4k Command to write 'HelloHelloHelloH' to card (using WinSCard.dll)
-                //int response2Size = 8;
-                //byte[] response2 = new byte[response2Size];
-                //byte[] writeCmd = { 0xFF, 0xD6, 0x00, block, 0x10, 0x48, 0x65, 0x6C, 0x6C, 0x6F, 0x48, 0x65, 0x6C, 0x6C, 0x6F, 0x48, 0x65, 0x6C, 0x6C, 0x6F, 0x48 };
-                //SCardTransmit(cardContext, ref sIO, ref writeCmd[0], writeCmd.Length, ref sIO, ref response2[0], ref response2Size);
-
-                //// Mifare 1k or 4k command to read card (using WinSCard.dll)
-                //int response3Size = 128;
-                //byte[] response3 = new byte[response3Size];
-                //byte[] readCmd = { 0xFF, 0xB0, 0x00, block, 0x00 };
-                //SCardTransmit(cardContext, ref sIO, ref readCmd[0], readCmd.Length, ref sIO, ref response3[0], ref response3Size);
-
-                //// Display the information read from the card; wait for user 
-                //Console.WriteLine(ASCIIEncoding.ASCII.GetString(response3, 0, response3Size));
-                //Console.ReadKey();
-
-                //// Close connection with card (using WinSCard.dll)
-                //SCardDisconnect(cardContext, 0x02);
-
-                //// Release connection to encoder (using WinSCard.dll)
-                //SCardReleaseContext(encoderContext);
-
-                // Resume ZMotif SDK control of printer (using ZMotif SDK)
-                job.JobResume();
-
-                // Close ZMotif SDK control of job (using ZMotif SDK)
-                job.Close();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-            }
-        }
-
-        private static void TestSmartCardPrinter()
-        {
-            Console.WriteLine("starting TestSmartCardPrinter...");
-            PrintAndWriteSmartcardInfo printAndWriteSmartcardInfo = new PrintAndWriteSmartcardInfo()
-            {
-                FrontCardImagePath = "Front.bmp",
-                BackCardImagePath = "Back.bmp",
-                SmartCardData = new SmartCardData()
-                {
-                    CardHolderInfo = new CardHolderInfo()
-                    {
-                        Name = "TuDD test smart card printer"
-                    }
-                }
-            };
-
-            SmartCardPrinterUtils smartCardPrinterUtils = SmartCardPrinterUtils.Instance;
-
-            smartCardPrinterUtils.PrintAndWriteSmartcardData(printAndWriteSmartcardInfo, OnCompleted);
         }
 
         private static void OnCompleted(PrintAndWriteSmartcardResult result)
