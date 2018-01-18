@@ -133,7 +133,7 @@ namespace DutyOfficer
             Session session = Session.Instance;
             Trinity.BE.User dutyOfficer = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
             var dalSetting = new DAL_Setting();
-            if (dalSetting.SaveSetting(model, dutyOfficer.UserId))
+            if (dalSetting.SaveSetting(model, dutyOfficer.UserId)) 
             {
                 _web.InvokeScript("showMessageBox", "Update successful!");
             }
