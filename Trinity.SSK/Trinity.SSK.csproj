@@ -283,7 +283,6 @@
     <Content Include="View\img\Notification-512.png" />
     <Content Include="View\img\refresh-512.png" />
     <Content Include="View\img\Reporting-Icon-300x300.png" />
-    <Content Include="View\scripts\jquery-1.10.2.min.js" />
     <Content Include="View\scripts\lib.js" />
     <Content Include="View\styles\main.css" />
   </ItemGroup>

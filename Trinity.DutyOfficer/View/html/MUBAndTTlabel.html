@@ -35,13 +35,14 @@
             <option>2</option>
             <option>3</option>
         </select>
-        <div style="display:inline-block;">Entries</div>
+        <div style="display:inline-block;">entries</div>
     </div>
 </div>
-<table id="MUBAndTTlabel" data-click-to-select="true">
+<table id="MUBAndTTlabel">
     <thead>
         <tr>
-            <th data-field="state" data-checkbox="true" class="col-xs-1">Select</th>
+            <th data-field="PrintMUB" data-checkbox="true" class="col-xs-1" id="PrintMUB">Print MUB</th>
+            <th data-field="PrintTT" data-checkbox="true" class="col-xs-1" id="PrintTT">Print TT</th>
             <th data-field="NRIC" data-sortable="true" class="col-xs-3">NRIC</th>
             <th data-field="Name" data-sortable="true" class="col-xs-6">Name</th>
             <th data-field="LastStation" class="col-xs-2">Last Station</th>
@@ -55,7 +56,8 @@
 <ul id="output"></ul>
 
 <script type="text/javascript">
- 
+
+    debugger;
 
     var dataSource = [];
 
@@ -98,8 +100,12 @@
         var checkedRows = [];
 
         $('#MUBAndTTlabel').on('check.bs.table', function (e, row) {
-            checkedRows.push({ NRIC: row.NRIC, Name: row.Name, LastStation: row.LastStation, UserId: row.UserId });
-        });
+            checkedRows.push({
+                NRIC: row.NRIC,
+                Name: row.Name,
+                LastStation: row.LastStation
+            });            
+        })
 
         $('#MUBAndTTlabel').on('uncheck.bs.table', function (e, row) {
             $.each(checkedRows, function (index, value) {
@@ -120,7 +126,6 @@
                 var data = JSON.stringify(model);
                 api.server.LoadPopupMUBAndTTLabel(data, function () {
                     $('#popupMUBandTTLabel').modal();
-
                 })
             }
             else {
