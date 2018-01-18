@@ -93,8 +93,8 @@ namespace DocumentScannerTest
             SuperviseeBiodata superviseeBiodata = new SuperviseeBiodata()
             {
                 UserId = Guid.NewGuid().ToString(),
-                Name = "Wong Teck Seng",
-                NRIC = "S999999G",
+                Name = "Supervisee - Written by Card Printer - Edited",
+                NRIC = "S1234561G",
                 SupervisionFrom = new DateTime(2018, 1, 1),
                 SupervisionTo = new DateTime(2020, 1, 1),
                 DrugProfile = "Cannabis NPS",
@@ -106,31 +106,33 @@ namespace DocumentScannerTest
             //bool result2 = smartCardReaderUtils.ReadAllData_MifareClassic();
             //bool result = smartCardReaderUtils.WriteSuperviseeBiodata(superviseeBiodata);
 
-            //DutyOfficerData dutyOfficerData = new DutyOfficerData()
-            //{
-            //    Name = "Theo Walcott",
-            //    NRIC = "S7777777G"
-            //};
+            DutyOfficerData dutyOfficerData = new DutyOfficerData()
+            {
+                Name = "Duty Officer - Written by Card Printer",
+                NRIC = "S1234560G"
+            };
 
             //bool writeOfficerData = SmartCardReaderUtils.Instance.WriteDutyOfficerData(dutyOfficerData);
 
-            HistoricalRecord historicalRecord2 = new HistoricalRecord()
-            {
-                ReportingDate = DateTime.Now,
-                CNB = "OK",
-                HSAResult = "test",
-                IUTResult = "something"
-            };
+            //HistoricalRecord historicalRecord2 = new HistoricalRecord()
+            //{
+            //    ReportingDate = DateTime.Now,
+            //    CNB = "OK",
+            //    HSAResult = "test",
+            //    IUTResult = "something"
+            //};
             SmartCardData smartCardData = SmartCardData.Instance;
 
-            DateTime startRead = DateTime.Now;
+            //DateTime startRead = DateTime.Now;
+            smartCardData.ReadData_FromSmartCard();
+            smartCardData.UpdateSuperviseeBiodata(superviseeBiodata);
             smartCardData.ReadData_FromSmartCard();
 
             //DateTime startWrite = DateTime.Now;
             //bool writeResult = smartCardData.WriteHistoricalRecord(historicalRecord2);
             //DateTime endWrite = DateTime.Now;
 
-            string uid = smartCardData.CardUID;
+            //string uid = smartCardData.CardUID;
 
 
             //DateTime date = new DateTime(2018, 1, 1);
@@ -148,9 +150,21 @@ namespace DocumentScannerTest
             //    Console.WriteLine(i + ": " + result1);
             //}
 
+            SuperviseeCardInfo printAndWriteSmartcardInfo = new SuperviseeCardInfo()
+            {
+                SuperviseeBiodata = superviseeBiodata
+            };
+
+            DutyOfficerCardInfo dutyOfficerCardInfo = new DutyOfficerCardInfo()
+            {
+                DutyOfficerData = dutyOfficerData
+            };
+
+            SmartCardPrinterUtils smartCardPrinterUtils = SmartCardPrinterUtils.Instance;
+            //smartCardPrinterUtils.PrintAndWriteSuperviseeSmartCard(printAndWriteSmartcardInfo, OnCompleted);
+            //smartCardPrinterUtils.PrintAndWriteDutyOfficerSmartCard(dutyOfficerCardInfo, OnCompleted);
 
             Console.ReadKey();
-
         }
 
         private static void WriteDataCompleted(string result)
@@ -158,7 +172,7 @@ namespace DocumentScannerTest
             Console.WriteLine("WriteData: " + result);
         }
 
-            private static void PrintLabelCompleted(bool result)
+        private static void PrintLabelCompleted(bool result)
         {
             Console.WriteLine("PrintLabel: " + result);
         }
@@ -198,7 +212,7 @@ namespace DocumentScannerTest
             Debug.WriteLine("initialize: " + e.ReaderName);
         }
 
-        private static void OnCompleted(PrintAndWriteSmartcardResult result)
+        private static void OnCompleted(PrintAndWriteCardResult result)
         {
             Console.WriteLine(result.Success);
             Console.ReadKey();

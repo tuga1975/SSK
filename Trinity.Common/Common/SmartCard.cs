@@ -11,8 +11,21 @@ namespace Trinity.Common.Common
 {
     public class SmartCardData
     {
-        string _cardUID;
-        SmartCardData_Original _cardData_Original;
+        private string _cardUID;
+        private SmartCardData_Original _cardData_Original;
+
+        public bool DataIsValid
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(UserRole))
+                {
+                    return true;
+                }
+
+                return false;
+            }
+        }
 
         public string CardUID
         {
@@ -158,14 +171,17 @@ namespace Trinity.Common.Common
         {
             try
             {
+                // validate
+
+
                 // write data to smart card
                 bool actionResult = SmartCardReaderUtils.Instance.WriteHistoricalRecord(_cardData_Original, record);
 
                 // get new data from smart card
-                if (actionResult)
-                {
-                    actionResult = ReadData_FromSmartCard();
-                }
+                //if (actionResult)
+                //{
+                //    actionResult = ReadData_FromSmartCard();
+                //}
 
                 // return value
                 return actionResult;
@@ -178,28 +194,63 @@ namespace Trinity.Common.Common
 
         }
 
+        public bool UpdateSuperviseeBiodata(SuperviseeBiodata superviseeBiodata)
+        {
+            try
+            {
+                // validate
+
+
+                // write data to smart card
+                bool actionResult = SmartCardReaderUtils.Instance.WriteSuperviseeBiodata(superviseeBiodata);
+
+                // get new data from smart card
+                //if (actionResult)
+                //{
+                //    actionResult = ReadData_FromSmartCard();
+                //}
+
+                // return value
+                return actionResult;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("WriteHistoricalRecord exception: " + ex.ToString());
+                return false;
+            }
+        }
+
         public void ResetInstance()
         {
             if (_instance != null)
             {
-                _instance = new SmartCardData();
+                _cardUID = string.Empty;
+                _cardData_Original = null;
+                _instance = null;
             }
         }
     }
 
-    public class PrintAndWriteSmartCardInfo
+    public class SuperviseeCardInfo
     {
         public string FrontCardImagePath { get; set; }
         public string BackCardImagePath { get; set; }
         public SuperviseeBiodata SuperviseeBiodata { get; set; }
     }
 
-    public class PrintAndWriteSmartcardResult
+    public class PrintAndWriteCardResult
     {
         public bool Success { get; set; }
         public string Description { get; set; }
         public string CardUID { get; set; }
-        public SmartCardData_Original SmartCardData { get; set; }
+        //public SmartCardData_Original SmartCardData { get; set; }
+    }
+
+    public class DutyOfficerCardInfo
+    {
+        public string FrontCardImagePath { get; set; }
+        public string BackCardImagePath { get; set; }
+        public DutyOfficerData DutyOfficerData { get; set; }
     }
 
     public class SmartCardData_Original
