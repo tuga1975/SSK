@@ -235,9 +235,8 @@ namespace Trinity.DAL
         public int GetMaximumNumberOfTimeslot(int timeslotID)
         {
             try
-            {
-                var timeslot = _localUnitOfWork.DataContext.Timeslots.Include("Settings").FirstOrDefault(t => t.Timeslot_ID == timeslotID);
-                
+            {                
+                var timeslot = _localUnitOfWork.DataContext.Timeslots.FirstOrDefault(t => t.Timeslot_ID == timeslotID);
 
                 switch (timeslot.DateOfWeek)
                 {
