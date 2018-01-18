@@ -462,7 +462,7 @@ namespace Enrolment
             new System.Drawing.Bitmap(new System.IO.MemoryStream(Convert.FromBase64String(frontBase64))).Save(ImgFront);
             new System.Drawing.Bitmap(new System.IO.MemoryStream(Convert.FromBase64String(backBase64))).Save(ImgBack);
 
-            PrintAndWriteSmartCardInfo infoPrinter = new PrintAndWriteSmartCardInfo()
+            SuperviseeCardInfo infoPrinter = new SuperviseeCardInfo()
             {
                 BackCardImagePath = ImgBack,
                 FrontCardImagePath = ImgFront,
@@ -474,9 +474,9 @@ namespace Enrolment
                 }
             };
 
-            Trinity.Common.Utils.SmartCardPrinterUtils.Instance.PrintAndWriteSmartcardData(infoPrinter, OnNewCardPrintedSuccessfully);
+            Trinity.Common.Utils.SmartCardPrinterUtils.Instance.PrintAndWriteSuperviseeSmartCard(infoPrinter, OnNewCardPrintedSuccessfully);
         }
-        private void OnNewCardPrintedSuccessfully(PrintAndWriteSmartcardResult result)
+        private void OnNewCardPrintedSuccessfully(PrintAndWriteCardResult result)
         {
             if (result.Success)
             {
@@ -769,7 +769,7 @@ namespace Enrolment
             Session session = Session.Instance;
             var userLogin = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
             var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
-            PrintAndWriteSmartCardInfo infoPrinter = new PrintAndWriteSmartCardInfo()
+            SuperviseeCardInfo infoPrinter = new SuperviseeCardInfo()
             {
                 SuperviseeBiodata = new SuperviseeBiodata()
                 {
@@ -779,9 +779,9 @@ namespace Enrolment
                 }
             };
 
-            Trinity.Common.Utils.SmartCardPrinterUtils.Instance.PrintAndWriteSmartcardData(null, PriterIssuedCardOnCompleted);
+            Trinity.Common.Utils.SmartCardPrinterUtils.Instance.PrintAndWriteSuperviseeSmartCard(null, PriterIssuedCardOnCompleted);
         }
-        private void PriterIssuedCardOnCompleted(PrintAndWriteSmartcardResult result)
+        private void PriterIssuedCardOnCompleted(PrintAndWriteCardResult result)
         {
             if (result.Success)
             {

@@ -743,7 +743,7 @@ namespace Enrolment
                 new System.Drawing.Bitmap(new System.IO.MemoryStream(Convert.FromBase64String(backBase64))).Save(ImgBack);
             }
 
-            PrintAndWriteSmartCardInfo infoPrinter = new PrintAndWriteSmartCardInfo()
+            SuperviseeCardInfo infoPrinter = new SuperviseeCardInfo()
             {
                 BackCardImagePath = ImgBack,
                 FrontCardImagePath = ImgFront,
@@ -755,9 +755,9 @@ namespace Enrolment
                 }
             };
 
-            Trinity.Common.Utils.SmartCardPrinterUtils.Instance.PrintAndWriteSmartcardData(infoPrinter, OnNewCardPrintedSuccessfully);
+            Trinity.Common.Utils.SmartCardPrinterUtils.Instance.PrintAndWriteSuperviseeSmartCard(infoPrinter, OnNewCardPrintedSuccessfully);
         }
-        private void OnNewCardPrintedSuccessfully(PrintAndWriteSmartcardResult result)
+        private void OnNewCardPrintedSuccessfully(PrintAndWriteCardResult result)
         {
             if (result.Success)
             {

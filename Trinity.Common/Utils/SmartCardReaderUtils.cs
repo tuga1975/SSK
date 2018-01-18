@@ -493,16 +493,21 @@ namespace Trinity.Common
             }
         }
 
-        private MifareCard CreateMifareCardInstance(byte MSB)
+        private MifareCard CreateMifareCardInstance(byte MSB, string readerName = null)
         {
             try
             {
+                if (string.IsNullOrEmpty(readerName))
+                {
+                    readerName = _readerName;
+                }
+
                 // create card context
                 var contextFactory = ContextFactory.Instance;
                 var context = contextFactory.Establish(SCardScope.System);
 
                 // create IsoReader
-                var isoReader = new IsoReader(context, _readerName, SCardShareMode.Shared, SCardProtocol.Any, false);
+                var isoReader = new IsoReader(context, readerName, SCardShareMode.Shared, SCardProtocol.Any, false);
 
                 // create mifare card and load authentication keys
                 MifareCard card = new MifareCard(isoReader);
@@ -527,7 +532,7 @@ namespace Trinity.Common
             }
         }
 
-        private List<MifareCard_Block> GetAll_Blocks_MifareClassic(EnumSmartCardTypes cardType)
+        public List<MifareCard_Block> GetAll_Blocks_MifareClassic(EnumSmartCardTypes cardType)
         {
             try
             {
@@ -675,10 +680,15 @@ namespace Trinity.Common
             }
         }
 
-        public bool WriteDutyOfficerData(DutyOfficerData data)
+        public bool WriteDutyOfficerData(DutyOfficerData data, string readerName = null)
         {
             try
             {
+                if (readerName == null)
+                {
+                    readerName = _readerName;
+                }
+
                 // get list blocks will be read/write
                 List<MifareCard_Block> lstBlocks = GetAll_Blocks_MifareClassic(EnumSmartCardTypes.MifareClassic4K);
                 if (lstBlocks == null || lstBlocks.Count() == 0)
@@ -703,23 +713,13 @@ namespace Trinity.Common
                 // check length of encryptContent, remove last HistoricalRecord
                 while (encryptedString.Length > totalBytes)
                 {
-                    // remove last activities
-                    if (cardData.HistoricalRecords != null || cardData.HistoricalRecords.Count() > 0)
-                    {
-                        cardData.HistoricalRecords.Remove(cardData.HistoricalRecords.Last());
-                    }
-
-                    // convert new data to json
-                    jsonData = JsonConvert.SerializeObject(cardData);
-
-                    // encrypting
-                    encryptedString = CommonUtil.EncryptString(jsonData, _passphrase);
+                    throw new Exception("Data length of DutyOfficerData is overflow");
                 }
 
                 // data to write
                 byte[] byteData = Encoding.ASCII.GetBytes(jsonData);
 
-                bool result = WriteData_MifareClassic(byteData);
+                bool result = WriteData_MifareClassic(byteData, readerName);
 
                 // return value
                 return result;
@@ -731,10 +731,15 @@ namespace Trinity.Common
             }
         }
 
-        public bool WriteSuperviseeBiodata(SuperviseeBiodata data)
+        public bool WriteSuperviseeBiodata(SuperviseeBiodata data, string readerName = null)
         {
             try
             {
+                if (readerName == null)
+                {
+                    readerName = _readerName;
+                }
+
                 // get list blocks will be read/write
                 List<MifareCard_Block> lstBlocks = GetAll_Blocks_MifareClassic(EnumSmartCardTypes.MifareClassic4K);
                 if (lstBlocks == null || lstBlocks.Count() == 0)
@@ -776,7 +781,7 @@ namespace Trinity.Common
                 // data to write
                 byte[] byteData = Encoding.ASCII.GetBytes(jsonData);
 
-                bool result = WriteData_MifareClassic(byteData);
+                bool result = WriteData_MifareClassic(byteData, readerName);
 
                 // return value
                 return result;
@@ -864,10 +869,15 @@ namespace Trinity.Common
         /// </summary>
         /// <param name="jsonValue">data to write (json format), maximum 1024 chars for card 1k, 4048 chars for card 4k</param>
         /// <returns></returns>
-        private bool WriteData_MifareClassic(byte[] data)
+        private bool WriteData_MifareClassic(byte[] data, string readerName = null)
         {
             try
             {
+                if (string.IsNullOrEmpty(readerName))
+                {
+                    readerName = _readerName;
+                }
+
                 // get list blocks will be read/write
                 List<MifareCard_Block> lstBlocks = GetAll_Blocks_MifareClassic(EnumSmartCardTypes.MifareClassic4K);
                 lstBlocks = lstBlocks?.Where(block => block.BlockType == EnumBlockTypes.Data).ToList();
@@ -877,11 +887,15 @@ namespace Trinity.Common
                     throw new Exception("Can not get card blocks");
                 }
 
-                // key slot
+                // MSB, default for ACS ACR122 0
                 byte MSB = 0x00;
+                if (readerName.Equals(EnumDeviceNames.SmartCardPrinterContactlessReader))
+                {
+                    MSB = 0x60;
+                }
 
                 // create mifare card
-                MifareCard card = CreateMifareCardInstance(MSB);
+                MifareCard card = CreateMifareCardInstance(MSB, readerName);
 
                 if (card == null)
                 {
