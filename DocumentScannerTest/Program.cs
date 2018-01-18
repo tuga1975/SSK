@@ -121,12 +121,12 @@ namespace DocumentScannerTest
             //    HSAResult = "test",
             //    IUTResult = "something"
             //};
-            SmartCardData smartCardData = SmartCardData.Instance;
+            //SmartCardData smartCardData = SmartCardData.Instance;
 
-            //DateTime startRead = DateTime.Now;
-            smartCardData.ReadData_FromSmartCard();
-            smartCardData.UpdateSuperviseeBiodata(superviseeBiodata);
-            smartCardData.ReadData_FromSmartCard();
+            ////DateTime startRead = DateTime.Now;
+            //smartCardData.ReadData_FromSmartCard();
+            //smartCardData.UpdateSuperviseeBiodata(superviseeBiodata);
+            //smartCardData.ReadData_FromSmartCard();
 
             //DateTime startWrite = DateTime.Now;
             //bool writeResult = smartCardData.WriteHistoricalRecord(historicalRecord2);

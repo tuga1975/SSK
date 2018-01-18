@@ -793,7 +793,7 @@ namespace Trinity.Common
             }
         }
 
-        public bool WriteHistoricalRecord(SmartCardData_Original cardData, HistoricalRecord record)
+        public bool AppendHistoricalRecord(SmartCardData_Original cardData, HistoricalRecord record)
         {
             try
             {

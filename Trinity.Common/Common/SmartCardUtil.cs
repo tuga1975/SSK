@@ -2,19 +2,16 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Diagnostics;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Trinity.Common.Common
+namespace Trinity.Common
 {
-    public class SmartCardData
+    public class SmartCardUtil
     {
-        private string _cardUID;
-        private SmartCardData_Original _cardData_Original;
+        private static string _cardUID;
+        private static SmartCardData_Original _cardData_Original;
 
-        public bool DataIsValid
+        public static bool DataIsValid
         {
             get
             {
@@ -27,12 +24,12 @@ namespace Trinity.Common.Common
             }
         }
 
-        public string CardUID
+        public static string CardUID
         {
             get { return _cardUID; }
         }
 
-        public string UserRole
+        public static string UserRole
         {
             get
             {
@@ -51,53 +48,22 @@ namespace Trinity.Common.Common
             }
         }
 
-        public DutyOfficerData DutyOfficerData
+        public static DutyOfficerData DutyOfficerData
         {
             get { return _cardData_Original?.DutyOfficerData; }
         }
 
-        public SuperviseeBiodata SuperviseeBiodata
+        public static SuperviseeBiodata SuperviseeBiodata
         {
             get { return _cardData_Original?.SuperviseeBiodata; }
         }
 
-        public List<HistoricalRecord> HistoricalRecords
+        public static List<HistoricalRecord> HistoricalRecords
         {
             get { return _cardData_Original?.HistoricalRecords; }
         }
 
-        #region Singleton Implementation
-        // The variable is declared to be volatile to ensure that assignment to the instance variable completes before the instance variable can be accessed
-        private static volatile SmartCardData _instance;
-
-        // Uses a syncRoot instance to lock on, rather than locking on the type itself, to avoid deadlocks.
-        private static object syncRoot = new Object();
-
-        private SmartCardData()
-        {
-            _cardUID = string.Empty;
-            _cardData_Original = null;
-        }
-
-        public static SmartCardData Instance
-        {
-            get
-            {
-                if (_instance == null)
-                {
-                    lock (syncRoot)
-                    {
-                        if (_instance == null)
-                            _instance = new SmartCardData();
-                    }
-                }
-
-                return _instance;
-            }
-        }
-        #endregion
-
-        public bool ReadData_FromSmartCard()
+        public static bool ReadData()
         {
             try
             {
@@ -135,17 +101,17 @@ namespace Trinity.Common.Common
             }
         }
 
-        public SuperviseeBiodata GetSuperviseeBiodata()
+        public static SuperviseeBiodata GetSuperviseeBiodata()
         {
             return _cardData_Original?.SuperviseeBiodata;
         }
 
-        public List<HistoricalRecord> GetHistoricalRecords()
+        public static List<HistoricalRecord> GetAllHistoricalRecords()
         {
             return _cardData_Original?.HistoricalRecords;
         }
 
-        public List<HistoricalRecord> GetHistoricalRecords(DateTime reportingDate)
+        public static List<HistoricalRecord> GetHistoricalRecords(DateTime reportingDate)
         {
             if (_cardData_Original == null || _cardData_Original.HistoricalRecords == null)
             {
@@ -156,7 +122,7 @@ namespace Trinity.Common.Common
                 .Where(record => DbFunctions.TruncateTime(record.ReportingDate) == DbFunctions.TruncateTime(reportingDate)).ToList();
         }
 
-        public List<HistoricalRecord> GetHistoricalRecords(DateTime fromDate, DateTime toDate)
+        public static List<HistoricalRecord> GetHistoricalRecords(DateTime fromDate, DateTime toDate)
         {
             if (_cardData_Original == null || _cardData_Original.HistoricalRecords == null)
             {
@@ -167,7 +133,7 @@ namespace Trinity.Common.Common
                 .Where(record => record.ReportingDate >= fromDate && record.ReportingDate <= toDate).ToList();
         }
 
-        public bool WriteHistoricalRecord(HistoricalRecord record)
+        public static bool AppendHistoricalRecord(HistoricalRecord record)
         {
             try
             {
@@ -175,7 +141,7 @@ namespace Trinity.Common.Common
 
 
                 // write data to smart card
-                bool actionResult = SmartCardReaderUtils.Instance.WriteHistoricalRecord(_cardData_Original, record);
+                bool actionResult = SmartCardReaderUtils.Instance.AppendHistoricalRecord(_cardData_Original, record);
 
                 // get new data from smart card
                 //if (actionResult)
@@ -194,7 +160,7 @@ namespace Trinity.Common.Common
 
         }
 
-        public bool UpdateSuperviseeBiodata(SuperviseeBiodata superviseeBiodata)
+        public static bool UpdateSuperviseeBiodata(SuperviseeBiodata superviseeBiodata)
         {
             try
             {
@@ -220,14 +186,10 @@ namespace Trinity.Common.Common
             }
         }
 
-        public void ResetInstance()
+        public static void Remove()
         {
-            if (_instance != null)
-            {
-                _cardUID = string.Empty;
-                _cardData_Original = null;
-                _instance = null;
-            }
+            _cardUID = null;
+            _cardData_Original = null;
         }
     }
 

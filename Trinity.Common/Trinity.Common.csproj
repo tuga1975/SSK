@@ -110,7 +110,7 @@
     <Compile Include="Common\LabelInfo.cs" />
     <Compile Include="Common\MifareCard.cs" />
     <Compile Include="Common\Results.cs" />
-    <Compile Include="Common\SmartCard.cs" />
+    <Compile Include="Common\SmartCardUtil.cs" />
     <Compile Include="Common\User.cs" />
     <Compile Include="Constants\CommonConstants.cs" />
     <Compile Include="CSCallJS.cs" />
