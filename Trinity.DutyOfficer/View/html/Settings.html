@@ -76,7 +76,7 @@
                 <td id="mon-EveningMax">10</td>
                 <td id="mon-EveningSpare">5</td>
                 <td id="mon-Interval">30 mins</td>
-                <th id="mon-Edit" style="background-color:#808080;cursor:pointer;" onclick="api.server.PopupEditOperationalDate(2, function () {$('#idEditOperationalDate').modal(); });">Edit</th>
+                <th id="mon-Edit" style="background-color:#808080;cursor:pointer;" onclick="api.server.PopupEditOperationalDate('Monday', function () {$('#idEditOperationalDate').modal(); });">Edit</th>
             </tr>
             <tr id="tuesday">
                 <td style="background-color:gainsboro">Tuesday</td>
@@ -93,7 +93,7 @@
                 <td id="tue-EveningMax">10</td>
                 <td id="tue-EveningSpare">5</td>
                 <td id="tue-Interval">30 mins</td>
-                <th id="tue-Edit" style="background-color:#808080;cursor:pointer;">Edit</th>
+                <th id="tue-Edit" style="background-color:#808080;cursor:pointer;" onclick="api.server.PopupEditOperationalDate('Tuesday', function () {$('#idEditOperationalDate').modal(); });">Edit</th>
             </tr>
             <tr id="wednesday">
                 <td style="background-color:gainsboro">Wednesday</td>
@@ -110,7 +110,7 @@
                 <td id="wed-EveningMax">10</td>
                 <td id="wed-EveningSpare">5</td>
                 <td id="wed-Interval">30 mins</td>
-                <th id="wed-Edit" style="background-color:#808080;cursor:pointer;">Edit</th>
+                <th id="wed-Edit" style="background-color:#808080;cursor:pointer;" onclick="api.server.PopupEditOperationalDate('Wednesday', function () {$('#idEditOperationalDate').modal(); });">Edit</th>
             </tr>
             <tr id="thurday">
                 <td style="background-color:gainsboro">Thurday</td>
@@ -127,7 +127,7 @@
                 <td id="thu-EveningMax">10</td>
                 <td id="thu-EveningSpare">5</td>
                 <td id="thu-Interval">30 mins</td>
-                <th id="thu-Edit" style="background-color:#808080;cursor:pointer;">Edit</th>
+                <th id="thu-Edit" style="background-color:#808080;cursor:pointer;" onclick="api.server.PopupEditOperationalDate('Thurday', function () {$('#idEditOperationalDate').modal(); });">Edit</th>
             </tr>
             <tr id="friday">
                 <td style="background-color:gainsboro">Friday</td>
@@ -144,7 +144,7 @@
                 <td id="fri-EveningMax">10</td>
                 <td id="fri-EveningSpare">5</td>
                 <td id="fri-Interval">30 mins</td>
-                <th id="fri-Edit" style="background-color:#808080;cursor:pointer;">Edit</th>
+                <th id="fri-Edit" style="background-color:#808080;cursor:pointer;" onclick="api.server.PopupEditOperationalDate('Friday', function () {$('#idEditOperationalDate').modal(); });">Edit</th>
             </tr>
             <tr id="saturday">
                 <td style="background-color:gainsboro">Saturday</td>
@@ -161,7 +161,7 @@
                 <td id="sat-EveningMax">10</td>
                 <td id="sat-EveningSpare">5</td>
                 <td id="sat-Interval">30 mins</td>
-                <th id="sat-Edit" style="background-color:#808080;cursor:pointer;">Edit</th>
+                <th id="sat-Edit" style="background-color:#808080;cursor:pointer;" onclick="api.server.PopupEditOperationalDate('Saturday', function () {$('#idEditOperationalDate').modal(); });">Edit</th>
             </tr>
             <tr id="sunday">
                 <td style="background-color:gainsboro">Sunday</td>
@@ -178,7 +178,7 @@
                 <td id="sun-EveningMax">10</td>
                 <td id="sun-EveningSpare">5</td>
                 <td id="sun-Interval">30 mins</td>
-                <th id="sun-Edit" style="background-color:#808080;cursor:pointer;">Edit</th>
+                <th id="sun-Edit" style="background-color:#808080;cursor:pointer;" onclick="api.server.PopupEditOperationalDate('Sunday', function () {$('#idEditOperationalDate').modal(); });">Edit</th>
             </tr>
         </tbody>
     </table>

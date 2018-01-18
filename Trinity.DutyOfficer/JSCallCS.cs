@@ -137,9 +137,9 @@ namespace DutyOfficer
             this._web.LoadPopupHtml("PopupAddHoliday.html");
         }
 
-        public void PopupEditOperationalDate(int dayOfWeek)
+        public void PopupEditOperationalDate(string dayOfWeek)
         {
-            this._web.LoadPopupHtml("PopupEditOperationalDate.html");
+            this._web.LoadPopupHtml("PopupEditOperationalDate.html", dayOfWeek);
         }
 
         public void GetSettings()

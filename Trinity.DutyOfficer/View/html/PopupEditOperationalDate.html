@@ -141,7 +141,9 @@
         $('#afternoon-interval').append($('<option></option>').val(p).html(p));
         $('#evening-interval').append($('<option></option>').val(p).html(p));
     });
-    
+
+    $('#dayOfWeek').val(api.model);
+
     $("#EditBtn").click(function (e) {
         
         e.preventDefault();
