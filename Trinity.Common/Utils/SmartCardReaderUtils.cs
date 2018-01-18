@@ -13,8 +13,16 @@ namespace Trinity.Common
 {
     public class SmartCardReaderUtils : DeviceUtils
     {
+        // monitor - need to be refactor
         List<string> _cardReaders;
         PCSC.SCardMonitor _sCardMonitor;
+
+        // 
+        string _readerName;
+
+        // authentication keys
+        byte[] _authenticationKeys = new byte[] { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
+        string _passphrase;
 
         #region Singleton Implementation
         // The variable is declared to be volatile to ensure that assignment to the instance variable completes before the instance variable can be accessed
@@ -26,6 +34,10 @@ namespace Trinity.Common
         private SmartCardReaderUtils()
         {
             _cardReaders = new List<string>();
+
+            _readerName = EnumDeviceNames.SmartCardContactlessReader;
+
+            _passphrase = "TVO@2018";
         }
 
         public static SmartCardReaderUtils Instance
@@ -123,16 +135,78 @@ namespace Trinity.Common
                 return returnValue;
             }
         }
-
+        
         public string GetCardUID()
         {
-            if (_cardReaders == null || _cardReaders.Count == 0)
+            string cardReaderName = EnumDeviceNames.SmartCardContactlessReader;
+
+            try
             {
+                var contextFactory = ContextFactory.Instance;
+                using (var context = contextFactory.Establish(SCardScope.System))
+                {
+                    using (var rfidReader = new SCardReader(context))
+                    {
+                        var sc = rfidReader.Connect(cardReaderName, SCardShareMode.Shared, SCardProtocol.Any);
+                        if (sc != SCardError.Success)
+                        {
+                            Debug.WriteLine(string.Format("GetCardUID: Could not connect to reader {0}:\n{1}",
+                                cardReaderName,
+                                SCardHelper.StringifyError(sc)));
+                            return string.Empty;
+                        }
+
+                        var apdu = new CommandApdu(IsoCase.Case2Short, rfidReader.ActiveProtocol)
+                        {
+                            CLA = 0xFF,
+                            Instruction = InstructionCode.GetData,
+                            P1 = 0x00,
+                            P2 = 0x00,
+                            Le = 0 // We don't know the ID tag size
+                        };
+
+                        sc = rfidReader.BeginTransaction();
+                        if (sc != SCardError.Success)
+                        {
+                            Debug.WriteLine("GetCardUID: Could not begin transaction.");
+                            return string.Empty;
+                        }
+
+                        Debug.WriteLine("Retrieving the UID .... ");
+
+                        var receivePci = new SCardPCI(); // IO returned protocol control information.
+                        var sendPci = SCardPCI.GetPci(rfidReader.ActiveProtocol);
+
+                        var receiveBuffer = new byte[256];
+                        var command = apdu.ToArray();
+
+                        sc = rfidReader.Transmit(
+                            sendPci, // Protocol Control Information (T0, T1 or Raw)
+                            command, // command APDU
+                            receivePci, // returning Protocol Control Information
+                            ref receiveBuffer); // data buffer
+
+                        if (sc != SCardError.Success)
+                        {
+                            Debug.WriteLine("Error: " + SCardHelper.StringifyError(sc));
+                            return string.Empty;
+                        }
+
+                        var responseApdu = new ResponseApdu(receiveBuffer, IsoCase.Case2Short, rfidReader.ActiveProtocol);
+                        string cardUID = responseApdu.HasData ? BitConverter.ToString(responseApdu.GetData()) : "No uid received";
+
+                        rfidReader.EndTransaction(SCardReaderDisposition.Leave);
+                        rfidReader.Disconnect(SCardReaderDisposition.Reset);
+
+                        return cardUID;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("GetCardUID exception: CardReaderName: " + cardReaderName + ". Error: " + ex.ToString());
                 return string.Empty;
             }
-
-            // return card UID
-            return GetCardUID(_cardReaders[0]);
         }
 
         public string GetCardUID(string cardReaderName)
@@ -285,179 +359,497 @@ namespace Trinity.Common
             return new EnumDeviceStatuses[] { EnumDeviceStatuses.Connected };
         }
 
-        public bool IsConnected(string cardReaderName)
-        {
-            if (_cardReaders == null || _cardReaders.Count() == 0)
-            {
-                return false;
-            }
-            else if (!_cardReaders.Contains(cardReaderName))
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-        public string ReadAllData_MifareClassic(string readerName)
+        public bool ReadAllData_MifareClassic(ref SmartCardData_Original smartCardData_Original)
         {
             try
             {
                 Debug.WriteLine("starting ReadAllData_MifareClassic...");
+
+                string readerName = EnumDeviceNames.SmartCardContactlessReader;
+
+                // get list blocks will be read/write
+                List<MifareCard_Block> lstBlocks = GetAll_Blocks_MifareClassic(EnumSmartCardTypes.MifareClassic4K);
+
+                if (lstBlocks == null || lstBlocks.Count() == 0)
+                {
+                    throw new Exception("Can not get card blocks");
+                }
+
                 // key slot
                 byte MSB = 0x00;
-                // authentication keys
-                var authenticationKeys = new byte[] { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
 
+                // create mifare card
+                MifareCard card = CreateMifareCardInstance(MSB);
+
+                if (card == null)
+                {
+                    throw new Exception("Can not create card instance with keys: " + BitConverter.ToString(_authenticationKeys));
+                }
+
+                // loop all blocks read/write to read binary data
+                StringBuilder sbData = new StringBuilder();
+                int currentSector = -1; // authenticate each sector, not block
+                foreach (var block in lstBlocks.Where(block => block.BlockType == EnumBlockTypes.Data))
+                {
+                    if (currentSector != block.Sector_Index)
+                    {
+                        currentSector = block.Sector_Index;
+
+                        // authentication
+                        // typeB
+                        bool authSuccessful = card.Authenticate(MSB, block.Block_Index_Hex, KeyType.KeyA, 0x00);
+                        if (!authSuccessful)
+                        {
+                            throw new Exception("AUTHENTICATE failed at block " + block.Block_Index_Dec + " with key " + BitConverter.ToString(_authenticationKeys));
+                        }
+                    }
+
+                    // get data 
+                    byte[] result = card.ReadBinary(MSB, block.Block_Index_Hex, 16);
+
+                    // display data writen
+                    string dataString = (result != null) ? Encoding.UTF8.GetString(result) : string.Empty;
+                    string dateBit = (result != null) ? BitConverter.ToString(result) : string.Empty;
+                    //sbData.AppendLine($"Block {block.Block_Index_Dec}: " + dateBit);
+                    sbData.Append(dataString);
+                }
+
+                string encryptedData = sbData.ToString().Trim();
+                //encryptedData = encryptedData.Replace('-', '+');
+                //encryptedData = encryptedData.Replace('_', '/');
+
+                //// decrypting result
+                //var decrytedtData = CommonUtil.DecryptString(encryptedData, _passphrase);
+                // set card data
+                //_cardData = JsonConvert.DeserializeObject<SmartCardData_Original>(encryptedData);
+                smartCardData_Original = JsonConvert.DeserializeObject<SmartCardData_Original>(encryptedData);
+
+                // return value
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("ReadAllData_MifareClassic exception: " + ex.ToString());
+                return false;
+            }
+        }
+
+        public bool ReadAllData_MifareClassic_ZXPSeries9(ref string data)
+        {
+            try
+            {
+                Debug.WriteLine("starting ReadAllData_MifareClassic_ZXPSeries9...");
+
+                // get list blocks will be read/write
+                List<MifareCard_Block> lstBlocks = GetAll_Blocks_MifareClassic(EnumSmartCardTypes.MifareClassic4K);
+
+                if (lstBlocks == null || lstBlocks.Count() == 0)
+                {
+                    throw new Exception("Can not get card blocks");
+                }
+
+                // MSB
+                byte MSB = 0x60;
+
+                // Create card
+                MifareCard card = CreateMifareCardInstance(MSB);
+
+                if (card == null)
+                {
+                    throw new Exception("Can not create card instance with keys: " + BitConverter.ToString(_authenticationKeys));
+                }
+
+                // loop all blocks read/write to read binary data
+                StringBuilder sbData = new StringBuilder();
+                foreach (var block in lstBlocks)
+                {
+                    // authentication
+                    // typeB
+                    bool authSuccessful = card.Authenticate(MSB, block.Block_Index_Hex, KeyType.KeyA, 0x00);
+                    if (!authSuccessful)
+                    {
+                        throw new Exception("AUTHENTICATE failed at block " + block.Block_Index_Dec + " with key " + BitConverter.ToString(_authenticationKeys));
+                        //Debug.WriteLine("AUTHENTICATE failed at block " + block.Block_Index_Sector_Dec + " with key " + BitConverter.ToString(authenticationKeys));
+                        //continue;
+                    }
+
+                    // get data 
+                    byte[] result = card.ReadBinary(MSB, block.Block_Index_Hex, 16);
+
+                    // display data writen
+                    string datastring = (result != null) ? Encoding.UTF8.GetString(result) : string.Empty;
+                    string dateBit = (result != null) ? BitConverter.ToString(result) : string.Empty;
+                    sbData.AppendLine($"Block {block.Block_Index_Hex}: " + dateBit);
+                }
+
+                // return value
+                data = sbData.ToString();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("ReadAllData_MifareClassic exception: " + ex.ToString());
+                return false;
+            }
+        }
+
+        private MifareCard CreateMifareCardInstance(byte MSB)
+        {
+            try
+            {
                 // create card context
                 var contextFactory = ContextFactory.Instance;
                 var context = contextFactory.Establish(SCardScope.System);
 
                 // create IsoReader
-                var isoReader = new IsoReader(context, readerName, SCardShareMode.Shared, SCardProtocol.Any, false);
-
-                // number of sectors will be read (1k = 16 sectors)
-                int sectors = 16;
-
-                // get list blocks will be read/write
-                List<int> lstBlocks_Decimal = GetRead_Write_Blocks_MifareClassic(sectors);
-
-                if (lstBlocks_Decimal == null || lstBlocks_Decimal.Count() == 0)
-                {
-                    return string.Empty;
-                }
+                var isoReader = new IsoReader(context, _readerName, SCardShareMode.Shared, SCardProtocol.Any, false);
 
                 // create mifare card and load authentication keys
                 MifareCard card = new MifareCard(isoReader);
                 bool loadKeySuccessful = card.LoadKey(
                     KeyStructure.VolatileMemory,
-                    MSB, // first key slot
-                    authenticationKeys // key
+                    MSB, 
+                    _authenticationKeys // key
                 );
 
                 // load authentication keys
                 if (!loadKeySuccessful)
                 {
-                    throw new Exception("LOAD KEY failed: " + BitConverter.ToString(authenticationKeys));
+                    throw new Exception("LOAD KEY failed: " + BitConverter.ToString(_authenticationKeys));
                 }
 
-                // loop all blocks read/write to read binary data
-                StringBuilder sbData = new StringBuilder();
-                foreach (var blockIndex_Decimal in lstBlocks_Decimal)
-                {
-                    // get block index in hex
-                    byte blockIndex_Hex = Convert.ToByte(blockIndex_Decimal.ToString(), 16);
-
-                    // authentication
-                    // typeB
-                    bool authSuccessful = card.Authenticate(MSB, blockIndex_Hex, KeyType.KeyB, 0x00);
-                    if (!authSuccessful)
-                    {
-                        //throw new Exception("AUTHENTICATE failed at block " + blockIndex_Decimal + " with key " + BitConverter.ToString(authenticationKeys));
-                        Debug.WriteLine("AUTHENTICATE failed at block " + blockIndex_Decimal + " with key " + BitConverter.ToString(authenticationKeys));
-                        continue;
-                    }
-
-                    // get data 
-                    byte[] result = card.ReadBinary(MSB, blockIndex_Hex, 16);
-
-                    // display data writen
-                    string data = (result != null) ? Encoding.UTF8.GetString(result) : string.Empty;
-                    string dateBit = (result != null) ? BitConverter.ToString(result) : string.Empty;
-                    sbData.AppendLine($"Block {blockIndex_Decimal}: " + data);
-                }
-                
-                // return value
-                return sbData.ToString();
+                return card;
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("ReadAllData_MifareClassic exception: " + ex.ToString());
-                return string.Empty;
-            }
-        }
-
-        private List<int> GetRead_Write_Blocks_MifareClassic(int sectors)
-        {
-            try
-            {
-                // get list sectors will be read (decimal index)
-                //List<int> lstSectors = new List<int>() { 0, 1, 2 };
-                List<int> lstSectors = new List<int>();
-                for (int i = 0; i < sectors; i++)
-                {
-                    lstSectors.Add(i);
-                }
-
-                // get list blocks will be read/write (decimal index)
-                List<int> lstBlocks_Decimal = new List<int>();
-                foreach (var sector in lstSectors)
-                {
-                    // block 0 at sector 0: keys stored, must not be read/write
-                    // 4 blocks per sector, read/write at blocks 0,1,2, trailer block (authentication keys stored) at block 3
-                    for (int i = 0; i < 3; i++)
-                    {
-                        // calculate block to add to lstBlocks
-                        int block = (sector * 4) + i;
-
-                        if (block > 0)
-                        {
-                            lstBlocks_Decimal.Add(block);
-                        }
-                    }
-                }
-
-                return lstBlocks_Decimal;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("WriteData_MifareClassic exception: " + ex.ToString());
+                Debug.WriteLine("CreateMifareCardInstance_Printer" + ex.ToString());
                 return null;
             }
         }
 
-        public bool WriteData(string printerName, PrintAndWriteSmartcardInfo_Demo data)
+        private List<MifareCard_Block> GetAll_Blocks_MifareClassic(EnumSmartCardTypes cardType)
         {
             try
             {
-                // set storage size of smartcard
-                int totalBytes = 300;
+                // get list blocks will be read/write (decimal index)
+                List<MifareCard_Block> lstBlocks = new List<MifareCard_Block>();
+                MifareCard_Block block;
 
+                if (cardType == EnumSmartCardTypes.MifareClassic1K)
+                {
+                    // classic 1k has 16 sectors
+                    // sector 0: block 0: manufactory block, block 1,2: data, block 3: sector trailer
+                    // sector 1 to sector 16: 4 blocks/sector (Sector trailer is at block 3)
+                    for (int sectorIndex = 0; sectorIndex < 16; sectorIndex++)
+                    {
+                        // block 0 at sector 0: keys stored, must not be read/write
+                        // 4 blocks per sector, read/write at blocks 0,1,2, trailer block (authentication keys stored) at block 3
+                        for (int blockIndex = 0; blockIndex < 4; blockIndex++)
+                        {
+                            // calculate block to add to lstBlocks
+                            block = new MifareCard_Block();
+                            block.Sector_Index = sectorIndex;
+                            block.Block_Index_Dec = (sectorIndex * 4) + blockIndex;
+
+                            // calculate Block_Hex_Index_Card
+                            block.Block_Index_Hex = GetBlockIndex_Card_Hex(block.Block_Index_Dec);
+
+                            // EnumBlockTypes
+                            if (block.Sector_Index == 0 && blockIndex == 0)
+                            {
+                                block.BlockType = EnumBlockTypes.ManufacturerBlock;
+                            }
+                            else if (blockIndex == 3)
+                            {
+                                block.BlockType = EnumBlockTypes.SectorTrailer;
+                            }
+                            else
+                            {
+                                block.BlockType = EnumBlockTypes.Data;
+                            }
+
+                            // add block to list
+                            lstBlocks.Add(block);
+                        }
+                    }
+                }
+                else if (cardType == EnumSmartCardTypes.MifareClassic4K)
+                {
+                    // sectors structure:
+                    // refer: https://www.nxp.com/docs/en/data-sheet/MF1S70YYX_V1.pdf
+                    // classic 4k has 39 sectors
+                    // sector 0: block 0: manufactory block, block 1,2: data, block 3: sector trailer
+                    // sector 1 to sector 31: 4 blocks/sector (Sector trailer is at block 3)
+                    // sector 32 to sector 39: 16 blocks/sector (Sector trailer is at block 15)
+
+                    // get list block from sector 0 to 31 (32 sectors)
+                    for (int sectorIndex = 0; sectorIndex < 32; sectorIndex++)
+                    {
+                        // block 0 at sector 0: keys stored, must not be read/write
+                        // 4 blocks per sector, read/write at blocks 0,1,2, trailer block (authentication keys stored) at block 3
+                        for (int blockIndex = 0; blockIndex < 4; blockIndex++)
+                        {
+                            // calculate block to add to lstBlocks
+                            block = new MifareCard_Block();
+                            block.Sector_Index = sectorIndex;
+                            block.Block_Index_Dec = (sectorIndex * 4) + blockIndex;
+
+                            // calculate Block_Hex_Index_Card
+                            block.Block_Index_Hex = GetBlockIndex_Card_Hex(block.Block_Index_Dec);
+
+                            // EnumBlockTypes
+                            if (block.Sector_Index == 0 && blockIndex == 0)
+                            {
+                                block.BlockType = EnumBlockTypes.ManufacturerBlock;
+                            }
+                            else if (blockIndex == 3)
+                            {
+                                block.BlockType = EnumBlockTypes.SectorTrailer;
+                            }
+                            else
+                            {
+                                block.BlockType = EnumBlockTypes.Data;
+                            }
+
+                            // add block to list
+                            lstBlocks.Add(block);
+                        }
+                    }
+
+                    // get list block from sector 32 to 39 (8 blocks)
+                    // start from block 128 = lstBlocks_Decimal.Length
+                    int nextSectorIndex = lstBlocks.Max(m => m.Sector_Index) + 1;
+                    int nextBlockIndex_Dec = lstBlocks.Count();
+                    for (int sectorIndex = 0; sectorIndex < 8; sectorIndex++)
+                    {
+                        // block 0 at sector 0: keys stored, must not be read/write
+                        // 16 blocks per sector, read/write at blocks 0,1,2...14 trailer block (authentication keys stored) at block 15
+                        for (int blockIndex = 0; blockIndex < 16; blockIndex++)
+                        {
+                            // calculate block to add to lstBlocks
+                            block = new MifareCard_Block();
+                            block.Sector_Index = nextSectorIndex + sectorIndex;
+                            block.Block_Index_Dec = nextBlockIndex_Dec + (sectorIndex * 16) + blockIndex;
+
+                            // calculate Block_Hex_Index_Card
+                            block.Block_Index_Hex = GetBlockIndex_Card_Hex(block.Block_Index_Dec);
+
+                            // EnumBlockTypes
+                            if (blockIndex == 15)
+                            {
+                                block.BlockType = EnumBlockTypes.SectorTrailer;
+                            }
+                            else
+                            {
+                                block.BlockType = EnumBlockTypes.Data;
+                            }
+
+                            // add block to list
+                            lstBlocks.Add(block);
+                        }
+                    }
+                }
+
+                return lstBlocks;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("GetAll_Blocks_MifareClassic exception: " + ex.ToString());
+                return null;
+            }
+        }
+
+        private byte GetBlockIndex_Card_Hex(int block_Index_Sector_Dec)
+        {
+            try
+            {
+                string hexOutput = String.Format("{0:X}", block_Index_Sector_Dec);
+                byte block_Index_Card_Hex = Convert.ToByte(hexOutput, 16);
+
+                return block_Index_Card_Hex;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("GetBlockIndex_Card_Hex exception: " + ex.ToString());
+                return new byte();
+            }
+        }
+
+        public bool WriteDutyOfficerData(DutyOfficerData data)
+        {
+            try
+            {
+                // get list blocks will be read/write
+                List<MifareCard_Block> lstBlocks = GetAll_Blocks_MifareClassic(EnumSmartCardTypes.MifareClassic4K);
+                if (lstBlocks == null || lstBlocks.Count() == 0)
+                {
+                    throw new Exception("Can not get card blocks");
+                }
+
+                // calculate storage size of smartcard
+                int totalBytes = lstBlocks.Count(block => block.BlockType == EnumBlockTypes.Data) * 16;
+
+                SmartCardData_Original cardData = new SmartCardData_Original()
+                {
+                    DutyOfficerData = data
+                };
+                
                 // convert object to json
-                var jsonData = JsonConvert.SerializeObject(data);
+                var jsonData = JsonConvert.SerializeObject(cardData);
 
                 // encrypting
-                //var encryptedString = CommonUtil.EncryptString(jsonData, passphrase);
+                var encryptedString = CommonUtil.EncryptString(jsonData, _passphrase);
 
-                //// check length of encryptContent, remove overflow data
-                //while (encryptedString.Length > totalBytes)
-                //{
-                //    // remove last activities
-                //    if (data.CardHolderActivities != null || data.CardHolderActivities.Count() > 0)
-                //    {
-                //        data.CardHolderActivities.RemoveAt(data.CardHolderActivities.Count());
-                //    }
-
-                //    // convert new data to json
-                //    jsonData = JsonConvert.SerializeObject(data);
-
-                //    // encrypting
-                //    encryptedString = CommonUtil.EncryptString(jsonData, passphrase);
-                //}
-
-                // starting write data
-                if (jsonData.Length > totalBytes)
+                // check length of encryptContent, remove last HistoricalRecord
+                while (encryptedString.Length > totalBytes)
                 {
-                    jsonData = jsonData.Substring(0, totalBytes);
+                    // remove last activities
+                    if (cardData.HistoricalRecords != null || cardData.HistoricalRecords.Count() > 0)
+                    {
+                        cardData.HistoricalRecords.Remove(cardData.HistoricalRecords.Last());
+                    }
+
+                    // convert new data to json
+                    jsonData = JsonConvert.SerializeObject(cardData);
+
+                    // encrypting
+                    encryptedString = CommonUtil.EncryptString(jsonData, _passphrase);
                 }
 
                 // data to write
                 byte[] byteData = Encoding.ASCII.GetBytes(jsonData);
-                //WriteData_MifareClassic(encryptedString);
-                //WriteData_MifareClassic(jsonData);
-                bool result = WriteData_MifareClassic(printerName, byteData);
 
+                bool result = WriteData_MifareClassic(byteData);
 
+                // return value
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("WriteData_MifareClassic exception: " + ex.ToString());
+                return false;
+            }
+        }
+
+        public bool WriteSuperviseeBiodata(SuperviseeBiodata data)
+        {
+            try
+            {
+                // get list blocks will be read/write
+                List<MifareCard_Block> lstBlocks = GetAll_Blocks_MifareClassic(EnumSmartCardTypes.MifareClassic4K);
+                if (lstBlocks == null || lstBlocks.Count() == 0)
+                {
+                    throw new Exception("Can not get card blocks");
+                }
+
+                // calculate storage size of smartcard
+                int totalBytes = lstBlocks.Count(block => block.BlockType == EnumBlockTypes.Data) * 16;
+
+                // create SmartCardData object
+                SmartCardData_Original cardData = new SmartCardData_Original()
+                {
+                    SuperviseeBiodata = data
+                };
+
+                // convert object to json
+                var jsonData = JsonConvert.SerializeObject(cardData);
+
+                // encrypting
+                var encryptedString = CommonUtil.EncryptString(jsonData, _passphrase);
+
+                // check length of encryptContent, remove last HistoricalRecord
+                while (encryptedString.Length > totalBytes)
+                {
+                    // remove last activities
+                    if (cardData.HistoricalRecords != null || cardData.HistoricalRecords.Count() > 0)
+                    {
+                        cardData.HistoricalRecords.Remove(cardData.HistoricalRecords.Last());
+                    }
+
+                    // convert new data to json
+                    jsonData = JsonConvert.SerializeObject(cardData);
+
+                    // encrypting
+                    encryptedString = CommonUtil.EncryptString(jsonData, _passphrase);
+                }
+
+                // data to write
+                byte[] byteData = Encoding.ASCII.GetBytes(jsonData);
+
+                bool result = WriteData_MifareClassic(byteData);
+
+                // return value
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("WriteData_MifareClassic exception: " + ex.ToString());
+                return false;
+            }
+        }
+
+        public bool WriteHistoricalRecord(SmartCardData_Original cardData, HistoricalRecord record)
+        {
+            try
+            {
+                // get list blocks will be read/write
+                List<MifareCard_Block> lstBlocks = GetAll_Blocks_MifareClassic(EnumSmartCardTypes.MifareClassic4K);
+                if (lstBlocks == null || lstBlocks.Count() == 0)
+                {
+                    throw new Exception("Can not get card blocks");
+                }
+
+                // calculate storage size of smartcard
+                int totalBytes = lstBlocks.Count(block => block.BlockType == EnumBlockTypes.Data) * 16;
+
+                // create SmartCardData object
+                if (cardData == null)
+                {
+                    throw new Exception("SuperviseeBiodata in the card can not be null");
+                }
+                else
+                {
+                    if (cardData.HistoricalRecords == null || cardData.HistoricalRecords.Count == 0)
+                    {
+                        List<HistoricalRecord> historicalRecords = new List<HistoricalRecord>();
+                        historicalRecords.Add(record);
+
+                        cardData.HistoricalRecords = historicalRecords;
+                    }
+                    else
+                    {
+                        cardData.HistoricalRecords.Insert(0, record);
+                    }
+                }
+
+                // convert object to json
+                var jsonData = JsonConvert.SerializeObject(cardData);
+
+                // encrypting
+                var encryptedString = CommonUtil.EncryptString(jsonData, _passphrase);
+
+                // check length of encryptContent, remove last HistoricalRecord
+                while (encryptedString.Length > totalBytes)
+                {
+                    // remove last record
+                    if (cardData.HistoricalRecords != null || cardData.HistoricalRecords.Count() > 0)
+                    {
+                        cardData.HistoricalRecords.Remove(cardData.HistoricalRecords.Last());
+                    }
+
+                    // convert new data to json
+                    jsonData = JsonConvert.SerializeObject(cardData);
+
+                    // encrypting
+                    encryptedString = CommonUtil.EncryptString(jsonData, _passphrase);
+                }
+
+                // data to write
+                byte[] byteData = Encoding.ASCII.GetBytes(jsonData);
+
+                bool result = WriteData_MifareClassic(byteData);
+
+                // return value
                 return result;
             }
             catch (Exception ex)
@@ -472,62 +864,67 @@ namespace Trinity.Common
         /// </summary>
         /// <param name="jsonValue">data to write (json format), maximum 1024 chars for card 1k, 4048 chars for card 4k</param>
         /// <returns></returns>
-        private bool WriteData_MifareClassic(string readerName, byte[] data)
+        private bool WriteData_MifareClassic(byte[] data)
         {
             try
             {
-                Debug.WriteLine("starting WriteBinaryData_MifareClassic...");
+                // get list blocks will be read/write
+                List<MifareCard_Block> lstBlocks = GetAll_Blocks_MifareClassic(EnumSmartCardTypes.MifareClassic4K);
+                lstBlocks = lstBlocks?.Where(block => block.BlockType == EnumBlockTypes.Data).ToList();
+
+                if (lstBlocks == null || lstBlocks.Count() == 0)
+                {
+                    throw new Exception("Can not get card blocks");
+                }
 
                 // key slot
                 byte MSB = 0x00;
-                // authentication keys
-                var authenticationKeys = new byte[] { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
 
-                // number of sectors will be read (1k = 16 sectors)
-                int sectors = 16;
+                // create mifare card
+                MifareCard card = CreateMifareCardInstance(MSB);
 
-                // get list blocks will be read/write
-                List<int> lstBlocks_Decimal = GetRead_Write_Blocks_MifareClassic(sectors);
-
-                if (lstBlocks_Decimal == null || lstBlocks_Decimal.Count() == 0)
+                if (card == null)
                 {
-                    return false;
+                    throw new Exception("Can not create card instance with keys: " + BitConverter.ToString(_authenticationKeys));
                 }
 
-                // get mifare card instance
-                MifareCard mifareCard = CreateMifareCardInstance(readerName, MSB, authenticationKeys);
+                // verify card
+                //bool verifycationResult = VerifyCardAuthentication(card, MSB, lstBlocks);
+
+                //if (!verifycationResult)
+                //{
+                //    throw new Exception("Authentication failed");
+                //}
 
                 // loop to write binary data to mifare card
-                Debug.WriteLine("stating write binary data");
-                int startBlock = lstBlocks_Decimal.Min();
                 int writtenBlock = 0;
-                for (int i = startBlock; i < lstBlocks_Decimal.Max(); i++)
+                int currentSector = -1;
+                foreach (var block in lstBlocks)
                 {
-                    // block to write: get block index in hex
-                    byte blockIndex_Hex = Convert.ToByte(i.ToString(), 16);
-
-                    // authentication, typeB
-                    var authSuccessful = mifareCard.Authenticate(MSB, blockIndex_Hex, KeyType.KeyB, 0x00);
-
-                    if (!authSuccessful)
+                    if (currentSector != block.Sector_Index)
                     {
-                        Debug.WriteLine("AUTHENTICATE failed at block " + i + " with key " + BitConverter.ToString(authenticationKeys));
-                        continue;
+                        currentSector = block.Sector_Index;
+
+                        // authentication
+                        // typeB
+                        bool authSuccessful = card.Authenticate(MSB, block.Block_Index_Hex, KeyType.KeyA, 0x00);
+                        if (!authSuccessful)
+                        {
+                            throw new Exception("AUTHENTICATE failed at block " + block.Block_Index_Dec + " with key " + BitConverter.ToString(_authenticationKeys));
+                        }
                     }
 
                     // starting write binary data
                     byte[] dataToWrite = GetDataToWrite(data, writtenBlock);
-                    var updateSuccessful = mifareCard.UpdateBinary(MSB, blockIndex_Hex, dataToWrite);
-                    writtenBlock++;
+                    var updateSuccessful = card.UpdateBinary(MSB, block.Block_Index_Hex, dataToWrite);
 
                     if (!updateSuccessful)
                     {
-                        Debug.WriteLine("UPDATE BINARY failed at block " + i + " with value " + BitConverter.ToString(dataToWrite));
-                        continue;
+                        throw new Exception("UPDATE BINARY failed at block " + block.Block_Index_Dec + " with value " + BitConverter.ToString(dataToWrite));
                     }
-                }
 
-                Debug.WriteLine("WriteBinaryData_MifareClassic successful");
+                    writtenBlock++;
+                }
 
                 return true;
             }
@@ -538,16 +935,34 @@ namespace Trinity.Common
             }
         }
 
+        private bool VerifyCardAuthentication(MifareCard card, byte MSB, List<MifareCard_Block> lstBlocks)
+        {
+            try
+            {
+                bool authSuccessful = true;
+                foreach (var block in lstBlocks)
+                {
+                    // authentication, typeA for classic 4K
+                    authSuccessful = card.Authenticate(MSB, block.Block_Index_Hex, KeyType.KeyB, 0x00);
+
+                    if (!authSuccessful)
+                    {
+                        throw new Exception("AUTHENTICATE failed at block " + block.Block_Index_Dec + " with key " + BitConverter.ToString(_authenticationKeys));
+                    }
+                }
+                return authSuccessful;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("VerifyCardAuthentication exception: " + ex.ToString());
+                return false;
+            }
+        }
+
         private byte[] GetDataToWrite(byte[] sourceData, int writtenBlock)
         {
             // calculate starting index of source data will be written into this block
             int startIndex = writtenBlock * 16;
-
-            // if length of source data is out of index, return null
-            //if (sourceData.Length < startIndex)
-            //{
-            //    return null;
-            //}
 
             // calculate data will be written into this block
             byte[] returnValue = new byte[16];
@@ -567,46 +982,12 @@ namespace Trinity.Common
                 // fill data to the rest
                 for (int i = startIndexToFill; i < 16; i++)
                 {
-                    returnValue[i] = 0x20;
+                    returnValue[i] = 0x00;
                 }
             }
 
             // return value
             return returnValue;
-        }
-
-        private MifareCard CreateMifareCardInstance(string readerName, byte keySlot, byte[] authenticationKeys)
-        {
-            try
-            {
-                // create card context
-                var contextFactory = ContextFactory.Instance;
-                var context = contextFactory.Establish(SCardScope.System);
-
-                // key slot:
-                byte MSB = keySlot;
-
-                // create IsoReader
-                var isoReader = new IsoReader(context, readerName, SCardShareMode.Shared, SCardProtocol.Any, false);
-                var card = new MifareCard(isoReader);
-                var loadKeySuccessful = card.LoadKey(
-                    KeyStructure.VolatileMemory,
-                    MSB, // first key slot
-                    authenticationKeys // key
-                );
-
-                if (!loadKeySuccessful)
-                {
-                    throw new Exception("LOAD KEY failed with key " + BitConverter.ToString(authenticationKeys));
-                }
-
-                return card;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("CreateMifareCardInstance exception: " + ex.ToString());
-                return null;
-            }
         }
     }
 }

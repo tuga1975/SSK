@@ -298,10 +298,14 @@
     <Content Include="View\html\Supervisee.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="View\img\Calendar-Clock-Icon.jpeg" />
     <Content Include="View\img\central_narco_logo.png" />
     <Content Include="View\img\Logo.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="View\img\Notification-512.png" />
+    <Content Include="View\img\refresh-512.png" />
+    <Content Include="View\img\Reporting-Icon-300x300.png" />
     <Content Include="View\scripts\jquery-1.10.2.min.js" />
     <Content Include="View\scripts\lib.js" />
     <Content Include="View\styles\main.css" />
