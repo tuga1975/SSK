@@ -174,22 +174,23 @@ namespace SSA
             };
 
             var dalLabel = new DAL_Labels();
-            dalLabel.UpdateLabel(labelInfo, labelInfo.UserId, EnumLabelType.TT);
+            var update = dalLabel.UpdateLabel(labelInfo, labelInfo.UserId, EnumLabelType.TT);
+            if (update)
+            {
+                var dalAppointment = new DAL_Appointments();
+                var dalQueue = new DAL_QueueNumber();
+                var appointment = dalAppointment.GetTodayAppointment(labelInfo.UserId);
+
+                var sskQueue = new DAL_QueueNumber().GetQueueDetailByAppointent(appointment, EnumStations.SSK);
+
+                dalQueue.UpdateQueueStatus(sskQueue.Queue_ID, EnumQueueStatuses.Finished, EnumStations.SSK);
+                dalQueue.UpdateQueueStatus(sskQueue.Queue_ID, EnumQueueStatuses.Processing, EnumStations.SSA);
+            }
             this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').show(); ; ");
             this._web.RunScript("$('.status-text').css('color','#000').text('Please collect your labels');");
 
             DeleteQRCodeImageFileTemp();
-
-            var dalAppointment = new DAL_Appointments();
-            var dalQueue = new DAL_QueueNumber();
-            var appointment = dalAppointment.GetTodayAppointment(labelInfo.UserId);
-
-            var sskQueue = new DAL_QueueNumber().GetQueueDetailByAppointent(appointment, EnumStations.SSK);
-
-            dalQueue.UpdateQueueStatus(sskQueue.Queue_ID, EnumQueueStatuses.Finished, EnumStations.SSK);
-            dalQueue.UpdateQueueStatus(sskQueue.Queue_ID, EnumQueueStatuses.Processing, EnumStations.SSA);
-
-
+            
         }
 
         private void PrintTTLabels_OnPrintTTLabelFailed(object sender, CodeBehind.PrintMUBAndTTLabelsEventArgs e)
