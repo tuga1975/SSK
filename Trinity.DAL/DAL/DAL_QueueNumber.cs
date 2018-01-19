@@ -77,18 +77,18 @@ namespace Trinity.DAL
         public List<Trinity.DAL.DBContext.Queue> GetAllQueueNumberByDate(DateTime date, string station)
         {
             date = date.Date;
-
-            var listDbQueue = (from apm in _localUnitOfWork.DataContext.Appointments
-                               join usr in _localUnitOfWork.DataContext.Membership_Users
-                                 on apm.UserId equals usr.UserId
-                               join q in _localUnitOfWork.DataContext.Queues
-                                on apm.ID equals q.Appointment_ID
-                               join qd in _localUnitOfWork.DataContext.QueueDetails
-                               on q.Queue_ID equals qd.Queue_ID
-                               join ts in _localUnitOfWork.DataContext.Timeslots
-                               on apm.Timeslot_ID equals ts.Timeslot_ID
-                               where DbFunctions.TruncateTime(q.CreatedTime).Value == date && qd.Station == station && (qd.Status.Equals(EnumQueueStatuses.Waiting, StringComparison.InvariantCultureIgnoreCase) || qd.Status.Equals(EnumQueueStatuses.Processing, StringComparison.InvariantCultureIgnoreCase))
-                               select q).ToList();
+            var listDbQueue = _localUnitOfWork.DataContext.QueueDetails.Include("Queue").Where(d => d.Station == station && (d.Status.Equals(EnumQueueStatuses.Waiting, StringComparison.InvariantCultureIgnoreCase) || d.Status.Equals(EnumQueueStatuses.Processing, StringComparison.InvariantCultureIgnoreCase)) && DbFunctions.TruncateTime(d.Queue.CreatedTime).Value == date).ToList().Select(d=>d.Queue).ToList();
+            //var listDbQueue = (from apm in _localUnitOfWork.DataContext.Appointments
+            //                   join usr in _localUnitOfWork.DataContext.Membership_Users
+            //                     on apm.UserId equals usr.UserId
+            //                   join q in _localUnitOfWork.DataContext.Queues
+            //                    on apm.ID equals q.Appointment_ID
+            //                   join qd in _localUnitOfWork.DataContext.QueueDetails
+            //                   on q.Queue_ID equals qd.Queue_ID
+            //                   join ts in _localUnitOfWork.DataContext.Timeslots
+            //                   on apm.Timeslot_ID equals ts.Timeslot_ID
+            //                   where DbFunctions.TruncateTime(q.CreatedTime).Value == date && qd.Station == station && 
+            //                   select q).ToList();
 
             return listDbQueue;
         }
@@ -195,11 +195,13 @@ namespace Trinity.DAL
             //                   on apm.Timeslot_ID equals ts.Timeslot_ID
             //                   where DbFunctions.TruncateTime(q.CreatedTime).Value == date && qd.Station == station && usr.Status.Equals(EnumUserStatuses.Blocked, StringComparison.InvariantCultureIgnoreCase)
             //                   select q).Distinct().ToList();
-            List<string> holdingList = (from apm in _localUnitOfWork.DataContext.Appointments
-                                        join usr in _localUnitOfWork.DataContext.Membership_Users
-                                        on apm.UserId equals usr.UserId
-                                        where DbFunctions.TruncateTime(apm.Date).Value == date && usr.Status.Equals(EnumUserStatuses.Blocked, StringComparison.InvariantCultureIgnoreCase)
-                                        select usr.NRIC).Distinct().ToList();
+
+            List<string> holdingList = _localUnitOfWork.DataContext.Appointments.Include("Membership_Users").Where(d => DbFunctions.TruncateTime(d.Date).Value == date && d.Membership_Users.Status.Equals(EnumUserStatuses.Blocked, StringComparison.InvariantCultureIgnoreCase)).Select(d => d.Membership_Users.NRIC).Distinct().ToList();
+            //List<string> holdingList = (from apm in _localUnitOfWork.DataContext.Appointments
+            //                            join usr in _localUnitOfWork.DataContext.Membership_Users
+            //                            on apm.UserId equals usr.UserId
+            //                            where DbFunctions.TruncateTime(apm.Date).Value == date && usr.Status.Equals(EnumUserStatuses.Blocked, StringComparison.InvariantCultureIgnoreCase)
+            //                            select usr.NRIC).Distinct().ToList();
 
             return holdingList;
         }

@@ -17,9 +17,6 @@ namespace SSK
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public class JSCallCS: JSCallCSBase
     {
-        private WebBrowser _web = null;
-        private Type _thisType = null;
-
         public event EventHandler<NRICEventArgs> OnNRICFailed;
         public event EventHandler<ShowMessageEventArgs> OnShowMessage;
         public event Action OnLogOutCompleted;
