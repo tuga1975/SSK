@@ -8,12 +8,12 @@
                 <div class="form-group">
                     <div class="input-group">
                         <span class="input-group-addon">Officer NRIC</span>
-                        <input readonly="readonly" type="text" class="form-control pri" id="NRIC">
+                        <input readonly="readonly" type="text" class="form-control pri" id="OfficerNRICBlock">
                     </div>
                     <br />
                     <div class="input-group">
                         <span class="input-group-addon">Officer Name</span>
-                        <input readonly="readonly" type="text" class="form-control pri" id="Name">
+                        <input readonly="readonly" type="text" class="form-control pri" id="OfficerNameBlock">
                     </div>
                     <br />
                     <span class="input-group-addon"  style="width:120px;">Reason:</span>
@@ -29,8 +29,8 @@
 </div>
 <script type="text/javascript">
     api.ready(function (model) {
-        $('#NRIC').val(model.OfficerNRIC);
-        $('#Name').val(model.OfficerName);
+        $('#OfficerNRICBlock').val(model.OfficerNRIC);
+        $('#OfficerNameBlock').val(model.OfficerName);
         $("#UnblockBtn").click(function (e) {
             api.server.UnblockSuperviseeByUserId(model.UserId, $('#Reason').val());
             // Waiting 1 second to update DB then refresh
