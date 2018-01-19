@@ -49,6 +49,8 @@
         </tr>
     </thead>
 </table>
+<div class="alert alert-success" id="eventsResult">
+</div>
 <br />
 <div id="PrintMUBAndTTlabel" class="text-right">
     <button id="PrintMUBAndTTbutton" class="btn btn-default">Print</button>
@@ -56,8 +58,6 @@
 <ul id="output"></ul>
 
 <script type="text/javascript">
-
-    debugger;
 
     var dataSource = [];
 
@@ -72,7 +72,9 @@
                     NRIC: element.NRIC,
                     Name: element.Name,
                     LastStation: element.LastStation,
-                    UserId: element.UserId
+                    UserId: element.UserId,
+                    PrintMUB: true,
+                    PrintTT:true
                 });
             });
         }
@@ -98,13 +100,17 @@
         });
 
         var checkedRows = [];
+        var $result = $('#eventsResult');
 
         $('#MUBAndTTlabel').on('check.bs.table', function (e, row) {
+            $("#MUBAndTTlabel").each(function () {
+                $(this).find("tr.selected td:nth-child(2)").addClass("checked");
+            })
             checkedRows.push({
                 NRIC: row.NRIC,
                 Name: row.Name,
                 LastStation: row.LastStation
-            });            
+            });
         })
 
         $('#MUBAndTTlabel').on('uncheck.bs.table', function (e, row) {
@@ -133,6 +139,10 @@
             }
 
         })
+
+
+           
+
         activemenu('MUB/TT Lablels');
     })
     
