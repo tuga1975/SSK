@@ -27,7 +27,7 @@ namespace DutyOfficer.CodeBehind
             _web = web;
         }
 
-        internal void Start(LabelInfo labelInfo)
+        internal void StartPrintMUB(LabelInfo labelInfo)
         {
             try
             {
@@ -39,7 +39,58 @@ namespace DutyOfficer.CodeBehind
 
                 PrinterMonitor printerMonitor = PrinterMonitor.Instance;
                 printerMonitor.OnPrintMUBLabelSucceeded += OnPrintMUBLabelsSucceeded;
-                printerMonitor.OnPrintTTLabelSucceeded += OnPrintTTLabelsSucceeded;//RaisePrintMUBAndTTLabelsSucceededEvent;
+                printerMonitor.OnMonitorException += OnPrintMUBAndTTLabelsException;
+
+                BarcodePrinterUtils barcodeScannerUtils = BarcodePrinterUtils.Instance;
+
+                Session session = Session.Instance;
+                if (session.IsAuthenticated)
+                {
+                    #region Print MUBLabel
+                    // Check status of Barcode printer
+                    string mubLabelPrinterName = ConfigurationManager.AppSettings["MUBLabelPrinterName"];
+                    var mubLabelPrinterStatus = barcodeScannerUtils.GetDeviceStatus(mubLabelPrinterName);
+
+                    if (mubLabelPrinterStatus.Contains(EnumDeviceStatuses.Connected))
+                    {
+                        printerMonitor.PrintMUBLabel(labelInfo);
+                    }
+                    else
+                    {
+                        // Printer disconnect, get list status of the causes disconnected
+                        string causeOfPrintMUBFailure = string.Empty;
+                        foreach (var item in mubLabelPrinterStatus)
+                        {
+                            causeOfPrintMUBFailure = causeOfPrintMUBFailure + CommonUtil.GetDeviceStatusText(item) + "; ";
+                        }
+
+                        RaisePrintMUBLabelsFailedEvent(new PrintMUBAndTTLabelsEventArgs("MUB Printer have problem: " + causeOfPrintMUBFailure));
+                    }
+                    #endregion
+                }
+            }
+            catch (Exception ex)
+            {
+                RaisePrintMUBAndTTLabelsExceptionEvent(new ExceptionArgs(new FailedInfo()
+                {
+                    ErrorCode = (int)EnumErrorCodes.UnknownError,
+                    ErrorMessage = new ErrorInfo().GetErrorMessage(EnumErrorCodes.UnknownError)
+                }));
+            }
+        }
+
+        internal void StartPrintTT(LabelInfo labelInfo)
+        {
+            try
+            {
+                _web.SetLoading(false);
+                this._web.LoadPageHtml("MUBAndTTLabel.html");
+                //this._web.RunScript("$('.status-text').css('color','#000').text('Please wait');");
+
+                //System.Threading.Thread.Sleep(1000);
+
+                PrinterMonitor printerMonitor = PrinterMonitor.Instance;
+                printerMonitor.OnPrintTTLabelSucceeded += OnPrintTTLabelsSucceeded;
                 printerMonitor.OnMonitorException += OnPrintMUBAndTTLabelsException;
 
                 BarcodePrinterUtils barcodeScannerUtils = BarcodePrinterUtils.Instance;
@@ -68,28 +119,6 @@ namespace DutyOfficer.CodeBehind
                         RaisePrintTTLabelsFailedEvent(new PrintMUBAndTTLabelsEventArgs("TTLabel Printer have problem: " + causeOfPrintFailure));
 
                         return;
-                    }
-                    #endregion
-
-                    #region Print MUBLabel
-                    // Check status of Barcode printer
-                    string mubLabelPrinterName = ConfigurationManager.AppSettings["MUBLabelPrinterName"];
-                    var mubLabelPrinterStatus = barcodeScannerUtils.GetDeviceStatus(mubLabelPrinterName);
-
-                    if (mubLabelPrinterStatus.Contains(EnumDeviceStatuses.Connected))
-                    {
-                        printerMonitor.PrintMUBLabel(labelInfo);
-                    }
-                    else
-                    {
-                        // Printer disconnect, get list status of the causes disconnected
-                        string causeOfPrintMUBFailure = string.Empty;
-                        foreach (var item in mubLabelPrinterStatus)
-                        {
-                            causeOfPrintMUBFailure = causeOfPrintMUBFailure + CommonUtil.GetDeviceStatusText(item) + "; ";
-                        }
-
-                        RaisePrintMUBLabelsFailedEvent(new PrintMUBAndTTLabelsEventArgs("MUB Printer have problem: " + causeOfPrintMUBFailure));
                     }
                     #endregion
                 }

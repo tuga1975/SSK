@@ -33,6 +33,10 @@ namespace Trinity.Common
         public string ReprintReason { get; set; }
 
         public byte[] BitmapLabel { get; set; }
+
+        public bool IsMUB { get; set; }
+
+        public bool IsTT { get; set; }
     }
 
     public class TTLabelInfo
