@@ -16,6 +16,14 @@ namespace Trinity.DAL
         public Trinity.DAL.DBContext.Queue InsertQueueNumber(Guid appointmentID, string userId, string station)
         {
             var generateQNo = Trinity.Common.CommonUtil.GetQueueNumber(_localUnitOfWork.DataContext.Membership_Users.Find(userId).NRIC);
+            var listStation = EnumStations.GetListStation();
+            var today = DateTime.Now;
+            var appointmentDetails = new DAL_Appointments().GetAppointmentDetails(appointmentID);
+            var diffHour = appointmentDetails.StartTime.Value.Hours - today.Hour;
+            var diffStartMin = appointmentDetails.StartTime.Value.Minutes - today.Minute;
+            var diffEndHour = appointmentDetails.EndTime.Value.Hours - today.Hour;
+            var diffEndMin = appointmentDetails.EndTime.Value.Minutes - today.Minute;
+
             Trinity.DAL.DBContext.Queue dataInsert = new Trinity.DAL.DBContext.Queue()
             {
                 Appointment_ID = appointmentID,
@@ -25,35 +33,35 @@ namespace Trinity.DAL
                 CurrentStation = station,
                 Outcome = EnumOutcome.Processing
             };
-            _localUnitOfWork.GetRepository<Trinity.DAL.DBContext.Queue>().Add(dataInsert);
-            _localUnitOfWork.Save();
             //insert to queue details
-            var listStation = EnumStations.GetListStation();
-            var today = DateTime.Now;
-            var appointmentDetails = new DAL_Appointments().GetAppointmentDetails(appointmentID);
-            var diffHour = appointmentDetails.StartTime.Value.Hours - today.Hour;
-            var diffStartMin = appointmentDetails.StartTime.Value.Minutes - today.Minute;
-            var diffEndHour = appointmentDetails.EndTime.Value.Hours - today.Hour;
-            var diffEndMin = appointmentDetails.EndTime.Value.Minutes - today.Minute;
+            List<QueueDetail> arrayQueueDetail = new List<QueueDetail>();
             foreach (var item in listStation)
             {
                 var queueDetails = new QueueDetail { Queue_ID = dataInsert.Queue_ID, Station = item, Status = EnumQueueStatuses.Waiting };
-
-                _localUnitOfWork.GetRepository<Trinity.DAL.DBContext.QueueDetail>().Add(queueDetails);
-                _localUnitOfWork.Save();
-            }
-            var queueDetailsRepo = _localUnitOfWork.GetRepository<QueueDetail>();
-
-            if (diffHour == 0 && diffStartMin <= 0 && ((diffEndHour > 0 && diffEndMin <= 0) || (diffEndHour == 0 && diffEndMin >= 0)))
-            {
-                var currentStationQueue = queueDetailsRepo.Get(s => s.Station == station && s.Queue_ID == dataInsert.Queue_ID);
-                if (currentStationQueue != null)
+                if(queueDetails.Station == station && diffHour == 0 && diffStartMin <= 0 && ((diffEndHour > 0 && diffEndMin <= 0) || (diffEndHour == 0 && diffEndMin >= 0)))
                 {
-                    currentStationQueue.Status = EnumQueueStatuses.Processing;
+                    queueDetails.Status = EnumQueueStatuses.Processing;
                 }
-                queueDetailsRepo.Update(currentStationQueue);
+                arrayQueueDetail.Add(queueDetails);
 
+                //_localUnitOfWork.GetRepository<Trinity.DAL.DBContext.QueueDetail>().Add(queueDetails);
+                //_localUnitOfWork.Save();
             }
+            _localUnitOfWork.GetRepository<Trinity.DAL.DBContext.Queue>().Add(dataInsert);
+            _localUnitOfWork.GetRepository<Trinity.DAL.DBContext.QueueDetail>().AddRange(arrayQueueDetail);
+
+            //var queueDetailsRepo = _localUnitOfWork.GetRepository<QueueDetail>();
+
+            //if (diffHour == 0 && diffStartMin <= 0 && ((diffEndHour > 0 && diffEndMin <= 0) || (diffEndHour == 0 && diffEndMin >= 0)))
+            //{
+            //    var currentStationQueue = queueDetailsRepo.Get(s => s.Station == station && s.Queue_ID == dataInsert.Queue_ID);
+            //    if (currentStationQueue != null)
+            //    {
+            //        currentStationQueue.Status = EnumQueueStatuses.Processing;
+            //    }
+            //    queueDetailsRepo.Update(currentStationQueue);
+
+            //}
             _localUnitOfWork.Save();
 
             return dataInsert;
@@ -69,18 +77,18 @@ namespace Trinity.DAL
         public List<Trinity.DAL.DBContext.Queue> GetAllQueueNumberByDate(DateTime date, string station)
         {
             date = date.Date;
-
-            var listDbQueue = (from apm in _localUnitOfWork.DataContext.Appointments
-                               join usr in _localUnitOfWork.DataContext.Membership_Users
-                                 on apm.UserId equals usr.UserId
-                               join q in _localUnitOfWork.DataContext.Queues
-                                on apm.ID equals q.Appointment_ID
-                               join qd in _localUnitOfWork.DataContext.QueueDetails
-                               on q.Queue_ID equals qd.Queue_ID
-                               join ts in _localUnitOfWork.DataContext.Timeslots
-                               on apm.Timeslot_ID equals ts.Timeslot_ID
-                               where DbFunctions.TruncateTime(q.CreatedTime).Value == date && qd.Station == station && (qd.Status.Equals(EnumQueueStatuses.Waiting, StringComparison.InvariantCultureIgnoreCase) || qd.Status.Equals(EnumQueueStatuses.Processing, StringComparison.InvariantCultureIgnoreCase))
-                               select q).ToList();
+            var listDbQueue = _localUnitOfWork.DataContext.QueueDetails.Include("Queue").Where(d => d.Station == station && (d.Status.Equals(EnumQueueStatuses.Waiting, StringComparison.InvariantCultureIgnoreCase) || d.Status.Equals(EnumQueueStatuses.Processing, StringComparison.InvariantCultureIgnoreCase)) && DbFunctions.TruncateTime(d.Queue.CreatedTime).Value == date).ToList().Select(d=>d.Queue).ToList();
+            //var listDbQueue = (from apm in _localUnitOfWork.DataContext.Appointments
+            //                   join usr in _localUnitOfWork.DataContext.Membership_Users
+            //                     on apm.UserId equals usr.UserId
+            //                   join q in _localUnitOfWork.DataContext.Queues
+            //                    on apm.ID equals q.Appointment_ID
+            //                   join qd in _localUnitOfWork.DataContext.QueueDetails
+            //                   on q.Queue_ID equals qd.Queue_ID
+            //                   join ts in _localUnitOfWork.DataContext.Timeslots
+            //                   on apm.Timeslot_ID equals ts.Timeslot_ID
+            //                   where DbFunctions.TruncateTime(q.CreatedTime).Value == date && qd.Station == station && 
+            //                   select q).ToList();
 
             return listDbQueue;
         }
@@ -187,11 +195,13 @@ namespace Trinity.DAL
             //                   on apm.Timeslot_ID equals ts.Timeslot_ID
             //                   where DbFunctions.TruncateTime(q.CreatedTime).Value == date && qd.Station == station && usr.Status.Equals(EnumUserStatuses.Blocked, StringComparison.InvariantCultureIgnoreCase)
             //                   select q).Distinct().ToList();
-            List<string> holdingList = (from apm in _localUnitOfWork.DataContext.Appointments
-                                        join usr in _localUnitOfWork.DataContext.Membership_Users
-                                        on apm.UserId equals usr.UserId
-                                        where DbFunctions.TruncateTime(apm.Date).Value == date && usr.Status.Equals(EnumUserStatuses.Blocked, StringComparison.InvariantCultureIgnoreCase)
-                                        select usr.NRIC).Distinct().ToList();
+
+            List<string> holdingList = _localUnitOfWork.DataContext.Appointments.Include("Membership_Users").Where(d => DbFunctions.TruncateTime(d.Date).Value == date && d.Membership_Users.Status.Equals(EnumUserStatuses.Blocked, StringComparison.InvariantCultureIgnoreCase)).Select(d => d.Membership_Users.NRIC).Distinct().ToList();
+            //List<string> holdingList = (from apm in _localUnitOfWork.DataContext.Appointments
+            //                            join usr in _localUnitOfWork.DataContext.Membership_Users
+            //                            on apm.UserId equals usr.UserId
+            //                            where DbFunctions.TruncateTime(apm.Date).Value == date && usr.Status.Equals(EnumUserStatuses.Blocked, StringComparison.InvariantCultureIgnoreCase)
+            //                            select usr.NRIC).Distinct().ToList();
 
             return holdingList;
         }

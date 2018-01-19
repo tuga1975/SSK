@@ -64,26 +64,34 @@
                         <div>
                             <div class="row">
                                 <div class="col">
-                                    <div style="width:300px;height:182px;border:1px solid #000;float:right;position:relative;" id="frontCard">
-                                        <div style="height:87px;width:100px;position:absolute;top:2px;left:2px;border:1px solid #CCC;text-align:center;padding:1px;">
-                                            <img src="../images/usr-default.jpg" id="verifyPhoto" style="height:100%;max-width:100%;" />
+                                    <div style="width:300px;height:182px;border:1px solid #000;float:right;position:relative;overflow:hidden;border-radius:5px;font-family:Arial;" id="frontCard">
+                                        <img src="../images/background-smart-card.png" style="position:absolute;z-index:0;left:0px;top:0px;height:100%;width:100%;" />
+                                        <div style="z-index:1;color:#FFF;">
+                                            <div style="position:absolute;font-size: 15px;font-weight: bold;font-style: italic;top: 10px;left: 20px;">
+                                                CNB Supervisee Card
+                                            </div>
+                                            <div style="height:95px;width:75px;position:absolute;top:40px;left:20px;text-align:center;padding:1px;border-radius:5px;background-color:#FFF;">
+                                                <img src="../images/usr-default.jpg" id="verifyPhoto" style="height:100%;max-width:100%;border-radius:5px;" />
+                                            </div>
+                                            <img src="../images/central_narco_logo.png" style="position:absolute;height: 35px;top: 119px;left: 40px;z-index: 1;">
+                                            <div style="position:absolute;top:40px;left: 110px;font-size: 12px;font-weight: bold;line-height: 16px;">
+                                                <div><span name="verifyName"></span></div>
+                                                <!--<div><span name="verifyNRIC"></span></div>-->
+                                                <div><span name="serialNumber"></span></div>
+                                                <!--<div><b>Issue date: </b><span name="issueDate"></span></div>
+                                                <div><b>Expire date: </b><span name="expireDate"></span></div>-->
+                                                <!--<div><b>Serial Number: </b><span name="serialNumber"></span></div>-->
+                                                <div style="clear:both"></div>
+                                            </div>
+                                            <div style="position:absolute;width:auto;left:110px;bottom:45px;background-color:#FFF;border-radius:5px;padding:5px;">
+                                                <img name="verifyBarcode" />
+                                            </div>
                                         </div>
-                                        <div style="height:87px;width:100px;position:absolute;bottom:2px;left:2px;border:1px solid #CCC;text-align:center;padding:1px;">
-                                            <img src="../images/usr-default.jpg" id="verifyPhoto2" style="height:100%;max-width:100%;" />
-                                        </div>
-                                        <div style="margin-left:100px;padding:10px;font-size:12px;">
-                                            <div><b>Name : </b><span name="verifyName"></span></div>
-                                            <div><b>NRIC : </b><span name="verifyNRIC"></span></div>
-                                            <div><b>Issue date: </b><span name="issueDate"></span></div>
-                                            <div><b>Expire date: </b><span name="expireDate"></span></div>
-                                            <!--<div><b>Serial Number: </b><span name="serialNumber"></span></div>-->
-                                        </div>
-                                        <div style="clear:both"></div>
                                     </div>
                                 </div>
                                 <div class="col">
-                                    <div style="width:300px;height:182px;border:1px solid #000;float:right;position:relative;" id="backCard">
-                                        <div style="height:87px;width:100px;position:absolute;top:2px;left:2px;border:1px solid #CCC;text-align:center;padding:1px;display:none;">
+                                    <div style="width:300px;height:182px;border:1px solid #000;float:right;position:relative;overflow:hidden;border-radius:5px;font-family:Arial;" id="backCard">
+                                        <!--<div style="height:87px;width:100px;position:absolute;top:2px;left:2px;border:1px solid #CCC;text-align:center;padding:1px;display:none;">
                                             <img src="../images/fingerprint.jpg" id="verifyLeftFinger" style="height:100%;max-width:100%;" />
                                         </div>
                                         <div style="height:87px;width:100px;position:absolute;bottom:2px;left:2px;border:1px solid #CCC;text-align:center;padding:1px;display:none;">
@@ -98,14 +106,26 @@
                                             <div><b>Race : </b><span name="verifyRace"></span></div>
                                             <div><b>Issue date: </b><span name="issueDate"></span></div>
                                             <div><b>Expire date: </b><span name="expireDate"></span></div>
-                                            <!--<div><b>Serial Number: </b><span name="serialNumber"></span></div>-->
+                                        </div>-->
+                                        <img src="../images/background-smart-card.png" style="position:absolute;z-index:0;left:0px;top:0px;height:100%;width:100%;" />
+
+                                        <div style="position:absolute;bottom:15px;left:15px;z-index:1;color:#FFF;">
+                                            <div style="font-size: 12px;font-weight: bold;">
+                                                <div>Issue date: <span name="issueDate"></span></div>
+                                            </div>
+                                            <div style="margin-top:10px;font-size: 8px;font-weight: bold;text-shadow: 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black;">
+                                                “If this card is found, please return to any Police Station or to:<br />
+                                                Central Narcotics Bureau<br />
+                                                393 New Bridge Road,<br />
+                                                Singapore 088763<br />
+                                                Contact Number: 6325 6665
+                                            </div>
                                         </div>
                                         <div style="clear:both"></div>
                                     </div>
                                 </div>
                                 <div style="clear:both;"></div>
                             </div>
-
                         </div>
                     </section>
 
@@ -141,9 +161,13 @@
         image.src = src;
     }
 
-    function Test() {
-
-    }
+    //function Test() {
+    //    html2canvas($('#backCard'), {
+    //        onrendered: function (backcanvas) {
+    //            $('[ad]').attr('src', backcanvas.toDataURL("image/png"))
+    //        }
+    //    });
+    //}
     $(document).ready(function () {
         $('#leftThumbClearBtn').attr('disabled', 'disabled');
         $('#rightThumbClearBtn').attr('disabled', 'disabled');
@@ -286,7 +310,8 @@
                         }
                         $('[name="verifyRace"]').text(model.UserProfile.Race == null ? '' : model.UserProfile.Race);
                         frontCardImg = null;
-                        backCardImg = null
+                        backCardImg = null;
+                        JsBarcode('[name="verifyBarcode"]', model.User.NRIC, { height: 20, fontSize: 8, width: 1, margin: 0, font: "Arial" });
                     });
                 } else if (newIndex == 3) {
                     //if (frontCardImg == null && backCardImg == null) {

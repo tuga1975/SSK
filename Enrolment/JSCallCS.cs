@@ -442,6 +442,7 @@ namespace Enrolment
                 EventCenter eventCenter = EventCenter.Default;
 
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.UPDATE_SUPERVISEE_BIODATA, Data = new object[] { profileModel, frontBase64, backBase64 } });
+                PrintSmartCart(frontBase64, backBase64);
             }
         }
         public object loadDataVerify()
@@ -457,10 +458,19 @@ namespace Enrolment
             Session session = Session.Instance;
             var userLogin = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
             var profileModel = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
-            var ImgFront = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".png";
-            var ImgBack = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".png";
-            new System.Drawing.Bitmap(new System.IO.MemoryStream(Convert.FromBase64String(frontBase64))).Save(ImgFront);
-            new System.Drawing.Bitmap(new System.IO.MemoryStream(Convert.FromBase64String(backBase64))).Save(ImgBack);
+
+            string ImgFront = null;
+            string ImgBack = null;
+            if (!string.IsNullOrEmpty(frontBase64))
+            {
+                ImgFront = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".png";
+                new System.Drawing.Bitmap(new System.IO.MemoryStream(Convert.FromBase64String(frontBase64))).Save(ImgFront);
+            }
+            if (!string.IsNullOrEmpty(backBase64))
+            {
+                ImgBack = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".png";
+                new System.Drawing.Bitmap(new System.IO.MemoryStream(Convert.FromBase64String(backBase64))).Save(ImgBack);
+            }
 
             SuperviseeCardInfo infoPrinter = new SuperviseeCardInfo()
             {
@@ -470,7 +480,7 @@ namespace Enrolment
                 {
                     Name = profileModel.User.Name,
                     NRIC = profileModel.User.NRIC,
-                    UserId = profileModel.User.UserId
+                    UserId = profileModel.User.UserId,
                 }
             };
 
@@ -505,6 +515,7 @@ namespace Enrolment
                 dalIssueCard.Insert(IssueCard);
                 currentEditUser.Membership_Users.SmartCardId = SmartID;
                 this._web.InvokeScript("showPrintMessage", true, "Smart Card was printed successfully! Please collect the smart card from printer and place on the reader to verify.");
+                this._web.InvokeScript("showCardImages");
             }
             else
             {
