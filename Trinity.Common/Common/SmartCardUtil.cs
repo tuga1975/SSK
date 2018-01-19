@@ -11,7 +11,7 @@ namespace Trinity.Common
         private static string _cardUID;
         private static SmartCardData_Original _cardData_Original;
 
-        public static bool DataIsValid
+        public static bool IsDataValid
         {
             get
             {

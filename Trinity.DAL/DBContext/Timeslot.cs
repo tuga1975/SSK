@@ -21,11 +21,11 @@ namespace Trinity.DAL.DBContext
         }
     
         public int Timeslot_ID { get; set; }
-        public Nullable<System.Guid> Setting_ID { get; set; }
         public string Category { get; set; }
-        public Nullable<int> DateOfWeek { get; set; }
+        public Nullable<System.DateTime> Date { get; set; }
         public Nullable<System.TimeSpan> StartTime { get; set; }
         public Nullable<System.TimeSpan> EndTime { get; set; }
+        public Nullable<int> MaximumSupervisee { get; set; }
         public string CreatedBy { get; set; }
         public Nullable<System.DateTime> CreatedDate { get; set; }
         public string LastUpdatedBy { get; set; }
@@ -34,6 +34,5 @@ namespace Trinity.DAL.DBContext
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Appointment> Appointments { get; set; }
-        public virtual Setting Setting { get; set; }
     }
 }

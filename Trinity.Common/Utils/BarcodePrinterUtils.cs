@@ -194,13 +194,15 @@ namespace Trinity.Common.Utils
             //Download PCX file into printer
             //TSCLIB_DLL.downloadpcx("UL.PCX", "UL.PCX");
             //Drawing PCX graphic
-            TSCLIB_DLL.downloadpcx(@"D:\xxx.bmp", "xxx.bmp");  //Download PCX file into printer
+            TSCLIB_DLL.downloadpcx(@"D:\sample.bmp", "sample.bmp");  //Download PCX file into printer
 
-            TSCLIB_DLL.sendcommand("PUTBMP 1,1,\"xxx.bmp\"");                          //Drawing PCX graphic
+            TSCLIB_DLL.sendcommand("PUTBMP 1,1,\"sample.bmp\"");                          //Drawing PCX graphic
 
             //Print labels
             //TSCLIB_DLL.printlabel("1", "1");
             TSCLIB_DLL.sendcommand("PRINT 1");
+            TSCLIB_DLL.sendcommand("FEED 100");
+            TSCLIB_DLL.sendcommand("CUT");
             TSCLIB_DLL.closeport();
         }
         public bool PrintMUBLabel(string filePath)

@@ -32,6 +32,7 @@ namespace Trinity.DAL.DBContext
         }
     
         public string UserId { get; set; }
+        public string OfficerId { get; set; }
         public string Email { get; set; }
         public bool EmailConfirmed { get; set; }
         public string PasswordHash { get; set; }
