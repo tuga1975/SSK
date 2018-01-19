@@ -39,9 +39,14 @@ function Api() {
     this.ready = function (callback) {
         arrayReadrCallback.push(callback);
     };
+    this.DumpDataToTxt = function (content, model) {
+        for (var item in model) {
+            content = content.replace(new RegExp('{' + item + '}', "g"), model[item]);
+        }
+        return content;
+    };
 }
 function AddContentPage(html, model) {
-
     if (model != null)
         api.model = JSON.parse(model);
     else
