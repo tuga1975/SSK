@@ -46,5 +46,9 @@ namespace Trinity.BE
 
         [DataMember]
         public string ReprintReason { get; set; }
+        public bool IsMUB { get; set; }
+        public bool IsTT { get; set; }
+        public string OfficerNRIC { get; set; }
+        public string OfficerName { get; set; }
     }
 }

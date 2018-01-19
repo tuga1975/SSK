@@ -67,7 +67,7 @@
 
 
 <script type="text/javascript">
-    $(document).ready(function () {
+    api.ready(function (model) {
         $('#companyName').text(api.model.CompanyName);
         //$('#markingNo').text('Marking No: ' + api.model.MarkingNo);
         $('#date').text(api.model.Date);
@@ -77,19 +77,44 @@
         var srcQRCode = "../../Temp/QRCode.png";
         $("#imgQRCode").attr("src", srcQRCode);
 
+        html2canvas($("#canvas"), {
+            onrendered: function (canvas) {
+                theCanvas = canvas;
+                //document.body.appendChild(canvas);
+
+                //$("#img-out").append(canvas);
+                var json = JSON.stringify(model);
+                api.server.CallPrintingMUBAndTT(json, canvas.toDataURL());
+                // Clean up
+                //document.body.removeChild(canvas);
+            }
+        });
     });
 
-    html2canvas($("#canvas"), {
-        onrendered: function (canvas) {
-            theCanvas = canvas;
-            //document.body.appendChild(canvas);
 
-            //$("#img-out").append(canvas);
-            var json = JSON.stringify(api.model);
-            api.server.CallPrintingMUBAndTT(json, canvas.toDataURL());
-            // Clean up
-            //document.body.removeChild(canvas);
-        }
-    });
+    //$(document).ready(function () {
+    //    $('#companyName').text(api.model.CompanyName);
+    //    //$('#markingNo').text('Marking No: ' + api.model.MarkingNo);
+    //    $('#date').text(api.model.Date);
+    //    $('#name').text(api.model.Name);
+    //    $('#nric').text(api.model.NRIC);
+    //    $('#markingNumber').text(api.model.MarkingNo);
+    //    var srcQRCode = "../../Temp/QRCode.png";
+    //    $("#imgQRCode").attr("src", srcQRCode);
+
+    //});
+
+    //html2canvas($("#canvas"), {
+    //    onrendered: function (canvas) {
+    //        theCanvas = canvas;
+    //        //document.body.appendChild(canvas);
+
+    //        //$("#img-out").append(canvas);
+    //        var json = JSON.stringify(api.model);
+    //        api.server.CallPrintingMUBAndTT(json, canvas.toDataURL());
+    //        // Clean up
+    //        //document.body.removeChild(canvas);
+    //    }
+    //});
 
 </script>

@@ -41,14 +41,16 @@
 <table id="MUBAndTTlabel">
     <thead>
         <tr>
-            <th data-field="PrintMUB" data-checkbox="true" class="col-xs-1" id="PrintMUB">Print MUB</th>
-            <th data-field="PrintTT" data-checkbox="true" class="col-xs-1" id="PrintTT">Print TT</th>
+            <th data-field="IsMUB" data-formatter="cbFormatter" class="col-xs-1" id="PrintMUB">Print MUB</th>
+            <th data-field="IsTT" data-formatter="cbFormatter" class="col-xs-1" id="PrintTT">Print TT</th>
             <th data-field="NRIC" data-sortable="true" class="col-xs-3">NRIC</th>
             <th data-field="Name" data-sortable="true" class="col-xs-6">Name</th>
             <th data-field="LastStation" class="col-xs-2">Last Station</th>
         </tr>
     </thead>
 </table>
+<div class="alert alert-success" id="eventsResult">
+</div>
 <br />
 <div id="PrintMUBAndTTlabel" class="text-right">
     <button id="PrintMUBAndTTbutton" class="btn btn-default">Print</button>
@@ -57,12 +59,14 @@
 
 <script type="text/javascript">
 
-    debugger;
-
     var dataSource = [];
 
     api.server.GetAllMUBAndTTlabels();
 
+    function cbFormatter(value) {
+        return '<input type="checkbox"' + (value == true ? " checked " : "") + '>';
+    };
+    
     function getDataCallback(response) {
 
         var data = JSON.parse(response);        
@@ -72,7 +76,9 @@
                     NRIC: element.NRIC,
                     Name: element.Name,
                     LastStation: element.LastStation,
-                    UserId: element.UserId
+                    UserId: element.UserId,
+                    IsMUB: element.IsMUB,
+                    IsTT: element.IsTT
                 });
             });
         }
@@ -81,7 +87,7 @@
             //pagination: true,
             search: true,
             pageSize: 10,
-            singleSelect: true,
+            //singleSelect: true,
             data: dataSource
         });
     } 
@@ -98,13 +104,17 @@
         });
 
         var checkedRows = [];
+        var $result = $('#eventsResult');
 
         $('#MUBAndTTlabel').on('check.bs.table', function (e, row) {
+            $("#MUBAndTTlabel").each(function () {
+                $(this).find("tr.selected td:nth-child(2)").addClass("checked");
+            })
             checkedRows.push({
                 NRIC: row.NRIC,
                 Name: row.Name,
                 LastStation: row.LastStation
-            });            
+            });
         })
 
         $('#MUBAndTTlabel').on('uncheck.bs.table', function (e, row) {
@@ -115,14 +125,26 @@
             });
         });
 
-        var model;
+        var model = [];
+            
 
-        $('#PrintMUBAndTTbutton').click(function () {
-            $.each(checkedRows, function (index, value) {
-                model = value;
-
-            });
-            if (model != null) {
+        $('#PrintMUBAndTTbutton').click(function () {            
+            var rows = document.getElementById('MUBAndTTlabel').rows;
+            for (i = 0; i < rows.length; i++) {
+                var row = rows[i];
+                
+                if (row.cells[0].firstChild.checked == true || row.cells[1].firstChild.checked == true) {
+                    model.push({
+                        NRIC: row.cells[2].innerHTML,
+                        Name: row.cells[3].innerHTML,
+                        LastStation: row.cells[4].innerHTML,
+                        IsMUB: row.cells[0].firstChild.checked,
+                        IsTT: row.cells[1].firstChild.checked
+                    });
+                };
+            };
+            
+            if (model.length > 0) {
                 var data = JSON.stringify(model);
                 api.server.LoadPopupMUBAndTTLabel(data, function () {
                     $('#popupMUBandTTLabel').modal();
@@ -133,6 +155,7 @@
             }
 
         })
+
         activemenu('MUB/TT Lablels');
     })
     
