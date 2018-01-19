@@ -44,8 +44,9 @@
             <th data-field="IsMUB" data-formatter="cbFormatter" class="col-xs-1" id="PrintMUB">Print MUB</th>
             <th data-field="IsTT" data-formatter="cbFormatter" class="col-xs-1" id="PrintTT">Print TT</th>
             <th data-field="NRIC" data-sortable="true" class="col-xs-3">NRIC</th>
-            <th data-field="Name" data-sortable="true" class="col-xs-6">Name</th>
+            <th data-field="Name" data-sortable="true" class="col-xs-5">Name</th>
             <th data-field="LastStation" class="col-xs-2">Last Station</th>
+            <th data-field="UserId" class="hidden"></th>
         </tr>
     </thead>
 </table>
@@ -139,10 +140,11 @@
                         Name: row.cells[3].innerHTML,
                         LastStation: row.cells[4].innerHTML,
                         IsMUB: row.cells[0].firstChild.checked,
-                        IsTT: row.cells[1].firstChild.checked
+                        IsTT: row.cells[1].firstChild.checked,
+                        UserId: row.cells[5].innerHTML
                     });
                 };
-            };
+            } ;
             
             if (model.length > 0) {
                 var data = JSON.stringify(model);

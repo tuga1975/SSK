@@ -32,7 +32,14 @@ namespace DutyOfficer.CodeBehind
             try
             {
                 _web.SetLoading(false);
-                this._web.LoadPageHtml("MUBAndTTLabel.html");
+                if (labelInfo.IsMUB)
+                {
+                    this._web.LoadPageHtml("MUBAndTTLabel.html");
+                }
+                else
+                {
+                    this._web.LoadPageHtml("UBlabel.html");
+                }
                 //this._web.RunScript("$('.status-text').css('color','#000').text('Please wait');");
 
                 //System.Threading.Thread.Sleep(1000);

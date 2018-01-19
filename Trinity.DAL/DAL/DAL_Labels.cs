@@ -71,11 +71,13 @@ namespace Trinity.DAL
             }
         }
 
-        public List<BE.Label> GetAllLabels()
+        public List<BE.Label> GetAllLabelsForMUBAndTT()
         {
             try
             {
-                var lstModels = _localUnitOfWork.DataContext.Labels.Include("Membership_Users").Select(d => new BE.Label()
+                var lstModels = _localUnitOfWork.DataContext.Labels.Include("Membership_Users")
+                    .Where(l=>l.Label_Type.Equals(EnumLabelType.MUB) || l.Label_Type.Equals(EnumLabelType.TT))
+                    .Select(d => new BE.Label()
                 {
                     NRIC = d.Membership_Users.NRIC,
                     Name = d.Membership_Users.Name,
@@ -99,5 +101,26 @@ namespace Trinity.DAL
             }
         }
 
+        public List<BE.Label> GetAllLabelsForUB()
+        {
+            try
+            {
+                var lstModels = _localUnitOfWork.DataContext.Labels.Include("Membership_Users")
+                    .Where(l => l.Label_Type.Equals(EnumLabelType.UB))
+                    .Select(d => new BE.Label()
+                    {
+                        NRIC = d.Membership_Users.NRIC,
+                        Name = d.Membership_Users.Name,
+                        LastStation = d.LastStation,
+                        UserId = d.UserId
+                    });
+
+                return lstModels.ToList();
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
     }
 }

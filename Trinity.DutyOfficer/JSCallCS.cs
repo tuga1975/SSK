@@ -237,7 +237,7 @@ namespace DutyOfficer
         public void GetAllUBlabels()
         {
             var dalUBlabels = new DAL_Labels();
-            List<Trinity.BE.Label> data = dalUBlabels.GetAllLabels();
+            List<Trinity.BE.Label> data = dalUBlabels.GetAllLabelsForUB();
 
             object result = null;
             if (data.Count != 0)
@@ -247,34 +247,7 @@ namespace DutyOfficer
             }
             else
             {
-                Trinity.BE.Label label0 = new Trinity.BE.Label();
-                label0.NRIC = "S99999999X";
-                label0.Name = "Tan Ah Guo";
-                label0.LastStation = "SSA";
-
-                Trinity.BE.Label label1 = new Trinity.BE.Label();
-                label1.NRIC = "S99999998X";
-                label1.Name = "Chen Ah Ming";
-                label1.LastStation = "SSK";
-
-                Trinity.BE.Label label2 = new Trinity.BE.Label();
-                label2.NRIC = "S99999997X";
-                label2.Name = "Koh Mok Yao";
-                label2.LastStation = "ESP";
-
-                Trinity.BE.Label label3 = new Trinity.BE.Label();
-                label3.NRIC = "S99999996X";
-                label3.Name = "Quek Yew Ming";
-                label3.LastStation = "UHP";
-
-                data = new List<Trinity.BE.Label>();
-                data.Add(label0);
-                data.Add(label1);
-                data.Add(label2);
-                data.Add(label3);
-
-                result = JsonConvert.SerializeObject(data, Formatting.Indented,
-                    new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
+                getAlertsSendToDutyOfficer();
             }
             _web.InvokeScript("getDataCallback", result);
         }
@@ -282,25 +255,93 @@ namespace DutyOfficer
         //Load Popup of UB label
         public void LoadPopupUBLabel(string json)
         {
-            //var rawdata = JsonConvert.DeserializeObject<Object>(json);
+            var data = JsonConvert.DeserializeObject<List<Trinity.BE.Label>>(json);
 
-            var rawdata = JsonConvert.DeserializeObject<UserBlockedModel>(json);
             Session session = Session.Instance;
             Trinity.BE.User dutyOfficer = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-            rawdata.OfficerNRIC = dutyOfficer.NRIC;
-            rawdata.OfficerName = dutyOfficer.Name;
+            data[0].OfficerNRIC = dutyOfficer.NRIC;
+            data[0].OfficerName = dutyOfficer.Name;
 
+            this._web.LoadPopupHtml("UBlabelPopup.html", data);
 
-            this._web.LoadPopupHtml("UBlabelPopup.html", rawdata);
         }
 
+        //Mapping Template UB labels
+        public void MappingTemplateUBLabels(string json, string reason)
+        {
+            try
+            {
+                List<Trinity.BE.Label> lstLabel = JsonConvert.DeserializeObject<List<Trinity.BE.Label>>(json);
+
+                foreach (var item in lstLabel)
+                {
+                    LabelInfo labelInfo = new LabelInfo
+                    {
+                        UserId = item.UserId,
+                        Name = item.Name,
+                        NRIC = item.NRIC,
+                        Label_Type = EnumLabelType.MUB,
+                        Date = DateTime.Now.ToString("dd/MM/yyyy"),
+                        CompanyName = CommonConstants.COMPANY_NAME,
+                        LastStation = EnumStations.DUTYOFFICER,
+                        MarkingNo = CommonUtil.GenerateMarkingNumber(),
+                        DrugType = "NA",
+                        ReprintReason = reason,
+                        IsMUB = false
+                    };
+
+                    if (item.IsMUB)
+                    {
+                        byte[] byteArrayQRCode = null;
+                        byteArrayQRCode = CommonUtil.CreateLabelQRCode(labelInfo, "AESKey");
+                        labelInfo.QRCode = byteArrayQRCode;
+
+                        using (var ms = new System.IO.MemoryStream(byteArrayQRCode))
+                        {
+                            if (!Directory.Exists(CSCallJS.curDir + "\\Temp"))
+                            {
+                                Directory.CreateDirectory(CSCallJS.curDir + "\\Temp");
+                            }
+                            string fileName = String.Format("{0}/Temp/{1}", CSCallJS.curDir, "QRCode.png");
+                            if (System.IO.File.Exists(fileName))
+                                System.IO.File.Delete(fileName);
+
+                            if (System.IO.File.Exists(fileName))
+                                System.IO.File.Delete(fileName);
+
+                            System.Drawing.Image bitmap = System.Drawing.Image.FromStream(ms);
+                            bitmap.Save(fileName, System.Drawing.Imaging.ImageFormat.Png);
+                        }
+                    }
+
+                    _web.LoadPageHtml("PrintingTemplates/UBLabelTemplate .html", labelInfo);
+
+                    Thread.Sleep(1500);
+                }
+            }
+            catch (Exception e)
+            {
+
+            }
+        }
+
+        public void CallPrintingUB(string jsonModel, string base64String)
+        {
+            string base64StringCanvas = base64String.Split(',')[1];
+            byte[] bitmapBytes = Convert.FromBase64String(base64StringCanvas);
+
+            var labelInfo = JsonConvert.DeserializeObject<LabelInfo>(jsonModel);
+            labelInfo.BitmapLabel = bitmapBytes;
+
+            _printMUBAndTTLabel.StartPrintMUB(labelInfo);
+        }
         #endregion
 
         #region Print MUB And TT
         public void GetAllMUBAndTTlabels()
         {
             var dalMUBAndTTlabels = new DAL_Labels();
-            List<Trinity.BE.Label> data = dalMUBAndTTlabels.GetAllLabels();
+            List<Trinity.BE.Label> data = dalMUBAndTTlabels.GetAllLabelsForMUBAndTT();
 
             object result = null;
             if (data.Count != 0)
@@ -308,38 +349,10 @@ namespace DutyOfficer
                 result = JsonConvert.SerializeObject(data, Formatting.Indented,
                     new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
             }
-            //else
-            //{
-            //    // data for testing
-            //    Trinity.BE.Label label0 = new Trinity.BE.Label();
-            //    label0.NRIC = "S99999999X";
-            //    label0.Name = "Tan Ah Guo";
-            //    label0.LastStation = "SSA";
-
-            //    Trinity.BE.Label label1 = new Trinity.BE.Label();
-            //    label1.NRIC = "S99999998X";
-            //    label1.Name = "Chen Ah Ming";
-            //    label1.LastStation = "SSK";
-
-            //    Trinity.BE.Label label2 = new Trinity.BE.Label();
-            //    label2.NRIC = "S99999997X";
-            //    label2.Name = "Koh Mok Yao";
-            //    label2.LastStation = "ESP";
-
-            //    Trinity.BE.Label label3 = new Trinity.BE.Label();
-            //    label3.NRIC = "S99999996X";
-            //    label3.Name = "Quek Yew Ming";
-            //    label3.LastStation = "UHP";
-
-            //    data = new List<Trinity.BE.Label>();
-            //    data.Add(label0);
-            //    data.Add(label1);
-            //    data.Add(label2);
-            //    data.Add(label3);
-
-            //    result = JsonConvert.SerializeObject(data, Formatting.Indented,
-            //        new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
-            //}
+            else
+            {
+                getAlertsSendToDutyOfficer();
+            }
             _web.InvokeScript("getDataCallback", result);
         }
 
@@ -378,10 +391,10 @@ namespace DutyOfficer
                         CompanyName = CommonConstants.COMPANY_NAME,
                         LastStation = EnumStations.DUTYOFFICER,
                         MarkingNo = CommonUtil.GenerateMarkingNumber(),
-                        DrugType = "NA",
+                        //DrugType = "NA",
                         ReprintReason = reason,
                         IsMUB = item.IsMUB,
-                        IsTT=item.IsTT
+                        IsTT = item.IsTT
                     };
 
                     if (item.IsMUB)
@@ -437,7 +450,7 @@ namespace DutyOfficer
                 _printMUBAndTTLabel.StartPrintTT(labelInfo);
             }
         }
-        
+
         private void PrintMUBLabels_OnPrintMUBLabelSucceeded(object sender, PrintMUBAndTTLabelsSucceedEventArgs e)
         {
             Trinity.BE.Label labelInfo = new Trinity.BE.Label
@@ -451,22 +464,31 @@ namespace DutyOfficer
                 Name = e.LabelInfo.Name,
                 Date = DateTime.Now,
                 QRCode = e.LabelInfo.QRCode,
-                LastStation = e.LabelInfo.LastStation,
+                LastStation = EnumStations.DUTYOFFICER,
                 PrintCount = e.LabelInfo.PrintCount,
                 ReprintReason = e.LabelInfo.ReprintReason
             };
 
-            DAL_Labels dalLabel = new DAL_Labels();
-            dalLabel.UpdateLabel(labelInfo, labelInfo.UserId, EnumLabelType.MUB);
+            // IsMUB = false: Print UB
+            if (!e.LabelInfo.IsMUB)
+            {
+                labelInfo.Label_Type = EnumLabelType.UB;
+                labelInfo.DrugType = ""; // Can dien thong tin DrugType khi print UB (chua biet drugtype la gi?)
+            }
 
-            MessageBox.Show("Print successful.", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            DAL_Labels dalLabel = new DAL_Labels();
+            if(dalLabel.UpdateLabel(labelInfo, labelInfo.UserId, labelInfo.Label_Type))
+            {
+                string message = "Print MUB for " + e.LabelInfo.Name + " successful.";
+                MessageBox.Show(message, "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }            
 
             DeleteQRCodeImageFileTemp();
         }
 
         private void PrintMUBLabels_OnPrintMUBLabelFailed(object sender, CodeBehind.PrintMUBAndTTLabelsEventArgs e)
         {
-            MessageBox.Show("Unable to print MUB labels\nPlease report to the Duty Officer", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show("Unable to print MUB/UB labels\nPlease report to the Duty Officer", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
             DeleteQRCodeImageFileTemp();
         }
@@ -489,7 +511,11 @@ namespace DutyOfficer
             };
 
             var dalLabel = new DAL_Labels();
-            dalLabel.UpdateLabel(labelInfo, labelInfo.UserId, EnumLabelType.TT);
+            if (dalLabel.UpdateLabel(labelInfo, labelInfo.UserId, EnumLabelType.TT))
+            {
+                string message = "Print TT for " + e.LabelInfo.Name + " successful.";
+                MessageBox.Show(message, "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
 
             DeleteQRCodeImageFileTemp();
         }

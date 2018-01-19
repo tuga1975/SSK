@@ -30,8 +30,8 @@
 </div>
 <script type="text/javascript">
     api.ready(function (model) {
-        $('#OfficerNRICUB').val(model.OfficerNRIC);
-        $('#OfficerNameUB').val(model.OfficerName);
+        $('#OfficerNRICUB').val(model[0].OfficerNRIC);
+        $('#OfficerNameUB').val(model[0].OfficerName);
         $("#PrintBtn").click(function (e) {
             //var json = JSON.stringify(api.model);
 

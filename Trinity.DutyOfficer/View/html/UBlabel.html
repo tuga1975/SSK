@@ -91,7 +91,7 @@
         var checkedRows = [];
 
         $('#UBlabel').on('check.bs.table', function (e, row) {
-            checkedRows.push({ NRIC: row.NRIC, Name: row.Name, LastStation: row.LastStation });
+            checkedRows.push({ NRIC: row.NRIC, Name: row.Name, LastStation: row.LastStation, UserId: row.UserId });
         });
 
         $('#UBlabel').on('uncheck.bs.table', function (e, row) {
@@ -108,8 +108,8 @@
             $.each(checkedRows, function (index, value) {
                 model = value;
             })
-            if (model != null) {
-                var data = JSON.stringify(model);
+            if (checkedRows.length > 0) {
+                var data = JSON.stringify(checkedRows);
                 api.server.LoadPopupUBLabel(data, function () {
                     $('#UBLabelpopup').modal();
                 })
