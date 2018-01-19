@@ -207,6 +207,9 @@
     <Content Include="View\scripts\jquery-1.10.2.min.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="View\scripts\JsBarcode.all.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="View\scripts\utils.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

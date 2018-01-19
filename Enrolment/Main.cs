@@ -677,9 +677,6 @@ namespace Enrolment
                 //    dalIssueCard.Update(profileModel.User.SmartCardId, profileModel.User.UserId, issueCardModel);
                 //}
                 session[CommonConstants.CURRENT_EDIT_USER] = profileModel;
-
-                // Start to print smart card
-                PrintSmartCart(frontBase64, backBase64);
             }
             else if (e.Name == EventNames.LOAD_EDIT_SUPERVISEE_SUCCEEDED)
             {
@@ -720,80 +717,6 @@ namespace Enrolment
             }
         }
 
-        #region Print Smart Card
-        public void PrintSmartCart(string frontBase64, string backBase64)
-        {
-            LayerWeb.InvokeScript("showPrintMessage", null, "Printing card please wait ...");
-            frontBase64 = frontBase64.Replace("data:image/png;base64,", string.Empty);
-            backBase64 = backBase64.Replace("data:image/png;base64,", string.Empty);
-            Session session = Session.Instance;
-            var userLogin = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-            var profileModel = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
-
-            string ImgFront = null;
-            string ImgBack = null;
-            if (!string.IsNullOrEmpty(frontBase64))
-            {
-                ImgFront = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".png";
-                new System.Drawing.Bitmap(new System.IO.MemoryStream(Convert.FromBase64String(frontBase64))).Save(ImgFront);
-            }
-            if (!string.IsNullOrEmpty(backBase64))
-            {
-                ImgBack = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".png";
-                new System.Drawing.Bitmap(new System.IO.MemoryStream(Convert.FromBase64String(backBase64))).Save(ImgBack);
-            }
-
-            SuperviseeCardInfo infoPrinter = new SuperviseeCardInfo()
-            {
-                BackCardImagePath = ImgBack,
-                FrontCardImagePath = ImgFront,
-                SuperviseeBiodata = new SuperviseeBiodata()
-                {
-                    Name = profileModel.User.Name,
-                    NRIC = profileModel.User.NRIC,
-                    UserId = profileModel.User.UserId,
-                }
-            };
-
-            Trinity.Common.Utils.SmartCardPrinterUtils.Instance.PrintAndWriteSuperviseeSmartCard(infoPrinter, OnNewCardPrintedSuccessfully);
-        }
-        private void OnNewCardPrintedSuccessfully(PrintAndWriteCardResult result)
-        {
-            if (result.Success)
-            {
-                Session session = Session.Instance;
-                var userLogin = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-                var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
-                DAL_IssueCard dalIssueCard = new Trinity.DAL.DAL_IssueCard();
-                string SmartID = result.CardUID;
-                Trinity.BE.IssueCard IssueCard = new Trinity.BE.IssueCard()
-                {
-                    CreatedBy = userLogin.UserId,
-                    CreatedDate = DateTime.Now,
-                    Date_Of_Issue = currentEditUser.UserProfile.DateOfIssue,
-                    Name = currentEditUser.Membership_Users.Name,
-                    NRIC = currentEditUser.Membership_Users.NRIC,
-                    Reprint_Reason = string.Empty,
-                    Serial_Number = currentEditUser.UserProfile.SerialNumber,
-                    Expired_Date = currentEditUser.UserProfile.Expired_Date,
-                    Status = EnumIssuedCards.Active,
-                    SmartCardId = SmartID,
-                    UserId = currentEditUser.UserProfile.UserId
-                };
-                dalIssueCard.UpdateStatusByUserId(currentEditUser.UserProfile.UserId, EnumIssuedCards.Deactivate);
-                new DAL_Membership_Users().UpdateSmartCardId(currentEditUser.User.UserId, SmartID);
-                new DAL_User().ChangeUserStatus(currentEditUser.User.UserId, EnumUserStatuses.Enrolled);
-                dalIssueCard.Insert(IssueCard);
-                currentEditUser.Membership_Users.SmartCardId = SmartID;
-                LayerWeb.InvokeScript("showPrintMessage", true, "Smart Card was printed successfully! Please collect the smart card from printer and place on the reader to verify.");
-                LayerWeb.InvokeScript("showCardImages");
-            }
-            else
-            {
-                LayerWeb.InvokeScript("showPrintMessage", false, result.Description);
-            }
-        }
-        #endregion
 
         private void CaptureAttempt(string sessionAttemptName)
         {
