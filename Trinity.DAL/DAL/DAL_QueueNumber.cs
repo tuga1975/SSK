@@ -16,6 +16,14 @@ namespace Trinity.DAL
         public Trinity.DAL.DBContext.Queue InsertQueueNumber(Guid appointmentID, string userId, string station)
         {
             var generateQNo = Trinity.Common.CommonUtil.GetQueueNumber(_localUnitOfWork.DataContext.Membership_Users.Find(userId).NRIC);
+            var listStation = EnumStations.GetListStation();
+            var today = DateTime.Now;
+            var appointmentDetails = new DAL_Appointments().GetAppointmentDetails(appointmentID);
+            var diffHour = appointmentDetails.StartTime.Value.Hours - today.Hour;
+            var diffStartMin = appointmentDetails.StartTime.Value.Minutes - today.Minute;
+            var diffEndHour = appointmentDetails.EndTime.Value.Hours - today.Hour;
+            var diffEndMin = appointmentDetails.EndTime.Value.Minutes - today.Minute;
+
             Trinity.DAL.DBContext.Queue dataInsert = new Trinity.DAL.DBContext.Queue()
             {
                 Appointment_ID = appointmentID,
@@ -25,35 +33,35 @@ namespace Trinity.DAL
                 CurrentStation = station,
                 Outcome = EnumOutcome.Processing
             };
-            _localUnitOfWork.GetRepository<Trinity.DAL.DBContext.Queue>().Add(dataInsert);
-            _localUnitOfWork.Save();
             //insert to queue details
-            var listStation = EnumStations.GetListStation();
-            var today = DateTime.Now;
-            var appointmentDetails = new DAL_Appointments().GetAppointmentDetails(appointmentID);
-            var diffHour = appointmentDetails.StartTime.Value.Hours - today.Hour;
-            var diffStartMin = appointmentDetails.StartTime.Value.Minutes - today.Minute;
-            var diffEndHour = appointmentDetails.EndTime.Value.Hours - today.Hour;
-            var diffEndMin = appointmentDetails.EndTime.Value.Minutes - today.Minute;
+            List<QueueDetail> arrayQueueDetail = new List<QueueDetail>();
             foreach (var item in listStation)
             {
                 var queueDetails = new QueueDetail { Queue_ID = dataInsert.Queue_ID, Station = item, Status = EnumQueueStatuses.Waiting };
-
-                _localUnitOfWork.GetRepository<Trinity.DAL.DBContext.QueueDetail>().Add(queueDetails);
-                _localUnitOfWork.Save();
-            }
-            var queueDetailsRepo = _localUnitOfWork.GetRepository<QueueDetail>();
-
-            if (diffHour == 0 && diffStartMin <= 0 && ((diffEndHour > 0 && diffEndMin <= 0) || (diffEndHour == 0 && diffEndMin >= 0)))
-            {
-                var currentStationQueue = queueDetailsRepo.Get(s => s.Station == station && s.Queue_ID == dataInsert.Queue_ID);
-                if (currentStationQueue != null)
+                if(queueDetails.Station == station && diffHour == 0 && diffStartMin <= 0 && ((diffEndHour > 0 && diffEndMin <= 0) || (diffEndHour == 0 && diffEndMin >= 0)))
                 {
-                    currentStationQueue.Status = EnumQueueStatuses.Processing;
+                    queueDetails.Status = EnumQueueStatuses.Processing;
                 }
-                queueDetailsRepo.Update(currentStationQueue);
+                arrayQueueDetail.Add(queueDetails);
 
+                //_localUnitOfWork.GetRepository<Trinity.DAL.DBContext.QueueDetail>().Add(queueDetails);
+                //_localUnitOfWork.Save();
             }
+            _localUnitOfWork.GetRepository<Trinity.DAL.DBContext.Queue>().Add(dataInsert);
+            _localUnitOfWork.GetRepository<Trinity.DAL.DBContext.QueueDetail>().AddRange(arrayQueueDetail);
+
+            //var queueDetailsRepo = _localUnitOfWork.GetRepository<QueueDetail>();
+
+            //if (diffHour == 0 && diffStartMin <= 0 && ((diffEndHour > 0 && diffEndMin <= 0) || (diffEndHour == 0 && diffEndMin >= 0)))
+            //{
+            //    var currentStationQueue = queueDetailsRepo.Get(s => s.Station == station && s.Queue_ID == dataInsert.Queue_ID);
+            //    if (currentStationQueue != null)
+            //    {
+            //        currentStationQueue.Status = EnumQueueStatuses.Processing;
+            //    }
+            //    queueDetailsRepo.Update(currentStationQueue);
+
+            //}
             _localUnitOfWork.Save();
 
             return dataInsert;
