@@ -1,0 +1,302 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="UHPSimulatorIIModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="DrugResults">
+          <Key>
+            <PropertyRef Name="DrugResultsID" />
+          </Key>
+          <Property Name="DrugResultsID" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="NRIC" Type="nvarchar" MaxLength="50" />
+          <Property Name="timestamp" Type="datetime" />
+          <Property Name="markingnumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="AMPH" Type="bit" />
+          <Property Name="BENZ" Type="bit" />
+          <Property Name="OPI" Type="bit" />
+          <Property Name="THC" Type="bit" />
+          <Property Name="COCA" Type="bit" />
+          <Property Name="BARB" Type="bit" />
+          <Property Name="LSD" Type="bit" />
+          <Property Name="METH" Type="bit" />
+          <Property Name="MTQL" Type="bit" />
+          <Property Name="PCP" Type="bit" />
+          <Property Name="KET" Type="bit" />
+          <Property Name="BUPRE" Type="bit" />
+          <Property Name="CAT" Type="bit" />
+          <Property Name="PPZ" Type="bit" />
+          <Property Name="NPS" Type="bit" />
+        </EntityType>
+        <EntityType Name="Notifications">
+          <Key>
+            <PropertyRef Name="NotificationID" />
+          </Key>
+          <Property Name="NotificationID" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Source" Type="nvarchar" MaxLength="50" />
+          <Property Name="Type" Type="nvarchar" MaxLength="50" />
+          <Property Name="Content" Type="text" />
+          <Property Name="Datetime" Type="datetime" />
+          <Property Name="notification_code" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <Function Name="USP_DrugResult_SELECT_MarkingNumber" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="markingnumber" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="USP_DrugResult_SELECT_NRIC_DATE" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="NRIC" Type="nvarchar" Mode="In" />
+          <Parameter Name="timestamp" Type="datetime" Mode="In" />
+        </Function>
+        <Function Name="USP_Notification_Insert" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Source" Type="nvarchar" Mode="In" />
+          <Parameter Name="Type" Type="nvarchar" Mode="In" />
+          <Parameter Name="Content" Type="text" Mode="In" />
+          <Parameter Name="Datetime" Type="datetime" Mode="In" />
+          <Parameter Name="NotificationCode" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="USP_Notification_Select_By_Date" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Datetime" Type="datetime" Mode="In" />
+        </Function>
+        <EntityContainer Name="UHPSimulatorIIModelStoreContainer">
+          <EntitySet Name="DrugResults" EntityType="Self.DrugResults" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Notifications" EntityType="Self.Notifications" Schema="dbo" store:Type="Tables" />
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="UHPSimulatorIIModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="DrugResult">
+          <Key>
+            <PropertyRef Name="DrugResultsID" />
+          </Key>
+          <Property Name="DrugResultsID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="NRIC" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="timestamp" Type="DateTime" Precision="3" />
+          <Property Name="markingnumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="AMPH" Type="Boolean" />
+          <Property Name="BENZ" Type="Boolean" />
+          <Property Name="OPI" Type="Boolean" />
+          <Property Name="THC" Type="Boolean" />
+          <Property Name="COCA" Type="Boolean" />
+          <Property Name="BARB" Type="Boolean" />
+          <Property Name="LSD" Type="Boolean" />
+          <Property Name="METH" Type="Boolean" />
+          <Property Name="MTQL" Type="Boolean" />
+          <Property Name="PCP" Type="Boolean" />
+          <Property Name="KET" Type="Boolean" />
+          <Property Name="BUPRE" Type="Boolean" />
+          <Property Name="CAT" Type="Boolean" />
+          <Property Name="PPZ" Type="Boolean" />
+          <Property Name="NPS" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="Notification">
+          <Key>
+            <PropertyRef Name="NotificationID" />
+          </Key>
+          <Property Name="NotificationID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Source" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Content" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Datetime" Type="DateTime" Precision="3" />
+          <Property Name="notification_code" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityContainer Name="UHPSimulatorIIEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="DrugResults" EntityType="Self.DrugResult" />
+          <EntitySet Name="Notifications" EntityType="Self.Notification" />
+          <FunctionImport Name="USP_DrugResult_SELECT_MarkingNumber" ReturnType="Collection(UHPSimulatorIIModel.USP_DrugResult_SELECT_MarkingNumber_Result)">
+            <Parameter Name="markingnumber" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="USP_DrugResult_SELECT_NRIC_DATE" ReturnType="Collection(UHPSimulatorIIModel.USP_DrugResult_SELECT_NRIC_DATE_Result)">
+            <Parameter Name="NRIC" Mode="In" Type="String" />
+            <Parameter Name="timestamp" Mode="In" Type="DateTime" />
+          </FunctionImport>
+          <FunctionImport Name="USP_Notification_Insert" ReturnType="Collection(String)">
+            <Parameter Name="Source" Mode="In" Type="String" />
+            <Parameter Name="Type" Mode="In" Type="String" />
+            <Parameter Name="Content" Mode="In" Type="String" />
+            <Parameter Name="Datetime" Mode="In" Type="DateTime" />
+            <Parameter Name="NotificationCode" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="USP_Notification_Select_By_Date" ReturnType="Collection(UHPSimulatorIIModel.USP_Notification_Select_By_Date_Result)">
+            <Parameter Name="Datetime" Mode="In" Type="DateTime" />
+          </FunctionImport>
+        </EntityContainer>
+        <ComplexType Name="USP_DrugResult_SELECT_MarkingNumber_Result">
+          <Property Type="String" Name="result" Nullable="false" MaxLength="8" />
+          <Property Type="String" Name="NRIC" Nullable="true" MaxLength="50" />
+          <Property Type="DateTime" Name="timestamp" Nullable="true" Precision="23" />
+          <Property Type="String" Name="markingnumber" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="AMPH" Nullable="false" MaxLength="8" />
+          <Property Type="String" Name="BENZ" Nullable="false" MaxLength="8" />
+          <Property Type="String" Name="OPI" Nullable="false" MaxLength="8" />
+          <Property Type="String" Name="THC" Nullable="false" MaxLength="8" />
+          <Property Type="String" Name="COCA" Nullable="false" MaxLength="8" />
+          <Property Type="String" Name="BARB" Nullable="false" MaxLength="8" />
+          <Property Type="String" Name="LSD" Nullable="false" MaxLength="8" />
+          <Property Type="String" Name="METH" Nullable="false" MaxLength="8" />
+          <Property Type="String" Name="MTQL" Nullable="false" MaxLength="8" />
+          <Property Type="String" Name="PCP" Nullable="false" MaxLength="8" />
+          <Property Type="String" Name="KET" Nullable="false" MaxLength="8" />
+          <Property Type="String" Name="BUPRE" Nullable="false" MaxLength="8" />
+          <Property Type="String" Name="CAT" Nullable="false" MaxLength="8" />
+          <Property Type="String" Name="PPZ" Nullable="false" MaxLength="8" />
+          <Property Type="String" Name="NPS" Nullable="false" MaxLength="8" />
+        </ComplexType>
+        <ComplexType Name="USP_DrugResult_SELECT_NRIC_DATE_Result">
+          <Property Type="String" Name="result" Nullable="false" MaxLength="8" />
+          <Property Type="String" Name="NRIC" Nullable="true" MaxLength="50" />
+          <Property Type="DateTime" Name="timestamp" Nullable="true" Precision="23" />
+          <Property Type="String" Name="AMPH" Nullable="false" MaxLength="8" />
+          <Property Type="String" Name="BENZ" Nullable="false" MaxLength="8" />
+          <Property Type="String" Name="OPI" Nullable="false" MaxLength="8" />
+          <Property Type="String" Name="THC" Nullable="false" MaxLength="8" />
+          <Property Type="String" Name="COCA" Nullable="false" MaxLength="8" />
+          <Property Type="String" Name="BARB" Nullable="false" MaxLength="8" />
+          <Property Type="String" Name="LSD" Nullable="false" MaxLength="8" />
+          <Property Type="String" Name="METH" Nullable="false" MaxLength="8" />
+          <Property Type="String" Name="MTQL" Nullable="false" MaxLength="8" />
+          <Property Type="String" Name="PCP" Nullable="false" MaxLength="8" />
+          <Property Type="String" Name="KET" Nullable="false" MaxLength="8" />
+          <Property Type="String" Name="BUPRE" Nullable="false" MaxLength="8" />
+          <Property Type="String" Name="CAT" Nullable="false" MaxLength="8" />
+          <Property Type="String" Name="PPZ" Nullable="false" MaxLength="8" />
+          <Property Type="String" Name="NPS" Nullable="false" MaxLength="8" />
+        </ComplexType>
+        <ComplexType Name="USP_Notification_Select_By_Date_Result">
+          <Property Type="String" Name="NotificationID" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="Source" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Type" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Content" Nullable="true" MaxLength="Max" />
+          <Property Type="DateTime" Name="Datetime" Nullable="true" Precision="23" />
+          <Property Type="String" Name="notification_code" Nullable="true" MaxLength="50" />
+        </ComplexType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="UHPSimulatorIIModelStoreContainer" CdmEntityContainer="UHPSimulatorIIEntities">
+          <EntitySetMapping Name="DrugResults">
+            <EntityTypeMapping TypeName="UHPSimulatorIIModel.DrugResult">
+              <MappingFragment StoreEntitySet="DrugResults">
+                <ScalarProperty Name="DrugResultsID" ColumnName="DrugResultsID" />
+                <ScalarProperty Name="NRIC" ColumnName="NRIC" />
+                <ScalarProperty Name="timestamp" ColumnName="timestamp" />
+                <ScalarProperty Name="markingnumber" ColumnName="markingnumber" />
+                <ScalarProperty Name="AMPH" ColumnName="AMPH" />
+                <ScalarProperty Name="BENZ" ColumnName="BENZ" />
+                <ScalarProperty Name="OPI" ColumnName="OPI" />
+                <ScalarProperty Name="THC" ColumnName="THC" />
+                <ScalarProperty Name="COCA" ColumnName="COCA" />
+                <ScalarProperty Name="BARB" ColumnName="BARB" />
+                <ScalarProperty Name="LSD" ColumnName="LSD" />
+                <ScalarProperty Name="METH" ColumnName="METH" />
+                <ScalarProperty Name="MTQL" ColumnName="MTQL" />
+                <ScalarProperty Name="PCP" ColumnName="PCP" />
+                <ScalarProperty Name="KET" ColumnName="KET" />
+                <ScalarProperty Name="BUPRE" ColumnName="BUPRE" />
+                <ScalarProperty Name="CAT" ColumnName="CAT" />
+                <ScalarProperty Name="PPZ" ColumnName="PPZ" />
+                <ScalarProperty Name="NPS" ColumnName="NPS" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Notifications">
+            <EntityTypeMapping TypeName="UHPSimulatorIIModel.Notification">
+              <MappingFragment StoreEntitySet="Notifications">
+                <ScalarProperty Name="NotificationID" ColumnName="NotificationID" />
+                <ScalarProperty Name="Source" ColumnName="Source" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="Content" ColumnName="Content" />
+                <ScalarProperty Name="Datetime" ColumnName="Datetime" />
+                <ScalarProperty Name="notification_code" ColumnName="notification_code" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="USP_DrugResult_SELECT_MarkingNumber" FunctionName="UHPSimulatorIIModel.Store.USP_DrugResult_SELECT_MarkingNumber">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="UHPSimulatorIIModel.USP_DrugResult_SELECT_MarkingNumber_Result">
+                <ScalarProperty Name="result" ColumnName="result" />
+                <ScalarProperty Name="NRIC" ColumnName="NRIC" />
+                <ScalarProperty Name="timestamp" ColumnName="timestamp" />
+                <ScalarProperty Name="markingnumber" ColumnName="markingnumber" />
+                <ScalarProperty Name="AMPH" ColumnName="AMPH" />
+                <ScalarProperty Name="BENZ" ColumnName="BENZ" />
+                <ScalarProperty Name="OPI" ColumnName="OPI" />
+                <ScalarProperty Name="THC" ColumnName="THC" />
+                <ScalarProperty Name="COCA" ColumnName="COCA" />
+                <ScalarProperty Name="BARB" ColumnName="BARB" />
+                <ScalarProperty Name="LSD" ColumnName="LSD" />
+                <ScalarProperty Name="METH" ColumnName="METH" />
+                <ScalarProperty Name="MTQL" ColumnName="MTQL" />
+                <ScalarProperty Name="PCP" ColumnName="PCP" />
+                <ScalarProperty Name="KET" ColumnName="KET" />
+                <ScalarProperty Name="BUPRE" ColumnName="BUPRE" />
+                <ScalarProperty Name="CAT" ColumnName="CAT" />
+                <ScalarProperty Name="PPZ" ColumnName="PPZ" />
+                <ScalarProperty Name="NPS" ColumnName="NPS" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="USP_DrugResult_SELECT_NRIC_DATE" FunctionName="UHPSimulatorIIModel.Store.USP_DrugResult_SELECT_NRIC_DATE">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="UHPSimulatorIIModel.USP_DrugResult_SELECT_NRIC_DATE_Result">
+                <ScalarProperty Name="result" ColumnName="result" />
+                <ScalarProperty Name="NRIC" ColumnName="NRIC" />
+                <ScalarProperty Name="timestamp" ColumnName="timestamp" />
+                <ScalarProperty Name="AMPH" ColumnName="AMPH" />
+                <ScalarProperty Name="BENZ" ColumnName="BENZ" />
+                <ScalarProperty Name="OPI" ColumnName="OPI" />
+                <ScalarProperty Name="THC" ColumnName="THC" />
+                <ScalarProperty Name="COCA" ColumnName="COCA" />
+                <ScalarProperty Name="BARB" ColumnName="BARB" />
+                <ScalarProperty Name="LSD" ColumnName="LSD" />
+                <ScalarProperty Name="METH" ColumnName="METH" />
+                <ScalarProperty Name="MTQL" ColumnName="MTQL" />
+                <ScalarProperty Name="PCP" ColumnName="PCP" />
+                <ScalarProperty Name="KET" ColumnName="KET" />
+                <ScalarProperty Name="BUPRE" ColumnName="BUPRE" />
+                <ScalarProperty Name="CAT" ColumnName="CAT" />
+                <ScalarProperty Name="PPZ" ColumnName="PPZ" />
+                <ScalarProperty Name="NPS" ColumnName="NPS" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="USP_Notification_Insert" FunctionName="UHPSimulatorIIModel.Store.USP_Notification_Insert" />
+          <FunctionImportMapping FunctionImportName="USP_Notification_Select_By_Date" FunctionName="UHPSimulatorIIModel.Store.USP_Notification_Select_By_Date">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="UHPSimulatorIIModel.USP_Notification_Select_By_Date_Result">
+                <ScalarProperty Name="NotificationID" ColumnName="NotificationID" />
+                <ScalarProperty Name="Source" ColumnName="Source" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="Content" ColumnName="Content" />
+                <ScalarProperty Name="Datetime" ColumnName="Datetime" />
+                <ScalarProperty Name="notification_code" ColumnName="notification_code" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
