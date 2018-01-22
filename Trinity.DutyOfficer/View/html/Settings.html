@@ -48,10 +48,12 @@
                 <th>Morning Slots<br />End time</th>
                 <th>Max Supervisee</th>
                 <th>Spare Slots</th>
+                <th>Interval</th>
                 <th>Afternoon Slots<br />Start time</th>
                 <th>Afternoon Slots<br />End time</th>
                 <th>Max Supervisee</th>
                 <th>Spare Slots</th>
+                <th>Interval</th>
                 <th>Evening Slots<br />Start time</th>
                 <th>Evening Slots<br />End time</th>
                 <th>Max Supervisee</th>
@@ -61,123 +63,137 @@
             </tr>
         </thead>
         <tbody>
-            <tr id="monday">
+            <tr id="Monday">
                 <td style="background-color:gainsboro">Monday</td>
                 <td id="mon-MorningStartTime">9:00</td>
                 <td id="mon-MorningEndTime">19:00</td>
                 <td id="mon-MorningMax">8</td>
                 <td id="mon-MorningSpare">2</td>
+                <td id="mon-MorningInterval">30 mins</td>
                 <td id="mon-AfternoonStartTime">9:00</td>
                 <td id="mon-AfternoonEndTime">17:00</td>
                 <td id="mon-AfternoonMax">6</td>
                 <td id="mon-AfternoonSpare">3</td>
+                <td id="mon-AfternoonInterval">30 mins</td>
                 <td id="mon-EveningStartTime">9:00</td>
                 <td id="mon-EveningEndTime">18:00</td>
                 <td id="mon-EveningMax">10</td>
                 <td id="mon-EveningSpare">5</td>
-                <td id="mon-Interval">30 mins</td>
+                <td id="mon-EveningInterval">30 mins</td>
                 <th id="mon-Edit" style="background-color:#808080;cursor:pointer;" onclick="api.server.PopupEditOperationalDate('Monday', function () {$('#idEditOperationalDate').modal(); });">Edit</th>
             </tr>
-            <tr id="tuesday">
+            <tr id="Tuesday">
                 <td style="background-color:gainsboro">Tuesday</td>
                 <td id="tue-MorningStartTime">7:00</td>
                 <td id="tue-MorningEndTime">18:00</td>
                 <td id="tue-MorningMax">8</td>
                 <td id="tue-MorningSpare">2</td>
+                <td id="tue-MorningInterval">30 mins</td>
                 <td id="tue-AfternoonStartTime">9:00</td>
                 <td id="tue-AfternoonEndTime">17:00</td>
                 <td id="tue-AfternoonMax">6</td>
                 <td id="tue-AfternoonSpare">3</td>
+                <td id="tue-AfternoonInterval">30 mins</td>
                 <td id="tue-EveningStartTime">9:00</td>
                 <td id="tue-EveningEndTime">18:00</td>
                 <td id="tue-EveningMax">10</td>
                 <td id="tue-EveningSpare">5</td>
-                <td id="tue-Interval">30 mins</td>
+                <td id="tue-EveningInterval">30 mins</td>
                 <th id="tue-Edit" style="background-color:#808080;cursor:pointer;" onclick="api.server.PopupEditOperationalDate('Tuesday', function () {$('#idEditOperationalDate').modal(); });">Edit</th>
             </tr>
-            <tr id="wednesday">
+            <tr id="Wednesday">
                 <td style="background-color:gainsboro">Wednesday</td>
                 <td id="wed-MorningStartTime">9:00</td>
                 <td id="wed-MorningEndTime">19:00</td>
                 <td id="wed-MorningMax">8</td>
                 <td id="wed-MorningSpare">2</td>
+                <td id="wed-MorningInterval">30 mins</td>
                 <td id="wed-AfternoonStartTime">9:00</td>
                 <td id="wed-AfternoonEndTime">17:00</td>
                 <td id="wed-AfternoonMax">6</td>
                 <td id="wed-AfternoonSpare">3</td>
+                <td id="wed-AfternoonInterval">30 mins</td>
                 <td id="wed-EveningStartTime">9:00</td>
                 <td id="wed-EveningEndTime">18:00</td>
                 <td id="wed-EveningMax">10</td>
                 <td id="wed-EveningSpare">5</td>
-                <td id="wed-Interval">30 mins</td>
+                <td id="wed-EveningInterval">30 mins</td>
                 <th id="wed-Edit" style="background-color:#808080;cursor:pointer;" onclick="api.server.PopupEditOperationalDate('Wednesday', function () {$('#idEditOperationalDate').modal(); });">Edit</th>
             </tr>
-            <tr id="thurday">
+            <tr id="Thurday">
                 <td style="background-color:gainsboro">Thurday</td>
                 <td id="thu-MorningStartTime">9:00</td>
                 <td id="thu-MorningEndTime">19:00</td>
                 <td id="thu-MorningMax">8</td>
                 <td id="thu-MorningSpare">2</td>
+                <td id="thu-MorningInterval">30 mins</td>
                 <td id="thu-AfternoonStartTime">9:00</td>
                 <td id="thu-AfternoonEndTime">17:00</td>
                 <td id="thu-AfternoonMax">6</td>
                 <td id="thu-AfternoonSpare">3</td>
+                <td id="thu-AfternoonInterval">30 mins</td>
                 <td id="thu-EveningStartTime">9:00</td>
                 <td id="thu-EveningEndTime">18:00</td>
                 <td id="thu-EveningMax">10</td>
                 <td id="thu-EveningSpare">5</td>
-                <td id="thu-Interval">30 mins</td>
+                <td id="thu-EveningInterval">30 mins</td>
                 <th id="thu-Edit" style="background-color:#808080;cursor:pointer;" onclick="api.server.PopupEditOperationalDate('Thurday', function () {$('#idEditOperationalDate').modal(); });">Edit</th>
             </tr>
-            <tr id="friday">
+            <tr id="Friday">
                 <td style="background-color:gainsboro">Friday</td>
                 <td id="fri-MorningStartTime">9:00</td>
                 <td id="fri-MorningEndTime">19:00</td>
                 <td id="fri-MorningMax">8</td>
                 <td id="fri-MorningSpare">2</td>
+                <td id="fri-MorningInterval">30 mins</td>
                 <td id="fri-AfternoonStartTime">9:00</td>
                 <td id="fri-AfternoonEndTime">17:00</td>
                 <td id="fri-AfternoonMax">6</td>
                 <td id="fri-AfternoonSpare">3</td>
+                <td id="fri-AfternoonInterval">30 mins</td>
                 <td id="fri-EveningStartTime">9:00</td>
                 <td id="fri-EveningEndTime">18:00</td>
                 <td id="fri-EveningMax">10</td>
                 <td id="fri-EveningSpare">5</td>
-                <td id="fri-Interval">30 mins</td>
+                <td id="fri-EveningInterval">30 mins</td>
                 <th id="fri-Edit" style="background-color:#808080;cursor:pointer;" onclick="api.server.PopupEditOperationalDate('Friday', function () {$('#idEditOperationalDate').modal(); });">Edit</th>
             </tr>
-            <tr id="saturday">
+            <tr id="Saturday">
                 <td style="background-color:gainsboro">Saturday</td>
                 <td id="sat-MorningStartTime">9:00</td>
                 <td id="sat-MorningEndTime">19:00</td>
                 <td id="sat-MorningMax">8</td>
                 <td id="sat-MorningSpare">2</td>
+                <td id="sat-MorningInterval">30 mins</td>
                 <td id="sat-AfternoonStartTime">9:00</td>
                 <td id="sat-AfternoonEndTime">17:00</td>
                 <td id="sat-AfternoonMax">6</td>
                 <td id="sat-AfternoonSpare">3</td>
+                <td id="sat-AfternoonInterval">30 mins</td>
                 <td id="sat-EveningStartTime">9:00</td>
                 <td id="sat-EveningEndTime">18:00</td>
                 <td id="sat-EveningMax">10</td>
                 <td id="sat-EveningSpare">5</td>
-                <td id="sat-Interval">30 mins</td>
+                <td id="sat-EveningInterval">30 mins</td>
                 <th id="sat-Edit" style="background-color:#808080;cursor:pointer;" onclick="api.server.PopupEditOperationalDate('Saturday', function () {$('#idEditOperationalDate').modal(); });">Edit</th>
             </tr>
-            <tr id="sunday">
+            <tr id="Sunday">
                 <td style="background-color:gainsboro">Sunday</td>
                 <td id="sun-MorningStartTime">9:00</td>
                 <td id="sun-MorningEndTime">19:00</td>
                 <td id="sun-MorningMax">8</td>
                 <td id="sun-MorningSpare">2</td>
+                <td id="sun-MorningInterval">30 mins</td>
                 <td id="sun-AfternoonStartTime">9:00</td>
                 <td id="sun-AfternoonEndTime">17:00</td>
                 <td id="sun-AfternoonMax">6</td>
                 <td id="sun-AfternoonSpare">3</td>
+                <td id="sun-AfternoonInterval">30 mins</td>
                 <td id="sun-EveningStartTime">9:00</td>
                 <td id="sun-EveningEndTime">18:00</td>
                 <td id="sun-EveningMax">10</td>
                 <td id="sun-EveningSpare">5</td>
-                <td id="sun-Interval">30 mins</td>
+                <td id="sun-EveningInterval">30 mins</td>
                 <th id="sun-Edit" style="background-color:#808080;cursor:pointer;" onclick="api.server.PopupEditOperationalDate('Sunday', function () {$('#idEditOperationalDate').modal(); });">Edit</th>
             </tr>
         </tbody>
@@ -276,6 +292,52 @@
             rowSunday.deleteCell(2);
             rowSunday.deleteCell(2);
         }
+
+        function setColspanForClosed(dayOfWeek, isClosedMorning, isClosedAfternoon, isClosedEvening) {
+            var row = document.getElementById("dayOfWeek");
+
+            if (isClosedMorning == true && isClosedAfternoon == true && isClosedEvening == true) {
+                row.cells[1].colSpan = 15;
+                row.cells[1].innerHTML = 'Closed';
+                for (i = 1; i < 15; i++) {
+                    row.deleteCell(2);
+                };
+            } else if (isClosedMorning == true && isClosedAfternoon == true) {
+                row.cells[1].colSpan = 10;
+                row.cells[1].innerHTML = 'Closed';
+                for (i = 1; i < 10; i++) {
+                    row.deleteCell(2);
+                };
+            } else if (isClosedAfternoon == true && isClosedEvening == true) {
+                row.cells[6].colSpan = 10;
+                row.cells[6].innerHTML = 'Closed';
+                for (i = 1; i < 10; i++) {
+                    row.deleteCell(7);
+                };
+            } else if (isClosedAfternoon == false) {
+                if (isClosedMorning == true) {
+                    row.cells[1].colSpan = 5;
+                    row.cells[1].innerHTML = 'Closed';
+                    for (i = 1; i < 5; i++) {
+                        row.deleteCell(2);
+                    };
+                };
+
+                if (isClosedEvening == true) {
+                    row.cells[11].colSpan = 5;
+                    row.cells[11].innerHTML = 'Closed';
+                    for (i = 1; i < 5; i++) {
+                        row.deleteCell(12);
+                    };
+                };
+            } else {
+                row.cells[6].colSpan = 5;
+                row.cells[6].innerHTML = 'Closed';
+                for (i = 1; i < 5; i++) {
+                    row.deleteCell(7);
+                };
+            };            
+        };
 
         var model = [];
         var holidaySelected;

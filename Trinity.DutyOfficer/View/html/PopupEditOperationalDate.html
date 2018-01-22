@@ -142,10 +142,72 @@
         $('#evening-interval').append($('<option></option>').val(p).html(p));
     });
 
-    $('#dayOfWeek').val(api.model);
-
+    api.ready(function (model) {
+        $('#dayOfWeek').val(model);
+    });
+    
     $("#EditBtn").click(function (e) {
-        
+        var dayOfWeek;
+        switch ($('#dayOfWeek').val()) {
+            case "Monday":
+                dayOfWeek = 2;
+                break;
+            case "Tuesday":
+                dayOfWeek = 3;
+                break;
+            case "Wednesday":
+                dayOfWeek = 4;
+                break;
+            case "Thurday":
+                dayOfWeek = 5;
+                break;
+            case "Friday":
+                dayOfWeek = 6;
+                break;
+            case "Saturday":
+                dayOfWeek = 7;
+                break;
+            case "Sunday":
+                dayOfWeek = 8;
+                break;
+            default:
+                dayOfWeek = 0;
+        }
+
+        var morningStart = $('#morning-start-HH').val() + ':' + $('#morning-start-MM').val() + ':' + $("#morning-start-XM").val();
+        var morningEnd = $('#morning-end-HH').val() + ':' + $('#morning-end-MM').val() + ':' + $("#morning-end-XM").val();
+        var afternoonStart = $('#afternoon-start-HH').val() + ':' + $('#afternoon-start-MM').val() + ':' + $("#afternoon-start-XM").val();
+        var afternoonEnd = $('#afternoon-end-HH').val() + ':' + $('#afternoon-end-MM').val() + ':' + $("#afternoon-end-XM").val();
+        var eveningStart = $('#evening-start-HH').val() + ':' + $('#evening-start-MM').val() + ':' + $("#evening-start-XM").val();
+        var eveningEnd = $('#evening-end-HH').val() + ':' + $('#evening-end-MM').val() + ':' + $("#evening-end-XM").val();
+
+        var model = {
+            DayOfWeek: dayOfWeek,
+            Morning_Open_Time: morningStart,
+            Morning_Close_Time: morningEnd,
+            Morning_MaximumSupervisee: $('#morning-max').val(),
+            Morning_Spare_Slots: $('#morning-spare').val(),
+            Morning_Interval: $('#morning-interval').val(),
+            Morning_IsClosed: $('#morning-Closed').is(":checked"),
+            Afternoon_Open_Time: afternoonStart,
+            Afternoon_Close_Time: afternoonEnd,
+            Afternoon_MaximumSupervisee: $('#afternoon-max').val(),
+            Afternoon_Spare_Slots: $('#afternoon-spare').val(),
+            Afternoon_Interval: $('#afternoon-interval').val(),
+            Afternoon_IsClosed: $('#afternoon-Closed').is(":checked"),
+            Evening_Open_Time: eveningStart,
+            Evening_Close_Time: eveningEnd,
+            Evening_MaximumSupervisee: $('#evening-max').val(),
+            Evening_Spare_Slots: $('#evening-spare').val(),
+            Evening_Interval: $('#evening-interval').val(),
+            Evening_IsClosed: $('#evening-Closed').is(":checked")
+        };
+
+        var data = JSON.stringify(model);
+        alert(data);
+
+        //api.server.UpdateOperationSetting(data);
+
         e.preventDefault();
     });
 </script>
