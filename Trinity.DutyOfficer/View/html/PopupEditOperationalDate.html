@@ -131,7 +131,7 @@
         $('#morning-start-XM').append($('<option></option>').val(p).html(p));
         $('#morning-end-XM').append($('<option></option>').val(p).html(p));
         $('#afternoon-start-XM').append($('<option></option>').val(p).html(p));
-        $('#agternoon-end-XM').append($('<option></option>').val(p).html(p));
+        $('#afternoon-end-XM').append($('<option></option>').val(p).html(p));
         $('#evening-start-XM').append($('<option></option>').val(p).html(p));
         $('#evening-end-XM').append($('<option></option>').val(p).html(p));
     });
@@ -188,25 +188,29 @@
             Morning_MaximumSupervisee: $('#morning-max').val(),
             Morning_Spare_Slots: $('#morning-spare').val(),
             Morning_Interval: $('#morning-interval').val(),
-            Morning_IsClosed: $('#morning-Closed').is(":checked"),
+            Morning_Is_Closed: $('#morning-Closed').is(":checked"),
             Afternoon_Open_Time: afternoonStart,
             Afternoon_Close_Time: afternoonEnd,
             Afternoon_MaximumSupervisee: $('#afternoon-max').val(),
             Afternoon_Spare_Slots: $('#afternoon-spare').val(),
             Afternoon_Interval: $('#afternoon-interval').val(),
-            Afternoon_IsClosed: $('#afternoon-Closed').is(":checked"),
+            Afternoon_Is_Closed: $('#afternoon-Closed').is(":checked"),
             Evening_Open_Time: eveningStart,
             Evening_Close_Time: eveningEnd,
             Evening_MaximumSupervisee: $('#evening-max').val(),
             Evening_Spare_Slots: $('#evening-spare').val(),
             Evening_Interval: $('#evening-interval').val(),
-            Evening_IsClosed: $('#evening-Closed').is(":checked")
+            Evening_Is_Closed: $('#evening-Closed').is(":checked")
         };
 
         var data = JSON.stringify(model);
-        alert(data);
+        api.server.UpdateOperationSetting(data);
 
-        //api.server.UpdateOperationSetting(data);
+        // Waiting 1 second to update DB then refresh
+        setTimeout(function () {
+            api.server.LoadPage('Settings.html')
+            $('#idEditOperationalDate').modal('toggle');
+        }, 1000);
 
         e.preventDefault();
     });

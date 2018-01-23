@@ -52,12 +52,14 @@
 
     $("#AddBtn").click(function (e) {
         var date = new Date($('#year').val(), $('#month').val() - 1, $('#day').val());
-        //date.setHours(date.getHours() - date.getTimezoneOffset() / 60);
+        var description = $('#description').val();
+        var note = $('#note').val();
+        date.setHours(date.getHours() - date.getTimezoneOffset() / 60);
         var checkExist = false;
         model.HoliDays.forEach(function (element, index) {
             if (Date.parse(element.Holiday1) == Date.parse(date)) {
-                alert('Date is duplicate!');
                 checkExist = true;
+                alert('Date is duplicate!');
                 return;
             }
         });
@@ -65,10 +67,13 @@
         if (!checkExist) {
             model.HoliDays.push({
                 Holiday1: date,
-                IsSingHoliday: true,
-                ShortDesc: $('#description').val(),
-                Notes: $('#note').val()
+                ShortDesc: description,
+                Notes: note
             });
+
+            var holiday = { Holiday1: date, ShortDesc: description, Notes: note };
+            var data = JSON.stringify(holiday);
+            api.server.AddHoliday(data);
 
             $('#holidayTable').bootstrapTable('refreshOptions', {
                 pagination: true,

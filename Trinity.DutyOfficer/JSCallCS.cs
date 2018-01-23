@@ -114,9 +114,8 @@ namespace DutyOfficer
 
         public void GetSettings()
         {
-            var dalSetting = new DAL_Setting();
-            SettingModel data = dalSetting.GetSettings(EnumSettingStatuses.Pending);
-            data.HoliDays = dalSetting.GetHolidays();
+            DAL_Setting dalSetting = new DAL_Setting();
+            SettingModel data = dalSetting.GetOperationSettings();
 
             object result = null;
             if (data != null)
@@ -127,20 +126,37 @@ namespace DutyOfficer
             _web.InvokeScript("getDataCallback", result);
         }
 
-        public void UpdateSetting(string json)
+        public void UpdateOperationSetting(string json)
         {
-            var model = JsonConvert.DeserializeObject<SettingModel>(json);
+            var model = JsonConvert.DeserializeObject<Trinity.BE.OperationSettings>(json);
             Session session = Session.Instance;
             Trinity.BE.User dutyOfficer = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+            model.Last_Updated_By = dutyOfficer.UserId;
+            model.Last_Updated_Date = DateTime.Now;
+
             var dalSetting = new DAL_Setting();
-            if (dalSetting.SaveSetting(model, dutyOfficer.UserId))
+            if (dalSetting.SaveOperationSetting(model))
             {
-                _web.InvokeScript("showMessageBox", "Update successful!");
+                //_web.InvokeScript("showMessageBox", "Update successful!");
             }
             else
             {
                 _web.InvokeScript("showMessageBox", "Update faied!");
             }
+        }
+
+        public void AddHoliday(string json)
+        {
+            var holiday = JsonConvert.DeserializeObject<Trinity.DAL.DBContext.Holiday>(json);
+            var dalSetting = new DAL_Setting();
+            dalSetting.AddHoliday(holiday);
+        }
+
+        public void DeleteHoliday(string date)
+        {
+            DateTime dateHoliday = Convert.ToDateTime(date);
+            var dalSetting = new DAL_Setting();
+            dalSetting.DeleteHoliday(dateHoliday);
         }
 
         #endregion
