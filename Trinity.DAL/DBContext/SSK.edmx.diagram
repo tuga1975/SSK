@@ -22,7 +22,6 @@
         <EntityTypeShape EntityType="SSKModel.Membership_UserRoles" Width="1.5" PointX="9" PointY="23.375" />
         <EntityTypeShape EntityType="SSKModel.Membership_Users" Width="1.5" PointX="0.75" PointY="20.5" />
         <EntityTypeShape EntityType="SSKModel.Notification" Width="1.5" PointX="3" PointY="10.75" />
-        <EntityTypeShape EntityType="SSKModel.OperationSetting" Width="1.5" PointX="2.75" PointY="4.75" />
         <EntityTypeShape EntityType="SSKModel.QueueDetail" Width="1.5" PointX="7.5" PointY="30.375" />
         <EntityTypeShape EntityType="SSKModel.Queue" Width="1.5" PointX="5.25" PointY="30" />
         <EntityTypeShape EntityType="SSKModel.Security_QA" Width="1.5" PointX="3" PointY="14.875" />
@@ -50,6 +49,7 @@
         <AssociationConnector Association="SSKModel.FK_PWD_QA_Membership_Users" />
         <AssociationConnector Association="SSKModel.FK_User_Profiles_Membership_Users" />
         <AssociationConnector Association="SSKModel.FK_QueueDetails_Queues" />
+        <EntityTypeShape EntityType="SSKModel.OperationSetting" Width="1.5" PointX="3.375" PointY="4.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

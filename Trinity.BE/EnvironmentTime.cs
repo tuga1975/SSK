@@ -69,7 +69,7 @@ namespace Trinity.BE
         public SettingDetails Friday { get; set; }
         public SettingDetails Saturday { get; set; }
         public SettingDetails Sunday { get; set; }
-       
+        public List<Trinity.BE.Holiday> HoliDays { get; set; }
 
     }
 
@@ -95,6 +95,9 @@ namespace Trinity.BE
         public System.DateTime Last_Updated_Date { get; set; }
         public string Last_Updated_By { get; set; }
         public string Description { get; set; }
+        public bool Morning_Is_Closed { get; set; }
+        public bool Afternoon_Is_Closed { get; set; }
+        public bool Evening_Is_Closed { get; set; }
         public List<Trinity.BE.Holiday> HoliDays { get; set; }
 
         public SettingDetails SetADay(SettingBE rawData)

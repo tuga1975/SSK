@@ -128,7 +128,7 @@ namespace DutyOfficer
 
         public void UpdateOperationSetting(string json)
         {
-            var model = JsonConvert.DeserializeObject<Trinity.BE.OperationSettings>(json);
+            var model = JsonConvert.DeserializeObject<Trinity.BE.SettingDetails>(json);
             Session session = Session.Instance;
             Trinity.BE.User dutyOfficer = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
             model.Last_Updated_By = dutyOfficer.UserId;

@@ -220,17 +220,19 @@
           <Property Name="Morning_Spare_Slots" Type="int" />
           <Property Name="Morning_Interval" Type="int" />
           <Property Name="Morning_MaximumSupervisee" Type="int" />
+          <Property Name="Morning_Is_Closed" Type="bit" Nullable="false" />
           <Property Name="Afternoon_Open_Time" Type="time" Precision="7" />
           <Property Name="Afternoon_Close_Time" Type="time" Precision="7" />
           <Property Name="Afternoon_Spare_Slots" Type="int" />
           <Property Name="Afternoon_Interval" Type="int" />
           <Property Name="Afternoon_MaximumSupervisee" Type="int" />
+          <Property Name="Afternoon_Is_Closed" Type="bit" Nullable="false" />
           <Property Name="Evening_Open_Time" Type="time" Precision="7" />
           <Property Name="Evening_Close_Time" Type="time" Precision="7" />
           <Property Name="Evening_Spare_Slots" Type="int" />
           <Property Name="Evening_Interval" Type="int" />
           <Property Name="Evening_MaximumSupervisee" Type="int" />
-          <Property Name="Is_Closed" Type="bit" Nullable="false" />
+          <Property Name="Evening_Is_Closed" Type="bit" Nullable="false" />
           <Property Name="Last_Updated_By" Type="nvarchar" MaxLength="128" Nullable="false" />
           <Property Name="Last_Updated_Date" Type="datetime" Nullable="false" />
           <Property Name="Description" Type="nvarchar" MaxLength="255" />
@@ -731,7 +733,6 @@
           <EntitySet Name="Membership_UserRoles" EntityType="SSKModel.Membership_UserRoles" />
           <EntitySet Name="Membership_Users" EntityType="SSKModel.Membership_Users" />
           <EntitySet Name="Notifications" EntityType="SSKModel.Notification" />
-          <EntitySet Name="OperationSettings" EntityType="SSKModel.OperationSetting" />
           <EntitySet Name="QueueDetails" EntityType="SSKModel.QueueDetail" />
           <EntitySet Name="Queues" EntityType="SSKModel.Queue" />
           <EntitySet Name="Security_QA" EntityType="SSKModel.Security_QA" />
@@ -825,6 +826,7 @@
             <End Role="Queue" EntitySet="Queues" />
             <End Role="QueueDetail" EntitySet="QueueDetails" />
           </AssociationSet>
+          <EntitySet Name="OperationSettings" EntityType="SSKModel.OperationSetting" />
         </EntityContainer>
         <EntityType Name="AbsenceReporting">
           <Key>
@@ -1066,31 +1068,6 @@
           <Property Name="Type" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="Membership_Users" Relationship="SSKModel.FK_Notifications_Membership_Users" FromRole="Notification" ToRole="Membership_Users" />
           <NavigationProperty Name="Membership_Users1" Relationship="SSKModel.FK_Notifications_Membership_Users1" FromRole="Notification" ToRole="Membership_Users" />
-        </EntityType>
-        <EntityType Name="OperationSetting">
-          <Key>
-            <PropertyRef Name="DayOfWeek" />
-          </Key>
-          <Property Name="DayOfWeek" Type="Int32" Nullable="false" />
-          <Property Name="Morning_Open_Time" Type="Time" Precision="7" />
-          <Property Name="Morning_Close_Time" Type="Time" Precision="7" />
-          <Property Name="Morning_Spare_Slots" Type="Int32" />
-          <Property Name="Morning_Interval" Type="Int32" />
-          <Property Name="Morning_MaximumSupervisee" Type="Int32" />
-          <Property Name="Afternoon_Open_Time" Type="Time" Precision="7" />
-          <Property Name="Afternoon_Close_Time" Type="Time" Precision="7" />
-          <Property Name="Afternoon_Spare_Slots" Type="Int32" />
-          <Property Name="Afternoon_Interval" Type="Int32" />
-          <Property Name="Afternoon_MaximumSupervisee" Type="Int32" />
-          <Property Name="Evening_Open_Time" Type="Time" Precision="7" />
-          <Property Name="Evening_Close_Time" Type="Time" Precision="7" />
-          <Property Name="Evening_Spare_Slots" Type="Int32" />
-          <Property Name="Evening_Interval" Type="Int32" />
-          <Property Name="Evening_MaximumSupervisee" Type="Int32" />
-          <Property Name="Is_Closed" Type="Boolean" Nullable="false" />
-          <Property Name="Last_Updated_By" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="Last_Updated_Date" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="QueueDetail">
           <Key>
@@ -1461,6 +1438,33 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="OperationSetting">
+          <Key>
+            <PropertyRef Name="DayOfWeek" />
+          </Key>
+          <Property Name="DayOfWeek" Type="Int32" Nullable="false" />
+          <Property Name="Morning_Open_Time" Type="Time" Precision="7" />
+          <Property Name="Morning_Close_Time" Type="Time" Precision="7" />
+          <Property Name="Morning_Spare_Slots" Type="Int32" />
+          <Property Name="Morning_Interval" Type="Int32" />
+          <Property Name="Morning_MaximumSupervisee" Type="Int32" />
+          <Property Name="Morning_Is_Closed" Type="Boolean" Nullable="false" />
+          <Property Name="Afternoon_Open_Time" Type="Time" Precision="7" />
+          <Property Name="Afternoon_Close_Time" Type="Time" Precision="7" />
+          <Property Name="Afternoon_Spare_Slots" Type="Int32" />
+          <Property Name="Afternoon_Interval" Type="Int32" />
+          <Property Name="Afternoon_MaximumSupervisee" Type="Int32" />
+          <Property Name="Afternoon_Is_Closed" Type="Boolean" Nullable="false" />
+          <Property Name="Evening_Open_Time" Type="Time" Precision="7" />
+          <Property Name="Evening_Close_Time" Type="Time" Precision="7" />
+          <Property Name="Evening_Spare_Slots" Type="Int32" />
+          <Property Name="Evening_Interval" Type="Int32" />
+          <Property Name="Evening_MaximumSupervisee" Type="Int32" />
+          <Property Name="Evening_Is_Closed" Type="Boolean" Nullable="false" />
+          <Property Name="Last_Updated_By" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Last_Updated_Date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1685,32 +1689,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="OperationSettings">
-            <EntityTypeMapping TypeName="SSKModel.OperationSetting">
-              <MappingFragment StoreEntitySet="OperationSettings">
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="Last_Updated_Date" ColumnName="Last_Updated_Date" />
-                <ScalarProperty Name="Last_Updated_By" ColumnName="Last_Updated_By" />
-                <ScalarProperty Name="Is_Closed" ColumnName="Is_Closed" />
-                <ScalarProperty Name="Evening_MaximumSupervisee" ColumnName="Evening_MaximumSupervisee" />
-                <ScalarProperty Name="Evening_Interval" ColumnName="Evening_Interval" />
-                <ScalarProperty Name="Evening_Spare_Slots" ColumnName="Evening_Spare_Slots" />
-                <ScalarProperty Name="Evening_Close_Time" ColumnName="Evening_Close_Time" />
-                <ScalarProperty Name="Evening_Open_Time" ColumnName="Evening_Open_Time" />
-                <ScalarProperty Name="Afternoon_MaximumSupervisee" ColumnName="Afternoon_MaximumSupervisee" />
-                <ScalarProperty Name="Afternoon_Interval" ColumnName="Afternoon_Interval" />
-                <ScalarProperty Name="Afternoon_Spare_Slots" ColumnName="Afternoon_Spare_Slots" />
-                <ScalarProperty Name="Afternoon_Close_Time" ColumnName="Afternoon_Close_Time" />
-                <ScalarProperty Name="Afternoon_Open_Time" ColumnName="Afternoon_Open_Time" />
-                <ScalarProperty Name="Morning_MaximumSupervisee" ColumnName="Morning_MaximumSupervisee" />
-                <ScalarProperty Name="Morning_Interval" ColumnName="Morning_Interval" />
-                <ScalarProperty Name="Morning_Spare_Slots" ColumnName="Morning_Spare_Slots" />
-                <ScalarProperty Name="Morning_Close_Time" ColumnName="Morning_Close_Time" />
-                <ScalarProperty Name="Morning_Open_Time" ColumnName="Morning_Open_Time" />
-                <ScalarProperty Name="DayOfWeek" ColumnName="DayOfWeek" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="QueueDetails">
             <EntityTypeMapping TypeName="SSKModel.QueueDetail">
               <MappingFragment StoreEntitySet="QueueDetails">
@@ -1800,6 +1778,34 @@
                 <ScalarProperty Name="Secondary_Phone" ColumnName="Secondary_Phone" />
                 <ScalarProperty Name="Primary_Phone" ColumnName="Primary_Phone" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="OperationSettings">
+            <EntityTypeMapping TypeName="SSKModel.OperationSetting">
+              <MappingFragment StoreEntitySet="OperationSettings">
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Last_Updated_Date" ColumnName="Last_Updated_Date" />
+                <ScalarProperty Name="Last_Updated_By" ColumnName="Last_Updated_By" />
+                <ScalarProperty Name="Evening_Is_Closed" ColumnName="Evening_Is_Closed" />
+                <ScalarProperty Name="Evening_MaximumSupervisee" ColumnName="Evening_MaximumSupervisee" />
+                <ScalarProperty Name="Evening_Interval" ColumnName="Evening_Interval" />
+                <ScalarProperty Name="Evening_Spare_Slots" ColumnName="Evening_Spare_Slots" />
+                <ScalarProperty Name="Evening_Close_Time" ColumnName="Evening_Close_Time" />
+                <ScalarProperty Name="Evening_Open_Time" ColumnName="Evening_Open_Time" />
+                <ScalarProperty Name="Afternoon_Is_Closed" ColumnName="Afternoon_Is_Closed" />
+                <ScalarProperty Name="Afternoon_MaximumSupervisee" ColumnName="Afternoon_MaximumSupervisee" />
+                <ScalarProperty Name="Afternoon_Interval" ColumnName="Afternoon_Interval" />
+                <ScalarProperty Name="Afternoon_Spare_Slots" ColumnName="Afternoon_Spare_Slots" />
+                <ScalarProperty Name="Afternoon_Close_Time" ColumnName="Afternoon_Close_Time" />
+                <ScalarProperty Name="Afternoon_Open_Time" ColumnName="Afternoon_Open_Time" />
+                <ScalarProperty Name="Morning_Is_Closed" ColumnName="Morning_Is_Closed" />
+                <ScalarProperty Name="Morning_MaximumSupervisee" ColumnName="Morning_MaximumSupervisee" />
+                <ScalarProperty Name="Morning_Interval" ColumnName="Morning_Interval" />
+                <ScalarProperty Name="Morning_Spare_Slots" ColumnName="Morning_Spare_Slots" />
+                <ScalarProperty Name="Morning_Close_Time" ColumnName="Morning_Close_Time" />
+                <ScalarProperty Name="Morning_Open_Time" ColumnName="Morning_Open_Time" />
+                <ScalarProperty Name="DayOfWeek" ColumnName="DayOfWeek" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

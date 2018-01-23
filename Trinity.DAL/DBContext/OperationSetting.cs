@@ -20,17 +20,19 @@ namespace Trinity.DAL.DBContext
         public Nullable<int> Morning_Spare_Slots { get; set; }
         public Nullable<int> Morning_Interval { get; set; }
         public Nullable<int> Morning_MaximumSupervisee { get; set; }
+        public bool Morning_Is_Closed { get; set; }
         public Nullable<System.TimeSpan> Afternoon_Open_Time { get; set; }
         public Nullable<System.TimeSpan> Afternoon_Close_Time { get; set; }
         public Nullable<int> Afternoon_Spare_Slots { get; set; }
         public Nullable<int> Afternoon_Interval { get; set; }
         public Nullable<int> Afternoon_MaximumSupervisee { get; set; }
+        public bool Afternoon_Is_Closed { get; set; }
         public Nullable<System.TimeSpan> Evening_Open_Time { get; set; }
         public Nullable<System.TimeSpan> Evening_Close_Time { get; set; }
         public Nullable<int> Evening_Spare_Slots { get; set; }
         public Nullable<int> Evening_Interval { get; set; }
         public Nullable<int> Evening_MaximumSupervisee { get; set; }
-        public bool Is_Closed { get; set; }
+        public bool Evening_Is_Closed { get; set; }
         public string Last_Updated_By { get; set; }
         public System.DateTime Last_Updated_Date { get; set; }
         public string Description { get; set; }
