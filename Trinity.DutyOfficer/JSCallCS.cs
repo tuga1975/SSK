@@ -115,7 +115,8 @@ namespace DutyOfficer
         public void GetSettings()
         {
             var dalSetting = new DAL_Setting();
-            SettingModel data = dalSetting.GetSettings(EnumSettingStatuses.Pending);
+            var dayOfWeek = CommonUtil.ConvertToCustomDateOfWeek(DateTime.Now.DayOfWeek);
+            var data = dalSetting.GetSettingDetails(dayOfWeek);
             data.HoliDays = dalSetting.GetHolidays();
 
             object result = null;
@@ -129,7 +130,7 @@ namespace DutyOfficer
 
         public void UpdateSetting(string json)
         {
-            var model = JsonConvert.DeserializeObject<SettingModel>(json);
+            var model = JsonConvert.DeserializeObject<SettingDetails>(json);
             Session session = Session.Instance;
             Trinity.BE.User dutyOfficer = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
             var dalSetting = new DAL_Setting();
