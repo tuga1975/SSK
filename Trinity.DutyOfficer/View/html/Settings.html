@@ -80,7 +80,7 @@
                 <td id="mon-EveningMax">10</td>
                 <td id="mon-EveningSpare">5</td>
                 <td id="mon-EveningInterval">30 mins</td>
-                <th id="mon-Edit" style="background-color:#808080;cursor:pointer;" onclick="api.server.PopupEditOperationalDate('Monday', function () {$('#idEditOperationalDate').modal(); });">Edit</th>
+                <th id="mon-Edit" style="background-color:#808080;cursor:pointer;" onclick="showPopupSettingDetail('Monday');">Edit</th>
             </tr>
             <tr id="Tuesday">
                 <td style="background-color:gainsboro">Tuesday</td>
@@ -99,7 +99,7 @@
                 <td id="tue-EveningMax">10</td>
                 <td id="tue-EveningSpare">5</td>
                 <td id="tue-EveningInterval">30 mins</td>
-                <th id="tue-Edit" style="background-color:#808080;cursor:pointer;" onclick="api.server.PopupEditOperationalDate('Tuesday', function () {$('#idEditOperationalDate').modal(); });">Edit</th>
+                <th id="tue-Edit" style="background-color:#808080;cursor:pointer;" onclick="showPopupSettingDetail('Tuesday');">Edit</th>
             </tr>
             <tr id="Wednesday">
                 <td style="background-color:gainsboro">Wednesday</td>
@@ -118,7 +118,7 @@
                 <td id="wed-EveningMax">10</td>
                 <td id="wed-EveningSpare">5</td>
                 <td id="wed-EveningInterval">30 mins</td>
-                <th id="wed-Edit" style="background-color:#808080;cursor:pointer;" onclick="api.server.PopupEditOperationalDate('Wednesday', function () {$('#idEditOperationalDate').modal(); });">Edit</th>
+                <th id="wed-Edit" style="background-color:#808080;cursor:pointer;" onclick="showPopupSettingDetail('Wednesday');">Edit</th>
             </tr>
             <tr id="Thurday">
                 <td style="background-color:gainsboro">Thurday</td>
@@ -137,7 +137,7 @@
                 <td id="thu-EveningMax">10</td>
                 <td id="thu-EveningSpare">5</td>
                 <td id="thu-EveningInterval">30 mins</td>
-                <th id="thu-Edit" style="background-color:#808080;cursor:pointer;" onclick="api.server.PopupEditOperationalDate('Thurday', function () {$('#idEditOperationalDate').modal(); });">Edit</th>
+                <th id="thu-Edit" style="background-color:#808080;cursor:pointer;" onclick="showPopupSettingDetail('Thurday');">Edit</th>
             </tr>
             <tr id="Friday">
                 <td style="background-color:gainsboro">Friday</td>
@@ -156,7 +156,7 @@
                 <td id="fri-EveningMax">10</td>
                 <td id="fri-EveningSpare">5</td>
                 <td id="fri-EveningInterval">30 mins</td>
-                <th id="fri-Edit" style="background-color:#808080;cursor:pointer;" onclick="api.server.PopupEditOperationalDate('Friday', function () {$('#idEditOperationalDate').modal(); });">Edit</th>
+                <th id="fri-Edit" style="background-color:#808080;cursor:pointer;" onclick="showPopupSettingDetail('Friday');">Edit</th>
             </tr>
             <tr id="Saturday">
                 <td style="background-color:gainsboro">Saturday</td>
@@ -175,7 +175,7 @@
                 <td id="sat-EveningMax">10</td>
                 <td id="sat-EveningSpare">5</td>
                 <td id="sat-EveningInterval">30 mins</td>
-                <th id="sat-Edit" style="background-color:#808080;cursor:pointer;" onclick="api.server.PopupEditOperationalDate('Saturday', function () {$('#idEditOperationalDate').modal(); });">Edit</th>
+                <th id="sat-Edit" style="background-color:#808080;cursor:pointer;" onclick="showPopupSettingDetail('Saturday');">Edit</th>
             </tr>
             <tr id="Sunday">
                 <td style="background-color:gainsboro">Sunday</td>
@@ -194,7 +194,7 @@
                 <td id="sun-EveningMax">10</td>
                 <td id="sun-EveningSpare">5</td>
                 <td id="sun-EveningInterval">30 mins</td>
-                <th id="sun-Edit" style="background-color:#808080;cursor:pointer;" onclick="api.server.PopupEditOperationalDate('Sunday', function () {$('#idEditOperationalDate').modal(); });">Edit</th>
+                <th id="sun-Edit" style="background-color:#808080;cursor:pointer;" onclick="showPopupSettingDetail('Sunday');">Edit</th>
             </tr>
         </tbody>
     </table>
@@ -579,6 +579,43 @@
                 e.preventDefault();
             };
         });
+
+        function showPopupSettingDetail(dayOfWeek) {
+            var settingDetail;
+            switch (dayOfWeek) {
+                case "Monday":
+                    model.Monday.DayOfWeek = 2;
+                    settingDetail = model.Monday;
+                    break;
+                case "Tuesday":
+                    model.Tuesday.DayOfWeek = 3;
+                    settingDetail = model.TuesDay;
+                    break;
+                case "Wednesday":
+                    model.WednesDay.DayOfWeek = 4;
+                    settingDetail = model.WednesDay;
+                    break;
+                case "Thurday":
+                    model.Thursday.DayOfWeek = 5;
+                    settingDetail = model.Thursday;
+                    break;
+                case "Friday":
+                    model.Friday.DayOfWeek = 6;
+                    settingDetail = model.Friday;
+                    break;
+                case "Saturday":
+                    model.Saturday.DayOfWeek = 7;
+                    settingDetail = model.Saturday;
+                    break;
+                case "Sunday":
+                    model.Sunday.DayOfWeek = 8;
+                    settingDetail = model.Sunday;
+                    break;
+            }
+
+            var data = JSON.stringify(settingDetail);
+            api.server.PopupEditOperationalDate(data, function () { $('#idEditOperationalDate').modal(); });
+        };
 
         function formatDate(strDate) {
             var date = new Date(Date.parse(strDate)),

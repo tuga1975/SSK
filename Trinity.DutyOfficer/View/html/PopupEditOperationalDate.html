@@ -142,10 +142,95 @@
         $('#evening-interval').append($('<option></option>').val(p).html(p));
     });
 
-    api.ready(function (model) {
-        $('#dayOfWeek').val(model);
+    api.ready(function (response) {
+        var model = JSON.parse(response);
+        switch (model.DayOfWeek) {
+            case 2:
+                $('#dayOfWeek').val('Monday');
+                break;
+            case 3:
+                $('#dayOfWeek').val('Tuesday');
+                break;
+            case 4:
+                $('#dayOfWeek').val('Wednesday');
+                break;
+            case 5:
+                $('#dayOfWeek').val('Thurday');
+                break;
+            case 6:
+                $('#dayOfWeek').val('Friday');
+                break;
+            case 7:
+                $('#dayOfWeek').val('Saturday');
+                break;
+            case 8:
+                $('#dayOfWeek').val('Sunday');
+                break;
+            default:
+                $('#dayOfWeek').val('Monday');
+                break;
+        }
+
+        if (model.Morning_Open_Time) {
+            var morningStart = model.Morning_Open_Time.split(':');
+            $('#morning-start-HH').val(morningStart[0]);
+            $('#morning-start-MM').val(morningStart[1]);
+            $('#morning-start-XM').val(morningStart[2]);
+        }
+
+        if (model.Morning_Close_Time) {
+            var morningEnd = model.Morning_Close_Time.split(':');
+            $('#morning-end-HH').val(morningEnd[0]);
+            $('#morning-end-MM').val(morningEnd[1]);
+            $('#morning-end-XM').val(morningEnd[2]);
+        }
+
+        $('#morning-max').val(model.Morning_MaximumSupervisee);
+        $('#morning-spare').val(model.Morning_Spare_Slots);
+        $('#morning-interval').val(model.Morning_Interval);
+        $('#morning-closed').prop('checked', model.Morning_Is_Closed);
+
+        //Afternoon
+        if (model.Afternoon_Open_Time) {
+            var afternoonStart = model.Afternoon_Open_Time.split(':');
+            $('#afternoon-start-HH').val(afternoonStart[0]);
+            $('#afternoon-start-MM').val(afternoonStart[1]);
+            $('#afternoon-start-XM').val(afternoonStart[2]);
+        }
+
+        if (model.Afternoon_Close_Time) {
+            var afternoonEnd = model.Afternoon_Close_Time.split(':');
+            $('#afternoon-end-HH').val(afternoonEnd[0]);
+            $('#afternoon-end-MM').val(afternoonEnd[1]);
+            $('#afternoon-end-XM').val(afternoonEnd[2]);
+        }
+
+        $('#afternoon-max').val(model.Afternoon_MaximumSupervisee);
+        $('#afternoon-spare').val(model.Afternoon_Spare_Slots);
+        $('#afternoon-interval').val(model.Afternoon_Interval);
+        $('#afternoon-closed').prop('checked', model.Afternoon_Is_Closed);
+
+        //Evening
+        if (model.Evening_Open_Time) {
+            var eveningStart = model.Evening_Open_Time.split(':');
+            $('#evening-start-HH').val(eveningStart[0]);
+            $('#evening-start-MM').val(eveningStart[1]);
+            $('#evening-start-XM').val(eveningStart[2]);
+        }
+
+        if (model.Evening_Close_Time) {
+            var eveningEnd = model.Evening_Close_Time.split(':');
+            $('#evening-end-HH').val(eveningEnd[0]);
+            $('#evening-end-MM').val(eveningEnd[1]);
+            $('#evening-end-XM').val(eveningEnd[2]);
+        }
+
+        $('#evening-max').val(model.Evening_MaximumSupervisee);
+        $('#evening-spare').val(model.Evening_Spare_Slots);
+        $('#evening-interval').val(model.Evening_Interval);
+        $('#evening-closed').prop('checked', model.Evening_Is_Closed);
     });
-    
+
     $("#EditBtn").click(function (e) {
         var dayOfWeek;
         switch ($('#dayOfWeek').val()) {
