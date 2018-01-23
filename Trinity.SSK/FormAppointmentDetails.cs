@@ -71,7 +71,7 @@ namespace SSK
             try
             {
                 DAL_Setting dalSetting = new DAL_Setting();
-                dalSetting.GenerateTimeslots("dfbb2a6a-9e45-4a76-9f75-af1a7824a947");
+                dalSetting.GenerateTimeslots(DateTime.Now.Date,"dfbb2a6a-9e45-4a76-9f75-af1a7824a947");
                 MessageBox.Show("OK");
             }
             catch (Exception ex)
