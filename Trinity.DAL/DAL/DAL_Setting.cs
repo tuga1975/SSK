@@ -571,7 +571,7 @@ namespace Trinity.DAL
 
                 // Generate Timeslote here
                 var date = FindNexDateByDayOfWeek((EnumDayOfWeek)model.DayOfWeek);
-                var lstTimeslots = GetTimeslotByDayOfWeek((EnumDayOfWeek)model.DayOfWeek);
+                var lstTimeslots = GetTimeslotByDate(date);
                 if (lstTimeslots.Count > 0)
                 {
                     bool isDeleteAppointment = false;
@@ -654,10 +654,8 @@ namespace Trinity.DAL
             }
         }
 
-        private List<Timeslot> GetTimeslotByDayOfWeek(EnumDayOfWeek dayOfWeek)
+        private List<Timeslot> GetTimeslotByDate(DateTime date)
         {
-            var date = FindNexDateByDayOfWeek(dayOfWeek);
-
             return _localUnitOfWork.DataContext.Timeslots.Where(t => DbFunctions.TruncateTime(t.Date) == date.Date).ToList();
         }
 
