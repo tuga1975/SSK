@@ -592,7 +592,7 @@ namespace Enrolment
                 var userInfo = dalUser.GetUserByUserId(appUser.Id, true);
                 if (userInfo.AccessFailedCount >= 3)
                 {
-                    eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.LOGIN_FAILED, Message = "You have exceeded the maximum amount of tries to Login. Please go to Forget Password to reset your password" });
+                    eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.LOGIN_FAILED, Message = "You have exceeded the maximum amount of tries to Login. Please goto APS and select \"Forgot Password\" to reset your password." });
                     return;
                 }
                 // Authenticated successfully
