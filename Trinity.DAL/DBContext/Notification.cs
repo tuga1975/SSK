@@ -20,7 +20,7 @@ namespace Trinity.DAL.DBContext
         public string ToUserId { get; set; }
         public string Subject { get; set; }
         public string Content { get; set; }
-        public bool IsRead { get; set; }
+        public Nullable<bool> IsRead { get; set; }
         public Nullable<bool> IsFromSupervisee { get; set; }
         public string Source { get; set; }
         public string Type { get; set; }
