@@ -182,6 +182,7 @@ namespace Trinity.BE
         public string LastUpdatedBy { get; set; }
         public Nullable<System.DateTime> LastUpdatedDate { get; set; }
         public string Description { get; set; }
+        public Nullable<int> MaximumSupervisee { get; set; }
     }
 
 

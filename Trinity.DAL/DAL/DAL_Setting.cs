@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.SqlServer;
 using System.Linq;
+using System.Windows.Forms;
 using Trinity.BE;
 using Trinity.DAL.DBContext;
 using Trinity.DAL.Repository;
@@ -107,25 +108,25 @@ namespace Trinity.DAL
 
         }
 
-        private void GenerateTimeslotAndInsert(DateTime date, Trinity.BE.SettingDetails model, string createBy)
+        private void GenerateTimeslotAndInsert(DateTime date, Trinity.BE.SettingDetails model, string createBy, int maxSupervisee = 0)
         {
             if (model.Morning_Open_Time.HasValue && model.Morning_Close_Time.HasValue && model.Morning_Interval.HasValue)
             {
-                GenerateByTimeshift(date, model.Morning_Open_Time, model.Morning_Close_Time, model.Morning_Interval, createBy);
+                GenerateByTimeshift(date, model.Morning_Open_Time, model.Morning_Close_Time, model.Morning_Interval, createBy, maxSupervisee);
             }
 
             if (model.Afternoon_Open_Time.HasValue && model.Afternoon_Close_Time.HasValue && model.Afternoon_Interval.HasValue)
             {
-                GenerateByTimeshift(date, model.Afternoon_Open_Time, model.Afternoon_Close_Time, model.Afternoon_Interval, createBy);
+                GenerateByTimeshift(date, model.Afternoon_Open_Time, model.Afternoon_Close_Time, model.Afternoon_Interval, createBy, maxSupervisee);
             }
 
             if (model.Evening_Open_Time.HasValue && model.Evening_Close_Time.HasValue && model.Evening_Interval.HasValue)
             {
-                GenerateByTimeshift(date, model.Evening_Open_Time, model.Evening_Close_Time, model.Evening_Interval, createBy);
+                GenerateByTimeshift(date, model.Evening_Open_Time, model.Evening_Close_Time, model.Evening_Interval, createBy, maxSupervisee);
             }
 
         }
-        private void GenerateByTimeshift(DateTime date, TimeSpan? openTime, TimeSpan? closeTime, int? duration, string createBy)
+        private void GenerateByTimeshift(DateTime date, TimeSpan? openTime, TimeSpan? closeTime, int? duration, string createBy, int maxSupervisee = 0)
         {
             var fromTime = openTime;
             var toTime = closeTime;
@@ -134,12 +135,15 @@ namespace Trinity.DAL
             {
                 var timeSlot = new BE.TimeslotDetails();
 
+                var morningTimeSpan = new TimeSpan(12, 0, 0);
+                var eveningTimeSpan = new TimeSpan(17, 0, 0);
+
                 timeSlot.Timeslot_ID = (id + 1);
 
                 timeSlot.StartTime = fromTime;
                 timeSlot.EndTime = fromTime.Value.Add(TimeSpan.FromMinutes(duration.Value));
 
-                timeSlot.Category = EnumTimeshift.Morning;
+                //timeSlot.Category = EnumTimeshift.Morning;
                 timeSlot.Date = date.Date;
                 timeSlot.CreatedDate = DateTime.Today;
                 timeSlot.Description = string.Empty;
@@ -147,8 +151,21 @@ namespace Trinity.DAL
                 timeSlot.CreatedBy = createBy;
                 timeSlot.LastUpdatedBy = createBy;
                 timeSlot.LastUpdatedDate = DateTime.Now;
+                timeSlot.MaximumSupervisee = maxSupervisee;
 
 
+                if (timeSlot.EndTime <= morningTimeSpan)
+                {
+                    timeSlot.Category = EnumTimeshift.Morning;
+                }
+                else if (timeSlot.EndTime > eveningTimeSpan)
+                {
+                    timeSlot.Category = EnumTimeshift.Evening;
+                }
+                else
+                {
+                    timeSlot.Category = EnumTimeshift.Afternoon;
+                }
 
                 fromTime = fromTime.Value.Add(TimeSpan.FromMinutes(duration.Value));
 
@@ -169,6 +186,7 @@ namespace Trinity.DAL
             dbTimeslot.Description = model.Description;
             dbTimeslot.LastUpdatedBy = model.LastUpdatedBy;
             dbTimeslot.LastUpdatedDate = model.LastUpdatedDate;
+            dbTimeslot.MaximumSupervisee = model.MaximumSupervisee;
 
             return dbTimeslot;
         }
@@ -487,12 +505,16 @@ namespace Trinity.DAL
             return settingModel;
         }
 
+        #region Duty Officer
         // Save Setting from DutyOfficer
         public bool SaveOperationSetting(BE.SettingDetails model)
         {
             try
             {
                 var repo = _localUnitOfWork.GetRepository<OperationSetting>();
+                var repoAppointment = _localUnitOfWork.GetRepository<DBContext.Appointment>();
+                var repoTimeslot = _localUnitOfWork.GetRepository<DBContext.Timeslot>();
+
                 var operationSetting = _localUnitOfWork.DataContext.OperationSettings.FirstOrDefault(s => s.DayOfWeek == model.DayOfWeek);
                 if (operationSetting == null)
                 {
@@ -547,10 +569,82 @@ namespace Trinity.DAL
                     repo.Update(operationSetting);
                 }
 
-                _localUnitOfWork.Save();
-
                 // Generate Timeslote here
-                //UpdateTimeslotForNewWeek(setting.Setting_ID, lastUpdateBy);
+                var date = FindNexDateByDayOfWeek((EnumDayOfWeek)model.DayOfWeek);
+                var lstTimeslots = GetTimeslotByDayOfWeek((EnumDayOfWeek)model.DayOfWeek);
+                if (lstTimeslots.Count > 0)
+                {
+                    bool isDeleteAppointment = false;
+                    bool isHasQueue = false;
+
+                    // Check Queue
+                    foreach (var item in lstTimeslots)
+                    {
+                        DBContext.Appointment appointment = GetAppointmentByTimeslotID(item.Timeslot_ID);
+                        if (appointment != null)
+                        {
+                            // If have Queue, show message and no change update
+                            if (GetQueueByAppointmentID(appointment.ID) != null)
+                            {
+                                MessageBox.Show("The day was order Queue, can not update.");
+                                isHasQueue = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (!isHasQueue)
+                    {
+                        // Check Appointment
+                        foreach (var item in lstTimeslots)
+                        {
+                            DBContext.Appointment appointment = GetAppointmentByTimeslotID(item.Timeslot_ID);
+                            if (appointment != null)
+                            {
+                                DialogResult dr = MessageBox.Show("The day was booked appointment, do you want to continue?", "Confirm", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Information);
+
+                                if (dr == DialogResult.Yes)
+                                {
+                                    isDeleteAppointment = true;
+                                }
+                                break;
+                            }
+                        }
+
+                        foreach (var item in lstTimeslots)
+                        {
+                            DBContext.Appointment appointment = GetAppointmentByTimeslotID(item.Timeslot_ID);
+                            if (appointment != null)
+                            {
+                                if (!isDeleteAppointment)
+                                {
+                                    return false;
+                                }
+                                else
+                                {
+                                    appointment.Timeslot_ID = null;
+                                    repoAppointment.Update(appointment);
+                                }
+                            }
+                            repoTimeslot.Delete(item);
+                        }
+
+                        int maxSupervisee = (model.Morning_MaximumSupervisee.HasValue ? model.Morning_MaximumSupervisee.Value : 0)
+                                        + (model.Afternoon_MaximumSupervisee.HasValue ? model.Afternoon_MaximumSupervisee.Value : 0)
+                                        + (model.Evening_MaximumSupervisee.HasValue ? model.Evening_MaximumSupervisee.Value : 0);
+
+                        GenerateTimeslotAndInsert(date, model, model.Last_Updated_By, maxSupervisee);
+                    }
+                }
+                else
+                {
+                    int maxSupervisee = (model.Morning_MaximumSupervisee.HasValue ? model.Morning_MaximumSupervisee.Value : 0) 
+                                        + (model.Afternoon_MaximumSupervisee.HasValue ? model.Afternoon_MaximumSupervisee.Value : 0) 
+                                        + (model.Evening_MaximumSupervisee.HasValue ? model.Evening_MaximumSupervisee.Value : 0);
+                    GenerateTimeslotAndInsert(date, model, model.Last_Updated_By, maxSupervisee);
+                }
+
+                _localUnitOfWork.Save();
 
                 return true;
             }
@@ -558,6 +652,30 @@ namespace Trinity.DAL
             {
                 return false;
             }
+        }
+
+        private List<Timeslot> GetTimeslotByDayOfWeek(EnumDayOfWeek dayOfWeek)
+        {
+            var date = FindNexDateByDayOfWeek(dayOfWeek);
+
+            return _localUnitOfWork.DataContext.Timeslots.Where(t => DbFunctions.TruncateTime(t.Date) == date.Date).ToList();
+        }
+
+        private DateTime FindNexDateByDayOfWeek(EnumDayOfWeek dayOfWeek)
+        {
+            int currentDayOfWeek = (int)Common.CommonUtil.ConvertToCustomDateOfWeek(DateTime.Now.DayOfWeek);
+            int daysToAdd = ((int)dayOfWeek - currentDayOfWeek + 7) % 7;
+            return DateTime.Today.AddDays(daysToAdd);
+        }
+
+        private DBContext.Appointment GetAppointmentByTimeslotID(int timeslotID)
+        {
+            return _localUnitOfWork.DataContext.Appointments.FirstOrDefault(a => a.Timeslot_ID == timeslotID);
+        }
+
+        private DBContext.Queue GetQueueByAppointmentID(Guid appointmentID)
+        {
+            return _localUnitOfWork.DataContext.Queues.FirstOrDefault(q => q.Appointment_ID == appointmentID);
         }
 
         public List<BE.Holiday> GetHolidays()
@@ -604,6 +722,7 @@ namespace Trinity.DAL
             {
             }
         }
+        #endregion
 
         public SettingDetails GetSettingDetails(EnumDayOfWeek dayOfWeek)
         {
@@ -638,9 +757,9 @@ namespace Trinity.DAL
             var nextIdx = 0;
             foreach (var item in listTimeslot)
             {
-                if (item.StartTime==currentTime)
+                if (item.StartTime == currentTime)
                 {
-                    nextIdx = listTimeslot.IndexOf(item)+1;
+                    nextIdx = listTimeslot.IndexOf(item) + 1;
                     break;
                 }
             }
@@ -655,7 +774,7 @@ namespace Trinity.DAL
             var setting = GetSettingDetails(dayOfWeek);
             var _dayOfWeek = dayOfWeek == EnumDayOfWeek.Sunday ? 1 : (int)dayOfWeek;
 
-            var listTimeslot = _localUnitOfWork.DataContext.Timeslots.Where(t => SqlFunctions.DatePart("dw", t.Date.Value) == _dayOfWeek).OrderBy(d=>d.StartTime).ToList();
+            var listTimeslot = _localUnitOfWork.DataContext.Timeslots.Where(t => SqlFunctions.DatePart("dw", t.Date.Value) == _dayOfWeek).OrderBy(d => d.StartTime).ToList();
             return listTimeslot;
 
         }
