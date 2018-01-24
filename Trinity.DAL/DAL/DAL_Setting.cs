@@ -788,5 +788,50 @@ namespace Trinity.DAL
             return listTimeslot;
 
         }
+
+
+        public List<CheckWarningSaveSetting> CheckWarningSaveSetting(EnumDayOfWeek DayOfWeek)
+        {
+            var _dayOfWeek = DayOfWeek == EnumDayOfWeek.Sunday ? 1 : (int)DayOfWeek;
+            var DateNow = DateTime.Now.Date;
+            var arrayBookAppoint = _localUnitOfWork.DataContext.Appointments.Include("Membership_Users").Include("Timeslot").Include("Queues").Where(d => d.Timeslot_ID.HasValue && DbFunctions.TruncateTime(d.Date) >= DateNow && SqlFunctions.DatePart("dw", d.Date) == _dayOfWeek).ToList();
+            // danh sách những user đc warning
+            List<CheckWarningSaveSetting> arrayListUser = new List<CheckWarningSaveSetting>();
+            if ((int)DayOfWeek == DateTime.Now.DayOfWeek())
+            {
+                //Nếu là thứ hiện tại cập nhật và chưa đã có queue đc chạy
+                bool isQueueStarted = arrayBookAppoint.Any(d => d.Date.Date == DateTime.Now.Date && d.Timeslot.StartTime.Value <= DateTime.Now.TimeOfDay);
+                if (!isQueueStarted)
+                {
+                    arrayListUser = arrayBookAppoint.Select(d => new CheckWarningSaveSetting()
+                    {
+                        Date = d.Date,
+                        Email = d.Membership_Users.Email,
+                        StartTime = d.Timeslot.StartTime.Value,
+                        EndTime = d.Timeslot.EndTime.Value,
+                        Timeslot_ID = d.Timeslot_ID.Value,
+                        UserId = d.UserId,
+                        UserName = d.Membership_Users.UserName,
+                        Queue_ID = d.Queues.Select(c => c.Queue_ID).FirstOrDefault()
+                    }).ToList();
+                }
+            }
+            else
+            {
+                arrayListUser = arrayBookAppoint.Select(d => new CheckWarningSaveSetting()
+                {
+                    Date = d.Date,
+                    Email = d.Membership_Users.Email,
+                    StartTime = d.Timeslot.StartTime.Value,
+                    EndTime = d.Timeslot.EndTime.Value,
+                    Timeslot_ID = d.Timeslot_ID.Value,
+                    UserId = d.UserId,
+                    UserName = d.Membership_Users.UserName,
+                    Queue_ID = d.Queues.Select(c => c.Queue_ID).FirstOrDefault()
+                }).ToList();
+            }
+           
+            return arrayListUser;
+        }
     }
 }
