@@ -229,7 +229,7 @@
           <Property Name="ToUserId" Type="nvarchar" MaxLength="128" />
           <Property Name="Subject" Type="nvarchar" MaxLength="100" />
           <Property Name="Content" Type="ntext" Nullable="false" />
-          <Property Name="IsRead" Type="bit" Nullable="false" />
+          <Property Name="IsRead" Type="bit" />
           <Property Name="IsFromSupervisee" Type="bit" />
           <Property Name="Source" Type="nvarchar" MaxLength="50" />
           <Property Name="Type" Type="nvarchar" MaxLength="50" />
@@ -1458,7 +1458,7 @@
           <Property Name="ToUserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="Subject" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="Content" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="IsRead" Type="Boolean" Nullable="false" />
+          <Property Name="IsRead" Type="Boolean" />
           <Property Name="IsFromSupervisee" Type="Boolean" />
           <Property Name="Source" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />

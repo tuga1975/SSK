@@ -29,11 +29,11 @@ namespace Trinity.DAL
         {
             if (isLocal)
             {
-                return _localUnitOfWork.DataContext.Notifications.Count(n => n.ToUserId == myUserId && !n.IsRead);
+                return _localUnitOfWork.DataContext.Notifications.Count(n => n.ToUserId == myUserId && n.IsRead.HasValue && !n.IsRead.Value);
             }
             else
             {
-                return _centralizedUnitOfWork.DataContext.Notifications.Count(n => n.ToUserId == myUserId && !n.IsRead);
+                return _centralizedUnitOfWork.DataContext.Notifications.Count(n => n.ToUserId == myUserId && n.IsRead.HasValue && !n.IsRead.Value);
             }
         }
 
@@ -60,7 +60,7 @@ namespace Trinity.DAL
                         Date = item.Datetime,
                         FromUserId = item.FromUserId,
                         ID = new Guid(item.NotificationID),
-                        IsRead = item.IsRead,
+                        IsRead = item.IsRead.HasValue?item.IsRead.Value:false,
                         Subject = item.Subject,
                         ToUserId = item.ToUserId
                     };
