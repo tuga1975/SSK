@@ -41,7 +41,8 @@ function Api() {
     };
     this.DumpDataToTxt = function (content, model) {
         for (var item in model) {
-            content = content.replace(new RegExp('{' + item + '}', "g"), model[item]);
+            var data = model[item];
+            content = content.replace(new RegExp('{' + item + '}', "g"), data == null ? '' : data);
         }
         return content;
     };

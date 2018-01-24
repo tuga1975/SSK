@@ -54,25 +54,32 @@ public static class Lib
         return null;
     }
 
-    public static TConvert Map<TConvert>(this object entity) where TConvert : new()
+    public static TConvert Map<TConvert>(this object entity) where TConvert :new()
     {
-        var convert = new TConvert();
-        var sourceProps = entity.GetType().GetProperties().Where(x => x.CanRead).ToList();
-        var destProps = typeof(TConvert).GetProperties()
-                .Where(x => x.CanWrite)
-                .ToList();
-        foreach (var sourceProp in sourceProps)
+        if (entity != null)
         {
-            if (destProps.Any(x => x.Name == sourceProp.Name))
+            var convert = new TConvert();
+            var sourceProps = entity.GetType().GetProperties().Where(x => x.CanRead).ToList();
+            var destProps = typeof(TConvert).GetProperties()
+                    .Where(x => x.CanWrite)
+                    .ToList();
+            foreach (var sourceProp in sourceProps)
             {
-                var p = destProps.First(x => x.Name == sourceProp.Name);
-                if (p.CanWrite)
+                if (destProps.Any(x => x.Name == sourceProp.Name))
                 {
-                    p.SetValue(convert, sourceProp.GetValue(entity, null), null);
+                    var p = destProps.First(x => x.Name == sourceProp.Name);
+                    if (p.CanWrite)
+                    {
+                        p.SetValue(convert, sourceProp.GetValue(entity, null), null);
+                    }
                 }
             }
+            return convert;
         }
-        return convert;
+        else
+        {
+            return default(TConvert);   
+        }
     }
     public static string JsonString(this object data)
     {
