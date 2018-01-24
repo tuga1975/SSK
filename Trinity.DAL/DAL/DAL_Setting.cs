@@ -588,7 +588,7 @@ namespace Trinity.DAL
                             {
                                 MessageBox.Show("The day was order Queue, can not update.");
                                 isHasQueue = true;
-                                break;
+                                return false;
                             }
                         }
                     }

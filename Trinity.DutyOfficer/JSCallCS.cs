@@ -139,10 +139,10 @@ namespace DutyOfficer
             {
                 //_web.InvokeScript("showMessageBox", "Update successful!");
             }
-            else
-            {
-                _web.InvokeScript("showMessageBox", "Update faied!");
-            }
+            //else
+            //{
+            //    _web.InvokeScript("showMessageBox", "Update faied!");
+            //}
         }
 
         public void AddHoliday(string json)
