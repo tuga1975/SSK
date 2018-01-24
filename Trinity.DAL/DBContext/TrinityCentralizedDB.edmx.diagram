@@ -22,7 +22,6 @@
         <EntityTypeShape EntityType="TrinityCentralizedDBModel.Membership_UserRoles" Width="1.5" PointX="3" PointY="27.375" />
         <EntityTypeShape EntityType="TrinityCentralizedDBModel.Membership_Users" Width="1.5" PointX="0.75" PointY="20.5" />
         <EntityTypeShape EntityType="TrinityCentralizedDBModel.Notification" Width="1.5" PointX="3" PointY="47.125" />
-        <EntityTypeShape EntityType="TrinityCentralizedDBModel.OperationSetting" Width="1.5" PointX="5.75" PointY="0.75" />
         <EntityTypeShape EntityType="TrinityCentralizedDBModel.QueueDetail" Width="1.5" PointX="7.5" PointY="30.375" />
         <EntityTypeShape EntityType="TrinityCentralizedDBModel.Queue" Width="1.5" PointX="5.25" PointY="30" />
         <EntityTypeShape EntityType="TrinityCentralizedDBModel.Security_QA" Width="1.5" PointX="3" PointY="36.625" />
@@ -50,6 +49,7 @@
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_PWD_QA_Membership_Users" />
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_User_Profiles_Membership_Users" />
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_QueueDetails_Queues" />
+        <EntityTypeShape EntityType="TrinityCentralizedDBModel.OperationSetting" Width="1.5" PointX="5.375" PointY="0.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

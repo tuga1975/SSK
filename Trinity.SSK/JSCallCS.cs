@@ -92,7 +92,7 @@ namespace SSK
             Trinity.DAL.DBContext.Appointment appointment;
             Trinity.DAL.DBContext.Appointment nearestAppointment;
             DateTime today = DateTime.Now.Date;
-            var selectedTimes = new Trinity.BE.AppointmentTime();
+            var selectedTimes = new Trinity.BE.WorkingTimeshift();
             appointment = DAL_Appointments.GetTodayAppointment(user.UserId);
 
             if (appointment != null)
@@ -118,10 +118,10 @@ namespace SSK
 
         }
 
-        private Trinity.BE.AppointmentTime SetSelectedTimes(DAL_Setting dalSettting, Appointment appointment)
+        private Trinity.BE.WorkingTimeshift SetSelectedTimes(DAL_Setting dalSettting, Appointment appointment)
         {
             var date = appointment.Date;
-            Trinity.BE.AppointmentTime selectedTimes = dalSettting.GetAppointmentTime(date);
+            Trinity.BE.WorkingTimeshift selectedTimes = dalSettting.GetAppointmentTime(date);
             SetSelectedTime(appointment, selectedTimes.Morning);
             SetSelectedTime(appointment, selectedTimes.Afternoon);
             SetSelectedTime(appointment, selectedTimes.Evening);
@@ -129,7 +129,7 @@ namespace SSK
             return selectedTimes;
         }
 
-        private static void SetSelectedTime(Appointment appointment, List<Trinity.BE.AppointmentTimeDetails> selectedTimes)
+        private static void SetSelectedTime(Appointment appointment, List<Trinity.BE.WorkingShiftDetails> selectedTimes)
         {
             DAL_Setting dalSetting = new DAL_Setting();
             var dalAppointment = new DAL_Appointments();
@@ -146,7 +146,7 @@ namespace SSK
                 var maxAppPerTimeslot = dalAppointment.GetMaximumNumberOfTimeslot(appointment.Timeslot_ID.Value);
                 foreach (var selectedItem in selectedTimes)
                 {
-                    var count = dalAppointment.CountListAppointmentByTimeslot(appointment.Date, selectedItem.StartTime, selectedItem.EndTime);
+                    var count = dalAppointment.CountListAppointmentByTimeslot(appointment);
                     if (count >= maxAppPerTimeslot)
                     {
                         selectedItem.IsAvailble = false;

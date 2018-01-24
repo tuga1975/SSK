@@ -51,13 +51,13 @@ namespace Trinity.DAL
         }
         public Appointment GetTodayAppointment(string UserId)
         {
-            
+
             return _localUnitOfWork.DataContext.Appointments.Where(d => d.UserId == UserId && d.Date == DateTime.Today).OrderBy(d => d.Date).FirstOrDefault();
         }
 
         public List<Appointment> GetAllCurrentTimeslotAppointment(TimeSpan currentTime)
         {
-            return _localUnitOfWork.DataContext.Appointments.Include("Queues").Include("Timeslot").Where(d => d.Date == DateTime.Today && d.Timeslot_ID.HasValue && d.Timeslot.StartTime.Value == currentTime && d.Queues.Any(q => q.Appointment_ID == d.ID)==false).OrderBy(d => d.Date).ToList();
+            return _localUnitOfWork.DataContext.Appointments.Include("Queues").Include("Timeslot").Where(d => d.Date == DateTime.Today && d.Timeslot_ID.HasValue && d.Timeslot.StartTime.Value == currentTime && d.Queues.Any(q => q.Appointment_ID == d.ID) == false).OrderBy(d => d.Date).ToList();
 
         }
 
@@ -69,7 +69,7 @@ namespace Trinity.DAL
         {
             Trinity.DAL.DBContext.Appointment appointment = GetMyAppointmentByID(new Guid(IDAppointment));
 
-            var timeSlot = GetTimeslotByAppointmentDate(appointment.Date, TimeSpan.Parse(timeStart), TimeSpan.Parse(timeEnd));
+            var timeSlot = GetTimeslotByAppointment(appointment);
             if (timeSlot != null)
             {
                 appointment.Timeslot_ID = timeSlot.Timeslot_ID;
@@ -127,22 +127,21 @@ namespace Trinity.DAL
             return localDbAppointment;
         }
 
-        public int CountListAppointmentByTimeslot(DateTime appointmentDate, TimeSpan fromTime, TimeSpan toTime)
+        public int CountListAppointmentByTimeslot(Appointment appointment)
         {
-            var timeSlot = GetTimeslotByAppointmentDate(appointmentDate, fromTime, toTime);
+            var timeSlot = GetTimeslotByAppointment(appointment);
             if (timeSlot != null)
             {
 
-                return _localUnitOfWork.DataContext.Appointments.Count(a => a.Timeslot_ID == timeSlot.Timeslot_ID && a.Date == appointmentDate);
+                return _localUnitOfWork.DataContext.Appointments.Count(a => a.Timeslot_ID == timeSlot.Timeslot_ID && a.Date == appointment.Date);
             }
             return 0;
 
         }
 
-        private Timeslot GetTimeslotByAppointmentDate(DateTime AppointmentDate, TimeSpan startTime, TimeSpan endTime)
+        private Timeslot GetTimeslotByAppointment(Appointment appointment)
         {
-            var dayOfWeek = (int)Common.CommonUtil.ConvertToCustomDateOfWeek(AppointmentDate.DayOfWeek);
-            var timeSlotEnt = _localUnitOfWork.DataContext.Timeslots.FirstOrDefault(t => t.DateOfWeek == dayOfWeek && t.StartTime == startTime && t.EndTime == endTime);
+            var timeSlotEnt = _localUnitOfWork.DataContext.Timeslots.FirstOrDefault(t => t.Timeslot_ID == appointment.Timeslot_ID);
             return timeSlotEnt;
         }
 
@@ -193,7 +192,8 @@ namespace Trinity.DAL
                 StartTime = d.Timeslot.StartTime,
                 EndTime = d.Timeslot.EndTime,
                 Date = d.Date
-            }).Distinct().Select(d=> new BE.Statistics() {
+            }).Distinct().Select(d => new BE.Statistics()
+            {
                 Timeslot_ID = d.Timeslot_ID.Value,
                 StartTime = d.StartTime,
                 EndTime = d.EndTime,
@@ -235,28 +235,10 @@ namespace Trinity.DAL
         public int GetMaximumNumberOfTimeslot(int timeslotID)
         {
             try
-            {                
+            {
                 var timeslot = _localUnitOfWork.DataContext.Timeslots.FirstOrDefault(t => t.Timeslot_ID == timeslotID);
 
-                switch (timeslot.DateOfWeek)
-                {
-                    case (int)EnumDayOfWeek.Monday:
-                        return timeslot.Setting.Mon_MaximumNum.Value;
-                    case (int)EnumDayOfWeek.Tuesday:
-                        return timeslot.Setting.Tue_MaximumNum.Value;
-                    case (int)EnumDayOfWeek.Wednesday:
-                        return timeslot.Setting.Wed_MaximumNum.Value;
-                    case (int)EnumDayOfWeek.Thursday:
-                        return timeslot.Setting.Thu_MaximumNum.Value;
-                    case (int)EnumDayOfWeek.Friday:
-                        return timeslot.Setting.Fri_MaximumNum.Value;
-                    case (int)EnumDayOfWeek.Saturday:
-                        return timeslot.Setting.Sat_MaximumNum.Value;
-                    case (int)EnumDayOfWeek.Sunday:
-                        return timeslot.Setting.Sun_MaximumNum.Value;
-                    default:
-                        return 0;
-                }
+                return timeslot.MaximumSupervisee.HasValue ? timeslot.MaximumSupervisee.Value : 0;
             }
             catch (Exception e)
             {
@@ -269,7 +251,7 @@ namespace Trinity.DAL
             _localUnitOfWork.GetRepository<Appointment>().Delete(t => t.Date.Year == date.Year && t.Date.Month == date.Month && t.Date.Day == date.Day);
             _localUnitOfWork.Save();
 
-            _localUnitOfWork.GetRepository<Appointment>().AddRange(_localUnitOfWork.DataContext.Membership_Users.Select(d=>d.UserId).Select(d => new Appointment()
+            _localUnitOfWork.GetRepository<Appointment>().AddRange(_localUnitOfWork.DataContext.Membership_Users.Select(d => d.UserId).Select(d => new Appointment()
             {
                 ID = Guid.NewGuid(),
                 UserId = d,
