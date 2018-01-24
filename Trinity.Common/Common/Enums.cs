@@ -75,7 +75,7 @@ public static class EnumQueueStatuses
     public static string Missed = "Missed";
     [Custom(Color = "white")]
     public const string Waiting = "Waiting";
-    [Custom(Color = "white")]
+    [Custom(Color = "green")]
     public const string Processing = "Processing";
     [Custom(Color = "red")]
     public const string Errors = "Errors";

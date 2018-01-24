@@ -102,25 +102,35 @@ namespace SSK
             var nextTimeslot = string.Empty;
 
             var listTodayTimeslot = new DAL_Setting().GetListTodayTimeslot();
-            for (int i = 0; i < listTodayTimeslot.Count; i++)
+            _currentTs = listTodayTimeslot.FirstOrDefault(d => d.StartTime.Value <= DateTime.Now.TimeOfDay && d.EndTime.Value > DateTime.Now.TimeOfDay);
+            if (_currentTs != null)
             {
-                var timeSlot = listTodayTimeslot[i];
-                var diffHour = timeSlot.StartTime.Value.Hours - today.Hour;
-                var diffStartMin = timeSlot.StartTime.Value.Minutes - today.Minute;
-                var diffEndHour = timeSlot.EndTime.Value.Hours - today.Hour;
-                var diffEndMin = timeSlot.EndTime.Value.Minutes - today.Minute;
-
-                if (diffHour == 0 && diffStartMin <= 0 && ((diffEndHour > 0 && diffEndMin <= 0) || (diffEndHour == 0 && diffEndMin >= 0)))
+                currentTimeslot = _currentTs.FromTimeTxt + " - " + _currentTs.ToTimeTxt;
+                _nextTs = listTodayTimeslot.FirstOrDefault(d => d.StartTime.Value >= _currentTs.EndTime.Value);
+                if (_nextTs != null)
                 {
-                    _currentTs = timeSlot;
-                    currentTimeslot = timeSlot.FromTimeTxt + " - " + timeSlot.ToTimeTxt;
-                    _nextTs = new DAL_Setting().GetNextTimeslotToday(timeSlot.StartTime.Value);
-                    if (_nextTs != null)
-                    {
-                        nextTimeslot = _nextTs.FromTimeTxt + " - " + _nextTs.ToTimeTxt;
-                    }
+                    nextTimeslot = _nextTs.FromTimeTxt + " - " + _nextTs.ToTimeTxt;
                 }
             }
+            //for (int i = 0; i < listTodayTimeslot.Count; i++)
+            //{
+            //    var timeSlot = listTodayTimeslot[i];
+            //    var diffHour = timeSlot.StartTime.Value.Hours - today.Hour;
+            //    var diffStartMin = timeSlot.StartTime.Value.Minutes - today.Minute;
+            //    var diffEndHour = timeSlot.EndTime.Value.Hours - today.Hour;
+            //    var diffEndMin = timeSlot.EndTime.Value.Minutes - today.Minute;
+
+            //    if (diffHour == 0 && diffStartMin <= 0 && ((diffEndHour > 0 && diffEndMin <= 0) || (diffEndHour == 0 && diffEndMin >= 0)))
+            //    {
+            //        _currentTs = timeSlot;
+            //        currentTimeslot = timeSlot.FromTimeTxt + " - " + timeSlot.ToTimeTxt;
+            //        _nextTs = new DAL_Setting().GetNextTimeslotToday(timeSlot.StartTime.Value);
+            //        if (_nextTs != null)
+            //        {
+            //            nextTimeslot = _nextTs.FromTimeTxt + " - " + _nextTs.ToTimeTxt;
+            //        }
+            //    }
+            //}
 
             for (int i = 0; i < allQueue.Count; i++)
             {
