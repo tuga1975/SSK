@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.SqlServer;
 using System.Linq;
 using Trinity.BE;
 using Trinity.DAL.DBContext;
@@ -652,7 +653,9 @@ namespace Trinity.DAL
         {
             var dayOfWeek = Common.CommonUtil.ConvertToCustomDateOfWeek(DateTime.Now.DayOfWeek);
             var setting = GetSettingDetails(dayOfWeek);
-            var listTimeslot = _localUnitOfWork.DataContext.Timeslots.Where(t => t.DateOfWeek == (int)dayOfWeek && t.Setting_ID == setting.Setting_ID).OrderBy(d=>d.StartTime).ToList();
+            var _dayOfWeek = dayOfWeek == EnumDayOfWeek.Sunday ? 1 : (int)dayOfWeek;
+
+            var listTimeslot = _localUnitOfWork.DataContext.Timeslots.Where(t => SqlFunctions.DatePart("dw", t.Date.Value) == _dayOfWeek).OrderBy(d=>d.StartTime).ToList();
             return listTimeslot;
 
         }

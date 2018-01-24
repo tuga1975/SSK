@@ -138,6 +138,9 @@
     <Compile Include="DBContext\Device.cs">
       <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
     </Compile>
+    <Compile Include="DBContext\DrugResult.cs">
+      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
+    </Compile>
     <Compile Include="DBContext\Holiday.cs">
       <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
     </Compile>

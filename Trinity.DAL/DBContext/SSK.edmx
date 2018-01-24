@@ -197,18 +197,18 @@
         </EntityType>
         <EntityType Name="Notifications">
           <Key>
-            <PropertyRef Name="ID" />
+            <PropertyRef Name="NotificationID" />
           </Key>
-          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
-          <Property Name="Date" Type="datetime" Nullable="false" />
+          <Property Name="NotificationID" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Datetime" Type="datetime" Nullable="false" />
           <Property Name="FromUserId" Type="nvarchar" MaxLength="128" />
           <Property Name="ToUserId" Type="nvarchar" MaxLength="128" />
           <Property Name="Subject" Type="nvarchar" MaxLength="100" />
-          <Property Name="Content" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="Content" Type="ntext" Nullable="false" />
           <Property Name="IsRead" Type="bit" Nullable="false" />
           <Property Name="IsFromSupervisee" Type="bit" />
-          <Property Name="Source" Type="varchar" MaxLength="15" />
-          <Property Name="Type" Type="varchar" MaxLength="15" />
+          <Property Name="Source" Type="nvarchar" MaxLength="50" />
+          <Property Name="Type" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="OperationSettings">
           <Key>
@@ -732,7 +732,6 @@
           <EntitySet Name="Membership_UserLogins" EntityType="SSKModel.Membership_UserLogins" />
           <EntitySet Name="Membership_UserRoles" EntityType="SSKModel.Membership_UserRoles" />
           <EntitySet Name="Membership_Users" EntityType="SSKModel.Membership_Users" />
-          <EntitySet Name="Notifications" EntityType="SSKModel.Notification" />
           <EntitySet Name="QueueDetails" EntityType="SSKModel.QueueDetail" />
           <EntitySet Name="Queues" EntityType="SSKModel.Queue" />
           <EntitySet Name="Security_QA" EntityType="SSKModel.Security_QA" />
@@ -806,14 +805,6 @@
             <End Role="Membership_Users" EntitySet="Membership_Users" />
             <End Role="Membership_UserRoles" EntitySet="Membership_UserRoles" />
           </AssociationSet>
-          <AssociationSet Name="FK_Notifications_Membership_Users" Association="SSKModel.FK_Notifications_Membership_Users">
-            <End Role="Membership_Users" EntitySet="Membership_Users" />
-            <End Role="Notification" EntitySet="Notifications" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Notifications_Membership_Users1" Association="SSKModel.FK_Notifications_Membership_Users1">
-            <End Role="Membership_Users" EntitySet="Membership_Users" />
-            <End Role="Notification" EntitySet="Notifications" />
-          </AssociationSet>
           <AssociationSet Name="FK_PWD_QA_Membership_Users" Association="SSKModel.FK_PWD_QA_Membership_Users">
             <End Role="Membership_Users" EntitySet="Membership_Users" />
             <End Role="Security_QA" EntitySet="Security_QA" />
@@ -827,6 +818,15 @@
             <End Role="QueueDetail" EntitySet="QueueDetails" />
           </AssociationSet>
           <EntitySet Name="OperationSettings" EntityType="SSKModel.OperationSetting" />
+          <EntitySet Name="Notifications" EntityType="SSKModel.Notification" />
+          <AssociationSet Name="FK_Notifications_Membership_Users" Association="SSKModel.FK_Notifications_Membership_Users">
+            <End Role="Membership_Users" EntitySet="Membership_Users" />
+            <End Role="Notification" EntitySet="Notifications" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Notifications_Membership_Users1" Association="SSKModel.FK_Notifications_Membership_Users1">
+            <End Role="Membership_Users" EntitySet="Membership_Users" />
+            <End Role="Notification" EntitySet="Notifications" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="AbsenceReporting">
           <Key>
@@ -1047,27 +1047,10 @@
           <NavigationProperty Name="Membership_UserDevices" Relationship="SSKModel.FK__Restauran__UserI__1CFC3D38" FromRole="Membership_Users" ToRole="Membership_UserDevices" />
           <NavigationProperty Name="Membership_UserLogins" Relationship="SSKModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" FromRole="Membership_Users" ToRole="Membership_UserLogins" />
           <NavigationProperty Name="Membership_UserRoles" Relationship="SSKModel.FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId" FromRole="Membership_Users" ToRole="Membership_UserRoles" />
-          <NavigationProperty Name="Notifications" Relationship="SSKModel.FK_Notifications_Membership_Users" FromRole="Membership_Users" ToRole="Notification" />
-          <NavigationProperty Name="Notifications1" Relationship="SSKModel.FK_Notifications_Membership_Users1" FromRole="Membership_Users" ToRole="Notification" />
           <NavigationProperty Name="Security_QA" Relationship="SSKModel.FK_PWD_QA_Membership_Users" FromRole="Membership_Users" ToRole="Security_QA" />
           <NavigationProperty Name="User_Profiles" Relationship="SSKModel.FK_User_Profiles_Membership_Users" FromRole="Membership_Users" ToRole="User_Profiles" />
-        </EntityType>
-        <EntityType Name="Notification">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Guid" Nullable="false" />
-          <Property Name="Date" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="FromUserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="ToUserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="Subject" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="Content" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="IsRead" Type="Boolean" Nullable="false" />
-          <Property Name="IsFromSupervisee" Type="Boolean" />
-          <Property Name="Source" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="Type" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Membership_Users" Relationship="SSKModel.FK_Notifications_Membership_Users" FromRole="Notification" ToRole="Membership_Users" />
-          <NavigationProperty Name="Membership_Users1" Relationship="SSKModel.FK_Notifications_Membership_Users1" FromRole="Notification" ToRole="Membership_Users" />
+          <NavigationProperty Name="Notifications" Relationship="SSKModel.FK_Notifications_Membership_Users" FromRole="Membership_Users" ToRole="Notification" />
+          <NavigationProperty Name="Notifications1" Relationship="SSKModel.FK_Notifications_Membership_Users1" FromRole="Membership_Users" ToRole="Notification" />
         </EntityType>
         <EntityType Name="QueueDetail">
           <Key>
@@ -1378,30 +1361,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Notifications_Membership_Users">
-          <End Type="SSKModel.Membership_Users" Role="Membership_Users" Multiplicity="0..1" />
-          <End Type="SSKModel.Notification" Role="Notification" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Membership_Users">
-              <PropertyRef Name="UserId" />
-            </Principal>
-            <Dependent Role="Notification">
-              <PropertyRef Name="ToUserId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Notifications_Membership_Users1">
-          <End Type="SSKModel.Membership_Users" Role="Membership_Users" Multiplicity="0..1" />
-          <End Type="SSKModel.Notification" Role="Notification" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Membership_Users">
-              <PropertyRef Name="UserId" />
-            </Principal>
-            <Dependent Role="Notification">
-              <PropertyRef Name="FromUserId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_PWD_QA_Membership_Users">
           <End Type="SSKModel.Membership_Users" Role="Membership_Users" Multiplicity="1" />
           <End Type="SSKModel.Security_QA" Role="Security_QA" Multiplicity="*" />
@@ -1465,6 +1424,47 @@
           <Property Name="Last_Updated_Date" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
+        <EntityType Name="Notification">
+          <Key>
+            <PropertyRef Name="NotificationID" />
+          </Key>
+          <Property Name="NotificationID" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Datetime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="FromUserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="ToUserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Subject" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Content" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="IsRead" Type="Boolean" Nullable="false" />
+          <Property Name="IsFromSupervisee" Type="Boolean" />
+          <Property Name="Source" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Membership_Users" Relationship="SSKModel.FK_Notifications_Membership_Users" FromRole="Notification" ToRole="Membership_Users" />
+          <NavigationProperty Name="Membership_Users1" Relationship="SSKModel.FK_Notifications_Membership_Users1" FromRole="Notification" ToRole="Membership_Users" />
+        </EntityType>
+        <Association Name="FK_Notifications_Membership_Users">
+          <End Type="SSKModel.Membership_Users" Role="Membership_Users" Multiplicity="0..1" />
+          <End Type="SSKModel.Notification" Role="Notification" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Membership_Users">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="Notification">
+              <PropertyRef Name="ToUserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Notifications_Membership_Users1">
+          <End Type="SSKModel.Membership_Users" Role="Membership_Users" Multiplicity="0..1" />
+          <End Type="SSKModel.Notification" Role="Notification" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Membership_Users">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="Notification">
+              <PropertyRef Name="FromUserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1673,22 +1673,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Notifications">
-            <EntityTypeMapping TypeName="SSKModel.Notification">
-              <MappingFragment StoreEntitySet="Notifications">
-                <ScalarProperty Name="Type" ColumnName="Type" />
-                <ScalarProperty Name="Source" ColumnName="Source" />
-                <ScalarProperty Name="IsFromSupervisee" ColumnName="IsFromSupervisee" />
-                <ScalarProperty Name="IsRead" ColumnName="IsRead" />
-                <ScalarProperty Name="Content" ColumnName="Content" />
-                <ScalarProperty Name="Subject" ColumnName="Subject" />
-                <ScalarProperty Name="ToUserId" ColumnName="ToUserId" />
-                <ScalarProperty Name="FromUserId" ColumnName="FromUserId" />
-                <ScalarProperty Name="Date" ColumnName="Date" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="QueueDetails">
             <EntityTypeMapping TypeName="SSKModel.QueueDetail">
               <MappingFragment StoreEntitySet="QueueDetails">
@@ -1806,6 +1790,22 @@
                 <ScalarProperty Name="Morning_Close_Time" ColumnName="Morning_Close_Time" />
                 <ScalarProperty Name="Morning_Open_Time" ColumnName="Morning_Open_Time" />
                 <ScalarProperty Name="DayOfWeek" ColumnName="DayOfWeek" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Notifications">
+            <EntityTypeMapping TypeName="SSKModel.Notification">
+              <MappingFragment StoreEntitySet="Notifications">
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="Source" ColumnName="Source" />
+                <ScalarProperty Name="IsFromSupervisee" ColumnName="IsFromSupervisee" />
+                <ScalarProperty Name="IsRead" ColumnName="IsRead" />
+                <ScalarProperty Name="Content" ColumnName="Content" />
+                <ScalarProperty Name="Subject" ColumnName="Subject" />
+                <ScalarProperty Name="ToUserId" ColumnName="ToUserId" />
+                <ScalarProperty Name="FromUserId" ColumnName="FromUserId" />
+                <ScalarProperty Name="Datetime" ColumnName="Datetime" />
+                <ScalarProperty Name="NotificationID" ColumnName="NotificationID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

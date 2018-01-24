@@ -14,8 +14,8 @@ namespace Trinity.DAL.DBContext
     
     public partial class Notification
     {
-        public System.Guid ID { get; set; }
-        public System.DateTime Date { get; set; }
+        public string NotificationID { get; set; }
+        public System.DateTime Datetime { get; set; }
         public string FromUserId { get; set; }
         public string ToUserId { get; set; }
         public string Subject { get; set; }
@@ -24,6 +24,7 @@ namespace Trinity.DAL.DBContext
         public Nullable<bool> IsFromSupervisee { get; set; }
         public string Source { get; set; }
         public string Type { get; set; }
+        public string notification_code { get; set; }
     
         public virtual Membership_Users Membership_Users { get; set; }
         public virtual Membership_Users Membership_Users1 { get; set; }

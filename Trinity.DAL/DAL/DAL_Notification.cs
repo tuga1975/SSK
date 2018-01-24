@@ -57,9 +57,9 @@ namespace Trinity.DAL
                     Notification notification = new Notification()
                     {
                         Content = item.Content,
-                        Date = item.Date,
+                        Date = item.Datetime,
                         FromUserId = item.FromUserId,
-                        ID = item.ID,
+                        ID = new Guid(item.NotificationID),
                         IsRead = item.IsRead,
                         Subject = item.Subject,
                         ToUserId = item.ToUserId
@@ -85,7 +85,7 @@ namespace Trinity.DAL
                         FromUserName = u.Name,
                         Subject = n.Subject,
                         Content = n.Content,
-                        Date = n.Date,
+                        Date = n.Datetime,
                         Type = n.Type,
                         Source = n.Source
                     });
@@ -100,7 +100,7 @@ namespace Trinity.DAL
                                           FromUserName = u.Name,
                                           Subject = n.Subject,
                                           Content = n.Content,
-                                          Date = n.Date,
+                                          Date = n.Datetime,
                                           Type = n.Type,
                                           Source = n.Source
                                       });
@@ -126,7 +126,7 @@ namespace Trinity.DAL
                                           Subject = n.Subject,
                                           Content = n.Content,
                                           Date =
-                                          n.Date,
+                                          n.Datetime,
                                           Type = n.Type,
                                           Source = n.Source
                                       }).Where(x => modules.Contains(x.Source));
@@ -141,7 +141,7 @@ namespace Trinity.DAL
                                           FromUserName = u.Name,
                                           Subject = n.Subject,
                                           Content = n.Content,
-                                          Date = n.Date,
+                                          Date = n.Datetime,
                                           Type = n.Type,
                                           Source = n.Source
                                       }).Where(x => modules.Contains(x.Source));
@@ -159,13 +159,13 @@ namespace Trinity.DAL
             Trinity.DAL.DBContext.Notification notifcation = new DBContext.Notification()
             {
                 Content = content,
-                Date = DateTime.Now,
+                Datetime = DateTime.Now,
                 FromUserId = fromUserId,
                 IsFromSupervisee = isFromSupervisee,
                 IsRead = false,
                 Subject = subject,
                 ToUserId = toUserId,
-                ID = Guid.NewGuid()
+                NotificationID = Guid.NewGuid().ToString().Trim()
             };
             IRepository<Trinity.DAL.DBContext.Notification> notificationRepo = null;
             if (isLocal)
@@ -200,7 +200,7 @@ namespace Trinity.DAL
             Trinity.DAL.DBContext.Notification notifcation = new DBContext.Notification()
             {
                 Content = content,
-                Date = DateTime.Now,
+                Datetime = DateTime.Now,
                 FromUserId = fromUserId,
                 IsFromSupervisee = isFromSupervisee,
                 IsRead = false,
@@ -208,7 +208,7 @@ namespace Trinity.DAL
                 ToUserId = toUserId,
                 Type = notifyType,
                 Source = source,
-                ID = Guid.NewGuid()
+                NotificationID = Guid.NewGuid().ToString().Trim()
             };
             IRepository<Trinity.DAL.DBContext.Notification> notificationRepo = null;
             if (isLocal)
