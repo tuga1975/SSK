@@ -5,7 +5,6 @@ using System.Threading;
 using System.Windows.Forms;
 using Trinity.Common;
 using Trinity.Common.Common;
-using Trinity.Common.Monitor;
 
 namespace Trinity.Common.Authentication
 {

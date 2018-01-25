@@ -20,7 +20,6 @@ namespace SSK
         private CodeBehind.Authentication.NRIC _nric;
         private CodeBehind.Suppervisee _suppervisee;
         private NavigatorEnums _currentPage;
-        private Trinity.Common.DeviceMonitor.HealthMonitor healthMonitor;
         private EventCenter _eventCenter;
         private int _smartCardFailed;
         private int _fingerprintFailed;
@@ -67,19 +66,7 @@ namespace SSK
             APIUtils.LayerWeb = LayerWeb;
             LayerWeb.Url = new Uri(String.Format("file:///{0}/View/html/Layout.html", CSCallJS.curDir));
             LayerWeb.ObjectForScripting = _jsCallCS;
-
-            //health check
-            healthMonitor = Trinity.Common.DeviceMonitor.HealthMonitor.Instance;
-            healthMonitor.OnHealthCheck += OnHealthMonitor;
-
-            //for testing
-            //var timer = new System.Timers.Timer(30000);
-
-            //15 minutes
-            var timer = new System.Timers.Timer(1000 * 60 * 15);
-
-            timer.Elapsed += PeriodCheck;
-            timer.Start();
+            
             //
             // For testing purpose only
             // 
@@ -171,8 +158,8 @@ namespace SSK
                 session[CommonConstants.USER_LOGIN] = user;
                 this.LayerWeb.RunScript("$('.status-text').css('color','#000').text('Your smart card is authenticated.');");
                 // Stop SCardMonitor
-                Trinity.Common.Monitor.SCardMonitor sCardMonitor = Trinity.Common.Monitor.SCardMonitor.Instance;
-                sCardMonitor.Stop();
+                Trinity.Common.SmartCardReaderUtils sCardMonitor = Trinity.Common.SmartCardReaderUtils.Instance;
+                sCardMonitor.StopSmartCardMonitor();
                 // raise succeeded event
                 SmartCard_OnSmartCardSucceeded();
             }
@@ -180,47 +167,6 @@ namespace SSK
             {
                 // raise failed event
                 SmartCard_OnSmartCardFailed("Unable to read your smart card. Please report to the Duty Officer");
-            }
-        }
-
-        private void PeriodCheck(object sender, System.Timers.ElapsedEventArgs e)
-        {
-            healthMonitor.CheckHealth();
-        }
-
-        private void OnHealthMonitor(object sender, Trinity.Common.DeviceMonitor.HealthMonitorEventArgs e)
-        {
-            var dalDeviceStatus = new DAL_DeviceStatus();
-            var listDeviceStatusModel = new System.Collections.Generic.List<DeviceStatus>();
-            try
-            {
-
-                //entry app name - lenght better be < 10 char
-                var entryAppName = System.Reflection.Assembly.GetEntryAssembly().GetName().Name;
-                if (e != null)
-                {
-                    //Receipt Print Status
-                    var deviceId = dalDeviceStatus.GetDeviceId(EnumDeviceTypes.ReceiptPrinter);
-                    listDeviceStatusModel.Add(dalDeviceStatus.SetInfo(entryAppName, deviceId, e.PrintStatus));
-
-                    //Smart Cart Reader Status
-                    deviceId = dalDeviceStatus.GetDeviceId(EnumDeviceTypes.SmartCardReader);
-                    listDeviceStatusModel.Add(dalDeviceStatus.SetInfo(entryAppName, deviceId, e.SCardStatus));
-
-                    //Document Scanner Status
-                    deviceId = dalDeviceStatus.GetDeviceId(EnumDeviceTypes.DocumentScanner);
-                    listDeviceStatusModel.Add(dalDeviceStatus.SetInfo(entryAppName, deviceId, e.DocStatus));
-
-                    //Fingerprint Scanner Status
-                    deviceId = dalDeviceStatus.GetDeviceId(EnumDeviceTypes.FingerprintScanner);
-                    listDeviceStatusModel.Add(dalDeviceStatus.SetInfo(entryAppName, deviceId, e.FPrintStatus));
-
-                    dalDeviceStatus.UpdateHealthStatus(listDeviceStatusModel);
-                }
-            }
-            catch (Exception ex)
-            {
-                return;
             }
         }
 

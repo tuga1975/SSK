@@ -94,12 +94,12 @@ namespace Trinity.Common
     public class AppointmentDetails
     {
         public string Name { get; set; }
-        public string NRICNo { get; set; }
+        public string Venue { get; set; }
         public DateTime Date { get; set; }
 
         internal bool IsValid()
         {
-            if (string.IsNullOrEmpty(Name) || string.IsNullOrEmpty(NRICNo))
+            if (string.IsNullOrEmpty(Name) || string.IsNullOrEmpty(Venue))
             {
                 return false;
             }

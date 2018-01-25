@@ -90,8 +90,7 @@ namespace DutyOfficer
                 session[CommonConstants.USER_LOGIN] = user;
                 this.LayerWeb.RunScript("$('.status-text').css('color','#000').text('Your smart card is authenticated.');");
                 // Stop SCardMonitor
-                Trinity.Common.Monitor.SCardMonitor sCardMonitor = Trinity.Common.Monitor.SCardMonitor.Instance;
-                sCardMonitor.Stop();
+                Trinity.Common.SmartCardReaderUtils.Instance.StopSmartCardMonitor();
                 // raise succeeded event
                 SmartCard_OnSmartCardSucceeded();
             }

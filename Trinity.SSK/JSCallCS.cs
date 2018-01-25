@@ -190,7 +190,7 @@ namespace SSK
             {
                 Date = appointment.AppointmentDate.Value,
                 Name = appointment.Name,
-                NRICNo = appointment.NRIC
+                Venue = appointment.NRIC
             });
             //APIUtils.Printer.PrintAppointmentDetails("AppointmentDetailsTemplate.html", appointment);
         }

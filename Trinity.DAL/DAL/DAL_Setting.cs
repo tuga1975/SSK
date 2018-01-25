@@ -652,9 +652,9 @@ namespace Trinity.DAL
         {
             var dayOfWeek = Common.CommonUtil.ConvertToCustomDateOfWeek(DateTime.Now.DayOfWeek);
             var setting = GetSettingDetails(dayOfWeek);
-            var listTimeslot = _localUnitOfWork.DataContext.Timeslots.Where(t => t.DateOfWeek == (int)dayOfWeek && t.Setting_ID == setting.Setting_ID).OrderBy(d=>d.StartTime).ToList();
-            return listTimeslot;
-
+            //var listTimeslot = _localUnitOfWork.DataContext.Timeslots.Where(t => t.DateOfWeek == (int)dayOfWeek && t.Setting_ID == setting.Setting_ID).OrderBy(d=>d.StartTime).ToList();
+            //return listTimeslot;
+            return null;
         }
     }
 }

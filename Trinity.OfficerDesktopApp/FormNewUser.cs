@@ -36,7 +36,6 @@ namespace OfficerDesktopApp
 
         private void FormNewUser_Load(object sender, EventArgs e)
         {
-            Trinity.Common.Monitor.DeviceMonitor.Start();
             _currentUser = new Trinity.BE.User();
             _currentUser.UserId = Guid.NewGuid().ToString();
         }
@@ -219,14 +218,12 @@ namespace OfficerDesktopApp
 
         private void StartCardMonitor()
         {
-            Trinity.Common.Monitor.SCardMonitor sCardMonitor = Trinity.Common.Monitor.SCardMonitor.Instance;
-            sCardMonitor.StartCardMonitor(OnCardInitialized, OnCardInserted, OnCardRemoved);
+            Trinity.Common.SmartCardReaderUtils.Instance.StartSmartCardMonitor(OnCardInitialized, OnCardInserted, OnCardRemoved);
         }
 
         private void OnCardInitialized(object sender, CardStatusEventArgs e)
         {
-            Trinity.Common.Monitor.SCardMonitor sCardMonitor = Trinity.Common.Monitor.SCardMonitor.Instance;
-            string cardUID = sCardMonitor.GetCardUID();
+            string cardUID = Trinity.Common.SmartCardReaderUtils.Instance.GetCardUID();
             if (string.IsNullOrEmpty(cardUID))
             {
                 UpdateNote("Please insert your smart card.", Color.Red);
@@ -245,7 +242,7 @@ namespace OfficerDesktopApp
                 UpdateNote("Your smart card was scanned successfully. Please scan your finger print to continue", Color.Blue);
 
                 // Then stop Smart Card and Start to scan finger print
-                sCardMonitor.Stop();
+                Trinity.Common.SmartCardReaderUtils.Instance.StopSmartCardMonitor();
                 btnScanSmartcard.Enabled = false;
 
                 _currentUser.SmartCardId = cardUID;
@@ -255,7 +252,7 @@ namespace OfficerDesktopApp
 
         private void OnCardInserted(object sender, CardStatusEventArgs e)
         {
-            Trinity.Common.Monitor.SCardMonitor sCardMonitor = Trinity.Common.Monitor.SCardMonitor.Instance;
+            Trinity.Common.SmartCardReaderUtils sCardMonitor = Trinity.Common.SmartCardReaderUtils.Instance;
             string cardUID = sCardMonitor.GetCardUID();
             if (!string.IsNullOrEmpty(cardUID))
             {
@@ -269,7 +266,7 @@ namespace OfficerDesktopApp
                 }
 
                 // Then stop Smart Card and Start to scan finger print
-                sCardMonitor.Stop();
+                sCardMonitor.StopSmartCardMonitor();
                 btnScanSmartcard.Enabled = false;
 
                 _currentUser.SmartCardId = cardUID;
