@@ -23,7 +23,6 @@ namespace Enrolment
         private CodeBehind.WebcamCapture _webcamCapture;
         private CodeBehind.Suppervisee _suppervisee;
         private NavigatorEnums _currentPage;
-        private Trinity.Common.DeviceMonitor.HealthMonitor healthMonitor;
         private CodeBehind.Authentication.Fingerprint _fingerprint;
         private int _smartCardFailed;
         private int _fingerprintFailed;
@@ -69,18 +68,6 @@ namespace Enrolment
             LayerWeb.Url = new Uri(String.Format("file:///{0}/View/html/Layout.html", CSCallJS.curDir));
             LayerWeb.ObjectForScripting = _jsCallCS;
 
-            //health check
-            healthMonitor = Trinity.Common.DeviceMonitor.HealthMonitor.Instance;
-            healthMonitor.OnHealthCheck += OnHealthMonitor;
-
-            //for testing
-            var timer = new System.Timers.Timer(30000);
-
-            //15 minutes
-            //var timer = new System.Timers.Timer(1000 * 60 * 15);
-
-            timer.Elapsed += PeriodCheck; ;
-            timer.Start();
         }
         //private void Fingerprint_OnFingerprintSucceeded(object sender, CodeBehind.Authentication.FingerprintEventArgs e)
         //{
@@ -284,47 +271,6 @@ namespace Enrolment
         }
 
         #endregion
-
-        private void PeriodCheck(object sender, System.Timers.ElapsedEventArgs e)
-        {
-            healthMonitor.CheckHealth();
-        }
-
-        private void OnHealthMonitor(object sender, Trinity.Common.DeviceMonitor.HealthMonitorEventArgs e)
-        {
-            var dalDeviceStatus = new DAL_DeviceStatus();
-            var listDeviceStatusModel = new System.Collections.Generic.List<DeviceStatus>();
-            try
-            {
-
-                //entry app name - lenght better be < 10 char
-                var entryAppName = System.Reflection.Assembly.GetEntryAssembly().GetName().Name;
-                if (e != null)
-                {
-                    //Receipt Print Status
-                    var deviceId = dalDeviceStatus.GetDeviceId(EnumDeviceTypes.ReceiptPrinter);
-                    listDeviceStatusModel.Add(dalDeviceStatus.SetInfo(entryAppName, deviceId, e.PrintStatus));
-
-                    //Smart Cart Reader Status
-                    deviceId = dalDeviceStatus.GetDeviceId(EnumDeviceTypes.SmartCardReader);
-                    listDeviceStatusModel.Add(dalDeviceStatus.SetInfo(entryAppName, deviceId, e.SCardStatus));
-
-                    //Document Scanner Status
-                    deviceId = dalDeviceStatus.GetDeviceId(EnumDeviceTypes.DocumentScanner);
-                    listDeviceStatusModel.Add(dalDeviceStatus.SetInfo(entryAppName, deviceId, e.DocStatus));
-
-                    //Fingerprint Scanner Status
-                    deviceId = dalDeviceStatus.GetDeviceId(EnumDeviceTypes.FingerprintScanner);
-                    listDeviceStatusModel.Add(dalDeviceStatus.SetInfo(entryAppName, deviceId, e.FPrintStatus));
-
-                    dalDeviceStatus.UpdateHealthStatus(listDeviceStatusModel);
-                }
-            }
-            catch (Exception ex)
-            {
-                return;
-            }
-        }
 
         private void LayerWeb_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {

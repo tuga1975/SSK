@@ -75,6 +75,10 @@
     <Reference Include="pcsc-sharp">
       <HintPath>..\Trinity.SSK\Libs\pcsc-sharp.dll</HintPath>
     </Reference>
+    <Reference Include="ScanAPIHelper, Version=1.1.6290.35130, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Libs\Futronic Fingerprint Reader\ScanAPIHelper.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
@@ -118,12 +122,8 @@
     <Compile Include="Constants\CommonConstants.cs" />
     <Compile Include="CSCallJS.cs" />
     <Compile Include="DeviceMonitor\AbstractDeviceMonitor.cs" />
-    <Compile Include="DeviceMonitor\DeviceMonitor.cs" />
     <Compile Include="DeviceMonitor\DocumentScannerMonitor.cs" />
-    <Compile Include="DeviceMonitor\FingerprintMonitor.cs" />
-    <Compile Include="DeviceMonitor\HealthMonitor.cs" />
     <Compile Include="DeviceMonitor\PrinterMonitor.cs" />
-    <Compile Include="DeviceMonitor\SCardMonitor.cs" />
     <Compile Include="JSCallCSBase.cs" />
     <Compile Include="Lib.cs" />
     <Compile Include="Session.cs" />
@@ -152,7 +152,12 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Libs\Futronic Fingerprint Reader\ftrSDKHelper13.dll" />
+    <Content Include="Libs\Futronic Fingerprint Reader\ftrSDKHelper13.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libs\Futronic Fingerprint Reader\ScanAPIHelper.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Libs\PCSC Smart Card Reader\pcsc-sharp.dll" />
     <Content Include="Libs\TSC Barcode Printer\x64\TSCLIB.dll" />
     <Content Include="Libs\TSC Barcode Printer\x86\TSCLIB.dll" />

@@ -40,15 +40,15 @@ namespace Trinity.Common.Authentication
 
         public void Start()
         {
-            // StartCardMonitor
-            Trinity.Common.Monitor.SCardMonitor.Instance.StartCardMonitor(OnCardInitialized, OnCardInserted, OnCardRemoved);
+            // StartSmartCardMonitor
+            Trinity.Common.SmartCardReaderUtils.Instance.StartSmartCardMonitor(OnCardInitialized, OnCardInserted, OnCardRemoved);
         }
 
         
         private void OnCardInitialized(object sender, CardStatusEventArgs e)
         {
             Debug.WriteLine("onCardInitialized");
-            string cardUID = Trinity.Common.Monitor.SCardMonitor.Instance.GetCardUID();
+            string cardUID = Trinity.Common.SmartCardReaderUtils.Instance.GetCardUID();
             if (!string.IsNullOrEmpty(cardUID) && GetCardInfoSucceeded!=null)
             {
                 GetCardInfoSucceeded(cardUID);
@@ -59,7 +59,7 @@ namespace Trinity.Common.Authentication
         private void OnCardInserted(object sender, CardStatusEventArgs e)
         {
             Debug.WriteLine("onCardInitialized");
-            string cardUID = Trinity.Common.Monitor.SCardMonitor.Instance.GetCardUID();
+            string cardUID = Trinity.Common.SmartCardReaderUtils.Instance.GetCardUID();
             if (!string.IsNullOrEmpty(cardUID) && GetCardInfoSucceeded != null)
             {
                 GetCardInfoSucceeded(cardUID);

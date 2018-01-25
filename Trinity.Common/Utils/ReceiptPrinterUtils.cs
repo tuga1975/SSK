@@ -70,7 +70,7 @@ namespace Trinity.Common.Utils
                 TSCLIB_DLL.windowsfont(100, 0, 40, 0, 0, 0, "ARIAL", "APPOINTMENT DETAILS");
                 TSCLIB_DLL.windowsfont(50, 70, 30, 0, 0, 0, "ARIAL", "Supervisee Information");
                 TSCLIB_DLL.windowsfont(70, 100, 25, 0, 0, 0, "ARIAL", "Name           : " + appointmentDetails.Name);
-                TSCLIB_DLL.windowsfont(70, 130, 25, 0, 0, 0, "ARIAL", "NRICNo.      : " + appointmentDetails.NRICNo);
+                TSCLIB_DLL.windowsfont(70, 130, 25, 0, 0, 0, "ARIAL", "NRICNo.      : " + appointmentDetails.Venue);
                 
                 TSCLIB_DLL.windowsfont(50, 180, 30, 0, 0, 0, "ARIAL", "Next Appointment");
                 TSCLIB_DLL.windowsfont(70, 210, 25, 0, 0, 0, "ARIAL", "Date              : " + appointmentDetails.Date.ToString("dd/MM/yyyyy HH:mm"));

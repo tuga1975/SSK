@@ -141,11 +141,12 @@ namespace DutyOfficer
                 session[CommonConstants.SETTING_DETAIL] = model;
                 // Show popup confirm with list Supervisee have appointment
                 this._web.LoadPopupHtml("PopupConfirmDeleteAppointment.html", checkWarningSaveSetting);
+                this._web.InvokeScript("showModal");
             }
             else
             {
                 dalSetting.UpdateSettingAndTimeSlot(checkWarningSaveSetting, model);
-            }            
+            }
         }
 
         public void UpdateSettingAndTimeslot(string jsonCheckWarningSaveSetting, string jsonModel)
@@ -156,6 +157,14 @@ namespace DutyOfficer
             var checkWarningSaveSetting = JsonConvert.DeserializeObject<Trinity.BE.CheckWarningSaveSetting>(jsonCheckWarningSaveSetting);
             var dalSetting = new DAL_Setting();
             dalSetting.UpdateSettingAndTimeSlot(checkWarningSaveSetting, settingDetail);
+        }
+
+        public bool CheckWarningSaveSetting(int dayOfWeek)
+        {
+            var dalSetting = new DAL_Setting();
+            CheckWarningSaveSetting checkWarningSaveSetting = dalSetting.CheckWarningSaveSetting((EnumDayOfWeek)dayOfWeek);
+            return (checkWarningSaveSetting.arrayDetail.Count > 0);
+                
         }
 
         public void AddHoliday(string json)

@@ -21,7 +21,7 @@ namespace Trinity.DAL.DBContext
         }
     
         public System.Guid ID { get; set; }
-        public Nullable<int> Timeslot_ID { get; set; }
+        public string Timeslot_ID { get; set; }
         public Nullable<System.Guid> AbsenceReporting_ID { get; set; }
         public string UserId { get; set; }
         public System.DateTime Date { get; set; }

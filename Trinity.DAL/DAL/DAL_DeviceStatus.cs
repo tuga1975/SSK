@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using Trinity.BE;
 using Trinity.Common;
 using Trinity.DAL.DBContext;
 using Trinity.DAL.Repository;
@@ -13,111 +15,67 @@ namespace Trinity.DAL
         Local_UnitOfWork _localUnitOfWork = new Local_UnitOfWork();
         Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
 
-        public bool UpdateHealthStatus(List<BE.DeviceStatus> listModel)
+        public bool Update(DeviceStatus model)
         {
             try
             {
-                var localRepo = _localUnitOfWork.GetRepository<ApplicationDevice_Status>();
-                var centralRepo = _centralizedUnitOfWork.GetRepository<ApplicationDevice_Status>();
-
-                var listdbDeviceStatus = new List<ApplicationDevice_Status>();
-                if (!_localUnitOfWork.DataContext.ApplicationDevice_Status.Any())
+                // validate
+                if (!DeviceIdExist(model.DeviceID))
                 {
-
-                    foreach (var item in listModel)
-                    {
-                        SetInfoToInsert(item, listdbDeviceStatus);
-                    }
-
-                    centralRepo.AddRange(listdbDeviceStatus);
-                    localRepo.AddRange(listdbDeviceStatus);
-                    _localUnitOfWork.Save();
-                    _centralizedUnitOfWork.Save();
-                    return true;
+                    throw new Exception("DeviceID is not valid");
                 }
-                else
+
+                // local db
+                // delete old statuses
+                var oldRows = _localUnitOfWork.DataContext.ApplicationDevice_Status.Where(item => item.DeviceID == model.DeviceID && item.Station.Equals(model.Station));
+                _localUnitOfWork.DataContext.ApplicationDevice_Status.RemoveRange(oldRows);
+
+                // insert new statuses
+                if (model.StatusCode!= null && model.StatusCode.Count() > 0)
                 {
-
-                    foreach (var item in listModel)
+                    // create new status entites
+                    ApplicationDevice_Status deviceStatus;
+                    foreach (var item in model.StatusCode)
                     {
-                        var dbDeviceStatus = localRepo.Get(d => d.DeviceID == item.DeviceID);
-                        if (dbDeviceStatus != null)
-                        {
-                            SetInfoToUpdate(item, dbDeviceStatus);
-                            localRepo.Update(dbDeviceStatus);
-                            _localUnitOfWork.Save();
-                        }
+                        deviceStatus = new ApplicationDevice_Status();
+                        deviceStatus.Station = model.Station;
+                        deviceStatus.DeviceID = model.DeviceID;
+                        deviceStatus.ID = Guid.NewGuid();
+                        deviceStatus.StatusCode = (int)item;
+                        deviceStatus.StatusMessage = CommonUtil.GetDeviceStatusText(item);
+
+                        // insert new statuses
+                        _localUnitOfWork.DataContext.ApplicationDevice_Status.Add(deviceStatus);
                     }
-                    return true;
                 }
+
+                // savechanges
+                if(_localUnitOfWork.DataContext.SaveChanges() < 0)
+                {
+                    throw new Exception("Save data to local database failed.");
+                }
+
+                // update centralized db
+
+                return true;
             }
             catch (Exception ex)
             {
-
+                Debug.WriteLine("DAL_DeviceStatus.Update exception: " + ex.ToString());
                 return false;
             }
         }
 
-
-        private void SetInfoToInsert(BE.DeviceStatus model, List<ApplicationDevice_Status> dbDeviceStatus)
+        private bool DeviceIdExist(int deviceID)
         {
-            foreach (var item in model.StatusCode)
+            try
             {
-                var deviceStatus = new ApplicationDevice_Status();
-                deviceStatus.Station = model.Station;
-                deviceStatus.DeviceID = model.DeviceID;
-                deviceStatus.ID = Guid.NewGuid();
-                deviceStatus.StatusCode = (int)item;
-                deviceStatus.StatusMessage = CommonUtil.GetDeviceStatusText(item);
-                dbDeviceStatus.Add(deviceStatus);
+                return _localUnitOfWork.DataContext.Devices.Any(item => item.DeviceID.Equals(deviceID));
             }
-        }
-
-        private void SetInfoToUpdate(BE.DeviceStatus model, ApplicationDevice_Status dbDeviceStatus)
-        {
-            foreach (var item in model.StatusCode)
+            catch
             {
-                var deviceStatus = new ApplicationDevice_Status();
-                deviceStatus.Station = model.Station;
-                deviceStatus.DeviceID = model.DeviceID;
-                deviceStatus.StatusCode = (int)item;
-                deviceStatus.StatusMessage = CommonUtil.GetDeviceStatusText(item);
-
+                return false;
             }
-        }
-
-        public BE.DeviceStatus SetInfo(string appName, int? deviceId, EnumDeviceStatuses[] statusCode)
-        {
-            return new BE.DeviceStatus
-            {
-                Station = appName,
-                DeviceID = deviceId,
-                StatusCode = statusCode
-            };
-        }
-
-        public int GetDeviceId(string deviceType)
-        {
-            switch (deviceType)
-            {
-                case EnumDeviceTypes.SmartCardReader:
-                    return 1;
-                case EnumDeviceTypes.FingerprintScanner:
-                    return 2;
-                case EnumDeviceTypes.DocumentScanner:
-                    return 3;
-                case EnumDeviceTypes.ReceiptPrinter:
-                    return 4;
-                case EnumDeviceTypes.BarcodeScanner:
-                    return 5;
-                case EnumDeviceTypes.LEDDisplayMonitor:
-                    return 6;
-                case EnumDeviceTypes.Camera:
-                    return 7;
-                default:
-                    return 0;
-            }
-
         }
     }
 }

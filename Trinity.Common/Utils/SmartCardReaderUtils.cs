@@ -14,11 +14,11 @@ namespace Trinity.Common
     public class SmartCardReaderUtils : DeviceUtils
     {
         // monitor - need to be refactor
-        List<string> _cardReaders;
         PCSC.SCardMonitor _sCardMonitor;
 
         // 
         string _readerName;
+        private bool _cardReaderMonitor_Started;
 
         // authentication keys
         byte[] _authenticationKeys = new byte[] { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
@@ -33,10 +33,8 @@ namespace Trinity.Common
 
         private SmartCardReaderUtils()
         {
-            _cardReaders = new List<string>();
-
             _readerName = EnumDeviceNames.SmartCardContactlessReader;
-
+            _cardReaderMonitor_Started = false;
             _passphrase = "TVO@2018";
         }
 
@@ -58,20 +56,7 @@ namespace Trinity.Common
         }
         #endregion
 
-        public event Action OnNoDeviceConnected;
-        public event EventHandler<SmartCardReaderConnectedArgs> OnDeviceConnected;
-
-        protected virtual void RaiseNoDeviceConnectedEvent()
-        {
-            OnNoDeviceConnected?.Invoke();
-        }
-
-        protected virtual void RaiseDeviceConnectedEvent(SmartCardReaderConnectedArgs e)
-        {
-            OnDeviceConnected?.Invoke(this, e);
-        }
-
-        public bool StartSmartCardReaderMonitor()
+        public bool StartSmartCardReaderMonitor(DeviceChangeEvent OnInitialized, DeviceChangeEvent OnStatusChanged, DeviceMonitorExceptionEvent OnMonitorException)
         {
             try
             {
@@ -93,53 +78,37 @@ namespace Trinity.Common
             }
         }
 
-        public SCardReaderStartResult StartSmartCardMonitor(CardInitializedEvent onCardInitialized, CardInsertedEvent onCardInserted, CardRemovedEvent onCardRemoved)
+        public bool StartSmartCardMonitor(CardInitializedEvent onCardInitialized, CardInsertedEvent onCardInserted, CardRemovedEvent onCardRemoved)
         {
-            SCardReaderStartResult returnValue = new SCardReaderStartResult()
-            {
-                Success = false
-            };
-
             try
             {
-                if (_cardReaders != null && _cardReaders.Count > 0)
-                {
-                    var contextFactory = ContextFactory.Instance;
-                    _sCardMonitor = new PCSC.SCardMonitor(contextFactory, SCardScope.System);
-                    _sCardMonitor.Initialized += onCardInitialized;
-                    _sCardMonitor.CardInserted += onCardInserted;
-                    _sCardMonitor.CardRemoved += onCardRemoved;
+                var contextFactory = ContextFactory.Instance;
+                _sCardMonitor = new PCSC.SCardMonitor(contextFactory, SCardScope.System);
+                _sCardMonitor.Initialized += onCardInitialized;
+                _sCardMonitor.CardInserted += onCardInserted;
+                _sCardMonitor.CardRemoved += onCardRemoved;
 
-                    _sCardMonitor.Start(_cardReaders[0]);
+                _sCardMonitor.Start(EnumDeviceNames.SmartCardContactlessReader);
 
-                    returnValue.Success = true;
-                    return returnValue;
-                }
-
-                // if card reader is not found
-                returnValue.FailedInfo = new FailedInfo()
-                {
-                    ErrorCode = (int)EnumErrorCodes.SmartCardReaderNull,
-                    ErrorMessage = new ErrorInfo().GetErrorMessage(EnumErrorCodes.SmartCardReaderNull)
-                };
-                return returnValue;
+                return true;
             }
             catch (Exception ex)
             {
                 Debug.WriteLine("StartCardMonitor Exception: " + ex.Message);
-                returnValue.FailedInfo = new FailedInfo()
-                {
-                    ErrorCode = (int)EnumErrorCodes.UnknownError,
-                    ErrorMessage = new ErrorInfo().GetErrorMessage(EnumErrorCodes.UnknownError)
-                };
-                return returnValue;
+                return false;
             }
         }
-        
+
+        public void StopSmartCardMonitor()
+        {
+            if (_sCardMonitor != null)
+            {
+                _sCardMonitor.Cancel();
+            }
+        }
+
         public string GetCardUID()
         {
-            string cardReaderName = EnumDeviceNames.SmartCardContactlessReader;
-
             try
             {
                 var contextFactory = ContextFactory.Instance;
@@ -147,11 +116,11 @@ namespace Trinity.Common
                 {
                     using (var rfidReader = new SCardReader(context))
                     {
-                        var sc = rfidReader.Connect(cardReaderName, SCardShareMode.Shared, SCardProtocol.Any);
+                        var sc = rfidReader.Connect(_readerName, SCardShareMode.Shared, SCardProtocol.Any);
                         if (sc != SCardError.Success)
                         {
                             Debug.WriteLine(string.Format("GetCardUID: Could not connect to reader {0}:\n{1}",
-                                cardReaderName,
+                                _readerName,
                                 SCardHelper.StringifyError(sc)));
                             return string.Empty;
                         }
@@ -204,7 +173,7 @@ namespace Trinity.Common
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("GetCardUID exception: CardReaderName: " + cardReaderName + ". Error: " + ex.ToString());
+                Debug.WriteLine("GetCardUID exception: CardReaderName: " + EnumDeviceNames.SmartCardContactlessReader + ". Error: " + ex.ToString());
                 return string.Empty;
             }
         }
@@ -280,83 +249,32 @@ namespace Trinity.Common
             }
         }
 
-        public void StopSmartCardMonitor()
-        {
-            if (_sCardMonitor != null)
-            {
-                _sCardMonitor.Cancel();
-            }
-        }
-
-        private void OnMonitorException(object sender, DeviceMonitorExceptionEventArgs args)
-        {
-            Debug.WriteLine($"StartSmartCardReaderMonitor Exception: {args.Exception}");
-        }
-
-        private void OnStatusChanged(object sender, DeviceChangeEventArgs e)
-        {
-            foreach (var removed in e.DetachedReaders)
-            {
-                Debug.WriteLine($"Reader detached: {removed}");
-                _cardReaders.Remove(removed);
-
-                if (_cardReaders == null || _cardReaders.Count() == 0)
-                {
-                    // Raise NoDeviceConnected Event when system have no conntected cared reader
-                    RaiseNoDeviceConnectedEvent();
-                }
-            }
-
-            foreach (var added in e.AttachedReaders)
-            {
-                Debug.WriteLine($"New reader attached: {added}");
-                _cardReaders.Add(added);
-
-                // raise RaiseDeviceConnectedEvent
-                List<string> newReaders = new List<string>();
-                newReaders.Add(_cardReaders.Last());
-                RaiseDeviceConnectedEvent(new SmartCardReaderConnectedArgs()
-                {
-                    NewReaders = newReaders,
-                    Readers = _cardReaders
-                });
-            }
-        }
-
-        private void OnInitialized(object sender, DeviceChangeEventArgs e)
-        {
-            Debug.WriteLine("Current connected readers:");
-            foreach (var name in e.AllReaders)
-            {
-                Debug.WriteLine(name);
-            }
-
-            _cardReaders.AddRange(e.AllReaders);
-
-            if (_cardReaders == null || _cardReaders.Count() == 0)
-            {
-                // Raise NoDeviceConnected Event when system have no conntected cared reader
-                RaiseNoDeviceConnectedEvent();
-            }
-            else
-            {
-                // raise RaiseDeviceConnectedEvent
-                RaiseDeviceConnectedEvent(new SmartCardReaderConnectedArgs()
-                {
-                    NewReaders = _cardReaders,
-                    Readers = _cardReaders
-                });
-            }
-        }
-
         public override EnumDeviceStatuses[] GetDeviceStatus()
         {
-            if (_cardReaders == null || _cardReaders.Count() == 0)
+            try
             {
-                return new EnumDeviceStatuses[] { EnumDeviceStatuses.Disconnected };
+                var contextFactory = ContextFactory.Instance;
+                var context = contextFactory.Establish(SCardScope.System);
+                var reader = new SCardReader(context);
+                var readerNames = context.GetReaders();
+
+                if (readerNames.Contains(_readerName))
+                {
+                    // connected
+                    return new EnumDeviceStatuses[] { EnumDeviceStatuses.Connected };
+                }
+                else
+                {
+                    // disconnected
+                    return new EnumDeviceStatuses[] { EnumDeviceStatuses.Disconnected };
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("SmartCardReaderUtils.GetDeviceStatus exception: " + ex.Message);
+                return new EnumDeviceStatuses[] { EnumDeviceStatuses.None };
             }
 
-            return new EnumDeviceStatuses[] { EnumDeviceStatuses.Connected };
         }
 
         public bool ReadAllData_MifareClassic(ref SmartCardData_Original smartCardData_Original)

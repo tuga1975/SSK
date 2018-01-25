@@ -112,6 +112,17 @@ public static class EnumDeviceTypes
     public const string Camera = "Camera";
 }
 
+public enum EnumDeviceIds
+{
+    SmartCardReader = 1,
+    FingerprintScanner = 2,
+    DocumentScanner= 3,
+    ReceiptPrinter = 4,
+    BarcodeScanner = 5,
+    LEDDisplayMonitor = 6,
+    Camera = 7
+}
+
 
 public static class EnumColors
 {

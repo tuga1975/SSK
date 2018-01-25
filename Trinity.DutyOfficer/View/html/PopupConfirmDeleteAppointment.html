@@ -7,13 +7,12 @@
             <div class="modal-body">
                 <div class="form-group">
                     <span style="text-align:center;">The day was booked appointment with list information bellow, do you want to continue?</span>
-                    <br />
+                    <br /><br />
                     <table id="tableAppointmentDelete"></table>
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" id="ConfirmDelBtn" class="btn btn-default">Confirm</button>
-                <button type="button" id="CancalConfirmBtn" class="btn btn-default">Cancel</button>
             </div>
         </div>
     </div>
@@ -24,8 +23,8 @@
             pagination: true,
             pageSize: 10,
             columns: [{
-                field: 'Supervisee Name',
-                title: 'UserName',
+                field: 'UserName',
+                title: 'Supervisee Name',
                 sortable: true,
                 width: '20%',
                 align: 'center'
@@ -39,15 +38,21 @@
                 field: 'Date',
                 title: 'Date',
                 width: '15%',
-                align: 'center'
+                align: 'center',
+                formatter: function (value, row, index, field) {
+                    if (value) {
+                        return formatDate(value);
+                    }
+                    return "";
+                }
             }, {
-                field: 'Start Time',
-                title: 'StartTime',
+                field: 'StartTime',
+                title: 'Start Time',
                 width: '20%',
                 align: 'center'
             }, {
-                field: 'End Time',
-                title: 'EndTime',
+                field: 'EndTime',
+                title: 'End Time',
                 width: '20%',
                 align: 'center'
             }],
@@ -60,10 +65,15 @@
         var dataOperationSetting = JSON.stringify(operationSetting);
 
         api.server.UpdateSettingAndTimeslot(data, dataOperationSetting, function () {
+            api.server.LoadPage('Settings.html');
             $('#idConfirmDelete').modal('toggle');
         });
         
         e.preventDefault();
     });
+
+    function showModal() {
+        $('#idConfirmDelete').modal();
+    };
 
 </script>

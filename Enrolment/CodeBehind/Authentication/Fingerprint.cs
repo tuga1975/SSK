@@ -3,7 +3,6 @@ using System.Threading;
 using System.Windows.Forms;
 using Trinity.Common;
 using Trinity.Common.Common;
-using Trinity.Common.Monitor;
 
 namespace Enrolment.CodeBehind.Authentication
 {
@@ -28,16 +27,13 @@ namespace Enrolment.CodeBehind.Authentication
 
 
             // start verification
-            FingerprintMonitor fingerprintMonitor = FingerprintMonitor.Instance;
             Session session = Session.Instance;
             var user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-            fingerprintMonitor.StartVerification(OnVerificationComplete, user.RightThumbFingerprint);
+            FingerprintReaderUtils.Instance.StartVerification(OnVerificationComplete, user.RightThumbFingerprint);
         }
 
         private void OnVerificationComplete(bool bSuccess, int nRetCode, bool bVerificationSuccess)
         {
-            FingerprintMonitor fingerprintMonitor = FingerprintMonitor.Instance;
-
             // if fingerprinter is connected
             if (bSuccess)
             {
@@ -54,7 +50,7 @@ namespace Enrolment.CodeBehind.Authentication
 
                     Session session = Session.Instance;
                     var user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-                    fingerprintMonitor.StartVerification(OnVerificationComplete, user.RightThumbFingerprint);
+                    FingerprintReaderUtils.Instance.StartVerification(OnVerificationComplete, user.RightThumbFingerprint);
                 }
             }
             else

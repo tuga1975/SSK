@@ -299,13 +299,26 @@
         operationSetting = model;
 
         var data = JSON.stringify(model);
-        api.server.UpdateOperationSetting(data);
+        api.server.CheckWarningSaveSetting(model.DayOfWeek, function (check) {
+            if (check == true) {
+                api.server.UpdateOperationSetting(data, function () {
+                    $('#idEditOperationalDate').modal('toggle');
+                });
+            }
+            else {
+                api.server.UpdateOperationSetting(data, function () {
+                    api.server.LoadPage('Settings.html')
+                    $('#idEditOperationalDate').modal('toggle');
+                });
+            };
+        });
 
-        // Waiting 1 second to update DB then refresh
-        setTimeout(function () {
-            api.server.LoadPage('Settings.html')
-            $('#idEditOperationalDate').modal('toggle');
-        }, 1000);
+
+        //// Waiting 1 second to update DB then refresh
+        //setTimeout(function () {
+        //    api.server.LoadPage('Settings.html')
+        //    $('#idEditOperationalDate').modal('toggle');
+        //}, 1000);
 
         e.preventDefault();
     });

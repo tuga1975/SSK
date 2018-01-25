@@ -7,22 +7,10 @@ using System.Threading.Tasks;
 
 namespace Trinity.BE
 {
-    [Serializable]
-    public class DeviceStatusInfo
-    {
-
-    }
-
-    [Serializable]
     public class DeviceStatus
     {
-        [DataMember]
-        public Guid ID { get; set; }
-        [DataMember]
         public string Station { get; set; }
-        [DataMember]
-        public Nullable<int> DeviceID { get; set; }
-        [DataMember]
+        public int DeviceID { get; set; }
         public EnumDeviceStatuses[] StatusCode { get; set; }
     }
 }

@@ -28,8 +28,7 @@ namespace Enrolment.CodeBehind.Authentication
             _web.RunScript("$('.status-text').css('color','#000').text('Please place your smart card on the reader.');");
 
             // StartCardMonitor
-            Trinity.Common.Monitor.SCardMonitor sCardMonitor = Trinity.Common.Monitor.SCardMonitor.Instance;
-            sCardMonitor.StartCardMonitor(OnCardInitialized, OnCardInserted, OnCardRemoved);
+            Trinity.Common.SmartCardReaderUtils.Instance.StartSmartCardMonitor(OnCardInitialized, OnCardInserted, OnCardRemoved);
         }
 
         // Wrap event invocations inside a protected virtual method
@@ -67,8 +66,7 @@ namespace Enrolment.CodeBehind.Authentication
         private void OnCardInitialized(object sender, CardStatusEventArgs e)
         {
             Debug.WriteLine("onCardInitialized");
-            Trinity.Common.Monitor.SCardMonitor sCardMonitor = Trinity.Common.Monitor.SCardMonitor.Instance;
-            string cardUID = sCardMonitor.GetCardUID();
+            string cardUID = SmartCardReaderUtils.Instance.GetCardUID();
             if (string.IsNullOrEmpty(cardUID))
             {
                 return;
@@ -80,8 +78,7 @@ namespace Enrolment.CodeBehind.Authentication
         private void OnCardInserted(object sender, CardStatusEventArgs e)
         {
             Debug.WriteLine("OnCardInserted");
-            Trinity.Common.Monitor.SCardMonitor sCardMonitor = Trinity.Common.Monitor.SCardMonitor.Instance;
-            string cardUID = sCardMonitor.GetCardUID();
+            string cardUID = SmartCardReaderUtils.Instance.GetCardUID();
             Debug.WriteLine($"Card UID: {cardUID}");
             SmartCardLoginProcess(cardUID);
         }
@@ -118,8 +115,7 @@ namespace Enrolment.CodeBehind.Authentication
                 _web.RunScript("$('.status-text').css('color','#000').text('Your smart card is authenticated.');");
 
                 // Stop SCardMonitor
-                Trinity.Common.Monitor.SCardMonitor sCardMonitor = Trinity.Common.Monitor.SCardMonitor.Instance;
-                sCardMonitor.Stop();
+                Trinity.Common.SmartCardReaderUtils.Instance.StopSmartCardMonitor();
 
                 // raise succeeded event
                 RaiseSmartCardSucceededEvent();

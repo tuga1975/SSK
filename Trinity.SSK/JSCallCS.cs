@@ -139,11 +139,11 @@ namespace SSK
                 item.IsSelected = true;
             }
 
-            if (appointment.Timeslot_ID.HasValue)
+            if (!string.IsNullOrEmpty(appointment.Timeslot_ID))
             {
 
 
-                var maxAppPerTimeslot = dalAppointment.GetMaximumNumberOfTimeslot(appointment.Timeslot_ID.Value);
+                var maxAppPerTimeslot = dalAppointment.GetMaximumNumberOfTimeslot(appointment.Timeslot_ID);
                 foreach (var selectedItem in selectedTimes)
                 {
                     var count = dalAppointment.CountListAppointmentByTimeslot(appointment);
@@ -190,7 +190,7 @@ namespace SSK
             {
                 Date = appointment.AppointmentDate.Value,
                 Name = appointment.Name,
-                NRICNo = appointment.NRIC
+                Venue = appointment.NRIC
             });
             //APIUtils.Printer.PrintAppointmentDetails("AppointmentDetailsTemplate.html", appointment);
         }
