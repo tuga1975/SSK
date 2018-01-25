@@ -79,6 +79,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CheckWarningSaveSetting.cs" />
     <Compile Include="AbsenceReporting.cs" />
     <Compile Include="DeviceStatus.cs" />
     <Compile Include="Holiday.cs" />
