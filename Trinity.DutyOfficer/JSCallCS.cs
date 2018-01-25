@@ -162,18 +162,10 @@ namespace DutyOfficer
         #endregion
 
         #region Blocked
-        public void GetAllSuperviseesBlocked()
+        public List<User> GetAllSuperviseesBlocked()
         {
             var dalUser = new DAL_User();
-            List<User> data = dalUser.GetAllSuperviseeBlocked(true);
-
-            object result = null;
-            if (data != null)
-            {
-                result = JsonConvert.SerializeObject(data, Formatting.Indented,
-                    new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
-            }
-            _web.InvokeScript("getDataCallback", result);
+            return dalUser.GetAllSuperviseeBlocked(true);            
         }
 
         public void LoadPopupBlock(string userId)
@@ -192,7 +184,20 @@ namespace DutyOfficer
         {
             var dalUser = new DAL_User();
             dalUser.UnblockSuperviseeById(userId, reason);
+            GetQueueForSupervisee(userId);
+        }
 
+        private void GetQueueForSupervisee(string userId)
+        {
+            DAL_Appointments _Appointment = new DAL_Appointments();
+            Trinity.DAL.DBContext.Appointment appointment = _Appointment.GetMyAppointmentByDate(userId, DateTime.Today);
+            if (appointment != null)
+            {
+                Trinity.DAL.DBContext.Timeslot timeslot = _Appointment.GetTimeslotNearest();
+                appointment = _Appointment.UpdateTimeslotForAppointment(appointment.ID, timeslot.Timeslot_ID);
+                var _dalQueue = new DAL_QueueNumber();
+                Trinity.DAL.DBContext.Queue queueNumber = _dalQueue.InsertQueueNumber(appointment.ID, appointment.UserId, EnumStations.SSK);
+            }
         }
         #endregion
 
