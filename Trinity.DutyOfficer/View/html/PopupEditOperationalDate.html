@@ -109,7 +109,7 @@
     var optionsEveningHH = ["17", "18", "19", "20", "21", "22", "23"];
     var optionsMM = ["00", "05", "10", "15", "20", "25", "30", "35", "40", "45", "50", "55"];
     var optionsXM = ["00", "10", "20", "30", "40", "50"];
-    var optionsInterval = ["00", "15", "30", "45", "60"];
+    var optionsInterval = ["15", "30", "45", "60"];
 
     $.each(optionsMorningHH, function (i, p) {
         $('#morning-start-HH').append($('<option></option>').val(p).html(p));
@@ -312,14 +312,7 @@
                 });
             };
         });
-
-
-        //// Waiting 1 second to update DB then refresh
-        //setTimeout(function () {
-        //    api.server.LoadPage('Settings.html')
-        //    $('#idEditOperationalDate').modal('toggle');
-        //}, 1000);
-
+        
         e.preventDefault();
     });
 </script>

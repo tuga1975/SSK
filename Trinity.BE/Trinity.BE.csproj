@@ -85,6 +85,7 @@
     <Compile Include="Holiday.cs" />
     <Compile Include="IssueCard.cs" />
     <Compile Include="Label.cs" />
+    <Compile Include="OperationSettings_ChangeHist.cs" />
     <Compile Include="QueueNumber.cs" />
     <Compile Include="EnvironmentTime.cs" />
     <Compile Include="Notification.cs" />

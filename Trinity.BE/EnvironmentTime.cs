@@ -70,7 +70,7 @@ namespace Trinity.BE
         public SettingDetails Saturday { get; set; }
         public SettingDetails Sunday { get; set; }
         public List<Trinity.BE.Holiday> HoliDays { get; set; }
-
+        public List<Trinity.BE.OperationSettings_ChangeHist> ChangeHistorySettings { get; set; }
     }
 
     public class SettingDetails
