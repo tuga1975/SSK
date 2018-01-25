@@ -794,6 +794,47 @@ namespace Trinity.DAL
         {
             #region Update OperationSetting
             var operationSetting = _localUnitOfWork.DataContext.OperationSettings.FirstOrDefault(s => s.DayOfWeek == model.DayOfWeek);
+            List<string> arrayUpdateHistory = new List<string>();
+            var sourceProps = model.GetType().GetProperties().Where(x => x.CanRead).ToList();
+            if (operationSetting == null)
+            {
+                foreach (var sourceProp in sourceProps)
+                {
+                    var dataUpdate = sourceProp.GetValue(model, null);
+                    CustomAttribute cusAttr = sourceProp.GetMyCustomAttributes();
+                    if (cusAttr != null && cusAttr.Name != null && dataUpdate != null)
+                    {
+                        arrayUpdateHistory.Add("Changed " + cusAttr.Name + " to " + (dataUpdate == null ? string.Empty : dataUpdate.ToString()));
+                    }
+                }
+            }
+            else
+            {
+                var destProps = operationSetting.GetType().GetProperties()
+                    .Where(x => x.CanWrite)
+                    .ToList();
+                foreach (var sourceProp in sourceProps)
+                {
+                    var dataUpdate = sourceProp.GetValue(model, null);
+                    CustomAttribute cusAttr = sourceProp.GetMyCustomAttributes();
+                    if (cusAttr != null && cusAttr.Name != null && dataUpdate != null)
+                    {
+                        if (destProps.Any(x => x.Name == sourceProp.Name))
+                        {
+                            var p = destProps.First(x => x.Name == sourceProp.Name);
+                            var dataValue = p.GetValue(operationSetting, null);
+                            if (!dataUpdate.Equals(dataValue))
+                                arrayUpdateHistory.Add("Changed " + cusAttr.Name + " to " + (dataUpdate==null?string.Empty: dataUpdate.ToString()));
+                        }
+
+                    }
+                }
+            }
+
+            ////////////////
+
+
+
             if (operationSetting == null)
             {
                 operationSetting = new OperationSetting();
@@ -857,16 +898,18 @@ namespace Trinity.DAL
                     _localUnitOfWork.GetRepository<DBContext.Appointment>().Update(item);
                 });
                 List<Guid> arrQueueID = modelWarning.arrayDetail.Where(d => d.Queue_ID.HasValue).Select(d => d.Queue_ID.Value).ToList();
-                _localUnitOfWork.DataContext.QueueDetails.Where(d => arrQueueID.Contains(d.Queue_ID)).ToList().ForEach(item => {
+                _localUnitOfWork.DataContext.QueueDetails.Where(d => arrQueueID.Contains(d.Queue_ID)).ToList().ForEach(item =>
+                {
                     _localUnitOfWork.GetRepository<DBContext.QueueDetail>().Delete(item);
                 });
-                _localUnitOfWork.DataContext.Queues.Where(d => arrQueueID.Contains(d.Queue_ID)).ToList().ForEach(item => {
+                _localUnitOfWork.DataContext.Queues.Where(d => arrQueueID.Contains(d.Queue_ID)).ToList().ForEach(item =>
+                {
                     _localUnitOfWork.GetRepository<DBContext.Queue>().Delete(item);
-                });   
+                });
             }
             #endregion
             #region Delete TimeSlot & Generate Time
-            if (modelWarning!=null && modelWarning.isDeleteTimeSlot)
+            if (modelWarning != null && modelWarning.isDeleteTimeSlot)
             {
                 var DateNow = DateTime.Now.Date;
                 var _dayOfWeek = model.DayOfWeek == (int)EnumDayOfWeek.Sunday ? 1 : model.DayOfWeek;
@@ -879,13 +922,13 @@ namespace Trinity.DAL
                 List<DBContext.Timeslot> arrTimeSlot = new List<Timeslot>();
 
                 #region Morning
-                arrTimeSlot.AddRange(GenerateTimeSlot(dateGenTimeSlot, operationSetting.Morning_Open_Time.Value, operationSetting.Morning_Close_Time.Value, operationSetting.Morning_Interval.Value,model.Last_Updated_By, operationSetting.Morning_MaximumSupervisee.Value, EnumTimeshift.Morning));
+                arrTimeSlot.AddRange(GenerateTimeSlot(dateGenTimeSlot, operationSetting.Morning_Open_Time.Value, operationSetting.Morning_Close_Time.Value, operationSetting.Morning_Interval.Value, model.Last_Updated_By, operationSetting.Morning_MaximumSupervisee.Value, EnumTimeshift.Morning));
                 #endregion
                 #region Evening
-                arrTimeSlot.AddRange(GenerateTimeSlot(dateGenTimeSlot, operationSetting.Evening_Open_Time.Value, operationSetting.Evening_Close_Time.Value, operationSetting.Evening_Interval.Value, model.Last_Updated_By, operationSetting.Evening_MaximumSupervisee.Value, EnumTimeshift.Morning));
+                arrTimeSlot.AddRange(GenerateTimeSlot(dateGenTimeSlot, operationSetting.Evening_Open_Time.Value, operationSetting.Evening_Close_Time.Value, operationSetting.Evening_Interval.Value, model.Last_Updated_By, operationSetting.Evening_MaximumSupervisee.Value, EnumTimeshift.Evening));
                 #endregion
                 #region Afternoon
-                arrTimeSlot.AddRange(GenerateTimeSlot(dateGenTimeSlot, operationSetting.Afternoon_Open_Time.Value, operationSetting.Afternoon_Close_Time.Value, operationSetting.Afternoon_Interval.Value, model.Last_Updated_By, operationSetting.Afternoon_MaximumSupervisee.Value, EnumTimeshift.Morning));
+                arrTimeSlot.AddRange(GenerateTimeSlot(dateGenTimeSlot, operationSetting.Afternoon_Open_Time.Value, operationSetting.Afternoon_Close_Time.Value, operationSetting.Afternoon_Interval.Value, model.Last_Updated_By, operationSetting.Afternoon_MaximumSupervisee.Value, EnumTimeshift.Afternoon));
                 #endregion
                 _localUnitOfWork.GetRepository<DBContext.Timeslot>().AddRange(arrTimeSlot);
             }
@@ -915,7 +958,7 @@ namespace Trinity.DAL
                 timeSlot.LastUpdatedBy = createBy;
                 timeSlot.LastUpdatedDate = DateTime.Now;
 
-                
+
                 fromTime = fromTime.Add(TimeSpan.FromMinutes(duration));
                 array.Add(timeSlot);
             }
