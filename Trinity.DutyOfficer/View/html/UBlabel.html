@@ -54,7 +54,16 @@
 
     var dataSource = [];
 
-    api.server.GetAllUBlabels();
+    api.server.GetAllUBlabels(function (data) {
+        dataSource = data;
+        $('#UBlabel').bootstrapTable({
+            //pagination: true,
+            search: true,
+            pageSize: 10,
+            singleSelect: true,
+            data: dataSource
+        });
+    });
 
     function getDataCallback(response) {
 

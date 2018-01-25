@@ -39,7 +39,115 @@
 
     var $table = $('#alertNotificationTable');
 
-    api.server.getAlertsSendToDutyOfficer();
+    api.server.getAlertsSendToDutyOfficer(function (data) {
+        var dataSource = [];
+        var Type = {
+            error: "Error",
+            notification: "Notification",
+            caution: "Caution"
+        };
+
+        var rowStyle = function (row, index) {
+            var type = row.type;
+            switch (type) {
+                case Type.error:
+                    return {
+                        classes: "error"
+                    };
+                case Type.notification:
+                    return {
+                        classes: "notification"
+                    };
+                case Type.caution:
+                    return {
+                        classes: "caution"
+                    };
+            }
+            return {};
+        }
+
+        $('#pageSize').change(function () {
+            pageSize = $("#pageSize option:selected").text();
+            $table.bootstrapTable('refreshOptions', {
+                pagination: true,
+                pageSize: pageSize
+            });
+        });
+
+        $table.bootstrapTable({
+            pagination: true,
+            search: true,
+            pageSize: 10,
+            columns: [{
+                field: 'source',
+                title: 'Source',
+                sortable: true,
+                searchable: true,
+                halign: "center"
+            }, {
+                field: 'type',
+                title: 'Type',
+                sortable: true,
+                halign: "center",
+                formatter: function (value, row, index, field) {
+                    switch (value) {
+                        case Type.error:
+                            return Type.error;
+                        case Type.notification:
+                            return Type.notification;
+                        case Type.caution:
+                            return Type.caution;
+                        default:
+                            return "";
+                    }
+                }
+            }, {
+                field: 'dateTime',
+                title: 'Date/Time',
+                sortable: true,
+                searchable: true,
+                halign: "center",
+                formatter: function (value, row, index, field) {
+                    if (value) {
+                        return formatDate(value);
+                    }
+                    return "";
+                }
+            }, {
+                field: 'message',
+                sortable: true,
+                searchable: true,
+                title: 'Message',
+                halign: "center"
+            }],
+            data: dataSource,
+            rowStyle: rowStyle,
+            onDblClickRow: onRowDblClick
+        });
+
+        function onRowDblClick(row, index) {
+            var data = JSON.stringify(row);
+            api.server.LoadPopupAlert(data, function () {
+                $('#alertPopup').modal();
+            });
+        }
+
+        function formatDate(strDate) {
+            var date = new Date(Date.parse(strDate)),
+                year = date.getFullYear(),
+                month = (date.getMonth() + 1).toString(),
+                formatedMonth = (month.length === 1) ? ("0" + month) : month,
+                day = date.getDate().toString(),
+                formatedDay = (day.length === 1) ? ("0" + day) : day,
+                hour = date.getHours().toString(),
+                formatedHour = (hour.length === 1) ? ("0" + hour) : hour,
+                minute = date.getMinutes().toString(),
+                formatedMinute = (minute.length === 1) ? ("0" + minute) : minute,
+                second = date.getSeconds().toString(),
+                formatedSecond = (second.length === 1) ? ("0" + second) : second;
+            return formatedMonth + "/" + formatedDay + "/" + year + " " + formatedHour + ':' + formatedMinute;
+        }
+    });
 
     function getDataCallback(response) {
         var data = JSON.parse(response);

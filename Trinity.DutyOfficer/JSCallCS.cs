@@ -40,19 +40,19 @@ namespace DutyOfficer
             _printMUBAndTTLabel.OnPrintMUBAndTTLabelsException += PrintMUBAndTTLabels_OnPrintTTLabelException;
         }
 
-        public void getAlertsSendToDutyOfficer()
+        public List<Notification> getAlertsSendToDutyOfficer()
         {
             var dalNotify = new DAL_Notification();
             //Receive alerts and notifications from APS, SSK, SSA, UHP and ESP 
             List<string> modules = new List<string>() { "APS", "SSK", "SSA", "UHP", "ESP" };
-            List<Notification> data = dalNotify.GetNotificationsSentToDutyOfficer(true, modules);
-            object result = null;
-            if (data != null)
-            {
-                result = JsonConvert.SerializeObject(data, Formatting.Indented,
-                    new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
-            }
-            _web.InvokeScript("getDataCallback", result);
+            return dalNotify.GetNotificationsSentToDutyOfficer(true, modules);
+            //object result = null;
+            //if (data != null)
+            //{
+            //    result = JsonConvert.SerializeObject(data, Formatting.Indented,
+            //        new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
+            //}
+            //_web.InvokeScript("getDataCallback", result);
         }
 
 
@@ -270,22 +270,22 @@ namespace DutyOfficer
         #endregion
 
         #region Print UB
-        public void GetAllUBlabels()
+        public List<Trinity.BE.Label> GetAllUBlabels()
         {
             var dalUBlabels = new DAL_Labels();
-            List<Trinity.BE.Label> data = dalUBlabels.GetAllLabelsForUB();
+            return dalUBlabels.GetAllLabelsForUB();
 
-            object result = null;
-            if (data.Count != 0)
-            {
-                result = JsonConvert.SerializeObject(data, Formatting.Indented,
-                    new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
-            }
-            else
-            {
-                getAlertsSendToDutyOfficer();
-            }
-            _web.InvokeScript("getDataCallback", result);
+            //object result = null;
+            //if (data.Count != 0)
+            //{
+            //    result = JsonConvert.SerializeObject(data, Formatting.Indented,
+            //        new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
+            //}
+            //else
+            //{
+            //    getAlertsSendToDutyOfficer();
+            //}
+            //_web.InvokeScript("getDataCallback", result);
         }
 
         //Load Popup of UB label
@@ -374,22 +374,22 @@ namespace DutyOfficer
         #endregion
 
         #region Print MUB And TT
-        public void GetAllMUBAndTTlabels()
+        public List<Trinity.BE.Label> GetAllMUBAndTTlabels()
         {
             var dalMUBAndTTlabels = new DAL_Labels();
-            List<Trinity.BE.Label> data = dalMUBAndTTlabels.GetAllLabelsForMUBAndTT();
+            return dalMUBAndTTlabels.GetAllLabelsForMUBAndTT();
 
-            object result = null;
-            if (data.Count != 0)
-            {
-                result = JsonConvert.SerializeObject(data, Formatting.Indented,
-                    new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
-            }
-            else
-            {
-                getAlertsSendToDutyOfficer();
-            }
-            _web.InvokeScript("getDataCallback", result);
+            //object result = null;
+            //if (data.Count != 0)
+            //{
+            //    result = JsonConvert.SerializeObject(data, Formatting.Indented,
+            //        new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
+            //}
+            //else
+            //{
+            //    getAlertsSendToDutyOfficer();
+            //}
+            //_web.InvokeScript("getDataCallback", result);
         }
 
         //Load Popup of MUBAndTT Label
