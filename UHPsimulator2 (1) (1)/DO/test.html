@@ -1,0 +1,22 @@
+<html>
+	<head>
+		<script src="./js/jquery-3.2.1.min.js"></script>
+		
+	</head>
+	<body>
+		<div id="noticeboard" class="noticeboard">
+		</div>
+		<input type="button" id="update" class="update" value="update" onclick="updateNotice();"/>
+		<script language="javascript">
+			$(document).ready(updateNotice);
+			function updateNotice()
+			{
+				$("div").append
+				( 
+					"<div class='notice"+"'>test" +"</div>"	
+				);
+			}			
+			alert($.now());
+		</script>
+	</body>
+</html>

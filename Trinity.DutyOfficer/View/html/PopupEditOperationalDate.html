@@ -104,16 +104,24 @@
 </div>
 
 <script type="text/javascript">
-    var optionsHH = ["00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23"];
+    var optionsMorningHH = ["00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"];
+    var optionsAfternoonHH = ["12", "13", "14", "15", "16", "17"];
+    var optionsEveningHH = ["17", "18", "19", "20", "21", "22", "23"];
     var optionsMM = ["00", "05", "10", "15", "20", "25", "30", "35", "40", "45", "50", "55"];
     var optionsXM = ["00", "10", "20", "30", "40", "50"];
     var optionsInterval = ["00", "15", "30", "45", "60"];
 
-    $.each(optionsHH, function (i, p) {
+    $.each(optionsMorningHH, function (i, p) {
         $('#morning-start-HH').append($('<option></option>').val(p).html(p));
         $('#morning-end-HH').append($('<option></option>').val(p).html(p));
+    });
+
+    $.each(optionsAfternoonHH, function (i, p) {
         $('#afternoon-start-HH').append($('<option></option>').val(p).html(p));
         $('#afternoon-end-HH').append($('<option></option>').val(p).html(p));
+    });
+
+    $.each(optionsEveningHH, function (i, p) {
         $('#evening-start-HH').append($('<option></option>').val(p).html(p));
         $('#evening-end-HH').append($('<option></option>').val(p).html(p));
     });
@@ -188,7 +196,7 @@
         $('#morning-max').val(model.Morning_MaximumSupervisee);
         $('#morning-spare').val(model.Morning_Spare_Slots);
         $('#morning-interval').val(model.Morning_Interval);
-        $('#morning-closed').prop('checked', model.Morning_Is_Closed);
+        $('#morning-Closed').prop('checked', model.Morning_Is_Closed);
 
         //Afternoon
         if (model.Afternoon_Open_Time) {
@@ -208,7 +216,7 @@
         $('#afternoon-max').val(model.Afternoon_MaximumSupervisee);
         $('#afternoon-spare').val(model.Afternoon_Spare_Slots);
         $('#afternoon-interval').val(model.Afternoon_Interval);
-        $('#afternoon-closed').prop('checked', model.Afternoon_Is_Closed);
+        $('#afternoon-Closed').prop('checked', model.Afternoon_Is_Closed);
 
         //Evening
         if (model.Evening_Open_Time) {
@@ -228,7 +236,7 @@
         $('#evening-max').val(model.Evening_MaximumSupervisee);
         $('#evening-spare').val(model.Evening_Spare_Slots);
         $('#evening-interval').val(model.Evening_Interval);
-        $('#evening-closed').prop('checked', model.Evening_Is_Closed);
+        $('#evening-Closed').prop('checked', model.Evening_Is_Closed);
     });
 
     $("#EditBtn").click(function (e) {

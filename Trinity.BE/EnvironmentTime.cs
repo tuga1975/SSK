@@ -76,6 +76,13 @@ namespace Trinity.BE
     public class SettingDetails
     {
         public int DayOfWeek { get; set; }
+        public string DayOfWeekTxt
+        {
+            get
+            {
+                return ((EnumDayOfWeek)DayOfWeek).ToString();
+            }
+        }
         public Nullable<System.TimeSpan> Morning_Open_Time { get; set; }
         public Nullable<System.TimeSpan> Morning_Close_Time { get; set; }
         public Nullable<int> Morning_Spare_Slots { get; set; }
@@ -182,6 +189,7 @@ namespace Trinity.BE
         public string LastUpdatedBy { get; set; }
         public Nullable<System.DateTime> LastUpdatedDate { get; set; }
         public string Description { get; set; }
+        public Nullable<int> MaximumSupervisee { get; set; }
     }
 
 

@@ -112,18 +112,18 @@ namespace DutyOfficer
             this._web.LoadPopupHtml("PopupEditOperationalDate.html", dayOfWeek);
         }
 
-        public void GetSettings()
+        public SettingModel GetSettings()
         {
             DAL_Setting dalSetting = new DAL_Setting();
-            SettingModel data = dalSetting.GetOperationSettings();
+            return dalSetting.GetOperationSettings();
 
-            object result = null;
-            if (data != null)
-            {
-                result = JsonConvert.SerializeObject(data, Formatting.Indented,
-                    new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
-            }
-            _web.InvokeScript("getDataCallback", result);
+            //object result = null;
+            //if (data != null)
+            //{
+            //    result = JsonConvert.SerializeObject(data, Formatting.Indented,
+            //        new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
+            //}
+            //_web.InvokeScript("getDataCallback", result);
         }
 
         public void UpdateOperationSetting(string json)
@@ -139,10 +139,10 @@ namespace DutyOfficer
             {
                 //_web.InvokeScript("showMessageBox", "Update successful!");
             }
-            else
-            {
-                _web.InvokeScript("showMessageBox", "Update faied!");
-            }
+            //else
+            //{
+            //    _web.InvokeScript("showMessageBox", "Update faied!");
+            //}
         }
 
         public void AddHoliday(string json)

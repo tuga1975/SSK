@@ -99,6 +99,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -136,6 +137,9 @@
       <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\Device.cs">
+      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBContext\DrugResult.cs">
       <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\Holiday.cs">

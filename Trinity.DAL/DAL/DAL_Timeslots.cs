@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
+using System.Data.Entity.SqlServer;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,10 +13,6 @@ namespace Trinity.DAL
     {
         Local_UnitOfWork _localUnitOfWork = new Local_UnitOfWork();
         Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
-        
-        public void Generate_Timeslots(EnumDayOfWeek DayOfWeek)
-        {
-            
-        }
+
     }
 }

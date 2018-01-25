@@ -2,6 +2,7 @@
     table.table-bordered {
         border: 1px solid #000000;
     }
+
     #operationTable th {
         text-align: center;
         font-size: 12px;
@@ -39,7 +40,7 @@
     <div style="display:block;">
         <span style="padding:4px 10px;border:1px solid #CCC;"><b>Operation Time:</b></span>
     </div>
-    <br/>
+    <br />
     <table id="operationTable" class="table table-bordered" style="width:100%;">
         <thead>
             <tr>
@@ -62,33 +63,33 @@
                 <th>Edit</th>
             </tr>
         </thead>
-        <tbody>
-            <tr id="Monday">
-                <td style="background-color:gainsboro">Monday</td>
-                <td id="mon-MorningStartTime">9:00</td>
-                <td id="mon-MorningEndTime">19:00</td>
-                <td id="mon-MorningMax">8</td>
-                <td id="mon-MorningSpare">2</td>
-                <td id="mon-MorningInterval">30 mins</td>
-                <td id="mon-AfternoonStartTime">9:00</td>
-                <td id="mon-AfternoonEndTime">17:00</td>
-                <td id="mon-AfternoonMax">6</td>
-                <td id="mon-AfternoonSpare">3</td>
-                <td id="mon-AfternoonInterval">30 mins</td>
-                <td id="mon-EveningStartTime">9:00</td>
-                <td id="mon-EveningEndTime">18:00</td>
-                <td id="mon-EveningMax">10</td>
-                <td id="mon-EveningSpare">5</td>
-                <td id="mon-EveningInterval">30 mins</td>
-                <th id="mon-Edit" style="background-color:#808080;cursor:pointer;" onclick="showPopupSettingDetail('Monday');">Edit</th>
+        <tbody table-settings>
+            <!--<tr>
+                <td style="background-color:gainsboro">{DayOfWeekTxt}</td>
+                <td>{Morning_Open_Time}</td>
+                <td>{Morning_Close_Time}</td>
+                <td>{Morning_MaximumSupervisee}</td>
+                <td>{Morning_Spare_Slots}</td>
+                <td>{Morning_Interval} mins</td>
+                <td>{Afternoon_Open_Time}</td>
+                <td>{Afternoon_Close_Time}</td>
+                <td>{Afternoon_MaximumSupervisee}</td>
+                <td>{Afternoon_Spare_Slots}</td>
+                <td>{Afternoon_Interval} mins</td>
+                <td>{Evening_Open_Time}</td>
+                <td>{Evening_Close_Time}</td>
+                <td>{Evening_MaximumSupervisee}</td>
+                <td>{Evening_Spare_Slots}</td>
+                <td>{Evening_Interval} mins</td>
+                <th style="background-color:#808080;cursor:pointer;" onclick="showPopupSettingDetail(\'{DayOfWeekTxt}\');">Edit</th>
             </tr>
             <tr id="Tuesday">
                 <td style="background-color:gainsboro">Tuesday</td>
-                <td id="tue-MorningStartTime">7:00</td>
-                <td id="tue-MorningEndTime">18:00</td>
-                <td id="tue-MorningMax">8</td>
-                <td id="tue-MorningSpare">2</td>
-                <td id="tue-MorningInterval">30 mins</td>
+                <td id="tue-MorningStartTime" MorningStartTime="3">7:00</td>
+                <td id="tue-MorningEndTime" MorningEndTime="3">18:00</td>
+                <td id="tue-MorningMax" MorningMax="3">8</td>
+                <td id="tue-MorningSpare" MorningSpare="3">2</td>
+                <td id="tue-MorningInterval" MorningInterval="3">30 mins</td>
                 <td id="tue-AfternoonStartTime">9:00</td>
                 <td id="tue-AfternoonEndTime">17:00</td>
                 <td id="tue-AfternoonMax">6</td>
@@ -195,7 +196,7 @@
                 <td id="sun-EveningSpare">5</td>
                 <td id="sun-EveningInterval">30 mins</td>
                 <th id="sun-Edit" style="background-color:#808080;cursor:pointer;" onclick="showPopupSettingDetail('Sunday');">Edit</th>
-            </tr>
+            </tr>-->
         </tbody>
     </table>
 
@@ -204,10 +205,10 @@
     <div style="display:block;">
         <span style="padding:4px 10px;border:1px solid #CCC;"><b>Public Holiday and Non-Operational Days</b></span>
     </div>
-    <br/>
-    <div style="width:70%;display:inline-block;box-sizing:border-box;position:relative;vertical-align:top;">       
+    <br />
+    <div style="width:70%;display:inline-block;box-sizing:border-box;position:relative;vertical-align:top;">
         <div style="width:calc(100% - 50px);">
-            <table id="holidayTable" class="table table-bordered" >
+            <table id="holidayTable" class="table table-bordered">
                 <thead>
                     <tr>
                         <th data-field="Date">Date</th>
@@ -230,7 +231,7 @@
     </div>
     <br />
     <div style="width:90%;display:inline-block;box-sizing:border-box;position:relative;vertical-align:top;">
-        <table id="changeHistoryTable" class="table table-bordered" >
+        <table id="changeHistoryTable" class="table table-bordered">
             <thead>
                 <tr>
                     <th data-field="Date">Date</th>
@@ -242,393 +243,511 @@
     </div>
 </div>
 
-    <script type="text/javascript">
-        activemenu("Settings");
+<script type="text/javascript">
+    activemenu("Settings");
+    var model = [];
+    var holidaySelected;
+    $(document).ready(function () {
 
-        $(document).ready(function () {
-                        
-            api.server.GetSettings();
-            
-        });
-        
-        function setColspanForClosed(dayOfWeek, isClosedMorning, isClosedAfternoon, isClosedEvening) {
-            var row = document.getElementById(dayOfWeek);
-
-            if (isClosedMorning == true && isClosedAfternoon == true && isClosedEvening == true) {
-                row.cells[1].colSpan = 15;
-                row.cells[1].innerHTML = 'Closed';
-                for (i = 1; i < 15; i++) {
-                    row.deleteCell(2);
-                };
-            } else if (isClosedMorning == true && isClosedAfternoon == true) {
-                row.cells[1].colSpan = 10;
-                row.cells[1].innerHTML = 'Closed';
-                for (i = 1; i < 10; i++) {
-                    row.deleteCell(2);
-                };
-            } else if (isClosedAfternoon == true && isClosedEvening == true) {
-                row.cells[6].colSpan = 10;
-                row.cells[6].innerHTML = 'Closed';
-                for (i = 1; i < 10; i++) {
-                    row.deleteCell(7);
-                };
-            } else if (isClosedAfternoon == false) {
-                if (isClosedMorning == true && isClosedEvening == true) {
-                    row.cells[1].colSpan = 5;
-                    row.cells[1].innerHTML = 'Closed';
-                    for (i = 1; i < 5; i++) {
-                        row.deleteCell(2);
-                    };
-
-                    row.cells[7].colSpan = 5;
-                    row.cells[7].innerHTML = 'Closed';
-                    for (i = 1; i < 5; i++) {
-                        row.deleteCell(8);
-                    };
-                } else if (isClosedEvening == true) {
-                    row.cells[11].colSpan = 5;
-                    row.cells[11].innerHTML = 'Closed';
-                    for (i = 1; i < 5; i++) {
-                        row.deleteCell(12);
-                    };
-                } else if (isClosedMorning == true) {
-                    row.cells[1].colSpan = 5;
-                    row.cells[1].innerHTML = 'Closed';
-                    for (i = 1; i < 5; i++) {
-                        row.deleteCell(2);
-                    };
-                };
-            } else {
-                row.cells[6].colSpan = 5;
-                row.cells[6].innerHTML = 'Closed';
-                for (i = 1; i < 5; i++) {
-                    row.deleteCell(7);
-                };
-            };            
-        };
-
-        var model = [];
-        var holidaySelected;
-        function getDataCallback(response) {
-            model = JSON.parse(response);
-
-            if (model) {
-
-                // MONDAY
-                var monday = model.Monday;
-                //if (monday.Morning_Open_Time) {
-                //    var monStart = monday.StartTime.split(':');
-                //    $('#mon-MorningStartTime').val(monStart[0]);
-                //    $('#mon-start-MM').val(monStart[1]);
-                //    $('#mon-start-XM').val(monStart[2]);
-                //}
-
-                //if (monday.Morning_Close_Time) {
-                //    var monEnd = monday.EndTime.split(':');
-                //    $('#mon-end-HH').val(monEnd[0]);
-                //    $('#mon-end-MM').val(monEnd[1]);
-                //    $('#mon-end-XM').val(monEnd[2]);
-                //}
-                document.getElementById('mon-MorningStartTime').innerHTML = monday.Morning_Open_Time;
-                document.getElementById('mon-MorningEndTime').innerHTML = monday.Morning_Close_Time;
-                document.getElementById('mon-MorningInterval').innerHTML = monday.Morning_Interval + " mins";
-                document.getElementById('mon-MorningMax').innerHTML = monday.Morning_MaximumSupervisee;
-                document.getElementById('mon-MorningSpare').innerHTML = monday.Morning_Spare_Slots;
-
-                document.getElementById('mon-AfternoonStartTime').innerHTML = monday.Afternoon_Open_Time;
-                document.getElementById('mon-AfternoonEndTime').innerHTML = monday.Afternoon_Close_Time;
-                document.getElementById('mon-AfternoonInterval').innerHTML = monday.Afternoon_Interval + " mins";
-                document.getElementById('mon-AfternoonMax').innerHTML = monday.Afternoon_MaximumSupervisee;
-                document.getElementById('mon-AfternoonSpare').innerHTML = monday.Afternoon_Spare_Slots;
-
-                document.getElementById('mon-EveningStartTime').innerHTML = monday.Evening_Open_Time;
-                document.getElementById('mon-EveningEndTime').innerHTML = monday.Evening_Close_Time;
-                document.getElementById('mon-EveningInterval').innerHTML = monday.Evening_Interval + " mins";
-                document.getElementById('mon-EveningMax').innerHTML = monday.Evening_MaximumSupervisee;
-                document.getElementById('mon-EveningSpare').innerHTML = monday.Evening_Spare_Slots;
-
-                setColspanForClosed("Monday", monday.Morning_Is_Closed, monday.Afternoon_Is_Closed, monday.Evening_Is_Closed);
-
-                // TUEDAY
-                var tuesDay = model.Tuesday;
-                document.getElementById('tue-MorningStartTime').innerHTML = tuesDay.Morning_Open_Time;
-                document.getElementById('tue-MorningEndTime').innerHTML = tuesDay.Morning_Close_Time;
-                document.getElementById('tue-MorningInterval').innerHTML = tuesDay.Morning_Interval + " mins";
-                document.getElementById('tue-MorningMax').innerHTML = tuesDay.Morning_MaximumSupervisee;
-                document.getElementById('tue-MorningSpare').innerHTML = tuesDay.Morning_Spare_Slots;
-
-                document.getElementById('tue-AfternoonStartTime').innerHTML = tuesDay.Afternoon_Open_Time;
-                document.getElementById('tue-AfternoonEndTime').innerHTML = tuesDay.Afternoon_Close_Time;
-                document.getElementById('tue-AfternoonInterval').innerHTML = tuesDay.Afternoon_Interval + " mins";
-                document.getElementById('tue-AfternoonMax').innerHTML = tuesDay.Afternoon_MaximumSupervisee;
-                document.getElementById('tue-AfternoonSpare').innerHTML = tuesDay.Afternoon_Spare_Slots;
-
-                document.getElementById('tue-EveningStartTime').innerHTML = tuesDay.Evening_Open_Time;
-                document.getElementById('tue-EveningEndTime').innerHTML = tuesDay.Evening_Close_Time;
-                document.getElementById('tue-EveningInterval').innerHTML = tuesDay.Evening_Interval + " mins";
-                document.getElementById('tue-EveningMax').innerHTML = tuesDay.Evening_MaximumSupervisee;
-                document.getElementById('tue-EveningSpare').innerHTML = tuesDay.Evening_Spare_Slots;
-
-                setColspanForClosed("Tuesday", tuesDay.Morning_Is_Closed, tuesDay.Afternoon_Is_Closed, tuesDay.Evening_Is_Closed);
-
-                // WEDNESDAY
-                var wedDay = model.WednesDay;
-                document.getElementById('wed-MorningStartTime').innerHTML = wedDay.Morning_Open_Time;
-                document.getElementById('wed-MorningEndTime').innerHTML = wedDay.Morning_Close_Time;
-                document.getElementById('wed-MorningInterval').innerHTML = wedDay.Morning_Interval + " mins";
-                document.getElementById('wed-MorningMax').innerHTML = wedDay.Morning_MaximumSupervisee;
-                document.getElementById('wed-MorningSpare').innerHTML = wedDay.Morning_Spare_Slots;
-
-                document.getElementById('wed-AfternoonStartTime').innerHTML = wedDay.Afternoon_Open_Time;
-                document.getElementById('wed-AfternoonEndTime').innerHTML = wedDay.Afternoon_Close_Time;
-                document.getElementById('wed-AfternoonInterval').innerHTML = wedDay.Afternoon_Interval + " mins";
-                document.getElementById('wed-AfternoonMax').innerHTML = wedDay.Afternoon_MaximumSupervisee;
-                document.getElementById('wed-AfternoonSpare').innerHTML = wedDay.Afternoon_Spare_Slots;
-
-                document.getElementById('wed-EveningStartTime').innerHTML = wedDay.Evening_Open_Time;
-                document.getElementById('wed-EveningEndTime').innerHTML = wedDay.Evening_Close_Time;
-                document.getElementById('wed-EveningInterval').innerHTML = wedDay.Evening_Interval + " mins";
-                document.getElementById('wed-EveningMax').innerHTML = wedDay.Evening_MaximumSupervisee;
-                document.getElementById('wed-EveningSpare').innerHTML = wedDay.Evening_Spare_Slots;
-
-                setColspanForClosed("Wednesday", wedDay.Morning_Is_Closed, wedDay.Afternoon_Is_Closed, wedDay.Evening_Is_Closed);
-
-                // THURSDAY
-                var thuDay = model.Thursday;
-                document.getElementById('thu-MorningStartTime').innerHTML = thuDay.Morning_Open_Time;
-                document.getElementById('thu-MorningEndTime').innerHTML = thuDay.Morning_Close_Time;
-                document.getElementById('thu-MorningInterval').innerHTML = thuDay.Morning_Interval + " mins";
-                document.getElementById('thu-MorningMax').innerHTML = thuDay.Morning_MaximumSupervisee;
-                document.getElementById('thu-MorningSpare').innerHTML = thuDay.Morning_Spare_Slots;
-
-                document.getElementById('thu-AfternoonStartTime').innerHTML = thuDay.Afternoon_Open_Time;
-                document.getElementById('thu-AfternoonEndTime').innerHTML = thuDay.Afternoon_Close_Time;
-                document.getElementById('thu-AfternoonInterval').innerHTML = thuDay.Afternoon_Interval + " mins";
-                document.getElementById('thu-AfternoonMax').innerHTML = thuDay.Afternoon_MaximumSupervisee;
-                document.getElementById('thu-AfternoonSpare').innerHTML = thuDay.Afternoon_Spare_Slots;
-
-                document.getElementById('thu-EveningStartTime').innerHTML = thuDay.Evening_Open_Time;
-                document.getElementById('thu-EveningEndTime').innerHTML = thuDay.Evening_Close_Time;
-                document.getElementById('thu-EveningInterval').innerHTML = thuDay.Evening_Interval + " mins";
-                document.getElementById('thu-EveningMax').innerHTML = thuDay.Evening_MaximumSupervisee;
-                document.getElementById('thu-EveningSpare').innerHTML = thuDay.Evening_Spare_Slots;
-
-                setColspanForClosed("Thurday", thuDay.Morning_Is_Closed, thuDay.Afternoon_Is_Closed, thuDay.Evening_Is_Closed);
-
-                // FRIDAY
-                var friDay = model.Friday;
-                document.getElementById('fri-MorningStartTime').innerHTML = friDay.Morning_Open_Time;
-                document.getElementById('fri-MorningEndTime').innerHTML = friDay.Morning_Close_Time;
-                document.getElementById('fri-MorningInterval').innerHTML = friDay.Morning_Interval + " mins";
-                document.getElementById('fri-MorningMax').innerHTML = friDay.Morning_MaximumSupervisee;
-                document.getElementById('fri-MorningSpare').innerHTML = friDay.Morning_Spare_Slots;
-
-                document.getElementById('fri-AfternoonStartTime').innerHTML = friDay.Afternoon_Open_Time;
-                document.getElementById('fri-AfternoonEndTime').innerHTML = friDay.Afternoon_Close_Time;
-                document.getElementById('fri-AfternoonInterval').innerHTML = friDay.Afternoon_Interval + " mins";
-                document.getElementById('fri-AfternoonMax').innerHTML = friDay.Afternoon_MaximumSupervisee;
-                document.getElementById('fri-AfternoonSpare').innerHTML = friDay.Afternoon_Spare_Slots;
-
-                document.getElementById('fri-EveningStartTime').innerHTML = friDay.Evening_Open_Time;
-                document.getElementById('fri-EveningEndTime').innerHTML = friDay.Evening_Close_Time;
-                document.getElementById('fri-EveningInterval').innerHTML = friDay.Evening_Interval + " mins";
-                document.getElementById('fri-EveningMax').innerHTML = friDay.Evening_MaximumSupervisee;
-                document.getElementById('fri-EveningSpare').innerHTML = friDay.Evening_Spare_Slots;
-
-                setColspanForClosed("Friday", friDay.Morning_Is_Closed, friDay.Afternoon_Is_Closed, friDay.Evening_Is_Closed);
-
-                // SATTURDAY
-                var satDay = model.Saturday;
-                document.getElementById('sat-MorningStartTime').innerHTML = satDay.Morning_Open_Time;
-                document.getElementById('sat-MorningEndTime').innerHTML = satDay.Morning_Close_Time;
-                document.getElementById('sat-MorningInterval').innerHTML = satDay.Morning_Interval + " mins";
-                document.getElementById('sat-MorningMax').innerHTML = satDay.Morning_MaximumSupervisee;
-                document.getElementById('sat-MorningSpare').innerHTML = satDay.Morning_Spare_Slots;
-
-                document.getElementById('sat-AfternoonStartTime').innerHTML = satDay.Afternoon_Open_Time;
-                document.getElementById('sat-AfternoonEndTime').innerHTML = satDay.Afternoon_Close_Time;
-                document.getElementById('sat-AfternoonInterval').innerHTML = satDay.Afternoon_Interval + " mins";
-                document.getElementById('sat-AfternoonMax').innerHTML = satDay.Afternoon_MaximumSupervisee;
-                document.getElementById('sat-AfternoonSpare').innerHTML = satDay.Afternoon_Spare_Slots;
-
-                document.getElementById('sat-EveningStartTime').innerHTML = satDay.Evening_Open_Time;
-                document.getElementById('sat-EveningEndTime').innerHTML = satDay.Evening_Close_Time;
-                document.getElementById('sat-EveningInterval').innerHTML = satDay.Evening_Interval + " mins";
-                document.getElementById('sat-EveningMax').innerHTML = satDay.Evening_MaximumSupervisee;
-                document.getElementById('sat-EveningSpare').innerHTML = satDay.Evening_Spare_Slots;
-
-                setColspanForClosed("Saturday", satDay.Morning_Is_Closed, satDay.Afternoon_Is_Closed, satDay.Evening_Is_Closed);
-
-                // SUNDAY
-                var sunDay = model.Sunday;
-                document.getElementById('sun-MorningStartTime').innerHTML = sunDay.Morning_Open_Time;
-                document.getElementById('sun-MorningEndTime').innerHTML = sunDay.Morning_Close_Time;
-                document.getElementById('sun-MorningInterval').innerHTML = sunDay.Morning_Interval + " mins";
-                document.getElementById('sun-MorningMax').innerHTML = sunDay.Morning_MaximumSupervisee;
-                document.getElementById('sun-MorningSpare').innerHTML = sunDay.Morning_Spare_Slots;
-
-                document.getElementById('sun-AfternoonStartTime').innerHTML = sunDay.Afternoon_Open_Time;
-                document.getElementById('sun-AfternoonEndTime').innerHTML = sunDay.Afternoon_Close_Time;
-                document.getElementById('sun-AfternoonInterval').innerHTML = sunDay.Afternoon_Interval + " mins";
-                document.getElementById('sun-AfternoonMax').innerHTML = sunDay.Afternoon_MaximumSupervisee;
-                document.getElementById('sun-AfternoonSpare').innerHTML = sunDay.Afternoon_Spare_Slots;
-
-                document.getElementById('sun-EveningStartTime').innerHTML = sunDay.Evening_Open_Time;
-                document.getElementById('sun-EveningEndTime').innerHTML = sunDay.Evening_Close_Time;
-                document.getElementById('sun-EveningInterval').innerHTML = sunDay.Evening_Interval + " mins";
-                document.getElementById('sun-EveningMax').innerHTML = sunDay.Evening_MaximumSupervisee;
-                document.getElementById('sun-EveningSpare').innerHTML = sunDay.Evening_Spare_Slots;
-
-                setColspanForClosed("Sunday", sunDay.Morning_Is_Closed, sunDay.Afternoon_Is_Closed, sunDay.Evening_Is_Closed);
-
-                $('#holidayTable').bootstrapTable({
-                    pagination: true,
-                    pageSize: 5,
-                    columns: [{
-                        field: 'Holiday1',
-                        title: 'Date',
-                        width: '20%',
-                        align: 'center',
-                        formatter: function (value, row, index, field) {
-                            if (value) {
-                                return formatDate(value);
-                            }
-                            return "";
-                        }
-                    }, {
-                        field: 'ShortDesc',
-                        title: 'Short Description',
-                        width: '40%',
-                        align: 'center'
-                    }, {
-                        field: 'Notes',
-                        title: 'Notes',
-                        width: '40%',
-                        align: 'center'
-                    }],
-                    data: model.HoliDays,
-                    onClickRow: onRowClick
-                });
-                $('#holidayTable').on('click', 'tr', function (event) {
-                    //if ($(this).hasClass('active')) {
-                    //    $(this).removeClass('active');
-                    //} else {
-                    $(this).addClass('active').siblings().removeClass('active');
-                    //}
-                });
-
-
-                function onRowClick(row, index) {
-                    var data = JSON.stringify(row);
-                    holidaySelected = row.Holiday1;
-                };
-
-                $('#changeHistoryTable').bootstrapTable({
-                    pagination: true,
-                    pageSize: 5,
-                    columns: [{
-                        field: 'Date',
-                        title: 'Date',
-                        width: '15%',
-                        align: 'center',
-                        formatter: function (value, row, index, field) {
-                            if (value) {
-                                return formatDate(value);
-                            }
-                            return "";
-                        }
-                    }, {
-                        field: 'Officer',
-                        title: 'Officer',
-                        width: '30%',
-                        align: 'center'
-                    }, {
-                        field: 'ChangeDetails',
-                        title: 'Change Details',
-                        width: '55%',
-                        align: 'center'
-                    }],
-                    data: [{
-                        Date: '20/01/2018',
-                        Officer: 'Lenh Ho Xung',
-                        ChangeDetails: 'Changed Monday Afternoon Interval to 45 mins'
-                    }]
-                });
+        api.server.GetSettings(function (data) {
+            model = data;
+            var html = '<tr id="{DayOfWeekTxt}">\
+                            <td style="background-color:gainsboro">{DayOfWeekTxt}</td>\
+                            <td>{Morning_Open_Time}</td>\
+                            <td>{Morning_Close_Time}</td>\
+                            <td>{Morning_MaximumSupervisee}</td>\
+                            <td>{Morning_Spare_Slots}</td>\
+                            <td>{Morning_Interval} mins</td>\
+                            <td>{Afternoon_Open_Time}</td>\
+                            <td>{Afternoon_Close_Time}</td>\
+                            <td>{Afternoon_MaximumSupervisee}</td>\
+                            <td>{Afternoon_Spare_Slots}</td>\
+                            <td>{Afternoon_Interval} mins</td>\
+                            <td>{Evening_Open_Time}</td>\
+                            <td>{Evening_Close_Time}</td>\
+                            <td>{Evening_MaximumSupervisee}</td>\
+                            <td>{Evening_Spare_Slots}</td>\
+                            <td>{Evening_Interval} mins</td>\
+                            <th style="background-color:#808080;cursor:pointer;" onclick="showPopupSettingDetail(\'{DayOfWeekTxt}\');">Edit</th>\
+                    </tr>';
+            if (data.Monday != null) {
+                $('[table-settings]').append(api.DumpDataToTxt(html, data.Monday));
             }
-        };
-        
-        $("#deleteBtn").click(function (e) {
+            if (data.Tuesday != null) {
+                $('[table-settings]').append(api.DumpDataToTxt(html, data.Tuesday));
+            }
 
-            if (holidaySelected) {
-                var re = confirm('Are you sure?', 'Warning');
-                if (re) {
-                    api.server.DeleteHoliday(holidaySelected);
+            if (data.WednesDay != null) {
+                $('[table-settings]').append(api.DumpDataToTxt(html, data.WednesDay));
+            }
+            if (data.Thursday != null) {
+                $('[table-settings]').append(api.DumpDataToTxt(html, data.Thursday));
+            }
+            if (data.Friday != null) {
+                $('[table-settings]').append(api.DumpDataToTxt(html, data.Friday));
+            }
+            if (data.Saturday != null) {
+                $('[table-settings]').append(api.DumpDataToTxt(html, data.Saturday));
+            }
+            if (data.Sunday != null) {
+                $('[table-settings]').append(api.DumpDataToTxt(html, data.Sunday));
+            }
 
-                    model.HoliDays.forEach(function (element, index) {
-                        if (Date.parse(element.Holiday1) == Date.parse(holidaySelected)) {
-                            model.HoliDays.splice(index, 1);
+            $('#holidayTable').bootstrapTable({
+                pagination: true,
+                pageSize: 5,
+                columns: [{
+                    field: 'Holiday1',
+                    title: 'Date',
+                    width: '20%',
+                    align: 'center',
+                    formatter: function (value, row, index, field) {
+                        if (value) {
+                            return formatDate(value);
                         }
-                    });
+                        return "";
+                    }
+                }, {
+                    field: 'ShortDesc',
+                    title: 'Short Description',
+                    width: '40%',
+                    align: 'center'
+                }, {
+                    field: 'Notes',
+                    title: 'Notes',
+                    width: '40%',
+                    align: 'center'
+                }],
+                data: model.HoliDays,
+                onClickRow: onRowClick
+            });
+            $('#holidayTable').on('click', 'tr', function (event) {
+                //if ($(this).hasClass('active')) {
+                //    $(this).removeClass('active');
+                //} else {
+                $(this).addClass('active').siblings().removeClass('active');
+                //}
+            });
 
-                    $('#holidayTable').bootstrapTable('refreshOptions', {
-                        pagination: true,
-                        pageSize: 5,
-                        data: model.HoliDays
-                    });
-                }
-                e.preventDefault();
+
+            function onRowClick(row, index) {
+                var data = JSON.stringify(row);
+                holidaySelected = row.Holiday1;
             };
+
+            $('#changeHistoryTable').bootstrapTable({
+                pagination: true,
+                pageSize: 5,
+                columns: [{
+                    field: 'Date',
+                    title: 'Date',
+                    width: '15%',
+                    align: 'center',
+                    formatter: function (value, row, index, field) {
+                        if (value) {
+                            return formatDate(value);
+                        }
+                        return "";
+                    }
+                }, {
+                    field: 'Officer',
+                    title: 'Officer',
+                    width: '30%',
+                    align: 'center'
+                }, {
+                    field: 'ChangeDetails',
+                    title: 'Change Details',
+                    width: '55%',
+                    align: 'center'
+                }],
+                data: [{
+                    Date: '20/01/2018',
+                    Officer: 'Lenh Ho Xung',
+                    ChangeDetails: 'Changed Monday Afternoon Interval to 45 mins'
+                }]
+            });
         });
 
-        function showPopupSettingDetail(dayOfWeek) {
-            var settingDetail;
-            switch (dayOfWeek) {
-                case "Monday":
-                    model.Monday.DayOfWeek = 2;
-                    settingDetail = model.Monday;
-                    break;
-                case "Tuesday":
-                    model.Tuesday.DayOfWeek = 3;
-                    settingDetail = model.TuesDay;
-                    break;
-                case "Wednesday":
-                    model.WednesDay.DayOfWeek = 4;
-                    settingDetail = model.WednesDay;
-                    break;
-                case "Thurday":
-                    model.Thursday.DayOfWeek = 5;
-                    settingDetail = model.Thursday;
-                    break;
-                case "Friday":
-                    model.Friday.DayOfWeek = 6;
-                    settingDetail = model.Friday;
-                    break;
-                case "Saturday":
-                    model.Saturday.DayOfWeek = 7;
-                    settingDetail = model.Saturday;
-                    break;
-                case "Sunday":
-                    model.Sunday.DayOfWeek = 8;
-                    settingDetail = model.Sunday;
-                    break;
+    });
+
+    function setColspanForClosed(dayOfWeek, isClosedMorning, isClosedAfternoon, isClosedEvening) {
+        var row = document.getElementById(dayOfWeek);
+
+        if (isClosedMorning == true && isClosedAfternoon == true && isClosedEvening == true) {
+            row.cells[1].colSpan = 15;
+            row.cells[1].innerHTML = 'Closed';
+            for (i = 1; i < 15; i++) {
+                row.deleteCell(2);
+            };
+        } else if (isClosedMorning == true && isClosedAfternoon == true) {
+            row.cells[1].colSpan = 10;
+            row.cells[1].innerHTML = 'Closed';
+            for (i = 1; i < 10; i++) {
+                row.deleteCell(2);
+            };
+        } else if (isClosedAfternoon == true && isClosedEvening == true) {
+            row.cells[6].colSpan = 10;
+            row.cells[6].innerHTML = 'Closed';
+            for (i = 1; i < 10; i++) {
+                row.deleteCell(7);
+            };
+        } else if (isClosedAfternoon == false) {
+            if (isClosedMorning == true && isClosedEvening == true) {
+                row.cells[1].colSpan = 5;
+                row.cells[1].innerHTML = 'Closed';
+                for (i = 1; i < 5; i++) {
+                    row.deleteCell(2);
+                };
+
+                row.cells[7].colSpan = 5;
+                row.cells[7].innerHTML = 'Closed';
+                for (i = 1; i < 5; i++) {
+                    row.deleteCell(8);
+                };
+            } else if (isClosedEvening == true) {
+                row.cells[11].colSpan = 5;
+                row.cells[11].innerHTML = 'Closed';
+                for (i = 1; i < 5; i++) {
+                    row.deleteCell(12);
+                };
+            } else if (isClosedMorning == true) {
+                row.cells[1].colSpan = 5;
+                row.cells[1].innerHTML = 'Closed';
+                for (i = 1; i < 5; i++) {
+                    row.deleteCell(2);
+                };
+            };
+        } else {
+            row.cells[6].colSpan = 5;
+            row.cells[6].innerHTML = 'Closed';
+            for (i = 1; i < 5; i++) {
+                row.deleteCell(7);
+            };
+        };
+    };
+
+
+    function getDataCallback(response) {
+        model = JSON.parse(response);
+
+        if (model) {
+
+            // MONDAY
+            var monday = model.Monday;
+            //if (monday.Morning_Open_Time) {
+            //    var monStart = monday.StartTime.split(':');
+            //    $('#mon-MorningStartTime').val(monStart[0]);
+            //    $('#mon-start-MM').val(monStart[1]);
+            //    $('#mon-start-XM').val(monStart[2]);
+            //}
+
+            //if (monday.Morning_Close_Time) {
+            //    var monEnd = monday.EndTime.split(':');
+            //    $('#mon-end-HH').val(monEnd[0]);
+            //    $('#mon-end-MM').val(monEnd[1]);
+            //    $('#mon-end-XM').val(monEnd[2]);
+            //}
+            document.getElementById('mon-MorningStartTime').innerHTML = monday.Morning_Open_Time;
+            document.getElementById('mon-MorningEndTime').innerHTML = monday.Morning_Close_Time;
+            document.getElementById('mon-MorningInterval').innerHTML = monday.Morning_Interval + " mins";
+            document.getElementById('mon-MorningMax').innerHTML = monday.Morning_MaximumSupervisee;
+            document.getElementById('mon-MorningSpare').innerHTML = monday.Morning_Spare_Slots;
+
+            document.getElementById('mon-AfternoonStartTime').innerHTML = monday.Afternoon_Open_Time;
+            document.getElementById('mon-AfternoonEndTime').innerHTML = monday.Afternoon_Close_Time;
+            document.getElementById('mon-AfternoonInterval').innerHTML = monday.Afternoon_Interval + " mins";
+            document.getElementById('mon-AfternoonMax').innerHTML = monday.Afternoon_MaximumSupervisee;
+            document.getElementById('mon-AfternoonSpare').innerHTML = monday.Afternoon_Spare_Slots;
+
+            document.getElementById('mon-EveningStartTime').innerHTML = monday.Evening_Open_Time;
+            document.getElementById('mon-EveningEndTime').innerHTML = monday.Evening_Close_Time;
+            document.getElementById('mon-EveningInterval').innerHTML = monday.Evening_Interval + " mins";
+            document.getElementById('mon-EveningMax').innerHTML = monday.Evening_MaximumSupervisee;
+            document.getElementById('mon-EveningSpare').innerHTML = monday.Evening_Spare_Slots;
+
+            setColspanForClosed("Monday", monday.Morning_Is_Closed, monday.Afternoon_Is_Closed, monday.Evening_Is_Closed);
+
+            // TUEDAY
+            var tuesDay = model.Tuesday;
+            document.getElementById('tue-MorningStartTime').innerHTML = tuesDay.Morning_Open_Time;
+            document.getElementById('tue-MorningEndTime').innerHTML = tuesDay.Morning_Close_Time;
+            document.getElementById('tue-MorningInterval').innerHTML = tuesDay.Morning_Interval + " mins";
+            document.getElementById('tue-MorningMax').innerHTML = tuesDay.Morning_MaximumSupervisee;
+            document.getElementById('tue-MorningSpare').innerHTML = tuesDay.Morning_Spare_Slots;
+
+            document.getElementById('tue-AfternoonStartTime').innerHTML = tuesDay.Afternoon_Open_Time;
+            document.getElementById('tue-AfternoonEndTime').innerHTML = tuesDay.Afternoon_Close_Time;
+            document.getElementById('tue-AfternoonInterval').innerHTML = tuesDay.Afternoon_Interval + " mins";
+            document.getElementById('tue-AfternoonMax').innerHTML = tuesDay.Afternoon_MaximumSupervisee;
+            document.getElementById('tue-AfternoonSpare').innerHTML = tuesDay.Afternoon_Spare_Slots;
+
+            document.getElementById('tue-EveningStartTime').innerHTML = tuesDay.Evening_Open_Time;
+            document.getElementById('tue-EveningEndTime').innerHTML = tuesDay.Evening_Close_Time;
+            document.getElementById('tue-EveningInterval').innerHTML = tuesDay.Evening_Interval + " mins";
+            document.getElementById('tue-EveningMax').innerHTML = tuesDay.Evening_MaximumSupervisee;
+            document.getElementById('tue-EveningSpare').innerHTML = tuesDay.Evening_Spare_Slots;
+
+            setColspanForClosed("Tuesday", tuesDay.Morning_Is_Closed, tuesDay.Afternoon_Is_Closed, tuesDay.Evening_Is_Closed);
+
+            // WEDNESDAY
+            var wedDay = model.WednesDay;
+            document.getElementById('wed-MorningStartTime').innerHTML = wedDay.Morning_Open_Time;
+            document.getElementById('wed-MorningEndTime').innerHTML = wedDay.Morning_Close_Time;
+            document.getElementById('wed-MorningInterval').innerHTML = wedDay.Morning_Interval + " mins";
+            document.getElementById('wed-MorningMax').innerHTML = wedDay.Morning_MaximumSupervisee;
+            document.getElementById('wed-MorningSpare').innerHTML = wedDay.Morning_Spare_Slots;
+
+            document.getElementById('wed-AfternoonStartTime').innerHTML = wedDay.Afternoon_Open_Time;
+            document.getElementById('wed-AfternoonEndTime').innerHTML = wedDay.Afternoon_Close_Time;
+            document.getElementById('wed-AfternoonInterval').innerHTML = wedDay.Afternoon_Interval + " mins";
+            document.getElementById('wed-AfternoonMax').innerHTML = wedDay.Afternoon_MaximumSupervisee;
+            document.getElementById('wed-AfternoonSpare').innerHTML = wedDay.Afternoon_Spare_Slots;
+
+            document.getElementById('wed-EveningStartTime').innerHTML = wedDay.Evening_Open_Time;
+            document.getElementById('wed-EveningEndTime').innerHTML = wedDay.Evening_Close_Time;
+            document.getElementById('wed-EveningInterval').innerHTML = wedDay.Evening_Interval + " mins";
+            document.getElementById('wed-EveningMax').innerHTML = wedDay.Evening_MaximumSupervisee;
+            document.getElementById('wed-EveningSpare').innerHTML = wedDay.Evening_Spare_Slots;
+
+            setColspanForClosed("Wednesday", wedDay.Morning_Is_Closed, wedDay.Afternoon_Is_Closed, wedDay.Evening_Is_Closed);
+
+            // THURSDAY
+            var thuDay = model.Thursday;
+            document.getElementById('thu-MorningStartTime').innerHTML = thuDay.Morning_Open_Time;
+            document.getElementById('thu-MorningEndTime').innerHTML = thuDay.Morning_Close_Time;
+            document.getElementById('thu-MorningInterval').innerHTML = thuDay.Morning_Interval + " mins";
+            document.getElementById('thu-MorningMax').innerHTML = thuDay.Morning_MaximumSupervisee;
+            document.getElementById('thu-MorningSpare').innerHTML = thuDay.Morning_Spare_Slots;
+
+            document.getElementById('thu-AfternoonStartTime').innerHTML = thuDay.Afternoon_Open_Time;
+            document.getElementById('thu-AfternoonEndTime').innerHTML = thuDay.Afternoon_Close_Time;
+            document.getElementById('thu-AfternoonInterval').innerHTML = thuDay.Afternoon_Interval + " mins";
+            document.getElementById('thu-AfternoonMax').innerHTML = thuDay.Afternoon_MaximumSupervisee;
+            document.getElementById('thu-AfternoonSpare').innerHTML = thuDay.Afternoon_Spare_Slots;
+
+            document.getElementById('thu-EveningStartTime').innerHTML = thuDay.Evening_Open_Time;
+            document.getElementById('thu-EveningEndTime').innerHTML = thuDay.Evening_Close_Time;
+            document.getElementById('thu-EveningInterval').innerHTML = thuDay.Evening_Interval + " mins";
+            document.getElementById('thu-EveningMax').innerHTML = thuDay.Evening_MaximumSupervisee;
+            document.getElementById('thu-EveningSpare').innerHTML = thuDay.Evening_Spare_Slots;
+
+            setColspanForClosed("Thurday", thuDay.Morning_Is_Closed, thuDay.Afternoon_Is_Closed, thuDay.Evening_Is_Closed);
+
+            // FRIDAY
+            var friDay = model.Friday;
+            document.getElementById('fri-MorningStartTime').innerHTML = friDay.Morning_Open_Time;
+            document.getElementById('fri-MorningEndTime').innerHTML = friDay.Morning_Close_Time;
+            document.getElementById('fri-MorningInterval').innerHTML = friDay.Morning_Interval + " mins";
+            document.getElementById('fri-MorningMax').innerHTML = friDay.Morning_MaximumSupervisee;
+            document.getElementById('fri-MorningSpare').innerHTML = friDay.Morning_Spare_Slots;
+
+            document.getElementById('fri-AfternoonStartTime').innerHTML = friDay.Afternoon_Open_Time;
+            document.getElementById('fri-AfternoonEndTime').innerHTML = friDay.Afternoon_Close_Time;
+            document.getElementById('fri-AfternoonInterval').innerHTML = friDay.Afternoon_Interval + " mins";
+            document.getElementById('fri-AfternoonMax').innerHTML = friDay.Afternoon_MaximumSupervisee;
+            document.getElementById('fri-AfternoonSpare').innerHTML = friDay.Afternoon_Spare_Slots;
+
+            document.getElementById('fri-EveningStartTime').innerHTML = friDay.Evening_Open_Time;
+            document.getElementById('fri-EveningEndTime').innerHTML = friDay.Evening_Close_Time;
+            document.getElementById('fri-EveningInterval').innerHTML = friDay.Evening_Interval + " mins";
+            document.getElementById('fri-EveningMax').innerHTML = friDay.Evening_MaximumSupervisee;
+            document.getElementById('fri-EveningSpare').innerHTML = friDay.Evening_Spare_Slots;
+
+            setColspanForClosed("Friday", friDay.Morning_Is_Closed, friDay.Afternoon_Is_Closed, friDay.Evening_Is_Closed);
+
+            // SATTURDAY
+            var satDay = model.Saturday;
+            document.getElementById('sat-MorningStartTime').innerHTML = satDay.Morning_Open_Time;
+            document.getElementById('sat-MorningEndTime').innerHTML = satDay.Morning_Close_Time;
+            document.getElementById('sat-MorningInterval').innerHTML = satDay.Morning_Interval + " mins";
+            document.getElementById('sat-MorningMax').innerHTML = satDay.Morning_MaximumSupervisee;
+            document.getElementById('sat-MorningSpare').innerHTML = satDay.Morning_Spare_Slots;
+
+            document.getElementById('sat-AfternoonStartTime').innerHTML = satDay.Afternoon_Open_Time;
+            document.getElementById('sat-AfternoonEndTime').innerHTML = satDay.Afternoon_Close_Time;
+            document.getElementById('sat-AfternoonInterval').innerHTML = satDay.Afternoon_Interval + " mins";
+            document.getElementById('sat-AfternoonMax').innerHTML = satDay.Afternoon_MaximumSupervisee;
+            document.getElementById('sat-AfternoonSpare').innerHTML = satDay.Afternoon_Spare_Slots;
+
+            document.getElementById('sat-EveningStartTime').innerHTML = satDay.Evening_Open_Time;
+            document.getElementById('sat-EveningEndTime').innerHTML = satDay.Evening_Close_Time;
+            document.getElementById('sat-EveningInterval').innerHTML = satDay.Evening_Interval + " mins";
+            document.getElementById('sat-EveningMax').innerHTML = satDay.Evening_MaximumSupervisee;
+            document.getElementById('sat-EveningSpare').innerHTML = satDay.Evening_Spare_Slots;
+
+            setColspanForClosed("Saturday", satDay.Morning_Is_Closed, satDay.Afternoon_Is_Closed, satDay.Evening_Is_Closed);
+
+            // SUNDAY
+            var sunDay = model.Sunday;
+            document.getElementById('sun-MorningStartTime').innerHTML = sunDay.Morning_Open_Time;
+            document.getElementById('sun-MorningEndTime').innerHTML = sunDay.Morning_Close_Time;
+            document.getElementById('sun-MorningInterval').innerHTML = sunDay.Morning_Interval + " mins";
+            document.getElementById('sun-MorningMax').innerHTML = sunDay.Morning_MaximumSupervisee;
+            document.getElementById('sun-MorningSpare').innerHTML = sunDay.Morning_Spare_Slots;
+
+            document.getElementById('sun-AfternoonStartTime').innerHTML = sunDay.Afternoon_Open_Time;
+            document.getElementById('sun-AfternoonEndTime').innerHTML = sunDay.Afternoon_Close_Time;
+            document.getElementById('sun-AfternoonInterval').innerHTML = sunDay.Afternoon_Interval + " mins";
+            document.getElementById('sun-AfternoonMax').innerHTML = sunDay.Afternoon_MaximumSupervisee;
+            document.getElementById('sun-AfternoonSpare').innerHTML = sunDay.Afternoon_Spare_Slots;
+
+            document.getElementById('sun-EveningStartTime').innerHTML = sunDay.Evening_Open_Time;
+            document.getElementById('sun-EveningEndTime').innerHTML = sunDay.Evening_Close_Time;
+            document.getElementById('sun-EveningInterval').innerHTML = sunDay.Evening_Interval + " mins";
+            document.getElementById('sun-EveningMax').innerHTML = sunDay.Evening_MaximumSupervisee;
+            document.getElementById('sun-EveningSpare').innerHTML = sunDay.Evening_Spare_Slots;
+
+            setColspanForClosed("Sunday", sunDay.Morning_Is_Closed, sunDay.Afternoon_Is_Closed, sunDay.Evening_Is_Closed);
+
+            $('#holidayTable').bootstrapTable({
+                pagination: true,
+                pageSize: 5,
+                columns: [{
+                    field: 'Holiday1',
+                    title: 'Date',
+                    width: '20%',
+                    align: 'center',
+                    formatter: function (value, row, index, field) {
+                        if (value) {
+                            return formatDate(value);
+                        }
+                        return "";
+                    }
+                }, {
+                    field: 'ShortDesc',
+                    title: 'Short Description',
+                    width: '40%',
+                    align: 'center'
+                }, {
+                    field: 'Notes',
+                    title: 'Notes',
+                    width: '40%',
+                    align: 'center'
+                }],
+                data: model.HoliDays,
+                onClickRow: onRowClick
+            });
+            $('#holidayTable').on('click', 'tr', function (event) {
+                //if ($(this).hasClass('active')) {
+                //    $(this).removeClass('active');
+                //} else {
+                $(this).addClass('active').siblings().removeClass('active');
+                //}
+            });
+
+
+            function onRowClick(row, index) {
+                var data = JSON.stringify(row);
+                holidaySelected = row.Holiday1;
+            };
+
+            $('#changeHistoryTable').bootstrapTable({
+                pagination: true,
+                pageSize: 5,
+                columns: [{
+                    field: 'Date',
+                    title: 'Date',
+                    width: '15%',
+                    align: 'center',
+                    formatter: function (value, row, index, field) {
+                        if (value) {
+                            return formatDate(value);
+                        }
+                        return "";
+                    }
+                }, {
+                    field: 'Officer',
+                    title: 'Officer',
+                    width: '30%',
+                    align: 'center'
+                }, {
+                    field: 'ChangeDetails',
+                    title: 'Change Details',
+                    width: '55%',
+                    align: 'center'
+                }],
+                data: [{
+                    Date: '20/01/2018',
+                    Officer: 'Lenh Ho Xung',
+                    ChangeDetails: 'Changed Monday Afternoon Interval to 45 mins'
+                }]
+            });
+        }
+    };
+
+    $("#deleteBtn").click(function (e) {
+
+        if (holidaySelected) {
+            var re = confirm('Are you sure?', 'Warning');
+            if (re) {
+                api.server.DeleteHoliday(holidaySelected);
+
+                model.HoliDays.forEach(function (element, index) {
+                    if (Date.parse(element.Holiday1) == Date.parse(holidaySelected)) {
+                        model.HoliDays.splice(index, 1);
+                    }
+                });
+
+                $('#holidayTable').bootstrapTable('refreshOptions', {
+                    pagination: true,
+                    pageSize: 5,
+                    data: model.HoliDays
+                });
             }
-
-            var data = JSON.stringify(settingDetail);
-            api.server.PopupEditOperationalDate(data, function () { $('#idEditOperationalDate').modal(); });
+            e.preventDefault();
         };
+    });
 
-        function formatDate(strDate) {
-            var date = new Date(Date.parse(strDate)),
-                year = date.getFullYear(),
-                month = (date.getMonth() + 1).toString(),
-                formatedMonth = (month.length === 1) ? ("0" + month) : month,
-                day = date.getDate().toString(),
-                formatedDay = (day.length === 1) ? ("0" + day) : day;
-            return formatedDay + "/" + formatedMonth + "/" + year;
-        };
+    function showPopupSettingDetail(dayOfWeek) {
+        //alert(dayOfWeek);
+        //var settingDetail;
+        //switch (dayOfWeek) {
+        //    case "Monday":
+        //        model.Monday.DayOfWeek = 2;
+        //        settingDetail = model.Monday;
+        //        break;
+        //    case "Tuesday":
+        //        model.Tuesday.DayOfWeek = 3;
+        //        settingDetail = model.Tuesday;
+        //        break;
+        //    case "Wednesday":
+        //        model.WednesDay.DayOfWeek = 4;
+        //        settingDetail = model.WednesDay;
+        //        break;
+        //    case "Thurday":
+        //        model.Thursday.DayOfWeek = 5;
+        //        settingDetail = model.Thursday;
+        //        break;
+        //    case "Friday":
+        //        model.Friday.DayOfWeek = 6;
+        //        settingDetail = model.Friday;
+        //        break;
+        //    case "Saturday":
+        //        model.Saturday.DayOfWeek = 7;
+        //        settingDetail = model.Saturday;
+        //        break;
+        //    case "Sunday":
+        //        model.Sunday.DayOfWeek = 8;
+        //        settingDetail = model.Sunday;
+        //        break;
+        //}
 
-        function showMessageBox(message) {
-            alert(message);
-        };
+        var data = JSON.stringify(model[dayOfWeek]);
+        api.server.PopupEditOperationalDate(data, function () { $('#idEditOperationalDate').modal(); });
+    };
 
-    </script>
+    function formatDate(strDate) {
+        var date = new Date(Date.parse(strDate)),
+            year = date.getFullYear(),
+            month = (date.getMonth() + 1).toString(),
+            formatedMonth = (month.length === 1) ? ("0" + month) : month,
+            day = date.getDate().toString(),
+            formatedDay = (day.length === 1) ? ("0" + day) : day;
+        return formatedDay + "/" + formatedMonth + "/" + year;
+    };
+
+    function showMessageBox(message) {
+        alert(message);
+    };
+
+</script>
