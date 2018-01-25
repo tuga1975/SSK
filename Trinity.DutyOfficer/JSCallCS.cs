@@ -60,13 +60,6 @@ namespace DutyOfficer
 
         public object getDataQueue()
         {
-            MemberInfo[] members = typeof(EnumQueueStatuses).GetMembers(
-                BindingFlags.Public |
-                BindingFlags.NonPublic |
-                BindingFlags.Static |
-                BindingFlags.Instance |
-                BindingFlags.DeclaredOnly);
-
             var data = new DAL_QueueNumber().GetAllQueueByDateIncludeDetail(DateTime.Now.Date)
                 .Select(queue => new
                 {
