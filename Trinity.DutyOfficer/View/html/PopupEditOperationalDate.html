@@ -239,6 +239,7 @@
         $('#evening-Closed').prop('checked', model.Evening_Is_Closed);
     });
 
+    var operationSetting;
     $("#EditBtn").click(function (e) {
         var dayOfWeek;
         switch ($('#dayOfWeek').val()) {
@@ -295,6 +296,7 @@
             Evening_Interval: $('#evening-interval').val(),
             Evening_Is_Closed: $('#evening-Closed').is(":checked")
         };
+        operationSetting = model;
 
         var data = JSON.stringify(model);
         api.server.UpdateOperationSetting(data);

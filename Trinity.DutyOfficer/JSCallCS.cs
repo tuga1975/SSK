@@ -135,14 +135,27 @@ namespace DutyOfficer
             model.Last_Updated_Date = DateTime.Now;
 
             var dalSetting = new DAL_Setting();
-            if (dalSetting.SaveOperationSetting(model))
+            CheckWarningSaveSetting checkWarningSaveSetting = dalSetting.CheckWarningSaveSetting((EnumDayOfWeek)model.DayOfWeek);
+            if (checkWarningSaveSetting != null && checkWarningSaveSetting.arrayDetail.Count > 0)
             {
-                //_web.InvokeScript("showMessageBox", "Update successful!");
+                session[CommonConstants.SETTING_DETAIL] = model;
+                // Show popup confirm with list Supervisee have appointment
+                this._web.LoadPopupHtml("PopupConfirmDeleteAppointment.html", checkWarningSaveSetting);
             }
-            //else
-            //{
-            //    _web.InvokeScript("showMessageBox", "Update faied!");
-            //}
+            else
+            {
+                dalSetting.UpdateSettingAndTimeSlot(checkWarningSaveSetting, model);
+            }            
+        }
+
+        public void UpdateSettingAndTimeslot(string jsonCheckWarningSaveSetting, string jsonModel)
+        {
+            //var settingDetail = JsonConvert.DeserializeObject<Trinity.BE.SettingDetails>(jsonModel);
+            Session session = Session.Instance;
+            var settingDetail = (SettingDetails)session[CommonConstants.SETTING_DETAIL];
+            var checkWarningSaveSetting = JsonConvert.DeserializeObject<Trinity.BE.CheckWarningSaveSetting>(jsonCheckWarningSaveSetting);
+            var dalSetting = new DAL_Setting();
+            dalSetting.UpdateSettingAndTimeSlot(checkWarningSaveSetting, settingDetail);
         }
 
         public void AddHoliday(string json)

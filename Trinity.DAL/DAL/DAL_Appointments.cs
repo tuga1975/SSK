@@ -266,7 +266,7 @@ namespace Trinity.DAL
         public Timeslot GetTimeslotNearest()
         {
             DateTime currentDate = DateTime.Now;
-            return _localUnitOfWork.DataContext.Timeslots.Where(t => DbFunctions.TruncateTime(t.Date) >= currentDate.Date && t.StartTime.Value.Hours >= currentDate.Hour).OrderBy(t => t.Date).ThenBy(t => t.StartTime).FirstOrDefault();
+            return _localUnitOfWork.DataContext.Timeslots.Where(t => DbFunctions.TruncateTime(t.Date) >= currentDate.Date && t.StartTime.Value >= currentDate.TimeOfDay).OrderBy(t => t.Date).ThenBy(t => t.StartTime).FirstOrDefault();
         }
 
         public Appointment UpdateTimeslotForAppointment(Guid appointmentId, int timeslotID)
