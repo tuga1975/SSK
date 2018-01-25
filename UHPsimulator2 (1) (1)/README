@@ -1,0 +1,46 @@
+Directory content:
+1) uhpSim - simulator solution files
+2) SQL - create SQL selectments to build DB
+3) DO - html5 front end to display notices
+
+
+JSON formats:
+
+Notifications 
+===============
+(recieve)
+source : UHP
+type : notification|error
+Content: Workflow 999 Started - Sample inserted for JOHN DOE S9912345A
+Datetime: 1/11/2017 2:00:00 PM
+notification_code UHP_0000
+
+(return)
+Ok
+
+
+DrugResult
+===========
+(recieve)
+markingnumber : PSA17000806
+
+(return)
+result : Positive | Negative
+NRIC : S12345678A
+timestamp : 2017-12-19
+markingnumber : PSA17000806
+AMPH : Positive | Negative
+BENZ : Positive | Negative
+OPI : Positive | Negative
+THC : Positive | Negative
+COCA : Positive | Negative
+BARB : Positive | Negative
+LSD : Positive | Negative
+METH : Positive | Negative
+MTQL : Positive | Negative
+PCP : Positive | Negative
+KET : Positive | Negative
+BUPRE : Positive | Negative
+CAT : Positive | Negative
+PPZ : Positive | Negative
+NPS : Positive | Negative
