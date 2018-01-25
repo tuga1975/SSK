@@ -19,7 +19,7 @@ namespace Trinity.BE
         public string Email { get; set; }
         public string UserName { get; set; }
         public DateTime Date { get; set; }
-        public int Timeslot_ID { get; set; }
+        public string Timeslot_ID { get; set; }
         public TimeSpan StartTime { get; set; }
         public TimeSpan EndTime { get; set; }
         public Nullable<Guid> Queue_ID { get; set; }

@@ -177,7 +177,7 @@ namespace Trinity.BE
     }
     public class TimeslotDetails
     {
-        public int Timeslot_ID { get; set; }
+        public string Timeslot_ID { get; set; }
 
         public Nullable<System.TimeSpan> StartTime { get; set; }
         public Nullable<System.TimeSpan> EndTime { get; set; }

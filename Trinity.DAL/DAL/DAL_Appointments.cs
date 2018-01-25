@@ -57,7 +57,7 @@ namespace Trinity.DAL
 
         public List<Appointment> GetAllCurrentTimeslotAppointment(TimeSpan currentTime)
         {
-            return _localUnitOfWork.DataContext.Appointments.Include("Queues").Include("Timeslot").Where(d => d.Date == DateTime.Today && d.Timeslot_ID.HasValue && d.Timeslot.StartTime.Value == currentTime && d.Queues.Any(q => q.Appointment_ID == d.ID) == false).OrderBy(d => d.Date).ToList();
+            return _localUnitOfWork.DataContext.Appointments.Include("Queues").Include("Timeslot").Where(d => d.Date == DateTime.Today && !string.IsNullOrEmpty(d.Timeslot_ID) && d.Timeslot.StartTime.Value == currentTime && d.Queues.Any(q => q.Appointment_ID == d.ID) == false).OrderBy(d => d.Date).ToList();
 
         }
 
@@ -150,7 +150,7 @@ namespace Trinity.DAL
             try
             {
 
-                var lstModels = _localUnitOfWork.DataContext.Appointments.Include("Timeslots").Include("Membership_Users").Where(d => d.Timeslot_ID.HasValue).OrderBy(d => d.Timeslot.StartTime).Select(d => new BE.Appointment()
+                var lstModels = _localUnitOfWork.DataContext.Appointments.Include("Timeslots").Include("Membership_Users").Where(d => !string.IsNullOrEmpty(d.Timeslot_ID)).OrderBy(d => d.Timeslot.StartTime).Select(d => new BE.Appointment()
                 {
                     NRIC = d.Membership_Users.NRIC,
                     Name = d.Membership_Users.Name,
@@ -186,7 +186,7 @@ namespace Trinity.DAL
         public List<BE.Statistics> GetAllStatistics()
         {
             //var model = _localUnitOfWork.DataContext.Timeslots.Include("Appointments")
-            var model = _localUnitOfWork.DataContext.Appointments.Include("Timeslots").Where(d => d.Timeslot_ID.HasValue).Select(d => new
+            var model = _localUnitOfWork.DataContext.Appointments.Include("Timeslots").Where(d => !string.IsNullOrEmpty(d.Timeslot_ID)).Select(d => new
             {
                 Timeslot_ID = d.Timeslot_ID,
                 StartTime = d.Timeslot.StartTime,
@@ -194,7 +194,7 @@ namespace Trinity.DAL
                 Date = d.Date
             }).Distinct().Select(d => new BE.Statistics()
             {
-                Timeslot_ID = d.Timeslot_ID.Value,
+                Timeslot_ID = d.Timeslot_ID,
                 StartTime = d.StartTime,
                 EndTime = d.EndTime,
                 Date = d.Date
@@ -217,22 +217,22 @@ namespace Trinity.DAL
             return model.ToList();
         }
 
-        public int CountAppointmentBookedByTimeslot(int timeslotID)
+        public int CountAppointmentBookedByTimeslot(string timeslotID)
         {
             return _localUnitOfWork.DataContext.Appointments.Count(a => a.Timeslot_ID == timeslotID && a.Status == (int)EnumAppointmentStatuses.Booked);
         }
 
-        public int CountAppointmentReportedByTimeslot(int timeslotID)
+        public int CountAppointmentReportedByTimeslot(string timeslotID)
         {
             return _localUnitOfWork.DataContext.Appointments.Count(a => a.Timeslot_ID == timeslotID && a.Status == (int)EnumAppointmentStatuses.Reported);
         }
 
-        public int CountAppointmentNoShowByTimeslot(int timeslotID)
+        public int CountAppointmentNoShowByTimeslot(string timeslotID)
         {
             return _localUnitOfWork.DataContext.Appointments.Count(a => a.Timeslot_ID == timeslotID && a.Status != (int)EnumAppointmentStatuses.Booked && a.Status != (int)EnumAppointmentStatuses.Reported);
         }
 
-        public int GetMaximumNumberOfTimeslot(int timeslotID)
+        public int GetMaximumNumberOfTimeslot(string timeslotID)
         {
             try
             {

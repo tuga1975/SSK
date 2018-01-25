@@ -135,10 +135,10 @@ namespace DutyOfficer
             model.Last_Updated_Date = DateTime.Now;
 
             var dalSetting = new DAL_Setting();
-            if (dalSetting.SaveOperationSetting(model))
-            {
-                //_web.InvokeScript("showMessageBox", "Update successful!");
-            }
+            //if (dalSetting.SaveOperationSetting(model))
+            //{
+            //    //_web.InvokeScript("showMessageBox", "Update successful!");
+            //}
             //else
             //{
             //    _web.InvokeScript("showMessageBox", "Update faied!");
