@@ -10,6 +10,11 @@ namespace Trinity.BE
     [Serializable]
     public class CheckWarningSaveSetting
     {
+        public List<CheckWarningSaveSettingDetail> arrayDetail = new List<CheckWarningSaveSettingDetail>();
+        public bool isDeleteTimeSlot = false;
+    }
+    public class CheckWarningSaveSettingDetail
+    {
         public string UserId { get; set; }
         public string Email { get; set; }
         public string UserName { get; set; }
@@ -18,7 +23,6 @@ namespace Trinity.BE
         public TimeSpan StartTime { get; set; }
         public TimeSpan EndTime { get; set; }
         public Nullable<Guid> Queue_ID { get; set; }
-
+        public Guid AppointmentID { get; set; }
     }
-    
 }
