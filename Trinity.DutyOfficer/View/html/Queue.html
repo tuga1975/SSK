@@ -2,7 +2,6 @@
 <script type="text/javascript">
 
     activemenu('Queue');
-
     api.server.getDataQueue(function (data) {
         $('#table-queue').bootstrapTable({
             search: true,
@@ -13,6 +12,10 @@
                 if (field == 'Message') {
                     api.server.LoadPopupQueue(function () {
                         $('#idQueue').modal();
+                    });
+                } else if (field == "HSA" && $.trim(value).length>0) {
+                    api.server.LoadDrugsTest(row.Date, row.UserId, function () {
+                        $('#idQueueDrugs').modal();
                     });
                 }
             },

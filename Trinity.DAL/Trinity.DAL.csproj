@@ -109,6 +109,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DAL\DAL_DrugResults.cs" />
     <Compile Include="DAL\DAL_Address.cs" />
     <Compile Include="DAL\DAL_DeviceStatus.cs" />
     <Compile Include="DAL\DAL_Timeslots.cs" />

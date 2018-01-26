@@ -320,7 +320,7 @@ public static class EnumStations
 
     public static List<string> GetListStation()
     {
-        return new List<string>() { SSK, SSA, UHP, APS, HSA, ESP };
+        return new List<string>() { SSK, SSA, UHP, APS, HSA, ESP, ENROLMENT,DUTYOFFICER };
     }
 
 }
