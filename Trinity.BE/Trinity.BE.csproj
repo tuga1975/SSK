@@ -53,9 +53,10 @@
     <OutputPath>bin\x64\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\x64\Release\</OutputPath>
@@ -85,6 +86,7 @@
     <Compile Include="Holiday.cs" />
     <Compile Include="IssueCard.cs" />
     <Compile Include="Label.cs" />
+    <Compile Include="OperationSettings_ChangeHist.cs" />
     <Compile Include="QueueNumber.cs" />
     <Compile Include="EnvironmentTime.cs" />
     <Compile Include="Notification.cs" />

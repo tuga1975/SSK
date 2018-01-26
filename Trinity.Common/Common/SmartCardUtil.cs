@@ -193,11 +193,12 @@ namespace Trinity.Common
         }
     }
 
-    public class SuperviseeCardInfo
+    public class PrintAndWriteSmartCardInfo
     {
         public string FrontCardImagePath { get; set; }
         public string BackCardImagePath { get; set; }
         public SuperviseeBiodata SuperviseeBiodata { get; set; }
+        public DutyOfficerData DutyOfficerData { get; set; }
     }
 
     public class PrintAndWriteCardResult

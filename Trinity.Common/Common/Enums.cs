@@ -283,6 +283,11 @@ public static class EnumDeviceNames
     {
         get { return ConfigurationManager.AppSettings["SmartCardPrinterSerialNumber"]; }
     }
+
+    public static string SmartCardPrinterName
+    {
+        get { return ConfigurationManager.AppSettings["SmartCardPrinterName"]; }
+    }
 }
 
 public static class NotificationType
@@ -306,7 +311,7 @@ public static class EnumStations
 
     public static List<string> GetListStation()
     {
-        return new List<string>() { SSK, SSA, UHP, APS, HSA, ESP };
+        return new List<string>() { SSK, SSA, UHP, APS, HSA, ESP, ENROLMENT,DUTYOFFICER };
     }
 
 }

@@ -472,7 +472,7 @@ namespace Enrolment
                 new System.Drawing.Bitmap(new System.IO.MemoryStream(Convert.FromBase64String(backBase64))).Save(ImgBack);
             }
 
-            SuperviseeCardInfo infoPrinter = new SuperviseeCardInfo()
+            PrintAndWriteSmartCardInfo infoPrinter = new PrintAndWriteSmartCardInfo()
             {
                 BackCardImagePath = ImgBack,
                 FrontCardImagePath = ImgFront,
@@ -484,7 +484,7 @@ namespace Enrolment
                 }
             };
 
-            Trinity.Common.Utils.SmartCardPrinterUtils.Instance.PrintAndWriteSuperviseeSmartCard(infoPrinter, OnNewCardPrintedSuccessfully);
+            Trinity.Common.Utils.SmartCardPrinterUtils.Instance.PrintAndWriteSmartCard(infoPrinter, OnNewCardPrintedSuccessfully);
         }
         private void OnNewCardPrintedSuccessfully(PrintAndWriteCardResult result)
         {
@@ -780,7 +780,7 @@ namespace Enrolment
             Session session = Session.Instance;
             var userLogin = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
             var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
-            SuperviseeCardInfo infoPrinter = new SuperviseeCardInfo()
+            PrintAndWriteSmartCardInfo cardInfo = new PrintAndWriteSmartCardInfo()
             {
                 SuperviseeBiodata = new SuperviseeBiodata()
                 {
@@ -790,7 +790,7 @@ namespace Enrolment
                 }
             };
 
-            Trinity.Common.Utils.SmartCardPrinterUtils.Instance.PrintAndWriteSuperviseeSmartCard(null, PriterIssuedCardOnCompleted);
+            Trinity.Common.Utils.SmartCardPrinterUtils.Instance.PrintAndWriteSmartCard(cardInfo, PriterIssuedCardOnCompleted);
         }
         private void PriterIssuedCardOnCompleted(PrintAndWriteCardResult result)
         {

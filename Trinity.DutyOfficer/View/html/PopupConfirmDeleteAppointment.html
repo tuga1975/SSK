@@ -1,0 +1,79 @@
+﻿<div class="modal fade" role="dialog" id="idConfirmDelete">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Delete</h5>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <span style="text-align:center;">The day was booked appointment with list information bellow, do you want to continue?</span>
+                    <br /><br />
+                    <table id="tableAppointmentDelete"></table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="ConfirmDelBtn" class="btn btn-default">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    api.ready(function (model) {
+        $('#tableAppointmentDelete').bootstrapTable({
+            pagination: true,
+            pageSize: 10,
+            columns: [{
+                field: 'UserName',
+                title: 'Supervisee Name',
+                sortable: true,
+                width: '20%',
+                align: 'center'
+            }, {
+                field: 'Email',
+                title: 'Email',
+                sortable: true,
+                width: '25%',
+                align: 'center'
+            }, {
+                field: 'Date',
+                title: 'Date',
+                width: '15%',
+                align: 'center',
+                formatter: function (value, row, index, field) {
+                    if (value) {
+                        return formatDate(value);
+                    }
+                    return "";
+                }
+            }, {
+                field: 'StartTime',
+                title: 'Start Time',
+                width: '20%',
+                align: 'center'
+            }, {
+                field: 'EndTime',
+                title: 'End Time',
+                width: '20%',
+                align: 'center'
+            }],
+            data: model.arrayDetail
+        });
+    });
+    
+    $("#ConfirmDelBtn").click(function (e) {
+        var data = JSON.stringify(model);
+        var dataOperationSetting = JSON.stringify(operationSetting);
+
+        api.server.UpdateSettingAndTimeslot(data, dataOperationSetting, function () {
+            api.server.LoadPage('Settings.html');
+            $('#idConfirmDelete').modal('toggle');
+        });
+        
+        e.preventDefault();
+    });
+
+    function showModal() {
+        $('#idConfirmDelete').modal();
+    };
+
+</script>

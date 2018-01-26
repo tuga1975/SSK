@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using Trinity.DAL.DBContext;
 using Trinity.DAL.Repository;
@@ -260,6 +261,21 @@ namespace Trinity.DAL
                 Status = (int)EnumAppointmentStatuses.Pending
             }).ToList());
             _localUnitOfWork.Save();
+        }
+
+        public Timeslot GetTimeslotNearest()
+        {
+            DateTime currentDate = DateTime.Now;
+            return _localUnitOfWork.DataContext.Timeslots.Where(t => DbFunctions.TruncateTime(t.Date) >= currentDate.Date && t.StartTime.Value >= currentDate.TimeOfDay).OrderBy(t => t.Date).ThenBy(t => t.StartTime).FirstOrDefault();
+        }
+
+        public Appointment UpdateTimeslotForAppointment(Guid appointmentId, string timeslotID)
+        {
+            Trinity.DAL.DBContext.Appointment appointment = GetMyAppointmentByID(appointmentId);
+            appointment.Timeslot_ID = timeslotID;
+            _localUnitOfWork.GetRepository<Appointment>().Update(appointment);
+            _localUnitOfWork.Save();
+            return appointment;
         }
     }
 }
