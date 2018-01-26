@@ -59,7 +59,6 @@ namespace DutyOfficer
         #region Queue
         public void LoadDrugsTest(string Date, string UserId)
         {
-            Date = DateTime.Now.ToString();
             Trinity.DAL.DBContext.Label dbLabel = new Trinity.DAL.DAL_Labels().GetByDateAndUserId(Convert.ToDateTime(Date).Date, UserId);
             if (dbLabel != null)
             {
