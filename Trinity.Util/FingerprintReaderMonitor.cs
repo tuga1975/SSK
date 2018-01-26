@@ -25,7 +25,7 @@ namespace Trinity.Util
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("SmartCardReaderMonitor.Start exception: " + ex.ToString());
+                Debug.WriteLine("FingerprintReaderMonitor.Start exception: " + ex.ToString());
                 return false;
             }
         }
@@ -55,7 +55,7 @@ namespace Trinity.Util
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("SmartCardReaderMonitor.ReportDeviceStatus exception: " + ex.ToString());
+                Debug.WriteLine("FingerprintReaderMonitor.ReportDeviceStatus exception: " + ex.ToString());
             }
         }
     }

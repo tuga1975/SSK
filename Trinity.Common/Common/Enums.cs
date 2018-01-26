@@ -120,7 +120,11 @@ public enum EnumDeviceIds
     ReceiptPrinter = 4,
     BarcodeScanner = 5,
     LEDDisplayMonitor = 6,
-    Camera = 7
+    Camera = 7,
+    SmartCardPrinter = 8,
+    MUBLabelPrinter = 9,
+    UBLabelPrinter = 10,
+    TTLabelPrinter = 11
 }
 
 
@@ -259,6 +263,11 @@ public static class EnumDeviceNames
         get { return ConfigurationManager.AppSettings["MUBLabelPrinterName"]; }
     }
 
+    public static string UBLabelPrinter
+    {
+        get { return ConfigurationManager.AppSettings["UBLabelPrinterName"]; }
+    }
+
     public static string ReceiptPrinter
     {
         get { return ConfigurationManager.AppSettings["ReceiptPrinterName"]; }
@@ -283,6 +292,11 @@ public static class EnumDeviceNames
     {
         get { return ConfigurationManager.AppSettings["SmartCardPrinterSerialNumber"]; }
     }
+
+    public static string SmartCardPrinterName
+    {
+        get { return ConfigurationManager.AppSettings["SmartCardPrinterName"]; }
+    }
 }
 
 public static class NotificationType
@@ -306,7 +320,7 @@ public static class EnumStations
 
     public static List<string> GetListStation()
     {
-        return new List<string>() { SSK, SSA, UHP, APS, HSA, ESP };
+        return new List<string>() { SSK, SSA, UHP, APS, HSA, ESP, ENROLMENT,DUTYOFFICER };
     }
 
 }

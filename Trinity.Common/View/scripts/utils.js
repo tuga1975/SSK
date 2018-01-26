@@ -90,6 +90,7 @@ function createEvent(arrayFun) {
             }
         }
     });
+    api.callReady();
 }
 function callEventCallBack(guid, model) {
     var call = api.callback[guid];

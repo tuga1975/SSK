@@ -598,6 +598,52 @@ namespace Trinity.Common
             }
         }
 
+        public bool WriteData(SmartCardData_Original cardData, string readerName = null)
+        {
+            try
+            {
+                if (readerName == null)
+                {
+                    readerName = _readerName;
+                }
+
+                // get list blocks will be read/write
+                List<MifareCard_Block> lstBlocks = GetAll_Blocks_MifareClassic(EnumSmartCardTypes.MifareClassic4K);
+                if (lstBlocks == null || lstBlocks.Count() == 0)
+                {
+                    throw new Exception("Can not get card blocks");
+                }
+
+                // calculate storage size of smartcard
+                int totalBytes = lstBlocks.Count(block => block.BlockType == EnumBlockTypes.Data) * 16;
+
+                // convert object to json
+                var jsonData = JsonConvert.SerializeObject(cardData);
+
+                // encrypting
+                var encryptedString = CommonUtil.EncryptString(jsonData, _passphrase);
+
+                // check length of encryptContent, remove last HistoricalRecord
+                while (encryptedString.Length > totalBytes)
+                {
+                    throw new Exception("Data length of DutyOfficerData is overflow");
+                }
+
+                // data to write
+                byte[] byteData = Encoding.ASCII.GetBytes(jsonData);
+
+                bool result = WriteData_MifareClassic(byteData, readerName);
+
+                // return value
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("WriteData_MifareClassic exception: " + ex.ToString());
+                return false;
+            }
+        }
+
         public bool WriteDutyOfficerData(DutyOfficerData data, string readerName = null)
         {
             try

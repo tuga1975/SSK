@@ -1,0 +1,136 @@
+﻿<div class="modal fade" role="dialog" id="idQueueDrugs">
+    <div class="modal-dialog" style="width:600px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Drug Test <span namedrug="time" style="margin-left:10px;font-weight:normal;font-size:13px;"></span></h5>
+            </div>
+            <div class="modal-body">
+                <div itemview>
+                    <span itemview-title title="Test Results"></span>
+                </div>
+                <div class="panel-data">
+                    <div>
+                        <span drugstatus="null" namedrug="AMPH"></span>
+                    </div>
+                    <div>
+                        <span drugstatus="null" namedrug="BENZ"></span>
+                    </div>
+                    <div>
+                        <span drugstatus="null" namedrug="OPI"></span>
+                    </div>
+                    <div>
+                        <span drugstatus="null" namedrug="THC"></span>
+                    </div>
+                </div>
+                <div style="clear:both;margin-bottom:20px;"></div>
+                <div itemview>
+                    <span itemview-title title="Seal for following tests:"></span>
+                </div>
+                <div class="panel-data">
+                    <div>
+                        <span drugchecked="null" namedrug="COCA"></span>
+                    </div>
+                    <div>
+                        <span drugchecked="null" namedrug="BARB"></span>
+                    </div>
+                    <div>
+                        <span drugchecked="null" namedrug="LSD"></span>
+                    </div>
+                    <div>
+                        <span drugchecked="null" namedrug="METH"></span>
+                    </div>
+                    <div>
+                        <span drugchecked="null" namedrug="MTQL"></span>
+                    </div>
+                    <div>
+                        <span drugchecked="null" namedrug="PCP"></span>
+                    </div>
+                    <div>
+                        <span drugchecked="null" namedrug="KET"></span>
+                    </div>
+                    <div>
+                        <span drugchecked="null" namedrug="BUPRE"></span>
+                    </div>
+                    <div>
+                        <span drugchecked="null" namedrug="CAT"></span>
+                    </div>
+                    <div>
+                        <span drugchecked="null" namedrug="PPZ"></span>
+                    </div>
+                    <div>
+                        <span drugchecked="null" namedrug="NPS"></span>
+                    </div>
+                </div>
+                <div style="clear:both;margin-bottom:20px;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    api.ready(function (model) {
+        if (model != null) {
+            $('[namedrug="time"]').text(model.Date);
+            for (var key in model.TestResults) {
+                var data = model.TestResults[key];
+                data = data == null ? 'null' : data.toString().toLowerCase();
+                $('[drugstatus][namedrug="' + key + '"]').attr('drugstatus', data);
+            }
+            for (var key in model.Seal) {
+                var data = model.Seal[key];
+                data = data == null ? 'null' : data.toString().toLowerCase();
+                $('[drugchecked][namedrug="' + key + '"]').attr('drugchecked', data);
+            }
+        }
+    });
+</script>
+<style type="text/css">
+    .panel-data div{
+        margin:10px 0px;
+        float:left;
+        width:calc(100% / 4);
+    }
+
+    [drugstatus], [drugchecked] {
+        position: relative;
+        height: 20px;
+        margin: 10px 0px;
+    }
+
+        [drugstatus]::before, [drugchecked]::before {
+            content: " ";
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            width: 20px;
+            height: 20px;
+            box-sizing: border-box;
+            border: 2px solid #555;
+            border-radius: 50%;
+        }
+
+        [drugchecked]::before {
+            border-radius: 0px;
+            box-shadow: inset 0 0 0 2px #FFF;
+        }
+
+    [drugstatus="true"]::before {
+        background-color: forestgreen;
+    }
+
+    [drugchecked="true"]::before {
+        background-color: #555;
+    }
+
+    [drugstatus="false"]::before, [drugchecked="false"]::before {
+        background-color: red;
+    }
+
+    [drugstatus]::after, [drugchecked]::after {
+        line-height: 20px;
+        border: 2px solid #555;
+        margin-left: 30px;
+        padding: 0px 5px;
+        content: attr(namedrug);
+        box-sizing: border-box;
+    }
+</style>

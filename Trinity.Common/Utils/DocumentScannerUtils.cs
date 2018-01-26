@@ -11,7 +11,7 @@ using WIA;
 
 namespace Trinity.Common.Utils
 {
-    class DocumentScannerUtils
+    public class DocumentScannerUtils
     {
         #region Singleton Implementation
         // The variable is declared to be volatile to ensure that assignment to the instance variable completes before the instance variable can be accessed
@@ -179,7 +179,7 @@ namespace Trinity.Common.Utils
         // for testing purpose
         public EnumDeviceStatuses[] GetDeviceStatus()
         {
-            return new EnumDeviceStatuses[] { EnumDeviceStatuses.Connected };
+            return new EnumDeviceStatuses[] { EnumDeviceStatuses.Disconnected };
         }
 
         private static void AdjustScannerSettings(IItem scannnerItem, int scanResolutionDPI, int scanStartLeftPixel, int scanStartTopPixel, int scanWidthPixels, int scanHeightPixels, int brightnessPercents, int contrastPercents, int colorMode)

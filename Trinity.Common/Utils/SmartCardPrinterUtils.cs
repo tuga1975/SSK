@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
+using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Management;
 using System.Runtime.InteropServices;
@@ -42,7 +44,7 @@ namespace Trinity.Common.Utils
 
         private SmartCardPrinterUtils()
         {
-            _smartCardPrinterName = ConfigurationManager.AppSettings["TTLabelPrinterName"];
+            _smartCardPrinterName = EnumDeviceNames.SmartCardPrinterName;
         }
 
         public static SmartCardPrinterUtils Instance
@@ -63,187 +65,177 @@ namespace Trinity.Common.Utils
         }
         #endregion
 
-        public void PrintAndWriteSuperviseeSmartCard(SuperviseeCardInfo cardInfo, Action<PrintAndWriteCardResult> OnCompleted)
+        public bool PrintAndWriteSmartCard(PrintAndWriteSmartCardInfo cardInfo, Action<PrintAndWriteCardResult> OnCompleted)
         {
             try
             {
                 // validate
+                if (cardInfo == null)
+                {
+                    throw new Exception("cardInfo can not be null");
+                }
 
-                // print label
+                bool bRet = true;
+                if (IsPrinterConnected(EnumDeviceNames.SmartCardPrinterName))
+                {
+                    #region use SmartCardPrinterName
+                    byte[] img = null;
+                    byte[] bmpFront = null;
+                    byte[] bmpBack = null;
 
-                // write data
-                PrintAndWriteCardResult printAndWriteSmartcardResult = PrintCard(cardInfo);
+                    Job job = null;
+                    ZMotifGraphics g = null;
 
-                // returm
-                OnCompleted(printAndWriteSmartcardResult);
+                    string frontImagePath, backImagePath = null;
+
+                    try
+                    {
+                        job = new Job();
+                        g = new ZMotifGraphics();
+
+                        // Opens a connection with a ZXP Printer
+                        //     if it is in an alarm condition, exit function
+                        // -------------------------------------------------
+
+                        if (!Connect(ref job))
+                        {
+                            throw new Exception("Unable to open device [" + _smartCardPrinterName + "]\r\n");
+                        }
+
+                        // Determines if the ZXP device supports smart card encoding
+                        // ---------------------------------------------------------
+                        if (!GetPrinterConfiguration(ref job, out bool isContactless))
+                        {
+                            throw new Exception("Unable to get printer configuration");
+                        }
+
+                        if (!isContactless)
+                        {
+                            throw new Exception("Printer is not configured for Contactless Encoding");
+                        }
+
+                        if (_alarm != 0)
+                        {
+                            throw new Exception("Printer is in alarm condition\r\n");
+                        }
+
+                        frontImagePath = cardInfo.FrontCardImagePath;
+                        backImagePath = cardInfo.BackCardImagePath;
+
+                        // Builds the front side image (color)
+                        // -----------------------------------
+
+                        g.InitGraphics(0, 0, ZMotifGraphics.ImageOrientationEnum.Landscape,
+                                       ZMotifGraphics.RibbonTypeEnum.Color);
+
+                        img = g.ImageFileToByteArray(frontImagePath);
+                        g.DrawImage(ref img, ZMotifGraphics.ImagePositionEnum.Centered, 0, 0, 0);
+
+                        int dataLen = 0;
+                        bmpFront = g.CreateBitmap(out dataLen);
+                        g.ClearGraphics();
+
+                        // Builds the back side image (monochrome)
+                        // ---------------------------------------
+
+                        g.InitGraphics(0, 0, ZMotifGraphics.ImageOrientationEnum.Landscape,
+                                       ZMotifGraphics.RibbonTypeEnum.MonoK);
+
+                        img = g.ImageFileToByteArray(backImagePath);
+                        g.DrawImage(ref img, ZMotifGraphics.ImagePositionEnum.Centered, 0, 0, 0);
+
+                        bmpBack = g.CreateBitmap(out dataLen);
+                        g.ClearGraphics();
+
+                        // Start a contactless smart card job
+                        // -----------------------
+
+                        //job.JobControl.CardType = GetContactlessCardType(ref job);
+                        //job.JobControl.CardType = "PVC,MIFARE,4K";
+
+                        job.JobControl.FeederSource = FeederSourceEnum.CardFeeder;
+                        job.JobControl.Destination = DestinationTypeEnum.Eject;
+
+                        job.JobControl.SmartCardConfiguration(SideEnum.Front, SmartCardTypeEnum.MIFARE, true);
+
+                        job.BuildGraphicsLayers(SideEnum.Front, PrintTypeEnum.Color, 0, 0, 0,
+                                                -1, GraphicTypeEnum.BMP, bmpFront);
+
+                        job.BuildGraphicsLayers(SideEnum.Back, PrintTypeEnum.MonoK, 0, 0, 0,
+                                                -1, GraphicTypeEnum.BMP, bmpBack);
+
+                        int actionID = 0;
+                        job.PrintGraphicsLayers(1, out actionID);
+
+                        job.ClearGraphicsLayers();
+
+                        // Waits for the card to reach the smart card station
+                        // --------------------------------------------------
+                        string status = string.Empty;
+                        AtStation(ref job, actionID, 30, out status);
+
+                        // ***** Smart Card Code goes here *****
+                        SmartCardData_Original cardData = new SmartCardData_Original()
+                        {
+                            SuperviseeBiodata = cardInfo.SuperviseeBiodata,
+                            DutyOfficerData = cardInfo.DutyOfficerData
+                        };
+                        bool writeDataResult = SmartCardReaderUtils.Instance.WriteData(cardData, EnumDeviceNames.SmartCardPrinterContactlessReader);
+
+                        // At the completion of smart card process
+                        //     if the smart card encoding was successful JobResume
+                        //     if the smart card encoding was Unsuccessful JobAbort
+                        // --------------------------------------------------------
+
+                        if (writeDataResult)
+                            JobResume(ref job);
+                        else
+                            JobAbort(ref job, true);
+
+                        JobWait(ref job, actionID, 180, out status);
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.WriteLine("");
+                        bRet = false;
+                    }
+                    finally
+                    {
+                        g.CloseGraphics();
+                        g = null;
+
+                        img = null;
+                        bmpFront = null;
+                        bmpBack = null;
+
+                        Disconnect(ref job);
+                    }
+                    #endregion
+                }
+                else if (SmartCardReaderUtils.Instance.GetDeviceStatus().Contains(EnumDeviceStatuses.Connected))
+                {
+                    #region use card reader
+                    SmartCardData_Original cardData = new SmartCardData_Original()
+                    {
+                        SuperviseeBiodata = cardInfo.SuperviseeBiodata,
+                        DutyOfficerData = cardInfo.DutyOfficerData
+                    };
+                    bool writeDataResult = SmartCardReaderUtils.Instance.WriteData(cardData);
+                    #endregion
+                }
+                else
+                {
+                    bRet = false;
+                }
+
+                OnCompleted(new PrintAndWriteCardResult() { Success = bRet });
+                return bRet;
             }
             catch (Exception ex)
             {
                 Debug.WriteLine("PrintAndWriteSmartcardData exception: " + ex.ToString());
-
                 OnCompleted(new PrintAndWriteCardResult() { Success = false, Description = "Oops!.. Something went wrong ..." });
-            }
-        }
-
-        public void PrintLabel(string frontImagePath, string backImagePath, Action<bool> OnCompleted)
-        {
-            string printerName = EnumDeviceNames.SmartCardPrinterSerialNumber;
-
-            bool bRet = false;
-            byte[] img = null;
-            byte[] bmpFront = null;
-            byte[] bmpBack = null;
-            Job job = null;
-            ZMotifGraphics g = null;
-            try
-            {
-                // Opens a connection with a ZXP Printer
-                //     if it is in an alarm condition, exit function
-                // -------------------------------------------------
-                job = new Job();
-                g = new ZMotifGraphics();
-
-                if (!Connect(printerName, ref job))
-                {
-                    Debug.WriteLine("Unable to open device [" + printerName + "]\r\n");
-                    OnCompleted(bRet);
-                    return;
-                }
-
-                if (_alarm != 0)
-                {
-                    Debug.WriteLine("Printer is in alarm condition\r\n" + "Error: " + job.Device.GetStatusMessageString(_alarm));
-                    OnCompleted(bRet);
-                    return;
-                }
-
-                #region Builds the front side image (color)
-                g.InitGraphics(0, 0, ZMotifGraphics.ImageOrientationEnum.Landscape, ZMotifGraphics.RibbonTypeEnum.Color);
-
-                img = g.ImageFileToByteArray(frontImagePath);
-                g.DrawImage(ref img, ZMotifGraphics.ImagePositionEnum.Centered, 0, 0, 0);
-                int dataLen;
-
-                bmpFront = g.CreateBitmap(out dataLen);
-                g.ClearGraphics();
-                #endregion
-
-                #region Builds the front side image (color)
-                g.InitGraphics(0, 0, ZMotifGraphics.ImageOrientationEnum.Landscape, ZMotifGraphics.RibbonTypeEnum.MonoK);
-
-                img = g.ImageFileToByteArray(backImagePath);
-                g.DrawImage(ref img, ZMotifGraphics.ImagePositionEnum.Centered, 0, 0, 0);
-
-                bmpBack = g.CreateBitmap(out dataLen);
-                g.ClearGraphics();
-                #endregion
-
-                #region Print the images
-                job.JobControl.FeederSource = FeederSourceEnum.CardFeeder;
-                job.JobControl.Destination = DestinationTypeEnum.Eject;
-
-                job.BuildGraphicsLayers(SideEnum.Front, PrintTypeEnum.Color, 0, 0, 0, -1, GraphicTypeEnum.BMP, bmpFront);
-
-                job.BuildGraphicsLayers(SideEnum.Back, PrintTypeEnum.MonoK, 0, 0, 0, -1, GraphicTypeEnum.BMP, bmpBack);
-
-
-                int actionID = 0;
-                job.PrintGraphicsLayers(1, out actionID);
-
-                job.ClearGraphicsLayers();
-
-                string status = string.Empty;
-                JobWait(ref job, actionID, 180, out status, out bRet);
-
-                Debug.WriteLine(bRet);
-                #endregion
-
-                OnCompleted(bRet);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("PrintLabel exception: " + ex.ToString());
-                OnCompleted(bRet);
-            }
-        }
-
-        public void WriteData(Action<string> OnCompleted)
-        {
-            try
-            {
-                string cardUID = string.Empty;
-                string deviceSerialNumber = EnumDeviceNames.SmartCardPrinterSerialNumber;
-
-                Job job = new Job();
-                job.Open(deviceSerialNumber);
-
-                // Move card to smart card reader and suspend ZMotif SDK control of printer (using ZMotif SDK)
-                int actionID = 0;
-                job.JobControl.SmartCardConfiguration(SideEnum.Front, SmartCardTypeEnum.MIFARE, true);
-                job.SmartCardDataOnly(1, out actionID);
-                // refer: https://km.zebra.com/kb/index?page=content&id=SA280&actp=LIST
-                //  The goal of this program is to establish a connection with 
-                // a Mifare 4k contactless microprocessor smart card through a ZXP printer.
-
-                // Wait while card moves into encode position 
-                Thread.Sleep(4000);
-
-                try
-                {
-                    // write data
-                    SmartCardReaderUtils smartCardReaderUtils = SmartCardReaderUtils.Instance;
-                    string readerName = EnumDeviceNames.SmartCardPrinterContactlessReader;
-
-                    // get card UID
-                    cardUID = SmartCardReaderUtils.Instance.GetCardUID(EnumDeviceNames.SmartCardPrinterContactlessReader);
-                    string cardData = string.Empty;
-                    bool readCardResult = smartCardReaderUtils.ReadAllData_MifareClassic_ZXPSeries9(ref cardData);
-                    Console.WriteLine(cardData);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.ToString());
-                }
-                finally
-                {
-                    // Resume ZMotif SDK control of printer (using ZMotif SDK)
-                    job.JobResume();
-
-                    // Close ZMotif SDK control of job (using ZMotif SDK)
-                    job.Close();
-
-                    // Wait while eject the card
-                    Thread.Sleep(2000);
-                }
-
-                OnCompleted(cardUID);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("WriteData exception: " + ex.ToString());
-                OnCompleted(string.Empty);
-            }
-        }
-
-        public void PrintAndWriteDutyOfficerSmartCard(DutyOfficerCardInfo cardInfo, Action<PrintAndWriteCardResult> OnCompleted)
-        {
-            try
-            {
-                // validate
-
-                // print label
-
-                // write data
-                PrintAndWriteCardResult printAndWriteSmartcardResult = PrintCard(cardInfo, 1);
-
-                // returm
-                OnCompleted(printAndWriteSmartcardResult);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("PrintAndWriteSmartcardData exception: " + ex.ToString());
-
-                OnCompleted(new PrintAndWriteCardResult() { Success = false, Description = "Oops!.. Something went wrong ..." });
+                return false;
             }
         }
 
@@ -253,76 +245,6 @@ namespace Trinity.Common.Utils
         /// <param name="type">0: Supervisee, 1: Duty officer</param>
         /// <param name="data"></param>
         /// <returns></returns>
-        private PrintAndWriteCardResult PrintCard(object data, int type = 0)
-        {
-            PrintAndWriteCardResult printAndWriteSmartcardResult = new PrintAndWriteCardResult()
-            {
-                Success = false
-            };
-
-            Job job = new Job();
-
-            // Begin SDK communication with printer (using ZMotif SDK)
-            //string deviceSerialNumber = "06C104500004";
-            string deviceSerialNumber = EnumDeviceNames.SmartCardPrinterSerialNumber;
-            job.Open(deviceSerialNumber);
-
-            // Move card to smart card reader and suspend ZMotif SDK control of printer (using ZMotif SDK)
-            int actionID = 0;
-            job.JobControl.SmartCardConfiguration(SideEnum.Front, SmartCardTypeEnum.MIFARE, true);
-            job.SmartCardDataOnly(1, out actionID);
-            // refer: https://km.zebra.com/kb/index?page=content&id=SA280&actp=LIST
-            //  The goal of this program is to establish a connection with 
-            // a Mifare 4k contactless microprocessor smart card through a ZXP printer.
-
-            // Wait while card moves into encode position 
-            Thread.Sleep(4000);
-
-            try
-            {
-                // write data
-                SmartCardReaderUtils smartCardReaderUtils = SmartCardReaderUtils.Instance;
-                string readerName = EnumDeviceNames.SmartCardPrinterContactlessReader;
-
-                #region print label
-                #endregion
-
-                #region write data
-                bool writeDataResult = false;
-                if (type == 0) // write supervisee data
-                {
-                    writeDataResult = SmartCardReaderUtils.Instance.WriteSuperviseeBiodata(((SuperviseeCardInfo)data).SuperviseeBiodata, EnumDeviceNames.SmartCardPrinterContactlessReader);
-                }
-                else if (type == 1) // write
-                {
-                    writeDataResult = SmartCardReaderUtils.Instance.WriteDutyOfficerData(((DutyOfficerCardInfo)data).DutyOfficerData, EnumDeviceNames.SmartCardPrinterContactlessReader);
-                }
-                #endregion
-
-                if (writeDataResult)
-                {
-                    printAndWriteSmartcardResult.Success = true;
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-                return null;
-            }
-            finally
-            {
-                // Resume ZMotif SDK control of printer (using ZMotif SDK)
-                job.JobResume();
-
-                // Close ZMotif SDK control of job (using ZMotif SDK)
-                job.Close();
-
-                // Wait while eject the card
-                Thread.Sleep(2000);
-            }
-
-            return printAndWriteSmartcardResult;
-        }
 
         public override EnumDeviceStatuses[] GetDeviceStatus()
         {
@@ -667,6 +589,412 @@ namespace Trinity.Common.Utils
             {
                 string _msg = status;
             }
+        }
+
+        #region Support
+
+        // Waits for a smart card to be at the smart card programming station
+        // --------------------------------------------------------------------------------------------------
+
+        private void AtStation(ref Job job, int actionID, int loops, out string status)
+        {
+            bool timedOut = true;
+
+            JobStatusStruct js = new JobStatusStruct();
+
+            status = "";
+
+            for (int i = 0; i < loops; i++)
+            {
+                try
+                {
+                    _alarm = job.GetJobStatus(actionID, out js.uuidJob, out js.printingStatus,
+                                out js.cardPosition, out js.errorCode, out js.copiesCompleted,
+                                out js.copiesRequested, out js.magStatus, out js.contactStatus,
+                                out js.contactlessStatus);
+                }
+                catch (Exception e)
+                {
+                    status = "At Station Exception: " + e.Message;
+                    break;
+                }
+
+                if (js.printingStatus.Contains("error") || js.printingStatus == "at_station" ||
+                    js.contactStatus == "at_station" || js.contactlessStatus == "at_station")
+                {
+                    timedOut = false;
+                    break;
+                }
+                Thread.Sleep(1000);
+            }
+            if (timedOut)
+                status = "At Station Timed Out";
+        }
+
+        // Gets the card types that the printer supports
+        // --------------------------------------------------------------------------------------------------
+
+        //public bool GetCardTypeList(ref Job job)
+        //{
+        //_cardTypeList = null;
+
+        //try
+        //{
+        //    job.JobControl.GetAvailableCardTypes(out _cardTypeList);
+        //    return true;
+        //}
+        //catch
+        //{
+        //    return false;
+        //}
+        //}
+
+        private string GetContactlessCardType(ref Job job)
+        {
+            try
+            {
+                object cardTypes = null;
+
+                job.JobControl.GetAvailableCardTypes(out cardTypes);
+
+                System.Collections.ArrayList arrCardTypes = System.Collections.ArrayList.Adapter((string[])cardTypes);
+
+                foreach (string card in arrCardTypes)
+                {
+                    if (card.ToUpper().Contains("MIFARE"))
+                        return card;
+                }
+                return string.Empty;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        private string GetContactCardType(ref Job job)
+        {
+            try
+            {
+                object cardTypes = null;
+
+                job.JobControl.GetAvailableCardTypes(out cardTypes);
+
+                System.Collections.ArrayList arrCardTypes = System.Collections.ArrayList.Adapter((string[])cardTypes);
+
+                foreach (string card in arrCardTypes)
+                {
+                    if (card.Contains("SLE"))
+                        return card;
+                }
+                return string.Empty;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        private string GetMagneticCardType(ref Job job)
+        {
+            try
+            {
+                object cardTypes = null;
+
+                job.JobControl.GetAvailableCardTypes(out cardTypes);
+
+                System.Collections.ArrayList arrCardTypes = System.Collections.ArrayList.Adapter((string[])cardTypes);
+
+                foreach (string card in arrCardTypes)
+                {
+                    if (card.ToUpper().Contains("HICO"))
+                        return card;
+                }
+                return string.Empty;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        // Gets a list of ZMotif devices
+        //     ConnectionTypeEnum { USB, Ethernet, All }
+        // --------------------------------------------------------------------------------------------------
+
+        //public bool GetDeviceList(bool USB)
+        //{
+        //    bool bRet = true;
+        //Job job = new Job();
+
+        //try
+        //{
+        //    if (USB)
+        //        job.GetPrinters(ConnectionTypeEnum.USB, out _deviceList);
+        //    else
+        //        job.GetPrinters(ConnectionTypeEnum.Ethernet, out _deviceList);
+        //}
+        //catch
+        //{
+        //    _deviceList = null;
+        //    bRet = false;
+        //}
+
+        //Disconnect(ref job);
+        //    return bRet;
+        //}
+
+        // Gets the printer configuration
+        // --------------------------------------------------------------------------------------------------
+
+        //private bool GetPrinterConfiguration(ref Job j)
+        //{
+        //    bool bRet = true;
+
+        //    _isContact = _isContactless = _isMag = false;
+
+        //    try
+        //    {
+        //        string headType, stripeLocation;
+        //        j.Device.GetMagneticEncoderConfiguration(out headType, out stripeLocation);
+        //        if (headType != "none" && headType != "")
+        //            _isMag = true;
+
+        //        string commChannel, contact, contactless;
+        //        j.Device.GetSmartCardConfiguration(out commChannel, out contact, out contactless);
+
+        //        if (contact != "" && contact != "none")
+        //            _isContact = true;
+
+        //        if (contactless != "" && contactless != "none")
+        //            _isContactless = true;
+        //    }
+        //    catch
+        //    {
+        //        bRet = false;
+        //    }
+        //    return bRet;
+        //}
+
+        // Loads a byte array with image data from a file
+        // --------------------------------------------------------------------------------------------------
+
+        private byte[] ImageToByteArray(string filename)
+        {
+            Image img = System.Drawing.Image.FromFile(filename);
+
+            MemoryStream ms = new MemoryStream();
+            img.Save(ms, System.Drawing.Imaging.ImageFormat.Bmp);
+            return ms.ToArray();
+        }
+
+        // Aborts a suspended job
+        // --------------------------------------------------------------------------------------------------
+
+        private bool JobAbort(ref Job job, bool eject)
+        {
+            try
+            {
+                job.JobAbort(eject);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        // Waits for a job to complete
+        // --------------------------------------------------------------------------------------------------
+
+        private void JobWait(ref Job job, int actionID, int loops, out string status)
+        {
+            status = string.Empty;
+
+            JobStatusStruct js = new JobStatusStruct();
+
+            while (loops > 0)
+            {
+                try
+                {
+                    _alarm = job.GetJobStatus(actionID, out js.uuidJob, out js.printingStatus,
+                                out js.cardPosition, out js.errorCode, out js.copiesCompleted,
+                                out js.copiesRequested, out js.magStatus, out js.contactStatus,
+                                out js.contactlessStatus);
+
+                    if (js.printingStatus == "done_ok" || js.printingStatus == "cleaning_up")
+                    {
+                        status = js.printingStatus + ": " + "Indicates a job completed successfully";
+                        break;
+                    }
+                    else if (js.printingStatus.Contains("cancelled"))
+                    {
+                        status = js.printingStatus;
+                        break;
+                    }
+
+                    if (js.contactStatus.ToLower().Contains("error"))
+                    {
+                        status = js.contactStatus;
+                        break;
+                    }
+
+                    if (js.printingStatus.ToLower().Contains("error"))
+                    {
+                        status = "Printing Status Error";
+                        break;
+                    }
+
+                    if (js.contactlessStatus.ToLower().Contains("error"))
+                    {
+                        status = js.contactlessStatus;
+                        break;
+                    }
+
+                    if (js.magStatus.ToLower().Contains("error"))
+                    {
+                        status = js.magStatus;
+                        break;
+                    }
+
+                    if (_alarm != 0 && _alarm != 4016) //no error or out of cards
+                    {
+                        status = "Error: " + job.Device.GetStatusMessageString(_alarm);
+                        break;
+                    }
+                }
+                catch (Exception e)
+                {
+                    status = "Job Wait Exception: " + e.Message;
+                    break;
+                }
+
+                if (_alarm == 0)
+                {
+                    if (--loops <= 0)
+                    {
+                        status = "Job Status Timeout";
+                        break;
+                    }
+                }
+                Thread.Sleep(1000);
+            }
+        }
+
+
+        // Resumes a suspended job
+        // --------------------------------------------------------------------------------------------------
+
+        private bool JobResume(ref Job job)
+        {
+            try
+            {
+                job.JobResume();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        #endregion
+        
+        #region ZMotif Device Connect
+
+        // Connects to a ZMotif device
+        // --------------------------------------------------------------------------------------------------
+
+        private bool Connect(ref Job j)
+        {
+            bool bRet = true;
+
+            try
+            {
+                if (j == null)
+                    return false;
+
+                if (!j.IsOpen)
+                {
+                    _alarm = j.Open(EnumDeviceNames.SmartCardPrinterSerialNumber);
+
+                    IdentifyZMotifPrinter(ref j);
+                }
+            }
+            catch (Exception e)
+            {
+                bRet = false;
+            }
+            return bRet;
+        }
+
+        // Disconnects from a ZMotif device
+        // --------------------------------------------------------------------------------------------------
+
+        private bool Disconnect(ref Job j)
+        {
+            bool bRet = true;
+
+            try
+            {
+                if (j == null)
+                    return false;
+
+                if (j.IsOpen)
+                {
+                    j.Close();
+
+                    do
+                    {
+                        Thread.Sleep(10);
+                    } while (Marshal.FinalReleaseComObject(j) != 0);
+                }
+            }
+            catch
+            {
+                bRet = false;
+            }
+            finally
+            {
+                j = null;
+                GC.Collect();
+            }
+            return bRet;
+        }
+        #endregion
+
+
+        // Gets the printer configuration
+        // --------------------------------------------------------------------------------------------------
+
+        private bool GetPrinterConfiguration(ref Job j, out bool isContactless)
+        {
+            bool bRet = true;
+            isContactless = false;
+            //_isContact = _isContactless = _isMag = false;
+
+            try
+            {
+                string headType, stripeLocation;
+                j.Device.GetMagneticEncoderConfiguration(out headType, out stripeLocation);
+                //if (headType != "none" && headType != "")
+                //    _isMag = true;
+
+                string commChannel, contact, contactless;
+                j.Device.GetSmartCardConfiguration(out commChannel, out contact, out contactless);
+
+                //if (contact != "" && contact != "none")
+                //    _isContact = true;
+
+                if (contactless != "" && contactless != "none")
+                    isContactless = true;
+                //_isContactless = true;
+            }
+            catch
+            {
+                bRet = false;
+            }
+            return bRet;
         }
     }
 }

@@ -12,7 +12,7 @@
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x64</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -51,8 +51,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BarcodePrinterMonitor.cs" />
+    <Compile Include="DocumentScannerMonitor.cs" />
     <Compile Include="FingerprintReaderMonitor.cs" />
     <Compile Include="Repeat.cs" />
+    <Compile Include="SmartCardPrinterMonitor.cs" />
     <Compile Include="SmartCardReaderMonitor.cs" />
   </ItemGroup>
   <ItemGroup>

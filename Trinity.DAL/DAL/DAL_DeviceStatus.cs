@@ -15,7 +15,59 @@ namespace Trinity.DAL
         Local_UnitOfWork _localUnitOfWork = new Local_UnitOfWork();
         Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
 
-        public bool Update(DeviceStatus model)
+        public bool Update(int deviceId, EnumDeviceStatuses[] deviceStatuses)
+        {
+            try
+            {
+                // validate
+                if (!DeviceIdExist(deviceId))
+                {
+                    throw new Exception("DeviceID is not valid");
+                }
+
+                // local db
+                // delete old statuses
+                string station = System.Reflection.Assembly.GetEntryAssembly().GetName().Name;
+                var oldRows = _localUnitOfWork.DataContext.ApplicationDevice_Status.Where(item => item.DeviceID == deviceId && item.Station.Equals(station));
+                _localUnitOfWork.DataContext.ApplicationDevice_Status.RemoveRange(oldRows);
+
+                // insert new statuses
+                if (deviceStatuses != null && deviceStatuses.Count() > 0)
+                {
+                    // create new status entites
+                    ApplicationDevice_Status deviceStatus;
+                    foreach (var status in deviceStatuses)
+                    {
+                        deviceStatus = new ApplicationDevice_Status();
+                        deviceStatus.Station = station;
+                        deviceStatus.DeviceID = deviceId;
+                        deviceStatus.ID = Guid.NewGuid();
+                        deviceStatus.StatusCode = (int)status;
+                        deviceStatus.StatusMessage = CommonUtil.GetDeviceStatusText(status);
+
+                        // insert new statuses
+                        _localUnitOfWork.DataContext.ApplicationDevice_Status.Add(deviceStatus);
+                    }
+                }
+
+                // savechanges
+                if (_localUnitOfWork.DataContext.SaveChanges() < 0)
+                {
+                    throw new Exception("Save data to local database failed.");
+                }
+
+                // update centralized db
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("DAL_DeviceStatus.Update exception: " + ex.ToString());
+                return false;
+            }
+        }
+
+        public bool Update(DeviceStatus model, bool isLocal = false)
         {
             try
             {
