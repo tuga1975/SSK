@@ -462,7 +462,7 @@ namespace Trinity.DAL
                     CustomAttribute cusAttr = sourceProp.GetMyCustomAttributes();
                     if (cusAttr != null && cusAttr.Name != null && dataUpdate != null)
                     {
-                        arrayUpdateHistory.Add("Changed " + cusAttr.Name + " to " + (dataUpdate == null ? string.Empty : dataUpdate.ToString()));
+                        arrayUpdateHistory.Add("Changed " + cusAttr.Name + " of "+ model.DayOfWeekTxt + " to " + (dataUpdate == null ? string.Empty : dataUpdate.ToString()));
                     }
                 }
             }
@@ -482,7 +482,7 @@ namespace Trinity.DAL
                             var p = destProps.First(x => x.Name == sourceProp.Name);
                             var dataValue = p.GetValue(operationSetting, null);
                             if (!dataUpdate.Equals(dataValue))
-                                arrayUpdateHistory.Add("Changed " + cusAttr.Name + " to " + (dataUpdate==null?string.Empty: dataUpdate.ToString()));
+                                arrayUpdateHistory.Add("Changed " + cusAttr.Name + " of " + model.DayOfWeekTxt + " to " + (dataUpdate==null?string.Empty: dataUpdate.ToString()));
                         }
 
                     }
