@@ -70,7 +70,7 @@ namespace Trinity.BE
         public SettingDetails Saturday { get; set; }
         public SettingDetails Sunday { get; set; }
         public List<Trinity.BE.Holiday> HoliDays { get; set; }
-
+        public List<Trinity.BE.OperationSettings_ChangeHist> ChangeHistorySettings { get; set; }
     }
 
     public class SettingDetails
@@ -83,27 +83,48 @@ namespace Trinity.BE
                 return ((EnumDayOfWeek)DayOfWeek).ToString();
             }
         }
+        [Custom(Name = "Morning start Time")]
         public Nullable<System.TimeSpan> Morning_Open_Time { get; set; }
+        [Custom(Name = "Morning end Time")]
         public Nullable<System.TimeSpan> Morning_Close_Time { get; set; }
+        [Custom(Name = "Morning reserved for spare")]
         public Nullable<int> Morning_Spare_Slots { get; set; }
+        [Custom(Name = "Morning intervals")]
         public Nullable<int> Morning_Interval { get; set; }
+        [Custom(Name = "Morning maximum Supervisee per timeslot")]
         public Nullable<int> Morning_MaximumSupervisee { get; set; }
+
+        [Custom(Name = "Afternoon start Time")]
         public Nullable<System.TimeSpan> Afternoon_Open_Time { get; set; }
+        [Custom(Name = "Afternoon end Time")]
         public Nullable<System.TimeSpan> Afternoon_Close_Time { get; set; }
+        [Custom(Name = "Afternoon reserved for spare")]
         public Nullable<int> Afternoon_Spare_Slots { get; set; }
+        [Custom(Name = "Afternoon intervals")]
         public Nullable<int> Afternoon_Interval { get; set; }
+        [Custom(Name = "Afternoon maximum Supervisee per timeslot")]
         public Nullable<int> Afternoon_MaximumSupervisee { get; set; }
+
+        [Custom(Name = "Evening start Time")]
         public Nullable<System.TimeSpan> Evening_Open_Time { get; set; }
+        [Custom(Name = "Evening end Time")]
         public Nullable<System.TimeSpan> Evening_Close_Time { get; set; }
+        [Custom(Name = "Evening reserved for spare")]
         public Nullable<int> Evening_Spare_Slots { get; set; }
+        [Custom(Name = "Evening intervals")]
         public Nullable<int> Evening_Interval { get; set; }
+        [Custom(Name = "Evening maximum Supervisee per timeslot")]
         public Nullable<int> Evening_MaximumSupervisee { get; set; }
         public bool Is_Closed { get; set; }
         public System.DateTime Last_Updated_Date { get; set; }
         public string Last_Updated_By { get; set; }
         public string Description { get; set; }
+
+        [Custom(Name = "Morning closed")]
         public bool Morning_Is_Closed { get; set; }
+        [Custom(Name = "Afternoon closed")]
         public bool Afternoon_Is_Closed { get; set; }
+        [Custom(Name = "Evening closed")]
         public bool Evening_Is_Closed { get; set; }
         public List<Trinity.BE.Holiday> HoliDays { get; set; }
 
@@ -177,7 +198,7 @@ namespace Trinity.BE
     }
     public class TimeslotDetails
     {
-        public int Timeslot_ID { get; set; }
+        public string Timeslot_ID { get; set; }
 
         public Nullable<System.TimeSpan> StartTime { get; set; }
         public Nullable<System.TimeSpan> EndTime { get; set; }

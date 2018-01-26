@@ -34,7 +34,7 @@ namespace Trinity.BE
         public EnumAppointmentStatuses Status { get; set; }
 
         [DataMember]
-        public int? Timeslot_ID { get; set; }
+        public string Timeslot_ID { get; set; }
 
         [DataMember]
         public Nullable<System.TimeSpan> StartTime { get; set; }

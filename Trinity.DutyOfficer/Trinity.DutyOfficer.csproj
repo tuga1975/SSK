@@ -283,6 +283,7 @@
     <Content Include="View\html\MUBAndTTlabel.html" />
     <Content Include="View\html\MUBandTTPopup.html" />
     <Content Include="View\html\PopupAddHoliday.html" />
+    <Content Include="View\html\PopupConfirmDeleteAppointment.html" />
     <Content Include="View\html\PopupEditOperationalDate.html" />
     <Content Include="View\html\PrintingUBLabels.html" />
     <Content Include="View\html\PrintingMUBAndTTLabels.html" />

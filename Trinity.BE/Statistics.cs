@@ -8,7 +8,7 @@ namespace Trinity.BE
 {
     public class Statistics
     {
-        public int Timeslot_ID { get; set; }
+        public string Timeslot_ID { get; set; }
         public Nullable<System.TimeSpan> StartTime { get; set; }
         
         public Nullable<System.TimeSpan> EndTime { get; set; }

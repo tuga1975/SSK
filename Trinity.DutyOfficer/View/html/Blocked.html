@@ -36,7 +36,41 @@
         if (pageSize)
             pageSize = 10;
 
-        api.server.GetAllSuperviseesBlocked();
+        api.server.GetAllSuperviseesBlocked(function (data) {
+            dataSource = data;
+            $('#table').bootstrapTable({
+                pagination: true,
+                pageSize: 10,
+                search: true,
+                columns: [{
+                    field: 'NRIC',
+                    title: 'NRIC',
+                    sortable: true,
+                    width: '10%',
+                    align: 'center'
+                }, {
+                    field: 'Name',
+                    title: 'Name',
+                    sortable: true,
+                    width: '40%',
+                    align: 'center'
+                }, {
+                    field: 'Reason',
+                    title: 'Reason',
+                    width: '40%',
+                    align: 'center'
+                }, {
+                    field: 'Action',
+                    title: 'Action',
+                    width: '10%',
+                    align: 'center',
+                    formatter: function (value, row, index, field) {
+                        return '<button class="btn btn-info " onclick = "openPopup(\'' + row.UserId + '\');">Unblock</button> ';
+                    }
+                }],
+                data: dataSource
+            });
+        });
     });
     $('#pageSize').change(function () {
         pageSize = $("#pageSize option:selected").text();
@@ -48,119 +82,11 @@
     });
 
     var dataSource = [];
-    function getDataCallback(response) {
-        var data = JSON.parse(response);
-        if (data) {
-            data.forEach(function (element, index) {
-                dataSource.push({
-                    NRIC: element.NRIC,
-                    Name: element.Name,
-                    Reason: element.Note,
-                    UserId: element.UserId
-                });
-            });
-        }
-
-        $('#table').bootstrapTable({
-            pagination: true,
-            pageSize: 10,
-            search:true,
-            //onClickCell: function (field, value, row, $element) {
-            //    if (field == 'Action') {
-            //        var data = JSON.stringify(row);
-            //        api.server.LoadPopupBlock(data, function () {
-            //            $('#idBlock').modal();
-            //        });
-            //    }
-            //},
-            columns: [{
-                field: 'NRIC',
-                title: 'NRIC',
-                sortable: true,
-                width: '10%',
-                align: 'center'
-            }, {
-                field: 'Name',
-                title: 'Name',
-                sortable: true,
-                width: '40%',
-                align: 'center'
-            }, {
-                field: 'Reason',
-                title: 'Reason',
-                width: '40%',
-                align: 'center'
-            }, {
-                field: 'Action',
-                title: 'Action',
-                width: '10%',
-                align: 'center',
-                formatter: function (value, row, index, field) {
-                    return '<button class="btn btn-info " onclick = "openPopup(\''+ row.UserId + '\');">Unblock</button> ';
-                }
-            }],
-            data: dataSource
-        });
-    };
 
     function openPopup(userId) {
         api.server.LoadPopupBlock(userId, function () {
             $('#idBlock').modal();
         });
     };    
-
-    function loadTable(page) {
-        $('#table').bootstrapTable({
-            pagination: true,
-            pageSize: page,
-            //search:true,
-            onClickCell: function (field, value, row, $element) {
-                if (field == 'Action') {
-                    var data = JSON.stringify(row);
-                    api.server.LoadPopupBlock(data, function () {
-                        $('#idBlock').modal();
-                    });
-                }
-            },
-            columns: [{
-                field: 'NRIC',
-                title: 'NRIC',
-                sortable: true,
-                width: '20%',
-                align: 'center'
-            }, {
-                field: 'Name',
-                title: 'Name',
-                sortable: true,
-                width: '40%',
-                align: 'center'
-            }, {
-                field: 'Reason',
-                title: 'Reason',
-                width: '40%',
-                align: 'center'
-            }, {
-                field: 'Action',
-                title: 'Action',
-                width: '20%',
-                align: 'center',
-                formatter: function (value, row, index, field) {
-                    return '<button class=\'btn btn-dark \' >Unblock</button> ';
-                }
-            }],
-            data: [{
-                NRIC: 'S99999991X',
-                Name: 'Dong Phuong Bat Bai',
-                Reason: 'Absented more then 3 times'
-            }, {
-                NRIC: 'S99999992X',
-                Name: 'Lenh Ho Xung',
-                Reason: 'Absented more then 3 times'
-            }, {
-                NRIC: 'S99999993X',
-                Name: 'Chau Chi Nhuoc',
-                Reason: 'Absented more then 3 times'
-            }]
-        });
-    }
+    
 </script>

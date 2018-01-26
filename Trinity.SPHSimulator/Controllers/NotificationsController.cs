@@ -23,7 +23,7 @@ namespace uhpSim.Controllers
         public IEnumerable<string> Post([FromBody] Notification note)
         {
             string[] lines = { note.Source, note.Type, note.Content, note.Datetime.ToString(), note.notification_code, DateTime.Now.ToString(), "==================" };
-            System.IO.File.AppendAllLines(@"C:\STE\Notifications.log", lines);
+            System.IO.File.AppendAllLines(System.Web.Hosting.HostingEnvironment.MapPath("~/STE") + @"\Notifications.log", lines);
             return db.USP_Notification_Insert(note.Source, note.Type, note.Content, note.Datetime, note.notification_code).AsEnumerable();
         }
 
@@ -46,7 +46,7 @@ namespace uhpSim.Controllers
 
         private bool NotificationExists(string id)
         {
-            return db.Notifications.Count(e => e.NotificationID == id) > 0;
+            return db.Notifications.Any(e => e.NotificationID == id);
         }
     }
 }

@@ -14,6 +14,12 @@ namespace Trinity.DAL.DBContext
     
     public partial class OperationSetting
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public OperationSetting()
+        {
+            this.OperationSettings_ChangeHist = new HashSet<OperationSettings_ChangeHist>();
+        }
+    
         public int DayOfWeek { get; set; }
         public Nullable<System.TimeSpan> Morning_Open_Time { get; set; }
         public Nullable<System.TimeSpan> Morning_Close_Time { get; set; }
@@ -36,5 +42,8 @@ namespace Trinity.DAL.DBContext
         public string Last_Updated_By { get; set; }
         public System.DateTime Last_Updated_Date { get; set; }
         public string Description { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<OperationSettings_ChangeHist> OperationSettings_ChangeHist { get; set; }
     }
 }

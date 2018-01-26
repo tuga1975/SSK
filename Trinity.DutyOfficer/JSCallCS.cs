@@ -40,19 +40,19 @@ namespace DutyOfficer
             _printMUBAndTTLabel.OnPrintMUBAndTTLabelsException += PrintMUBAndTTLabels_OnPrintTTLabelException;
         }
 
-        public void getAlertsSendToDutyOfficer()
+        public List<Notification> getAlertsSendToDutyOfficer()
         {
             var dalNotify = new DAL_Notification();
             //Receive alerts and notifications from APS, SSK, SSA, UHP and ESP 
             List<string> modules = new List<string>() { "APS", "SSK", "SSA", "UHP", "ESP" };
-            List<Notification> data = dalNotify.GetNotificationsSentToDutyOfficer(true, modules);
-            object result = null;
-            if (data != null)
-            {
-                result = JsonConvert.SerializeObject(data, Formatting.Indented,
-                    new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
-            }
-            _web.InvokeScript("getDataCallback", result);
+            return dalNotify.GetNotificationsSentToDutyOfficer(true, modules);
+            //object result = null;
+            //if (data != null)
+            //{
+            //    result = JsonConvert.SerializeObject(data, Formatting.Indented,
+            //        new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
+            //}
+            //_web.InvokeScript("getDataCallback", result);
         }
 
 
@@ -60,13 +60,6 @@ namespace DutyOfficer
 
         public object getDataQueue()
         {
-            MemberInfo[] members = typeof(EnumQueueStatuses).GetMembers(
-                BindingFlags.Public |
-                BindingFlags.NonPublic |
-                BindingFlags.Static |
-                BindingFlags.Instance |
-                BindingFlags.DeclaredOnly);
-
             var data = new DAL_QueueNumber().GetAllQueueByDateIncludeDetail(DateTime.Now.Date)
                 .Select(queue => new
                 {
@@ -135,14 +128,36 @@ namespace DutyOfficer
             model.Last_Updated_Date = DateTime.Now;
 
             var dalSetting = new DAL_Setting();
-            if (dalSetting.SaveOperationSetting(model))
+            CheckWarningSaveSetting checkWarningSaveSetting = dalSetting.CheckWarningSaveSetting((EnumDayOfWeek)model.DayOfWeek);
+            if (checkWarningSaveSetting != null && checkWarningSaveSetting.arrayDetail.Count > 0)
             {
-                //_web.InvokeScript("showMessageBox", "Update successful!");
+                session[CommonConstants.SETTING_DETAIL] = model;
+                // Show popup confirm with list Supervisee have appointment
+                this._web.LoadPopupHtml("PopupConfirmDeleteAppointment.html", checkWarningSaveSetting);
+                this._web.InvokeScript("showModal");
             }
-            //else
-            //{
-            //    _web.InvokeScript("showMessageBox", "Update faied!");
-            //}
+            else
+            {
+                dalSetting.UpdateSettingAndTimeSlot(checkWarningSaveSetting, model);
+            }
+        }
+
+        public void UpdateSettingAndTimeslot(string jsonCheckWarningSaveSetting, string jsonModel)
+        {
+            //var settingDetail = JsonConvert.DeserializeObject<Trinity.BE.SettingDetails>(jsonModel);
+            Session session = Session.Instance;
+            var settingDetail = (SettingDetails)session[CommonConstants.SETTING_DETAIL];
+            var checkWarningSaveSetting = JsonConvert.DeserializeObject<Trinity.BE.CheckWarningSaveSetting>(jsonCheckWarningSaveSetting);
+            var dalSetting = new DAL_Setting();
+            dalSetting.UpdateSettingAndTimeSlot(checkWarningSaveSetting, settingDetail);
+        }
+
+        public bool CheckWarningSaveSetting(int dayOfWeek)
+        {
+            var dalSetting = new DAL_Setting();
+            CheckWarningSaveSetting checkWarningSaveSetting = dalSetting.CheckWarningSaveSetting((EnumDayOfWeek)dayOfWeek);
+            return (checkWarningSaveSetting.arrayDetail.Count > 0);
+                
         }
 
         public void AddHoliday(string json)
@@ -162,18 +177,10 @@ namespace DutyOfficer
         #endregion
 
         #region Blocked
-        public void GetAllSuperviseesBlocked()
+        public List<User> GetAllSuperviseesBlocked()
         {
             var dalUser = new DAL_User();
-            List<User> data = dalUser.GetAllSuperviseeBlocked(true);
-
-            object result = null;
-            if (data != null)
-            {
-                result = JsonConvert.SerializeObject(data, Formatting.Indented,
-                    new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
-            }
-            _web.InvokeScript("getDataCallback", result);
+            return dalUser.GetAllSuperviseeBlocked(true);            
         }
 
         public void LoadPopupBlock(string userId)
@@ -192,7 +199,20 @@ namespace DutyOfficer
         {
             var dalUser = new DAL_User();
             dalUser.UnblockSuperviseeById(userId, reason);
+            GetQueueForSupervisee(userId);
+        }
 
+        private void GetQueueForSupervisee(string userId)
+        {
+            DAL_Appointments _Appointment = new DAL_Appointments();
+            Trinity.DAL.DBContext.Appointment appointment = _Appointment.GetMyAppointmentByDate(userId, DateTime.Today);
+            if (appointment != null)
+            {
+                Trinity.DAL.DBContext.Timeslot timeslot = _Appointment.GetTimeslotNearest();
+                appointment = _Appointment.UpdateTimeslotForAppointment(appointment.ID, timeslot.Timeslot_ID);
+                var _dalQueue = new DAL_QueueNumber();
+                Trinity.DAL.DBContext.Queue queueNumber = _dalQueue.InsertQueueNumber(appointment.ID, appointment.UserId, EnumStations.SSK);
+            }
         }
         #endregion
 
@@ -250,22 +270,22 @@ namespace DutyOfficer
         #endregion
 
         #region Print UB
-        public void GetAllUBlabels()
+        public List<Trinity.BE.Label> GetAllUBlabels()
         {
             var dalUBlabels = new DAL_Labels();
-            List<Trinity.BE.Label> data = dalUBlabels.GetAllLabelsForUB();
+            return dalUBlabels.GetAllLabelsForUB();
 
-            object result = null;
-            if (data.Count != 0)
-            {
-                result = JsonConvert.SerializeObject(data, Formatting.Indented,
-                    new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
-            }
-            else
-            {
-                getAlertsSendToDutyOfficer();
-            }
-            _web.InvokeScript("getDataCallback", result);
+            //object result = null;
+            //if (data.Count != 0)
+            //{
+            //    result = JsonConvert.SerializeObject(data, Formatting.Indented,
+            //        new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
+            //}
+            //else
+            //{
+            //    getAlertsSendToDutyOfficer();
+            //}
+            //_web.InvokeScript("getDataCallback", result);
         }
 
         //Load Popup of UB label
@@ -354,22 +374,22 @@ namespace DutyOfficer
         #endregion
 
         #region Print MUB And TT
-        public void GetAllMUBAndTTlabels()
+        public List<Trinity.BE.Label> GetAllMUBAndTTlabels()
         {
             var dalMUBAndTTlabels = new DAL_Labels();
-            List<Trinity.BE.Label> data = dalMUBAndTTlabels.GetAllLabelsForMUBAndTT();
+            return dalMUBAndTTlabels.GetAllLabelsForMUBAndTT();
 
-            object result = null;
-            if (data.Count != 0)
-            {
-                result = JsonConvert.SerializeObject(data, Formatting.Indented,
-                    new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
-            }
-            else
-            {
-                getAlertsSendToDutyOfficer();
-            }
-            _web.InvokeScript("getDataCallback", result);
+            //object result = null;
+            //if (data.Count != 0)
+            //{
+            //    result = JsonConvert.SerializeObject(data, Formatting.Indented,
+            //        new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
+            //}
+            //else
+            //{
+            //    getAlertsSendToDutyOfficer();
+            //}
+            //_web.InvokeScript("getDataCallback", result);
         }
 
         //Load Popup of MUBAndTT Label

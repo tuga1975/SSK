@@ -130,7 +130,7 @@ namespace Trinity.DAL
         {
             var fromTime = openTime;
             var toTime = closeTime;
-            var id = _localUnitOfWork.DataContext.Timeslots.Any() ? _localUnitOfWork.DataContext.Timeslots.Max(t => t.Timeslot_ID) : 0;
+            var id = _localUnitOfWork.DataContext.Timeslots.Any() ? _localUnitOfWork.DataContext.Timeslots.Max(t => t.Timeslot_ID) : null;
             while (fromTime < toTime)
             {
                 var timeSlot = new BE.TimeslotDetails();
@@ -138,7 +138,7 @@ namespace Trinity.DAL
                 var morningTimeSpan = new TimeSpan(12, 0, 0);
                 var eveningTimeSpan = new TimeSpan(17, 0, 0);
 
-                timeSlot.Timeslot_ID = (id + 1);
+                //timeSlot.Timeslot_ID = (id + 1);
 
                 timeSlot.StartTime = fromTime;
                 timeSlot.EndTime = fromTime.Value.Add(TimeSpan.FromMinutes(duration.Value));
@@ -327,7 +327,8 @@ namespace Trinity.DAL
                 Friday = arraySetting.FirstOrDefault(d => d.DayOfWeek == (int)EnumDayOfWeek.Friday).Map<BE.SettingDetails>(),
                 Saturday = arraySetting.FirstOrDefault(d => d.DayOfWeek == (int)EnumDayOfWeek.Saturday).Map<BE.SettingDetails>(),
                 Sunday = arraySetting.FirstOrDefault(d => d.DayOfWeek == (int)EnumDayOfWeek.Sunday).Map<BE.SettingDetails>(),
-                HoliDays = GetHolidays()
+                HoliDays = GetHolidays(),
+                ChangeHistorySettings = GetHistoryChangeSettings()
             };
 
             settingModel.Monday = settingModel.Monday == null ? new SettingDetails() { DayOfWeek = (int)EnumDayOfWeek.Monday } : settingModel.Monday;
@@ -337,339 +338,11 @@ namespace Trinity.DAL
             settingModel.Friday = settingModel.Friday == null ? new SettingDetails() { DayOfWeek = (int)EnumDayOfWeek.Friday } : settingModel.Friday;
             settingModel.Saturday = settingModel.Saturday == null ? new SettingDetails() { DayOfWeek = (int)EnumDayOfWeek.Saturday } : settingModel.Saturday;
             settingModel.Sunday = settingModel.Sunday == null ? new SettingDetails() { DayOfWeek = (int)EnumDayOfWeek.Sunday } : settingModel.Sunday;
-
-            //OperationSetting settingMonday = _localUnitOfWork.DataContext.OperationSettings.FirstOrDefault(s => s.DayOfWeek == 2);
-            //OperationSetting settingTuesday = _localUnitOfWork.DataContext.OperationSettings.FirstOrDefault(s => s.DayOfWeek == 3);
-            //OperationSetting settingWednesday = _localUnitOfWork.DataContext.OperationSettings.FirstOrDefault(s => s.DayOfWeek == 4);
-            //OperationSetting settingThurday = _localUnitOfWork.DataContext.OperationSettings.FirstOrDefault(s => s.DayOfWeek == 5);
-            //OperationSetting settingFriday = _localUnitOfWork.DataContext.OperationSettings.FirstOrDefault(s => s.DayOfWeek == 6);
-            //OperationSetting settingSaturday = _localUnitOfWork.DataContext.OperationSettings.FirstOrDefault(s => s.DayOfWeek == 7);
-            //OperationSetting settingSunday = _localUnitOfWork.DataContext.OperationSettings.FirstOrDefault(s => s.DayOfWeek == 8);
-
-            //if (settingMonday != null)
-            //{
-            //    settingModel.Monday.Morning_Open_Time = settingMonday.Morning_Open_Time;
-            //    settingModel.Monday.Morning_Close_Time = settingMonday.Morning_Close_Time;
-            //    settingModel.Monday.Morning_Interval = settingMonday.Morning_Interval;
-            //    settingModel.Monday.Morning_Is_Closed = settingMonday.Morning_Is_Closed;
-            //    settingModel.Monday.Morning_MaximumSupervisee = settingMonday.Morning_MaximumSupervisee;
-            //    settingModel.Monday.Morning_Spare_Slots = settingMonday.Morning_Spare_Slots;
-
-            //    settingModel.Monday.Afternoon_Open_Time = settingMonday.Afternoon_Open_Time;
-            //    settingModel.Monday.Afternoon_Close_Time = settingMonday.Afternoon_Close_Time;
-            //    settingModel.Monday.Afternoon_Interval = settingMonday.Afternoon_Interval;
-            //    settingModel.Monday.Afternoon_Is_Closed = settingMonday.Afternoon_Is_Closed;
-            //    settingModel.Monday.Afternoon_MaximumSupervisee = settingMonday.Afternoon_MaximumSupervisee;
-            //    settingModel.Monday.Afternoon_Spare_Slots = settingMonday.Afternoon_Spare_Slots;
-
-            //    settingModel.Monday.Evening_Open_Time = settingMonday.Evening_Open_Time;
-            //    settingModel.Monday.Evening_Close_Time = settingMonday.Evening_Close_Time;
-            //    settingModel.Monday.Evening_Interval = settingMonday.Evening_Interval;
-            //    settingModel.Monday.Evening_Is_Closed = settingMonday.Evening_Is_Closed;
-            //    settingModel.Monday.Evening_MaximumSupervisee = settingMonday.Evening_MaximumSupervisee;
-            //    settingModel.Monday.Evening_Spare_Slots = settingMonday.Evening_Spare_Slots;
-            //}
-
-            //if (settingTuesday != null)
-            //{
-            //    settingModel.Tuesday.Morning_Open_Time = settingTuesday.Morning_Open_Time;
-            //    settingModel.Tuesday.Morning_Close_Time = settingTuesday.Morning_Close_Time;
-            //    settingModel.Tuesday.Morning_Interval = settingTuesday.Morning_Interval;
-            //    settingModel.Tuesday.Morning_Is_Closed = settingTuesday.Morning_Is_Closed;
-            //    settingModel.Tuesday.Morning_MaximumSupervisee = settingTuesday.Morning_MaximumSupervisee;
-            //    settingModel.Tuesday.Morning_Spare_Slots = settingTuesday.Morning_Spare_Slots;
-
-            //    settingModel.Tuesday.Afternoon_Open_Time = settingTuesday.Afternoon_Open_Time;
-            //    settingModel.Tuesday.Afternoon_Close_Time = settingMonday.Afternoon_Close_Time;
-            //    settingModel.Tuesday.Afternoon_Interval = settingTuesday.Afternoon_Interval;
-            //    settingModel.Tuesday.Afternoon_Is_Closed = settingTuesday.Afternoon_Is_Closed;
-            //    settingModel.Tuesday.Afternoon_MaximumSupervisee = settingTuesday.Afternoon_MaximumSupervisee;
-            //    settingModel.Tuesday.Afternoon_Spare_Slots = settingTuesday.Afternoon_Spare_Slots;
-
-            //    settingModel.Tuesday.Evening_Open_Time = settingTuesday.Evening_Open_Time;
-            //    settingModel.Tuesday.Evening_Close_Time = settingTuesday.Evening_Close_Time;
-            //    settingModel.Tuesday.Evening_Interval = settingTuesday.Evening_Interval;
-            //    settingModel.Tuesday.Evening_Is_Closed = settingTuesday.Evening_Is_Closed;
-            //    settingModel.Tuesday.Evening_MaximumSupervisee = settingTuesday.Evening_MaximumSupervisee;
-            //    settingModel.Tuesday.Evening_Spare_Slots = settingTuesday.Evening_Spare_Slots;
-            //}
-
-            //if (settingWednesday != null)
-            //{
-            //    settingModel.WednesDay.Morning_Open_Time = settingWednesday.Morning_Open_Time;
-            //    settingModel.WednesDay.Morning_Close_Time = settingWednesday.Morning_Close_Time;
-            //    settingModel.WednesDay.Morning_Interval = settingWednesday.Morning_Interval;
-            //    settingModel.WednesDay.Morning_Is_Closed = settingWednesday.Morning_Is_Closed;
-            //    settingModel.WednesDay.Morning_MaximumSupervisee = settingWednesday.Morning_MaximumSupervisee;
-            //    settingModel.WednesDay.Morning_Spare_Slots = settingWednesday.Morning_Spare_Slots;
-
-            //    settingModel.WednesDay.Afternoon_Open_Time = settingWednesday.Afternoon_Open_Time;
-            //    settingModel.WednesDay.Afternoon_Close_Time = settingWednesday.Afternoon_Close_Time;
-            //    settingModel.WednesDay.Afternoon_Interval = settingWednesday.Afternoon_Interval;
-            //    settingModel.WednesDay.Afternoon_Is_Closed = settingWednesday.Afternoon_Is_Closed;
-            //    settingModel.WednesDay.Afternoon_MaximumSupervisee = settingWednesday.Afternoon_MaximumSupervisee;
-            //    settingModel.WednesDay.Afternoon_Spare_Slots = settingWednesday.Afternoon_Spare_Slots;
-
-            //    settingModel.WednesDay.Evening_Open_Time = settingWednesday.Evening_Open_Time;
-            //    settingModel.WednesDay.Evening_Close_Time = settingWednesday.Evening_Close_Time;
-            //    settingModel.WednesDay.Evening_Interval = settingWednesday.Evening_Interval;
-            //    settingModel.WednesDay.Evening_Is_Closed = settingWednesday.Evening_Is_Closed;
-            //    settingModel.WednesDay.Evening_MaximumSupervisee = settingWednesday.Evening_MaximumSupervisee;
-            //    settingModel.WednesDay.Evening_Spare_Slots = settingWednesday.Evening_Spare_Slots;
-            //}
-
-            //if (settingThurday != null)
-            //{
-            //    settingModel.Thursday.Morning_Open_Time = settingThurday.Morning_Open_Time;
-            //    settingModel.Thursday.Morning_Close_Time = settingThurday.Morning_Close_Time;
-            //    settingModel.Thursday.Morning_Interval = settingThurday.Morning_Interval;
-            //    settingModel.Thursday.Morning_Is_Closed = settingThurday.Morning_Is_Closed;
-            //    settingModel.Thursday.Morning_MaximumSupervisee = settingThurday.Morning_MaximumSupervisee;
-            //    settingModel.Thursday.Morning_Spare_Slots = settingThurday.Morning_Spare_Slots;
-
-            //    settingModel.Thursday.Afternoon_Open_Time = settingThurday.Afternoon_Open_Time;
-            //    settingModel.Thursday.Afternoon_Close_Time = settingThurday.Afternoon_Close_Time;
-            //    settingModel.Thursday.Afternoon_Interval = settingThurday.Afternoon_Interval;
-            //    settingModel.Thursday.Afternoon_Is_Closed = settingThurday.Afternoon_Is_Closed;
-            //    settingModel.Thursday.Afternoon_MaximumSupervisee = settingThurday.Afternoon_MaximumSupervisee;
-            //    settingModel.Thursday.Afternoon_Spare_Slots = settingThurday.Afternoon_Spare_Slots;
-
-            //    settingModel.Thursday.Evening_Open_Time = settingThurday.Evening_Open_Time;
-            //    settingModel.Thursday.Evening_Close_Time = settingThurday.Evening_Close_Time;
-            //    settingModel.Thursday.Evening_Interval = settingThurday.Evening_Interval;
-            //    settingModel.Thursday.Evening_Is_Closed = settingThurday.Evening_Is_Closed;
-            //    settingModel.Thursday.Evening_MaximumSupervisee = settingThurday.Evening_MaximumSupervisee;
-            //    settingModel.Thursday.Evening_Spare_Slots = settingThurday.Evening_Spare_Slots;
-            //}
-
-            //if (settingFriday != null)
-            //{
-            //    settingModel.Friday.Morning_Open_Time = settingFriday.Morning_Open_Time;
-            //    settingModel.Friday.Morning_Close_Time = settingFriday.Morning_Close_Time;
-            //    settingModel.Friday.Morning_Interval = settingFriday.Morning_Interval;
-            //    settingModel.Friday.Morning_Is_Closed = settingFriday.Morning_Is_Closed;
-            //    settingModel.Friday.Morning_MaximumSupervisee = settingFriday.Morning_MaximumSupervisee;
-            //    settingModel.Friday.Morning_Spare_Slots = settingFriday.Morning_Spare_Slots;
-
-            //    settingModel.Friday.Afternoon_Open_Time = settingFriday.Afternoon_Open_Time;
-            //    settingModel.Friday.Afternoon_Close_Time = settingFriday.Afternoon_Close_Time;
-            //    settingModel.Friday.Afternoon_Interval = settingFriday.Afternoon_Interval;
-            //    settingModel.Friday.Afternoon_Is_Closed = settingFriday.Afternoon_Is_Closed;
-            //    settingModel.Friday.Afternoon_MaximumSupervisee = settingFriday.Afternoon_MaximumSupervisee;
-            //    settingModel.Friday.Afternoon_Spare_Slots = settingFriday.Afternoon_Spare_Slots;
-
-            //    settingModel.Friday.Evening_Open_Time = settingFriday.Evening_Open_Time;
-            //    settingModel.Friday.Evening_Close_Time = settingFriday.Evening_Close_Time;
-            //    settingModel.Friday.Evening_Interval = settingFriday.Evening_Interval;
-            //    settingModel.Friday.Evening_Is_Closed = settingFriday.Evening_Is_Closed;
-            //    settingModel.Friday.Evening_MaximumSupervisee = settingFriday.Evening_MaximumSupervisee;
-            //    settingModel.Friday.Evening_Spare_Slots = settingFriday.Evening_Spare_Slots;
-            //}
-
-            //if (settingSaturday != null)
-            //{
-            //    settingModel.Saturday.Morning_Open_Time = settingSaturday.Morning_Open_Time;
-            //    settingModel.Saturday.Morning_Close_Time = settingSaturday.Morning_Close_Time;
-            //    settingModel.Saturday.Morning_Interval = settingSaturday.Morning_Interval;
-            //    settingModel.Saturday.Morning_Is_Closed = settingSaturday.Morning_Is_Closed;
-            //    settingModel.Saturday.Morning_MaximumSupervisee = settingSaturday.Morning_MaximumSupervisee;
-            //    settingModel.Saturday.Morning_Spare_Slots = settingSaturday.Morning_Spare_Slots;
-
-            //    settingModel.Saturday.Afternoon_Open_Time = settingSaturday.Afternoon_Open_Time;
-            //    settingModel.Saturday.Afternoon_Close_Time = settingSaturday.Afternoon_Close_Time;
-            //    settingModel.Saturday.Afternoon_Interval = settingSaturday.Afternoon_Interval;
-            //    settingModel.Saturday.Afternoon_Is_Closed = settingSaturday.Afternoon_Is_Closed;
-            //    settingModel.Saturday.Afternoon_MaximumSupervisee = settingSaturday.Afternoon_MaximumSupervisee;
-            //    settingModel.Saturday.Afternoon_Spare_Slots = settingSaturday.Afternoon_Spare_Slots;
-
-            //    settingModel.Saturday.Evening_Open_Time = settingSaturday.Evening_Open_Time;
-            //    settingModel.Saturday.Evening_Close_Time = settingSaturday.Evening_Close_Time;
-            //    settingModel.Saturday.Evening_Interval = settingSaturday.Evening_Interval;
-            //    settingModel.Saturday.Evening_Is_Closed = settingSaturday.Evening_Is_Closed;
-            //    settingModel.Saturday.Evening_MaximumSupervisee = settingSaturday.Evening_MaximumSupervisee;
-            //    settingModel.Saturday.Evening_Spare_Slots = settingSaturday.Evening_Spare_Slots;
-            //}
-
-            //if (settingSunday != null)
-            //{
-            //    settingModel.Sunday.Morning_Open_Time = settingSunday.Morning_Open_Time;
-            //    settingModel.Sunday.Morning_Close_Time = settingSunday.Morning_Close_Time;
-            //    settingModel.Sunday.Morning_Interval = settingSunday.Morning_Interval;
-            //    settingModel.Sunday.Morning_Is_Closed = settingSunday.Morning_Is_Closed;
-            //    settingModel.Sunday.Morning_MaximumSupervisee = settingSunday.Morning_MaximumSupervisee;
-            //    settingModel.Sunday.Morning_Spare_Slots = settingSunday.Morning_Spare_Slots;
-
-            //    settingModel.Sunday.Afternoon_Open_Time = settingSunday.Afternoon_Open_Time;
-            //    settingModel.Sunday.Afternoon_Close_Time = settingSunday.Afternoon_Close_Time;
-            //    settingModel.Sunday.Afternoon_Interval = settingSunday.Afternoon_Interval;
-            //    settingModel.Sunday.Afternoon_Is_Closed = settingSunday.Afternoon_Is_Closed;
-            //    settingModel.Sunday.Afternoon_MaximumSupervisee = settingSunday.Afternoon_MaximumSupervisee;
-            //    settingModel.Sunday.Afternoon_Spare_Slots = settingSunday.Afternoon_Spare_Slots;
-
-            //    settingModel.Sunday.Evening_Open_Time = settingSunday.Evening_Open_Time;
-            //    settingModel.Sunday.Evening_Close_Time = settingSunday.Evening_Close_Time;
-            //    settingModel.Sunday.Evening_Interval = settingSunday.Evening_Interval;
-            //    settingModel.Sunday.Evening_Is_Closed = settingSunday.Evening_Is_Closed;
-            //    settingModel.Sunday.Evening_MaximumSupervisee = settingSunday.Evening_MaximumSupervisee;
-            //    settingModel.Sunday.Evening_Spare_Slots = settingSunday.Evening_Spare_Slots;
-            //}
-
+            
             return settingModel;
         }
 
-        #region Duty Officer
-        // Save Setting from DutyOfficer
-        public bool SaveOperationSetting(BE.SettingDetails model)
-        {
-            try
-            {
-                var repo = _localUnitOfWork.GetRepository<OperationSetting>();
-                var repoAppointment = _localUnitOfWork.GetRepository<DBContext.Appointment>();
-                var repoTimeslot = _localUnitOfWork.GetRepository<DBContext.Timeslot>();
-
-                var operationSetting = _localUnitOfWork.DataContext.OperationSettings.FirstOrDefault(s => s.DayOfWeek == model.DayOfWeek);
-                if (operationSetting == null)
-                {
-                    operationSetting = new OperationSetting();
-                    operationSetting.DayOfWeek = model.DayOfWeek;
-                    operationSetting.Morning_Open_Time = model.Morning_Open_Time;
-                    operationSetting.Morning_Close_Time = model.Morning_Close_Time;
-                    operationSetting.Morning_Spare_Slots = model.Morning_Spare_Slots;
-                    operationSetting.Morning_Interval = model.Morning_Interval;
-                    operationSetting.Morning_MaximumSupervisee = model.Morning_MaximumSupervisee;
-                    operationSetting.Morning_Is_Closed = model.Morning_Is_Closed;
-                    operationSetting.Afternoon_Open_Time = model.Afternoon_Open_Time;
-                    operationSetting.Afternoon_Close_Time = model.Afternoon_Close_Time;
-                    operationSetting.Afternoon_Spare_Slots = model.Afternoon_Spare_Slots;
-                    operationSetting.Afternoon_Interval = model.Afternoon_Interval;
-                    operationSetting.Afternoon_MaximumSupervisee = model.Afternoon_MaximumSupervisee;
-                    operationSetting.Afternoon_Is_Closed = model.Afternoon_Is_Closed;
-                    operationSetting.Evening_Open_Time = model.Evening_Open_Time;
-                    operationSetting.Evening_Close_Time = model.Evening_Close_Time;
-                    operationSetting.Evening_Spare_Slots = model.Evening_Spare_Slots;
-                    operationSetting.Evening_Interval = model.Evening_Interval;
-                    operationSetting.Evening_MaximumSupervisee = model.Evening_MaximumSupervisee;
-                    operationSetting.Evening_Is_Closed = model.Evening_Is_Closed;
-                    operationSetting.Last_Updated_By = model.Last_Updated_By;
-                    operationSetting.Last_Updated_Date = DateTime.Now;
-
-                    repo.Add(operationSetting);
-                }
-                else
-                {
-                    operationSetting.Morning_Open_Time = model.Morning_Open_Time;
-                    operationSetting.Morning_Close_Time = model.Morning_Close_Time;
-                    operationSetting.Morning_Spare_Slots = model.Morning_Spare_Slots;
-                    operationSetting.Morning_Interval = model.Morning_Interval;
-                    operationSetting.Morning_MaximumSupervisee = model.Morning_MaximumSupervisee;
-                    operationSetting.Morning_Is_Closed = model.Morning_Is_Closed;
-                    operationSetting.Afternoon_Open_Time = model.Afternoon_Open_Time;
-                    operationSetting.Afternoon_Close_Time = model.Afternoon_Close_Time;
-                    operationSetting.Afternoon_Spare_Slots = model.Afternoon_Spare_Slots;
-                    operationSetting.Afternoon_Interval = model.Afternoon_Interval;
-                    operationSetting.Afternoon_MaximumSupervisee = model.Afternoon_MaximumSupervisee;
-                    operationSetting.Afternoon_Is_Closed = model.Afternoon_Is_Closed;
-                    operationSetting.Evening_Open_Time = model.Evening_Open_Time;
-                    operationSetting.Evening_Close_Time = model.Evening_Close_Time;
-                    operationSetting.Evening_Spare_Slots = model.Evening_Spare_Slots;
-                    operationSetting.Evening_Interval = model.Evening_Interval;
-                    operationSetting.Evening_MaximumSupervisee = model.Evening_MaximumSupervisee;
-                    operationSetting.Evening_Is_Closed = model.Evening_Is_Closed;
-                    operationSetting.Last_Updated_By = model.Last_Updated_By;
-                    operationSetting.Last_Updated_Date = DateTime.Now;
-
-                    repo.Update(operationSetting);
-                }
-
-                // Generate Timeslote here
-                var date = FindNexDateByDayOfWeek((EnumDayOfWeek)model.DayOfWeek);
-                var lstTimeslots = GetTimeslotByDate(date);
-                if (lstTimeslots.Count > 0)
-                {
-                    bool isDeleteAppointment = false;
-                    bool isHasQueue = false;
-
-                    // Check Queue
-                    foreach (var item in lstTimeslots)
-                    {
-                        DBContext.Appointment appointment = GetAppointmentByTimeslotID(item.Timeslot_ID);
-                        if (appointment != null)
-                        {
-                            // If have Queue, show message and no change update
-                            if (GetQueueByAppointmentID(appointment.ID) != null)
-                            {
-                                MessageBox.Show("The day was order Queue, can not update.");
-                                isHasQueue = true;
-                                return false;
-                            }
-                        }
-                    }
-
-                    if (!isHasQueue)
-                    {
-                        // Check Appointment
-                        foreach (var item in lstTimeslots)
-                        {
-                            DBContext.Appointment appointment = GetAppointmentByTimeslotID(item.Timeslot_ID);
-                            if (appointment != null)
-                            {
-                                DialogResult dr = MessageBox.Show("The day was booked appointment, do you want to continue?", "Confirm", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Information);
-
-                                if (dr == DialogResult.Yes)
-                                {
-                                    isDeleteAppointment = true;
-                                }
-                                break;
-                            }
-                        }
-
-                        foreach (var item in lstTimeslots)
-                        {
-                            DBContext.Appointment appointment = GetAppointmentByTimeslotID(item.Timeslot_ID);
-                            if (appointment != null)
-                            {
-                                if (!isDeleteAppointment)
-                                {
-                                    return false;
-                                }
-                                else
-                                {
-                                    appointment.Timeslot_ID = null;
-                                    repoAppointment.Update(appointment);
-                                }
-                            }
-                            repoTimeslot.Delete(item);
-                        }
-
-                        int maxSupervisee = (model.Morning_MaximumSupervisee.HasValue ? model.Morning_MaximumSupervisee.Value : 0)
-                                        + (model.Afternoon_MaximumSupervisee.HasValue ? model.Afternoon_MaximumSupervisee.Value : 0)
-                                        + (model.Evening_MaximumSupervisee.HasValue ? model.Evening_MaximumSupervisee.Value : 0);
-
-                        GenerateTimeslotAndInsert(date, model, model.Last_Updated_By, maxSupervisee);
-                    }
-                }
-                else
-                {
-                    int maxSupervisee = (model.Morning_MaximumSupervisee.HasValue ? model.Morning_MaximumSupervisee.Value : 0)
-                                        + (model.Afternoon_MaximumSupervisee.HasValue ? model.Afternoon_MaximumSupervisee.Value : 0)
-                                        + (model.Evening_MaximumSupervisee.HasValue ? model.Evening_MaximumSupervisee.Value : 0);
-                    GenerateTimeslotAndInsert(date, model, model.Last_Updated_By, maxSupervisee);
-                }
-
-                _localUnitOfWork.Save();
-
-                return true;
-            }
-            catch (Exception e)
-            {
-                return false;
-            }
-        }
-
-        private List<Timeslot> GetTimeslotByDate(DateTime date)
-        {
-            return _localUnitOfWork.DataContext.Timeslots.Where(t => DbFunctions.TruncateTime(t.Date) == date.Date).ToList();
-        }
+        #region Duty Officer        
 
         private DateTime FindNexDateByDayOfWeek(EnumDayOfWeek dayOfWeek)
         {
@@ -678,33 +351,18 @@ namespace Trinity.DAL
             return DateTime.Today.AddDays(daysToAdd);
         }
 
-        private DBContext.Appointment GetAppointmentByTimeslotID(int timeslotID)
+        public List<Trinity.BE.OperationSettings_ChangeHist> GetHistoryChangeSettings()
         {
-            return _localUnitOfWork.DataContext.Appointments.FirstOrDefault(a => a.Timeslot_ID == timeslotID);
-        }
+            var repoChangeHistorySetting = _localUnitOfWork.GetRepository<DBContext.OperationSettings_ChangeHist>();
+            List<BE.OperationSettings_ChangeHist> results = repoChangeHistorySetting.GetAll().ToList().Select(d => d.Map<BE.OperationSettings_ChangeHist>()).OrderByDescending(t=>t.LastUpdatedDate).ToList();
 
-        private DBContext.Queue GetQueueByAppointmentID(Guid appointmentID)
-        {
-            return _localUnitOfWork.DataContext.Queues.FirstOrDefault(q => q.Appointment_ID == appointmentID);
+            return results;
         }
 
         public List<BE.Holiday> GetHolidays()
         {
-            //List<BE.Holiday> results = new List<BE.Holiday>();
             var repoHolidays = _localUnitOfWork.GetRepository<DBContext.Holiday>();
-            List<BE.Holiday> results = repoHolidays.GetAll().ToList().Select(d => d.Map<BE.Holiday>()).ToList();
-
-            //foreach (var item in lstHolidays)
-            //{
-            //    BE.Holiday holiday = new BE.Holiday();
-            //    holiday.Holiday1 = item.Holiday1;
-            //    //holiday.IsSingHoliday = item.IsSingHoliday;
-            //    //holiday.IsMalayHoliday = item.IsMalayHoliday;
-            //    holiday.ShortDesc = item.ShortDesc;
-            //    holiday.Notes = item.Notes;
-
-            //    results.Add(holiday);
-            //}
+            List<BE.Holiday> results = repoHolidays.GetAll().ToList().Select(d => d.Map<BE.Holiday>()).ToList();            
 
             return results;
         }
@@ -794,6 +452,47 @@ namespace Trinity.DAL
         {
             #region Update OperationSetting
             var operationSetting = _localUnitOfWork.DataContext.OperationSettings.FirstOrDefault(s => s.DayOfWeek == model.DayOfWeek);
+            List<string> arrayUpdateHistory = new List<string>();
+            var sourceProps = model.GetType().GetProperties().Where(x => x.CanRead).ToList();
+            if (operationSetting == null)
+            {
+                foreach (var sourceProp in sourceProps)
+                {
+                    var dataUpdate = sourceProp.GetValue(model, null);
+                    CustomAttribute cusAttr = sourceProp.GetMyCustomAttributes();
+                    if (cusAttr != null && cusAttr.Name != null && dataUpdate != null)
+                    {
+                        arrayUpdateHistory.Add("Changed " + cusAttr.Name + " to " + (dataUpdate == null ? string.Empty : dataUpdate.ToString()));
+                    }
+                }
+            }
+            else
+            {
+                var destProps = operationSetting.GetType().GetProperties()
+                    .Where(x => x.CanWrite)
+                    .ToList();
+                foreach (var sourceProp in sourceProps)
+                {
+                    var dataUpdate = sourceProp.GetValue(model, null);
+                    CustomAttribute cusAttr = sourceProp.GetMyCustomAttributes();
+                    if (cusAttr != null && cusAttr.Name != null && dataUpdate != null)
+                    {
+                        if (destProps.Any(x => x.Name == sourceProp.Name))
+                        {
+                            var p = destProps.First(x => x.Name == sourceProp.Name);
+                            var dataValue = p.GetValue(operationSetting, null);
+                            if (!dataUpdate.Equals(dataValue))
+                                arrayUpdateHistory.Add("Changed " + cusAttr.Name + " to " + (dataUpdate==null?string.Empty: dataUpdate.ToString()));
+                        }
+
+                    }
+                }
+            }
+
+            ////////////////
+
+
+
             if (operationSetting == null)
             {
                 operationSetting = new OperationSetting();
@@ -845,6 +544,29 @@ namespace Trinity.DAL
 
                 _localUnitOfWork.GetRepository<OperationSetting>().Update(operationSetting);
             }
+
+            // Insert to Change History Setting
+            if (arrayUpdateHistory.Count > 0)
+            {
+                var dalUser = new DAL_User();
+                Trinity.BE.User oficcer = dalUser.GetUserByUserId(model.Last_Updated_By, true);
+                var changeHistoryID = _localUnitOfWork.DataContext.OperationSettings_ChangeHist.Any() ? _localUnitOfWork.DataContext.OperationSettings_ChangeHist.Max(t => t.ID) : 0;
+                //System.Text.StringBuilder changeDetails = new System.Text.StringBuilder();
+                foreach (var detail in arrayUpdateHistory)
+                {
+                    //changeDetails.Append(detail + Environment.NewLine);
+                    DBContext.OperationSettings_ChangeHist changeHistory = new DBContext.OperationSettings_ChangeHist();
+                    changeHistory.ID = changeHistoryID + 1;
+                    changeHistory.DayOfWeek = model.DayOfWeek;
+                    changeHistory.LastUpdatedBy = oficcer.Name;
+                    changeHistory.LastUpdatedDate = DateTime.Now;
+                    changeHistory.ChangeDetails = detail;
+
+                    _localUnitOfWork.GetRepository<DBContext.OperationSettings_ChangeHist>().Add(changeHistory);
+
+                    changeHistoryID += 1;
+                }
+            }
             #endregion
             #region update appointments & remove queue
             if (modelWarning != null && modelWarning.arrayDetail.Count > 0)
@@ -857,16 +579,18 @@ namespace Trinity.DAL
                     _localUnitOfWork.GetRepository<DBContext.Appointment>().Update(item);
                 });
                 List<Guid> arrQueueID = modelWarning.arrayDetail.Where(d => d.Queue_ID.HasValue).Select(d => d.Queue_ID.Value).ToList();
-                _localUnitOfWork.DataContext.QueueDetails.Where(d => arrQueueID.Contains(d.Queue_ID)).ToList().ForEach(item => {
+                _localUnitOfWork.DataContext.QueueDetails.Where(d => arrQueueID.Contains(d.Queue_ID)).ToList().ForEach(item =>
+                {
                     _localUnitOfWork.GetRepository<DBContext.QueueDetail>().Delete(item);
                 });
-                _localUnitOfWork.DataContext.Queues.Where(d => arrQueueID.Contains(d.Queue_ID)).ToList().ForEach(item => {
+                _localUnitOfWork.DataContext.Queues.Where(d => arrQueueID.Contains(d.Queue_ID)).ToList().ForEach(item =>
+                {
                     _localUnitOfWork.GetRepository<DBContext.Queue>().Delete(item);
-                });   
+                });
             }
             #endregion
             #region Delete TimeSlot & Generate Time
-            if (modelWarning!=null && modelWarning.isDeleteTimeSlot)
+            if (modelWarning != null && modelWarning.isDeleteTimeSlot)
             {
                 var DateNow = DateTime.Now.Date;
                 var _dayOfWeek = model.DayOfWeek == (int)EnumDayOfWeek.Sunday ? 1 : model.DayOfWeek;
@@ -879,13 +603,16 @@ namespace Trinity.DAL
                 List<DBContext.Timeslot> arrTimeSlot = new List<Timeslot>();
 
                 #region Morning
-                arrTimeSlot.AddRange(GenerateTimeSlot(dateGenTimeSlot, operationSetting.Morning_Open_Time.Value, operationSetting.Morning_Close_Time.Value, operationSetting.Morning_Interval.Value,model.Last_Updated_By, operationSetting.Morning_MaximumSupervisee.Value, EnumTimeshift.Morning));
+                arrTimeSlot.AddRange(GenerateTimeSlot(dateGenTimeSlot, operationSetting.Morning_Open_Time.Value, operationSetting.Morning_Close_Time.Value, operationSetting.Morning_Interval.HasValue ? operationSetting.Morning_Interval.Value : 15, 
+                                                        model.Last_Updated_By, operationSetting.Morning_MaximumSupervisee.HasValue ? operationSetting.Morning_MaximumSupervisee.Value : 0, EnumTimeshift.Morning));
                 #endregion
                 #region Evening
-                arrTimeSlot.AddRange(GenerateTimeSlot(dateGenTimeSlot, operationSetting.Evening_Open_Time.Value, operationSetting.Evening_Close_Time.Value, operationSetting.Evening_Interval.Value, model.Last_Updated_By, operationSetting.Evening_MaximumSupervisee.Value, EnumTimeshift.Morning));
+                arrTimeSlot.AddRange(GenerateTimeSlot(dateGenTimeSlot, operationSetting.Evening_Open_Time.Value, operationSetting.Evening_Close_Time.Value, operationSetting.Evening_Interval.HasValue ? operationSetting.Evening_Interval.Value : 15, 
+                                                        model.Last_Updated_By, operationSetting.Evening_MaximumSupervisee.HasValue ? operationSetting.Evening_MaximumSupervisee.Value : 0, EnumTimeshift.Evening));
                 #endregion
                 #region Afternoon
-                arrTimeSlot.AddRange(GenerateTimeSlot(dateGenTimeSlot, operationSetting.Afternoon_Open_Time.Value, operationSetting.Afternoon_Close_Time.Value, operationSetting.Afternoon_Interval.Value, model.Last_Updated_By, operationSetting.Afternoon_MaximumSupervisee.Value, EnumTimeshift.Morning));
+                arrTimeSlot.AddRange(GenerateTimeSlot(dateGenTimeSlot, operationSetting.Afternoon_Open_Time.Value, operationSetting.Afternoon_Close_Time.Value, operationSetting.Afternoon_Interval.HasValue ? operationSetting.Afternoon_Interval.Value : 15, 
+                                                        model.Last_Updated_By, operationSetting.Afternoon_MaximumSupervisee.HasValue ? operationSetting.Afternoon_MaximumSupervisee.Value : 0, EnumTimeshift.Afternoon));
                 #endregion
                 _localUnitOfWork.GetRepository<DBContext.Timeslot>().AddRange(arrTimeSlot);
             }
@@ -901,8 +628,7 @@ namespace Trinity.DAL
             while (fromTime < toTime)
             {
                 var timeSlot = new DBContext.Timeslot();
-                //timeSlot.Timeslot_ID = (id + 1);
-                
+                timeSlot.Timeslot_ID = Guid.NewGuid().ToString().Trim();
                 timeSlot.StartTime = fromTime;
                 timeSlot.EndTime = fromTime.Add(TimeSpan.FromMinutes(duration));
                 timeSlot.Date = date.Date.Date;
@@ -916,7 +642,7 @@ namespace Trinity.DAL
                 timeSlot.LastUpdatedBy = createBy;
                 timeSlot.LastUpdatedDate = DateTime.Now;
 
-                
+
                 fromTime = fromTime.Add(TimeSpan.FromMinutes(duration));
                 array.Add(timeSlot);
             }
@@ -928,7 +654,7 @@ namespace Trinity.DAL
             CheckWarningSaveSetting modelReturn = new BE.CheckWarningSaveSetting();
             var _dayOfWeek = DayOfWeek == EnumDayOfWeek.Sunday ? 1 : (int)DayOfWeek;
             var DateNow = DateTime.Now.Date;
-            var arrayBookAppoint = _localUnitOfWork.DataContext.Appointments.Include("Membership_Users").Include("Timeslot").Include("Queues").Where(d => d.Timeslot_ID.HasValue && DbFunctions.TruncateTime(d.Date) >= DateNow && SqlFunctions.DatePart("dw", d.Date) == _dayOfWeek).ToList();
+            var arrayBookAppoint = _localUnitOfWork.DataContext.Appointments.Include("Membership_Users").Include("Timeslot").Include("Queues").Where(d => !string.IsNullOrEmpty(d.Timeslot_ID) && DbFunctions.TruncateTime(d.Date) >= DateNow && SqlFunctions.DatePart("dw", d.Date) == _dayOfWeek).ToList();
             // danh sách những user đc warning
             List<CheckWarningSaveSetting> arrayListUser = new List<CheckWarningSaveSetting>();
             if ((int)DayOfWeek == DateTime.Now.DayOfWeek())
@@ -943,7 +669,7 @@ namespace Trinity.DAL
                         Email = d.Membership_Users.Email,
                         StartTime = d.Timeslot.StartTime.Value,
                         EndTime = d.Timeslot.EndTime.Value,
-                        Timeslot_ID = d.Timeslot_ID.Value,
+                        Timeslot_ID = d.Timeslot_ID,
                         UserId = d.UserId,
                         UserName = d.Membership_Users.UserName,
                         Queue_ID = d.Queues.Select(c => c.Queue_ID).FirstOrDefault(),
@@ -960,7 +686,7 @@ namespace Trinity.DAL
                     Email = d.Membership_Users.Email,
                     StartTime = d.Timeslot.StartTime.Value,
                     EndTime = d.Timeslot.EndTime.Value,
-                    Timeslot_ID = d.Timeslot_ID.Value,
+                    Timeslot_ID = d.Timeslot_ID,
                     UserId = d.UserId,
                     UserName = d.Membership_Users.UserName,
                     Queue_ID = d.Queues.Select(c => c.Queue_ID).FirstOrDefault(),
@@ -970,7 +696,7 @@ namespace Trinity.DAL
             }
 
             return modelReturn;
-        }
+        }        
         #endregion
     }
 }

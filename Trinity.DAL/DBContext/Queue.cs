@@ -27,8 +27,8 @@ namespace Trinity.DAL.DBContext
         public System.DateTime CreatedTime { get; set; }
         public string QueuedNumber { get; set; }
     
-        public virtual Appointment Appointment { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<QueueDetail> QueueDetails { get; set; }
+        public virtual Appointment Appointment { get; set; }
     }
 }

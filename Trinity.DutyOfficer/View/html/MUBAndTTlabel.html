@@ -62,7 +62,16 @@
 
     var dataSource = [];
 
-    api.server.GetAllMUBAndTTlabels();
+    api.server.GetAllMUBAndTTlabels(function (data) {
+        dataSource = data;
+        $('#MUBAndTTlabel').bootstrapTable({
+            //pagination: true,
+            search: true,
+            pageSize: 10,
+            //singleSelect: true,
+            data: data
+        });
+    });
 
     function cbFormatter(value) {
         return '<input type="checkbox"' + (value == true ? " checked " : "") + '>';
