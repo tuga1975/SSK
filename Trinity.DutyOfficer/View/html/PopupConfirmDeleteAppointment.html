@@ -18,7 +18,8 @@
     </div>
 </div>
 <script type="text/javascript">
-    api.ready(function (model) {
+    api.ready(function (responseCheckWarning) {
+        modelCheckWarning = responseCheckWarning;
         $('#tableAppointmentDelete').bootstrapTable({
             pagination: true,
             pageSize: 10,
@@ -56,15 +57,17 @@
                 width: '20%',
                 align: 'center'
             }],
-            data: model.arrayDetail
+            data: modelCheckWarning.arrayDetail
         });
     });
-    
+
+    var modelCheckWarning;
+
     $("#ConfirmDelBtn").click(function (e) {
-        var data = JSON.stringify(model);
+        var dataCheckWarning = JSON.stringify(modelCheckWarning);
         var dataOperationSetting = JSON.stringify(operationSetting);
 
-        api.server.UpdateSettingAndTimeslot(data, dataOperationSetting, function () {
+        api.server.UpdateSettingAndTimeslot(dataCheckWarning, dataOperationSetting, function () {
             api.server.LoadPage('Settings.html');
             $('#idConfirmDelete').modal('toggle');
         });

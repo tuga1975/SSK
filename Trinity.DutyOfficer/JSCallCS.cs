@@ -55,6 +55,16 @@ namespace DutyOfficer
             //_web.InvokeScript("getDataCallback", result);
         }
 
+        public StationColorDevice GetStationClolorDevice()
+        {
+            var dalDeviceStatus = new DAL_DeviceStatus();
+            StationColorDevice stationColorDevice = new StationColorDevice();
+            stationColorDevice.SSAColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStations.SSA) ? EnumColors.Red : EnumColors.Green;
+            stationColorDevice.SSKColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStations.SSK) ? EnumColors.Red : EnumColors.Green;
+            stationColorDevice.ESPColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStations.ESP) ? EnumColors.Red : EnumColors.Green;
+            stationColorDevice.UHPColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStations.UHP) ? EnumColors.Red : EnumColors.Green;
+            return stationColorDevice;
+        }
 
         #region Queue
 
@@ -164,14 +174,22 @@ namespace DutyOfficer
         {
             var holiday = JsonConvert.DeserializeObject<Trinity.DAL.DBContext.Holiday>(json);
             var dalSetting = new DAL_Setting();
-            dalSetting.AddHoliday(holiday);
+
+            Session session = Session.Instance;
+            Trinity.BE.User dutyOfficer = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+
+            dalSetting.AddHoliday(holiday, dutyOfficer.Name);
         }
 
         public void DeleteHoliday(string date)
         {
             DateTime dateHoliday = Convert.ToDateTime(date);
             var dalSetting = new DAL_Setting();
-            dalSetting.DeleteHoliday(dateHoliday);
+
+            Session session = Session.Instance;
+            Trinity.BE.User dutyOfficer = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+
+            dalSetting.DeleteHoliday(dateHoliday, dutyOfficer.Name);
         }
 
         #endregion

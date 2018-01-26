@@ -77,5 +77,10 @@ namespace Trinity.DAL
                 return false;
             }
         }
+
+        public bool CheckStatusDevicesStation(string station)
+        {
+            return _localUnitOfWork.DataContext.ApplicationDevice_Status.Any(d => d.Station.ToUpper() == station.ToUpper() && d.StatusCode == (int)EnumDeviceStatuses.Disconnected);
+        }
     }
 }
