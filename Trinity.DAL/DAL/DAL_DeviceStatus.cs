@@ -15,7 +15,7 @@ namespace Trinity.DAL
         Local_UnitOfWork _localUnitOfWork = new Local_UnitOfWork();
         Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
 
-        public bool Update(DeviceStatus model)
+        public bool Update(DeviceStatus model, bool isLocal = false)
         {
             try
             {

@@ -50,7 +50,7 @@ namespace Experiment
         private void btnPrintSuperviseeCard_Click(object sender, EventArgs e)
         {
             SmartCardPrinterUtils smartCardPrinterUtils = SmartCardPrinterUtils.Instance;
-            SuperviseeCardInfo superviseeCardInfo = new SuperviseeCardInfo()
+            PrintAndWriteSmartCardInfo superviseeCardInfo = new PrintAndWriteSmartCardInfo()
             {
                 FrontCardImagePath = @"E:\GitHub\SSK\DocumentScannerTest\bin\x64\Debug\Front.bmp",
                 BackCardImagePath = @"E:\GitHub\SSK\DocumentScannerTest\bin\x64\Debug\Back.bmp",
@@ -67,7 +67,7 @@ namespace Experiment
                 }
             };
 
-            smartCardPrinterUtils.PrintAndWriteSuperviseeSmartCard(superviseeCardInfo, OnCompleted);
+            smartCardPrinterUtils.PrintAndWriteSmartCard(superviseeCardInfo, OnCompleted);
         }
 
         private void OnCompleted(PrintAndWriteCardResult result)
@@ -112,6 +112,11 @@ namespace Experiment
         private void btnStartHealthChecker_Click(object sender, EventArgs e)
         {
             //SCardMonitor.Instance.Start();
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            var status = FingerprintReaderUtils.Instance.GetDeviceStatus();
         }
     }
 }
