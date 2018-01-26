@@ -186,12 +186,5 @@ namespace Trinity.Common.DeviceMonitor
                 }));
             }
         }
-
-        public EnumDeviceStatuses[] GetBarcodePrinterStatus()
-        {
-            // get printerName name from appconfig
-            string printerName = ConfigurationManager.AppSettings["TTLabelPrinterName"];
-            return BarcodePrinterUtils.Instance.GetDeviceStatus(printerName);
-        }
     }
 }

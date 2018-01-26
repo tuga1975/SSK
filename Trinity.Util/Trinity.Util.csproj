@@ -51,8 +51,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BarcodePrinterMonitor.cs" />
+    <Compile Include="DocumentScannerMonitor.cs" />
     <Compile Include="FingerprintReaderMonitor.cs" />
     <Compile Include="Repeat.cs" />
+    <Compile Include="SmartCardPrinterMonitor.cs" />
     <Compile Include="SmartCardReaderMonitor.cs" />
   </ItemGroup>
   <ItemGroup>

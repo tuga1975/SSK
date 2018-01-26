@@ -122,8 +122,6 @@
     <Compile Include="Common\User.cs" />
     <Compile Include="Constants\CommonConstants.cs" />
     <Compile Include="CSCallJS.cs" />
-    <Compile Include="DeviceMonitor\AbstractDeviceMonitor.cs" />
-    <Compile Include="DeviceMonitor\DocumentScannerMonitor.cs" />
     <Compile Include="DeviceMonitor\PrinterMonitor.cs" />
     <Compile Include="JSCallCSBase.cs" />
     <Compile Include="Lib.cs" />

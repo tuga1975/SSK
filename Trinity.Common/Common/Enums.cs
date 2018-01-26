@@ -120,7 +120,11 @@ public enum EnumDeviceIds
     ReceiptPrinter = 4,
     BarcodeScanner = 5,
     LEDDisplayMonitor = 6,
-    Camera = 7
+    Camera = 7,
+    SmartCardPrinter = 8,
+    MUBLabelPrinter = 9,
+    UBLabelPrinter = 10,
+    TTLabelPrinter = 11
 }
 
 
@@ -257,6 +261,11 @@ public static class EnumDeviceNames
     public static string MUBLabelPrinter
     {
         get { return ConfigurationManager.AppSettings["MUBLabelPrinterName"]; }
+    }
+
+    public static string UBLabelPrinter
+    {
+        get { return ConfigurationManager.AppSettings["UBLabelPrinterName"]; }
     }
 
     public static string ReceiptPrinter

@@ -19,13 +19,13 @@ namespace Trinity.CentralizedAPI.Controllers
         [Route("Update")]
         [HttpPost]
         [ResponseType(responseType: typeof(bool))]
-        public IHttpActionResult Update(DeviceStatus model)
+        public IHttpActionResult Update(int deviceId, EnumDeviceStatuses[] deviceStatuses)
         {
             try
             {
                 // update local ApplicationDevice_Status
                 DAL_DeviceStatus dAL_DeviceStatus = new DAL_DeviceStatus();
-                bool updateResult = dAL_DeviceStatus.Update(model, true);
+                bool updateResult = dAL_DeviceStatus.Update(deviceId, deviceStatuses);
 
                 // return value
                 return Ok(updateResult);

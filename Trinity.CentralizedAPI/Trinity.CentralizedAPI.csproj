@@ -264,6 +264,10 @@
       <Project>{4321FA96-3A53-49C1-89EF-8A2F6E9B81C7}</Project>
       <Name>Trinity.BE</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Trinity.Common\Trinity.Common.csproj">
+      <Project>{6c023597-f6ba-4857-9c3b-82d91eb4b4a3}</Project>
+      <Name>Trinity.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Trinity.DAL\Trinity.DAL.csproj">
       <Project>{344f2633-3277-44c5-a55e-b66f920cca14}</Project>
       <Name>Trinity.DAL</Name>
