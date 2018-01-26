@@ -78,13 +78,15 @@ namespace DutyOfficer
                     this._web.LoadPopupHtml("QueuePopupDrugs.html", new
                     {
                         Date = dbLabel.Date.ToString("dd MMM yyyy"),
-                        TestResults = new {
+                        TestResults = new
+                        {
                             AMPH = dbDrugResult.AMPH,
                             BENZ = dbDrugResult.BENZ,
                             OPI = dbDrugResult.OPI,
                             THC = dbDrugResult.THC
                         },
-                        Seal = new {
+                        Seal = new
+                        {
                             BARB = dbDrugResult.BARB,
                             BUPRE = dbDrugResult.BUPRE,
                             CAT = dbDrugResult.CAT,
@@ -204,7 +206,7 @@ namespace DutyOfficer
             var dalSetting = new DAL_Setting();
             CheckWarningSaveSetting checkWarningSaveSetting = dalSetting.CheckWarningSaveSetting((EnumDayOfWeek)dayOfWeek);
             return (checkWarningSaveSetting.arrayDetail.Count > 0);
-                
+
         }
 
         public void AddHoliday(string json)
@@ -235,7 +237,7 @@ namespace DutyOfficer
         public List<User> GetAllSuperviseesBlocked()
         {
             var dalUser = new DAL_User();
-            return dalUser.GetAllSuperviseeBlocked(true);            
+            return dalUser.GetAllSuperviseeBlocked(true);
         }
 
         public void LoadPopupBlock(string userId)
@@ -380,29 +382,29 @@ namespace DutyOfficer
                         ReprintReason = reason,
                         IsMUB = false
                     };
-
-                    if (item.IsMUB)
+                    if (string.IsNullOrEmpty(item.DrugType) || item.DrugType != "NA")
                     {
-                        byte[] byteArrayQRCode = null;
-                        byteArrayQRCode = CommonUtil.CreateLabelQRCode(labelInfo, "AESKey");
-                        labelInfo.QRCode = byteArrayQRCode;
+                        labelInfo.DrugType = new DAL_DrugResults().GetDrugTypeByNRIC(item.NRIC);
+                    }
+                    byte[] byteArrayQRCode = null;
+                    byteArrayQRCode = CommonUtil.CreateLabelQRCode(labelInfo, "AESKey", true);
+                    labelInfo.QRCode = byteArrayQRCode;
 
-                        using (var ms = new System.IO.MemoryStream(byteArrayQRCode))
+                    using (var ms = new System.IO.MemoryStream(byteArrayQRCode))
+                    {
+                        if (!Directory.Exists(CSCallJS.curDir + "\\Temp"))
                         {
-                            if (!Directory.Exists(CSCallJS.curDir + "\\Temp"))
-                            {
-                                Directory.CreateDirectory(CSCallJS.curDir + "\\Temp");
-                            }
-                            string fileName = String.Format("{0}/Temp/{1}", CSCallJS.curDir, "QRCode.png");
-                            if (System.IO.File.Exists(fileName))
-                                System.IO.File.Delete(fileName);
-
-                            if (System.IO.File.Exists(fileName))
-                                System.IO.File.Delete(fileName);
-
-                            System.Drawing.Image bitmap = System.Drawing.Image.FromStream(ms);
-                            bitmap.Save(fileName, System.Drawing.Imaging.ImageFormat.Png);
+                            Directory.CreateDirectory(CSCallJS.curDir + "\\Temp");
                         }
+                        string fileName = String.Format("{0}/Temp/{1}", CSCallJS.curDir, "QRCode.png");
+                        if (System.IO.File.Exists(fileName))
+                            System.IO.File.Delete(fileName);
+
+                        if (System.IO.File.Exists(fileName))
+                            System.IO.File.Delete(fileName);
+
+                        System.Drawing.Image bitmap = System.Drawing.Image.FromStream(ms);
+                        bitmap.Save(fileName, System.Drawing.Imaging.ImageFormat.Png);
                     }
 
                     _web.LoadPageHtml("PrintingTemplates/UBLabelTemplate .html", labelInfo);
