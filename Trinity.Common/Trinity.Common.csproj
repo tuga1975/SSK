@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -152,8 +153,14 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Libs\Futronic Fingerprint Reader\ftrScanAPI.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Libs\Futronic Fingerprint Reader\ftrSDKHelper13.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libs\Futronic Fingerprint Reader\ftrWSQ.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Libs\Futronic Fingerprint Reader\ScanAPIHelper.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

@@ -364,6 +364,7 @@ namespace Trinity.Common
             // callback
             _identificationCompleted(success);
         }
+
         public byte[] GetTemplate {
             get
             {
@@ -373,6 +374,7 @@ namespace Trinity.Common
                 return _futronicEnrollment.Template;
             }
         }
+
         public uint GetQuality
         {
             get
@@ -417,6 +419,7 @@ namespace Trinity.Common
                 _futronicEnrollment.Enrollment();
             }
         }
+
         public void DisposeCapture()
         {
             lock (syncRoot)
