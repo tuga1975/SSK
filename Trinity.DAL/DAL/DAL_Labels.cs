@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,12 @@ namespace Trinity.DAL
     {
         Local_UnitOfWork _localUnitOfWork = new Local_UnitOfWork();
         Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
+
+
+        public DBContext.Label GetByDateAndUserId(DateTime Date,string UserId)
+        {
+            return _localUnitOfWork.DataContext.Labels.FirstOrDefault(d=> DbFunctions.TruncateTime(d.Date).Value==Date && d.UserId==UserId);
+        }
 
         public Label GetLabelByUserIdAndType(string userId, string labelType)
         {
@@ -41,8 +48,23 @@ namespace Trinity.DAL
                     dbLabel.LastStation = model.LastStation;
                     dbLabel.ReprintReason = model.ReprintReason;
                     dbLabel.PrintCount = 1;
-
                     locallabelRepo.Add(dbLabel);
+
+                    var dateLable = dbLabel.Date.Date;
+                    DBContext.Queue dbQueue = _localUnitOfWork.DataContext.Queues.Include("Appointment").FirstOrDefault(d => DbFunctions.TruncateTime(d.Appointment.Date).Value == dateLable && d.Appointment.UserId == dbLabel.UserId);
+                    if (dbQueue != null)
+                    {
+                        dbQueue.CurrentStation = EnumStations.HSA;
+                        dbQueue.Outcome = "Printer MUB/TT Label";
+                        DBContext.QueueDetail dbQueueDetail = _localUnitOfWork.DataContext.QueueDetails.FirstOrDefault(d=>d.Queue_ID== dbQueue.Queue_ID && d.Station== EnumStations.HSA);
+                        if (dbQueueDetail != null)
+                        {
+                            dbQueueDetail.Status = EnumQueueStatuses.Finished;
+                            _localUnitOfWork.GetRepository<DBContext.QueueDetail>().Update(dbQueueDetail);
+                        }
+                        _localUnitOfWork.GetRepository<DBContext.Queue>().Update(dbQueue);
+                    }
+
                 }
                 else
                 {
@@ -58,9 +80,13 @@ namespace Trinity.DAL
                     dbLabel.LastStation = model.LastStation;
                     dbLabel.PrintCount += 1;
                     dbLabel.ReprintReason = model.ReprintReason;
-
                     locallabelRepo.Update(dbLabel);
                 }
+
+
+
+
+
                 _localUnitOfWork.Save();
 
                 return true;

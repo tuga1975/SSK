@@ -57,19 +57,57 @@ namespace DutyOfficer
 
 
         #region Queue
-
+        public void LoadDrugsTest(string Date, string UserId)
+        {
+            Date = DateTime.Now.ToString();
+            Trinity.DAL.DBContext.Label dbLabel = new Trinity.DAL.DAL_Labels().GetByDateAndUserId(Convert.ToDateTime(Date).Date, UserId);
+            if (dbLabel != null)
+            {
+                Trinity.DAL.DBContext.DrugResult dbDrugResult = new Trinity.DAL.DAL_DrugResults().GetByMarkingNumber(dbLabel.MarkingNo);
+                if (dbDrugResult != null)
+                {
+                    this._web.LoadPopupHtml("QueuePopupDrugs.html", new
+                    {
+                        Date = dbLabel.Date.ToString("dd MMM yyyy"),
+                        TestResults = new {
+                            AMPH = dbDrugResult.AMPH,
+                            BENZ = dbDrugResult.BENZ,
+                            OPI = dbDrugResult.OPI,
+                            THC = dbDrugResult.THC
+                        },
+                        Seal = new {
+                            BARB = dbDrugResult.BARB,
+                            BUPRE = dbDrugResult.BUPRE,
+                            CAT = dbDrugResult.CAT,
+                            COCA = dbDrugResult.COCA,
+                            KET = dbDrugResult.KET,
+                            LSD = dbDrugResult.LSD,
+                            METH = dbDrugResult.METH,
+                            MTQL = dbDrugResult.MTQL,
+                            NPS = dbDrugResult.NPS,
+                            PCP = dbDrugResult.PCP,
+                            PPZ = dbDrugResult.PPZ
+                        }
+                    });
+                }
+            }
+            this._web.LoadPopupHtml("QueuePopupDrugs.html", null);
+        }
         public object getDataQueue()
         {
             var data = new DAL_QueueNumber().GetAllQueueByDateIncludeDetail(DateTime.Now.Date)
                 .Select(queue => new
                 {
+                    Queue_ID = queue.Queue_ID,
+                    Date = queue.Appointment.Date.Date,
+                    UserId = queue.Appointment.UserId,
                     NRIC = queue.Appointment.Membership_Users.NRIC,
                     Name = queue.Appointment.Membership_Users.Name,
                     APS = queue.QueueDetails.Where(c => c.Station == EnumStations.APS).FirstOrDefault().Color,
                     SSK = queue.QueueDetails.Where(c => c.Station == EnumStations.SSK).FirstOrDefault().Color,
                     SSA = queue.QueueDetails.Where(c => c.Station == EnumStations.SSA).FirstOrDefault().Color,
                     UHP = queue.QueueDetails.Where(c => c.Station == EnumStations.UHP).FirstOrDefault().Color,
-                    HSA = queue.QueueDetails.Where(c => c.Station == EnumStations.UHP).FirstOrDefault().Message,
+                    HSA = queue.QueueDetails.Where(c => c.Station == EnumStations.HSA).FirstOrDefault().Status == EnumQueueStatuses.Finished ? "Drugs" : string.Empty,
                     ESP = queue.QueueDetails.Where(c => c.Station == EnumStations.ESP).FirstOrDefault().Color,
                     Outcome = queue.Outcome,
                     Message = new
@@ -486,11 +524,11 @@ namespace DutyOfficer
             }
 
             DAL_Labels dalLabel = new DAL_Labels();
-            if(dalLabel.UpdateLabel(labelInfo, labelInfo.UserId, labelInfo.Label_Type))
+            if (dalLabel.UpdateLabel(labelInfo, labelInfo.UserId, labelInfo.Label_Type))
             {
                 string message = "Print MUB for " + e.LabelInfo.Name + " successful.";
                 MessageBox.Show(message, "", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }            
+            }
 
             DeleteQRCodeImageFileTemp();
         }
