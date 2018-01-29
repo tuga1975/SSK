@@ -11,7 +11,7 @@ using Trinity.DAL;
 
 namespace Trinity.Util
 {
-    public static class MUBLabelPrinter
+    public static class MUBLabelPrinterMonitor
     {
         public static bool Start()
         {
@@ -48,7 +48,7 @@ namespace Trinity.Util
         }
     }
 
-    public static class UBLabelPrinter
+    public static class UBLabelPrinterMonitor
     {
         public static bool Start()
         {
@@ -85,7 +85,7 @@ namespace Trinity.Util
         }
     }
 
-    public static class TTLabelPrinter
+    public static class TTLabelPrinterMonitor
     {
         public static bool Start()
         {
