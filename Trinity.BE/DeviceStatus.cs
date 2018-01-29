@@ -13,4 +13,12 @@ namespace Trinity.BE
         public int DeviceID { get; set; }
         public EnumDeviceStatuses[] StatusCode { get; set; }
     }
+
+    public class StationColorDevice
+    {
+        public string SSAColor { get; set; }
+        public string SSKColor { get; set; }
+        public string UHPColor { get; set; }
+        public string ESPColor { get; set; }
+    }
 }

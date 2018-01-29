@@ -73,15 +73,10 @@
 
             var holiday = { Holiday1: date, ShortDesc: description, Notes: note };
             var data = JSON.stringify(holiday);
-            api.server.AddHoliday(data);
-
-            $('#holidayTable').bootstrapTable('refreshOptions', {
-                pagination: true,
-                pageSize: 5,
-                data: model.HoliDays
+            api.server.AddHoliday(data, function () {
+                api.server.LoadPage('Settings.html');
+                $('#idAddHoliday').modal('toggle');
             });
-
-            $('#idAddHoliday').modal('toggle');
         }
         e.preventDefault();
     });

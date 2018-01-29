@@ -19,8 +19,13 @@ namespace Experiment
             Application.SetCompatibleTextRenderingDefault(false);
 
             // start health monitors
-            bool result = SmartCardReaderMonitor.Start();
-            bool result2 = FingerprintReaderMonitor.Start();
+            SmartCardReaderMonitor.Start();
+            FingerprintReaderMonitor.Start();
+            DocumentScannerMonitor.Start();
+            MUBLabelPrinterMonitor.Start();
+            UBLabelPrinterMonitor.Start();
+            TTLabelPrinterMonitor.Start();
+            SmartCardPrinterMonitor.Start();
 
             // 
             Application.Run(new Form1());

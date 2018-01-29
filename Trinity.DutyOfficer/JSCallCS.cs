@@ -46,15 +46,18 @@ namespace DutyOfficer
             //Receive alerts and notifications from APS, SSK, SSA, UHP and ESP 
             List<string> modules = new List<string>() { "APS", "SSK", "SSA", "UHP", "ESP" };
             return dalNotify.GetNotificationsSentToDutyOfficer(true, modules);
-            //object result = null;
-            //if (data != null)
-            //{
-            //    result = JsonConvert.SerializeObject(data, Formatting.Indented,
-            //        new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
-            //}
-            //_web.InvokeScript("getDataCallback", result);
         }
 
+        public StationColorDevice GetStationClolorDevice()
+        {
+            var dalDeviceStatus = new DAL_DeviceStatus();
+            StationColorDevice stationColorDevice = new StationColorDevice();
+            stationColorDevice.SSAColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStations.SSA) ? EnumColors.Red : EnumColors.Green;
+            stationColorDevice.SSKColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStations.SSK) ? EnumColors.Red : EnumColors.Green;
+            stationColorDevice.ESPColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStations.ESP) ? EnumColors.Red : EnumColors.Green;
+            stationColorDevice.UHPColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStations.UHP) ? EnumColors.Red : EnumColors.Green;
+            return stationColorDevice;
+        }
 
         #region Queue
         public void LoadDrugsTest(string Date, string UserId)
@@ -68,13 +71,15 @@ namespace DutyOfficer
                     this._web.LoadPopupHtml("QueuePopupDrugs.html", new
                     {
                         Date = dbLabel.Date.ToString("dd MMM yyyy"),
-                        TestResults = new {
+                        TestResults = new
+                        {
                             AMPH = dbDrugResult.AMPH,
                             BENZ = dbDrugResult.BENZ,
                             OPI = dbDrugResult.OPI,
                             THC = dbDrugResult.THC
                         },
-                        Seal = new {
+                        Seal = new
+                        {
                             BARB = dbDrugResult.BARB,
                             BUPRE = dbDrugResult.BUPRE,
                             CAT = dbDrugResult.CAT,
@@ -116,9 +121,11 @@ namespace DutyOfficer
                 });
             return data;
         }
-        public void LoadPopupQueue()
+        public void LoadPopupQueue(string queue_ID)
         {
-            this._web.LoadPopupHtml("QueuePopupDetail.html");
+            var dalQueue = new DAL_QueueNumber();
+            Trinity.BE.QueueInfo queueInfo = dalQueue.GetQueueInfoByQueueID(new Guid(queue_ID));
+            this._web.LoadPopupHtml("QueuePopupDetail.html", queueInfo);
         }
         #endregion
 
@@ -146,14 +153,6 @@ namespace DutyOfficer
         {
             DAL_Setting dalSetting = new DAL_Setting();
             return dalSetting.GetOperationSettings();
-
-            //object result = null;
-            //if (data != null)
-            //{
-            //    result = JsonConvert.SerializeObject(data, Formatting.Indented,
-            //        new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
-            //}
-            //_web.InvokeScript("getDataCallback", result);
         }
 
         public void UpdateOperationSetting(string json)
@@ -194,21 +193,29 @@ namespace DutyOfficer
             var dalSetting = new DAL_Setting();
             CheckWarningSaveSetting checkWarningSaveSetting = dalSetting.CheckWarningSaveSetting((EnumDayOfWeek)dayOfWeek);
             return (checkWarningSaveSetting.arrayDetail.Count > 0);
-                
+
         }
 
         public void AddHoliday(string json)
         {
             var holiday = JsonConvert.DeserializeObject<Trinity.DAL.DBContext.Holiday>(json);
             var dalSetting = new DAL_Setting();
-            dalSetting.AddHoliday(holiday);
+
+            Session session = Session.Instance;
+            Trinity.BE.User dutyOfficer = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+
+            dalSetting.AddHoliday(holiday, dutyOfficer.Name);
         }
 
         public void DeleteHoliday(string date)
         {
             DateTime dateHoliday = Convert.ToDateTime(date);
             var dalSetting = new DAL_Setting();
-            dalSetting.DeleteHoliday(dateHoliday);
+
+            Session session = Session.Instance;
+            Trinity.BE.User dutyOfficer = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+
+            dalSetting.DeleteHoliday(dateHoliday, dutyOfficer.Name);
         }
 
         #endregion
@@ -217,7 +224,7 @@ namespace DutyOfficer
         public List<User> GetAllSuperviseesBlocked()
         {
             var dalUser = new DAL_User();
-            return dalUser.GetAllSuperviseeBlocked(true);            
+            return dalUser.GetAllSuperviseeBlocked(true);
         }
 
         public void LoadPopupBlock(string userId)
@@ -254,35 +261,16 @@ namespace DutyOfficer
         #endregion
 
         #region Appointment
-        public void GetAllAppoinments()
+        public List<Appointment> GetAllAppoinments()
         {
             var dalAppointment = new DAL_Appointments();
-            List<Appointment> data = dalAppointment.GetAllAppointments();
-
-            //foreach(var item in data)
-            //{
-            //    item.TimeSlot = GetDurationBetweenTwoTimespan(item.StartTime.Value, item.EndTime.Value);
-            //}
-
-            object result = null;
-            if (data != null)
-            {
-                result = JsonConvert.SerializeObject(data, Formatting.Indented,
-                    new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
-            }
-            _web.InvokeScript("getDataCallback", result);
-        }
-
-        private TimeSpan GetDurationBetweenTwoTimespan(TimeSpan startTime, TimeSpan endTime)
-        {
-            TimeSpan duration = new TimeSpan(endTime.Ticks - startTime.Ticks);
-            return duration;
+             return dalAppointment.GetAllAppointments();            
         }
 
         #endregion
 
         #region Statistics
-        public void GetStatistics()
+        public List<Statistics> GetStatistics()
         {
             var dalAppointment = new DAL_Appointments();
             List<Statistics> data = dalAppointment.GetAllStatistics();
@@ -296,13 +284,7 @@ namespace DutyOfficer
                 item.Available = item.Max - item.Booked - item.Reported - item.No_Show;
             }
 
-            object result = null;
-            if (data != null)
-            {
-                result = JsonConvert.SerializeObject(data, Formatting.Indented,
-                    new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
-            }
-            _web.InvokeScript("getDataCallback", result);
+            return data;
         }
         #endregion
 
@@ -311,18 +293,6 @@ namespace DutyOfficer
         {
             var dalUBlabels = new DAL_Labels();
             return dalUBlabels.GetAllLabelsForUB();
-
-            //object result = null;
-            //if (data.Count != 0)
-            //{
-            //    result = JsonConvert.SerializeObject(data, Formatting.Indented,
-            //        new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
-            //}
-            //else
-            //{
-            //    getAlertsSendToDutyOfficer();
-            //}
-            //_web.InvokeScript("getDataCallback", result);
         }
 
         //Load Popup of UB label
@@ -362,29 +332,29 @@ namespace DutyOfficer
                         ReprintReason = reason,
                         IsMUB = false
                     };
-
-                    if (item.IsMUB)
+                    if (string.IsNullOrEmpty(item.DrugType) || item.DrugType != "NA")
                     {
-                        byte[] byteArrayQRCode = null;
-                        byteArrayQRCode = CommonUtil.CreateLabelQRCode(labelInfo, "AESKey");
-                        labelInfo.QRCode = byteArrayQRCode;
+                        labelInfo.DrugType = new DAL_DrugResults().GetDrugTypeByNRIC(item.NRIC);
+                    }
+                    byte[] byteArrayQRCode = null;
+                    byteArrayQRCode = CommonUtil.CreateLabelQRCode(labelInfo, "AESKey", true);
+                    labelInfo.QRCode = byteArrayQRCode;
 
-                        using (var ms = new System.IO.MemoryStream(byteArrayQRCode))
+                    using (var ms = new System.IO.MemoryStream(byteArrayQRCode))
+                    {
+                        if (!Directory.Exists(CSCallJS.curDir + "\\Temp"))
                         {
-                            if (!Directory.Exists(CSCallJS.curDir + "\\Temp"))
-                            {
-                                Directory.CreateDirectory(CSCallJS.curDir + "\\Temp");
-                            }
-                            string fileName = String.Format("{0}/Temp/{1}", CSCallJS.curDir, "QRCode.png");
-                            if (System.IO.File.Exists(fileName))
-                                System.IO.File.Delete(fileName);
-
-                            if (System.IO.File.Exists(fileName))
-                                System.IO.File.Delete(fileName);
-
-                            System.Drawing.Image bitmap = System.Drawing.Image.FromStream(ms);
-                            bitmap.Save(fileName, System.Drawing.Imaging.ImageFormat.Png);
+                            Directory.CreateDirectory(CSCallJS.curDir + "\\Temp");
                         }
+                        string fileName = String.Format("{0}/Temp/{1}", CSCallJS.curDir, "QRCode.png");
+                        if (System.IO.File.Exists(fileName))
+                            System.IO.File.Delete(fileName);
+
+                        if (System.IO.File.Exists(fileName))
+                            System.IO.File.Delete(fileName);
+
+                        System.Drawing.Image bitmap = System.Drawing.Image.FromStream(ms);
+                        bitmap.Save(fileName, System.Drawing.Imaging.ImageFormat.Png);
                     }
 
                     _web.LoadPageHtml("PrintingTemplates/UBLabelTemplate .html", labelInfo);
@@ -415,18 +385,6 @@ namespace DutyOfficer
         {
             var dalMUBAndTTlabels = new DAL_Labels();
             return dalMUBAndTTlabels.GetAllLabelsForMUBAndTT();
-
-            //object result = null;
-            //if (data.Count != 0)
-            //{
-            //    result = JsonConvert.SerializeObject(data, Formatting.Indented,
-            //        new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
-            //}
-            //else
-            //{
-            //    getAlertsSendToDutyOfficer();
-            //}
-            //_web.InvokeScript("getDataCallback", result);
         }
 
         //Load Popup of MUBAndTT Label

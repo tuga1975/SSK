@@ -205,5 +205,24 @@ namespace Trinity.DAL
 
             return holdingList;
         }
+
+        public BE.QueueInfo GetQueueInfoByQueueID(Guid queue_ID)
+        {
+            var dbQueue = _localUnitOfWork.DataContext.Queues.Include("Appointment").Include("Appointment.Membership_Users").FirstOrDefault(q => q.Queue_ID == queue_ID);
+            var queueDetails = _localUnitOfWork.DataContext.QueueDetails.Where(qd => qd.Queue_ID == queue_ID).ToList().Select(d => d.Map<BE.QueueDetail>()).ToList();
+
+            BE.QueueInfo queueInfo = new BE.QueueInfo();
+            if (dbQueue != null)
+            {
+                queueInfo.Queue_ID = dbQueue.Queue_ID;
+                queueInfo.NRIC = dbQueue.Appointment.Membership_Users.NRIC;
+                queueInfo.Name = dbQueue.Appointment.Membership_Users.Name;
+                queueInfo.CurrentStation = dbQueue.CurrentStation;
+                queueInfo.Status = queueDetails.FirstOrDefault(qd => qd.Station.Equals(dbQueue.CurrentStation)).Status;
+                queueInfo.QueueDetail = queueDetails.Where(qd => qd.Message != null && qd.Message != "").ToList();
+            }
+
+            return queueInfo;
+        }
     }
 }
