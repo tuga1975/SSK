@@ -53,116 +53,6 @@
     today = mm + '/' + dd + '/' + yyyy;
     $('#dateSearch').val(today);
 
-    function getDataCallback(response) {
-        var data = JSON.parse(response);
-        if (data) {
-            data.forEach(function (element, index) {
-                dataSource.push({
-                    TimeSlot: element.StartTime + ' to ' + element.EndTime,
-                    NRIC: element.NRIC,
-                    Name: element.Name,
-                    ReportTime: element.ReportTime,
-                    Status: element.Status,
-                    Date: element.AppointmentDate,
-                    StartTime: element.StartTime,
-                    EndTime: element.EndTime,
-                    Category: element.Category
-                });
-
-                if (Date.parse(element.AppointmentDate) == Date.parse(today)) {
-                    searchSource.push({
-                        TimeSlot: element.StartTime + ' to ' + element.EndTime,
-                        NRIC: element.NRIC,
-                        Name: element.Name,
-                        ReportTime: element.ReportTime,
-                        Status: element.Status,
-                        Date: element.AppointmentDate,
-                        StartTime: element.StartTime,
-                        EndTime: element.EndTime,
-                        Category: element.Category
-                    });
-                }
-            });
-
-            searchSource.forEach(function (element, index) {
-                $('#timeslot').append($('<option></option>').val(element.TimeSlot).html(element.TimeSlot));
-            });
-        }
-
-        $('#table').bootstrapTable({
-            pagination: true,
-            pageSize: 10,
-            //search:true,
-            columns: [{
-                field: 'TimeSlot',
-                title: 'Time Slot',
-                sortable: true,
-                width: '15%',
-                align: 'center'
-            }, {
-                field: 'NRIC',
-                title: 'NRIC',
-                sortable: true,
-                width: '15%',
-                align: 'center'
-            }, {
-                field: 'Name',
-                title: 'Name',
-                sortable: true,
-                width: '40%',
-                align: 'center'
-            }, {
-                field: 'ReportTime',
-                title: 'Report Time',
-                sortable: true,
-                width: '15%',
-                align: 'center',
-                formatter: function (value, row, index, field) {
-                    if (value) {
-                        return formatDate(value);
-                    }
-                    return "";
-                }
-            }, {
-                field: 'Status',
-                title: 'Status',
-                sortable: true,
-                width: '15%',
-                align: 'center',
-                formatter: function (value, row, index, field) {
-                    switch (value) {
-                        case 1:
-                            return 'Booked';
-                        case 2:
-                            return 'Reported';
-                        default:
-                            return "No-show";
-                    }
-                }
-            }],
-            data: searchSource
-            //[{
-            //    TimeSlot: '04:50',
-            //    NRIC: 'S99999991X',
-            //    Name: 'Quach Phu Phu',
-            //    ReportTime: '12:11',
-            //    Status: 'Reported'
-            //}, {
-            //    TimeSlot: '05:15',
-            //    NRIC: 'S99999992X',
-            //    Name: 'Duong Qua',
-            //    ReportTime: '12:11',
-            //    Status: 'Booked'
-            //}, {
-            //    TimeSlot: '11:10',
-            //    NRIC: 'S99999993X',
-            //    Name: 'Tieu Long Nu',
-            //    ReportTime: '14:40',
-            //    Status: 'No-show'
-            //}]
-        });
-    };
-
     $(document).ready(function () {
 
         var pageSize = $('#pageSize');
@@ -173,9 +63,94 @@
             $('#datetimepicker').datepicker();
         });
 
-        api.server.GetAllAppoinments();
-        //loadTable(pageSize);
+        api.server.GetAllAppoinments(function (data) {
+            if (data) {
+                data.forEach(function (element, index) {
+                    dataSource.push({
+                        TimeSlot: element.StartTime + ' to ' + element.EndTime,
+                        NRIC: element.NRIC,
+                        Name: element.Name,
+                        ReportTime: element.ReportTime,
+                        Status: element.Status,
+                        Date: element.AppointmentDate,
+                        StartTime: element.StartTime,
+                        EndTime: element.EndTime,
+                        Category: element.Category
+                    });
 
+                    if (Date.parse(element.AppointmentDate) == Date.parse(today)) {
+                        searchSource.push({
+                            TimeSlot: element.StartTime + ' to ' + element.EndTime,
+                            NRIC: element.NRIC,
+                            Name: element.Name,
+                            ReportTime: element.ReportTime,
+                            Status: element.Status,
+                            Date: element.AppointmentDate,
+                            StartTime: element.StartTime,
+                            EndTime: element.EndTime,
+                            Category: element.Category
+                        });
+                    }
+                });
+
+                searchSource.forEach(function (element, index) {
+                    $('#timeslot').append($('<option></option>').val(element.TimeSlot).html(element.TimeSlot));
+                });
+            }
+
+            $('#table').bootstrapTable({
+                pagination: true,
+                pageSize: 10,
+                columns: [{
+                    field: 'TimeSlot',
+                    title: 'Time Slot',
+                    sortable: true,
+                    width: '15%',
+                    align: 'center'
+                }, {
+                    field: 'NRIC',
+                    title: 'NRIC',
+                    sortable: true,
+                    width: '15%',
+                    align: 'center'
+                }, {
+                    field: 'Name',
+                    title: 'Name',
+                    sortable: true,
+                    width: '40%',
+                    align: 'center'
+                }, {
+                    field: 'ReportTime',
+                    title: 'Report Time',
+                    sortable: true,
+                    width: '15%',
+                    align: 'center',
+                    formatter: function (value, row, index, field) {
+                        if (value) {
+                            return formatDate(value);
+                        }
+                        return "";
+                    }
+                }, {
+                    field: 'Status',
+                    title: 'Status',
+                    sortable: true,
+                    width: '15%',
+                    align: 'center',
+                    formatter: function (value, row, index, field) {
+                        switch (value) {
+                            case 1:
+                                return 'Booked';
+                            case 2:
+                                return 'Reported';
+                            default:
+                                return "No-show";
+                        }
+                    }
+                }],
+                data: searchSource
+            });
+        });
     });
 
     $('#pageSize').change(function () {

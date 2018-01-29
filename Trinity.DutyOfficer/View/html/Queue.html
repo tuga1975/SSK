@@ -10,7 +10,7 @@
             pageList: [10, 20, 40, 60,80,100],
             onDblClickCell: function (field, value, row, $element) {
                 if (field == 'Message') {
-                    api.server.LoadPopupQueue(function () {
+                    api.server.LoadPopupQueue(row.Queue_ID, function () {
                         $('#idQueue').modal();
                     });
                 } else if (field == "HSA" && $.trim(value).length>0) {

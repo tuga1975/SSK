@@ -46,13 +46,6 @@ namespace DutyOfficer
             //Receive alerts and notifications from APS, SSK, SSA, UHP and ESP 
             List<string> modules = new List<string>() { "APS", "SSK", "SSA", "UHP", "ESP" };
             return dalNotify.GetNotificationsSentToDutyOfficer(true, modules);
-            //object result = null;
-            //if (data != null)
-            //{
-            //    result = JsonConvert.SerializeObject(data, Formatting.Indented,
-            //        new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
-            //}
-            //_web.InvokeScript("getDataCallback", result);
         }
 
         public StationColorDevice GetStationClolorDevice()
@@ -128,9 +121,11 @@ namespace DutyOfficer
                 });
             return data;
         }
-        public void LoadPopupQueue()
+        public void LoadPopupQueue(string queue_ID)
         {
-            this._web.LoadPopupHtml("QueuePopupDetail.html");
+            var dalQueue = new DAL_QueueNumber();
+            Trinity.BE.QueueInfo queueInfo = dalQueue.GetQueueInfoByQueueID(new Guid(queue_ID));
+            this._web.LoadPopupHtml("QueuePopupDetail.html", queueInfo);
         }
         #endregion
 
@@ -158,14 +153,6 @@ namespace DutyOfficer
         {
             DAL_Setting dalSetting = new DAL_Setting();
             return dalSetting.GetOperationSettings();
-
-            //object result = null;
-            //if (data != null)
-            //{
-            //    result = JsonConvert.SerializeObject(data, Formatting.Indented,
-            //        new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
-            //}
-            //_web.InvokeScript("getDataCallback", result);
         }
 
         public void UpdateOperationSetting(string json)
@@ -274,35 +261,16 @@ namespace DutyOfficer
         #endregion
 
         #region Appointment
-        public void GetAllAppoinments()
+        public List<Appointment> GetAllAppoinments()
         {
             var dalAppointment = new DAL_Appointments();
-            List<Appointment> data = dalAppointment.GetAllAppointments();
-
-            //foreach(var item in data)
-            //{
-            //    item.TimeSlot = GetDurationBetweenTwoTimespan(item.StartTime.Value, item.EndTime.Value);
-            //}
-
-            object result = null;
-            if (data != null)
-            {
-                result = JsonConvert.SerializeObject(data, Formatting.Indented,
-                    new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
-            }
-            _web.InvokeScript("getDataCallback", result);
-        }
-
-        private TimeSpan GetDurationBetweenTwoTimespan(TimeSpan startTime, TimeSpan endTime)
-        {
-            TimeSpan duration = new TimeSpan(endTime.Ticks - startTime.Ticks);
-            return duration;
+             return dalAppointment.GetAllAppointments();            
         }
 
         #endregion
 
         #region Statistics
-        public void GetStatistics()
+        public List<Statistics> GetStatistics()
         {
             var dalAppointment = new DAL_Appointments();
             List<Statistics> data = dalAppointment.GetAllStatistics();
@@ -316,13 +284,7 @@ namespace DutyOfficer
                 item.Available = item.Max - item.Booked - item.Reported - item.No_Show;
             }
 
-            object result = null;
-            if (data != null)
-            {
-                result = JsonConvert.SerializeObject(data, Formatting.Indented,
-                    new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
-            }
-            _web.InvokeScript("getDataCallback", result);
+            return data;
         }
         #endregion
 
@@ -331,18 +293,6 @@ namespace DutyOfficer
         {
             var dalUBlabels = new DAL_Labels();
             return dalUBlabels.GetAllLabelsForUB();
-
-            //object result = null;
-            //if (data.Count != 0)
-            //{
-            //    result = JsonConvert.SerializeObject(data, Formatting.Indented,
-            //        new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
-            //}
-            //else
-            //{
-            //    getAlertsSendToDutyOfficer();
-            //}
-            //_web.InvokeScript("getDataCallback", result);
         }
 
         //Load Popup of UB label
@@ -435,18 +385,6 @@ namespace DutyOfficer
         {
             var dalMUBAndTTlabels = new DAL_Labels();
             return dalMUBAndTTlabels.GetAllLabelsForMUBAndTT();
-
-            //object result = null;
-            //if (data.Count != 0)
-            //{
-            //    result = JsonConvert.SerializeObject(data, Formatting.Indented,
-            //        new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
-            //}
-            //else
-            //{
-            //    getAlertsSendToDutyOfficer();
-            //}
-            //_web.InvokeScript("getDataCallback", result);
         }
 
         //Load Popup of MUBAndTT Label
