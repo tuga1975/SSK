@@ -3,27 +3,23 @@ using ScanAPIHelper;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Management;
-using System.Runtime.ExceptionServices;
-using System.Text;
-using Trinity.Common.Common;
-using Trinity.Common.Utils;
 using System.Linq;
+using Trinity.Common;
 
-namespace Trinity.Common
+namespace Trinity.Util
 {
-    public class FingerprintReaderUtils
+    public class FingerprintReaderUtil
     {
         #region Singleton Implementation
         // The variable is declared to be volatile to ensure that assignment to the instance variable completes before the instance variable can be accessed
-        private static volatile FingerprintReaderUtils _instance;
+        private static volatile FingerprintReaderUtil _instance;
 
         // Uses a syncRoot instance to lock on, rather than locking on the type itself, to avoid deadlocks.
         private static object syncRoot = new Object();
 
-        private FingerprintReaderUtils() { }
+        private FingerprintReaderUtil() { }
 
-        public static FingerprintReaderUtils Instance
+        public static FingerprintReaderUtil Instance
         {
             get
             {
@@ -32,7 +28,7 @@ namespace Trinity.Common
                     lock (syncRoot)
                     {
                         if (_instance == null)
-                            _instance = new FingerprintReaderUtils();
+                            _instance = new FingerprintReaderUtil();
                     }
                 }
 
@@ -365,7 +361,8 @@ namespace Trinity.Common
             _identificationCompleted(success);
         }
 
-        public byte[] GetTemplate {
+        public byte[] GetTemplate
+        {
             get
             {
                 if (_futronicEnrollment == null)
@@ -382,7 +379,7 @@ namespace Trinity.Common
                 return _futronicEnrollment.Quality;
             }
         }
-        
+
         public void StartCapture(OnPutOnHandler OnPutOn, OnTakeOffHandler OnTakeOff, UpdateScreenImageHandler UpdateScreenImage, OnFakeSourceHandler OnFakeSource, OnEnrollmentCompleteHandler OnEnrollmentComplete)
         {
             lock (syncRoot)

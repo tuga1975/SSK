@@ -11,6 +11,8 @@ using Trinity.BE;
 using Trinity.Common;
 using Trinity.Common.Common;
 using Trinity.DAL;
+using Trinity.Util;
+using Trinity.Util.Authentication;
 
 namespace SSK
 {
@@ -43,10 +45,10 @@ namespace SSK
             _jsCallCS.OnLogOutCompleted += JSCallCS_OnLogOutCompleted;
 
             // SmartCard
-            Trinity.Common.Authentication.SmartCard.Instance.GetCardInfoSucceeded += GetCardInfoSucceeded;
+            SmartCard.Instance.GetCardInfoSucceeded += GetCardInfoSucceeded;
             // Fingerprint
-            Trinity.Common.Authentication.Fingerprint.Instance.OnIdentificationCompleted += Fingerprint_OnIdentificationCompleted;
-            Trinity.Common.Authentication.Fingerprint.Instance.OnDeviceDisconnected += Fingerprint_OnDeviceDisconnected;
+            Fingerprint.Instance.OnIdentificationCompleted += Fingerprint_OnIdentificationCompleted;
+            Fingerprint.Instance.OnDeviceDisconnected += Fingerprint_OnDeviceDisconnected;
 
 
             // NRIC
@@ -158,7 +160,7 @@ namespace SSK
                 session[CommonConstants.USER_LOGIN] = user;
                 this.LayerWeb.RunScript("$('.status-text').css('color','#000').text('Your smart card is authenticated.');");
                 // Stop SCardMonitor
-                Trinity.Common.SmartCardReaderUtils sCardMonitor = Trinity.Common.SmartCardReaderUtils.Instance;
+                SmartCardReaderUtil sCardMonitor = SmartCardReaderUtil.Instance;
                 sCardMonitor.StopSmartCardMonitor();
                 // raise succeeded event
                 SmartCard_OnSmartCardSucceeded();
@@ -391,7 +393,7 @@ namespace SSK
                     user.RightThumbFingerprint
                 };
 
-                FingerprintReaderUtils.Instance.StartIdentification(fingerprintTemplates, Fingerprint_OnIdentificationCompleted);
+                FingerprintReaderUtil.Instance.StartIdentification(fingerprintTemplates, Fingerprint_OnIdentificationCompleted);
             }
             else
             {
@@ -429,7 +431,7 @@ namespace SSK
             {
                 LayerWeb.LoadPageHtml("Authentication/SmartCard.html");
                 LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please place your smart card on the reader.');");
-                Trinity.Common.Authentication.SmartCard.Instance.Start();
+                SmartCard.Instance.Start();
             }
             else if (navigatorEnum == NavigatorEnums.Authentication_Fingerprint)
             {
@@ -439,7 +441,7 @@ namespace SSK
                     Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
                     LayerWeb.LoadPageHtml("Authentication/FingerPrint.html");
                     LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please place your finger on the reader.');");
-                    Trinity.Common.Authentication.Fingerprint.Instance.Start(new System.Collections.Generic.List<byte[]>() { user.LeftThumbFingerprint, user.RightThumbFingerprint });
+                    Fingerprint.Instance.Start(new System.Collections.Generic.List<byte[]>() { user.LeftThumbFingerprint, user.RightThumbFingerprint });
                 }
                 catch (System.IO.FileNotFoundException ex)
                 {

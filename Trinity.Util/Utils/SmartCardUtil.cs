@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Diagnostics;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Trinity.Common
+namespace Trinity.Util
 {
     public class SmartCardUtil
     {
@@ -67,10 +69,10 @@ namespace Trinity.Common
         {
             try
             {
-                SmartCardReaderUtils smartCardReaderUtils = SmartCardReaderUtils.Instance;
+                SmartCardReaderUtil smartCardReaderUtil = SmartCardReaderUtil.Instance;
 
                 // get card UID
-                string cardUID = smartCardReaderUtils.GetCardUID();
+                string cardUID = smartCardReaderUtil.GetCardUID();
                 if (string.IsNullOrEmpty(cardUID))
                 {
                     throw new Exception("Can not get card UID");
@@ -78,7 +80,7 @@ namespace Trinity.Common
 
                 // get card data
                 SmartCardData_Original smartCardData_Original = null;
-                bool readDataResult = smartCardReaderUtils.ReadAllData_MifareClassic(ref smartCardData_Original);
+                bool readDataResult = smartCardReaderUtil.ReadAllData_MifareClassic(ref smartCardData_Original);
                 if (!readDataResult)
                 {
                     throw new Exception("Can not get card data");
@@ -141,7 +143,7 @@ namespace Trinity.Common
 
 
                 // write data to smart card
-                bool actionResult = SmartCardReaderUtils.Instance.AppendHistoricalRecord(_cardData_Original, record);
+                bool actionResult = SmartCardReaderUtil.Instance.AppendHistoricalRecord(_cardData_Original, record);
 
                 // get new data from smart card
                 //if (actionResult)
@@ -168,7 +170,7 @@ namespace Trinity.Common
 
 
                 // write data to smart card
-                bool actionResult = SmartCardReaderUtils.Instance.WriteSuperviseeBiodata(superviseeBiodata);
+                bool actionResult = SmartCardReaderUtil.Instance.WriteSuperviseeBiodata(superviseeBiodata);
 
                 // get new data from smart card
                 //if (actionResult)

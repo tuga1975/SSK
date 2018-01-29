@@ -1,23 +1,17 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
+﻿using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Management;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using Trinity.Common.Common;
 using ZMOTIFPRINTERLib;
 using ZMTGraphics;
 
-namespace Trinity.Common.Utils
+namespace Trinity.Util
 {
-    public class SmartCardPrinterUtils : DeviceUtils
+    public class SmartCardPrinterUtil : DeviceUtil
     {
         private string _smartCardPrinterName;
         private short _alarm = 0;
@@ -37,17 +31,17 @@ namespace Trinity.Common.Utils
 
         #region Singleton Implementation
         // The variable is declared to be volatile to ensure that assignment to the instance variable completes before the instance variable can be accessed
-        private static volatile SmartCardPrinterUtils _instance;
+        private static volatile SmartCardPrinterUtil _instance;
 
         // Uses a syncRoot instance to lock on, rather than locking on the type itself, to avoid deadlocks.
         private static object syncRoot = new Object();
 
-        private SmartCardPrinterUtils()
+        private SmartCardPrinterUtil()
         {
             _smartCardPrinterName = EnumDeviceNames.SmartCardPrinterName;
         }
 
-        public static SmartCardPrinterUtils Instance
+        public static SmartCardPrinterUtil Instance
         {
             get
             {
@@ -56,7 +50,7 @@ namespace Trinity.Common.Utils
                     lock (syncRoot)
                     {
                         if (_instance == null)
-                            _instance = new SmartCardPrinterUtils();
+                            _instance = new SmartCardPrinterUtil();
                     }
                 }
 
@@ -180,7 +174,7 @@ namespace Trinity.Common.Utils
                             SuperviseeBiodata = cardInfo.SuperviseeBiodata,
                             DutyOfficerData = cardInfo.DutyOfficerData
                         };
-                        bool writeDataResult = SmartCardReaderUtils.Instance.WriteData(cardData, EnumDeviceNames.SmartCardPrinterContactlessReader);
+                        bool writeDataResult = SmartCardReaderUtil.Instance.WriteData(cardData, EnumDeviceNames.SmartCardPrinterContactlessReader);
 
                         // At the completion of smart card process
                         //     if the smart card encoding was successful JobResume
@@ -212,7 +206,7 @@ namespace Trinity.Common.Utils
                     }
                     #endregion
                 }
-                else if (SmartCardReaderUtils.Instance.GetDeviceStatus().Contains(EnumDeviceStatuses.Connected))
+                else if (SmartCardReaderUtil.Instance.GetDeviceStatus().Contains(EnumDeviceStatuses.Connected))
                 {
                     #region use card reader
                     SmartCardData_Original cardData = new SmartCardData_Original()
@@ -220,7 +214,7 @@ namespace Trinity.Common.Utils
                         SuperviseeBiodata = cardInfo.SuperviseeBiodata,
                         DutyOfficerData = cardInfo.DutyOfficerData
                     };
-                    bool writeDataResult = SmartCardReaderUtils.Instance.WriteData(cardData);
+                    bool writeDataResult = SmartCardReaderUtil.Instance.WriteData(cardData);
                     #endregion
                 }
                 else
@@ -899,7 +893,7 @@ namespace Trinity.Common.Utils
         }
 
         #endregion
-        
+
         #region ZMotif Device Connect
 
         // Connects to a ZMotif device

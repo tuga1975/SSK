@@ -54,7 +54,7 @@ namespace Trinity.Common
         /// </summary>
         public string MarkingNumber { get; set; }
 
-        internal bool IsValid()
+        public bool IsValid()
         {
             if (string.IsNullOrEmpty(ID) || string.IsNullOrEmpty(Name) || string.IsNullOrEmpty(MarkingNumber))
             {
@@ -97,7 +97,7 @@ namespace Trinity.Common
         public string Venue { get; set; }
         public DateTime Date { get; set; }
 
-        internal bool IsValid()
+        public bool IsValid()
         {
             if (string.IsNullOrEmpty(Name) || string.IsNullOrEmpty(Venue))
             {

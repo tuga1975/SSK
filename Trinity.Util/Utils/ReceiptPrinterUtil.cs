@@ -1,33 +1,27 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
 using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
 using System.Management;
-using System.Text;
-using System.Threading.Tasks;
-using Trinity.Common.Common;
+using Trinity.Common;
 
-namespace Trinity.Common.Utils
+namespace Trinity.Util
 {
-    public class ReceiptPrinterUtils : DeviceUtils
+    public class ReceiptPrinterUtil : DeviceUtil
     {
         private string _printerName;
 
         #region Singleton Implementation
         // The variable is declared to be volatile to ensure that assignment to the instance variable completes before the instance variable can be accessed
-        private static volatile ReceiptPrinterUtils _instance;
+        private static volatile ReceiptPrinterUtil _instance;
 
         // Uses a syncRoot instance to lock on, rather than locking on the type itself, to avoid deadlocks.
         private static object syncRoot = new Object();
 
-        private ReceiptPrinterUtils()
+        private ReceiptPrinterUtil()
         {
-            _printerName = ConfigurationManager.AppSettings["ReceiptPrinterName"];
+            _printerName = EnumDeviceNames.ReceiptPrinter;
         }
 
-        public static ReceiptPrinterUtils Instance
+        public static ReceiptPrinterUtil Instance
         {
             get
             {
@@ -36,7 +30,7 @@ namespace Trinity.Common.Utils
                     lock (syncRoot)
                     {
                         if (_instance == null)
-                            _instance = new ReceiptPrinterUtils();
+                            _instance = new ReceiptPrinterUtil();
                     }
                 }
 
@@ -71,7 +65,7 @@ namespace Trinity.Common.Utils
                 TSCLIB_DLL.windowsfont(50, 70, 30, 0, 0, 0, "ARIAL", "Supervisee Information");
                 TSCLIB_DLL.windowsfont(70, 100, 25, 0, 0, 0, "ARIAL", "Name           : " + appointmentDetails.Name);
                 TSCLIB_DLL.windowsfont(70, 130, 25, 0, 0, 0, "ARIAL", "NRICNo.      : " + appointmentDetails.Venue);
-                
+
                 TSCLIB_DLL.windowsfont(50, 180, 30, 0, 0, 0, "ARIAL", "Next Appointment");
                 TSCLIB_DLL.windowsfont(70, 210, 25, 0, 0, 0, "ARIAL", "Date              : " + appointmentDetails.Date.ToString("dd/MM/yyyyy HH:mm"));
 

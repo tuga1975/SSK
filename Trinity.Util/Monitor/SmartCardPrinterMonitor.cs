@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Trinity.Common.Utils;
 using Trinity.DAL;
 
 namespace Trinity.Util
 {
-    public static class DocumentScannerMonitor
+    public static class SmartCardPrinterMonitor
     {
         public static bool Start()
         {
@@ -24,7 +20,7 @@ namespace Trinity.Util
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("DocumentScannerMonitor.Start exception: " + ex.ToString());
+                Debug.WriteLine("SmartCardPrinterMonitor.Start exception: " + ex.ToString());
                 return false;
             }
         }
@@ -34,7 +30,7 @@ namespace Trinity.Util
             try
             {
                 // get statuses
-                var statuses = DocumentScannerUtils.Instance.GetDeviceStatus();
+                var statuses = SmartCardPrinterUtil.Instance.GetDeviceStatus();
 
                 // update local ApplicationDevice_Status
                 DAL_DeviceStatus dAL_DeviceStatus = new DAL_DeviceStatus();
@@ -42,7 +38,7 @@ namespace Trinity.Util
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("DocumentScannerMonitor.ReportDeviceStatus exception: " + ex.ToString());
+                Debug.WriteLine("SmartCardPrinterMonitor.ReportDeviceStatus exception: " + ex.ToString());
             }
         }
     }

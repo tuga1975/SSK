@@ -35,7 +35,7 @@ namespace Trinity.Util
             try
             {
                 Debug.WriteLine("FingerprintReaderMonitor.ReportDeviceStatus " + DateTime.Now.ToString());
-                var status = FingerprintReaderUtils.Instance.GetDeviceStatus();
+                var status = FingerprintReaderUtil.Instance.GetDeviceStatus();
 
                 // create entity
                 string station = System.Reflection.Assembly.GetEntryAssembly().GetName().Name;
