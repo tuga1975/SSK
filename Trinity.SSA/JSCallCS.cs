@@ -112,6 +112,11 @@ namespace SSA
 
             var dalLabel = new DAL_Labels();
             dalLabel.UpdateLabel(labelInfo, labelInfo.UserId, EnumLabelType.MUB);
+
+            // Update queue status is finished
+            var dalQueue = new DAL_QueueNumber();
+            dalQueue.UpdateQueueStatusByUserId(labelInfo.UserId, EnumStations.SSA, EnumQueueStatuses.Finished, "Printer MUB/TT Label");
+
             this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').show(); ; ");
             this._web.RunScript("$('.status-text').css('color','#000').text('Please collect your labels');");
             this._web.InvokeScript("countdownLogout");
