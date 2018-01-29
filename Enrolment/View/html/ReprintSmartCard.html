@@ -87,7 +87,7 @@
     function LoadSuperviseeDetails() {
         api.server.EditSupervisee(UserID);
     }
-    function OnIssuedCardPrintedSuccessfully(status,item) {
+    function OnIssuedCardReprinted(status,item) {
         if (status) {
             item = JSON.parse(item);
             $('#data-issuedcards tbody [reprintsmartcard-status]').text('Deactivate');
@@ -98,8 +98,8 @@
             alert('Card enrollment failed. Please try again!');
         }
     }
-    function PrintIssuedCard() {
-        api.server.PrintIssuedCard($('[name="reprint"]').val());
+    function ReprintIssuedCard() {
+        api.server.ReprintIssuedCard($('[name="reprint"]').val());
     }
     function ShowPrintIssuedCard() {
         $('[enterreprint]').css('display', 'block');

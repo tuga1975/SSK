@@ -809,11 +809,11 @@ namespace Enrolment
                 dalIssueCard.Insert(IssueCard);
                 new DAL_Membership_Users().UpdateSmartCardId(currentEditUser.UserProfile.UserId, SmartID);
                 currentEditUser.Membership_Users.SmartCardId = SmartID;
-                _web.InvokeScript("OnIssuedCardPrintedSuccessfully", true, IssueCard.JsonString());
+                _web.InvokeScript("OnIssuedCardReprinted", true, IssueCard.JsonString());
             }
             else
             {
-                _web.InvokeScript("OnIssuedCardPrintedSuccessfully", false, null);
+                _web.InvokeScript("OnIssuedCardReprinted", false, null);
             }
         }
         #endregion
