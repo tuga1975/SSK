@@ -201,6 +201,10 @@
       <Project>{b25053fb-2050-4115-9441-8edf5c03fb1d}</Project>
       <Name>Trinity.Identity</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Trinity.Util\Trinity.Util.csproj">
+      <Project>{9C043308-E722-46AE-8D57-D0B409C0B729}</Project>
+      <Name>Trinity.Util</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />

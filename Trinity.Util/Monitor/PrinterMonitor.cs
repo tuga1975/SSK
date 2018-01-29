@@ -1,17 +1,11 @@
 ﻿using ImageConvertor;
 using System;
-using System.Collections.Generic;
-using System.Configuration;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Trinity.Common.Common;
-using Trinity.Common.Utils;
+using Trinity.Common;
 
-namespace Trinity.Common.DeviceMonitor
+namespace Trinity.Util
 {
     public class PrinterMonitor
     {
@@ -97,7 +91,7 @@ namespace Trinity.Common.DeviceMonitor
             }
 
             // print label
-            BarcodePrinterUtils printerUtils = BarcodePrinterUtils.Instance;
+            BarcodePrinterUtil printerUtils = BarcodePrinterUtil.Instance;
             TTLabelInfo infoTTLabel = new TTLabelInfo();
             infoTTLabel.ID = labelInfo.NRIC;
             infoTTLabel.Name = labelInfo.Name;
@@ -146,7 +140,7 @@ namespace Trinity.Common.DeviceMonitor
             }
 
             // print label
-            BarcodePrinterUtils printerUtils = BarcodePrinterUtils.Instance;
+            BarcodePrinterUtil printerUtils = BarcodePrinterUtil.Instance;
 
             // create image file to print
             string filePath = string.Empty;

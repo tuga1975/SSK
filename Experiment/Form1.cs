@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Trinity.BE;
 using Trinity.Common;
-using Trinity.Common.Utils;
 using Trinity.DAL;
+using Trinity.Util;
 
 namespace Experiment
 {
@@ -30,7 +26,7 @@ namespace Experiment
                 Venue = "CNB ENF A"
             };
 
-            bool result = ReceiptPrinterUtils.Instance.PrintAppointmentDetails(appointmentDetails);
+            bool result = ReceiptPrinterUtil.Instance.PrintAppointmentDetails(appointmentDetails);
 
             AlertResult(result);
         }
@@ -49,7 +45,7 @@ namespace Experiment
 
         private void btnPrintSuperviseeCard_Click(object sender, EventArgs e)
         {
-            SmartCardPrinterUtils smartCardPrinterUtils = SmartCardPrinterUtils.Instance;
+            SmartCardPrinterUtil smartCardPrinterUtils = SmartCardPrinterUtil.Instance;
             PrintAndWriteSmartCardInfo superviseeCardInfo = new PrintAndWriteSmartCardInfo()
             {
                 FrontCardImagePath = @"E:\GitHub\SSK\DocumentScannerTest\bin\x64\Debug\Front.bmp",
@@ -87,7 +83,7 @@ namespace Experiment
 
         private void btnIdentifyFingerprint_Click(object sender, EventArgs e)
         {
-            FingerprintReaderUtils fingerprintReaderUtils = FingerprintReaderUtils.Instance;
+            FingerprintReaderUtil fingerprintReaderUtils = FingerprintReaderUtil.Instance;
 
             DAL_User dAL_User = new DAL_User();
             List<User> users = dAL_User.GetAllSupervisees(true);
@@ -116,7 +112,7 @@ namespace Experiment
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            var status = FingerprintReaderUtils.Instance.GetDeviceStatus();
+            var status = FingerprintReaderUtil.Instance.GetDeviceStatus();
         }
     }
 }

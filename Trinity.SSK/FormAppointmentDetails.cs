@@ -1,17 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Trinity.Common;
-using Trinity.Common.Authentication;
-using Trinity.Common.Utils;
 using Trinity.DAL;
+using Trinity.Util;
 
 namespace SSK
 {
@@ -49,8 +42,8 @@ namespace SSK
 
         private void btnPrint_Click(object sender, EventArgs e)
         {
-            BarcodePrinterUtils printerUtil = BarcodePrinterUtils.Instance;
-            printerUtil.Test();
+            BarcodePrinterUtil printerUtil = BarcodePrinterUtil.Instance;
+            //printerUtil.Test();
             return;
             Trinity.Common.LabelInfo labelInfo = new Trinity.Common.LabelInfo()
             {

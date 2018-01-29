@@ -2,15 +2,12 @@
 using SSK.CodeBehind.Authentication;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Reflection;
-using System.Threading;
 using System.Windows.Forms;
 using Trinity.Common;
-using Trinity.Common.Utils;
 using Trinity.DAL;
 using Trinity.DAL.DBContext;
+using Trinity.Util;
 
 namespace SSK
 {
@@ -186,7 +183,7 @@ namespace SSK
         {
             var dalAppointment = new DAL_Appointments();
             Trinity.BE.Appointment appointment = dalAppointment.GetAppointmentDetails(Guid.Parse(appointmentId));
-            ReceiptPrinterUtils.Instance.PrintAppointmentDetails(new AppointmentDetails()
+            ReceiptPrinterUtil.Instance.PrintAppointmentDetails(new AppointmentDetails()
             {
                 Date = appointment.AppointmentDate.Value,
                 Name = appointment.Name,

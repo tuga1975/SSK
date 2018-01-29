@@ -13,6 +13,7 @@ using Trinity.Common.Common;
 using Trinity.DAL;
 using Trinity.DAL.DBContext;
 using Trinity.Identity;
+using Trinity.Util;
 
 namespace Enrolment
 {
@@ -484,7 +485,7 @@ namespace Enrolment
                 }
             };
 
-            Trinity.Common.Utils.SmartCardPrinterUtils.Instance.PrintAndWriteSmartCard(infoPrinter, OnNewCardPrintedSuccessfully);
+            SmartCardPrinterUtil.Instance.PrintAndWriteSmartCard(infoPrinter, OnNewCardPrintedSuccessfully);
         }
         private void OnNewCardPrintedSuccessfully(PrintAndWriteCardResult result)
         {
@@ -691,14 +692,14 @@ namespace Enrolment
         }
         public void CancelUpdateFingerprints()
         {
-            FingerprintReaderUtils.Instance.DisposeCapture();
+            FingerprintReaderUtil.Instance.DisposeCapture();
             Session session = Session.Instance;
             EditSupervisee(((Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER]).User.UserId);
         }
         public void CaptureFingerprint(int LeftOrRight)
         {
             FingerprintLeftRight = LeftOrRight;
-            FingerprintReaderUtils.Instance.StartCapture(OnPutOn, OnTakeOff, UpdateScreenImage, OnFakeSource, OnEnrollmentComplete);
+            FingerprintReaderUtil.Instance.StartCapture(OnPutOn, OnTakeOff, UpdateScreenImage, OnFakeSource, OnEnrollmentComplete);
         }
 
         #region Event Capture Fingerprint
@@ -716,7 +717,7 @@ namespace Enrolment
         {
             if (bSuccess)
             {
-                _web.InvokeScript("setDataFingerprint", FingerprintLeftRight, Convert.ToBase64String(FingerprintReaderUtils.Instance.GetTemplate));
+                _web.InvokeScript("setDataFingerprint", FingerprintLeftRight, Convert.ToBase64String(FingerprintReaderUtil.Instance.GetTemplate));
                 _web.InvokeScript("captureFingerprintMessage", FingerprintLeftRight, "Your fingerprint was scanned successfully!", EnumColors.Green);
                 FingerprintNumber = 0;
             }
@@ -729,7 +730,7 @@ namespace Enrolment
             }
             try
             {
-                FingerprintReaderUtils.Instance.DisposeCapture();
+                FingerprintReaderUtil.Instance.DisposeCapture();
             }
             catch (Exception ex)
             {
@@ -790,7 +791,7 @@ namespace Enrolment
                 }
             };
 
-            Trinity.Common.Utils.SmartCardPrinterUtils.Instance.PrintAndWriteSmartCard(cardInfo, PriterIssuedCardOnCompleted);
+            SmartCardPrinterUtil.Instance.PrintAndWriteSmartCard(cardInfo, PriterIssuedCardOnCompleted);
         }
         private void PriterIssuedCardOnCompleted(PrintAndWriteCardResult result)
         {
