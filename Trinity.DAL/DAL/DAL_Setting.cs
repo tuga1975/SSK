@@ -338,7 +338,7 @@ namespace Trinity.DAL
             settingModel.Friday = settingModel.Friday == null ? new SettingDetails() { DayOfWeek = (int)EnumDayOfWeek.Friday } : settingModel.Friday;
             settingModel.Saturday = settingModel.Saturday == null ? new SettingDetails() { DayOfWeek = (int)EnumDayOfWeek.Saturday } : settingModel.Saturday;
             settingModel.Sunday = settingModel.Sunday == null ? new SettingDetails() { DayOfWeek = (int)EnumDayOfWeek.Sunday } : settingModel.Sunday;
-            
+
             return settingModel;
         }
 
@@ -354,7 +354,7 @@ namespace Trinity.DAL
         public List<Trinity.BE.OperationSettings_ChangeHist> GetHistoryChangeSettings()
         {
             var repoChangeHistorySetting = _localUnitOfWork.GetRepository<DBContext.OperationSettings_ChangeHist>();
-            List<BE.OperationSettings_ChangeHist> results = repoChangeHistorySetting.GetAll().ToList().Select(d => d.Map<BE.OperationSettings_ChangeHist>()).OrderByDescending(t=>t.LastUpdatedDate).ToList();
+            List<BE.OperationSettings_ChangeHist> results = repoChangeHistorySetting.GetAll().ToList().Select(d => d.Map<BE.OperationSettings_ChangeHist>()).OrderByDescending(t => t.LastUpdatedDate).ToList();
 
             return results;
         }
@@ -362,16 +362,28 @@ namespace Trinity.DAL
         public List<BE.Holiday> GetHolidays()
         {
             var repoHolidays = _localUnitOfWork.GetRepository<DBContext.Holiday>();
-            List<BE.Holiday> results = repoHolidays.GetAll().ToList().Select(d => d.Map<BE.Holiday>()).ToList();            
+            List<BE.Holiday> results = repoHolidays.GetAll().ToList().Select(d => d.Map<BE.Holiday>()).ToList();
 
             return results;
         }
 
-        public void AddHoliday(DBContext.Holiday holiday)
+        public void AddHoliday(DBContext.Holiday holiday, string updatedBy)
         {
             try
             {
                 _localUnitOfWork.GetRepository<DBContext.Holiday>().Add(holiday);
+
+                // Insert to Change History Setting
+                var changeHistoryID = _localUnitOfWork.DataContext.OperationSettings_ChangeHist.Any() ? _localUnitOfWork.DataContext.OperationSettings_ChangeHist.Max(t => t.ID) : 0;
+                DBContext.OperationSettings_ChangeHist changeHistory = new DBContext.OperationSettings_ChangeHist();
+                changeHistory.ID = changeHistoryID + 1;
+                changeHistory.DayOfWeek = (int)Common.CommonUtil.ConvertToCustomDateOfWeek(holiday.Holiday1.DayOfWeek);
+                changeHistory.LastUpdatedBy = updatedBy;
+                changeHistory.LastUpdatedDate = DateTime.Now;
+                changeHistory.ChangeDetails = "The holiday " + holiday.Holiday1.ToString("dd/MM/yyyy") + " has been added";
+
+                _localUnitOfWork.GetRepository<DBContext.OperationSettings_ChangeHist>().Add(changeHistory);
+
                 _localUnitOfWork.Save();
             }
             catch (Exception e)
@@ -379,11 +391,23 @@ namespace Trinity.DAL
             }
         }
 
-        public void DeleteHoliday(DateTime date)
+        public void DeleteHoliday(DateTime date, string updatedBy)
         {
             try
             {
                 _localUnitOfWork.GetRepository<DBContext.Holiday>().Delete(h => h.Holiday1.Year == date.Year && h.Holiday1.Month == date.Month && h.Holiday1.Day == date.Day);
+
+                // Insert to Change History Setting
+                var changeHistoryID = _localUnitOfWork.DataContext.OperationSettings_ChangeHist.Any() ? _localUnitOfWork.DataContext.OperationSettings_ChangeHist.Max(t => t.ID) : 0;
+                DBContext.OperationSettings_ChangeHist changeHistory = new DBContext.OperationSettings_ChangeHist();
+                changeHistory.ID = changeHistoryID + 1;
+                changeHistory.DayOfWeek = (int)Common.CommonUtil.ConvertToCustomDateOfWeek(date.DayOfWeek);
+                changeHistory.LastUpdatedBy = updatedBy;
+                changeHistory.LastUpdatedDate = DateTime.Now;
+                changeHistory.ChangeDetails = "The holiday " + date.ToString("dd/MM/yyyy") + " has been deleted";
+
+                _localUnitOfWork.GetRepository<DBContext.OperationSettings_ChangeHist>().Add(changeHistory);
+
                 _localUnitOfWork.Save();
             }
             catch (Exception e)
@@ -482,7 +506,7 @@ namespace Trinity.DAL
                             var p = destProps.First(x => x.Name == sourceProp.Name);
                             var dataValue = p.GetValue(operationSetting, null);
                             if (!dataUpdate.Equals(dataValue))
-                                arrayUpdateHistory.Add("Changed " + cusAttr.Name + " to " + (dataUpdate==null?string.Empty: dataUpdate.ToString()));
+                                arrayUpdateHistory.Add("Changed " + cusAttr.Name + " to " + (dataUpdate == null ? string.Empty : dataUpdate.ToString()));
                         }
 
                     }
@@ -603,15 +627,15 @@ namespace Trinity.DAL
                 List<DBContext.Timeslot> arrTimeSlot = new List<Timeslot>();
 
                 #region Morning
-                arrTimeSlot.AddRange(GenerateTimeSlot(dateGenTimeSlot, operationSetting.Morning_Open_Time.Value, operationSetting.Morning_Close_Time.Value, operationSetting.Morning_Interval.HasValue ? operationSetting.Morning_Interval.Value : 15, 
+                arrTimeSlot.AddRange(GenerateTimeSlot(dateGenTimeSlot, operationSetting.Morning_Open_Time.Value, operationSetting.Morning_Close_Time.Value, operationSetting.Morning_Interval.HasValue ? operationSetting.Morning_Interval.Value : 15,
                                                         model.Last_Updated_By, operationSetting.Morning_MaximumSupervisee.HasValue ? operationSetting.Morning_MaximumSupervisee.Value : 0, EnumTimeshift.Morning));
                 #endregion
                 #region Evening
-                arrTimeSlot.AddRange(GenerateTimeSlot(dateGenTimeSlot, operationSetting.Evening_Open_Time.Value, operationSetting.Evening_Close_Time.Value, operationSetting.Evening_Interval.HasValue ? operationSetting.Evening_Interval.Value : 15, 
+                arrTimeSlot.AddRange(GenerateTimeSlot(dateGenTimeSlot, operationSetting.Evening_Open_Time.Value, operationSetting.Evening_Close_Time.Value, operationSetting.Evening_Interval.HasValue ? operationSetting.Evening_Interval.Value : 15,
                                                         model.Last_Updated_By, operationSetting.Evening_MaximumSupervisee.HasValue ? operationSetting.Evening_MaximumSupervisee.Value : 0, EnumTimeshift.Evening));
                 #endregion
                 #region Afternoon
-                arrTimeSlot.AddRange(GenerateTimeSlot(dateGenTimeSlot, operationSetting.Afternoon_Open_Time.Value, operationSetting.Afternoon_Close_Time.Value, operationSetting.Afternoon_Interval.HasValue ? operationSetting.Afternoon_Interval.Value : 15, 
+                arrTimeSlot.AddRange(GenerateTimeSlot(dateGenTimeSlot, operationSetting.Afternoon_Open_Time.Value, operationSetting.Afternoon_Close_Time.Value, operationSetting.Afternoon_Interval.HasValue ? operationSetting.Afternoon_Interval.Value : 15,
                                                         model.Last_Updated_By, operationSetting.Afternoon_MaximumSupervisee.HasValue ? operationSetting.Afternoon_MaximumSupervisee.Value : 0, EnumTimeshift.Afternoon));
                 #endregion
                 _localUnitOfWork.GetRepository<DBContext.Timeslot>().AddRange(arrTimeSlot);
@@ -696,7 +720,7 @@ namespace Trinity.DAL
             }
 
             return modelReturn;
-        }        
+        }
         #endregion
     }
 }

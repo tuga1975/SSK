@@ -10,7 +10,7 @@ namespace Trinity.Common
 {
     public class CommonUtil
     {
-        public static byte[] CreateLabelQRCode(LabelInfo labelInfo, string AESKey)
+        public static byte[] CreateLabelQRCode(LabelInfo labelInfo, string AESKey, bool printUB = false)
         {
             var width = 200; // width of the Qr Code    
             var height = 200; // height of the Qr Code    
@@ -26,8 +26,16 @@ namespace Trinity.Common
                     Margin = margin
                 }
             };
+            string contentQRCode = string.Empty;
+            if (printUB)
+            {
+                contentQRCode = labelInfo.MarkingNo + "*" + labelInfo.NRIC + "*" + labelInfo.Name + "*" + labelInfo.DrugType + "*SA*URINE";
+            }
+            else
+            {
+                contentQRCode = labelInfo.MarkingNo + "*" + labelInfo.NRIC + "*" + labelInfo.Name + "*SA*URINE";
+            }
 
-            var contentQRCode = labelInfo.MarkingNo + "*" + labelInfo.NRIC + "*" + labelInfo.Name + "*" + labelInfo.DrugType + "*SA*URINE";
             var encryptContent = CommonUtil.EncryptString(contentQRCode, AESKey);
             var pixelData = qrCodeWriter.Write(encryptContent);
             // creating a bitmap from the raw pixel data; if only black and white colors are used it makes no difference    

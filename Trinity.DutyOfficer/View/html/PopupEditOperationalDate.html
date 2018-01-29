@@ -307,7 +307,7 @@
             }
             else {
                 api.server.UpdateOperationSetting(data, function () {
-                    api.server.LoadPage('Settings.html')
+                    api.server.LoadPage('Settings.html');
                     $('#idEditOperationalDate').modal('toggle');
                 });
             };
