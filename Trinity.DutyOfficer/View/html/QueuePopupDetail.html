@@ -7,41 +7,31 @@
             <div class="modal-body">
                 <div itemview>
                     <span itemview-title title="NRIC"></span>
-                    <span itemview-content>NRIC</span>
+                    <span itemview-content id="supervisee_NRIC">NRIC</span>
                 </div>
                 <div itemview>
                     <span itemview-title title="Name"></span>
-                    <span itemview-content>Name</span>
+                    <span itemview-content id="supervisee_Name">Name</span>
                 </div>
                 <div itemview>
                     <span itemview-title title="Curent Station"></span>
-                    <span itemview-content></span>
+                    <span itemview-content id="supervisee_CurrentStation"></span>
                 </div>
                 <div itemview>
                     <span itemview-title title="Status"></span>
-                    <span itemview-content>Status</span>
+                    <span itemview-content id="supervisee_Status">Status</span>
                 </div>
                 <div itemview>
                     <span itemview-title title="Message:"></span>
                 </div>
 
-                <table class="table table-bordered" style="width:100%;">
+                <table class="table table-bordered" style="width:100%;" id="tableMessage">
                     <thead>
                         <tr>
                             <th>Station</th>
                             <th>Message</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>ESP</td>
-                            <td>Message</td>
-                        </tr>
-                        <tr>
-                            <td>UHP</td>
-                            <td>Message</td>
-                        </tr>
-                    </tbody>
                 </table>
             </div>
             <div class="modal-footer">
@@ -50,3 +40,47 @@
         </div>
     </div>
 </div>
+<script type="text/javascript">
+    api.ready(function (model) {
+        if (model != null) {
+            $('#supervisee_NRIC').text(model.NRIC);
+            $('#supervisee_Name').text(model.Name);
+            $('#supervisee_CurrentStation').text(model.CurrentStation);
+            $('#supervisee_Status').text(model.Status);
+
+            switch (model.Status) {
+                case 'Missed':
+                case 'Errors':
+                    $('#supervisee_Status').css('color', 'red');
+                    break;
+                case 'Processing':
+                case 'Finished':
+                    $('#supervisee_Status').css('color', 'green');
+                    break;
+                case 'Waiting':
+                    $('#supervisee_Status').css('color', 'black');
+                    break;
+                default:
+                    $('#supervisee_Status').css('color', 'black');
+                    break;
+            }
+
+            $('#tableMessage').bootstrapTable({
+                pagination: true,
+                pageSize: 5,
+                columns: [{
+                    field: 'Station',
+                    title: 'Station',
+                    width: '25%',
+                    align: 'left'
+                }, {
+                    field: 'Message',
+                    title: 'Message',
+                    width: '75%',
+                    align: 'left'
+                }],
+                data: model.QueueDetail
+            });
+        }
+    });
+</script>
