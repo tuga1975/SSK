@@ -443,7 +443,7 @@ namespace Enrolment
                 EventCenter eventCenter = EventCenter.Default;
 
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.UPDATE_SUPERVISEE_BIODATA, Data = new object[] { profileModel, frontBase64, backBase64 } });
-                PrintSmartCart(frontBase64, backBase64);
+                PrintSmartCard(frontBase64, backBase64);
             }
         }
         public object loadDataVerify()
@@ -451,7 +451,7 @@ namespace Enrolment
             Session session = Session.Instance;
             return session[CommonConstants.CURRENT_EDIT_USER];
         }
-        public void PrintSmartCart(string frontBase64, string backBase64)
+        public void PrintSmartCard(string frontBase64, string backBase64)
         {
             this._web.InvokeScript("showPrintMessage", null, "Printing card please wait ...");
             frontBase64 = frontBase64.Replace("data:image/png;base64,", string.Empty);
@@ -485,9 +485,9 @@ namespace Enrolment
                 }
             };
 
-            SmartCardPrinterUtil.Instance.PrintAndWriteSmartCard(infoPrinter, OnNewCardPrintedSuccessfully);
+            SmartCardPrinterUtil.Instance.PrintAndWriteSmartCard(infoPrinter, OnNewCardPrinted);
         }
-        private void OnNewCardPrintedSuccessfully(PrintAndWriteCardResult result)
+        private void OnNewCardPrinted(PrintAndWriteCardResult result)
         {
             if (result.Success)
             {
@@ -757,27 +757,16 @@ namespace Enrolment
 
         #region Issued Cards
         private string reprintTxt = string.Empty;
-        public object[] GetDataIssuedCards()
+        public object[] GetIssuedCards()
         {
             Session session = Session.Instance;
             var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
-            List<Trinity.BE.IssueCard> array = new Trinity.DAL.DAL_IssueCard().GetMyIssueCard(currentEditUser.UserProfile.UserId);
-            ////Mở ra nếu IssueCard ko có dữ liệu (Do dữ liệu test, tao ko đúng luồng)
-            //array.Insert(0, new Trinity.BE.IssueCard() {
-            //    CreatedDate = currentEditUser.UserProfile.DateOfIssue,
-            //    Date_Of_Issue = currentEditUser.UserProfile.DateOfIssue,
-            //    Name = currentEditUser.Membership_Users.Name,
-            //    NRIC = currentEditUser.Membership_Users.NRIC,
-            //    Serial_Number = currentEditUser.UserProfile.SerialNumber,
-            //    SmartCardId = currentEditUser.Membership_Users.SmartCardId,
-            //    Status = EnumIssuedCards.Active,
-            //    UserId = currentEditUser.Membership_Users.UserId
-            //});
+            List<Trinity.BE.IssueCard> array = new Trinity.DAL.DAL_IssueCard().GetMyIssueCards(currentEditUser.UserProfile.UserId);
             return new object[] { array, currentEditUser.UserProfile.UserId };
         }
-        public void PriterIssuedCard(string reprint)
+        public void ReprintIssuedCard(string reprintReason)
         {
-            reprintTxt = reprint;
+            reprintTxt = reprintReason;
             Session session = Session.Instance;
             var userLogin = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
             var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
@@ -791,9 +780,9 @@ namespace Enrolment
                 }
             };
 
-            SmartCardPrinterUtil.Instance.PrintAndWriteSmartCard(cardInfo, PriterIssuedCardOnCompleted);
+            SmartCardPrinterUtil.Instance.PrintAndWriteSmartCard(cardInfo, OnIssuedCardReprinted);
         }
-        private void PriterIssuedCardOnCompleted(PrintAndWriteCardResult result)
+        private void OnIssuedCardReprinted(PrintAndWriteCardResult result)
         {
             if (result.Success)
             {
@@ -820,11 +809,11 @@ namespace Enrolment
                 dalIssueCard.Insert(IssueCard);
                 new DAL_Membership_Users().UpdateSmartCardId(currentEditUser.UserProfile.UserId, SmartID);
                 currentEditUser.Membership_Users.SmartCardId = SmartID;
-                _web.InvokeScript("OnPriterIssuedCardCompleted", true, IssueCard.JsonString());
+                _web.InvokeScript("OnIssuedCardPrintedSuccessfully", true, IssueCard.JsonString());
             }
             else
             {
-                _web.InvokeScript("OnPriterIssuedCardCompleted", false, null);
+                _web.InvokeScript("OnIssuedCardPrintedSuccessfully", false, null);
             }
         }
         #endregion
