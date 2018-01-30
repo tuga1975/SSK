@@ -230,6 +230,7 @@
     <Compile Include="USP_Notification_Select_By_Date_Result.cs">
       <DependentUpon>UHPSimulatorII.tt</DependentUpon>
     </Compile>
+    <Compile Include="Utils\Logs.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\HelpPage\HelpPage.css" />
@@ -302,8 +303,8 @@
     <Content Include="UHPSimulatorII.edmx.diagram">
       <DependentUpon>UHPSimulatorII.edmx</DependentUpon>
     </Content>
-    <Content Include="STE\DrugResults.log" />
-    <Content Include="STE\Notifications.log" />
+    <Content Include="Logs\DrugResults.log" />
+    <Content Include="Logs\Notifications.log" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

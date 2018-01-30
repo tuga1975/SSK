@@ -24,7 +24,7 @@ namespace uhpSim.Controllers
         public IEnumerable<USP_DrugResult_SELECT_MarkingNumber_Result> Get([FromBody] resultRequest request)
         {
             string[] lines = { "==================", "Requested Time: " + DateTime.Now.ToString(), "Requested markingnumber:" + request.markingnumber, "==================" };
-            System.IO.File.AppendAllLines(System.Web.Hosting.HostingEnvironment.MapPath("~/STE") + @"\DrugResults.log", lines);
+            Utils.Logs.SaveLog(System.Web.Hosting.HostingEnvironment.MapPath("~/Logs") + @"\DrugResults.log", lines);
             return db.USP_DrugResult_SELECT_MarkingNumber(request.markingnumber).AsEnumerable();
         }
     }
