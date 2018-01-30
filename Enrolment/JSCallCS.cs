@@ -764,14 +764,31 @@ namespace Enrolment
             List<Trinity.BE.IssueCard> array = new Trinity.DAL.DAL_IssueCard().GetMyIssueCards(currentEditUser.UserProfile.UserId);
             return new object[] { array, currentEditUser.UserProfile.UserId };
         }
-        public void ReprintIssuedCard(string reprintReason)
+        public void ReprintIssuedCard(string reprintReason, string frontBase64, string backBase64)
         {
+            frontBase64 = frontBase64.Replace("data:image/png;base64,", string.Empty);
+            backBase64 = backBase64.Replace("data:image/png;base64,", string.Empty);
+            string ImgFront = null;
+            string ImgBack = null;
+            if (!string.IsNullOrEmpty(frontBase64))
+            {
+                ImgFront = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".png";
+                new System.Drawing.Bitmap(new System.IO.MemoryStream(Convert.FromBase64String(frontBase64))).Save(ImgFront);
+            }
+            if (!string.IsNullOrEmpty(backBase64))
+            {
+                ImgBack = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".png";
+                new System.Drawing.Bitmap(new System.IO.MemoryStream(Convert.FromBase64String(backBase64))).Save(ImgBack);
+            }
+
             reprintTxt = reprintReason;
             Session session = Session.Instance;
             var userLogin = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
             var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
             PrintAndWriteSmartCardInfo cardInfo = new PrintAndWriteSmartCardInfo()
             {
+                BackCardImagePath = ImgBack,
+                FrontCardImagePath = ImgFront,
                 SuperviseeBiodata = new SuperviseeBiodata()
                 {
                     Name = currentEditUser.User.Name,
