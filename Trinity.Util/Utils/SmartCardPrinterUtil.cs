@@ -202,7 +202,6 @@ namespace Trinity.Util
                     catch (Exception e)
                     {
                         Debug.WriteLine("");
-                        returnValue.Success = false;
                     }
                     finally
                     {
@@ -236,9 +235,9 @@ namespace Trinity.Util
                 }
 
 
-                if (string.IsNullOrEmpty(returnValue.CardUID))
+                if (!string.IsNullOrEmpty(returnValue.CardUID))
                 {
-                    returnValue.Success = false;
+                    returnValue.Success = true;
                 }
 
                 OnCompleted(returnValue);
