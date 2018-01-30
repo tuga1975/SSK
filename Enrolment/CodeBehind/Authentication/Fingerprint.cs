@@ -3,6 +3,7 @@ using System.Threading;
 using System.Windows.Forms;
 using Trinity.Common;
 using Trinity.Common.Common;
+using Trinity.Util;
 
 namespace Enrolment.CodeBehind.Authentication
 {
@@ -29,7 +30,7 @@ namespace Enrolment.CodeBehind.Authentication
             // start verification
             Session session = Session.Instance;
             var user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-            FingerprintReaderUtils.Instance.StartVerification(OnVerificationComplete, user.RightThumbFingerprint);
+            FingerprintReaderUtil.Instance.StartVerification(OnVerificationComplete, user.RightThumbFingerprint);
         }
 
         private void OnVerificationComplete(bool bSuccess, int nRetCode, bool bVerificationSuccess)
@@ -50,7 +51,7 @@ namespace Enrolment.CodeBehind.Authentication
 
                     Session session = Session.Instance;
                     var user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-                    FingerprintReaderUtils.Instance.StartVerification(OnVerificationComplete, user.RightThumbFingerprint);
+                    FingerprintReaderUtil.Instance.StartVerification(OnVerificationComplete, user.RightThumbFingerprint);
                 }
             }
             else

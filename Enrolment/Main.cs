@@ -11,6 +11,7 @@ using Trinity.BE;
 using Trinity.Common;
 using Trinity.Common.Common;
 using Trinity.DAL;
+using Trinity.Util;
 
 namespace Enrolment
 {
@@ -148,7 +149,7 @@ namespace Enrolment
             Session session = Session.Instance;
             if (session["CountPutOn"] == null)
                 session["CountPutOn"] = 0;
-            FingerprintReaderUtils.Instance.StartCapture(OnPutOn, OnTakeOff, UpdateScreenImage, OnFakeSource, OnEnrollmentComplete);
+            FingerprintReaderUtil.Instance.StartCapture(OnPutOn, OnTakeOff, UpdateScreenImage, OnFakeSource, OnEnrollmentComplete);
             //_futronicEnrollment = new FutronicEnrollment();
 
             //// Set control properties
@@ -183,7 +184,7 @@ namespace Enrolment
                 // set status string
                 szMessage.Append("Enrollment process finished successfully.");
                 szMessage.Append("Quality: ");
-                szMessage.Append(FingerprintReaderUtils.Instance.GetQuality.ToString());
+                szMessage.Append(FingerprintReaderUtil.Instance.GetQuality.ToString());
                 Console.WriteLine(szMessage);
 
                 //set data for curent edit user
@@ -203,15 +204,15 @@ namespace Enrolment
 
                     if (isRight)
                     {
-                        profileModel.User.RightThumbFingerprint = FingerprintReaderUtils.Instance.GetTemplate;
+                        profileModel.User.RightThumbFingerprint = FingerprintReaderUtil.Instance.GetTemplate;
 
                     }
                     else
                     {
-                        profileModel.User.LeftThumbFingerprint = FingerprintReaderUtils.Instance.GetTemplate;
+                        profileModel.User.LeftThumbFingerprint = FingerprintReaderUtil.Instance.GetTemplate;
 
                     }
-                    session[CommonConstants.CURRENT_FINGERPRINT_DATA] = FingerprintReaderUtils.Instance.GetTemplate;
+                    session[CommonConstants.CURRENT_FINGERPRINT_DATA] = FingerprintReaderUtil.Instance.GetTemplate;
 
 
                     session[CommonConstants.CURRENT_EDIT_USER] = profileModel;
@@ -237,7 +238,7 @@ namespace Enrolment
                 }
             }
 
-            FingerprintReaderUtils.Instance.DisposeCapture();
+            FingerprintReaderUtil.Instance.DisposeCapture();
 
             //// unregister events
             //_futronicEnrollment.OnPutOn -= OnPutOn;

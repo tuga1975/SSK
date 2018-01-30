@@ -1,11 +1,8 @@
 ﻿using PCSC;
 using System;
 using System.Diagnostics;
-using System.Threading;
-using System.Windows.Forms;
-using Trinity.Common;
 
-namespace Trinity.Common.Authentication
+namespace Trinity.Util.Authentication
 {
     public class SmartCard
     {
@@ -41,14 +38,14 @@ namespace Trinity.Common.Authentication
         public void Start()
         {
             // StartSmartCardMonitor
-            Trinity.Common.SmartCardReaderUtils.Instance.StartSmartCardMonitor(OnCardInitialized, OnCardInserted, OnCardRemoved);
+            SmartCardReaderUtil.Instance.StartSmartCardMonitor(OnCardInitialized, OnCardInserted, OnCardRemoved);
         }
 
         
         private void OnCardInitialized(object sender, CardStatusEventArgs e)
         {
             Debug.WriteLine("onCardInitialized");
-            string cardUID = Trinity.Common.SmartCardReaderUtils.Instance.GetCardUID();
+            string cardUID = SmartCardReaderUtil.Instance.GetCardUID();
             if (!string.IsNullOrEmpty(cardUID) && GetCardInfoSucceeded!=null)
             {
                 GetCardInfoSucceeded(cardUID);
@@ -59,7 +56,7 @@ namespace Trinity.Common.Authentication
         private void OnCardInserted(object sender, CardStatusEventArgs e)
         {
             Debug.WriteLine("onCardInitialized");
-            string cardUID = Trinity.Common.SmartCardReaderUtils.Instance.GetCardUID();
+            string cardUID = SmartCardReaderUtil.Instance.GetCardUID();
             if (!string.IsNullOrEmpty(cardUID) && GetCardInfoSucceeded != null)
             {
                 GetCardInfoSucceeded(cardUID);

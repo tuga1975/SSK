@@ -42,7 +42,7 @@ namespace Trinity.DAL
             return SetInfoForBE(new BE.IssueCard(), dbIssueCard);
 
         }
-        public List<BE.IssueCard> GetMyIssueCard(string UserId)
+        public List<BE.IssueCard> GetMyIssueCards(string UserId)
         {
             return _localUnitOfWork.DataContext.IssuedCards.Where(d => d.UserId == UserId).OrderByDescending(d => d.CreatedDate).ToList().Select(d=> d.Map<BE.IssueCard>()).ToList();
         }

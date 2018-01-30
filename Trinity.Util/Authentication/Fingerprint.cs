@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using System.Windows.Forms;
 using Trinity.Common;
-using Trinity.Common.Common;
 
-namespace Trinity.Common.Authentication
+namespace Trinity.Util.Authentication
 {
     public class Fingerprint
     {
@@ -48,7 +45,7 @@ namespace Trinity.Common.Authentication
             _fingerprintTemplates = fingerprintTemplates;
 
             // get fingerprint reader status
-            var fingerprintReaderStatus = FingerprintReaderUtils.Instance.GetDeviceStatus();
+            var fingerprintReaderStatus = FingerprintReaderUtil.Instance.GetDeviceStatus();
 
             // if status is disconnected, raise disconnected event
             if (!fingerprintReaderStatus.Contains(EnumDeviceStatuses.Connected))
@@ -58,7 +55,7 @@ namespace Trinity.Common.Authentication
             else
             {
                 // start identification
-                FingerprintReaderUtils.Instance.StartIdentification(_fingerprintTemplates, RaiseIdentificationCompletedEvent);
+                FingerprintReaderUtil.Instance.StartIdentification(_fingerprintTemplates, RaiseIdentificationCompletedEvent);
             }
         }
 

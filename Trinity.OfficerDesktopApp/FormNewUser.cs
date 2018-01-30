@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using Trinity.DAL;
 using Trinity.Identity;
+using Trinity.Util;
 
 namespace OfficerDesktopApp
 {
@@ -218,12 +219,12 @@ namespace OfficerDesktopApp
 
         private void StartCardMonitor()
         {
-            Trinity.Common.SmartCardReaderUtils.Instance.StartSmartCardMonitor(OnCardInitialized, OnCardInserted, OnCardRemoved);
+            SmartCardReaderUtil.Instance.StartSmartCardMonitor(OnCardInitialized, OnCardInserted, OnCardRemoved);
         }
 
         private void OnCardInitialized(object sender, CardStatusEventArgs e)
         {
-            string cardUID = Trinity.Common.SmartCardReaderUtils.Instance.GetCardUID();
+            string cardUID = SmartCardReaderUtil.Instance.GetCardUID();
             if (string.IsNullOrEmpty(cardUID))
             {
                 UpdateNote("Please insert your smart card.", Color.Red);
@@ -242,7 +243,7 @@ namespace OfficerDesktopApp
                 UpdateNote("Your smart card was scanned successfully. Please scan your finger print to continue", Color.Blue);
 
                 // Then stop Smart Card and Start to scan finger print
-                Trinity.Common.SmartCardReaderUtils.Instance.StopSmartCardMonitor();
+                SmartCardReaderUtil.Instance.StopSmartCardMonitor();
                 btnScanSmartcard.Enabled = false;
 
                 _currentUser.SmartCardId = cardUID;
@@ -252,7 +253,7 @@ namespace OfficerDesktopApp
 
         private void OnCardInserted(object sender, CardStatusEventArgs e)
         {
-            Trinity.Common.SmartCardReaderUtils sCardMonitor = Trinity.Common.SmartCardReaderUtils.Instance;
+            SmartCardReaderUtil sCardMonitor = SmartCardReaderUtil.Instance;
             string cardUID = sCardMonitor.GetCardUID();
             if (!string.IsNullOrEmpty(cardUID))
             {

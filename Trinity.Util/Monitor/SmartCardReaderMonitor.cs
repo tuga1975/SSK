@@ -19,7 +19,7 @@ namespace Trinity.Util
             try
             {
                 // start card reader monitor
-                bool startMonitorResult = SmartCardReaderUtils.Instance.StartSmartCardReaderMonitor(OnInitialized, OnStatusChanged, OnMonitorException);
+                bool startMonitorResult = SmartCardReaderUtil.Instance.StartSmartCardReaderMonitor(OnInitialized, OnStatusChanged, OnMonitorException);
 
                 if (startMonitorResult)
                 {
@@ -42,7 +42,7 @@ namespace Trinity.Util
             try
             {
                 // get statuses
-                var deviceStatuses = SmartCardReaderUtils.Instance.GetDeviceStatus();
+                var deviceStatuses = SmartCardReaderUtil.Instance.GetDeviceStatus();
 
                 // update local ApplicationDevice_Status
                 DAL_DeviceStatus dAL_DeviceStatus = new DAL_DeviceStatus();

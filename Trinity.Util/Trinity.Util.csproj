@@ -35,6 +35,7 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Trinity.BE\Trinity.BE.csproj">
@@ -51,18 +52,63 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BarcodePrinterMonitor.cs" />
-    <Compile Include="DocumentScannerMonitor.cs" />
-    <Compile Include="FingerprintReaderMonitor.cs" />
+    <Compile Include="Authentication\Fingerprint.cs" />
+    <Compile Include="Authentication\SmartCard.cs" />
+    <Compile Include="Monitor\BarcodePrinterMonitor.cs" />
+    <Compile Include="Monitor\DocumentScannerMonitor.cs" />
+    <Compile Include="Monitor\FingerprintReaderMonitor.cs" />
+    <Compile Include="Monitor\PrinterMonitor.cs" />
     <Compile Include="Repeat.cs" />
-    <Compile Include="SmartCardPrinterMonitor.cs" />
-    <Compile Include="SmartCardReaderMonitor.cs" />
+    <Compile Include="Monitor\SmartCardPrinterMonitor.cs" />
+    <Compile Include="Monitor\SmartCardReaderMonitor.cs" />
+    <Compile Include="TSCLIB_DLL.cs" />
+    <Compile Include="Utils\BarcodePrinterUtil.cs" />
+    <Compile Include="Utils\DeviceUtil.cs" />
+    <Compile Include="Utils\DocumentScannerUtil.cs" />
+    <Compile Include="Utils\FingerprintReaderUtil.cs" />
+    <Compile Include="Utils\ReceiptPrinterUtil.cs" />
+    <Compile Include="Utils\SmartCardPrinterUtil.cs" />
+    <Compile Include="Utils\SmartCardReaderUtil.cs" />
+    <Compile Include="Utils\SmartCardUtil.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="ftrSDKHelper13, Version=4.5.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Trinity.Common\Libs\Futronic Fingerprint Reader\ftrSDKHelper13.dll</HintPath>
+    </Reference>
+    <Reference Include="Interop.WIA, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\Trinity.Common\obj\x64\Debug\Interop.WIA.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="pcsc-sharp">
       <HintPath>..\Trinity.Common\Libs\PCSC Smart Card Reader\pcsc-sharp.dll</HintPath>
     </Reference>
+    <Reference Include="ScanAPIHelper, Version=1.1.6290.35130, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Trinity.Common\Libs\Futronic Fingerprint Reader\ScanAPIHelper.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Management" />
+    <Reference Include="ZMotifGraphics, Version=1.8.4100.0, Culture=neutral, PublicKeyToken=e38255d558fcaa39, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Trinity.Common\Libs\Zerbra XZP Serries 9\ZMotifGraphics.dll</HintPath>
+    </Reference>
+    <Reference Include="ZMOTIFPRINTERLib">
+      <HintPath>..\Trinity.Common\Libs\ZMOTIFPRINTERLib.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using Trinity.Common.Common;
+using Trinity.Common;
 using WIA;
 
-namespace Trinity.Common.Utils
+namespace Trinity.Util
 {
     public class DocumentScannerUtils
     {
@@ -72,7 +69,7 @@ namespace Trinity.Common.Utils
 
                     // refer https://msdn.microsoft.com/en-us/library/windows/desktop/ms630318(v=vs.85).aspx
                     // Print something like e.g "WIA Canoscan 4400F"
-                    Debug.WriteLine(deviceManager.DeviceInfos[i].Properties["Name"].get_Value());
+                    //Debug.WriteLine(deviceManager.DeviceInfos[i].Properties["Name"].get_Value());
                     // e.g Canoscan 4400F
                     //Console.WriteLine(deviceManager.DeviceInfos[i].Properties["Description"].get_Value());
                     // e.g \\.\Usbscan0
@@ -105,7 +102,7 @@ namespace Trinity.Common.Utils
                 AdjustScannerSettings(scannerItem, resolution, 0, 0, width_pixel, height_pixel, 0, 0, color_mode);
 
                 // Retrieve a image in JPEG format and store it into a variable
-                var imageFile = (ImageFile)scannerItem.Transfer(FormatID.wiaFormatJPEG);
+                //var imageFile = (ImageFile)scannerItem.Transfer(FormatID.wiaFormatJPEG);
 
                 // Save the image in some path with filename
                 var path = @"C:\Users\DucTu\Desktop\scan.jpeg";
@@ -116,10 +113,10 @@ namespace Trinity.Common.Utils
                 }
 
                 // Save image !
-                imageFile.SaveFile(path);
+                //imageFile.SaveFile(path);
 
                 // Set returnValue
-                returnValue.Value = imageFile;
+                //returnValue.Value = imageFile;
                 return returnValue;
             }
             catch (COMException e)

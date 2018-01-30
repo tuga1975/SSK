@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Trinity.BE;
-using Trinity.Common.Utils;
 using Trinity.DAL;
 
 namespace Trinity.Util
@@ -35,7 +30,7 @@ namespace Trinity.Util
             try
             {
                 // get status
-                var status = BarcodePrinterUtils.Instance.GetDeviceStatus(EnumDeviceNames.MUBLabelPrinter);
+                var status = BarcodePrinterUtil.Instance.GetDeviceStatus(EnumDeviceNames.MUBLabelPrinter);
                 
                 // update local ApplicationDevice_Status
                 DAL_DeviceStatus dAL_DeviceStatus = new DAL_DeviceStatus();
@@ -72,7 +67,7 @@ namespace Trinity.Util
             try
             {
                 // get status
-                var status = BarcodePrinterUtils.Instance.GetDeviceStatus(EnumDeviceNames.UBLabelPrinter);
+                var status = BarcodePrinterUtil.Instance.GetDeviceStatus(EnumDeviceNames.UBLabelPrinter);
 
                 // update local ApplicationDevice_Status
                 DAL_DeviceStatus dAL_DeviceStatus = new DAL_DeviceStatus();
@@ -109,7 +104,7 @@ namespace Trinity.Util
             try
             {
                 // get status
-                var status = BarcodePrinterUtils.Instance.GetDeviceStatus(EnumDeviceNames.TTLabelPrinter);
+                var status = BarcodePrinterUtil.Instance.GetDeviceStatus(EnumDeviceNames.TTLabelPrinter);
 
                 // update local ApplicationDevice_Status
                 DAL_DeviceStatus dAL_DeviceStatus = new DAL_DeviceStatus();

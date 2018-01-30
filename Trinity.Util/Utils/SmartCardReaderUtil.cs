@@ -6,19 +6,18 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using Trinity.Common;
 using Trinity.Common.Common;
-using Trinity.Common.Utils;
 
-namespace Trinity.Common
+namespace Trinity.Util
 {
-    public class SmartCardReaderUtils : DeviceUtils
+    public class SmartCardReaderUtil : DeviceUtil
     {
         // monitor - need to be refactor
         PCSC.SCardMonitor _sCardMonitor;
 
         // 
         string _readerName;
-        private bool _cardReaderMonitor_Started;
 
         // authentication keys
         byte[] _authenticationKeys = new byte[] { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
@@ -26,19 +25,18 @@ namespace Trinity.Common
 
         #region Singleton Implementation
         // The variable is declared to be volatile to ensure that assignment to the instance variable completes before the instance variable can be accessed
-        private static volatile SmartCardReaderUtils _instance;
+        private static volatile SmartCardReaderUtil _instance;
 
         // Uses a syncRoot instance to lock on, rather than locking on the type itself, to avoid deadlocks.
         private static object syncRoot = new Object();
 
-        private SmartCardReaderUtils()
+        private SmartCardReaderUtil()
         {
             _readerName = EnumDeviceNames.SmartCardContactlessReader;
-            _cardReaderMonitor_Started = false;
             _passphrase = "TVO@2018";
         }
 
-        public static SmartCardReaderUtils Instance
+        public static SmartCardReaderUtil Instance
         {
             get
             {
@@ -47,7 +45,7 @@ namespace Trinity.Common
                     lock (syncRoot)
                     {
                         if (_instance == null)
-                            _instance = new SmartCardReaderUtils();
+                            _instance = new SmartCardReaderUtil();
                     }
                 }
 
@@ -431,7 +429,7 @@ namespace Trinity.Common
                 MifareCard card = new MifareCard(isoReader);
                 bool loadKeySuccessful = card.LoadKey(
                     KeyStructure.VolatileMemory,
-                    MSB, 
+                    MSB,
                     _authenticationKeys // key
                 );
 
@@ -667,7 +665,7 @@ namespace Trinity.Common
                 {
                     DutyOfficerData = data
                 };
-                
+
                 // convert object to json
                 var jsonData = JsonConvert.SerializeObject(cardData);
 

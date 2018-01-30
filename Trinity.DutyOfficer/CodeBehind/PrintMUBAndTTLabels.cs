@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Trinity.Common;
-using Trinity.Common.Common;
-using Trinity.Common.DeviceMonitor;
-using Trinity.Common.Utils;
+using Trinity.Util;
 
 namespace DutyOfficer.CodeBehind
 {
@@ -48,7 +43,7 @@ namespace DutyOfficer.CodeBehind
                 printerMonitor.OnPrintMUBLabelSucceeded += OnPrintMUBLabelsSucceeded;
                 printerMonitor.OnMonitorException += OnPrintMUBAndTTLabelsException;
 
-                BarcodePrinterUtils barcodeScannerUtils = BarcodePrinterUtils.Instance;
+                BarcodePrinterUtil barcodeScannerUtils = BarcodePrinterUtil.Instance;
 
                 Session session = Session.Instance;
                 if (session.IsAuthenticated)
@@ -100,7 +95,7 @@ namespace DutyOfficer.CodeBehind
                 printerMonitor.OnPrintTTLabelSucceeded += OnPrintTTLabelsSucceeded;
                 printerMonitor.OnMonitorException += OnPrintMUBAndTTLabelsException;
 
-                BarcodePrinterUtils barcodeScannerUtils = BarcodePrinterUtils.Instance;
+                BarcodePrinterUtil barcodeScannerUtils = BarcodePrinterUtil.Instance;
 
                 Session session = Session.Instance;
                 if (session.IsAuthenticated)

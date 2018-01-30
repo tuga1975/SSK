@@ -50,20 +50,20 @@ namespace Trinity.DAL
                     dbLabel.PrintCount = 1;
                     locallabelRepo.Add(dbLabel);
 
-                    var dateLable = dbLabel.Date.Date;
-                    DBContext.Queue dbQueue = _localUnitOfWork.DataContext.Queues.Include("Appointment").FirstOrDefault(d => DbFunctions.TruncateTime(d.Appointment.Date).Value == dateLable && d.Appointment.UserId == dbLabel.UserId);
-                    if (dbQueue != null)
-                    {
-                        dbQueue.CurrentStation = EnumStations.HSA;
-                        dbQueue.Outcome = "Printer MUB/TT Label";
-                        DBContext.QueueDetail dbQueueDetail = _localUnitOfWork.DataContext.QueueDetails.FirstOrDefault(d=>d.Queue_ID== dbQueue.Queue_ID && d.Station== EnumStations.HSA);
-                        if (dbQueueDetail != null)
-                        {
-                            dbQueueDetail.Status = EnumQueueStatuses.Finished;
-                            _localUnitOfWork.GetRepository<DBContext.QueueDetail>().Update(dbQueueDetail);
-                        }
-                        _localUnitOfWork.GetRepository<DBContext.Queue>().Update(dbQueue);
-                    }
+                    //var dateLable = dbLabel.Date.Date;
+                    //DBContext.Queue dbQueue = _localUnitOfWork.DataContext.Queues.Include("Appointment").FirstOrDefault(d => DbFunctions.TruncateTime(d.Appointment.Date).Value == dateLable && d.Appointment.UserId == dbLabel.UserId);
+                    //if (dbQueue != null)
+                    //{
+                    //    dbQueue.CurrentStation = EnumStations.SSA;
+                    //    dbQueue.Outcome = "Printer MUB/TT Label";
+                    //    DBContext.QueueDetail dbQueueDetail = _localUnitOfWork.DataContext.QueueDetails.FirstOrDefault(d=>d.Queue_ID== dbQueue.Queue_ID && d.Station== EnumStations.SSA);
+                    //    if (dbQueueDetail != null)
+                    //    {
+                    //        dbQueueDetail.Status = EnumQueueStatuses.Finished;
+                    //        _localUnitOfWork.GetRepository<DBContext.QueueDetail>().Update(dbQueueDetail);
+                    //    }
+                    //    _localUnitOfWork.GetRepository<DBContext.Queue>().Update(dbQueue);
+                    //}
 
                 }
                 else

@@ -1,6 +1,6 @@
-﻿namespace Trinity.Common.Utils
+﻿namespace Trinity.Util
 {
-    public abstract class DeviceUtils
+    public abstract class DeviceUtil
     {
         public abstract EnumDeviceStatuses[] GetDeviceStatus();
     }
