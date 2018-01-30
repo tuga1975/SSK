@@ -1,93 +1,133 @@
 <div style="width:100%;">
-	<div class="header header-form-supervisee">
-		<img class="logo" src="../images/logo.png" />
+    <div class="header header-form-supervisee">
+        <img class="logo" src="../images/logo.png" />
         <h3>Reprint Smart Card</h3>
-		<div class="clear"></div>
-	</div>
-	<div class="form-supervisee">
-		<form id="superviseeFrm">
-			<input class="name-supervisee" type="text" value="Reprint Smart Card" disabled="disabled" />
-			<nav class="nav nav-tabs" id="myTab" role="tablist">
-				<a class="nav-item nav-link" href="javascript:LoadSuperviseeDetails();">Supervisee Details</a>
-				<a class="nav-item nav-link active">Issued Cards</a>
-			</nav>
-			<div class="tab-content" id="nav-tabContent">
-			<div class="tab-pane fade show active" id="issued-cards" role="tabpanel" aria-labelledby="nav-profile-tab">
-                <div>
-                    <table class="table table-bordered" id="data-issuedcards">
-                        <colgroup>
-
-                        </colgroup>
-                        <thead>
-                            <tr>
-                                <th>NRIC</th>
-                                <th>Name</th>
-                                <th>Issued Date</th>
-                                <th>Expired Date</th>
-                                <th>Card Number</th>
-                                <th>Status</th>
-                                <th style="text-align:center;">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            
-                        </tbody>
-                    </table>
-                    <div enterreprint style="display:none;margin-top:10px;">
-                        <span style="height:30px;display:inline-block;vertical-align:middle;box-sizing:border-box;padding:0px 10px;border:1px solid #333;line-height:30px;float:left;">Enter resson to reprint:</span>
-                        <input type="text" name="reprint" style="height:30px;display:inline-block;vertical-align:middle;box-sizing:border-box;padding:0px 10px;border:1px solid #333;width:calc(100% - 280px);float:left;margin:0px 10px;"/>
-                        <button type="button" style="border:1px solid #333; float:right;" onclick="ReprintIssuedCard();">Reprint</button>
-                        <div style="clear:both;"></div>
+        <div class="clear"></div>
+    </div>
+    <div class="form-supervisee">
+        <form id="superviseeFrm">
+            <input class="name-supervisee" type="text" value="Reprint Smart Card" disabled="disabled" />
+            <nav class="nav nav-tabs" id="myTab" role="tablist">
+                <a class="nav-item nav-link" href="javascript:LoadSuperviseeDetails();">Supervisee Details</a>
+                <a class="nav-item nav-link active">Issued Cards</a>
+            </nav>
+            <div class="tab-content" id="nav-tabContent">
+                <div class="tab-pane fade show active" id="issued-cards" role="tabpanel" aria-labelledby="nav-profile-tab">
+                    <div>
+                        <table class="table table-bordered" id="data-issuedcards">
+                            <colgroup></colgroup>
+                            <thead>
+                                <tr>
+                                    <th>NRIC</th>
+                                    <th>Name</th>
+                                    <th>Issued Date</th>
+                                    <th>Expired Date</th>
+                                    <th>Card Number</th>
+                                    <th>Status</th>
+                                    <th style="text-align:center;">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                        <div enterreprint style="display:none;margin-top:10px;">
+                            <span style="height:30px;display:inline-block;vertical-align:middle;box-sizing:border-box;padding:0px 10px;border:1px solid #333;line-height:30px;float:left;">Enter resson to reprint:</span>
+                            <input type="text" name="reprint" style="height:30px;display:inline-block;vertical-align:middle;box-sizing:border-box;padding:0px 10px;border:1px solid #333;width:calc(100% - 280px);float:left;margin:0px 10px;" />
+                            <button type="button" style="border:1px solid #333; float:right;" onclick="ReprintIssuedCard();">Reprint</button>
+                            <div style="clear:both;"></div>
+                        </div>
                     </div>
                 </div>
-			</div>
-		</div>
-		</form>
-	</div>
-</div>
-<!--<div style="">
-    <div style="width:300px;height:182px;border:1px solid #000;float:right;position:relative;" id="backCard">
-        <div style="height:87px;width:100px;position:absolute;top:2px;left:2px;border:1px solid #CCC;text-align:center;padding:1px;display:none;">
-            <img src="../images/fingerprint.jpg" id="verifyLeftFinger" style="height:100%;max-width:100%;" />
-        </div>
-        <div style="height:87px;width:100px;position:absolute;bottom:2px;left:2px;border:1px solid #CCC;text-align:center;padding:1px;display:none;">
-            <img src="../images/fingerprint.jpg" id="verifyRightFinger" style="height:100%;max-width:100%;" />
-        </div>
-        <div style="margin-left:0px;padding:10px;font-size:12px;">
-            <div><b>Name : </b><span name="verifyName"></span></div>
-            <div><b>NRIC : </b><span name="verifyNRIC"></span></div>
-            <div><b>Date of Birth : </b><span name="verifyDOB"></span></div>
-            <div><b>Sex : </b><span name="verifyGender"></span></div>
-            <div><b>Nationality : </b><span name="verifyNation"></span></div>
-            <div><b>Race : </b><span name="verifyRace"></span></div>
-            <div><b>Issue date: </b><span name="issueDate"></span></div>
-            <div><b>Expire date: </b><span name="expireDate"></span></div>
-            <div><b>Serial Number: </b><span name="serialNumber"></span></div>
-        </div>
-        <div style="clear:both"></div>
-        <img a src="" />
+            </div>
+        </form>
     </div>
 </div>
-<input type="button" onclick="TestIN()"/>-->
+<div style="opacity:1;position:fixed;z-index:-1;right:0px;top:0px;overflow:hidden;width:0px;height:0px;">
+    <div style="width:300px;height:182px;border:1px solid #000;float:right;position:relative;overflow:hidden;border-radius:5px;font-family:Arial;" id="frontCard">
+        <img src="../images/background-smart-card.png" style="position:absolute;z-index:0;left:0px;top:0px;height:100%;width:100%;" />
+        <div style="z-index:1;color:#FFF;">
+            <div style="position:absolute;font-size: 15px;font-weight: bold;font-style: italic;top: 10px;left: 20px;">
+                CNB Supervisee Card
+            </div>
+            <div style="height:95px;width:75px;position:absolute;top:40px;left:20px;text-align:center;padding:1px;border-radius:5px;background-color:#FFF;">
+                <img src="../images/usr-default.jpg" id="verifyPhoto" style="height:100%;max-width:100%;border-radius:5px;" />
+            </div>
+            <img src="../images/central_narco_logo.png" style="position:absolute;height: 35px;top: 119px;left: 40px;z-index: 1;">
+            <div style="position:absolute;top:40px;left: 110px;font-size: 12px;font-weight: bold;line-height: 16px;">
+                <div><span name="verifyName"></span></div>
+                <div><span name="serialNumber"></span></div>
+                <div style="clear:both"></div>
+            </div>
+            <div style="position:absolute;width:auto;left:110px;bottom:45px;background-color:#FFF;border-radius:5px;padding:5px;">
+                <img name="verifyBarcode" />
+            </div>
+            <div style="position:absolute;right:15px;bottom:15px;text-align:right;">
+                <span name="verifyNumber"></span>
+            </div>
+        </div>
+    </div>
+    <div style="width:300px;height:182px;border:1px solid #000;float:right;position:relative;overflow:hidden;border-radius:5px;font-family:Arial;" id="backCard">
+        <img src="../images/background-smart-card.png" style="position:absolute;z-index:0;left:0px;top:0px;height:100%;width:100%;" />
+
+        <div style="position:absolute;bottom:15px;left:15px;z-index:1;color:#FFF;">
+            <div style="font-size: 12px;font-weight: bold;">
+                <div>Date of Issue: <span name="issueDate"></span></div>
+            </div>
+            <div style="margin-top:10px;font-size: 8px;font-weight: bold;text-shadow: 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black;">
+                “If this card is found, please return to any Police Station or to:<br />
+                Central Narcotics Bureau<br />
+                393 New Bridge Road,<br />
+                Singapore 088763<br />
+                Contact Number: 6325 6665
+            </div>
+        </div>
+        <div style="clear:both"></div>
+    </div>
+</div>
+<input type="button" onclick="TestIN()" />
+<img a src="" />
 <script>
-    //function TestIN() {
-    //    html2canvas($('#backCard'), {
-    //        onrendered: function (backcanvas) {
-    //            $('[a]').attr('src', backcanvas.toDataURL("image/png"));
-    //        }
-    //    });
-    //}
+    function TestIN() {
+        html2canvas($('#frontCard'), {
+            onrendered: function (backcanvas) {
+                $('[a]').attr('src', backcanvas.toDataURL("image/png"));
+            }
+        });
+    }
     var UserID = null;
     api.server.GetIssuedCards(function (data) {
         UserID = data[1];
         $.each(data[0], function (index, item) {
             $('#data-issuedcards tbody').append(api.DumpDataToTxt('<tr><td>{NRIC}</td><td>{Name}</td><td>{Date_Of_Issue_Txt}</td><td>{Expired_Date_Txt}</td><td>{Serial_Number}</td><td reprintsmartcard-status>{Status}</td><td style="text-align:center;">' + (index == 0 ? '<a href="javascript:ShowPrintIssuedCard();"><img style="cursor:pointer;" src="../images/printer.png"/></a>' : '') + '</td></tr>', item));
         });
+
+        api.server.loadDataVerify(function (model) {
+            $('[name="verifyName"]').text(model.User.Name);
+            if (model.UserProfile.DOB != null) {
+                $('[name="verifyDOB"]').text(model.UserProfile.DOBTxt);
+            }
+
+            $('[name="verifyNRIC"]').text(model.User.NRIC);
+            $('[name="serialNumber"]').text(model.UserProfile.SerialNumber);
+            $('[name="serialNumberBack"]').text(model.UserProfile.SerialNumber);
+            $('[name="verifyGender"]').text(model.UserProfile.Gender == null ? '' : model.UserProfile.Gender);
+            $('[name="verifyNation"]').text(model.UserProfile.Nationality);
+            if (model.UserProfile.DateOfIssue != null) {
+
+                $('[name="issueDate"]').text(model.UserProfile.DateOfIssueTxt);
+                $('[name="issueDateBack"]').text(model.UserProfile.DateOfIssueTxt);
+            }
+            if (model.UserProfile.Expired_Date != null) {
+                $('[name="expireDate"]').text(model.UserProfile.Expired_DateTxt);
+            }
+            $('[name="verifyRace"]').text(model.UserProfile.Race == null ? '' : model.UserProfile.Race);
+            JsBarcode('[name="verifyBarcode"]', model.User.NRIC, { height: 20, fontSize: 8, width: 1, margin: 0, font: "Arial" });
+        });
+
     });
     function LoadSuperviseeDetails() {
         api.server.EditSupervisee(UserID);
     }
-    function OnIssuedCardReprinted(status,item) {
+    function OnIssuedCardReprinted(status, item) {
         if (status) {
             item = JSON.parse(item);
             $('#data-issuedcards tbody [reprintsmartcard-status]').text('Deactivate');
@@ -99,7 +139,15 @@
         }
     }
     function ReprintIssuedCard() {
-        api.server.ReprintIssuedCard($('[name="reprint"]').val());
+        html2canvas($('#frontCard'), {
+            onrendered: function (froncanvas) {
+                html2canvas($('#backCard'), {
+                    onrendered: function (backcanvas) {
+                        api.server.ReprintIssuedCard($('[name="reprint"]').val(), froncanvas.toDataURL("image/png"), backcanvas.toDataURL("image/png"));
+                    }
+                });
+            }
+        });   
     }
     function ShowPrintIssuedCard() {
         $('[enterreprint]').css('display', 'block');
