@@ -12,23 +12,25 @@ namespace Trinity.DAL.DBContext
     using System;
     using System.Collections.Generic;
     
-    public partial class Queue
+    public partial class SentMessage
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Queue()
+        public SentMessage()
         {
-            this.QueueDetails = new HashSet<QueueDetail>();
+            this.MsgRecipients = new HashSet<MsgRecipient>();
         }
     
-        public System.Guid Queue_ID { get; set; }
-        public System.Guid Appointment_ID { get; set; }
-        public string CurrentStation { get; set; }
-        public string Outcome { get; set; }
-        public System.DateTime CreatedTime { get; set; }
-        public string QueuedNumber { get; set; }
+        public int MsgID { get; set; }
+        public string Subject { get; set; }
+        public string MsgContent { get; set; }
+        public Nullable<int> DelileryStatus { get; set; }
+        public Nullable<System.DateTime> DeliveryDateTime { get; set; }
+        public Nullable<bool> SMS { get; set; }
+        public Nullable<bool> Email { get; set; }
+        public string UserId { get; set; }
     
-        public virtual Appointment Appointment { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<QueueDetail> QueueDetails { get; set; }
+        public virtual ICollection<MsgRecipient> MsgRecipients { get; set; }
+        public virtual User_Profiles User_Profiles { get; set; }
     }
 }
