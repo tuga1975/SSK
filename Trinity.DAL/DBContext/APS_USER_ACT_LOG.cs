@@ -20,5 +20,7 @@ namespace Trinity.DAL.DBContext
         public string USER_NAME { get; set; }
         public string CREATED_BY { get; set; }
         public System.DateTime CREATED_TIME { get; set; }
+    
+        public virtual User_Profiles User_Profiles { get; set; }
     }
 }

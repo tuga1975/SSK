@@ -41,17 +41,13 @@ namespace Trinity.DAL.DBContext
         public virtual DbSet<Membership_UserLogins> Membership_UserLogins { get; set; }
         public virtual DbSet<Membership_UserRoles> Membership_UserRoles { get; set; }
         public virtual DbSet<Membership_Users> Membership_Users { get; set; }
+        public virtual DbSet<Notification> Notifications { get; set; }
         public virtual DbSet<OperationSetting> OperationSettings { get; set; }
         public virtual DbSet<OperationSettings_ChangeHist> OperationSettings_ChangeHist { get; set; }
         public virtual DbSet<QueueDetail> QueueDetails { get; set; }
         public virtual DbSet<Queue> Queues { get; set; }
-        public virtual DbSet<Security_QA> Security_QA { get; set; }
         public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
         public virtual DbSet<Timeslot> Timeslots { get; set; }
         public virtual DbSet<User_Profiles> User_Profiles { get; set; }
-        public virtual DbSet<APS_USER_ACT_LOG> APS_USER_ACT_LOG { get; set; }
-        public virtual DbSet<EMAIL_LOG> EMAIL_LOG { get; set; }
-        public virtual DbSet<SMS_LOG> SMS_LOG { get; set; }
-        public virtual DbSet<Notification> Notifications { get; set; }
     }
 }
