@@ -19,16 +19,16 @@ namespace Trinity.DAL.DBContext
         {
             this.ActionLogs = new HashSet<ActionLog>();
             this.ActionLogs1 = new HashSet<ActionLog>();
+            this.Appointments = new HashSet<Appointment>();
             this.IssuedCards = new HashSet<IssuedCard>();
             this.Labels = new HashSet<Label>();
             this.Membership_UserClaims = new HashSet<Membership_UserClaims>();
             this.Membership_UserDevices = new HashSet<Membership_UserDevices>();
             this.Membership_UserLogins = new HashSet<Membership_UserLogins>();
             this.Membership_UserRoles = new HashSet<Membership_UserRoles>();
-            this.Security_QA = new HashSet<Security_QA>();
             this.Notifications = new HashSet<Notification>();
             this.Notifications1 = new HashSet<Notification>();
-            this.Appointments = new HashSet<Appointment>();
+            this.Security_QA = new HashSet<Security_QA>();
         }
     
         public string UserId { get; set; }
@@ -59,6 +59,8 @@ namespace Trinity.DAL.DBContext
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ActionLog> ActionLogs1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Appointment> Appointments { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<IssuedCard> IssuedCards { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Label> Labels { get; set; }
@@ -71,13 +73,11 @@ namespace Trinity.DAL.DBContext
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Membership_UserRoles> Membership_UserRoles { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Security_QA> Security_QA { get; set; }
-        public virtual User_Profiles User_Profiles { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Notification> Notifications { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Notification> Notifications1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Appointment> Appointments { get; set; }
+        public virtual ICollection<Security_QA> Security_QA { get; set; }
+        public virtual User_Profiles User_Profiles { get; set; }
     }
 }

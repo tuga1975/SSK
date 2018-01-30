@@ -68,8 +68,11 @@ namespace Trinity.Util
                 {
                     throw new Exception("cardInfo can not be null");
                 }
+                PrintAndWriteCardResult returnValue = new PrintAndWriteCardResult()
+                {
+                    Success = false
+                };
 
-                bool bRet = true;
                 if (IsPrinterConnected(EnumDeviceNames.SmartCardPrinterName))
                 {
                     #region use SmartCardPrinterName
@@ -174,7 +177,13 @@ namespace Trinity.Util
                             SuperviseeBiodata = cardInfo.SuperviseeBiodata,
                             DutyOfficerData = cardInfo.DutyOfficerData
                         };
+                        // write data
                         bool writeDataResult = SmartCardReaderUtil.Instance.WriteData(cardData, EnumDeviceNames.SmartCardPrinterContactlessReader);
+                        if (writeDataResult)
+                        {
+                            // get card UID
+                            returnValue.CardUID = SmartCardReaderUtil.Instance.GetCardUID(EnumDeviceNames.SmartCardPrinterContactlessReader);
+                        }
 
                         // At the completion of smart card process
                         //     if the smart card encoding was successful JobResume
@@ -187,11 +196,13 @@ namespace Trinity.Util
                             JobAbort(ref job, true);
 
                         JobWait(ref job, actionID, 180, out status);
+
+                        // need to verify printing status
                     }
                     catch (Exception e)
                     {
                         Debug.WriteLine("");
-                        bRet = false;
+                        returnValue.Success = false;
                     }
                     finally
                     {
@@ -214,16 +225,24 @@ namespace Trinity.Util
                         SuperviseeBiodata = cardInfo.SuperviseeBiodata,
                         DutyOfficerData = cardInfo.DutyOfficerData
                     };
+                    // write data
                     bool writeDataResult = SmartCardReaderUtil.Instance.WriteData(cardData);
+                    if (writeDataResult)
+                    {
+                        // get card UID
+                        returnValue.CardUID = SmartCardReaderUtil.Instance.GetCardUID(EnumDeviceNames.SmartCardContactlessReader);
+                    }
                     #endregion
                 }
-                else
+
+
+                if (string.IsNullOrEmpty(returnValue.CardUID))
                 {
-                    bRet = false;
+                    returnValue.Success = false;
                 }
 
-                OnCompleted(new PrintAndWriteCardResult() { Success = bRet });
-                return bRet;
+                OnCompleted(returnValue);
+                return returnValue.Success;
             }
             catch (Exception ex)
             {

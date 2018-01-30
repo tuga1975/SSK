@@ -52,13 +52,24 @@
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
-          <Property Name="Timeslot_ID" Type="int" />
+          <Property Name="Timeslot_ID" Type="nvarchar" MaxLength="128" />
           <Property Name="AbsenceReporting_ID" Type="uniqueidentifier" />
           <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
           <Property Name="Date" Type="date" Nullable="false" />
           <Property Name="ChangedCount" Type="smallint" Nullable="false" />
           <Property Name="Status" Type="int" Nullable="false" />
           <Property Name="ReportTime" Type="datetime" />
+        </EntityType>
+        <EntityType Name="APS_USER_ACT_LOG">
+          <Key>
+            <PropertyRef Name="USER_ACT_LOG_ID" />
+          </Key>
+          <Property Name="USER_ACT_LOG_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserId" Type="nvarchar" MaxLength="128" />
+          <Property Name="USER_ACT_LOG" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="USER_NAME" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="CREATED_BY" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="CREATED_TIME" Type="datetime" Nullable="false" />
         </EntityType>
         <EntityType Name="Devices">
           <Key>
@@ -91,6 +102,19 @@
           <Property Name="CAT" Type="bit" />
           <Property Name="PPZ" Type="bit" />
           <Property Name="NPS" Type="bit" />
+        </EntityType>
+        <EntityType Name="EMAIL_LOG">
+          <Key>
+            <PropertyRef Name="EMAIL_LOG_ID" />
+          </Key>
+          <Property Name="EMAIL_LOG_ID" Type="bigint" Nullable="false" />
+          <Property Name="EMAIL_MSG" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="EMAIL_FROM_ADDR" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="EMAIL_TO_ADDR" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="CREATED_BY" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="CREATED_TIME" Type="datetime" Nullable="false" />
+          <Property Name="LAST_UPDATED_BY" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="LAST_UPDATED_ON" Type="datetime" Nullable="false" />
         </EntityType>
         <EntityType Name="Holidays">
           <Key>
@@ -219,11 +243,22 @@
           <Property Name="IsFirstAttempt" Type="bit" />
           <Property Name="Note" Type="nvarchar" MaxLength="100" />
         </EntityType>
+        <EntityType Name="MsgRecipients">
+          <Key>
+            <PropertyRef Name="RecID" />
+          </Key>
+          <Property Name="RecID" Type="int" Nullable="false" />
+          <Property Name="MsgID" Type="int" />
+          <Property Name="UserId" Type="nvarchar" MaxLength="128" />
+          <Property Name="Email" Type="bit" />
+          <Property Name="SMS" Type="bit" />
+          <Property Name="DeliveryStatus" Type="int" />
+        </EntityType>
         <EntityType Name="Notifications">
           <Key>
             <PropertyRef Name="NotificationID" />
           </Key>
-          <Property Name="NotificationID" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="NotificationID" Type="nvarchar" MaxLength="128" Nullable="false" />
           <Property Name="Datetime" Type="datetime" Nullable="false" />
           <Property Name="FromUserId" Type="nvarchar" MaxLength="128" />
           <Property Name="ToUserId" Type="nvarchar" MaxLength="128" />
@@ -262,6 +297,16 @@
           <Property Name="Last_Updated_Date" Type="datetime" Nullable="false" />
           <Property Name="Description" Type="nvarchar" MaxLength="255" />
         </EntityType>
+        <EntityType Name="OperationSettings_ChangeHist">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="DayOfWeek" Type="int" Nullable="false" />
+          <Property Name="LastUpdatedDate" Type="datetime" Nullable="false" />
+          <Property Name="LastUpdatedBy" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="ChangeDetails" Type="nvarchar" MaxLength="255" Nullable="false" />
+        </EntityType>
         <EntityType Name="QueueDetails">
           <Key>
             <PropertyRef Name="Queue_ID" />
@@ -296,11 +341,37 @@
           <Property Name="LastUpdatedBy" Type="nvarchar" MaxLength="128" Nullable="false" />
           <Property Name="LastUpdatedDate" Type="datetime" Nullable="false" />
         </EntityType>
+        <EntityType Name="SentMessages">
+          <Key>
+            <PropertyRef Name="MsgID" />
+          </Key>
+          <Property Name="MsgID" Type="int" Nullable="false" />
+          <Property Name="Subject" Type="nvarchar" MaxLength="50" />
+          <Property Name="MsgContent" Type="text" />
+          <Property Name="DelileryStatus" Type="int" />
+          <Property Name="DeliveryDateTime" Type="datetime" />
+          <Property Name="SMS" Type="bit" />
+          <Property Name="Email" Type="bit" />
+          <Property Name="UserId" Type="nvarchar" MaxLength="128" />
+        </EntityType>
+        <EntityType Name="SMS_LOG">
+          <Key>
+            <PropertyRef Name="SMS_LOG_ID" />
+          </Key>
+          <Property Name="SMS_LOG_ID" Type="bigint" Nullable="false" />
+          <Property Name="SMS_MSG" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="SMS_FROM_ADDR" Type="nchar" MaxLength="10" Nullable="false" />
+          <Property Name="SMS_TO_ADDR" Type="nchar" MaxLength="10" Nullable="false" />
+          <Property Name="CREATED_BY" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="CREATED_TIME" Type="datetime" Nullable="false" />
+          <Property Name="LAST_UPDATED_BY" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="LAST_UPDATED_TIME" Type="datetime" Nullable="false" />
+        </EntityType>
         <EntityType Name="Timeslots">
           <Key>
             <PropertyRef Name="Timeslot_ID" />
           </Key>
-          <Property Name="Timeslot_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Timeslot_ID" Type="nvarchar" MaxLength="128" Nullable="false" />
           <Property Name="Category" Type="varchar" MaxLength="10" Nullable="false" />
           <Property Name="Date" Type="date" />
           <Property Name="StartTime" Type="time" Precision="4" />
@@ -435,6 +506,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_APS_USER_ACT_LOG_User_Profiles">
+          <End Role="User_Profiles" Type="Self.User_Profiles" Multiplicity="0..1" />
+          <End Role="APS_USER_ACT_LOG" Type="Self.APS_USER_ACT_LOG" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User_Profiles">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="APS_USER_ACT_LOG">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
           <End Role="Membership_Users" Type="Self.Membership_Users" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -527,27 +610,39 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Notifications_Membership_Users">
-          <End Role="Membership_Users" Type="Self.Membership_Users" Multiplicity="0..1" />
-          <End Role="Notifications" Type="Self.Notifications" Multiplicity="*" />
+        <Association Name="FK_MsgRecipients_SentMessages">
+          <End Role="SentMessages" Type="Self.SentMessages" Multiplicity="0..1" />
+          <End Role="MsgRecipients" Type="Self.MsgRecipients" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Membership_Users">
-              <PropertyRef Name="UserId" />
+            <Principal Role="SentMessages">
+              <PropertyRef Name="MsgID" />
             </Principal>
-            <Dependent Role="Notifications">
-              <PropertyRef Name="ToUserId" />
+            <Dependent Role="MsgRecipients">
+              <PropertyRef Name="MsgID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Notifications_Membership_Users1">
-          <End Role="Membership_Users" Type="Self.Membership_Users" Multiplicity="0..1" />
-          <End Role="Notifications" Type="Self.Notifications" Multiplicity="*" />
+        <Association Name="FK_MsgRecipients_User_Profiles">
+          <End Role="User_Profiles" Type="Self.User_Profiles" Multiplicity="0..1" />
+          <End Role="MsgRecipients" Type="Self.MsgRecipients" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Membership_Users">
+            <Principal Role="User_Profiles">
               <PropertyRef Name="UserId" />
             </Principal>
-            <Dependent Role="Notifications">
-              <PropertyRef Name="FromUserId" />
+            <Dependent Role="MsgRecipients">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OperationSettings_ChangeHist_OperationSettings">
+          <End Role="OperationSettings" Type="Self.OperationSettings" Multiplicity="1" />
+          <End Role="OperationSettings_ChangeHist" Type="Self.OperationSettings_ChangeHist" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OperationSettings">
+              <PropertyRef Name="DayOfWeek" />
+            </Principal>
+            <Dependent Role="OperationSettings_ChangeHist">
+              <PropertyRef Name="DayOfWeek" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -584,6 +679,18 @@
             </Principal>
             <Dependent Role="Queues">
               <PropertyRef Name="Appointment_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SentMessages_User_Profiles">
+          <End Role="User_Profiles" Type="Self.User_Profiles" Multiplicity="0..1" />
+          <End Role="SentMessages" Type="Self.SentMessages" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User_Profiles">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="SentMessages">
+              <PropertyRef Name="UserId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -629,8 +736,10 @@
           <EntitySet Name="Addresses" EntityType="Self.Addresses" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ApplicationDevice_Status" EntityType="Self.ApplicationDevice_Status" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Appointments" EntityType="Self.Appointments" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="APS_USER_ACT_LOG" EntityType="Self.APS_USER_ACT_LOG" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Devices" EntityType="Self.Devices" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DrugResults" EntityType="Self.DrugResults" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EMAIL_LOG" EntityType="Self.EMAIL_LOG" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Holidays" EntityType="Self.Holidays" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="IssuedCards" EntityType="Self.IssuedCards" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Labels" EntityType="Self.Labels" Schema="dbo" store:Type="Tables" />
@@ -641,11 +750,15 @@
           <EntitySet Name="Membership_UserLogins" EntityType="Self.Membership_UserLogins" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Membership_UserRoles" EntityType="Self.Membership_UserRoles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Membership_Users" EntityType="Self.Membership_Users" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MsgRecipients" EntityType="Self.MsgRecipients" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Notifications" EntityType="Self.Notifications" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OperationSettings" EntityType="Self.OperationSettings" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="OperationSettings_ChangeHist" EntityType="Self.OperationSettings_ChangeHist" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="QueueDetails" EntityType="Self.QueueDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Queues" EntityType="Self.Queues" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Security_QA" EntityType="Self.Security_QA" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SentMessages" EntityType="Self.SentMessages" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SMS_LOG" EntityType="Self.SMS_LOG" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Timeslots" EntityType="Self.Timeslots" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User_Profiles" EntityType="Self.User_Profiles" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK__Restauran__UserI__1CFC3D38" Association="Self.FK__Restauran__UserI__1CFC3D38">
@@ -676,6 +789,10 @@
             <End Role="Timeslots" EntitySet="Timeslots" />
             <End Role="Appointments" EntitySet="Appointments" />
           </AssociationSet>
+          <AssociationSet Name="FK_APS_USER_ACT_LOG_User_Profiles" Association="Self.FK_APS_USER_ACT_LOG_User_Profiles">
+            <End Role="User_Profiles" EntitySet="User_Profiles" />
+            <End Role="APS_USER_ACT_LOG" EntitySet="APS_USER_ACT_LOG" />
+          </AssociationSet>
           <AssociationSet Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
             <End Role="Membership_Users" EntitySet="Membership_Users" />
             <End Role="Membership_UserClaims" EntitySet="Membership_UserClaims" />
@@ -704,13 +821,17 @@
             <End Role="Membership_Roles" EntitySet="Membership_Roles" />
             <End Role="Membership_RoleClaims" EntitySet="Membership_RoleClaims" />
           </AssociationSet>
-          <AssociationSet Name="FK_Notifications_Membership_Users" Association="Self.FK_Notifications_Membership_Users">
-            <End Role="Membership_Users" EntitySet="Membership_Users" />
-            <End Role="Notifications" EntitySet="Notifications" />
+          <AssociationSet Name="FK_MsgRecipients_SentMessages" Association="Self.FK_MsgRecipients_SentMessages">
+            <End Role="SentMessages" EntitySet="SentMessages" />
+            <End Role="MsgRecipients" EntitySet="MsgRecipients" />
           </AssociationSet>
-          <AssociationSet Name="FK_Notifications_Membership_Users1" Association="Self.FK_Notifications_Membership_Users1">
-            <End Role="Membership_Users" EntitySet="Membership_Users" />
-            <End Role="Notifications" EntitySet="Notifications" />
+          <AssociationSet Name="FK_MsgRecipients_User_Profiles" Association="Self.FK_MsgRecipients_User_Profiles">
+            <End Role="User_Profiles" EntitySet="User_Profiles" />
+            <End Role="MsgRecipients" EntitySet="MsgRecipients" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OperationSettings_ChangeHist_OperationSettings" Association="Self.FK_OperationSettings_ChangeHist_OperationSettings">
+            <End Role="OperationSettings" EntitySet="OperationSettings" />
+            <End Role="OperationSettings_ChangeHist" EntitySet="OperationSettings_ChangeHist" />
           </AssociationSet>
           <AssociationSet Name="FK_PWD_QA_Membership_Users" Association="Self.FK_PWD_QA_Membership_Users">
             <End Role="Membership_Users" EntitySet="Membership_Users" />
@@ -723,6 +844,10 @@
           <AssociationSet Name="FK_Queues_Appointments" Association="Self.FK_Queues_Appointments">
             <End Role="Appointments" EntitySet="Appointments" />
             <End Role="Queues" EntitySet="Queues" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SentMessages_User_Profiles" Association="Self.FK_SentMessages_User_Profiles">
+            <End Role="User_Profiles" EntitySet="User_Profiles" />
+            <End Role="SentMessages" EntitySet="SentMessages" />
           </AssociationSet>
           <AssociationSet Name="FK_User_Profiles_Addresses2" Association="Self.FK_User_Profiles_Addresses2">
             <End Role="Addresses" EntitySet="Addresses" />
@@ -747,7 +872,10 @@
           <EntitySet Name="Addresses" EntityType="TrinityCentralizedDBModel.Address" />
           <EntitySet Name="ApplicationDevice_Status" EntityType="TrinityCentralizedDBModel.ApplicationDevice_Status" />
           <EntitySet Name="Appointments" EntityType="TrinityCentralizedDBModel.Appointment" />
+          <EntitySet Name="APS_USER_ACT_LOG" EntityType="TrinityCentralizedDBModel.APS_USER_ACT_LOG" />
           <EntitySet Name="Devices" EntityType="TrinityCentralizedDBModel.Device" />
+          <EntitySet Name="DrugResults" EntityType="TrinityCentralizedDBModel.DrugResult" />
+          <EntitySet Name="EMAIL_LOG" EntityType="TrinityCentralizedDBModel.EMAIL_LOG" />
           <EntitySet Name="Holidays" EntityType="TrinityCentralizedDBModel.Holiday" />
           <EntitySet Name="IssuedCards" EntityType="TrinityCentralizedDBModel.IssuedCard" />
           <EntitySet Name="Labels" EntityType="TrinityCentralizedDBModel.Label" />
@@ -758,9 +886,15 @@
           <EntitySet Name="Membership_UserLogins" EntityType="TrinityCentralizedDBModel.Membership_UserLogins" />
           <EntitySet Name="Membership_UserRoles" EntityType="TrinityCentralizedDBModel.Membership_UserRoles" />
           <EntitySet Name="Membership_Users" EntityType="TrinityCentralizedDBModel.Membership_Users" />
+          <EntitySet Name="MsgRecipients" EntityType="TrinityCentralizedDBModel.MsgRecipient" />
+          <EntitySet Name="Notifications" EntityType="TrinityCentralizedDBModel.Notification" />
+          <EntitySet Name="OperationSettings" EntityType="TrinityCentralizedDBModel.OperationSetting" />
+          <EntitySet Name="OperationSettings_ChangeHist" EntityType="TrinityCentralizedDBModel.OperationSettings_ChangeHist" />
           <EntitySet Name="QueueDetails" EntityType="TrinityCentralizedDBModel.QueueDetail" />
           <EntitySet Name="Queues" EntityType="TrinityCentralizedDBModel.Queue" />
           <EntitySet Name="Security_QA" EntityType="TrinityCentralizedDBModel.Security_QA" />
+          <EntitySet Name="SentMessages" EntityType="TrinityCentralizedDBModel.SentMessage" />
+          <EntitySet Name="SMS_LOG" EntityType="TrinityCentralizedDBModel.SMS_LOG" />
           <EntitySet Name="Timeslots" EntityType="TrinityCentralizedDBModel.Timeslot" />
           <EntitySet Name="User_Profiles" EntityType="TrinityCentralizedDBModel.User_Profiles" />
           <AssociationSet Name="FK_Appointments_AbsenceReporting" Association="TrinityCentralizedDBModel.FK_Appointments_AbsenceReporting">
@@ -798,6 +932,10 @@
           <AssociationSet Name="FK_Queues_Appointments" Association="TrinityCentralizedDBModel.FK_Queues_Appointments">
             <End Role="Appointment" EntitySet="Appointments" />
             <End Role="Queue" EntitySet="Queues" />
+          </AssociationSet>
+          <AssociationSet Name="FK_APS_USER_ACT_LOG_User_Profiles" Association="TrinityCentralizedDBModel.FK_APS_USER_ACT_LOG_User_Profiles">
+            <End Role="User_Profiles" EntitySet="User_Profiles" />
+            <End Role="APS_USER_ACT_LOG" EntitySet="APS_USER_ACT_LOG" />
           </AssociationSet>
           <AssociationSet Name="FK_IssuedCards_Membership_Users" Association="TrinityCentralizedDBModel.FK_IssuedCards_Membership_Users">
             <End Role="Membership_Users" EntitySet="Membership_Users" />
@@ -839,21 +977,26 @@
             <End Role="Membership_Users" EntitySet="Membership_Users" />
             <End Role="User_Profiles" EntitySet="User_Profiles" />
           </AssociationSet>
+          <AssociationSet Name="FK_MsgRecipients_SentMessages" Association="TrinityCentralizedDBModel.FK_MsgRecipients_SentMessages">
+            <End Role="SentMessage" EntitySet="SentMessages" />
+            <End Role="MsgRecipient" EntitySet="MsgRecipients" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MsgRecipients_User_Profiles" Association="TrinityCentralizedDBModel.FK_MsgRecipients_User_Profiles">
+            <End Role="User_Profiles" EntitySet="User_Profiles" />
+            <End Role="MsgRecipient" EntitySet="MsgRecipients" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OperationSettings_ChangeHist_OperationSettings" Association="TrinityCentralizedDBModel.FK_OperationSettings_ChangeHist_OperationSettings">
+            <End Role="OperationSetting" EntitySet="OperationSettings" />
+            <End Role="OperationSettings_ChangeHist" EntitySet="OperationSettings_ChangeHist" />
+          </AssociationSet>
           <AssociationSet Name="FK_QueueDetails_Queues" Association="TrinityCentralizedDBModel.FK_QueueDetails_Queues">
             <End Role="Queue" EntitySet="Queues" />
             <End Role="QueueDetail" EntitySet="QueueDetails" />
           </AssociationSet>
-          <EntitySet Name="DrugResults" EntityType="TrinityCentralizedDBModel.DrugResult" />
-          <EntitySet Name="Notifications" EntityType="TrinityCentralizedDBModel.Notification" />
-          <AssociationSet Name="FK_Notifications_Membership_Users" Association="TrinityCentralizedDBModel.FK_Notifications_Membership_Users">
-            <End Role="Membership_Users" EntitySet="Membership_Users" />
-            <End Role="Notification" EntitySet="Notifications" />
+          <AssociationSet Name="FK_SentMessages_User_Profiles" Association="TrinityCentralizedDBModel.FK_SentMessages_User_Profiles">
+            <End Role="User_Profiles" EntitySet="User_Profiles" />
+            <End Role="SentMessage" EntitySet="SentMessages" />
           </AssociationSet>
-          <AssociationSet Name="FK_Notifications_Membership_Users1" Association="TrinityCentralizedDBModel.FK_Notifications_Membership_Users1">
-            <End Role="Membership_Users" EntitySet="Membership_Users" />
-            <End Role="Notification" EntitySet="Notifications" />
-          </AssociationSet>
-          <EntitySet Name="OperationSettings" EntityType="TrinityCentralizedDBModel.OperationSetting" />
         </EntityContainer>
         <EntityType Name="AbsenceReporting">
           <Key>
@@ -908,7 +1051,7 @@
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Guid" Nullable="false" />
-          <Property Name="Timeslot_ID" Type="Int32" />
+          <Property Name="Timeslot_ID" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="AbsenceReporting_ID" Type="Guid" />
           <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="Date" Type="DateTime" Nullable="false" Precision="0" />
@@ -920,6 +1063,18 @@
           <NavigationProperty Name="Timeslot" Relationship="TrinityCentralizedDBModel.FK_Appointments_Timeslots" FromRole="Appointment" ToRole="Timeslot" />
           <NavigationProperty Name="Queues" Relationship="TrinityCentralizedDBModel.FK_Queues_Appointments" FromRole="Appointment" ToRole="Queue" />
         </EntityType>
+        <EntityType Name="APS_USER_ACT_LOG">
+          <Key>
+            <PropertyRef Name="USER_ACT_LOG_ID" />
+          </Key>
+          <Property Name="USER_ACT_LOG_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="USER_ACT_LOG" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="USER_NAME" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CREATED_TIME" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="User_Profiles" Relationship="TrinityCentralizedDBModel.FK_APS_USER_ACT_LOG_User_Profiles" FromRole="APS_USER_ACT_LOG" ToRole="User_Profiles" />
+        </EntityType>
         <EntityType Name="Device">
           <Key>
             <PropertyRef Name="DeviceID" />
@@ -928,6 +1083,43 @@
           <Property Name="DeviceName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Details" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="ApplicationDevice_Status" Relationship="TrinityCentralizedDBModel.FK_ApplicationDevice_Status_Devices" FromRole="Device" ToRole="ApplicationDevice_Status" />
+        </EntityType>
+        <EntityType Name="DrugResult">
+          <Key>
+            <PropertyRef Name="DrugResultsID" />
+          </Key>
+          <Property Name="DrugResultsID" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="NRIC" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="timestamp" Type="DateTime" Precision="3" />
+          <Property Name="markingnumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="AMPH" Type="Boolean" />
+          <Property Name="BENZ" Type="Boolean" />
+          <Property Name="OPI" Type="Boolean" />
+          <Property Name="THC" Type="Boolean" />
+          <Property Name="COCA" Type="Boolean" />
+          <Property Name="BARB" Type="Boolean" />
+          <Property Name="LSD" Type="Boolean" />
+          <Property Name="METH" Type="Boolean" />
+          <Property Name="MTQL" Type="Boolean" />
+          <Property Name="PCP" Type="Boolean" />
+          <Property Name="KET" Type="Boolean" />
+          <Property Name="BUPRE" Type="Boolean" />
+          <Property Name="CAT" Type="Boolean" />
+          <Property Name="PPZ" Type="Boolean" />
+          <Property Name="NPS" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="EMAIL_LOG">
+          <Key>
+            <PropertyRef Name="EMAIL_LOG_ID" />
+          </Key>
+          <Property Name="EMAIL_LOG_ID" Type="Int64" Nullable="false" />
+          <Property Name="EMAIL_MSG" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="EMAIL_FROM_ADDR" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="EMAIL_TO_ADDR" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CREATED_TIME" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="LAST_UPDATED_BY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="LAST_UPDATED_ON" Type="DateTime" Nullable="false" Precision="3" />
         </EntityType>
         <EntityType Name="Holiday">
           <Key>
@@ -1076,8 +1268,74 @@
           <NavigationProperty Name="Membership_UserRoles" Relationship="TrinityCentralizedDBModel.FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId" FromRole="Membership_Users" ToRole="Membership_UserRoles" />
           <NavigationProperty Name="Security_QA" Relationship="TrinityCentralizedDBModel.FK_PWD_QA_Membership_Users" FromRole="Membership_Users" ToRole="Security_QA" />
           <NavigationProperty Name="User_Profiles" Relationship="TrinityCentralizedDBModel.FK_User_Profiles_Membership_Users" FromRole="Membership_Users" ToRole="User_Profiles" />
-          <NavigationProperty Name="Notifications" Relationship="TrinityCentralizedDBModel.FK_Notifications_Membership_Users" FromRole="Membership_Users" ToRole="Notification" />
-          <NavigationProperty Name="Notifications1" Relationship="TrinityCentralizedDBModel.FK_Notifications_Membership_Users1" FromRole="Membership_Users" ToRole="Notification" />
+        </EntityType>
+        <EntityType Name="MsgRecipient">
+          <Key>
+            <PropertyRef Name="RecID" />
+          </Key>
+          <Property Name="RecID" Type="Int32" Nullable="false" />
+          <Property Name="MsgID" Type="Int32" />
+          <Property Name="UserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="Boolean" />
+          <Property Name="SMS" Type="Boolean" />
+          <Property Name="DeliveryStatus" Type="Int32" />
+          <NavigationProperty Name="SentMessage" Relationship="TrinityCentralizedDBModel.FK_MsgRecipients_SentMessages" FromRole="MsgRecipient" ToRole="SentMessage" />
+          <NavigationProperty Name="User_Profiles" Relationship="TrinityCentralizedDBModel.FK_MsgRecipients_User_Profiles" FromRole="MsgRecipient" ToRole="User_Profiles" />
+        </EntityType>
+        <EntityType Name="Notification">
+          <Key>
+            <PropertyRef Name="NotificationID" />
+          </Key>
+          <Property Name="NotificationID" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Datetime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="FromUserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="ToUserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Subject" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Content" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="IsRead" Type="Boolean" />
+          <Property Name="IsFromSupervisee" Type="Boolean" />
+          <Property Name="Source" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="notification_code" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="OperationSetting">
+          <Key>
+            <PropertyRef Name="DayOfWeek" />
+          </Key>
+          <Property Name="DayOfWeek" Type="Int32" Nullable="false" />
+          <Property Name="Morning_Open_Time" Type="Time" Precision="7" />
+          <Property Name="Morning_Close_Time" Type="Time" Precision="7" />
+          <Property Name="Morning_Spare_Slots" Type="Int32" />
+          <Property Name="Morning_Interval" Type="Int32" />
+          <Property Name="Morning_MaximumSupervisee" Type="Int32" />
+          <Property Name="Morning_Is_Closed" Type="Boolean" Nullable="false" />
+          <Property Name="Afternoon_Open_Time" Type="Time" Precision="7" />
+          <Property Name="Afternoon_Close_Time" Type="Time" Precision="7" />
+          <Property Name="Afternoon_Spare_Slots" Type="Int32" />
+          <Property Name="Afternoon_Interval" Type="Int32" />
+          <Property Name="Afternoon_MaximumSupervisee" Type="Int32" />
+          <Property Name="Afternoon_Is_Closed" Type="Boolean" Nullable="false" />
+          <Property Name="Evening_Open_Time" Type="Time" Precision="7" />
+          <Property Name="Evening_Close_Time" Type="Time" Precision="7" />
+          <Property Name="Evening_Spare_Slots" Type="Int32" />
+          <Property Name="Evening_Interval" Type="Int32" />
+          <Property Name="Evening_MaximumSupervisee" Type="Int32" />
+          <Property Name="Evening_Is_Closed" Type="Boolean" Nullable="false" />
+          <Property Name="Last_Updated_By" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Last_Updated_Date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="OperationSettings_ChangeHist" Relationship="TrinityCentralizedDBModel.FK_OperationSettings_ChangeHist_OperationSettings" FromRole="OperationSetting" ToRole="OperationSettings_ChangeHist" />
+        </EntityType>
+        <EntityType Name="OperationSettings_ChangeHist">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="DayOfWeek" Type="Int32" Nullable="false" />
+          <Property Name="LastUpdatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="LastUpdatedBy" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="ChangeDetails" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="OperationSetting" Relationship="TrinityCentralizedDBModel.FK_OperationSettings_ChangeHist_OperationSettings" FromRole="OperationSettings_ChangeHist" ToRole="OperationSetting" />
         </EntityType>
         <EntityType Name="QueueDetail">
           <Key>
@@ -1117,11 +1375,39 @@
           <Property Name="LastUpdatedDate" Type="DateTime" Nullable="false" Precision="3" />
           <NavigationProperty Name="Membership_Users" Relationship="TrinityCentralizedDBModel.FK_PWD_QA_Membership_Users" FromRole="Security_QA" ToRole="Membership_Users" />
         </EntityType>
+        <EntityType Name="SentMessage">
+          <Key>
+            <PropertyRef Name="MsgID" />
+          </Key>
+          <Property Name="MsgID" Type="Int32" Nullable="false" />
+          <Property Name="Subject" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MsgContent" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="DelileryStatus" Type="Int32" />
+          <Property Name="DeliveryDateTime" Type="DateTime" Precision="3" />
+          <Property Name="SMS" Type="Boolean" />
+          <Property Name="Email" Type="Boolean" />
+          <Property Name="UserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="MsgRecipients" Relationship="TrinityCentralizedDBModel.FK_MsgRecipients_SentMessages" FromRole="SentMessage" ToRole="MsgRecipient" />
+          <NavigationProperty Name="User_Profiles" Relationship="TrinityCentralizedDBModel.FK_SentMessages_User_Profiles" FromRole="SentMessage" ToRole="User_Profiles" />
+        </EntityType>
+        <EntityType Name="SMS_LOG">
+          <Key>
+            <PropertyRef Name="SMS_LOG_ID" />
+          </Key>
+          <Property Name="SMS_LOG_ID" Type="Int64" Nullable="false" />
+          <Property Name="SMS_MSG" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SMS_FROM_ADDR" Type="String" Nullable="false" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="SMS_TO_ADDR" Type="String" Nullable="false" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CREATED_TIME" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="LAST_UPDATED_BY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="LAST_UPDATED_TIME" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
         <EntityType Name="Timeslot">
           <Key>
             <PropertyRef Name="Timeslot_ID" />
           </Key>
-          <Property Name="Timeslot_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Timeslot_ID" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="Category" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="Date" Type="DateTime" Precision="0" />
           <Property Name="StartTime" Type="Time" Precision="4" />
@@ -1174,7 +1460,10 @@
           <Property Name="LeftThumb_Photo" Type="Binary" MaxLength="Max" FixedLength="false" />
           <NavigationProperty Name="Address" Relationship="TrinityCentralizedDBModel.FK_User_Profiles_Addresses2" FromRole="User_Profiles" ToRole="Address" />
           <NavigationProperty Name="Address1" Relationship="TrinityCentralizedDBModel.FK_User_Profiles_Addresses3" FromRole="User_Profiles" ToRole="Address" />
+          <NavigationProperty Name="APS_USER_ACT_LOG" Relationship="TrinityCentralizedDBModel.FK_APS_USER_ACT_LOG_User_Profiles" FromRole="User_Profiles" ToRole="APS_USER_ACT_LOG" />
           <NavigationProperty Name="Membership_Users" Relationship="TrinityCentralizedDBModel.FK_User_Profiles_Membership_Users" FromRole="User_Profiles" ToRole="Membership_Users" />
+          <NavigationProperty Name="MsgRecipients" Relationship="TrinityCentralizedDBModel.FK_MsgRecipients_User_Profiles" FromRole="User_Profiles" ToRole="MsgRecipient" />
+          <NavigationProperty Name="SentMessages" Relationship="TrinityCentralizedDBModel.FK_SentMessages_User_Profiles" FromRole="User_Profiles" ToRole="SentMessage" />
         </EntityType>
         <Association Name="FK_Appointments_AbsenceReporting">
           <End Type="TrinityCentralizedDBModel.AbsenceReporting" Role="AbsenceReporting" Multiplicity="0..1" />
@@ -1281,6 +1570,18 @@
             </Principal>
             <Dependent Role="Queue">
               <PropertyRef Name="Appointment_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_APS_USER_ACT_LOG_User_Profiles">
+          <End Type="TrinityCentralizedDBModel.User_Profiles" Role="User_Profiles" Multiplicity="0..1" />
+          <End Type="TrinityCentralizedDBModel.APS_USER_ACT_LOG" Role="APS_USER_ACT_LOG" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User_Profiles">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="APS_USER_ACT_LOG">
+              <PropertyRef Name="UserId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1412,6 +1713,42 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_MsgRecipients_SentMessages">
+          <End Type="TrinityCentralizedDBModel.SentMessage" Role="SentMessage" Multiplicity="0..1" />
+          <End Type="TrinityCentralizedDBModel.MsgRecipient" Role="MsgRecipient" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SentMessage">
+              <PropertyRef Name="MsgID" />
+            </Principal>
+            <Dependent Role="MsgRecipient">
+              <PropertyRef Name="MsgID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MsgRecipients_User_Profiles">
+          <End Type="TrinityCentralizedDBModel.User_Profiles" Role="User_Profiles" Multiplicity="0..1" />
+          <End Type="TrinityCentralizedDBModel.MsgRecipient" Role="MsgRecipient" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User_Profiles">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="MsgRecipient">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OperationSettings_ChangeHist_OperationSettings">
+          <End Type="TrinityCentralizedDBModel.OperationSetting" Role="OperationSetting" Multiplicity="1" />
+          <End Type="TrinityCentralizedDBModel.OperationSettings_ChangeHist" Role="OperationSettings_ChangeHist" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OperationSetting">
+              <PropertyRef Name="DayOfWeek" />
+            </Principal>
+            <Dependent Role="OperationSettings_ChangeHist">
+              <PropertyRef Name="DayOfWeek" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_QueueDetails_Queues">
           <End Type="TrinityCentralizedDBModel.Queue" Role="Queue" Multiplicity="1" />
           <End Type="TrinityCentralizedDBModel.QueueDetail" Role="QueueDetail" Multiplicity="*" />
@@ -1424,100 +1761,19 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="DrugResult">
-          <Key>
-            <PropertyRef Name="DrugResultsID" />
-          </Key>
-          <Property Name="DrugResultsID" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="NRIC" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="timestamp" Type="DateTime" Precision="3" />
-          <Property Name="markingnumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="AMPH" Type="Boolean" />
-          <Property Name="BENZ" Type="Boolean" />
-          <Property Name="OPI" Type="Boolean" />
-          <Property Name="THC" Type="Boolean" />
-          <Property Name="COCA" Type="Boolean" />
-          <Property Name="BARB" Type="Boolean" />
-          <Property Name="LSD" Type="Boolean" />
-          <Property Name="METH" Type="Boolean" />
-          <Property Name="MTQL" Type="Boolean" />
-          <Property Name="PCP" Type="Boolean" />
-          <Property Name="KET" Type="Boolean" />
-          <Property Name="BUPRE" Type="Boolean" />
-          <Property Name="CAT" Type="Boolean" />
-          <Property Name="PPZ" Type="Boolean" />
-          <Property Name="NPS" Type="Boolean" />
-        </EntityType>
-        <EntityType Name="Notification">
-          <Key>
-            <PropertyRef Name="NotificationID" />
-          </Key>
-          <Property Name="NotificationID" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Datetime" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="FromUserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="ToUserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="Subject" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="Content" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="IsRead" Type="Boolean" />
-          <Property Name="IsFromSupervisee" Type="Boolean" />
-          <Property Name="Source" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="notification_code" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Membership_Users" Relationship="TrinityCentralizedDBModel.FK_Notifications_Membership_Users" FromRole="Notification" ToRole="Membership_Users" />
-          <NavigationProperty Name="Membership_Users1" Relationship="TrinityCentralizedDBModel.FK_Notifications_Membership_Users1" FromRole="Notification" ToRole="Membership_Users" />
-        </EntityType>
-        <Association Name="FK_Notifications_Membership_Users">
-          <End Type="TrinityCentralizedDBModel.Membership_Users" Role="Membership_Users" Multiplicity="0..1" />
-          <End Type="TrinityCentralizedDBModel.Notification" Role="Notification" Multiplicity="*" />
+        <Association Name="FK_SentMessages_User_Profiles">
+          <End Type="TrinityCentralizedDBModel.User_Profiles" Role="User_Profiles" Multiplicity="0..1" />
+          <End Type="TrinityCentralizedDBModel.SentMessage" Role="SentMessage" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Membership_Users">
+            <Principal Role="User_Profiles">
               <PropertyRef Name="UserId" />
             </Principal>
-            <Dependent Role="Notification">
-              <PropertyRef Name="ToUserId" />
+            <Dependent Role="SentMessage">
+              <PropertyRef Name="UserId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Notifications_Membership_Users1">
-          <End Type="TrinityCentralizedDBModel.Membership_Users" Role="Membership_Users" Multiplicity="0..1" />
-          <End Type="TrinityCentralizedDBModel.Notification" Role="Notification" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Membership_Users">
-              <PropertyRef Name="UserId" />
-            </Principal>
-            <Dependent Role="Notification">
-              <PropertyRef Name="FromUserId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <EntityType Name="OperationSetting">
-          <Key>
-            <PropertyRef Name="DayOfWeek" />
-          </Key>
-          <Property Name="DayOfWeek" Type="Int32" Nullable="false" />
-          <Property Name="Morning_Open_Time" Type="Time" Precision="7" />
-          <Property Name="Morning_Close_Time" Type="Time" Precision="7" />
-          <Property Name="Morning_Spare_Slots" Type="Int32" />
-          <Property Name="Morning_Interval" Type="Int32" />
-          <Property Name="Morning_MaximumSupervisee" Type="Int32" />
-          <Property Name="Morning_Is_Closed" Type="Boolean" Nullable="false" />
-          <Property Name="Afternoon_Open_Time" Type="Time" Precision="7" />
-          <Property Name="Afternoon_Close_Time" Type="Time" Precision="7" />
-          <Property Name="Afternoon_Spare_Slots" Type="Int32" />
-          <Property Name="Afternoon_Interval" Type="Int32" />
-          <Property Name="Afternoon_MaximumSupervisee" Type="Int32" />
-          <Property Name="Afternoon_Is_Closed" Type="Boolean" Nullable="false" />
-          <Property Name="Evening_Open_Time" Type="Time" Precision="7" />
-          <Property Name="Evening_Close_Time" Type="Time" Precision="7" />
-          <Property Name="Evening_Spare_Slots" Type="Int32" />
-          <Property Name="Evening_Interval" Type="Int32" />
-          <Property Name="Evening_MaximumSupervisee" Type="Int32" />
-          <Property Name="Evening_Is_Closed" Type="Boolean" Nullable="false" />
-          <Property Name="Last_Updated_By" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="Last_Updated_Date" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-        </EntityType>
-      </Schema>
+        </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
@@ -1583,12 +1839,63 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="APS_USER_ACT_LOG">
+            <EntityTypeMapping TypeName="TrinityCentralizedDBModel.APS_USER_ACT_LOG">
+              <MappingFragment StoreEntitySet="APS_USER_ACT_LOG">
+                <ScalarProperty Name="CREATED_TIME" ColumnName="CREATED_TIME" />
+                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+                <ScalarProperty Name="USER_NAME" ColumnName="USER_NAME" />
+                <ScalarProperty Name="USER_ACT_LOG" ColumnName="USER_ACT_LOG" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="USER_ACT_LOG_ID" ColumnName="USER_ACT_LOG_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Devices">
             <EntityTypeMapping TypeName="TrinityCentralizedDBModel.Device">
               <MappingFragment StoreEntitySet="Devices">
                 <ScalarProperty Name="Details" ColumnName="Details" />
                 <ScalarProperty Name="DeviceName" ColumnName="DeviceName" />
                 <ScalarProperty Name="DeviceID" ColumnName="DeviceID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DrugResults">
+            <EntityTypeMapping TypeName="TrinityCentralizedDBModel.DrugResult">
+              <MappingFragment StoreEntitySet="DrugResults">
+                <ScalarProperty Name="NPS" ColumnName="NPS" />
+                <ScalarProperty Name="PPZ" ColumnName="PPZ" />
+                <ScalarProperty Name="CAT" ColumnName="CAT" />
+                <ScalarProperty Name="BUPRE" ColumnName="BUPRE" />
+                <ScalarProperty Name="KET" ColumnName="KET" />
+                <ScalarProperty Name="PCP" ColumnName="PCP" />
+                <ScalarProperty Name="MTQL" ColumnName="MTQL" />
+                <ScalarProperty Name="METH" ColumnName="METH" />
+                <ScalarProperty Name="LSD" ColumnName="LSD" />
+                <ScalarProperty Name="BARB" ColumnName="BARB" />
+                <ScalarProperty Name="COCA" ColumnName="COCA" />
+                <ScalarProperty Name="THC" ColumnName="THC" />
+                <ScalarProperty Name="OPI" ColumnName="OPI" />
+                <ScalarProperty Name="BENZ" ColumnName="BENZ" />
+                <ScalarProperty Name="AMPH" ColumnName="AMPH" />
+                <ScalarProperty Name="markingnumber" ColumnName="markingnumber" />
+                <ScalarProperty Name="timestamp" ColumnName="timestamp" />
+                <ScalarProperty Name="NRIC" ColumnName="NRIC" />
+                <ScalarProperty Name="DrugResultsID" ColumnName="DrugResultsID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EMAIL_LOG">
+            <EntityTypeMapping TypeName="TrinityCentralizedDBModel.EMAIL_LOG">
+              <MappingFragment StoreEntitySet="EMAIL_LOG">
+                <ScalarProperty Name="LAST_UPDATED_ON" ColumnName="LAST_UPDATED_ON" />
+                <ScalarProperty Name="LAST_UPDATED_BY" ColumnName="LAST_UPDATED_BY" />
+                <ScalarProperty Name="CREATED_TIME" ColumnName="CREATED_TIME" />
+                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+                <ScalarProperty Name="EMAIL_TO_ADDR" ColumnName="EMAIL_TO_ADDR" />
+                <ScalarProperty Name="EMAIL_FROM_ADDR" ColumnName="EMAIL_FROM_ADDR" />
+                <ScalarProperty Name="EMAIL_MSG" ColumnName="EMAIL_MSG" />
+                <ScalarProperty Name="EMAIL_LOG_ID" ColumnName="EMAIL_LOG_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1725,6 +2032,74 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="MsgRecipients">
+            <EntityTypeMapping TypeName="TrinityCentralizedDBModel.MsgRecipient">
+              <MappingFragment StoreEntitySet="MsgRecipients">
+                <ScalarProperty Name="DeliveryStatus" ColumnName="DeliveryStatus" />
+                <ScalarProperty Name="SMS" ColumnName="SMS" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="MsgID" ColumnName="MsgID" />
+                <ScalarProperty Name="RecID" ColumnName="RecID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Notifications">
+            <EntityTypeMapping TypeName="TrinityCentralizedDBModel.Notification">
+              <MappingFragment StoreEntitySet="Notifications">
+                <ScalarProperty Name="notification_code" ColumnName="notification_code" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="Source" ColumnName="Source" />
+                <ScalarProperty Name="IsFromSupervisee" ColumnName="IsFromSupervisee" />
+                <ScalarProperty Name="IsRead" ColumnName="IsRead" />
+                <ScalarProperty Name="Content" ColumnName="Content" />
+                <ScalarProperty Name="Subject" ColumnName="Subject" />
+                <ScalarProperty Name="ToUserId" ColumnName="ToUserId" />
+                <ScalarProperty Name="FromUserId" ColumnName="FromUserId" />
+                <ScalarProperty Name="Datetime" ColumnName="Datetime" />
+                <ScalarProperty Name="NotificationID" ColumnName="NotificationID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="OperationSettings">
+            <EntityTypeMapping TypeName="TrinityCentralizedDBModel.OperationSetting">
+              <MappingFragment StoreEntitySet="OperationSettings">
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Last_Updated_Date" ColumnName="Last_Updated_Date" />
+                <ScalarProperty Name="Last_Updated_By" ColumnName="Last_Updated_By" />
+                <ScalarProperty Name="Evening_Is_Closed" ColumnName="Evening_Is_Closed" />
+                <ScalarProperty Name="Evening_MaximumSupervisee" ColumnName="Evening_MaximumSupervisee" />
+                <ScalarProperty Name="Evening_Interval" ColumnName="Evening_Interval" />
+                <ScalarProperty Name="Evening_Spare_Slots" ColumnName="Evening_Spare_Slots" />
+                <ScalarProperty Name="Evening_Close_Time" ColumnName="Evening_Close_Time" />
+                <ScalarProperty Name="Evening_Open_Time" ColumnName="Evening_Open_Time" />
+                <ScalarProperty Name="Afternoon_Is_Closed" ColumnName="Afternoon_Is_Closed" />
+                <ScalarProperty Name="Afternoon_MaximumSupervisee" ColumnName="Afternoon_MaximumSupervisee" />
+                <ScalarProperty Name="Afternoon_Interval" ColumnName="Afternoon_Interval" />
+                <ScalarProperty Name="Afternoon_Spare_Slots" ColumnName="Afternoon_Spare_Slots" />
+                <ScalarProperty Name="Afternoon_Close_Time" ColumnName="Afternoon_Close_Time" />
+                <ScalarProperty Name="Afternoon_Open_Time" ColumnName="Afternoon_Open_Time" />
+                <ScalarProperty Name="Morning_Is_Closed" ColumnName="Morning_Is_Closed" />
+                <ScalarProperty Name="Morning_MaximumSupervisee" ColumnName="Morning_MaximumSupervisee" />
+                <ScalarProperty Name="Morning_Interval" ColumnName="Morning_Interval" />
+                <ScalarProperty Name="Morning_Spare_Slots" ColumnName="Morning_Spare_Slots" />
+                <ScalarProperty Name="Morning_Close_Time" ColumnName="Morning_Close_Time" />
+                <ScalarProperty Name="Morning_Open_Time" ColumnName="Morning_Open_Time" />
+                <ScalarProperty Name="DayOfWeek" ColumnName="DayOfWeek" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="OperationSettings_ChangeHist">
+            <EntityTypeMapping TypeName="TrinityCentralizedDBModel.OperationSettings_ChangeHist">
+              <MappingFragment StoreEntitySet="OperationSettings_ChangeHist">
+                <ScalarProperty Name="ChangeDetails" ColumnName="ChangeDetails" />
+                <ScalarProperty Name="LastUpdatedBy" ColumnName="LastUpdatedBy" />
+                <ScalarProperty Name="LastUpdatedDate" ColumnName="LastUpdatedDate" />
+                <ScalarProperty Name="DayOfWeek" ColumnName="DayOfWeek" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="QueueDetails">
             <EntityTypeMapping TypeName="TrinityCentralizedDBModel.QueueDetail">
               <MappingFragment StoreEntitySet="QueueDetails">
@@ -1757,6 +2132,34 @@
                 <ScalarProperty Name="Answer" ColumnName="Answer" />
                 <ScalarProperty Name="Question" ColumnName="Question" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SentMessages">
+            <EntityTypeMapping TypeName="TrinityCentralizedDBModel.SentMessage">
+              <MappingFragment StoreEntitySet="SentMessages">
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="SMS" ColumnName="SMS" />
+                <ScalarProperty Name="DeliveryDateTime" ColumnName="DeliveryDateTime" />
+                <ScalarProperty Name="DelileryStatus" ColumnName="DelileryStatus" />
+                <ScalarProperty Name="MsgContent" ColumnName="MsgContent" />
+                <ScalarProperty Name="Subject" ColumnName="Subject" />
+                <ScalarProperty Name="MsgID" ColumnName="MsgID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SMS_LOG">
+            <EntityTypeMapping TypeName="TrinityCentralizedDBModel.SMS_LOG">
+              <MappingFragment StoreEntitySet="SMS_LOG">
+                <ScalarProperty Name="LAST_UPDATED_TIME" ColumnName="LAST_UPDATED_TIME" />
+                <ScalarProperty Name="LAST_UPDATED_BY" ColumnName="LAST_UPDATED_BY" />
+                <ScalarProperty Name="CREATED_TIME" ColumnName="CREATED_TIME" />
+                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+                <ScalarProperty Name="SMS_TO_ADDR" ColumnName="SMS_TO_ADDR" />
+                <ScalarProperty Name="SMS_FROM_ADDR" ColumnName="SMS_FROM_ADDR" />
+                <ScalarProperty Name="SMS_MSG" ColumnName="SMS_MSG" />
+                <ScalarProperty Name="SMS_LOG_ID" ColumnName="SMS_LOG_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1814,76 +2217,6 @@
                 <ScalarProperty Name="Secondary_Phone" ColumnName="Secondary_Phone" />
                 <ScalarProperty Name="Primary_Phone" ColumnName="Primary_Phone" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="DrugResults">
-            <EntityTypeMapping TypeName="TrinityCentralizedDBModel.DrugResult">
-              <MappingFragment StoreEntitySet="DrugResults">
-                <ScalarProperty Name="NPS" ColumnName="NPS" />
-                <ScalarProperty Name="PPZ" ColumnName="PPZ" />
-                <ScalarProperty Name="CAT" ColumnName="CAT" />
-                <ScalarProperty Name="BUPRE" ColumnName="BUPRE" />
-                <ScalarProperty Name="KET" ColumnName="KET" />
-                <ScalarProperty Name="PCP" ColumnName="PCP" />
-                <ScalarProperty Name="MTQL" ColumnName="MTQL" />
-                <ScalarProperty Name="METH" ColumnName="METH" />
-                <ScalarProperty Name="LSD" ColumnName="LSD" />
-                <ScalarProperty Name="BARB" ColumnName="BARB" />
-                <ScalarProperty Name="COCA" ColumnName="COCA" />
-                <ScalarProperty Name="THC" ColumnName="THC" />
-                <ScalarProperty Name="OPI" ColumnName="OPI" />
-                <ScalarProperty Name="BENZ" ColumnName="BENZ" />
-                <ScalarProperty Name="AMPH" ColumnName="AMPH" />
-                <ScalarProperty Name="markingnumber" ColumnName="markingnumber" />
-                <ScalarProperty Name="timestamp" ColumnName="timestamp" />
-                <ScalarProperty Name="NRIC" ColumnName="NRIC" />
-                <ScalarProperty Name="DrugResultsID" ColumnName="DrugResultsID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Notifications">
-            <EntityTypeMapping TypeName="TrinityCentralizedDBModel.Notification">
-              <MappingFragment StoreEntitySet="Notifications">
-                <ScalarProperty Name="notification_code" ColumnName="notification_code" />
-                <ScalarProperty Name="Type" ColumnName="Type" />
-                <ScalarProperty Name="Source" ColumnName="Source" />
-                <ScalarProperty Name="IsFromSupervisee" ColumnName="IsFromSupervisee" />
-                <ScalarProperty Name="IsRead" ColumnName="IsRead" />
-                <ScalarProperty Name="Content" ColumnName="Content" />
-                <ScalarProperty Name="Subject" ColumnName="Subject" />
-                <ScalarProperty Name="ToUserId" ColumnName="ToUserId" />
-                <ScalarProperty Name="FromUserId" ColumnName="FromUserId" />
-                <ScalarProperty Name="Datetime" ColumnName="Datetime" />
-                <ScalarProperty Name="NotificationID" ColumnName="NotificationID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="OperationSettings">
-            <EntityTypeMapping TypeName="TrinityCentralizedDBModel.OperationSetting">
-              <MappingFragment StoreEntitySet="OperationSettings">
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="Last_Updated_Date" ColumnName="Last_Updated_Date" />
-                <ScalarProperty Name="Last_Updated_By" ColumnName="Last_Updated_By" />
-                <ScalarProperty Name="Evening_Is_Closed" ColumnName="Evening_Is_Closed" />
-                <ScalarProperty Name="Evening_MaximumSupervisee" ColumnName="Evening_MaximumSupervisee" />
-                <ScalarProperty Name="Evening_Interval" ColumnName="Evening_Interval" />
-                <ScalarProperty Name="Evening_Spare_Slots" ColumnName="Evening_Spare_Slots" />
-                <ScalarProperty Name="Evening_Close_Time" ColumnName="Evening_Close_Time" />
-                <ScalarProperty Name="Evening_Open_Time" ColumnName="Evening_Open_Time" />
-                <ScalarProperty Name="Afternoon_Is_Closed" ColumnName="Afternoon_Is_Closed" />
-                <ScalarProperty Name="Afternoon_MaximumSupervisee" ColumnName="Afternoon_MaximumSupervisee" />
-                <ScalarProperty Name="Afternoon_Interval" ColumnName="Afternoon_Interval" />
-                <ScalarProperty Name="Afternoon_Spare_Slots" ColumnName="Afternoon_Spare_Slots" />
-                <ScalarProperty Name="Afternoon_Close_Time" ColumnName="Afternoon_Close_Time" />
-                <ScalarProperty Name="Afternoon_Open_Time" ColumnName="Afternoon_Open_Time" />
-                <ScalarProperty Name="Morning_Is_Closed" ColumnName="Morning_Is_Closed" />
-                <ScalarProperty Name="Morning_MaximumSupervisee" ColumnName="Morning_MaximumSupervisee" />
-                <ScalarProperty Name="Morning_Interval" ColumnName="Morning_Interval" />
-                <ScalarProperty Name="Morning_Spare_Slots" ColumnName="Morning_Spare_Slots" />
-                <ScalarProperty Name="Morning_Close_Time" ColumnName="Morning_Close_Time" />
-                <ScalarProperty Name="Morning_Open_Time" ColumnName="Morning_Open_Time" />
-                <ScalarProperty Name="DayOfWeek" ColumnName="DayOfWeek" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
