@@ -83,16 +83,7 @@
         <div style="clear:both"></div>
     </div>
 </div>
-<input type="button" onclick="TestIN()" />
-<img a src="" />
 <script>
-    function TestIN() {
-        html2canvas($('#frontCard'), {
-            onrendered: function (backcanvas) {
-                $('[a]').attr('src', backcanvas.toDataURL("image/png"));
-            }
-        });
-    }
     var UserID = null;
     api.server.GetIssuedCards(function (data) {
         UserID = data[1];
@@ -101,6 +92,10 @@
         });
 
         api.server.loadDataVerify(function (model) {
+
+            //User_Photo1_Base64
+            $('#verifyPhoto').attr('src', 'data:image/jpg;base64,' + model.UserProfile.User_Photo1);
+
             $('[name="verifyName"]').text(model.User.Name);
             if (model.UserProfile.DOB != null) {
                 $('[name="verifyDOB"]').text(model.UserProfile.DOBTxt);

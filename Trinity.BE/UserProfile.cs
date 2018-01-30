@@ -151,7 +151,29 @@ namespace Trinity.BE
         public byte[] User_Photo1 { get; set; }
 
         [DataMember]
+        public string User_Photo1_Base64
+        {
+            get
+            {
+                if (User_Photo1 == null)
+                    return "../images/usr-default.jpg";
+                return Convert.ToBase64String(User_Photo1);
+            }
+        }
+
+        [DataMember]
         public byte[] User_Photo2 { get; set; }
+
+        [DataMember]
+        public string User_Photo2_Base64
+        {
+            get
+            {
+                if (User_Photo2 == null)
+                    return "../images/usr-default.jpg";
+                return Convert.ToBase64String(User_Photo2);
+            }
+        }
 
         [DataMember]
         public byte[] RightThumbImage { get; set; }
