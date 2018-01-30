@@ -584,30 +584,6 @@ warning 6002: The table/view 'SSK.dbo.SMS_LOG' does not have a primary key defin
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Notifications_Membership_Users">
-          <End Role="Membership_Users" Type="Self.Membership_Users" Multiplicity="0..1" />
-          <End Role="Notifications" Type="Self.Notifications" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Membership_Users">
-              <PropertyRef Name="UserId" />
-            </Principal>
-            <Dependent Role="Notifications">
-              <PropertyRef Name="ToUserId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Notifications_Membership_Users1">
-          <End Role="Membership_Users" Type="Self.Membership_Users" Multiplicity="0..1" />
-          <End Role="Notifications" Type="Self.Notifications" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Membership_Users">
-              <PropertyRef Name="UserId" />
-            </Principal>
-            <Dependent Role="Notifications">
-              <PropertyRef Name="FromUserId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_OperationSettings_ChangeHist_OperationSettings">
           <End Role="OperationSettings" Type="Self.OperationSettings" Multiplicity="1" />
           <End Role="OperationSettings_ChangeHist" Type="Self.OperationSettings_ChangeHist" Multiplicity="*" />
@@ -808,14 +784,6 @@ warning 6002: The table/view 'SSK.dbo.SMS_LOG' does not have a primary key defin
             <End Role="Membership_Roles" EntitySet="Membership_Roles" />
             <End Role="Membership_RoleClaims" EntitySet="Membership_RoleClaims" />
           </AssociationSet>
-          <AssociationSet Name="FK_Notifications_Membership_Users" Association="Self.FK_Notifications_Membership_Users">
-            <End Role="Membership_Users" EntitySet="Membership_Users" />
-            <End Role="Notifications" EntitySet="Notifications" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Notifications_Membership_Users1" Association="Self.FK_Notifications_Membership_Users1">
-            <End Role="Membership_Users" EntitySet="Membership_Users" />
-            <End Role="Notifications" EntitySet="Notifications" />
-          </AssociationSet>
           <AssociationSet Name="FK_OperationSettings_ChangeHist_OperationSettings" Association="Self.FK_OperationSettings_ChangeHist_OperationSettings">
             <End Role="OperationSettings" EntitySet="OperationSettings" />
             <End Role="OperationSettings_ChangeHist" EntitySet="OperationSettings_ChangeHist" />
@@ -866,7 +834,6 @@ warning 6002: The table/view 'SSK.dbo.SMS_LOG' does not have a primary key defin
           <EntitySet Name="Membership_UserLogins" EntityType="SSKModel.Membership_UserLogins" />
           <EntitySet Name="Membership_UserRoles" EntityType="SSKModel.Membership_UserRoles" />
           <EntitySet Name="Membership_Users" EntityType="SSKModel.Membership_Users" />
-          <EntitySet Name="Notifications" EntityType="SSKModel.Notification" />
           <EntitySet Name="OperationSettings" EntityType="SSKModel.OperationSetting" />
           <EntitySet Name="OperationSettings_ChangeHist" EntityType="SSKModel.OperationSettings_ChangeHist" />
           <EntitySet Name="QueueDetails" EntityType="SSKModel.QueueDetail" />
@@ -946,14 +913,6 @@ warning 6002: The table/view 'SSK.dbo.SMS_LOG' does not have a primary key defin
             <End Role="Membership_Users" EntitySet="Membership_Users" />
             <End Role="Membership_UserRoles" EntitySet="Membership_UserRoles" />
           </AssociationSet>
-          <AssociationSet Name="FK_Notifications_Membership_Users" Association="SSKModel.FK_Notifications_Membership_Users">
-            <End Role="Membership_Users" EntitySet="Membership_Users" />
-            <End Role="Notification" EntitySet="Notifications" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Notifications_Membership_Users1" Association="SSKModel.FK_Notifications_Membership_Users1">
-            <End Role="Membership_Users" EntitySet="Membership_Users" />
-            <End Role="Notification" EntitySet="Notifications" />
-          </AssociationSet>
           <AssociationSet Name="FK_PWD_QA_Membership_Users" Association="SSKModel.FK_PWD_QA_Membership_Users">
             <End Role="Membership_Users" EntitySet="Membership_Users" />
             <End Role="Security_QA" EntitySet="Security_QA" />
@@ -970,6 +929,7 @@ warning 6002: The table/view 'SSK.dbo.SMS_LOG' does not have a primary key defin
             <End Role="Queue" EntitySet="Queues" />
             <End Role="QueueDetail" EntitySet="QueueDetails" />
           </AssociationSet>
+          <EntitySet Name="Notifications" EntityType="SSKModel.Notification" />
         </EntityContainer>
         <EntityType Name="AbsenceReporting">
           <Key>
@@ -1190,28 +1150,8 @@ warning 6002: The table/view 'SSK.dbo.SMS_LOG' does not have a primary key defin
           <NavigationProperty Name="Membership_UserDevices" Relationship="SSKModel.FK__Restauran__UserI__1CFC3D38" FromRole="Membership_Users" ToRole="Membership_UserDevices" />
           <NavigationProperty Name="Membership_UserLogins" Relationship="SSKModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" FromRole="Membership_Users" ToRole="Membership_UserLogins" />
           <NavigationProperty Name="Membership_UserRoles" Relationship="SSKModel.FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId" FromRole="Membership_Users" ToRole="Membership_UserRoles" />
-          <NavigationProperty Name="Notifications" Relationship="SSKModel.FK_Notifications_Membership_Users" FromRole="Membership_Users" ToRole="Notification" />
-          <NavigationProperty Name="Notifications1" Relationship="SSKModel.FK_Notifications_Membership_Users1" FromRole="Membership_Users" ToRole="Notification" />
           <NavigationProperty Name="Security_QA" Relationship="SSKModel.FK_PWD_QA_Membership_Users" FromRole="Membership_Users" ToRole="Security_QA" />
           <NavigationProperty Name="User_Profiles" Relationship="SSKModel.FK_User_Profiles_Membership_Users" FromRole="Membership_Users" ToRole="User_Profiles" />
-        </EntityType>
-        <EntityType Name="Notification">
-          <Key>
-            <PropertyRef Name="NotificationID" />
-          </Key>
-          <Property Name="NotificationID" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="Datetime" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="FromUserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="ToUserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="Subject" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="Content" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="IsRead" Type="Boolean" />
-          <Property Name="IsFromSupervisee" Type="Boolean" />
-          <Property Name="Source" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="notification_code" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Membership_Users" Relationship="SSKModel.FK_Notifications_Membership_Users" FromRole="Notification" ToRole="Membership_Users" />
-          <NavigationProperty Name="Membership_Users1" Relationship="SSKModel.FK_Notifications_Membership_Users1" FromRole="Notification" ToRole="Membership_Users" />
         </EntityType>
         <EntityType Name="OperationSetting">
           <Key>
@@ -1626,30 +1566,6 @@ warning 6002: The table/view 'SSK.dbo.SMS_LOG' does not have a primary key defin
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Notifications_Membership_Users">
-          <End Type="SSKModel.Membership_Users" Role="Membership_Users" Multiplicity="0..1" />
-          <End Type="SSKModel.Notification" Role="Notification" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Membership_Users">
-              <PropertyRef Name="UserId" />
-            </Principal>
-            <Dependent Role="Notification">
-              <PropertyRef Name="ToUserId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Notifications_Membership_Users1">
-          <End Type="SSKModel.Membership_Users" Role="Membership_Users" Multiplicity="0..1" />
-          <End Type="SSKModel.Notification" Role="Notification" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Membership_Users">
-              <PropertyRef Name="UserId" />
-            </Principal>
-            <Dependent Role="Notification">
-              <PropertyRef Name="FromUserId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_PWD_QA_Membership_Users">
           <End Type="SSKModel.Membership_Users" Role="Membership_Users" Multiplicity="1" />
           <End Type="SSKModel.Security_QA" Role="Security_QA" Multiplicity="*" />
@@ -1698,6 +1614,22 @@ warning 6002: The table/view 'SSK.dbo.SMS_LOG' does not have a primary key defin
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="Notification">
+          <Key>
+            <PropertyRef Name="NotificationID" />
+          </Key>
+          <Property Name="NotificationID" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Datetime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="FromUserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="ToUserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Subject" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Content" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="IsRead" Type="Boolean" />
+          <Property Name="IsFromSupervisee" Type="Boolean" />
+          <Property Name="Source" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="notification_code" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1906,23 +1838,6 @@ warning 6002: The table/view 'SSK.dbo.SMS_LOG' does not have a primary key defin
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Notifications">
-            <EntityTypeMapping TypeName="SSKModel.Notification">
-              <MappingFragment StoreEntitySet="Notifications">
-                <ScalarProperty Name="notification_code" ColumnName="notification_code" />
-                <ScalarProperty Name="Type" ColumnName="Type" />
-                <ScalarProperty Name="Source" ColumnName="Source" />
-                <ScalarProperty Name="IsFromSupervisee" ColumnName="IsFromSupervisee" />
-                <ScalarProperty Name="IsRead" ColumnName="IsRead" />
-                <ScalarProperty Name="Content" ColumnName="Content" />
-                <ScalarProperty Name="Subject" ColumnName="Subject" />
-                <ScalarProperty Name="ToUserId" ColumnName="ToUserId" />
-                <ScalarProperty Name="FromUserId" ColumnName="FromUserId" />
-                <ScalarProperty Name="Datetime" ColumnName="Datetime" />
-                <ScalarProperty Name="NotificationID" ColumnName="NotificationID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="OperationSettings">
             <EntityTypeMapping TypeName="SSKModel.OperationSetting">
               <MappingFragment StoreEntitySet="OperationSettings">
@@ -2102,6 +2017,23 @@ warning 6002: The table/view 'SSK.dbo.SMS_LOG' does not have a primary key defin
                 <ScalarProperty Name="SMS_FROM_ADDR" ColumnName="SMS_FROM_ADDR" />
                 <ScalarProperty Name="SMS_MSG" ColumnName="SMS_MSG" />
                 <ScalarProperty Name="SMS_LOG_ID" ColumnName="SMS_LOG_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Notifications">
+            <EntityTypeMapping TypeName="SSKModel.Notification">
+              <MappingFragment StoreEntitySet="Notifications">
+                <ScalarProperty Name="notification_code" ColumnName="notification_code" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="Source" ColumnName="Source" />
+                <ScalarProperty Name="IsFromSupervisee" ColumnName="IsFromSupervisee" />
+                <ScalarProperty Name="IsRead" ColumnName="IsRead" />
+                <ScalarProperty Name="Content" ColumnName="Content" />
+                <ScalarProperty Name="Subject" ColumnName="Subject" />
+                <ScalarProperty Name="ToUserId" ColumnName="ToUserId" />
+                <ScalarProperty Name="FromUserId" ColumnName="FromUserId" />
+                <ScalarProperty Name="Datetime" ColumnName="Datetime" />
+                <ScalarProperty Name="NotificationID" ColumnName="NotificationID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -21,7 +21,6 @@
         <EntityTypeShape EntityType="SSKModel.Membership_UserLogins" Width="1.5" PointX="3" PointY="48.875" />
         <EntityTypeShape EntityType="SSKModel.Membership_UserRoles" Width="1.5" PointX="3" PointY="19.5" />
         <EntityTypeShape EntityType="SSKModel.Membership_Users" Width="1.5" PointX="0.75" PointY="20.625" />
-        <EntityTypeShape EntityType="SSKModel.Notification" Width="1.5" PointX="3" PointY="41.5" />
         <EntityTypeShape EntityType="SSKModel.OperationSetting" Width="1.5" PointX="5.75" PointY="1.125" />
         <EntityTypeShape EntityType="SSKModel.OperationSettings_ChangeHist" Width="1.5" PointX="8" PointY="2.75" />
         <EntityTypeShape EntityType="SSKModel.QueueDetail" Width="1.5" PointX="7.5" PointY="30.5" />
@@ -50,12 +49,11 @@
         <AssociationConnector Association="SSKModel.FK__Restauran__UserI__1CFC3D38" />
         <AssociationConnector Association="SSKModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" />
         <AssociationConnector Association="SSKModel.FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId" />
-        <AssociationConnector Association="SSKModel.FK_Notifications_Membership_Users" />
-        <AssociationConnector Association="SSKModel.FK_Notifications_Membership_Users1" />
         <AssociationConnector Association="SSKModel.FK_PWD_QA_Membership_Users" />
         <AssociationConnector Association="SSKModel.FK_User_Profiles_Membership_Users" />
         <AssociationConnector Association="SSKModel.FK_OperationSettings_ChangeHist_OperationSettings" />
         <AssociationConnector Association="SSKModel.FK_QueueDetails_Queues" />
+        <EntityTypeShape EntityType="SSKModel.Notification" Width="1.5" PointX="8.375" PointY="9.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

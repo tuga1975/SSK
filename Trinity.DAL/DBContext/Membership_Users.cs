@@ -26,8 +26,6 @@ namespace Trinity.DAL.DBContext
             this.Membership_UserDevices = new HashSet<Membership_UserDevices>();
             this.Membership_UserLogins = new HashSet<Membership_UserLogins>();
             this.Membership_UserRoles = new HashSet<Membership_UserRoles>();
-            this.Notifications = new HashSet<Notification>();
-            this.Notifications1 = new HashSet<Notification>();
             this.Security_QA = new HashSet<Security_QA>();
         }
     
@@ -72,10 +70,6 @@ namespace Trinity.DAL.DBContext
         public virtual ICollection<Membership_UserLogins> Membership_UserLogins { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Membership_UserRoles> Membership_UserRoles { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Notification> Notifications { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Notification> Notifications1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Security_QA> Security_QA { get; set; }
         public virtual User_Profiles User_Profiles { get; set; }
