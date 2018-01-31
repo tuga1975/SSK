@@ -391,3 +391,32 @@ public static class EnumOutcome
     public const string Processing = "Processing...";
 
 };
+public static class EnumAPIParam
+{
+    //controller
+    public const string Appointment = "Appointment";
+
+    //action
+    public const string GetByToday = "GetByToday";
+    public const string GetNearest = "GetNearest";
+    public const string GetMaximumNumberOfTimeslot = "GetMaximumNumberOfTimeslot";
+    public const string GetById = "GetById";
+    public const string GetDetailsById = "GetDetailsById";
+    public const string GetByUserIdAndDate = "GetByUserIdAndDate";
+    public const string GetListByUserId = "GetListByUserId";
+    public const string GetListCurrentTimeslot = "GetListCurrentTimeslot";
+    public const string UpdateBooktime = "UpdateBooktime";
+    public const string CountAbsenceByUserId = "CountAbsenceByUserId";
+    public const string GetAbsenceByUserId = "GetAbsenceByUserId";
+    public const string UpdateReason = "UpdateReason";
+    public const string GetListFromSelectedDate = "GetListFromSelectedDate";
+    public const string CountByTimeslot = "CountByTimeslot";
+    public const string GetAll = "GetAll";
+    public const string GetAllStatistics = "GetAllStatistics";
+    public const string CountBookedByTimeslot = "CountBookedByTimeslot";
+    public const string CountReportedByTimeslot = "CountReportedByTimeslot";
+    public const string CountNoShowdByTimeslot = "CountNoShowdByTimeslot";
+    public const string CreateForAllUsers = "CreateForAllUsers";
+    public const string GetNearestTimeslot = "GetNearestTimeslot";
+    public const string UpdateTimeslot = "UpdateTimeslot";
+}
