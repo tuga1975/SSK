@@ -151,6 +151,8 @@
     <Content Include="Libs\Futronic Fingerprint Reader\ScanAPIHelper.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Libs\Futronic Fingerprint Reader\x64\ftrSDKHelper13.dll" />
+    <Content Include="Libs\Futronic Fingerprint Reader\x86\ftrSDKHelper13.dll" />
     <Content Include="Libs\PCSC Smart Card Reader\pcsc-sharp.dll" />
     <Content Include="Libs\TSC Barcode Printer\x64\TSCLIB.dll" />
     <Content Include="Libs\TSC Barcode Printer\x86\TSCLIB.dll" />
