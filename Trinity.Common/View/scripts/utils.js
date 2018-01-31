@@ -122,6 +122,9 @@ function setLoading(status) {
 function RunScript(script) {
     eval(script);
 }
+function ShowMessageBox(message) {
+    alert(message);
+}
 $(document).ready(function () {
     $('body').on('click', 'a[href]', function (event) {
         event.preventDefault();
