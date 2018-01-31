@@ -42,8 +42,8 @@ public class JSCallCSBase: Exception
         catch (Exception ex)
         {
             this._web.InvokeScript("ShowMessageBox", ex.InnerException.Message);
-            
         }
+        this._web.SetLoading(false);
     }
 
     public void ClientCallServer(string method, string guidEvent, params object[] pram)
