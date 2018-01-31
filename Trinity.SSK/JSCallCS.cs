@@ -51,7 +51,7 @@ namespace SSK
             DAL_Notification dalNotification = new DAL_Notification();
             List<Trinity.BE.Notification> myNotifications = dalNotification.GetMyNotifications(user.UserId, false);
             var model = myNotifications;
-            _web.LoadPageHtml("Notication.html", myNotifications);
+            _web.LoadPageHtml("Notifications.html", myNotifications);
         }
 
         public void ChangeReadStatus(string notificationId)
