@@ -7,12 +7,11 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
-using Trinity.Common;
-using Trinity.Common.Common;
+
 
 [ComVisible(true)]
 [ClassInterface(ClassInterfaceType.None)]
-public class JSCallCSBase
+public class JSCallCSBase: Exception
 {
     public WebBrowser _web = null;
     public Type _thisType = null;
@@ -20,6 +19,7 @@ public class JSCallCSBase
     {
 
     }
+
     public void LoadPage(string file)
     {
         _web.LoadPageHtml(file);
@@ -27,17 +27,23 @@ public class JSCallCSBase
 
     private void actionThread(object pram)
     {
-
-        var data = (object[])pram;
-        var method = data[0].ToString();
-
-        MethodInfo theMethod = _thisType.GetMethod(method);
-        var dataReturn = theMethod.Invoke(this, (object[])data[2]);
-        if (data[1] != null)
+        try
         {
-            this._web.InvokeScript("callEventCallBack", data[1], JsonConvert.SerializeObject(dataReturn, Formatting.Indented, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore }));
+            var data = (object[])pram;
+            var method = data[0].ToString();
+
+            MethodInfo theMethod = _thisType.GetMethod(method);
+            var dataReturn = theMethod.Invoke(this, (object[])data[2]);
+            if (data[1] != null)
+            {
+                this._web.InvokeScript("callEventCallBack", data[1], JsonConvert.SerializeObject(dataReturn, Formatting.Indented, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore }));
+            }
         }
-        _web.SetLoading(false);
+        catch (Exception ex)
+        {
+            this._web.InvokeScript("ShowMessageBox", ex.InnerException.Message);
+        }
+        this._web.SetLoading(false);
     }
 
     public void ClientCallServer(string method, string guidEvent, params object[] pram)
