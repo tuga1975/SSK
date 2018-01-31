@@ -92,7 +92,7 @@ namespace Trinity.DAL
             GenerateTimeslotAndInsert(date.Date, settings.Tuesday, createdBy);
 
             //wed
-            GenerateTimeslotAndInsert(date.Date, settings.WednesDay, createdBy);
+            GenerateTimeslotAndInsert(date.Date, settings.Wednesday, createdBy);
 
             //thu
             GenerateTimeslotAndInsert(date.Date, settings.Thursday, createdBy);
@@ -322,7 +322,7 @@ namespace Trinity.DAL
             {
                 Monday = arraySetting.FirstOrDefault(d => d.DayOfWeek == (int)EnumDayOfWeek.Monday).Map<BE.SettingDetails>(),
                 Tuesday = arraySetting.FirstOrDefault(d => d.DayOfWeek == (int)EnumDayOfWeek.Tuesday).Map<BE.SettingDetails>(),
-                WednesDay = arraySetting.FirstOrDefault(d => d.DayOfWeek == (int)EnumDayOfWeek.Wednesday).Map<BE.SettingDetails>(),
+                Wednesday = arraySetting.FirstOrDefault(d => d.DayOfWeek == (int)EnumDayOfWeek.Wednesday).Map<BE.SettingDetails>(),
                 Thursday = arraySetting.FirstOrDefault(d => d.DayOfWeek == (int)EnumDayOfWeek.Thursday).Map<BE.SettingDetails>(),
                 Friday = arraySetting.FirstOrDefault(d => d.DayOfWeek == (int)EnumDayOfWeek.Friday).Map<BE.SettingDetails>(),
                 Saturday = arraySetting.FirstOrDefault(d => d.DayOfWeek == (int)EnumDayOfWeek.Saturday).Map<BE.SettingDetails>(),
@@ -333,7 +333,7 @@ namespace Trinity.DAL
 
             settingModel.Monday = settingModel.Monday == null ? new SettingDetails() { DayOfWeek = (int)EnumDayOfWeek.Monday } : settingModel.Monday;
             settingModel.Tuesday = settingModel.Tuesday == null ? new SettingDetails() { DayOfWeek = (int)EnumDayOfWeek.Tuesday } : settingModel.Tuesday;
-            settingModel.WednesDay = settingModel.WednesDay == null ? new SettingDetails() { DayOfWeek = (int)EnumDayOfWeek.Wednesday } : settingModel.WednesDay;
+            settingModel.Wednesday = settingModel.Wednesday == null ? new SettingDetails() { DayOfWeek = (int)EnumDayOfWeek.Wednesday } : settingModel.Wednesday;
             settingModel.Thursday = settingModel.Thursday == null ? new SettingDetails() { DayOfWeek = (int)EnumDayOfWeek.Thursday } : settingModel.Thursday;
             settingModel.Friday = settingModel.Friday == null ? new SettingDetails() { DayOfWeek = (int)EnumDayOfWeek.Friday } : settingModel.Friday;
             settingModel.Saturday = settingModel.Saturday == null ? new SettingDetails() { DayOfWeek = (int)EnumDayOfWeek.Saturday } : settingModel.Saturday;
@@ -425,7 +425,7 @@ namespace Trinity.DAL
                 case EnumDayOfWeek.Tuesday:
                     return GetSettings().Tuesday;
                 case EnumDayOfWeek.Wednesday:
-                    return GetSettings().WednesDay;
+                    return GetSettings().Wednesday;
                 case EnumDayOfWeek.Thursday:
                     return GetSettings().Thursday;
                 case EnumDayOfWeek.Friday:
@@ -722,5 +722,26 @@ namespace Trinity.DAL
             return modelReturn;
         }
         #endregion
+
+        //public Setting GetSettingSystemByYear(int year)
+        //{
+        //    return _localUnitOfWork.DataContext.Settings.FirstOrDefault(s => s.Year == year);
+        //}
+
+        //public void UpdateSettingSystem(Setting setting)
+        //{
+        //    Setting dbSetting = _localUnitOfWork.DataContext.Settings.FirstOrDefault(s => s.Year == setting.Year);
+
+        //    if (dbSetting == null)
+        //    {
+        //        _localUnitOfWork.GetRepository<Setting>().Add(setting);
+        //    }
+        //    else
+        //    {
+        //        _localUnitOfWork.GetRepository<Setting>().Update(setting);
+        //    }
+
+        //    _localUnitOfWork.Save();
+        //}
     }
 }

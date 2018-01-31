@@ -277,8 +277,8 @@
                 $('[table-settings]').append(api.DumpDataToTxt(html, data.Tuesday));
             }
 
-            if (data.WednesDay != null) {
-                $('[table-settings]').append(api.DumpDataToTxt(html, data.WednesDay));
+            if (data.Wednesday != null) {
+                $('[table-settings]').append(api.DumpDataToTxt(html, data.Wednesday));
             }
             if (data.Thursday != null) {
                 $('[table-settings]').append(api.DumpDataToTxt(html, data.Thursday));
@@ -295,7 +295,7 @@
 
             setColspanForClosed("Monday", data.Monday.Morning_Is_Closed, data.Monday.Afternoon_Is_Closed, data.Monday.Evening_Is_Closed);
             setColspanForClosed("Tuesday", data.Tuesday.Morning_Is_Closed, data.Tuesday.Afternoon_Is_Closed, data.Tuesday.Evening_Is_Closed);
-            setColspanForClosed("WednesDay", data.WednesDay.Morning_Is_Closed, data.WednesDay.Afternoon_Is_Closed, data.WednesDay.Evening_Is_Closed);
+            setColspanForClosed("Wednesday", data.Wednesday.Morning_Is_Closed, data.Wednesday.Afternoon_Is_Closed, data.Wednesday.Evening_Is_Closed);
             setColspanForClosed("Thursday", data.Thursday.Morning_Is_Closed, data.Thursday.Afternoon_Is_Closed, data.Thursday.Evening_Is_Closed);
             setColspanForClosed("Friday", data.Friday.Morning_Is_Closed, data.Friday.Afternoon_Is_Closed, data.Friday.Evening_Is_Closed);
             setColspanForClosed("Saturday", data.Saturday.Morning_Is_Closed, data.Saturday.Afternoon_Is_Closed, data.Saturday.Evening_Is_Closed);
