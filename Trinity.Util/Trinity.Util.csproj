@@ -55,7 +55,6 @@
     <Compile Include="Authentication\Fingerprint.cs" />
     <Compile Include="Authentication\SmartCard.cs" />
     <Compile Include="Monitor\BarcodePrinterMonitor.cs" />
-    <Compile Include="Monitor\DocumentScannerMonitor.cs" />
     <Compile Include="Monitor\FingerprintReaderMonitor.cs" />
     <Compile Include="Monitor\PrinterMonitor.cs" />
     <Compile Include="Repeat.cs" />
@@ -64,7 +63,6 @@
     <Compile Include="TSCLIB_DLL.cs" />
     <Compile Include="Utils\BarcodePrinterUtil.cs" />
     <Compile Include="Utils\DeviceUtil.cs" />
-    <Compile Include="Utils\DocumentScannerUtil.cs" />
     <Compile Include="Utils\FingerprintReaderUtil.cs" />
     <Compile Include="Utils\ReceiptPrinterUtil.cs" />
     <Compile Include="Utils\SmartCardPrinterUtil.cs" />
@@ -81,11 +79,6 @@
     <Reference Include="ftrSDKHelper13, Version=4.5.0.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Trinity.Common\Libs\Futronic Fingerprint Reader\x86\ftrSDKHelper13.dll</HintPath>
-    </Reference>
-    <Reference Include="Interop.WIA, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-      <HintPath>..\Trinity.Common\obj\x64\Debug\Interop.WIA.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
