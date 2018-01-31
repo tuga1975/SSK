@@ -64,7 +64,7 @@ namespace Trinity.BE
     {
         public SettingDetails Monday { get; set; }
         public SettingDetails Tuesday { get; set; }
-        public SettingDetails WednesDay { get; set; }
+        public SettingDetails Wednesday { get; set; }
         public SettingDetails Thursday { get; set; }
         public SettingDetails Friday { get; set; }
         public SettingDetails Saturday { get; set; }
@@ -185,7 +185,7 @@ namespace Trinity.BE
             {
                 Monday = settingDetail.SetADay(rawData),
                 Tuesday = settingDetail.SetADay(rawData),
-                WednesDay = settingDetail.SetADay(rawData),
+                Wednesday = settingDetail.SetADay(rawData),
                 Thursday = settingDetail.SetADay(rawData),
                 Friday = settingDetail.SetADay(rawData),
                 Saturday = settingDetail.SetADay(rawData),

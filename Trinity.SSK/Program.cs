@@ -16,7 +16,16 @@ namespace SSK
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Main());
+            try
+            {
+                Application.Run(new Main());
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                Environment.Exit(1);
+            }
             //Application.Run(new FormTextToSpeech());
             //Application.Run(new FormAppointmentDetails());
         }
