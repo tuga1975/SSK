@@ -97,7 +97,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-dark" id="EditBtn">Edit</button>
+                <button type="button" class="btn btn-dark" id="SaveBtn">Save</button>
             </div>
         </div>
     </div>
@@ -203,6 +203,7 @@
         setEnableControls('morning', model.Morning_Is_Closed);
 
         //Afternoon
+        $('#afternoon-start-XM').val('PM');
         if (model.Afternoon_Open_Time) {
             var afternoonStart = model.Afternoon_Open_Time.split(':');
             var H = +afternoonStart[0];
@@ -215,6 +216,7 @@
             $('#afternoon-start-XM').val(ampm);
         }
 
+        $('#afternoon-end-XM').val('PM');
         if (model.Afternoon_Close_Time) {
             var afternoonEnd = model.Afternoon_Close_Time.split(':');
             var H = +afternoonEnd[0];
@@ -235,6 +237,7 @@
         setEnableControls('afternoon', model.Afternoon_Is_Closed);
 
         //Evening
+        $('#evening-start-XM').val('PM');
         if (model.Evening_Open_Time) {
             var eveningStart = model.Evening_Open_Time.split(':');
             var H = +eveningStart[0];
@@ -247,6 +250,7 @@
             $('#evening-start-XM').val(ampm);
         }
 
+        $('#evening-end-XM').val('PM');
         if (model.Evening_Close_Time) {
             var eveningEnd = model.Evening_Close_Time.split(':');
             var H = +eveningEnd[0];
@@ -316,7 +320,7 @@
     });
 
     var operationSetting;
-    $("#EditBtn").click(function (e) {
+    $("#SaveBtn").click(function (e) {
         var dayOfWeek;
         switch ($('#dayOfWeek').val()) {
             case "Monday":
@@ -360,13 +364,13 @@
             Morning_Interval: $('#morning-interval').val(),
             Morning_Is_Closed: $('#morning-Closed').is(":checked"),
             Afternoon_Open_Time: convert12To24H(afternoonStart, $("#afternoon-start-XM").val()),
-            Afternoon_Close_Time: convert12To24H(afternoonEnd, $("#afternoon-start-XM").val()),
+            Afternoon_Close_Time: convert12To24H(afternoonEnd, $("#afternoon-end-XM").val()),
             Afternoon_MaximumSupervisee: $('#afternoon-max').val(),
             Afternoon_Spare_Slots: $('#afternoon-spare').val(),
             Afternoon_Interval: $('#afternoon-interval').val(),
             Afternoon_Is_Closed: $('#afternoon-Closed').is(":checked"),
             Evening_Open_Time: convert12To24H(eveningStart, $("#evening-start-XM").val()),
-            Evening_Close_Time: convert12To24H(eveningEnd, $("#evening-start-XM").val()),
+            Evening_Close_Time: convert12To24H(eveningEnd, $("#evening-end-XM").val()),
             Evening_MaximumSupervisee: $('#evening-max').val(),
             Evening_Spare_Slots: $('#evening-spare').val(),
             Evening_Interval: $('#evening-interval').val(),
