@@ -2,7 +2,6 @@
 using Microsoft.Owin.Cors;
 using Microsoft.Owin.Hosting;
 using Owin;
-using SignalRChat.DbContext;
 using System;
 using System.Reflection;
 using System.Threading.Tasks;

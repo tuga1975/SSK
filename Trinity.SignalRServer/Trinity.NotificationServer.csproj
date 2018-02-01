@@ -129,24 +129,6 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DbContext\Notification.cs">
-      <DependentUpon>SSKCentralized.tt</DependentUpon>
-    </Compile>
-    <Compile Include="DbContext\SSKCentralized.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>SSKCentralized.Context.tt</DependentUpon>
-    </Compile>
-    <Compile Include="DbContext\SSKCentralized.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>SSKCentralized.tt</DependentUpon>
-    </Compile>
-    <Compile Include="DbContext\SSKCentralized.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>SSKCentralized.edmx</DependentUpon>
-    </Compile>
     <Compile Include="WinFormsServer.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -167,13 +149,6 @@
     <EmbeddedResource Include="WinFormsServer.resx">
       <DependentUpon>WinFormsServer.cs</DependentUpon>
     </EmbeddedResource>
-    <EntityDeploy Include="DbContext\SSKCentralized.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>SSKCentralized.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <None Include="DbContext\SSKCentralized.edmx.diagram">
-      <DependentUpon>SSKCentralized.edmx</DependentUpon>
-    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -189,24 +164,16 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="DbContext\SSKCentralized.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>SSKCentralized.Context.cs</LastGenOutput>
-      <DependentUpon>SSKCentralized.edmx</DependentUpon>
-    </Content>
-    <Content Include="DbContext\SSKCentralized.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>SSKCentralized.edmx</DependentUpon>
-      <LastGenOutput>SSKCentralized.cs</LastGenOutput>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Trinity.BE\Trinity.BE.csproj">
       <Project>{4321fa96-3a53-49c1-89ef-8a2f6e9b81c7}</Project>
       <Name>Trinity.BE</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Trinity.Common\Trinity.Common.csproj">
+      <Project>{6c023597-f6ba-4857-9c3b-82d91eb4b4a3}</Project>
+      <Name>Trinity.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\Trinity.DAL\Trinity.DAL.csproj">
       <Project>{344f2633-3277-44c5-a55e-b66f920cca14}</Project>
