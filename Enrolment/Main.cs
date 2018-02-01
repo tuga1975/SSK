@@ -38,7 +38,6 @@ namespace Enrolment
         public Main()
         {
             InitializeComponent();
-            new DAL_Appointments().GetAllStatistics();
             pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
             // setup variables
             _smartCardFailed = 0;

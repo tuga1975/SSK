@@ -25,6 +25,9 @@ namespace DutyOfficer
         public event EventHandler<NRICEventArgs> OnNRICFailed;
         public event EventHandler<ShowMessageEventArgs> OnShowMessage;
         public event Action OnLogOutCompleted;
+        private bool _isPrintFailMUB = false;
+        private bool _isPrintFailTT = false;
+        private bool _isPrintFailUB = false;
 
 
         public JSCallCS(WebBrowser web)
@@ -38,6 +41,7 @@ namespace DutyOfficer
             _printMUBAndTTLabel.OnPrintTTLabelsSucceeded += PrintTTLabels_OnPrintTTLabelSucceeded;
             _printMUBAndTTLabel.OnPrintTTLabelsFailed += PrintTTLabels_OnPrintTTLabelFailed;
             _printMUBAndTTLabel.OnPrintMUBAndTTLabelsException += PrintMUBAndTTLabels_OnPrintTTLabelException;
+            _printMUBAndTTLabel.OnPrintUBLabelsFailed += PrintUBLabels_OnPrintUBLabelFailed;
         }
 
         public List<Notification> getAlertsSendToDutyOfficer()
@@ -52,10 +56,10 @@ namespace DutyOfficer
         {
             var dalDeviceStatus = new DAL_DeviceStatus();
             StationColorDevice stationColorDevice = new StationColorDevice();
-            stationColorDevice.SSAColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStations.SSA) ? EnumColors.Red : EnumColors.Green;
-            stationColorDevice.SSKColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStations.SSK) ? EnumColors.Red : EnumColors.Green;
-            stationColorDevice.ESPColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStations.ESP) ? EnumColors.Red : EnumColors.Green;
-            stationColorDevice.UHPColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStations.UHP) ? EnumColors.Red : EnumColors.Green;
+            stationColorDevice.SSAColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStations.SSA) ? EnumColors.Green : EnumColors.Red;
+            stationColorDevice.SSKColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStations.SSK) ? EnumColors.Green : EnumColors.Red;
+            stationColorDevice.ESPColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStations.ESP) ? EnumColors.Green : EnumColors.Red;
+            stationColorDevice.UHPColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStations.UHP) ? EnumColors.Green : EnumColors.Red;
             return stationColorDevice;
         }
 
@@ -204,7 +208,7 @@ namespace DutyOfficer
             Session session = Session.Instance;
             Trinity.BE.User dutyOfficer = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
 
-            dalSetting.AddHoliday(holiday, dutyOfficer.Name);
+            dalSetting.AddHoliday(holiday, dutyOfficer.Name, dutyOfficer.UserId);
         }
 
         public void DeleteHoliday(string date)
@@ -318,6 +322,9 @@ namespace DutyOfficer
 
                 foreach (var item in lstLabel)
                 {
+                    if (_isPrintFailUB)
+                        break;
+
                     LabelInfo labelInfo = new LabelInfo
                     {
                         UserId = item.UserId,
@@ -328,7 +335,7 @@ namespace DutyOfficer
                         CompanyName = CommonConstants.COMPANY_NAME,
                         LastStation = EnumStations.DUTYOFFICER,
                         MarkingNo = CommonUtil.GenerateMarkingNumber(),
-                        DrugType = "NA",
+                        DrugType = item.DrugType,
                         ReprintReason = reason,
                         IsMUB = false
                     };
@@ -361,6 +368,7 @@ namespace DutyOfficer
 
                     Thread.Sleep(1500);
                 }
+                _isPrintFailUB = false;
             }
             catch (Exception e)
             {
@@ -377,6 +385,17 @@ namespace DutyOfficer
             labelInfo.BitmapLabel = bitmapBytes;
 
             _printMUBAndTTLabel.StartPrintMUB(labelInfo);
+        }
+
+        private void PrintUBLabels_OnPrintUBLabelFailed(object sender, CodeBehind.PrintMUBAndTTLabelsEventArgs e)
+        {
+            if (!_isPrintFailUB)
+            {
+                _isPrintFailUB = true;
+                MessageBox.Show("Unable to print UB labels\nPlease report to the Duty Officer", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            DeleteQRCodeImageFileTemp();
         }
         #endregion
 
@@ -412,6 +431,9 @@ namespace DutyOfficer
 
                 foreach (var item in lstLabel)
                 {
+                    if (_isPrintFailMUB && _isPrintFailTT)
+                        break;
+
                     LabelInfo labelInfo = new LabelInfo
                     {
                         UserId = item.UserId,
@@ -456,6 +478,8 @@ namespace DutyOfficer
 
                     Thread.Sleep(1500);
                 }
+                _isPrintFailMUB = false;
+                _isPrintFailTT = false;
             }
             catch (Exception e)
             {
@@ -504,14 +528,14 @@ namespace DutyOfficer
             if (!e.LabelInfo.IsMUB)
             {
                 labelInfo.Label_Type = EnumLabelType.UB;
-                labelInfo.DrugType = ""; // Can dien thong tin DrugType khi print UB (chua biet drugtype la gi?)
+                labelInfo.DrugType = e.LabelInfo.DrugType; 
             }
 
             DAL_Labels dalLabel = new DAL_Labels();
             if (dalLabel.UpdateLabel(labelInfo, labelInfo.UserId, labelInfo.Label_Type))
             {
                 string message = "Print MUB for " + e.LabelInfo.Name + " successful.";
-                MessageBox.Show(message, "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //MessageBox.Show(message, "", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
             DeleteQRCodeImageFileTemp();
@@ -519,7 +543,11 @@ namespace DutyOfficer
 
         private void PrintMUBLabels_OnPrintMUBLabelFailed(object sender, CodeBehind.PrintMUBAndTTLabelsEventArgs e)
         {
-            MessageBox.Show("Unable to print MUB/UB labels\nPlease report to the Duty Officer", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            if (!_isPrintFailMUB)
+            {
+                _isPrintFailMUB = true;
+                MessageBox.Show("Unable to print MUB labels\nPlease report to the Duty Officer", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
 
             DeleteQRCodeImageFileTemp();
         }
@@ -553,14 +581,18 @@ namespace DutyOfficer
 
         private void PrintTTLabels_OnPrintTTLabelFailed(object sender, CodeBehind.PrintMUBAndTTLabelsEventArgs e)
         {
-            MessageBox.Show("Unable to print TT labels\nPlease report to the Duty Officer", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            if (!_isPrintFailTT)
+            {
+                _isPrintFailTT = true;
+                MessageBox.Show("Unable to print TT labels\nPlease report to the Duty Officer", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
 
             DeleteQRCodeImageFileTemp();
         }
 
         private void PrintMUBAndTTLabels_OnPrintTTLabelException(object sender, ExceptionArgs e)
         {
-            MessageBox.Show(e.ErrorMessage, "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //MessageBox.Show(e.ErrorMessage, "", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
             DeleteQRCodeImageFileTemp();
         }

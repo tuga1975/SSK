@@ -27,22 +27,27 @@ namespace Trinity.DAL
                 var morningTimeSpan = new TimeSpan(12, 0, 0);
                 var eveningTimeSpan = new TimeSpan(17, 0, 0);
 
-                foreach (var item in listTimeSlot)
-                {
-                    var setTime = SetAppointmentTime(item);
-                    if (setTime.EndTime <= morningTimeSpan)
-                    {
-                        appointmentTime.Morning.Add(setTime);
-                    }
-                    else if (setTime.EndTime > eveningTimeSpan)
-                    {
-                        appointmentTime.Evening.Add(setTime);
-                    }
-                    else
-                    {
-                        appointmentTime.Afternoon.Add(setTime);
-                    }
-                }
+                appointmentTime.Morning = listTimeSlot.Where(d=>d.Category== EnumTimeshift.Morning).Select(d=> SetAppointmentTime(d)).ToList();
+                appointmentTime.Evening = listTimeSlot.Where(d => d.Category == EnumTimeshift.Evening).Select(d => SetAppointmentTime(d)).ToList();
+                appointmentTime.Afternoon = listTimeSlot.Where(d => d.Category == EnumTimeshift.Afternoon).Select(d => SetAppointmentTime(d)).ToList();
+
+
+                //foreach (var item in listTimeSlot)
+                //{
+                //    var setTime = SetAppointmentTime(item);
+                //    if (setTime.EndTime <= morningTimeSpan)
+                //    {
+                //        appointmentTime.Morning.Add(setTime);
+                //    }
+                //    else if (setTime.EndTime > eveningTimeSpan)
+                //    {
+                //        appointmentTime.Evening.Add(setTime);
+                //    }
+                //    else
+                //    {
+                //        appointmentTime.Afternoon.Add(setTime);
+                //    }
+                //}
 
             }
             return appointmentTime;
@@ -367,18 +372,32 @@ namespace Trinity.DAL
             return results;
         }
 
-        public void AddHoliday(DBContext.Holiday holiday, string updatedBy)
+        public void AddHoliday(DBContext.Holiday holiday, string updatedByName, string updatedByID)
         {
             try
             {
                 _localUnitOfWork.GetRepository<DBContext.Holiday>().Add(holiday);
 
                 // Insert to Change History Setting
+                int dayOfWeek = (int)Common.CommonUtil.ConvertToCustomDateOfWeek(holiday.Holiday1.DayOfWeek);
+                var operationSetting = _localUnitOfWork.DataContext.OperationSettings.FirstOrDefault(s => s.DayOfWeek == dayOfWeek);
+                if (operationSetting == null)
+                {
+                    operationSetting = new OperationSetting();
+                    operationSetting.DayOfWeek = dayOfWeek;
+                    operationSetting.Morning_Is_Closed = false;
+                    operationSetting.Afternoon_Is_Closed = false;
+                    operationSetting.Evening_Is_Closed = false;
+                    operationSetting.Last_Updated_By = updatedByID;
+                    operationSetting.Last_Updated_Date = DateTime.Now;
+                    _localUnitOfWork.GetRepository<OperationSetting>().Add(operationSetting);
+                }
+
                 var changeHistoryID = _localUnitOfWork.DataContext.OperationSettings_ChangeHist.Any() ? _localUnitOfWork.DataContext.OperationSettings_ChangeHist.Max(t => t.ID) : 0;
                 DBContext.OperationSettings_ChangeHist changeHistory = new DBContext.OperationSettings_ChangeHist();
                 changeHistory.ID = changeHistoryID + 1;
-                changeHistory.DayOfWeek = (int)Common.CommonUtil.ConvertToCustomDateOfWeek(holiday.Holiday1.DayOfWeek);
-                changeHistory.LastUpdatedBy = updatedBy;
+                changeHistory.DayOfWeek = dayOfWeek;
+                changeHistory.LastUpdatedBy = updatedByName;
                 changeHistory.LastUpdatedDate = DateTime.Now;
                 changeHistory.ChangeDetails = "The holiday " + holiday.Holiday1.ToString("dd/MM/yyyy") + " has been added";
 

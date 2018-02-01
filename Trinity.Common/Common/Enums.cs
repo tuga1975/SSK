@@ -279,6 +279,20 @@ public static class EnumAppConfig
             return ConfigurationManager.AppSettings["web_api_url"];
         }
     }
+    public static string DateFormat
+    {
+        get
+        {
+            return ConfigurationManager.AppSettings["DateFormat"];
+        }
+    }
+    public static int Card_Expired_Date
+    {
+        get
+        {
+            return Convert.ToInt32(ConfigurationManager.AppSettings["Card_Expired_Date"]);
+        }
+    }
 }
 public static class EnumDeviceNames
 {

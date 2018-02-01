@@ -12,6 +12,7 @@ namespace DutyOfficer.CodeBehind
         public event EventHandler<PrintMUBAndTTLabelsSucceedEventArgs> OnPrintMUBLabelsSucceeded;
         public event EventHandler<PrintMUBAndTTLabelsSucceedEventArgs> OnPrintTTLabelsSucceeded;
         public event EventHandler<PrintMUBAndTTLabelsEventArgs> OnPrintMUBLabelsFailed;
+        public event EventHandler<PrintMUBAndTTLabelsEventArgs> OnPrintUBLabelsFailed;
         public event EventHandler<PrintMUBAndTTLabelsEventArgs> OnPrintTTLabelsFailed;
         public event EventHandler<ExceptionArgs> OnPrintMUBAndTTLabelsException;
 
@@ -66,7 +67,14 @@ namespace DutyOfficer.CodeBehind
                             causeOfPrintMUBFailure = causeOfPrintMUBFailure + CommonUtil.GetDeviceStatusText(item) + "; ";
                         }
 
-                        RaisePrintMUBLabelsFailedEvent(new PrintMUBAndTTLabelsEventArgs("MUB Printer have problem: " + causeOfPrintMUBFailure));
+                        if (labelInfo.IsMUB)
+                        {
+                            RaisePrintMUBLabelsFailedEvent(new PrintMUBAndTTLabelsEventArgs("MUB Printer have problem: " + causeOfPrintMUBFailure));
+                        }
+                        else
+                        {
+                            RaisePrintUBLabelsFailedEvent(new PrintMUBAndTTLabelsEventArgs("UB Printer have problem: " + causeOfPrintMUBFailure));
+                        }
                     }
                     #endregion
                 }
@@ -159,6 +167,21 @@ namespace DutyOfficer.CodeBehind
             // a race condition if the last subscriber unsubscribes
             // immediately after the null check and before the event is raised.
             EventHandler<PrintMUBAndTTLabelsEventArgs> handler = OnPrintMUBLabelsFailed;
+
+            // Event will be null if there are no subscribers
+            if (handler != null)
+            {
+                // Use the () operator to raise the event.
+                handler(this, e);
+            }
+        }
+
+        protected virtual void RaisePrintUBLabelsFailedEvent(PrintMUBAndTTLabelsEventArgs e)
+        {
+            // Make a temporary copy of the event to avoid possibility of
+            // a race condition if the last subscriber unsubscribes
+            // immediately after the null check and before the event is raised.
+            EventHandler<PrintMUBAndTTLabelsEventArgs> handler = OnPrintUBLabelsFailed;
 
             // Event will be null if there are no subscribers
             if (handler != null)
