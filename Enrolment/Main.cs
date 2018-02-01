@@ -606,6 +606,7 @@ namespace Enrolment
                 var dalUserProfile = new DAL_UserProfile();
                 dalUser.UpdateUser(profileModel.User, profileModel.User.UserId, true);
 
+
                 dalUserProfile.UpdateUserProfile(profileModel.UserProfile, profileModel.User.UserId, true);
                 dalUser.ChangeUserStatus(profileModel.User.UserId, EnumUserStatuses.New);
 

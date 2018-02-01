@@ -82,11 +82,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Trinity.Common\Libs\Futronic Fingerprint Reader\ftrSDKHelper13.dll</HintPath>
     </Reference>
-    <Reference Include="Interop.WIA, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-      <HintPath>..\Trinity.Common\obj\x64\Debug\Interop.WIA.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>

@@ -2,6 +2,7 @@
 using SSK.CodeBehind.Authentication;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
 using Trinity.Common;
@@ -248,8 +249,9 @@ namespace SSK
                 //load Supervisee page 
                 LoadPage("Supervisee.html");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Debug.WriteLine("JSCallCS.SaveProfile exception: " + ex.ToString());
                 LoadPage("Supervisee.html");
             }
         }
