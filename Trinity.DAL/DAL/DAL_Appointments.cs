@@ -13,13 +13,29 @@ namespace Trinity.DAL
         Local_UnitOfWork _localUnitOfWork = new Local_UnitOfWork();
         Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
 
-        public Appointment GetMyAppointmentByID(Guid ID)
+        public BE.Response<Appointment> GetMyAppointmentByID(Guid ID)
         {
-            if (EnumAppConfig.IsLocal)
+            try
             {
-                return _localUnitOfWork.DataContext.Appointments.FirstOrDefault(d => d.ID == ID);
+                if (EnumAppConfig.IsLocal)
+                {
+                    var data = _localUnitOfWork.DataContext.Appointments.FirstOrDefault(d => d.ID == ID);
+                    return new BE.Response<Appointment>((int)EnumResponseStatuses.Success,EnumResponseMessage.Success,data );
+                    
+                }
+                else
+                {
+                    var data = _centralizedUnitOfWork.DataContext.Appointments.FirstOrDefault(d => d.ID == ID);
+                    return new BE.Response<Appointment>((int)EnumResponseStatuses.Success, EnumResponseMessage.Success, data);
+                }
+                
             }
-                return _centralizedUnitOfWork.DataContext.Appointments.FirstOrDefault(d => d.ID == ID);
+            catch (Exception)
+            {
+
+                return new BE.Response<Appointment>((int)EnumResponseStatuses.ErrorSystem, EnumResponseMessage.ErrorSystem, null);
+            }
+
         }
 
         public Trinity.BE.Appointment GetAppointmentDetails(Guid ID)
@@ -33,7 +49,7 @@ namespace Trinity.DAL
             {
                 appointment = _centralizedUnitOfWork.DataContext.Appointments.Include("TimeSlot").Include("Membership_Users").FirstOrDefault(d => d.ID == ID);
             }
-            
+
             if (appointment != null)
             {
                 Trinity.BE.Appointment result = new BE.Appointment()
@@ -102,8 +118,8 @@ namespace Trinity.DAL
         }
         public Appointment UpdateBookTime(string IDAppointment, string timeStart, string timeEnd)
         {
-            Trinity.DAL.DBContext.Appointment appointment = GetMyAppointmentByID(new Guid(IDAppointment));
-
+            var result= GetMyAppointmentByID(new Guid(IDAppointment));
+            var appointment = result.Data;
             var timeSlot = GetTimeslotByAppointment(appointment);
             if (timeSlot != null)
             {
@@ -135,8 +151,8 @@ namespace Trinity.DAL
 
                 return null;
             }
-           
-            
+
+
             return appointment;
         }
         public int CountMyAbsence(string UserID)
@@ -169,7 +185,8 @@ namespace Trinity.DAL
         /// <returns></returns>
         public Appointment UpdateReason(Guid appointmentId, Guid absenceId)
         {
-            Trinity.DAL.DBContext.Appointment appointment = GetMyAppointmentByID(appointmentId);
+            var result = GetMyAppointmentByID(appointmentId);
+            var appointment = result.Data;
             appointment.AbsenceReporting_ID = absenceId;
             appointment.Status = (int)EnumAppointmentStatuses.Reported;
             try
@@ -190,7 +207,7 @@ namespace Trinity.DAL
 
                 return null;
             }
-         
+
             return appointment;
         }
 
@@ -214,7 +231,7 @@ namespace Trinity.DAL
 
                 }
             }
-            
+
             return dbAppointment;
         }
 
@@ -286,7 +303,7 @@ namespace Trinity.DAL
                 //                    EndTime = tl.EndTime
                 //                };
 
-               // return lstModels.ToList();
+                // return lstModels.ToList();
             }
             catch (Exception e)
             {
@@ -393,7 +410,7 @@ namespace Trinity.DAL
                 {
                     timeslot = _centralizedUnitOfWork.DataContext.Timeslots.FirstOrDefault(t => t.Timeslot_ID == timeslotID);
                 }
-                if (timeslot!=null)
+                if (timeslot != null)
                 {
                     return timeslot.MaximumSupervisee.HasValue ? timeslot.MaximumSupervisee.Value : 0;
                 }
@@ -423,7 +440,7 @@ namespace Trinity.DAL
                 }).ToList());
                 _localUnitOfWork.Save();
             }
-            
+
             _centralizedUnitOfWork.GetRepository<Appointment>().Delete(t => t.Date.Year == date.Year && t.Date.Month == date.Month && t.Date.Day == date.Day);
             _centralizedUnitOfWork.Save();
 
@@ -450,7 +467,8 @@ namespace Trinity.DAL
 
         public Appointment UpdateTimeslotForAppointment(Guid appointmentId, string timeslotID)
         {
-            Trinity.DAL.DBContext.Appointment appointment = GetMyAppointmentByID(appointmentId);
+            var result = GetMyAppointmentByID(appointmentId);
+            var appointment = result.Data;
             appointment.Timeslot_ID = timeslotID;
             if (EnumAppConfig.IsLocal)
             {

@@ -391,6 +391,39 @@ public static class EnumOutcome
     public const string Processing = "Processing...";
 
 };
+
+public enum EnumResponseStatuses
+{
+    /// <summary>
+    /// Success
+    /// </summary>
+    Success = 200,
+
+    /// <summary>
+    /// ErrorRequestParam
+    /// </summary>
+    ErrorRequestParam = 400,
+
+    /// <summary>
+    /// Unauthorized
+    /// </summary>
+    Unauthorized = 401,
+
+    /// <summary>
+    /// ErrorSystem
+    /// </summary>
+    ErrorSystem = 500,
+}
+public static class EnumResponseMessage
+{
+    public const string Success = "Success";
+    public const string ErrorCommonRequestParam = "The request was unacceptable, often due to missing a required parameter";
+    public const string ErrorSystem = "Internal server error";
+    public const string NotExistMsg = "This record is not exist in DB";
+    public const string ErrorExistMsg = "This record is existing in DB";
+    public const string UnauthorizedErrorMsg = "Authorization has been denied for this request";
+    public const string SessionTimeOut = "Your session has expired. Please login again";
+}
 public static class EnumAPIParam
 {
     //controller

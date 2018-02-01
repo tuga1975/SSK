@@ -242,7 +242,7 @@ namespace SSK
         {
             var appointment = new DAL_Appointments().GetMyAppointmentByID(allQueue[0].AppointmentId);
             //var nextTimeslot = new DAL_Setting().GetNextTimeslotToday(appointment.Timeslot.StartTime.Value);
-            var allNextQueue = new DAL_QueueNumber().GetAllQueueByNextimeslot(appointment.Timeslot.StartTime.Value, EnumStations.SSK);
+            var allNextQueue = new DAL_QueueNumber().GetAllQueueByNextimeslot(appointment.Data.Timeslot.StartTime.Value, EnumStations.SSK);
             return allNextQueue;
         }
 

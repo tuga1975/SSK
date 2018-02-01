@@ -17,17 +17,24 @@ namespace Trinity.CentralizedAPI.Controllers
         /// <returns>Appointment</returns>
         [HttpGet]
         [Route("api/Appointment/GetById")]
-        [ResponseType(typeof(Trinity.BE.Appointment))]
+        [ResponseType(typeof(BE.ResponseTypeModel<Trinity.BE.Appointment>))]
         public IHttpActionResult GetById(string appointmentId)
         {
+            var responseModel = new BE.ResponseModel();
+
+
             var guid = Guid.Empty;
             if (Guid.TryParse(appointmentId, out guid))
             {
-                return Ok(new DAL.DAL_Appointments().GetMyAppointmentByID(guid));
+                var result = new DAL.DAL_Appointments().GetMyAppointmentByID(guid);
+                responseModel.ResponseCode = result.ResponseCode;
+                responseModel.ResponseMessage = result.ResponseMessage;
+                responseModel.Data = result.Data;
+                return Ok(responseModel);
             }
             else
             {
-                return null;
+                return Ok(responseModel);
             }
 
         }
@@ -212,13 +219,17 @@ namespace Trinity.CentralizedAPI.Controllers
         [ResponseType(typeof(int))]
         public IHttpActionResult CountByTimeslot(string appointmentId)
         {
+            var responseModel = new BE.ResponseModel();
             var guid = Guid.Empty;
             if (Guid.TryParse(appointmentId, out guid))
             {
                 var appointment = new DAL.DAL_Appointments().GetMyAppointmentByID(guid);
-                return Ok(new DAL.DAL_Appointments().CountListAppointmentByTimeslot(appointment));
+                responseModel.Data = new DAL.DAL_Appointments().CountListAppointmentByTimeslot(appointment.Data);
+                responseModel.ResponseCode = (int)EnumResponseStatuses.Success;
+                responseModel.ResponseMessage = EnumResponseMessage.Success;
+                return Ok(responseModel);
             }
-            return Ok(0);
+            return Ok(responseModel);
 
 
         }
