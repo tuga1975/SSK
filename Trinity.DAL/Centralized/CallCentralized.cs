@@ -45,6 +45,9 @@ public class CallCentralized
         {
             IsConnectCentralized = true;
 
+            if (EnumAppConfig.ByPassCentralizedDB)
+                return default(T);
+
             HttpClient client = new HttpClient();
             client.BaseAddress = new Uri(EnumAppConfig.web_api_url);
             HttpResponseMessage response = client.GetAsync(string.Format("api/{0}/{1}?{2}", Controller, Action, string.Join("&", pram))).Result;
@@ -72,11 +75,15 @@ public class CallCentralized
     }
     public T Post<T>(string Controller, string Action, object data)
     {
+        
         try
         {
             IsConnectCentralized = true;
 
-            HttpClient client = new HttpClient();
+            if (EnumAppConfig.ByPassCentralizedDB)
+                return default(T);
+
+                HttpClient client = new HttpClient();
             client.BaseAddress = new Uri(EnumAppConfig.web_api_url);
             client.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));
