@@ -117,10 +117,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Centralized\CallCentralized.cs" />
-    <Compile Include="Centralized\Centralized_AbsenceReporting.cs" />
     <Compile Include="DAL\DAL_Address.cs" />
     <Compile Include="DAL\DAL_DeviceStatus.cs" />
     <Compile Include="DAL\DAL_DrugResults.cs" />
+    <Compile Include="DAL\DAL_GetCardNumber.cs" />
     <Compile Include="DAL\DAL_Timeslots.cs" />
     <Compile Include="DAL\DAL_IssueCard.cs" />
     <Compile Include="DAL\DAL_Setting.cs" />

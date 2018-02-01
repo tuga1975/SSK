@@ -137,7 +137,7 @@ namespace Trinity.BE
         }
     }
 
-    [Serializable]
+    
     public class Address
     {
         [DataMember]

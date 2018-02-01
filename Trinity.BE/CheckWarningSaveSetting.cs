@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Trinity.BE
 {
-    [Serializable]
+    
     public class CheckWarningSaveSetting
     {
         public List<CheckWarningSaveSettingDetail> arrayDetail = new List<CheckWarningSaveSettingDetail>();

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Trinity.BE
 {
-    [Serializable]
+    
 
     public class Appointment
     {

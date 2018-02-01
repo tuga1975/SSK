@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Trinity.BE
 {
 
-    [Serializable]
+    
     public class Queue
     {
         public DateTime Time { get; set; }
