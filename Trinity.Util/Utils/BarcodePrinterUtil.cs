@@ -6,7 +6,7 @@ using System.IO;
 using System.Management;
 using Trinity.Common;
 
-namespace Trinity.Util
+namespace Trinity.Device
 {
     public class BarcodePrinterUtil
     {

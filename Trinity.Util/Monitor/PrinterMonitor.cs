@@ -5,7 +5,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using Trinity.Common;
 
-namespace Trinity.Util
+namespace Trinity.Device
 {
     public class PrinterMonitor
     {

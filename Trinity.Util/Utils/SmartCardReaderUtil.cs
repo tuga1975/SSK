@@ -9,7 +9,7 @@ using System.Text;
 using Trinity.Common;
 using Trinity.Common.Common;
 
-namespace Trinity.Util
+namespace Trinity.Device
 {
     public class SmartCardReaderUtil : DeviceUtil
     {

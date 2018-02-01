@@ -172,9 +172,9 @@
       <Project>{b25053fb-2050-4115-9441-8edf5c03fb1d}</Project>
       <Name>Trinity.Identity</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Trinity.Util\Trinity.Util.csproj">
+    <ProjectReference Include="..\Trinity.Util\Trinity.Device.csproj">
       <Project>{9c043308-e722-46ae-8d57-d0b409c0b729}</Project>
-      <Name>Trinity.Util</Name>
+      <Name>Trinity.Device</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

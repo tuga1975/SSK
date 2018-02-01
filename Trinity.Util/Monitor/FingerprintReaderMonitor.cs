@@ -9,7 +9,7 @@ using Trinity.BE;
 using Trinity.Common;
 using Trinity.DAL;
 
-namespace Trinity.Util
+namespace Trinity.Device
 {
     public static class FingerprintReaderMonitor
     {

@@ -108,9 +108,9 @@
       <Project>{344F2633-3277-44C5-A55E-B66F920CCA14}</Project>
       <Name>Trinity.DAL</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Trinity.Util\Trinity.Util.csproj">
+    <ProjectReference Include="..\Trinity.Util\Trinity.Device.csproj">
       <Project>{9C043308-E722-46AE-8D57-D0B409C0B729}</Project>
-      <Name>Trinity.Util</Name>
+      <Name>Trinity.Device</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

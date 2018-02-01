@@ -2,7 +2,7 @@
 using System;
 using System.Diagnostics;
 
-namespace Trinity.Util.Authentication
+namespace Trinity.Device.Authentication
 {
     public class SmartCard
     {

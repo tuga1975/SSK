@@ -8,7 +8,7 @@ using System.Windows.Forms;
 using Trinity.Common;
 using Trinity.DAL;
 using Trinity.DAL.DBContext;
-using Trinity.Util;
+using Trinity.Device;
 
 namespace SSK
 {
