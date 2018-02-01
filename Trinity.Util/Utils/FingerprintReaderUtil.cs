@@ -365,10 +365,14 @@ namespace Trinity.Util
         {
             get
             {
-                if (_futronicEnrollment == null)
+                try
+                {
+                    return _futronicEnrollment.Template;
+                }
+                catch
+                {
                     return new byte[] { };
-
-                return _futronicEnrollment.Template;
+                }
             }
         }
 
@@ -376,7 +380,14 @@ namespace Trinity.Util
         {
             get
             {
-                return _futronicEnrollment.Quality;
+                try
+                {
+                    return _futronicEnrollment.Quality;
+                }
+                catch
+                {
+                    return 0;
+                }
             }
         }
 

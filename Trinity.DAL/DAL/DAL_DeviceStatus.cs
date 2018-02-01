@@ -132,7 +132,11 @@ namespace Trinity.DAL
 
         public bool CheckStatusDevicesStation(string station)
         {
-            return _localUnitOfWork.DataContext.ApplicationDevice_Status.Any(d => d.Station.ToUpper() == station.ToUpper() && d.StatusCode == (int)EnumDeviceStatuses.Disconnected);
+            if (!_localUnitOfWork.DataContext.ApplicationDevice_Status.Any(a=>a.Station.ToUpper() == station.ToUpper()))
+            {
+                return false;
+            }
+            return !_localUnitOfWork.DataContext.ApplicationDevice_Status.Any(d => d.Station.ToUpper() == station.ToUpper() && d.StatusCode == (int)EnumDeviceStatuses.Disconnected);
         }
     }
 }

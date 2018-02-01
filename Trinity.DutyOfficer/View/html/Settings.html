@@ -437,6 +437,7 @@
             if (re) {
                 api.server.DeleteHoliday(holidaySelected, function () {
                     api.server.LoadPage('Settings.html');
+                    holidaySelected = null;
                 });
             }
             e.preventDefault();
