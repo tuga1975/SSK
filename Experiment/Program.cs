@@ -21,7 +21,7 @@ namespace Experiment
             // start health monitors
             SmartCardReaderMonitor.Start();
             FingerprintReaderMonitor.Start();
-            DocumentScannerMonitor.Start();
+            //DocumentScannerMonitor.Start();
             MUBLabelPrinterMonitor.Start();
             UBLabelPrinterMonitor.Start();
             TTLabelPrinterMonitor.Start();

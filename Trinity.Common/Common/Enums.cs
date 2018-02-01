@@ -116,7 +116,7 @@ public enum EnumDeviceIds
 {
     SmartCardReader = 1,
     FingerprintScanner = 2,
-    DocumentScanner= 3,
+    DocumentScanner = 3,
     ReceiptPrinter = 4,
     BarcodeScanner = 5,
     LEDDisplayMonitor = 6,
@@ -250,9 +250,39 @@ public enum EnumDeviceStatuses
     PowerSave = 16777216,
     Disconnected = -1
 }
-
+public static class EnumAppConfig
+{
+    public static bool IsLocal
+    {
+        get
+        {
+            if (ConfigurationManager.AppSettings["IsLocal"] == "true")
+                return true;
+            else
+                return false;
+        }
+    }
+    public static bool ByPassCentralizedDB
+    {
+        get
+        {
+            if (ConfigurationManager.AppSettings["ByPassCentralizedDB"] == "true")
+                return true;
+            else
+                return false;
+        }
+    }
+    public static string web_api_url
+    {
+        get
+        {
+            return ConfigurationManager.AppSettings["web_api_url"];
+        }
+    }
+}
 public static class EnumDeviceNames
 {
+
     public static string TTLabelPrinter
     {
         get { return ConfigurationManager.AppSettings["TTLabelPrinterName"]; }
@@ -320,7 +350,7 @@ public static class EnumStations
 
     public static List<string> GetListStation()
     {
-        return new List<string>() { SSK, SSA, UHP, APS, HSA, ESP, ENROLMENT,DUTYOFFICER };
+        return new List<string>() { SSK, SSA, UHP, APS, HSA, ESP, ENROLMENT, DUTYOFFICER };
     }
 
 }
@@ -359,5 +389,34 @@ public static class EnumIssuedCards
 public static class EnumOutcome
 {
     public const string Processing = "Processing...";
-   
+
 };
+public static class EnumAPIParam
+{
+    //controller
+    public const string Appointment = "Appointment";
+
+    //action
+    public const string GetByToday = "GetByToday";
+    public const string GetNearest = "GetNearest";
+    public const string GetMaximumNumberOfTimeslot = "GetMaximumNumberOfTimeslot";
+    public const string GetById = "GetById";
+    public const string GetDetailsById = "GetDetailsById";
+    public const string GetByUserIdAndDate = "GetByUserIdAndDate";
+    public const string GetListByUserId = "GetListByUserId";
+    public const string GetListCurrentTimeslot = "GetListCurrentTimeslot";
+    public const string UpdateBooktime = "UpdateBooktime";
+    public const string CountAbsenceByUserId = "CountAbsenceByUserId";
+    public const string GetAbsenceByUserId = "GetAbsenceByUserId";
+    public const string UpdateReason = "UpdateReason";
+    public const string GetListFromSelectedDate = "GetListFromSelectedDate";
+    public const string CountByTimeslot = "CountByTimeslot";
+    public const string GetAll = "GetAll";
+    public const string GetAllStatistics = "GetAllStatistics";
+    public const string CountBookedByTimeslot = "CountBookedByTimeslot";
+    public const string CountReportedByTimeslot = "CountReportedByTimeslot";
+    public const string CountNoShowdByTimeslot = "CountNoShowdByTimeslot";
+    public const string CreateForAllUsers = "CreateForAllUsers";
+    public const string GetNearestTimeslot = "GetNearestTimeslot";
+    public const string UpdateTimeslot = "UpdateTimeslot";
+}
