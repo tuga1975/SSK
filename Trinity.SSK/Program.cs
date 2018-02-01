@@ -18,7 +18,7 @@ namespace SSK
             Application.SetCompatibleTextRenderingDefault(false);
             try
             {
-                Application.Run(new Main());
+               Application.Run(new Main());
 
             }
             catch (Exception ex)

@@ -385,7 +385,8 @@ namespace SSK
             }
             else if (countAbsence > 0 && countAbsence < 3)
             {
-                var listAppointment = dalAppointment.GetMyAbsentAppointments(user.UserId);
+                var result= dalAppointment.GetMyAbsentAppointments(user.UserId);
+                var listAppointment = result.Data;
 
                 var eventCenter = Trinity.Common.Common.EventCenter.Default;
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ABSENCE_LESS_THAN_3, Message = "You have been absent for " + countAbsence + " times.\nPlease provide reasons and the supporting documents." });

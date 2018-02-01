@@ -78,8 +78,9 @@ namespace SSK
             try
             {
                 DAL_Appointments dalAppointment = new DAL_Appointments();
-                dalAppointment.CreateAppointmentsForAllUsers(dateTimePicker1.Value);
-                MessageBox.Show("OK");
+                var result = dalAppointment.CreateAppointmentsForAllUsers(dateTimePicker1.Value);
+
+                MessageBox.Show(result.ResponseMessage);
             }
             catch (Exception ex)
             {
