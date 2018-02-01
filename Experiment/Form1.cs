@@ -6,7 +6,7 @@ using System.Windows.Forms;
 using Trinity.BE;
 using Trinity.Common;
 using Trinity.DAL;
-using Trinity.Util;
+using Trinity.Device;
 
 namespace Experiment
 {

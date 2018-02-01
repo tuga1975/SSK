@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Windows.Forms;
 using Trinity.Common;
 using Trinity.DAL;
-using Trinity.Util;
+using Trinity.Device;
 
 namespace Enrolment.CodeBehind.Authentication
 {

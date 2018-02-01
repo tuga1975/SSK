@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26403.7
+VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trinity.SSK", "Trinity.SSK\Trinity.SSK.csproj", "{B65ECADC-0BC9-4B1A-84EE-C1FE0541A787}"
 EndProject
@@ -29,7 +29,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trinity.SPHSim", "Trinity.S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Experiment", "Experiment\Experiment.csproj", "{4E49489A-BB18-4206-B758-631386462B98}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trinity.Util", "Trinity.Util\Trinity.Util.csproj", "{9C043308-E722-46AE-8D57-D0B409C0B729}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trinity.Device", "Trinity.Util\Trinity.Device.csproj", "{9C043308-E722-46AE-8D57-D0B409C0B729}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trinity.CentralizedAPI", "Trinity.CentralizedAPI\Trinity.CentralizedAPI.csproj", "{3E0060ED-B34F-45E0-9895-14B48467C4D1}"
 EndProject

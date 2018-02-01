@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Trinity.Util
+namespace Trinity.Device
 {
     internal static class Repeat
     {

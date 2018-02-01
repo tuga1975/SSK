@@ -3,7 +3,7 @@ using System.Configuration;
 using System.Linq;
 using System.Windows.Forms;
 using Trinity.Common;
-using Trinity.Util;
+using Trinity.Device;
 
 namespace DutyOfficer.CodeBehind
 {

@@ -8,7 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using Trinity.DAL;
 using Trinity.Identity;
-using Trinity.Util;
+using Trinity.Device;
 
 namespace OfficerDesktopApp
 {

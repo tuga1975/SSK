@@ -10,7 +10,7 @@ using Trinity.DAL;
 using Trinity.BE;
 using System.Threading;
 
-namespace Trinity.Util
+namespace Trinity.Device
 {
     public static class SmartCardReaderMonitor
     {

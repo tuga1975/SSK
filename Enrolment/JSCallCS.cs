@@ -13,7 +13,7 @@ using Trinity.Common.Common;
 using Trinity.DAL;
 using Trinity.DAL.DBContext;
 using Trinity.Identity;
-using Trinity.Util;
+using Trinity.Device;
 
 namespace Enrolment
 {

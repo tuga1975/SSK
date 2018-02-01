@@ -10,8 +10,8 @@ using System.Windows.Forms;
 using Trinity.Common;
 using Trinity.Common.Common;
 using Trinity.DAL;
-using Trinity.Util;
-using Trinity.Util.Authentication;
+using Trinity.Device;
+using Trinity.Device.Authentication;
 
 namespace SSA
 {

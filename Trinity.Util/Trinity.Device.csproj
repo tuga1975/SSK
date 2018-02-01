@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{9C043308-E722-46AE-8D57-D0B409C0B729}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>Trinity.Util</RootNamespace>
-    <AssemblyName>Trinity.Util</AssemblyName>
+    <RootNamespace>Trinity.Device</RootNamespace>
+    <AssemblyName>Trinity.Device</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

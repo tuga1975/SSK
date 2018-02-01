@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Trinity.Common;
 
-namespace Trinity.Util.Authentication
+namespace Trinity.Device.Authentication
 {
     public class Fingerprint
     {

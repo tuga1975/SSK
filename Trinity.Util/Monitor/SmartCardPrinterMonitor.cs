@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Trinity.DAL;
 
-namespace Trinity.Util
+namespace Trinity.Device
 {
     public static class SmartCardPrinterMonitor
     {

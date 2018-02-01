@@ -1,4 +1,4 @@
-﻿namespace Trinity.Util
+﻿namespace Trinity.Device
 {
     public abstract class DeviceUtil
     {

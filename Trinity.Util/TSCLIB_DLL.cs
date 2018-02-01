@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace Trinity.Util
+namespace Trinity.Device
 {
     class TSCLIB_DLL
     {

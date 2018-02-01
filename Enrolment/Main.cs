@@ -11,7 +11,7 @@ using Trinity.BE;
 using Trinity.Common;
 using Trinity.Common.Common;
 using Trinity.DAL;
-using Trinity.Util;
+using Trinity.Device;
 
 namespace Enrolment
 {
