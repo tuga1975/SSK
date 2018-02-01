@@ -120,7 +120,7 @@
     <Compile Include="DAL\DAL_Address.cs" />
     <Compile Include="DAL\DAL_DeviceStatus.cs" />
     <Compile Include="DAL\DAL_DrugResults.cs" />
-    <Compile Include="DAL\DAL_GetCardNumber.cs" />
+    <Compile Include="DAL\DAL_GetCardInfo.cs" />
     <Compile Include="DAL\DAL_Timeslots.cs" />
     <Compile Include="DAL\DAL_IssueCard.cs" />
     <Compile Include="DAL\DAL_Setting.cs" />

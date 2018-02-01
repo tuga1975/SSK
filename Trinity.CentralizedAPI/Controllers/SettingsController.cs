@@ -12,10 +12,10 @@ namespace Trinity.CentralizedAPI.Controllers
     {
 
         [HttpGet]
-        [Route("api/Settings/GetCardNumber")]
-        public BE.CardNumber GetCardNumber()
+        [Route("api/Settings/GetCardInfo")]
+        public BE.CardInfo GetCardInfo()
         {
-            return new DAL.DAL_GetCardNumber().GetCardNumber();
+            return new DAL.DAL_GetCardInfo().GetCardInfo();
         }
 
     }

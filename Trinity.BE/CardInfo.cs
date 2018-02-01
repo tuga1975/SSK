@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Trinity.BE
 {
     
-    public class CardNumber
+    public class CardInfo
     {
         [DataMember]
         public int Year { get; set; }
@@ -34,6 +34,11 @@ namespace Trinity.BE
                 return string.Format("{0}/{1}{2}",Year,firstNumber,lastNumber);
             }
         }
+
+        public string CompanyName { get; set; }
+        public string VenueName { get; set; }
+        public string Address { get; set; }
+        public string ContactNumber { get; set; }
     }
     
 }
