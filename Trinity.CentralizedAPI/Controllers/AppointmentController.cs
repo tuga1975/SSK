@@ -259,10 +259,10 @@ namespace Trinity.CentralizedAPI.Controllers
         [HttpGet]
         [Route("api/Appointment/GetListFromSelectedDate")]
         [ResponseType(typeof(BE.ResponseTypeModel<List<Trinity.BE.Appointment>>))]
-        public IHttpActionResult GetListFromSelectedDate(string[] listAppointmentId)
+        public IHttpActionResult GetListFromSelectedDate(string listAppointmentId)
         {
             var responseModel = new BE.ResponseModel();
-            var _listAppointmentId = listAppointmentId.ToList();
+            var _listAppointmentId = listAppointmentId.Split(',').ToList();
             var result = new DAL.DAL_Appointments().GetListAppointmentFromSelectedDate(_listAppointmentId);
             responseModel.ResponseCode = result.ResponseCode;
             responseModel.ResponseMessage = result.ResponseMessage;
