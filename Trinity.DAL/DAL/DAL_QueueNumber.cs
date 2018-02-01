@@ -18,7 +18,8 @@ namespace Trinity.DAL
             var generateQNo = Trinity.Common.CommonUtil.GetQueueNumber(_localUnitOfWork.DataContext.Membership_Users.Find(userId).NRIC);
             var listStation = EnumStations.GetListStation();
             var today = DateTime.Now;
-            var appointmentDetails = new DAL_Appointments().GetAppointmentDetails(appointmentID);
+            var result = new DAL_Appointments().GetAppointmentDetails(appointmentID);
+            var appointmentDetails = result.Data;
             var diffHour = appointmentDetails.StartTime.Value.Hours - today.Hour;
             var diffStartMin = appointmentDetails.StartTime.Value.Minutes - today.Minute;
             var diffEndHour = appointmentDetails.EndTime.Value.Hours - today.Hour;

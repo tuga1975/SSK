@@ -253,11 +253,14 @@ namespace DutyOfficer
         private void GetQueueForSupervisee(string userId)
         {
             DAL_Appointments _Appointment = new DAL_Appointments();
-            Trinity.DAL.DBContext.Appointment appointment = _Appointment.GetMyAppointmentByDate(userId, DateTime.Today);
+            var result= _Appointment.GetMyAppointmentByDate(userId, DateTime.Today);
+            Trinity.DAL.DBContext.Appointment appointment = result.Data;
             if (appointment != null)
             {
-                Trinity.DAL.DBContext.Timeslot timeslot = _Appointment.GetTimeslotNearest();
-                appointment = _Appointment.UpdateTimeslotForAppointment(appointment.ID, timeslot.Timeslot_ID);
+                var responseResult= _Appointment.GetTimeslotNearest();
+                Trinity.DAL.DBContext.Timeslot timeslot = responseResult.Data;
+                var response= _Appointment.UpdateTimeslotForAppointment(appointment.ID, timeslot.Timeslot_ID);
+                appointment = response.Data;
                 var _dalQueue = new DAL_QueueNumber();
                 Trinity.DAL.DBContext.Queue queueNumber = _dalQueue.InsertQueueNumber(appointment.ID, appointment.UserId, EnumStations.SSK);
             }
@@ -268,7 +271,8 @@ namespace DutyOfficer
         public List<Appointment> GetAllAppoinments()
         {
             var dalAppointment = new DAL_Appointments();
-             return dalAppointment.GetAllAppointments();            
+            var result= dalAppointment.GetAllAppointments();
+            return result.Data;            
         }
 
         #endregion
@@ -277,14 +281,19 @@ namespace DutyOfficer
         public List<Statistics> GetStatistics()
         {
             var dalAppointment = new DAL_Appointments();
-            List<Statistics> data = dalAppointment.GetAllStatistics();
+            var result= dalAppointment.GetAllStatistics();
+            List<Statistics> data = result.Data;
 
             foreach (var item in data)
             {
-                item.Max = dalAppointment.GetMaximumNumberOfTimeslot(item.Timeslot_ID);
-                item.Booked = dalAppointment.CountAppointmentBookedByTimeslot(item.Timeslot_ID);
-                item.Reported = dalAppointment.CountAppointmentReportedByTimeslot(item.Timeslot_ID);
-                item.No_Show = dalAppointment.CountAppointmentNoShowByTimeslot(item.Timeslot_ID);
+                var maxResult = dalAppointment.GetMaximumNumberOfTimeslot(item.Timeslot_ID);
+                item.Max = maxResult.Data;
+                var bookedResult= dalAppointment.CountAppointmentBookedByTimeslot(item.Timeslot_ID);
+                item.Booked = bookedResult.Data;
+                var reportedResult = dalAppointment.CountAppointmentReportedByTimeslot(item.Timeslot_ID);
+                item.Reported = reportedResult.Data;
+                var noShowResult= dalAppointment.CountAppointmentNoShowByTimeslot(item.Timeslot_ID);
+                item.No_Show = noShowResult.Data;
                 item.Available = item.Max - item.Booked - item.Reported - item.No_Show;
             }
 
