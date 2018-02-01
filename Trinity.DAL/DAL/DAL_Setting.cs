@@ -27,22 +27,27 @@ namespace Trinity.DAL
                 var morningTimeSpan = new TimeSpan(12, 0, 0);
                 var eveningTimeSpan = new TimeSpan(17, 0, 0);
 
-                foreach (var item in listTimeSlot)
-                {
-                    var setTime = SetAppointmentTime(item);
-                    if (setTime.EndTime <= morningTimeSpan)
-                    {
-                        appointmentTime.Morning.Add(setTime);
-                    }
-                    else if (setTime.EndTime > eveningTimeSpan)
-                    {
-                        appointmentTime.Evening.Add(setTime);
-                    }
-                    else
-                    {
-                        appointmentTime.Afternoon.Add(setTime);
-                    }
-                }
+                appointmentTime.Morning = listTimeSlot.Where(d=>d.Category== EnumTimeshift.Morning).Select(d=> SetAppointmentTime(d)).ToList();
+                appointmentTime.Evening = listTimeSlot.Where(d => d.Category == EnumTimeshift.Evening).Select(d => SetAppointmentTime(d)).ToList();
+                appointmentTime.Afternoon = listTimeSlot.Where(d => d.Category == EnumTimeshift.Afternoon).Select(d => SetAppointmentTime(d)).ToList();
+
+
+                //foreach (var item in listTimeSlot)
+                //{
+                //    var setTime = SetAppointmentTime(item);
+                //    if (setTime.EndTime <= morningTimeSpan)
+                //    {
+                //        appointmentTime.Morning.Add(setTime);
+                //    }
+                //    else if (setTime.EndTime > eveningTimeSpan)
+                //    {
+                //        appointmentTime.Evening.Add(setTime);
+                //    }
+                //    else
+                //    {
+                //        appointmentTime.Afternoon.Add(setTime);
+                //    }
+                //}
 
             }
             return appointmentTime;
