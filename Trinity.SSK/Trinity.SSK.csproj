@@ -266,7 +266,7 @@
     <Content Include="View\html\Authentication\SmartCard.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="View\html\Notication.html">
+    <Content Include="View\html\Notifications.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="View\html\Profile.html">

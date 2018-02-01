@@ -128,17 +128,6 @@
     <Compile Include="Utils\Convertor2.cs" />
   </ItemGroup>
   <ItemGroup>
-    <COMReference Include="WIA">
-      <Guid>{94A0E92D-43C0-494E-AC29-FD45948A5221}</Guid>
-      <VersionMajor>1</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>tlbimp</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-    </COMReference>
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Libs\Futronic Fingerprint Reader\ftrScanAPI.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -151,6 +140,8 @@
     <Content Include="Libs\Futronic Fingerprint Reader\ScanAPIHelper.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Libs\Futronic Fingerprint Reader\x64\ftrSDKHelper13.dll" />
+    <Content Include="Libs\Futronic Fingerprint Reader\x86\ftrSDKHelper13.dll" />
     <Content Include="Libs\PCSC Smart Card Reader\pcsc-sharp.dll" />
     <Content Include="Libs\TSC Barcode Printer\x64\TSCLIB.dll" />
     <Content Include="Libs\TSC Barcode Printer\x86\TSCLIB.dll" />

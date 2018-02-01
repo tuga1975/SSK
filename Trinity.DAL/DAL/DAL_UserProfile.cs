@@ -73,6 +73,7 @@ namespace Trinity.DAL
         {
             try
             {
+                model.UserId = userId;
                 User_Profiles dbUserProfile = null;
                 if (isLocal)
                 {
