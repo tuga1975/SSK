@@ -225,14 +225,14 @@ namespace Trinity.DAL
             return queueInfo;
         }
 
-        public void UpdateQueueStatusByUserId(string userId, string station, string status, string outcome)
+        public void UpdateQueueStatusByUserId(string userId, string currentStation, string nextStation, string status, string outcome)
         {
             DBContext.Queue dbQueue = _localUnitOfWork.DataContext.Queues.Include("Appointment").FirstOrDefault(d => d.Appointment.UserId == userId);
             if (dbQueue != null)
             {
-                dbQueue.CurrentStation = station;
+                dbQueue.CurrentStation = nextStation;
                 dbQueue.Outcome = outcome;
-                DBContext.QueueDetail dbQueueDetail = _localUnitOfWork.DataContext.QueueDetails.FirstOrDefault(d => d.Queue_ID == dbQueue.Queue_ID && d.Station == EnumStations.SSA);
+                DBContext.QueueDetail dbQueueDetail = _localUnitOfWork.DataContext.QueueDetails.FirstOrDefault(d => d.Queue_ID == dbQueue.Queue_ID && d.Station == currentStation);
                 if (dbQueueDetail != null)
                 {
                     dbQueueDetail.Status = status;
