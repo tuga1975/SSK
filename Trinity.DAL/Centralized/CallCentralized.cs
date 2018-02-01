@@ -111,4 +111,42 @@ public class CallCentralized
         }
         return default(T);
     }
+    public T Post<T>(string Controller, string Action, params string[] pram)
+    {
+
+        try
+        {
+            IsConnectCentralized = true;
+
+            if (EnumAppConfig.ByPassCentralizedDB)
+                return default(T);
+
+            HttpClient client = new HttpClient();
+            client.BaseAddress = new Uri(EnumAppConfig.web_api_url);
+            //client.DefaultRequestHeaders.Accept.Add(
+            //    new MediaTypeWithQualityHeaderValue("application/json"));
+            var response = client.PostAsJsonAsync(string.Format("api/{0}/{1}?{2}", Controller, Action, string.Join("&", pram)), "").Result;
+            if (response.IsSuccessStatusCode)
+            {
+                using (StreamReader sr = new StreamReader(response.Content.ReadAsStreamAsync().Result))
+                {
+                    using (JsonReader reader = new JsonTextReader(sr))
+                    {
+                        JsonSerializer serializer = new JsonSerializer();
+                        return serializer.Deserialize<T>(reader);
+                    }
+                }
+            }
+            else
+            {
+                IsConnectCentralized = false;
+            }
+            return default(T);
+        }
+        catch (Exception)
+        {
+            IsConnectCentralized = false;
+        }
+        return default(T);
+    }
 }

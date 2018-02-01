@@ -15,7 +15,5 @@ namespace Trinity.CentralizedAPI.Controllers
         {
             return new DAL.DAL_User().GetUserByUserId(userId,false);
         }
-
-
     }
 }

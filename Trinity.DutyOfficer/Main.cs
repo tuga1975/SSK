@@ -29,7 +29,6 @@ namespace DutyOfficer
         public Main()
         {
             InitializeComponent();
-
             // setup variables
             _smartCardFailed = 0;
             _fingerprintFailed = 0;
