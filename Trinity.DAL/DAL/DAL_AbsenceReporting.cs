@@ -74,7 +74,7 @@ namespace Trinity.DAL
         /// </summary>
         /// <param name="reason"></param>
         /// <returns></returns>
-        public Trinity.BE.AbsenceReporting SetInfo(Trinity.BE.Reason reason)
+        public BE.Response<BE.AbsenceReporting> SetInfo(Trinity.BE.Reason reason)
         {
             var absenceModel = new Trinity.BE.AbsenceReporting();
             absenceModel.ID = Guid.NewGuid();
@@ -84,7 +84,8 @@ namespace Trinity.DAL
             absenceModel.ScannedDocument = null;
             absenceModel.ReportingDate = DateTime.Now;
 
-            return absenceModel;
+
+            return new BE.Response<BE.AbsenceReporting>((int)EnumResponseStatuses.Success,EnumResponseMessage.Success,absenceModel);
         }
     }
 }

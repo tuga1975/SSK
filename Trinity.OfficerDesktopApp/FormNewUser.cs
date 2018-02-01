@@ -91,10 +91,15 @@ namespace OfficerDesktopApp
                 userProfile.Nationality = txtNationality.Text;
                 userProfile.DOB = dpDOB.Value;
 
-                dalUserProfile.UpdateUserProfile(userProfile, _currentUser.UserId, true);
+                var apiCentral = CallCentralized.Instance;
 
-                // Save to the Centralized DB also
-                dalUserProfile.UpdateUserProfile(userProfile, _currentUser.UserId, false);
+              
+                var updateUProfileResult = apiCentral.Post<bool>("User", "UpdateUserProfile", userProfile);
+
+                //dalUserProfile.UpdateUserProfile(userProfile, _currentUser.UserId, true);
+
+                //// Save to the Centralized DB also
+                //dalUserProfile.UpdateUserProfile(userProfile, _currentUser.UserId, false);
 
                 btnSave.Enabled = false;
                 MessageBox.Show("Create user successfully!", "Create user", MessageBoxButtons.OK, MessageBoxIcon.Information);
