@@ -14,6 +14,7 @@ namespace Enrolment
         [STAThread]
         static void Main()
         {
+            Trinity.BE.CardNumber a = new Trinity.DAL.DAL_GetCardNumber().GetCardNumber();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Main());

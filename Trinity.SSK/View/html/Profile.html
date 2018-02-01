@@ -236,7 +236,7 @@
         //user inforation
         $('#ParticularsName').val(model.User.Name);
         $('#NRIC').val(model.User.NRIC);
-        $('#DOB').val(model.UserProfile.DOB);
+        $('#DOB').val(model.UserProfile.DOBAsString);
         $('#LastLoginTime').val(model.User.LastLoginTime);
         $('#EnrolledDate').val(model.User.EnrolledDate);
         $('#Role').val(model.User.Role);
@@ -297,6 +297,8 @@
 
         var $form = $("#profileFrm");
         var data = getFormData($form);
+        var dobtxt = data.DOB.split('/');
+        data.DOB = dobtxt[2] + '-' + dobtxt[1] + '-' + dobtxt[0];
         var json = JSON.stringify(data);
 
         //for testing purpose
