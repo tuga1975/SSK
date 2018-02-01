@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNet.SignalR.Client;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,10 +7,56 @@ using System.Threading.Tasks;
 
 namespace Trinity.Utils.Notification
 {
-    public class SignalRBase
+    public abstract class SignalRBase
     {
         private IHubProxy HubProxy { get; set; }
-        const string ServerURI = "http://localhost:8080/signalr";
         private HubConnection Connection { get; set; }
+        public void StartConnect(string station)
+        {
+            ConnectAsync(station);
+        }
+        private async void ConnectAsync(string station)
+        {
+            Connection = new HubConnection(EnumAppConfig.NotificationServerUrl + "/signalr");
+            Connection.Headers.Add("Station", station);
+            Connection.Closed += _Connection_Closed;
+
+            HubProxy = Connection.CreateHubProxy("MyHub");
+            //Handle incoming event from server: use Invoke to write to console from SignalR's thread
+            _IncomingEvents();
+            try
+            {
+                await Connection.Start();
+            }
+            catch
+            {
+                //No connection: Don't enable Send button or show chat UI
+                return;
+            }
+        }
+        private void _Connection_Closed()
+        {
+            Connection_Closed();
+            if (Connection != null)
+                Connection.Start();
+        }
+        private void _IncomingEvents()
+        {
+            IncomingEvents();
+        }
+
+
+
+        public abstract void IncomingEvents();
+        public abstract void Connection_Closed();
+
+        public void Dispose()
+        {
+            Connection.Stop();
+            Connection = null;
+            HubProxy = null;
+        }
+
+
     }
 }

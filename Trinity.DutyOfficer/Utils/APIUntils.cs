@@ -13,13 +13,12 @@ class APIUtils
     static APIUtils()
     {
         SignalR = new DutyOfficer.Utils.SignalR();
+        SignalR.StartConnect(EnumStations.SSK);
     }
 
 
     public static void Dispose()
     {
-        #region Đóng lại nếu ko có Smart Card Driver
-        //SCardMonitor.Dispose();
-        #endregion
+        SignalR.Dispose();
     }
 }

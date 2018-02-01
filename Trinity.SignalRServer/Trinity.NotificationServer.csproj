@@ -130,6 +130,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MyHub.cs" />
+    <Compile Include="ProfileConnected.cs" />
+    <Compile Include="Startup.cs" />
     <Compile Include="WinFormsServer.cs">
       <SubType>Form</SubType>
     </Compile>
