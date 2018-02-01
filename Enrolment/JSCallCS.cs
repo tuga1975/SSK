@@ -432,7 +432,7 @@ namespace Enrolment
             _web.LoadPageHtml("UpdateSuperviseeFingerprint.html");
         }
 
-        public void UpdateSuperviseeBiodata(string frontBase64, string backBase64)
+        public void UpdateSuperviseeBiodata(string frontBase64, string backBase64,string cardInfo)
         {
             Session session = Session.Instance;
             var dalUser = new Trinity.DAL.DAL_User();
@@ -443,16 +443,17 @@ namespace Enrolment
                 EventCenter eventCenter = EventCenter.Default;
 
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.UPDATE_SUPERVISEE_BIODATA, Data = new object[] { profileModel, frontBase64, backBase64 } });
-                PrintSmartCard(frontBase64, backBase64);
+                PrintSmartCard(frontBase64, backBase64, cardInfo);
             }
         }
         public object loadDataVerify()
         {
             Session session = Session.Instance;
-            return session[CommonConstants.CURRENT_EDIT_USER];
+            return new object[] { session[CommonConstants.CURRENT_EDIT_USER] ,new DAL_GetCardInfo().GetCardInfo()};
         }
-        public void PrintSmartCard(string frontBase64, string backBase64)
+        public void PrintSmartCard(string frontBase64, string backBase64, string cardInfo)
         {
+            _CardInfo = JsonConvert.DeserializeObject<Trinity.BE.CardInfo>(cardInfo);
             this._web.InvokeScript("showPrintMessage", null, "Printing card please wait ...");
             frontBase64 = frontBase64.Replace("data:image/png;base64,", string.Empty);
             backBase64 = backBase64.Replace("data:image/png;base64,", string.Empty);
@@ -500,12 +501,12 @@ namespace Enrolment
                 {
                     CreatedBy = userLogin.UserId,
                     CreatedDate = DateTime.Now,
-                    Date_Of_Issue = currentEditUser.UserProfile.DateOfIssue,
+                    Date_Of_Issue = _CardInfo.Date_Of_Issue,
                     Name = currentEditUser.Membership_Users.Name,
                     NRIC = currentEditUser.Membership_Users.NRIC,
                     Reprint_Reason = string.Empty,
-                    Serial_Number = currentEditUser.UserProfile.SerialNumber,
-                    Expired_Date = currentEditUser.UserProfile.Expired_Date,
+                    Serial_Number = _CardInfo.CardNumberFull,
+                    Expired_Date = _CardInfo.Expired_Date,
                     Status = EnumIssuedCards.Active,
                     SmartCardId = SmartID,
                     UserId = currentEditUser.UserProfile.UserId
@@ -514,6 +515,10 @@ namespace Enrolment
                 new DAL_Membership_Users().UpdateSmartCardId(currentEditUser.User.UserId, SmartID);
                 new DAL_User().ChangeUserStatus(currentEditUser.User.UserId, EnumUserStatuses.Enrolled);
                 dalIssueCard.Insert(IssueCard);
+                new DAL_UserProfile().UpdateCardInfo(currentEditUser.UserProfile.UserId, _CardInfo.CardNumberFull, _CardInfo.Date_Of_Issue, _CardInfo.Expired_Date);
+                currentEditUser.UserProfile.Expired_Date = _CardInfo.Expired_Date;
+                currentEditUser.UserProfile.DateOfIssue = _CardInfo.Date_Of_Issue;
+                currentEditUser.UserProfile.SerialNumber = _CardInfo.CardNumberFull;
                 currentEditUser.Membership_Users.SmartCardId = SmartID;
                 this._web.InvokeScript("showPrintMessage", true, "Smart Card was printed successfully! Please collect the smart card from printer and place on the reader to verify.");
                 this._web.InvokeScript("showCardImages");
@@ -757,6 +762,7 @@ namespace Enrolment
 
         #region Issued Cards
         private string reprintTxt = string.Empty;
+        private Trinity.BE.CardInfo _CardInfo = null;
         public object[] GetIssuedCards()
         {
             Session session = Session.Instance;
@@ -764,8 +770,9 @@ namespace Enrolment
             List<Trinity.BE.IssueCard> array = new Trinity.DAL.DAL_IssueCard().GetMyIssueCards(currentEditUser.UserProfile.UserId);
             return new object[] { array, currentEditUser.UserProfile.UserId };
         }
-        public void ReprintIssuedCard(string reprintReason, string frontBase64, string backBase64)
+        public void ReprintIssuedCard(string reprintReason,string cardInfo, string frontBase64, string backBase64)
         {
+            _CardInfo = JsonConvert.DeserializeObject<Trinity.BE.CardInfo>(cardInfo);
             frontBase64 = frontBase64.Replace("data:image/png;base64,", string.Empty);
             backBase64 = backBase64.Replace("data:image/png;base64,", string.Empty);
             string ImgFront = null;
@@ -785,7 +792,9 @@ namespace Enrolment
             Session session = Session.Instance;
             var userLogin = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
             var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
-            PrintAndWriteSmartCardInfo cardInfo = new PrintAndWriteSmartCardInfo()
+            
+
+            SmartCardPrinterUtil.Instance.PrintAndWriteSmartCard(new PrintAndWriteSmartCardInfo()
             {
                 BackCardImagePath = ImgBack,
                 FrontCardImagePath = ImgFront,
@@ -795,9 +804,7 @@ namespace Enrolment
                     NRIC = currentEditUser.User.NRIC,
                     UserId = currentEditUser.User.UserId,
                 }
-            };
-
-            SmartCardPrinterUtil.Instance.PrintAndWriteSmartCard(cardInfo, OnIssuedCardReprinted);
+            }, OnIssuedCardReprinted);
         }
         private void OnIssuedCardReprinted(PrintAndWriteCardResult result)
         {
@@ -812,12 +819,12 @@ namespace Enrolment
                 {
                     CreatedBy = userLogin.UserId,
                     CreatedDate = DateTime.Now,
-                    Date_Of_Issue = currentEditUser.UserProfile.DateOfIssue,
                     Name = currentEditUser.Membership_Users.Name,
                     NRIC = currentEditUser.Membership_Users.NRIC,
                     Reprint_Reason = reprintTxt,
-                    Serial_Number = currentEditUser.UserProfile.SerialNumber,
-                    Expired_Date = currentEditUser.UserProfile.Expired_Date,
+                    Serial_Number = _CardInfo.CardNumberFull,
+                    Date_Of_Issue = _CardInfo.Date_Of_Issue,
+                    Expired_Date = _CardInfo.Expired_Date,
                     Status = EnumIssuedCards.Active,
                     SmartCardId = SmartID,
                     UserId = currentEditUser.UserProfile.UserId
@@ -825,6 +832,10 @@ namespace Enrolment
                 dalIssueCard.UpdateStatusByUserId(currentEditUser.UserProfile.UserId, EnumIssuedCards.Deactivate);
                 dalIssueCard.Insert(IssueCard);
                 new DAL_Membership_Users().UpdateSmartCardId(currentEditUser.UserProfile.UserId, SmartID);
+                new DAL_UserProfile().UpdateCardInfo(currentEditUser.UserProfile.UserId,_CardInfo.CardNumberFull,_CardInfo.Date_Of_Issue,_CardInfo.Expired_Date);
+                currentEditUser.UserProfile.Expired_Date = _CardInfo.Expired_Date;
+                currentEditUser.UserProfile.DateOfIssue = _CardInfo.Date_Of_Issue;
+                currentEditUser.UserProfile.SerialNumber = _CardInfo.CardNumberFull;
                 currentEditUser.Membership_Users.SmartCardId = SmartID;
                 _web.InvokeScript("OnIssuedCardReprinted", true, IssueCard.JsonString());
             }

@@ -76,40 +76,20 @@
                                             <img src="../images/central_narco_logo.png" style="position:absolute;height: 35px;top: 119px;left: 40px;z-index: 1;">
                                             <div style="position:absolute;top:40px;left: 110px;font-size: 12px;font-weight: bold;line-height: 16px;">
                                                 <div><span name="verifyName"></span></div>
-                                                <!--<div><span name="verifyNRIC"></span></div>-->
-                                                <div><span name="serialNumber"></span></div>
-                                                <!--<div><b>Issue date: </b><span name="issueDate"></span></div>
-                                                <div><b>Expire date: </b><span name="expireDate"></span></div>-->
-                                                <!--<div><b>Serial Number: </b><span name="serialNumber"></span></div>-->
+                                                <div><span name="verifyNRIC"></span></div>
                                                 <div style="clear:both"></div>
                                             </div>
                                             <div style="position:absolute;width:auto;left:110px;bottom:45px;background-color:#FFF;border-radius:5px;padding:5px;">
                                                 <img name="verifyBarcode" />
                                             </div>
-                                            <div style="position:absolute;right:15px;bottom:15px;text-align:right;">
-                                                <span name="verifyNumber"></span>
+                                            <div style="position:absolute;right:15px;bottom:10px;text-align:right;font-size:10px;font-weight:bold;">
+                                                <span name="verifyCardNumber"></span>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col">
                                     <div style="width:300px;height:182px;border:1px solid #000;float:right;position:relative;overflow:hidden;border-radius:5px;font-family:Arial;" id="backCard">
-                                        <!--<div style="height:87px;width:100px;position:absolute;top:2px;left:2px;border:1px solid #CCC;text-align:center;padding:1px;display:none;">
-                                            <img src="../images/fingerprint.jpg" id="verifyLeftFinger" style="height:100%;max-width:100%;" />
-                                        </div>
-                                        <div style="height:87px;width:100px;position:absolute;bottom:2px;left:2px;border:1px solid #CCC;text-align:center;padding:1px;display:none;">
-                                            <img src="../images/fingerprint.jpg" id="verifyRightFinger" style="height:100%;max-width:100%;" />
-                                        </div>
-                                        <div style="margin-left:0px;padding:10px;font-size:12px;">
-                                            <div><b>Name : </b><span name="verifyName"></span></div>
-                                            <div><b>NRIC : </b><span name="verifyNRIC"></span></div>
-                                            <div><b>Date of Birth : </b><span name="verifyDOB"></span></div>
-                                            <div><b>Sex : </b><span name="verifyGender"></span></div>
-                                            <div><b>Nationality : </b><span name="verifyNation"></span></div>
-                                            <div><b>Race : </b><span name="verifyRace"></span></div>
-                                            <div><b>Issue date: </b><span name="issueDate"></span></div>
-                                            <div><b>Expire date: </b><span name="expireDate"></span></div>
-                                        </div>-->
                                         <img src="../images/background-smart-card.png" style="position:absolute;z-index:0;left:0px;top:0px;height:100%;width:100%;" />
 
                                         <div style="position:absolute;bottom:15px;left:15px;z-index:1;color:#FFF;">
@@ -118,10 +98,10 @@
                                             </div>
                                             <div style="margin-top:10px;font-size: 8px;font-weight: bold;text-shadow: 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black;">
                                                 “If this card is found, please return to any Police Station or to:<br />
-                                                Central Narcotics Bureau<br />
-                                                393 New Bridge Road,<br />
-                                                Singapore 088763<br />
-                                                Contact Number: 6325 6665
+                                                <span name="verifyCompanyName"></span><br />
+                                                <span name="verifyVenueName"></span><br />
+                                                <span name="verifyAddress"></span><br />
+                                                Contact Number: <span name="verifyContactNumber"></span><br />
                                             </div>
                                         </div>
                                         <div style="clear:both"></div>
@@ -138,7 +118,7 @@
                             <div class="col" style="text-align:center">
                                 <div style="width:100%;border:1px solid #000000;font-size:15px;display:none" id="printSuccessMessage"></div>
                                 <div style="text-align:center;margin-top:10px;display:none;" id="rePrinter">
-                                    <input type="button" value="Reprint" onclick="api.server.PrintSmartCard(frontCardImg, backCardImg);" />
+                                    <input type="button" value="Reprint" onclick="api.server.PrintSmartCard(frontCardImg, backCardImg, JSON.stringify(CardInfo));" />
                                 </div>
                                 <div style="margin:10px auto;display:none;text-align:center;" id="reCheckSCard">
                                     <img src="" style="margin-left:10px;" id="frontCardImg" />
@@ -158,7 +138,6 @@
     </div>
 </div>
 <script>
-
     function setImg(number, src) {
         image = document.getElementById('image' + number);
         image.src = src;
@@ -269,8 +248,10 @@
 <script>
     var frontCardImg = null;
     var backCardImg = null;
+    var CardInfo = null;
     var countPrinterSmartCard = 0;
     $(function () {
+
         var isUpdated = false;
         $("#wizard").steps({
             headerTag: "h2",
@@ -292,25 +273,35 @@
 
 
                 if (newIndex == 2) {
-                    api.server.loadDataVerify(function (model) {
+                    api.server.loadDataVerify(function (dataRe) {
+
+                        var model = dataRe[0];
+                        CardInfo = dataRe[1];
+
+                        $('[name="issueDate"]').text(CardInfo.Date_Of_Issue_Txt);
+                        $('[name="verifyCardNumber"]').text(CardInfo.CardNumberFull);
+
+                        $('[name="verifyCompanyName"]').text(CardInfo.CompanyName);
+                        $('[name="verifyVenueName"]').text(CardInfo.VenueName);
+                        $('[name="verifyAddress"]').text(CardInfo.Address);
+                        $('[name="verifyContactNumber"]').text(CardInfo.ContactNumber);
+
                         $('[name="verifyName"]').text(model.User.Name);
                         if (model.UserProfile.DOB != null) {
                             $('[name="verifyDOB"]').text(model.UserProfile.DOBTxt);
                         }
 
                         $('[name="verifyNRIC"]').text(model.User.NRIC);
-                        $('[name="serialNumber"]').text(model.UserProfile.SerialNumber);
-                        $('[name="serialNumberBack"]').text(model.UserProfile.SerialNumber);
                         $('[name="verifyGender"]').text(model.UserProfile.Gender == null ? '' : model.UserProfile.Gender);
                         $('[name="verifyNation"]').text(model.UserProfile.Nationality);
-                        if (model.UserProfile.DateOfIssue != null) {
+                        //if (model.UserProfile.DateOfIssue != null) {
 
-                            $('[name="issueDate"]').text(model.UserProfile.DateOfIssueTxt);
-                            $('[name="issueDateBack"]').text(model.UserProfile.DateOfIssueTxt);
-                        }
-                        if (model.UserProfile.Expired_Date != null) {
-                            $('[name="expireDate"]').text(model.UserProfile.Expired_DateTxt);
-                        }
+                        //    $('[name="issueDate"]').text(model.UserProfile.DateOfIssueTxt);
+                        //    $('[name="issueDateBack"]').text(model.UserProfile.DateOfIssueTxt);
+                        //}
+                        //if (model.UserProfile.Expired_Date != null) {
+                        //    $('[name="expireDate"]').text(model.UserProfile.Expired_DateTxt);
+                        //}
                         $('[name="verifyRace"]').text(model.UserProfile.Race == null ? '' : model.UserProfile.Race);
                         frontCardImg = null;
                         backCardImg = null;
@@ -360,7 +351,7 @@
                     if (backCardImg == null) {
                         backCardImg = '';
                     }
-                    api.server.UpdateSuperviseeBiodata(frontCardImg, backCardImg);
+                    api.server.UpdateSuperviseeBiodata(frontCardImg, backCardImg, JSON.stringify(CardInfo));
                 }
             },
             onFinished: function (event, currentIndex) {

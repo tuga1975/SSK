@@ -54,14 +54,14 @@
             <img src="../images/central_narco_logo.png" style="position:absolute;height: 35px;top: 119px;left: 40px;z-index: 1;">
             <div style="position:absolute;top:40px;left: 110px;font-size: 12px;font-weight: bold;line-height: 16px;">
                 <div><span name="verifyName"></span></div>
-                <div><span name="serialNumber"></span></div>
+                <div><span name="verifyNRIC"></span></div>
                 <div style="clear:both"></div>
             </div>
             <div style="position:absolute;width:auto;left:110px;bottom:45px;background-color:#FFF;border-radius:5px;padding:5px;">
                 <img name="verifyBarcode" />
             </div>
-            <div style="position:absolute;right:15px;bottom:15px;text-align:right;">
-                <span name="verifyNumber"></span>
+            <div style="position:absolute;right:15px;bottom:10px;text-align:right;font-size:10px;font-weight:bold;">
+                <span name="verifyCardNumber"></span>
             </div>
         </div>
     </div>
@@ -74,16 +74,17 @@
             </div>
             <div style="margin-top:10px;font-size: 8px;font-weight: bold;text-shadow: 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black;">
                 “If this card is found, please return to any Police Station or to:<br />
-                Central Narcotics Bureau<br />
-                393 New Bridge Road,<br />
-                Singapore 088763<br />
-                Contact Number: 6325 6665
+                <span name="verifyCompanyName"></span><br />
+                <span name="verifyVenueName"></span><br />
+                <span name="verifyAddress"></span><br />
+                Contact Number: <span name="verifyContactNumber"></span><br />
             </div>
         </div>
         <div style="clear:both"></div>
     </div>
 </div>
 <script>
+    var CardInfo = null;
     var UserID = null;
     api.server.GetIssuedCards(function (data) {
         UserID = data[1];
@@ -91,7 +92,19 @@
             $('#data-issuedcards tbody').append(api.DumpDataToTxt('<tr><td>{NRIC}</td><td>{Name}</td><td>{Date_Of_Issue_Txt}</td><td>{Expired_Date_Txt}</td><td>{Serial_Number}</td><td reprintsmartcard-status>{Status}</td><td style="text-align:center;">' + (index == 0 ? '<a href="javascript:ShowPrintIssuedCard();"><img style="cursor:pointer;" src="../images/printer.png"/></a>' : '') + '</td></tr>', item));
         });
 
-        api.server.loadDataVerify(function (model) {
+        api.server.loadDataVerify(function (dataRe) {
+
+            var model = dataRe[0];
+            CardInfo = dataRe[1];
+            $('[name="issueDate"]').text(CardInfo.Date_Of_Issue_Txt);
+            $('[name="verifyCardNumber"]').text(CardInfo.CardNumberFull);
+
+            $('[name="verifyCompanyName"]').text(CardInfo.CompanyName);
+            $('[name="verifyVenueName"]').text(CardInfo.VenueName);
+            $('[name="verifyAddress"]').text(CardInfo.Address);
+            $('[name="verifyContactNumber"]').text(CardInfo.ContactNumber);
+
+
 
             //User_Photo1_Base64
             $('#verifyPhoto').attr('src', 'data:image/jpg;base64,' + model.UserProfile.User_Photo1);
@@ -102,18 +115,16 @@
             }
 
             $('[name="verifyNRIC"]').text(model.User.NRIC);
-            $('[name="serialNumber"]').text(model.UserProfile.SerialNumber);
-            $('[name="serialNumberBack"]').text(model.UserProfile.SerialNumber);
             $('[name="verifyGender"]').text(model.UserProfile.Gender == null ? '' : model.UserProfile.Gender);
             $('[name="verifyNation"]').text(model.UserProfile.Nationality);
-            if (model.UserProfile.DateOfIssue != null) {
+            //if (model.UserProfile.DateOfIssue != null) {
 
-                $('[name="issueDate"]').text(model.UserProfile.DateOfIssueTxt);
-                $('[name="issueDateBack"]').text(model.UserProfile.DateOfIssueTxt);
-            }
-            if (model.UserProfile.Expired_Date != null) {
-                $('[name="expireDate"]').text(model.UserProfile.Expired_DateTxt);
-            }
+            //    $('[name="issueDate"]').text(model.UserProfile.DateOfIssueTxt);
+            //    $('[name="issueDateBack"]').text(model.UserProfile.DateOfIssueTxt);
+            //}
+            //if (model.UserProfile.Expired_Date != null) {
+            //    $('[name="expireDate"]').text(model.UserProfile.Expired_DateTxt);
+            //}
             $('[name="verifyRace"]').text(model.UserProfile.Race == null ? '' : model.UserProfile.Race);
             JsBarcode('[name="verifyBarcode"]', model.User.NRIC, { height: 20, fontSize: 8, width: 1, margin: 0, font: "Arial" });
         });
@@ -138,11 +149,11 @@
             onrendered: function (froncanvas) {
                 html2canvas($('#backCard'), {
                     onrendered: function (backcanvas) {
-                        api.server.ReprintIssuedCard($('[name="reprint"]').val(), froncanvas.toDataURL("image/png"), backcanvas.toDataURL("image/png"));
+                        api.server.ReprintIssuedCard($('[name="reprint"]').val(), JSON.stringify(CardInfo), froncanvas.toDataURL("image/png"), backcanvas.toDataURL("image/png"));
                     }
                 });
             }
-        });   
+        });
     }
     function ShowPrintIssuedCard() {
         $('[enterreprint]').css('display', 'block');

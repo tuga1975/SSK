@@ -20,7 +20,7 @@ namespace Trinity.BE
         public int Number { get; set; }
 
         [DataMember]
-        public string FullCardNumber
+        public string CardNumberFull
         {
             get
             {
@@ -39,6 +39,36 @@ namespace Trinity.BE
         public string VenueName { get; set; }
         public string Address { get; set; }
         public string ContactNumber { get; set; }
+        
+        public DateTime Date_Of_Issue
+        {
+            get
+            {
+                return DateTime.Today;
+            }
+        }
+        public string Date_Of_Issue_Txt
+        {
+            get
+            {
+                return Date_Of_Issue.ToString(EnumAppConfig.DateFormat);
+            }
+        }
+
+        public DateTime Expired_Date
+        {
+            get
+            {
+                return Date_Of_Issue.AddYears(EnumAppConfig.Card_Expired_Date);
+            }
+        }
+        public string Expired_Date_Txt
+        {
+            get
+            {
+                return Expired_Date.ToString(EnumAppConfig.DateFormat);
+            }
+        }
     }
     
 }

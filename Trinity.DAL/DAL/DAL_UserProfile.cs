@@ -252,5 +252,14 @@ namespace Trinity.DAL
                 this._localUnitOfWork.Save();
             }
         }
+        public void UpdateCardInfo(string UserId,string CardNumber, DateTime Date_of_Issue,DateTime Expired_Date)
+        {
+            DBContext.User_Profiles user = _localUnitOfWork.DataContext.User_Profiles.FirstOrDefault(d=>d.UserId==UserId);\
+            user.Serial_Number = CardNumber;
+            user.Date_of_Issue = Date_of_Issue;
+            user.Expired_Date = Expired_Date;
+            _localUnitOfWork.GetRepository<DBContext.User_Profiles>().Update(user);
+            _localUnitOfWork.Save();
+        }
     }
 }
