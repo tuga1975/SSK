@@ -17,40 +17,49 @@ namespace Trinity.DAL
         Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
 
 
-        public Trinity.BE.WorkingTimeshift GetAppointmentTime(DateTime date)
+        public Response<WorkingTimeshift> GetAppointmentTime(DateTime date)
         {
-            var appointmentTime = new Trinity.BE.WorkingTimeshift();
-            var listTimeSlot = GetTimeslots(date);
-            if (listTimeSlot.Count > 0)
+            try
             {
 
-                var morningTimeSpan = new TimeSpan(12, 0, 0);
-                var eveningTimeSpan = new TimeSpan(17, 0, 0);
+                var appointmentTime = new Trinity.BE.WorkingTimeshift();
+                var listTimeSlot = GetTimeslots(date);
+                if (listTimeSlot.Count > 0)
+                {
 
-                appointmentTime.Morning = listTimeSlot.Where(d=>d.Category== EnumTimeshift.Morning).Select(d=> SetAppointmentTime(d)).ToList();
-                appointmentTime.Evening = listTimeSlot.Where(d => d.Category == EnumTimeshift.Evening).Select(d => SetAppointmentTime(d)).ToList();
-                appointmentTime.Afternoon = listTimeSlot.Where(d => d.Category == EnumTimeshift.Afternoon).Select(d => SetAppointmentTime(d)).ToList();
+                    var morningTimeSpan = new TimeSpan(12, 0, 0);
+                    var eveningTimeSpan = new TimeSpan(17, 0, 0);
+
+                    appointmentTime.Morning = listTimeSlot.Where(d => d.Category == EnumTimeshift.Morning).Select(d => SetAppointmentTime(d)).ToList();
+                    appointmentTime.Evening = listTimeSlot.Where(d => d.Category == EnumTimeshift.Evening).Select(d => SetAppointmentTime(d)).ToList();
+                    appointmentTime.Afternoon = listTimeSlot.Where(d => d.Category == EnumTimeshift.Afternoon).Select(d => SetAppointmentTime(d)).ToList();
 
 
-                //foreach (var item in listTimeSlot)
-                //{
-                //    var setTime = SetAppointmentTime(item);
-                //    if (setTime.EndTime <= morningTimeSpan)
-                //    {
-                //        appointmentTime.Morning.Add(setTime);
-                //    }
-                //    else if (setTime.EndTime > eveningTimeSpan)
-                //    {
-                //        appointmentTime.Evening.Add(setTime);
-                //    }
-                //    else
-                //    {
-                //        appointmentTime.Afternoon.Add(setTime);
-                //    }
-                //}
+                    //foreach (var item in listTimeSlot)
+                    //{
+                    //    var setTime = SetAppointmentTime(item);
+                    //    if (setTime.EndTime <= morningTimeSpan)
+                    //    {
+                    //        appointmentTime.Morning.Add(setTime);
+                    //    }
+                    //    else if (setTime.EndTime > eveningTimeSpan)
+                    //    {
+                    //        appointmentTime.Evening.Add(setTime);
+                    //    }
+                    //    else
+                    //    {
+                    //        appointmentTime.Afternoon.Add(setTime);
+                    //    }
+                    //}
 
+                }
+                return new Response<WorkingTimeshift>((int)EnumResponseStatuses.Success, EnumResponseMessage.Success, appointmentTime);
             }
-            return appointmentTime;
+            catch (Exception)
+            {
+
+                return new Response<WorkingTimeshift>((int)EnumResponseStatuses.ErrorSystem,EnumResponseMessage.ErrorSystem,null);
+            }
         }
 
         public BE.WorkingShiftDetails SetAppointmentTime(DBContext.Timeslot timeSlot)
@@ -66,10 +75,11 @@ namespace Trinity.DAL
             return environmentTime;
         }
 
-        public Trinity.BE.WorkingTimeshift GetCurrentAppointmentTime()
+        public Response<WorkingTimeshift> GetCurrentAppointmentTime()
         {
             var today = DateTime.Now;
-            return GetAppointmentTime(today);
+            var result= GetAppointmentTime(today);
+            return result;
         }
 
         public List<Timeslot> GetTimeslots(DateTime date)
@@ -77,7 +87,13 @@ namespace Trinity.DAL
             SettingModel setting = GetSettings();
             //GenerateTimeslots("dfbb2a6a-9e45-4a76-9f75-af1a7824a947");
             int dayOfWeek = date.DayOfWeek();
-            return _localUnitOfWork.DataContext.Timeslots.Where(t => DbFunctions.TruncateTime(t.Date) == date.Date).ToList();
+            if (EnumAppConfig.IsLocal)
+            {
+                return _localUnitOfWork.DataContext.Timeslots.Where(t => DbFunctions.TruncateTime(t.Date) == date.Date).ToList();
+            }
+            return _centralizedUnitOfWork.DataContext.Timeslots.Where(t => DbFunctions.TruncateTime(t.Date) == date.Date).ToList();
+
+
         }
 
         public void GenerateTimeslots(DateTime date, string createdBy)

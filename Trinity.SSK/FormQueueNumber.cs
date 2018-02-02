@@ -81,12 +81,13 @@ namespace SSK
         }
         public void RefreshQueueNumbers()
         {
+            var apiCentral = CallCentralized.Instance;
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
             DAL_QueueNumber dalQueue = new DAL_QueueNumber();
             var allQueue = GetAllQueueToday(dalQueue, EnumStations.SSK);
 
-            var setting = new DAL_Setting().GetCurrentAppointmentTime();
+            var setting = apiCentral.Get<Trinity.BE.WorkingTimeshift>("Setting","GetCurrentAppointmentTime");
             var today = DateTime.Now;
             List<Trinity.BE.Queue> currentTimeslotQueue = new List<Trinity.BE.Queue>();
             List<Trinity.BE.Queue> nextTimesloteQueue = new List<Trinity.BE.Queue>();
@@ -263,7 +264,8 @@ namespace SSK
 
         private void RefreshQueueNumberTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
-            var setting = new DAL_Setting().GetCurrentAppointmentTime();
+            var apiCentral = CallCentralized.Instance;
+            var setting = apiCentral.Get<Trinity.BE.WorkingTimeshift>("Setting", "GetCurrentAppointmentTime");
 
             //this.timer.Interval = 1000 * 60 * setting.Duration;
             this.timer.Interval = 30000;

@@ -347,9 +347,13 @@ namespace Enrolment
                 data.User.Name = tempUser.User.Name;
                 data.User.Status = tempUser.User.Status;
 
-                dalUser.UpdateUser(data.User, profileModel.User.UserId, true);
+                var apiCentral = CallCentralized.Instance;
+                var updateUserResult = apiCentral.Post<bool>("User", "UpdateUser", data.User);
+                // dalUser.UpdateUser(data.User, data.User.UserId, true);
+                var userProfileModel = data.UserProfile;
+                userProfileModel.UserId = data.User.UserId;
+                var updateUProfileResult = apiCentral.Post<bool>("User", "UpdateUserProfile", userProfileModel);
 
-                dalUserprofile.UpdateUserProfile(data.UserProfile, profileModel.User.UserId, true);
                 ////send notifiy to case officer
                 APIUtils.SignalR.SendNotificationToDutyOfficer("A supervisee has updated profile.", "Please check Supervisee's information!");
 
