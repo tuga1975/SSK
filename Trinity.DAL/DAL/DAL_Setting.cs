@@ -17,40 +17,49 @@ namespace Trinity.DAL
         Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
 
 
-        public Trinity.BE.WorkingTimeshift GetAppointmentTime(DateTime date)
+        public Response<WorkingTimeshift> GetAppointmentTime(DateTime date)
         {
-            var appointmentTime = new Trinity.BE.WorkingTimeshift();
-            var listTimeSlot = GetTimeslots(date);
-            if (listTimeSlot.Count > 0)
+            try
             {
 
-                var morningTimeSpan = new TimeSpan(12, 0, 0);
-                var eveningTimeSpan = new TimeSpan(17, 0, 0);
+                var appointmentTime = new Trinity.BE.WorkingTimeshift();
+                var listTimeSlot = GetTimeslots(date);
+                if (listTimeSlot.Count > 0)
+                {
 
-                appointmentTime.Morning = listTimeSlot.Where(d=>d.Category== EnumTimeshift.Morning).Select(d=> SetAppointmentTime(d)).ToList();
-                appointmentTime.Evening = listTimeSlot.Where(d => d.Category == EnumTimeshift.Evening).Select(d => SetAppointmentTime(d)).ToList();
-                appointmentTime.Afternoon = listTimeSlot.Where(d => d.Category == EnumTimeshift.Afternoon).Select(d => SetAppointmentTime(d)).ToList();
+                    var morningTimeSpan = new TimeSpan(12, 0, 0);
+                    var eveningTimeSpan = new TimeSpan(17, 0, 0);
+
+                    appointmentTime.Morning = listTimeSlot.Where(d => d.Category == EnumTimeshift.Morning).Select(d => SetAppointmentTime(d)).ToList();
+                    appointmentTime.Evening = listTimeSlot.Where(d => d.Category == EnumTimeshift.Evening).Select(d => SetAppointmentTime(d)).ToList();
+                    appointmentTime.Afternoon = listTimeSlot.Where(d => d.Category == EnumTimeshift.Afternoon).Select(d => SetAppointmentTime(d)).ToList();
 
 
-                //foreach (var item in listTimeSlot)
-                //{
-                //    var setTime = SetAppointmentTime(item);
-                //    if (setTime.EndTime <= morningTimeSpan)
-                //    {
-                //        appointmentTime.Morning.Add(setTime);
-                //    }
-                //    else if (setTime.EndTime > eveningTimeSpan)
-                //    {
-                //        appointmentTime.Evening.Add(setTime);
-                //    }
-                //    else
-                //    {
-                //        appointmentTime.Afternoon.Add(setTime);
-                //    }
-                //}
+                    //foreach (var item in listTimeSlot)
+                    //{
+                    //    var setTime = SetAppointmentTime(item);
+                    //    if (setTime.EndTime <= morningTimeSpan)
+                    //    {
+                    //        appointmentTime.Morning.Add(setTime);
+                    //    }
+                    //    else if (setTime.EndTime > eveningTimeSpan)
+                    //    {
+                    //        appointmentTime.Evening.Add(setTime);
+                    //    }
+                    //    else
+                    //    {
+                    //        appointmentTime.Afternoon.Add(setTime);
+                    //    }
+                    //}
 
+                }
+                return new Response<WorkingTimeshift>((int)EnumResponseStatuses.Success, EnumResponseMessage.Success, appointmentTime);
             }
-            return appointmentTime;
+            catch (Exception)
+            {
+
+                return new Response<WorkingTimeshift>((int)EnumResponseStatuses.ErrorSystem,EnumResponseMessage.ErrorSystem,null);
+            }
         }
 
         public BE.WorkingShiftDetails SetAppointmentTime(DBContext.Timeslot timeSlot)
@@ -66,10 +75,11 @@ namespace Trinity.DAL
             return environmentTime;
         }
 
-        public Trinity.BE.WorkingTimeshift GetCurrentAppointmentTime()
+        public Response<WorkingTimeshift> GetCurrentAppointmentTime()
         {
             var today = DateTime.Now;
-            return GetAppointmentTime(today);
+            var result= GetAppointmentTime(today);
+            return result;
         }
 
         public List<Timeslot> GetTimeslots(DateTime date)
@@ -77,7 +87,13 @@ namespace Trinity.DAL
             SettingModel setting = GetSettings();
             //GenerateTimeslots("dfbb2a6a-9e45-4a76-9f75-af1a7824a947");
             int dayOfWeek = date.DayOfWeek();
-            return _localUnitOfWork.DataContext.Timeslots.Where(t => DbFunctions.TruncateTime(t.Date) == date.Date).ToList();
+            if (EnumAppConfig.IsLocal)
+            {
+                return _localUnitOfWork.DataContext.Timeslots.Where(t => DbFunctions.TruncateTime(t.Date) == date.Date).ToList();
+            }
+            return _centralizedUnitOfWork.DataContext.Timeslots.Where(t => DbFunctions.TruncateTime(t.Date) == date.Date).ToList();
+
+
         }
 
         public void GenerateTimeslots(DateTime date, string createdBy)
@@ -115,17 +131,17 @@ namespace Trinity.DAL
 
         private void GenerateTimeslotAndInsert(DateTime date, Trinity.BE.SettingDetails model, string createBy, int maxSupervisee = 0)
         {
-            if (model.Morning_Open_Time.HasValue && model.Morning_Close_Time.HasValue && model.Morning_Interval.HasValue)
+            if (model.Morning_Open_Time.HasValue && model.Morning_Close_Time.HasValue && model.Morning_Interval.HasValue&&!model.Morning_Is_Closed)
             {
                 GenerateByTimeshift(date, model.Morning_Open_Time, model.Morning_Close_Time, model.Morning_Interval, createBy, maxSupervisee);
             }
 
-            if (model.Afternoon_Open_Time.HasValue && model.Afternoon_Close_Time.HasValue && model.Afternoon_Interval.HasValue)
+            if (model.Afternoon_Open_Time.HasValue && model.Afternoon_Close_Time.HasValue && model.Afternoon_Interval.HasValue&&!model.Afternoon_Is_Closed)
             {
                 GenerateByTimeshift(date, model.Afternoon_Open_Time, model.Afternoon_Close_Time, model.Afternoon_Interval, createBy, maxSupervisee);
             }
 
-            if (model.Evening_Open_Time.HasValue && model.Evening_Close_Time.HasValue && model.Evening_Interval.HasValue)
+            if (model.Evening_Open_Time.HasValue && model.Evening_Close_Time.HasValue && model.Evening_Interval.HasValue&&!model.Evening_Is_Closed)
             {
                 GenerateByTimeshift(date, model.Evening_Open_Time, model.Evening_Close_Time, model.Evening_Interval, createBy, maxSupervisee);
             }
@@ -135,15 +151,16 @@ namespace Trinity.DAL
         {
             var fromTime = openTime;
             var toTime = closeTime;
+            var morningTimeSpan = new TimeSpan(12, 0, 0);
+            var eveningTimeSpan = new TimeSpan(17, 0, 0);
             var id = _localUnitOfWork.DataContext.Timeslots.Any() ? _localUnitOfWork.DataContext.Timeslots.Max(t => t.Timeslot_ID) : null;
             while (fromTime < toTime)
             {
                 var timeSlot = new BE.TimeslotDetails();
 
-                var morningTimeSpan = new TimeSpan(12, 0, 0);
-                var eveningTimeSpan = new TimeSpan(17, 0, 0);
+                
 
-                //timeSlot.Timeslot_ID = (id + 1);
+                timeSlot.Timeslot_ID = Guid.NewGuid().ToString();
 
                 timeSlot.StartTime = fromTime;
                 timeSlot.EndTime = fromTime.Value.Add(TimeSpan.FromMinutes(duration.Value));
@@ -157,7 +174,7 @@ namespace Trinity.DAL
                 timeSlot.LastUpdatedBy = createBy;
                 timeSlot.LastUpdatedDate = DateTime.Now;
                 timeSlot.MaximumSupervisee = maxSupervisee;
-
+                
 
                 if (timeSlot.EndTime <= morningTimeSpan)
                 {
@@ -206,18 +223,21 @@ namespace Trinity.DAL
             settingBE.Morning_Interval = setting.Morning_Interval;
             settingBE.Morning_MaximumSupervisee = setting.Morning_MaximumSupervisee;
             settingBE.Morning_Spare_Slots = setting.Morning_Spare_Slots;
+            settingBE.Morning_Is_Closed = setting.Morning_Is_Closed;
 
-            settingBE.Afternoon_Open_Time = setting.Morning_Open_Time;
-            settingBE.Afternoon_Close_Time = setting.Morning_Close_Time;
-            settingBE.Afternoon_Interval = setting.Morning_Interval;
-            settingBE.Afternoon_MaximumSupervisee = setting.Morning_MaximumSupervisee;
-            settingBE.Afternoon_Spare_Slots = setting.Morning_Spare_Slots;
+            settingBE.Afternoon_Open_Time = setting.Afternoon_Open_Time;
+            settingBE.Afternoon_Close_Time = setting.Afternoon_Close_Time;
+            settingBE.Afternoon_Interval = setting.Afternoon_Interval;
+            settingBE.Afternoon_MaximumSupervisee = setting.Afternoon_MaximumSupervisee;
+            settingBE.Afternoon_Spare_Slots = setting.Afternoon_Spare_Slots;
+            settingBE.Afternoon_Is_Closed = setting.Afternoon_Is_Closed;
 
-            settingBE.Evening_Open_Time = setting.Morning_Open_Time;
-            settingBE.Evening_Close_Time = setting.Morning_Close_Time;
-            settingBE.Evening_Interval = setting.Morning_Interval;
-            settingBE.Evening_MaximumSupervisee = setting.Morning_MaximumSupervisee;
-            settingBE.Evening_Spare_Slots = setting.Morning_Spare_Slots;
+            settingBE.Evening_Open_Time = setting.Evening_Open_Time;
+            settingBE.Evening_Close_Time = setting.Evening_Close_Time;
+            settingBE.Evening_Interval = setting.Evening_Interval;
+            settingBE.Evening_MaximumSupervisee = setting.Evening_MaximumSupervisee;
+            settingBE.Evening_Spare_Slots = setting.Evening_Spare_Slots;
+            settingBE.Evening_Is_Closed = setting.Evening_Is_Closed;
 
 
             settingBE.Last_Updated_By = setting.Last_Updated_By;
@@ -235,19 +255,21 @@ namespace Trinity.DAL
             setting.Morning_Interval = settingBE.Morning_Interval;
             setting.Morning_MaximumSupervisee = settingBE.Morning_MaximumSupervisee;
             setting.Morning_Spare_Slots = settingBE.Morning_Spare_Slots;
+            setting.Morning_Is_Closed = settingBE.Morning_Is_Closed;
 
-            setting.Afternoon_Open_Time = settingBE.Morning_Open_Time;
-            setting.Afternoon_Close_Time = settingBE.Morning_Close_Time;
-            setting.Afternoon_Interval = settingBE.Morning_Interval;
-            setting.Afternoon_MaximumSupervisee = settingBE.Morning_MaximumSupervisee;
-            setting.Afternoon_Spare_Slots = settingBE.Morning_Spare_Slots;
+            setting.Afternoon_Open_Time = settingBE.Afternoon_Open_Time;
+            setting.Afternoon_Close_Time = settingBE.Afternoon_Close_Time;
+            setting.Afternoon_Interval = settingBE.Afternoon_Interval;
+            setting.Afternoon_MaximumSupervisee = settingBE.Afternoon_MaximumSupervisee;
+            setting.Afternoon_Spare_Slots = settingBE.Afternoon_Spare_Slots;
+            setting.Afternoon_Is_Closed = settingBE.Afternoon_Is_Closed;
 
-            setting.Evening_Open_Time = settingBE.Morning_Open_Time;
-            setting.Evening_Close_Time = settingBE.Morning_Close_Time;
-            setting.Evening_Interval = settingBE.Morning_Interval;
-            setting.Evening_MaximumSupervisee = settingBE.Morning_MaximumSupervisee;
-            setting.Evening_Spare_Slots = settingBE.Morning_Spare_Slots;
-
+            setting.Evening_Open_Time = settingBE.Evening_Open_Time;
+            setting.Evening_Close_Time = settingBE.Evening_Close_Time;
+            setting.Evening_Interval = settingBE.Evening_Interval;
+            setting.Evening_MaximumSupervisee = settingBE.Evening_MaximumSupervisee;
+            setting.Evening_Spare_Slots = settingBE.Evening_Spare_Slots;
+            setting.Evening_Is_Closed = settingBE.Evening_Is_Closed;
 
             setting.Last_Updated_By = settingBE.Last_Updated_By;
             setting.Last_Updated_Date = settingBE.Last_Updated_Date;
@@ -256,12 +278,21 @@ namespace Trinity.DAL
 
         public BE.SettingModel GetSettings()
         {
-            var dbSeting = _localUnitOfWork.DataContext.OperationSettings.FirstOrDefault();
+            OperationSetting dbSetting = new OperationSetting() ;
+            if (EnumAppConfig.IsLocal)
+            {
+                dbSetting = _localUnitOfWork.DataContext.OperationSettings.FirstOrDefault();
+            }
+            else
+            {
+                dbSetting = _centralizedUnitOfWork.DataContext.OperationSettings.FirstOrDefault();
+            }
+            
             var settingBE = new BE.SettingBE();
 
-            if (dbSeting != null)
+            if (dbSetting != null)
             {
-                SetInfoToSettingBE(settingBE, dbSeting);
+                SetInfoToSettingBE(settingBE, dbSetting);
             }
 
             return new BE.SettingBE().ToSettingModel(settingBE);

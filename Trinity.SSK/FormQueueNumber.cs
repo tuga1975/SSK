@@ -81,12 +81,13 @@ namespace SSK
         }
         public void RefreshQueueNumbers()
         {
+            var apiCentral = CallCentralized.Instance;
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
             DAL_QueueNumber dalQueue = new DAL_QueueNumber();
             var allQueue = GetAllQueueToday(dalQueue, EnumStations.SSK);
 
-            var setting = new DAL_Setting().GetCurrentAppointmentTime();
+            var setting = apiCentral.Get<Trinity.BE.WorkingTimeshift>("Setting","GetCurrentAppointmentTime");
             var today = DateTime.Now;
             List<Trinity.BE.Queue> currentTimeslotQueue = new List<Trinity.BE.Queue>();
             List<Trinity.BE.Queue> nextTimesloteQueue = new List<Trinity.BE.Queue>();
@@ -134,7 +135,8 @@ namespace SSK
 
             for (int i = 0; i < allQueue.Count; i++)
             {
-                var appointmentStartTime = new DAL_Appointments().GetAppointmentDetails(allQueue[i].AppointmentId);
+                var result= new DAL_Appointments().GetAppointmentDetails(allQueue[i].AppointmentId);
+                var appointmentStartTime = result.Data;
                 var diffHour = appointmentStartTime.StartTime.Value.Hours - today.Hour;
                 var diffStartMin = appointmentStartTime.StartTime.Value.Minutes - today.Minute;
                 var diffEndHour = appointmentStartTime.EndTime.Value.Hours - today.Hour;
@@ -187,7 +189,8 @@ namespace SSK
             //get NRIC for booked current timeslot and have not queued
             if (_currentTs != null)
             {
-                var todayAppointment = new DAL_Appointments().GetAllCurrentTimeslotAppointment(_currentTs.StartTime.Value);
+                var result= new DAL_Appointments().GetAllCurrentTimeslotAppointment(_currentTs.StartTime.Value);
+                var todayAppointment = result.Data;
                 foreach (var item in todayAppointment)
                 {
                     var userNRIC = new DAL_User().GetUserByUserId(item.UserId, true).NRIC;
@@ -261,7 +264,8 @@ namespace SSK
 
         private void RefreshQueueNumberTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
-            var setting = new DAL_Setting().GetCurrentAppointmentTime();
+            var apiCentral = CallCentralized.Instance;
+            var setting = apiCentral.Get<Trinity.BE.WorkingTimeshift>("Setting", "GetCurrentAppointmentTime");
 
             //this.timer.Interval = 1000 * 60 * setting.Duration;
             this.timer.Interval = 30000;

@@ -69,28 +69,26 @@ namespace Trinity.DAL
             return new UserProfile();
         }
 
-        public bool UpdateUserProfile(BE.UserProfile model, string userId, bool isLocal)
+        public BE.Response<bool> UpdateUserProfile(BE.UserProfile model)
         {
             try
             {
-                model.UserId = userId;
                 User_Profiles dbUserProfile = null;
-                if (isLocal)
+                if (EnumAppConfig.IsLocal)
                 {
-                    dbUserProfile = UpdateLocal(model, userId);
-                    dbUserProfile = UpdateCentral(model, userId);
-                    return true;
+                    dbUserProfile = UpdateLocal(model, model.UserId );
+                    dbUserProfile = UpdateCentral(model, model.UserId);
+                    return new Response<bool>((int)EnumResponseStatuses.Success,EnumResponseMessage.Success,true);
                 }
                 else
                 {
-                    dbUserProfile = UpdateCentral(model, userId);
-                    return true;
+                    dbUserProfile = UpdateCentral(model, model.UserId);
+                    return new Response<bool>((int)EnumResponseStatuses.Success, EnumResponseMessage.Success, true);
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
-                return false;
+                return new Response<bool>((int)EnumResponseStatuses.ErrorSystem, EnumResponseMessage.ErrorSystem, false);
             }
         }
 

@@ -293,6 +293,14 @@ public static class EnumAppConfig
             return Convert.ToInt32(ConfigurationManager.AppSettings["Card_Expired_Date"]);
         }
     }
+    public static string NotificationServerUrl
+    {
+        get
+        {
+            return ConfigurationManager.AppSettings["NotificationServerUrl"];
+        }
+    }
+    
 }
 public static class EnumDeviceNames
 {

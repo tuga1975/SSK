@@ -179,7 +179,8 @@ namespace SSA
             {
                 var dalAppointment = new DAL_Appointments();
                 var dalQueue = new DAL_QueueNumber();
-                var appointment = dalAppointment.GetTodayAppointment(labelInfo.UserId);
+                var result= dalAppointment.GetTodayAppointment(labelInfo.UserId);
+                var appointment = result.Data;
 
                 var sskQueue = new DAL_QueueNumber().GetQueueDetailByAppointent(appointment, EnumStations.SSK);
 

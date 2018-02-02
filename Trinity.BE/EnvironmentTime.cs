@@ -128,11 +128,11 @@ namespace Trinity.BE
         public bool Evening_Is_Closed { get; set; }
         public List<Trinity.BE.Holiday> HoliDays { get; set; }
 
-        public SettingDetails SetADay(SettingBE rawData)
+        public SettingDetails SetADay(SettingBE rawData,int dayOfWeek)
         {
             return new SettingDetails
             {
-                DayOfWeek = rawData.DayOfWeek,
+                DayOfWeek = dayOfWeek,
                 Morning_Open_Time = rawData.Morning_Open_Time,
                 Morning_Close_Time = rawData.Morning_Close_Time,
                 Morning_Spare_Slots = rawData.Morning_Spare_Slots,
@@ -148,7 +148,9 @@ namespace Trinity.BE
                 Evening_Spare_Slots = rawData.Evening_Spare_Slots,
                 Evening_Interval = rawData.Evening_Interval,
                 Evening_MaximumSupervisee = rawData.Evening_MaximumSupervisee,
-                Is_Closed = rawData.Is_Closed,
+                Morning_Is_Closed= rawData.Morning_Is_Closed,
+                Afternoon_Is_Closed = rawData.Afternoon_Is_Closed,
+                Evening_Is_Closed = rawData.Evening_Is_Closed,
                 Description = rawData.Description,
                 Last_Updated_By = rawData.Last_Updated_By,
                 Last_Updated_Date = rawData.Last_Updated_Date
@@ -163,17 +165,19 @@ namespace Trinity.BE
         public Nullable<int> Morning_Spare_Slots { get; set; }
         public Nullable<int> Morning_Interval { get; set; }
         public Nullable<int> Morning_MaximumSupervisee { get; set; }
+        public bool Morning_Is_Closed { get; set; }
         public Nullable<System.TimeSpan> Afternoon_Open_Time { get; set; }
         public Nullable<System.TimeSpan> Afternoon_Close_Time { get; set; }
         public Nullable<int> Afternoon_Spare_Slots { get; set; }
         public Nullable<int> Afternoon_Interval { get; set; }
         public Nullable<int> Afternoon_MaximumSupervisee { get; set; }
+        public bool Afternoon_Is_Closed { get; set; }
         public Nullable<System.TimeSpan> Evening_Open_Time { get; set; }
         public Nullable<System.TimeSpan> Evening_Close_Time { get; set; }
         public Nullable<int> Evening_Spare_Slots { get; set; }
         public Nullable<int> Evening_Interval { get; set; }
         public Nullable<int> Evening_MaximumSupervisee { get; set; }
-        public bool Is_Closed { get; set; }
+        public bool Evening_Is_Closed { get; set; }
         public string Last_Updated_By { get; set; }
         public System.DateTime Last_Updated_Date { get; set; }
         public string Description { get; set; }
@@ -183,13 +187,13 @@ namespace Trinity.BE
             var settingDetail = new SettingDetails();
             var settingModel = new SettingModel
             {
-                Monday = settingDetail.SetADay(rawData),
-                Tuesday = settingDetail.SetADay(rawData),
-                Wednesday = settingDetail.SetADay(rawData),
-                Thursday = settingDetail.SetADay(rawData),
-                Friday = settingDetail.SetADay(rawData),
-                Saturday = settingDetail.SetADay(rawData),
-                Sunday = settingDetail.SetADay(rawData),
+                Monday = settingDetail.SetADay(rawData,(int)EnumDayOfWeek.Monday),
+                Tuesday = settingDetail.SetADay(rawData, (int)EnumDayOfWeek.Tuesday),
+                Wednesday = settingDetail.SetADay(rawData, (int)EnumDayOfWeek.Wednesday),
+                Thursday = settingDetail.SetADay(rawData, (int)EnumDayOfWeek.Thursday),
+                Friday = settingDetail.SetADay(rawData, (int)EnumDayOfWeek.Friday),
+                Saturday = settingDetail.SetADay(rawData, (int)EnumDayOfWeek.Saturday),
+                Sunday = settingDetail.SetADay(rawData, (int)EnumDayOfWeek.Sunday),
             };
 
             return settingModel;

@@ -603,10 +603,13 @@ namespace Enrolment
                 string backBase64 = (string)data[2];
                 var dalUser = new DAL_User();
                 var dalUserProfile = new DAL_UserProfile();
-                dalUser.UpdateUser(profileModel.User, profileModel.User.UserId, true);
+                var apiCentral = CallCentralized.Instance;
+                var updateUserResult = apiCentral.Post<bool>("User", "UpdateUser", profileModel.User);
+                // dalUser.UpdateUser(data.User, data.User.UserId, true);
+                var userProfileModel = profileModel.UserProfile;
+                userProfileModel.UserId = profileModel.User.UserId;
+                var updateUProfileResult = apiCentral.Post<bool>("User", "UpdateUserProfile", userProfileModel);
 
-
-                dalUserProfile.UpdateUserProfile(profileModel.UserProfile, profileModel.User.UserId, true);
                 dalUser.ChangeUserStatus(profileModel.User.UserId, EnumUserStatuses.New);
 
                 new DAL_Membership_Users().UpdateFingerprint(profileModel.User.UserId, profileModel.User.LeftThumbFingerprint, profileModel.User.RightThumbFingerprint);

@@ -29,7 +29,6 @@ namespace DutyOfficer
         public Main()
         {
             InitializeComponent();
-
             // setup variables
             _smartCardFailed = 0;
             _fingerprintFailed = 0;
@@ -113,7 +112,7 @@ namespace DutyOfficer
             session.IsFingerprintAuthenticated = true;
 
             LayerWeb.RunScript("$('.status-text').css('color','#000').text('Fingerprint authentication is successful.');");
-            APIUtils.SignalR.GetLatestNotifications();
+            //APIUtils.SignalR.GetLatestNotifications();
 
             Thread.Sleep(1000);
 
@@ -138,7 +137,7 @@ namespace DutyOfficer
             if (_smartCardFailed > 3)
             {
                 // Send Notification to duty officer
-                APIUtils.SignalR.SendNotificationToDutyOfficer(message, message);
+                //APIUtils.SignalR.SendNotificationToDutyOfficer(message, message);
 
                 // show message box to user
                 MessageBox.Show(message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -166,7 +165,7 @@ namespace DutyOfficer
             {
                 string message = "Unable to read your fingerprint. Please report to the Duty Officer";
                 // Send Notification to duty officer
-                APIUtils.SignalR.SendNotificationToDutyOfficer(message, message);
+                //APIUtils.SignalR.SendNotificationToDutyOfficer(message, message);
 
                 // show message box to user
                 MessageBox.Show(message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);

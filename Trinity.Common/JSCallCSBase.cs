@@ -11,7 +11,7 @@ using System.Windows.Forms;
 
 [ComVisible(true)]
 [ClassInterface(ClassInterfaceType.None)]
-public class JSCallCSBase: Exception
+public class JSCallCSBase
 {
     public WebBrowser _web = null;
     public Type _thisType = null;
