@@ -44,31 +44,38 @@ namespace Trinity.DAL
 
         public void UpdateSettingSystem(Setting setting)
         {
-            Setting dbCentralSetting = _centralizedUnitOfWork.DataContext.Settings.FirstOrDefault(s => s.Year == setting.Year);
-            if (dbCentralSetting == null)
+            try
             {
-                _centralizedUnitOfWork.GetRepository<Setting>().Add(setting);
-            }
-            else
-            {
-                _centralizedUnitOfWork.GetRepository<Setting>().Update(setting);
-            }
-
-            if (_centralizedUnitOfWork.Save() > 0)
-            {
-
-                Setting dbLocalSetting = _localUnitOfWork.DataContext.Settings.FirstOrDefault(s => s.Year == setting.Year);
-
-                if (dbLocalSetting == null)
+                Setting dbCentralSetting = _centralizedUnitOfWork.DataContext.Settings.FirstOrDefault(s => s.Year == setting.Year);
+                if (dbCentralSetting == null)
                 {
-                    _localUnitOfWork.GetRepository<Setting>().Add(setting);
+                    _centralizedUnitOfWork.GetRepository<Setting>().Add(setting);
                 }
                 else
                 {
-                    _localUnitOfWork.GetRepository<Setting>().Update(setting);
+                    _centralizedUnitOfWork.GetRepository<Setting>().Update(setting);
                 }
 
-                _localUnitOfWork.Save();
+                if (_centralizedUnitOfWork.Save() > 0)
+                {
+
+                    Setting dbLocalSetting = _localUnitOfWork.DataContext.Settings.FirstOrDefault(s => s.Year == setting.Year);
+
+                    if (dbLocalSetting == null)
+                    {
+                        _localUnitOfWork.GetRepository<Setting>().Add(setting);
+                    }
+                    else
+                    {
+                        _localUnitOfWork.GetRepository<Setting>().Update(setting);
+                    }
+
+                    _localUnitOfWork.Save();
+                }
+            }
+            catch(Exception e)
+            {
+
             }
         }
     }
