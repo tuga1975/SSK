@@ -47,6 +47,7 @@ namespace SSA.CodeBehind
 
                     using (var ms = new System.IO.MemoryStream(byteArrayQRCode))
                     {
+                        System.IO.Directory.CreateDirectory(String.Format("{0}/Temp", CSCallJS.curDir));
                         string fileName = String.Format("{0}/Temp/{1}", CSCallJS.curDir, "QRCode_" + user.NRIC + ".png");
                         if (System.IO.File.Exists(fileName))
                             System.IO.File.Delete(fileName);
