@@ -10,7 +10,7 @@
             <div id="leftThumbDiv" style="position:absolute;width:calc(50% - 20px);height:100%;left:15px;top:0px;">
                 <div style="border:1px solid #000000;color:#000;margin-bottom:5px" id="leftProcessMessage" capturefingerprint-message="0">Place left thumb onto scanner</div>
                 <div>
-                    <button style="float:left" class="btn-form" onclick="api.server.CaptureFingerprint(0)">Scan</button>
+                    <button style="float:left" class="btn-form" onclick="disBtnFingerprint(true); api.server.CaptureFingerprint(0);" capturefingerprint-btn="0">Scan</button>
                     <button style="float:right;" class="btn-form" onclick="clearFingerprint(0)">Clear</button>
                 </div>
                 <br />
@@ -24,7 +24,7 @@
             <div id="rightThumbDiv" style="position:absolute;width:calc(50% - 20px);height:100%;right:15px;top:0px;">
                 <div style="border:1px solid #000000;color:#000;margin-bottom:5px" id="rightProcessMessage" capturefingerprint-message="1">Place right thumb onto scanner</div>
                 <div>
-                    <button style="float:left" class="btn-form" onclick="api.server.CaptureFingerprint(1)">Scan</button>
+                    <button style="float:left" class="btn-form" onclick="disBtnFingerprint(true); api.server.CaptureFingerprint(1);" capturefingerprint-btn="1">Scan</button>
                     <button style="float:right;" class="btn-form" onclick="clearFingerprint(1)">Clear</button>
                 </div>
                 <br />
@@ -43,10 +43,21 @@
     </div>
 </div>
 <script type="text/javascript">
-    clearFingerprint(0);
-    clearFingerprint(1);
+    var modelFingerprinter = null;
+    api.ready(function (model) {
+        modelFingerprinter = model;
+        clearFingerprint(0);
+        clearFingerprint(1);
+    });
+    function disBtnFingerprint(status) {
+        if (status) {
+            $('[capturefingerprint-btn]').attr('disabled', 'disabled');
+        } else {
+            $('[capturefingerprint-btn]').removeAttr('disabled');
+        }
+    }
     function clearFingerprint(LeftOrRight) {
-        $('[capturefingerprint-img="' + LeftOrRight + '"]').attr('src', api.model[LeftOrRight] == null ? '../images/fingerprint.png' : 'data:image/png;base64,' + api.model[LeftOrRight]).attr('soure', '').attr('data-fingerprint', '');
+        $('[capturefingerprint-img="' + LeftOrRight + '"]').attr('src', modelFingerprinter[LeftOrRight] == null ? '../images/fingerprint.png' : 'data:image/png;base64,' + modelFingerprinter[LeftOrRight]).attr('soure', '').attr('data-fingerprint', '');
     }
     function captureFingerprintMessage(LeftOrRight, Message, color) {
         $('[capturefingerprint-message="' + LeftOrRight + '"]').text(Message).css('color', color);

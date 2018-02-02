@@ -12,7 +12,7 @@ class APIUtils
 
     static APIUtils()
     {
-        SignalR = new DutyOfficer.Utils.SignalR(EnumStations.SSK);
+        SignalR = new DutyOfficer.Utils.SignalR();
     }
 
 

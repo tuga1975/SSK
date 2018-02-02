@@ -737,6 +737,7 @@ namespace Enrolment
                 if (FingerprintNumber >= 3)
                     _web.InvokeScript("moreThan3Fingerprint");
             }
+            _web.InvokeScript("disBtnFingerprint", false);
             try
             {
                 FingerprintReaderUtil.Instance.DisposeCapture();

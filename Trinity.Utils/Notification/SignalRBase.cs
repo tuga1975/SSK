@@ -11,9 +11,9 @@ namespace Trinity.Utils.Notification
     {
         protected IHubProxy HubProxy { get; set; }
         protected HubConnection Connection { get; set; }
-        protected void StartConnect(string station)
+        protected void StartConnect()
         {
-            ConnectAsync(station);
+            ConnectAsync(System.Reflection.Assembly.GetEntryAssembly().GetName().Name);
         }
         private async void ConnectAsync(string station)
         {
