@@ -105,16 +105,7 @@ namespace Trinity.Common
             }
             return UTF8.GetString(Results);
         }
-
-        public static string GenerateMarkingNumber()
-        {
-            var currentDate = DateTime.Now;
-            var rand = new Random(Guid.NewGuid().GetHashCode());
-
-            //return currentDate.Year.ToString() + currentDate.Month.ToString() + currentDate.Day.ToString() + "_" + rand.Next().ToString();
-            return rand.Next().ToString();
-        }
-
+        
         public static string GetDeviceStatusText(EnumDeviceStatuses deviceStatus)
         {
             switch (deviceStatus)

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Trinity.DAL.DBContext;
 using Trinity.DAL.Repository;
-
+using Trinity.Common;
 
 namespace Trinity.DAL
 {
@@ -74,7 +74,7 @@ namespace Trinity.DAL
         /// </summary>
         /// <param name="reason"></param>
         /// <returns></returns>
-        public BE.Response<BE.AbsenceReporting> SetInfo(Trinity.BE.Reason reason)
+        public Response<BE.AbsenceReporting> SetInfo(Trinity.BE.Reason reason)
         {
             var absenceModel = new Trinity.BE.AbsenceReporting();
             absenceModel.ID = Guid.NewGuid();
@@ -85,7 +85,7 @@ namespace Trinity.DAL
             absenceModel.ReportingDate = DateTime.Now;
 
 
-            return new BE.Response<BE.AbsenceReporting>((int)EnumResponseStatuses.Success,EnumResponseMessage.Success,absenceModel);
+            return new Response<BE.AbsenceReporting>((int)EnumResponseStatuses.Success,EnumResponseMessage.Success,absenceModel);
         }
     }
 }

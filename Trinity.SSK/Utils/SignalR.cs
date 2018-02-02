@@ -97,7 +97,7 @@ namespace SSK.Utils
             User user = (User)currentSession[CommonConstants.USER_LOGIN];
             if (user != null)
             {
-                List<Notification> myNotifications = dalNotification.GetMyNotifications(user.UserId, false);
+                List<Notification> myNotifications = dalNotification.GetMyNotifications(user.UserId).Data;
                 if (myNotifications != null)
                 {
                     var unReadCount = myNotifications.Count;

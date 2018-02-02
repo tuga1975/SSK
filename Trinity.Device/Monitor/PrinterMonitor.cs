@@ -36,11 +36,11 @@ namespace Trinity.Device
         }
         #endregion
 
-        public event EventHandler<PrintMUBAndTTLabelsSucceedEventArgs> OnPrintMUBLabelSucceeded;
+        public event EventHandler<PrintMUBAndTTLabelsEventArgs> OnPrintMUBLabelSucceeded;
         public event EventHandler<ExceptionArgs> OnMonitorException;
-        public event EventHandler<PrintMUBAndTTLabelsSucceedEventArgs> OnPrintTTLabelSucceeded;
+        public event EventHandler<PrintMUBAndTTLabelsEventArgs> OnPrintTTLabelSucceeded;
 
-        protected virtual void RaisePrintMUBLabelSucceededEvent(PrintMUBAndTTLabelsSucceedEventArgs e)
+        protected virtual void RaisePrintMUBLabelSucceededEvent(PrintMUBAndTTLabelsEventArgs e)
         {
             // Make a temporary copy of the event to avoid possibility of
             // a race condition if the last subscriber unsubscribes
@@ -56,7 +56,7 @@ namespace Trinity.Device
             OnMonitorException?.Invoke(this, e);
         }
 
-        protected virtual void RaisePrintTTLabelSucceededEvent(PrintMUBAndTTLabelsSucceedEventArgs e)
+        protected virtual void RaisePrintTTLabelSucceededEvent(PrintMUBAndTTLabelsEventArgs e)
         {
             // Make a temporary copy of the event to avoid possibility of
             // a race condition if the last subscriber unsubscribes
@@ -100,7 +100,7 @@ namespace Trinity.Device
             if (printerUtils.PrintTTLabel(infoTTLabel))
             {
                 // raise succeeded event
-                RaisePrintTTLabelSucceededEvent(new PrintMUBAndTTLabelsSucceedEventArgs(labelInfo));
+                RaisePrintTTLabelSucceededEvent(new PrintMUBAndTTLabelsEventArgs(labelInfo));
             }
             else
             {
@@ -168,7 +168,7 @@ namespace Trinity.Device
             if (printerUtils.PrintMUBLabel(filePath))
             {
                 // raise succeeded event
-                RaisePrintMUBLabelSucceededEvent(new PrintMUBAndTTLabelsSucceedEventArgs(labelInfo));
+                RaisePrintMUBLabelSucceededEvent(new PrintMUBAndTTLabelsEventArgs(labelInfo));
             }
             else
             {

@@ -111,6 +111,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+  
     <Compile Include="CallCentralized.cs" />
     <Compile Include="Common\CustomAttribute.cs" />
     <Compile Include="Common\Enums.cs" />
@@ -119,6 +120,7 @@
     <Compile Include="Common\EventCenter.cs" />
     <Compile Include="Common\LabelInfo.cs" />
     <Compile Include="Common\MifareCard.cs" />
+    <Compile Include="ResponseModel.cs" />
     <Compile Include="Common\Results.cs" />
     <Compile Include="Common\User.cs" />
     <Compile Include="Constants\CommonConstants.cs" />

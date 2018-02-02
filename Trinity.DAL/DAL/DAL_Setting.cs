@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using Trinity.BE;
 using Trinity.DAL.DBContext;
 using Trinity.DAL.Repository;
+using Trinity.Common;
 
 
 namespace Trinity.DAL
@@ -623,7 +624,8 @@ namespace Trinity.DAL
             if (arrayUpdateHistory.Count > 0)
             {
                 var dalUser = new DAL_User();
-                Trinity.BE.User oficcer = dalUser.GetUserByUserId(model.Last_Updated_By, true);
+                var result = dalUser.GetUserByUserId(model.Last_Updated_By);
+                Trinity.BE.User oficcer = result.Data;
                 var changeHistoryID = _localUnitOfWork.DataContext.OperationSettings_ChangeHist.Any() ? _localUnitOfWork.DataContext.OperationSettings_ChangeHist.Max(t => t.ID) : 0;
                 //System.Text.StringBuilder changeDetails = new System.Text.StringBuilder();
                 foreach (var detail in arrayUpdateHistory)
@@ -772,26 +774,5 @@ namespace Trinity.DAL
             return modelReturn;
         }
         #endregion
-
-        //public Setting GetSettingSystemByYear(int year)
-        //{
-        //    return _localUnitOfWork.DataContext.Settings.FirstOrDefault(s => s.Year == year);
-        //}
-
-        //public void UpdateSettingSystem(Setting setting)
-        //{
-        //    Setting dbSetting = _localUnitOfWork.DataContext.Settings.FirstOrDefault(s => s.Year == setting.Year);
-
-        //    if (dbSetting == null)
-        //    {
-        //        _localUnitOfWork.GetRepository<Setting>().Add(setting);
-        //    }
-        //    else
-        //    {
-        //        _localUnitOfWork.GetRepository<Setting>().Update(setting);
-        //    }
-
-        //    _localUnitOfWork.Save();
-        //}
     }
 }

@@ -29,9 +29,9 @@ namespace Trinity.DAL
         {
             try
             {
-                Label dbLabel;
-                var locallabelRepo = _localUnitOfWork.GetRepository<Label>();
-                dbLabel = GetLabelByUserIdAndType(userId, labelType);
+                Label dbLabel = null;
+                var centralizeLabelRepo = _centralizedUnitOfWork.GetRepository<Label>();
+                dbLabel = _centralizedUnitOfWork.DataContext.Labels.FirstOrDefault(d => d.UserId == userId && d.Label_Type.Equals(labelType));
                 if (dbLabel == null)
                 {
                     dbLabel = new Label();
@@ -48,23 +48,10 @@ namespace Trinity.DAL
                     dbLabel.LastStation = model.LastStation;
                     dbLabel.ReprintReason = model.ReprintReason;
                     dbLabel.PrintCount = 1;
-                    locallabelRepo.Add(dbLabel);
+                    dbLabel.PrintStatus = model.PrintStatus;
+                    dbLabel.Message = model.Message;
 
-                    //var dateLable = dbLabel.Date.Date;
-                    //DBContext.Queue dbQueue = _localUnitOfWork.DataContext.Queues.Include("Appointment").FirstOrDefault(d => DbFunctions.TruncateTime(d.Appointment.Date).Value == dateLable && d.Appointment.UserId == dbLabel.UserId);
-                    //if (dbQueue != null)
-                    //{
-                    //    dbQueue.CurrentStation = EnumStations.SSA;
-                    //    dbQueue.Outcome = "Printer MUB/TT Label";
-                    //    DBContext.QueueDetail dbQueueDetail = _localUnitOfWork.DataContext.QueueDetails.FirstOrDefault(d=>d.Queue_ID== dbQueue.Queue_ID && d.Station== EnumStations.SSA);
-                    //    if (dbQueueDetail != null)
-                    //    {
-                    //        dbQueueDetail.Status = EnumQueueStatuses.Finished;
-                    //        _localUnitOfWork.GetRepository<DBContext.QueueDetail>().Update(dbQueueDetail);
-                    //    }
-                    //    _localUnitOfWork.GetRepository<DBContext.Queue>().Update(dbQueue);
-                    //}
-
+                    centralizeLabelRepo.Add(dbLabel);
                 }
                 else
                 {
@@ -80,15 +67,60 @@ namespace Trinity.DAL
                     dbLabel.LastStation = model.LastStation;
                     dbLabel.PrintCount += 1;
                     dbLabel.ReprintReason = model.ReprintReason;
-                    locallabelRepo.Update(dbLabel);
+                    dbLabel.PrintStatus = model.PrintStatus;
+                    dbLabel.Message = model.Message;
+
+                    centralizeLabelRepo.Update(dbLabel);
                 }
 
+                if (_centralizedUnitOfWork.Save() > 0)
+                {
 
+                    var locallabelRepo = _localUnitOfWork.GetRepository<Label>();
+                    dbLabel = GetLabelByUserIdAndType(userId, labelType);
+                    if (dbLabel == null)
+                    {
+                        dbLabel = new Label();
+                        dbLabel.Label_ID = Guid.NewGuid();
+                        dbLabel.Label_Type = model.Label_Type;
+                        dbLabel.CompanyName = model.CompanyName;
+                        dbLabel.MarkingNo = model.MarkingNo;
+                        dbLabel.DrugType = model.DrugType;
+                        dbLabel.UserId = model.UserId;
+                        dbLabel.NRIC = model.NRIC;
+                        dbLabel.Name = model.Name;
+                        dbLabel.Date = model.Date.Value;
+                        dbLabel.QRCode = model.QRCode;
+                        dbLabel.LastStation = model.LastStation;
+                        dbLabel.ReprintReason = model.ReprintReason;
+                        dbLabel.PrintCount = 1;
+                        dbLabel.PrintStatus = model.PrintStatus;
+                        dbLabel.Message = model.Message;
 
+                        locallabelRepo.Add(dbLabel);
+                    }
+                    else
+                    {
+                        dbLabel.Label_Type = model.Label_Type;
+                        dbLabel.CompanyName = model.CompanyName;
+                        dbLabel.MarkingNo = model.MarkingNo;
+                        dbLabel.DrugType = model.DrugType;
+                        dbLabel.UserId = model.UserId;
+                        dbLabel.NRIC = model.NRIC;
+                        dbLabel.Name = model.Name;
+                        dbLabel.Date = model.Date.Value;
+                        dbLabel.QRCode = model.QRCode;
+                        dbLabel.LastStation = model.LastStation;
+                        dbLabel.PrintCount += 1;
+                        dbLabel.ReprintReason = model.ReprintReason;
+                        dbLabel.PrintStatus = model.PrintStatus;
+                        dbLabel.Message = model.Message;
 
+                        locallabelRepo.Update(dbLabel);
+                    }
 
-                _localUnitOfWork.Save();
-
+                    _localUnitOfWork.Save();
+                }
                 return true;
             }
             catch(Exception e)

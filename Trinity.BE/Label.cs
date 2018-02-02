@@ -50,5 +50,9 @@ namespace Trinity.BE
         public bool IsTT { get; set; }
         public string OfficerNRIC { get; set; }
         public string OfficerName { get; set; }
+        [DataMember]
+        public string PrintStatus { get; set; }
+        [DataMember]
+        public string Message { get; set; }
     }
 }

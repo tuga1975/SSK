@@ -93,7 +93,6 @@
     <Compile Include="Notification.cs" />
     <Compile Include="ProfileModel.cs" />
     <Compile Include="Appointment.cs" />
-    <Compile Include="ResponseModel.cs" />
     <Compile Include="Statistics.cs" />
     <Compile Include="Membership_Users.cs" />
     <Compile Include="User.cs" />

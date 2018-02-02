@@ -158,6 +158,8 @@
           <Property Name="LastStation" Type="varchar" MaxLength="10" Nullable="false" />
           <Property Name="PrintCount" Type="int" Nullable="false" />
           <Property Name="ReprintReason" Type="nvarchar" MaxLength="255" />
+          <Property Name="PrintStatus" Type="varchar" MaxLength="20" />
+          <Property Name="Message" Type="nvarchar" MaxLength="100" />
         </EntityType>
         <EntityType Name="Membership_RoleClaims">
           <Key>
@@ -353,6 +355,18 @@
           <Property Name="SMS" Type="bit" />
           <Property Name="Email" Type="bit" />
           <Property Name="UserId" Type="nvarchar" MaxLength="128" />
+        </EntityType>
+        <EntityType Name="Settings">
+          <Key>
+            <PropertyRef Name="Year" />
+          </Key>
+          <Property Name="Year" Type="int" Nullable="false" />
+          <Property Name="CompanyName" Type="nvarchar" MaxLength="100" />
+          <Property Name="VenueName" Type="nvarchar" MaxLength="50" />
+          <Property Name="MaxCardNumber" Type="int" />
+          <Property Name="MaxMarkingNo" Type="int" />
+          <Property Name="Address" Type="nvarchar" MaxLength="255" />
+          <Property Name="ContactNumber" Type="varchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="SMS_LOG">
           <Key>
@@ -758,6 +772,7 @@
           <EntitySet Name="Queues" EntityType="Self.Queues" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Security_QA" EntityType="Self.Security_QA" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SentMessages" EntityType="Self.SentMessages" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Settings" EntityType="Self.Settings" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SMS_LOG" EntityType="Self.SMS_LOG" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Timeslots" EntityType="Self.Timeslots" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User_Profiles" EntityType="Self.User_Profiles" Schema="dbo" store:Type="Tables" />
@@ -997,6 +1012,7 @@
             <End Role="User_Profiles" EntitySet="User_Profiles" />
             <End Role="SentMessage" EntitySet="SentMessages" />
           </AssociationSet>
+          <EntitySet Name="Settings" EntityType="TrinityCentralizedDBModel.Setting" />
         </EntityContainer>
         <EntityType Name="AbsenceReporting">
           <Key>
@@ -1165,6 +1181,8 @@
           <Property Name="PrintCount" Type="Int32" Nullable="false" />
           <Property Name="ReprintReason" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Membership_Users" Relationship="TrinityCentralizedDBModel.FK_Labels_Membership_Users" FromRole="Label" ToRole="Membership_Users" />
+          <Property Name="PrintStatus" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Message" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Membership_RoleClaims">
           <Key>
@@ -1773,6 +1791,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="Setting">
+          <Key>
+            <PropertyRef Name="Year" />
+          </Key>
+          <Property Name="Year" Type="Int32" Nullable="false" />
+          <Property Name="CompanyName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="VenueName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MaxCardNumber" Type="Int32" />
+          <Property Name="MaxMarkingNo" Type="Int32" />
+          <Property Name="Address" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ContactNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1928,6 +1958,8 @@
           <EntitySetMapping Name="Labels">
             <EntityTypeMapping TypeName="TrinityCentralizedDBModel.Label">
               <MappingFragment StoreEntitySet="Labels">
+                <ScalarProperty Name="Message" ColumnName="Message" />
+                <ScalarProperty Name="PrintStatus" ColumnName="PrintStatus" />
                 <ScalarProperty Name="ReprintReason" ColumnName="ReprintReason" />
                 <ScalarProperty Name="PrintCount" ColumnName="PrintCount" />
                 <ScalarProperty Name="LastStation" ColumnName="LastStation" />
@@ -2217,6 +2249,19 @@
                 <ScalarProperty Name="Secondary_Phone" ColumnName="Secondary_Phone" />
                 <ScalarProperty Name="Primary_Phone" ColumnName="Primary_Phone" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Settings">
+            <EntityTypeMapping TypeName="TrinityCentralizedDBModel.Setting">
+              <MappingFragment StoreEntitySet="Settings">
+                <ScalarProperty Name="ContactNumber" ColumnName="ContactNumber" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="MaxMarkingNo" ColumnName="MaxMarkingNo" />
+                <ScalarProperty Name="MaxCardNumber" ColumnName="MaxCardNumber" />
+                <ScalarProperty Name="VenueName" ColumnName="VenueName" />
+                <ScalarProperty Name="CompanyName" ColumnName="CompanyName" />
+                <ScalarProperty Name="Year" ColumnName="Year" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

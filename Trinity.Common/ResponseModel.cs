@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace Trinity.BE
+namespace Trinity.Common
 {
-    public class Response<T> : Response
+    public class Response<T> : CustomResponse
     {
         public T Data { get; set; }
 
@@ -16,13 +16,13 @@ namespace Trinity.BE
         }
     }
 
-    public class Response
+    public class CustomResponse
     {
         public int ResponseCode { get; set; }
 
         public string ResponseMessage { get; set; }
 
-        public Response(int responseCode, string message = null)
+        public CustomResponse(int responseCode, string message = null)
         {
             ResponseCode = responseCode;
             ResponseMessage = message;

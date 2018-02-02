@@ -9,17 +9,15 @@ using Trinity.Common;
 
 namespace Trinity.CentralizedAPI.Controllers
 {
-
-    public class AbsenceReportController : ApiController
+    public class NotificationController : ApiController
     {
-        [HttpPost]
-        [Route("api/AbsenceReport/SetReasonInfo")]
-        [ResponseType(typeof(Common.ResponseModel))]
-        public IHttpActionResult SetReasonInfo(Trinity.BE.Reason model)
+        [HttpGet]
+        [Route("api/Notification/GetByUserId")]
+        [ResponseType(typeof(ResponseModel))]
+        public IHttpActionResult GetMyNotifications(string userId)
         {
-            var responseModel = new Common.ResponseModel();
-
-            var result = new DAL.DAL_AbsenceReporting().SetInfo(model);
+            var responseModel = new ResponseModel();
+            var result = new DAL.DAL_Notification().GetMyNotifications(userId);
             responseModel.ResponseCode = result.ResponseCode;
             responseModel.ResponseMessage = result.ResponseMessage;
             responseModel.Data = result.Data;
