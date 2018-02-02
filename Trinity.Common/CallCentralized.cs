@@ -9,36 +9,11 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 
-public class CallCentralized
+public static class CallCentralized
 {
-    #region Singleton Implementation
-    private static volatile CallCentralized _instance;
+    
 
-    private static object syncRoot = new Object();
-
-    private CallCentralized()
-    {
-
-    }
-
-    public static CallCentralized Instance
-    {
-        get
-        {
-            if (_instance == null)
-            {
-                lock (syncRoot)
-                {
-                    if (_instance == null)
-                        _instance = new CallCentralized();
-                }
-            }
-            return _instance;
-        }
-    }
-    #endregion
-
-    public T Get<T>(string Controller, string Action, out bool statusCentralized, params string[] pram)
+    public static T Get<T>(string Controller, string Action, out bool statusCentralized, params string[] pram)
     {
         try
         {
@@ -71,7 +46,7 @@ public class CallCentralized
         return default(T);
     }
 
-    public T Post<T>(string Controller, string Action, out bool statusCentralized, object data)
+    public static T Post<T>(string Controller, string Action, out bool statusCentralized, object data)
     {
 
         try
@@ -106,7 +81,7 @@ public class CallCentralized
         statusCentralized = false;
         return default(T);
     }
-    public T Post<T>(string Controller, string Action, out bool statusCentralized, params string[] pram)
+    public static T Post<T>(string Controller, string Action, out bool statusCentralized, params string[] pram)
     {
 
         try
@@ -146,7 +121,7 @@ public class CallCentralized
 
 
 
-    public T Get<T>(string Controller, string Action, params string[] pram)
+    public static T Get<T>(string Controller, string Action, params string[] pram)
     {
         bool statusCentralized = true;
         try
@@ -179,7 +154,7 @@ public class CallCentralized
         statusCentralized = false;
         return default(T);
     }
-    public T Post<T>(string Controller, string Action, object data)
+    public static T Post<T>(string Controller, string Action, object data)
     {
         bool statusCentralized = true;
         try
@@ -214,7 +189,7 @@ public class CallCentralized
         statusCentralized = false;
         return default(T);
     }
-    public T Post<T>(string Controller, string Action,  params string[] pram)
+    public static T Post<T>(string Controller, string Action,  params string[] pram)
     {
         bool statusCentralized = true;
         try

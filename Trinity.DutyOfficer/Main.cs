@@ -286,6 +286,7 @@ namespace DutyOfficer
             session.IsFingerprintAuthenticated = true;
 
             NavigateTo(NavigatorEnums.Queue);
+            Lib.SignalR.UserLogined("Thắng");
         }
     }
 }
