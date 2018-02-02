@@ -9,6 +9,10 @@ namespace DutyOfficer.Utils
 {
     class SignalR:Trinity.Utils.Notification.SignalRBase
     {
+        public SignalR()
+        {
+            StartConnect();
+        }
         public override void IncomingEvents()
         {
             

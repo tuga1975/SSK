@@ -13,7 +13,6 @@ class APIUtils
     static APIUtils()
     {
         SignalR = new DutyOfficer.Utils.SignalR();
-        SignalR.StartConnect(EnumStations.SSK);
     }
 
 
