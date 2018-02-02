@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Trinity.BE;
 using Trinity.DAL.Repository;
+using Trinity.Common;
 
 namespace Trinity.DAL
 {
@@ -37,16 +38,16 @@ namespace Trinity.DAL
             }
         }
 
-        public List<Notification> GetMyNotifications(string myUserId, bool isLocal)
+        public Response<List<Notification>> GetMyNotifications(string userId)
         {
             IQueryable<DBContext.Notification> queryNotifications = null;
-            if (isLocal)
+            //if (EnumAppConfig.IsLocal)
+            //{
+            //    queryNotifications = _localUnitOfWork.DataContext.Notifications.Where(n => n.ToUserId == userId);
+            //}
+            //else
             {
-                queryNotifications = _localUnitOfWork.DataContext.Notifications.Where(n => n.ToUserId == myUserId);
-            }
-            else
-            {
-                queryNotifications = _centralizedUnitOfWork.DataContext.Notifications.Where(n => n.ToUserId == myUserId);
+                queryNotifications = _centralizedUnitOfWork.DataContext.Notifications.Where(n => n.ToUserId == userId);
             }
             int count = queryNotifications.Count();
             if (count > 0)
@@ -67,9 +68,9 @@ namespace Trinity.DAL
                     notifications.Add(notification);
                 }
 
-                return notifications;
+                return new Response<List<Notification>>((int)EnumResponseStatuses.Success,EnumResponseMessage.Success, notifications);
             }
-            return null;
+            return new Response<List<Notification>>((int)EnumResponseStatuses.ErrorSystem, EnumResponseMessage.ErrorSystem, null);
         }
 
         public List<Notification> GetNotificationsSentToDutyOfficer(bool isLocal)

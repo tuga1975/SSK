@@ -26,10 +26,10 @@ namespace Trinity.CentralizedAPI.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("api/Setting/GetAppointmentTime")]
-        [ResponseType(typeof(BE.ResponseModel))]
+        [ResponseType(typeof(Common.ResponseModel))]
         public IHttpActionResult GetAppointmentTime(string date)
         {
-            var responseModel = new BE.ResponseModel();
+            var responseModel = new Common.ResponseModel();
             var _date = Convert.ToDateTime(date);
             
             var result = new DAL.DAL_Setting().GetAppointmentTime(_date);
@@ -45,10 +45,10 @@ namespace Trinity.CentralizedAPI.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("api/Setting/GetCurrentAppointmentTime")]
-        [ResponseType(typeof(BE.ResponseModel))]
+        [ResponseType(typeof(Common.ResponseModel))]
         public IHttpActionResult GetCurrentAppointmentTime()
         {
-            var responseModel = new BE.ResponseModel();
+            var responseModel = new Common.ResponseModel();
            
             var result = new DAL.DAL_Setting().GetCurrentAppointmentTime();
             responseModel.ResponseCode = result.ResponseCode;

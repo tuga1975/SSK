@@ -128,9 +128,10 @@ namespace OfficerDesktopApp
 
         private void GetAllSupervisees()
         {
+            var apiCentral = CallCentralized.Instance;
             DAL_User dalUser = new DAL_User();
-
-            cboUsers.DataSource = dalUser.GetAllSupervisees(true);
+            var dbUsers = apiCentral.Get<List<Trinity.BE.User>>("User", "GetAllSupervisees");
+            cboUsers.DataSource = dbUsers;
             cboUsers.DisplayMember = "Name";
             cboUsers.ValueMember = "UserId";
         }

@@ -9,6 +9,7 @@ using System.Web.Http;
 using System.Web.Http.Description;
 using Trinity.BE;
 using Trinity.DAL;
+using Trinity.Common;
 
 namespace Trinity.CentralizedAPI.Controllers
 {
@@ -18,7 +19,7 @@ namespace Trinity.CentralizedAPI.Controllers
         // PUT api/values/5
         [Route("Update")]
         [HttpPost]
-        [ResponseType(responseType: typeof(bool))]
+        [ResponseType(responseType: typeof(ResponseModel))]
         public IHttpActionResult Update(int deviceId, EnumDeviceStatuses[] deviceStatuses)
         {
             try

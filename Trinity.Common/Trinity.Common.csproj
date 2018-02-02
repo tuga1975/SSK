@@ -119,6 +119,7 @@
     <Compile Include="Common\EventCenter.cs" />
     <Compile Include="Common\LabelInfo.cs" />
     <Compile Include="Common\MifareCard.cs" />
+    <Compile Include="ResponseModel.cs" />
     <Compile Include="Common\Results.cs" />
     <Compile Include="Common\User.cs" />
     <Compile Include="Constants\CommonConstants.cs" />
