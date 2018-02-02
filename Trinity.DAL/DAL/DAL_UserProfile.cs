@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Trinity.BE;
 using Trinity.DAL.DBContext;
 using Trinity.DAL.Repository;
+using Trinity.Common;
 
 namespace Trinity.DAL
 {
@@ -69,7 +70,7 @@ namespace Trinity.DAL
             return new Response<UserProfile>((int)EnumResponseStatuses.ErrorSystem,EnumResponseMessage.ErrorSystem,null);
         }
 
-        public BE.Response<bool> UpdateUserProfile(BE.UserProfile model)
+        public Response<bool> UpdateUserProfile(BE.UserProfile model)
         {
             try
             {
@@ -185,7 +186,7 @@ namespace Trinity.DAL
             };
 
         }
-        public BE.Response<BE.Address> GetAddressByUserId(string userId, bool isOther=false)
+        public Response<BE.Address> GetAddressByUserId(string userId, bool isOther=false)
         {
             User_Profiles dbUserProfile = null;
             DBContext.Address dbAddress = null;

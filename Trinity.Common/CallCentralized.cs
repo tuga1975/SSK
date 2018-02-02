@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
+
 public class CallCentralized
 {
     #region Singleton Implementation
@@ -61,7 +62,7 @@ public class CallCentralized
                         var result= serializer.Deserialize<T>(reader);
                         if (result!=null)
                         {
-                            var model = (Trinity.BE.ResponseModel)(object)result;
+                            var model = (Trinity.Common.ResponseModel)(object)result;
                             if (model.ResponseCode == (int)EnumResponseStatuses.Success)
                             {
                                 return (T)model.Data;
@@ -108,7 +109,7 @@ public class CallCentralized
                         var result = serializer.Deserialize<T>(reader);
                         if (result != null)
                         {
-                            var model = (Trinity.BE.ResponseModel)(object)result;
+                            var model = (Trinity.Common.ResponseModel)(object)result;
                             if (model.ResponseCode == (int)EnumResponseStatuses.Success)
                             {
                                 return (T)model.Data;
@@ -155,7 +156,7 @@ public class CallCentralized
                         var result = serializer.Deserialize<T>(reader);
                         if (result != null)
                         {
-                            var model = (Trinity.BE.ResponseModel)(object)result;
+                            var model = (Trinity.Common.ResponseModel)(object)result;
                             if (model.ResponseCode == (int)EnumResponseStatuses.Success)
                             {
                                 return (T)model.Data;

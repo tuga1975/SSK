@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using Trinity.BE;
 using Trinity.DAL.DBContext;
 using Trinity.DAL.Repository;
+using Trinity.Common;
 
 
 namespace Trinity.DAL

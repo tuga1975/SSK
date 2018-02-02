@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Trinity.BE;
 using Trinity.DAL.Repository;
+using Trinity.Common;
 
 namespace Trinity.DAL
 {
@@ -37,7 +38,7 @@ namespace Trinity.DAL
             }
         }
 
-        public BE.Response<List<Notification>> GetMyNotifications(string userId)
+        public Response<List<Notification>> GetMyNotifications(string userId)
         {
             IQueryable<DBContext.Notification> queryNotifications = null;
             //if (EnumAppConfig.IsLocal)

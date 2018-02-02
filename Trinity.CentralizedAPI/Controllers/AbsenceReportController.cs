@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
+using Trinity.Common;
 
 namespace Trinity.CentralizedAPI.Controllers
 {
@@ -13,10 +14,10 @@ namespace Trinity.CentralizedAPI.Controllers
     {
         [HttpPost]
         [Route("api/AbsenceReport/SetReasonInfo")]
-        [ResponseType(typeof(BE.ResponseModel))]
+        [ResponseType(typeof(Common.ResponseModel))]
         public IHttpActionResult SetReasonInfo(Trinity.BE.Reason model)
         {
-            var responseModel = new BE.ResponseModel();
+            var responseModel = new Common.ResponseModel();
 
             var result = new DAL.DAL_AbsenceReporting().SetInfo(model);
             responseModel.ResponseCode = result.ResponseCode;
