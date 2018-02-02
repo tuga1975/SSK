@@ -741,26 +741,5 @@ namespace Trinity.DAL
             return modelReturn;
         }
         #endregion
-
-        //public Setting GetSettingSystemByYear(int year)
-        //{
-        //    return _localUnitOfWork.DataContext.Settings.FirstOrDefault(s => s.Year == year);
-        //}
-
-        //public void UpdateSettingSystem(Setting setting)
-        //{
-        //    Setting dbSetting = _localUnitOfWork.DataContext.Settings.FirstOrDefault(s => s.Year == setting.Year);
-
-        //    if (dbSetting == null)
-        //    {
-        //        _localUnitOfWork.GetRepository<Setting>().Add(setting);
-        //    }
-        //    else
-        //    {
-        //        _localUnitOfWork.GetRepository<Setting>().Update(setting);
-        //    }
-
-        //    _localUnitOfWork.Save();
-        //}
     }
 }

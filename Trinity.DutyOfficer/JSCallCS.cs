@@ -334,7 +334,7 @@ namespace DutyOfficer
                         Date = DateTime.Now.ToString("dd/MM/yyyy"),
                         CompanyName = CommonConstants.COMPANY_NAME,
                         LastStation = EnumStations.DUTYOFFICER,
-                        MarkingNo = CommonUtil.GenerateMarkingNumber(),
+                        MarkingNo = new DAL_SettingSystem().GenerateMarkingNumber(),
                         DrugType = item.DrugType,
                         ReprintReason = reason,
                         IsMUB = false
@@ -443,7 +443,7 @@ namespace DutyOfficer
                         Date = DateTime.Now.ToString("dd/MM/yyyy"),
                         CompanyName = CommonConstants.COMPANY_NAME,
                         LastStation = EnumStations.DUTYOFFICER,
-                        MarkingNo = CommonUtil.GenerateMarkingNumber(),
+                        MarkingNo = new DAL_SettingSystem().GenerateMarkingNumber(),
                         //DrugType = "NA",
                         ReprintReason = reason,
                         IsMUB = item.IsMUB,

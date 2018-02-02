@@ -29,7 +29,7 @@ namespace Trinity.DAL
         {
             try
             {
-                Label dbLabel;
+                Label dbLabel = null;
                 var centralizeLabelRepo = _centralizedUnitOfWork.GetRepository<Label>();
                 dbLabel = _centralizedUnitOfWork.DataContext.Labels.FirstOrDefault(d => d.UserId == userId && d.Label_Type.Equals(labelType));
                 if (dbLabel == null)
@@ -48,8 +48,8 @@ namespace Trinity.DAL
                     dbLabel.LastStation = model.LastStation;
                     dbLabel.ReprintReason = model.ReprintReason;
                     dbLabel.PrintCount = 1;
-                    //dbLabel.PrintStatus = model.PrintStatus;
-                    //dbLabel.Message = model.Message;
+                    dbLabel.PrintStatus = model.PrintStatus;
+                    dbLabel.Message = model.Message;
 
                     centralizeLabelRepo.Add(dbLabel);
                 }
@@ -67,8 +67,8 @@ namespace Trinity.DAL
                     dbLabel.LastStation = model.LastStation;
                     dbLabel.PrintCount += 1;
                     dbLabel.ReprintReason = model.ReprintReason;
-                    //dbLabel.PrintStatus = model.PrintStatus;
-                    //dbLabel.Message = model.Message;
+                    dbLabel.PrintStatus = model.PrintStatus;
+                    dbLabel.Message = model.Message;
 
                     centralizeLabelRepo.Update(dbLabel);
                 }
@@ -94,8 +94,8 @@ namespace Trinity.DAL
                         dbLabel.LastStation = model.LastStation;
                         dbLabel.ReprintReason = model.ReprintReason;
                         dbLabel.PrintCount = 1;
-                        //dbLabel.PrintStatus = model.PrintStatus;
-                        //dbLabel.Message = model.Message;
+                        dbLabel.PrintStatus = model.PrintStatus;
+                        dbLabel.Message = model.Message;
 
                         locallabelRepo.Add(dbLabel);
                     }
@@ -113,8 +113,8 @@ namespace Trinity.DAL
                         dbLabel.LastStation = model.LastStation;
                         dbLabel.PrintCount += 1;
                         dbLabel.ReprintReason = model.ReprintReason;
-                        //dbLabel.PrintStatus = model.PrintStatus;
-                        //dbLabel.Message = model.Message;
+                        dbLabel.PrintStatus = model.PrintStatus;
+                        dbLabel.Message = model.Message;
 
                         locallabelRepo.Update(dbLabel);
                     }

@@ -14,14 +14,6 @@ namespace Trinity.DAL.DBContext
     
     public partial class User_Profiles
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public User_Profiles()
-        {
-            this.APS_USER_ACT_LOG = new HashSet<APS_USER_ACT_LOG>();
-            this.MsgRecipients = new HashSet<MsgRecipient>();
-            this.SentMessages = new HashSet<SentMessage>();
-        }
-    
         public string UserId { get; set; }
         public string Primary_Phone { get; set; }
         public string Secondary_Phone { get; set; }
@@ -59,12 +51,6 @@ namespace Trinity.DAL.DBContext
     
         public virtual Address Address { get; set; }
         public virtual Address Address1 { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<APS_USER_ACT_LOG> APS_USER_ACT_LOG { get; set; }
         public virtual Membership_Users Membership_Users { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<MsgRecipient> MsgRecipients { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<SentMessage> SentMessages { get; set; }
     }
 }

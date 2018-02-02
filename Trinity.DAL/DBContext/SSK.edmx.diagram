@@ -49,6 +49,12 @@
         <AssociationConnector Association="SSKModel.FK_User_Profiles_Membership_Users" />
         <AssociationConnector Association="SSKModel.FK_OperationSettings_ChangeHist_OperationSettings" />
         <AssociationConnector Association="SSKModel.FK_QueueDetails_Queues" />
+        <EntityTypeShape EntityType="SSKModel.DrugResult" Width="1.5" PointX="8.375" PointY="7.75" />
+        <EntityTypeShape EntityType="SSKModel.Security_QA" Width="1.5" PointX="3" PointY="23.25" />
+        <EntityTypeShape EntityType="SSKModel.Setting" Width="1.5" PointX="10.375" PointY="0.75" />
+        <AssociationConnector Association="SSKModel.FK_Notifications_Membership_Users" />
+        <AssociationConnector Association="SSKModel.FK_Notifications_Membership_Users1" />
+        <AssociationConnector Association="SSKModel.FK_PWD_QA_Membership_Users" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
