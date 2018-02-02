@@ -13,7 +13,7 @@ namespace Trinity.CentralizedAPI.Controllers
     {
         [HttpGet]
         [Route("api/Notification/GetByUserId")]
-        [ResponseType(typeof(ResponseModel))]
+        //[ResponseType(typeof(ResponseModel))]
         public IHttpActionResult GetMyNotifications(string userId)
         {
             var responseModel = new ResponseModel();

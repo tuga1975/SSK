@@ -18,24 +18,24 @@ namespace Trinity.CentralizedAPI.Controllers
         /// <returns>Appointment</returns>
         [HttpGet]
         [Route("api/Appointment/GetById")]
-        [ResponseType(typeof(ResponseModel))]
+        ////[ResponseType(typeof(ResponseModel))]
         public IHttpActionResult GetById(string appointmentId)
         {
-            var responseModel = new ResponseModel();
-
-
+            //var responseModel = new ResponseModel();
             var guid = Guid.Empty;
             if (Guid.TryParse(appointmentId, out guid))
             {
-                var result = new DAL.DAL_Appointments().GetMyAppointmentByID(guid);
-                responseModel.ResponseCode = result.ResponseCode;
-                responseModel.ResponseMessage = result.ResponseMessage;
-                responseModel.Data = result.Data;
-                return Ok(responseModel);
+                var result = new DAL.DAL_Appointments().GetAppointmentByID(guid);
+                //responseModel.ResponseCode = result.ResponseCode;
+                //responseModel.ResponseMessage = result.ResponseMessage;
+                //responseModel.Data = result.Data;
+                //return Ok(responseModel);
+                return Ok(result);
             }
             else
             {
-                return Ok(responseModel);
+                //return Ok(responseModel);
+                return null;
             }
 
         }
@@ -47,22 +47,24 @@ namespace Trinity.CentralizedAPI.Controllers
         /// <returns>Appointment</returns>
         [HttpGet]
         [Route("api/Appointment/GetDetailsById")]
-        [ResponseType(typeof(ResponseModel))]
+        ////[ResponseType(typeof(ResponseModel))]
         public IHttpActionResult GetDetailsById(string appointmentId)
         {
-            var responseModel = new ResponseModel();
+            //var responseModel = new ResponseModel();
             var guid = Guid.Empty;
             if (Guid.TryParse(appointmentId, out guid))
             {
-                var result= new DAL.DAL_Appointments().GetAppointmentDetails(guid);
-                responseModel.ResponseCode = result.ResponseCode;
-                responseModel.ResponseMessage = result.ResponseMessage;
-                responseModel.Data = result.Data;
-                return Ok(responseModel);
+                var result= new DAL.DAL_Appointments().GetAppmtDetails(guid);
+                //responseModel.ResponseCode = result.ResponseCode;
+                //responseModel.ResponseMessage = result.ResponseMessage;
+                //responseModel.Data = result.Data;
+                //return Ok(responseModel);
+                return Ok(result);
             }
             else
             {
-                return Ok(responseModel);
+                //return Ok(responseModel);
+                return null;
             }
         }
 
@@ -74,16 +76,17 @@ namespace Trinity.CentralizedAPI.Controllers
         /// <returns>Appointment</returns>
         [HttpGet]
         [Route("api/Appointment/GetByUserIdAndDate")]
-        [ResponseType(typeof(ResponseModel))]
+        ////[ResponseType(typeof(ResponseModel))]
         public IHttpActionResult GetByUserIdAndDate(string UserId, string date)
         {
-            var responseModel = new ResponseModel();
+            //var responseModel = new ResponseModel();
             DateTime _date = Convert.ToDateTime(date);
-            var result = new DAL.DAL_Appointments().GetMyAppointmentByDate(UserId, _date);
-            responseModel.ResponseCode = result.ResponseCode;
-            responseModel.ResponseMessage = result.ResponseMessage;
-            responseModel.Data = result.Data;
-            return Ok(responseModel);
+            var result = new DAL.DAL_Appointments().GetAppointmentByDate(UserId, _date);
+            //responseModel.ResponseCode = result.ResponseCode;
+            //responseModel.ResponseMessage = result.ResponseMessage;
+            //responseModel.Data = result.Data;
+            //return Ok(responseModel);
+            return Ok(result);
 
         }
 
@@ -94,15 +97,16 @@ namespace Trinity.CentralizedAPI.Controllers
         /// <returns>Appointment</returns>
         [HttpGet]
         [Route("api/Appointment/GetListByUserId")]
-        [ResponseType(typeof(ResponseModel))]
+        ////[ResponseType(typeof(ResponseModel))]
         public IHttpActionResult GetListByUserId(string userId)
         {
-            var responseModel = new ResponseModel();
-            var result = new DAL.DAL_Appointments().GetMyAppointmentBy(userId);
-            responseModel.ResponseCode = result.ResponseCode;
-            responseModel.ResponseMessage = result.ResponseMessage;
-            responseModel.Data = result.Data;
-            return Ok(responseModel);
+           // var responseModel = new ResponseModel();
+            var result = new DAL.DAL_Appointments().GetAppointmentByUserId(userId);
+            //responseModel.ResponseCode = result.ResponseCode;
+            //responseModel.ResponseMessage = result.ResponseMessage;
+            //responseModel.Data = result.Data;
+            //return Ok(responseModel);
+            return Ok(result);
             
         }
 
@@ -113,15 +117,16 @@ namespace Trinity.CentralizedAPI.Controllers
         /// <returns>Appointment</returns>
         [HttpGet]
         [Route("api/Appointment/GetByToday")]
-        [ResponseType(typeof(ResponseModel))]
+        ////[ResponseType(typeof(ResponseModel))]
         public IHttpActionResult GetByToday(string userId)
         {
-            var responseModel = new ResponseModel();
-            var result = new DAL.DAL_Appointments().GetTodayAppointment(userId);
-            responseModel.ResponseCode = result.ResponseCode;
-            responseModel.ResponseMessage = result.ResponseMessage;
-            responseModel.Data = result.Data;
-            return Ok(responseModel);
+            //var responseModel = new ResponseModel();
+            var result = new DAL.DAL_Appointments().GetTodayAppointmentByUserId(userId);
+            //responseModel.ResponseCode = result.ResponseCode;
+            //responseModel.ResponseMessage = result.ResponseMessage;
+            //responseModel.Data = result.Data;
+            //return Ok(responseModel);
+            return Ok(result);
            
         }
 
@@ -132,21 +137,23 @@ namespace Trinity.CentralizedAPI.Controllers
         /// <returns>List Appointment</returns>
         [HttpGet]
         [Route("api/Appointment/GetListCurrentTimeslot")]
-        [ResponseType(typeof(ResponseModel))]
+        ////[ResponseType(typeof(ResponseModel))]
         public IHttpActionResult GetListCurrentTimeslot(string currentTime)
         {
-            var responseModel = new ResponseModel();
+            //var responseModel = new ResponseModel();
             TimeSpan current = new TimeSpan();
             if (TimeSpan.TryParse(currentTime, out current))
             {
                
-                var result = new DAL.DAL_Appointments().GetAllCurrentTimeslotAppointment(current);
-                responseModel.ResponseCode = result.ResponseCode;
-                responseModel.ResponseMessage = result.ResponseMessage;
-                responseModel.Data = result.Data;
-                return Ok(responseModel);
+                var result = new DAL.DAL_Appointments().GetAllCurrentTimeslotApptmt(current);
+                //responseModel.ResponseCode = result.ResponseCode;
+                //responseModel.ResponseMessage = result.ResponseMessage;
+                //responseModel.Data = result.Data;
+                //return Ok(responseModel);
+                return Ok(result);
             }
-            return Ok(responseModel);
+            //return Ok(responseModel);
+            return null;
         }
 
         /// <summary>
@@ -156,15 +163,14 @@ namespace Trinity.CentralizedAPI.Controllers
         /// <returns>Appointment</returns>
         [HttpGet]
         [Route("api/Appointment/GetNearest")]
-        [ResponseType(typeof(ResponseModel))]
         public IHttpActionResult GetNearest(string userId)
         {
-            var responseModel = new ResponseModel();
-            var result = new DAL.DAL_Appointments().GetNearestAppointment(userId);
-            responseModel.ResponseCode = result.ResponseCode;
-            responseModel.ResponseMessage = result.ResponseMessage;
-            responseModel.Data = result.Data;
-            return Ok(responseModel);
+           // var responseModel = new ResponseModel();
+            var result = new DAL.DAL_Appointments().GetNearestApptmt(userId);
+            //responseModel.ResponseCode = result.ResponseCode;
+            //responseModel.ResponseMessage = result.ResponseMessage;
+            //responseModel.Data = result.Data;
+            return Ok(result);
           
         }
 
@@ -177,15 +183,16 @@ namespace Trinity.CentralizedAPI.Controllers
         /// <returns>Appointment</returns>
         [HttpPost]
         [Route("api/Appointment/UpdateBooktime")]
-        [ResponseType(typeof(ResponseModel))]
+        ////[ResponseType(typeof(ResponseModel))]
         public IHttpActionResult UpdateBooktime(string appointmentId, string timeStart, string timeEnd)
         {
-            var responseModel = new ResponseModel();
-            var result = new DAL.DAL_Appointments().UpdateBookTime(appointmentId, timeStart, timeEnd);
-            responseModel.ResponseCode = result.ResponseCode;
-            responseModel.ResponseMessage = result.ResponseMessage;
-            responseModel.Data = result.Data;
-            return Ok(responseModel);
+            //var responseModel = new ResponseModel();
+            var result = new DAL.DAL_Appointments().UpdateBookingTime(appointmentId, timeStart, timeEnd);
+            //responseModel.ResponseCode = result.ResponseCode;
+            //responseModel.ResponseMessage = result.ResponseMessage;
+            //responseModel.Data = result.Data;
+            //return Ok(responseModel);
+            return Ok(result);
         }
 
         /// <summary>
@@ -195,15 +202,15 @@ namespace Trinity.CentralizedAPI.Controllers
         /// <returns>int</returns>
         [HttpGet]
         [Route("api/Appointment/CountAbsenceByUserId")]
-        [ResponseType(typeof(ResponseModel))]
+        //[ResponseType(typeof(ResponseModel))]
         public IHttpActionResult CountAbsenceByUserId(string userID)
         {
-            var responseModel = new ResponseModel();
-            var result = new DAL.DAL_Appointments().CountMyAbsence(userID);
-            responseModel.ResponseCode = result.ResponseCode;
-            responseModel.ResponseMessage = result.ResponseMessage;
-            responseModel.Data = result.Data;
-            return Ok(responseModel);
+           // var responseModel = new ResponseModel();
+            var result = new DAL.DAL_Appointments().CountAbsenceReport(userID);
+            //responseModel.ResponseCode = result.ResponseCode;
+            //responseModel.ResponseMessage = result.ResponseMessage;
+            //responseModel.Data = result.Data;
+            return Ok(result);
         }
 
         /// <summary>
@@ -213,15 +220,15 @@ namespace Trinity.CentralizedAPI.Controllers
         /// <returns>List Appointment</returns>
         [HttpGet]
         [Route("api/Appointment/GetAbsenceByUserId")]
-        [ResponseType(typeof(ResponseModel))]
+        //[ResponseType(typeof(ResponseModel))]
         public IHttpActionResult GetAbsenceByUserId(string userID)
         {
-            var responseModel = new ResponseModel();
-            var result = new DAL.DAL_Appointments().GetMyAbsentAppointments(userID);
-            responseModel.ResponseCode = result.ResponseCode;
-            responseModel.ResponseMessage = result.ResponseMessage;
-            responseModel.Data = result.Data;
-            return Ok(responseModel);
+            //var responseModel = new ResponseModel();
+            var result = new DAL.DAL_Appointments().GetAbsentAppointments(userID);
+            //responseModel.ResponseCode = result.ResponseCode;
+            //responseModel.ResponseMessage = result.ResponseMessage;
+            //responseModel.Data = result.Data;
+            return Ok(result);
         }
 
         /// <summary>
@@ -232,22 +239,23 @@ namespace Trinity.CentralizedAPI.Controllers
         /// <returns>Appointment</returns>
         [HttpPost]
         [Route("api/Appointment/UpdateReason")]
-        [ResponseType(typeof(ResponseModel))]
+        //[ResponseType(typeof(ResponseModel))]
         public IHttpActionResult UpdateReason(string appointmentId, string asbsenceId)
         {
-            var responseModel = new ResponseModel();
+            //var responseModel = new ResponseModel();
             var appointmentGuid = Guid.Empty;
             var absenceGuid = Guid.Empty;
             if (Guid.TryParse(appointmentId, out appointmentGuid) && Guid.TryParse(asbsenceId, out absenceGuid))
             {
 
-                var result = new DAL.DAL_Appointments().UpdateReason(appointmentGuid, absenceGuid);
-                responseModel.ResponseCode = result.ResponseCode;
-                responseModel.ResponseMessage = result.ResponseMessage;
-                responseModel.Data = result.Data;
-                return Ok(responseModel);
+                var result = new DAL.DAL_Appointments().UpdateAbsenceReason(appointmentGuid, absenceGuid);
+                //responseModel.ResponseCode = result.ResponseCode;
+                //responseModel.ResponseMessage = result.ResponseMessage;
+                //responseModel.Data = result.Data;
+                //return Ok(responseModel);
+                return Ok(result);
             }
-            return Ok(responseModel);
+            return null;
 
 
         }
@@ -259,16 +267,16 @@ namespace Trinity.CentralizedAPI.Controllers
         /// <returns>List Appointment</returns>
         [HttpGet]
         [Route("api/Appointment/GetListFromSelectedDate")]
-        [ResponseType(typeof(ResponseModel))]
+        //[ResponseType(typeof(ResponseModel))]
         public IHttpActionResult GetListFromSelectedDate(string listAppointmentId)
         {
-            var responseModel = new ResponseModel();
+           // var responseModel = new ResponseModel();
             var _listAppointmentId = listAppointmentId.Split(',').ToList();
-            var result = new DAL.DAL_Appointments().GetListAppointmentFromSelectedDate(_listAppointmentId);
-            responseModel.ResponseCode = result.ResponseCode;
-            responseModel.ResponseMessage = result.ResponseMessage;
-            responseModel.Data = result.Data;
-            return Ok(responseModel);
+            var result = new DAL.DAL_Appointments().GetListAppointmentFromListSelectedDate(listAppointmentId);
+            //responseModel.ResponseCode = result.ResponseCode;
+            //responseModel.ResponseMessage = result.ResponseMessage;
+            //responseModel.Data = result.Data;
+            return Ok(result);
         }
 
         /// <summary>
@@ -278,20 +286,21 @@ namespace Trinity.CentralizedAPI.Controllers
         /// <returns>int</returns>
         [HttpGet]
         [Route("api/Appointment/CountByTimeslot")]
-        [ResponseType(typeof(ResponseModel))]
+        //[ResponseType(typeof(ResponseModel))]
         public IHttpActionResult CountByTimeslot(string appointmentId)
         {
-            var responseModel = new ResponseModel();
+           // var responseModel = new ResponseModel();
             var guid = Guid.Empty;
             if (Guid.TryParse(appointmentId, out guid))
             {
-                var appointment = new DAL.DAL_Appointments().GetMyAppointmentByID(guid);
-                responseModel.Data = new DAL.DAL_Appointments().CountListAppointmentByTimeslot(appointment.Data);
-                responseModel.ResponseCode = (int)EnumResponseStatuses.Success;
-                responseModel.ResponseMessage = EnumResponseMessage.Success;
-                return Ok(responseModel);
+                var appointment = new DAL.DAL_Appointments().GetAppointmentByID(guid);
+                var result = new DAL.DAL_Appointments().CountListApptmtByTimeslot(appointment);
+                //responseModel.ResponseCode = (int)EnumResponseStatuses.Success;
+                //responseModel.ResponseMessage = EnumResponseMessage.Success;
+                //return Ok(responseModel);
+                return Ok(result);
             }
-            return Ok(responseModel);
+            return null;
 
 
         }
@@ -302,15 +311,16 @@ namespace Trinity.CentralizedAPI.Controllers
         /// <returns>List Appointment</returns>
         [HttpGet]
         [Route("api/Appointment/GetAll")]
-        [ResponseType(typeof(ResponseModel))]
+        //[ResponseType(typeof(ResponseModel))]
         public IHttpActionResult GetAllAppointments()
         {
-            var responseModel = new ResponseModel();
-            var result = new DAL.DAL_Appointments().GetAllAppointments();
-            responseModel.ResponseCode = result.ResponseCode;
-            responseModel.ResponseMessage = result.ResponseMessage;
-            responseModel.Data = result.Data;
-            return Ok(responseModel);
+            //var responseModel = new ResponseModel();
+            var result = new DAL.DAL_Appointments().GetAllApptmts();
+            //responseModel.ResponseCode = result.ResponseCode;
+            //responseModel.ResponseMessage = result.ResponseMessage;
+            //responseModel.Data = result.Data;
+            //return Ok(responseModel);
+            return Ok(result);
         }
 
         /// <summary>
@@ -319,15 +329,16 @@ namespace Trinity.CentralizedAPI.Controllers
         /// <returns>List Statistics</returns>
         [HttpGet]
         [Route("api/Appointment/GetAllStatistics")]
-        [ResponseType(typeof(ResponseModel))]
+        //[ResponseType(typeof(ResponseModel))]
         public IHttpActionResult GetAllStatistics()
         {
-            var responseModel = new ResponseModel();
-            var result = new DAL.DAL_Appointments().GetAllStatistics();
-            responseModel.ResponseCode = result.ResponseCode;
-            responseModel.ResponseMessage = result.ResponseMessage;
-            responseModel.Data = result.Data;
-            return Ok(responseModel);
+           // var responseModel = new ResponseModel();
+            var result = new DAL.DAL_Appointments().GetAllStats();
+            //responseModel.ResponseCode = result.ResponseCode;
+            //responseModel.ResponseMessage = result.ResponseMessage;
+            //responseModel.Data = result.Data;
+            //return Ok(responseModel);
+            return Ok(result);
         }
 
         /// <summary>
@@ -337,15 +348,16 @@ namespace Trinity.CentralizedAPI.Controllers
         /// <returns>int</returns>
         [HttpGet]
         [Route("api/Appointment/CountBookedByTimeslot")]
-        [ResponseType(typeof(ResponseModel))]
+        //[ResponseType(typeof(ResponseModel))]
         public IHttpActionResult CountBookedByTimeslot(string timeslotId)
         {
             var responseModel = new ResponseModel();
-            var result = new DAL.DAL_Appointments().CountAppointmentBookedByTimeslot(timeslotId);
-            responseModel.ResponseCode = result.ResponseCode;
-            responseModel.ResponseMessage = result.ResponseMessage;
-            responseModel.Data = result.Data;
-            return Ok(responseModel);
+            var result = new DAL.DAL_Appointments().CountApptmtBookedByTimeslot(timeslotId);
+            //responseModel.ResponseCode = result.ResponseCode;
+            //responseModel.ResponseMessage = result.ResponseMessage;
+            //responseModel.Data = result.Data;
+            //return Ok(responseModel);
+            return Ok(result);
         }
 
         /// <summary>
@@ -355,15 +367,16 @@ namespace Trinity.CentralizedAPI.Controllers
         /// <returns>int</returns>
         [HttpGet]
         [Route("api/Appointment/CountReportedByTimeslot")]
-        [ResponseType(typeof(ResponseModel))]
+        //[ResponseType(typeof(ResponseModel))]
         public IHttpActionResult CountReportedByTimeslot(string timeslotId)
         {
             var responseModel = new ResponseModel();
-            var result = new DAL.DAL_Appointments().CountAppointmentReportedByTimeslot(timeslotId);
-            responseModel.ResponseCode = result.ResponseCode;
-            responseModel.ResponseMessage = result.ResponseMessage;
-            responseModel.Data = result.Data;
-            return Ok(responseModel);
+            var result = new DAL.DAL_Appointments().CountApptmtReportedByTimeslot(timeslotId);
+            //responseModel.ResponseCode = result.ResponseCode;
+            //responseModel.ResponseMessage = result.ResponseMessage;
+            //responseModel.Data = result.Data;
+            //return Ok(responseModel);
+            return Ok(result);
         }
 
         /// <summary>
@@ -373,15 +386,16 @@ namespace Trinity.CentralizedAPI.Controllers
         /// <returns>int</returns>
         [HttpGet]
         [Route("api/Appointment/CountNoShowdByTimeslot")]
-        [ResponseType(typeof(ResponseModel))]
+        //[ResponseType(typeof(ResponseModel))]
         public IHttpActionResult CountNoShowdByTimeslot(string timeslotId)
         {
             var responseModel = new ResponseModel();
-            var result = new DAL.DAL_Appointments().CountAppointmentNoShowByTimeslot(timeslotId);
-            responseModel.ResponseCode = result.ResponseCode;
-            responseModel.ResponseMessage = result.ResponseMessage;
-            responseModel.Data = result.Data;
-            return Ok(responseModel);
+            var result = new DAL.DAL_Appointments().CountApptmtNoShowByTimeslot(timeslotId);
+            //responseModel.ResponseCode = result.ResponseCode;
+            //responseModel.ResponseMessage = result.ResponseMessage;
+            //responseModel.Data = result.Data;
+            //return Ok(responseModel);
+            return Ok(result);
         }
 
         /// <summary>
@@ -391,15 +405,16 @@ namespace Trinity.CentralizedAPI.Controllers
         /// <returns>int</returns>
         [HttpGet]
         [Route("api/Appointment/GetMaximumNumberOfTimeslot")]
-        [ResponseType(typeof(ResponseModel))]
+        //[ResponseType(typeof(ResponseModel))]
         public IHttpActionResult GetMaximumNumberOfTimeslot(string timeslotId)
         {
             var responseModel = new ResponseModel();
-            var result = new DAL.DAL_Appointments().GetMaximumNumberOfTimeslot(timeslotId);
-            responseModel.ResponseCode = result.ResponseCode;
-            responseModel.ResponseMessage = result.ResponseMessage;
-            responseModel.Data = result.Data;
-            return Ok(responseModel);
+            var result = new DAL.DAL_Appointments().GetMaxNumberOfTimeslot(timeslotId);
+            //responseModel.ResponseCode = result.ResponseCode;
+            //responseModel.ResponseMessage = result.ResponseMessage;
+            //responseModel.Data = result.Data;
+            //return Ok(responseModel);
+            return Ok(result);
         }
 
         /// <summary>
@@ -408,16 +423,17 @@ namespace Trinity.CentralizedAPI.Controllers
         /// <param name="specificDate">specific date</param>
         [HttpPost]
         [Route("api/Appointment/CreateForAllUsers")]
-        [ResponseType(typeof(ResponseModel))]
+        //[ResponseType(typeof(ResponseModel))]
         public IHttpActionResult CreateForAllUsers(string specificDate)
         {
             var responseModel = new ResponseModel();
             DateTime date = Convert.ToDateTime(specificDate);
-            var result = new DAL.DAL_Appointments().CreateAppointmentsForAllUsers(date); 
-            responseModel.ResponseCode = result.ResponseCode;
-            responseModel.ResponseMessage = result.ResponseMessage;
-            responseModel.Data = result.Data;
-            return Ok(responseModel);
+            var result = new DAL.DAL_Appointments().CreateApptmtsForAllUsers(date);
+            //responseModel.ResponseCode = result.ResponseCode;
+            //responseModel.ResponseMessage = result.ResponseMessage;
+            //responseModel.Data = result.Data;
+            //return Ok(responseModel);
+            return Ok(result);
           
             
         }
@@ -429,17 +445,29 @@ namespace Trinity.CentralizedAPI.Controllers
         /// <returns>Timeslot</returns>
         [HttpGet]
         [Route("api/Appointment/GetNearestTimeslot")]
-        [ResponseType(typeof(ResponseModel))]
+        //[ResponseType(typeof(ResponseModel))]
         public IHttpActionResult GetNearestTimeslot()
         {
             var responseModel = new ResponseModel();
-            var result = new DAL.DAL_Appointments().GetTimeslotNearest();
-            responseModel.ResponseCode = result.ResponseCode;
-            responseModel.ResponseMessage = result.ResponseMessage;
-            responseModel.Data = result.Data;
-            return Ok(responseModel);
+            var result = new DAL.DAL_Appointments().GetTimeslotNearestAppointment();
+            //responseModel.ResponseCode = result.ResponseCode;
+            //responseModel.ResponseMessage = result.ResponseMessage;
+            //responseModel.Data = result.Data;
+            return Ok(result);
         }
 
+        //[HttpGet]
+        //[Route("api/Appointment/GetTimeslotbyAppointment")]
+      
+        //public IHttpActionResult GetTimeslotbyAppointment(string appointmentId)
+        //{
+        //    var responseModel = new ResponseModel();
+        //    var result = new DAL.DAL_Appointments().GetTimeslotNearest();
+        //    //responseModel.ResponseCode = result.ResponseCode;
+        //    //responseModel.ResponseMessage = result.ResponseMessage;
+        //    //responseModel.Data = result.Data;
+        //    return Ok(responseModel);
+        //}
 
         /// <summary>
         /// Update time slot for appointment
@@ -449,7 +477,7 @@ namespace Trinity.CentralizedAPI.Controllers
         /// <returns>Appointment</returns>
         [HttpPost]
         [Route("api/Appointment/UpdateTimeslot")]
-        [ResponseType(typeof(ResponseModel))]
+        //[ResponseType(typeof(ResponseModel))]
         public IHttpActionResult UpdateTimeslot(string appointmentId, string timeslotID)
         {
             var responseModel = new ResponseModel();
@@ -458,14 +486,16 @@ namespace Trinity.CentralizedAPI.Controllers
             if (Guid.TryParse(appointmentId, out appointmentGuid))
             {
                 
-                var result = new DAL.DAL_Appointments().UpdateTimeslotForAppointment(appointmentGuid, timeslotID);
-                responseModel.ResponseCode = result.ResponseCode;
-                responseModel.ResponseMessage = result.ResponseMessage;
-                responseModel.Data = result.Data;
-                return Ok(responseModel);
+                var result = new DAL.DAL_Appointments().UpdateTimeslotForApptmt(appointmentGuid, timeslotID);
+                //responseModel.ResponseCode = result.ResponseCode;
+                //responseModel.ResponseMessage = result.ResponseMessage;
+                //responseModel.Data = result.Data;
+                return Ok(result);
             }
-            return Ok(responseModel);
+            return null;
 
         }
+
+
     }
 }

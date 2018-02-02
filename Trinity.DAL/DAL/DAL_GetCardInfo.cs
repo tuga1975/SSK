@@ -18,7 +18,7 @@ namespace Trinity.DAL
         {
             if (EnumAppConfig.IsLocal)
             {
-                return CallCentralized.Instance.Get<BE.CardInfo>("Settings", "GetCardInfo");
+                return CallCentralized.Get<BE.CardInfo>("Settings", "GetCardInfo");
             }
             else
             {

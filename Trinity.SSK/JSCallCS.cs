@@ -47,13 +47,13 @@ namespace SSK
 
         public void LoadNotications()
         {
-            var apiCentral = CallCentralized.Instance;
+            
             Session currentSession = Session.Instance;
             Trinity.BE.User user = (Trinity.BE.User)currentSession[CommonConstants.USER_LOGIN];
 
             DAL_Notification dalNotification = new DAL_Notification();
 
-            List<Trinity.BE.Notification> myNotifications = apiCentral.Get<List<Trinity.BE.Notification>>("Notification","GetMyNotifications","userId="+user.UserId);
+            List<Trinity.BE.Notification> myNotifications = CallCentralized.Get<List<Trinity.BE.Notification>>("Notification","GetMyNotifications","userId="+user.UserId);
 
             var model = myNotifications;
             _web.LoadPageHtml("Notifications.html", myNotifications);
@@ -87,13 +87,13 @@ namespace SSK
             Session session = Session.Instance;
             Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
 
-            var apiCentral = CallCentralized.Instance;
+            
             Trinity.DAL.DBContext.Appointment appointment;
             Trinity.DAL.DBContext.Appointment nearestAppointment;
             DateTime today = DateTime.Now.Date;
             var selectedTimes = new Trinity.BE.WorkingTimeshift();
 
-            appointment = apiCentral.Get<Trinity.DAL.DBContext.Appointment>(EnumAPIParam.Appointment, EnumAPIParam.GetByToday, "userId=" + user.UserId);
+            appointment = CallCentralized.Get<Trinity.DAL.DBContext.Appointment>(EnumAPIParam.Appointment, EnumAPIParam.GetByToday, "userId=" + user.UserId);
 
             if (appointment != null)
             {
@@ -103,7 +103,7 @@ namespace SSK
             }
             else
             {
-                nearestAppointment = CallCentralized.Instance.Get<Trinity.DAL.DBContext.Appointment>(EnumAPIParam.Appointment, EnumAPIParam.GetNearest, "userId=" + user.UserId);
+                nearestAppointment = CallCentralized.Get<Trinity.DAL.DBContext.Appointment>(EnumAPIParam.Appointment, EnumAPIParam.GetNearest, "userId=" + user.UserId);
                 //nearestAppointment = DAL_Appointments.GetNearestAppointment(user.UserId);
                 if (nearestAppointment != null)
                 {
@@ -122,8 +122,8 @@ namespace SSK
         private Trinity.BE.WorkingTimeshift SetSelectedTimes( Appointment appointment)
         {
             var date = appointment.Date;
-            var apiCentral = CallCentralized.Instance;
-            Trinity.BE.WorkingTimeshift selectedTimes = apiCentral.Get<Trinity.BE.WorkingTimeshift>("Setting", "GetAppointmentTime", "date=" + date.ToString());
+            
+            Trinity.BE.WorkingTimeshift selectedTimes = CallCentralized.Get<Trinity.BE.WorkingTimeshift>("Setting", "GetAppointmentTime", "date=" + date.ToString());
             SetSelectedTime(appointment, selectedTimes.Morning);
             SetSelectedTime(appointment, selectedTimes.Afternoon);
             SetSelectedTime(appointment, selectedTimes.Evening);
@@ -133,7 +133,7 @@ namespace SSK
 
         private static void SetSelectedTime(Appointment appointment, List<Trinity.BE.WorkingShiftDetails> selectedTimes)
         {
-            var apiCentral = CallCentralized.Instance;
+            
 
             var item = selectedTimes.Where(d => appointment.Timeslot != null && appointment.Timeslot.StartTime != null && d.StartTime == appointment.Timeslot.StartTime.Value && d.EndTime == appointment.Timeslot.EndTime.Value).FirstOrDefault();
             if (item != null)
@@ -145,10 +145,10 @@ namespace SSK
             {
 
 
-                var maxAppPerTimeslot = apiCentral.Get<int>(EnumAPIParam.Appointment, EnumAPIParam.GetMaximumNumberOfTimeslot, "timeslotId=" + appointment.Timeslot_ID);
+                var maxAppPerTimeslot = CallCentralized.Get<int>(EnumAPIParam.Appointment, EnumAPIParam.GetMaximumNumberOfTimeslot, "timeslotId=" + appointment.Timeslot_ID);
                 foreach (var selectedItem in selectedTimes)
                 {
-                    var count = apiCentral.Get<int>(EnumAPIParam.Appointment, EnumAPIParam.CountByTimeslot, "appointmentId=" + appointment.ID.ToString());
+                    var count = CallCentralized.Get<int>(EnumAPIParam.Appointment, EnumAPIParam.CountByTimeslot, "appointmentId=" + appointment.ID.ToString());
                     if (count >= maxAppPerTimeslot)
                     {
                         selectedItem.IsAvailble = false;
@@ -159,8 +159,8 @@ namespace SSK
 
         public bool UpdateTimeAppointment(string IDAppointment, string timeStart, string timeEnd)
         {
-            var apiCentral = CallCentralized.Instance;
-            var dbAppointment = apiCentral.Get<Appointment>(EnumAPIParam.Appointment, EnumAPIParam.GetById, "appointmentId=" + IDAppointment);
+            
+            var dbAppointment = CallCentralized.Get<Appointment>(EnumAPIParam.Appointment, EnumAPIParam.GetById, "appointmentId=" + IDAppointment);
             //check exist queue
             var dalQueue = new DAL_QueueNumber();
             if (dbAppointment != null)
@@ -168,10 +168,10 @@ namespace SSK
                 if (!dalQueue.CheckQueueExistToday(dbAppointment.UserId, EnumStations.SSK))
                 {
                     //var data = JsonConvert.SerializeObject(new { IDAppointment, timeStart, timeEnd });
-                    apiCentral.Post<Appointment>(EnumAPIParam.Appointment, EnumAPIParam.UpdateBooktime, "appointmentId=" + IDAppointment, "timeStart=" + timeStart, "timeEnd=" + timeEnd);
+                    CallCentralized.Post<Appointment>(EnumAPIParam.Appointment, EnumAPIParam.UpdateBooktime, "appointmentId=" + IDAppointment, "timeStart=" + timeStart, "timeEnd=" + timeEnd);
                     // dalAppointments.UpdateBookTime(IDAppointment, timeStart, timeEnd);
 
-                    Trinity.BE.Appointment appointment = apiCentral.Get<Trinity.BE.Appointment>(EnumAPIParam.Appointment, EnumAPIParam.GetDetailsById, "appointmentId=" + IDAppointment);
+                    Trinity.BE.Appointment appointment = CallCentralized.Get<Trinity.BE.Appointment>(EnumAPIParam.Appointment, EnumAPIParam.GetDetailsById, "appointmentId=" + IDAppointment);
                     //Trinity.BE.Appointment appointment = dalAppointments.GetAppointmentDetails(new Guid(IDAppointment));
 
                     APIUtils.Printer.PrintAppointmentDetails("AppointmentDetailsTemplate.html", appointment);
@@ -190,9 +190,9 @@ namespace SSK
 
         public void PrintAppointmentDetails(string appointmentId)
         {
-            var apiCentral = CallCentralized.Instance;
+            
             var dalAppointment = new DAL_Appointments();
-            Trinity.BE.Appointment appointment = apiCentral.Get<Trinity.BE.Appointment>(EnumAPIParam.Appointment, EnumAPIParam.GetDetailsById, "appointmentId=" + appointmentId);
+            Trinity.BE.Appointment appointment = CallCentralized.Get<Trinity.BE.Appointment>(EnumAPIParam.Appointment, EnumAPIParam.GetDetailsById, "appointmentId=" + appointmentId);
             //Trinity.BE.Appointment appointment = dalAppointment.GetAppointmentDetails(Guid.Parse(appointmentId));
             ReceiptPrinterUtil.Instance.PrintAppointmentDetails(new AppointmentDetails()
             {
@@ -207,7 +207,7 @@ namespace SSK
         {
             try
             {
-                var apiCentral = CallCentralized.Instance;
+                
                 Session session = Session.Instance;
                 if (session.IsAuthenticated)
                 {
@@ -217,10 +217,10 @@ namespace SSK
                     var dalUserprofile = new Trinity.DAL.DAL_UserProfile();
                     var profileModel = new Trinity.BE.ProfileModel
                     {
-                        User = apiCentral.Get<Trinity.BE.User>("User", "GetUserByUserId", "userId=" + user.UserId),
-                        UserProfile = apiCentral.Get<Trinity.BE.UserProfile>("User", "GetUserProfileByUserId", "userId=" + user.UserId),
-                        Addresses = apiCentral.Get<Trinity.BE.Address>("User", "GetAddressByUserId", "userId=" + user.UserId, "isOther=" + false),
-                        OtherAddress = apiCentral.Get<Trinity.BE.Address>("User", "GetAddressByUserId", "userId=" + user.UserId,"isOther="+true),
+                        User = CallCentralized.Get<Trinity.BE.User>("User", "GetUserByUserId", "userId=" + user.UserId),
+                        UserProfile = CallCentralized.Get<Trinity.BE.UserProfile>("User", "GetUserProfileByUserId", "userId=" + user.UserId),
+                        Addresses = CallCentralized.Get<Trinity.BE.Address>("User", "GetAddressByUserId", "userId=" + user.UserId, "isOther=" + false),
+                        OtherAddress = CallCentralized.Get<Trinity.BE.Address>("User", "GetAddressByUserId", "userId=" + user.UserId,"isOther="+true),
                     };
 
                     //profile model 
@@ -237,17 +237,17 @@ namespace SSK
         {
             try
             {
-                var apiCentral = CallCentralized.Instance;
+                
                 var rawData = JsonConvert.DeserializeObject<Trinity.BE.ProfileRawMData>(param);
                 var data = new Trinity.BE.ProfileRawMData().ToProfileModel(rawData);
                
                 if (primaryInfoChange)
                 {
-                    var updateUserResult = apiCentral.Post<bool>("User", "UpdateUser", data.User);
+                    var updateUserResult = CallCentralized.Post<bool>("User", "UpdateUser", data.User);
                     // dalUser.UpdateUser(data.User, data.User.UserId, true);
                     var userProfileModel = data.UserProfile;
                     userProfileModel.UserId = data.User.UserId;
-                    var updateUProfileResult = apiCentral.Post<bool>("User", "UpdateUserProfile", userProfileModel);
+                    var updateUProfileResult = CallCentralized.Post<bool>("User", "UpdateUserProfile", userProfileModel);
                     // dalUserprofile.UpdateUserProfile(data.UserProfile,data.User.UserId , true);
                     //send notifiy to duty officer
                     APIUtils.SignalR.SendNotificationToDutyOfficer("A supervisee has updated profile.", "Please check Supervisee's information!");
@@ -256,7 +256,7 @@ namespace SSK
                 {
                     var userProfileModel = data.UserProfile;
                     userProfileModel.UserId = data.User.UserId;
-                    var updateUProfileResult = apiCentral.Post<bool>("User", "UpdateUserProfile", userProfileModel);
+                    var updateUProfileResult = CallCentralized.Post<bool>("User", "UpdateUserProfile", userProfileModel);
                    // dalUserprofile.UpdateUserProfile(data.UserProfile, data.User.UserId, true);
                     //send notifiy to case officer
                     APIUtils.SignalR.SendNotificationToDutyOfficer("A supervisee has updated profile.", "Please check Supervisee's information!");
@@ -291,14 +291,14 @@ namespace SSK
         }
         public void LoadScanDocumentForAbsence(string jsonData, string reason)
         {
-            var apiCentral = CallCentralized.Instance;
+            
             try
             {
                 Session session = Session.Instance;
 
               
                 var reasonModel = JsonConvert.DeserializeObject<Trinity.BE.Reason>(reason);
-                var result = apiCentral.Post<Trinity.BE.AbsenceReporting>("AbsenceReport", "SetReasonInfo", reasonModel);
+                var result = CallCentralized.Post<Trinity.BE.AbsenceReporting>("AbsenceReport", "SetReasonInfo", reasonModel);
                 //var absenceModel = dalAbsence.SetInfo(reasonModel);
                 session[CommonConstants.ABSENCE_REPORTING_DATA] = result;
 
@@ -328,7 +328,7 @@ namespace SSK
 
         public int GetCountMyAbsence()
         {
-            var apiCentral = CallCentralized.Instance;
+            
             Session session = Session.Instance;
             Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
 
@@ -337,14 +337,14 @@ namespace SSK
             {
                 user = (Trinity.BE.User)session[CommonConstants.SUPERVISEE];
             }
-            return apiCentral.Get<int>(EnumAPIParam.Appointment, EnumAPIParam.CountAbsenceByUserId, "userId=" + user.UserId);
+            return CallCentralized.Get<int>(EnumAPIParam.Appointment, EnumAPIParam.CountAbsenceByUserId, "userId=" + user.UserId);
             //return new DAL_Appointments().CountMyAbsence(user.UserId);
         }
 
         // Reporting for Queue Number
         public void ReportingForQueueNumber()
         {
-            var apiCentral = CallCentralized.Instance;
+            
             // get user info
             Session session = Session.Instance;
             Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
@@ -357,7 +357,7 @@ namespace SSK
 
             int countAbsence = 0;
 
-            countAbsence = apiCentral.Get<int>(EnumAPIParam.Appointment, EnumAPIParam.CountAbsenceByUserId, "userId=" + user.UserId);
+            countAbsence = CallCentralized.Get<int>(EnumAPIParam.Appointment, EnumAPIParam.CountAbsenceByUserId, "userId=" + user.UserId);
             //countAbsence = dalAppointment.CountMyAbsence(user.UserId);
             if (countAbsence == 0)
             {
@@ -383,7 +383,7 @@ namespace SSK
                 //dalUser.ChangeUserStatus(user.UserId, EnumUserStatuses.New);
 
                 //create absence reporting
-                var listAppointment = apiCentral.Get<int>(EnumAPIParam.Appointment, EnumAPIParam.GetAbsenceByUserId, "userId=" + user.UserId);
+                var listAppointment = CallCentralized.Get<int>(EnumAPIParam.Appointment, EnumAPIParam.GetAbsenceByUserId, "userId=" + user.UserId);
                 // var listAppointment = dalAppointment.GetMyAbsentAppointments(user.UserId);
                 session[CommonConstants.LIST_APPOINTMENT] = listAppointment;
                 _web.LoadPageHtml("ReasonsForQueue.html", listAppointment);
@@ -391,7 +391,7 @@ namespace SSK
             else if (countAbsence > 0 && countAbsence < 3)
             {
                 
-                var result = apiCentral.Get<List<Trinity.BE.Appointment>>(EnumAPIParam.Appointment, EnumAPIParam.GetAbsenceByUserId, "userId=" + user.UserId);
+                var result = CallCentralized.Get<List<Trinity.BE.Appointment>>(EnumAPIParam.Appointment, EnumAPIParam.GetAbsenceByUserId, "userId=" + user.UserId);
                 var listAppointment = result;
 
                 var eventCenter = Trinity.Common.Common.EventCenter.Default;
@@ -403,12 +403,12 @@ namespace SSK
 
         private void GetMyQueueNumber()
         {
-            var apiCentral = CallCentralized.Instance;
+            
             Session session = Session.Instance;
             Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
 
             DAL_Appointments _Appointment = new DAL_Appointments();
-            Trinity.DAL.DBContext.Appointment appointment = apiCentral.Get<Appointment>(EnumAPIParam.Appointment, EnumAPIParam.GetByUserIdAndDate, "UserId=" + user.UserId, "date=" + DateTime.Today.ToString());
+            Trinity.DAL.DBContext.Appointment appointment = CallCentralized.Get<Appointment>(EnumAPIParam.Appointment, EnumAPIParam.GetByUserIdAndDate, "UserId=" + user.UserId, "date=" + DateTime.Today.ToString());
             //Trinity.DAL.DBContext.Appointment appointment = _Appointment.GetMyAppointmentByDate(user.UserId, DateTime.Today);
             if (appointment == null)
             {
@@ -456,7 +456,7 @@ namespace SSK
 
         public void SaveReasonForQueue(/*string data,*/ string reason, string selectedID)
         {
-            var apiCentral = CallCentralized.Instance;
+            
             //send message to case office if no support document
             if (reason == "No Supporting Document")
             {
@@ -482,18 +482,18 @@ namespace SSK
 
             var dalAppointment = new DAL_Appointments();
 
-            var listSelectedDate = apiCentral.Get<List<Appointment>>(EnumAPIParam.Appointment, EnumAPIParam.GetListFromSelectedDate, "listAppointmentId=" + selectedID);
+            var listSelectedDate = CallCentralized.Get<List<Appointment>>(EnumAPIParam.Appointment, EnumAPIParam.GetListFromSelectedDate, "listAppointmentId=" + selectedID);
             //var listSelectedDate = dalAppointment.GetListAppointmentFromSelectedDate(listSplitID);
             foreach (var item in listSelectedDate)
             {
-                var result = apiCentral.Post<Trinity.BE.AbsenceReporting>("AbsenceReport", "SetReasonInfo", reasonModel);
+                var result = CallCentralized.Post<Trinity.BE.AbsenceReporting>("AbsenceReport", "SetReasonInfo", reasonModel);
                 //var absenceModel = dalAbsence.SetInfo(reasonModel);
                 var absenceModel = result;
                 var create = dalAbsence.CreateAbsenceReporting(absenceModel, true);
                 if (create)
                 {
                     var absenceId = absenceModel.ID;
-                    apiCentral.Post<Appointment>(EnumAPIParam.Appointment, EnumAPIParam.UpdateReason, "appointmentId=" + item.ID, "absenceId=" + absenceId);
+                    CallCentralized.Post<Appointment>(EnumAPIParam.Appointment, EnumAPIParam.UpdateReason, "appointmentId=" + item.ID, "absenceId=" + absenceId);
                     //dalAppointment.UpdateReason(item.ID, absenceModel.ID);
                 }
 
@@ -509,7 +509,7 @@ namespace SSK
 
         public void UpdateAbsenceAfterScanDoc()
         {
-            var apiCentral = CallCentralized.Instance;
+            
             Session session = Session.Instance;
             Trinity.BE.AbsenceReporting absenceData = (Trinity.BE.AbsenceReporting)session[CommonConstants.ABSENCE_REPORTING_DATA];
             //get scanned data from session
@@ -524,7 +524,7 @@ namespace SSK
                 foreach (var item in listAppointment)
                 {
                     var absenceId = absenceData.ID;
-                    apiCentral.Post<Appointment>(EnumAPIParam.Appointment, EnumAPIParam.UpdateReason, "appointmentId=" + item.ID, "absenceId=" + absenceId);
+                    CallCentralized.Post<Appointment>(EnumAPIParam.Appointment, EnumAPIParam.UpdateReason, "appointmentId=" + item.ID, "absenceId=" + absenceId);
                     // dalAppointment.UpdateReason(item.ID, absenceData.ID);
                 }
             }

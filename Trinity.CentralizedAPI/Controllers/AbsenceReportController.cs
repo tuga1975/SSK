@@ -14,16 +14,10 @@ namespace Trinity.CentralizedAPI.Controllers
     {
         [HttpPost]
         [Route("api/AbsenceReport/SetReasonInfo")]
-        [ResponseType(typeof(Common.ResponseModel))]
         public IHttpActionResult SetReasonInfo(Trinity.BE.Reason model)
         {
-            var responseModel = new Common.ResponseModel();
-
             var result = new DAL.DAL_AbsenceReporting().SetInfo(model);
-            responseModel.ResponseCode = result.ResponseCode;
-            responseModel.ResponseMessage = result.ResponseMessage;
-            responseModel.Data = result.Data;
-            return Ok(responseModel);
+            return Ok(result.Data);
         }
     }
 }

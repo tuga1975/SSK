@@ -13,7 +13,7 @@ namespace Trinity.CentralizedAPI.Controllers
 
         [HttpGet]
         [Route("api/User/GetUserByUserId")]
-        [ResponseType(typeof(ResponseModel))]
+        //[ResponseType(typeof(ResponseModel))]
         public IHttpActionResult GetUserByUserId(string userId)
         {
             var responseModel = new ResponseModel();
@@ -26,7 +26,7 @@ namespace Trinity.CentralizedAPI.Controllers
 
         [HttpGet]
         [Route("api/User/GetUserProfileByUserId")]
-        [ResponseType(typeof(ResponseModel))]
+        //[ResponseType(typeof(ResponseModel))]
         public IHttpActionResult GetUserProfileByUserId(string userId)
         {
             var responseModel = new ResponseModel();
@@ -39,7 +39,7 @@ namespace Trinity.CentralizedAPI.Controllers
 
         [HttpGet]
         [Route("api/User/GetAddressByUserId")]
-        [ResponseType(typeof(ResponseModel))]
+        //[ResponseType(typeof(ResponseModel))]
         public IHttpActionResult GetAddressByUserId(string userId,string isOther)
         {
             var responseModel = new ResponseModel();
@@ -53,7 +53,7 @@ namespace Trinity.CentralizedAPI.Controllers
 
 [HttpGet]
         [Route("api/User/GetAllSupervisees")]
-        [ResponseType(typeof(ResponseModel))]
+        //[ResponseType(typeof(ResponseModel))]
         public IHttpActionResult GetAllSupervisees(string userId,string isOther)
         {
             var responseModel = new ResponseModel();
@@ -67,7 +67,7 @@ namespace Trinity.CentralizedAPI.Controllers
 
         [HttpPost]
         [Route("api/User/UpdateUser")]
-        [ResponseType(typeof(ResponseModel))]
+        //[ResponseType(typeof(ResponseModel))]
         public IHttpActionResult UpdateUser(BE.User model)
         {
             var responseModel = new ResponseModel();
@@ -80,7 +80,7 @@ namespace Trinity.CentralizedAPI.Controllers
 
         [HttpPost]
         [Route("api/User/UpdateUserProfile")]
-        [ResponseType(typeof(ResponseModel))]
+        //[ResponseType(typeof(ResponseModel))]
         public IHttpActionResult UpdateUserProfile(BE.UserProfile model)
         {
             var responseModel = new ResponseModel();

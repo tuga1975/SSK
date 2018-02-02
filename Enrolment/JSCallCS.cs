@@ -39,8 +39,8 @@ namespace Enrolment
         public void LoadListSupervisee()
         {
             EventCenter eventCenter = EventCenter.Default;
-            var apiCentral = CallCentralized.Instance;
-            var dbUsers = apiCentral.Get<List<Trinity.BE.User>>("User","GetAllSupervisees");
+            
+            var dbUsers = CallCentralized.Get<List<Trinity.BE.User>>("User","GetAllSupervisees");
             var listSupervisee = new List<Trinity.BE.ProfileModel>();
             if (dbUsers != null)
             {
@@ -49,7 +49,7 @@ namespace Enrolment
                     var model = new Trinity.BE.ProfileModel()
                     {
                         User = item,
-                        UserProfile = apiCentral.Get<Trinity.BE.UserProfile>("User", "GetUserProfileByUserId", "userId="+item.UserId),
+                        UserProfile = CallCentralized.Get<Trinity.BE.UserProfile>("User", "GetUserProfileByUserId", "userId="+item.UserId),
                     Addresses = null
                     };
                     listSupervisee.Add(model);
@@ -212,13 +212,13 @@ namespace Enrolment
 
         public void EditSupervisee(string userId)
         {
-            var apiCentral = CallCentralized.Instance;
+            
             Session session = Session.Instance;
 
             var dalUser = new DAL_User();
             var dalUserProfile = new DAL_UserProfile();
             var dalUserMembership = new DAL_Membership_Users();
-            var result = apiCentral.Get<Trinity.BE.User>("User", "GetUserByUserId","userId="+userId);
+            var result = CallCentralized.Get<Trinity.BE.User>("User", "GetUserByUserId","userId="+userId);
             var dbUser = result;
            
 
@@ -239,9 +239,9 @@ namespace Enrolment
                 {
                     User = dbUser,
                   
-                    UserProfile = apiCentral.Get<Trinity.BE.UserProfile>("User", "GetUserProfileByUserId", "userId=" + dbUser.UserId),
-                    Addresses = apiCentral.Get<Trinity.BE.Address>("User", "GetAddressByUserId", "userId=" + dbUser.UserId, "isOther=" + false),
-                    OtherAddress = apiCentral.Get<Trinity.BE.Address>("User", "GetAddressByUserId", "userId=" + dbUser.UserId, "isOther=" + true),
+                    UserProfile = CallCentralized.Get<Trinity.BE.UserProfile>("User", "GetUserProfileByUserId", "userId=" + dbUser.UserId),
+                    Addresses = CallCentralized.Get<Trinity.BE.Address>("User", "GetAddressByUserId", "userId=" + dbUser.UserId, "isOther=" + false),
+                    OtherAddress = CallCentralized.Get<Trinity.BE.Address>("User", "GetAddressByUserId", "userId=" + dbUser.UserId, "isOther=" + true),
                     Membership_Users = dalUserMembership.GetByUserId(userId)
                 };
                 //first load set model to session 
@@ -348,12 +348,12 @@ namespace Enrolment
                 data.User.Name = tempUser.User.Name;
                 data.User.Status = tempUser.User.Status;
 
-                var apiCentral = CallCentralized.Instance;
-                var updateUserResult = apiCentral.Post<bool>("User", "UpdateUser", data.User);
+                
+                var updateUserResult = CallCentralized.Post<bool>("User", "UpdateUser", data.User);
                 // dalUser.UpdateUser(data.User, data.User.UserId, true);
                 var userProfileModel = data.UserProfile;
                 userProfileModel.UserId = data.User.UserId;
-                var updateUProfileResult = apiCentral.Post<bool>("User", "UpdateUserProfile", userProfileModel);
+                var updateUProfileResult = CallCentralized.Post<bool>("User", "UpdateUserProfile", userProfileModel);
 
                 ////send notifiy to case officer
                 APIUtils.SignalR.SendNotificationToDutyOfficer("A supervisee has updated profile.", "Please check Supervisee's information!");
