@@ -17,7 +17,7 @@ namespace Trinity.CentralizedAPI.Controllers
         /// <returns>Appointment</returns>
         [HttpGet]
         [Route("api/Appointment/GetById")]
-        [ResponseType(typeof(BE.ResponseTypeModel<Trinity.BE.Appointment>))]
+        [ResponseType(typeof(BE.ResponseModel))]
         public IHttpActionResult GetById(string appointmentId)
         {
             var responseModel = new BE.ResponseModel();
@@ -46,7 +46,7 @@ namespace Trinity.CentralizedAPI.Controllers
         /// <returns>Appointment</returns>
         [HttpGet]
         [Route("api/Appointment/GetDetailsById")]
-        [ResponseType(typeof(BE.ResponseTypeModel<Trinity.BE.Appointment>))]
+        [ResponseType(typeof(BE.ResponseModel))]
         public IHttpActionResult GetDetailsById(string appointmentId)
         {
             var responseModel = new BE.ResponseModel();
@@ -73,7 +73,7 @@ namespace Trinity.CentralizedAPI.Controllers
         /// <returns>Appointment</returns>
         [HttpGet]
         [Route("api/Appointment/GetByUserIdAndDate")]
-        [ResponseType(typeof(BE.ResponseTypeModel<Trinity.BE.Appointment>))]
+        [ResponseType(typeof(BE.ResponseModel))]
         public IHttpActionResult GetByUserIdAndDate(string UserId, string date)
         {
             var responseModel = new BE.ResponseModel();
@@ -93,7 +93,7 @@ namespace Trinity.CentralizedAPI.Controllers
         /// <returns>Appointment</returns>
         [HttpGet]
         [Route("api/Appointment/GetListByUserId")]
-        [ResponseType(typeof(BE.ResponseTypeModel<List<Trinity.BE.Appointment>>))]
+        [ResponseType(typeof(BE.ResponseModel))]
         public IHttpActionResult GetListByUserId(string userId)
         {
             var responseModel = new BE.ResponseModel();
@@ -112,7 +112,7 @@ namespace Trinity.CentralizedAPI.Controllers
         /// <returns>Appointment</returns>
         [HttpGet]
         [Route("api/Appointment/GetByToday")]
-        [ResponseType(typeof(BE.ResponseTypeModel<Trinity.BE.Appointment>))]
+        [ResponseType(typeof(BE.ResponseModel))]
         public IHttpActionResult GetByToday(string userId)
         {
             var responseModel = new BE.ResponseModel();
@@ -131,7 +131,7 @@ namespace Trinity.CentralizedAPI.Controllers
         /// <returns>List Appointment</returns>
         [HttpGet]
         [Route("api/Appointment/GetListCurrentTimeslot")]
-        [ResponseType(typeof(BE.ResponseTypeModel<List<Trinity.BE.Appointment>>))]
+        [ResponseType(typeof(BE.ResponseModel))]
         public IHttpActionResult GetListCurrentTimeslot(string currentTime)
         {
             var responseModel = new BE.ResponseModel();
@@ -155,7 +155,7 @@ namespace Trinity.CentralizedAPI.Controllers
         /// <returns>Appointment</returns>
         [HttpGet]
         [Route("api/Appointment/GetNearest")]
-        [ResponseType(typeof(BE.ResponseTypeModel<Trinity.BE.Appointment>))]
+        [ResponseType(typeof(BE.ResponseModel))]
         public IHttpActionResult GetNearest(string userId)
         {
             var responseModel = new BE.ResponseModel();
@@ -176,7 +176,7 @@ namespace Trinity.CentralizedAPI.Controllers
         /// <returns>Appointment</returns>
         [HttpPost]
         [Route("api/Appointment/UpdateBooktime")]
-        [ResponseType(typeof(BE.ResponseTypeModel<Trinity.BE.Appointment>))]
+        [ResponseType(typeof(BE.ResponseModel))]
         public IHttpActionResult UpdateBooktime(string appointmentId, string timeStart, string timeEnd)
         {
             var responseModel = new BE.ResponseModel();
@@ -212,7 +212,7 @@ namespace Trinity.CentralizedAPI.Controllers
         /// <returns>List Appointment</returns>
         [HttpGet]
         [Route("api/Appointment/GetAbsenceByUserId")]
-        [ResponseType(typeof(BE.ResponseTypeModel<List<Trinity.BE.Appointment>>))]
+        [ResponseType(typeof(BE.ResponseModel))]
         public IHttpActionResult GetAbsenceByUserId(string userID)
         {
             var responseModel = new BE.ResponseModel();
@@ -231,7 +231,7 @@ namespace Trinity.CentralizedAPI.Controllers
         /// <returns>Appointment</returns>
         [HttpPost]
         [Route("api/Appointment/UpdateReason")]
-        [ResponseType(typeof(BE.ResponseTypeModel<Trinity.BE.Appointment>))]
+        [ResponseType(typeof(BE.ResponseModel))]
         public IHttpActionResult UpdateReason(string appointmentId, string asbsenceId)
         {
             var responseModel = new BE.ResponseModel();
@@ -258,7 +258,7 @@ namespace Trinity.CentralizedAPI.Controllers
         /// <returns>List Appointment</returns>
         [HttpGet]
         [Route("api/Appointment/GetListFromSelectedDate")]
-        [ResponseType(typeof(BE.ResponseTypeModel<List<Trinity.BE.Appointment>>))]
+        [ResponseType(typeof(BE.ResponseModel))]
         public IHttpActionResult GetListFromSelectedDate(string listAppointmentId)
         {
             var responseModel = new BE.ResponseModel();
@@ -301,7 +301,7 @@ namespace Trinity.CentralizedAPI.Controllers
         /// <returns>List Appointment</returns>
         [HttpGet]
         [Route("api/Appointment/GetAll")]
-        [ResponseType(typeof(BE.ResponseTypeModel<List<Trinity.BE.Appointment>>))]
+        [ResponseType(typeof(BE.ResponseModel))]
         public IHttpActionResult GetAllAppointments()
         {
             var responseModel = new BE.ResponseModel();
@@ -318,7 +318,7 @@ namespace Trinity.CentralizedAPI.Controllers
         /// <returns>List Statistics</returns>
         [HttpGet]
         [Route("api/Appointment/GetAllStatistics")]
-        [ResponseType(typeof(BE.ResponseTypeModel<List<Trinity.BE.Statistics>>))]
+        [ResponseType(typeof(BE.ResponseModel))]
         public IHttpActionResult GetAllStatistics()
         {
             var responseModel = new BE.ResponseModel();
@@ -428,7 +428,7 @@ namespace Trinity.CentralizedAPI.Controllers
         /// <returns>Timeslot</returns>
         [HttpGet]
         [Route("api/Appointment/GetNearestTimeslot")]
-        [ResponseType(typeof(BE.ResponseTypeModel<Trinity.BE.TimeslotDetails>))]
+        [ResponseType(typeof(BE.ResponseModel))]
         public IHttpActionResult GetNearestTimeslot()
         {
             var responseModel = new BE.ResponseModel();
@@ -448,7 +448,7 @@ namespace Trinity.CentralizedAPI.Controllers
         /// <returns>Appointment</returns>
         [HttpPost]
         [Route("api/Appointment/UpdateTimeslot")]
-        [ResponseType(typeof(BE.ResponseTypeModel<Trinity.BE.Appointment>))]
+        [ResponseType(typeof(BE.ResponseModel))]
         public IHttpActionResult UpdateTimeslot(string appointmentId, string timeslotID)
         {
             var responseModel = new BE.ResponseModel();

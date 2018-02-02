@@ -14,10 +14,10 @@ namespace Trinity.DAL
         Local_UnitOfWork _localUnitOfWork = new Local_UnitOfWork();
         Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
 
-        public Trinity.BE.UserProfile GetUserProfileByUserId(string userId, bool isLocal)
+        public Response<UserProfile> GetUserProfileByUserId(string userId)
         {
             User_Profiles dbUserProfile = null;
-            if (isLocal)
+            if (EnumAppConfig.IsLocal)
             {
                 dbUserProfile = _localUnitOfWork.DataContext.User_Profiles.FirstOrDefault(u => u.UserId == userId);
             }
@@ -64,9 +64,9 @@ namespace Trinity.DAL
                     RightThumbImage = dbUserProfile.RightThumb_Photo,
                     Expired_Date = dbUserProfile.Expired_Date,
                 };
-                return userProfile;
+                return new Response<UserProfile>((int)EnumResponseStatuses.Success, EnumResponseMessage.Success, userProfile);
             }
-            return new UserProfile();
+            return new Response<UserProfile>((int)EnumResponseStatuses.ErrorSystem,EnumResponseMessage.ErrorSystem,null);
         }
 
         public BE.Response<bool> UpdateUserProfile(BE.UserProfile model)
@@ -175,7 +175,8 @@ namespace Trinity.DAL
             dbUserProfile.Serial_Number = model.SerialNumber;
 
             var dalUser = new Trinity.DAL.DAL_User();
-            var user = dalUser.GetUserByUserId(model.UserId, true);
+            var result= dalUser.GetUserByUserId(model.UserId);
+            var user = result.Data;
             var userInfo = new Trinity.Common.UserInfo
             {
                 NRIC = user.NRIC,
@@ -184,11 +185,11 @@ namespace Trinity.DAL
             };
 
         }
-        public Trinity.BE.Address GetAddressByUserId(string userId, bool isLocal, bool isOther=false)
+        public BE.Response<BE.Address> GetAddressByUserId(string userId, bool isOther=false)
         {
             User_Profiles dbUserProfile = null;
             DBContext.Address dbAddress = null;
-            if (isLocal)
+            if (EnumAppConfig.IsLocal)
             {
                 dbUserProfile = _localUnitOfWork.DataContext.User_Profiles.FirstOrDefault(u => u.UserId == userId);
                 if (dbUserProfile != null)
@@ -230,11 +231,11 @@ namespace Trinity.DAL
                         Postal_Code = dbAddress.Postal_Code,
                         Street_Name = dbAddress.Street_Name
                     };
-                    return address;
+                    return new Response<BE.Address>((int)EnumResponseStatuses.Success, EnumResponseMessage.Success, address);
                 }
             }
 
-            return null;
+            return new Response<BE.Address>((int)EnumResponseStatuses.ErrorSystem,EnumResponseMessage.ErrorSystem, null);
         }
 
         public void UpdateFingerprintImg(string userId, byte[] left, byte[] right)

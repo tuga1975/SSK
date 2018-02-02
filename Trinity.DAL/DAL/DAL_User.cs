@@ -13,16 +13,16 @@ namespace Trinity.DAL
         Local_UnitOfWork _localUnitOfWork = new Local_UnitOfWork();
         Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
 
-        public List<Trinity.BE.User> GetAllSupervisees(bool isLocal)
+        public BE.Response<List<BE.User>> GetAllSupervisees()
         {
-            if (isLocal)
+            if (EnumAppConfig.IsLocal)
             {
                 var user = (from mu in _localUnitOfWork.DataContext.Membership_Users
                             join mur in _localUnitOfWork.DataContext.Membership_UserRoles on mu.UserId equals mur.UserId
                             join mr in _localUnitOfWork.DataContext.Membership_Roles on mur.RoleId equals mr.Id
                             where mr.Name == "Supervisee"
                             select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, SmartCardId = mu.SmartCardId, RightThumbFingerprint = mu.RightThumbFingerprint, LeftThumbFingerprint = mu.LeftThumbFingerprint, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name, IsFirstAttempt = mu.IsFirstAttempt });
-                return user.ToList();
+                return new BE.Response<List<BE.User>>((int)EnumResponseStatuses.Success,EnumResponseMessage.Success, user.ToList());
             }
             else
             {
@@ -31,7 +31,7 @@ namespace Trinity.DAL
                             join mr in _centralizedUnitOfWork.DataContext.Membership_Roles on mur.RoleId equals mr.Id
                             where mr.Name == "Supervisee"
                             select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, SmartCardId = mu.SmartCardId, RightThumbFingerprint = mu.RightThumbFingerprint, LeftThumbFingerprint = mu.LeftThumbFingerprint, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name, IsFirstAttempt = mu.IsFirstAttempt });
-                return user.ToList();
+                return new BE.Response<List<BE.User>>((int)EnumResponseStatuses.Success, EnumResponseMessage.Success, user.ToList());
             }
         }
 
@@ -57,25 +57,33 @@ namespace Trinity.DAL
             }
         }
 
-        public Trinity.BE.User GetUserByUserId(string userId, bool isLocal)
+        public BE.Response<BE.User> GetUserByUserId(string userId)
         {
-            if (isLocal)
+            try
             {
-                var user = (from mu in _localUnitOfWork.DataContext.Membership_Users
-                            join mur in _localUnitOfWork.DataContext.Membership_UserRoles on mu.UserId equals mur.UserId
-                            join mr in _localUnitOfWork.DataContext.Membership_Roles on mur.RoleId equals mr.Id
-                            where mu.UserId == userId
-                            select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, SmartCardId = mu.SmartCardId, RightThumbFingerprint = mu.RightThumbFingerprint, LeftThumbFingerprint = mu.LeftThumbFingerprint, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name, IsFirstAttempt = mu.IsFirstAttempt, AccessFailedCount = mu.AccessFailedCount, User_Photo1 = mu.User_Profiles.User_Photo1, User_Photo2 = mu.User_Profiles.User_Photo2 });
-                return user.FirstOrDefault();
+                if (EnumAppConfig.IsLocal)
+                {
+                    var user = (from mu in _localUnitOfWork.DataContext.Membership_Users
+                                join mur in _localUnitOfWork.DataContext.Membership_UserRoles on mu.UserId equals mur.UserId
+                                join mr in _localUnitOfWork.DataContext.Membership_Roles on mur.RoleId equals mr.Id
+                                where mu.UserId == userId
+                                select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, SmartCardId = mu.SmartCardId, RightThumbFingerprint = mu.RightThumbFingerprint, LeftThumbFingerprint = mu.LeftThumbFingerprint, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name, IsFirstAttempt = mu.IsFirstAttempt, AccessFailedCount = mu.AccessFailedCount, User_Photo1 = mu.User_Profiles.User_Photo1, User_Photo2 = mu.User_Profiles.User_Photo2 });
+                    return new BE.Response<BE.User>((int)EnumResponseStatuses.Success, EnumResponseMessage.Success, user.FirstOrDefault());
+                }
+                else
+                {
+                    var user = (from mu in _centralizedUnitOfWork.DataContext.Membership_Users
+                                join mur in _centralizedUnitOfWork.DataContext.Membership_UserRoles on mu.UserId equals mur.UserId
+                                join mr in _centralizedUnitOfWork.DataContext.Membership_Roles on mur.RoleId equals mr.Id
+                                where mu.UserId == userId
+                                select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, SmartCardId = mu.SmartCardId, RightThumbFingerprint = mu.RightThumbFingerprint, LeftThumbFingerprint = mu.LeftThumbFingerprint, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name, IsFirstAttempt = mu.IsFirstAttempt });
+                    return new BE.Response<BE.User>((int)EnumResponseStatuses.Success, EnumResponseMessage.Success, user.FirstOrDefault());
+                }
             }
-            else
+            catch (Exception)
             {
-                var user = (from mu in _centralizedUnitOfWork.DataContext.Membership_Users
-                            join mur in _centralizedUnitOfWork.DataContext.Membership_UserRoles on mu.UserId equals mur.UserId
-                            join mr in _centralizedUnitOfWork.DataContext.Membership_Roles on mur.RoleId equals mr.Id
-                            where mu.UserId == userId
-                            select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, SmartCardId = mu.SmartCardId, RightThumbFingerprint = mu.RightThumbFingerprint, LeftThumbFingerprint = mu.LeftThumbFingerprint, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name, IsFirstAttempt = mu.IsFirstAttempt });
-                return user.FirstOrDefault();
+
+                return new BE.Response<BE.User>((int)EnumResponseStatuses.ErrorSystem,EnumResponseMessage.ErrorSystem,null);
             }
         }
 

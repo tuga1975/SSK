@@ -193,7 +193,8 @@ namespace SSK
                 var todayAppointment = result.Data;
                 foreach (var item in todayAppointment)
                 {
-                    var userNRIC = new DAL_User().GetUserByUserId(item.UserId, true).NRIC;
+                    
+                    var userNRIC = new DAL_User().GetUserByUserId(item.UserId).Data.NRIC;
                     var qNumber = userNRIC.GetLast(5);
                     currentQueueNumber += qNumber + "-";
                 }

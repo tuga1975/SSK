@@ -9,12 +9,59 @@ namespace Trinity.CentralizedAPI.Controllers
 {
     public class UserController : ApiController
     {
-        
+
         [HttpGet]
         [Route("api/User/GetUserByUserId")]
-        public Trinity.BE.User GetUserByUserId(string userId)
+        [ResponseType(typeof(BE.ResponseModel))]
+        public IHttpActionResult GetUserByUserId(string userId)
         {
-            return new DAL.DAL_User().GetUserByUserId(userId,false);
+            var responseModel = new BE.ResponseModel();
+            var result = new DAL.DAL_User().GetUserByUserId(userId);
+            responseModel.ResponseCode = result.ResponseCode;
+            responseModel.ResponseMessage = result.ResponseMessage;
+            responseModel.Data = result.Data;
+            return Ok(responseModel);
+        }
+
+        [HttpGet]
+        [Route("api/User/GetUserProfileByUserId")]
+        [ResponseType(typeof(BE.ResponseModel))]
+        public IHttpActionResult GetUserProfileByUserId(string userId)
+        {
+            var responseModel = new BE.ResponseModel();
+            var result = new DAL.DAL_UserProfile().GetUserProfileByUserId(userId);
+            responseModel.ResponseCode = result.ResponseCode;
+            responseModel.ResponseMessage = result.ResponseMessage;
+            responseModel.Data = result.Data;
+            return Ok(responseModel);
+        }
+
+        [HttpGet]
+        [Route("api/User/GetAddressByUserId")]
+        [ResponseType(typeof(BE.ResponseTypeModel<BE.UserProfile>))]
+        public IHttpActionResult GetAddressByUserId(string userId,string isOther)
+        {
+            var responseModel = new BE.ResponseModel();
+            bool other = Convert.ToBoolean(isOther);
+            var result = new DAL.DAL_UserProfile().GetAddressByUserId(userId, other);
+            responseModel.ResponseCode = result.ResponseCode;
+            responseModel.ResponseMessage = result.ResponseMessage;
+            responseModel.Data = result.Data;
+            return Ok(responseModel);
+        }
+
+[HttpGet]
+        [Route("api/User/GetAllSupervisees")]
+        [ResponseType(typeof(BE.ResponseTypeModel<List<BE.User>>))]
+        public IHttpActionResult GetAllSupervisees(string userId,string isOther)
+        {
+            var responseModel = new BE.ResponseModel();
+            bool other = Convert.ToBoolean(isOther);
+            var result = new DAL.DAL_User().GetAllSupervisees();
+            responseModel.ResponseCode = result.ResponseCode;
+            responseModel.ResponseMessage = result.ResponseMessage;
+            responseModel.Data = result.Data;
+            return Ok(responseModel);
         }
 
         [HttpPost]

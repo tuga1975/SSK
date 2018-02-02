@@ -47,11 +47,13 @@ namespace SSK
 
         public void LoadNotications()
         {
+            var apiCentral = CallCentralized.Instance;
             Session currentSession = Session.Instance;
             Trinity.BE.User user = (Trinity.BE.User)currentSession[CommonConstants.USER_LOGIN];
 
             DAL_Notification dalNotification = new DAL_Notification();
-            List<Trinity.BE.Notification> myNotifications = dalNotification.GetMyNotifications(user.UserId, false);
+
+            List<Trinity.BE.Notification> myNotifications = apiCentral.Get<List<Trinity.BE.Notification>>("Notification","GetMyNotifications","userId="+user.UserId);
 
             var model = myNotifications;
             _web.LoadPageHtml("Notifications.html", myNotifications);
@@ -85,7 +87,6 @@ namespace SSK
             Session session = Session.Instance;
             Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
 
-            DAL_Setting dalSettting = new DAL_Setting();
             var apiCentral = CallCentralized.Instance;
             Trinity.DAL.DBContext.Appointment appointment;
             Trinity.DAL.DBContext.Appointment nearestAppointment;
@@ -97,7 +98,7 @@ namespace SSK
             if (appointment != null)
             {
 
-                selectedTimes = SetSelectedTimes(dalSettting, appointment);
+                selectedTimes = SetSelectedTimes( appointment);
 
             }
             else
@@ -106,7 +107,7 @@ namespace SSK
                 //nearestAppointment = DAL_Appointments.GetNearestAppointment(user.UserId);
                 if (nearestAppointment != null)
                 {
-                    selectedTimes = SetSelectedTimes(dalSettting, nearestAppointment);
+                    selectedTimes = SetSelectedTimes( nearestAppointment);
                 }
                 else
                 {
@@ -118,7 +119,7 @@ namespace SSK
 
         }
 
-        private Trinity.BE.WorkingTimeshift SetSelectedTimes(DAL_Setting dalSettting, Appointment appointment)
+        private Trinity.BE.WorkingTimeshift SetSelectedTimes( Appointment appointment)
         {
             var date = appointment.Date;
             var apiCentral = CallCentralized.Instance;
@@ -206,6 +207,7 @@ namespace SSK
         {
             try
             {
+                var apiCentral = CallCentralized.Instance;
                 Session session = Session.Instance;
                 if (session.IsAuthenticated)
                 {
@@ -215,10 +217,10 @@ namespace SSK
                     var dalUserprofile = new Trinity.DAL.DAL_UserProfile();
                     var profileModel = new Trinity.BE.ProfileModel
                     {
-                        User = dalUser.GetUserByUserId(user.UserId, true),
-                        UserProfile = dalUserprofile.GetUserProfileByUserId(user.UserId, true),
-                        Addresses = dalUserprofile.GetAddressByUserId(user.UserId, true),
-                        OtherAddress = dalUserprofile.GetAddressByUserId(user.UserId, true, true)
+                        User = apiCentral.Get<Trinity.BE.User>("User", "GetUserByUserId", "userId=" + user.UserId),
+                        UserProfile = apiCentral.Get<Trinity.BE.UserProfile>("User", "GetUserProfileByUserId", "userId=" + user.UserId),
+                        Addresses = apiCentral.Get<Trinity.BE.Address>("User", "GetAddressByUserId", "userId=" + user.UserId, "isOther=" + false),
+                        OtherAddress = apiCentral.Get<Trinity.BE.Address>("User", "GetAddressByUserId", "userId=" + user.UserId,"isOther="+true),
                     };
 
                     //profile model 
@@ -238,8 +240,7 @@ namespace SSK
                 var apiCentral = CallCentralized.Instance;
                 var rawData = JsonConvert.DeserializeObject<Trinity.BE.ProfileRawMData>(param);
                 var data = new Trinity.BE.ProfileRawMData().ToProfileModel(rawData);
-                var dalUser = new Trinity.DAL.DAL_User();
-                var dalUserprofile = new Trinity.DAL.DAL_UserProfile();
+               
                 if (primaryInfoChange)
                 {
                     var updateUserResult = apiCentral.Post<bool>("User", "UpdateUser", data.User);
@@ -290,14 +291,16 @@ namespace SSK
         }
         public void LoadScanDocumentForAbsence(string jsonData, string reason)
         {
+            var apiCentral = CallCentralized.Instance;
             try
             {
                 Session session = Session.Instance;
 
-                var dalAbsence = new DAL_AbsenceReporting();
+              
                 var reasonModel = JsonConvert.DeserializeObject<Trinity.BE.Reason>(reason);
-                var absenceModel = dalAbsence.SetInfo(reasonModel);
-                session[CommonConstants.ABSENCE_REPORTING_DATA] = absenceModel;
+                var result = apiCentral.Post<Trinity.BE.AbsenceReporting>("AbsenceReport", "SetReasonInfo", reasonModel);
+                //var absenceModel = dalAbsence.SetInfo(reasonModel);
+                session[CommonConstants.ABSENCE_REPORTING_DATA] = result;
 
                 LoadPage("DocumentFromQueue.html");
 
@@ -352,10 +355,6 @@ namespace SSK
                 user = (Trinity.BE.User)session[CommonConstants.SUPERVISEE];
             }
 
-            var dalAbsence = new DAL_AbsenceReporting();
-
-            var dalAppointment = new DAL_Appointments();
-
             int countAbsence = 0;
 
             countAbsence = apiCentral.Get<int>(EnumAPIParam.Appointment, EnumAPIParam.CountAbsenceByUserId, "userId=" + user.UserId);
@@ -391,8 +390,9 @@ namespace SSK
             }
             else if (countAbsence > 0 && countAbsence < 3)
             {
-                var result = dalAppointment.GetMyAbsentAppointments(user.UserId);
-                var listAppointment = result.Data;
+                
+                var result = apiCentral.Get<List<Trinity.BE.Appointment>>(EnumAPIParam.Appointment, EnumAPIParam.GetAbsenceByUserId, "userId=" + user.UserId);
+                var listAppointment = result;
 
                 var eventCenter = Trinity.Common.Common.EventCenter.Default;
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ABSENCE_LESS_THAN_3, Message = "You have been absent for " + countAbsence + " times.\nPlease provide reasons and the supporting documents." });

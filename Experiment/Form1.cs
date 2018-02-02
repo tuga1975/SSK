@@ -86,7 +86,7 @@ namespace Experiment
             FingerprintReaderUtil fingerprintReaderUtils = FingerprintReaderUtil.Instance;
 
             DAL_User dAL_User = new DAL_User();
-            List<User> users = dAL_User.GetAllSupervisees(true);
+            List<User> users = dAL_User.GetAllSupervisees().Data;
             List<byte[]> templates = new List<byte[]>();
             templates.AddRange(users?.Where(s => s.LeftThumbFingerprint != null).Select(s => s.LeftThumbFingerprint).ToList());
             templates.AddRange(users?.Where(s => s.RightThumbFingerprint != null).Select(s => s.RightThumbFingerprint).ToList());

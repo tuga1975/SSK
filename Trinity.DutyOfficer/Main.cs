@@ -280,7 +280,7 @@ namespace DutyOfficer
             // For testing purpose
             Session session = Session.Instance;
             // Duty Officer
-            Trinity.BE.User user = new DAL_User().GetUserByUserId("dfbb2a6a-9e45-4a76-9f75-af1a7824a947", true);
+            Trinity.BE.User user = new DAL_User().GetUserByUserId("dfbb2a6a-9e45-4a76-9f75-af1a7824a947").Data;
             session[CommonConstants.USER_LOGIN] = user;
             session.IsSmartCardAuthenticated = true;
             session.IsFingerprintAuthenticated = true;

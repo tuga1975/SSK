@@ -39,9 +39,8 @@ namespace Enrolment
         public void LoadListSupervisee()
         {
             EventCenter eventCenter = EventCenter.Default;
-            var dalUser = new DAL_User();
-            var dalUserProfile = new DAL_UserProfile();
-            var dbUsers = dalUser.GetAllSupervisees(true);
+            var apiCentral = CallCentralized.Instance;
+            var dbUsers = apiCentral.Get<List<Trinity.BE.User>>("User","GetAllSupervisees");
             var listSupervisee = new List<Trinity.BE.ProfileModel>();
             if (dbUsers != null)
             {
@@ -50,8 +49,8 @@ namespace Enrolment
                     var model = new Trinity.BE.ProfileModel()
                     {
                         User = item,
-                        UserProfile = dalUserProfile.GetUserProfileByUserId(item.UserId, true),
-                        Addresses = null
+                        UserProfile = apiCentral.Get<Trinity.BE.UserProfile>("User", "GetUserProfileByUserId", "userId="+item.UserId),
+                    Addresses = null
                     };
                     listSupervisee.Add(model);
                 }
@@ -78,7 +77,7 @@ namespace Enrolment
                 var model = new Trinity.BE.ProfileModel()
                 {
                     User = dbUser,
-                    UserProfile = dalUserProfile.GetUserProfileByUserId(dbUser.UserId, true),
+                    UserProfile = dalUserProfile.GetUserProfileByUserId(dbUser.UserId).Data,
                     Addresses = null
                 };
                 session[CommonConstants.SUPERVISEE] = dbUser;
@@ -213,14 +212,15 @@ namespace Enrolment
 
         public void EditSupervisee(string userId)
         {
+            var apiCentral = CallCentralized.Instance;
             Session session = Session.Instance;
 
             var dalUser = new DAL_User();
             var dalUserProfile = new DAL_UserProfile();
             var dalUserMembership = new DAL_Membership_Users();
-
-            var dbUser = dalUser.GetUserByUserId(userId, true);
-
+            var result = apiCentral.Get<Trinity.BE.User>("User", "GetUserByUserId","userId="+userId);
+            var dbUser = result;
+           
 
             Trinity.BE.ProfileModel profileModel = null;
             if (session[CommonConstants.CURRENT_EDIT_USER] != null && ((Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER]).UserProfile.UserId != userId)
@@ -238,9 +238,10 @@ namespace Enrolment
                 profileModel = new Trinity.BE.ProfileModel
                 {
                     User = dbUser,
-                    UserProfile = dalUserProfile.GetUserProfileByUserId(userId, true),
-                    Addresses = dalUserProfile.GetAddressByUserId(userId, true),
-                    OtherAddress = dalUserProfile.GetAddressByUserId(userId, true, true),
+                  
+                    UserProfile = apiCentral.Get<Trinity.BE.UserProfile>("User", "GetUserProfileByUserId", "userId=" + dbUser.UserId),
+                    Addresses = apiCentral.Get<Trinity.BE.Address>("User", "GetAddressByUserId", "userId=" + dbUser.UserId, "isOther=" + false),
+                    OtherAddress = apiCentral.Get<Trinity.BE.Address>("User", "GetAddressByUserId", "userId=" + dbUser.UserId, "isOther=" + true),
                     Membership_Users = dalUserMembership.GetByUserId(userId)
                 };
                 //first load set model to session 
@@ -599,7 +600,7 @@ namespace Enrolment
             ApplicationUser appUser = userManager.Find(username, password);
             if (appUser != null)
             {
-                var userInfo = dalUser.GetUserByUserId(appUser.Id, true);
+                var userInfo = dalUser.GetUserByUserId(appUser.Id).Data;
                 if (userInfo.AccessFailedCount >= 3)
                 {
                     eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.LOGIN_FAILED, Message = "You have exceeded the maximum amount of tries to Login. Please goto APS and select \"Forgot Password\" to reset your password." });
@@ -641,7 +642,7 @@ namespace Enrolment
                 ApplicationUser user = userManager.FindByName(username);
                 if (user != null)
                 {
-                    var userInfo = dalUser.GetUserByUserId(user.Id, true);
+                    var userInfo = dalUser.GetUserByUserId(user.Id).Data;
                     dalUser.ChangeAccessFailedCount(user.Id, userInfo.AccessFailedCount + 1);
                 }
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.LOGIN_FAILED, Message = "Your username or password is incorrect." });
