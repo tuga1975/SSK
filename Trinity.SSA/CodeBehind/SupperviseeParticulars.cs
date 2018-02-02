@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Trinity.Common;
+using Trinity.DAL;
 
 namespace SSA.CodeBehind
 {
@@ -36,7 +37,7 @@ namespace SSA.CodeBehind
                         Date = DateTime.Now.ToString("dd/MM/yyyy"),
                         CompanyName = CommonConstants.COMPANY_NAME,
                         LastStation = EnumStations.SSA,
-                        MarkingNo = CommonUtil.GenerateMarkingNumber(),
+                        MarkingNo = new DAL_SettingSystem().GenerateMarkingNumber(),
                         DrugType = "NA"
                     };
 

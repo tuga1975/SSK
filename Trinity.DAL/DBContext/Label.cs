@@ -27,6 +27,8 @@ namespace Trinity.DAL.DBContext
         public string LastStation { get; set; }
         public int PrintCount { get; set; }
         public string ReprintReason { get; set; }
+        public string PrintStatus { get; set; }
+        public string Message { get; set; }
     
         public virtual Membership_Users Membership_Users { get; set; }
     }

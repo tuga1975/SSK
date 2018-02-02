@@ -343,7 +343,7 @@ namespace DutyOfficer
                         Date = DateTime.Now.ToString("dd/MM/yyyy"),
                         CompanyName = CommonConstants.COMPANY_NAME,
                         LastStation = EnumStations.DUTYOFFICER,
-                        MarkingNo = CommonUtil.GenerateMarkingNumber(),
+                        MarkingNo = new DAL_SettingSystem().GenerateMarkingNumber(),
                         DrugType = item.DrugType,
                         ReprintReason = reason,
                         IsMUB = false
@@ -452,7 +452,7 @@ namespace DutyOfficer
                         Date = DateTime.Now.ToString("dd/MM/yyyy"),
                         CompanyName = CommonConstants.COMPANY_NAME,
                         LastStation = EnumStations.DUTYOFFICER,
-                        MarkingNo = CommonUtil.GenerateMarkingNumber(),
+                        MarkingNo = new DAL_SettingSystem().GenerateMarkingNumber(),
                         //DrugType = "NA",
                         ReprintReason = reason,
                         IsMUB = item.IsMUB,
@@ -515,7 +515,7 @@ namespace DutyOfficer
             }
         }
 
-        private void PrintMUBLabels_OnPrintMUBLabelSucceeded(object sender, PrintMUBAndTTLabelsSucceedEventArgs e)
+        private void PrintMUBLabels_OnPrintMUBLabelSucceeded(object sender, PrintMUBAndTTLabelsEventArgs e)
         {
             Trinity.BE.Label labelInfo = new Trinity.BE.Label
             {
@@ -561,7 +561,7 @@ namespace DutyOfficer
             DeleteQRCodeImageFileTemp();
         }
 
-        private void PrintTTLabels_OnPrintTTLabelSucceeded(object sender, PrintMUBAndTTLabelsSucceedEventArgs e)
+        private void PrintTTLabels_OnPrintTTLabelSucceeded(object sender, PrintMUBAndTTLabelsEventArgs e)
         {
             var labelInfo = new Trinity.BE.Label
             {

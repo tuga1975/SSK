@@ -60,6 +60,7 @@
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_OperationSettings_ChangeHist_OperationSettings" />
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_QueueDetails_Queues" />
         <AssociationConnector Association="TrinityCentralizedDBModel.FK_SentMessages_User_Profiles" />
+        <EntityTypeShape EntityType="TrinityCentralizedDBModel.Setting" Width="1.5" PointX="10.375" PointY="0.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
