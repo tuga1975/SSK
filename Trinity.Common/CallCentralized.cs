@@ -37,16 +37,15 @@ public class CallCentralized
     }
     #endregion
 
-    public bool IsConnectCentralized = true;
-
-    public T Get<T>(string Controller, string Action, params string[] pram)
+    public T Get<T>(string Controller, string Action, out bool statusCentralized, params string[] pram)
     {
         try
         {
-            IsConnectCentralized = true;
-
             if (EnumAppConfig.ByPassCentralizedDB)
+            {
+                statusCentralized = true;
                 return default(T);
+            }
 
             HttpClient client = new HttpClient();
             client.BaseAddress = new Uri(EnumAppConfig.web_api_url);
@@ -58,32 +57,31 @@ public class CallCentralized
                     using (JsonReader reader = new JsonTextReader(sr))
                     {
                         JsonSerializer serializer = new JsonSerializer();
+                        statusCentralized = true;
                         return serializer.Deserialize<T>(reader);
                     }
                 }
             }
-            else
-            {
-                IsConnectCentralized = false;
-            }
         }
         catch (Exception)
         {
-            IsConnectCentralized = false;
         }
+        statusCentralized = false;
         return default(T);
     }
-    public T Post<T>(string Controller, string Action, object data)
+
+    public T Post<T>(string Controller, string Action, out bool statusCentralized, object data)
     {
-        
+
         try
         {
-            IsConnectCentralized = true;
-
             if (EnumAppConfig.ByPassCentralizedDB)
+            {
+                statusCentralized = true;
                 return default(T);
+            }
 
-                HttpClient client = new HttpClient();
+            HttpClient client = new HttpClient();
             client.BaseAddress = new Uri(EnumAppConfig.web_api_url);
             client.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));
@@ -95,31 +93,28 @@ public class CallCentralized
                     using (JsonReader reader = new JsonTextReader(sr))
                     {
                         JsonSerializer serializer = new JsonSerializer();
+                        statusCentralized = true;
                         return serializer.Deserialize<T>(reader);
                     }
                 }
             }
-            else
-            {
-                IsConnectCentralized = false;
-            }
-            return default(T);
         }
         catch (Exception)
         {
-            IsConnectCentralized = false;
         }
+        statusCentralized = false;
         return default(T);
     }
-    public T Post<T>(string Controller, string Action, params string[] pram)
+    public T Post<T>(string Controller, string Action, out bool statusCentralized, params string[] pram)
     {
 
         try
         {
-            IsConnectCentralized = true;
-
             if (EnumAppConfig.ByPassCentralizedDB)
+            {
+                statusCentralized = true;
                 return default(T);
+            }
 
             HttpClient client = new HttpClient();
             client.BaseAddress = new Uri(EnumAppConfig.web_api_url);
@@ -133,20 +128,16 @@ public class CallCentralized
                     using (JsonReader reader = new JsonTextReader(sr))
                     {
                         JsonSerializer serializer = new JsonSerializer();
+                        statusCentralized = true;
                         return serializer.Deserialize<T>(reader);
                     }
                 }
             }
-            else
-            {
-                IsConnectCentralized = false;
-            }
-            return default(T);
         }
         catch (Exception)
         {
-            IsConnectCentralized = false;
         }
+        statusCentralized = false;
         return default(T);
     }
 }
