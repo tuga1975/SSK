@@ -467,3 +467,9 @@ public static class EnumAPIParam
     public const string GetNearestTimeslot = "GetNearestTimeslot";
     public const string UpdateTimeslot = "UpdateTimeslot";
 }
+
+public static class EnumPrintStatus
+{
+    public const string Successful = "Successful";
+    public const string Failed = "Failed"; 
+}

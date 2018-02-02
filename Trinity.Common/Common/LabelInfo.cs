@@ -37,6 +37,10 @@ namespace Trinity.Common
         public bool IsMUB { get; set; }
 
         public bool IsTT { get; set; }
+
+        public string PrintStatus { get; set; }
+
+        public string Message { get; set; }
     }
 
     public class TTLabelInfo

@@ -9,8 +9,8 @@ namespace DutyOfficer.CodeBehind
 {
     public class PrintMUBAndTTLabels
     {
-        public event EventHandler<PrintMUBAndTTLabelsSucceedEventArgs> OnPrintMUBLabelsSucceeded;
-        public event EventHandler<PrintMUBAndTTLabelsSucceedEventArgs> OnPrintTTLabelsSucceeded;
+        public event EventHandler<Trinity.Common.PrintMUBAndTTLabelsEventArgs> OnPrintMUBLabelsSucceeded;
+        public event EventHandler<Trinity.Common.PrintMUBAndTTLabelsEventArgs> OnPrintTTLabelsSucceeded;
         public event EventHandler<PrintMUBAndTTLabelsEventArgs> OnPrintMUBLabelsFailed;
         public event EventHandler<PrintMUBAndTTLabelsEventArgs> OnPrintUBLabelsFailed;
         public event EventHandler<PrintMUBAndTTLabelsEventArgs> OnPrintTTLabelsFailed;
@@ -145,12 +145,12 @@ namespace DutyOfficer.CodeBehind
 
         // Wrap event invocations inside a protected virtual method
         // to allow derived classes to override the event invocation behavior
-        protected virtual void RaisePrintMUBLabelsSucceededEvent(PrintMUBAndTTLabelsSucceedEventArgs e)
+        protected virtual void RaisePrintMUBLabelsSucceededEvent(Trinity.Common.PrintMUBAndTTLabelsEventArgs e)
         {
             // Make a temporary copy of the event to avoid possibility of
             // a race condition if the last subscriber unsubscribes
             // immediately after the null check and before the event is raised.
-            EventHandler<PrintMUBAndTTLabelsSucceedEventArgs> handler = OnPrintMUBLabelsSucceeded;
+            EventHandler<Trinity.Common.PrintMUBAndTTLabelsEventArgs> handler = OnPrintMUBLabelsSucceeded;
 
             // Event will be null if there are no subscribers
             if (handler != null)
@@ -193,12 +193,12 @@ namespace DutyOfficer.CodeBehind
 
         // Wrap event invocations inside a protected virtual method
         // to allow derived classes to override the event invocation behavior
-        protected virtual void RaisePrintTTLabelsSucceededEvent(PrintMUBAndTTLabelsSucceedEventArgs e)
+        protected virtual void RaisePrintTTLabelsSucceededEvent(Trinity.Common.PrintMUBAndTTLabelsEventArgs e)
         {
             // Make a temporary copy of the event to avoid possibility of
             // a race condition if the last subscriber unsubscribes
             // immediately after the null check and before the event is raised.
-            EventHandler<PrintMUBAndTTLabelsSucceedEventArgs> handler = OnPrintTTLabelsSucceeded;
+            EventHandler<Trinity.Common.PrintMUBAndTTLabelsEventArgs> handler = OnPrintTTLabelsSucceeded;
 
             // Event will be null if there are no subscribers
             if (handler != null)

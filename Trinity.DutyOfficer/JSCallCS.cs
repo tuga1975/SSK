@@ -506,7 +506,7 @@ namespace DutyOfficer
             }
         }
 
-        private void PrintMUBLabels_OnPrintMUBLabelSucceeded(object sender, PrintMUBAndTTLabelsSucceedEventArgs e)
+        private void PrintMUBLabels_OnPrintMUBLabelSucceeded(object sender, PrintMUBAndTTLabelsEventArgs e)
         {
             Trinity.BE.Label labelInfo = new Trinity.BE.Label
             {
@@ -552,7 +552,7 @@ namespace DutyOfficer
             DeleteQRCodeImageFileTemp();
         }
 
-        private void PrintTTLabels_OnPrintTTLabelSucceeded(object sender, PrintMUBAndTTLabelsSucceedEventArgs e)
+        private void PrintTTLabels_OnPrintTTLabelSucceeded(object sender, PrintMUBAndTTLabelsEventArgs e)
         {
             var labelInfo = new Trinity.BE.Label
             {

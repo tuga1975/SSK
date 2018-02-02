@@ -146,10 +146,10 @@ namespace Trinity.Common
         public object Source { get; set; }
     }
 
-    public class PrintMUBAndTTLabelsSucceedEventArgs
+    public class PrintMUBAndTTLabelsEventArgs
     {
         private LabelInfo _labelInfo;
-        public PrintMUBAndTTLabelsSucceedEventArgs(LabelInfo labeInfo)
+        public PrintMUBAndTTLabelsEventArgs(LabelInfo labeInfo)
         {
             _labelInfo = labeInfo;
         }
