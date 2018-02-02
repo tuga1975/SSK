@@ -9,9 +9,9 @@ namespace Trinity.Utils.Notification
 {
     public abstract class SignalRBase
     {
-        private IHubProxy HubProxy { get; set; }
-        private HubConnection Connection { get; set; }
-        public void StartConnect(string station)
+        protected IHubProxy HubProxy { get; set; }
+        protected HubConnection Connection { get; set; }
+        protected void StartConnect(string station)
         {
             ConnectAsync(station);
         }
@@ -49,6 +49,15 @@ namespace Trinity.Utils.Notification
 
         public abstract void IncomingEvents();
         public abstract void Connection_Closed();
+
+        public void UserLogined(string userID)
+        {
+            HubProxy.Invoke("UserLogined", userID);
+        }
+        public void UserLogout(string userID)
+        {
+            HubProxy.Invoke("UserLogout", userID);
+        }
 
         public void Dispose()
         {
