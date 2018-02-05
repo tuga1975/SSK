@@ -84,7 +84,7 @@ namespace SSA.Utils
             User user = (User)currentSession[CommonConstants.USER_LOGIN];
             if (user != null)
             {
-                List<Notification> myNotifications = dalNotification.GetMyNotifications(user.UserId).Data;
+                List<Notification> myNotifications = dalNotification.GetNotificationsByUserId(user.UserId);
                 if (myNotifications != null)
                 {
                     var unReadCount = myNotifications.Count;
