@@ -29,7 +29,10 @@ namespace SignalRChat
         private void ButtonStop_Click(object sender, EventArgs e)
         {
             //SignalR will be disposed in the FormClosing event
-            Close();
+            //Close();
+            SignalR.Dispose();
+            ButtonStop.Enabled = false;
+            ButtonStart.Enabled = true;
         }
 
         private void StartServer()
