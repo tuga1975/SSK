@@ -15,118 +15,293 @@ namespace Trinity.DAL
 
         public Trinity.DAL.DBContext.Queue InsertQueueNumber(Guid appointmentID, string userId, string station)
         {
-            var generateQNo = Trinity.Common.CommonUtil.GetQueueNumber(_localUnitOfWork.DataContext.Membership_Users.Find(userId).NRIC);
-            var listStation = EnumStations.GetListStation();
-            var today = DateTime.Now;
-            var result = new DAL_Appointments().GetAppointmentDetails(appointmentID);
-            var appointmentDetails = result.Data;
-            var diffHour = appointmentDetails.StartTime.Value.Hours - today.Hour;
-            var diffStartMin = appointmentDetails.StartTime.Value.Minutes - today.Minute;
-            var diffEndHour = appointmentDetails.EndTime.Value.Hours - today.Hour;
-            var diffEndMin = appointmentDetails.EndTime.Value.Minutes - today.Minute;
+            try
+            {
+                var generateQNo = Trinity.Common.CommonUtil.GetQueueNumber(_localUnitOfWork.DataContext.Membership_Users.Find(userId).NRIC);
+                var listStation = EnumStations.GetListStation();
+                var today = DateTime.Now;
+                var result = new DAL_Appointments().GetAppmtDetails(appointmentID);
+                var appointmentDetails = result;
+                var diffHour = appointmentDetails.StartTime.Value.Hours - today.Hour;
+                var diffStartMin = appointmentDetails.StartTime.Value.Minutes - today.Minute;
+                var diffEndHour = appointmentDetails.EndTime.Value.Hours - today.Hour;
+                var diffEndMin = appointmentDetails.EndTime.Value.Minutes - today.Minute;
 
-            Trinity.DAL.DBContext.Queue dataInsert = new Trinity.DAL.DBContext.Queue()
-            {
-                Appointment_ID = appointmentID,
-                Queue_ID = Guid.NewGuid(),
-                CreatedTime = DateTime.Now,
-                QueuedNumber = generateQNo,
-                CurrentStation = station,
-                Outcome = EnumOutcome.Processing
-            };
-            //insert to queue details
-            List<QueueDetail> arrayQueueDetail = new List<QueueDetail>();
-            foreach (var item in listStation)
-            {
-                var queueDetails = new QueueDetail { Queue_ID = dataInsert.Queue_ID, Station = item, Status = EnumQueueStatuses.Waiting };
-                if(queueDetails.Station == station && diffHour == 0 && diffStartMin <= 0 && ((diffEndHour > 0 && diffEndMin <= 0) || (diffEndHour == 0 && diffEndMin >= 0)))
+                Trinity.DAL.DBContext.Queue dataInsert = new Trinity.DAL.DBContext.Queue()
                 {
-                    queueDetails.Status = EnumQueueStatuses.Processing;
+                    Appointment_ID = appointmentID,
+                    Queue_ID = Guid.NewGuid(),
+                    CreatedTime = DateTime.Now,
+                    QueuedNumber = generateQNo,
+                    CurrentStation = station,
+                    Outcome = EnumOutcome.Processing
+                };
+                //insert to queue details
+                List<QueueDetail> arrayQueueDetail = new List<QueueDetail>();
+                foreach (var item in listStation)
+                {
+                    var queueDetails = new QueueDetail { Queue_ID = dataInsert.Queue_ID, Station = item, Status = EnumQueueStatuses.Waiting };
+                    if (queueDetails.Station == station && diffHour == 0 && diffStartMin <= 0 && ((diffEndHour > 0 && diffEndMin <= 0) || (diffEndHour == 0 && diffEndMin >= 0)))
+                    {
+                        queueDetails.Status = EnumQueueStatuses.Processing;
+                    }
+                    arrayQueueDetail.Add(queueDetails);
+
                 }
-                arrayQueueDetail.Add(queueDetails);
 
-                //_localUnitOfWork.GetRepository<Trinity.DAL.DBContext.QueueDetail>().Add(queueDetails);
-                //_localUnitOfWork.Save();
+                if (EnumAppConfig.IsLocal)
+                {
+                    bool centralizeStatus;
+                    var centralData = CallCentralized.Post<Queue>(EnumAPIParam.QueueNumber, "InserNewQueue", out centralizeStatus, "appointmentId=" + appointmentID, "userId=" + userId, "station=" + station);
+                    if (centralizeStatus)
+                    {
+                        _localUnitOfWork.GetRepository<Trinity.DAL.DBContext.Queue>().Add(dataInsert);
+                        _localUnitOfWork.GetRepository<Trinity.DAL.DBContext.QueueDetail>().AddRange(arrayQueueDetail);
+                        _localUnitOfWork.Save();
+                        return centralData;
+
+                    }
+                }
+                else
+                {
+                    _centralizedUnitOfWork.GetRepository<Queue>().Add(dataInsert);
+                    _centralizedUnitOfWork.GetRepository<QueueDetail>().AddRange(arrayQueueDetail);
+                    _centralizedUnitOfWork.Save();
+                    return dataInsert;
+                }
+
+                return null;
             }
-            _localUnitOfWork.GetRepository<Trinity.DAL.DBContext.Queue>().Add(dataInsert);
-            _localUnitOfWork.GetRepository<Trinity.DAL.DBContext.QueueDetail>().AddRange(arrayQueueDetail);
+            catch (Exception)
+            {
 
-            //var queueDetailsRepo = _localUnitOfWork.GetRepository<QueueDetail>();
-
-            //if (diffHour == 0 && diffStartMin <= 0 && ((diffEndHour > 0 && diffEndMin <= 0) || (diffEndHour == 0 && diffEndMin >= 0)))
-            //{
-            //    var currentStationQueue = queueDetailsRepo.Get(s => s.Station == station && s.Queue_ID == dataInsert.Queue_ID);
-            //    if (currentStationQueue != null)
-            //    {
-            //        currentStationQueue.Status = EnumQueueStatuses.Processing;
-            //    }
-            //    queueDetailsRepo.Update(currentStationQueue);
-
-            //}
-            _localUnitOfWork.Save();
-
-            return dataInsert;
+                return null;
+            }
         }
 
-        public Trinity.DAL.DBContext.QueueDetail GetQueueDetailByAppointent(Appointment appointment,string station)
+        public Trinity.DAL.DBContext.QueueDetail GetQueueDetailByAppointment(Appointment appointment, string station)
         {
-            var today = DateTime.Now;
-            var queueDetail= _localUnitOfWork.DataContext.Queues.Include("QueueDetails").Where(q => q.Appointment_ID == appointment.ID && DbFunctions.TruncateTime(appointment.Date) == today.Date).Select(qd=>qd.QueueDetails.FirstOrDefault(s=>s.Station==station)).FirstOrDefault();
-            return queueDetail;
+            try
+            {
+                var today = DateTime.Now;
+                if (EnumAppConfig.IsLocal)
+                {
+                    var data = _localUnitOfWork.DataContext.Queues.Include("QueueDetails").Where(q => q.Appointment_ID == appointment.ID && DbFunctions.TruncateTime(appointment.Date) == today.Date).Select(qd => qd.QueueDetails.FirstOrDefault(s => s.Station == station)).FirstOrDefault();
+                    if (data != null)
+                    {
+                        return data;
+                    }
+                    else
+                    {
+                        bool centralizeStatus;
+                        var centralData = CallCentralized.Get<QueueDetail>(EnumAPIParam.QueueNumber, "GetQueueDetailByAppointment", out centralizeStatus, "appointmentId=" + appointment.ID.ToString(), "station=" + station);
+                        if (centralizeStatus)
+                        {
+                            return centralData;
+                        }
+                    }
+
+                }
+                else
+                {
+                    var data = _centralizedUnitOfWork.DataContext.Queues.Include("QueueDetails").Where(q => q.Appointment_ID == appointment.ID && DbFunctions.TruncateTime(appointment.Date) == today.Date).Select(qd => qd.QueueDetails.FirstOrDefault(s => s.Station == station)).FirstOrDefault();
+                    if (data != null)
+                    {
+                        return data;
+                    }
+                }
+                return null;
+            }
+            catch (Exception)
+            {
+
+                return null;
+            }
+
         }
 
         public List<Trinity.DAL.DBContext.Queue> GetAllQueueNumberByDate(DateTime date, string station)
         {
-            date = date.Date;
-            var listDbQueue = _localUnitOfWork.DataContext.QueueDetails.Include("Queue").Where(d => d.Station == station && (d.Status.Equals(EnumQueueStatuses.Waiting, StringComparison.InvariantCultureIgnoreCase) || d.Status.Equals(EnumQueueStatuses.Processing, StringComparison.InvariantCultureIgnoreCase)) && DbFunctions.TruncateTime(d.Queue.CreatedTime).Value == date).ToList().Select(d=>d.Queue).ToList();
-            //var listDbQueue = (from apm in _localUnitOfWork.DataContext.Appointments
-            //                   join usr in _localUnitOfWork.DataContext.Membership_Users
-            //                     on apm.UserId equals usr.UserId
-            //                   join q in _localUnitOfWork.DataContext.Queues
-            //                    on apm.ID equals q.Appointment_ID
-            //                   join qd in _localUnitOfWork.DataContext.QueueDetails
-            //                   on q.Queue_ID equals qd.Queue_ID
-            //                   join ts in _localUnitOfWork.DataContext.Timeslots
-            //                   on apm.Timeslot_ID equals ts.Timeslot_ID
-            //                   where DbFunctions.TruncateTime(q.CreatedTime).Value == date && qd.Station == station && 
-            //                   select q).ToList();
+            try
+            {
+                date = date.Date;
+                if (EnumAppConfig.IsLocal)
+                {
+                    var data = _localUnitOfWork.DataContext.QueueDetails.Include("Queue").Where(d => d.Station == station && (d.Status.Equals(EnumQueueStatuses.Waiting, StringComparison.InvariantCultureIgnoreCase) || d.Status.Equals(EnumQueueStatuses.Processing, StringComparison.InvariantCultureIgnoreCase)) && DbFunctions.TruncateTime(d.Queue.CreatedTime).Value == date).ToList().Select(d => d.Queue).ToList();
+                    if (data != null)
+                    {
+                        return data;
+                    }
+                    else
+                    {
+                        bool centralizeStatus;
+                        var centralData = CallCentralized.Get<List<Queue>>(EnumAPIParam.QueueNumber, "GetAllQueueNumberByDate", out centralizeStatus, "date=" + date.ToString(), "station=" + station);
+                        if (centralizeStatus)
+                        {
+                            return centralData;
+                        }
+                    }
+                }
+                else
+                {
+                    var data = _centralizedUnitOfWork.DataContext.QueueDetails.Include("Queue").Where(d => d.Station == station && (d.Status.Equals(EnumQueueStatuses.Waiting, StringComparison.InvariantCultureIgnoreCase) || d.Status.Equals(EnumQueueStatuses.Processing, StringComparison.InvariantCultureIgnoreCase)) && DbFunctions.TruncateTime(d.Queue.CreatedTime).Value == date).ToList().Select(d => d.Queue).ToList();
 
-            return listDbQueue;
+                    if (data != null)
+                    {
+                        return data;
+                    }
+
+                }
+                return null;
+            }
+            catch (Exception)
+            {
+
+                return null;
+            }
         }
 
         public List<Trinity.DAL.DBContext.Queue> GetAllQueueByNextimeslot(TimeSpan timeSlot, string station)
         {
+            try
+            {
+                if (EnumAppConfig.IsLocal)
+                {
+                    var data = (from apm in _localUnitOfWork.DataContext.Appointments
+                                join usr in _localUnitOfWork.DataContext.Membership_Users
+                                  on apm.UserId equals usr.UserId
+                                join q in _localUnitOfWork.DataContext.Queues
+                                 on apm.ID equals q.Appointment_ID
+                                join qd in _localUnitOfWork.DataContext.QueueDetails
+                                on q.Queue_ID equals qd.Queue_ID
+                                join ts in _localUnitOfWork.DataContext.Timeslots
+                                on apm.Timeslot_ID equals ts.Timeslot_ID
+                                where ts.StartTime.Value == timeSlot && qd.Station == station && qd.Status.Equals(EnumQueueStatuses.Waiting, StringComparison.InvariantCultureIgnoreCase)
+                                select q).ToList();
+                    if (data != null)
+                    {
+                        return data;
+                    }
+                    else
+                    {
+                        bool centralizeStatus;
+                        var centralData = CallCentralized.Get<List<Queue>>(EnumAPIParam.QueueNumber, "GetAllQueueByNextimeslot", out centralizeStatus, "timeslot=" + timeSlot.ToString(), "station=" + station);
+                        if (centralizeStatus)
+                        {
+                            return centralData;
+                        }
+                    }
 
-            var listDbQueue = (from apm in _localUnitOfWork.DataContext.Appointments
-                               join usr in _localUnitOfWork.DataContext.Membership_Users
-                                 on apm.UserId equals usr.UserId
-                               join q in _localUnitOfWork.DataContext.Queues
-                                on apm.ID equals q.Appointment_ID
-                               join qd in _localUnitOfWork.DataContext.QueueDetails
-                               on q.Queue_ID equals qd.Queue_ID
-                               join ts in _localUnitOfWork.DataContext.Timeslots
-                               on apm.Timeslot_ID equals ts.Timeslot_ID
-                               where ts.StartTime.Value == timeSlot && qd.Station == station && qd.Status.Equals(EnumQueueStatuses.Waiting, StringComparison.InvariantCultureIgnoreCase)
-                               select q).ToList();
 
-            return listDbQueue;
+                }
+                else
+                {
+                    var data = (from apm in _centralizedUnitOfWork.DataContext.Appointments
+                                join usr in _centralizedUnitOfWork.DataContext.Membership_Users
+                                  on apm.UserId equals usr.UserId
+                                join q in _localUnitOfWork.DataContext.Queues
+                                 on apm.ID equals q.Appointment_ID
+                                join qd in _localUnitOfWork.DataContext.QueueDetails
+                                on q.Queue_ID equals qd.Queue_ID
+                                join ts in _localUnitOfWork.DataContext.Timeslots
+                                on apm.Timeslot_ID equals ts.Timeslot_ID
+                                where ts.StartTime.Value == timeSlot && qd.Station == station && qd.Status.Equals(EnumQueueStatuses.Waiting, StringComparison.InvariantCultureIgnoreCase)
+                                select q).ToList();
+                    if (data != null)
+                    {
+                        return data;
+                    }
+                }
+                return null;
+            }
+            catch (Exception)
+            {
+
+                return null;
+            }
+
         }
 
         public string GetQueueStatusByStation(Guid queueId, string station)
         {
-            var dbQueueDetail = _localUnitOfWork.DataContext.QueueDetails.FirstOrDefault(qd => qd.Queue_ID == queueId && qd.Station == station);
-            if (dbQueueDetail != null)
+            try
             {
-                return dbQueueDetail.Status;
+                if (EnumAppConfig.IsLocal)
+                {
+                    var data = _localUnitOfWork.DataContext.QueueDetails.FirstOrDefault(qd => qd.Queue_ID == queueId && qd.Station == station);
+                    if (data != null)
+                    {
+                        return data.Status;
+                    }
+                    else
+                    {
+                        bool centralizeStatus;
+                        var centralData = CallCentralized.Get<string>(EnumAPIParam.QueueNumber, "GetQueueStatusByStation", out centralizeStatus, "queueId=" + queueId.ToString(), "station=" + station);
+                        if (centralizeStatus)
+                        {
+                            return centralData;
+                        }
+                    }
+
+                }
+                else
+                {
+                    var data = _centralizedUnitOfWork.DataContext.QueueDetails.FirstOrDefault(qd => qd.Queue_ID == queueId && qd.Station == station);
+                    if (data != null)
+                    {
+                        return data.Status;
+                    }
+                }
+                return null;
             }
-            return null;
+            catch (Exception)
+            {
+
+                return string.Empty;
+            }
         }
 
 
-        public List<Trinity.DAL.DBContext.Queue> GetAllQueueByDateIncludeDetail(DateTime today)
+        public List<Trinity.DAL.DBContext.Queue> GetAllQueueByDateIncludeDetail(DateTime date)
         {
-            today = today.Date;
-            return _localUnitOfWork.DataContext.Queues.Include("QueueDetails").Include("Appointment").Include("Appointment.Membership_Users").Where(d => DbFunctions.TruncateTime(d.CreatedTime).Value == today).OrderByDescending(d => d.CreatedTime).ToList();
+            date = date.Date;
+            try
+            {
+
+                if (EnumAppConfig.IsLocal)
+                {
+                    var data = _localUnitOfWork.DataContext.Queues.Include("QueueDetails").Include("Appointment").Include("Appointment.Membership_Users").Where(d => DbFunctions.TruncateTime(d.CreatedTime).Value == date).OrderByDescending(d => d.CreatedTime).ToList();
+                    if (data != null)
+                    {
+                        return data;
+                    }
+                    else
+                    {
+                        bool centralizeStatus;
+                        var centralData = CallCentralized.Get<List<Queue>>(EnumAPIParam.QueueNumber, "GetAllQueueByDateIncludeDetail", out centralizeStatus, "date=" + date.ToString());
+                        if (centralizeStatus)
+                        {
+                            return centralData;
+                        }
+                    }
+                }
+                else
+                {
+                    var data = _localUnitOfWork.DataContext.Queues.Include("QueueDetails").Include("Appointment").Include("Appointment.Membership_Users").Where(d => DbFunctions.TruncateTime(d.CreatedTime).Value == date).OrderByDescending(d => d.CreatedTime).ToList();
+
+                    if (data != null)
+                    {
+                        return data;
+                    }
+
+                }
+                return null;
+            }
+            catch (Exception)
+            {
+
+                return null;
+            }
         }
 
         public bool CheckQueueExistToday(string userId, string station)
@@ -146,34 +321,158 @@ namespace Trinity.DAL
 
         public int CountQueueByStatus(string userId, string status, string station)
         {
-            var today = DateTime.Now.Date;
-            return _localUnitOfWork.DataContext.Queues.Include(u => u.Appointment).Include(q => q.QueueDetails).Count(d => DbFunctions.TruncateTime(d.CreatedTime).Value == today && d.Appointment.UserId == userId && d.QueueDetails.FirstOrDefault(qd => qd.Station == station) != null && d.QueueDetails.FirstOrDefault(qd => qd.Station == station).Status == status);
+            try
+            {
+                var today = DateTime.Now.Date;
+                if (EnumAppConfig.IsLocal)
+                {
+                    var data = _localUnitOfWork.DataContext.Queues.Include(u => u.Appointment).Include(q => q.QueueDetails).Where(d => DbFunctions.TruncateTime(d.CreatedTime).Value == today && d.Appointment.UserId == userId && d.QueueDetails.FirstOrDefault(qd => qd.Station == station) != null && d.QueueDetails.FirstOrDefault(qd => qd.Station == station).Status == status);
+                    if (data != null)
+                    {
+                        return data.Count();
+                    }
+                    else
+                    {
+                        bool centralizeStatus;
+                        var centralData = CallCentralized.Get<int>(EnumAPIParam.QueueNumber, "CountQueueByStatus", out centralizeStatus, "userId=" + userId, "status=" + status, "station=" + station);
+                        if (centralizeStatus)
+                        {
+                            return centralData;
+                        }
+                    }
+                }
+                else
+                {
+                    var data = _centralizedUnitOfWork.DataContext.Queues.Include(u => u.Appointment).Include(q => q.QueueDetails).Where(d => DbFunctions.TruncateTime(d.CreatedTime).Value == today && d.Appointment.UserId == userId && d.QueueDetails.FirstOrDefault(qd => qd.Station == station) != null && d.QueueDetails.FirstOrDefault(qd => qd.Station == station).Status == status);
+                    if (data != null)
+                    {
+                        return data.Count();
+                    }
+                }
+
+                return 0;
+            }
+            catch (Exception)
+            {
+
+                return 0;
+            }
         }
 
-        public void UpdateQueueStatus(Guid queueId, string status, string station)
+        public int UpdateQueueStatus(Guid queueId, string status, string station)
         {
-            var queueDetailRepo = _localUnitOfWork.GetRepository<Trinity.DAL.DBContext.QueueDetail>();
-            var dbqueueDetail = queueDetailRepo.Get(q => q.Queue_ID == queueId && q.Station == station);
-            dbqueueDetail.Status = status;
-            queueDetailRepo.Update(dbqueueDetail);
-            _localUnitOfWork.Save();
+            try
+            {
+                if (EnumAppConfig.IsLocal)
+                {
+
+                    bool centralizeStatus;
+                    var centralData = CallCentralized.Post<int>(EnumAPIParam.QueueNumber, "UpdateQueueStatus", out centralizeStatus, "queueId=" + queueId.ToString(), "status=" + status, "station=" + station);
+                    if (centralizeStatus)
+                    {
+                        var queueDetailRepo = _localUnitOfWork.GetRepository<Trinity.DAL.DBContext.QueueDetail>();
+                        var dbqueueDetail = queueDetailRepo.Get(q => q.Queue_ID == queueId && q.Station == station);
+                        dbqueueDetail.Status = status;
+                        queueDetailRepo.Update(dbqueueDetail);
+                        _localUnitOfWork.Save();
+
+                        return centralData;
+                    }
+
+                }
+                else
+                {
+                    var queueDetailRepo = _centralizedUnitOfWork.GetRepository<Trinity.DAL.DBContext.QueueDetail>();
+                    var dbqueueDetail = queueDetailRepo.Get(q => q.Queue_ID == queueId && q.Station == station);
+                    dbqueueDetail.Status = status;
+                    queueDetailRepo.Update(dbqueueDetail);
+                    return _centralizedUnitOfWork.Save();
+                }
+                return 0;
+            }
+            catch (Exception)
+            {
+
+                return 0;
+            }
+
         }
 
-        public void UpdateQueueDetailMessage(Guid queueId, string message, string station)
+        public int UpdateQueueDetailMessage(Guid queueId, string message, string station)
         {
-            var queueDetailRepo = _localUnitOfWork.GetRepository<Trinity.DAL.DBContext.QueueDetail>();
-            var dbqueueDetail = queueDetailRepo.Get(q => q.Queue_ID == queueId && q.Station == station);
-            dbqueueDetail.Message = message;
-            queueDetailRepo.Update(dbqueueDetail);
-            _localUnitOfWork.Save();
+            try
+            {
+                if (EnumAppConfig.IsLocal)
+                {
+
+                    bool centralizeStatus;
+                    var centralData = CallCentralized.Post<int>(EnumAPIParam.QueueNumber, "UpdateQueueDetailMessage", out centralizeStatus, "queueId=" + queueId.ToString(), "message=" + message, "station=" + station);
+                    if (centralizeStatus)
+                    {
+                        var queueDetailRepo = _localUnitOfWork.GetRepository<Trinity.DAL.DBContext.QueueDetail>();
+                        var dbqueueDetail = queueDetailRepo.Get(q => q.Queue_ID == queueId && q.Station == station);
+                        dbqueueDetail.Message = message;
+                        queueDetailRepo.Update(dbqueueDetail);
+                        _localUnitOfWork.Save();
+
+                        return centralData;
+                    }
+
+                }
+                else
+                {
+                    var queueDetailRepo = _centralizedUnitOfWork.GetRepository<Trinity.DAL.DBContext.QueueDetail>();
+                    var dbqueueDetail = queueDetailRepo.Get(q => q.Queue_ID == queueId && q.Station == station);
+                    dbqueueDetail.Message = message;
+                    queueDetailRepo.Update(dbqueueDetail);
+                    return _centralizedUnitOfWork.Save();
+                }
+                return 0;
+            }
+            catch (Exception)
+            {
+
+                return 0;
+            }
+
         }
-        public void UpdateQueueCurrentStation(Guid queueId, string station)
+        public int UpdateQueueCurrentStation(Guid queueId, string station)
         {
-            var queueRepo = _localUnitOfWork.GetRepository<Trinity.DAL.DBContext.Queue>();
-            var dbQueue = queueRepo.Get(q => q.Queue_ID == queueId);
-            dbQueue.CurrentStation = station;
-            queueRepo.Update(dbQueue);
-            _localUnitOfWork.Save();
+            try
+            {
+                if (EnumAppConfig.IsLocal)
+                {
+
+                    bool centralizeStatus;
+                    var centralData = CallCentralized.Post<int>(EnumAPIParam.QueueNumber, "UpdateQueueCurrentStation", out centralizeStatus, "queueId=" + queueId.ToString(), "station=" + station);
+                    if (centralizeStatus)
+                    {
+                        var queueRepo = _localUnitOfWork.GetRepository<Trinity.DAL.DBContext.Queue>();
+                        var dbQueue = queueRepo.Get(q => q.Queue_ID == queueId);
+                        dbQueue.CurrentStation = station;
+                        queueRepo.Update(dbQueue);
+                        _localUnitOfWork.Save();
+
+                        return centralData;
+                    }
+
+                }
+                else
+                {
+                    var queueRepo = _centralizedUnitOfWork.GetRepository<Trinity.DAL.DBContext.Queue>();
+                    var dbQueue = queueRepo.Get(q => q.Queue_ID == queueId);
+                    dbQueue.CurrentStation = station;
+                    queueRepo.Update(dbQueue);
+
+                    return _centralizedUnitOfWork.Save();
+                }
+                return 0;
+            }
+            catch (Exception)
+            {
+
+                return 0;
+            }
         }
 
         /// <summary>
@@ -183,35 +482,101 @@ namespace Trinity.DAL
         /// <returns></returns>
         public List<string> GetHoldingListByDate(DateTime date)
         {
-            date = date.Date;
+            try
+            {
+                date = date.Date;
+                if (EnumAppConfig.IsLocal)
+                {
+                    List<string> data = _localUnitOfWork.DataContext.Appointments.Include("Membership_Users").Where(d => DbFunctions.TruncateTime(d.Date).Value == date && d.Membership_Users.Status.Equals(EnumUserStatuses.Blocked, StringComparison.InvariantCultureIgnoreCase)).Select(d => d.Membership_Users.NRIC).Distinct().ToList();
 
-            //var listDbQueue = (from apm in _localUnitOfWork.DataContext.Appointments
-            //                   join usr in _localUnitOfWork.DataContext.Membership_Users
-            //                     on apm.UserId equals usr.UserId
-            //                   join q in _localUnitOfWork.DataContext.Queues
-            //                    on apm.ID equals q.Appointment_ID
-            //                   join qd in _localUnitOfWork.DataContext.QueueDetails
-            //                   on q.Queue_ID equals qd.Queue_ID
-            //                   join ts in _localUnitOfWork.DataContext.Timeslots
-            //                   on apm.Timeslot_ID equals ts.Timeslot_ID
-            //                   where DbFunctions.TruncateTime(q.CreatedTime).Value == date && qd.Station == station && usr.Status.Equals(EnumUserStatuses.Blocked, StringComparison.InvariantCultureIgnoreCase)
-            //                   select q).Distinct().ToList();
+                    if (data != null)
+                    {
+                        return data;
+                    }
+                    else
+                    {
+                        bool centralizeStatus;
+                        var centralData = CallCentralized.Get<List<string>>(EnumAPIParam.QueueNumber, "GetHoldingListByDate", out centralizeStatus, "date=" + date.ToString());
+                        if (centralizeStatus)
+                        {
+                            return centralData;
+                        }
+                    }
 
-            List<string> holdingList = _localUnitOfWork.DataContext.Appointments.Include("Membership_Users").Where(d => DbFunctions.TruncateTime(d.Date).Value == date && d.Membership_Users.Status.Equals(EnumUserStatuses.Blocked, StringComparison.InvariantCultureIgnoreCase)).Select(d => d.Membership_Users.NRIC).Distinct().ToList();
-            //List<string> holdingList = (from apm in _localUnitOfWork.DataContext.Appointments
-            //                            join usr in _localUnitOfWork.DataContext.Membership_Users
-            //                            on apm.UserId equals usr.UserId
-            //                            where DbFunctions.TruncateTime(apm.Date).Value == date && usr.Status.Equals(EnumUserStatuses.Blocked, StringComparison.InvariantCultureIgnoreCase)
-            //                            select usr.NRIC).Distinct().ToList();
+                }
+                else
+                {
+                    List<string> holdingList = _centralizedUnitOfWork.DataContext.Appointments.Include("Membership_Users").Where(d => DbFunctions.TruncateTime(d.Date).Value == date && d.Membership_Users.Status.Equals(EnumUserStatuses.Blocked, StringComparison.InvariantCultureIgnoreCase)).Select(d => d.Membership_Users.NRIC).Distinct().ToList();
 
-            return holdingList;
+                    return holdingList;
+                }
+                return null;
+            }
+            catch (Exception)
+            {
+
+                return null;
+            }
         }
 
         public BE.QueueInfo GetQueueInfoByQueueID(Guid queue_ID)
         {
-            var dbQueue = _localUnitOfWork.DataContext.Queues.Include("Appointment").Include("Appointment.Membership_Users").FirstOrDefault(q => q.Queue_ID == queue_ID);
-            var queueDetails = _localUnitOfWork.DataContext.QueueDetails.Where(qd => qd.Queue_ID == queue_ID).ToList().Select(d => d.Map<BE.QueueDetail>()).ToList();
+            try
+            {
+                var dbQueue = new Queue();
+                var queueDetails = new List<BE.QueueDetail>();
+                if (EnumAppConfig.IsLocal)
+                {
+                    var queueData = _localUnitOfWork.DataContext.Queues.Include("Appointment").Include("Appointment.Membership_Users").FirstOrDefault(q => q.Queue_ID == queue_ID);
+                    var queueDataDetails = _localUnitOfWork.DataContext.QueueDetails.Where(qd => qd.Queue_ID == queue_ID).ToList().Select(d => d.Map<BE.QueueDetail>()).ToList();
 
+                    if (queueData != null)
+                    {
+                        dbQueue = queueData;
+                        queueDetails = queueDataDetails;
+                        BE.QueueInfo queueInfo = SetQueueInfo(dbQueue, queueDetails);
+
+                        return queueInfo;
+                    }
+                    else
+                    {
+                        bool centralizeStatus;
+                        var centralData = CallCentralized.Get<BE.QueueInfo>(EnumAPIParam.QueueNumber, "GetQueueInfoByQueueID", out centralizeStatus, "queueId=" + queue_ID.ToString());
+                        if (centralizeStatus)
+                        {
+                            return centralData;
+                        }
+                    }
+                }
+                else
+                {
+                    var queueData = _centralizedUnitOfWork.DataContext.Queues.Include("Appointment").Include("Appointment.Membership_Users").FirstOrDefault(q => q.Queue_ID == queue_ID);
+                    var queueDataDetails = _centralizedUnitOfWork.DataContext.QueueDetails.Where(qd => qd.Queue_ID == queue_ID).ToList().Select(d => d.Map<BE.QueueDetail>()).ToList();
+                    if (queueData != null)
+                    {
+                        dbQueue = queueData;
+                        queueDetails = queueDataDetails;
+                    }
+                    BE.QueueInfo queueInfo = SetQueueInfo(dbQueue, queueDetails);
+
+                    return queueInfo;
+                }
+                return null;
+
+
+            }
+            catch (Exception)
+            {
+
+                return null;
+            }
+
+
+
+        }
+
+        private static BE.QueueInfo SetQueueInfo(Queue dbQueue, List<BE.QueueDetail> queueDetails)
+        {
             BE.QueueInfo queueInfo = new BE.QueueInfo();
             if (dbQueue != null)
             {
@@ -226,21 +591,69 @@ namespace Trinity.DAL
             return queueInfo;
         }
 
-        public void UpdateQueueStatusByUserId(string userId, string currentStation, string nextStation, string status, string outcome)
+        public int UpdateQueueStatusByUserId(string userId, string currentStation, string nextStation, string status, string outcome)
         {
-            DBContext.Queue dbQueue = _localUnitOfWork.DataContext.Queues.Include("Appointment").FirstOrDefault(d => d.Appointment.UserId == userId);
-            if (dbQueue != null)
+
+
+            try
             {
-                dbQueue.CurrentStation = nextStation;
-                dbQueue.Outcome = outcome;
-                DBContext.QueueDetail dbQueueDetail = _localUnitOfWork.DataContext.QueueDetails.FirstOrDefault(d => d.Queue_ID == dbQueue.Queue_ID && d.Station == currentStation);
-                if (dbQueueDetail != null)
+                if (EnumAppConfig.IsLocal)
                 {
-                    dbQueueDetail.Status = status;
-                    _localUnitOfWork.GetRepository<DBContext.QueueDetail>().Update(dbQueueDetail);
+
+                    bool centralizeStatus;
+                    var centralData = CallCentralized.Post<int>(EnumAPIParam.QueueNumber, "UpdateQueueStatusByUserId", out centralizeStatus, "userId=" + userId, "currentStation=" + currentStation, "nextStation=" + nextStation, "status=" + status, "outcome=" + outcome);
+                    if (centralizeStatus)
+                    {
+
+                        DBContext.Queue dbQueue = _localUnitOfWork.DataContext.Queues.Include("Appointment").FirstOrDefault(d => d.Appointment.UserId == userId);
+
+                        if (dbQueue != null)
+                        {
+                            dbQueue.CurrentStation = nextStation;
+                            dbQueue.Outcome = outcome;
+                            DBContext.QueueDetail dbQueueDetail = _localUnitOfWork.DataContext.QueueDetails.FirstOrDefault(d => d.Queue_ID == dbQueue.Queue_ID && d.Station == currentStation);
+                            if (dbQueueDetail != null)
+                            {
+                                dbQueueDetail.Status = status;
+                                _localUnitOfWork.GetRepository<DBContext.QueueDetail>().Update(dbQueueDetail);
+                            }
+                            _localUnitOfWork.GetRepository<DBContext.Queue>().Update(dbQueue);
+
+                            _localUnitOfWork.Save();
+
+                            return centralData;
+                        }
+                    }
                 }
-                _localUnitOfWork.GetRepository<DBContext.Queue>().Update(dbQueue);
+                else
+                {
+                    DBContext.Queue dbQueue = _centralizedUnitOfWork.DataContext.Queues.Include("Appointment").FirstOrDefault(d => d.Appointment.UserId == userId);
+
+                    if (dbQueue != null)
+                    {
+                        dbQueue.CurrentStation = nextStation;
+                        dbQueue.Outcome = outcome;
+                        DBContext.QueueDetail dbQueueDetail = _centralizedUnitOfWork.DataContext.QueueDetails.FirstOrDefault(d => d.Queue_ID == dbQueue.Queue_ID && d.Station == currentStation);
+                        if (dbQueueDetail != null)
+                        {
+                            dbQueueDetail.Status = status;
+                            _centralizedUnitOfWork.GetRepository<DBContext.QueueDetail>().Update(dbQueueDetail);
+                        }
+                        _centralizedUnitOfWork.GetRepository<DBContext.Queue>().Update(dbQueue);
+
+                        return _centralizedUnitOfWork.Save();
+
+                    }
+                }
+                return 0;
+
             }
+            catch (Exception)
+            {
+
+                return 0;
+            }
+
         }
     }
 }
