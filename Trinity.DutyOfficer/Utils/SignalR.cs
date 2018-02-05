@@ -15,8 +15,12 @@ namespace DutyOfficer.Utils
         }
         public override void IncomingEvents()
         {
-            
+            //
+            HubProxy.On<int, EnumDeviceStatuses[]>("DeviceStatusUpdate", (deviceId, deviceStatuses) => {
+                // Xử lý status device
+            });
         }
+
         public override void Connection_Closed()
         {
             

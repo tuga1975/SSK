@@ -17,15 +17,16 @@ namespace Trinity.CentralizedAPI.Controllers
     {
 
         // PUT api/values/5
-        [Route("Update")]
+        [Route("api/DeviceStatus/Update")]
         [HttpPost]
-        public IHttpActionResult Update(int deviceId, EnumDeviceStatuses[] deviceStatuses)
+        public IHttpActionResult Update([FromBody] object[] data)
         {
+            
             try
             {
                 // update local ApplicationDevice_Status
                 DAL_DeviceStatus dAL_DeviceStatus = new DAL_DeviceStatus();
-                bool updateResult = dAL_DeviceStatus.Update(deviceId, deviceStatuses);
+                bool updateResult = dAL_DeviceStatus.Update((int)data[0], (EnumDeviceStatuses[])data[1]);
 
                 // return value
                 return Ok(updateResult);

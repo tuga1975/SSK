@@ -30,6 +30,11 @@ namespace SignalRChat
             Program.MainForm.WriteToConsole("User:" + fromUserId + "' send notification|subject:" + subject + "|" + "|content:" + content + "|to user:" + toUserId);
         }
 
+        public void DeviceStatusUpdate(int deviceId, EnumDeviceStatuses[] deviceStatuses)
+        {
+            CallCentralized.Post<bool>("DeviceStatus", "Update",new object[] { deviceId, deviceStatuses });
+            Clients.Clients(Program.ProfileConnected.Where(d => d.isApp && d.Station == EnumStations.DUTYOFFICER).Select(d => d.ConnectionId).ToList()).DeviceStatusUpdate(deviceId, deviceStatuses);
+        }
 
         public void UserLogined(string UserId)
         {
