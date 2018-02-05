@@ -11,6 +11,7 @@ namespace Trinity.Utils.Notification
     {
         protected IHubProxy HubProxy { get; set; }
         protected HubConnection Connection { get; set; }
+        protected bool IsConnected = false;
         protected void StartConnect()
         {
             ConnectAsync(System.Reflection.Assembly.GetEntryAssembly().GetName().Name);
@@ -28,18 +29,28 @@ namespace Trinity.Utils.Notification
             try
             {
                 await Connection.Start();
+                if (Connection.ConnectionId != null)
+                {
+                    IsConnected = true;
+                }
             }
             catch
             {
-                //No connection: Don't enable Send button or show chat UI
-                return;
+                IsConnected = false;
             }
         }
         private void _Connection_Closed()
         {
+            IsConnected = false;
             Connection_Closed();
             if (Connection != null)
+            {
                 Connection.Start();
+                if (Connection.ConnectionId != null)
+                {
+                    IsConnected = true;
+                }
+            }
         }
         private void _IncomingEvents()
         {
@@ -66,6 +77,7 @@ namespace Trinity.Utils.Notification
         }
         public void Dispose()
         {
+            Connection.Closed -= _Connection_Closed;
             Connection.Stop();
             Connection = null;
             HubProxy = null;

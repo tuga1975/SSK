@@ -18,9 +18,9 @@ using Trinity.Device;
 namespace Enrolment
 {
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    public class JSCallCS: JSCallCSBase
+    public class JSCallCS : JSCallCSBase
     {
-        
+
         public JSCallCS(WebBrowser web)
         {
             this._web = web;
@@ -39,8 +39,9 @@ namespace Enrolment
         public void LoadListSupervisee()
         {
             EventCenter eventCenter = EventCenter.Default;
-            
-            var dbUsers = CallCentralized.Get<List<Trinity.BE.User>>("User","GetAllSupervisees");
+
+            //var dbUsers = CallCentralized.Get<List<Trinity.BE.User>>("User", "GetAllSupervisees");
+            var dbUsers = new DAL_User().GetAllSupervisees().Data;
             var listSupervisee = new List<Trinity.BE.ProfileModel>();
             if (dbUsers != null)
             {
@@ -49,8 +50,9 @@ namespace Enrolment
                     var model = new Trinity.BE.ProfileModel()
                     {
                         User = item,
-                        UserProfile = CallCentralized.Get<Trinity.BE.UserProfile>("User", "GetUserProfileByUserId", "userId="+item.UserId),
-                    Addresses = null
+                        //UserProfile = CallCentralized.Get<Trinity.BE.UserProfile>("User", "GetUserProfileByUserId", "userId=" + item.UserId),
+                        UserProfile = new DAL_UserProfile().GetUserProfileByUserId(item.UserId).Data,
+                        Addresses = null
                     };
                     listSupervisee.Add(model);
                 }
@@ -212,15 +214,15 @@ namespace Enrolment
 
         public void EditSupervisee(string userId)
         {
-            
+
             Session session = Session.Instance;
 
             var dalUser = new DAL_User();
             var dalUserProfile = new DAL_UserProfile();
             var dalUserMembership = new DAL_Membership_Users();
-            var result = CallCentralized.Get<Trinity.BE.User>("User", "GetUserByUserId","userId="+userId);
+            var result = CallCentralized.Get<Trinity.BE.User>("User", "GetUserByUserId", "userId=" + userId);
             var dbUser = result;
-           
+
 
             Trinity.BE.ProfileModel profileModel = null;
             if (session[CommonConstants.CURRENT_EDIT_USER] != null && ((Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER]).UserProfile.UserId != userId)
@@ -238,7 +240,7 @@ namespace Enrolment
                 profileModel = new Trinity.BE.ProfileModel
                 {
                     User = dbUser,
-                  
+
                     UserProfile = CallCentralized.Get<Trinity.BE.UserProfile>("User", "GetUserProfileByUserId", "userId=" + dbUser.UserId),
                     Addresses = CallCentralized.Get<Trinity.BE.Address>("User", "GetAddressByUserId", "userId=" + dbUser.UserId, "isOther=" + false),
                     OtherAddress = CallCentralized.Get<Trinity.BE.Address>("User", "GetAddressByUserId", "userId=" + dbUser.UserId, "isOther=" + true),
@@ -348,7 +350,7 @@ namespace Enrolment
                 data.User.Name = tempUser.User.Name;
                 data.User.Status = tempUser.User.Status;
 
-                
+
                 var updateUserResult = CallCentralized.Post<bool>("User", "UpdateUser", data.User);
                 // dalUser.UpdateUser(data.User, data.User.UserId, true);
                 var userProfileModel = data.UserProfile;
@@ -437,7 +439,7 @@ namespace Enrolment
             _web.LoadPageHtml("UpdateSuperviseeFingerprint.html");
         }
 
-        public void UpdateSuperviseeBiodata(string frontBase64, string backBase64,string cardInfo)
+        public void UpdateSuperviseeBiodata(string frontBase64, string backBase64, string cardInfo)
         {
             Session session = Session.Instance;
             var dalUser = new Trinity.DAL.DAL_User();
@@ -454,7 +456,7 @@ namespace Enrolment
         public object loadDataVerify()
         {
             Session session = Session.Instance;
-            return new object[] { session[CommonConstants.CURRENT_EDIT_USER] ,new DAL_GetCardInfo().GetCardInfo()};
+            return new object[] { session[CommonConstants.CURRENT_EDIT_USER], new DAL_GetCardInfo().GetCardInfo() };
         }
         public void PrintSmartCard(string frontBase64, string backBase64, string cardInfo)
         {
@@ -776,7 +778,7 @@ namespace Enrolment
             List<Trinity.BE.IssueCard> array = new Trinity.DAL.DAL_IssueCard().GetMyIssueCards(currentEditUser.UserProfile.UserId);
             return new object[] { array, currentEditUser.UserProfile.UserId };
         }
-        public void ReprintIssuedCard(string reprintReason,string cardInfo, string frontBase64, string backBase64)
+        public void ReprintIssuedCard(string reprintReason, string cardInfo, string frontBase64, string backBase64)
         {
             _CardInfo = JsonConvert.DeserializeObject<Trinity.BE.CardInfo>(cardInfo);
             frontBase64 = frontBase64.Replace("data:image/png;base64,", string.Empty);
@@ -798,7 +800,7 @@ namespace Enrolment
             Session session = Session.Instance;
             var userLogin = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
             var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
-            
+
 
             SmartCardPrinterUtil.Instance.PrintAndWriteSmartCard(new PrintAndWriteSmartCardInfo()
             {
@@ -838,7 +840,7 @@ namespace Enrolment
                 dalIssueCard.UpdateStatusByUserId(currentEditUser.UserProfile.UserId, EnumIssuedCards.Deactivate);
                 dalIssueCard.Insert(IssueCard);
                 new DAL_Membership_Users().UpdateSmartCardId(currentEditUser.UserProfile.UserId, SmartID);
-                new DAL_UserProfile().UpdateCardInfo(currentEditUser.UserProfile.UserId,_CardInfo.CardNumberFull,_CardInfo.Date_Of_Issue,_CardInfo.Expired_Date);
+                new DAL_UserProfile().UpdateCardInfo(currentEditUser.UserProfile.UserId, _CardInfo.CardNumberFull, _CardInfo.Date_Of_Issue, _CardInfo.Expired_Date);
                 currentEditUser.UserProfile.Expired_Date = _CardInfo.Expired_Date;
                 currentEditUser.UserProfile.DateOfIssue = _CardInfo.Date_Of_Issue;
                 currentEditUser.UserProfile.SerialNumber = _CardInfo.CardNumberFull;

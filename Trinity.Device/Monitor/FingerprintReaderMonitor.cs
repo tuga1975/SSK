@@ -35,23 +35,12 @@ namespace Trinity.Device
             try
             {
                 Debug.WriteLine("FingerprintReaderMonitor.ReportDeviceStatus " + DateTime.Now.ToString());
+                // get status
                 var status = FingerprintReaderUtil.Instance.GetDeviceStatus();
-
-                // create entity
-                string station = System.Reflection.Assembly.GetEntryAssembly().GetName().Name;
-                DeviceStatus deviceStatus = new DeviceStatus()
-                {
-                    DeviceID = (int)EnumDeviceIds.FingerprintScanner,
-                    Station = station,
-                    StatusCode = status
-                };
 
                 // update local ApplicationDevice_Status
                 DAL_DeviceStatus dAL_DeviceStatus = new DAL_DeviceStatus();
-                dAL_DeviceStatus.Update(deviceStatus);
-
-                // update centralized db ApplicationDevice_Status
-                // if update failed, notify duty officer
+                dAL_DeviceStatus.Update((int)EnumDeviceIds.MUBLabelPrinter, status);
             }
             catch (Exception ex)
             {
