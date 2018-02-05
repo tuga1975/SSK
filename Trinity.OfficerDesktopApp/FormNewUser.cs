@@ -91,10 +91,10 @@ namespace OfficerDesktopApp
                 userProfile.Nationality = txtNationality.Text;
                 userProfile.DOB = dpDOB.Value;
 
-                var apiCentral = CallCentralized.Instance;
+                
 
               
-                var updateUProfileResult = apiCentral.Post<bool>("User", "UpdateUserProfile", userProfile);
+                var updateUProfileResult = CallCentralized.Post<bool>("User", "UpdateUserProfile", userProfile);
 
                 //dalUserProfile.UpdateUserProfile(userProfile, _currentUser.UserId, true);
 

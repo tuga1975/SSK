@@ -6,6 +6,7 @@ using System.Reflection;
 
 public static class Lib
 {
+    public static ISignalR SignalR { get; set; }
     public static int DayOfWeek(this DateTime date)
     {
         return (int)date.DayOfWeek == 0 ? 8 : ((int)date.DayOfWeek) + 1;

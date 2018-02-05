@@ -9,45 +9,19 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 
-public class CallCentralized
+public static class CallCentralized
 {
-    #region Singleton Implementation
-    private static volatile CallCentralized _instance;
+    
 
-    private static object syncRoot = new Object();
-
-    private CallCentralized()
-    {
-
-    }
-
-    public static CallCentralized Instance
-    {
-        get
-        {
-            if (_instance == null)
-            {
-                lock (syncRoot)
-                {
-                    if (_instance == null)
-                        _instance = new CallCentralized();
-                }
-            }
-            return _instance;
-        }
-    }
-    #endregion
-
-    public bool IsConnectCentralized = true;
-
-    public T Get<T>(string Controller, string Action, params string[] pram)
+    public static T Get<T>(string Controller, string Action, out bool statusCentralized, params string[] pram)
     {
         try
         {
-            IsConnectCentralized = true;
-
             if (EnumAppConfig.ByPassCentralizedDB)
+            {
+                statusCentralized = true;
                 return default(T);
+            }
 
             HttpClient client = new HttpClient();
             client.BaseAddress = new Uri(EnumAppConfig.web_api_url);
@@ -59,42 +33,31 @@ public class CallCentralized
                     using (JsonReader reader = new JsonTextReader(sr))
                     {
                         JsonSerializer serializer = new JsonSerializer();
-                        var result= serializer.Deserialize<T>(reader);
-                        if (result!=null)
-                        {
-                            var model = (Trinity.Common.ResponseModel)(object)result;
-                            if (model.ResponseCode == (int)EnumResponseStatuses.Success)
-                            {
-                                return (T)model.Data;
-                            }
-                            
-                        }
-                        
+                        statusCentralized = true;
+                        return serializer.Deserialize<T>(reader);
                     }
                 }
-            }
-            else
-            {
-                IsConnectCentralized = false;
             }
         }
         catch (Exception)
         {
-            IsConnectCentralized = false;
         }
+        statusCentralized = false;
         return default(T);
     }
-    public T Post<T>(string Controller, string Action, object data)
+
+    public static T Post<T>(string Controller, string Action, out bool statusCentralized, object data)
     {
-        
+
         try
         {
-            IsConnectCentralized = true;
-
             if (EnumAppConfig.ByPassCentralizedDB)
+            {
+                statusCentralized = true;
                 return default(T);
+            }
 
-                HttpClient client = new HttpClient();
+            HttpClient client = new HttpClient();
             client.BaseAddress = new Uri(EnumAppConfig.web_api_url);
             client.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));
@@ -106,40 +69,28 @@ public class CallCentralized
                     using (JsonReader reader = new JsonTextReader(sr))
                     {
                         JsonSerializer serializer = new JsonSerializer();
-                        var result = serializer.Deserialize<T>(reader);
-                        if (result != null)
-                        {
-                            var model = (Trinity.Common.ResponseModel)(object)result;
-                            if (model.ResponseCode == (int)EnumResponseStatuses.Success)
-                            {
-                                return (T)model.Data;
-                            }
-
-                        }
+                        statusCentralized = true;
+                        return serializer.Deserialize<T>(reader);
                     }
                 }
             }
-            else
-            {
-                IsConnectCentralized = false;
-            }
-            return default(T);
         }
         catch (Exception)
         {
-            IsConnectCentralized = false;
         }
+        statusCentralized = false;
         return default(T);
     }
-    public T Post<T>(string Controller, string Action, params string[] pram)
+    public static T Post<T>(string Controller, string Action, out bool statusCentralized, params string[] pram)
     {
 
         try
         {
-            IsConnectCentralized = true;
-
             if (EnumAppConfig.ByPassCentralizedDB)
+            {
+                statusCentralized = true;
                 return default(T);
+            }
 
             HttpClient client = new HttpClient();
             client.BaseAddress = new Uri(EnumAppConfig.web_api_url);
@@ -153,29 +104,124 @@ public class CallCentralized
                     using (JsonReader reader = new JsonTextReader(sr))
                     {
                         JsonSerializer serializer = new JsonSerializer();
-                        var result = serializer.Deserialize<T>(reader);
-                        if (result != null)
-                        {
-                            var model = (Trinity.Common.ResponseModel)(object)result;
-                            if (model.ResponseCode == (int)EnumResponseStatuses.Success)
-                            {
-                                return (T)model.Data;
-                            }
-
-                        }
+                        statusCentralized = true;
+                        return serializer.Deserialize<T>(reader);
                     }
                 }
             }
-            else
-            {
-                IsConnectCentralized = false;
-            }
-            return default(T);
         }
         catch (Exception)
         {
-            IsConnectCentralized = false;
         }
+        statusCentralized = false;
+        return default(T);
+    }
+
+
+
+
+
+    public static T Get<T>(string Controller, string Action, params string[] pram)
+    {
+        bool statusCentralized = true;
+        try
+        {
+            if (EnumAppConfig.ByPassCentralizedDB)
+            {
+                statusCentralized = true;
+                return default(T);
+            }
+
+            HttpClient client = new HttpClient();
+            client.BaseAddress = new Uri(EnumAppConfig.web_api_url);
+            HttpResponseMessage response = client.GetAsync(string.Format("api/{0}/{1}?{2}", Controller, Action, string.Join("&", pram))).Result;
+            if (response.IsSuccessStatusCode)
+            {
+                using (StreamReader sr = new StreamReader(response.Content.ReadAsStreamAsync().Result))
+                {
+                    using (JsonReader reader = new JsonTextReader(sr))
+                    {
+                        JsonSerializer serializer = new JsonSerializer();
+                        statusCentralized = true;
+                        return serializer.Deserialize<T>(reader);
+                    }
+                }
+            }
+        }
+        catch (Exception)
+        {
+        }
+        statusCentralized = false;
+        return default(T);
+    }
+    public static T Post<T>(string Controller, string Action, object data)
+    {
+        bool statusCentralized = true;
+        try
+        {
+            if (EnumAppConfig.ByPassCentralizedDB)
+            {
+                statusCentralized = true;
+                return default(T);
+            }
+
+            HttpClient client = new HttpClient();
+            client.BaseAddress = new Uri(EnumAppConfig.web_api_url);
+            client.DefaultRequestHeaders.Accept.Add(
+                new MediaTypeWithQualityHeaderValue("application/json"));
+            var response = client.PostAsJsonAsync(string.Format("api/{0}/{1}", Controller, Action), data).Result;
+            if (response.IsSuccessStatusCode)
+            {
+                using (StreamReader sr = new StreamReader(response.Content.ReadAsStreamAsync().Result))
+                {
+                    using (JsonReader reader = new JsonTextReader(sr))
+                    {
+                        JsonSerializer serializer = new JsonSerializer();
+                        statusCentralized = true;
+                        return serializer.Deserialize<T>(reader);
+                    }
+                }
+            }
+        }
+        catch (Exception)
+        {
+        }
+        statusCentralized = false;
+        return default(T);
+    }
+    public static T Post<T>(string Controller, string Action,  params string[] pram)
+    {
+        bool statusCentralized = true;
+        try
+        {
+            if (EnumAppConfig.ByPassCentralizedDB)
+            {
+                statusCentralized = true;
+                return default(T);
+            }
+
+            HttpClient client = new HttpClient();
+            client.BaseAddress = new Uri(EnumAppConfig.web_api_url);
+            //client.DefaultRequestHeaders.Accept.Add(
+            //    new MediaTypeWithQualityHeaderValue("application/json"));
+            var response = client.PostAsJsonAsync(string.Format("api/{0}/{1}?{2}", Controller, Action, string.Join("&", pram)), "").Result;
+            if (response.IsSuccessStatusCode)
+            {
+                using (StreamReader sr = new StreamReader(response.Content.ReadAsStreamAsync().Result))
+                {
+                    using (JsonReader reader = new JsonTextReader(sr))
+                    {
+                        JsonSerializer serializer = new JsonSerializer();
+                        statusCentralized = true;
+                        return serializer.Deserialize<T>(reader);
+                    }
+                }
+            }
+        }
+        catch (Exception)
+        {
+        }
+        statusCentralized = false;
         return default(T);
     }
 }

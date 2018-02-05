@@ -135,7 +135,7 @@ namespace SSK
             // get local user info
             DAL_User dAL_User = new DAL_User();
 
-            Trinity.BE.User user = CallCentralized.Instance.Get<Trinity.BE.User>("User", "GetUserBySmartCardId", "cardUID=" + cardUID);
+            Trinity.BE.User user = CallCentralized.Get<Trinity.BE.User>("User", "GetUserBySmartCardId", "cardUID=" + cardUID);
             // if local user is null, get user from centralized, and sync db
             if (user == null)
             {
