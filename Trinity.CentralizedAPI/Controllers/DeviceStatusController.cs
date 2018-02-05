@@ -26,7 +26,7 @@ namespace Trinity.CentralizedAPI.Controllers
             {
                 // update local ApplicationDevice_Status
                 DAL_DeviceStatus dAL_DeviceStatus = new DAL_DeviceStatus();
-                bool updateResult = dAL_DeviceStatus.Update((int)data[0], (EnumDeviceStatuses[])data[1]);
+                bool updateResult = dAL_DeviceStatus.Update((int)data[0], (EnumDeviceStatuses[])data[1], data[2].ToString());
 
                 // return value
                 return Ok(updateResult);

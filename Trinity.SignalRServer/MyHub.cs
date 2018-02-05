@@ -32,8 +32,8 @@ namespace SignalRChat
 
         public void DeviceStatusUpdate(int deviceId, EnumDeviceStatuses[] deviceStatuses)
         {
-            CallCentralized.Post<bool>("DeviceStatus", "Update",new object[] { deviceId, deviceStatuses });
-            Clients.Clients(Program.ProfileConnected.Where(d => d.isApp && d.Station == EnumStations.DUTYOFFICER).Select(d => d.ConnectionId).ToList()).DeviceStatusUpdate(deviceId, deviceStatuses);
+            CallCentralized.Post<bool>("DeviceStatus", "Update",new object[] { deviceId, deviceStatuses,Station });
+            Clients.Clients(Program.ProfileConnected.Where(d => d.isApp && d.Station == EnumStations.DUTYOFFICER).Select(d => d.ConnectionId).ToList()).DeviceStatusUpdate(deviceId, deviceStatuses, Station);
         }
 
         public void UserLogined(string UserId)

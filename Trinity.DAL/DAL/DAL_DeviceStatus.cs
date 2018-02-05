@@ -15,7 +15,7 @@ namespace Trinity.DAL
         Local_UnitOfWork _localUnitOfWork = new Local_UnitOfWork();
         Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
 
-        public bool Update(int deviceId, EnumDeviceStatuses[] deviceStatuses)
+        public bool Update(int deviceId, EnumDeviceStatuses[] deviceStatuses,string Station = null)
         {
             if (EnumAppConfig.IsLocal)
             {
@@ -79,7 +79,7 @@ namespace Trinity.DAL
 
                     // local db
                     // delete old statuses
-                    string station = System.Reflection.Assembly.GetEntryAssembly().GetName().Name;
+                    string station = Station;
                     var oldRows = _centralizedUnitOfWork.DataContext.ApplicationDevice_Status.Where(item => item.DeviceID == deviceId && item.Station.Equals(station));
                     _centralizedUnitOfWork.DataContext.ApplicationDevice_Status.RemoveRange(oldRows);
 
