@@ -17,11 +17,11 @@ namespace Trinity.CentralizedAPI.Controllers
         public IHttpActionResult GetMyNotifications(string userId)
         {
             var responseModel = new ResponseModel();
-            var result = new DAL.DAL_Notification().GetMyNotifications(userId);
-            responseModel.ResponseCode = result.ResponseCode;
-            responseModel.ResponseMessage = result.ResponseMessage;
-            responseModel.Data = result.Data;
-            return Ok(responseModel);
+            var result = new DAL.DAL_Notification().GetNotificationsByUserId(userId);
+            //responseModel.ResponseCode = result.ResponseCode;
+            //responseModel.ResponseMessage = result.ResponseMessage;
+            //responseModel.Data = result.Data;
+            return Ok(result);
         }
     }
 }

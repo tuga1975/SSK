@@ -17,7 +17,7 @@ namespace Trinity.CentralizedAPI.Controllers
     {
 
         // PUT api/values/5
-        [Route("Update")]
+        [Route("api/Notification/Update")]
         [HttpPost]
         public IHttpActionResult Update(int deviceId, EnumDeviceStatuses[] deviceStatuses)
         {

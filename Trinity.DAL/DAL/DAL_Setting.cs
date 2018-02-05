@@ -59,7 +59,73 @@ namespace Trinity.DAL
             catch (Exception)
             {
 
-                return new Response<WorkingTimeshift>((int)EnumResponseStatuses.ErrorSystem,EnumResponseMessage.ErrorSystem,null);
+                return new Response<WorkingTimeshift>((int)EnumResponseStatuses.ErrorSystem, EnumResponseMessage.ErrorSystem, null);
+            }
+        }
+
+        public WorkingTimeshift GetApptmtTime(DateTime date)
+        {
+            try
+            {
+                List<Timeslot> listTimeSlot;
+                if (EnumAppConfig.IsLocal)
+                {
+
+                    var data = GetTimeslots(date);
+                    if (data != null)
+                    {
+                        listTimeSlot = data;
+                        WorkingTimeshift appointmentTime = SetAppointTime(listTimeSlot);
+                        if (appointmentTime != null)
+                        {
+                            return appointmentTime;
+                        }
+                        else
+                        {
+                            bool centralizeStatus;
+                            var centralData = CallCentralized.Get<WorkingTimeshift>(EnumAPIParam.Setting, "GetAppointmentTime", out centralizeStatus, "date=" + date);
+                            if (centralizeStatus)
+                            {
+                                return centralData;
+                            }
+                        }
+                    }
+
+
+                }
+                else
+                {
+                    listTimeSlot = GetTimeslots(date);
+                    WorkingTimeshift appointmentTime = SetAppointTime(listTimeSlot);
+                    return appointmentTime;
+                }
+                return null;
+            }
+            catch (Exception)
+            {
+
+                return null;
+            }
+        }
+
+        private WorkingTimeshift SetAppointTime(List<Timeslot> listTimeSlot)
+        {
+            try
+            {
+                var appointmentTime = new Trinity.BE.WorkingTimeshift();
+                if (listTimeSlot.Count > 0)
+                {
+                    appointmentTime.Morning = listTimeSlot.Where(d => d.Category == EnumTimeshift.Morning).Select(d => SetAppointmentTime(d)).ToList();
+                    appointmentTime.Evening = listTimeSlot.Where(d => d.Category == EnumTimeshift.Evening).Select(d => SetAppointmentTime(d)).ToList();
+                    appointmentTime.Afternoon = listTimeSlot.Where(d => d.Category == EnumTimeshift.Afternoon).Select(d => SetAppointmentTime(d)).ToList();
+                    return appointmentTime;
+                }
+                return null;
+            }
+            catch (Exception)
+            {
+
+                return null;
             }
         }
 
@@ -79,21 +145,36 @@ namespace Trinity.DAL
         public Response<WorkingTimeshift> GetCurrentAppointmentTime()
         {
             var today = DateTime.Now;
-            var result= GetAppointmentTime(today);
+            var result = GetAppointmentTime(today);
+            return result;
+        }
+
+        public WorkingTimeshift GetCurrentApptmtTime()
+        {
+            var today = DateTime.Today;
+            var result = GetApptmtTime(today);
             return result;
         }
 
         public List<Timeslot> GetTimeslots(DateTime date)
         {
-            SettingModel setting = GetSettings();
-            //GenerateTimeslots("dfbb2a6a-9e45-4a76-9f75-af1a7824a947");
-            int dayOfWeek = date.DayOfWeek();
-            if (EnumAppConfig.IsLocal)
+            try
             {
-                return _localUnitOfWork.DataContext.Timeslots.Where(t => DbFunctions.TruncateTime(t.Date) == date.Date).ToList();
-            }
-            return _centralizedUnitOfWork.DataContext.Timeslots.Where(t => DbFunctions.TruncateTime(t.Date) == date.Date).ToList();
+                SettingModel setting = GetSettings();
 
+                int dayOfWeek = date.DayOfWeek();
+                if (EnumAppConfig.IsLocal)
+                {
+                    return _localUnitOfWork.DataContext.Timeslots.Where(t => DbFunctions.TruncateTime(t.Date) == date.Date).ToList();
+                }
+                return _centralizedUnitOfWork.DataContext.Timeslots.Where(t => DbFunctions.TruncateTime(t.Date) == date.Date).ToList();
+
+            }
+            catch (Exception)
+            {
+
+                return null;
+            }
 
         }
 
@@ -132,17 +213,17 @@ namespace Trinity.DAL
 
         private void GenerateTimeslotAndInsert(DateTime date, Trinity.BE.SettingDetails model, string createBy, int maxSupervisee = 0)
         {
-            if (model.Morning_Open_Time.HasValue && model.Morning_Close_Time.HasValue && model.Morning_Interval.HasValue&&!model.Morning_Is_Closed)
+            if (model.Morning_Open_Time.HasValue && model.Morning_Close_Time.HasValue && model.Morning_Interval.HasValue && !model.Morning_Is_Closed)
             {
                 GenerateByTimeshift(date, model.Morning_Open_Time, model.Morning_Close_Time, model.Morning_Interval, createBy, maxSupervisee);
             }
 
-            if (model.Afternoon_Open_Time.HasValue && model.Afternoon_Close_Time.HasValue && model.Afternoon_Interval.HasValue&&!model.Afternoon_Is_Closed)
+            if (model.Afternoon_Open_Time.HasValue && model.Afternoon_Close_Time.HasValue && model.Afternoon_Interval.HasValue && !model.Afternoon_Is_Closed)
             {
                 GenerateByTimeshift(date, model.Afternoon_Open_Time, model.Afternoon_Close_Time, model.Afternoon_Interval, createBy, maxSupervisee);
             }
 
-            if (model.Evening_Open_Time.HasValue && model.Evening_Close_Time.HasValue && model.Evening_Interval.HasValue&&!model.Evening_Is_Closed)
+            if (model.Evening_Open_Time.HasValue && model.Evening_Close_Time.HasValue && model.Evening_Interval.HasValue && !model.Evening_Is_Closed)
             {
                 GenerateByTimeshift(date, model.Evening_Open_Time, model.Evening_Close_Time, model.Evening_Interval, createBy, maxSupervisee);
             }
@@ -159,7 +240,7 @@ namespace Trinity.DAL
             {
                 var timeSlot = new BE.TimeslotDetails();
 
-                
+
 
                 timeSlot.Timeslot_ID = Guid.NewGuid().ToString();
 
@@ -175,7 +256,7 @@ namespace Trinity.DAL
                 timeSlot.LastUpdatedBy = createBy;
                 timeSlot.LastUpdatedDate = DateTime.Now;
                 timeSlot.MaximumSupervisee = maxSupervisee;
-                
+
 
                 if (timeSlot.EndTime <= morningTimeSpan)
                 {
@@ -279,7 +360,7 @@ namespace Trinity.DAL
 
         public BE.SettingModel GetSettings()
         {
-            OperationSetting dbSetting = new OperationSetting() ;
+            OperationSetting dbSetting = new OperationSetting();
             if (EnumAppConfig.IsLocal)
             {
                 dbSetting = _localUnitOfWork.DataContext.OperationSettings.FirstOrDefault();
@@ -288,7 +369,7 @@ namespace Trinity.DAL
             {
                 dbSetting = _centralizedUnitOfWork.DataContext.OperationSettings.FirstOrDefault();
             }
-            
+
             var settingBE = new BE.SettingBE();
 
             if (dbSetting != null)
@@ -537,7 +618,7 @@ namespace Trinity.DAL
                     CustomAttribute cusAttr = sourceProp.GetMyCustomAttributes();
                     if (cusAttr != null && cusAttr.Name != null && dataUpdate != null)
                     {
-                        arrayUpdateHistory.Add("Changed " + cusAttr.Name + " of "+ model.DayOfWeekTxt + " to " + (dataUpdate == null ? string.Empty : dataUpdate.ToString()));
+                        arrayUpdateHistory.Add("Changed " + cusAttr.Name + " of " + model.DayOfWeekTxt + " to " + (dataUpdate == null ? string.Empty : dataUpdate.ToString()));
                     }
                 }
             }
@@ -557,7 +638,7 @@ namespace Trinity.DAL
                             var p = destProps.First(x => x.Name == sourceProp.Name);
                             var dataValue = p.GetValue(operationSetting, null);
                             if (!dataUpdate.Equals(dataValue))
-                                arrayUpdateHistory.Add("Changed " + cusAttr.Name + " of " + model.DayOfWeekTxt + " to " + (dataUpdate==null?string.Empty: dataUpdate.ToString()));
+                                arrayUpdateHistory.Add("Changed " + cusAttr.Name + " of " + model.DayOfWeekTxt + " to " + (dataUpdate == null ? string.Empty : dataUpdate.ToString()));
                         }
 
                     }

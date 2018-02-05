@@ -24,40 +24,93 @@ namespace Trinity.DAL
                 {
                     throw new Exception("DeviceID is not valid");
                 }
-
-                // local db
-                // delete old statuses
                 string station = System.Reflection.Assembly.GetEntryAssembly().GetName().Name;
-                var oldRows = _localUnitOfWork.DataContext.ApplicationDevice_Status.Where(item => item.DeviceID == deviceId && item.Station.Equals(station));
-                _localUnitOfWork.DataContext.ApplicationDevice_Status.RemoveRange(oldRows);
-
-                // insert new statuses
-                if (deviceStatuses != null && deviceStatuses.Count() > 0)
+                if (EnumAppConfig.IsLocal)
                 {
-                    // create new status entites
-                    ApplicationDevice_Status deviceStatus;
-                    foreach (var status in deviceStatuses)
+                    // local db
+                    // delete old statuses
+                  
+
+                    bool centralizeStatus;
+                    var centralData = CallCentralized.Post<bool>(EnumAPIParam.Notification, "Update", out centralizeStatus);
+
+                    if (centralizeStatus)
                     {
-                        deviceStatus = new ApplicationDevice_Status();
-                        deviceStatus.Station = station;
-                        deviceStatus.DeviceID = deviceId;
-                        deviceStatus.ID = Guid.NewGuid();
-                        deviceStatus.StatusCode = (int)status;
-                        deviceStatus.StatusMessage = CommonUtil.GetDeviceStatusText(status);
-
+                        var oldRows = _localUnitOfWork.DataContext.ApplicationDevice_Status.Where(item => item.DeviceID == deviceId && item.Station.Equals(station));
+                        if (oldRows != null)
+                        {
+                            _localUnitOfWork.DataContext.ApplicationDevice_Status.RemoveRange(oldRows);
+                        }
                         // insert new statuses
-                        _localUnitOfWork.DataContext.ApplicationDevice_Status.Add(deviceStatus);
-                    }
-                }
+                        if (deviceStatuses != null && deviceStatuses.Count() > 0)
+                        {
+                            // create new status entites
+                            ApplicationDevice_Status deviceStatus;
+                            foreach (var status in deviceStatuses)
+                            {
+                                deviceStatus = new ApplicationDevice_Status();
+                                deviceStatus.Station = station;
+                                deviceStatus.DeviceID = deviceId;
+                                deviceStatus.ID = Guid.NewGuid();
+                                deviceStatus.StatusCode = (int)status;
+                                deviceStatus.StatusMessage = CommonUtil.GetDeviceStatusText(status);
 
-                // savechanges
-                if (_localUnitOfWork.DataContext.SaveChanges() < 0)
-                {
-                    throw new Exception("Save data to local database failed.");
+                                // insert new statuses
+                                _localUnitOfWork.DataContext.ApplicationDevice_Status.Add(deviceStatus);
+                            }
+                        }
+
+                        // savechanges
+                        if (_localUnitOfWork.DataContext.SaveChanges() < 0)
+                        {
+                            throw new Exception("Save data to local database failed.");
+                        }
+                        // Send Noti server
+                        Lib.SignalR.DeviceStatusUpdate(deviceId, deviceStatuses);
+
+                        return centralData;
+                    }
+                    return false;
+                   
                 }
-                // Send Noti server
-                Lib.SignalR.DeviceStatusUpdate(deviceId, deviceStatuses);
-                return true;
+                else
+                {
+                    var oldRows = _centralizedUnitOfWork.DataContext.ApplicationDevice_Status.Where(item => item.DeviceID == deviceId && item.Station.Equals(station));
+                    if (oldRows != null)
+                    {
+                        _centralizedUnitOfWork.DataContext.ApplicationDevice_Status.RemoveRange(oldRows);
+                    }
+                    // insert new statuses
+                    if (deviceStatuses != null && deviceStatuses.Count() > 0)
+                    {
+                        // create new status entites
+                        ApplicationDevice_Status deviceStatus;
+                        foreach (var status in deviceStatuses)
+                        {
+                            deviceStatus = new ApplicationDevice_Status();
+                            deviceStatus.Station = station;
+                            deviceStatus.DeviceID = deviceId;
+                            deviceStatus.ID = Guid.NewGuid();
+                            deviceStatus.StatusCode = (int)status;
+                            deviceStatus.StatusMessage = CommonUtil.GetDeviceStatusText(status);
+
+                            // insert new statuses
+                            _centralizedUnitOfWork.DataContext.ApplicationDevice_Status.Add(deviceStatus);
+                        }
+                    }
+
+                    // savechanges
+                    if (_centralizedUnitOfWork.DataContext.SaveChanges() < 0)
+                    {
+                        throw new Exception("Save data to central database failed.");
+                    }
+                    // Send Noti server
+                    Lib.SignalR.DeviceStatusUpdate(deviceId, deviceStatuses);
+                    return true;
+                }
+               
+
+              
             }
             catch (Exception ex)
             {

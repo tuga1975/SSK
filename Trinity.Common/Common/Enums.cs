@@ -450,6 +450,9 @@ public static class EnumAPIParam
 {
     //controller
     public const string Appointment = "Appointment";
+    public const string Notification = "Notification";
+    public const string User = "User";
+    public const string Setting = "Setting";
 
     //action
     public const string GetByToday = "GetByToday";
