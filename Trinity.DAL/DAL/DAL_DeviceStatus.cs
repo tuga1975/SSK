@@ -15,71 +15,74 @@ namespace Trinity.DAL
         Local_UnitOfWork _localUnitOfWork = new Local_UnitOfWork();
         Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
 
-        public bool Update(int deviceId, EnumDeviceStatuses[] deviceStatuses)
+        public bool Update(int deviceId, EnumDeviceStatuses[] deviceStatuses,string Station = null)
         {
-            try
+            if (EnumAppConfig.IsLocal)
             {
-                // validate
-                if (!DeviceIdExist(deviceId))
+                try
                 {
-                    throw new Exception("DeviceID is not valid");
-                }
-                string station = System.Reflection.Assembly.GetEntryAssembly().GetName().Name;
-                if (EnumAppConfig.IsLocal)
-                {
+                    // validate
+                    if (!DeviceIdExist(deviceId))
+                    {
+                        throw new Exception("DeviceID is not valid");
+                    }
+
                     // local db
                     // delete old statuses
-                  
+                    string station = System.Reflection.Assembly.GetEntryAssembly().GetName().Name;
+                    var oldRows = _localUnitOfWork.DataContext.ApplicationDevice_Status.Where(item => item.DeviceID == deviceId && item.Station.Equals(station));
+                    _localUnitOfWork.DataContext.ApplicationDevice_Status.RemoveRange(oldRows);
 
-                    bool centralizeStatus;
-                    var centralData = CallCentralized.Post<bool>(EnumAPIParam.Notification, "Update", out centralizeStatus);
-
-                    if (centralizeStatus)
+                    // insert new statuses
+                    if (deviceStatuses != null && deviceStatuses.Count() > 0)
                     {
-                        var oldRows = _localUnitOfWork.DataContext.ApplicationDevice_Status.Where(item => item.DeviceID == deviceId && item.Station.Equals(station));
-                        if (oldRows != null)
+                        // create new status entites
+                        ApplicationDevice_Status deviceStatus;
+                        foreach (var status in deviceStatuses)
                         {
-                            _localUnitOfWork.DataContext.ApplicationDevice_Status.RemoveRange(oldRows);
-                        }
-                        // insert new statuses
-                        if (deviceStatuses != null && deviceStatuses.Count() > 0)
-                        {
-                            // create new status entites
-                            ApplicationDevice_Status deviceStatus;
-                            foreach (var status in deviceStatuses)
-                            {
-                                deviceStatus = new ApplicationDevice_Status();
-                                deviceStatus.Station = station;
-                                deviceStatus.DeviceID = deviceId;
-                                deviceStatus.ID = Guid.NewGuid();
-                                deviceStatus.StatusCode = (int)status;
-                                deviceStatus.StatusMessage = CommonUtil.GetDeviceStatusText(status);
+                            deviceStatus = new ApplicationDevice_Status();
+                            deviceStatus.Station = station;
+                            deviceStatus.DeviceID = deviceId;
+                            deviceStatus.ID = Guid.NewGuid();
+                            deviceStatus.StatusCode = (int)status;
+                            deviceStatus.StatusMessage = CommonUtil.GetDeviceStatusText(status);
 
-                                // insert new statuses
-                                _localUnitOfWork.DataContext.ApplicationDevice_Status.Add(deviceStatus);
-                            }
+                            // insert new statuses
+                            _localUnitOfWork.DataContext.ApplicationDevice_Status.Add(deviceStatus);
                         }
-
-                        // savechanges
-                        if (_localUnitOfWork.DataContext.SaveChanges() < 0)
-                        {
-                            throw new Exception("Save data to local database failed.");
-                        }
-                        // Send Noti server
-                        Lib.SignalR.DeviceStatusUpdate(deviceId, deviceStatuses);
-
-                        return centralData;
                     }
-                    return false;
-                   
+
+                    // savechanges
+                    if (_localUnitOfWork.DataContext.SaveChanges() < 0)
+                    {
+                        throw new Exception("Save data to local database failed.");
+                    }
+                    // Send Noti server
+                    Lib.SignalR.DeviceStatusUpdate(deviceId, deviceStatuses);
+                    return true;
                 }
-                else
+                catch (Exception ex)
                 {
-                    var oldRows = _centralizedUnitOfWork.DataContext.ApplicationDevice_Status.Where(item => item.DeviceID == deviceId && item.Station.Equals(station));
-                    if (oldRows != null)
+                    Debug.WriteLine("DAL_DeviceStatus.Update exception: " + ex.ToString());
+                    return false;
+                }
+            }
+            else
+            {
+                try
+                {
+                    // validate
+                    if (!DeviceIdExist(deviceId))
                     {
-                        _centralizedUnitOfWork.DataContext.ApplicationDevice_Status.RemoveRange(oldRows);
+                        throw new Exception("DeviceID is not valid");
                     }
+
+                    // local db
+                    // delete old statuses
+                    string station = Station;
+                    var oldRows = _centralizedUnitOfWork.DataContext.ApplicationDevice_Status.Where(item => item.DeviceID == deviceId && item.Station.Equals(station));
+                    _centralizedUnitOfWork.DataContext.ApplicationDevice_Status.RemoveRange(oldRows);
+
                     // insert new statuses
                     if (deviceStatuses != null && deviceStatuses.Count() > 0)
                     {
@@ -102,32 +105,35 @@ namespace Trinity.DAL
                     // savechanges
                     if (_centralizedUnitOfWork.DataContext.SaveChanges() < 0)
                     {
-                        throw new Exception("Save data to central database failed.");
+                        throw new Exception("Save data to local database failed.");
                     }
-                    // Send Noti server
-                    Lib.SignalR.DeviceStatusUpdate(deviceId, deviceStatuses);
                     return true;
                 }
-               
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("DAL_DeviceStatus.Update exception: " + ex.ToString());
+                    return false;
+                }
 
-              
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("DAL_DeviceStatus.Update exception: " + ex.ToString());
-                return false;
             }
         }
 
         private bool DeviceIdExist(int deviceID)
         {
-            try
+            if (EnumAppConfig.IsLocal)
             {
-                return _localUnitOfWork.DataContext.Devices.Any(item => item.DeviceID.Equals(deviceID));
+                try
+                {
+                    return _localUnitOfWork.DataContext.Devices.Any(item => item.DeviceID.Equals(deviceID));
+                }
+                catch
+                {
+                    return false;
+                }
             }
-            catch
+            else
             {
-                return false;
+                return _centralizedUnitOfWork.DataContext.Devices.Any(item => item.DeviceID.Equals(deviceID));
             }
         }
 

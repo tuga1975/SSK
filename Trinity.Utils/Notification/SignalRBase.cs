@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Trinity.Utils.Notification
 {
-    public abstract class SignalRBase: ISignalR
+    public abstract class SignalRBase : ISignalR
     {
         protected IHubProxy HubProxy { get; set; }
         protected HubConnection Connection { get; set; }
@@ -64,16 +64,19 @@ namespace Trinity.Utils.Notification
 
         public void UserLogined(string userID)
         {
-            HubProxy.Invoke("UserLogined", userID);
+            if (IsConnected)
+                HubProxy.Invoke("UserLogined", userID);
         }
         public void UserLogout(string userID)
         {
-            HubProxy.Invoke("UserLogout", userID);
+            if (IsConnected)
+                HubProxy.Invoke("UserLogout", userID);
         }
 
         public void DeviceStatusUpdate(int deviceId, EnumDeviceStatuses[] deviceStatuses)
         {
-            HubProxy.Invoke("DeviceStatusUpdate", deviceId, deviceStatuses);
+            if (IsConnected)
+                HubProxy.Invoke("DeviceStatusUpdate", deviceId, deviceStatuses);
         }
         public void Dispose()
         {

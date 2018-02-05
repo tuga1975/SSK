@@ -632,6 +632,8 @@ namespace Enrolment
                     session.Role = EnumUserRoles.EnrolmentOfficer;
                     session[CommonConstants.USER_LOGIN] = user;
 
+                    APIUtils.SignalR.UserLogined(user.UserId);
+
                     eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = 0, Name = EventNames.LOGIN_SUCCEEDED });
                 }
                 else
@@ -655,6 +657,9 @@ namespace Enrolment
         {
             // reset session value
             Session session = Session.Instance;
+
+            APIUtils.SignalR.UserLogout(((Trinity.BE.User)session[CommonConstants.USER_LOGIN]).UserId);
+
             session.IsSmartCardAuthenticated = false;
             session.IsFingerprintAuthenticated = false;
             session[CommonConstants.USER_LOGIN] = null;

@@ -66,6 +66,9 @@ namespace SSA
         {
             // reset session value
             Session session = Session.Instance;
+
+            APIUtils.SignalR.UserLogout(((Trinity.BE.User)session[CommonConstants.USER_LOGIN]).UserId);
+
             session.IsSmartCardAuthenticated = false;
             session.IsFingerprintAuthenticated = false;
             session[CommonConstants.USER_LOGIN] = null;
