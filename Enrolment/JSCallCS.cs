@@ -102,7 +102,7 @@ namespace Enrolment
             if (attempt > 3)
             {
                 session[CommonConstants.CAPTURE_PHOTO_ATTEMPT] = null;
-                APIUtils.SignalR.SendNotificationToDutyOfficer("Supervisee failed to capture photo!", "Supervisee failed to capture photo!\n Please check the status");
+                APIUtils.SignalR.SendAllDutyOfficer(null,"Supervisee failed to capture photo!", "Supervisee failed to capture photo!\n Please check the status");
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.PHOTO_CAPTURE_FAILED, Message = "Unable to capture photo", Source = "FailToCapture.html" });
             }
             else
@@ -121,7 +121,7 @@ namespace Enrolment
             if (attempt > 3)
             {
                 session[CommonConstants.CAPTURE_FINGERPRINT_ATTEMPT] = null;
-                APIUtils.SignalR.SendNotificationToDutyOfficer("Supervisee failed to capture photo!", "Supervisee failed to capture fingerprint!\n Please check the status");
+                APIUtils.SignalR.SendAllDutyOfficer(null,"Supervisee failed to capture photo!", "Supervisee failed to capture fingerprint!\n Please check the status");
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.PHOTO_CAPTURE_FAILED, Message = "Unable to capture fingerprint", Source = "FailToCapture.html" });
             }
             else
@@ -140,7 +140,7 @@ namespace Enrolment
             if (attempt > 3)
             {
                 session[CommonConstants.PRINT_SMARTCARD_ATTEMPT] = null;
-                APIUtils.SignalR.SendNotificationToDutyOfficer("Supervisee failed to capture photo!", "Supervisee failed to print smart card!\n Please check the status");
+                APIUtils.SignalR.SendAllDutyOfficer(null,"Supervisee failed to capture photo!", "Supervisee failed to print smart card!\n Please check the status");
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.ABLE_TO_PRINT_FAILED, Message = "Unable to print smart card", Source = "FailToCapture.html" });
             }
             else
@@ -206,7 +206,7 @@ namespace Enrolment
             }
             else
             {
-                APIUtils.SignalR.SendNotificationToDutyOfficer("Unable to scan supervisee's NRIC", "Unable to scan supervisee's NRIC! Please check the manually input information!");
+                APIUtils.SignalR.SendAllDutyOfficer(null,"Unable to scan supervisee's NRIC", "Unable to scan supervisee's NRIC! Please check the manually input information!");
                 LoadListSupervisee();
 
             }
@@ -358,7 +358,7 @@ namespace Enrolment
                 var updateUProfileResult = CallCentralized.Post<bool>("User", "UpdateUserProfile", userProfileModel);
 
                 ////send notifiy to case officer
-                APIUtils.SignalR.SendNotificationToDutyOfficer("A supervisee has updated profile.", "Please check Supervisee's information!");
+                APIUtils.SignalR.SendAllDutyOfficer(null,"A supervisee has updated profile.", "Please check Supervisee's information!");
 
 
                 //session[CommonConstants.CURRENT_EDIT_USER] = data;

@@ -74,7 +74,7 @@ namespace SSA
             string message = "The fingerprint reader is not connected, please report to the Duty Officer!";
 
             // Send Notification to duty officer
-            APIUtils.SignalR.SendNotificationToDutyOfficer("The fingerprinter is not connected", "The fingerprinter is not connected.");
+            APIUtils.SignalR.SendAllDutyOfficer(null,"The fingerprinter is not connected", "The fingerprinter is not connected.");
 
             // show message box to user
             MessageBox.Show(message, "Authentication failed!", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -210,7 +210,7 @@ namespace SSA
             if (_smartCardFailed > 3)
             {
                 // Send Notification to duty officer
-                APIUtils.SignalR.SendNotificationToDutyOfficer(message, message, NotificationType.Error, EnumStations.SSA);
+                APIUtils.SignalR.SendAllDutyOfficer(null,message, message);
 
                 // show message box to user
                 MessageBox.Show(message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -241,8 +241,7 @@ namespace SSA
             session.IsFingerprintAuthenticated = true;
 
             LayerWeb.RunScript("$('.status-text').css('color','#000').text('Fingerprint authentication is successful.');");
-            APIUtils.SignalR.GetLatestNotifications();
-
+            
             Thread.Sleep(1000);
 
             // if role = 0 (duty officer), redirect to NRIC.html
@@ -277,7 +276,7 @@ namespace SSA
                 string errorMessage = "Unable to read " + user.Name + "'s fingerprint.";
 
                 // Send Notification to duty officer
-                APIUtils.SignalR.SendNotificationToDutyOfficer("Fingerprint Authentication failed", errorMessage, NotificationType.Error, EnumStations.SSA);
+                APIUtils.SignalR.SendAllDutyOfficer(user.UserId, "Fingerprint Authentication failed", errorMessage);
 
                 // Pause for 1 second and goto Facial Login Screen
                 Thread.Sleep(1000);
@@ -330,9 +329,6 @@ namespace SSA
             Session session = Session.Instance;
             session.IsFacialAuthenticated = true;
 
-
-            APIUtils.SignalR.GetLatestNotifications();
-
             Thread.Sleep(1000);
 
             // if role = 0 (duty officer), redirect to NRIC.html
@@ -371,7 +367,7 @@ namespace SSA
             Session session = Session.Instance;
             Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
             string errorMessage = "User '" + user.Name + "' cannot complete facial authentication";
-            APIUtils.SignalR.SendNotificationToDutyOfficer("Facial authentication failed", errorMessage);
+            APIUtils.SignalR.SendAllDutyOfficer(user.UserId, "Facial authentication failed", errorMessage);
 
             // show message box to user
             MessageBox.Show("Facial authentication failed", "Facial Authentication", MessageBoxButtons.OK, MessageBoxIcon.Error);
