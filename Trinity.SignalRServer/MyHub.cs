@@ -17,22 +17,42 @@ namespace SignalRChat
             }
         }
 
-        public void SendNotification(string subject, string content, string fromUserId, string toUserId, bool isFromSupervisee)
+
+        public void SendToDutyOfficer(string UserId, string DutyOfficerID, string Subject, string Content)
         {
-            // Insert notification into centralized DB first
-            Trinity.DAL.DAL_Notification dalNotification = new Trinity.DAL.DAL_Notification();
-            dalNotification.InsertNotification(subject, content, fromUserId, toUserId, isFromSupervisee, false);
-
-            // And notify all client about new notification
-            // In later phase we should send to appropriate client
-            Clients.All.OnNewNotification(subject, content, fromUserId, toUserId, isFromSupervisee);
-
-            Program.MainForm.WriteToConsole("User:" + fromUserId + "' send notification|subject:" + subject + "|" + "|content:" + content + "|to user:" + toUserId);
+            CallCentralized.Post("Notification", "SendToDutyOfficer", "UserId=" + UserId, "DutyOfficerID=" + DutyOfficerID, "Subject=" + Subject, "Content=" + Content, "Station="+ Station);
+            List<string> connectId = Program.ProfileConnected.Where(d => d.isUser && d.UserID == DutyOfficerID && d.Station == EnumStations.DUTYOFFICER).Select(d=>d.ConnectionId).ToList();
+            if (connectId.Count > 0)
+            {
+                Clients.Clients(connectId).MessageTo(UserId,Subject, Content,Station);
+            }
         }
+        public void SendAllDutyOfficer(string UserId, string Subject, string Content)
+        {
+            CallCentralized.Post("Notification", "SendAllDutyOfficer", "UserId=" + UserId, "Subject=" + Subject, "Content=" + Content, "Station=" + Station);
+            List<string> connectId = Program.ProfileConnected.Where(d => d.isUser && d.Station == EnumStations.DUTYOFFICER).Select(d=>d.ConnectionId).ToList();
+            if (connectId.Count > 0)
+            {
+                Clients.Clients(connectId).MessageTo(UserId, Subject, Content, Station);
+            }
+        }
+
+        //public void SendNotification(string subject, string content, string fromUserId, string toUserId, bool isFromSupervisee)
+        //{
+        //    // Insert notification into centralized DB first
+        //    Trinity.DAL.DAL_Notification dalNotification = new Trinity.DAL.DAL_Notification();
+        //    dalNotification.InsertNotification(subject, content, fromUserId, toUserId, isFromSupervisee, false);
+
+        //    // And notify all client about new notification
+        //    // In later phase we should send to appropriate client
+        //    Clients.All.OnNewNotification(subject, content, fromUserId, toUserId, isFromSupervisee);
+
+        //    Program.MainForm.WriteToConsole("User:" + fromUserId + "' send notification|subject:" + subject + "|" + "|content:" + content + "|to user:" + toUserId);
+        //}
 
         public void DeviceStatusUpdate(int deviceId, EnumDeviceStatuses[] deviceStatuses)
         {
-            CallCentralized.Post<bool>("DeviceStatus", "Update",new object[] { deviceId, deviceStatuses,Station });
+            CallCentralized.Post<bool>("DeviceStatus", "Update", new object[] { deviceId, deviceStatuses, Station });
             Clients.Clients(Program.ProfileConnected.Where(d => d.isApp && d.Station == EnumStations.DUTYOFFICER).Select(d => d.ConnectionId).ToList()).DeviceStatusUpdate(deviceId, deviceStatuses, Station);
         }
 

@@ -12,16 +12,21 @@ namespace Trinity.CentralizedAPI.Controllers
     public class NotificationController : ApiController
     {
         [HttpGet]
-        [Route("api/Notification/GetByUserId")]
+        [Route("api/Notification/GetMyNotifications")]
         //[ResponseType(typeof(ResponseModel))]
         public IHttpActionResult GetMyNotifications(string userId)
         {
-            var responseModel = new ResponseModel();
-            var result = new DAL.DAL_Notification().GetNotificationsByUserId(userId);
-            //responseModel.ResponseCode = result.ResponseCode;
-            //responseModel.ResponseMessage = result.ResponseMessage;
-            //responseModel.Data = result.Data;
-            return Ok(result);
+            return Ok(new DAL.DAL_Notification().GetMyNotifications(userId));
+        }
+        [Route("api/Notification/SendToDutyOfficer")]
+        public void SendToDutyOfficer(string UserId, string DutyOfficerID, string Subject, string Content,string Station)
+        {
+            new DAL.DAL_Notification().SendToDutyOfficer(UserId,DutyOfficerID,Subject,Content,Station);
+        }
+        [Route("api/Notification/SendAllDutyOfficer")]
+        public void SendAllDutyOfficer(string UserId, string Subject, string Content, string Station)
+        {
+            new DAL.DAL_Notification().SendAllDutyOfficer(UserId, Subject, Content, Station);
         }
     }
 }
