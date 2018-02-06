@@ -374,12 +374,17 @@ namespace SSK
                 // Send Notification to duty officer
                 APIUtils.SignalR.SendAllDutyOfficer(user.UserId,"Fingerprint Authentication failed", errorMessage);
 
+                //for testing purpose
+                NavigateTo(NavigatorEnums.Authentication_SmartCard);
+                CSCallJS.InvokeScript(this.LayerWeb,"showMessage","Fingerprint's Authenication failed!\n Please contact your officer.");
                 // Pause for 1 second and goto Facial Login Screen
-                Thread.Sleep(1000);
-                _fingerprintFailed = 0;
+                //Thread.Sleep(1000);
+                //_fingerprintFailed = 0;
+
+               
 
                 // Navigate to next page: Facial Authentication
-                NavigateTo(NavigatorEnums.Authentication_Facial);
+                //NavigateTo(NavigatorEnums.Authentication_Facial);
 
                 return;
             }
