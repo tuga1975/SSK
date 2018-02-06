@@ -89,5 +89,31 @@ namespace Trinity.CentralizedAPI.Controllers
             //responseModel.Data = result.Data;
             return Ok(result);
         }
+
+        [HttpGet]
+        [Route("api/User/GetMembershipByUserId")]
+        //[ResponseType(typeof(ResponseModel))]
+        public IHttpActionResult GetMembershipByUserId(string userId)
+        {
+            var responseModel = new ResponseModel();
+            var result = new DAL.DAL_Membership_Users().GetByUserId(userId);
+            //responseModel.ResponseCode = result.ResponseCode;
+            //responseModel.ResponseMessage = result.ResponseMessage;
+            //responseModel.Data = result.Data;
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("api/User/GetUserBySmartCardId")]
+        //[ResponseType(typeof(ResponseModel))]
+        public IHttpActionResult GetUserBySmartCardId(string smartcardId)
+        {
+            var responseModel = new ResponseModel();
+            var result = new DAL.DAL_User().GetUserBySmartCardId(smartcardId);
+            //responseModel.ResponseCode = result.ResponseCode;
+            //responseModel.ResponseMessage = result.ResponseMessage;
+            //responseModel.Data = result.Data;
+            return Ok(result);
+        }
     }
 }

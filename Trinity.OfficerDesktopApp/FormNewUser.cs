@@ -238,7 +238,7 @@ namespace OfficerDesktopApp
             else
             {
                 DAL_User dalUser = new DAL_User();
-                Trinity.BE.User user = dalUser.GetUserBySmartCardId(cardUID, true);
+                Trinity.BE.User user = dalUser.GetUserBySmartCardId(cardUID);
                 if (user != null)
                 {
                     MessageBox.Show("This smart card is already in used by another person. Please user another card.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -264,7 +264,7 @@ namespace OfficerDesktopApp
             {
                 // Scan smart card successfully                
                 DAL_User dalUser = new DAL_User();
-                Trinity.BE.User user = dalUser.GetUserBySmartCardId(cardUID, true);
+                Trinity.BE.User user = dalUser.GetUserBySmartCardId(cardUID);
                 if (user != null)
                 {
                     MessageBox.Show("This smart card is already in used by another person. Please user another card.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
