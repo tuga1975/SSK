@@ -220,7 +220,7 @@ namespace Enrolment
             var dalUser = new DAL_User();
             var dalUserProfile = new DAL_UserProfile();
             var dalUserMembership = new DAL_Membership_Users();
-            var result = CallCentralized.Get<Trinity.BE.User>("User", "GetUserByUserId", "userId=" + userId);
+            var result = dalUser.GetUserById(userId);
             var dbUser = result;
 
 
@@ -241,9 +241,9 @@ namespace Enrolment
                 {
                     User = dbUser,
 
-                    UserProfile = CallCentralized.Get<Trinity.BE.UserProfile>("User", "GetUserProfileByUserId", "userId=" + dbUser.UserId),
-                    Addresses = CallCentralized.Get<Trinity.BE.Address>("User", "GetAddressByUserId", "userId=" + dbUser.UserId, "isOther=" + false),
-                    OtherAddress = CallCentralized.Get<Trinity.BE.Address>("User", "GetAddressByUserId", "userId=" + dbUser.UserId, "isOther=" + true),
+                    UserProfile = new DAL_UserProfile().GetProfileByUserId(dbUser.UserId),
+                    Addresses = new DAL_UserProfile().GetAddByUserId(dbUser.UserId),
+                    OtherAddress = new DAL_UserProfile().GetAddByUserId(dbUser.UserId, true),
                     Membership_Users = dalUserMembership.GetByUserId(userId)
                 };
                 //first load set model to session 
@@ -351,11 +351,11 @@ namespace Enrolment
                 data.User.Status = tempUser.User.Status;
 
 
-                var updateUserResult = CallCentralized.Post<bool>("User", "UpdateUser", data.User);
+                var updateUserResult = dalUser.Update(data.User);
                 // dalUser.UpdateUser(data.User, data.User.UserId, true);
                 var userProfileModel = data.UserProfile;
                 userProfileModel.UserId = data.User.UserId;
-                var updateUProfileResult = CallCentralized.Post<bool>("User", "UpdateUserProfile", userProfileModel);
+                var updateUProfileResult = dalUserprofile.UpdateProfile(userProfileModel);
 
                 ////send notifiy to case officer
                 APIUtils.SignalR.SendAllDutyOfficer(null,"A supervisee has updated profile.", "Please check Supervisee's information!");
