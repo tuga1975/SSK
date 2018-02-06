@@ -1,8 +1,16 @@
 ﻿<div class="subcontent">
-    <span>Please scan supervisee NRIC:</span>
-    <input type="text" id="txtNRIC" class="txtNRIC" autofocus />
-    <input type="button" value="Enter manually" onclick="enterManually()" />
-    <input type="button" value="Submit" onclick="api.server.SubmitNRIC($('#txtNRIC').val())" />
+    <!--<span>Please scan supervisee NRIC:</span>-->
+    <div class="titles"><span>Verification</span></div><br />
+    <div class="contentWrapper">
+        <div class="input-group">
+            <span class="input-group-addon">Supervisee NRIC No</span>
+            <input type="text" id="txtNRIC" class="txtNRIC" autofocus />
+        </div>
+        <div style="display:block;float:right; margin-top:20px;" id="divSave">
+            <input type="button" value="Enter manually" onclick="enterManually()" />
+            <input type="button" value="Submit" onclick="api.server.SubmitNRIC($('#txtNRIC').val())" />
+        </div>
+    </div>
 </div>
 
 <style type="text/css">
@@ -11,6 +19,7 @@
         margin-top: 200px;
         text-align: center;
     }
+
     .txtNRIC {
         height: 28px;
     }
