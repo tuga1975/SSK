@@ -14,6 +14,69 @@ namespace Trinity.DAL
         Local_UnitOfWork _localUnitOfWork = new Local_UnitOfWork();
         Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
 
+        /// <summary>
+        /// App call ko cần truyền Station
+        /// </summary>
+        /// <param name="UserId"></param>
+        /// <param name="DutyOfficerID"></param>
+        /// <param name="Subject"></param>
+        /// <param name="Content"></param>
+        /// <param name="Station"></param>
+        public void SendToDutyOfficer(string UserId, string DutyOfficerID, string Subject, string Content, string Station = null)
+        {
+            if (EnumAppConfig.IsLocal)
+            {
+                Lib.SignalR.SendToDutyOfficer(UserId, DutyOfficerID, Subject, Content);
+            }
+            else
+            {
+                _centralizedUnitOfWork.GetRepository<DBContext.Notification>().Add(new DBContext.Notification()
+                {
+                    Content = Content,
+                    Datetime = DateTime.Now,
+                    FromUserId = UserId,
+                    IsFromSupervisee = true,
+                    NotificationID = Guid.NewGuid().ToString().Trim(),
+                    Source = Station,
+                    Subject = Subject,
+                    ToUserId = DutyOfficerID
+                });
+                _centralizedUnitOfWork.Save();
+            }
+        }
+        /// <summary>
+        /// App call ko cần truyền Station
+        /// </summary>
+        /// <param name="UserId"></param>
+        /// <param name="DutyOfficerID"></param>
+        /// <param name="Subject"></param>
+        /// <param name="Content"></param>
+        /// <param name="Station"></param>
+        public void SendAllDutyOfficer(string UserId, string Subject, string Content, string Statis, string Station = null)
+        {
+            if (EnumAppConfig.IsLocal)
+            {
+                Lib.SignalR.SendAllDutyOfficer(UserId, Subject, Content);
+            }
+            else
+            {
+                List<string> DOId = _centralizedUnitOfWork.DataContext.Membership_UserRoles.Include("Membership_Roles").Where(d => d.Membership_Roles.Name == EnumUserRoles.DutyOfficer).Select(d => d.UserId).ToList();
+                _centralizedUnitOfWork.GetRepository<DBContext.Notification>().AddRange(DOId.Select(d => new DBContext.Notification()
+                {
+                    Content = Content,
+                    Datetime = DateTime.Now,
+                    FromUserId = UserId,
+                    IsFromSupervisee = true,
+                    NotificationID = Guid.NewGuid().ToString().Trim(),
+                    Source = Station,
+                    Subject = Subject,
+                    ToUserId = d
+                }).ToList());
+                _centralizedUnitOfWork.Save();
+            }
+        }
+
+
         public string GetNotificationContentById(Guid id, bool isLocal)
         {
             if (isLocal)
@@ -38,39 +101,40 @@ namespace Trinity.DAL
             }
         }
 
-        public Response<List<Notification>> GetMyNotifications(string userId)
+        public List<Notification> GetMyNotifications(string userId)
         {
-            IQueryable<DBContext.Notification> queryNotifications = null;
-            //if (EnumAppConfig.IsLocal)
-            //{
-            //    queryNotifications = _localUnitOfWork.DataContext.Notifications.Where(n => n.ToUserId == userId);
-            //}
-            //else
+            if (EnumAppConfig.IsLocal)
             {
-                queryNotifications = _centralizedUnitOfWork.DataContext.Notifications.Where(n => n.ToUserId == userId);
-            }
-            int count = queryNotifications.Count();
-            if (count > 0)
-            {
-                List<Notification> notifications = new List<Notification>();
-                foreach (var item in queryNotifications)
+                bool statusCentralized;
+                List<Notification> arrayNoti = CallCentralized.Get<List<Notification>>("Notification", "GetMyNotifications",out statusCentralized, "userId="+ userId);
+                if(arrayNoti==null || !statusCentralized)
                 {
-                    Notification notification = new Notification()
+                    arrayNoti = _localUnitOfWork.DataContext.Notifications.Where(d => (!string.IsNullOrEmpty(d.FromUserId) && d.FromUserId == userId) || (!string.IsNullOrEmpty(d.ToUserId) && d.ToUserId == userId)).Select(item => new Notification()
                     {
                         Content = item.Content,
                         Date = item.Datetime,
                         FromUserId = item.FromUserId,
                         ID = new Guid(item.NotificationID),
-                        IsRead = item.IsRead.HasValue?item.IsRead.Value:false,
+                        IsRead = item.IsRead.HasValue ? item.IsRead.Value : false,
                         Subject = item.Subject,
                         ToUserId = item.ToUserId
-                    };
-                    notifications.Add(notification);
+                    }).ToList();
                 }
-
-                return new Response<List<Notification>>((int)EnumResponseStatuses.Success,EnumResponseMessage.Success, notifications);
+                return arrayNoti;
             }
-            return new Response<List<Notification>>((int)EnumResponseStatuses.ErrorSystem, EnumResponseMessage.ErrorSystem, null);
+            else
+            {
+                return _centralizedUnitOfWork.DataContext.Notifications.Where(d => (!string.IsNullOrEmpty(d.FromUserId) && d.FromUserId == userId) || (!string.IsNullOrEmpty(d.ToUserId) && d.ToUserId == userId)).Select(item => new Notification()
+                {
+                    Content = item.Content,
+                    Date = item.Datetime,
+                    FromUserId = item.FromUserId,
+                    ID = new Guid(item.NotificationID),
+                    IsRead = item.IsRead.HasValue ? item.IsRead.Value : false,
+                    Subject = item.Subject,
+                    ToUserId = item.ToUserId
+                }).ToList();
+            }
         }
 
         public List<Notification> GetNotificationsByUserId(string userId)
@@ -95,8 +159,8 @@ namespace Trinity.DAL
                     else
                     {
                         bool centralizeStatus;
-                        var centralData = CallCentralized.Get<List<Notification>>(EnumAPIParam.Notification, "GetByUserId", out centralizeStatus,"userId="+userId);
-                        if (centralData!=null)
+                        var centralData = CallCentralized.Get<List<Notification>>(EnumAPIParam.Notification, "GetByUserId", out centralizeStatus, "userId=" + userId);
+                        if (centralData != null)
                         {
                             return centralData;
                         }
@@ -113,7 +177,7 @@ namespace Trinity.DAL
 
                         return notifications;
                     }
-                    
+
                 }
                 return null;
 
@@ -124,7 +188,7 @@ namespace Trinity.DAL
 
                 return null;
             }
-            
+
         }
 
         private static List<Notification> GetListNotifications(IQueryable<DBContext.Notification> queryNotifications)
@@ -155,16 +219,16 @@ namespace Trinity.DAL
             {
                 //queryNotifications = _localUnitOfWork.DataContext.Notifications.Where(n => n.ToUserId == null);
                 queryNotifications = (from n in _localUnitOfWork.DataContext.Notifications
-                    join u in _localUnitOfWork.DataContext.Membership_Users on n.FromUserId equals u.UserId
-                    select new Trinity.BE.Notification()
-                    {
-                        FromUserName = u.Name,
-                        Subject = n.Subject,
-                        Content = n.Content,
-                        Date = n.Datetime,
-                        Type = n.Type,
-                        Source = n.Source
-                    });
+                                      join u in _localUnitOfWork.DataContext.Membership_Users on n.FromUserId equals u.UserId
+                                      select new Trinity.BE.Notification()
+                                      {
+                                          FromUserName = u.Name,
+                                          Subject = n.Subject,
+                                          Content = n.Content,
+                                          Date = n.Datetime,
+                                          Type = n.Type,
+                                          Source = n.Source
+                                      });
             }
             else
             {

@@ -111,7 +111,7 @@ namespace SSA
             };
 
             var dalLabel = new DAL_Labels();
-            dalLabel.UpdateLabel(labelInfo, labelInfo.UserId, EnumLabelType.MUB);
+            dalLabel.UpdateLabel(labelInfo);
 
             // Update queue status is finished
             var dalQueue = new DAL_QueueNumber();
@@ -145,12 +145,12 @@ namespace SSA
             };
 
             var dalLabel = new DAL_Labels();
-            dalLabel.UpdateLabel(labelInfo, labelInfo.UserId, EnumLabelType.MUB);
+            dalLabel.UpdateLabel(labelInfo);
 
             this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').hide(); ; ");
             this._web.RunScript("$('.status-text').css('color','#000').text('Sent problem to Duty Officer. Please wait to check !');");
             MessageBox.Show("Unable to print MUB labels\nPlease report to the Duty Officer", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            APIUtils.SignalR.SendNotificationToDutyOfficer("Print MUB Label", "Don't print MUB, Please check !", NotificationType.Error, EnumStations.SSA);
+            APIUtils.SignalR.SendAllDutyOfficer(e.LabelInfo.UserId, "Print MUB Label", "Don't print MUB, Please check !");
 
             DeleteQRCodeImageFileTemp();
             LogOut();
@@ -174,13 +174,13 @@ namespace SSA
             };
 
             var dalLabel = new DAL_Labels();
-            var update = dalLabel.UpdateLabel(labelInfo, labelInfo.UserId, EnumLabelType.TT);
+            var update = dalLabel.UpdateLabel(labelInfo);
             if (update)
             {
                 var dalAppointment = new DAL_Appointments();
                 var dalQueue = new DAL_QueueNumber();
-                var result= dalAppointment.GetTodayAppointment(labelInfo.UserId);
-                var appointment = result.Data;
+                var appointment = dalAppointment.GetTodayAppointmentByUserId(labelInfo.UserId);
+                //var appointment = result.Data;
 
                 var sskQueue = new DAL_QueueNumber().GetQueueDetailByAppointment(appointment, EnumStations.SSK);
 
@@ -215,12 +215,12 @@ namespace SSA
             };
 
             var dalLabel = new DAL_Labels();
-            dalLabel.UpdateLabel(labelInfo, labelInfo.UserId, EnumLabelType.TT);
+            dalLabel.UpdateLabel(labelInfo);
 
             this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').hide(); ; ");
             this._web.RunScript("$('.status-text').css('color','#000').text('Sent problem to Duty Officer. Please wait to check !');");
             MessageBox.Show("Unable to print TT labels\nPlease report to the Duty Officer", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            APIUtils.SignalR.SendNotificationToDutyOfficer("Print TT Label", "Don't print MUB, Please check !", NotificationType.Error, EnumStations.SSA);
+            APIUtils.SignalR.SendAllDutyOfficer(e.LabelInfo.UserId,"Print TT Label", "Don't print MUB, Please check !");
 
             DeleteQRCodeImageFileTemp();
             LogOut();
@@ -231,7 +231,7 @@ namespace SSA
             this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').hide(); ; ");
             this._web.RunScript("$('.status-text').css('color','#000').text('Sent problem to Duty Officer. Please wait to check !');");
             MessageBox.Show(e.ErrorMessage, "", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            APIUtils.SignalR.SendNotificationToDutyOfficer("MUB & TT", "Don't print MUB & TT, Please check !", NotificationType.Error, EnumStations.SSA);
+            APIUtils.SignalR.SendAllDutyOfficer(null,"MUB & TT", "Don't print MUB & TT, Please check !");
 
             DeleteQRCodeImageFileTemp();
             LogOut();

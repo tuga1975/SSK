@@ -39,43 +39,82 @@ namespace Trinity.DAL
 
         public Setting GetSettingSystemByYear(int year)
         {
-            return _localUnitOfWork.DataContext.Settings.FirstOrDefault(s => s.Year == year);
-        }
-
-        public void UpdateSettingSystem(Setting setting)
-        {
-            try
+            if (EnumAppConfig.IsLocal)
             {
-                Setting dbCentralSetting = _centralizedUnitOfWork.DataContext.Settings.FirstOrDefault(s => s.Year == setting.Year);
-                if (dbCentralSetting == null)
+                var data = _localUnitOfWork.DataContext.Settings.FirstOrDefault(s => s.Year == year);
+
+                if (data != null)
                 {
-                    _centralizedUnitOfWork.GetRepository<Setting>().Add(setting);
+                    return data;
                 }
                 else
                 {
-                    _centralizedUnitOfWork.GetRepository<Setting>().Update(setting);
-                }
-
-                if (_centralizedUnitOfWork.Save() > 0)
-                {
-
-                    Setting dbLocalSetting = _localUnitOfWork.DataContext.Settings.FirstOrDefault(s => s.Year == setting.Year);
-
-                    if (dbLocalSetting == null)
+                    bool centralizeStatus;
+                    var centralData = CallCentralized.Get<DBContext.Setting>(EnumAPIParam.SettingSystem, EnumAPIParam.GetSettingSystemByYear, out centralizeStatus, "year=" + year.ToString());
+                    if (centralizeStatus)
                     {
-                        _localUnitOfWork.GetRepository<Setting>().Add(setting);
+                        return centralData;
+                    }
+                    return null;
+                }
+            }
+            else
+            {
+                var data = _centralizedUnitOfWork.DataContext.Settings.FirstOrDefault(s => s.Year == year);
+                if (data != null)
+                {
+                    return data;
+                }
+                return null;
+            }
+        }
+
+        public Setting UpdateSettingSystem(Setting setting)
+        {
+            try
+            {
+                if (EnumAppConfig.IsLocal)
+                {
+                    bool centralizeStatus;
+                    var centralUpdate = CallCentralized.Post<Setting>(EnumAPIParam.SettingSystem, EnumAPIParam.UpdateSettingSystem, out centralizeStatus, setting);
+                    if (centralizeStatus)
+                    {
+                        Setting dbLocalSetting = _localUnitOfWork.DataContext.Settings.FirstOrDefault(s => s.Year == setting.Year);
+
+                        if (dbLocalSetting == null)
+                        {
+                            _localUnitOfWork.GetRepository<Setting>().Add(setting);
+                        }
+                        else
+                        {
+                            _localUnitOfWork.GetRepository<Setting>().Update(setting);
+                        }
+
+                        _localUnitOfWork.Save();
+
+                        return centralUpdate;
+                    }
+                    return null;
+                }
+                else
+                {
+                    Setting dbCentralSetting = _centralizedUnitOfWork.DataContext.Settings.FirstOrDefault(s => s.Year == setting.Year);
+                    if (dbCentralSetting == null)
+                    {
+                        _centralizedUnitOfWork.GetRepository<Setting>().Add(setting);
                     }
                     else
                     {
-                        _localUnitOfWork.GetRepository<Setting>().Update(setting);
+                        _centralizedUnitOfWork.GetRepository<Setting>().Update(setting);
                     }
+                    _centralizedUnitOfWork.Save();
 
-                    _localUnitOfWork.Save();
+                    return setting;
                 }
             }
             catch(Exception e)
             {
-
+                return null;
             }
         }
     }

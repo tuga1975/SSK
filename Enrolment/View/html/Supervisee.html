@@ -37,11 +37,15 @@
 <script>
     $(document).ready(function () {
         if (api.model != null) {
-
             for (var i = 0; i < api.model.length; i++) {
-				var uId = '"' + api.model[i].User.UserId + '"';
-                $('#listSupervisee').append("<tr> <th scope='row'>" + (i + 1) + "</th><td>" + api.model[i].User.Name + "</td><td>" + api.model[i].User.NRIC + "</td><td>" + api.model[i].UserProfile.DOBAsString + "</td><td><a href='#' onclick='api.server.EditSupervisee(" + uId + ");'>" + api.model[i].User.Status + "</a></td></tr>");
+                //alert(api.model[i].User.Name);
+                var uId = '"' + api.model[i].User.UserId + '"';
+                var dob = api.model[i].UserProfile != null ? api.model[i].UserProfile.DOBAsString : "";
+                var content = "<tr><th scope='row'>" + (i + 1) + "</th><td>" + api.model[i].User.Name + "</td><td>" + api.model[i].User.NRIC + "</td><td>" + dob + "</td><td><a href='javascript:void();' onclick='api.server.EditSupervisee(" + uId + ");'>" + api.model[i].User.Status + "</a></td></tr>";
+                //$('#listSupervisee').append("<tr><th scope='row'>" + (i + 1) + "</th><td>" + api.model[i].User.Name + "</td><td>" + api.model[i].User.NRIC + "</td><td>" + api.model[i].UserProfile != null ? api.model[i].UserProfile.DOBAsString : null + "</td><td><a href='javascript:void();' onclick='api.server.EditSupervisee(" + uId + ");'>" + api.model[i].User.Status + "</a></td></tr>");
+                $('#listSupervisee').append(content);
             }
+            
         }
 
     });

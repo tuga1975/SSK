@@ -102,7 +102,7 @@ namespace Enrolment
             if (attempt > 3)
             {
                 session[CommonConstants.CAPTURE_PHOTO_ATTEMPT] = null;
-                APIUtils.SignalR.SendNotificationToDutyOfficer("Supervisee failed to capture photo!", "Supervisee failed to capture photo!\n Please check the status");
+                APIUtils.SignalR.SendAllDutyOfficer(null,"Supervisee failed to capture photo!", "Supervisee failed to capture photo!\n Please check the status");
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.PHOTO_CAPTURE_FAILED, Message = "Unable to capture photo", Source = "FailToCapture.html" });
             }
             else
@@ -121,7 +121,7 @@ namespace Enrolment
             if (attempt > 3)
             {
                 session[CommonConstants.CAPTURE_FINGERPRINT_ATTEMPT] = null;
-                APIUtils.SignalR.SendNotificationToDutyOfficer("Supervisee failed to capture photo!", "Supervisee failed to capture fingerprint!\n Please check the status");
+                APIUtils.SignalR.SendAllDutyOfficer(null,"Supervisee failed to capture photo!", "Supervisee failed to capture fingerprint!\n Please check the status");
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.PHOTO_CAPTURE_FAILED, Message = "Unable to capture fingerprint", Source = "FailToCapture.html" });
             }
             else
@@ -140,7 +140,7 @@ namespace Enrolment
             if (attempt > 3)
             {
                 session[CommonConstants.PRINT_SMARTCARD_ATTEMPT] = null;
-                APIUtils.SignalR.SendNotificationToDutyOfficer("Supervisee failed to capture photo!", "Supervisee failed to print smart card!\n Please check the status");
+                APIUtils.SignalR.SendAllDutyOfficer(null,"Supervisee failed to capture photo!", "Supervisee failed to print smart card!\n Please check the status");
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.ABLE_TO_PRINT_FAILED, Message = "Unable to print smart card", Source = "FailToCapture.html" });
             }
             else
@@ -206,7 +206,7 @@ namespace Enrolment
             }
             else
             {
-                APIUtils.SignalR.SendNotificationToDutyOfficer("Unable to scan supervisee's NRIC", "Unable to scan supervisee's NRIC! Please check the manually input information!");
+                APIUtils.SignalR.SendAllDutyOfficer(null,"Unable to scan supervisee's NRIC", "Unable to scan supervisee's NRIC! Please check the manually input information!");
                 LoadListSupervisee();
 
             }
@@ -220,7 +220,7 @@ namespace Enrolment
             var dalUser = new DAL_User();
             var dalUserProfile = new DAL_UserProfile();
             var dalUserMembership = new DAL_Membership_Users();
-            var result = CallCentralized.Get<Trinity.BE.User>("User", "GetUserByUserId", "userId=" + userId);
+            var result = dalUser.GetUserById(userId);
             var dbUser = result;
 
 
@@ -241,9 +241,9 @@ namespace Enrolment
                 {
                     User = dbUser,
 
-                    UserProfile = CallCentralized.Get<Trinity.BE.UserProfile>("User", "GetUserProfileByUserId", "userId=" + dbUser.UserId),
-                    Addresses = CallCentralized.Get<Trinity.BE.Address>("User", "GetAddressByUserId", "userId=" + dbUser.UserId, "isOther=" + false),
-                    OtherAddress = CallCentralized.Get<Trinity.BE.Address>("User", "GetAddressByUserId", "userId=" + dbUser.UserId, "isOther=" + true),
+                    UserProfile = new DAL_UserProfile().GetProfileByUserId(dbUser.UserId),
+                    Addresses = new DAL_UserProfile().GetAddByUserId(dbUser.UserId),
+                    OtherAddress = new DAL_UserProfile().GetAddByUserId(dbUser.UserId, true),
                     Membership_Users = dalUserMembership.GetByUserId(userId)
                 };
                 //first load set model to session 
@@ -351,14 +351,14 @@ namespace Enrolment
                 data.User.Status = tempUser.User.Status;
 
 
-                var updateUserResult = CallCentralized.Post<bool>("User", "UpdateUser", data.User);
+                var updateUserResult = dalUser.Update(data.User);
                 // dalUser.UpdateUser(data.User, data.User.UserId, true);
                 var userProfileModel = data.UserProfile;
                 userProfileModel.UserId = data.User.UserId;
-                var updateUProfileResult = CallCentralized.Post<bool>("User", "UpdateUserProfile", userProfileModel);
+                var updateUProfileResult = dalUserprofile.UpdateProfile(userProfileModel);
 
                 ////send notifiy to case officer
-                APIUtils.SignalR.SendNotificationToDutyOfficer("A supervisee has updated profile.", "Please check Supervisee's information!");
+                APIUtils.SignalR.SendAllDutyOfficer(null,"A supervisee has updated profile.", "Please check Supervisee's information!");
 
 
                 //session[CommonConstants.CURRENT_EDIT_USER] = data;

@@ -15,69 +15,75 @@ namespace Trinity.DAL
         Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
 
 
-        public DBContext.Label GetByDateAndUserId(DateTime Date,string UserId)
+        public DBContext.Label GetByDateAndUserId(DateTime Date, string UserId)
         {
-            return _localUnitOfWork.DataContext.Labels.FirstOrDefault(d=> DbFunctions.TruncateTime(d.Date).Value==Date && d.UserId==UserId);
+            return _localUnitOfWork.DataContext.Labels.FirstOrDefault(d => DbFunctions.TruncateTime(d.Date).Value == Date && d.UserId == UserId);
         }
-
-        public Label GetLabelByUserIdAndType(string userId, string labelType)
-        {
-            return _localUnitOfWork.DataContext.Labels.FirstOrDefault(d => d.UserId == userId && d.Label_Type.Equals(labelType));
-        }
-
-        public bool UpdateLabel(BE.Label model, string userId, string labelType)
+        
+        public bool UpdateLabel(BE.Label model)
         {
             try
             {
                 Label dbLabel = null;
-                var centralizeLabelRepo = _centralizedUnitOfWork.GetRepository<Label>();
-                dbLabel = _centralizedUnitOfWork.DataContext.Labels.FirstOrDefault(d => d.UserId == userId && d.Label_Type.Equals(labelType));
-                if (dbLabel == null)
+                if (EnumAppConfig.IsLocal)
                 {
-                    dbLabel = new Label();
-                    dbLabel.Label_ID = Guid.NewGuid();
-                    dbLabel.Label_Type = model.Label_Type;
-                    dbLabel.CompanyName = model.CompanyName;
-                    dbLabel.MarkingNo = model.MarkingNo;
-                    dbLabel.DrugType = model.DrugType;
-                    dbLabel.UserId = model.UserId;
-                    dbLabel.NRIC = model.NRIC;
-                    dbLabel.Name = model.Name;
-                    dbLabel.Date = model.Date.Value;
-                    dbLabel.QRCode = model.QRCode;
-                    dbLabel.LastStation = model.LastStation;
-                    dbLabel.ReprintReason = model.ReprintReason;
-                    dbLabel.PrintCount = 1;
-                    dbLabel.PrintStatus = model.PrintStatus;
-                    dbLabel.Message = model.Message;
+                    bool centralizeStatus;
+                    var centralUpdate = CallCentralized.Post<Label>(EnumAPIParam.Label, EnumAPIParam.UpdateLabel, out centralizeStatus, model);
+                    if (centralizeStatus)
+                    {
+                        var locallabelRepo = _localUnitOfWork.GetRepository<Label>();
+                        dbLabel = _localUnitOfWork.DataContext.Labels.FirstOrDefault(d => d.UserId == model.UserId && d.Label_Type.Equals(model.Label_Type));
+                        if (dbLabel == null)
+                        {
+                            dbLabel = new Label();
+                            dbLabel.Label_ID = Guid.NewGuid();
+                            dbLabel.Label_Type = model.Label_Type;
+                            dbLabel.CompanyName = model.CompanyName;
+                            dbLabel.MarkingNo = model.MarkingNo;
+                            dbLabel.DrugType = model.DrugType;
+                            dbLabel.UserId = model.UserId;
+                            dbLabel.NRIC = model.NRIC;
+                            dbLabel.Name = model.Name;
+                            dbLabel.Date = model.Date.Value;
+                            dbLabel.QRCode = model.QRCode;
+                            dbLabel.LastStation = model.LastStation;
+                            dbLabel.ReprintReason = model.ReprintReason;
+                            dbLabel.PrintCount = 1;
+                            dbLabel.PrintStatus = model.PrintStatus;
+                            dbLabel.Message = model.Message;
 
-                    centralizeLabelRepo.Add(dbLabel);
+                            locallabelRepo.Add(dbLabel);
+                        }
+                        else
+                        {
+                            dbLabel.Label_Type = model.Label_Type;
+                            dbLabel.CompanyName = model.CompanyName;
+                            dbLabel.MarkingNo = model.MarkingNo;
+                            dbLabel.DrugType = model.DrugType;
+                            dbLabel.UserId = model.UserId;
+                            dbLabel.NRIC = model.NRIC;
+                            dbLabel.Name = model.Name;
+                            dbLabel.Date = model.Date.Value;
+                            dbLabel.QRCode = model.QRCode;
+                            dbLabel.LastStation = model.LastStation;
+                            dbLabel.PrintCount += 1;
+                            dbLabel.ReprintReason = model.ReprintReason;
+                            dbLabel.PrintStatus = model.PrintStatus;
+                            dbLabel.Message = model.Message;
+
+                            locallabelRepo.Update(dbLabel);
+                        }
+
+                        _localUnitOfWork.Save();
+
+                        return true;
+                    }
+                    return false;
                 }
                 else
                 {
-                    dbLabel.Label_Type = model.Label_Type;
-                    dbLabel.CompanyName = model.CompanyName;
-                    dbLabel.MarkingNo = model.MarkingNo;
-                    dbLabel.DrugType = model.DrugType;
-                    dbLabel.UserId = model.UserId;
-                    dbLabel.NRIC = model.NRIC;
-                    dbLabel.Name = model.Name;
-                    dbLabel.Date = model.Date.Value;
-                    dbLabel.QRCode = model.QRCode;
-                    dbLabel.LastStation = model.LastStation;
-                    dbLabel.PrintCount += 1;
-                    dbLabel.ReprintReason = model.ReprintReason;
-                    dbLabel.PrintStatus = model.PrintStatus;
-                    dbLabel.Message = model.Message;
-
-                    centralizeLabelRepo.Update(dbLabel);
-                }
-
-                if (_centralizedUnitOfWork.Save() > 0)
-                {
-
-                    var locallabelRepo = _localUnitOfWork.GetRepository<Label>();
-                    dbLabel = GetLabelByUserIdAndType(userId, labelType);
+                    var centralizeLabelRepo = _centralizedUnitOfWork.GetRepository<Label>();
+                    dbLabel = _centralizedUnitOfWork.DataContext.Labels.FirstOrDefault(d => d.UserId == model.UserId && d.Label_Type.Equals(model.Label_Type));
                     if (dbLabel == null)
                     {
                         dbLabel = new Label();
@@ -97,7 +103,7 @@ namespace Trinity.DAL
                         dbLabel.PrintStatus = model.PrintStatus;
                         dbLabel.Message = model.Message;
 
-                        locallabelRepo.Add(dbLabel);
+                        centralizeLabelRepo.Add(dbLabel);
                     }
                     else
                     {
@@ -116,14 +122,13 @@ namespace Trinity.DAL
                         dbLabel.PrintStatus = model.PrintStatus;
                         dbLabel.Message = model.Message;
 
-                        locallabelRepo.Update(dbLabel);
+                        centralizeLabelRepo.Update(dbLabel);
                     }
-
-                    _localUnitOfWork.Save();
+                    _centralizedUnitOfWork.Save();
                 }
                 return true;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return false;
             }
@@ -134,14 +139,14 @@ namespace Trinity.DAL
             try
             {
                 var lstModels = _localUnitOfWork.DataContext.Labels.Include("Membership_Users")
-                    .Where(l=>l.Label_Type.Equals(EnumLabelType.MUB) || l.Label_Type.Equals(EnumLabelType.TT))
+                    .Where(l => l.Label_Type.Equals(EnumLabelType.MUB) || l.Label_Type.Equals(EnumLabelType.TT))
                     .Select(d => new BE.Label()
-                {
-                    NRIC = d.Membership_Users.NRIC,
-                    Name = d.Membership_Users.Name,
-                    LastStation = d.LastStation,
-                    UserId = d.UserId
-                });
+                    {
+                        NRIC = d.Membership_Users.NRIC,
+                        Name = d.Membership_Users.Name,
+                        LastStation = d.LastStation,
+                        UserId = d.UserId
+                    });
                 //var lstModels = from a in _localUnitOfWork.DataContext.Labels
                 //                join u in _localUnitOfWork.DataContext.Membership_Users on a.UserId equals u.UserId
                 //                select new BE.Label()

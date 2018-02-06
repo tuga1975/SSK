@@ -11,7 +11,14 @@ namespace Trinity.Utils.Notification
     {
         protected IHubProxy HubProxy { get; set; }
         protected HubConnection Connection { get; set; }
-        protected bool IsConnected = false;
+        protected bool IsConnected {
+            get
+            {
+                if (Connection == null || (Connection != null && string.IsNullOrEmpty(Connection.ConnectionId)))
+                    return false;
+                return true;
+            }
+        }
         protected void StartConnect()
         {
             ConnectAsync(System.Reflection.Assembly.GetEntryAssembly().GetName().Name);
@@ -29,28 +36,15 @@ namespace Trinity.Utils.Notification
             try
             {
                 await Connection.Start();
-                if (Connection.ConnectionId != null)
-                {
-                    IsConnected = true;
-                }
             }
             catch
             {
-                IsConnected = false;
             }
         }
         private void _Connection_Closed()
         {
-            IsConnected = false;
             Connection_Closed();
-            if (Connection != null)
-            {
-                Connection.Start();
-                if (Connection.ConnectionId != null)
-                {
-                    IsConnected = true;
-                }
-            }
+            Connection.Start();
         }
         private void _IncomingEvents()
         {
@@ -77,6 +71,16 @@ namespace Trinity.Utils.Notification
         {
             if (IsConnected)
                 HubProxy.Invoke("DeviceStatusUpdate", deviceId, deviceStatuses);
+        }
+        public void SendToDutyOfficer(string UserId, string DutyOfficerID, string Subject, string Content)
+        {
+            if (IsConnected)
+                HubProxy.Invoke("SendToDutyOfficer", UserId, DutyOfficerID, Subject, Content);
+        }
+        public void SendAllDutyOfficer(string UserId, string Subject, string Content)
+        {
+            if (IsConnected)
+                HubProxy.Invoke("SendAllDutyOfficer", UserId, Subject, Content);
         }
         public void Dispose()
         {

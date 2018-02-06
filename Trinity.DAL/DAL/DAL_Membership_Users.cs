@@ -28,7 +28,37 @@ namespace Trinity.DAL
         }
         public Trinity.BE.Membership_Users GetByUserId(string UserId)
         {
-            return this._localUnitOfWork.DataContext.Membership_Users.FirstOrDefault(d => d.UserId == UserId).Map<Trinity.BE.Membership_Users>();
+            try
+            {
+                if (EnumAppConfig.IsLocal)
+                {
+
+                    var data = _localUnitOfWork.DataContext.Membership_Users.FirstOrDefault(d => d.UserId == UserId).Map<Trinity.BE.Membership_Users>();
+                    if (data != null)
+                    {
+                        return data;
+                    }
+                    else
+                    {
+                        bool centralizeStatus;
+                        var centralData = CallCentralized.Get<BE.Membership_Users>(EnumAPIParam.User, "GetMembershipByUserId", out centralizeStatus, "userId" + UserId);
+                        if (centralizeStatus)
+                        {
+                            return centralData;
+                        }
+                    }
+                }
+                else
+                {
+                    return _centralizedUnitOfWork.DataContext.Membership_Users.FirstOrDefault(d => d.UserId == UserId).Map<Trinity.BE.Membership_Users>();
+                }
+                return null;
+            }
+            catch (Exception)
+            {
+
+                return null;
+            }
         }
         public void UpdateSmartCardId(string UserId, string SmartCardId)
         {
