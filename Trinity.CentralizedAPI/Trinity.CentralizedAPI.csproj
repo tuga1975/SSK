@@ -183,9 +183,11 @@
     <Compile Include="Controllers\AbsenceReportController.cs" />
     <Compile Include="Controllers\AppointmentController.cs" />
     <Compile Include="Controllers\DeviceStatusController.cs" />
+    <Compile Include="Controllers\LabelController.cs" />
     <Compile Include="Controllers\NotificationController.cs" />
     <Compile Include="Controllers\QueueNumberController.cs" />
     <Compile Include="Controllers\SettingsController.cs" />
+    <Compile Include="Controllers\SettingSystemController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

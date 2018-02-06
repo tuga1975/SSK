@@ -109,12 +109,6 @@
     <Compile Include="CodeBehind\Authentication\NRIC.cs" />
     <Compile Include="CodeBehind\PrintMUBAndTTLabels.cs" />
     <Compile Include="CodeBehind\SupperviseeParticulars.cs" />
-    <Compile Include="FormQueueNumber.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FormQueueNumber.Designer.cs">
-      <DependentUpon>FormQueueNumber.cs</DependentUpon>
-    </Compile>
     <Compile Include="JSCallCS.cs" />
     <Compile Include="Main.cs">
       <SubType>Form</SubType>
@@ -128,9 +122,6 @@
     <Compile Include="Utils\Printer.cs" />
     <Compile Include="Utils\SignalR.cs" />
     <Compile Include="Utils\TextToSpeech.cs" />
-    <EmbeddedResource Include="FormQueueNumber.resx">
-      <DependentUpon>FormQueueNumber.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
     </EmbeddedResource>
