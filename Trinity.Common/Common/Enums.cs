@@ -367,8 +367,8 @@ public static class EnumStations
     public const string HSA = "HSA";
     public const string ESP = "ESP";
 
-    public const string ENROLMENT = "Enrolment";
-    public const string DUTYOFFICER = "DutyOfficer";
+    public const string ENROLMENT = "ENROLMENT";
+    public const string DUTYOFFICER = "DOFFICER";
 
     public static List<string> GetListStation()
     {
@@ -450,6 +450,10 @@ public static class EnumAPIParam
 {
     //controller
     public const string Appointment = "Appointment";
+    public const string Notification = "Notification";
+    public const string User = "User";
+    public const string Setting = "Setting";
+    public const string QueueNumber = "QueueNumber";
 
     //action
     public const string GetByToday = "GetByToday";

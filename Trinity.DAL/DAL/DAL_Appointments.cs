@@ -900,7 +900,7 @@ namespace Trinity.DAL
                 if (EnumAppConfig.IsLocal)
                 {
                     bool centralizeStatus;
-                    var centralData = CallCentralized.Get<bool>(EnumAPIParam.Appointment, EnumAPIParam.CreateForAllUsers, out centralizeStatus);
+                    var centralData = CallCentralized.Post<bool>(EnumAPIParam.Appointment, EnumAPIParam.CreateForAllUsers, out centralizeStatus);
                     if (centralizeStatus)
                     {
                         _localUnitOfWork.GetRepository<Appointment>().Delete(t => t.Date.Year == date.Year && t.Date.Month == date.Month && t.Date.Day == date.Day);
@@ -994,7 +994,7 @@ namespace Trinity.DAL
                 if (EnumAppConfig.IsLocal)
                 {
                     bool centralizeStatus;
-                    var centralData = CallCentralized.Get<Appointment>(EnumAPIParam.Appointment, EnumAPIParam.UpdateTimeslot, out centralizeStatus);
+                    var centralData = CallCentralized.Post<Appointment>(EnumAPIParam.Appointment, EnumAPIParam.UpdateTimeslot, out centralizeStatus);
                     if (centralizeStatus)
                     {
                         _localUnitOfWork.GetRepository<Appointment>().Update(appointment);

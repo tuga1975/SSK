@@ -53,7 +53,7 @@ namespace SSK
 
             DAL_Notification dalNotification = new DAL_Notification();
 
-            List<Trinity.BE.Notification> myNotifications = CallCentralized.Get<List<Trinity.BE.Notification>>("Notification","GetMyNotifications","userId="+user.UserId);
+            List<Trinity.BE.Notification> myNotifications = CallCentralized.Get<List<Trinity.BE.Notification>>("Notification", "GetByUserId", "userId="+user.UserId);
 
             var model = myNotifications;
             _web.LoadPageHtml("Notifications.html", myNotifications);

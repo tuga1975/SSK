@@ -67,7 +67,87 @@ namespace Trinity.DAL
                 };
                 return new Response<UserProfile>((int)EnumResponseStatuses.Success, EnumResponseMessage.Success, userProfile);
             }
-            return new Response<UserProfile>((int)EnumResponseStatuses.ErrorSystem,EnumResponseMessage.ErrorSystem,null);
+            return new Response<UserProfile>((int)EnumResponseStatuses.ErrorSystem, EnumResponseMessage.ErrorSystem, null);
+        }
+
+        public UserProfile GetProfileByUserId(string userId)
+        {
+            try
+            {
+                User_Profiles dbUserProfile = null;
+                if (EnumAppConfig.IsLocal)
+                {
+                    var data = _localUnitOfWork.DataContext.User_Profiles.FirstOrDefault(u => u.UserId == userId);
+                    if (data != null)
+                    {
+                        dbUserProfile = data;
+                    }
+                    else
+                    {
+                        bool centralizeStatus;
+                        var centralData = CallCentralized.Get<UserProfile>(EnumAPIParam.User, "GetUserProfileByUserId", out centralizeStatus, "userId=" + userId);
+                        if (centralizeStatus)
+                        {
+                            return centralData;
+                        }
+                    }
+                }
+                else
+                {
+                    var data = _centralizedUnitOfWork.DataContext.User_Profiles.FirstOrDefault(u => u.UserId == userId);
+                    if (data != null)
+                    {
+                        dbUserProfile = data;
+                    }
+                }
+
+                if (dbUserProfile != null)
+                {
+                    var userProfile = new BE.UserProfile
+                    {
+                        DOB = dbUserProfile.DOB,
+                        Employment_Company_Name = dbUserProfile.Employment_Company_Name,
+                        Employment_Contact_Number = dbUserProfile.Employment_Contact_Number,
+                        Employment_End_Date = dbUserProfile.Employment_End_Date,
+                        Employment_Job_Title = dbUserProfile.Employment_Job_Title,
+                        Employment_Name = dbUserProfile.Employment_Name,
+                        Employment_Remarks = dbUserProfile.Employment_Remarks,
+                        Employment_Start_Date = dbUserProfile.Employment_Start_Date,
+                        Maritial_Status = dbUserProfile.Maritial_Status,
+                        Nationality = dbUserProfile.Nationality,
+                        NextOfKin_BlkHouse_Number = dbUserProfile.NextOfKin_BlkHouse_Number,
+                        NextOfKin_Contact_Number = dbUserProfile.NextOfKin_Contact_Number,
+                        NextOfKin_Country = dbUserProfile.NextOfKin_Country,
+                        NextOfKin_FlrUnit_Number = dbUserProfile.NextOfKin_FlrUnit_Number,
+                        NextOfKin_Name = dbUserProfile.NextOfKin_Name,
+                        NextOfKin_PostalCode = dbUserProfile.NextOfKin_PostalCode,
+                        NextOfKin_Relationship = dbUserProfile.NextOfKin_Relationship,
+                        NextOfKin_Street_Name = dbUserProfile.NextOfKin_Street_Name,
+                        Other_Address_ID = dbUserProfile.Other_Address_ID,
+                        Primary_Email = dbUserProfile.Primary_Email,
+                        Primary_Phone = dbUserProfile.Primary_Phone,
+                        Residential_Addess_ID = dbUserProfile.Residential_Addess_ID,
+                        Secondary_Email = dbUserProfile.Secondary_Email,
+                        Secondary_Phone = dbUserProfile.Secondary_Phone,
+                        UserId = dbUserProfile.UserId,
+                        User_Photo1 = dbUserProfile.User_Photo1,
+                        User_Photo2 = dbUserProfile.User_Photo2,
+                        DateOfIssue = dbUserProfile.Date_of_Issue,
+                        Gender = dbUserProfile.Gender,
+                        Race = dbUserProfile.Race,
+                        SerialNumber = dbUserProfile.Serial_Number,
+                        LeftThumbImage = dbUserProfile.LeftThumb_Photo,
+                        RightThumbImage = dbUserProfile.RightThumb_Photo,
+                        Expired_Date = dbUserProfile.Expired_Date,
+                    };
+                    return userProfile;
+                }
+                return null;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
         public Response<bool> UpdateUserProfile(BE.UserProfile model)
@@ -77,9 +157,9 @@ namespace Trinity.DAL
                 User_Profiles dbUserProfile = null;
                 if (EnumAppConfig.IsLocal)
                 {
-                    dbUserProfile = UpdateLocal(model, model.UserId );
+                    dbUserProfile = UpdateLocal(model, model.UserId);
                     dbUserProfile = UpdateCentral(model, model.UserId);
-                    return new Response<bool>((int)EnumResponseStatuses.Success,EnumResponseMessage.Success,true);
+                    return new Response<bool>((int)EnumResponseStatuses.Success, EnumResponseMessage.Success, true);
                 }
                 else
                 {
@@ -93,9 +173,31 @@ namespace Trinity.DAL
             }
         }
 
+        public bool UpdateProfile(BE.UserProfile model)
+        {
+            try
+            {
+                User_Profiles dbUserProfile = null;
+                if (EnumAppConfig.IsLocal)
+                {
+                    dbUserProfile = UpdateLocal(model, model.UserId);
+                    dbUserProfile = UpdateCentral(model, model.UserId);
+                    return true;
+                }
+                else
+                {
+                    dbUserProfile = UpdateCentral(model, model.UserId);
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
         private User_Profiles UpdateCentral(UserProfile model, string userId)
         {
-            User_Profiles dbUserProfile = new User_Profiles() ;
+            User_Profiles dbUserProfile = new User_Profiles();
             try
             {
                 var centralUserProfileRepo = _centralizedUnitOfWork.GetRepository<User_Profiles>();
@@ -176,7 +278,7 @@ namespace Trinity.DAL
             dbUserProfile.Serial_Number = model.SerialNumber;
 
             var dalUser = new Trinity.DAL.DAL_User();
-            var result= dalUser.GetUserByUserId(model.UserId);
+            var result = dalUser.GetUserByUserId(model.UserId);
             var user = result.Data;
             var userInfo = new Trinity.Common.UserInfo
             {
@@ -186,7 +288,7 @@ namespace Trinity.DAL
             };
 
         }
-        public Response<BE.Address> GetAddressByUserId(string userId, bool isOther=false)
+        public Response<BE.Address> GetAddressByUserId(string userId, bool isOther = false)
         {
             User_Profiles dbUserProfile = null;
             DBContext.Address dbAddress = null;
@@ -236,7 +338,82 @@ namespace Trinity.DAL
                 }
             }
 
-            return new Response<BE.Address>((int)EnumResponseStatuses.ErrorSystem,EnumResponseMessage.ErrorSystem, null);
+            return new Response<BE.Address>((int)EnumResponseStatuses.ErrorSystem, EnumResponseMessage.ErrorSystem, null);
+        }
+
+        public BE.Address GetAddByUserId(string userId, bool isOther = false)
+        {
+            try
+            {
+                User_Profiles dbUserProfile = null;
+                DBContext.Address dbAddress = null;
+                if (EnumAppConfig.IsLocal)
+                {
+                    var data = _localUnitOfWork.DataContext.User_Profiles.FirstOrDefault(u => u.UserId == userId);
+                    if (data != null)
+                    {
+                        dbUserProfile = data;
+                        var addressId = dbUserProfile.Residential_Addess_ID;
+                        if (isOther)
+                        {
+                            addressId = dbUserProfile.Other_Address_ID;
+                        }
+                        var addressData = _localUnitOfWork.DataContext.Addresses.FirstOrDefault(a => a.Address_ID == addressId);
+                        if (addressData != null)
+                        {
+                            dbAddress = addressData;
+                        }
+                    }
+                    else
+                    {
+                        bool centralizeStatus;
+                        var centralData = CallCentralized.Get<BE.Address>(EnumAPIParam.User, "GetAddressByUserId", out centralizeStatus, "userId=" + userId);
+                        if (centralizeStatus)
+                        {
+                            return centralData;
+                        }
+                    }
+
+                }
+                else
+                {
+                    dbUserProfile = _centralizedUnitOfWork.DataContext.User_Profiles.FirstOrDefault(u => u.UserId == userId);
+                    if (dbUserProfile != null)
+                    {
+                        var addressId = dbUserProfile.Residential_Addess_ID;
+                        if (isOther)
+                        {
+                            addressId = dbUserProfile.Other_Address_ID;
+                        }
+                        dbAddress = _centralizedUnitOfWork.DataContext.Addresses.FirstOrDefault(a => a.Address_ID == addressId);
+                    }
+                }
+
+                if (dbUserProfile != null)
+                {
+
+                    if (dbAddress != null)
+                    {
+                        var address = new BE.Address
+                        {
+                            Address_ID = dbAddress.Address_ID,
+                            BlkHouse_Number = dbAddress.BlkHouse_Number,
+                            Country = dbAddress.Country,
+                            FlrUnit_Number = dbAddress.FlrUnit_Number,
+                            Postal_Code = dbAddress.Postal_Code,
+                            Street_Name = dbAddress.Street_Name
+                        };
+                        return address;
+                    }
+                }
+
+                return null;
+            }
+            catch (Exception)
+            {
+
+                return null;
+            }
         }
 
         public void UpdateFingerprintImg(string userId, byte[] left, byte[] right)
@@ -252,9 +429,9 @@ namespace Trinity.DAL
                 this._localUnitOfWork.Save();
             }
         }
-        public void UpdateCardInfo(string UserId,string CardNumber, DateTime Date_of_Issue,DateTime Expired_Date)
+        public void UpdateCardInfo(string UserId, string CardNumber, DateTime Date_of_Issue, DateTime Expired_Date)
         {
-            DBContext.User_Profiles user = _localUnitOfWork.DataContext.User_Profiles.FirstOrDefault(d=>d.UserId==UserId);
+            DBContext.User_Profiles user = _localUnitOfWork.DataContext.User_Profiles.FirstOrDefault(d => d.UserId == UserId);
             user.Serial_Number = CardNumber;
             user.Date_of_Issue = Date_of_Issue;
             user.Expired_Date = Expired_Date;

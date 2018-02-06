@@ -41,7 +41,7 @@ namespace Enrolment
             EventCenter eventCenter = EventCenter.Default;
 
             //var dbUsers = CallCentralized.Get<List<Trinity.BE.User>>("User", "GetAllSupervisees");
-            var dbUsers = new DAL_User().GetAllSupervisees().Data;
+            var dbUsers = new DAL_User().GetListAllSupervisees();
             var listSupervisee = new List<Trinity.BE.ProfileModel>();
             if (dbUsers != null)
             {
@@ -51,7 +51,7 @@ namespace Enrolment
                     {
                         User = item,
                         //UserProfile = CallCentralized.Get<Trinity.BE.UserProfile>("User", "GetUserProfileByUserId", "userId=" + item.UserId),
-                        UserProfile = new DAL_UserProfile().GetUserProfileByUserId(item.UserId).Data,
+                        UserProfile = new DAL_UserProfile().GetProfileByUserId(item.UserId),
                         Addresses = null
                     };
                     listSupervisee.Add(model);
@@ -79,7 +79,7 @@ namespace Enrolment
                 var model = new Trinity.BE.ProfileModel()
                 {
                     User = dbUser,
-                    UserProfile = dalUserProfile.GetUserProfileByUserId(dbUser.UserId).Data,
+                    UserProfile = dalUserProfile.GetProfileByUserId(dbUser.UserId),
                     Addresses = null
                 };
                 session[CommonConstants.SUPERVISEE] = dbUser;
@@ -602,7 +602,7 @@ namespace Enrolment
             ApplicationUser appUser = userManager.Find(username, password);
             if (appUser != null)
             {
-                var userInfo = dalUser.GetUserByUserId(appUser.Id).Data;
+                var userInfo = dalUser.GetUserById(appUser.Id);
                 if (userInfo.AccessFailedCount >= 3)
                 {
                     eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.LOGIN_FAILED, Message = "You have exceeded the maximum amount of tries to Login. Please goto APS and select \"Forgot Password\" to reset your password." });

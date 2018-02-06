@@ -17,7 +17,7 @@ namespace Trinity.CentralizedAPI.Controllers
         public IHttpActionResult SetReasonInfo(Trinity.BE.Reason model)
         {
             var result = new DAL.DAL_AbsenceReporting().SetInfo(model);
-            return Ok(result.Data);
+            return Ok(result);
         }
     }
 }

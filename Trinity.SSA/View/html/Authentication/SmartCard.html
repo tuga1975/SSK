@@ -1,31 +1,15 @@
-﻿<video autoplay="autoplay" loop="loop">
-    <source src="Authentication/mov_bbb.mp4" type="video/mp4">
-</video>
-<div class="status-text">
+﻿<div class="status-text">
 
 </div>
 
-<div style="display:block;float:right;">
-    <a style="position:fixed;bottom:10px;right:10px; float:right;" href="javascript:;" onclick="window.external.LoadPage('Authentication/ManualLogin.html');">
-        <img src="Authentication/key.png" alt="Manually Enter Officer NRIC and Password" width="80" height="30">
+<div class="scanSmartCart contentWrapper">
+    <img src="../img/ScanSmartCard.png" />
+</div>
+
+
+<div style="display:block;float:right;" class="manualLogin">
+    <a href="javascript:;" onclick="window.external.LoadPage('Authentication/ManualLogin.html');">
+        <!--<img src="Authentication/key.png" alt="Manually Enter Officer NRIC and Password" width="80" height="30">-->
+        <img src="../img/ManualLogin.png" /> D.O.
     </a>
 </div>
-
-<style type="text/css">
-    video {
-        position: fixed;
-        width: calc(100% - 20px);
-        height: calc(100% - 190px);
-        left: 10px;
-        top: 80px;
-    }
-
-    .status-text {
-        position: fixed;
-        width: calc(100% - 20px);
-        bottom: 60px;
-        border: 1px solid #CCC;
-        padding: 5px 10px;
-        text-align: center;
-    }
-</style>
