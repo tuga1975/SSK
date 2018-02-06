@@ -1,47 +1,39 @@
-﻿<style type="text/css">
-    [particulars] {
-        border-top: none;
-        padding: 5px;
-        width: 650px;
-    }
-
-    button {
-        z-index: 100;
-    }
-</style>
-
-<form id="particularsFrm">
+﻿<form id="particularsFrm">
     <div class="container" particulars>
-        <span style="display: inline-block;font-size:16px;border:1px solid #CCC;background-color:#FFF;padding:5px; margin-bottom:25px">Information to be printed</span>
+        <!--<span style="display: inline-block;font-size:16px;border:1px solid #CCC;background-color:#FFF;padding:5px; margin-bottom:25px">Information to be printed</span>-->
+        <div class="titles"><span>Information to be printed</span></div>
         <br />
-        <div class="input-group">
-            <span class="input-group-addon">Name:</span>
-            <input id="UserName" type="text" class="form-control pri" name="UserName" readonly="readonly" />
+        <div class="contentWrapper">
+            <div class="input-group">
+                <span class="input-group-addon">Name</span>
+                <input id="UserName" type="text" class="form-control pri" name="UserName" readonly="readonly" />
+            </div>
+            <br />
+            <div class="input-group">
+                <span class="input-group-addon">NRIC No.</span>
+                <input id="NRIC" type="text" class="form-control pri" name="NRIC" readonly="readonly" />
+            </div>
+            <br />
+            <div class="input-group">
+                <span class="input-group-addon">Date</span>
+                <input id="Date" type="text" class="form-control pri" name="Date" readonly="readonly" />
+            </div>
+            <br />
         </div>
-        <br />
-        <div class="input-group">
-            <span class="input-group-addon">NRIC No.:</span>
-            <input id="NRIC" type="text" class="form-control pri" name="NRIC" readonly="readonly" />
-        </div>
-        <br />
-        <div class="input-group">
-            <span class="input-group-addon">Date:</span>
-            <input id="Date" type="text" class="form-control pri" name="Date" readonly="readonly" />
-        </div>
-        <br />
-        <div class="input-group">
-            <span class="input-group-addon">QR Code:</span>
-            <img id="imgQRCode" width="120" height="120" style="margin-left:12px;">
-        </div>
-        <br />
-        <div class="input-group">
-            <span class="input-group-addon">Marking Number:</span>
-            <input id="MarkingNumber" type="text" class="form-control pri" name="MarkingNumber" readonly="readonly" />
-        </div>
+        <!--<div class="input-group">
+        <span class="input-group-addon">QR Code:</span>
+        <img id="imgQRCode" width="120" height="120" style="margin-left:12px;">
+    </div>
+    <br />
+    <div class="input-group">
+        <span class="input-group-addon">Marking Number:</span>
+        <input id="MarkingNumber" type="text" class="form-control pri" name="MarkingNumber" readonly="readonly" />
+    </div>-->
 
         <div style="display:block;float:right; margin-top:20px;" id="divSave">
-            <button type="button" class="btn btn-primary" id="ConfirmBtn">Confirm</button>
-            <button type="button" class="btn btn-dark" style="margin-left:10px;" id="CancelBtn">Cancel</button>
+            <button type="button" class="btn btn-dark" id="CancelBtn">CANCEL</button>
+            <button type="button" class="btn btn-primary" id="ConfirmBtn">CONFIRM</button>
+
         </div>
     </div>
 </form>

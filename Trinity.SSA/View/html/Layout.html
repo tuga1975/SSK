@@ -16,20 +16,26 @@
     <script src="../html2canvas/jquery.plugin.html2canvas.js"></script>
 </head>
 <body>
-    <div id="header">
-        <div class="logo" title="logo"></div>
-        <div class="logout glyphicon glyphicon-log-out" title="Logout" onclick="confirm('Are you sure you want to logout?') == true ? api.server.LogOut() : null" id="btn-logout"></div>
-    </div>
-    <div id="parent-content">
-        <div id="content">
-
+    <div class="bodyContent">
+        <div id="header">
+            <div class="logo" title="logo">
+                <img src="../img/logoCNB.png" />
+            </div>
+            <div class="logout" title="Logout" onclick="confirm('Are you sure you want to logout?') == true ? api.server.LogOut() : null" id="btn-logout">
+                <img src="../img/Logout.png" /> Exit
+            </div>
         </div>
-    </div>
+        <div id="parent-content">
+            <div id="content">
 
-    <div class="loading">
-        <span class="loader"></span>
-    </div>
-    <div id="panel-popup">
+            </div>
+        </div>
+
+        <div class="loading">
+            <span class="loader"></span>
+        </div>
+        <div id="panel-popup">
+        </div>
     </div>
 </body>
 </html>
