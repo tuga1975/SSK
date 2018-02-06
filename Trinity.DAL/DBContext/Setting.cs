@@ -19,5 +19,7 @@ namespace Trinity.DAL.DBContext
         public string VenueName { get; set; }
         public Nullable<int> MaxCardNumber { get; set; }
         public Nullable<int> MaxMarkingNo { get; set; }
+        public string Address { get; set; }
+        public string ContactNumber { get; set; }
     }
 }

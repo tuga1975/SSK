@@ -14,6 +14,16 @@ namespace Trinity.DAL
         Local_UnitOfWork _localUnitOfWork = new Local_UnitOfWork();
         Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
 
+
+        public void SendToDutyOfficer(string UserId,string DutyOfficerID,string Subject,string Content)
+        {
+            if (EnumAppConfig.IsLocal)
+            {
+                
+            }
+        }
+
+
         public string GetNotificationContentById(Guid id, bool isLocal)
         {
             if (isLocal)

@@ -25,8 +25,5 @@ namespace Trinity.DAL.DBContext
         public string Source { get; set; }
         public string Type { get; set; }
         public string notification_code { get; set; }
-    
-        public virtual Membership_Users Membership_Users { get; set; }
-        public virtual Membership_Users Membership_Users1 { get; set; }
     }
 }
