@@ -7,37 +7,18 @@ using Trinity.DAL;
 
 namespace SSK.Utils
 {
-    class SignalR
+    class SignalR : Trinity.Utils.Notification.SignalRBase
     {
-        private IHubProxy HubProxy { get; set; }
-        const string ServerURI = "http://localhost:8080/signalr";
-        private HubConnection Connection { get; set; }
-
         public SignalR()
         {
-            ConnectAsync();
+            StartConnect();
         }
-        private async void ConnectAsync()
+        public override void IncomingEvents()
         {
-            Connection = new HubConnection(ServerURI);
-            Connection.Closed += Connection_Closed;
-            HubProxy = Connection.CreateHubProxy("MyHub");
-            //Handle incoming event from server: use Invoke to write to console from SignalR's thread
-            HubProxy.On("OnNewNotification", () => GetLatestNotifications());
 
-            try
-            {
-                await Connection.Start();
-            }
-            catch
-            {
-                //No connection: Don't enable Send button or show chat UI
-                return;
-            }
         }
-        private void Connection_Closed()
+        public override void Connection_Closed()
         {
-            Connection.Start();
 
         }
 
@@ -97,7 +78,7 @@ namespace SSK.Utils
             User user = (User)currentSession[CommonConstants.USER_LOGIN];
             if (user != null)
             {
-                List<Notification> myNotifications = dalNotification.GetMyNotifications(user.UserId).Data;
+                List<Notification> myNotifications = dalNotification.GetNotificationsByUserId(user.UserId);
                 if (myNotifications != null)
                 {
                     var unReadCount = myNotifications.Count;

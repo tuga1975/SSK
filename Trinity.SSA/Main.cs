@@ -182,6 +182,8 @@ namespace SSA
         private void NRIC_OnNRICSucceeded()
         {
             // navigate to Supervisee page
+            APIUtils.SignalR.UserLogined(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId);
+
             NavigateTo(NavigatorEnums.Supervisee_NRIC);
         }
 
@@ -256,6 +258,7 @@ namespace SSA
                 session[CommonConstants.SUPERVISEE] = user;
                 session[CommonConstants.USER_LOGIN] = null;
                 // navigate to SuperviseeParticulars page
+                APIUtils.SignalR.UserLogined(user.UserId);
                 NavigateTo(NavigatorEnums.Supervisee_Particulars);
             }
         }
@@ -345,6 +348,7 @@ namespace SSA
                 session[CommonConstants.SUPERVISEE] = user;
                 session[CommonConstants.USER_LOGIN] = null;
                 // navigate to SuperviseeParticulars page
+                APIUtils.SignalR.UserLogined(user.UserId);
                 NavigateTo(NavigatorEnums.Supervisee_Particulars);
             }
         }
@@ -386,6 +390,7 @@ namespace SSA
         {
             if (e.Name == EventNames.LOGIN_SUCCEEDED)
             {
+
                 NavigateTo(NavigatorEnums.Authentication_NRIC);
             }
             else if (e.Name.Equals(EventNames.LOGIN_FAILED))

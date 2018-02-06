@@ -14,9 +14,9 @@ namespace Trinity.CentralizedAPI.Controllers
 
         [HttpGet]
         [Route("api/Settings/GetCardInfo")]
-        public BE.CardInfo GetCardInfo()
+        public IHttpActionResult GetCardInfo()
         {
-            return new DAL.DAL_GetCardInfo().GetCardInfo();
+            return Ok( new DAL.DAL_GetCardInfo().GetCardInfo());
         }
 
         /// <summary>
@@ -32,10 +32,10 @@ namespace Trinity.CentralizedAPI.Controllers
             var responseModel = new Common.ResponseModel();
             var _date = Convert.ToDateTime(date);
             
-            var result = new DAL.DAL_Setting().GetAppointmentTime(_date);
-            responseModel.ResponseCode = result.ResponseCode;
-            responseModel.ResponseMessage = result.ResponseMessage;
-            responseModel.Data = result.Data;
+            var result = new DAL.DAL_Setting().GetApptmtTime(_date);
+            //responseModel.ResponseCode = result.ResponseCode;
+            //responseModel.ResponseMessage = result.ResponseMessage;
+            //responseModel.Data = result.Data;
             return Ok(responseModel);
         }
 
@@ -50,10 +50,10 @@ namespace Trinity.CentralizedAPI.Controllers
         {
             var responseModel = new Common.ResponseModel();
            
-            var result = new DAL.DAL_Setting().GetCurrentAppointmentTime();
-            responseModel.ResponseCode = result.ResponseCode;
-            responseModel.ResponseMessage = result.ResponseMessage;
-            responseModel.Data = result.Data;
+            var result = new DAL.DAL_Setting().GetCurrentApptmtTime();
+            //responseModel.ResponseCode = result.ResponseCode;
+            //responseModel.ResponseMessage = result.ResponseMessage;
+            //responseModel.Data = result.Data;
             return Ok(responseModel);
         }
 

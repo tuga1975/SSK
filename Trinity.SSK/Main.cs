@@ -207,6 +207,7 @@ namespace SSK
         private void NRIC_OnNRICSucceeded()
         {
             // navigate to Supervisee page
+            APIUtils.SignalR.UserLogined(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId);
             NavigateTo(NavigatorEnums.Supervisee);
         }
 
@@ -284,6 +285,7 @@ namespace SSK
             }
             else
             {
+                APIUtils.SignalR.UserLogined(user.UserId);
                 // navigate to Supervisee page
                 NavigateTo(NavigatorEnums.Supervisee);
             }
@@ -349,6 +351,9 @@ namespace SSK
             else
             {
                 // navigate to Supervisee page
+
+                APIUtils.SignalR.UserLogined(user.UserId);
+
                 NavigateTo(NavigatorEnums.Supervisee);
             }
         }

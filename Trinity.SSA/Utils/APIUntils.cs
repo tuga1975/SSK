@@ -21,8 +21,6 @@ class APIUtils
 
     public static void Dispose()
     {
-        #region Đóng lại nếu ko có Smart Card Driver
-        //SCardMonitor.Dispose();
-        #endregion
+        SignalR.Dispose();
     }
 }

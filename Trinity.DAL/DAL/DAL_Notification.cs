@@ -73,6 +73,81 @@ namespace Trinity.DAL
             return new Response<List<Notification>>((int)EnumResponseStatuses.ErrorSystem, EnumResponseMessage.ErrorSystem, null);
         }
 
+        public List<Notification> GetNotificationsByUserId(string userId)
+        {
+            try
+            {
+                IQueryable<DBContext.Notification> queryNotifications = null;
+                if (EnumAppConfig.IsLocal)
+                {
+                    var data = _localUnitOfWork.DataContext.Notifications.Where(n => n.ToUserId == userId);
+                    if (data != null)
+                    {
+                        queryNotifications = data;
+                        int count = queryNotifications.Count();
+                        if (count > 0)
+                        {
+                            List<Notification> notifications = GetListNotifications(queryNotifications);
+
+                            return notifications;
+                        }
+                    }
+                    else
+                    {
+                        bool centralizeStatus;
+                        var centralData = CallCentralized.Get<List<Notification>>(EnumAPIParam.Notification, "GetByUserId", out centralizeStatus,"userId="+userId);
+                        if (centralData!=null)
+                        {
+                            return centralData;
+                        }
+
+                    }
+                }
+                else
+                {
+                    queryNotifications = _centralizedUnitOfWork.DataContext.Notifications.Where(n => n.ToUserId == userId);
+                    int count = queryNotifications.Count();
+                    if (count > 0)
+                    {
+                        List<Notification> notifications = GetListNotifications(queryNotifications);
+
+                        return notifications;
+                    }
+                    
+                }
+                return null;
+
+
+            }
+            catch (Exception)
+            {
+
+                return null;
+            }
+            
+        }
+
+        private static List<Notification> GetListNotifications(IQueryable<DBContext.Notification> queryNotifications)
+        {
+            List<Notification> notifications = new List<Notification>();
+            foreach (var item in queryNotifications)
+            {
+                Notification notification = new Notification()
+                {
+                    Content = item.Content,
+                    Date = item.Datetime,
+                    FromUserId = item.FromUserId,
+                    ID = new Guid(item.NotificationID),
+                    IsRead = item.IsRead.HasValue ? item.IsRead.Value : false,
+                    Subject = item.Subject,
+                    ToUserId = item.ToUserId
+                };
+                notifications.Add(notification);
+            }
+
+            return notifications;
+        }
+
         public List<Notification> GetNotificationsSentToDutyOfficer(bool isLocal)
         {
             IQueryable<Trinity.BE.Notification> queryNotifications = null;

@@ -18,9 +18,9 @@ namespace Trinity.CentralizedAPI.Controllers
         {
             var responseModel = new ResponseModel();
             var result = new DAL.DAL_User().GetUserByUserId(userId);
-            responseModel.ResponseCode = result.ResponseCode;
-            responseModel.ResponseMessage = result.ResponseMessage;
-            responseModel.Data = result.Data;
+            //responseModel.ResponseCode = result.ResponseCode;
+            //responseModel.ResponseMessage = result.ResponseMessage;
+            //responseModel.Data = result.Data;
             return Ok(responseModel);
         }
 
@@ -30,39 +30,38 @@ namespace Trinity.CentralizedAPI.Controllers
         public IHttpActionResult GetUserProfileByUserId(string userId)
         {
             var responseModel = new ResponseModel();
-            var result = new DAL.DAL_UserProfile().GetUserProfileByUserId(userId);
-            responseModel.ResponseCode = result.ResponseCode;
-            responseModel.ResponseMessage = result.ResponseMessage;
-            responseModel.Data = result.Data;
+            var result = new DAL.DAL_UserProfile().GetProfileByUserId(userId);
+            //responseModel.ResponseCode = result.ResponseCode;
+            //responseModel.ResponseMessage = result.ResponseMessage;
+            //responseModel.Data = result.Data;
             return Ok(responseModel);
         }
 
         [HttpGet]
         [Route("api/User/GetAddressByUserId")]
         //[ResponseType(typeof(ResponseModel))]
-        public IHttpActionResult GetAddressByUserId(string userId,string isOther)
+        public IHttpActionResult GetAddressByUserId(string userId, string isOther)
         {
             var responseModel = new ResponseModel();
             bool other = Convert.ToBoolean(isOther);
             var result = new DAL.DAL_UserProfile().GetAddressByUserId(userId, other);
-            responseModel.ResponseCode = result.ResponseCode;
-            responseModel.ResponseMessage = result.ResponseMessage;
-            responseModel.Data = result.Data;
+            //responseModel.ResponseCode = result.ResponseCode;
+            //responseModel.ResponseMessage = result.ResponseMessage;
+            //responseModel.Data = result.Data;
             return Ok(responseModel);
         }
 
-[HttpGet]
+        [HttpGet]
         [Route("api/User/GetAllSupervisees")]
         //[ResponseType(typeof(ResponseModel))]
-        public IHttpActionResult GetAllSupervisees(string userId,string isOther)
+        public IHttpActionResult GetAllSupervisees()
         {
             var responseModel = new ResponseModel();
-            bool other = Convert.ToBoolean(isOther);
-            var result = new DAL.DAL_User().GetAllSupervisees();
-            responseModel.ResponseCode = result.ResponseCode;
-            responseModel.ResponseMessage = result.ResponseMessage;
-            responseModel.Data = result.Data;
-            return Ok(responseModel);
+            var result = new DAL.DAL_User().GetListAllSupervisees();
+            //responseModel.ResponseCode = result.ResponseCode;
+            //responseModel.ResponseMessage = result.ResponseMessage;
+            //responseModel.Data = result.Data;
+            return Ok(result);
         }
 
         [HttpPost]
@@ -71,11 +70,11 @@ namespace Trinity.CentralizedAPI.Controllers
         public IHttpActionResult UpdateUser(BE.User model)
         {
             var responseModel = new ResponseModel();
-            var result = new DAL.DAL_User().UpdateUser(model);
-            responseModel.ResponseCode = result.ResponseCode;
-            responseModel.ResponseMessage = result.ResponseMessage;
-            responseModel.Data = result.Data;
-            return Ok(responseModel);
+            var result = new DAL.DAL_User().Update(model);
+            //responseModel.ResponseCode = result.ResponseCode;
+            //responseModel.ResponseMessage = result.ResponseMessage;
+            //responseModel.Data = result.Data;
+            return Ok(result);
         }
 
         [HttpPost]
@@ -84,11 +83,11 @@ namespace Trinity.CentralizedAPI.Controllers
         public IHttpActionResult UpdateUserProfile(BE.UserProfile model)
         {
             var responseModel = new ResponseModel();
-            var result = new DAL.DAL_UserProfile().UpdateUserProfile(model);
-            responseModel.ResponseCode = result.ResponseCode;
-            responseModel.ResponseMessage = result.ResponseMessage;
-            responseModel.Data = result.Data;
-            return Ok(responseModel);
+            var result = new DAL.DAL_UserProfile().UpdateProfile(model);
+            //responseModel.ResponseCode = result.ResponseCode;
+            //responseModel.ResponseMessage = result.ResponseMessage;
+            //responseModel.Data = result.Data;
+            return Ok(result);
         }
     }
 }

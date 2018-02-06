@@ -618,6 +618,7 @@ namespace DutyOfficer
         public void LogOut()
         {
             // reset session value
+            string userID = ((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId;
             Session session = Session.Instance;
             session.IsSmartCardAuthenticated = false;
             session.IsFingerprintAuthenticated = false;
@@ -627,6 +628,8 @@ namespace DutyOfficer
             //
             // RaiseLogOutCompletedEvent
             RaiseLogOutCompletedEvent();
+
+            APIUtils.SignalR.UserLogout(userID);
         }
 
         protected virtual void RaiseLogOutCompletedEvent()

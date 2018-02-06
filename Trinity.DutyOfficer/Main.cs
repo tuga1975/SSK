@@ -88,7 +88,7 @@ namespace DutyOfficer
             {
                 Session session = Session.Instance;
                 session.IsSmartCardAuthenticated = true;
-                session[CommonConstants.USER_LOGIN] = user;
+                Session.Instance[CommonConstants.USER_LOGIN] = user;
                 this.LayerWeb.RunScript("$('.status-text').css('color','#000').text('Your smart card is authenticated.');");
                 // Stop SCardMonitor
                 SmartCardReaderUtil.Instance.StopSmartCardMonitor();
@@ -116,7 +116,9 @@ namespace DutyOfficer
 
             Thread.Sleep(1000);
 
-            LayerWeb.LoadPageHtml("Table.html");
+            APIUtils.SignalR.UserLogined(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId);
+            NavigateTo(NavigatorEnums.Queue);
+
         }
 
         private void SmartCard_OnSmartCardSucceeded()
@@ -270,23 +272,23 @@ namespace DutyOfficer
         {
             LayerWeb.InvokeScript("createEvent", JsonConvert.SerializeObject(_jsCallCS.GetType().GetMethods().Where(d => (d.IsPublic && !d.IsVirtual && !d.IsSecuritySafeCritical) || (d.IsPublic && d.IsSecurityCritical)).ToArray().Select(d => d.Name)));
 
-            //if (_isFirstTimeLoaded)
-            //{
-            //    NavigateTo(NavigatorEnums.Authentication_SmartCard);
+            if (_isFirstTimeLoaded)
+            {
+                NavigateTo(NavigatorEnums.Authentication_SmartCard);
 
-            //    _isFirstTimeLoaded = false;
-            //}
+                _isFirstTimeLoaded = false;
+            }
 
-            // For testing purpose
-            Session session = Session.Instance;
-            // Duty Officer
-            Trinity.BE.User user = new DAL_User().GetUserByUserId("dfbb2a6a-9e45-4a76-9f75-af1a7824a947").Data;
-            session[CommonConstants.USER_LOGIN] = user;
-            session.IsSmartCardAuthenticated = true;
-            session.IsFingerprintAuthenticated = true;
+            //// For testing purpose
+            //Session session = Session.Instance;
+            //// Duty Officer
+            //Trinity.BE.User user = new DAL_User().GetUserByUserId("dfbb2a6a-9e45-4a76-9f75-af1a7824a947").Data;
+            //session[CommonConstants.USER_LOGIN] = user;
+            //session.IsSmartCardAuthenticated = true;
+            //session.IsFingerprintAuthenticated = true;
 
-            NavigateTo(NavigatorEnums.Queue);
-            Lib.SignalR.UserLogined("Thắng");
+            //NavigateTo(NavigatorEnums.Queue);
+            //Lib.SignalR.UserLogined("Thắng");
         }
     }
 }
