@@ -39,6 +39,9 @@
         if (api.model != null) {
 
             for (var i = 0; i < api.model.length; i++) {
+                if (api.model[i].User != null) {
+
+              
 				var uId = '"' + api.model[i].User.UserId + '"';
                 $('#listSupervisee').append("<tr>"
                     +"<th scope='row'>" + (i + 1) + "</th>"
@@ -47,6 +50,7 @@
                     + "<td>" + api.model[i].UserProfile != null ? api.model[i].UserProfile.DOBAsString : null + "</td>"
                     +"<td><a href='javascript:void();' onclick='api.server.EditSupervisee(" + uId + ");'>" + api.model[i].User.Status + "</a></td>"
                     + "</tr>");
+                }
             }
         }
 
