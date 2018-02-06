@@ -95,6 +95,12 @@ namespace SSK
             {
                 LayerWeb.InvokeScript("alertBookAppointment", e.Message);
             }
+            if (e.Name == EventNames.FINGERPRINT_FAILED_MORE_THAN_3)
+            {
+                NavigateTo(NavigatorEnums.Authentication_SmartCard);
+                LayerWeb.InvokeScript("showMessage", e.Message);
+
+            }
 
         }
 
@@ -375,8 +381,8 @@ namespace SSK
                 APIUtils.SignalR.SendAllDutyOfficer(user.UserId,"Fingerprint Authentication failed", errorMessage);
 
                 //for testing purpose
-                NavigateTo(NavigatorEnums.Authentication_SmartCard);
-                CSCallJS.InvokeScript(this.LayerWeb,"showMessage","Fingerprint's Authenication failed!\n Please contact your officer.");
+                EventCenter.Default.RaiseEvent(new EventInfo {Name=EventNames.FINGERPRINT_FAILED_MORE_THAN_3 ,Code=-1,Message= "Fingerprint's Authenication failed!\n Please contact your officer."});
+                
                 // Pause for 1 second and goto Facial Login Screen
                 //Thread.Sleep(1000);
                 //_fingerprintFailed = 0;

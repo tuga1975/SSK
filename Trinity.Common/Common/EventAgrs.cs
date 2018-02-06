@@ -135,6 +135,7 @@ namespace Trinity.Common
         public const string ABSENCE_LESS_THAN_3 = "AbsenceLessThan3";
         public const string SOMETHING_WENT_WRONG = "SomethingWentWrong";
         public const string LOAD_EDIT_SUPERVISEE_SUCCEEDED = "LoadEditSupervisee";
+        public const string FINGERPRINT_FAILED_MORE_THAN_3 = "ScanFingerprintFailMorethan3";
     }
 
     public class EventInfo
