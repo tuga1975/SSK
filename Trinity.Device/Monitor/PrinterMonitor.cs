@@ -97,7 +97,7 @@ namespace Trinity.Device
             infoTTLabel.Name = labelInfo.Name;
             infoTTLabel.MarkingNumber = labelInfo.MarkingNo;
 
-            if (!printerUtils.PrintTTLabel(infoTTLabel))
+            if (printerUtils.PrintTTLabel(infoTTLabel))
             {
                 // raise succeeded event
                 RaisePrintTTLabelSucceededEvent(new PrintMUBAndTTLabelsEventArgs(labelInfo));
@@ -165,7 +165,7 @@ namespace Trinity.Device
             }
 
             // print mub label
-            if (!printerUtils.PrintMUBLabel(filePath))
+            if (printerUtils.PrintMUBLabel(filePath))
             {
                 // raise succeeded event
                 RaisePrintMUBLabelSucceededEvent(new PrintMUBAndTTLabelsEventArgs(labelInfo));

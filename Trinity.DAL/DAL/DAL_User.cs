@@ -146,7 +146,7 @@ namespace Trinity.DAL
                     return new Response<BE.User>((int)EnumResponseStatuses.Success, EnumResponseMessage.Success, user.FirstOrDefault());
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
 
                 return new Response<BE.User>((int)EnumResponseStatuses.ErrorSystem, EnumResponseMessage.ErrorSystem, null);
