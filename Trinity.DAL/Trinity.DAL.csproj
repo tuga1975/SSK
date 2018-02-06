@@ -145,7 +145,7 @@
       <DependentUpon>SSK.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\APS_USER_ACT_LOG.cs">
-      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
+      <DependentUpon>SSK.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\Device.cs">
       <DependentUpon>SSK.tt</DependentUpon>
@@ -154,7 +154,7 @@
       <DependentUpon>SSK.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\EMAIL_LOG.cs">
-      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
+      <DependentUpon>SSK.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\Holiday.cs">
       <DependentUpon>SSK.tt</DependentUpon>
@@ -187,7 +187,7 @@
       <DependentUpon>SSK.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\MsgRecipient.cs">
-      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
+      <DependentUpon>SSK.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\Notification.cs">
       <DependentUpon>SSK.tt</DependentUpon>
@@ -208,15 +208,12 @@
       <DependentUpon>SSK.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\SentMessage.cs">
-      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
+      <DependentUpon>SSK.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\Setting.cs">
       <DependentUpon>SSK.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\SMS_LOG.cs">
-      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
-    </Compile>
-    <Compile Include="DBContext\sysdiagram.cs">
       <DependentUpon>SSK.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\Timeslot.cs">
