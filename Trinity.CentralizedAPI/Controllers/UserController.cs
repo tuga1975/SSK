@@ -17,11 +17,11 @@ namespace Trinity.CentralizedAPI.Controllers
         public IHttpActionResult GetUserByUserId(string userId)
         {
             var responseModel = new ResponseModel();
-            var result = new DAL.DAL_User().GetUserByUserId(userId);
+            var result = new DAL.DAL_User().GetUserById(userId);
             //responseModel.ResponseCode = result.ResponseCode;
             //responseModel.ResponseMessage = result.ResponseMessage;
             //responseModel.Data = result.Data;
-            return Ok(responseModel);
+            return Ok(result);
         }
 
         [HttpGet]
@@ -34,7 +34,7 @@ namespace Trinity.CentralizedAPI.Controllers
             //responseModel.ResponseCode = result.ResponseCode;
             //responseModel.ResponseMessage = result.ResponseMessage;
             //responseModel.Data = result.Data;
-            return Ok(responseModel);
+            return Ok(result);
         }
 
         [HttpGet]
@@ -44,11 +44,11 @@ namespace Trinity.CentralizedAPI.Controllers
         {
             var responseModel = new ResponseModel();
             bool other = Convert.ToBoolean(isOther);
-            var result = new DAL.DAL_UserProfile().GetAddressByUserId(userId, other);
+            var result = new DAL.DAL_UserProfile().GetAddByUserId(userId, other);
             //responseModel.ResponseCode = result.ResponseCode;
             //responseModel.ResponseMessage = result.ResponseMessage;
             //responseModel.Data = result.Data;
-            return Ok(responseModel);
+            return Ok(result);
         }
 
         [HttpGet]
