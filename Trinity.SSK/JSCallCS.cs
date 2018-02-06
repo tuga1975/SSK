@@ -53,7 +53,7 @@ namespace SSK
 
             DAL_Notification dalNotification = new DAL_Notification();
 
-            List<Trinity.BE.Notification> myNotifications = new DAL_Notification().GetNotificationsByUserId(user.UserId); 
+            List<Trinity.BE.Notification> myNotifications = dalNotification.GetMyNotifications(user.UserId);
 
             var model = myNotifications;
             _web.LoadPageHtml("Notifications.html", myNotifications);
@@ -251,7 +251,7 @@ namespace SSK
                     var updateUProfileResult = new DAL_UserProfile().UpdateProfile(userProfileModel);
                     // dalUserprofile.UpdateUserProfile(data.UserProfile,data.User.UserId , true);
                     //send notifiy to duty officer
-                    APIUtils.SignalR.SendNotificationToDutyOfficer("A supervisee has updated profile.", "Please check Supervisee's information!");
+                    APIUtils.SignalR.SendAllDutyOfficer(data.User.UserId, "A supervisee has updated profile.", "Please check Supervisee's information!");
                 }
                 else
                 {
@@ -260,7 +260,7 @@ namespace SSK
                     var updateUProfileResult = new DAL_UserProfile().UpdateProfile(userProfileModel);
                     // dalUserprofile.UpdateUserProfile(data.UserProfile, data.User.UserId, true);
                     //send notifiy to case officer
-                    APIUtils.SignalR.SendNotificationToDutyOfficer("A supervisee has updated profile.", "Please check Supervisee's information!");
+                    APIUtils.SignalR.SendAllDutyOfficer(data.User.UserId,"A supervisee has updated profile.", "Please check Supervisee's information!");
                 }
 
                 //load Supervisee page 
@@ -279,7 +279,7 @@ namespace SSK
             {
                 Session session = Session.Instance;
                 session[CommonConstants.PROFILE_DATA] = jsonData;
-                APIUtils.SignalR.SendNotificationToDutyOfficer("Supervisee's information changed!", "Please check the Supervisee's information!");
+                APIUtils.SignalR.SendAllDutyOfficer(null,"Supervisee's information changed!", "Please check the Supervisee's information!");
                 LoadPage("Document.html");
 
             }
@@ -378,7 +378,7 @@ namespace SSK
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ABSENCE_MORE_THAN_3, Message = "You have been blocked for 3 or more absences \n Please report to the Duty Officer" });
                 //for testing purpose
                 //notify to officer
-                APIUtils.SignalR.SendNotificationToDutyOfficer("Supervisee got blocked for 3 or more absences", "Please check the Supervisee's information!");
+                APIUtils.SignalR.SendAllDutyOfficer(user.UserId,"Supervisee got blocked for 3 or more absences", "Please check the Supervisee's information!");
                 var dalUser = new DAL_User();
                 //active the user
                 //dalUser.ChangeUserStatus(user.UserId, EnumUserStatuses.New);
@@ -459,7 +459,7 @@ namespace SSK
             //send message to case office if no support document
             if (reason == "No Supporting Document")
             {
-                APIUtils.SignalR.SendNotificationToDutyOfficer("Supervisee get queue without supporting document", "Please check the Supervisee's information!");
+                APIUtils.SignalR.SendAllDutyOfficer(null,"Supervisee get queue without supporting document", "Please check the Supervisee's information!");
             }
             var charSeparators = new char[] { ',' };
             var listSplitID = selectedID.Split(charSeparators, StringSplitOptions.RemoveEmptyEntries);
@@ -502,7 +502,7 @@ namespace SSK
             //send notify to case officer
             Session currentSession = Session.Instance;
             Trinity.BE.User user = (Trinity.BE.User)currentSession[CommonConstants.USER_LOGIN];
-            APIUtils.SignalR.SendNotificationToDutyOfficer(user.Name + " has provided absent reason", user.Name + " has provided absent reason.");
+            APIUtils.SignalR.SendAllDutyOfficer(user.UserId,user.Name + " has provided absent reason", user.Name + " has provided absent reason.");
             ReportingForQueueNumber();
             LoadPage("Supervisee.html");
         }

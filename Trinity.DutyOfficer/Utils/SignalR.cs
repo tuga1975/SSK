@@ -15,9 +15,12 @@ namespace DutyOfficer.Utils
         }
         public override void IncomingEvents()
         {
-            //
             HubProxy.On<int, EnumDeviceStatuses[],string>("DeviceStatusUpdate", (deviceId, deviceStatuses, Station) => {
                 // Xử lý status device
+            });
+
+            HubProxy.On<string, string, string, string>("MessageTo", (UserId, Subject, Content, Station) => {
+                // Xử lý Message
             });
         }
 
