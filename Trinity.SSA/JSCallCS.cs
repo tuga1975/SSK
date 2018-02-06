@@ -111,7 +111,7 @@ namespace SSA
             };
 
             var dalLabel = new DAL_Labels();
-            dalLabel.UpdateLabel(labelInfo, labelInfo.UserId, EnumLabelType.MUB);
+            dalLabel.UpdateLabel(labelInfo);
 
             // Update queue status is finished
             var dalQueue = new DAL_QueueNumber();
@@ -145,7 +145,7 @@ namespace SSA
             };
 
             var dalLabel = new DAL_Labels();
-            dalLabel.UpdateLabel(labelInfo, labelInfo.UserId, EnumLabelType.MUB);
+            dalLabel.UpdateLabel(labelInfo);
 
             this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').hide(); ; ");
             this._web.RunScript("$('.status-text').css('color','#000').text('Sent problem to Duty Officer. Please wait to check !');");
@@ -174,13 +174,13 @@ namespace SSA
             };
 
             var dalLabel = new DAL_Labels();
-            var update = dalLabel.UpdateLabel(labelInfo, labelInfo.UserId, EnumLabelType.TT);
+            var update = dalLabel.UpdateLabel(labelInfo);
             if (update)
             {
                 var dalAppointment = new DAL_Appointments();
                 var dalQueue = new DAL_QueueNumber();
-                var result= dalAppointment.GetTodayAppointment(labelInfo.UserId);
-                var appointment = result.Data;
+                var appointment = dalAppointment.GetTodayAppointmentByUserId(labelInfo.UserId);
+                //var appointment = result.Data;
 
                 var sskQueue = new DAL_QueueNumber().GetQueueDetailByAppointment(appointment, EnumStations.SSK);
 
@@ -215,7 +215,7 @@ namespace SSA
             };
 
             var dalLabel = new DAL_Labels();
-            dalLabel.UpdateLabel(labelInfo, labelInfo.UserId, EnumLabelType.TT);
+            dalLabel.UpdateLabel(labelInfo);
 
             this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').hide(); ; ");
             this._web.RunScript("$('.status-text').css('color','#000').text('Sent problem to Duty Officer. Please wait to check !');");

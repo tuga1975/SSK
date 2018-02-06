@@ -541,7 +541,7 @@ namespace DutyOfficer
             }
 
             DAL_Labels dalLabel = new DAL_Labels();
-            if (dalLabel.UpdateLabel(labelInfo, labelInfo.UserId, labelInfo.Label_Type))
+            if (dalLabel.UpdateLabel(labelInfo))
             {
                 string message = "Print MUB for " + e.LabelInfo.Name + " successful.";
                 //MessageBox.Show(message, "", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -579,7 +579,7 @@ namespace DutyOfficer
             };
 
             var dalLabel = new DAL_Labels();
-            if (dalLabel.UpdateLabel(labelInfo, labelInfo.UserId, EnumLabelType.TT))
+            if (dalLabel.UpdateLabel(labelInfo))
             {
                 string message = "Print TT for " + e.LabelInfo.Name + " successful.";
                 MessageBox.Show(message, "", MessageBoxButtons.OK, MessageBoxIcon.Error);

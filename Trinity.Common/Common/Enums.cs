@@ -454,6 +454,8 @@ public static class EnumAPIParam
     public const string User = "User";
     public const string Setting = "Setting";
     public const string QueueNumber = "QueueNumber";
+    public const string SettingSystem = "SettingSystem";
+    public const string Label = "Label";
 
     //action
     public const string GetByToday = "GetByToday";
@@ -478,6 +480,9 @@ public static class EnumAPIParam
     public const string CreateForAllUsers = "CreateForAllUsers";
     public const string GetNearestTimeslot = "GetNearestTimeslot";
     public const string UpdateTimeslot = "UpdateTimeslot";
+    public const string GetSettingSystemByYear = "GetSettingSystemByYear";
+    public const string UpdateSettingSystem = "UpdateSettingSystem";
+    public const string UpdateLabel = "UpdateLabel";
 }
 
 public static class EnumPrintStatus
