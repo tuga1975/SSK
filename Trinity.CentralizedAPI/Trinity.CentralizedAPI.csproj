@@ -183,6 +183,7 @@
     <Compile Include="Controllers\AbsenceReportController.cs" />
     <Compile Include="Controllers\AppointmentController.cs" />
     <Compile Include="Controllers\DeviceStatusController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LabelController.cs" />
     <Compile Include="Controllers\NotificationController.cs" />
     <Compile Include="Controllers\QueueNumberController.cs" />
