@@ -187,8 +187,10 @@
     <Compile Include="Controllers\LabelController.cs" />
     <Compile Include="Controllers\NotificationController.cs" />
     <Compile Include="Controllers\QueueNumberController.cs" />
+    <Compile Include="Controllers\IssueCardController.cs" />
     <Compile Include="Controllers\SettingsController.cs" />
     <Compile Include="Controllers\SettingSystemController.cs" />
+    <Compile Include="Controllers\AddressController.cs" />
     <Compile Include="Controllers\User_ProfilesController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Global.asax.cs">
