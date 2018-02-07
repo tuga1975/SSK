@@ -10,10 +10,10 @@ function updateNRICTextValue(value) {
     $('#txtNRIC').text(value);
 }
 
-function displayNRICLogin() {
-    $('.col-sm-3').hide();
-    $('#NRIC-login').show();
-}
+//function displayNRICLogin() {
+//    $('.col-sm-3').hide();
+//    $('#NRIC-login').show();
+//}
 
 function setNRICFocus() {
     $('#txtNRIC').focus();

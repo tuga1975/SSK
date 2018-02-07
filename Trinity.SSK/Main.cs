@@ -68,7 +68,7 @@ namespace SSK
             APIUtils.LayerWeb = LayerWeb;
             LayerWeb.Url = new Uri(String.Format("file:///{0}/View/html/Layout.html", CSCallJS.curDir));
             LayerWeb.ObjectForScripting = _jsCallCS;
-            
+
             //
             // For testing purpose only
             // 
@@ -95,6 +95,12 @@ namespace SSK
             {
                 LayerWeb.InvokeScript("alertBookAppointment", e.Message);
             }
+            if (e.Name == EventNames.FINGERPRINT_FAILED_MORE_THAN_3)
+            {
+                NavigateTo(NavigatorEnums.Authentication_SmartCard);
+                LayerWeb.InvokeScript("showMessage", e.Message);
+
+            }
 
         }
 
@@ -108,7 +114,8 @@ namespace SSK
             string message = "The fingerprint reader is not connected, please report to the Duty Officer!";
 
             // Send Notification to duty officer
-            APIUtils.SignalR.SendNotificationToDutyOfficer("The fingerprinter is not connected", "The fingerprinter is not connected.");
+            APIUtils.SignalR.SendAllDutyOfficer(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId,"The fingerprinter is not connected", "The fingerprinter is not connected.");
+
 
             // show message box to user
             MessageBox.Show(message, "Authentication failed!", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -135,11 +142,11 @@ namespace SSK
             // get local user info
             DAL_User dAL_User = new DAL_User();
 
-            Trinity.BE.User user = CallCentralized.Get<Trinity.BE.User>("User", "GetUserBySmartCardId", "cardUID=" + cardUID);
+            Trinity.BE.User user = dAL_User.GetUserBySmartCardId(cardUID);
             // if local user is null, get user from centralized, and sync db
             if (user == null)
             {
-                user = dAL_User.GetUserBySmartCardId(cardUID, true);
+                user = dAL_User.GetUserBySmartCardId(cardUID);
             }
 
             if (user != null)
@@ -234,7 +241,7 @@ namespace SSK
             if (_smartCardFailed > 3)
             {
                 // Send Notification to duty officer
-                APIUtils.SignalR.SendNotificationToDutyOfficer(message, message, NotificationType.Error, EnumStations.SSK);
+                APIUtils.SignalR.SendAllDutyOfficer(null,message, message);
                 // show message box to user
                 MessageBox.Show(message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 // reset counter
@@ -271,8 +278,6 @@ namespace SSK
             session.IsFacialAuthenticated = true;
 
 
-            APIUtils.SignalR.GetLatestNotifications();
-
             Thread.Sleep(1000);
 
             // if role = 0 (duty officer), redirect to NRIC.html
@@ -308,7 +313,7 @@ namespace SSK
             Session session = Session.Instance;
             Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
             string errorMessage = "User '" + user.Name + "' cannot complete facial authentication";
-            APIUtils.SignalR.SendNotificationToDutyOfficer("Facial authentication failed", errorMessage);
+            APIUtils.SignalR.SendAllDutyOfficer(user.UserId,"Facial authentication failed", errorMessage);
 
             // show message box to user
             MessageBox.Show("Facial authentication failed", "Facial Authentication", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -336,7 +341,6 @@ namespace SSK
             session.IsFingerprintAuthenticated = true;
 
             LayerWeb.RunScript("$('.status-text').css('color','#000').text('Fingerprint authentication is successful.');");
-            APIUtils.SignalR.GetLatestNotifications();
 
             Thread.Sleep(1000);
 
@@ -374,14 +378,19 @@ namespace SSK
                 string errorMessage = "Unable to read " + user.Name + "'s fingerprint.";
 
                 // Send Notification to duty officer
-                APIUtils.SignalR.SendNotificationToDutyOfficer("Fingerprint Authentication failed", errorMessage, NotificationType.Error, EnumStations.SSA);
+                APIUtils.SignalR.SendAllDutyOfficer(user.UserId,"Fingerprint Authentication failed", errorMessage);
 
+                //for testing purpose
+                EventCenter.Default.RaiseEvent(new EventInfo {Name=EventNames.FINGERPRINT_FAILED_MORE_THAN_3 ,Code=-1,Message= "Fingerprint's Authenication failed!\n Please contact your officer."});
+                
                 // Pause for 1 second and goto Facial Login Screen
-                Thread.Sleep(1000);
-                _fingerprintFailed = 0;
+                //Thread.Sleep(1000);
+                //_fingerprintFailed = 0;
+
+               
 
                 // Navigate to next page: Facial Authentication
-                NavigateTo(NavigatorEnums.Authentication_Facial);
+                //NavigateTo(NavigatorEnums.Authentication_Facial);
 
                 return;
             }

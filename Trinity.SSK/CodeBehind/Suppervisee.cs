@@ -22,15 +22,25 @@ namespace SSK.CodeBehind
             // load page
             _web.LoadPageHtml("Supervisee.html");
 
+
+
             // get user login info
             Session session = Session.Instance;
             Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-
-            // if user login is dutyofficer, implement duty officer override
-            if (user.Role == EnumUserRoles.DutyOfficer)
+            List<Trinity.BE.Notification> myNotifications = new Trinity.DAL.DAL_Notification().GetMyNotifications(user.UserId);
+            if (myNotifications != null)
             {
-                CSCallJS.DisplayNRICLogin(_web);
+                var unReadCount = myNotifications.Count;
+                APIUtils.LayerWeb.Invoke((System.Windows.Forms.MethodInvoker)(() =>
+                {
+                    APIUtils.LayerWeb.PushNoti(unReadCount);
+                }));
             }
+            //// if user login is dutyofficer, implement duty officer override
+            //if (user.Role == EnumUserRoles.DutyOfficer)
+            //{
+            //    CSCallJS.DisplayNRICLogin(_web);
+            //}
         }
     }
 }

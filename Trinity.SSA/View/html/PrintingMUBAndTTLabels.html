@@ -1,6 +1,6 @@
 ﻿
-<div class="container contentPrinting text-center center-block" style="padding-top:110px;">
-    <div id="WaitingSection">
+<div class="container text-center center-block">
+    <!--<div id="WaitingSection">
         <div id="image" style="display:inline;">
             <img src="hourglass.gif" />
         </div>
@@ -8,12 +8,16 @@
         <div id="texts" style="display:inline;">
             <span style="font-size:42px;padding:5px;">Please Wait</span>
         </div>
-    </div>
+    </div>-->
     <div id="CompletedSection">
-        <div id="texts" style="display:inline;">
-            <span style="font-size:42px;padding:5px;">Collect Master Urine Bottle <br/> and Test Tube Video.</span>
-            <br/> <br/>
-            <p style="font-size:38px;">System will be logout in <span style="font-size:42px;" id="countdown">5</span> seconds</p>
+        <div class="titles"><span>Please collect your labels</span></div>
+        <br />
+        <div class="contentWrapper">
+            <div id="texts" style="display:inline;">
+                <div class="SucessesPrint"><span>(Collect Master Urine Bottle <br /> and Test Tube Video.)</span></div>
+                <br />
+                <!--<p style="font-size:38px;">System will be logout in <span style="font-size:42px;" id="countdown">5</span> seconds</p>-->
+            </div>
         </div>
     </div>
 </div>
@@ -22,41 +26,21 @@
 
 </div>
 
-<style type="text/css">
-    .contentPrinting {
-        position: fixed;
-        width: calc(100% - 20px);
-        height: calc(100% - 140px);
-        left: 10px;
-        top: 80px;
-        border: 1px solid #CCC;
-        background-color: #e6ffff;
-    }
-
-    .status-text {
-        position: fixed;
-        width: calc(100% - 20px);
-        bottom: 20px;
-        border: 1px solid #CCC;
-        padding: 5px 10px;
-        text-align: center;
-    }
-</style>
 <script type="text/javascript">
     $(document).ready(function () {
         $('#WaitingSection').show();
         $('#CompletedSection').hide();
     });
 
-    function countdownLogout() {
-        var timeleft = 5;
-        var downloadTimer = setInterval(function () {
-            timeleft--;
-            document.getElementById("countdown").textContent = timeleft;
-            if (timeleft <= 0) {
-                clearInterval(downloadTimer);
-                api.server.LogOut();
-            }
-        }, 1000);
-    };
+    //function countdownLogout() {
+    //    var timeleft = 5;
+    //    var downloadTimer = setInterval(function () {
+    //        timeleft--;
+    //        document.getElementById("countdown").textContent = timeleft;
+    //        if (timeleft <= 0) {
+    //            clearInterval(downloadTimer);
+    //            api.server.LogOut();
+    //        }
+    //    }, 1000);
+    //};
 </script>

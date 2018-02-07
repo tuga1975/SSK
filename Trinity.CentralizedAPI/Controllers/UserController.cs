@@ -17,11 +17,11 @@ namespace Trinity.CentralizedAPI.Controllers
         public IHttpActionResult GetUserByUserId(string userId)
         {
             var responseModel = new ResponseModel();
-            var result = new DAL.DAL_User().GetUserByUserId(userId);
+            var result = new DAL.DAL_User().GetUserById(userId);
             //responseModel.ResponseCode = result.ResponseCode;
             //responseModel.ResponseMessage = result.ResponseMessage;
             //responseModel.Data = result.Data;
-            return Ok(responseModel);
+            return Ok(result);
         }
 
         [HttpGet]
@@ -34,7 +34,7 @@ namespace Trinity.CentralizedAPI.Controllers
             //responseModel.ResponseCode = result.ResponseCode;
             //responseModel.ResponseMessage = result.ResponseMessage;
             //responseModel.Data = result.Data;
-            return Ok(responseModel);
+            return Ok(result);
         }
 
         [HttpGet]
@@ -44,11 +44,11 @@ namespace Trinity.CentralizedAPI.Controllers
         {
             var responseModel = new ResponseModel();
             bool other = Convert.ToBoolean(isOther);
-            var result = new DAL.DAL_UserProfile().GetAddressByUserId(userId, other);
+            var result = new DAL.DAL_UserProfile().GetAddByUserId(userId, other);
             //responseModel.ResponseCode = result.ResponseCode;
             //responseModel.ResponseMessage = result.ResponseMessage;
             //responseModel.Data = result.Data;
-            return Ok(responseModel);
+            return Ok(result);
         }
 
         [HttpGet]
@@ -84,6 +84,32 @@ namespace Trinity.CentralizedAPI.Controllers
         {
             var responseModel = new ResponseModel();
             var result = new DAL.DAL_UserProfile().UpdateProfile(model);
+            //responseModel.ResponseCode = result.ResponseCode;
+            //responseModel.ResponseMessage = result.ResponseMessage;
+            //responseModel.Data = result.Data;
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("api/User/GetMembershipByUserId")]
+        //[ResponseType(typeof(ResponseModel))]
+        public IHttpActionResult GetMembershipByUserId(string userId)
+        {
+            var responseModel = new ResponseModel();
+            var result = new DAL.DAL_Membership_Users().GetByUserId(userId);
+            //responseModel.ResponseCode = result.ResponseCode;
+            //responseModel.ResponseMessage = result.ResponseMessage;
+            //responseModel.Data = result.Data;
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("api/User/GetUserBySmartCardId")]
+        //[ResponseType(typeof(ResponseModel))]
+        public IHttpActionResult GetUserBySmartCardId(string smartcardId)
+        {
+            var responseModel = new ResponseModel();
+            var result = new DAL.DAL_User().GetUserBySmartCardId(smartcardId);
             //responseModel.ResponseCode = result.ResponseCode;
             //responseModel.ResponseMessage = result.ResponseMessage;
             //responseModel.Data = result.Data;
