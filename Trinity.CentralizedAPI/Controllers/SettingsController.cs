@@ -57,5 +57,50 @@ namespace Trinity.CentralizedAPI.Controllers
             return Ok(responseModel);
         }
 
+        [HttpGet]
+        [Route("api/Setting/GetOperationSettings")]
+        public IHttpActionResult GetOperationSettings()
+        {
+            return Ok(new DAL.DAL_Setting().GetOperationSettings());
+        }
+
+        [HttpPost]
+        [Route("api/Setting/UpdateSettingAndTimeSlot")]
+        public IHttpActionResult UpdateSettingAndTimeSlot(BE.SettingUpdate settingUpdate)
+        {
+            var result = new DAL.DAL_Setting().UpdateSettingAndTimeSlot(settingUpdate);
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("api/Setting/CheckWarningSaveSetting")]
+        public IHttpActionResult CheckWarningSaveSetting(string DayOfWeek)
+        {
+            int dayofWeek = 0;
+            if (Int32.TryParse(DayOfWeek, out dayofWeek))
+            {
+                return Ok(new DAL.DAL_Setting().CheckWarningSaveSetting(dayofWeek));
+            }
+            else
+                return null;
+        }
+
+        [HttpPost]
+        [Route("api/Setting/AddHoliday")]
+        public IHttpActionResult AddHoliday(string date, string shortDesc, string notes, string updatedByName, string updatedByID)
+        {
+            DateTime _date = Convert.ToDateTime(date);
+            var result = new DAL.DAL_Setting().AddHoliday(_date, shortDesc, notes, updatedByName, updatedByID);
+            return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("api/Setting/DeleteHoliday")]
+        public IHttpActionResult DeleteHoliday(string date, string updatedBy)
+        {
+            DateTime _date = Convert.ToDateTime(date);
+            var result = new DAL.DAL_Setting().DeleteHoliday(_date, updatedBy);
+            return Ok(result);
+        }
     }
 }

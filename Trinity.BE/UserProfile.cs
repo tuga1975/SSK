@@ -45,10 +45,10 @@ namespace Trinity.BE
         public string Maritial_Status { get; set; }
 
         [DataMember]
-        public Nullable<int> Residential_Addess_ID { get; set; }
+        public string Residential_Addess_ID { get; set; }
 
         [DataMember]
-        public Nullable<int> Other_Address_ID { get; set; }
+        public string Other_Address_ID { get; set; }
 
         [DataMember]
         public string NextOfKin_Name { get; set; }
@@ -190,6 +190,5 @@ namespace Trinity.BE
                 return this.Expired_Date.HasValue ? Expired_Date.Value.ToString("dd/MM/yyyy") : string.Empty;
             }
         }
-
     }
 }

@@ -41,8 +41,8 @@ namespace Trinity.BE
         public string SecondaryContact { get; set; }
         public string PrimaryEmail { get; set; }
         public string SecondaryEmail { get; set; }
-        public int? Residential_Addess_ID { get; set; }
-        public int? Other_Address_ID { get; set; }
+        public string Residential_Addess_ID { get; set; }
+        public string Other_Address_ID { get; set; }
         public string Postal_Code { get; set; }
         public string NextOfKinDetailsName { get; set; }
         public string ContactNumber { get; set; }   // NextOfKinDetailsContactNumber
@@ -141,7 +141,7 @@ namespace Trinity.BE
     public class Address
     {
         [DataMember]
-        public int Address_ID { get; set; }
+        public string Address_ID { get; set; }
         [DataMember]
         public string BlkHouse_Number { get; set; }
         [DataMember]
@@ -157,7 +157,7 @@ namespace Trinity.BE
     public class OtherAddress
     {
         [DataMember]
-        public int OAddress_ID { get; set; }
+        public string OAddress_ID { get; set; }
         [DataMember]
         public string OBlkHouse_Number { get; set; }
         [DataMember]

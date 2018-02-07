@@ -30,8 +30,8 @@ namespace Trinity.DAL.DBContext
         public Nullable<System.DateTime> DOB { get; set; }
         public string Nationality { get; set; }
         public string Maritial_Status { get; set; }
-        public Nullable<int> Residential_Addess_ID { get; set; }
-        public Nullable<int> Other_Address_ID { get; set; }
+        public string Residential_Addess_ID { get; set; }
+        public string Other_Address_ID { get; set; }
         public string NextOfKin_Name { get; set; }
         public string NextOfKin_Contact_Number { get; set; }
         public string NextOfKin_Relationship { get; set; }

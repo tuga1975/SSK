@@ -289,6 +289,10 @@ namespace SSA
             if (System.IO.File.Exists(fileName))
                 System.IO.File.Delete(fileName);
         }
+        public void popupLoading(string content)
+        {
+            this._web.LoadPopupHtml("LoadingPopup.html", content);
+        }
     }
 
     #region Custom Events

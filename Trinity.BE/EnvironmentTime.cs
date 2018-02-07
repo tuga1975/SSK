@@ -217,5 +217,9 @@ namespace Trinity.BE
         public Nullable<int> MaximumSupervisee { get; set; }
     }
 
-
+    public class SettingUpdate
+    {
+        public CheckWarningSaveSetting CheckWarningSaveSetting { get; set; }
+        public SettingDetails SettingDetails { get; set; }
+    }
 }

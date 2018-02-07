@@ -72,7 +72,7 @@ namespace Enrolment
             Session session = Session.Instance;
             var dalUser = new DAL_User();
             var dalUserProfile = new DAL_UserProfile();
-            var dbUser = dalUser.GetSuperviseeByNRIC(nric, true);
+            var dbUser = dalUser.GetSuperviseeByNRIC(nric);
             var listSupervisee = new List<Trinity.BE.ProfileModel>();
             if (dbUser != null)
             {
@@ -216,16 +216,13 @@ namespace Enrolment
         {
 
             Session session = Session.Instance;
-
             var dalUser = new DAL_User();
             var dalUserProfile = new DAL_UserProfile();
             var dalUserMembership = new DAL_Membership_Users();
             var result = dalUser.GetUserById(userId);
             var dbUser = result;
-
-
             Trinity.BE.ProfileModel profileModel = null;
-            if (session[CommonConstants.CURRENT_EDIT_USER] != null && ((Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER]).UserProfile.UserId != userId)
+            if (session[CommonConstants.CURRENT_EDIT_USER] != null && ((Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER]).User.UserId != userId)
             {
                 session[CommonConstants.CURRENT_EDIT_USER] = null;
             }
@@ -246,6 +243,7 @@ namespace Enrolment
                     OtherAddress = new DAL_UserProfile().GetAddByUserId(dbUser.UserId, true),
                     Membership_Users = dalUserMembership.GetByUserId(userId)
                 };
+                profileModel.UserProfile = profileModel.UserProfile == null ? new Trinity.BE.UserProfile() : profileModel.UserProfile;
                 //first load set model to session 
                 session[CommonConstants.CURRENT_EDIT_USER] = profileModel;
                 session["TEMP_USER"] = profileModel;
@@ -263,12 +261,12 @@ namespace Enrolment
                 {
                     profileModel.Addresses = new Trinity.BE.Address();
                     // if address == null then set Residential_Addess_ID and Other_Address_ID = 0 to insert new record
-                    profileModel.UserProfile.Residential_Addess_ID = 0;
+                    //profileModel.UserProfile.Residential_Addess_ID = 0;
                 }
                 if (profileModel.OtherAddress == null)
                 {
                     profileModel.OtherAddress = new Trinity.BE.Address();
-                    profileModel.UserProfile.Other_Address_ID = 0;
+                    //profileModel.UserProfile.Other_Address_ID = 0;
                 }
                 session[CommonConstants.CURRENT_PAGE] = "UpdateSupervisee";
                 // _web.LoadPageHtml("Edit-Supervisee.html", profileModel);
@@ -279,131 +277,146 @@ namespace Enrolment
 
         public void SaveSupervisee(string param)
         {
-            try
-            {
-                Session session = Session.Instance;
-                var rawData = JsonConvert.DeserializeObject<Trinity.BE.ProfileRawMData>(param);
-                var rawDataAddress = JsonConvert.DeserializeObject<Trinity.BE.Address>(param);
-                var rawDataOtherAddress = JsonConvert.DeserializeObject<Trinity.BE.OtherAddress>(param);
+            Session session = Session.Instance;
+            var rawData = JsonConvert.DeserializeObject<Trinity.BE.ProfileRawMData>(param);
+            var rawDataAddress = JsonConvert.DeserializeObject<Trinity.BE.Address>(param);
+            var rawDataOtherAddress = JsonConvert.DeserializeObject<Trinity.BE.OtherAddress>(param);
 
-                var data = new Trinity.BE.ProfileRawMData().ToProfileModel(rawData);
-                var dalUser = new Trinity.DAL.DAL_User();
+            var data = new Trinity.BE.ProfileRawMData().ToProfileModel(rawData);
+            var dalUser = new Trinity.DAL.DAL_User();
 
-                var dalUserprofile = new Trinity.DAL.DAL_UserProfile();
-                var profileModel = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
-                var tempUser = (Trinity.BE.ProfileModel)session["TEMP_USER"];
-                var address = new DAL_Address();
+            var dalUserprofile = new Trinity.DAL.DAL_UserProfile();
+            var profileModel = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
+            var tempUser = (Trinity.BE.ProfileModel)session["TEMP_USER"];
+            var address = new DAL_Address();
 
-                // get address_ID insert or update
-                var residential_Addess_ID = address.SaveAddress(rawDataAddress, true);
-                var blkHouse_Number = rawDataAddress.BlkHouse_Number;
-                var flrUnit_Number = rawDataAddress.FlrUnit_Number;
-                var street_Name = rawDataAddress.Street_Name;
-                var country = rawDataAddress.Country;
-                var Postal_Code = rawDataAddress.Postal_Code;
+            // get address_ID insert or update
+            var residential_Addess_ID = address.SaveAddress(rawDataAddress);
+            var blkHouse_Number = rawDataAddress.BlkHouse_Number;
+            var flrUnit_Number = rawDataAddress.FlrUnit_Number;
+            var street_Name = rawDataAddress.Street_Name;
+            var country = rawDataAddress.Country;
+            var Postal_Code = rawDataAddress.Postal_Code;
 
-                // get Other address ID
-                rawDataAddress.Address_ID = rawDataOtherAddress.OAddress_ID;
-                rawDataAddress.BlkHouse_Number = rawDataOtherAddress.OBlkHouse_Number;
-                rawDataAddress.FlrUnit_Number = rawDataOtherAddress.OFlrUnit_Number;
-                rawDataAddress.Street_Name = rawDataOtherAddress.OStreet_Name;
-                rawDataAddress.Country = rawDataOtherAddress.OCountry;
-                rawDataAddress.Postal_Code = rawDataOtherAddress.OPostal_Code;
+            // get Other address ID
+            rawDataAddress.Address_ID = rawDataOtherAddress.OAddress_ID;
+            rawDataAddress.BlkHouse_Number = rawDataOtherAddress.OBlkHouse_Number;
+            rawDataAddress.FlrUnit_Number = rawDataOtherAddress.OFlrUnit_Number;
+            rawDataAddress.Street_Name = rawDataOtherAddress.OStreet_Name;
+            rawDataAddress.Country = rawDataOtherAddress.OCountry;
+            rawDataAddress.Postal_Code = rawDataOtherAddress.OPostal_Code;
 
-                var other_Address_ID = address.SaveAddress(rawDataAddress, true);
-                data.OtherAddress = rawDataAddress;
-                // set address again to reload page
-                data.Addresses.Address_ID = residential_Addess_ID;
-                data.Addresses.BlkHouse_Number = blkHouse_Number;
-                data.Addresses.FlrUnit_Number = flrUnit_Number;
-                data.Addresses.Street_Name = street_Name;
-                data.Addresses.Country = country;
-                data.Addresses.Postal_Code = Postal_Code;
-                //
-                data.UserProfile.Residential_Addess_ID = residential_Addess_ID;
-                data.UserProfile.Other_Address_ID = other_Address_ID;
-                data.UserProfile.User_Photo1 = profileModel.UserProfile.User_Photo1;
-                data.UserProfile.User_Photo2 = profileModel.UserProfile.User_Photo2;
+            var other_Address_ID = address.SaveAddress(rawDataAddress);
+            data.OtherAddress = rawDataAddress;
+            // set address again to reload page
+            data.Addresses.Address_ID = residential_Addess_ID;
+            data.Addresses.BlkHouse_Number = blkHouse_Number;
+            data.Addresses.FlrUnit_Number = flrUnit_Number;
+            data.Addresses.Street_Name = street_Name;
+            data.Addresses.Country = country;
+            data.Addresses.Postal_Code = Postal_Code;
+            //
+            data.UserProfile.Residential_Addess_ID = residential_Addess_ID;
+            data.UserProfile.Other_Address_ID = other_Address_ID;
+            data.UserProfile.User_Photo1 = profileModel.UserProfile.User_Photo1;
+            data.UserProfile.User_Photo2 = profileModel.UserProfile.User_Photo2;
 
-                data.User.LeftThumbFingerprint = profileModel.User.LeftThumbFingerprint;
-                data.User.RightThumbFingerprint = profileModel.User.RightThumbFingerprint;
+            data.User.LeftThumbFingerprint = profileModel.User.LeftThumbFingerprint;
+            data.User.RightThumbFingerprint = profileModel.User.RightThumbFingerprint;
 
-                // add some some old data not change in form
-                data.UserProfile.SerialNumber = tempUser.UserProfile.SerialNumber;
-                data.UserProfile.DateOfIssue = tempUser.UserProfile.DateOfIssue;
-                data.UserProfile.Gender = tempUser.UserProfile.Gender;
-                data.UserProfile.Race = tempUser.UserProfile.Race;
-                data.UserProfile.RightThumbImage = tempUser.UserProfile.RightThumbImage;
-                data.UserProfile.LeftThumbImage = tempUser.UserProfile.LeftThumbImage;
-                data.UserProfile.Primary_Phone = tempUser.UserProfile.Primary_Phone;
-                data.UserProfile.Secondary_Phone = tempUser.UserProfile.Secondary_Phone;
-                data.UserProfile.Primary_Email = tempUser.UserProfile.Primary_Email;
-                data.UserProfile.Secondary_Email = tempUser.UserProfile.Secondary_Email;
-                data.UserProfile.DOB = tempUser.UserProfile.DOB;
-                data.UserProfile.Nationality = tempUser.UserProfile.Nationality;
-                data.UserProfile.Maritial_Status = tempUser.UserProfile.Maritial_Status;
+            // add some some old data not change in form
+            data.UserProfile.SerialNumber = tempUser.UserProfile.SerialNumber;
+            data.UserProfile.DateOfIssue = tempUser.UserProfile.DateOfIssue;
+            data.UserProfile.Gender = tempUser.UserProfile.Gender;
+            data.UserProfile.Race = tempUser.UserProfile.Race;
+            data.UserProfile.RightThumbImage = tempUser.UserProfile.RightThumbImage;
+            data.UserProfile.LeftThumbImage = tempUser.UserProfile.LeftThumbImage;
+            data.UserProfile.Primary_Phone = tempUser.UserProfile.Primary_Phone;
+            data.UserProfile.Secondary_Phone = tempUser.UserProfile.Secondary_Phone;
+            data.UserProfile.Primary_Email = tempUser.UserProfile.Primary_Email;
+            data.UserProfile.Secondary_Email = tempUser.UserProfile.Secondary_Email;
+            data.UserProfile.DOB = tempUser.UserProfile.DOB;
+            data.UserProfile.Nationality = tempUser.UserProfile.Nationality;
+            data.UserProfile.Maritial_Status = tempUser.UserProfile.Maritial_Status;
 
-                data.User.NRIC = tempUser.User.NRIC;
-                data.User.SmartCardId = tempUser.User.SmartCardId;
-                data.User.IsFirstAttempt = tempUser.User.IsFirstAttempt;
-                //////
-                data.User.Name = tempUser.User.Name;
-                data.User.Status = tempUser.User.Status;
+            data.User.NRIC = tempUser.User.NRIC;
+            data.User.SmartCardId = tempUser.User.SmartCardId;
+            data.User.IsFirstAttempt = tempUser.User.IsFirstAttempt;
+            //////
+            data.User.Name = tempUser.User.Name;
+            data.User.Status = tempUser.User.Status;
 
 
-                var updateUserResult = dalUser.Update(data.User);
-                // dalUser.UpdateUser(data.User, data.User.UserId, true);
-                var userProfileModel = data.UserProfile;
-                userProfileModel.UserId = data.User.UserId;
-                var updateUProfileResult = dalUserprofile.UpdateProfile(userProfileModel);
+            var updateUserResult = dalUser.Update(data.User);
+            // dalUser.UpdateUser(data.User, data.User.UserId, true);
+            var userProfileModel = data.UserProfile;
+            userProfileModel.UserId = data.User.UserId;
+            var updateUProfileResult = dalUserprofile.UpdateProfile(userProfileModel);
 
                 ////send notifiy to case officer
                 APIUtils.SignalR.SendAllDutyOfficer(null,"A supervisee has updated profile.", "Please check Supervisee's information!", NotificationType.Notification);
 
 
-                //session[CommonConstants.CURRENT_EDIT_USER] = data;
-                session[CommonConstants.CURRENT_EDIT_USER] = null;
-                session["TEMP_USER"] = null;
-                //load Supervisee page 
-                LoadListSupervisee();
-            }
-            catch (Exception)
-            {
-                LoadPage("Login.html");
-            }
+            //session[CommonConstants.CURRENT_EDIT_USER] = data;
+            session[CommonConstants.CURRENT_EDIT_USER] = null;
+            session["TEMP_USER"] = null;
+            //load Supervisee page 
+            LoadListSupervisee();
         }
 
         public void saveNewDataToSession(string param)
         {
             try
             {
-                Session session = Session.Instance;
+
                 var rawData = JsonConvert.DeserializeObject<Trinity.BE.ProfileRawMData>(param);
+
                 var rawDataAddress = JsonConvert.DeserializeObject<Trinity.BE.Address>(param);
                 var rawDataOtherAddress = JsonConvert.DeserializeObject<Trinity.BE.OtherAddress>(param);
 
-                var data = new Trinity.BE.ProfileRawMData().ToProfileModel(rawData);
-                data.Addresses = rawDataAddress;
-                data.OtherAddress.Address_ID = rawDataOtherAddress.OAddress_ID;
-                data.OtherAddress.BlkHouse_Number = rawDataOtherAddress.OBlkHouse_Number;
-                data.OtherAddress.FlrUnit_Number = rawDataOtherAddress.OFlrUnit_Number;
-                data.OtherAddress.Street_Name = rawDataOtherAddress.OStreet_Name;
-                data.OtherAddress.Country = rawDataOtherAddress.OCountry;
-                data.OtherAddress.Postal_Code = rawDataOtherAddress.OPostal_Code;
 
+                Session session = Session.Instance;
                 var profileModel = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
+                profileModel.Addresses = rawDataAddress;
+                profileModel.OtherAddress.Address_ID = rawDataOtherAddress.OAddress_ID;
+                profileModel.OtherAddress.BlkHouse_Number = rawDataOtherAddress.OBlkHouse_Number;
+                profileModel.OtherAddress.FlrUnit_Number = rawDataOtherAddress.OFlrUnit_Number;
+                profileModel.OtherAddress.Street_Name = rawDataOtherAddress.OStreet_Name;
+                profileModel.OtherAddress.Country = rawDataOtherAddress.OCountry;
+                profileModel.OtherAddress.Postal_Code = rawDataOtherAddress.OPostal_Code;
+
+
+
+
+                //var data = new Trinity.BE.ProfileRawMData().ToProfileModel(rawData);
+                //data.Addresses = rawDataAddress;
+                //data.OtherAddress.Address_ID = rawDataOtherAddress.OAddress_ID;
+                //data.OtherAddress.BlkHouse_Number = rawDataOtherAddress.OBlkHouse_Number;
+                //data.OtherAddress.FlrUnit_Number = rawDataOtherAddress.OFlrUnit_Number;
+                //data.OtherAddress.Street_Name = rawDataOtherAddress.OStreet_Name;
+                //data.OtherAddress.Country = rawDataOtherAddress.OCountry;
+                //data.OtherAddress.Postal_Code = rawDataOtherAddress.OPostal_Code;
+
+                
+
+                //var profileModel = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
+
                 var tempProfileModel = (Trinity.BE.ProfileModel)session["TEMP_USER"];
+
+                //data.UserProfile.LeftThumbImage = profileModel.UserProfile.LeftThumbImage;
+                //data.UserProfile.RightThumbImage = profileModel.UserProfile.RightThumbImage;
+
 
                 var photo1 = tempProfileModel.UserProfile.User_Photo1 != null ? Convert.ToBase64String(tempProfileModel.UserProfile.User_Photo1) : null;
                 var photo2 = tempProfileModel.UserProfile.User_Photo2 != null ? Convert.ToBase64String(tempProfileModel.UserProfile.User_Photo2) : null;
                 ////////
                 session["TempPhotos"] = new Tuple<string, string>(photo1, photo2);
                 ////////
-                data.UserProfile.User_Photo1 = profileModel.UserProfile.User_Photo1;
-                data.UserProfile.User_Photo2 = profileModel.UserProfile.User_Photo2;
-                data.UserProfile.Residential_Addess_ID = profileModel.UserProfile.Residential_Addess_ID;
-                data.UserProfile.Other_Address_ID = profileModel.UserProfile.Other_Address_ID;
-                session[CommonConstants.CURRENT_EDIT_USER] = data;
+                //data.UserProfile.User_Photo1 = profileModel.UserProfile.User_Photo1;
+                //data.UserProfile.User_Photo2 = profileModel.UserProfile.User_Photo2;
+                //data.UserProfile.Residential_Addess_ID = profileModel.UserProfile.Residential_Addess_ID;
+                //data.UserProfile.Other_Address_ID = profileModel.UserProfile.Other_Address_ID;
+                //session[CommonConstants.CURRENT_EDIT_USER] = data;
 
             }
             catch
@@ -598,8 +611,7 @@ namespace Enrolment
         {
             EventCenter eventCenter = EventCenter.Default;
             var dalUser = new DAL_User();
-            UserManager<ApplicationUser> userManager = ApplicationIdentityManager.GetUserManager();
-            ApplicationUser appUser = userManager.Find(username, password);
+            ApplicationUser appUser = dalUser.Login(username,password);
             if (appUser != null)
             {
                 var userInfo = dalUser.GetUserById(appUser.Id);
@@ -612,7 +624,7 @@ namespace Enrolment
                 // Reset AccessFailedCount
                 dalUser.ChangeAccessFailedCount(appUser.Id, 0);
                 // Check if the current user is an Enrolment Officer or not
-                if (userManager.IsInRole(appUser.Id, EnumUserRoles.EnrolmentOfficer))
+                if (dalUser.IsInRole(appUser.Id, EnumUserRoles.EnrolmentOfficer))
                 {
                     // Authorized successfully
                     Trinity.BE.User user = new Trinity.BE.User()
@@ -643,7 +655,7 @@ namespace Enrolment
             }
             else
             {
-                ApplicationUser user = userManager.FindByName(username);
+                ApplicationUser user = dalUser.FindByName(username);
                 if (user != null)
                 {
                     var userInfo = dalUser.GetUserByUserId(user.Id).Data;

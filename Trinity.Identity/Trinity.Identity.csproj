@@ -61,5 +61,15 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Trinity.BE\Trinity.BE.csproj">
+      <Project>{4321fa96-3a53-49c1-89ef-8a2f6e9b81c7}</Project>
+      <Name>Trinity.BE</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Trinity.Common\Trinity.Common.csproj">
+      <Project>{6c023597-f6ba-4857-9c3b-82d91eb4b4a3}</Project>
+      <Name>Trinity.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

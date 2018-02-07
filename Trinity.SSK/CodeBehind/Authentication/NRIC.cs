@@ -84,12 +84,12 @@ namespace SSK.CodeBehind.Authentication
         public void NRICAuthentication(string nric)
         {
             DAL_User dal_User = new DAL_User();
-            var supervisee = dal_User.GetSuperviseeByNRIC(nric, true);
+            var supervisee = dal_User.GetSuperviseeByNRIC(nric);
 
             // if local user is null, get user from centralized, and sync db
             if (supervisee == null)
             {
-                supervisee = dal_User.GetSuperviseeByNRIC(nric, false);
+                supervisee = dal_User.GetSuperviseeByNRIC(nric);
             }
 
             // if centralized user is null

@@ -517,12 +517,23 @@ namespace Enrolment
                             if (currentPage.ToString() == "EditSupervisee")
                             {
                                 LayerWeb.LoadPageHtml("UpdateSuperviseeBiodata.html", currentEditUser);
-                                LayerWeb.InvokeScript("setAvatar", photo1, photo2);
                             }
                             else if (currentPage.ToString() == "UpdateSupervisee")
                             {
                                 LayerWeb.LoadPageHtml("Edit-Supervisee.html", currentEditUser);
+                                LayerWeb.InvokeScript("setAvatar", photo1, photo2);
 
+                                string fingerprintLeft = "../images/fingerprint.png";
+                                string fingerprintRight = "../images/fingerprint.png";
+                                if (currentEditUser.UserProfile.LeftThumbImage != null)
+                                {
+                                    fingerprintLeft = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(currentEditUser.UserProfile.LeftThumbImage));
+                                }
+                                if (currentEditUser.UserProfile.RightThumbImage != null)
+                                {
+                                    fingerprintRight = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(currentEditUser.UserProfile.RightThumbImage));
+                                }
+                                LayerWeb.InvokeScript("setFingerprintServerCall", fingerprintLeft, fingerprintRight);
                                 LayerWeb.InvokeScript("setAvatar", photo1, photo2);
                             }
                             CaptureAttempt(CommonConstants.CAPTURE_PHOTO_ATTEMPT);
@@ -604,12 +615,10 @@ namespace Enrolment
                 var dalUser = new DAL_User();
                 var dalUserProfile = new DAL_UserProfile();
 
-                var updateUserResult = new DAL_User().Update(profileModel.User);
-                // dalUser.UpdateUser(data.User, data.User.UserId, true);
+                new DAL_User().Update(profileModel.User);
                 var userProfileModel = profileModel.UserProfile;
                 userProfileModel.UserId = profileModel.User.UserId;
                 var updateUProfileResult = new DAL_UserProfile().UpdateProfile(userProfileModel); 
-
                 dalUser.ChangeUserStatus(profileModel.User.UserId, EnumUserStatuses.New);
 
                 new DAL_Membership_Users().UpdateFingerprint(profileModel.User.UserId, profileModel.User.LeftThumbFingerprint, profileModel.User.RightThumbFingerprint);

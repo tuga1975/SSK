@@ -40,26 +40,7 @@ namespace Trinity.Identity
         }
     }
 
-    public class ApplicationUser : IdentityUser
-    {
-        public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager, string authenticationType)
-        {
-            // Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType
-            var userIdentity = await manager.CreateIdentityAsync(this, authenticationType);
-
-            // Add custom user claims here
-            return userIdentity;
-        }
-
-        public string Name { get; set; }
-        public string NRIC { get; set; }
-        public string SmartCardId { get; set; }
-        public byte[] RightThumbFingerprint { get; set; }
-        public byte[] LeftThumbFingerprint { get; set; }
-        public string Status { get; set; }
-        public Nullable<bool> IsFirstAttempt { get; set; }
-        public int AccessFailedCount { get; set; }
-    }
+    
 
     public class ApplicationIdentityManager
     {
@@ -70,7 +51,14 @@ namespace Trinity.Identity
         {
             if (_userManager == null)
             {
-                _userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(SSKDbContext.Create()));
+                if (EnumAppConfig.IsLocal)
+                {
+                    _userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(SSKDbContext.Create()));
+                }
+                else
+                {
+                    _userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(CentralizedDBContext.Create()));
+                }
                 // Configure validation logic for usernames
                 _userManager.UserValidator = new UserValidator<ApplicationUser>(_userManager)
                 {
@@ -98,6 +86,38 @@ namespace Trinity.Identity
                 _roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(SSKDbContext.Create()));
             }
             return _roleManager;
+        }
+    }
+
+
+    public class CentralizedDBContext : IdentityDbContext<ApplicationUser>
+    {
+        private static CentralizedDBContext _dbContext = null;
+        public CentralizedDBContext()
+            : base("CentralizedDB", throwIfV1Schema: false)
+        {
+        }
+
+        protected override void OnModelCreating(System.Data.Entity.DbModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<IdentityUser>().ToTable("Membership_Users", "dbo").Property(p => p.Id).HasColumnName("UserId");
+            modelBuilder.Entity<ApplicationUser>().ToTable("Membership_Users", "dbo").Property(p => p.Id).HasColumnName("UserId");
+
+            modelBuilder.Entity<IdentityUserRole>().ToTable("Membership_UserRoles", "dbo");
+            modelBuilder.Entity<IdentityUserLogin>().ToTable("Membership_UserLogins", "dbo");
+            modelBuilder.Entity<IdentityUserClaim>().ToTable("Membership_UserClaims", "dbo");
+            modelBuilder.Entity<IdentityRole>().ToTable("Membership_Roles", "dbo");
+        }
+
+        public static CentralizedDBContext Create()
+        {
+            if (_dbContext == null)
+            {
+                _dbContext = new CentralizedDBContext();
+            }
+            return _dbContext;
         }
     }
 }
