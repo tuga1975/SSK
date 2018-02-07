@@ -72,15 +72,15 @@ namespace Trinity.Utils.Notification
             if (IsConnected)
                 HubProxy.Invoke("DeviceStatusUpdate", deviceId, deviceStatuses);
         }
-        public void SendToDutyOfficer(string UserId, string DutyOfficerID, string Subject, string Content)
+        public void SendToDutyOfficer(string UserId, string DutyOfficerID, string Subject, string Content, string notificationType)
         {
             if (IsConnected)
-                HubProxy.Invoke("SendToDutyOfficer", UserId, DutyOfficerID, Subject, Content);
+                HubProxy.Invoke("SendToDutyOfficer", UserId, DutyOfficerID, Subject, Content, notificationType);
         }
-        public void SendAllDutyOfficer(string UserId, string Subject, string Content)
+        public void SendAllDutyOfficer(string UserId, string Subject, string Content, string notificationType)
         {
             if (IsConnected)
-                HubProxy.Invoke("SendAllDutyOfficer", UserId, Subject, Content);
+                HubProxy.Invoke("SendAllDutyOfficer", UserId, Subject, Content, notificationType);
         }
         public void Dispose()
         {

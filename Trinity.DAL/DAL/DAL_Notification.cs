@@ -22,11 +22,11 @@ namespace Trinity.DAL
         /// <param name="Subject"></param>
         /// <param name="Content"></param>
         /// <param name="Station"></param>
-        public void SendToDutyOfficer(string UserId, string DutyOfficerID, string Subject, string Content, string Station = null)
+        public void SendToDutyOfficer(string UserId, string DutyOfficerID, string Subject, string Content, string notificationType, string Station = null)
         {
             if (EnumAppConfig.IsLocal)
             {
-                Lib.SignalR.SendToDutyOfficer(UserId, DutyOfficerID, Subject, Content);
+                Lib.SignalR.SendToDutyOfficer(UserId, DutyOfficerID, Subject, Content, notificationType);
             }
             else
             {
@@ -39,7 +39,8 @@ namespace Trinity.DAL
                     NotificationID = Guid.NewGuid().ToString().Trim(),
                     Source = Station,
                     Subject = Subject,
-                    ToUserId = DutyOfficerID
+                    ToUserId = DutyOfficerID,
+                    Type = notificationType.ToString()
                 });
                 _centralizedUnitOfWork.Save();
             }
@@ -51,12 +52,13 @@ namespace Trinity.DAL
         /// <param name="DutyOfficerID"></param>
         /// <param name="Subject"></param>
         /// <param name="Content"></param>
-        /// <param name="Station"></param>
-        public void SendAllDutyOfficer(string UserId, string Subject, string Content, string Statis, string Station = null)
+        /// <param name="Station"></param
+        /// <param name="notificationType"></param>
+        public void SendAllDutyOfficer(string UserId, string Subject, string Content, string Statis, string notificationType, string Station = null)
         {
             if (EnumAppConfig.IsLocal)
             {
-                Lib.SignalR.SendAllDutyOfficer(UserId, Subject, Content);
+                Lib.SignalR.SendAllDutyOfficer(UserId, Subject, Content, notificationType);
             }
             else
             {
@@ -70,7 +72,8 @@ namespace Trinity.DAL
                     NotificationID = Guid.NewGuid().ToString().Trim(),
                     Source = Station,
                     Subject = Subject,
-                    ToUserId = d
+                    ToUserId = d,
+                    Type = notificationType
                 }).ToList());
                 _centralizedUnitOfWork.Save();
             }
@@ -293,34 +296,6 @@ namespace Trinity.DAL
             return null;
         }
 
-
-        public void InsertNotification(string subject, string content, string fromUserId, string toUserId, bool isFromSupervisee, bool isLocal)
-        {
-            Trinity.DAL.DBContext.Notification notifcation = new DBContext.Notification()
-            {
-                Content = content,
-                Datetime = DateTime.Now,
-                FromUserId = fromUserId,
-                IsFromSupervisee = isFromSupervisee,
-                IsRead = false,
-                Subject = subject,
-                ToUserId = toUserId,
-                NotificationID = Guid.NewGuid().ToString().Trim()
-            };
-            IRepository<Trinity.DAL.DBContext.Notification> notificationRepo = null;
-            if (isLocal)
-            {
-                notificationRepo = _localUnitOfWork.GetRepository<Trinity.DAL.DBContext.Notification>();
-                notificationRepo.Add(notifcation);
-                _localUnitOfWork.Save();
-            }
-            else
-            {
-                notificationRepo = _centralizedUnitOfWork.GetRepository<Trinity.DAL.DBContext.Notification>();
-                notificationRepo.Add(notifcation);
-                _centralizedUnitOfWork.Save();
-            }
-        }
 
         /// <summary>
         /// Add notification

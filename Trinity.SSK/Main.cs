@@ -114,7 +114,7 @@ namespace SSK
             string message = "The fingerprint reader is not connected, please report to the Duty Officer!";
 
             // Send Notification to duty officer
-            APIUtils.SignalR.SendAllDutyOfficer(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId,"The fingerprinter is not connected", "The fingerprinter is not connected.");
+            APIUtils.SignalR.SendAllDutyOfficer(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId,"The fingerprinter is not connected", "The fingerprinter is not connected.", NotificationType.Error);
 
 
             // show message box to user
@@ -193,10 +193,11 @@ namespace SSK
                 // Start page
                 NavigateTo(NavigatorEnums.Authentication_SmartCard);
 
+
                 ////// For testing purpose
                 //Session session = Session.Instance;
                 ////////Supervisee
-                //Trinity.BE.User user = new DAL_User().GetUserByUserId("bb67863c-c330-41aa-b397-c220428ad16f", true);
+                //Trinity.BE.User user = new DAL_User().GetUserByUserId("bb67863c-c330-41aa-b397-c220428ad16f").Data;
                 //////// Duty Officer
                 //////Trinity.BE.User user = new DAL_User().GetUserByUserId("ead039f9-b9a1-45bb-8186-0bb7248aafac", true);
                 //session[CommonConstants.USER_LOGIN] = user;
@@ -208,6 +209,7 @@ namespace SSK
                 //////NavigateTo(NavigatorEnums.Authentication_NRIC);                
 
                 _isFirstTimeLoaded = false;
+                
             }
         }
 
@@ -241,7 +243,7 @@ namespace SSK
             if (_smartCardFailed > 3)
             {
                 // Send Notification to duty officer
-                APIUtils.SignalR.SendAllDutyOfficer(null,message, message);
+                APIUtils.SignalR.SendAllDutyOfficer(null,message, message, NotificationType.Error);
                 // show message box to user
                 MessageBox.Show(message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 // reset counter
@@ -313,7 +315,7 @@ namespace SSK
             Session session = Session.Instance;
             Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
             string errorMessage = "User '" + user.Name + "' cannot complete facial authentication";
-            APIUtils.SignalR.SendAllDutyOfficer(user.UserId,"Facial authentication failed", errorMessage);
+            APIUtils.SignalR.SendAllDutyOfficer(user.UserId,"Facial authentication failed", errorMessage, NotificationType.Error);
 
             // show message box to user
             MessageBox.Show("Facial authentication failed", "Facial Authentication", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -378,7 +380,7 @@ namespace SSK
                 string errorMessage = "Unable to read " + user.Name + "'s fingerprint.";
 
                 // Send Notification to duty officer
-                APIUtils.SignalR.SendAllDutyOfficer(user.UserId,"Fingerprint Authentication failed", errorMessage);
+                APIUtils.SignalR.SendAllDutyOfficer(user.UserId,"Fingerprint Authentication failed", errorMessage, NotificationType.Error);
 
                 //for testing purpose
                 EventCenter.Default.RaiseEvent(new EventInfo {Name=EventNames.FINGERPRINT_FAILED_MORE_THAN_3 ,Code=-1,Message= "Fingerprint's Authenication failed!\n Please contact your officer."});
