@@ -19,6 +19,7 @@ namespace Trinity.DAL
             if (dbAddress == null)
             {
                 dbAddress = new Trinity.DAL.DBContext.Address();
+                dbAddress.Address_ID = model.Address_ID;
                 dbAddress.BlkHouse_Number = model.BlkHouse_Number;
                 dbAddress.FlrUnit_Number = model.FlrUnit_Number;
                 dbAddress.Street_Name = model.Street_Name;
