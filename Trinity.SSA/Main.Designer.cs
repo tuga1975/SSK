@@ -37,15 +37,15 @@
             this.LayerWeb.Location = new System.Drawing.Point(0, 0);
             this.LayerWeb.MinimumSize = new System.Drawing.Size(20, 20);
             this.LayerWeb.Name = "LayerWeb";
-            this.LayerWeb.Size = new System.Drawing.Size(800, 1280);
+            this.LayerWeb.Size = new System.Drawing.Size(1256, 640);
             this.LayerWeb.TabIndex = 0;
             this.LayerWeb.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.LayerWeb_DocumentCompleted);
             // 
             // Main
             // 
-           // this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(400, 640);
+            this.ClientSize = new System.Drawing.Size(1256, 640);
             this.Controls.Add(this.LayerWeb);
             this.Name = "Main";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
