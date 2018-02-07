@@ -168,7 +168,7 @@ namespace DutyOfficer
             model.Last_Updated_Date = DateTime.Now;
 
             var dalSetting = new DAL_Setting();
-            CheckWarningSaveSetting checkWarningSaveSetting = dalSetting.CheckWarningSaveSetting((EnumDayOfWeek)model.DayOfWeek);
+            CheckWarningSaveSetting checkWarningSaveSetting = dalSetting.CheckWarningSaveSetting(model.DayOfWeek);
             if (checkWarningSaveSetting != null && checkWarningSaveSetting.arrayDetail.Count > 0)
             {
                 session[CommonConstants.SETTING_DETAIL] = model;
@@ -178,7 +178,12 @@ namespace DutyOfficer
             }
             else
             {
-                dalSetting.UpdateSettingAndTimeSlot(checkWarningSaveSetting, model);
+                SettingUpdate settingUpdate = new SettingUpdate()
+                {
+                    CheckWarningSaveSetting = checkWarningSaveSetting,
+                    SettingDetails = model
+                };
+                dalSetting.UpdateSettingAndTimeSlot(settingUpdate);
             }
         }
 
@@ -189,13 +194,18 @@ namespace DutyOfficer
             var settingDetail = (SettingDetails)session[CommonConstants.SETTING_DETAIL];
             var checkWarningSaveSetting = JsonConvert.DeserializeObject<Trinity.BE.CheckWarningSaveSetting>(jsonCheckWarningSaveSetting);
             var dalSetting = new DAL_Setting();
-            dalSetting.UpdateSettingAndTimeSlot(checkWarningSaveSetting, settingDetail);
+            SettingUpdate settingUpdate = new SettingUpdate()
+            {
+                CheckWarningSaveSetting = checkWarningSaveSetting,
+                SettingDetails = settingDetail
+            };
+            dalSetting.UpdateSettingAndTimeSlot(settingUpdate);
         }
 
         public bool CheckWarningSaveSetting(int dayOfWeek)
         {
             var dalSetting = new DAL_Setting();
-            CheckWarningSaveSetting checkWarningSaveSetting = dalSetting.CheckWarningSaveSetting((EnumDayOfWeek)dayOfWeek);
+            CheckWarningSaveSetting checkWarningSaveSetting = dalSetting.CheckWarningSaveSetting(dayOfWeek);
             return (checkWarningSaveSetting.arrayDetail.Count > 0);
 
         }
@@ -208,7 +218,7 @@ namespace DutyOfficer
             Session session = Session.Instance;
             Trinity.BE.User dutyOfficer = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
 
-            dalSetting.AddHoliday(holiday, dutyOfficer.Name, dutyOfficer.UserId);
+            dalSetting.AddHoliday(holiday.Holiday1, holiday.ShortDesc, holiday.Notes, dutyOfficer.Name, dutyOfficer.UserId);
         }
 
         public void DeleteHoliday(string date)
