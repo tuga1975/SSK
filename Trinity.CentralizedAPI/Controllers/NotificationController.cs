@@ -24,9 +24,9 @@ namespace Trinity.CentralizedAPI.Controllers
             new DAL.DAL_Notification().SendToDutyOfficer(UserId,DutyOfficerID,Subject,Content,Station);
         }
         [Route("api/Notification/SendAllDutyOfficer")]
-        public void SendAllDutyOfficer(string UserId, string Subject, string Content, string Station)
+        public void SendAllDutyOfficer(string UserId, string Subject, string Content, string Station, string notificationType)
         {
-            new DAL.DAL_Notification().SendAllDutyOfficer(UserId, Subject, Content, Station);
+            new DAL.DAL_Notification().SendAllDutyOfficer(UserId, Subject, Content, Station, notificationType);
         }
     }
 }
