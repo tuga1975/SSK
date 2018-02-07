@@ -456,6 +456,18 @@ namespace Enrolment
                         LayerWeb.InvokeScript("showPopUp", "pageUpdatePhotos");
 
                         LayerWeb.InvokeScript("setAvatar", currentNewPhotos.Item1, currentNewPhotos.Item2);
+
+                        string fingerprintLeft = "../images/fingerprint.png";
+                        string fingerprintRight = "../images/fingerprint.png";
+                        if (currentEditUser.UserProfile.LeftThumbImage != null)
+                        {
+                            fingerprintLeft = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(currentEditUser.UserProfile.LeftThumbImage));
+                        }
+                        if (currentEditUser.UserProfile.RightThumbImage != null)
+                        {
+                            fingerprintRight = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(currentEditUser.UserProfile.RightThumbImage));
+                        }
+                        LayerWeb.InvokeScript("setFingerprintServerCall", fingerprintLeft, fingerprintRight);
                     }
                     else if (currentPage.ToString() == "UpdateSuperviseePhoto")
                     {
@@ -534,7 +546,6 @@ namespace Enrolment
                                     fingerprintRight = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(currentEditUser.UserProfile.RightThumbImage));
                                 }
                                 LayerWeb.InvokeScript("setFingerprintServerCall", fingerprintLeft, fingerprintRight);
-                                LayerWeb.InvokeScript("setAvatar", photo1, photo2);
                             }
                             CaptureAttempt(CommonConstants.CAPTURE_PHOTO_ATTEMPT);
                         }
