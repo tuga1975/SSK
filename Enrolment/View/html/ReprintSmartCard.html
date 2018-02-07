@@ -30,7 +30,7 @@
                             <tbody></tbody>
                         </table>
                         <div enterreprint style="display:none;margin-top:10px;">
-                            <span style="height:30px;display:inline-block;vertical-align:middle;box-sizing:border-box;padding:0px 10px;border:1px solid #333;line-height:30px;float:left;">Enter resson to reprint:</span>
+                            <span style="height:30px;display:inline-block;vertical-align:middle;box-sizing:border-box;padding:0px 10px;border:1px solid #333;line-height:30px;float:left;">Enter reason to reprint:</span>
                             <input type="text" name="reprint" style="height:30px;display:inline-block;vertical-align:middle;box-sizing:border-box;padding:0px 10px;border:1px solid #333;width:calc(100% - 280px);float:left;margin:0px 10px;" />
                             <button type="button" style="border:1px solid #333; float:right;" onclick="ReprintIssuedCard();">Reprint</button>
                             <div style="clear:both;"></div>
@@ -141,7 +141,7 @@
             $('#data-issuedcards tbody').prepend(api.DumpDataToTxt('<tr><td>{NRIC}</td><td>{Name}</td><td>{Date_Of_Issue_Txt}</td><td>{Expired_Date_Txt}</td><td>{Serial_Number}</td><td reprintsmartcard-status>{Status}</td><td  style="text-align:center;"><a href="javascript:ShowPrintIssuedCard();"><img style="cursor:pointer;" src="../images/printer.png"/></a></td></tr>', item))
             $('[enterreprint]').css('display', 'none');
         } else {
-            alert('Card enrollment failed. Please try again!');
+            alert('Could not reprint. Please the Smart Card Printer and try again!');
         }
     }
     function ReprintIssuedCard() {
