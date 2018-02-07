@@ -225,7 +225,7 @@ namespace Enrolment
 
 
             Trinity.BE.ProfileModel profileModel = null;
-            if (session[CommonConstants.CURRENT_EDIT_USER] != null && ((Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER]).UserProfile.UserId != userId)
+            if (session[CommonConstants.CURRENT_EDIT_USER] != null && ((Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER]).User.UserId != userId)
             {
                 session[CommonConstants.CURRENT_EDIT_USER] = null;
             }

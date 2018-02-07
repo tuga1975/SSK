@@ -573,24 +573,27 @@ namespace Enrolment
             else if (e.Name == EventNames.LOAD_UPDATE_SUPERVISEE_BIODATA_SUCCEEDED)
             {
                 var profileModel = (Trinity.BE.ProfileModel)e.Data;
-                CSCallJS.LoadPageHtml(this.LayerWeb, "UpdateSuperviseeBiodata.html", profileModel);
-                if (profileModel.UserProfile.LeftThumbImage != null && profileModel.UserProfile.RightThumbImage != null)
-                {
-                    var leftFingerprint = profileModel.UserProfile.LeftThumbImage;
-                    var rightFingerprint = profileModel.UserProfile.RightThumbImage;
-
-                    LayerWeb.InvokeScript("setBase64FingerprintOnloadServerCall", Convert.ToBase64String(leftFingerprint), Convert.ToBase64String(rightFingerprint));
-
-                }
+                CSCallJS.LoadPageHtml(this.LayerWeb, "UpdateSuperviseeBiodata.html");
                 string photo1 = "../images/usr-default.jpg";
                 string photo2 = "../images/usr-default.jpg";
-                if (profileModel.UserProfile.User_Photo1 != null)
+                if (profileModel.UserProfile != null)
                 {
-                    photo1 = Convert.ToBase64String(profileModel.UserProfile.User_Photo1);
-                }
-                if (profileModel.UserProfile.User_Photo2 != null)
-                {
-                    photo2 = Convert.ToBase64String(profileModel.UserProfile.User_Photo2);
+                    if (profileModel.UserProfile.LeftThumbImage != null && profileModel.UserProfile.RightThumbImage != null)
+                    {
+                        var leftFingerprint = profileModel.UserProfile.LeftThumbImage;
+                        var rightFingerprint = profileModel.UserProfile.RightThumbImage;
+
+                        LayerWeb.InvokeScript("setBase64FingerprintOnloadServerCall", Convert.ToBase64String(leftFingerprint), Convert.ToBase64String(rightFingerprint));
+
+                    }
+                    if (profileModel.UserProfile.User_Photo1 != null)
+                    {
+                        photo1 = Convert.ToBase64String(profileModel.UserProfile.User_Photo1);
+                    }
+                    if (profileModel.UserProfile.User_Photo2 != null)
+                    {
+                        photo2 = Convert.ToBase64String(profileModel.UserProfile.User_Photo2);
+                    }
                 }
                 LayerWeb.InvokeScript("setAvatar", photo1, photo2);
             }

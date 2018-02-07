@@ -11,7 +11,9 @@ namespace Trinity.DAL
     {
         Local_UnitOfWork _localUnitOfWork = new Local_UnitOfWork();
         Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
-        public string SaveAddress(BE.Address model, bool isLocal) {
+        #region 2018
+        public string SaveAddress(BE.Address model,bool isLocal)
+        {
             if (isLocal)
             {
                 string LastestId = ProcessSaveAddress(model, _localUnitOfWork);
@@ -30,6 +32,8 @@ namespace Trinity.DAL
                 return LastestId;
             }
         }
+        #endregion
+
 
         private string ProcessSaveAddress(BE.Address model, IUnitOfWork unitOfWork)
         {
