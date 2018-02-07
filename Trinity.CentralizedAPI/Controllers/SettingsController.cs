@@ -57,5 +57,12 @@ namespace Trinity.CentralizedAPI.Controllers
             return Ok(responseModel);
         }
 
+        [HttpGet]
+        [Route("api/Setting/GetOperationSettings")]
+        public IHttpActionResult GetOperationSettings()
+        {
+            return Ok(new DAL.DAL_Setting().GetOperationSettings());
+        }
+
     }
 }

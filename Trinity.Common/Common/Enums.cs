@@ -490,3 +490,8 @@ public static class EnumPrintStatus
     public const string Successful = "Successful";
     public const string Failed = "Failed"; 
 }
+
+public static class EnumMessage
+{
+    public const string NotConnectCentralized = "Can not connect to Centralized";
+}

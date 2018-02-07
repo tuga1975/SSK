@@ -598,8 +598,7 @@ namespace Enrolment
         {
             EventCenter eventCenter = EventCenter.Default;
             var dalUser = new DAL_User();
-            UserManager<ApplicationUser> userManager = ApplicationIdentityManager.GetUserManager();
-            ApplicationUser appUser = userManager.Find(username, password);
+            ApplicationUser appUser = dalUser.Login(username,password);
             if (appUser != null)
             {
                 var userInfo = dalUser.GetUserById(appUser.Id);
@@ -612,7 +611,7 @@ namespace Enrolment
                 // Reset AccessFailedCount
                 dalUser.ChangeAccessFailedCount(appUser.Id, 0);
                 // Check if the current user is an Enrolment Officer or not
-                if (userManager.IsInRole(appUser.Id, EnumUserRoles.EnrolmentOfficer))
+                if (dalUser.IsInRole(appUser.Id, EnumUserRoles.EnrolmentOfficer))
                 {
                     // Authorized successfully
                     Trinity.BE.User user = new Trinity.BE.User()
@@ -643,7 +642,7 @@ namespace Enrolment
             }
             else
             {
-                ApplicationUser user = userManager.FindByName(username);
+                ApplicationUser user = dalUser.FindByName(username);
                 if (user != null)
                 {
                     var userInfo = dalUser.GetUserByUserId(user.Id).Data;
