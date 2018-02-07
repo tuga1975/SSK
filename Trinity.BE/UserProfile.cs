@@ -190,6 +190,5 @@ namespace Trinity.BE
                 return this.Expired_Date.HasValue ? Expired_Date.Value.ToString("dd/MM/yyyy") : string.Empty;
             }
         }
-
     }
 }

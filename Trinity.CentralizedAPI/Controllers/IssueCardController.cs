@@ -23,7 +23,7 @@ namespace Trinity.CentralizedAPI.Controllers
         [Route("api/IssueCard/Insert")]
         public void Insert([FromBody] Trinity.BE.IssueCard model)
         {
-            new DAL.DAL_IssueCard().Insert(model)
+            new DAL.DAL_IssueCard().Insert(model);
         }
 
         [HttpPost]
