@@ -432,32 +432,75 @@ namespace Trinity.DAL
         // Save OperationSetting from DutyOfficer
         public BE.SettingModel GetOperationSettings()
         {
-
-            List<OperationSetting> arraySetting = _localUnitOfWork.DataContext.OperationSettings.ToList();
-
-
-            var settingModel = new BE.SettingModel
+            if (EnumAppConfig.IsLocal)
             {
-                Monday = arraySetting.FirstOrDefault(d => d.DayOfWeek == (int)EnumDayOfWeek.Monday).Map<BE.SettingDetails>(),
-                Tuesday = arraySetting.FirstOrDefault(d => d.DayOfWeek == (int)EnumDayOfWeek.Tuesday).Map<BE.SettingDetails>(),
-                Wednesday = arraySetting.FirstOrDefault(d => d.DayOfWeek == (int)EnumDayOfWeek.Wednesday).Map<BE.SettingDetails>(),
-                Thursday = arraySetting.FirstOrDefault(d => d.DayOfWeek == (int)EnumDayOfWeek.Thursday).Map<BE.SettingDetails>(),
-                Friday = arraySetting.FirstOrDefault(d => d.DayOfWeek == (int)EnumDayOfWeek.Friday).Map<BE.SettingDetails>(),
-                Saturday = arraySetting.FirstOrDefault(d => d.DayOfWeek == (int)EnumDayOfWeek.Saturday).Map<BE.SettingDetails>(),
-                Sunday = arraySetting.FirstOrDefault(d => d.DayOfWeek == (int)EnumDayOfWeek.Sunday).Map<BE.SettingDetails>(),
-                HoliDays = GetHolidays(),
-                ChangeHistorySettings = GetHistoryChangeSettings()
-            };
+                List<OperationSetting> arraySetting = _localUnitOfWork.DataContext.OperationSettings.ToList();
 
-            settingModel.Monday = settingModel.Monday == null ? new SettingDetails() { DayOfWeek = (int)EnumDayOfWeek.Monday } : settingModel.Monday;
-            settingModel.Tuesday = settingModel.Tuesday == null ? new SettingDetails() { DayOfWeek = (int)EnumDayOfWeek.Tuesday } : settingModel.Tuesday;
-            settingModel.Wednesday = settingModel.Wednesday == null ? new SettingDetails() { DayOfWeek = (int)EnumDayOfWeek.Wednesday } : settingModel.Wednesday;
-            settingModel.Thursday = settingModel.Thursday == null ? new SettingDetails() { DayOfWeek = (int)EnumDayOfWeek.Thursday } : settingModel.Thursday;
-            settingModel.Friday = settingModel.Friday == null ? new SettingDetails() { DayOfWeek = (int)EnumDayOfWeek.Friday } : settingModel.Friday;
-            settingModel.Saturday = settingModel.Saturday == null ? new SettingDetails() { DayOfWeek = (int)EnumDayOfWeek.Saturday } : settingModel.Saturday;
-            settingModel.Sunday = settingModel.Sunday == null ? new SettingDetails() { DayOfWeek = (int)EnumDayOfWeek.Sunday } : settingModel.Sunday;
+                var settingModel = new BE.SettingModel
+                {
+                    Monday = arraySetting.FirstOrDefault(d => d.DayOfWeek == (int)EnumDayOfWeek.Monday).Map<BE.SettingDetails>(),
+                    Tuesday = arraySetting.FirstOrDefault(d => d.DayOfWeek == (int)EnumDayOfWeek.Tuesday).Map<BE.SettingDetails>(),
+                    Wednesday = arraySetting.FirstOrDefault(d => d.DayOfWeek == (int)EnumDayOfWeek.Wednesday).Map<BE.SettingDetails>(),
+                    Thursday = arraySetting.FirstOrDefault(d => d.DayOfWeek == (int)EnumDayOfWeek.Thursday).Map<BE.SettingDetails>(),
+                    Friday = arraySetting.FirstOrDefault(d => d.DayOfWeek == (int)EnumDayOfWeek.Friday).Map<BE.SettingDetails>(),
+                    Saturday = arraySetting.FirstOrDefault(d => d.DayOfWeek == (int)EnumDayOfWeek.Saturday).Map<BE.SettingDetails>(),
+                    Sunday = arraySetting.FirstOrDefault(d => d.DayOfWeek == (int)EnumDayOfWeek.Sunday).Map<BE.SettingDetails>(),
+                    HoliDays = GetHolidays(_localUnitOfWork.GetRepository<DBContext.Holiday>()),
+                    ChangeHistorySettings = GetHistoryChangeSettings(_localUnitOfWork.GetRepository<DBContext.OperationSettings_ChangeHist>())
+                };
 
-            return settingModel;
+                if (settingModel.Monday == null || settingModel.Tuesday == null || settingModel.Wednesday == null || settingModel.Thursday == null || settingModel.Friday == null 
+                    || settingModel.Saturday == null || settingModel.Sunday == null || settingModel.HoliDays == null || settingModel.ChangeHistorySettings == null)
+                {
+                    bool centralizeStatus;
+                    var centralData = CallCentralized.Get<BE.SettingModel>(EnumAPIParam.Setting, "GetOperationSettings", out centralizeStatus);
+                    if (centralizeStatus)
+                    {
+                        return centralData;
+                    }
+                    return null;
+                }
+                else
+                {
+                    settingModel.Monday = settingModel.Monday == null ? new SettingDetails() { DayOfWeek = (int)EnumDayOfWeek.Monday } : settingModel.Monday;
+                    settingModel.Tuesday = settingModel.Tuesday == null ? new SettingDetails() { DayOfWeek = (int)EnumDayOfWeek.Tuesday } : settingModel.Tuesday;
+                    settingModel.Wednesday = settingModel.Wednesday == null ? new SettingDetails() { DayOfWeek = (int)EnumDayOfWeek.Wednesday } : settingModel.Wednesday;
+                    settingModel.Thursday = settingModel.Thursday == null ? new SettingDetails() { DayOfWeek = (int)EnumDayOfWeek.Thursday } : settingModel.Thursday;
+                    settingModel.Friday = settingModel.Friday == null ? new SettingDetails() { DayOfWeek = (int)EnumDayOfWeek.Friday } : settingModel.Friday;
+                    settingModel.Saturday = settingModel.Saturday == null ? new SettingDetails() { DayOfWeek = (int)EnumDayOfWeek.Saturday } : settingModel.Saturday;
+                    settingModel.Sunday = settingModel.Sunday == null ? new SettingDetails() { DayOfWeek = (int)EnumDayOfWeek.Sunday } : settingModel.Sunday;
+
+                    return settingModel;
+                }
+            }
+            else
+            {
+                List<OperationSetting> arraySetting = _centralizedUnitOfWork.DataContext.OperationSettings.ToList();
+
+                var settingModel = new BE.SettingModel
+                {
+                    Monday = arraySetting.FirstOrDefault(d => d.DayOfWeek == (int)EnumDayOfWeek.Monday).Map<BE.SettingDetails>(),
+                    Tuesday = arraySetting.FirstOrDefault(d => d.DayOfWeek == (int)EnumDayOfWeek.Tuesday).Map<BE.SettingDetails>(),
+                    Wednesday = arraySetting.FirstOrDefault(d => d.DayOfWeek == (int)EnumDayOfWeek.Wednesday).Map<BE.SettingDetails>(),
+                    Thursday = arraySetting.FirstOrDefault(d => d.DayOfWeek == (int)EnumDayOfWeek.Thursday).Map<BE.SettingDetails>(),
+                    Friday = arraySetting.FirstOrDefault(d => d.DayOfWeek == (int)EnumDayOfWeek.Friday).Map<BE.SettingDetails>(),
+                    Saturday = arraySetting.FirstOrDefault(d => d.DayOfWeek == (int)EnumDayOfWeek.Saturday).Map<BE.SettingDetails>(),
+                    Sunday = arraySetting.FirstOrDefault(d => d.DayOfWeek == (int)EnumDayOfWeek.Sunday).Map<BE.SettingDetails>(),
+                    HoliDays = GetHolidays(_centralizedUnitOfWork.GetRepository<DBContext.Holiday>()),
+                    ChangeHistorySettings = GetHistoryChangeSettings(_centralizedUnitOfWork.GetRepository<DBContext.OperationSettings_ChangeHist>())
+                };
+
+                settingModel.Monday = settingModel.Monday == null ? new SettingDetails() { DayOfWeek = (int)EnumDayOfWeek.Monday } : settingModel.Monday;
+                settingModel.Tuesday = settingModel.Tuesday == null ? new SettingDetails() { DayOfWeek = (int)EnumDayOfWeek.Tuesday } : settingModel.Tuesday;
+                settingModel.Wednesday = settingModel.Wednesday == null ? new SettingDetails() { DayOfWeek = (int)EnumDayOfWeek.Wednesday } : settingModel.Wednesday;
+                settingModel.Thursday = settingModel.Thursday == null ? new SettingDetails() { DayOfWeek = (int)EnumDayOfWeek.Thursday } : settingModel.Thursday;
+                settingModel.Friday = settingModel.Friday == null ? new SettingDetails() { DayOfWeek = (int)EnumDayOfWeek.Friday } : settingModel.Friday;
+                settingModel.Saturday = settingModel.Saturday == null ? new SettingDetails() { DayOfWeek = (int)EnumDayOfWeek.Saturday } : settingModel.Saturday;
+                settingModel.Sunday = settingModel.Sunday == null ? new SettingDetails() { DayOfWeek = (int)EnumDayOfWeek.Sunday } : settingModel.Sunday;
+                
+                return settingModel;
+            }
+
         }
 
         #region Duty Officer        
@@ -469,17 +512,17 @@ namespace Trinity.DAL
             return DateTime.Today.AddDays(daysToAdd);
         }
 
-        public List<Trinity.BE.OperationSettings_ChangeHist> GetHistoryChangeSettings()
+        public List<Trinity.BE.OperationSettings_ChangeHist> GetHistoryChangeSettings(IRepository<DBContext.OperationSettings_ChangeHist> repoChangeHistorySetting)
         {
-            var repoChangeHistorySetting = _localUnitOfWork.GetRepository<DBContext.OperationSettings_ChangeHist>();
+            //var repoChangeHistorySetting = _localUnitOfWork.GetRepository<DBContext.OperationSettings_ChangeHist>();
             List<BE.OperationSettings_ChangeHist> results = repoChangeHistorySetting.GetAll().ToList().Select(d => d.Map<BE.OperationSettings_ChangeHist>()).OrderByDescending(t => t.LastUpdatedDate).ToList();
 
             return results;
         }
 
-        public List<BE.Holiday> GetHolidays()
+        public List<BE.Holiday> GetHolidays(IRepository<DBContext.Holiday> repoHolidays)
         {
-            var repoHolidays = _localUnitOfWork.GetRepository<DBContext.Holiday>();
+            //var repoHolidays = _localUnitOfWork.GetRepository<DBContext.Holiday>();
             List<BE.Holiday> results = repoHolidays.GetAll().ToList().Select(d => d.Map<BE.Holiday>()).ToList();
 
             return results;
