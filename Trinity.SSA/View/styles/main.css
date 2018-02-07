@@ -5,16 +5,17 @@
     background: url('../img/Background.png') no-repeat;
     width: 100%;
     background-size: cover;
-    padding-top: 20px;
 }
 .bodyContent {
-    margin: 3.9% 5%;
+    /*margin: 3.9% 5%;*/
+    margin: 20px 40px;
 }
 #header {
     width: 100%;
     height: auto;
     float: left;
-    margin-bottom: 7.8%;
+    /*margin-bottom: 7.8%;*/
+    margin-bottom: 50px;
 }
 .logo {
     position: relative;
@@ -23,13 +24,12 @@
     float: left;
 }
 .logo img {
-    width: 50%;
-    height: auto;
+    width: 235px;
 }
 .logout {
     position: relative;
     width: 30%;
-    font-size: 12px;
+    font-size: 14px;
     cursor: pointer;
     float: right;
     color: #1CACF6;
@@ -39,13 +39,13 @@
     background-color: #fff;
 }
 .logout img {
-    width: 25%;
+    width: 25px;
 }
 #parent-content {
     position: relative;
     width: 100%;
     overflow: hidden;
-    margin-bottom: 4%;
+    margin-bottom: 50px;
 }
 input{    
     border:1px solid #CCC;
@@ -85,25 +85,33 @@ input{
 .contentWrapper {
     position: relative;
     width: 100%;
-    height: 100%;
+    height: auto;
     overflow: hidden;
-    margin-bottom: 5%;
+    margin-bottom: 40px;
     box-shadow: 0px 0px 15px 2px rgba(204,204,204,1);
     background-color: #ffffff;
 }
 
 .status-text {
     width: 100%;
-    margin-bottom: 5%;
-    font-size: 12px;
+    margin-bottom: 50px;
+    font-size: 16px;
     text-align: center;
     font-weight: bold;
     color: #334352;
 }
 
 /*Scan Smart Card*/
+.scanSmartCart {
+    height: calc(100vh - 350px);
+    width: auto;
+    text-align: center;
+    padding: 40px 0 20px 0;
+}
+
 .scanSmartCart img {
-    width: 100%;
+    width: auto;
+    height: 100%;
 }
 
 .manualLogin {
@@ -115,10 +123,10 @@ input{
 .manualLogin a {
     color: #1CACF6;
     font-weight: bold;
-    font-size: 12px;
+    font-size: 14px;
 }
 .manualLogin img {
-    width: 25%;
+    width: 25px;
 }
 
 /*FingerPrint*/
@@ -131,13 +139,13 @@ input{
     overflow:hidden;
     width: 100%;
     margin-bottom: 5%;
-    font-size: 12px;
+    font-size: 16px;
     text-align: center;
     font-weight: bold;
 }
 .titles span {
     border-bottom: 2px solid pink;
-    padding-bottom: 5px;
+    padding-bottom: 10px;
 }
 
 #particularsFrm .contentWrapper {
