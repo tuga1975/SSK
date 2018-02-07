@@ -10,6 +10,98 @@ namespace Trinity.CentralizedAPI.Controllers
 {
     public class UserController : ApiController
     {
+        #region 2018
+        [HttpGet]
+        [Route("api/User/Login")]
+        //[ResponseType(typeof(ResponseModel))]
+        public IHttpActionResult Login(string username, string password)
+        {
+            return Ok(new DAL.DAL_User().Login(username, password));
+        }
+
+        [HttpGet]
+        [Route("api/User/IsInRole")]
+        public IHttpActionResult IsInRole(string Id, string Role)
+        {
+            return Ok(new DAL.DAL_User().IsInRole(Id, Role));
+        }
+        [HttpGet]
+        [Route("api/User/FindByName")]
+        public IHttpActionResult FindByName(string username)
+        {
+            return Ok(new DAL.DAL_User().FindByName(username));
+        }
+        [HttpGet]
+        [Route("api/User/GetUserById")]
+        public IHttpActionResult GetUserById(string userId)
+        {
+            return Ok(new DAL.DAL_User().GetUserById(userId));
+        }
+        [HttpPost]
+        [Route("api/User/ChangeAccessFailedCount")]
+        public void ChangeAccessFailedCount(string userId, int count)
+        {
+            new DAL.DAL_User().ChangeAccessFailedCount(userId, count);
+        }
+        [HttpGet]
+        [Route("api/User/GetSuperviseeByNRIC")]
+        public IHttpActionResult GetSuperviseeByNRIC(string nric)
+        {
+            return Ok(new DAL.DAL_User().GetSuperviseeByNRIC(nric));
+        }
+        [HttpGet]
+        [Route("api/User/GetListAllSupervisees")]
+        public IHttpActionResult GetListAllSupervisees()
+        {
+            return Ok(new DAL.DAL_User().GetListAllSupervisees());
+        }
+        [HttpGet]
+        [Route("api/User/GetProfileByUserId")]
+        public IHttpActionResult GetProfileByUserId(string userId)
+        {
+            return Ok(new DAL.DAL_UserProfile().GetProfileByUserId(userId));
+        }
+        [HttpGet]
+        [Route("api/User/GetAddByUserId")]
+        public IHttpActionResult GetAddByUserId(string userId, bool isOther)
+        {
+            return Ok(new DAL.DAL_UserProfile().GetAddByUserId(userId, isOther));
+        }
+        [HttpGet]
+        [Route("api/User/GetByUserId")]
+        public IHttpActionResult GetByUserId(string userId)
+        {
+            return Ok(new DAL.DAL_Membership_Users().GetByUserId(userId));
+        }
+
+        [HttpPost]
+        [Route("api/User/Update")]
+        public IHttpActionResult Update([FromBody] BE.User model) {
+            return Ok(new DAL.DAL_User().Update(model));
+        }
+        [HttpPost]
+        [Route("api/User/ChangeUserStatus")]
+        public void ChangeUserStatus(string userId, string status)
+        {
+            new DAL.DAL_User().ChangeUserStatus(userId, status);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="model">object[]{string userid,byte[] left,byte[] right}</param>
+        [HttpPost]
+        [Route("api/User/UpdateFingerprint")]
+        public void UpdateFingerprint([FromBody] object[] model)
+        {
+            new DAL.DAL_Membership_Users().UpdateFingerprint(model[0].ToString(), (byte[])model[1], (byte[])model[2]);
+        }
+
+        
+        #endregion
+
+
+
+
 
         [HttpGet]
         [Route("api/User/GetUserByUserId")]
@@ -24,58 +116,24 @@ namespace Trinity.CentralizedAPI.Controllers
             return Ok(result);
         }
 
-        [HttpGet]
-        [Route("api/User/GetUserProfileByUserId")]
-        //[ResponseType(typeof(ResponseModel))]
-        public IHttpActionResult GetUserProfileByUserId(string userId)
-        {
-            var responseModel = new ResponseModel();
-            var result = new DAL.DAL_UserProfile().GetProfileByUserId(userId);
-            //responseModel.ResponseCode = result.ResponseCode;
-            //responseModel.ResponseMessage = result.ResponseMessage;
-            //responseModel.Data = result.Data;
-            return Ok(result);
-        }
+        
 
-        [HttpGet]
-        [Route("api/User/GetAddressByUserId")]
-        //[ResponseType(typeof(ResponseModel))]
-        public IHttpActionResult GetAddressByUserId(string userId, string isOther)
-        {
-            var responseModel = new ResponseModel();
-            bool other = Convert.ToBoolean(isOther);
-            var result = new DAL.DAL_UserProfile().GetAddByUserId(userId, other);
-            //responseModel.ResponseCode = result.ResponseCode;
-            //responseModel.ResponseMessage = result.ResponseMessage;
-            //responseModel.Data = result.Data;
-            return Ok(result);
-        }
+        
 
-        [HttpGet]
-        [Route("api/User/GetAllSupervisees")]
-        //[ResponseType(typeof(ResponseModel))]
-        public IHttpActionResult GetAllSupervisees()
-        {
-            var responseModel = new ResponseModel();
-            var result = new DAL.DAL_User().GetListAllSupervisees();
-            //responseModel.ResponseCode = result.ResponseCode;
-            //responseModel.ResponseMessage = result.ResponseMessage;
-            //responseModel.Data = result.Data;
-            return Ok(result);
-        }
+        
 
-        [HttpPost]
-        [Route("api/User/UpdateUser")]
-        //[ResponseType(typeof(ResponseModel))]
-        public IHttpActionResult UpdateUser(BE.User model)
-        {
-            var responseModel = new ResponseModel();
-            var result = new DAL.DAL_User().Update(model);
-            //responseModel.ResponseCode = result.ResponseCode;
-            //responseModel.ResponseMessage = result.ResponseMessage;
-            //responseModel.Data = result.Data;
-            return Ok(result);
-        }
+        //[HttpPost]
+        //[Route("api/User/UpdateUser")]
+        ////[ResponseType(typeof(ResponseModel))]
+        //public IHttpActionResult UpdateUser(BE.User model)
+        //{
+        //    var responseModel = new ResponseModel();
+        //    var result = new DAL.DAL_User().Update(model);
+        //    //responseModel.ResponseCode = result.ResponseCode;
+        //    //responseModel.ResponseMessage = result.ResponseMessage;
+        //    //responseModel.Data = result.Data;
+        //    return Ok(result);
+        //}
 
         [HttpPost]
         [Route("api/User/UpdateUserProfile")]
@@ -90,18 +148,7 @@ namespace Trinity.CentralizedAPI.Controllers
             return Ok(result);
         }
 
-        [HttpGet]
-        [Route("api/User/GetMembershipByUserId")]
-        //[ResponseType(typeof(ResponseModel))]
-        public IHttpActionResult GetMembershipByUserId(string userId)
-        {
-            var responseModel = new ResponseModel();
-            var result = new DAL.DAL_Membership_Users().GetByUserId(userId);
-            //responseModel.ResponseCode = result.ResponseCode;
-            //responseModel.ResponseMessage = result.ResponseMessage;
-            //responseModel.Data = result.Data;
-            return Ok(result);
-        }
+        
 
         [HttpGet]
         [Route("api/User/GetUserBySmartCardId")]

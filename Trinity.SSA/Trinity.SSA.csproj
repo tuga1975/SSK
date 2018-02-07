@@ -206,6 +206,7 @@
     <Content Include="View\html\PrintingMUBAndTTLabels.html" />
     <Content Include="View\html\PrintingTemplates\MUBLabelTemplate.html" />
     <Content Include="View\html\QueueNumber.html" />
+    <Content Include="View\html\LoadingPopup.html" />
     <Content Include="View\html\SuperviseeParticulars.html" />
     <Content Include="View\img\central_narco_logo.png" />
     <Content Include="View\img\Logo.png" />

@@ -72,7 +72,7 @@ namespace Enrolment
             Session session = Session.Instance;
             var dalUser = new DAL_User();
             var dalUserProfile = new DAL_UserProfile();
-            var dbUser = dalUser.GetSuperviseeByNRIC(nric, true);
+            var dbUser = dalUser.GetSuperviseeByNRIC(nric);
             var listSupervisee = new List<Trinity.BE.ProfileModel>();
             if (dbUser != null)
             {
@@ -225,7 +225,7 @@ namespace Enrolment
 
 
             Trinity.BE.ProfileModel profileModel = null;
-            if (session[CommonConstants.CURRENT_EDIT_USER] != null && ((Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER]).UserProfile.UserId != userId)
+            if (session[CommonConstants.CURRENT_EDIT_USER] != null && ((Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER]).User.UserId != userId)
             {
                 session[CommonConstants.CURRENT_EDIT_USER] = null;
             }
@@ -246,6 +246,7 @@ namespace Enrolment
                     OtherAddress = new DAL_UserProfile().GetAddByUserId(dbUser.UserId, true),
                     Membership_Users = dalUserMembership.GetByUserId(userId)
                 };
+                profileModel.UserProfile = profileModel.UserProfile == null ? new Trinity.BE.UserProfile() : profileModel.UserProfile;
                 //first load set model to session 
                 session[CommonConstants.CURRENT_EDIT_USER] = profileModel;
                 session["TEMP_USER"] = profileModel;
@@ -263,12 +264,12 @@ namespace Enrolment
                 {
                     profileModel.Addresses = new Trinity.BE.Address();
                     // if address == null then set Residential_Addess_ID and Other_Address_ID = 0 to insert new record
-                    profileModel.UserProfile.Residential_Addess_ID = 0;
+                    //profileModel.UserProfile.Residential_Addess_ID = 0;
                 }
                 if (profileModel.OtherAddress == null)
                 {
                     profileModel.OtherAddress = new Trinity.BE.Address();
-                    profileModel.UserProfile.Other_Address_ID = 0;
+                    //profileModel.UserProfile.Other_Address_ID = 0;
                 }
                 session[CommonConstants.CURRENT_PAGE] = "UpdateSupervisee";
                 // _web.LoadPageHtml("Edit-Supervisee.html", profileModel);
@@ -598,8 +599,7 @@ namespace Enrolment
         {
             EventCenter eventCenter = EventCenter.Default;
             var dalUser = new DAL_User();
-            UserManager<ApplicationUser> userManager = ApplicationIdentityManager.GetUserManager();
-            ApplicationUser appUser = userManager.Find(username, password);
+            ApplicationUser appUser = dalUser.Login(username,password);
             if (appUser != null)
             {
                 var userInfo = dalUser.GetUserById(appUser.Id);
@@ -612,7 +612,7 @@ namespace Enrolment
                 // Reset AccessFailedCount
                 dalUser.ChangeAccessFailedCount(appUser.Id, 0);
                 // Check if the current user is an Enrolment Officer or not
-                if (userManager.IsInRole(appUser.Id, EnumUserRoles.EnrolmentOfficer))
+                if (dalUser.IsInRole(appUser.Id, EnumUserRoles.EnrolmentOfficer))
                 {
                     // Authorized successfully
                     Trinity.BE.User user = new Trinity.BE.User()
@@ -643,7 +643,7 @@ namespace Enrolment
             }
             else
             {
-                ApplicationUser user = userManager.FindByName(username);
+                ApplicationUser user = dalUser.FindByName(username);
                 if (user != null)
                 {
                     var userInfo = dalUser.GetUserByUserId(user.Id).Data;

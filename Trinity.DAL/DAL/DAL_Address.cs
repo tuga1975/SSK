@@ -11,71 +11,59 @@ namespace Trinity.DAL
     {
         Local_UnitOfWork _localUnitOfWork = new Local_UnitOfWork();
         Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
-        public int SaveAddress(BE.Address model, bool isLocal) {
-            try
+        #region 2018
+        public string SaveAddress(BE.Address model,bool isLocal)
+        {
+            if (isLocal)
             {
-                if (isLocal)
-                {
-                    int LastestId = ProcessSaveAddress(model, _localUnitOfWork);
-                    if (LastestId == 0) {
-                        LastestId = _localUnitOfWork.DataContext.Addresses.Max(a => a.Address_ID);
-                    }
-                    return LastestId;
-                }
-                else
-                {
-                    int LastestId = ProcessSaveAddress(model, _centralizedUnitOfWork);
-                    if (LastestId == 0)
-                    {
-                        LastestId = _centralizedUnitOfWork.DataContext.Addresses.Max(a => a.Address_ID);
-                    }
-                    return LastestId;
-                }
-
+                string LastestId = ProcessSaveAddress(model, _localUnitOfWork);
+                //if (LastestId == 0) {
+                //    LastestId = _localUnitOfWork.DataContext.Addresses.Max(a => a.Address_ID);
+                //}
+                return LastestId;
             }
-            catch (Exception ex)
+            else
             {
-                Console.WriteLine(ex.Message);
-                return 0;
+                string LastestId = ProcessSaveAddress(model, _centralizedUnitOfWork);
+                //if (LastestId == 0)
+                //{
+                //    LastestId = _centralizedUnitOfWork.DataContext.Addresses.Max(a => a.Address_ID);
+                //}
+                return LastestId;
             }
         }
+        #endregion
 
-        private int ProcessSaveAddress(BE.Address model, IUnitOfWork unitOfWork)
+
+        private string ProcessSaveAddress(BE.Address model, IUnitOfWork unitOfWork)
         {
-            try
+            var Repo = unitOfWork.GetRepository<Trinity.DAL.DBContext.Address>();
+            if (!string.IsNullOrEmpty(model.Address_ID))
             {
-                var Repo = unitOfWork.GetRepository<Trinity.DAL.DBContext.Address>();
-                if (model.Address_ID > 0)
-                {
-                    // Update
-                    var dbAddress = Repo.GetById(model.Address_ID);
-                    dbAddress.BlkHouse_Number = model.BlkHouse_Number;
-                    dbAddress.FlrUnit_Number = model.FlrUnit_Number;
-                    dbAddress.Street_Name = model.Street_Name;
-                    dbAddress.Country = model.Country;
-                    dbAddress.Postal_Code = model.Postal_Code;
-                    Repo.Update(dbAddress);
-                    unitOfWork.Save();
-                    return model.Address_ID;
-                }
-                else
-                {
-                    // Insert
-                    var dbAddress = new Trinity.DAL.DBContext.Address();
-                    dbAddress.BlkHouse_Number = model.BlkHouse_Number;
-                    dbAddress.FlrUnit_Number = model.FlrUnit_Number;
-                    dbAddress.Street_Name = model.Street_Name;
-                    dbAddress.Country = model.Country;
-                    dbAddress.Postal_Code = model.Postal_Code;
-                    Repo.Add(dbAddress);
-                    unitOfWork.Save();
-                    return 0;
-                }
+                // Update
+                var dbAddress = Repo.GetById(model.Address_ID);
+                dbAddress.BlkHouse_Number = model.BlkHouse_Number;
+                dbAddress.FlrUnit_Number = model.FlrUnit_Number;
+                dbAddress.Street_Name = model.Street_Name;
+                dbAddress.Country = model.Country;
+                dbAddress.Postal_Code = model.Postal_Code;
+                Repo.Update(dbAddress);
+                unitOfWork.Save();
+                return model.Address_ID;
             }
-            catch (Exception ex)
+            else
             {
-                Console.WriteLine(ex.Message);
-                return 0;
+                // Insert
+                var dbAddress = new Trinity.DAL.DBContext.Address();
+                dbAddress.Address_ID = Guid.NewGuid().ToString().Trim();
+                dbAddress.BlkHouse_Number = model.BlkHouse_Number;
+                dbAddress.FlrUnit_Number = model.FlrUnit_Number;
+                dbAddress.Street_Name = model.Street_Name;
+                dbAddress.Country = model.Country;
+                dbAddress.Postal_Code = model.Postal_Code;
+                Repo.Add(dbAddress);
+                unitOfWork.Save();
+                return dbAddress.Address_ID;
             }
         }
     }

@@ -604,12 +604,10 @@ namespace Enrolment
                 var dalUser = new DAL_User();
                 var dalUserProfile = new DAL_UserProfile();
 
-                var updateUserResult = new DAL_User().Update(profileModel.User);
-                // dalUser.UpdateUser(data.User, data.User.UserId, true);
+                new DAL_User().Update(profileModel.User);
                 var userProfileModel = profileModel.UserProfile;
                 userProfileModel.UserId = profileModel.User.UserId;
                 var updateUProfileResult = new DAL_UserProfile().UpdateProfile(userProfileModel); 
-
                 dalUser.ChangeUserStatus(profileModel.User.UserId, EnumUserStatuses.New);
 
                 new DAL_Membership_Users().UpdateFingerprint(profileModel.User.UserId, profileModel.User.LeftThumbFingerprint, profileModel.User.RightThumbFingerprint);
