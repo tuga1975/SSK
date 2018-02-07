@@ -36,7 +36,7 @@ namespace Trinity.DAL
             {
                 this._centralizedUnitOfWork.DataContext.Database.ExecuteSqlCommand("Update Membership_Users set SmartCardId='" + SmartCardId + "' where UserId='" + UserId + "'");
             }
-            
+
         }
         public void UpdateFingerprint(string userId, byte[] left, byte[] right)
         {
