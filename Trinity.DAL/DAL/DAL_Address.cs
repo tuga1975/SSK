@@ -12,8 +12,16 @@ namespace Trinity.DAL
         Local_UnitOfWork _localUnitOfWork = new Local_UnitOfWork();
         Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
         #region 2018
+        private void UpdateOrInsert(BE.Address model, IUnitOfWork unitOfWork)
+        {
+            //if (string.IsNullOrEmpty(model))
+            //{
+
+            //}
+        }
         public string SaveAddress(BE.Address model,bool isLocal)
         {
+            
             if (isLocal)
             {
                 string LastestId = ProcessSaveAddress(model, _localUnitOfWork);

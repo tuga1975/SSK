@@ -216,14 +216,11 @@ namespace Enrolment
         {
 
             Session session = Session.Instance;
-
             var dalUser = new DAL_User();
             var dalUserProfile = new DAL_UserProfile();
             var dalUserMembership = new DAL_Membership_Users();
             var result = dalUser.GetUserById(userId);
             var dbUser = result;
-
-
             Trinity.BE.ProfileModel profileModel = null;
             if (session[CommonConstants.CURRENT_EDIT_USER] != null && ((Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER]).User.UserId != userId)
             {
