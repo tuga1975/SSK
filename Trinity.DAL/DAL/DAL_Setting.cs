@@ -578,8 +578,7 @@ namespace Trinity.DAL
                     }
                     else
                     {
-                        //throw new Exception(EnumMessage.NotConnectCentralized);
-                        return null;
+                        throw new Exception(EnumMessage.NotConnectCentralized);
                     }
                 }
                 else
@@ -658,8 +657,7 @@ namespace Trinity.DAL
                     }
                     else
                     {
-                        //throw new Exception(EnumMessage.NotConnectCentralized);
-                        return false;
+                        throw new Exception(EnumMessage.NotConnectCentralized);
                     }
                 }
                 else
@@ -762,8 +760,7 @@ namespace Trinity.DAL
                     }
                     else
                     {
-                        //throw new Exception(EnumMessage.NotConnectCentralized);
-                        return false;
+                        throw new Exception(EnumMessage.NotConnectCentralized);
                     }
                 }
                 else
@@ -1216,8 +1213,7 @@ namespace Trinity.DAL
                         }
                         else
                         {
-                            //throw new Exception(EnumMessage.NotConnectCentralized);
-                            return null;
+                            throw new Exception(EnumMessage.NotConnectCentralized);
                         }
                     }
                 }
