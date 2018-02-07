@@ -293,7 +293,7 @@ namespace Enrolment
                 var address = new DAL_Address();
 
                 // get address_ID insert or update
-                var residential_Addess_ID = address.SaveAddress(rawDataAddress, true);
+                var residential_Addess_ID = address.SaveAddress(rawDataAddress);
                 var blkHouse_Number = rawDataAddress.BlkHouse_Number;
                 var flrUnit_Number = rawDataAddress.FlrUnit_Number;
                 var street_Name = rawDataAddress.Street_Name;
@@ -308,7 +308,7 @@ namespace Enrolment
                 rawDataAddress.Country = rawDataOtherAddress.OCountry;
                 rawDataAddress.Postal_Code = rawDataOtherAddress.OPostal_Code;
 
-                var other_Address_ID = address.SaveAddress(rawDataAddress, true);
+                var other_Address_ID = address.SaveAddress(rawDataAddress);
                 data.OtherAddress = rawDataAddress;
                 // set address again to reload page
                 data.Addresses.Address_ID = residential_Addess_ID;

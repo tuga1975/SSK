@@ -14,31 +14,54 @@ namespace Trinity.DAL
         #region 2018
         private void UpdateOrInsert(BE.Address model, IUnitOfWork unitOfWork)
         {
-            //if (string.IsNullOrEmpty(model))
-            //{
-
-            //}
-        }
-        public string SaveAddress(BE.Address model,bool isLocal)
-        {
-            
-            if (isLocal)
+            var AddressRespon = unitOfWork.GetRepository<Trinity.DAL.DBContext.Address>();
+            DBContext.Address dbAddress = AddressRespon.GetById(model.Address_ID);
+            if (dbAddress == null)
             {
-                string LastestId = ProcessSaveAddress(model, _localUnitOfWork);
-                //if (LastestId == 0) {
-                //    LastestId = _localUnitOfWork.DataContext.Addresses.Max(a => a.Address_ID);
-                //}
-                return LastestId;
+                dbAddress = new Trinity.DAL.DBContext.Address();
+                dbAddress.BlkHouse_Number = model.BlkHouse_Number;
+                dbAddress.FlrUnit_Number = model.FlrUnit_Number;
+                dbAddress.Street_Name = model.Street_Name;
+                dbAddress.Country = model.Country;
+                dbAddress.Postal_Code = model.Postal_Code;
+                AddressRespon.Add(dbAddress);
+                unitOfWork.Save();
             }
             else
             {
-                string LastestId = ProcessSaveAddress(model, _centralizedUnitOfWork);
-                //if (LastestId == 0)
-                //{
-                //    LastestId = _centralizedUnitOfWork.DataContext.Addresses.Max(a => a.Address_ID);
-                //}
-                return LastestId;
+                dbAddress.BlkHouse_Number = model.BlkHouse_Number;
+                dbAddress.FlrUnit_Number = model.FlrUnit_Number;
+                dbAddress.Street_Name = model.Street_Name;
+                dbAddress.Country = model.Country;
+                dbAddress.Postal_Code = model.Postal_Code;
+                AddressRespon.Update(dbAddress);
+                unitOfWork.Save();
             }
+        }
+        public string SaveAddress(BE.Address model)
+        {
+            if (string.IsNullOrEmpty(model.Address_ID))
+            {
+                model.Address_ID = Guid.NewGuid().ToString().Trim();
+            }
+            if (EnumAppConfig.IsLocal)
+            {
+                bool statusCentralized;
+                CallCentralized.Post("Address", "SaveAddress", out statusCentralized, model);
+                if (!statusCentralized)
+                {
+                    throw new Exception(EnumMessage.NotConnectCentralized);
+                }
+                else
+                {
+                    UpdateOrInsert(model, _localUnitOfWork);
+                }
+            }
+            else
+            {
+                UpdateOrInsert(model, _centralizedUnitOfWork);
+            }
+            return model.Address_ID;
         }
         #endregion
 
