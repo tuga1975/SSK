@@ -189,10 +189,12 @@
     width: 100%;
     border-bottom: 1px solid #ccc;
 }
+
 .contentWrapper .input-group:hover,
 .contentWrapper .input-group:focus {
     border-bottom: 1px solid #1CACF6;
 }
+
 .contentWrapper .input-group-addon {
     color: #1CACF6;
     width: 30%;
@@ -207,11 +209,15 @@
     box-shadow: none;
     width: 70%;
 }
+.contentWrapper input[readonly='readonly'] {
+    background: none;
+}
 .contentWrapper input:hover,
 .contentWrapper input:focus,
 .contentWrapper input:active {
     border: none;
     box-shadow: none;
+    background: none;
 } 
 .btn {
     color: #1CACF6;
