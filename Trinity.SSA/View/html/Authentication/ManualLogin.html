@@ -1,16 +1,19 @@
 ﻿<form id="manualLoginFrm">
-    <div class="container contentPrinting text-center center-block" style="padding-top:120px; padding-left:120px;">
+    <div class="titles"><span>Login</span></div><br />
+    <div class="container contentPrinting text-center center-block contentWrapper">
         <div class="input-group">
-            <span style="width:100px;" class="input-group-addon">NRIC:</span>
-            <input style="width:350px;" id="loginNRIC" type="text" class="form-control pri" name="loginNRIC"/>
+            <span class="input-group-addon">NRIC:</span>
+            <input id="loginNRIC" type="text" class="form-control pri" name="loginNRIC" />
         </div>
         <br />
         <div class="input-group">
-            <span style="width:100px;" class="input-group-addon">Password:</span>
-            <input style="width:350px;" id="loginPassword" type="password" class="form-control pri" name="loginPassword" />
-            <button type="button" class="btn btn-dark" style="margin-left:10px;" id="LoginBtn">Submit</button>
+            <span class="input-group-addon">Password:</span>
+            <input id="loginPassword" type="password" class="form-control pri" name="loginPassword" />
         </div>
-
+    </div>
+    <div id="divSave">
+        <button type="button" class="btn btn-dark" id="CancelBtn">CANCEL</button>
+        <button type="button" class="btn btn-dark" id="LoginBtn">SUBMIT</button>
     </div>
 </form>
 <script type="text/javascript">
@@ -30,6 +33,12 @@
             return true;
         }
         return false;
+    });
+
+
+    $('#CancelBtn').click(function () {
+        api.server.DeleteQRCodeImageFileTemp();
+        api.server.LogOut();
     });
 
 </script>

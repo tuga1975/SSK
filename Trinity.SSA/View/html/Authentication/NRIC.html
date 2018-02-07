@@ -6,24 +6,14 @@
             <span class="input-group-addon">Supervisee NRIC No</span>
             <input type="text" id="txtNRIC" class="txtNRIC" autofocus />
         </div>
-        <div style="display:block;float:right; margin-top:20px;" id="divSave">
-            <input type="button" value="Enter manually" onclick="enterManually()" />
-            <input type="button" value="Submit" onclick="api.server.SubmitNRIC($('#txtNRIC').val())" />
-        </div>
+    </div>
+    <div id="divSave">
+        <!--<input type="button" value="Enter manually" onclick="enterManually()" />
+            <input type="button" value="Submit" onclick="api.server.SubmitNRIC($('#txtNRIC').val())" />-->
+        <button type="button" class="btn btn-dark" onclick="api.server.LogOut()">Cancel</button>
+        <button type="button" class="btn btn-dark" onclick="api.server.SubmitNRIC($('#txtNRIC').val())">Submit</button>
     </div>
 </div>
-
-<style type="text/css">
-    .subcontent {
-        width: calc(100% - 20px);
-        margin-top: 200px;
-        text-align: center;
-    }
-
-    .txtNRIC {
-        height: 28px;
-    }
-</style>
 
 <script type="text/javascript">
     function enterManually() {
