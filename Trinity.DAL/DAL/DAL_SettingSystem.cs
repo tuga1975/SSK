@@ -96,8 +96,7 @@ namespace Trinity.DAL
                     }
                     else
                     {
-                        //throw new Exception(EnumMessage.NotConnectCentralized);
-                        return null;
+                        throw new Exception(EnumMessage.NotConnectCentralized);
                     }
                 }
                 else
