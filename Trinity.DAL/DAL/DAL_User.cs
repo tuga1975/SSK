@@ -13,6 +13,107 @@ namespace Trinity.DAL
         Local_UnitOfWork _localUnitOfWork = new Local_UnitOfWork();
         Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
 
+
+        #region 2018
+        public ApplicationUser Login(string username, string password)
+        {
+            if (EnumAppConfig.IsLocal)
+            {
+                ApplicationUser user = user = ApplicationIdentityManager.GetUserManager().Find(username, password); 
+                if (user == null)
+                {
+                    user = CallCentralized.Get<ApplicationUser>("User", "Login", "username=" + username, "password=" + password);
+                }
+                return user;
+            }
+            else
+            {
+                return ApplicationIdentityManager.GetUserManager().Find(username, password);
+            }
+        }
+        public bool IsInRole(string Id, string Role)
+        {
+            if (EnumAppConfig.IsLocal)
+            {
+                bool? status = status = ApplicationIdentityManager.GetUserManager().IsInRole(Id, Role);
+                if (status == null)
+                {
+                    status = CallCentralized.Get<bool>("User", "IsInRole", "Id=" + Id, "Role=" + Role);
+                }
+                return status.Value;
+            }
+            else
+            {
+                return ApplicationIdentityManager.GetUserManager().IsInRole(Id, Role); ;
+            }
+        }
+
+        public ApplicationUser FindByName(string username)
+        {
+            if (EnumAppConfig.IsLocal)
+            {
+                ApplicationUser user = ApplicationIdentityManager.GetUserManager().FindByName(username);
+                if (user == null)
+                {
+                    user = CallCentralized.Get<ApplicationUser>("User", "FindByName", "username=" + username);
+                }
+                return user;
+            }
+            else
+            {
+                return ApplicationIdentityManager.GetUserManager().FindByName(username);
+            }
+        }
+        public BE.User GetUserById(string userId)
+        {
+            if (EnumAppConfig.IsLocal)
+            {
+                bool statusCentralized;
+                BE.User user = (from mu in _localUnitOfWork.DataContext.Membership_Users
+                        join mur in _localUnitOfWork.DataContext.Membership_UserRoles on mu.UserId equals mur.UserId
+                        join mr in _localUnitOfWork.DataContext.Membership_Roles on mur.RoleId equals mr.Id
+                        where mu.UserId == userId
+                        select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, SmartCardId = mu.SmartCardId, RightThumbFingerprint = mu.RightThumbFingerprint, LeftThumbFingerprint = mu.LeftThumbFingerprint, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name, IsFirstAttempt = mu.IsFirstAttempt, AccessFailedCount = mu.AccessFailedCount, User_Photo1 = mu.User_Profiles.User_Photo1, User_Photo2 = mu.User_Profiles.User_Photo2 }).FirstOrDefault();
+                if(user==null)
+                {
+                    user = CallCentralized.Get<BE.User>("User", "GetUserById", out statusCentralized, "userId=" + userId);
+                }
+                return user;
+            }
+            else
+            {
+                var user = (from mu in _centralizedUnitOfWork.DataContext.Membership_Users
+                            join mur in _centralizedUnitOfWork.DataContext.Membership_UserRoles on mu.UserId equals mur.UserId
+                            join mr in _centralizedUnitOfWork.DataContext.Membership_Roles on mur.RoleId equals mr.Id
+                            where mu.UserId == userId
+                            select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, SmartCardId = mu.SmartCardId, RightThumbFingerprint = mu.RightThumbFingerprint, LeftThumbFingerprint = mu.LeftThumbFingerprint, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name, IsFirstAttempt = mu.IsFirstAttempt });
+                return user.FirstOrDefault();
+            }
+        }
+        public void ChangeAccessFailedCount(string userId, int count)
+        {
+            if (EnumAppConfig.IsLocal)
+            {
+                bool statusCentralized;
+                CallCentralized.Post("User", "ChangeAccessFailedCount", out statusCentralized, "userId=" + userId, "count="+ count);
+                if(!statusCentralized)
+                {
+                    throw new Exception(EnumMessage.NotConnectCentralized);
+                }
+                else
+                {
+                    UpdateAccessFailedCount(userId, count, _localUnitOfWork.GetRepository<Membership_Users>());
+                    _localUnitOfWork.Save();
+                }
+            }
+            else
+            {
+                UpdateAccessFailedCount(userId, count, _centralizedUnitOfWork.GetRepository<Membership_Users>());
+                _centralizedUnitOfWork.Save();
+            }
+        }
+        #endregion
+
         public Response<List<BE.User>> GetAllSupervisees()
         {
             if (EnumAppConfig.IsLocal)
@@ -153,50 +254,50 @@ namespace Trinity.DAL
             }
         }
 
-        public BE.User GetUserById(string userId)
-        {
-            try
-            {
-                if (EnumAppConfig.IsLocal)
-                {
-                    var user = (from mu in _localUnitOfWork.DataContext.Membership_Users
-                                join mur in _localUnitOfWork.DataContext.Membership_UserRoles on mu.UserId equals mur.UserId
-                                join mr in _localUnitOfWork.DataContext.Membership_Roles on mur.RoleId equals mr.Id
-                                where mu.UserId == userId
-                                select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, SmartCardId = mu.SmartCardId, RightThumbFingerprint = mu.RightThumbFingerprint, LeftThumbFingerprint = mu.LeftThumbFingerprint, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name, IsFirstAttempt = mu.IsFirstAttempt, AccessFailedCount = mu.AccessFailedCount, User_Photo1 = mu.User_Profiles.User_Photo1, User_Photo2 = mu.User_Profiles.User_Photo2 });
-                    if (user != null)
-                    {
-                        return user.FirstOrDefault();
-                    }
-                    else
-                    {
-                        bool centralizeStatus;
-                        var centralData = CallCentralized.Get<BE.User>(EnumAPIParam.User, "GetUserByUserId", out centralizeStatus, "userId=" + userId);
-                        if (centralizeStatus)
-                        {
-                            return centralData;
-                        }
-                    }
+        //public BE.User GetUserById(string userId)
+        //{
+        //    try
+        //    {
+        //        if (EnumAppConfig.IsLocal)
+        //        {
+        //            var user = (from mu in _localUnitOfWork.DataContext.Membership_Users
+        //                        join mur in _localUnitOfWork.DataContext.Membership_UserRoles on mu.UserId equals mur.UserId
+        //                        join mr in _localUnitOfWork.DataContext.Membership_Roles on mur.RoleId equals mr.Id
+        //                        where mu.UserId == userId
+        //                        select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, SmartCardId = mu.SmartCardId, RightThumbFingerprint = mu.RightThumbFingerprint, LeftThumbFingerprint = mu.LeftThumbFingerprint, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name, IsFirstAttempt = mu.IsFirstAttempt, AccessFailedCount = mu.AccessFailedCount, User_Photo1 = mu.User_Profiles.User_Photo1, User_Photo2 = mu.User_Profiles.User_Photo2 });
+        //            if (user != null)
+        //            {
+        //                return user.FirstOrDefault();
+        //            }
+        //            else
+        //            {
+        //                bool centralizeStatus;
+        //                var centralData = CallCentralized.Get<BE.User>(EnumAPIParam.User, "GetUserByUserId", out centralizeStatus, "userId=" + userId);
+        //                if (centralizeStatus)
+        //                {
+        //                    return centralData;
+        //                }
+        //            }
 
 
-                }
-                else
-                {
-                    var user = (from mu in _centralizedUnitOfWork.DataContext.Membership_Users
-                                join mur in _centralizedUnitOfWork.DataContext.Membership_UserRoles on mu.UserId equals mur.UserId
-                                join mr in _centralizedUnitOfWork.DataContext.Membership_Roles on mur.RoleId equals mr.Id
-                                where mu.UserId == userId
-                                select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, SmartCardId = mu.SmartCardId, RightThumbFingerprint = mu.RightThumbFingerprint, LeftThumbFingerprint = mu.LeftThumbFingerprint, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name, IsFirstAttempt = mu.IsFirstAttempt });
-                    return user.FirstOrDefault();
-                }
-                return null;
-            }
-            catch (Exception)
-            {
+        //        }
+        //        else
+        //        {
+        //            var user = (from mu in _centralizedUnitOfWork.DataContext.Membership_Users
+        //                        join mur in _centralizedUnitOfWork.DataContext.Membership_UserRoles on mu.UserId equals mur.UserId
+        //                        join mr in _centralizedUnitOfWork.DataContext.Membership_Roles on mur.RoleId equals mr.Id
+        //                        where mu.UserId == userId
+        //                        select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, SmartCardId = mu.SmartCardId, RightThumbFingerprint = mu.RightThumbFingerprint, LeftThumbFingerprint = mu.LeftThumbFingerprint, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name, IsFirstAttempt = mu.IsFirstAttempt });
+        //            return user.FirstOrDefault();
+        //        }
+        //        return null;
+        //    }
+        //    catch (Exception)
+        //    {
 
-                return null;
-            }
-        }
+        //        return null;
+        //    }
+        //}
 
         public Trinity.BE.User GetSuperviseeByNRIC(string nric, bool isLocal)
         {
@@ -250,18 +351,18 @@ namespace Trinity.DAL
                 {
                     UpdateCentral(model, model.UserId);
                     UpdateLocal(model, model.UserId);
-                    return  true;
+                    return true;
                 }
                 else
                 {
                     UpdateCentral(model, model.UserId);
-                    return  true;
+                    return true;
                 }
 
             }
             catch (Exception ex)
             {
-                return  false;
+                return false;
             }
         }
 
@@ -380,31 +481,24 @@ namespace Trinity.DAL
             }
         }
 
-        public void ChangeAccessFailedCount(string userId, int count)
-        {
-            var localUserRepo = _localUnitOfWork.GetRepository<Membership_Users>();
-            var centralUserRepo = _centralizedUnitOfWork.GetRepository<Membership_Users>();
-            UpdateAccessFailedCount(userId, count, localUserRepo);
-            UpdateAccessFailedCount(userId, count, centralUserRepo);
-            _localUnitOfWork.Save();
-            _centralizedUnitOfWork.Save();
-        }
+        //public void ChangeAccessFailedCount(string userId, int count)
+        //{
+        //    var localUserRepo = _localUnitOfWork.GetRepository<Membership_Users>();
+        //    var centralUserRepo = _centralizedUnitOfWork.GetRepository<Membership_Users>();
+        //    UpdateAccessFailedCount(userId, count, localUserRepo);
+        //    UpdateAccessFailedCount(userId, count, centralUserRepo);
+        //    _localUnitOfWork.Save();
+        //    _centralizedUnitOfWork.Save();
+        //}
 
         private void UpdateAccessFailedCount(string userId, int count, IRepository<Membership_Users> userRepo)
         {
-            try
+            var dbUser = userRepo.GetById(userId);
+            if (dbUser != null)
             {
-                var dbUser = userRepo.GetById(userId);
-                if (dbUser != null)
-                {
-                    dbUser.AccessFailedCount = count;
-                    userRepo.Update(dbUser);
+                dbUser.AccessFailedCount = count;
+                userRepo.Update(dbUser);
 
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
             }
         }
 

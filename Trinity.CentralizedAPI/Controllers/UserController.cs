@@ -10,6 +10,44 @@ namespace Trinity.CentralizedAPI.Controllers
 {
     public class UserController : ApiController
     {
+        #region 2018
+        [HttpGet]
+        [Route("api/User/Login")]
+        //[ResponseType(typeof(ResponseModel))]
+        public IHttpActionResult Login(string username, string password)
+        {
+            return Ok(new DAL.DAL_User().Login(username, password));
+        }
+
+        [HttpGet]
+        [Route("api/User/IsInRole")]
+        public IHttpActionResult IsInRole(string Id, string Role)
+        {
+            return Ok(new DAL.DAL_User().IsInRole(Id, Role));
+        }
+        [HttpGet]
+        [Route("api/User/FindByName")]
+        public IHttpActionResult FindByName(string username)
+        {
+            return Ok(new DAL.DAL_User().FindByName(username));
+        }
+        [HttpGet]
+        [Route("api/User/GetUserById")]
+        public IHttpActionResult GetUserById(string userId)
+        {
+            return Ok(new DAL.DAL_User().GetUserById(userId));
+        }
+        [HttpPost]
+        [Route("api/User/ChangeAccessFailedCount")]
+        public void ChangeAccessFailedCount(string userId, int count)
+        {
+            new DAL.DAL_User().ChangeAccessFailedCount(userId, count);
+        }
+        #endregion
+
+
+
+
 
         [HttpGet]
         [Route("api/User/GetUserByUserId")]
