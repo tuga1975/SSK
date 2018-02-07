@@ -246,6 +246,7 @@ namespace Enrolment
                     OtherAddress = new DAL_UserProfile().GetAddByUserId(dbUser.UserId, true),
                     Membership_Users = dalUserMembership.GetByUserId(userId)
                 };
+                profileModel.UserProfile = profileModel.UserProfile == null ? new Trinity.BE.UserProfile() : profileModel.UserProfile;
                 //first load set model to session 
                 session[CommonConstants.CURRENT_EDIT_USER] = profileModel;
                 session["TEMP_USER"] = profileModel;
