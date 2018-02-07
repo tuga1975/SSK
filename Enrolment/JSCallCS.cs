@@ -368,33 +368,55 @@ namespace Enrolment
         {
             try
             {
-                Session session = Session.Instance;
+
                 var rawData = JsonConvert.DeserializeObject<Trinity.BE.ProfileRawMData>(param);
+
                 var rawDataAddress = JsonConvert.DeserializeObject<Trinity.BE.Address>(param);
                 var rawDataOtherAddress = JsonConvert.DeserializeObject<Trinity.BE.OtherAddress>(param);
 
-                var data = new Trinity.BE.ProfileRawMData().ToProfileModel(rawData);
-                data.Addresses = rawDataAddress;
-                data.OtherAddress.Address_ID = rawDataOtherAddress.OAddress_ID;
-                data.OtherAddress.BlkHouse_Number = rawDataOtherAddress.OBlkHouse_Number;
-                data.OtherAddress.FlrUnit_Number = rawDataOtherAddress.OFlrUnit_Number;
-                data.OtherAddress.Street_Name = rawDataOtherAddress.OStreet_Name;
-                data.OtherAddress.Country = rawDataOtherAddress.OCountry;
-                data.OtherAddress.Postal_Code = rawDataOtherAddress.OPostal_Code;
 
+                Session session = Session.Instance;
                 var profileModel = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
+                profileModel.Addresses = rawDataAddress;
+                profileModel.OtherAddress.Address_ID = rawDataOtherAddress.OAddress_ID;
+                profileModel.OtherAddress.BlkHouse_Number = rawDataOtherAddress.OBlkHouse_Number;
+                profileModel.OtherAddress.FlrUnit_Number = rawDataOtherAddress.OFlrUnit_Number;
+                profileModel.OtherAddress.Street_Name = rawDataOtherAddress.OStreet_Name;
+                profileModel.OtherAddress.Country = rawDataOtherAddress.OCountry;
+                profileModel.OtherAddress.Postal_Code = rawDataOtherAddress.OPostal_Code;
+
+
+
+
+                //var data = new Trinity.BE.ProfileRawMData().ToProfileModel(rawData);
+                //data.Addresses = rawDataAddress;
+                //data.OtherAddress.Address_ID = rawDataOtherAddress.OAddress_ID;
+                //data.OtherAddress.BlkHouse_Number = rawDataOtherAddress.OBlkHouse_Number;
+                //data.OtherAddress.FlrUnit_Number = rawDataOtherAddress.OFlrUnit_Number;
+                //data.OtherAddress.Street_Name = rawDataOtherAddress.OStreet_Name;
+                //data.OtherAddress.Country = rawDataOtherAddress.OCountry;
+                //data.OtherAddress.Postal_Code = rawDataOtherAddress.OPostal_Code;
+
+                
+
+                //var profileModel = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
+
                 var tempProfileModel = (Trinity.BE.ProfileModel)session["TEMP_USER"];
+
+                //data.UserProfile.LeftThumbImage = profileModel.UserProfile.LeftThumbImage;
+                //data.UserProfile.RightThumbImage = profileModel.UserProfile.RightThumbImage;
+
 
                 var photo1 = tempProfileModel.UserProfile.User_Photo1 != null ? Convert.ToBase64String(tempProfileModel.UserProfile.User_Photo1) : null;
                 var photo2 = tempProfileModel.UserProfile.User_Photo2 != null ? Convert.ToBase64String(tempProfileModel.UserProfile.User_Photo2) : null;
                 ////////
                 session["TempPhotos"] = new Tuple<string, string>(photo1, photo2);
                 ////////
-                data.UserProfile.User_Photo1 = profileModel.UserProfile.User_Photo1;
-                data.UserProfile.User_Photo2 = profileModel.UserProfile.User_Photo2;
-                data.UserProfile.Residential_Addess_ID = profileModel.UserProfile.Residential_Addess_ID;
-                data.UserProfile.Other_Address_ID = profileModel.UserProfile.Other_Address_ID;
-                session[CommonConstants.CURRENT_EDIT_USER] = data;
+                //data.UserProfile.User_Photo1 = profileModel.UserProfile.User_Photo1;
+                //data.UserProfile.User_Photo2 = profileModel.UserProfile.User_Photo2;
+                //data.UserProfile.Residential_Addess_ID = profileModel.UserProfile.Residential_Addess_ID;
+                //data.UserProfile.Other_Address_ID = profileModel.UserProfile.Other_Address_ID;
+                //session[CommonConstants.CURRENT_EDIT_USER] = data;
 
             }
             catch

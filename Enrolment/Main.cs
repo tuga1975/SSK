@@ -517,12 +517,23 @@ namespace Enrolment
                             if (currentPage.ToString() == "EditSupervisee")
                             {
                                 LayerWeb.LoadPageHtml("UpdateSuperviseeBiodata.html", currentEditUser);
-                                LayerWeb.InvokeScript("setAvatar", photo1, photo2);
                             }
                             else if (currentPage.ToString() == "UpdateSupervisee")
                             {
                                 LayerWeb.LoadPageHtml("Edit-Supervisee.html", currentEditUser);
+                                LayerWeb.InvokeScript("setAvatar", photo1, photo2);
 
+                                string fingerprintLeft = "../images/fingerprint.png";
+                                string fingerprintRight = "../images/fingerprint.png";
+                                if (currentEditUser.UserProfile.LeftThumbImage != null)
+                                {
+                                    fingerprintLeft = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(currentEditUser.UserProfile.LeftThumbImage));
+                                }
+                                if (currentEditUser.UserProfile.RightThumbImage != null)
+                                {
+                                    fingerprintRight = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(currentEditUser.UserProfile.RightThumbImage));
+                                }
+                                LayerWeb.InvokeScript("setFingerprintServerCall", fingerprintLeft, fingerprintRight);
                                 LayerWeb.InvokeScript("setAvatar", photo1, photo2);
                             }
                             CaptureAttempt(CommonConstants.CAPTURE_PHOTO_ATTEMPT);
