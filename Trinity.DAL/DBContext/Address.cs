@@ -21,7 +21,7 @@ namespace Trinity.DAL.DBContext
             this.User_Profiles1 = new HashSet<User_Profiles>();
         }
     
-        public int Address_ID { get; set; }
+        public string Address_ID { get; set; }
         public string Name { get; set; }
         public string BlkHouse_Number { get; set; }
         public string FlrUnit_Number { get; set; }

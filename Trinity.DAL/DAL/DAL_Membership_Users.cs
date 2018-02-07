@@ -13,53 +13,70 @@ namespace Trinity.DAL
         Local_UnitOfWork _localUnitOfWork = new Local_UnitOfWork();
         Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
 
+
+        #region 2018
         public void UpdateFingerprint(string userId, byte[] left, byte[] right)
         {
-            Membership_Users user = this._localUnitOfWork.DataContext.Membership_Users.FirstOrDefault(d => d.UserId == userId);
-            if (left!=null && left.Length > 0)
-                user.LeftThumbFingerprint = left;
-            if (right!=null && right.Length > 0)
-                user.RightThumbFingerprint = right;
-            if ((left != null && left.Length > 0) || (right != null && right.Length > 0))
+            if (EnumAppConfig.IsLocal)
             {
-                this._localUnitOfWork.GetRepository<Membership_Users>().Update(user);
-                this._localUnitOfWork.Save();
-            }
-        }
-        public Trinity.BE.Membership_Users GetByUserId(string UserId)
-        {
-            try
-            {
-                if (EnumAppConfig.IsLocal)
+                bool statusCentralized;
+                CallCentralized.Post<bool>("User", "UpdateFingerprint", out statusCentralized, new object[] { userId , left, right });
+                if (!statusCentralized)
                 {
-
-                    var data = _localUnitOfWork.DataContext.Membership_Users.FirstOrDefault(d => d.UserId == UserId).Map<Trinity.BE.Membership_Users>();
-                    if (data != null)
-                    {
-                        return data;
-                    }
-                    else
-                    {
-                        bool centralizeStatus;
-                        var centralData = CallCentralized.Get<BE.Membership_Users>(EnumAPIParam.User, "GetMembershipByUserId", out centralizeStatus, "userId" + UserId);
-                        if (centralizeStatus)
-                        {
-                            return centralData;
-                        }
-                    }
+                    throw new Exception(EnumMessage.NotConnectCentralized);
                 }
                 else
                 {
-                    return _centralizedUnitOfWork.DataContext.Membership_Users.FirstOrDefault(d => d.UserId == UserId).Map<Trinity.BE.Membership_Users>();
+                    Membership_Users user = this._localUnitOfWork.DataContext.Membership_Users.FirstOrDefault(d => d.UserId == userId);
+                    if (left != null && left.Length > 0)
+                        user.LeftThumbFingerprint = left;
+                    if (right != null && right.Length > 0)
+                        user.RightThumbFingerprint = right;
+                    if ((left != null && left.Length > 0) || (right != null && right.Length > 0))
+                    {
+                        this._localUnitOfWork.GetRepository<Membership_Users>().Update(user);
+                        this._localUnitOfWork.Save();
+                    }
                 }
-                return null;
+
+                
             }
-            catch (Exception)
+            else
+            {
+                Membership_Users user = this._centralizedUnitOfWork.DataContext.Membership_Users.FirstOrDefault(d => d.UserId == userId);
+                if (left != null && left.Length > 0)
+                    user.LeftThumbFingerprint = left;
+                if (right != null && right.Length > 0)
+                    user.RightThumbFingerprint = right;
+                if ((left != null && left.Length > 0) || (right != null && right.Length > 0))
+                {
+                    this._centralizedUnitOfWork.GetRepository<Membership_Users>().Update(user);
+                    this._centralizedUnitOfWork.Save();
+                }
+            }
+            
+        }
+        public Trinity.BE.Membership_Users GetByUserId(string UserId)
+        {
+            if (EnumAppConfig.IsLocal)
             {
 
-                return null;
+                Trinity.BE.Membership_Users data = _localUnitOfWork.DataContext.Membership_Users.FirstOrDefault(d => d.UserId == UserId).Map<Trinity.BE.Membership_Users>();
+                if (data == null)
+                {
+                    data = CallCentralized.Get<BE.Membership_Users>(EnumAPIParam.User, "GetMembershipByUserId", "userId" + UserId);
+                }
+                return data;
+            }
+            else
+            {
+                return _centralizedUnitOfWork.DataContext.Membership_Users.FirstOrDefault(d => d.UserId == UserId).Map<Trinity.BE.Membership_Users>();
             }
         }
+        #endregion
+
+        
+       
         public void UpdateSmartCardId(string UserId, string SmartCardId)
         {
             this._localUnitOfWork.DataContext.Database.ExecuteSqlCommand("Update Membership_Users set SmartCardId='"+ SmartCardId + "' where UserId='"+ UserId + "'");
