@@ -29,7 +29,7 @@
           <Key>
             <PropertyRef Name="Address_ID" />
           </Key>
-          <Property Name="Address_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Address_ID" Type="nvarchar" MaxLength="128" Nullable="false" />
           <Property Name="Name" Type="nvarchar" MaxLength="255" />
           <Property Name="BlkHouse_Number" Type="varchar" MaxLength="50" />
           <Property Name="FlrUnit_Number" Type="varchar" MaxLength="50" />
@@ -409,8 +409,8 @@
           <Property Name="DOB" Type="date" />
           <Property Name="Nationality" Type="varchar" MaxLength="50" />
           <Property Name="Maritial_Status" Type="nvarchar" MaxLength="50" />
-          <Property Name="Residential_Addess_ID" Type="int" />
-          <Property Name="Other_Address_ID" Type="int" />
+          <Property Name="Residential_Addess_ID" Type="nvarchar" MaxLength="128" />
+          <Property Name="Other_Address_ID" Type="nvarchar" MaxLength="128" />
           <Property Name="NextOfKin_Name" Type="nvarchar" MaxLength="255" />
           <Property Name="NextOfKin_Contact_Number" Type="varchar" MaxLength="50" />
           <Property Name="NextOfKin_Relationship" Type="nvarchar" MaxLength="255" />
@@ -1041,7 +1041,7 @@
           <Key>
             <PropertyRef Name="Address_ID" />
           </Key>
-          <Property Name="Address_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Address_ID" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="BlkHouse_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="FlrUnit_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
@@ -1462,8 +1462,8 @@
           <Property Name="DOB" Type="DateTime" Precision="0" />
           <Property Name="Nationality" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Maritial_Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Residential_Addess_ID" Type="Int32" />
-          <Property Name="Other_Address_ID" Type="Int32" />
+          <Property Name="Residential_Addess_ID" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Other_Address_ID" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="NextOfKin_Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="NextOfKin_Contact_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="NextOfKin_Relationship" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />

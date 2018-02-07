@@ -84,12 +84,12 @@ namespace Enrolment.CodeBehind.Authentication
         public void NRICAuthentication(string nric)
         {
             DAL_User dal_User = new DAL_User();
-            var user = dal_User.GetSuperviseeByNRIC(nric, true);
+            var user = dal_User.GetSuperviseeByNRIC(nric);
 
             // if local user is null, get user from centralized, and sync db
             if (user == null)
             {
-                user = dal_User.GetSuperviseeByNRIC(nric, false);
+                user = dal_User.GetSuperviseeByNRIC(nric);
             }
 
             // if centralized user is null

@@ -72,7 +72,7 @@ namespace Enrolment
             Session session = Session.Instance;
             var dalUser = new DAL_User();
             var dalUserProfile = new DAL_UserProfile();
-            var dbUser = dalUser.GetSuperviseeByNRIC(nric, true);
+            var dbUser = dalUser.GetSuperviseeByNRIC(nric);
             var listSupervisee = new List<Trinity.BE.ProfileModel>();
             if (dbUser != null)
             {
@@ -263,12 +263,12 @@ namespace Enrolment
                 {
                     profileModel.Addresses = new Trinity.BE.Address();
                     // if address == null then set Residential_Addess_ID and Other_Address_ID = 0 to insert new record
-                    profileModel.UserProfile.Residential_Addess_ID = 0;
+                    //profileModel.UserProfile.Residential_Addess_ID = 0;
                 }
                 if (profileModel.OtherAddress == null)
                 {
                     profileModel.OtherAddress = new Trinity.BE.Address();
-                    profileModel.UserProfile.Other_Address_ID = 0;
+                    //profileModel.UserProfile.Other_Address_ID = 0;
                 }
                 session[CommonConstants.CURRENT_PAGE] = "UpdateSupervisee";
                 // _web.LoadPageHtml("Edit-Supervisee.html", profileModel);

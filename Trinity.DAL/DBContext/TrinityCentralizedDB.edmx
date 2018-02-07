@@ -29,7 +29,7 @@
           <Key>
             <PropertyRef Name="Address_ID" />
           </Key>
-          <Property Name="Address_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Address_ID" Type="nvarchar" MaxLength="128" Nullable="false" />
           <Property Name="Name" Type="nvarchar" MaxLength="255" />
           <Property Name="BlkHouse_Number" Type="varchar" MaxLength="50" />
           <Property Name="FlrUnit_Number" Type="varchar" MaxLength="50" />
@@ -409,8 +409,8 @@
           <Property Name="DOB" Type="date" />
           <Property Name="Nationality" Type="varchar" MaxLength="50" />
           <Property Name="Maritial_Status" Type="nvarchar" MaxLength="50" />
-          <Property Name="Residential_Addess_ID" Type="int" />
-          <Property Name="Other_Address_ID" Type="int" />
+          <Property Name="Residential_Addess_ID" Type="nvarchar" MaxLength="128" />
+          <Property Name="Other_Address_ID" Type="nvarchar" MaxLength="128" />
           <Property Name="NextOfKin_Name" Type="nvarchar" MaxLength="255" />
           <Property Name="NextOfKin_Contact_Number" Type="varchar" MaxLength="50" />
           <Property Name="NextOfKin_Relationship" Type="nvarchar" MaxLength="255" />
@@ -909,6 +909,7 @@
           <EntitySet Name="Queues" EntityType="TrinityCentralizedDBModel.Queue" />
           <EntitySet Name="Security_QA" EntityType="TrinityCentralizedDBModel.Security_QA" />
           <EntitySet Name="SentMessages" EntityType="TrinityCentralizedDBModel.SentMessage" />
+          <EntitySet Name="Settings" EntityType="TrinityCentralizedDBModel.Setting" />
           <EntitySet Name="SMS_LOG" EntityType="TrinityCentralizedDBModel.SMS_LOG" />
           <EntitySet Name="Timeslots" EntityType="TrinityCentralizedDBModel.Timeslot" />
           <EntitySet Name="User_Profiles" EntityType="TrinityCentralizedDBModel.User_Profiles" />
@@ -1012,7 +1013,6 @@
             <End Role="User_Profiles" EntitySet="User_Profiles" />
             <End Role="SentMessage" EntitySet="SentMessages" />
           </AssociationSet>
-          <EntitySet Name="Settings" EntityType="TrinityCentralizedDBModel.Setting" />
         </EntityContainer>
         <EntityType Name="AbsenceReporting">
           <Key>
@@ -1041,7 +1041,7 @@
           <Key>
             <PropertyRef Name="Address_ID" />
           </Key>
-          <Property Name="Address_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Address_ID" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="BlkHouse_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="FlrUnit_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
@@ -1180,9 +1180,9 @@
           <Property Name="LastStation" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="PrintCount" Type="Int32" Nullable="false" />
           <Property Name="ReprintReason" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Membership_Users" Relationship="TrinityCentralizedDBModel.FK_Labels_Membership_Users" FromRole="Label" ToRole="Membership_Users" />
           <Property Name="PrintStatus" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="Message" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Membership_Users" Relationship="TrinityCentralizedDBModel.FK_Labels_Membership_Users" FromRole="Label" ToRole="Membership_Users" />
         </EntityType>
         <EntityType Name="Membership_RoleClaims">
           <Key>
@@ -1408,6 +1408,18 @@
           <NavigationProperty Name="MsgRecipients" Relationship="TrinityCentralizedDBModel.FK_MsgRecipients_SentMessages" FromRole="SentMessage" ToRole="MsgRecipient" />
           <NavigationProperty Name="User_Profiles" Relationship="TrinityCentralizedDBModel.FK_SentMessages_User_Profiles" FromRole="SentMessage" ToRole="User_Profiles" />
         </EntityType>
+        <EntityType Name="Setting">
+          <Key>
+            <PropertyRef Name="Year" />
+          </Key>
+          <Property Name="Year" Type="Int32" Nullable="false" />
+          <Property Name="CompanyName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="VenueName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MaxCardNumber" Type="Int32" />
+          <Property Name="MaxMarkingNo" Type="Int32" />
+          <Property Name="Address" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ContactNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
         <EntityType Name="SMS_LOG">
           <Key>
             <PropertyRef Name="SMS_LOG_ID" />
@@ -1450,8 +1462,8 @@
           <Property Name="DOB" Type="DateTime" Precision="0" />
           <Property Name="Nationality" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Maritial_Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Residential_Addess_ID" Type="Int32" />
-          <Property Name="Other_Address_ID" Type="Int32" />
+          <Property Name="Residential_Addess_ID" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Other_Address_ID" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="NextOfKin_Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="NextOfKin_Contact_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="NextOfKin_Relationship" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
@@ -1791,18 +1803,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="Setting">
-          <Key>
-            <PropertyRef Name="Year" />
-          </Key>
-          <Property Name="Year" Type="Int32" Nullable="false" />
-          <Property Name="CompanyName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="VenueName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="MaxCardNumber" Type="Int32" />
-          <Property Name="MaxMarkingNo" Type="Int32" />
-          <Property Name="Address" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="ContactNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -2181,6 +2181,19 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Settings">
+            <EntityTypeMapping TypeName="TrinityCentralizedDBModel.Setting">
+              <MappingFragment StoreEntitySet="Settings">
+                <ScalarProperty Name="ContactNumber" ColumnName="ContactNumber" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="MaxMarkingNo" ColumnName="MaxMarkingNo" />
+                <ScalarProperty Name="MaxCardNumber" ColumnName="MaxCardNumber" />
+                <ScalarProperty Name="VenueName" ColumnName="VenueName" />
+                <ScalarProperty Name="CompanyName" ColumnName="CompanyName" />
+                <ScalarProperty Name="Year" ColumnName="Year" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="SMS_LOG">
             <EntityTypeMapping TypeName="TrinityCentralizedDBModel.SMS_LOG">
               <MappingFragment StoreEntitySet="SMS_LOG">
@@ -2249,19 +2262,6 @@
                 <ScalarProperty Name="Secondary_Phone" ColumnName="Secondary_Phone" />
                 <ScalarProperty Name="Primary_Phone" ColumnName="Primary_Phone" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Settings">
-            <EntityTypeMapping TypeName="TrinityCentralizedDBModel.Setting">
-              <MappingFragment StoreEntitySet="Settings">
-                <ScalarProperty Name="ContactNumber" ColumnName="ContactNumber" />
-                <ScalarProperty Name="Address" ColumnName="Address" />
-                <ScalarProperty Name="MaxMarkingNo" ColumnName="MaxMarkingNo" />
-                <ScalarProperty Name="MaxCardNumber" ColumnName="MaxCardNumber" />
-                <ScalarProperty Name="VenueName" ColumnName="VenueName" />
-                <ScalarProperty Name="CompanyName" ColumnName="CompanyName" />
-                <ScalarProperty Name="Year" ColumnName="Year" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
