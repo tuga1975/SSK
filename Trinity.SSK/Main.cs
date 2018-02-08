@@ -139,15 +139,8 @@ namespace SSK
 
         private void GetCardInfoSucceeded(string cardUID)
         {
-            // get local user info
             DAL_User dAL_User = new DAL_User();
-
             Trinity.BE.User user = dAL_User.GetUserBySmartCardId(cardUID);
-            // if local user is null, get user from centralized, and sync db
-            if (user == null)
-            {
-                user = dAL_User.GetUserBySmartCardId(cardUID);
-            }
 
             if (user != null)
             {
@@ -382,14 +375,14 @@ namespace SSK
                 // Send Notification to duty officer
                 APIUtils.SignalR.SendAllDutyOfficer(user.UserId,"Fingerprint Authentication failed", errorMessage, NotificationType.Error);
 
-                //for testing purpose
                 EventCenter.Default.RaiseEvent(new EventInfo {Name=EventNames.FINGERPRINT_FAILED_MORE_THAN_3 ,Code=-1,Message= "Fingerprint's Authenication failed!\n Please contact your officer."});
-                
+
+                //for testing purpose
                 // Pause for 1 second and goto Facial Login Screen
                 //Thread.Sleep(1000);
-                //_fingerprintFailed = 0;
+                _fingerprintFailed = 0;
 
-               
+
 
                 // Navigate to next page: Facial Authentication
                 //NavigateTo(NavigatorEnums.Authentication_Facial);

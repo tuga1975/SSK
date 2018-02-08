@@ -394,29 +394,47 @@ namespace Enrolment
 
                     if (currentEditUser != null)
                     {
-                        if (currentPhotosSession != null)
-                        {
-                            currentOldPhotos = (Tuple<string, string>)currentPhotosSession;
-                        }
-                        else
-                        {
-                            if (currentEditUser.UserProfile.User_Photo1 != null && currentEditUser.UserProfile.User_Photo2 != null)
-                            {
-                                var uPhoto1 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo1);
-                                var uPhoto2 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo2);
-                                currentOldPhotos = new Tuple<string, string>(uPhoto1, uPhoto2);
+                        //if (currentPhotosSession != null)
+                        //{
+                        //    currentOldPhotos = (Tuple<string, string>)currentPhotosSession;
+                        //}
+                        //else
+                        //{
+                        //    if (currentEditUser.UserProfile.User_Photo1 != null && currentEditUser.UserProfile.User_Photo2 != null)
+                        //    {
+                        //        var uPhoto1 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo1);
+                        //        var uPhoto2 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo2);
+                        //        currentOldPhotos = new Tuple<string, string>(uPhoto1, uPhoto2);
 
-                            }
-                            else if (currentEditUser.UserProfile.User_Photo1 == null && currentEditUser.UserProfile.User_Photo2 != null)
-                            {
-                                var uPhoto2 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo2);
-                                currentOldPhotos = new Tuple<string, string>(string.Empty, uPhoto2);
-                            }
-                            else if (currentEditUser.UserProfile.User_Photo1 != null && currentEditUser.UserProfile.User_Photo2 == null)
-                            {
-                                var uPhoto1 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo1);
-                                currentOldPhotos = new Tuple<string, string>(uPhoto1, string.Empty);
-                            }
+                        //    }
+                        //    else if (currentEditUser.UserProfile.User_Photo1 == null && currentEditUser.UserProfile.User_Photo2 != null)
+                        //    {
+                        //        var uPhoto2 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo2);
+                        //        currentOldPhotos = new Tuple<string, string>(string.Empty, uPhoto2);
+                        //    }
+                        //    else if (currentEditUser.UserProfile.User_Photo1 != null && currentEditUser.UserProfile.User_Photo2 == null)
+                        //    {
+                        //        var uPhoto1 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo1);
+                        //        currentOldPhotos = new Tuple<string, string>(uPhoto1, string.Empty);
+                        //    }
+                        //}
+
+                        if (currentEditUser.UserProfile.User_Photo1 != null && currentEditUser.UserProfile.User_Photo2 != null)
+                        {
+                            var uPhoto1 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo1);
+                            var uPhoto2 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo2);
+                            currentOldPhotos = new Tuple<string, string>(uPhoto1, uPhoto2);
+
+                        }
+                        else if (currentEditUser.UserProfile.User_Photo1 == null && currentEditUser.UserProfile.User_Photo2 != null)
+                        {
+                            var uPhoto2 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo2);
+                            currentOldPhotos = new Tuple<string, string>(string.Empty, uPhoto2);
+                        }
+                        else if (currentEditUser.UserProfile.User_Photo1 != null && currentEditUser.UserProfile.User_Photo2 == null)
+                        {
+                            var uPhoto1 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo1);
+                            currentOldPhotos = new Tuple<string, string>(uPhoto1, string.Empty);
                         }
 
                         if (image1 != null)

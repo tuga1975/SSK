@@ -122,8 +122,27 @@
     display: inline-block;
     text-align: left;
     vertical-align: middle;
+    width: 350px;
 }
-
+.modal-content {
+    padding: 20px;
+}
+.modal-body .title {
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+}
+.modal-body .contentMesg {
+    text-align: center;
+    padding: 10px 0 20px 0;
+}
+.modal-body #btnOK {
+    width: 100%;
+    background-color: #1CACF6;
+    text-align: center;
+    color: #fff;
+    font-weight: bold;
+}
 /*Scan Smart Card*/
 .scanSmartCart {
     height: calc(100vh - 330px);
@@ -133,7 +152,7 @@
     background-image: url('../img/ScanSmartCard.png');
     background-position: center;
     background-repeat: no-repeat;
-    background-size:contain;
+    background-size: contain;
 }
 
 .scanSmartCart img {
@@ -197,7 +216,7 @@
 
 .contentWrapper .input-group-addon {
     color: #1CACF6;
-    width: 30%;
+    width: 100px;
     text-align: left;
     background: none;
     border: none;
@@ -207,7 +226,7 @@
     background: none;
     border: none;
     box-shadow: none;
-    width: 70%;
+    width: calc(100% - 100px);
 }
 .contentWrapper input[readonly='readonly'] {
     background: none;

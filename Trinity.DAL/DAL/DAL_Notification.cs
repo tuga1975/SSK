@@ -14,6 +14,66 @@ namespace Trinity.DAL
         Local_UnitOfWork _localUnitOfWork = new Local_UnitOfWork();
         Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
 
+        #region refactor 2018
+        public List<Notification> GetAllNotifications(string userId)
+        {
+            // local request
+            if (EnumAppConfig.IsLocal)
+            {
+                // select from localdb
+                List<Notification> notifications = _localUnitOfWork.DataContext.Notifications
+                    .Where(d => (!string.IsNullOrEmpty(d.FromUserId) && d.FromUserId == userId) || (!string.IsNullOrEmpty(d.ToUserId) && d.ToUserId == userId))
+                    .Select(item => new Notification()
+                    {
+                        Content = item.Content,
+                        Date = item.Datetime,
+                        FromUserId = item.FromUserId,
+                        ID = item.NotificationID,
+                        IsRead = item.IsRead.HasValue ? item.IsRead.Value : false,
+                        Subject = item.Subject,
+                        ToUserId = item.ToUserId
+                    }).ToList();
+
+                // if null, get data from centralized (check bypass)
+                if (notifications == null && notifications.Count == 0 && !EnumAppConfig.ByPassCentralizedDB)
+                {
+
+                }
+
+                // if centralized had data, update local
+
+                return notifications;
+            }
+            else // centralized api request
+            {
+                return _centralizedUnitOfWork.DataContext.Notifications.Where(d => (!string.IsNullOrEmpty(d.FromUserId) && d.FromUserId == userId) || (!string.IsNullOrEmpty(d.ToUserId) && d.ToUserId == userId)).Select(item => new Notification()
+                {
+                    Content = item.Content,
+                    Date = item.Datetime,
+                    FromUserId = item.FromUserId,
+                    ID = item.NotificationID,
+                    IsRead = item.IsRead.HasValue ? item.IsRead.Value : false,
+                    Subject = item.Subject,
+                    ToUserId = item.ToUserId
+                }).ToList();
+            }
+        }
+
+        public string GetNotification(string id)
+        {
+            // local request
+            if (EnumAppConfig.IsLocal)
+            {
+                // select from localdb
+                return _localUnitOfWork.DataContext.Notifications.Find(id).Content;
+
+                // no need sync data because GetAllNotifications() already did it
+            }
+
+            return string.Empty;
+        }
+        #endregion
+
         /// <summary>
         /// App call ko cần truyền Station
         /// </summary>
@@ -117,7 +177,7 @@ namespace Trinity.DAL
                         Content = item.Content,
                         Date = item.Datetime,
                         FromUserId = item.FromUserId,
-                        ID = new Guid(item.NotificationID),
+                        ID = item.NotificationID,
                         IsRead = item.IsRead.HasValue ? item.IsRead.Value : false,
                         Subject = item.Subject,
                         ToUserId = item.ToUserId
@@ -132,7 +192,7 @@ namespace Trinity.DAL
                     Content = item.Content,
                     Date = item.Datetime,
                     FromUserId = item.FromUserId,
-                    ID = new Guid(item.NotificationID),
+                    ID = item.NotificationID,
                     IsRead = item.IsRead.HasValue ? item.IsRead.Value : false,
                     Subject = item.Subject,
                     ToUserId = item.ToUserId
@@ -204,7 +264,7 @@ namespace Trinity.DAL
                     Content = item.Content,
                     Date = item.Datetime,
                     FromUserId = item.FromUserId,
-                    ID = new Guid(item.NotificationID),
+                    ID = item.NotificationID,
                     IsRead = item.IsRead.HasValue ? item.IsRead.Value : false,
                     Subject = item.Subject,
                     ToUserId = item.ToUserId

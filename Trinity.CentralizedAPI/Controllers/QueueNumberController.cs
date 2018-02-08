@@ -39,19 +39,20 @@ namespace Trinity.CentralizedAPI.Controllers
 
         }
 
-        [HttpGet]
-        [Route("api/QueueNumber/GetAllQueueNumberByDate")]
-        public IHttpActionResult GetAllQueueNumberByDate(string date, string station)
-        {
-            var _date = DateTime.Now;
-            if (DateTime.TryParse(date, out _date))
-            {
-                var result = new DAL.DAL_QueueNumber().GetAllQueueNumberByDate(_date, station);
-                return Ok(result);
-            }
-            return null;
+        //[HttpGet]
+        //[Route("api/QueueNumber/GetAllQueueNumberByDate")]
+        //public IHttpActionResult GetAllQueueNumberByDate(string date, string station)
+        //{
+        //    var _date = DateTime.Now;
+        //    if (DateTime.TryParse(date, out _date))
+        //    {
+        //        var result = new DAL.DAL_QueueNumber().GetAllQueueNumberByDate(_date, station);
+        //        return Ok(result);
+        //    }
+        //    return null;
 
-        }
+        //}
+
         [HttpGet]
         [Route("api/QueueNumber/GetAllQueueByNextimeslot")]
         public IHttpActionResult GetAllQueueByNextimeslot(string timeSlot, string station)

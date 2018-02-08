@@ -142,7 +142,7 @@ namespace Trinity.DAL
         }
         public BE.Address GetAddByUserId(string userId, bool isOther = false)
         {
-            UserProfile user = GetProfileByUserId(userId);
+            UserProfile user = GetProfile(userId);
             if (user == null)
                 return null;
             string AddressID = isOther ? user.Other_Address_ID : user.Residential_Addess_ID;
@@ -178,13 +178,13 @@ namespace Trinity.DAL
             }
             return null;
         }
-        public UserProfile GetProfileByUserId(string userId)
+        public UserProfile GetProfile(string userId)
         {
             User_Profiles dbUserProfile = null;
             if (EnumAppConfig.IsLocal)
             {
                 dbUserProfile = _localUnitOfWork.DataContext.User_Profiles.FirstOrDefault(u => u.UserId == userId);
-                if (dbUserProfile==null)
+                if (dbUserProfile == null && !EnumAppConfig.ByPassCentralizedDB)
                 {
                     UserProfile data = CallCentralized.Get<UserProfile>(EnumAPIParam.User, "GetProfileByUserId", "userId=" + userId);
                     return data;

@@ -53,7 +53,7 @@ namespace SSK
 
             DAL_Notification dalNotification = new DAL_Notification();
 
-            List<Trinity.BE.Notification> myNotifications = dalNotification.GetMyNotifications(user.UserId);
+            List<Trinity.BE.Notification> myNotifications = dalNotification.GetAllNotifications(user.UserId);
 
             var model = myNotifications;
             _web.LoadPageHtml("Notifications.html", myNotifications);
@@ -75,8 +75,8 @@ namespace SSK
         }
         public void SpeakNotification(string notificationId)
         {
-            var dalNotify = new DAL_Notification();
-            var content = dalNotify.GetNotificationContentById(Guid.Parse(notificationId), false);
+            DAL_Notification dalNotify = new DAL_Notification();
+            string content = dalNotify.GetNotification(notificationId);
             APIUtils.TextToSpeech.Speak(content);
         }
 
@@ -219,7 +219,7 @@ namespace SSK
                     var profileModel = new Trinity.BE.ProfileModel
                     {
                         User = user,
-                        UserProfile = new DAL_UserProfile().GetProfileByUserId(user.UserId),
+                        UserProfile = new DAL_UserProfile().GetProfile(user.UserId),
                         Addresses = new DAL_UserProfile().GetAddByUserId(user.UserId) ,
                         OtherAddress = new DAL_UserProfile().GetAddByUserId(user.UserId, true) ,
                     };
