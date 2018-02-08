@@ -531,7 +531,7 @@ namespace Enrolment
                     SmartCardId = SmartID,
                     UserId = currentEditUser.UserProfile.UserId
                 };
-                dalIssueCard.UpdateStatusByUserId(currentEditUser.UserProfile.UserId, EnumIssuedCards.Deactivate);
+                dalIssueCard.UpdateStatusByUserId(currentEditUser.UserProfile.UserId, EnumIssuedCards.Inactive);
                 new DAL_Membership_Users().UpdateSmartCardId(currentEditUser.User.UserId, SmartID);
                 new DAL_User().ChangeUserStatus(currentEditUser.User.UserId, EnumUserStatuses.Enrolled);
                 dalIssueCard.Insert(IssueCard);
@@ -854,7 +854,7 @@ namespace Enrolment
                     SmartCardId = SmartID,
                     UserId = currentEditUser.UserProfile.UserId
                 };
-                dalIssueCard.UpdateStatusByUserId(currentEditUser.UserProfile.UserId, EnumIssuedCards.Deactivate);
+                dalIssueCard.UpdateStatusByUserId(currentEditUser.UserProfile.UserId, EnumIssuedCards.Inactive);
                 dalIssueCard.Insert(IssueCard);
                 new DAL_Membership_Users().UpdateSmartCardId(currentEditUser.UserProfile.UserId, SmartID);
                 new DAL_UserProfile().UpdateCardInfo(currentEditUser.UserProfile.UserId, _CardInfo.CardNumberFull, _CardInfo.Date_Of_Issue, _CardInfo.Expired_Date);

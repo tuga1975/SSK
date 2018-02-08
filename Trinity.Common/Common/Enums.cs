@@ -405,7 +405,7 @@ public enum EnumDayOfWeek
 public static class EnumIssuedCards
 {
     public const string Active = "Active";
-    public const string Deactivate = "Deactivate";
+    public const string Inactive = "Inactive";
 };
 
 public static class EnumOutcome
