@@ -5,19 +5,19 @@
             <div class="container contentPrinting text-center center-block ">
                 <div class="input-group" data-tip="Enter your NRIC">
                     <!--<span class="input-group-addon">NRIC:</span>-->
-                    <input id="loginNRIC" type="text" class="form-control pri" name="loginNRIC" placeholder="NRIC"/>
+                    <input id="loginNRIC" type="text" class="form-control pri" name="loginNRIC" placeholder="NRIC" />
                 </div>
                 <br />
                 <div class="input-group" data-tip="Enter your Password">
                     <!--<span class="input-group-addon">Password:</span>-->
-                    <input id="loginPassword" type="password" class="form-control pri" name="loginPassword" placeholder="Password"/>
+                    <input id="loginPassword" type="password" class="form-control pri" name="loginPassword" placeholder="Password" />
                 </div>
             </div>
         </div>
-    </div>
     <div id="divSave">
         <button type="button" class="btn btn-dark" id="CancelBtn">CANCEL</button>
         <button type="button" class="btn btn-dark" id="LoginBtn">SUBMIT</button>
+    </div>
     </div>
 </form>
 <script type="text/javascript">
@@ -41,8 +41,6 @@
 
 
     $('#CancelBtn').click(function () {
-        api.server.DeleteQRCodeImageFileTemp();
-        api.server.LogOut();
     });
 
 </script>

@@ -213,7 +213,14 @@ namespace SSA
                 APIUtils.SignalR.SendAllDutyOfficer(null,message, message, NotificationType.Error);
 
                 // show message box to user
-                MessageBox.Show(message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //MessageBox.Show(message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Trinity.BE.PopupModel popupModel = new Trinity.BE.PopupModel();
+                popupModel.Title = "Authorization Failed";
+                popupModel.Message = "Unable to read your smart card.\nPlease report to the Duty Officer";
+                popupModel.IsShowLoading = false;
+                popupModel.IsShowOK = true;
+
+                LayerWeb.InvokeScript("showPopupModal", JsonConvert.SerializeObject(popupModel));
 
                 // reset counter
                 _smartCardFailed = 0;
@@ -277,6 +284,14 @@ namespace SSA
 
                 // Send Notification to duty officer
                 APIUtils.SignalR.SendAllDutyOfficer(user.UserId, "Fingerprint Authentication failed", errorMessage, NotificationType.Error);
+
+                Trinity.BE.PopupModel popupModel = new Trinity.BE.PopupModel();
+                popupModel.Title = "Authorization Failed";
+                popupModel.Message = "Unable to read your fingerprint.\nPlease report to the Duty Officer";
+                popupModel.IsShowLoading = false;
+                popupModel.IsShowOK = true;
+
+                LayerWeb.InvokeScript("showPopupModal", JsonConvert.SerializeObject(popupModel));
 
                 // Pause for 1 second and goto Facial Login Screen
                 Thread.Sleep(1000);
