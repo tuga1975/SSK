@@ -45,11 +45,11 @@
 /*Content layout*/
 #parent-content {
     position: relative;
-    /*width: 100%;*/
+    width: 100%;
     overflow: hidden;
     margin-bottom: 50px;
-    width: 500px;
-    margin: 0 auto;
+    /*width: 500px;*/
+    
 }
 #content {
     position: relative;
@@ -65,13 +65,13 @@
 }
 .contentWrapper {
     position: relative;
-    width: 100%;
+    width: 500px;
     height: auto;
     overflow: hidden;
     margin-bottom: 40px;
     box-shadow: 0px 0px 15px 2px rgba(204,204,204,1);
     background-color: #ffffff;
-    
+    margin: 0 auto;
 }
 .contentForm {
     width: 400px;
@@ -135,8 +135,10 @@
 
 #divSave {
     display: block;
-    float: right;
-    margin-top: 20px;
+    /*float: right;*/
+    margin: 20px auto;
+    width: 500px;
+    text-align: right;
 }
 
 /*Modal Layout*/
@@ -237,8 +239,11 @@
 
 .manualLogin {
     display: block;
-    float: right;
-    padding-right: 3%;    
+    /*float: right;*/
+    padding: 20px;
+    width: 500px;
+    margin: 0 auto;
+    text-align: right;
 }
 
 .manualLogin a {
