@@ -184,7 +184,7 @@ namespace Trinity.DAL
             if (EnumAppConfig.IsLocal)
             {
                 dbUserProfile = _localUnitOfWork.DataContext.User_Profiles.FirstOrDefault(u => u.UserId == userId);
-                if (dbUserProfile==null)
+                if (dbUserProfile == null && !EnumAppConfig.ByPassCentralizedDB)
                 {
                     UserProfile data = CallCentralized.Get<UserProfile>(EnumAPIParam.User, "GetProfileByUserId", "userId=" + userId);
                     return data;
