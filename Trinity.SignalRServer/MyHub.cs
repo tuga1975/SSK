@@ -24,7 +24,7 @@ namespace SignalRChat
             {
                 string MessageID = Guid.NewGuid().ToString();
                 Clients.Clients(Program.ProfileConnected.Where(d => d.isUser && d.UserID == DutyOfficerID && d.Station == EnumStations.DUTYOFFICER).Select(d => d.ConnectionId).ToList()).MessageTo(MessageID, UserId, Subject, Content, notificationType, Station);
-                return null;
+                return MessageID;
             }
             else
             {
@@ -49,7 +49,7 @@ namespace SignalRChat
                 {
                     Clients.Client(item.ConnectionId).MessageTo(Guid.NewGuid().ToString().Trim(), UserId, Subject, Content, notificationType, Station);
                 }
-                return null;
+                return new List<Trinity.BE.Notification>();
             }
             else
             {

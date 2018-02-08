@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNet.SignalR.Client;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using Trinity.BE;
@@ -21,13 +22,26 @@ namespace DutyOfficer.Utils
 
             HubProxy.On<string, string, string, string, string,string>("MessageTo", (NotificationID, UserId, Subject, Content, notificationType, Station) => {
                 // Xử lý Message
-
+                 Notification notification = new Notification();
+                notification.Subject = Subject;
+                notification.ToUserId = UserId;
+                notification.Content = Content;
+                notification.Source = Station;
+                notification.Type = notificationType;
+                updateAlertNotification(notification);
             });
         }
 
         public override void Connection_Closed()
         {
             
+        }
+
+        private void updateAlertNotification(Notification notification)
+        {
+            object result = JsonConvert.SerializeObject(notification, Formatting.Indented,
+                new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
+            Lib.LayerWeb.InvokeScript("getRealtimeNotificationServer", result);
         }
 
 

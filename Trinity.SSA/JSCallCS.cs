@@ -201,6 +201,8 @@ namespace SSA
                     var appointment = dalAppointment.GetTodayAppointmentByUserId(labelInfo.UserId);
                     //var appointment = result.Data;
 
+                if (appointment != null)
+                {
                     var sskQueue = new DAL_QueueNumber().GetQueueDetailByAppointment(appointment, EnumStations.SSK);
 
                     dalQueue.UpdateQueueStatus(sskQueue.Queue_ID, EnumQueueStatuses.Finished, EnumStations.SSK);
