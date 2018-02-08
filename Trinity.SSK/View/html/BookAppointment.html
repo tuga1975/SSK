@@ -92,18 +92,19 @@
         }
         //
         $.each(model[1].Morning, function (index, item) {
-            $('[add-time-Morning]').append('<span style="width:100%" item-select-time availble="' + item.IsAvailble + '" selecttime="' + item.IsSelected + '" start="' + item.StartTimeTxt + '" end="' + item.EndTimeTxt + '">' + item.StartTimeTxt + ' to ' + item.EndTimeTxt + '</span>');
+            $('[add-time-Morning]').append('<span style="width:100%" item-select-time availble="' + item.IsAvailble + '" selecttime="' + item.IsSelected + '" start="' + item.StartTimeTxt + '" end="' + item.EndTimeTxt + '" timeslot_ID="' + item.Timeslot_ID + '">' + item.StartTimeTxt + ' to ' + item.EndTimeTxt + '</span>');
         });
 
         $.each(model[1].Afternoon, function (index, item) {
-            $('[add-time-Afternoon]').append('<span style="width:100%" item-select-time availble="' + item.IsAvailble + '" selecttime="' + item.IsSelected + '" start="' + item.StartTimeTxt + '" end="' + item.EndTimeTxt + '">' + item.StartTimeTxt + ' to ' + item.EndTimeTxt + '</span>');
+            $('[add-time-Afternoon]').append('<span style="width:100%" item-select-time availble="' + item.IsAvailble + '" selecttime="' + item.IsSelected + '" start="' + item.StartTimeTxt + '" end="' + item.EndTimeTxt + '" timeslot_ID="' + item.Timeslot_ID + '">' + item.StartTimeTxt + ' to ' + item.EndTimeTxt + '</span>');
         });
         $.each(model[1].Evening, function (index, item) {
-            $('[add-time-Evening]').append('<span style="width:100%" item-select-time availble="' + item.IsAvailble + '" selecttime="' + item.IsSelected + '" start="' + item.StartTimeTxt + '" end="' + item.EndTimeTxt + '">' + item.StartTimeTxt + ' to ' + item.EndTimeTxt + '</span>');
+            $('[add-time-Evening]').append('<span style="width:100%" item-select-time availble="' + item.IsAvailble + '" selecttime="' + item.IsSelected + '" start="' + item.StartTimeTxt + '" end="' + item.EndTimeTxt + '" timeslot_ID="' + item.Timeslot_ID + '">' + item.StartTimeTxt + ' to ' + item.EndTimeTxt + '</span>');
         });
 
         $('[item-select-time]').click(function () {
             var _this = $(this);
+            var timeslot_ID = _this.attr('timeslot_ID');
             var startTime = _this.attr('start');
             var endTime = _this.attr('end');
             if (model[0].ChangedCount >= 3) {
@@ -111,7 +112,7 @@
             } else {
                 var re = confirm('You have selected the time slot\n' + startTime + ' on ' + model[0].GetDateTxt + '\nConfirm time slot?', 'Warning');
                 if (re == true) {
-                    api.server.UpdateTimeAppointment(model[0].ID, startTime, endTime, function (isUpdated) {
+                    api.server.UpdateTimeAppointment(model[0].ID, timeslot_ID, function (isUpdated) {
                         if (isUpdated) {
                             model[0].ChangedCount += 1;
                             //$('[item-select-time][selecttime="true"]').removeAttr('selecttime').removeAttr('availble');

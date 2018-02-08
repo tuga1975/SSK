@@ -182,11 +182,11 @@ namespace Trinity.DAL
                     {
                         bool centralizeStatus;
                         var centralUpdate = CallCentralized.Get<List<BE.Label>>(EnumAPIParam.Label, "GetAllLabelsForMUBAndTT", out centralizeStatus);
-                        if (centralizeStatus)
+                        if (centralizeStatus && centralUpdate != null)
                         {
                             return centralUpdate;
                         }
-                        return null;
+                        return lstModels.ToList(); 
                     }
                 }
                 else
@@ -234,11 +234,11 @@ namespace Trinity.DAL
                     {
                         bool centralizeStatus;
                         var centralUpdate = CallCentralized.Get<List<BE.Label>>(EnumAPIParam.Label, "GetAllLabelsForUB", out centralizeStatus);
-                        if (centralizeStatus)
+                        if (centralizeStatus && centralUpdate != null)
                         {
                             return centralUpdate;
                         }
-                        return null;
+                        return lstModels.ToList();
                     }
                 }
                 else

@@ -40,6 +40,7 @@ namespace DutyOfficer
             #region Initialize and register events
             // _jsCallCS
             _jsCallCS = new JSCallCS(this.LayerWeb);
+            _jsCallCS.OnLogOutCompleted += JSCallCS_OnLogOutCompleted;
 
             // SmartCard
             SmartCard.Instance.GetCardInfoSucceeded += GetCardInfoSucceeded;
@@ -47,6 +48,8 @@ namespace DutyOfficer
             Fingerprint.Instance.OnIdentificationCompleted += Fingerprint_OnIdentificationCompleted;
             Fingerprint.Instance.OnDeviceDisconnected += Fingerprint_OnDeviceDisconnected;
 
+            _eventCenter = EventCenter.Default;
+            _eventCenter.OnNewEvent += EventCenter_OnNewEvent;
             #endregion
 
 
@@ -292,6 +295,24 @@ namespace DutyOfficer
 
             //NavigateTo(NavigatorEnums.Queue);
             //Lib.SignalR.UserLogined("Thắng");
+        }
+
+        private void EventCenter_OnNewEvent(object sender, EventInfo e)
+        {
+            if (e.Name == EventNames.LOGIN_SUCCEEDED)
+            {
+                NavigateTo(NavigatorEnums.Queue);
+            }
+            else if (e.Name.Equals(EventNames.LOGIN_FAILED))
+            {
+                //NavigateTo(NavigatorEnums.Authentication_NRIC);
+                MessageBox.Show(e.Message, "Login Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void JSCallCS_OnLogOutCompleted()
+        {
+            NavigateTo(NavigatorEnums.Authentication_SmartCard);
         }
     }
 }

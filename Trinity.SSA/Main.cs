@@ -159,18 +159,18 @@ namespace SSA
             {
                 // Start page
                 NavigateTo(NavigatorEnums.Authentication_SmartCard);
-                //// For testing purpose
+                ////// For testing purpose
                 //Session session = Session.Instance;
                 //// Supervisee
                 //Trinity.BE.User user = new DAL_User().GetUserByUserId("bb67863c-c330-41aa-b397-c220428ad16f").Data;
                 //session[CommonConstants.SUPERVISEE] = user;
-                //// Duty Officer
-                ////Trinity.BE.User user = new DAL_User().GetUserByUserId("dfbb2a6a-9e45-4a76-9f75-af1a7824a947", true);
-                ////session[CommonConstants.USER_LOGIN] = user;
+                ////// Duty Officer
+                //////Trinity.BE.User user = new DAL_User().GetUserByUserId("dfbb2a6a-9e45-4a76-9f75-af1a7824a947", true);
+                //////session[CommonConstants.USER_LOGIN] = user;
                 //session.IsSmartCardAuthenticated = true;
                 //session.IsFingerprintAuthenticated = true;
                 //NavigateTo(NavigatorEnums.Supervisee_Particulars);
-                ////NavigateTo(NavigatorEnums.Authentication_NRIC);
+                //////NavigateTo(NavigatorEnums.Authentication_NRIC);
 
                 _isFirstTimeLoaded = false;
             }
@@ -215,7 +215,14 @@ namespace SSA
                 APIUtils.SignalR.SendAllDutyOfficer(null,message, message, NotificationType.Error);
 
                 // show message box to user
-                MessageBox.Show(message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //MessageBox.Show(message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Trinity.BE.PopupModel popupModel = new Trinity.BE.PopupModel();
+                popupModel.Title = "Authorization Failed";
+                popupModel.Message = "Unable to read your smart card.\nPlease report to the Duty Officer";
+                popupModel.IsShowLoading = false;
+                popupModel.IsShowOK = true;
+
+                LayerWeb.InvokeScript("showPopupModal", JsonConvert.SerializeObject(popupModel));
 
                 // reset counter
                 _smartCardFailed = 0;
@@ -279,6 +286,14 @@ namespace SSA
 
                 // Send Notification to duty officer
                 APIUtils.SignalR.SendAllDutyOfficer(user.UserId, "Fingerprint Authentication failed", errorMessage, NotificationType.Error);
+
+                Trinity.BE.PopupModel popupModel = new Trinity.BE.PopupModel();
+                popupModel.Title = "Authorization Failed";
+                popupModel.Message = "Unable to read your fingerprint.\nPlease report to the Duty Officer";
+                popupModel.IsShowLoading = false;
+                popupModel.IsShowOK = true;
+
+                LayerWeb.InvokeScript("showPopupModal", JsonConvert.SerializeObject(popupModel));
 
                 // Pause for 1 second and goto Facial Login Screen
                 Thread.Sleep(1000);
