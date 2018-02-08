@@ -42,17 +42,18 @@
 </html>
 <script type="text/javascript">
     function showPopupModal(popupModel) {
-        api.ready(function () {
+        //api.ready(function () {
             api.server.popupLoading(popupModel, function () {
                 $('#popupLoading').modal({
-                    //backdrop: 'static',
+                    backdrop: 'static',
                     keyboard: false
                 });
             });
-        });
+        //});
     };
 
     function closePopup() {
+        $('.modal-backdrop').remove();
         $('#popupLoading').modal('toggle');
     };
 </script>

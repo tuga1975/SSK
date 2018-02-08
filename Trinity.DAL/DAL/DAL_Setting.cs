@@ -115,14 +115,31 @@ namespace Trinity.DAL
                 var appointmentTime = new Trinity.BE.WorkingTimeshift();
                 if (listTimeSlot.Count > 0)
                 {
-                    appointmentTime.Morning = listTimeSlot.Where(d => d.Category == EnumTimeshift.Morning).Select(d => SetAppointmentTime(d)).ToList();
-                    appointmentTime.Evening = listTimeSlot.Where(d => d.Category == EnumTimeshift.Evening).Select(d => SetAppointmentTime(d)).ToList();
-                    appointmentTime.Afternoon = listTimeSlot.Where(d => d.Category == EnumTimeshift.Afternoon).Select(d => SetAppointmentTime(d)).ToList();
+                    //appointmentTime.Morning = listTimeSlot.Where(d => d.Category == EnumTimeshift.Morning).Select(d => SetAppointmentTime(d)).ToList();
+                    //appointmentTime.Evening = listTimeSlot.Where(d => d.Category == EnumTimeshift.Evening).Select(d => SetAppointmentTime(d)).ToList();
+                    //appointmentTime.Afternoon = listTimeSlot.Where(d => d.Category == EnumTimeshift.Afternoon).Select(d => SetAppointmentTime(d)).ToList();
+
+                    foreach (var item in listTimeSlot)
+                    {
+                        var setTime = SetAppointmentTime(item);
+                        if (setTime.Category == EnumTimeshift.Morning)
+                        {
+                            appointmentTime.Morning.Add(setTime);
+                        }
+                        else if (setTime.Category == EnumTimeshift.Afternoon)
+                        {
+                            appointmentTime.Evening.Add(setTime);
+                        }
+                        else if (setTime.Category == EnumTimeshift.Evening)
+                        {
+                            appointmentTime.Afternoon.Add(setTime);
+                        }
+                    }
                     return appointmentTime;
                 }
                 return null;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
                 return null;
@@ -162,12 +179,16 @@ namespace Trinity.DAL
             {
                 SettingModel setting = GetSettings();
 
-                int dayOfWeek = date.DayOfWeek();
+                
                 if (EnumAppConfig.IsLocal)
                 {
                     return _localUnitOfWork.DataContext.Timeslots.Where(t => DbFunctions.TruncateTime(t.Date) == date.Date).ToList();
                 }
-                return _centralizedUnitOfWork.DataContext.Timeslots.Where(t => DbFunctions.TruncateTime(t.Date) == date.Date).ToList();
+                else
+                {
+                    return _centralizedUnitOfWork.DataContext.Timeslots.Where(t => DbFunctions.TruncateTime(t.Date) == date.Date).ToList();
+                }
+                
 
             }
             catch (Exception)
@@ -189,25 +210,25 @@ namespace Trinity.DAL
             }
 
             //mon
-            GenerateTimeslotAndInsert(date.Date, settings.Monday, createdBy);
+            //GenerateTimeslotAndInsert(date.Date, settings.Monday, createdBy);
 
             //tue
-            GenerateTimeslotAndInsert(date.Date, settings.Tuesday, createdBy);
+            //GenerateTimeslotAndInsert(date.Date, settings.Tuesday, createdBy);
 
-            //wed
-            GenerateTimeslotAndInsert(date.Date, settings.Wednesday, createdBy);
+            ////wed
+            //GenerateTimeslotAndInsert(date.Date, settings.Wednesday, createdBy);
 
-            //thu
+            ////thu
             GenerateTimeslotAndInsert(date.Date, settings.Thursday, createdBy);
 
-            //fri
-            GenerateTimeslotAndInsert(date.Date, settings.Friday, createdBy);
+            ////fri
+            //GenerateTimeslotAndInsert(date.Date, settings.Friday, createdBy);
 
-            //sat
-            GenerateTimeslotAndInsert(date.Date, settings.Saturday, createdBy);
+            ////sat
+            //GenerateTimeslotAndInsert(date.Date, settings.Saturday, createdBy);
 
-            //sun
-            GenerateTimeslotAndInsert(date.Date, settings.Sunday, createdBy);
+            ////sun
+            //GenerateTimeslotAndInsert(date.Date, settings.Sunday, createdBy);
 
         }
 
@@ -360,14 +381,29 @@ namespace Trinity.DAL
 
         public BE.SettingModel GetSettings()
         {
+            //try
+            //{
+            //    // local request
+            //    if (EnumAppConfig.IsLocal)
+            //    {
+            //        // get data
+            //        OperationSetting dbSetting = _localUnitOfWork.DataContext.OperationSettings.Where(s => s.DayOfWeek == dayOfWeek).FirstOrDefault();
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    return null;
+            //}
+
             OperationSetting dbSetting = new OperationSetting();
+            var dayOfWeek = (int)CommonUtil.ConvertToCustomDateOfWeek(DateTime.Now.DayOfWeek);
             if (EnumAppConfig.IsLocal)
             {
-                dbSetting = _localUnitOfWork.DataContext.OperationSettings.FirstOrDefault();
+                dbSetting = _localUnitOfWork.DataContext.OperationSettings.Where(s=>s.DayOfWeek==dayOfWeek).FirstOrDefault();
             }
             else
             {
-                dbSetting = _centralizedUnitOfWork.DataContext.OperationSettings.FirstOrDefault();
+                dbSetting = _centralizedUnitOfWork.DataContext.OperationSettings.Where(s => s.DayOfWeek == dayOfWeek).FirstOrDefault();
             }
 
             var settingBE = new BE.SettingBE();

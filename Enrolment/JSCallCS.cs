@@ -102,7 +102,7 @@ namespace Enrolment
             if (attempt > 3)
             {
                 session[CommonConstants.CAPTURE_PHOTO_ATTEMPT] = null;
-                APIUtils.SignalR.SendAllDutyOfficer(null,"Supervisee failed to capture photo!", "Supervisee failed to capture photo!\n Please check the status", NotificationType.Error);
+                APIUtils.SignalR.SendAllDutyOfficer(null, "Supervisee failed to capture photo!", "Supervisee failed to capture photo!\n Please check the status", NotificationType.Error);
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.PHOTO_CAPTURE_FAILED, Message = "Unable to capture photo", Source = "FailToCapture.html" });
             }
             else
@@ -121,7 +121,7 @@ namespace Enrolment
             if (attempt > 3)
             {
                 session[CommonConstants.CAPTURE_FINGERPRINT_ATTEMPT] = null;
-                APIUtils.SignalR.SendAllDutyOfficer(null,"Supervisee failed to capture photo!", "Supervisee failed to capture fingerprint!\n Please check the status", NotificationType.Error);
+                APIUtils.SignalR.SendAllDutyOfficer(null, "Supervisee failed to capture photo!", "Supervisee failed to capture fingerprint!\n Please check the status", NotificationType.Error);
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.PHOTO_CAPTURE_FAILED, Message = "Unable to capture fingerprint", Source = "FailToCapture.html" });
             }
             else
@@ -140,7 +140,7 @@ namespace Enrolment
             if (attempt > 3)
             {
                 session[CommonConstants.PRINT_SMARTCARD_ATTEMPT] = null;
-                APIUtils.SignalR.SendAllDutyOfficer(null,"Supervisee failed to capture photo!", "Supervisee failed to print smart card!\n Please check the status", NotificationType.Error);
+                APIUtils.SignalR.SendAllDutyOfficer(null, "Supervisee failed to capture photo!", "Supervisee failed to print smart card!\n Please check the status", NotificationType.Error);
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.ABLE_TO_PRINT_FAILED, Message = "Unable to print smart card", Source = "FailToCapture.html" });
             }
             else
@@ -206,13 +206,13 @@ namespace Enrolment
             }
             else
             {
-                APIUtils.SignalR.SendAllDutyOfficer(null,"Unable to scan supervisee's NRIC", "Unable to scan supervisee's NRIC! Please check the manually input information!", NotificationType.Caution);
+                APIUtils.SignalR.SendAllDutyOfficer(null, "Unable to scan supervisee's NRIC", "Unable to scan supervisee's NRIC! Please check the manually input information!", NotificationType.Caution);
                 LoadListSupervisee();
 
             }
         }
 
-        public void EditSupervisee(string userId)
+        public void EditSupervisee(string userId, string Action = null)
         {
 
             Session session = Session.Instance;
@@ -237,41 +237,63 @@ namespace Enrolment
                 profileModel = new Trinity.BE.ProfileModel
                 {
                     User = dbUser,
-
                     UserProfile = new DAL_UserProfile().GetProfile(dbUser.UserId),
                     Addresses = new DAL_UserProfile().GetAddByUserId(dbUser.UserId),
                     OtherAddress = new DAL_UserProfile().GetAddByUserId(dbUser.UserId, true),
                     Membership_Users = dalUserMembership.GetByUserId(userId)
                 };
-                profileModel.UserProfile = profileModel.UserProfile == null ? new Trinity.BE.UserProfile() : profileModel.UserProfile;
                 //first load set model to session 
+                profileModel.UserProfile = profileModel.UserProfile != null ? profileModel.UserProfile : new Trinity.BE.UserProfile() { UserId = dbUser.UserId };
                 session[CommonConstants.CURRENT_EDIT_USER] = profileModel;
                 session["TEMP_USER"] = profileModel;
             }
-
-            if (dbUser.Status.Equals(EnumUserStatuses.New, StringComparison.InvariantCultureIgnoreCase))
+            if (Action != null)
             {
-                session[CommonConstants.CURRENT_PAGE] = "EditSupervisee";
-                EventCenter eventCenter = EventCenter.Default;
-                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.LOAD_UPDATE_SUPERVISEE_BIODATA_SUCCEEDED, Data = profileModel });
+                if (Action == "UpdateSupervisee")
+                {
+                    if (profileModel.Addresses == null)
+                    {
+                        profileModel.Addresses = new Trinity.BE.Address();
+                        // if address == null then set Residential_Addess_ID and Other_Address_ID = 0 to insert new record
+                        //profileModel.UserProfile.Residential_Addess_ID = 0;
+                    }
+                    if (profileModel.OtherAddress == null)
+                    {
+                        profileModel.OtherAddress = new Trinity.BE.Address();
+                        //profileModel.UserProfile.Other_Address_ID = 0;
+                    }
+                    session[CommonConstants.CURRENT_PAGE] = "UpdateSupervisee";
+                    // _web.LoadPageHtml("Edit-Supervisee.html", profileModel);
+                    EventCenter eventCenter = EventCenter.Default;
+                    eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.LOAD_EDIT_SUPERVISEE_SUCCEEDED, Data = profileModel });
+                }
             }
             else
             {
-                if (profileModel.Addresses == null)
+                if (dbUser.Status.Equals(EnumUserStatuses.New, StringComparison.InvariantCultureIgnoreCase))
                 {
-                    profileModel.Addresses = new Trinity.BE.Address();
-                    // if address == null then set Residential_Addess_ID and Other_Address_ID = 0 to insert new record
-                    //profileModel.UserProfile.Residential_Addess_ID = 0;
+                    session[CommonConstants.CURRENT_PAGE] = "EditSupervisee";
+                    EventCenter eventCenter = EventCenter.Default;
+                    eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.LOAD_UPDATE_SUPERVISEE_BIODATA_SUCCEEDED, Data = profileModel });
                 }
-                if (profileModel.OtherAddress == null)
+                else
                 {
-                    profileModel.OtherAddress = new Trinity.BE.Address();
-                    //profileModel.UserProfile.Other_Address_ID = 0;
+                    if (profileModel.Addresses == null)
+                    {
+                        profileModel.Addresses = new Trinity.BE.Address();
+                        // if address == null then set Residential_Addess_ID and Other_Address_ID = 0 to insert new record
+                        //profileModel.UserProfile.Residential_Addess_ID = 0;
+                    }
+                    if (profileModel.OtherAddress == null)
+                    {
+                        profileModel.OtherAddress = new Trinity.BE.Address();
+                        //profileModel.UserProfile.Other_Address_ID = 0;
+                    }
+                    session[CommonConstants.CURRENT_PAGE] = "UpdateSupervisee";
+                    // _web.LoadPageHtml("Edit-Supervisee.html", profileModel);
+                    EventCenter eventCenter = EventCenter.Default;
+                    eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.LOAD_EDIT_SUPERVISEE_SUCCEEDED, Data = profileModel });
                 }
-                session[CommonConstants.CURRENT_PAGE] = "UpdateSupervisee";
-                // _web.LoadPageHtml("Edit-Supervisee.html", profileModel);
-                EventCenter eventCenter = EventCenter.Default;
-                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.LOAD_EDIT_SUPERVISEE_SUCCEEDED, Data = profileModel });
             }
         }
 
@@ -353,8 +375,8 @@ namespace Enrolment
             userProfileModel.UserId = data.User.UserId;
             var updateUProfileResult = dalUserprofile.UpdateProfile(userProfileModel);
 
-                ////send notifiy to case officer
-                APIUtils.SignalR.SendAllDutyOfficer(null,"A supervisee has updated profile.", "Please check Supervisee's information!", NotificationType.Notification);
+            ////send notifiy to case officer
+            APIUtils.SignalR.SendAllDutyOfficer(null, "A supervisee has updated profile.", "Please check Supervisee's information!", NotificationType.Notification);
 
 
             //session[CommonConstants.CURRENT_EDIT_USER] = data;
@@ -397,7 +419,7 @@ namespace Enrolment
                 //data.OtherAddress.Country = rawDataOtherAddress.OCountry;
                 //data.OtherAddress.Postal_Code = rawDataOtherAddress.OPostal_Code;
 
-                
+
 
                 //var profileModel = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
 
@@ -529,13 +551,12 @@ namespace Enrolment
                     Expired_Date = _CardInfo.Expired_Date,
                     Status = EnumIssuedCards.Active,
                     SmartCardId = SmartID,
-                    UserId = currentEditUser.UserProfile.UserId
+                    UserId = currentEditUser.User.UserId
                 };
-                dalIssueCard.UpdateStatusByUserId(currentEditUser.UserProfile.UserId, EnumIssuedCards.Inactive);
+                dalIssueCard.Insert(IssueCard);
                 new DAL_Membership_Users().UpdateSmartCardId(currentEditUser.User.UserId, SmartID);
                 new DAL_User().ChangeUserStatus(currentEditUser.User.UserId, EnumUserStatuses.Enrolled);
-                dalIssueCard.Insert(IssueCard);
-                new DAL_UserProfile().UpdateCardInfo(currentEditUser.UserProfile.UserId, _CardInfo.CardNumberFull, _CardInfo.Date_Of_Issue, _CardInfo.Expired_Date);
+                new DAL_UserProfile().UpdateCardInfo(currentEditUser.User.UserId, _CardInfo.CardNumberFull, _CardInfo.Date_Of_Issue, _CardInfo.Expired_Date);
                 currentEditUser.UserProfile.Expired_Date = _CardInfo.Expired_Date;
                 currentEditUser.UserProfile.DateOfIssue = _CardInfo.Date_Of_Issue;
                 currentEditUser.UserProfile.SerialNumber = _CardInfo.CardNumberFull;
@@ -611,7 +632,7 @@ namespace Enrolment
         {
             EventCenter eventCenter = EventCenter.Default;
             var dalUser = new DAL_User();
-            ApplicationUser appUser = dalUser.Login(username,password);
+            ApplicationUser appUser = dalUser.Login(username, password);
             if (appUser != null)
             {
                 var userInfo = dalUser.GetUserById(appUser.Id);
@@ -698,8 +719,8 @@ namespace Enrolment
 
             byte[] _leftImg = Convert.FromBase64String(leftImg);
             byte[] _rightImg = Convert.FromBase64String(rightImg);
-            new DAL_Membership_Users().UpdateFingerprint(currentEditUser.UserProfile.UserId, _left, _right);
-            new DAL_UserProfile().UpdateFingerprintImg(currentEditUser.UserProfile.UserId, _leftImg, _rightImg);
+            new DAL_Membership_Users().UpdateFingerprint(currentEditUser.User.UserId, _left, _right);
+            new DAL_UserProfile().UpdateFingerprintImg(currentEditUser.User.UserId, _leftImg, _rightImg);
             if (_left.Length > 0)
             {
                 currentEditUser.User.LeftThumbFingerprint = _left;
@@ -710,7 +731,7 @@ namespace Enrolment
                 currentEditUser.User.RightThumbFingerprint = _right;
                 currentEditUser.UserProfile.RightThumbImage = _rightImg;
             }
-            EditSupervisee(currentEditUser.UserProfile.UserId);
+            EditSupervisee(currentEditUser.User.UserId);
         }
         public void UpdateFingerprints()
         {
@@ -744,7 +765,7 @@ namespace Enrolment
         }
         private void OnEnrollmentComplete(bool bSuccess, int nResult)
         {
-            if (bSuccess)
+            if (bSuccess && FingerprintReaderUtil.Instance.GetQuality >= 7)
             {
                 _web.InvokeScript("setDataFingerprint", FingerprintLeftRight, Convert.ToBase64String(FingerprintReaderUtil.Instance.GetTemplate));
                 _web.InvokeScript("captureFingerprintMessage", FingerprintLeftRight, "Your fingerprint was scanned successfully!", EnumColors.Green);
@@ -752,7 +773,14 @@ namespace Enrolment
             }
             else
             {
-                _web.InvokeScript("captureFingerprintMessage", FingerprintLeftRight, Futronic.SDKHelper.FutronicSdkBase.SdkRetCode2Message(nResult), EnumColors.Red);
+                if (bSuccess)
+                {
+                    _web.InvokeScript("captureFingerprintMessage", FingerprintLeftRight, "Please use only one finger for one scan.", EnumColors.Red);
+                }
+                else
+                {
+                    _web.InvokeScript("captureFingerprintMessage", FingerprintLeftRight, Futronic.SDKHelper.FutronicSdkBase.SdkRetCode2Message(nResult), EnumColors.Red);
+                }
                 FingerprintNumber++;
                 if (FingerprintNumber >= 3)
                     _web.InvokeScript("moreThan3Fingerprint");
@@ -792,8 +820,8 @@ namespace Enrolment
         {
             Session session = Session.Instance;
             var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
-            List<Trinity.BE.IssueCard> array = new Trinity.DAL.DAL_IssueCard().GetMyIssueCards(currentEditUser.UserProfile.UserId);
-            return new object[] { array, currentEditUser.UserProfile.UserId };
+            List<Trinity.BE.IssueCard> array = new Trinity.DAL.DAL_IssueCard().GetMyIssueCards(currentEditUser.User.UserId);
+            return new object[] { array, currentEditUser.User.UserId };
         }
         public void ReprintIssuedCard(string reprintReason, string cardInfo, string frontBase64, string backBase64)
         {
@@ -852,12 +880,11 @@ namespace Enrolment
                     Expired_Date = _CardInfo.Expired_Date,
                     Status = EnumIssuedCards.Active,
                     SmartCardId = SmartID,
-                    UserId = currentEditUser.UserProfile.UserId
+                    UserId = currentEditUser.User.UserId
                 };
-                dalIssueCard.UpdateStatusByUserId(currentEditUser.UserProfile.UserId, EnumIssuedCards.Inactive);
                 dalIssueCard.Insert(IssueCard);
-                new DAL_Membership_Users().UpdateSmartCardId(currentEditUser.UserProfile.UserId, SmartID);
-                new DAL_UserProfile().UpdateCardInfo(currentEditUser.UserProfile.UserId, _CardInfo.CardNumberFull, _CardInfo.Date_Of_Issue, _CardInfo.Expired_Date);
+                new DAL_Membership_Users().UpdateSmartCardId(currentEditUser.User.UserId, SmartID);
+                new DAL_UserProfile().UpdateCardInfo(currentEditUser.User.UserId, _CardInfo.CardNumberFull, _CardInfo.Date_Of_Issue, _CardInfo.Expired_Date);
                 currentEditUser.UserProfile.Expired_Date = _CardInfo.Expired_Date;
                 currentEditUser.UserProfile.DateOfIssue = _CardInfo.Date_Of_Issue;
                 currentEditUser.UserProfile.SerialNumber = _CardInfo.CardNumberFull;

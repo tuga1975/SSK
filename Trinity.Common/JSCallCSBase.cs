@@ -24,7 +24,21 @@ public class JSCallCSBase
     {
         _web.LoadPageHtml(file);
     }
+    //private bool ArgumentListMatches(this MethodInfo m, Type[] args)
+    //{
+    //    // If there are less arguments, then it just doesn't matter.
+    //    var pInfo = m.GetParameters();
+    //    if (pInfo.Length < args.Length)
+    //        return false;
 
+    //    // Now, check compatibility of the first set of arguments.
+    //    var commonArgs = args.Zip(pInfo, (margs, pinfo) => Tuple.Create(margs, pinfo.ParameterType));
+    //    if (commonArgs.Where(t => !t.Item1.IsAssignableFrom(t.Item2)).Any())
+    //        return false;
+
+    //    // And make sure the last set of arguments are actually default!
+    //    return pInfo.Skip(args.Length).All(p => p.IsOptional);
+    //}
     private void actionThread(object pram)
     {
         try
@@ -33,7 +47,16 @@ public class JSCallCSBase
             var method = data[0].ToString();
 
             MethodInfo theMethod = _thisType.GetMethod(method);
-            var dataReturn = theMethod.Invoke(this, (object[])data[2]);
+            var parameterInfo = theMethod.GetParameters();
+            List<object> dataParameter = ((object[])data[2]).ToList();
+            if(dataParameter.Count< parameterInfo.Length)
+            {
+                for (int i = 1; i <= parameterInfo.Length-dataParameter.Count; i++)
+                {
+                    dataParameter.Add(parameterInfo[i].RawDefaultValue);
+                }
+            }
+            var dataReturn = theMethod.Invoke(this, dataParameter.ToArray());
             if (data[1] != null)
             {
                 this._web.InvokeScript("callEventCallBack", data[1], JsonConvert.SerializeObject(dataReturn, Formatting.Indented, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore }));
