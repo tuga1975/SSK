@@ -11,7 +11,7 @@ namespace Trinity.BE
     
     public class WorkingShiftDetails
     {
-
+        public string Timeslot_ID { get; set; }
         public int DayOfWeek { get; set; }
         public Nullable<int> Spare_Slots { get; set; }
         public Nullable<int> Interval { get; set; }

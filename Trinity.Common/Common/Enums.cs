@@ -494,4 +494,5 @@ public static class EnumPrintStatus
 public static class EnumMessage
 {
     public const string NotConnectCentralized = "Can not connect to Centralized";
+    public const string SmartCardIsAlreadyInUse = "This smart card is already in use";
 }

@@ -138,7 +138,7 @@ namespace OfficerDesktopApp
         private void LoadNotifications()
         {
             DAL_Notification dalNotification = new DAL_Notification();
-            List<Notification> notifications = dalNotification.GetNotificationsSentToDutyOfficer(false);
+            List<Notification> notifications = dalNotification.GetNotificationsSentToDutyOfficer(true);
             if (notifications != null && notifications.Count > 0)
             {
                 dgvNotifications.Rows.Clear();

@@ -8,8 +8,10 @@
     <div class="form-supervisee">
         <input class="name-supervisee" type="text" value="Enrol Supervisee" />
         <nav class="nav nav-tabs" id="myTab" role="tablist">
-            <a class="nav-item nav-link active" data-toggle="tab" href="#print-card" role="tab" aria-controls="nav-home" aria-selected="true">Print Card</a>
-            <a class="nav-item nav-link" data-toggle="tab" href="#supervisee-details" role="tab" aria-controls="nav-profile" aria-selected="false">Supervisee Details</a>
+            <!--<a class="nav-item nav-link active" data-toggle="tab" href="#print-card" role="tab" aria-controls="nav-home" aria-selected="true">Print Card</a>
+            <a class="nav-item nav-link" data-toggle="tab" href="#supervisee-details" role="tab" aria-controls="nav-profile" aria-selected="false">Supervisee Details</a>-->
+            <a class="nav-item nav-link active" href="javascript:;">Print Card</a>
+            <a class="nav-item nav-link" href="javascript:;" onclick="api.server.EditSupervisee(userIDNew,'UpdateSupervisee');">Supervisee Details</a>
         </nav>
         <div class="tab-content" id="nav-tabContent">
             <div class="tab-pane fade show active" id="print-card" role="tabpanel" aria-labelledby="nav-home-tab">
@@ -138,6 +140,10 @@
     </div>
 </div>
 <script>
+    var userIDNew = '';
+    api.ready(function (model) {
+        userIDNew = model.User.UserId;
+    });
     function setImg(number, src) {
         image = document.getElementById('image' + number);
         image.src = src;
