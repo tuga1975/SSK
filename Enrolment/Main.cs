@@ -38,6 +38,9 @@ namespace Enrolment
         public Main()
         {
             InitializeComponent();
+
+            APIUtils.Start();
+
             pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
             // setup variables
             _smartCardFailed = 0;
@@ -64,7 +67,7 @@ namespace Enrolment
 
             #endregion
 
-            APIUtils.LayerWeb = LayerWeb;
+            Lib.LayerWeb = LayerWeb;
             LayerWeb.Url = new Uri(String.Format("file:///{0}/View/html/Layout.html", CSCallJS.curDir));
             LayerWeb.ObjectForScripting = _jsCallCS;
 
