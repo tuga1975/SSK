@@ -18,22 +18,55 @@ namespace SignalRChat
         }
 
 
-        public void SendToDutyOfficer(string UserId, string DutyOfficerID, string Subject, string Content, string notificationType)
+        public string SendToDutyOfficer(string UserId, string DutyOfficerID, string Subject, string Content, string notificationType)
         {
-            CallCentralized.Post("Notification", "SendToDutyOfficer", "UserId=" + UserId, "DutyOfficerID=" + DutyOfficerID, "Subject=" + Subject, "Content=" + Content, "Station="+ Station, "Type="+notificationType);
-            List<string> connectId = Program.ProfileConnected.Where(d => d.isUser && d.UserID == DutyOfficerID && d.Station == EnumStations.DUTYOFFICER).Select(d=>d.ConnectionId).ToList();
-            if (connectId.Count > 0)
+            if (EnumAppConfig.ByPassCentralizedDB)
             {
-                Clients.Clients(connectId).MessageTo(UserId,Subject, Content,Station, notificationType);
+                string MessageID = Guid.NewGuid().ToString();
+                Clients.Clients(Program.ProfileConnected.Where(d => d.isUser && d.UserID == DutyOfficerID && d.Station == EnumStations.DUTYOFFICER).Select(d => d.ConnectionId).ToList()).MessageTo(MessageID, UserId, Subject, Content, notificationType, Station);
+                return null;
+            }
+            else
+            {
+                bool statusCentralized;
+                string MessageID = CallCentralized.Post<string>("Notification", "SendToDutyOfficer", out statusCentralized, "UserId=" + UserId, "DutyOfficerID=" + DutyOfficerID, "Subject=" + Subject, "Content=" + Content, "Type=" + notificationType, "Station=" + Station);
+                if (statusCentralized)
+                {
+                    List<string> connectId = Program.ProfileConnected.Where(d => d.isUser && d.UserID == DutyOfficerID && d.Station == EnumStations.DUTYOFFICER).Select(d => d.ConnectionId).ToList();
+                    if (connectId.Count > 0)
+                    {
+                        Clients.Clients(connectId).MessageTo(MessageID, UserId, Subject, Content, notificationType, Station);
+                    }
+                }
+                return MessageID;
             }
         }
-        public void SendAllDutyOfficer(string UserId, string Subject, string Content, string notificationType)
+        public List<Trinity.BE.Notification> SendAllDutyOfficer(string UserId, string Subject, string Content, string notificationType)
         {
-            CallCentralized.Post("Notification", "SendAllDutyOfficer", "UserId=" + UserId, "Subject=" + Subject, "Content=" + Content, "Station=" + Station, "Type=" + notificationType);
-            List<string> connectId = Program.ProfileConnected.Where(d => d.isUser && d.Station == EnumStations.DUTYOFFICER).Select(d=>d.ConnectionId).ToList();
-            if (connectId.Count > 0)
+            if (EnumAppConfig.ByPassCentralizedDB)
             {
-                Clients.Clients(connectId).MessageTo(UserId, Subject, Content, Station, notificationType);
+                foreach (var item in Program.ProfileConnected.Where(d => d.isUser && d.Station == EnumStations.DUTYOFFICER))
+                {
+                    Clients.Client(item.ConnectionId).MessageTo(Guid.NewGuid().ToString().Trim(), UserId, Subject, Content, notificationType, Station);
+                }
+                return null;
+            }
+            else
+            {
+                bool statusCentralized;
+                List<Trinity.BE.Notification> arraySend = CallCentralized.Post<List<Trinity.BE.Notification>>("Notification", "SendAllDutyOfficer", out statusCentralized, "UserId=" + UserId, "Subject=" + Subject, "Content=" + Content, "Type=" + notificationType, "Station=" + Station);
+                if (statusCentralized)
+                {
+                    foreach (var item in Program.ProfileConnected.Where(d => d.isUser && d.Station == EnumStations.DUTYOFFICER))
+                    {
+                        Trinity.BE.Notification dataNoti = arraySend.FirstOrDefault(d => d.ToUserId == item.UserID);
+                        if (dataNoti != null)
+                        {
+                            Clients.Client(item.ConnectionId).MessageTo(dataNoti.NotificationID, UserId, Subject, Content, notificationType, Station);
+                        }
+                    }
+                }
+                return arraySend;
             }
         }
 

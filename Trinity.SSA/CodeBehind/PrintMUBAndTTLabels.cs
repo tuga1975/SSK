@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Configuration;
 using System.Linq;
 using System.Windows.Forms;
@@ -27,8 +28,16 @@ namespace SSA.CodeBehind
             try
             {
                 _web.SetLoading(false);
-                this._web.LoadPageHtml("PrintingMUBAndTTLabels.html");
-                this._web.RunScript("$('.status-text').css('color','#000').text('Please wait');");
+                //this._web.LoadPageHtml("PrintingMUBAndTTLabels.html");
+                //this._web.RunScript("$('.status-text').css('color','#000').text('Please wait');");
+                this._web.LoadPageHtml("SuperviseeParticulars.html", labelInfo);
+                System.Threading.Thread.Sleep(500);
+                Trinity.BE.PopupModel popupModel = new Trinity.BE.PopupModel();
+                popupModel.Title = "MUB and TT Labels \nPrinting in Progress";
+                popupModel.Message = "Please wait a moment";
+                popupModel.IsShowLoading = true;
+                popupModel.IsShowOK = false;
+                this._web.InvokeScript("showPopupModal", JsonConvert.SerializeObject(popupModel));
 
                 System.Threading.Thread.Sleep(1000);
 
@@ -91,6 +100,9 @@ namespace SSA.CodeBehind
                         RaisePrintMUBLabelsFailedEvent(new Trinity.Common.PrintMUBAndTTLabelsEventArgs(labelInfo));
                     }
                     #endregion
+
+                    this._web.InvokeScript("closePopup");
+                    new JSCallCS(this._web).OnEventPrintFinished();
                 }
             }
             catch (Exception ex)

@@ -19,8 +19,9 @@ namespace DutyOfficer.Utils
                 // Xử lý status device
             });
 
-            HubProxy.On<string, string, string, string>("MessageTo", (UserId, Subject, Content, Station) => {
+            HubProxy.On<string, string, string, string, string,string>("MessageTo", (NotificationID, UserId, Subject, Content, notificationType, Station) => {
                 // Xử lý Message
+
             });
         }
 
