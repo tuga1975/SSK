@@ -141,31 +141,26 @@ namespace SSK
 
             // set workingTimeshift
             Trinity.BE.WorkingTimeshift workingTimeshift = new Trinity.BE.WorkingTimeshift();
-            workingTimeshift.Morning = GetWorkingTimeshift(timeslots, settingDetail.Morning_Open_Time, settingDetail.Morning_Close_Time);
-            workingTimeshift.Afternoon = GetWorkingTimeshift(timeslots, settingDetail.Afternoon_Open_Time, settingDetail.Afternoon_Close_Time);
-            workingTimeshift.Evening = GetWorkingTimeshift(timeslots, settingDetail.Evening_Open_Time, settingDetail.Evening_Close_Time);
+            workingTimeshift.Morning = GetWorkingTimeshift(timeslots, appointment.Timeslot_ID, EnumTimeshift.Morning);
+            workingTimeshift.Afternoon = GetWorkingTimeshift(timeslots, appointment.Timeslot_ID, EnumTimeshift.Afternoon);
+            workingTimeshift.Evening = GetWorkingTimeshift(timeslots, appointment.Timeslot_ID, EnumTimeshift.Evening);
 
             // redirect
             this._web.LoadPageHtml("BookAppointment.html", new object[] { appointment, workingTimeshift });
         }
 
-        private List<WorkingShiftDetails> GetWorkingTimeshift(List<Timeslot> timeslots, TimeSpan? open_Time, TimeSpan? close_Time)
+        private List<WorkingShiftDetails> GetWorkingTimeshift(List<Timeslot> timeslots, string selected_Timeslot_ID, string timeshift)
         {
             try
             {
-                if (open_Time == null && close_Time == null)
-                {
-                    return null;
-                }
-
-                List<WorkingShiftDetails> returnValue = timeslots.Where(item => item.StartTime >= open_Time && item.EndTime <= close_Time)
+                List<WorkingShiftDetails> returnValue = timeslots.Where(item => item.Category == timeshift)
                     .Select(item => new WorkingShiftDetails()
                     {
                         Timeslot_ID = item.Timeslot_ID,
                         StartTime = item.StartTime.Value,
                         EndTime = item.EndTime.Value,
                         IsAvailble = true,
-                        IsSelected = false,
+                        IsSelected = selected_Timeslot_ID == item.Timeslot_ID,
                         Category = item.Category
                     }).OrderBy(item => item.StartTime).ToList();
 
@@ -220,9 +215,13 @@ namespace SSK
             try
             {
                 // if appointment is in queue, return false
-                //bool inQueue = new DAL_Appointments().IsInQueue(appointment_ID);
-                // if not, update Appointments.timeslotId
+                bool inQueue = new DAL_QueueNumber().IsInQueue(appointment_ID, EnumStations.SSK);
+                if (inQueue)
+                {
+                    return false;
+                }
 
+                // if not, update Appointments.timeslotId
                 bool updateResult = new DAL_Appointments().UpdateTimeslot_ID(appointment_ID, timeslot_ID);
 
                 if (updateResult)
@@ -247,7 +246,7 @@ namespace SSK
             //var dalQueue = new DAL_QueueNumber();
             //if (dbAppointment != null)
             //{
-            //    if (!dalQueue.CheckQueueExistToday(dbAppointment.UserId, EnumStations.SSK))
+                //if (!dalQueue.CheckQueueExistToday(dbAppointment.UserId, EnumStations.SSK))
             //    {
             //        //var data = JsonConvert.SerializeObject(new { IDAppointment, timeStart, timeEnd });
             //        new DAL_Appointments().UpdateBookingTime(IDAppointment, timeStart, timeEnd);
