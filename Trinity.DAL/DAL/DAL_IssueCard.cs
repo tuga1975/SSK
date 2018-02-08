@@ -31,20 +31,46 @@ namespace Trinity.DAL
             }
             return array;
         }
+
+        public BE.IssueCard GetIssueCardBySmartCardId(string SmartCardId)
+        {
+            BE.IssueCard issueCard = null;
+            if (EnumAppConfig.IsLocal)
+            {
+                issueCard = _localUnitOfWork.DataContext.IssuedCards.FirstOrDefault(d => d.SmartCardId == SmartCardId).Map<BE.IssueCard>();
+                if (issueCard == null)
+                {
+                    issueCard = CallCentralized.Get<BE.IssueCard>("IssueCard", "GetIssueCardBySmartCardId", "SmartCardId="+ SmartCardId);
+                }
+            }
+            else
+            {
+                issueCard =  _centralizedUnitOfWork.DataContext.IssuedCards.FirstOrDefault(d => d.SmartCardId == SmartCardId).Map<BE.IssueCard>();
+            }
+            return issueCard;
+        }
         public void Insert(Trinity.BE.IssueCard model)
         {
             if (EnumAppConfig.IsLocal)
             {
-                bool statusCentralized;
-                CallCentralized.Post("IssueCard", "Insert", out statusCentralized, model);
-                if (!statusCentralized)
+                BE.IssueCard issueCard = GetIssueCardBySmartCardId(model.SmartCardId);
+                if (issueCard!=null)
                 {
-                    throw new Exception(EnumMessage.NotConnectCentralized);
+                    throw new Exception(EnumMessage.SmartCardIsAlreadyInUse);
                 }
                 else
                 {
-                    _localUnitOfWork.GetRepository<DBContext.IssuedCard>().Add(model.Map<DBContext.IssuedCard>());
-                    _localUnitOfWork.Save();
+                    bool statusCentralized;
+                    CallCentralized.Post("IssueCard", "Insert", out statusCentralized, model);
+                    if (!statusCentralized)
+                    {
+                        throw new Exception(EnumMessage.NotConnectCentralized);
+                    }
+                    else
+                    {
+                        _localUnitOfWork.GetRepository<DBContext.IssuedCard>().Add(model.Map<DBContext.IssuedCard>());
+                        _localUnitOfWork.Save();
+                    }
                 }
             }
             else

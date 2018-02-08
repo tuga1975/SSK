@@ -33,7 +33,12 @@ namespace Trinity.CentralizedAPI.Controllers
             new DAL.DAL_IssueCard().UpdateStatusByUserId(userId, Status);
         }
 
-
+        [HttpGet]
+        [Route("api/IssueCard/GetIssueCardBySmartCardId")]
+        public IHttpActionResult GetIssueCardBySmartCardId(string SmartCardId)
+        {
+            return Ok(new DAL.DAL_IssueCard().GetIssueCardBySmartCardId(SmartCardId));
+        }
 
     }
 }
