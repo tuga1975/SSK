@@ -87,7 +87,7 @@ namespace Trinity.Utils.Notification
                 string IDMessage = await HubProxy.Invoke<string>("SendToDutyOfficer", UserId, DutyOfficerID, Subject, Content, notificationType);
                 if (IDMessage == null)
                 {
-                    throw new Exception(EnumMessage.NotConnectCentralized);
+                    Lib.LayerWeb.InvokeScript("ShowMessageBox", EnumMessage.NotConnectCentralized);
                 }
                 else
                 {
@@ -106,7 +106,7 @@ namespace Trinity.Utils.Notification
                 }
                 else
                 {
-                    throw new Exception(EnumMessage.NotConnectCentralized);
+                    Lib.LayerWeb.InvokeScript("ShowMessageBox", EnumMessage.NotConnectCentralized);
                 }
             }
         }

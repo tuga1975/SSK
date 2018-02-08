@@ -199,10 +199,13 @@ namespace SSA
                 var appointment = dalAppointment.GetTodayAppointmentByUserId(labelInfo.UserId);
                 //var appointment = result.Data;
 
-                var sskQueue = new DAL_QueueNumber().GetQueueDetailByAppointment(appointment, EnumStations.SSK);
+                if (appointment != null)
+                {
+                    var sskQueue = new DAL_QueueNumber().GetQueueDetailByAppointment(appointment, EnumStations.SSK);
 
-                dalQueue.UpdateQueueStatus(sskQueue.Queue_ID, EnumQueueStatuses.Finished, EnumStations.SSK);
-                dalQueue.UpdateQueueStatus(sskQueue.Queue_ID, EnumQueueStatuses.Processing, EnumStations.SSA);
+                    dalQueue.UpdateQueueStatus(sskQueue.Queue_ID, EnumQueueStatuses.Finished, EnumStations.SSK);
+                    dalQueue.UpdateQueueStatus(sskQueue.Queue_ID, EnumQueueStatuses.Processing, EnumStations.SSA);
+                }
             }
             //this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').show(); ; ");
             //this._web.RunScript("$('.status-text').css('color','#000').text('Please collect your labels');");
