@@ -74,8 +74,8 @@
     margin: 0 auto;
 }
 .contentForm {
-    width: 400px;
-    margin: 0 auto;
+    width: calc(100% - 40px);
+    /*margin: 0 auto;*/
     overflow: hidden;
     padding: 20px;
 }
