@@ -272,23 +272,23 @@ namespace DutyOfficer
         {
             LayerWeb.InvokeScript("createEvent", JsonConvert.SerializeObject(_jsCallCS.GetType().GetMethods().Where(d => (d.IsPublic && !d.IsVirtual && !d.IsSecuritySafeCritical) || (d.IsPublic && d.IsSecurityCritical)).ToArray().Select(d => d.Name)));
 
-            if (_isFirstTimeLoaded)
-            {
-                NavigateTo(NavigatorEnums.Authentication_SmartCard);
+            //if (_isFirstTimeLoaded)
+            //{
+            //    NavigateTo(NavigatorEnums.Authentication_SmartCard);
 
-                _isFirstTimeLoaded = false;
-            }
+            //    _isFirstTimeLoaded = false;
+            //}
 
             //// For testing purpose
-            //Session session = Session.Instance;
-            //// Duty Officer
-            //Trinity.BE.User user = new DAL_User().GetUserByUserId("dfbb2a6a-9e45-4a76-9f75-af1a7824a947").Data;
-            //session[CommonConstants.USER_LOGIN] = user;
-            //session.IsSmartCardAuthenticated = true;
-            //session.IsFingerprintAuthenticated = true;
+            Session session = Session.Instance;
+            // Duty Officer
+            Trinity.BE.User user = new DAL_User().GetUserByUserId("dfbb2a6a-9e45-4a76-9f75-af1a7824a947").Data;
+            session[CommonConstants.USER_LOGIN] = user;
+            session.IsSmartCardAuthenticated = true;
+            session.IsFingerprintAuthenticated = true;
 
-            //NavigateTo(NavigatorEnums.Queue);
-            //Lib.SignalR.UserLogined("Thắng");
+            NavigateTo(NavigatorEnums.Queue);
+            APIUtils.SignalR.UserLogined(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId);
         }
     }
 }
