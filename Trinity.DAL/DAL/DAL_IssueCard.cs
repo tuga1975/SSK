@@ -38,7 +38,7 @@ namespace Trinity.DAL
             if (EnumAppConfig.IsLocal)
             {
                 issueCard = _localUnitOfWork.DataContext.IssuedCards.FirstOrDefault(d => d.SmartCardId == SmartCardId).Map<BE.IssueCard>();
-                if (issueCard == null)
+                if (issueCard == nul l)
                 {
                     issueCard = CallCentralized.Get<BE.IssueCard>("IssueCard", "GetIssueCardBySmartCardId", "SmartCardId="+ SmartCardId);
                 }
@@ -60,6 +60,8 @@ namespace Trinity.DAL
                 }
                 else
                 {
+                    UpdateStatusByUserId(model.UserId, EnumIssuedCards.Inactive);
+
                     bool statusCentralized;
                     CallCentralized.Post("IssueCard", "Insert", out statusCentralized, model);
                     if (!statusCentralized)
