@@ -311,6 +311,7 @@ namespace Trinity.DAL
                 {
                     var appointment = _localUnitOfWork.DataContext.Appointments.FirstOrDefault(item => item.ID.ToString() == appointment_ID);
                     appointment.Timeslot_ID = timeslot_ID;
+                    appointment.ChangedCount += 1;
 
                     var entry = _localUnitOfWork.DataContext.Entry(appointment);
                     entry.State = EntityState.Modified;

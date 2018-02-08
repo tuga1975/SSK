@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using Trinity.BE;
+using Trinity.Common;
 using Trinity.DAL.Repository;
 
 
@@ -12,6 +13,19 @@ namespace Trinity.DAL
     {
         Local_UnitOfWork _localUnitOfWork = new Local_UnitOfWork();
         Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
+
+        #region refactor 2018
+        public bool IsInQueue(string appointment_ID, string station)
+        {
+            if (EnumAppConfig.IsLocal)
+            {
+                return _localUnitOfWork.DataContext.Queues.Any(item => item.Appointment_ID.ToString() == appointment_ID);
+            }
+
+            return false;
+        }
+        #endregion
+
 
         public Trinity.DAL.DBContext.Queue InsertQueueNumber(Guid appointmentID, string userId, string station)
         {
@@ -51,6 +65,14 @@ namespace Trinity.DAL
 
                 if (EnumAppConfig.IsLocal)
                 {
+                    if (EnumAppConfig.ByPassCentralizedDB)
+                    {
+                        _localUnitOfWork.GetRepository<Trinity.DAL.DBContext.Queue>().Add(dataInsert);
+                        _localUnitOfWork.GetRepository<Trinity.DAL.DBContext.QueueDetail>().AddRange(arrayQueueDetail);
+                        _localUnitOfWork.Save();
+                        return dataInsert;
+                    }
+
                     bool centralizeStatus;
                     var centralData = CallCentralized.Post<Trinity.DAL.DBContext.Queue>(EnumAPIParam.QueueNumber, "InserNewQueue", out centralizeStatus, "appointmentId=" + appointmentID, "userId=" + userId, "station=" + station);
                     if (centralizeStatus)
@@ -72,7 +94,7 @@ namespace Trinity.DAL
 
                 return null;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
                 return null;
