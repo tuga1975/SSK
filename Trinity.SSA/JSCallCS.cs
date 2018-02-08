@@ -23,7 +23,8 @@ namespace SSA
         public event EventHandler<NRICEventArgs> OnNRICFailed;
         public event EventHandler<ShowMessageEventArgs> OnShowMessage;
         public event Action OnLogOutCompleted;
-
+        private static bool _PrintMUBSucceed = false;
+        private static bool _PrintTTSucceed = false;
 
         public JSCallCS(WebBrowser web)
         {
@@ -94,6 +95,7 @@ namespace SSA
 
         private void PrintMUBLabels_OnPrintMUBLabelSucceeded(object sender, PrintMUBAndTTLabelsEventArgs e)
         {
+            _PrintMUBSucceed = true;
             var labelInfo = new Trinity.BE.Label
             {
                 UserId = e.LabelInfo.UserId,
@@ -117,15 +119,16 @@ namespace SSA
             var dalQueue = new DAL_QueueNumber();
             dalQueue.UpdateQueueStatusByUserId(labelInfo.UserId, EnumStations.SSA, EnumStations.UHP, EnumQueueStatuses.Finished, "Printer MUB/TT Label");
 
-            this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').show(); ; ");
-            this._web.RunScript("$('.status-text').css('color','#000').text('Please collect your labels');");
-            this._web.InvokeScript("countdownLogout");
+            //this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').show(); ; ");
+            //this._web.RunScript("$('.status-text').css('color','#000').text('Please collect your labels');");
+            //this._web.InvokeScript("countdownLogout");
 
-            DeleteQRCodeImageFileTemp();
+            //DeleteQRCodeImageFileTemp();
         }
 
         private void PrintMUBLabels_OnPrintMUBLabelFailed(object sender, PrintMUBAndTTLabelsEventArgs e)
         {
+            _PrintMUBSucceed = false;
             var labelInfo = new Trinity.BE.Label
             {
                 UserId = e.LabelInfo.UserId,
@@ -147,17 +150,31 @@ namespace SSA
             var dalLabel = new DAL_Labels();
             dalLabel.UpdateLabel(labelInfo);
 
-            this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').hide(); ; ");
-            this._web.RunScript("$('.status-text').css('color','#000').text('Sent problem to Duty Officer. Please wait to check !');");
-            MessageBox.Show("Unable to print MUB labels\nPlease report to the Duty Officer", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').hide(); ; ");
+            //this._web.RunScript("$('.status-text').css('color','#000').text('Sent problem to Duty Officer. Please wait to check !');");
+            ////MessageBox.Show("Unable to print MUB labels\nPlease report to the Duty Officer", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+            //Trinity.BE.PopupModel popupModel = new Trinity.BE.PopupModel();
+            //popupModel.Title = "Printing Failed";
+            //popupModel.Message = "Unable to print MUB labels.\nPlease report to the Duty Officer";
+            //popupModel.IsShowLoading = false;
+            //popupModel.IsShowOK = true;
+
+            //if (!_PrintTTSucced)
+            //{
+            //    popupModel.Message = "Unable to print labels.\nPlease report to the Duty Officer";
+            //}
+            //this._web.InvokeScript("showPopupModal", JsonConvert.SerializeObject(popupModel));
+
             APIUtils.SignalR.SendAllDutyOfficer(e.LabelInfo.UserId, "Print MUB Label", "Don't print MUB, Please check !");
 
-            DeleteQRCodeImageFileTemp();
-            LogOut();
+            //DeleteQRCodeImageFileTemp();
+            //LogOut();
         }
 
         private void PrintTTLabels_OnPrintTTLabelSucceeded(object sender, PrintMUBAndTTLabelsEventArgs e)
         {
+            _PrintTTSucceed = true;
             var labelInfo = new Trinity.BE.Label
             {
                 UserId = e.LabelInfo.UserId,
@@ -187,15 +204,16 @@ namespace SSA
                 dalQueue.UpdateQueueStatus(sskQueue.Queue_ID, EnumQueueStatuses.Finished, EnumStations.SSK);
                 dalQueue.UpdateQueueStatus(sskQueue.Queue_ID, EnumQueueStatuses.Processing, EnumStations.SSA);
             }
-            this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').show(); ; ");
-            this._web.RunScript("$('.status-text').css('color','#000').text('Please collect your labels');");
+            //this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').show(); ; ");
+            //this._web.RunScript("$('.status-text').css('color','#000').text('Please collect your labels');");
 
-            DeleteQRCodeImageFileTemp();
+            //DeleteQRCodeImageFileTemp();
             
         }
 
         private void PrintTTLabels_OnPrintTTLabelFailed(object sender, PrintMUBAndTTLabelsEventArgs e)
         {
+            _PrintTTSucceed = false;
             var labelInfo = new Trinity.BE.Label
             {
                 UserId = e.LabelInfo.UserId,
@@ -217,24 +235,32 @@ namespace SSA
             var dalLabel = new DAL_Labels();
             dalLabel.UpdateLabel(labelInfo);
 
-            this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').hide(); ; ");
-            this._web.RunScript("$('.status-text').css('color','#000').text('Sent problem to Duty Officer. Please wait to check !');");
-            MessageBox.Show("Unable to print TT labels\nPlease report to the Duty Officer", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            APIUtils.SignalR.SendAllDutyOfficer(e.LabelInfo.UserId,"Print TT Label", "Don't print MUB, Please check !");
+            //this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').hide(); ; ");
+            //this._web.RunScript("$('.status-text').css('color','#000').text('Sent problem to Duty Officer. Please wait to check !');");
+            //Trinity.BE.PopupModel popupModel = new Trinity.BE.PopupModel();
+            //popupModel.Title = "Printing Failed";
+            //popupModel.Message = "Unable to print TT labels.\nPlease report to the Duty Officer";
+            //popupModel.IsShowLoading = false;
+            //popupModel.IsShowOK = true;
+            //this._web.InvokeScript("showPopupModal", JsonConvert.SerializeObject(popupModel));
 
-            DeleteQRCodeImageFileTemp();
-            LogOut();
+            APIUtils.SignalR.SendAllDutyOfficer(e.LabelInfo.UserId,"Print TT Label", "Don't print TT, Please check !");
+
+            //DeleteQRCodeImageFileTemp();
+            //LogOut();
         }
 
         private void PrintMUBAndTTLabels_OnPrintTTLabelException(object sender, ExceptionArgs e)
         {
-            this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').hide(); ; ");
-            this._web.RunScript("$('.status-text').css('color','#000').text('Sent problem to Duty Officer. Please wait to check !');");
-            MessageBox.Show(e.ErrorMessage, "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            _PrintMUBSucceed = false;
+            _PrintTTSucceed = false;
+            //this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').hide(); ; ");
+            //this._web.RunScript("$('.status-text').css('color','#000').text('Sent problem to Duty Officer. Please wait to check !');");
+            //MessageBox.Show(e.ErrorMessage, "", MessageBoxButtons.OK, MessageBoxIcon.Error);
             APIUtils.SignalR.SendAllDutyOfficer(null,"MUB & TT", "Don't print MUB & TT, Please check !");
 
-            DeleteQRCodeImageFileTemp();
-            LogOut();
+            //DeleteQRCodeImageFileTemp();
+            //LogOut();
         }
 
         public void ManualLogin(string username, string password)
@@ -292,6 +318,39 @@ namespace SSA
         public void popupLoading(string content)
         {
             this._web.LoadPopupHtml("LoadingPopup.html", content);
+        }
+
+        public void OnEventPrintFinished()
+        {
+
+            if (_PrintMUBSucceed && _PrintTTSucceed)
+            {
+                this._web.LoadPageHtml("PrintingMUBAndTTLabels.html");
+                this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').show(); ; ");
+                this._web.RunScript("$('.status-text').css('color','#000').text('Please collect your labels');");
+                this._web.InvokeScript("countdownLogout");
+
+                DeleteQRCodeImageFileTemp();
+                LogOut();
+            }
+            else
+            {
+                Trinity.BE.PopupModel popupModel = new Trinity.BE.PopupModel();
+                popupModel.Title = "Printing Failed";
+                popupModel.Message = "Unable to print labels.\nPlease report to the Duty Officer";
+                popupModel.IsShowLoading = false;
+                popupModel.IsShowOK = true;
+
+                if (_PrintTTSucceed)
+                {
+                    popupModel.Message = "Unable to print MUB labels.\nPlease report to the Duty Officer";
+                }
+                if (_PrintMUBSucceed)
+                {
+                    popupModel.Message = "Unable to print TT labels.\nPlease report to the Duty Officer";
+                }
+                this._web.InvokeScript("showPopupModal", JsonConvert.SerializeObject(popupModel));
+            }
         }
     }
 

@@ -1,22 +1,47 @@
 ﻿<div class="modal fade" role="dialog" id="popupLoading">
-    <div class="modal-dialog" style="width:300px;">
+    <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header" style="display:none;">
                 <h5 class="modal-title">Loading</h5>
             </div>
             <div class="modal-body">
-                <div style="padding:0px 20px;">
-                    Loading
+                <div class="title">
+                    <span id="title"></span>
                 </div>
-                <div>
-                    Xin vui lòng chờ
+                <div class="contentMesg">
+                    <span id="contentMesg"></span>
+                </div>
+                <div id="divLoading">
+                    <img src="../img/loading.gif" height="60" width="60"/>
+                </div>
+                <div id="divButton">
+                    <button type="button" class="btn btn-primary" id="btnOK">OK</button>
                 </div>
             </div>
         </div>
     </div>
 </div>
 <script type="text/javascript">
-    api.ready(function (model) {
-        $('#popupLoading .modal-body').html(model);
+    api.ready(function (response) {
+        var modelPopup = JSON.parse(response);
+        //$('#popupLoading .modal-body').html(model);
+        document.getElementById("title").textContent = modelPopup.Title;
+        document.getElementById("contentMesg").textContent = modelPopup.Message;
+
+        if (modelPopup.IsShowLoading == true) {
+            $('#divLoading').show();
+        } else {
+            $('#divLoading').hide();
+        };
+
+        if (modelPopup.IsShowOK == true) {
+            $('#divButton').show();
+        } else {
+            $('#divButton').hide();
+        };
     });
+
+    $('#btnOK').click(function () {
+        $('#popupLoading').modal('toggle');
+    });   
 </script>
