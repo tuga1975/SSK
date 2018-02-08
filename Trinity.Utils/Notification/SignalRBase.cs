@@ -11,7 +11,15 @@ namespace Trinity.Utils.Notification
     {
         protected IHubProxy HubProxy { get; set; }
         protected HubConnection Connection { get; set; }
-        protected bool IsConnected {
+        protected string Station
+        {
+            get
+            {
+                return System.Reflection.Assembly.GetEntryAssembly().GetName().Name;
+            }
+        }
+        protected bool IsConnected
+        {
             get
             {
                 if (Connection == null || (Connection != null && string.IsNullOrEmpty(Connection.ConnectionId)))
@@ -21,13 +29,13 @@ namespace Trinity.Utils.Notification
         }
         protected void StartConnect()
         {
-            ConnectAsync(System.Reflection.Assembly.GetEntryAssembly().GetName().Name);
+            ConnectAsync();
             Lib.SignalR = this;
         }
-        private async void ConnectAsync(string station)
+        private async void ConnectAsync()
         {
             Connection = new HubConnection(EnumAppConfig.NotificationServerUrl + "/signalr");
-            Connection.Headers.Add("Station", station);
+            Connection.Headers.Add("Station", Station);
             Connection.Closed += _Connection_Closed;
 
             HubProxy = Connection.CreateHubProxy("MyHub");
@@ -72,15 +80,35 @@ namespace Trinity.Utils.Notification
             if (IsConnected)
                 HubProxy.Invoke("DeviceStatusUpdate", deviceId, deviceStatuses);
         }
-        public void SendToDutyOfficer(string UserId, string DutyOfficerID, string Subject, string Content, string notificationType)
+        public async void SendToDutyOfficer(string UserId, string DutyOfficerID, string Subject, string Content, string notificationType)
         {
             if (IsConnected)
-                HubProxy.Invoke("SendToDutyOfficer", UserId, DutyOfficerID, Subject, Content, notificationType);
+            {
+                string IDMessage = await HubProxy.Invoke<string>("SendToDutyOfficer", UserId, DutyOfficerID, Subject, Content, notificationType);
+                if (IDMessage == null)
+                {
+                    throw new Exception(EnumMessage.NotConnectCentralized);
+                }
+                else
+                {
+                    new DAL.DAL_Notification().SendToDutyOfficer(IDMessage, UserId, DutyOfficerID, Subject, Content, notificationType,Station);
+                }
+            }
         }
-        public void SendAllDutyOfficer(string UserId, string Subject, string Content, string notificationType)
+        public async void SendAllDutyOfficer(string UserId, string Subject, string Content, string notificationType)
         {
             if (IsConnected)
-                HubProxy.Invoke("SendAllDutyOfficer", UserId, Subject, Content, notificationType);
+            {
+                List<Trinity.BE.Notification> arrraySend = await HubProxy.Invoke<List<Trinity.BE.Notification>>("SendAllDutyOfficer", UserId, Subject, Content, notificationType);
+                if (arrraySend != null)
+                {
+                    new DAL.DAL_Notification().SendAllDutyOfficer(arrraySend);
+                }
+                else
+                {
+                    throw new Exception(EnumMessage.NotConnectCentralized);
+                }
+            }
         }
         public void Dispose()
         {

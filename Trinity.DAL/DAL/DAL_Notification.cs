@@ -26,9 +26,9 @@ namespace Trinity.DAL
                     .Select(item => new Notification()
                     {
                         Content = item.Content,
-                        Date = item.Datetime,
+                        Datetime = item.Datetime,
                         FromUserId = item.FromUserId,
-                        ID = item.NotificationID,
+                        NotificationID = item.NotificationID,
                         IsRead = item.IsRead.HasValue ? item.IsRead.Value : false,
                         Subject = item.Subject,
                         ToUserId = item.ToUserId
@@ -49,9 +49,9 @@ namespace Trinity.DAL
                 return _centralizedUnitOfWork.DataContext.Notifications.Where(d => (!string.IsNullOrEmpty(d.FromUserId) && d.FromUserId == userId) || (!string.IsNullOrEmpty(d.ToUserId) && d.ToUserId == userId)).Select(item => new Notification()
                 {
                     Content = item.Content,
-                    Date = item.Datetime,
+                    Datetime = item.Datetime,
                     FromUserId = item.FromUserId,
-                    ID = item.NotificationID,
+                    NotificationID = item.NotificationID,
                     IsRead = item.IsRead.HasValue ? item.IsRead.Value : false,
                     Subject = item.Subject,
                     ToUserId = item.ToUserId
@@ -77,16 +77,30 @@ namespace Trinity.DAL
         /// <summary>
         /// App call ko cần truyền Station
         /// </summary>
+        /// <param name="MessageID"></param>
         /// <param name="UserId"></param>
         /// <param name="DutyOfficerID"></param>
         /// <param name="Subject"></param>
         /// <param name="Content"></param>
+        /// <param name="notificationType"></param>
         /// <param name="Station"></param>
-        public void SendToDutyOfficer(string UserId, string DutyOfficerID, string Subject, string Content, string notificationType, string Station = null)
+        public void SendToDutyOfficer(string MessageID,string UserId, string DutyOfficerID, string Subject, string Content, string notificationType, string Station)
         {
             if (EnumAppConfig.IsLocal)
             {
-                Lib.SignalR.SendToDutyOfficer(UserId, DutyOfficerID, Subject, Content, notificationType);
+                _localUnitOfWork.GetRepository<DBContext.Notification>().Add(new DBContext.Notification()
+                {
+                    Content = Content,
+                    Datetime = DateTime.Now,
+                    FromUserId = UserId,
+                    IsFromSupervisee = true,
+                    NotificationID = MessageID,
+                    Source = Station,
+                    Subject = Subject,
+                    ToUserId = DutyOfficerID,
+                    Type = notificationType.ToString()
+                });
+                _localUnitOfWork.Save();
             }
             else
             {
@@ -96,7 +110,7 @@ namespace Trinity.DAL
                     Datetime = DateTime.Now,
                     FromUserId = UserId,
                     IsFromSupervisee = true,
-                    NotificationID = Guid.NewGuid().ToString().Trim(),
+                    NotificationID = MessageID,
                     Source = Station,
                     Subject = Subject,
                     ToUserId = DutyOfficerID,
@@ -106,24 +120,25 @@ namespace Trinity.DAL
             }
         }
         /// <summary>
-        /// App call ko cần truyền Station
+        /// 
         /// </summary>
         /// <param name="UserId"></param>
         /// <param name="DutyOfficerID"></param>
         /// <param name="Subject"></param>
         /// <param name="Content"></param>
-        /// <param name="Station"></param
         /// <param name="notificationType"></param>
-        public void SendAllDutyOfficer(string UserId, string Subject, string Content, string Statis, string notificationType, string Station = null)
+        /// <param name="Station"></param
+        public List<BE.Notification> SendAllDutyOfficer(string UserId, string Subject, string Content, string notificationType, string Station)
         {
+            
             if (EnumAppConfig.IsLocal)
             {
-                Lib.SignalR.SendAllDutyOfficer(UserId, Subject, Content, notificationType);
+                return null;
             }
             else
             {
                 List<string> DOId = _centralizedUnitOfWork.DataContext.Membership_UserRoles.Include("Membership_Roles").Where(d => d.Membership_Roles.Name == EnumUserRoles.DutyOfficer).Select(d => d.UserId).ToList();
-                _centralizedUnitOfWork.GetRepository<DBContext.Notification>().AddRange(DOId.Select(d => new DBContext.Notification()
+                List<DBContext.Notification> arrayInsert = DOId.Select(d => new DBContext.Notification()
                 {
                     Content = Content,
                     Datetime = DateTime.Now,
@@ -134,8 +149,20 @@ namespace Trinity.DAL
                     Subject = Subject,
                     ToUserId = d,
                     Type = notificationType
-                }).ToList());
+                }).ToList();
+                _centralizedUnitOfWork.GetRepository<DBContext.Notification>().AddRange(arrayInsert);
                 _centralizedUnitOfWork.Save();
+
+                return arrayInsert.Select(item => item.Map<BE.Notification>()).ToList();
+            }
+        }
+        public void SendAllDutyOfficer(List<BE.Notification> arrayInsert)
+        {
+
+            if (EnumAppConfig.IsLocal)
+            {
+                _localUnitOfWork.GetRepository<DBContext.Notification>().AddRange(arrayInsert.Select(item => item.Map<DBContext.Notification>()).ToList());
+                _localUnitOfWork.Save();
             }
         }
 
@@ -175,9 +202,9 @@ namespace Trinity.DAL
                     arrayNoti = _localUnitOfWork.DataContext.Notifications.Where(d => (!string.IsNullOrEmpty(d.FromUserId) && d.FromUserId == userId) || (!string.IsNullOrEmpty(d.ToUserId) && d.ToUserId == userId)).Select(item => new Notification()
                     {
                         Content = item.Content,
-                        Date = item.Datetime,
+                        Datetime = item.Datetime,
                         FromUserId = item.FromUserId,
-                        ID = item.NotificationID,
+                        NotificationID = item.NotificationID,
                         IsRead = item.IsRead.HasValue ? item.IsRead.Value : false,
                         Subject = item.Subject,
                         ToUserId = item.ToUserId
@@ -190,9 +217,9 @@ namespace Trinity.DAL
                 return _centralizedUnitOfWork.DataContext.Notifications.Where(d => (!string.IsNullOrEmpty(d.FromUserId) && d.FromUserId == userId) || (!string.IsNullOrEmpty(d.ToUserId) && d.ToUserId == userId)).Select(item => new Notification()
                 {
                     Content = item.Content,
-                    Date = item.Datetime,
+                    Datetime = item.Datetime,
                     FromUserId = item.FromUserId,
-                    ID = item.NotificationID,
+                    NotificationID = item.NotificationID,
                     IsRead = item.IsRead.HasValue ? item.IsRead.Value : false,
                     Subject = item.Subject,
                     ToUserId = item.ToUserId
@@ -262,9 +289,9 @@ namespace Trinity.DAL
                 Notification notification = new Notification()
                 {
                     Content = item.Content,
-                    Date = item.Datetime,
+                    Datetime = item.Datetime,
                     FromUserId = item.FromUserId,
-                    ID = item.NotificationID,
+                    NotificationID = item.NotificationID,
                     IsRead = item.IsRead.HasValue ? item.IsRead.Value : false,
                     Subject = item.Subject,
                     ToUserId = item.ToUserId
@@ -288,7 +315,7 @@ namespace Trinity.DAL
                                           FromUserName = u.Name,
                                           Subject = n.Subject,
                                           Content = n.Content,
-                                          Date = n.Datetime,
+                                          Datetime = n.Datetime,
                                           Type = n.Type,
                                           Source = n.Source
                                       });
@@ -303,7 +330,7 @@ namespace Trinity.DAL
                                           FromUserName = u.Name,
                                           Subject = n.Subject,
                                           Content = n.Content,
-                                          Date = n.Datetime,
+                                          Datetime = n.Datetime,
                                           Type = n.Type,
                                           Source = n.Source
                                       });
@@ -328,7 +355,7 @@ namespace Trinity.DAL
                                           FromUserName = u.Name,
                                           Subject = n.Subject,
                                           Content = n.Content,
-                                          Date =
+                                          Datetime =
                                           n.Datetime,
                                           Type = n.Type,
                                           Source = n.Source
@@ -344,7 +371,7 @@ namespace Trinity.DAL
                                           FromUserName = u.Name,
                                           Subject = n.Subject,
                                           Content = n.Content,
-                                          Date = n.Datetime,
+                                          Datetime = n.Datetime,
                                           Type = n.Type,
                                           Source = n.Source
                                       }).Where(x => modules.Contains(x.Source));
