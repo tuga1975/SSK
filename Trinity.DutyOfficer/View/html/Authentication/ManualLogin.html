@@ -1,0 +1,42 @@
+﻿<form id="manualLoginFrm">
+    <div class="titles"><span>Login</span></div><br />
+    <div class="container contentPrinting text-center center-block contentWrapper">
+        <div class="input-group">
+            <span class="input-group-addon">NRIC:</span>
+            <input id="loginNRIC" type="text" class="form-control pri" name="loginNRIC" />
+        </div>
+        <br />
+        <div class="input-group">
+            <span class="input-group-addon">Password:</span>
+            <input id="loginPassword" type="password" class="form-control pri" name="loginPassword" />
+        </div>
+    </div>
+    <div id="divSave">
+        <button type="button" class="btn btn-dark" id="CancelBtn">CANCEL</button>
+        <button type="button" class="btn btn-dark" id="LoginBtn">SUBMIT</button>
+    </div>
+</form>
+<script type="text/javascript">
+    $('#LoginBtn').click(function () {
+
+        var loginNRIC = document.getElementById('loginNRIC').value;
+        var password = document.getElementById('loginPassword').value;
+
+        if (loginNRIC == '') {
+            alert('Please type your NRIC');
+        }
+        else if (password == '') {
+            alert('Please type your password');
+        }
+        else {
+            api.server.ManualLogin($('#loginNRIC').val(), $('#loginPassword').val());
+            return true;
+        }
+        return false;
+    });
+
+
+    $('#CancelBtn').click(function () {
+    });
+
+</script>
