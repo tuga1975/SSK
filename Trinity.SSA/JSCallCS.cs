@@ -166,7 +166,7 @@ namespace SSA
             //}
             //this._web.InvokeScript("showPopupModal", JsonConvert.SerializeObject(popupModel));
 
-            APIUtils.SignalR.SendAllDutyOfficer(e.LabelInfo.UserId, "Print MUB Label", "Don't print MUB, Please check !");
+            APIUtils.SignalR.SendAllDutyOfficer(e.LabelInfo.UserId, "Print MUB Label", "Don't print MUB, Please check !", NotificationType.Error);
 
             //DeleteQRCodeImageFileTemp();
             //LogOut();
@@ -244,7 +244,7 @@ namespace SSA
             //popupModel.IsShowOK = true;
             //this._web.InvokeScript("showPopupModal", JsonConvert.SerializeObject(popupModel));
 
-            APIUtils.SignalR.SendAllDutyOfficer(e.LabelInfo.UserId,"Print TT Label", "Don't print TT, Please check !");
+            APIUtils.SignalR.SendAllDutyOfficer(e.LabelInfo.UserId,"Print TT Label", "Don't print TT, Please check !", NotificationType.Error);
 
             //DeleteQRCodeImageFileTemp();
             //LogOut();
@@ -257,7 +257,7 @@ namespace SSA
             //this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').hide(); ; ");
             //this._web.RunScript("$('.status-text').css('color','#000').text('Sent problem to Duty Officer. Please wait to check !');");
             //MessageBox.Show(e.ErrorMessage, "", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            APIUtils.SignalR.SendAllDutyOfficer(null,"MUB & TT", "Don't print MUB & TT, Please check !");
+            APIUtils.SignalR.SendAllDutyOfficer(null,"MUB & TT", "Don't print MUB & TT, Please check !", NotificationType.Error);
 
             //DeleteQRCodeImageFileTemp();
             //LogOut();
