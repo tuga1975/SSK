@@ -13,6 +13,71 @@ namespace Trinity.DAL
         Local_UnitOfWork _localUnitOfWork = new Local_UnitOfWork();
         Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
 
+        #region refactor 2018
+        public Trinity.DAL.DBContext.Appointment GetNextAppointment(string userId)
+        {
+            try
+            {
+                // get from localdb
+                if (EnumAppConfig.IsLocal)
+                {
+                    Appointment appointment = _localUnitOfWork.DataContext.Appointments.Where(item => item.Date >= DateTime.Today && item.UserId == userId)
+                        .OrderBy(item => item.Date).FirstOrDefault();
+
+                    // if local have no data, get data from centralizeddb and update localdb
+                    if (appointment == null && !EnumAppConfig.ByPassCentralizedDB)
+                    {
+
+                    }
+
+                    return appointment;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public Trinity.BE.Appointment GetAppointment(string appointment_ID)
+        {
+            try
+            {
+                // get from localdb
+                if (EnumAppConfig.IsLocal)
+                {
+                    Trinity.BE.Appointment appointment = _localUnitOfWork.DataContext.Appointments
+                        .Where(item => item.ID.ToString() == appointment_ID)
+                        .Select(item => new BE.Appointment
+                        {
+                            UserId = item.UserId,
+                            AppointmentDate = item.Date,
+                            ChangedCount = item.ChangedCount,
+                            Timeslot_ID = item.Timeslot_ID,
+                            Name = item.Membership_Users.Name,
+                            NRIC = item.Membership_Users.NRIC,
+                            Status = (EnumAppointmentStatuses)item.Status,
+                            ReportTime = item.ReportTime,
+                            StartTime = item.Timeslot.StartTime,
+                            EndTime = item.Timeslot.EndTime,
+
+                        }).FirstOrDefault();
+
+                    return appointment;
+                }
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+        #endregion
 
         #region NEW DAL_APPOINTMENT
         public Appointment GetAppointmentByID(Guid ID)
@@ -235,6 +300,29 @@ namespace Trinity.DAL
             {
 
                 return null;
+            }
+        }
+
+        public bool UpdateTimeslot_ID(string appointment_ID, string timeslot_ID)
+        {
+            try
+            {
+                if (EnumAppConfig.IsLocal)
+                {
+                    var appointment = _localUnitOfWork.DataContext.Appointments.FirstOrDefault(item => item.ID.ToString() == appointment_ID);
+                    appointment.Timeslot_ID = timeslot_ID;
+
+                    var entry = _localUnitOfWork.DataContext.Entry(appointment);
+                    entry.State = EntityState.Modified;
+
+                    return _localUnitOfWork.DataContext.SaveChanges() > 0;
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                return false;
             }
         }
 

@@ -9,6 +9,7 @@ using Trinity.Common;
 using Trinity.DAL;
 using Trinity.DAL.DBContext;
 using Trinity.Device;
+using Trinity.BE;
 
 namespace SSK
 {
@@ -83,110 +84,191 @@ namespace SSK
         #region BookAppointment
         public void BookAppointment()
         {
-
             Session session = Session.Instance;
             Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+            var eventCenter = Trinity.Common.Common.EventCenter.Default;
 
-            
-            Trinity.DAL.DBContext.Appointment appointment;
-            Trinity.DAL.DBContext.Appointment nearestAppointment;
-            DateTime today = DateTime.Now.Date;
-            var selectedTimes = new Trinity.BE.WorkingTimeshift();
+            // check supervisee have appoitment
+            Trinity.DAL.DBContext.Appointment appointment = new DAL_Appointments().GetNextAppointment(user.UserId);
 
-            appointment = new DAL_Appointments().GetTodayAppointmentByUserId(user.UserId.ToString());
-
-            if (appointment != null)
+            if (appointment == null)
             {
-
-                selectedTimes = SetSelectedTimes( appointment);
-
-            }
-            else
-            {
-                nearestAppointment = new DAL_Appointments().GetNearestApptmt(user.UserId);
-                //nearestAppointment = DAL_Appointments.GetNearestAppointment(user.UserId);
-                if (nearestAppointment != null)
-                {
-                    selectedTimes = SetSelectedTimes( nearestAppointment);
-                }
-                else
-                {
-                    var eventCenter = Trinity.Common.Common.EventCenter.Default;
-                    eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_MESSAGE, Message = "You have no appointment" });
-                }
-
+                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_MESSAGE, Message = "You have no appointment" });
             }
 
+            // get timeslots of appoitment day
+            List<Timeslot> timeslots = new DAL_Timeslots().GetTimeSlots(appointment.Date);
+
+            if (timeslots ==null)
+            {
+                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_MESSAGE, Message = "Have no timeslot to select. \nPlease contact Duty officer." });
+            }
+
+            // get GetOperationSetting of appointment day
+            var operationSettings = new DAL_Setting().GetOperationSettings();
+            Trinity.BE.SettingDetails settingDetail = null;
+            switch (appointment.Date.DayOfWeek)
+            {
+                case DayOfWeek.Sunday:
+                    settingDetail = operationSettings.Sunday;
+                    break;
+                case DayOfWeek.Monday:
+                    settingDetail = operationSettings.Monday;
+                    break;
+                case DayOfWeek.Tuesday:
+                    settingDetail = operationSettings.Tuesday;
+                    break;
+                case DayOfWeek.Wednesday:
+                    settingDetail = operationSettings.Wednesday;
+                    break;
+                case DayOfWeek.Thursday:
+                    settingDetail = operationSettings.Thursday;
+                    break;
+                case DayOfWeek.Friday:
+                    settingDetail = operationSettings.Friday;
+                    break;
+                case DayOfWeek.Saturday:
+                    settingDetail = operationSettings.Saturday;
+                    break;
+                default:
+                    break;
+            }
+
+            if (settingDetail == null)
+            {
+                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_MESSAGE, Message = "Can not get timeslots. \nPlease contact Duty officer." });
+            }
+
+            // set workingTimeshift
+            Trinity.BE.WorkingTimeshift workingTimeshift = new Trinity.BE.WorkingTimeshift();
+            workingTimeshift.Morning = GetWorkingTimeshift(timeslots, settingDetail.Morning_Open_Time, settingDetail.Morning_Close_Time);
+            workingTimeshift.Afternoon = GetWorkingTimeshift(timeslots, settingDetail.Afternoon_Open_Time, settingDetail.Afternoon_Close_Time);
+            workingTimeshift.Evening = GetWorkingTimeshift(timeslots, settingDetail.Evening_Open_Time, settingDetail.Evening_Close_Time);
+
+            // redirect
+            this._web.LoadPageHtml("BookAppointment.html", new object[] { appointment, workingTimeshift });
         }
 
-        private Trinity.BE.WorkingTimeshift SetSelectedTimes( Appointment appointment)
+        private List<WorkingShiftDetails> GetWorkingTimeshift(List<Timeslot> timeslots, TimeSpan? open_Time, TimeSpan? close_Time)
         {
-            var date = appointment.Date;
-
-            Trinity.BE.WorkingTimeshift selectedTimes = new DAL_Setting().GetApptmtTime(date); 
-            SetSelectedTime(appointment, selectedTimes.Morning);
-            SetSelectedTime(appointment, selectedTimes.Afternoon);
-            SetSelectedTime(appointment, selectedTimes.Evening);
-            this._web.LoadPageHtml("BookAppointment.html", new object[] { appointment, selectedTimes });
-            return selectedTimes;
-        }
-
-        private static void SetSelectedTime(Appointment appointment, List<Trinity.BE.WorkingShiftDetails> selectedTimes)
-        {
-            
-
-            var item = selectedTimes.Where(d => appointment.Timeslot != null && appointment.Timeslot.StartTime != null && d.StartTime == appointment.Timeslot.StartTime.Value && d.EndTime == appointment.Timeslot.EndTime.Value).FirstOrDefault();
-            if (item != null)
+            try
             {
-                item.IsSelected = true;
-            }
-
-            if (!string.IsNullOrEmpty(appointment.Timeslot_ID))
-            {
-
-
-                var maxAppPerTimeslot = new DAL_Appointments().GetMaxNumberOfTimeslot(appointment.Timeslot_ID);
-                foreach (var selectedItem in selectedTimes)
+                if (open_Time == null && close_Time == null)
                 {
-                    var count = new DAL_Appointments().CountListApptmtByTimeslot(appointment); 
-                    if (count >= maxAppPerTimeslot)
+                    return null;
+                }
+
+                List<WorkingShiftDetails> returnValue = timeslots.Where(item => item.StartTime >= open_Time && item.EndTime <= close_Time)
+                    .Select(item => new WorkingShiftDetails()
                     {
-                        selectedItem.IsAvailble = false;
-                    }
-                }
+                        Timeslot_ID = item.Timeslot_ID,
+                        StartTime = item.StartTime.Value,
+                        EndTime = item.EndTime.Value,
+                        IsAvailble = true,
+                        IsSelected = false,
+                        Category = item.Category
+                    }).OrderBy(item => item.StartTime).ToList();
+
+                return returnValue;
+            }
+            catch (Exception ex)
+            {
+                return null;
             }
         }
 
-        public bool UpdateTimeAppointment(string IDAppointment, string timeStart, string timeEnd)
+        //private Trinity.BE.WorkingTimeshift SetSelectedTimes( Appointment appointment)
+        //{
+        //    var date = appointment.Date;
+
+        //    Trinity.BE.WorkingTimeshift selectedTimes = new DAL_Setting().GetApptmtTime(date); 
+        //    SetSelectedTime(appointment, selectedTimes.Morning);
+        //    SetSelectedTime(appointment, selectedTimes.Afternoon);
+        //    SetSelectedTime(appointment, selectedTimes.Evening);
+        //    this._web.LoadPageHtml("BookAppointment.html", new object[] { appointment, selectedTimes });
+        //    return selectedTimes;
+        //}
+
+        //private static void SetSelectedTime(Appointment appointment, List<Trinity.BE.WorkingShiftDetails> selectedTimes)
+        //{
+            
+
+        //    var item = selectedTimes.Where(d => appointment.Timeslot != null && appointment.Timeslot.StartTime != null && d.StartTime == appointment.Timeslot.StartTime.Value && d.EndTime == appointment.Timeslot.EndTime.Value).FirstOrDefault();
+        //    if (item != null)
+        //    {
+        //        item.IsSelected = true;
+        //    }
+
+        //    if (!string.IsNullOrEmpty(appointment.Timeslot_ID))
+        //    {
+
+
+        //        var maxAppPerTimeslot = new DAL_Appointments().GetMaxNumberOfTimeslot(appointment.Timeslot_ID);
+        //        foreach (var selectedItem in selectedTimes)
+        //        {
+        //            var count = new DAL_Appointments().CountListApptmtByTimeslot(appointment); 
+        //            if (count >= maxAppPerTimeslot)
+        //            {
+        //                selectedItem.IsAvailble = false;
+        //            }
+        //        }
+        //    }
+        //}
+
+        public bool UpdateTimeAppointment(string appointment_ID, string timeslot_ID)
         {
-
-            var dbAppointment = new DAL_Appointments().GetAppointmentByID(Guid.Parse(IDAppointment));
-            //check exist queue
-            var dalQueue = new DAL_QueueNumber();
-            if (dbAppointment != null)
+            try
             {
-                if (!dalQueue.CheckQueueExistToday(dbAppointment.UserId, EnumStations.SSK))
+                // if appointment is in queue, return false
+                //bool inQueue = new DAL_Appointments().IsInQueue(appointment_ID);
+                // if not, update Appointments.timeslotId
+
+                bool updateResult = new DAL_Appointments().UpdateTimeslot_ID(appointment_ID, timeslot_ID);
+
+                if (updateResult)
                 {
-                    //var data = JsonConvert.SerializeObject(new { IDAppointment, timeStart, timeEnd });
-                    new DAL_Appointments().UpdateBookingTime(IDAppointment, timeStart, timeEnd);
-
-                    // dalAppointments.UpdateBookTime(IDAppointment, timeStart, timeEnd);
-
-                    Trinity.BE.Appointment appointment = new DAL_Appointments().GetAppmtDetails(Guid.Parse(IDAppointment)); 
-                    //Trinity.BE.Appointment appointment = dalAppointments.GetAppointmentDetails(new Guid(IDAppointment));
-
+                    Trinity.BE.Appointment appointment = new DAL_Appointments().GetAppointment(appointment_ID);
                     APIUtils.Printer.PrintAppointmentDetails("AppointmentDetailsTemplate.html", appointment);
                     FormQueueNumber f = FormQueueNumber.GetInstance();
                     f.RefreshQueueNumbers();
                     return true;
                 }
-                else
-                {
-                    return false;
-                }
 
+                return false;
             }
-            return false;
+            catch (Exception ex)
+            {
+                return false;
+            }
+
+
+            //var dbAppointment = new DAL_Appointments().GetAppointmentByID(Guid.Parse(IDAppointment));
+            ////check exist queue
+            //var dalQueue = new DAL_QueueNumber();
+            //if (dbAppointment != null)
+            //{
+            //    if (!dalQueue.CheckQueueExistToday(dbAppointment.UserId, EnumStations.SSK))
+            //    {
+            //        //var data = JsonConvert.SerializeObject(new { IDAppointment, timeStart, timeEnd });
+            //        new DAL_Appointments().UpdateBookingTime(IDAppointment, timeStart, timeEnd);
+
+            //        // dalAppointments.UpdateBookTime(IDAppointment, timeStart, timeEnd);
+
+            //        Trinity.BE.Appointment appointment = new DAL_Appointments().GetAppmtDetails(Guid.Parse(IDAppointment)); 
+            //        //Trinity.BE.Appointment appointment = dalAppointments.GetAppointmentDetails(new Guid(IDAppointment));
+
+            //        APIUtils.Printer.PrintAppointmentDetails("AppointmentDetailsTemplate.html", appointment);
+            //        FormQueueNumber f = FormQueueNumber.GetInstance();
+            //        f.RefreshQueueNumbers();
+            //        return true;
+            //    }
+            //    else
+            //    {
+            //        return false;
+            //    }
+
+            //}
+            //return false;
         }
 
         public void PrintAppointmentDetails(string appointmentId)
@@ -514,7 +596,7 @@ namespace SSK
             Trinity.BE.AbsenceReporting absenceData = (Trinity.BE.AbsenceReporting)session[CommonConstants.ABSENCE_REPORTING_DATA];
             //get scanned data from session
             var scannedDoc = (byte[])session[CommonConstants.SCANNED_DOCUMENT];
-            var listAppointment = (List<Appointment>)session[CommonConstants.LIST_APPOINTMENT];
+            var listAppointment = (List<Trinity.DAL.DBContext.Appointment>)session[CommonConstants.LIST_APPOINTMENT];
             absenceData.ScannedDocument = scannedDoc;
             var dalAbsence = new DAL_AbsenceReporting();
             var create = dalAbsence.CreateAbsenceReporting(absenceData, true);
