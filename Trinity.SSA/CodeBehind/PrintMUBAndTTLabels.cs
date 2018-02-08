@@ -31,6 +31,7 @@ namespace SSA.CodeBehind
                 //this._web.LoadPageHtml("PrintingMUBAndTTLabels.html");
                 //this._web.RunScript("$('.status-text').css('color','#000').text('Please wait');");
                 this._web.LoadPageHtml("SuperviseeParticulars.html", labelInfo);
+                System.Threading.Thread.Sleep(500);
                 Trinity.BE.PopupModel popupModel = new Trinity.BE.PopupModel();
                 popupModel.Title = "MUB and TT Labels \nPrinting in Progress";
                 popupModel.Message = "Please wait a moment";
@@ -38,7 +39,7 @@ namespace SSA.CodeBehind
                 popupModel.IsShowOK = false;
                 this._web.InvokeScript("showPopupModal", JsonConvert.SerializeObject(popupModel));
 
-                System.Threading.Thread.Sleep(1500);
+                System.Threading.Thread.Sleep(1000);
 
                 PrinterMonitor printerMonitor = PrinterMonitor.Instance;
                 printerMonitor.OnPrintMUBLabelSucceeded += OnPrintMUBLabelsSucceeded;

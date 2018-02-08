@@ -11,7 +11,7 @@
                 <div class="contentMesg">
                     <span id="contentMesg"></span>
                 </div>
-                <div id="divLoading">
+                <div id="divLoading" align="center">
                     <img src="../img/loading.gif" height="60" width="60"/>
                 </div>
                 <div id="divButton">
@@ -42,6 +42,7 @@
     });
 
     $('#btnOK').click(function () {
+        $('.modal-backdrop').remove();
         $('#popupLoading').modal('toggle');
     });   
 </script>
