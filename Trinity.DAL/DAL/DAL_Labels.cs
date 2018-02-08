@@ -17,9 +17,30 @@ namespace Trinity.DAL
 
         public DBContext.Label GetByDateAndUserId(DateTime Date, string UserId)
         {
-            return _localUnitOfWork.DataContext.Labels.FirstOrDefault(d => DbFunctions.TruncateTime(d.Date).Value == Date && d.UserId == UserId);
+            if (EnumAppConfig.IsLocal)
+            {
+                DBContext.Label label = _localUnitOfWork.DataContext.Labels.FirstOrDefault(d => DbFunctions.TruncateTime(d.Date).Value == Date && d.UserId == UserId);
+                if (label != null)
+                {
+                    return label;
+                }
+                else
+                {
+                    bool centralizeStatus;
+                    var centralUpdate = CallCentralized.Get<Label>(EnumAPIParam.Label, "GetByDateAndUserId", out centralizeStatus, "date=" + Date.ToString(), "UserId=" + UserId);
+                    if (centralizeStatus)
+                    {
+                        return centralUpdate;
+                    }
+                    return null;
+                }
+            }
+            else
+            {
+                return _centralizedUnitOfWork.DataContext.Labels.FirstOrDefault(d => DbFunctions.TruncateTime(d.Date).Value == Date && d.UserId == UserId);
+            }
         }
-        
+
         public bool UpdateLabel(BE.Label model)
         {
             try
@@ -141,7 +162,36 @@ namespace Trinity.DAL
         {
             try
             {
-                var lstModels = _localUnitOfWork.DataContext.Labels.Include("Membership_Users")
+                if (EnumAppConfig.IsLocal)
+                {
+                    var lstModels = _localUnitOfWork.DataContext.Labels.Include("Membership_Users")
+                        .Where(l => l.Label_Type.Equals(EnumLabelType.MUB) || l.Label_Type.Equals(EnumLabelType.TT))
+                        .Select(d => new BE.Label()
+                        {
+                            NRIC = d.Membership_Users.NRIC,
+                            Name = d.Membership_Users.Name,
+                            LastStation = d.LastStation,
+                            UserId = d.UserId
+                        });
+
+                    if (lstModels != null && lstModels.Count() > 0)
+                    {
+                        return lstModels.ToList();
+                    }
+                    else
+                    {
+                        bool centralizeStatus;
+                        var centralUpdate = CallCentralized.Get<List<BE.Label>>(EnumAPIParam.Label, "GetAllLabelsForMUBAndTT", out centralizeStatus);
+                        if (centralizeStatus)
+                        {
+                            return centralUpdate;
+                        }
+                        return null;
+                    }
+                }
+                else
+                {
+                    var lstModels = _centralizedUnitOfWork.DataContext.Labels.Include("Membership_Users")
                     .Where(l => l.Label_Type.Equals(EnumLabelType.MUB) || l.Label_Type.Equals(EnumLabelType.TT))
                     .Select(d => new BE.Label()
                     {
@@ -150,16 +200,9 @@ namespace Trinity.DAL
                         LastStation = d.LastStation,
                         UserId = d.UserId
                     });
-                //var lstModels = from a in _localUnitOfWork.DataContext.Labels
-                //                join u in _localUnitOfWork.DataContext.Membership_Users on a.UserId equals u.UserId
-                //                select new BE.Label()
-                //                {
-                //                    NRIC = u.NRIC,
-                //                    Name = u.Name,
-                //                    LastStation = a.LastStation
-                //                };
 
-                return lstModels.ToList();
+                    return lstModels.ToList();
+                }
             }
             catch (Exception e)
             {
@@ -171,7 +214,9 @@ namespace Trinity.DAL
         {
             try
             {
-                var lstModels = _localUnitOfWork.DataContext.Labels.Include("Membership_Users")
+                if (EnumAppConfig.IsLocal)
+                {
+                    var lstModels = _localUnitOfWork.DataContext.Labels.Include("Membership_Users")
                     .Where(l => l.Label_Type.Equals(EnumLabelType.UB))
                     .Select(d => new BE.Label()
                     {
@@ -181,7 +226,35 @@ namespace Trinity.DAL
                         UserId = d.UserId
                     });
 
-                return lstModels.ToList();
+                    if (lstModels != null && lstModels.Count() > 0)
+                    {
+                        return lstModels.ToList();
+                    }
+                    else
+                    {
+                        bool centralizeStatus;
+                        var centralUpdate = CallCentralized.Get<List<BE.Label>>(EnumAPIParam.Label, "GetAllLabelsForUB", out centralizeStatus);
+                        if (centralizeStatus)
+                        {
+                            return centralUpdate;
+                        }
+                        return null;
+                    }
+                }
+                else
+                {
+                    var lstModels = _centralizedUnitOfWork.DataContext.Labels.Include("Membership_Users")
+                    .Where(l => l.Label_Type.Equals(EnumLabelType.UB))
+                    .Select(d => new BE.Label()
+                    {
+                        NRIC = d.Membership_Users.NRIC,
+                        Name = d.Membership_Users.Name,
+                        LastStation = d.LastStation,
+                        UserId = d.UserId
+                    });
+
+                    return lstModels.ToList();
+                }
             }
             catch (Exception e)
             {
