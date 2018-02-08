@@ -51,7 +51,7 @@ namespace Enrolment
                     {
                         User = item,
                         //UserProfile = CallCentralized.Get<Trinity.BE.UserProfile>("User", "GetUserProfileByUserId", "userId=" + item.UserId),
-                        UserProfile = new DAL_UserProfile().GetProfileByUserId(item.UserId),
+                        UserProfile = new DAL_UserProfile().GetProfile(item.UserId),
                         Addresses = null
                     };
                     listSupervisee.Add(model);
@@ -79,7 +79,7 @@ namespace Enrolment
                 var model = new Trinity.BE.ProfileModel()
                 {
                     User = dbUser,
-                    UserProfile = dalUserProfile.GetProfileByUserId(dbUser.UserId),
+                    UserProfile = dalUserProfile.GetProfile(dbUser.UserId),
                     Addresses = null
                 };
                 session[CommonConstants.SUPERVISEE] = dbUser;
@@ -238,7 +238,7 @@ namespace Enrolment
                 {
                     User = dbUser,
 
-                    UserProfile = new DAL_UserProfile().GetProfileByUserId(dbUser.UserId),
+                    UserProfile = new DAL_UserProfile().GetProfile(dbUser.UserId),
                     Addresses = new DAL_UserProfile().GetAddByUserId(dbUser.UserId),
                     OtherAddress = new DAL_UserProfile().GetAddByUserId(dbUser.UserId, true),
                     Membership_Users = dalUserMembership.GetByUserId(userId)

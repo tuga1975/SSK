@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using Trinity.DAL.DBContext;
+using Trinity.BE;
 using Trinity.DAL.Repository;
 
 
@@ -37,10 +37,10 @@ namespace Trinity.DAL
                     Outcome = EnumOutcome.Processing
                 };
                 //insert to queue details
-                List<QueueDetail> arrayQueueDetail = new List<QueueDetail>();
+                List<Trinity.DAL.DBContext.QueueDetail> arrayQueueDetail = new List<Trinity.DAL.DBContext.QueueDetail>();
                 foreach (var item in listStation)
                 {
-                    var queueDetails = new QueueDetail { Queue_ID = dataInsert.Queue_ID, Station = item, Status = EnumQueueStatuses.Waiting };
+                    var queueDetails = new Trinity.DAL.DBContext.QueueDetail { Queue_ID = dataInsert.Queue_ID, Station = item, Status = EnumQueueStatuses.Waiting };
                     if (queueDetails.Station == station && diffHour == 0 && diffStartMin <= 0 && ((diffEndHour > 0 && diffEndMin <= 0) || (diffEndHour == 0 && diffEndMin >= 0)))
                     {
                         queueDetails.Status = EnumQueueStatuses.Processing;
@@ -52,7 +52,7 @@ namespace Trinity.DAL
                 if (EnumAppConfig.IsLocal)
                 {
                     bool centralizeStatus;
-                    var centralData = CallCentralized.Post<Queue>(EnumAPIParam.QueueNumber, "InserNewQueue", out centralizeStatus, "appointmentId=" + appointmentID, "userId=" + userId, "station=" + station);
+                    var centralData = CallCentralized.Post<Trinity.DAL.DBContext.Queue>(EnumAPIParam.QueueNumber, "InserNewQueue", out centralizeStatus, "appointmentId=" + appointmentID, "userId=" + userId, "station=" + station);
                     if (centralizeStatus)
                     {
                         _localUnitOfWork.GetRepository<Trinity.DAL.DBContext.Queue>().Add(dataInsert);
@@ -64,8 +64,8 @@ namespace Trinity.DAL
                 }
                 else
                 {
-                    _centralizedUnitOfWork.GetRepository<Queue>().Add(dataInsert);
-                    _centralizedUnitOfWork.GetRepository<QueueDetail>().AddRange(arrayQueueDetail);
+                    _centralizedUnitOfWork.GetRepository<Trinity.DAL.DBContext.Queue>().Add(dataInsert);
+                    _centralizedUnitOfWork.GetRepository<Trinity.DAL.DBContext.QueueDetail>().AddRange(arrayQueueDetail);
                     _centralizedUnitOfWork.Save();
                     return dataInsert;
                 }
@@ -79,7 +79,35 @@ namespace Trinity.DAL
             }
         }
 
-        public Trinity.DAL.DBContext.QueueDetail GetQueueDetailByAppointment(Appointment appointment, string station)
+        public List<BE.Queue> GetAllQueueToday(string station)
+        {
+            if (EnumAppConfig.IsLocal)
+            {
+                // need to be refactored
+                var data = _localUnitOfWork.DataContext.QueueDetails
+                    .Where(d => d.Station == station
+                    && (d.Status.Equals(EnumQueueStatuses.Waiting, StringComparison.InvariantCultureIgnoreCase) 
+                    || d.Status.Equals(EnumQueueStatuses.Processing, StringComparison.InvariantCultureIgnoreCase)) 
+                    && DbFunctions.TruncateTime(d.Queue.CreatedTime).Value == DateTime.Today)
+                    .Select(d => d.Queue).Distinct()
+                    .Select(d => new Trinity.BE.Queue()
+                    {
+                        ID = d.Queue_ID,
+                        AppointmentId = d.Appointment_ID,
+                        Status = d.QueueDetails.FirstOrDefault(qd => qd.Queue_ID == d.Queue_ID && qd.Station == station).Status,
+                        QueueNumber = d.QueuedNumber,
+                        Time = d.CreatedTime
+                    }).ToList();
+
+                return data;
+            }
+            else // request from centralizedapi
+            {
+                return null;
+            }
+        }
+
+        public Trinity.DAL.DBContext.QueueDetail GetQueueDetailByAppointment(DAL.DBContext.Appointment appointment, string station)
         {
             try
             {
@@ -94,7 +122,7 @@ namespace Trinity.DAL
                     else
                     {
                         bool centralizeStatus;
-                        var centralData = CallCentralized.Get<QueueDetail>(EnumAPIParam.QueueNumber, "GetQueueDetailByAppointment", out centralizeStatus, "appointmentId=" + appointment.ID.ToString(), "station=" + station);
+                        var centralData = CallCentralized.Get<DAL.DBContext.QueueDetail>(EnumAPIParam.QueueNumber, "GetQueueDetailByAppointment", out centralizeStatus, "appointmentId=" + appointment.ID.ToString(), "station=" + station);
                         if (centralizeStatus)
                         {
                             return centralData;
@@ -120,46 +148,46 @@ namespace Trinity.DAL
 
         }
 
-        public List<Trinity.DAL.DBContext.Queue> GetAllQueueNumberByDate(DateTime date, string station)
-        {
-            try
-            {
-                date = date.Date;
-                if (EnumAppConfig.IsLocal)
-                {
-                    var data = _localUnitOfWork.DataContext.QueueDetails.Include("Queue").Where(d => d.Station == station && (d.Status.Equals(EnumQueueStatuses.Waiting, StringComparison.InvariantCultureIgnoreCase) || d.Status.Equals(EnumQueueStatuses.Processing, StringComparison.InvariantCultureIgnoreCase)) && DbFunctions.TruncateTime(d.Queue.CreatedTime).Value == date).ToList().Select(d => d.Queue).ToList();
-                    if (data != null)
-                    {
-                        return data;
-                    }
-                    else
-                    {
-                        bool centralizeStatus;
-                        var centralData = CallCentralized.Get<List<Queue>>(EnumAPIParam.QueueNumber, "GetAllQueueNumberByDate", out centralizeStatus, "date=" + date.ToString(), "station=" + station);
-                        if (centralizeStatus)
-                        {
-                            return centralData;
-                        }
-                    }
-                }
-                else
-                {
-                    var data = _centralizedUnitOfWork.DataContext.QueueDetails.Include("Queue").Where(d => d.Station == station && (d.Status.Equals(EnumQueueStatuses.Waiting, StringComparison.InvariantCultureIgnoreCase) || d.Status.Equals(EnumQueueStatuses.Processing, StringComparison.InvariantCultureIgnoreCase)) && DbFunctions.TruncateTime(d.Queue.CreatedTime).Value == date).ToList().Select(d => d.Queue).ToList();
+        //public List<Trinity.DAL.DBContext.Queue> GetAllQueueNumberByDate(DateTime date, string station)
+        //{
+        //    try
+        //    {
+        //        date = date.Date;
+        //        if (EnumAppConfig.IsLocal)
+        //        {
+        //            var data = _localUnitOfWork.DataContext.QueueDetails.Include("Queue").Where(d => d.Station == station && (d.Status.Equals(EnumQueueStatuses.Waiting, StringComparison.InvariantCultureIgnoreCase) || d.Status.Equals(EnumQueueStatuses.Processing, StringComparison.InvariantCultureIgnoreCase)) && DbFunctions.TruncateTime(d.Queue.CreatedTime).Value == date).ToList().Select(d => d.Queue).ToList();
+        //            if (data != null)
+        //            {
+        //                return data;
+        //            }
+        //            else
+        //            {
+        //                bool centralizeStatus;
+        //                var centralData = CallCentralized.Get<List<Queue>>(EnumAPIParam.QueueNumber, "GetAllQueueNumberByDate", out centralizeStatus, "date=" + date.ToString(), "station=" + station);
+        //                if (centralizeStatus)
+        //                {
+        //                    return centralData;
+        //                }
+        //            }
+        //        }
+        //        else
+        //        {
+        //            var data = _centralizedUnitOfWork.DataContext.QueueDetails.Include("Queue").Where(d => d.Station == station && (d.Status.Equals(EnumQueueStatuses.Waiting, StringComparison.InvariantCultureIgnoreCase) || d.Status.Equals(EnumQueueStatuses.Processing, StringComparison.InvariantCultureIgnoreCase)) && DbFunctions.TruncateTime(d.Queue.CreatedTime).Value == date).ToList().Select(d => d.Queue).ToList();
 
-                    if (data != null)
-                    {
-                        return data;
-                    }
+        //            if (data != null)
+        //            {
+        //                return data;
+        //            }
 
-                }
-                return null;
-            }
-            catch (Exception)
-            {
+        //        }
+        //        return null;
+        //    }
+        //    catch (Exception)
+        //    {
 
-                return null;
-            }
-        }
+        //        return null;
+        //    }
+        //}
 
         public List<Trinity.DAL.DBContext.Queue> GetAllQueueByNextimeslot(TimeSpan timeSlot, string station)
         {
@@ -185,14 +213,12 @@ namespace Trinity.DAL
                     else
                     {
                         bool centralizeStatus;
-                        var centralData = CallCentralized.Get<List<Queue>>(EnumAPIParam.QueueNumber, "GetAllQueueByNextimeslot", out centralizeStatus, "timeslot=" + timeSlot.ToString(), "station=" + station);
+                        var centralData = CallCentralized.Get<List<DBContext.Queue>>(EnumAPIParam.QueueNumber, "GetAllQueueByNextimeslot", out centralizeStatus, "timeslot=" + timeSlot.ToString(), "station=" + station);
                         if (centralizeStatus)
                         {
                             return centralData;
                         }
                     }
-
-
                 }
                 else
                 {
@@ -278,7 +304,7 @@ namespace Trinity.DAL
                     else
                     {
                         bool centralizeStatus;
-                        var centralData = CallCentralized.Get<List<Queue>>(EnumAPIParam.QueueNumber, "GetAllQueueByDateIncludeDetail", out centralizeStatus, "date=" + date.ToString());
+                        var centralData = CallCentralized.Get<List<Trinity.DAL.DBContext.Queue>>(EnumAPIParam.QueueNumber, "GetAllQueueByDateIncludeDetail", out centralizeStatus, "date=" + date.ToString());
                         if (centralizeStatus)
                         {
                             return centralData;
@@ -523,7 +549,7 @@ namespace Trinity.DAL
         {
             try
             {
-                var dbQueue = new Queue();
+                var dbQueue = new DBContext.Queue();
                 var queueDetails = new List<BE.QueueDetail>();
                 if (EnumAppConfig.IsLocal)
                 {
@@ -575,7 +601,7 @@ namespace Trinity.DAL
 
         }
 
-        private static BE.QueueInfo SetQueueInfo(Queue dbQueue, List<BE.QueueDetail> queueDetails)
+        private static BE.QueueInfo SetQueueInfo(DBContext.Queue dbQueue, List<BE.QueueDetail> queueDetails)
         {
             BE.QueueInfo queueInfo = new BE.QueueInfo();
             if (dbQueue != null)

@@ -59,7 +59,7 @@ namespace Trinity.CentralizedAPI.Controllers
         [Route("api/User/GetProfileByUserId")]
         public IHttpActionResult GetProfileByUserId(string userId)
         {
-            return Ok(new DAL.DAL_UserProfile().GetProfileByUserId(userId));
+            return Ok(new DAL.DAL_UserProfile().GetProfile(userId));
         }
         [HttpGet]
         [Route("api/User/GetAddByUserId")]

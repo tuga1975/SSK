@@ -16,7 +16,7 @@ namespace Trinity.CentralizedAPI.Controllers
         //[ResponseType(typeof(ResponseModel))]
         public IHttpActionResult GetMyNotifications(string userId)
         {
-            return Ok(new DAL.DAL_Notification().GetMyNotifications(userId));
+            return Ok(new DAL.DAL_Notification().GetAllNotifications(userId));
         }
         [Route("api/Notification/SendToDutyOfficer")]
         public void SendToDutyOfficer(string UserId, string DutyOfficerID, string Subject, string Content,string Station)
