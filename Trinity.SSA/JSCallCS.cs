@@ -174,41 +174,47 @@ namespace SSA
 
         private void PrintTTLabels_OnPrintTTLabelSucceeded(object sender, PrintMUBAndTTLabelsEventArgs e)
         {
-            _PrintTTSucceed = true;
-            var labelInfo = new Trinity.BE.Label
+            try
             {
-                UserId = e.LabelInfo.UserId,
-                Label_Type = EnumLabelType.TT,
-                CompanyName = e.LabelInfo.CompanyName,
-                MarkingNo = e.LabelInfo.MarkingNo,
-                //DrugType = e.LabelInfo.DrugType,
-                NRIC = e.LabelInfo.NRIC,
-                Name = e.LabelInfo.Name,
-                Date = DateTime.Now,
-                LastStation = e.LabelInfo.LastStation,
-                PrintCount = e.LabelInfo.PrintCount,
-                ReprintReason = e.LabelInfo.ReprintReason
-            };
+                _PrintTTSucceed = true;
+                var labelInfo = new Trinity.BE.Label
+                {
+                    UserId = e.LabelInfo.UserId,
+                    Label_Type = EnumLabelType.TT,
+                    CompanyName = e.LabelInfo.CompanyName,
+                    MarkingNo = e.LabelInfo.MarkingNo,
+                    //DrugType = e.LabelInfo.DrugType,
+                    NRIC = e.LabelInfo.NRIC,
+                    Name = e.LabelInfo.Name,
+                    Date = DateTime.Now,
+                    LastStation = e.LabelInfo.LastStation,
+                    PrintCount = e.LabelInfo.PrintCount,
+                    ReprintReason = e.LabelInfo.ReprintReason
+                };
 
-            var dalLabel = new DAL_Labels();
-            var update = dalLabel.UpdateLabel(labelInfo);
-            if (update)
-            {
-                var dalAppointment = new DAL_Appointments();
-                var dalQueue = new DAL_QueueNumber();
-                var appointment = dalAppointment.GetTodayAppointmentByUserId(labelInfo.UserId);
-                //var appointment = result.Data;
+                var dalLabel = new DAL_Labels();
+                var update = dalLabel.UpdateLabel(labelInfo);
+                if (update)
+                {
+                    var dalAppointment = new DAL_Appointments();
+                    var dalQueue = new DAL_QueueNumber();
+                    var appointment = dalAppointment.GetTodayAppointmentByUserId(labelInfo.UserId);
+                    //var appointment = result.Data;
 
-                var sskQueue = new DAL_QueueNumber().GetQueueDetailByAppointment(appointment, EnumStations.SSK);
+                    var sskQueue = new DAL_QueueNumber().GetQueueDetailByAppointment(appointment, EnumStations.SSK);
 
-                dalQueue.UpdateQueueStatus(sskQueue.Queue_ID, EnumQueueStatuses.Finished, EnumStations.SSK);
-                dalQueue.UpdateQueueStatus(sskQueue.Queue_ID, EnumQueueStatuses.Processing, EnumStations.SSA);
+                    dalQueue.UpdateQueueStatus(sskQueue.Queue_ID, EnumQueueStatuses.Finished, EnumStations.SSK);
+                    dalQueue.UpdateQueueStatus(sskQueue.Queue_ID, EnumQueueStatuses.Processing, EnumStations.SSA);
+                }
+                //this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').show(); ; ");
+                //this._web.RunScript("$('.status-text').css('color','#000').text('Please collect your labels');");
+
+                //DeleteQRCodeImageFileTemp();
             }
-            //this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').show(); ; ");
-            //this._web.RunScript("$('.status-text').css('color','#000').text('Please collect your labels');");
+            catch (Exception ex)
+            {
 
-            //DeleteQRCodeImageFileTemp();
-            
+            }
         }
 
         private void PrintTTLabels_OnPrintTTLabelFailed(object sender, PrintMUBAndTTLabelsEventArgs e)
@@ -352,6 +358,28 @@ namespace SSA
                 this._web.InvokeScript("showPopupModal", JsonConvert.SerializeObject(popupModel));
             }
         }
+    }
+
+    public static class Log
+    {
+        public static void WriteLog(string content)
+        {
+            string path = @"c:\temp\MyTest.txt";
+
+            // This text is added only once to the file.
+            if (!File.Exists(path))
+            {
+                // Create a file to write to.
+                string createText = "2018" + Environment.NewLine;
+                File.WriteAllText(path, createText);
+            }
+
+            // This text is always added, making the file longer over time
+            // if it is not deleted.
+            string appendText = content + Environment.NewLine;
+            File.AppendAllText(path, appendText);
+        }
+
     }
 
     #region Custom Events
