@@ -32,6 +32,8 @@ namespace SSA
         {
             InitializeComponent();
 
+            APIUtils.Start();
+
             // setup variables
             _smartCardFailed = 0;
             _fingerprintFailed = 0;
@@ -63,7 +65,7 @@ namespace SSA
             #endregion
 
 
-            APIUtils.LayerWeb = LayerWeb;
+            Lib.LayerWeb = LayerWeb;
             LayerWeb.Url = new Uri(String.Format("file:///{0}/View/html/Layout.html", CSCallJS.curDir));
             LayerWeb.ObjectForScripting = _jsCallCS;
 

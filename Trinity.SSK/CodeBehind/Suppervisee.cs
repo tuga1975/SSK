@@ -31,9 +31,9 @@ namespace SSK.CodeBehind
             if (myNotifications != null)
             {
                 var unReadCount = myNotifications.Count;
-                APIUtils.LayerWeb.Invoke((System.Windows.Forms.MethodInvoker)(() =>
+                Lib.LayerWeb.Invoke((System.Windows.Forms.MethodInvoker)(() =>
                 {
-                    APIUtils.LayerWeb.PushNoti(unReadCount);
+                    Lib.LayerWeb.PushNoti(unReadCount);
                 }));
             }
             //// if user login is dutyofficer, implement duty officer override

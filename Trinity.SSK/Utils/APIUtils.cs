@@ -6,12 +6,11 @@ using System.Threading.Tasks;
 
 class APIUtils
 {
-    public static System.Windows.Forms.WebBrowser LayerWeb { get; set; }
     public static SSK.Utils.SignalR SignalR { get; set; }
     public static SSK.Utils.Printer Printer { get; set; }
     public static SSK.Utils.TextToSpeech TextToSpeech { get; set; }
 
-    static APIUtils()
+    public static void Start()
     {
         SignalR = new SSK.Utils.SignalR();
         Printer = new SSK.Utils.Printer();
