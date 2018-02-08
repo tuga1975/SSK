@@ -1,6 +1,6 @@
 ﻿<table id="table-queue"></table>
 <script type="text/javascript">
-
+    $('#menu').show();
     activemenu('Queue');
     api.server.getDataQueue(function (data) {
         $('#table-queue').bootstrapTable({
