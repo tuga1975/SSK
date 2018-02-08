@@ -85,7 +85,7 @@ namespace SSK
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
             DAL_QueueNumber dalQueue = new DAL_QueueNumber();
-            var allQueue = GetAllQueueToday(dalQueue, EnumStations.SSK);
+            List<Trinity.BE.Queue> allQueue = dalQueue.GetAllQueueToday(EnumStations.SSK);
 
             var setting = new DAL_Setting().GetCurrentApptmtTime();
             var today = DateTime.Now;
@@ -250,17 +250,17 @@ namespace SSK
             return allNextQueue;
         }
 
-        private static List<Trinity.BE.Queue> GetAllQueueToday(DAL_QueueNumber dalQueue, string station)
-        {
-            return dalQueue.GetAllQueueNumberByDate(DateTime.Today, station).Select(d => new Trinity.BE.Queue()
-            {
-                ID = d.Queue_ID,
-                AppointmentId = d.Appointment_ID,
-                Status = d.QueueDetails.FirstOrDefault(qd => qd.Queue_ID == d.Queue_ID && qd.Station == station).Status,
-                QueueNumber = d.QueuedNumber,
-                Time = d.CreatedTime
-            }).ToList();
-        }
+        //private static List<Trinity.BE.Queue> GetAllQueueToday(DAL_QueueNumber dalQueue, string station)
+        //{
+        //    return dalQueue.GetAllQueueNumberByDate(DateTime.Today, station).Select(d => new Trinity.BE.Queue()
+        //    {
+        //        ID = d.Queue_ID,
+        //        AppointmentId = d.Appointment_ID,
+        //        Status = d.QueueDetails.FirstOrDefault(qd => qd.Queue_ID == d.Queue_ID && qd.Station == station).Status,
+        //        QueueNumber = d.QueuedNumber,
+        //        Time = d.CreatedTime
+        //    }).ToList();
+        //}
 
 
         private void RefreshQueueNumberTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)

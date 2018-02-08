@@ -27,7 +27,7 @@ namespace SSK.CodeBehind
             // get user login info
             Session session = Session.Instance;
             Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-            List<Trinity.BE.Notification> myNotifications = new Trinity.DAL.DAL_Notification().GetMyNotifications(user.UserId);
+            List<Trinity.BE.Notification> myNotifications = new Trinity.DAL.DAL_Notification().GetAllNotifications(user.UserId);
             if (myNotifications != null)
             {
                 var unReadCount = myNotifications.Count;
