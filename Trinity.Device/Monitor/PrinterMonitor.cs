@@ -66,6 +66,7 @@ namespace Trinity.Device
 
         public void PrintBarcodeLabel(LabelInfo labelInfo)
         {
+
             // validation
             if (string.IsNullOrEmpty(labelInfo.Name))
             {
@@ -90,6 +91,7 @@ namespace Trinity.Device
                 return;
             }
 
+
             // print label
             BarcodePrinterUtil printerUtils = BarcodePrinterUtil.Instance;
             TTLabelInfo infoTTLabel = new TTLabelInfo();
@@ -111,6 +113,23 @@ namespace Trinity.Device
                     ErrorMessage = new ErrorInfo().GetErrorMessage(EnumErrorCodes.UnknownError)
                 }));
             }
+        }
+        public void WriteLog(string content)
+        {
+            string path = @"c:\temp\MyTest.txt";
+
+            // This text is added only once to the file.
+            if (!File.Exists(path))
+            {
+                // Create a file to write to.
+                string createText = "2018" + Environment.NewLine;
+                File.WriteAllText(path, createText);
+            }
+
+            // This text is always added, making the file longer over time
+            // if it is not deleted.
+            string appendText = content + Environment.NewLine;
+            File.AppendAllText(path, appendText);
         }
 
         public void PrintMUBLabel(LabelInfo labelInfo)

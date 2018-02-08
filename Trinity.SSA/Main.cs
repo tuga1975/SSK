@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
@@ -143,6 +144,8 @@ namespace SSA
             //FormQueueNumber f = FormQueueNumber.GetInstance();
             //f.ShowOnSecondaryScreen();
             //f.Show();
+
+            Log.WriteLog(DateTime.Now.ToString());
         }
 
         private void Main_FormClosing(object sender, FormClosingEventArgs e)
