@@ -71,7 +71,7 @@ namespace OfficerDesktopApp
             user.NRIC = _currentUser.NRIC;
             user.PhoneNumber = txtPrimaryPhone.Text;
             user.SmartCardId = _currentUser.SmartCardId;
-            user.Status = EnumUserStatuses.New;
+            user.Status = EnumUserStatuses.Enrolled;
 
             UserManager<ApplicationUser> userManager = ApplicationIdentityManager.GetUserManager();
             Trinity.DAL.DAL_User dalUser = new Trinity.DAL.DAL_User();
@@ -91,15 +91,30 @@ namespace OfficerDesktopApp
                 userProfile.Nationality = txtNationality.Text;
                 userProfile.DOB = dpDOB.Value;
 
-                
 
-              
+
+
                 var updateUProfileResult = CallCentralized.Post<bool>("User", "UpdateUserProfile", userProfile);
 
                 //dalUserProfile.UpdateUserProfile(userProfile, _currentUser.UserId, true);
 
                 //// Save to the Centralized DB also
                 //dalUserProfile.UpdateUserProfile(userProfile, _currentUser.UserId, false);
+
+                Trinity.BE.IssueCard issuedCard = new Trinity.BE.IssueCard()
+                {
+                    CreatedDate = DateTime.Now,
+                    Date_Of_Issue = DateTime.Now,
+                    Expired_Date = DateTime.Now.AddYears(2),
+                    Name = _currentUser.Name,
+                    NRIC = _currentUser.NRIC,
+                    Serial_Number = "123434",
+                    SmartCardId = _currentUser.SmartCardId,
+                    Status = "Active",
+                    UserId = user.Id
+                };
+                DAL_IssueCard dalIssuedCard = new DAL_IssueCard();
+                dalIssuedCard.Insert(issuedCard);
 
                 btnSave.Enabled = false;
                 MessageBox.Show("Create user successfully!", "Create user", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -205,12 +220,12 @@ namespace OfficerDesktopApp
 
         private void OnTakeOff(FTR_PROGRESS Progress)
         {
-            UpdateNote("Take off finger from device, please ...", Color.Yellow);
+            UpdateNote("Take off your finger from device, please ...", Color.Yellow);
         }
 
         private void OnPutOn(FTR_PROGRESS Progress)
         {
-            UpdateNote("Put finger into device, please ...", Color.Yellow);
+            UpdateNote("Put your right thumb onto the device, please ...", Color.Yellow);
         }
 
         #endregion

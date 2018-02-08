@@ -178,8 +178,10 @@ namespace Enrolment
             Session session = Session.Instance;
             var isRight = session[CommonConstants.IS_RIGHT_THUMB] != null ? (bool)session[CommonConstants.IS_RIGHT_THUMB] : (bool)session[CommonConstants.IS_RIGHT_THUMB];
             StringBuilder szMessage = new StringBuilder();
-            if (bSuccess)
+            if (bSuccess && FingerprintReaderUtil.Instance.GetQuality >= 7)
             {
+
+
                 // set status string
                 szMessage.Append("Enrollment process finished successfully.");
                 szMessage.Append("Quality: ");
@@ -226,10 +228,17 @@ namespace Enrolment
             }
             else
             {
-                var count = (int)session["CountPutOn"]+1;
+                if (bSuccess)
+                {
+                    LayerWeb.InvokeScript("changeMessageServerCall", isRight, "Please use only one finger for one scan.", EnumColors.Red);
+                }
+                else
+                {
+                    LayerWeb.InvokeScript("changeMessageServerCall", isRight, FutronicSdkBase.SdkRetCode2Message(nResult), EnumColors.Red);
+                }
+                var count = (int)session["CountPutOn"] + 1;
                 session["CountPutOn"] = count;
                 LayerWeb.InvokeScript("enableClearBtnServerCall", isRight);
-                LayerWeb.InvokeScript("changeMessageServerCall", isRight, FutronicSdkBase.SdkRetCode2Message(nResult), EnumColors.Red);
                 if (count >= 3)
                 {
                     session["CountPutOn"] = 0;
@@ -306,7 +315,7 @@ namespace Enrolment
 
         private void EventCenter_OnNewEvent(object sender, EventInfo e)
         {
-            
+
             if (e.Name == EventNames.LOGIN_SUCCEEDED)
             {
                 new JSCallCS(this.LayerWeb).LoadListSupervisee();
@@ -394,29 +403,47 @@ namespace Enrolment
 
                     if (currentEditUser != null)
                     {
-                        if (currentPhotosSession != null)
-                        {
-                            currentOldPhotos = (Tuple<string, string>)currentPhotosSession;
-                        }
-                        else
-                        {
-                            if (currentEditUser.UserProfile.User_Photo1 != null && currentEditUser.UserProfile.User_Photo2 != null)
-                            {
-                                var uPhoto1 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo1);
-                                var uPhoto2 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo2);
-                                currentOldPhotos = new Tuple<string, string>(uPhoto1, uPhoto2);
+                        //if (currentPhotosSession != null)
+                        //{
+                        //    currentOldPhotos = (Tuple<string, string>)currentPhotosSession;
+                        //}
+                        //else
+                        //{
+                        //    if (currentEditUser.UserProfile.User_Photo1 != null && currentEditUser.UserProfile.User_Photo2 != null)
+                        //    {
+                        //        var uPhoto1 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo1);
+                        //        var uPhoto2 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo2);
+                        //        currentOldPhotos = new Tuple<string, string>(uPhoto1, uPhoto2);
 
-                            }
-                            else if (currentEditUser.UserProfile.User_Photo1 == null && currentEditUser.UserProfile.User_Photo2 != null)
-                            {
-                                var uPhoto2 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo2);
-                                currentOldPhotos = new Tuple<string, string>(string.Empty, uPhoto2);
-                            }
-                            else if (currentEditUser.UserProfile.User_Photo1 != null && currentEditUser.UserProfile.User_Photo2 == null)
-                            {
-                                var uPhoto1 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo1);
-                                currentOldPhotos = new Tuple<string, string>(uPhoto1, string.Empty);
-                            }
+                        //    }
+                        //    else if (currentEditUser.UserProfile.User_Photo1 == null && currentEditUser.UserProfile.User_Photo2 != null)
+                        //    {
+                        //        var uPhoto2 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo2);
+                        //        currentOldPhotos = new Tuple<string, string>(string.Empty, uPhoto2);
+                        //    }
+                        //    else if (currentEditUser.UserProfile.User_Photo1 != null && currentEditUser.UserProfile.User_Photo2 == null)
+                        //    {
+                        //        var uPhoto1 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo1);
+                        //        currentOldPhotos = new Tuple<string, string>(uPhoto1, string.Empty);
+                        //    }
+                        //}
+
+                        if (currentEditUser.UserProfile.User_Photo1 != null && currentEditUser.UserProfile.User_Photo2 != null)
+                        {
+                            var uPhoto1 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo1);
+                            var uPhoto2 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo2);
+                            currentOldPhotos = new Tuple<string, string>(uPhoto1, uPhoto2);
+
+                        }
+                        else if (currentEditUser.UserProfile.User_Photo1 == null && currentEditUser.UserProfile.User_Photo2 != null)
+                        {
+                            var uPhoto2 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo2);
+                            currentOldPhotos = new Tuple<string, string>(string.Empty, uPhoto2);
+                        }
+                        else if (currentEditUser.UserProfile.User_Photo1 != null && currentEditUser.UserProfile.User_Photo2 == null)
+                        {
+                            var uPhoto1 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo1);
+                            currentOldPhotos = new Tuple<string, string>(uPhoto1, string.Empty);
                         }
 
                         if (image1 != null)
@@ -629,7 +656,7 @@ namespace Enrolment
                 new DAL_User().Update(profileModel.User);
                 var userProfileModel = profileModel.UserProfile;
                 userProfileModel.UserId = profileModel.User.UserId;
-                var updateUProfileResult = new DAL_UserProfile().UpdateProfile(userProfileModel); 
+                var updateUProfileResult = new DAL_UserProfile().UpdateProfile(userProfileModel);
                 dalUser.ChangeUserStatus(profileModel.User.UserId, EnumUserStatuses.New);
 
                 new DAL_Membership_Users().UpdateFingerprint(profileModel.User.UserId, profileModel.User.LeftThumbFingerprint, profileModel.User.RightThumbFingerprint);

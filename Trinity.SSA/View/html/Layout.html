@@ -35,17 +35,24 @@
             <span class="loader"></span>
         </div>
         <div id="panel-popup">
-            
+
         </div>
-        <script type="text/javascript">
-            //api.ready(function () {
-            //    api.server.popupLoading('Aloooo', function () {
-            //        $('#popupLoading').modal({
-            //            backdrop: 'static',
-            //            keyboard: false
-            //        });
-            //    });
-            //});
-        </script>
 </body>
 </html>
+<script type="text/javascript">
+    function showPopupModal(popupModel) {
+        //api.ready(function () {
+            api.server.popupLoading(popupModel, function () {
+                $('#popupLoading').modal({
+                    backdrop: 'static',
+                    keyboard: false
+                });
+            });
+        //});
+    };
+
+    function closePopup() {
+        $('.modal-backdrop').remove();
+        $('#popupLoading').modal('toggle');
+    };
+</script>

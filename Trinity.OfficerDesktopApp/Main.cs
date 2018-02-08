@@ -138,18 +138,18 @@ namespace OfficerDesktopApp
         private void LoadNotifications()
         {
             DAL_Notification dalNotification = new DAL_Notification();
-            List<Notification> notifications = dalNotification.GetNotificationsSentToDutyOfficer(false);
+            List<Notification> notifications = dalNotification.GetNotificationsSentToDutyOfficer(true);
             if (notifications != null && notifications.Count > 0)
             {
                 dgvNotifications.Rows.Clear();
-                notifications = notifications.OrderBy(n => n.Date).ToList();
+                notifications = notifications.OrderBy(n => n.Datetime).ToList();
                 for (int i = 0; i < notifications.Count; i++)
                 {
                     dgvNotifications.Rows.Insert(0, 1);
                     dgvNotifications[colFromUserName.Index, 0].Value = notifications[i].FromUserName;
                     dgvNotifications[ColSubject.Index, 0].Value = notifications[i].Subject;
                     dgvNotifications[ColContent.Index, 0].Value = notifications[i].Content;
-                    dgvNotifications[ColDate.Index, 0].Value = notifications[i].Date.ToString("dd/MM/yyyy HH:mm");
+                    dgvNotifications[ColDate.Index, 0].Value = notifications[i].Datetime.ToString("dd/MM/yyyy HH:mm");
                 }
             }
         }

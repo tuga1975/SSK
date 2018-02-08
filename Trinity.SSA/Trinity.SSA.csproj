@@ -209,6 +209,7 @@
     <Content Include="View\html\LoadingPopup.html" />
     <Content Include="View\html\SuperviseeParticulars.html" />
     <Content Include="View\img\central_narco_logo.png" />
+    <Content Include="View\img\loading.gif" />
     <Content Include="View\img\Logo.png" />
     <Content Include="View\scripts\lib.js" />
     <Content Include="View\styles\main.css" />

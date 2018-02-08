@@ -18,15 +18,20 @@ namespace Trinity.CentralizedAPI.Controllers
         {
             return Ok(new DAL.DAL_Notification().GetAllNotifications(userId));
         }
+        [HttpPost]
         [Route("api/Notification/SendToDutyOfficer")]
-        public void SendToDutyOfficer(string UserId, string DutyOfficerID, string Subject, string Content,string Station)
+        public IHttpActionResult SendToDutyOfficer(string UserId, string DutyOfficerID, string Subject, string Content, string Type, string Station)
         {
-            new DAL.DAL_Notification().SendToDutyOfficer(UserId,DutyOfficerID,Subject,Content,Station);
+            string MessageID = Guid.NewGuid().ToString().Trim();
+            new DAL.DAL_Notification().SendToDutyOfficer(MessageID, UserId, DutyOfficerID, Subject, Content, Type, Station);
+            return Ok(MessageID);
         }
+
+        [HttpPost]
         [Route("api/Notification/SendAllDutyOfficer")]
-        public void SendAllDutyOfficer(string UserId, string Subject, string Content, string Station, string notificationType)
+        public IHttpActionResult SendAllDutyOfficer(string UserId, string Subject, string Content, string Type, string Station)
         {
-            new DAL.DAL_Notification().SendAllDutyOfficer(UserId, Subject, Content, Station, notificationType);
+            return Ok(new DAL.DAL_Notification().SendAllDutyOfficer(UserId, Subject, Content, Type, Station));
         }
     }
 }

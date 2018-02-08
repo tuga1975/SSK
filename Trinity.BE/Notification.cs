@@ -8,14 +8,33 @@ using System.Threading.Tasks;
 namespace Trinity.BE
 {
 
-    
+
     public class Notification
     {
-        [DataMember]
-        public string ID { get; set; }
 
         [DataMember]
-        public DateTime Date { get; set; }
+        public string NotificationID { get; set; }
+
+        [DataMember]
+        public string ID
+        {
+            get
+            {
+                return NotificationID;
+            }
+        }
+
+        [DataMember]
+        public DateTime Datetime { get; set; }
+
+        [DataMember]
+        public DateTime Date
+        {
+            get
+            {
+                return Datetime;
+            }
+        }
 
         [DataMember]
         public string FromUserName { get; set; }
@@ -40,7 +59,7 @@ namespace Trinity.BE
 
         [DataMember]
         public bool IsFromSupervisee { get; set; }
-            
+
         [DataMember]
         public string Type { get; set; }
 
