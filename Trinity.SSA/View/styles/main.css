@@ -53,6 +53,9 @@
 
 #content {
     position: relative;
+    width: 800px;
+    display: flex;
+    flex-direction: row;
 }
 
 .loading{
@@ -76,7 +79,9 @@
     left:calc(50% - 25px);
     top:calc(50% - 25px);
 }
-
+#divLoading {
+    text-align: center;
+}
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
