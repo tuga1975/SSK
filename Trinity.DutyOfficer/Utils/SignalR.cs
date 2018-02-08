@@ -41,7 +41,7 @@ namespace DutyOfficer.Utils
         {
             object result = JsonConvert.SerializeObject(notification, Formatting.Indented,
                 new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
-            APIUtils.LayerWeb.InvokeScript("getRealtimeNotificationServer", result);
+            Lib.LayerWeb.InvokeScript("getRealtimeNotificationServer", result);
         }
 
 
