@@ -18,22 +18,22 @@ namespace SignalRChat
         }
 
 
-        public void SendToDutyOfficer(string UserId, string DutyOfficerID, string Subject, string Content)
+        public void SendToDutyOfficer(string UserId, string DutyOfficerID, string Subject, string Content, string notificationType)
         {
-            CallCentralized.Post("Notification", "SendToDutyOfficer", "UserId=" + UserId, "DutyOfficerID=" + DutyOfficerID, "Subject=" + Subject, "Content=" + Content, "Station="+ Station);
+            CallCentralized.Post("Notification", "SendToDutyOfficer", "UserId=" + UserId, "DutyOfficerID=" + DutyOfficerID, "Subject=" + Subject, "Content=" + Content, "Station="+ Station, "Type="+notificationType);
             List<string> connectId = Program.ProfileConnected.Where(d => d.isUser && d.UserID == DutyOfficerID && d.Station == EnumStations.DUTYOFFICER).Select(d=>d.ConnectionId).ToList();
             if (connectId.Count > 0)
             {
-                Clients.Clients(connectId).MessageTo(UserId,Subject, Content,Station);
+                Clients.Clients(connectId).MessageTo(UserId,Subject, Content,Station, notificationType);
             }
         }
-        public void SendAllDutyOfficer(string UserId, string Subject, string Content)
+        public void SendAllDutyOfficer(string UserId, string Subject, string Content, string notificationType)
         {
-            CallCentralized.Post("Notification", "SendAllDutyOfficer", "UserId=" + UserId, "Subject=" + Subject, "Content=" + Content, "Station=" + Station);
+            CallCentralized.Post("Notification", "SendAllDutyOfficer", "UserId=" + UserId, "Subject=" + Subject, "Content=" + Content, "Station=" + Station, "Type=" + notificationType);
             List<string> connectId = Program.ProfileConnected.Where(d => d.isUser && d.Station == EnumStations.DUTYOFFICER).Select(d=>d.ConnectionId).ToList();
             if (connectId.Count > 0)
             {
-                Clients.Clients(connectId).MessageTo(UserId, Subject, Content, Station);
+                Clients.Clients(connectId).MessageTo(UserId, Subject, Content, Station, notificationType);
             }
         }
 

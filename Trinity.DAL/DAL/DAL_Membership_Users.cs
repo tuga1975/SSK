@@ -15,6 +15,29 @@ namespace Trinity.DAL
 
 
         #region 2018
+        public void UpdateSmartCardId(string UserId, string SmartCardId)
+        {
+            if (EnumAppConfig.IsLocal)
+            {
+                bool statusCentralized;
+                CallCentralized.Post("User", "UpdateSmartCardId", out statusCentralized, "UserId="+ UserId, "SmartCardId="+ SmartCardId);
+                if (!statusCentralized)
+                {
+                    throw new Exception(EnumMessage.NotConnectCentralized);
+                }
+                else
+                {
+                    this._localUnitOfWork.DataContext.Database.ExecuteSqlCommand("Update Membership_Users set SmartCardId='" + SmartCardId + "' where UserId='" + UserId + "'");
+                }
+
+
+            }
+            else
+            {
+                this._centralizedUnitOfWork.DataContext.Database.ExecuteSqlCommand("Update Membership_Users set SmartCardId='" + SmartCardId + "' where UserId='" + UserId + "'");
+            }
+
+        }
         public void UpdateFingerprint(string userId, byte[] left, byte[] right)
         {
             if (EnumAppConfig.IsLocal)
@@ -77,9 +100,6 @@ namespace Trinity.DAL
 
         
        
-        public void UpdateSmartCardId(string UserId, string SmartCardId)
-        {
-            this._localUnitOfWork.DataContext.Database.ExecuteSqlCommand("Update Membership_Users set SmartCardId='"+ SmartCardId + "' where UserId='"+ UserId + "'");
-        }
+        
     }
 }

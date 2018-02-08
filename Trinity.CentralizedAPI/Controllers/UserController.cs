@@ -59,7 +59,7 @@ namespace Trinity.CentralizedAPI.Controllers
         [Route("api/User/GetProfileByUserId")]
         public IHttpActionResult GetProfileByUserId(string userId)
         {
-            return Ok(new DAL.DAL_UserProfile().GetProfileByUserId(userId));
+            return Ok(new DAL.DAL_UserProfile().GetProfile(userId));
         }
         [HttpGet]
         [Route("api/User/GetAddByUserId")]
@@ -96,7 +96,21 @@ namespace Trinity.CentralizedAPI.Controllers
             new DAL.DAL_Membership_Users().UpdateFingerprint(model[0].ToString(), (byte[])model[1], (byte[])model[2]);
         }
 
-        
+        [HttpPost]
+        [Route("api/User/UpdateSmartCardId")]
+        public void UpdateSmartCardId(string UserId, string SmartCardId)
+        {
+            new DAL.DAL_Membership_Users().UpdateSmartCardId(UserId, SmartCardId);
+        }
+
+        [HttpPost]
+        [Route("api/User/UpdateCardInfo")]
+        public void UpdateCardInfo(string UserId, string CardNumber, DateTime Date_of_Issue, DateTime Expired_Date)
+        {
+            new DAL.DAL_UserProfile().UpdateCardInfo(UserId, CardNumber, Date_of_Issue, Expired_Date);
+        }
+
+
         #endregion
 
 

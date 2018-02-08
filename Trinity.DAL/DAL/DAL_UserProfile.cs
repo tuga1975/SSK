@@ -16,6 +16,42 @@ namespace Trinity.DAL
         Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
 
         #region 2018
+
+        public void UpdateCardInfo(string UserId, string CardNumber, DateTime Date_of_Issue, DateTime Expired_Date)
+        {
+            if (EnumAppConfig.IsLocal)
+            {
+                bool statusCentralized;
+                CallCentralized.Post("User_Profiles", "UpdateCardInfo", out statusCentralized, "UserId="+ UserId, "CardNumber="+ CardNumber, "Date_of_Issue="+ Date_of_Issue.ToString(), "Expired_Date="+ Expired_Date.ToString());
+                if (!statusCentralized)
+                {
+                    throw new Exception(EnumMessage.NotConnectCentralized);
+                }
+                else
+                {
+                    DBContext.User_Profiles user = _localUnitOfWork.DataContext.User_Profiles.FirstOrDefault(d => d.UserId == UserId);
+                    user.Serial_Number = CardNumber;
+                    user.Date_of_Issue = Date_of_Issue;
+                    user.Expired_Date = Expired_Date;
+                    _localUnitOfWork.GetRepository<DBContext.User_Profiles>().Update(user);
+                    _localUnitOfWork.Save();
+                }
+
+
+            }
+            else
+            {
+                DBContext.User_Profiles user = _centralizedUnitOfWork.DataContext.User_Profiles.FirstOrDefault(d => d.UserId == UserId);
+                user.Serial_Number = CardNumber;
+                user.Date_of_Issue = Date_of_Issue;
+                user.Expired_Date = Expired_Date;
+                _centralizedUnitOfWork.GetRepository<DBContext.User_Profiles>().Update(user);
+                _centralizedUnitOfWork.Save();
+            }
+
+            
+        }
+
         public void UpdateFingerprintImg(string userId, byte[] left, byte[] right)
         {
             if (EnumAppConfig.IsLocal)
@@ -55,7 +91,6 @@ namespace Trinity.DAL
                     this._centralizedUnitOfWork.Save();
                 }
             }
-
             
         }
         public bool UpdateProfile(BE.UserProfile model)
@@ -107,7 +142,7 @@ namespace Trinity.DAL
         }
         public BE.Address GetAddByUserId(string userId, bool isOther = false)
         {
-            UserProfile user = GetProfileByUserId(userId);
+            UserProfile user = GetProfile(userId);
             if (user == null)
                 return null;
             string AddressID = isOther ? user.Other_Address_ID : user.Residential_Addess_ID;
@@ -143,13 +178,13 @@ namespace Trinity.DAL
             }
             return null;
         }
-        public UserProfile GetProfileByUserId(string userId)
+        public UserProfile GetProfile(string userId)
         {
             User_Profiles dbUserProfile = null;
             if (EnumAppConfig.IsLocal)
             {
                 dbUserProfile = _localUnitOfWork.DataContext.User_Profiles.FirstOrDefault(u => u.UserId == userId);
-                if (dbUserProfile==null)
+                if (dbUserProfile == null && !EnumAppConfig.ByPassCentralizedDB)
                 {
                     UserProfile data = CallCentralized.Get<UserProfile>(EnumAPIParam.User, "GetProfileByUserId", "userId=" + userId);
                     return data;
@@ -452,14 +487,6 @@ namespace Trinity.DAL
         
 
         
-        public void UpdateCardInfo(string UserId, string CardNumber, DateTime Date_of_Issue, DateTime Expired_Date)
-        {
-            DBContext.User_Profiles user = _localUnitOfWork.DataContext.User_Profiles.FirstOrDefault(d => d.UserId == UserId);
-            user.Serial_Number = CardNumber;
-            user.Date_of_Issue = Date_of_Issue;
-            user.Expired_Date = Expired_Date;
-            _localUnitOfWork.GetRepository<DBContext.User_Profiles>().Update(user);
-            _localUnitOfWork.Save();
-        }
+        
     }
 }

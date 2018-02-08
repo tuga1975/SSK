@@ -394,29 +394,47 @@ namespace Enrolment
 
                     if (currentEditUser != null)
                     {
-                        if (currentPhotosSession != null)
-                        {
-                            currentOldPhotos = (Tuple<string, string>)currentPhotosSession;
-                        }
-                        else
-                        {
-                            if (currentEditUser.UserProfile.User_Photo1 != null && currentEditUser.UserProfile.User_Photo2 != null)
-                            {
-                                var uPhoto1 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo1);
-                                var uPhoto2 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo2);
-                                currentOldPhotos = new Tuple<string, string>(uPhoto1, uPhoto2);
+                        //if (currentPhotosSession != null)
+                        //{
+                        //    currentOldPhotos = (Tuple<string, string>)currentPhotosSession;
+                        //}
+                        //else
+                        //{
+                        //    if (currentEditUser.UserProfile.User_Photo1 != null && currentEditUser.UserProfile.User_Photo2 != null)
+                        //    {
+                        //        var uPhoto1 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo1);
+                        //        var uPhoto2 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo2);
+                        //        currentOldPhotos = new Tuple<string, string>(uPhoto1, uPhoto2);
 
-                            }
-                            else if (currentEditUser.UserProfile.User_Photo1 == null && currentEditUser.UserProfile.User_Photo2 != null)
-                            {
-                                var uPhoto2 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo2);
-                                currentOldPhotos = new Tuple<string, string>(string.Empty, uPhoto2);
-                            }
-                            else if (currentEditUser.UserProfile.User_Photo1 != null && currentEditUser.UserProfile.User_Photo2 == null)
-                            {
-                                var uPhoto1 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo1);
-                                currentOldPhotos = new Tuple<string, string>(uPhoto1, string.Empty);
-                            }
+                        //    }
+                        //    else if (currentEditUser.UserProfile.User_Photo1 == null && currentEditUser.UserProfile.User_Photo2 != null)
+                        //    {
+                        //        var uPhoto2 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo2);
+                        //        currentOldPhotos = new Tuple<string, string>(string.Empty, uPhoto2);
+                        //    }
+                        //    else if (currentEditUser.UserProfile.User_Photo1 != null && currentEditUser.UserProfile.User_Photo2 == null)
+                        //    {
+                        //        var uPhoto1 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo1);
+                        //        currentOldPhotos = new Tuple<string, string>(uPhoto1, string.Empty);
+                        //    }
+                        //}
+
+                        if (currentEditUser.UserProfile.User_Photo1 != null && currentEditUser.UserProfile.User_Photo2 != null)
+                        {
+                            var uPhoto1 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo1);
+                            var uPhoto2 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo2);
+                            currentOldPhotos = new Tuple<string, string>(uPhoto1, uPhoto2);
+
+                        }
+                        else if (currentEditUser.UserProfile.User_Photo1 == null && currentEditUser.UserProfile.User_Photo2 != null)
+                        {
+                            var uPhoto2 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo2);
+                            currentOldPhotos = new Tuple<string, string>(string.Empty, uPhoto2);
+                        }
+                        else if (currentEditUser.UserProfile.User_Photo1 != null && currentEditUser.UserProfile.User_Photo2 == null)
+                        {
+                            var uPhoto1 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo1);
+                            currentOldPhotos = new Tuple<string, string>(uPhoto1, string.Empty);
                         }
 
                         if (image1 != null)
@@ -456,6 +474,18 @@ namespace Enrolment
                         LayerWeb.InvokeScript("showPopUp", "pageUpdatePhotos");
 
                         LayerWeb.InvokeScript("setAvatar", currentNewPhotos.Item1, currentNewPhotos.Item2);
+
+                        string fingerprintLeft = "../images/fingerprint.png";
+                        string fingerprintRight = "../images/fingerprint.png";
+                        if (currentEditUser.UserProfile.LeftThumbImage != null)
+                        {
+                            fingerprintLeft = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(currentEditUser.UserProfile.LeftThumbImage));
+                        }
+                        if (currentEditUser.UserProfile.RightThumbImage != null)
+                        {
+                            fingerprintRight = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(currentEditUser.UserProfile.RightThumbImage));
+                        }
+                        LayerWeb.InvokeScript("setFingerprintServerCall", fingerprintLeft, fingerprintRight);
                     }
                     else if (currentPage.ToString() == "UpdateSuperviseePhoto")
                     {
@@ -517,13 +547,23 @@ namespace Enrolment
                             if (currentPage.ToString() == "EditSupervisee")
                             {
                                 LayerWeb.LoadPageHtml("UpdateSuperviseeBiodata.html", currentEditUser);
-                                LayerWeb.InvokeScript("setAvatar", photo1, photo2);
                             }
                             else if (currentPage.ToString() == "UpdateSupervisee")
                             {
                                 LayerWeb.LoadPageHtml("Edit-Supervisee.html", currentEditUser);
-
                                 LayerWeb.InvokeScript("setAvatar", photo1, photo2);
+
+                                string fingerprintLeft = "../images/fingerprint.png";
+                                string fingerprintRight = "../images/fingerprint.png";
+                                if (currentEditUser.UserProfile.LeftThumbImage != null)
+                                {
+                                    fingerprintLeft = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(currentEditUser.UserProfile.LeftThumbImage));
+                                }
+                                if (currentEditUser.UserProfile.RightThumbImage != null)
+                                {
+                                    fingerprintRight = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(currentEditUser.UserProfile.RightThumbImage));
+                                }
+                                LayerWeb.InvokeScript("setFingerprintServerCall", fingerprintLeft, fingerprintRight);
                             }
                             CaptureAttempt(CommonConstants.CAPTURE_PHOTO_ATTEMPT);
                         }
