@@ -4,7 +4,11 @@
     <input type="button" value="Enter manually" onclick="enterManually()" />
     <input type="button" value="Submit" onclick="api.server.SubmitNRIC($('#txtNRIC').val())" />
 </div>
-
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#menu').hide();
+    });
+</script>
 <style type="text/css">
     .subcontent {
         width: calc(100% - 20px);

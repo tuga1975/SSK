@@ -29,6 +29,9 @@ namespace DutyOfficer
         public Main()
         {
             InitializeComponent();
+
+            APIUtils.Start();
+
             // setup variables
             _smartCardFailed = 0;
             _fingerprintFailed = 0;
@@ -37,6 +40,7 @@ namespace DutyOfficer
             #region Initialize and register events
             // _jsCallCS
             _jsCallCS = new JSCallCS(this.LayerWeb);
+            _jsCallCS.OnLogOutCompleted += JSCallCS_OnLogOutCompleted;
 
             // SmartCard
             SmartCard.Instance.GetCardInfoSucceeded += GetCardInfoSucceeded;
@@ -44,10 +48,12 @@ namespace DutyOfficer
             Fingerprint.Instance.OnIdentificationCompleted += Fingerprint_OnIdentificationCompleted;
             Fingerprint.Instance.OnDeviceDisconnected += Fingerprint_OnDeviceDisconnected;
 
+            _eventCenter = EventCenter.Default;
+            _eventCenter.OnNewEvent += EventCenter_OnNewEvent;
             #endregion
 
 
-            APIUtils.LayerWeb = LayerWeb;
+            Lib.LayerWeb = LayerWeb;
             LayerWeb.Url = new Uri(String.Format("file:///{0}/View/html/Layout.html", CSCallJS.curDir));
             LayerWeb.ObjectForScripting = _jsCallCS;
 
@@ -289,6 +295,24 @@ namespace DutyOfficer
 
             NavigateTo(NavigatorEnums.Queue);
             APIUtils.SignalR.UserLogined(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId);
+        }
+
+        private void EventCenter_OnNewEvent(object sender, EventInfo e)
+        {
+            if (e.Name == EventNames.LOGIN_SUCCEEDED)
+            {
+                NavigateTo(NavigatorEnums.Queue);
+            }
+            else if (e.Name.Equals(EventNames.LOGIN_FAILED))
+            {
+                //NavigateTo(NavigatorEnums.Authentication_NRIC);
+                MessageBox.Show(e.Message, "Login Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void JSCallCS_OnLogOutCompleted()
+        {
+            NavigateTo(NavigatorEnums.Authentication_SmartCard);
         }
     }
 }
