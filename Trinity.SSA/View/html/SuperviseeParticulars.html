@@ -21,14 +21,14 @@
             <br />
         </div>
         <!--<div class="input-group">
-        <span class="input-group-addon">QR Code:</span>
-        <img id="imgQRCode" width="120" height="120" style="margin-left:12px;">
-    </div>
-    <br />
-    <div class="input-group">
-        <span class="input-group-addon">Marking Number:</span>
-        <input id="MarkingNumber" type="text" class="form-control pri" name="MarkingNumber" readonly="readonly" />
-    </div>-->
+            <span class="input-group-addon">QR Code:</span>
+            <img id="imgQRCode" width="120" height="120" style="margin-left:12px;">
+        </div>
+        <br />
+        <div class="input-group">
+            <span class="input-group-addon">Marking Number:</span>
+            <input id="MarkingNumber" type="text" class="form-control pri" name="MarkingNumber" readonly="readonly" />
+        </div>-->
 
         <div id="divSave">
             <button type="button" class="btn btn-dark" id="CancelBtn">CANCEL</button>
@@ -56,6 +56,17 @@
         $('#CancelBtn').click(function () {
             api.server.DeleteQRCodeImageFileTemp();
             api.server.LogOut();
-        });    
+        });
     });
+
+    //function showPopupModal(popupModel) {
+    //    api.ready(function () {
+    //        api.server.popupLoading(popupModel, function () {
+    //            $('#popupLoading').modal({
+    //                backdrop: 'static',
+    //                keyboard: false
+    //            });
+    //        });
+    //    });
+    //};
 </script>
