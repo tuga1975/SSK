@@ -425,17 +425,32 @@ namespace SSA
         #region events
         private void JSCallCS_OnNRICFailed(object sender, NRICEventArgs e)
         {
-            MessageBox.Show(e.Message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //MessageBox.Show(e.Message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            _popupModel.Title = "Authentication Failed";
+            _popupModel.Message = e.Message;
+            _popupModel.IsShowLoading = false;
+            _popupModel.IsShowOK = true;
+            LayerWeb.InvokeScript("showPopupModal", JsonConvert.SerializeObject(_popupModel));
         }
 
         private void JSCallCS_ShowMessage(object sender, ShowMessageEventArgs e)
         {
-            MessageBox.Show(e.Message, e.Caption, e.Button, e.Icon);
+            //MessageBox.Show(e.Message, e.Caption, e.Button, e.Icon);
+            _popupModel.Title = e.Caption;
+            _popupModel.Message = e.Message;
+            _popupModel.IsShowLoading = false;
+            _popupModel.IsShowOK = true;
+            LayerWeb.InvokeScript("showPopupModal", JsonConvert.SerializeObject(_popupModel));
         }
 
         private void OnShowMessage(object sender, ShowMessageEventArgs e)
         {
-            MessageBox.Show(e.Message, e.Caption, e.Button, e.Icon);
+            //MessageBox.Show(e.Message, e.Caption, e.Button, e.Icon);
+            _popupModel.Title = e.Caption;
+            _popupModel.Message = e.Message;
+            _popupModel.IsShowLoading = false;
+            _popupModel.IsShowOK = true;
+            LayerWeb.InvokeScript("showPopupModal", JsonConvert.SerializeObject(_popupModel));
         }
 
         private void NavigateTo(NavigatorEnums navigatorEnum)

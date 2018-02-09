@@ -39,34 +39,37 @@ namespace Trinity.DAL
 
         public Setting GetSettingSystemByYear(int year)
         {
-            if (EnumAppConfig.IsLocal)
-            {
-                var data = _localUnitOfWork.DataContext.Settings.FirstOrDefault(s => s.Year == year);
+            // Must get Setting from Centralize to make sure MarkingNo is latest
+            //if (EnumAppConfig.IsLocal)
+            //{
+            //    var data = _localUnitOfWork.DataContext.Settings.FirstOrDefault(s => s.Year == year);
 
-                if (data != null)
-                {
-                    return data;
-                }
-                else
-                {
-                    bool centralizeStatus;
-                    var centralData = CallCentralized.Get<DBContext.Setting>(EnumAPIParam.SettingSystem, EnumAPIParam.GetSettingSystemByYear, out centralizeStatus, "year=" + year.ToString());
-                    if (centralizeStatus)
-                    {
-                        return centralData;
-                    }
-                    return null;
-                }
+            //    if (data != null)
+            //    {
+            //        return data;
+            //    }
+            //    else
+            //    {
+            //        bool centralizeStatus;
+            //        var centralData = CallCentralized.Get<DBContext.Setting>(EnumAPIParam.SettingSystem, EnumAPIParam.GetSettingSystemByYear, out centralizeStatus, "year=" + year.ToString());
+            //        if (centralizeStatus)
+            //        {
+            //            return centralData;
+            //        }
+            //        return null;
+            //    }
+            //}
+            //else
+            //{
+            if (EnumAppConfig.ByPassCentralizedDB)
+            {
+                return _localUnitOfWork.DataContext.Settings.FirstOrDefault(s => s.Year == year); ;
             }
             else
             {
-                var data = _centralizedUnitOfWork.DataContext.Settings.FirstOrDefault(s => s.Year == year);
-                if (data != null)
-                {
-                    return data;
-                }
-                return null;
+                return _centralizedUnitOfWork.DataContext.Settings.FirstOrDefault(s => s.Year == year);
             }
+            //}
         }
 
         public Setting UpdateSettingSystem(Setting setting)
@@ -75,7 +78,7 @@ namespace Trinity.DAL
             {
                 if (EnumAppConfig.IsLocal)
                 {
-                    bool centralizeStatus;
+                    bool centralizeStatus = false;
                     var centralUpdate = CallCentralized.Post<Setting>(EnumAPIParam.SettingSystem, EnumAPIParam.UpdateSettingSystem, out centralizeStatus, setting);
                     if (centralizeStatus)
                     {
