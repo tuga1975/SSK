@@ -22,13 +22,7 @@ namespace DutyOfficer.Utils
 
             HubProxy.On<string, string, string, string, string,string>("MessageTo", (NotificationID, UserId, Subject, Content, notificationType, Station) => {
                 // Xử lý Message
-                 Notification notification = new Notification();
-                notification.Subject = Subject;
-                notification.ToUserId = UserId;
-                notification.Content = Content;
-                notification.Source = Station;
-                notification.Type = notificationType;
-                updateAlertNotification(notification);
+                saveNotification(NotificationID, UserId, Subject, Content, notificationType, Station);
             });
         }
 
@@ -37,13 +31,29 @@ namespace DutyOfficer.Utils
             
         }
 
-        private void updateAlertNotification(Notification notification)
-        {
-            object result = JsonConvert.SerializeObject(notification, Formatting.Indented,
-                new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
-            APIUtils.LayerWeb.InvokeScript("getRealtimeNotificationServer", result);
-        }
 
+        private void saveNotification(string NotificationID, string UserId, string Subject, string Content, string notificationType, string Station)
+        {
+            string dutiOfficerId = ((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId;
+            if(dutiOfficerId != null && dutiOfficerId != "")
+            {
+                DAL_Notification dAL_Notification = new DAL_Notification();
+                bool isSuccessed = dAL_Notification.SendToDutyOfficer(NotificationID, UserId, dutiOfficerId, Subject, Content, notificationType, Station) > 0;
+                if (isSuccessed)
+                {
+                    Notification notification = new Notification();
+                    notification.Subject = Subject;
+                    notification.ToUserId = UserId;
+                    notification.Content = Content;
+                    notification.Source = Station;
+                    notification.Type = notificationType;
+                    notification.Datetime = DateTime.Now;
+                    object result = JsonConvert.SerializeObject(notification, Formatting.Indented,
+                    new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
+                    Lib.LayerWeb.InvokeScript("getRealtimeNotificationServer", result);
+                }
+            }
+        }
 
     }
 }

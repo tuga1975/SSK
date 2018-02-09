@@ -39,17 +39,27 @@
 
     var $table = $('#alertNotificationTable');
 
+     var dataSource = [];
+
     function getRealtimeNotificationServer(notification){
-        debugger;
+        var objNotify = JSON.parse(notification);
+        dataSource.unshift({
+                    source: objNotify.Source,
+                    type: objNotify.Type,
+                    dateTime: objNotify.Date,
+                    message: objNotify.Content
+                });
+        $table.bootstrapTable('load', dataSource);
     }
 
     api.server.getAlertsSendToDutyOfficer(function (data) {
-        var dataSource = [];
+        
         var Type = {
             error: "Error",
             notification: "Notification",
             caution: "Caution"
         };
+
         if (data) {
             data.forEach(function (element, index) {
                 dataSource.push({
