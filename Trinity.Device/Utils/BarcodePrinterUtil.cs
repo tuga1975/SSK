@@ -167,6 +167,8 @@ namespace Trinity.Device
             catch (Exception ex)
             {
                 Debug.WriteLine("Print exception: " + ex.ToString());
+                // Delete temp file
+                File.Delete(filePath);
                 return false;
             }
         }

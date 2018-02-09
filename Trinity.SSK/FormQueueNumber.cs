@@ -113,6 +113,15 @@ namespace SSK
                     nextTimeslot = _nextTs.FromTimeTxt + " - " + _nextTs.ToTimeTxt;
                 }
             }
+            else
+            {
+                _nextTs = listTodayTimeslot.FirstOrDefault(d => d.StartTime.Value >= DateTime.Now.TimeOfDay);
+                if (_nextTs != null)
+                {
+                    nextTimeslot = _nextTs.FromTimeTxt + " - " + _nextTs.ToTimeTxt;
+                }
+
+            }
             //for (int i = 0; i < listTodayTimeslot.Count; i++)
             //{
             //    var timeSlot = listTodayTimeslot[i];

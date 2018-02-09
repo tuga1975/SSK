@@ -12,7 +12,7 @@ namespace SignalRChat
     public partial class WinFormsServer : Form
     {
         private IDisposable SignalR { get; set; }
-        const string ServerURI = "http://localhost:8080";
+        private string ServerURI = EnumAppConfig.NotificationServerUrl;
 
         internal WinFormsServer()
         {

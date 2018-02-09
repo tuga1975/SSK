@@ -160,44 +160,50 @@ namespace SSA
 
         private void PrintTTLabels_OnPrintTTLabelSucceeded(object sender, PrintMUBAndTTLabelsEventArgs e)
         {
-            _PrintTTSucceed = true;
-            var labelInfo = new Trinity.BE.Label
+            try
             {
-                UserId = e.LabelInfo.UserId,
-                Label_Type = EnumLabelType.TT,
-                CompanyName = e.LabelInfo.CompanyName,
-                MarkingNo = e.LabelInfo.MarkingNo,
-                //DrugType = e.LabelInfo.DrugType,
-                NRIC = e.LabelInfo.NRIC,
-                Name = e.LabelInfo.Name,
-                Date = DateTime.Now,
-                LastStation = e.LabelInfo.LastStation,
-                PrintCount = e.LabelInfo.PrintCount,
-                ReprintReason = e.LabelInfo.ReprintReason
-            };
-
-            var dalLabel = new DAL_Labels();
-            var update = dalLabel.UpdateLabel(labelInfo);
-            if (update)
-            {
-                var dalAppointment = new DAL_Appointments();
-                var dalQueue = new DAL_QueueNumber();
-                var appointment = dalAppointment.GetTodayAppointmentByUserId(labelInfo.UserId);
-                //var appointment = result.Data;
-
-                if (appointment != null)
+                _PrintTTSucceed = true;
+                var labelInfo = new Trinity.BE.Label
                 {
-                    var sskQueue = new DAL_QueueNumber().GetQueueDetailByAppointment(appointment, EnumStations.SSK);
+                    UserId = e.LabelInfo.UserId,
+                    Label_Type = EnumLabelType.TT,
+                    CompanyName = e.LabelInfo.CompanyName,
+                    MarkingNo = e.LabelInfo.MarkingNo,
+                    //DrugType = e.LabelInfo.DrugType,
+                    NRIC = e.LabelInfo.NRIC,
+                    Name = e.LabelInfo.Name,
+                    Date = DateTime.Now,
+                    LastStation = e.LabelInfo.LastStation,
+                    PrintCount = e.LabelInfo.PrintCount,
+                    ReprintReason = e.LabelInfo.ReprintReason
+                };
 
-                    dalQueue.UpdateQueueStatus(sskQueue.Queue_ID, EnumQueueStatuses.Finished, EnumStations.SSK);
-                    dalQueue.UpdateQueueStatus(sskQueue.Queue_ID, EnumQueueStatuses.Processing, EnumStations.SSA);
+                var dalLabel = new DAL_Labels();
+                var update = dalLabel.UpdateLabel(labelInfo);
+                if (update)
+                {
+                    var dalAppointment = new DAL_Appointments();
+                    var dalQueue = new DAL_QueueNumber();
+                    var appointment = dalAppointment.GetTodayAppointmentByUserId(labelInfo.UserId);
+                    //var appointment = result.Data;
+
+                    if (appointment != null)
+                    {
+                        var sskQueue = new DAL_QueueNumber().GetQueueDetailByAppointment(appointment, EnumStations.SSK);
+
+                        dalQueue.UpdateQueueStatus(sskQueue.Queue_ID, EnumQueueStatuses.Finished, EnumStations.SSK);
+                        dalQueue.UpdateQueueStatus(sskQueue.Queue_ID, EnumQueueStatuses.Processing, EnumStations.SSA);
+                    }
+                    //this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').show(); ; ");
+                    //this._web.RunScript("$('.status-text').css('color','#000').text('Please collect your labels');");
+
+                    //DeleteQRCodeImageFileTemp();
                 }
             }
-            //this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').show(); ; ");
-            //this._web.RunScript("$('.status-text').css('color','#000').text('Please collect your labels');");
+            catch (Exception ex)
+            {
 
-            //DeleteQRCodeImageFileTemp();
-            
+            }
         }
 
         private void PrintTTLabels_OnPrintTTLabelFailed(object sender, PrintMUBAndTTLabelsEventArgs e)
@@ -331,8 +337,6 @@ namespace SSA
                 this._web.InvokeScript("showPopupModal", JsonConvert.SerializeObject(_popupModel));
             }
         }
-    }
-
     #region Custom Events
     public class NRICEventArgs
     {

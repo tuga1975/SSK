@@ -500,7 +500,7 @@ namespace SSK
                 var _dalQueue = new DAL_QueueNumber();
                 Trinity.DAL.DBContext.Queue queueNumber = null;
                 //check queue exist
-                if (!_dalQueue.CheckQueueExistToday(appointment.UserId, EnumStations.SSK))
+                if (!_dalQueue.IsInQueue(appointment.UserId, EnumStations.SSK))
                 {
                     if (appointment.Timeslot_ID != null)
                     {

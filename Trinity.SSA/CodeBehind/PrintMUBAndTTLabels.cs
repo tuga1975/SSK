@@ -33,7 +33,7 @@ namespace SSA.CodeBehind
                 this._web.LoadPageHtml("SuperviseeParticulars.html", labelInfo);
                 System.Threading.Thread.Sleep(500);
                 Trinity.BE.PopupModel popupModel = new Trinity.BE.PopupModel();
-                popupModel.Title = "MUB and TT Labels \nPrinting in Progress";
+                popupModel.Title = "MUB and TT Labels \n\nPrinting in Progress";
                 popupModel.Message = "Please wait a moment";
                 popupModel.IsShowLoading = true;
                 popupModel.IsShowOK = false;
@@ -56,7 +56,7 @@ namespace SSA.CodeBehind
                     string ttLabelPrinterName = ConfigurationManager.AppSettings["TTLabelPrinterName"];
                     var ttLabelPrinterStatus = barcodeScannerUtils.GetDeviceStatus(ttLabelPrinterName);
 
-                    if (ttLabelPrinterStatus.Contains(EnumDeviceStatuses.Connected))
+                    if (!ttLabelPrinterStatus.Contains(EnumDeviceStatuses.Connected))
                     {
                         printerMonitor.PrintBarcodeLabel(labelInfo);
                     }
@@ -82,7 +82,7 @@ namespace SSA.CodeBehind
                     string mubLabelPrinterName = ConfigurationManager.AppSettings["MUBLabelPrinterName"];
                     var mubLabelPrinterStatus = barcodeScannerUtils.GetDeviceStatus(mubLabelPrinterName);
 
-                    if (mubLabelPrinterStatus.Contains(EnumDeviceStatuses.Connected))
+                    if (!mubLabelPrinterStatus.Contains(EnumDeviceStatuses.Connected))
                     {
                         printerMonitor.PrintMUBLabel(labelInfo);
                     }
