@@ -73,15 +73,15 @@ namespace Enrolment
             LayerWeb.ObjectForScripting = _jsCallCS;
 
 
-            ThreadStart newThreadStart = new ThreadStart(newThread_Execute);
-            Thread newThread = new Thread(newThreadStart);
-            newThread.Start();
+            //ThreadStart newThreadStart = new ThreadStart(newThread_Execute);
+            //Thread newThread = new Thread(newThreadStart);
+            //newThread.Start();
         }
-        void newThread_Execute()
-        {
-            Thread.Sleep(10000);
-            throw new Exception("The method or operation is not implemented.");
-        }
+        //void newThread_Execute()
+        //{
+        //    Thread.Sleep(10000);
+        //    throw new Exception("The method or operation is not implemented.");
+        //}
         //private void Fingerprint_OnFingerprintSucceeded(object sender, CodeBehind.Authentication.FingerprintEventArgs e)
         //{
         //    Session session = Session.Instance;
