@@ -485,8 +485,8 @@ namespace Trinity.DAL
                     ChangeHistorySettings = GetHistoryChangeSettings(_localUnitOfWork.GetRepository<DBContext.OperationSettings_ChangeHist>())
                 };
 
-                if (settingModel.Monday == null || settingModel.Tuesday == null || settingModel.Wednesday == null || settingModel.Thursday == null || settingModel.Friday == null
-                    || settingModel.Saturday == null || settingModel.Sunday == null || settingModel.HoliDays == null || settingModel.ChangeHistorySettings == null)
+                if ((settingModel.Monday == null || settingModel.Tuesday == null || settingModel.Wednesday == null || settingModel.Thursday == null || settingModel.Friday == null
+                    || settingModel.Saturday == null || settingModel.Sunday == null || settingModel.HoliDays == null || settingModel.ChangeHistorySettings == null) && !EnumAppConfig.ByPassCentralizedDB)
                 {
                     bool centralizeStatus;
                     var centralData = CallCentralized.Get<BE.SettingModel>(EnumAPIParam.Setting, "GetOperationSettings", out centralizeStatus);
@@ -598,7 +598,8 @@ namespace Trinity.DAL
                             _localUnitOfWork.GetRepository<OperationSetting>().Add(operationSetting);
                         }
 
-                        var changeHistoryID = _localUnitOfWork.DataContext.OperationSettings_ChangeHist.Any() ? _localUnitOfWork.DataContext.OperationSettings_ChangeHist.Max(t => t.ID) : 0;
+                        //var changeHistoryID = _localUnitOfWork.DataContext.OperationSettings_ChangeHist.Any() ? _localUnitOfWork.DataContext.OperationSettings_ChangeHist.Max(t => t.ID) : 0;
+                        var changeHistoryID = GetMaxIDChangeHist();
                         DBContext.OperationSettings_ChangeHist changeHistory = new DBContext.OperationSettings_ChangeHist();
                         changeHistory.ID = changeHistoryID + 1;
                         changeHistory.DayOfWeek = dayOfWeek;
@@ -664,6 +665,18 @@ namespace Trinity.DAL
             }
         }
 
+        private int GetMaxIDChangeHist()
+        {
+            if (EnumAppConfig.ByPassCentralizedDB)
+            {
+                return _localUnitOfWork.DataContext.OperationSettings_ChangeHist.Any() ? _centralizedUnitOfWork.DataContext.OperationSettings_ChangeHist.Max(t => t.ID) : 0;
+            }
+            else
+            {
+                return _centralizedUnitOfWork.DataContext.OperationSettings_ChangeHist.Any() ? _centralizedUnitOfWork.DataContext.OperationSettings_ChangeHist.Max(t => t.ID) : 0;
+            }
+        }
+
         public bool DeleteHoliday(DateTime date, string updatedBy)
         {
             try
@@ -677,7 +690,7 @@ namespace Trinity.DAL
                         _localUnitOfWork.GetRepository<DBContext.Holiday>().Delete(h => h.Holiday1.Year == date.Year && h.Holiday1.Month == date.Month && h.Holiday1.Day == date.Day);
 
                         // Insert to Change History Setting
-                        var changeHistoryID = _localUnitOfWork.DataContext.OperationSettings_ChangeHist.Any() ? _localUnitOfWork.DataContext.OperationSettings_ChangeHist.Max(t => t.ID) : 0;
+                        var changeHistoryID = GetMaxIDChangeHist();
                         DBContext.OperationSettings_ChangeHist changeHistory = new DBContext.OperationSettings_ChangeHist();
                         changeHistory.ID = changeHistoryID + 1;
                         changeHistory.DayOfWeek = (int)Common.CommonUtil.ConvertToCustomDateOfWeek(date.DayOfWeek);
@@ -1196,7 +1209,7 @@ namespace Trinity.DAL
                 {
                     var arrayBookAppoint = _localUnitOfWork.DataContext.Appointments.Include("Membership_Users").Include("Timeslot").Include("Queues").Where(d => !string.IsNullOrEmpty(d.Timeslot_ID) && DbFunctions.TruncateTime(d.Date) >= DateNow && SqlFunctions.DatePart("dw", d.Date) == _dayOfWeek).ToList();
 
-                    if (arrayBookAppoint != null)
+                    if (arrayBookAppoint != null || EnumAppConfig.ByPassCentralizedDB)
                     {
                         List<CheckWarningSaveSetting> arrayListUser = new List<CheckWarningSaveSetting>();
                         if ((int)DayOfWeek == DateTime.Now.DayOfWeek())

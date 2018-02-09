@@ -44,14 +44,6 @@ namespace DutyOfficer
             _printMUBAndTTLabel.OnPrintUBLabelsFailed += PrintUBLabels_OnPrintUBLabelFailed;
         }
 
-        public List<Notification> getAlertsSendToDutyOfficer()
-        {
-            var dalNotify = new DAL_Notification();
-            //Receive alerts and notifications from APS, SSK, SSA, UHP and ESP 
-            List<string> modules = new List<string>() { "APS", "SSK", "SSA", "UHP", "ESP" };
-            return dalNotify.GetNotificationsSentToDutyOfficer(true, modules);
-        }
-
         public StationColorDevice GetStationClolorDevice()
         {
             var dalDeviceStatus = new DAL_DeviceStatus();
@@ -134,6 +126,14 @@ namespace DutyOfficer
         #endregion
 
         #region Alert & Notification Popup Detail
+
+        public List<Notification> getAlertsSendToDutyOfficer()
+        {
+            var dalNotify = new DAL_Notification();
+            //Receive alerts and notifications from APS, SSK, SSA, UHP and ESP 
+            List<string> modules = new List<string>() { "APS", "SSK", "SSA", "UHP", "ESP" };
+            return dalNotify.GetNotificationsSentToDutyOfficer();
+        }
 
         public void LoadPopupAlert(string jsonData)
         {
@@ -238,7 +238,7 @@ namespace DutyOfficer
         public List<User> GetAllSuperviseesBlocked()
         {
             var dalUser = new DAL_User();
-            return dalUser.GetAllSuperviseeBlocked(true);
+            return dalUser.GetAllSuperviseeBlocked();
         }
 
         public void LoadPopupBlock(string userId)

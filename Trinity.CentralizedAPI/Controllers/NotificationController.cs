@@ -33,5 +33,13 @@ namespace Trinity.CentralizedAPI.Controllers
         {
             return Ok(new DAL.DAL_Notification().SendAllDutyOfficer(UserId, Subject, Content, Type, Station));
         }
+
+        [HttpGet]
+        [Route("api/Notification/GetNotificationsSentToDutyOfficer")]
+        //[ResponseType(typeof(ResponseModel))]
+        public IHttpActionResult GetNotificationsSentToDutyOfficer()
+        {
+            return Ok(new DAL.DAL_Notification().GetNotificationsSentToDutyOfficer());
+        }
     }
 }

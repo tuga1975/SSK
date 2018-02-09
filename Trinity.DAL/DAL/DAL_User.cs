@@ -546,9 +546,9 @@ namespace Trinity.DAL
             }
         }
 
-        public List<Trinity.BE.User> GetAllSuperviseeBlocked(bool isLocal)
+        public List<Trinity.BE.User> GetAllSuperviseeBlocked()
         {
-            if (isLocal)
+            if (EnumAppConfig.ByPassCentralizedDB)
             {
                 var user = (from mu in _localUnitOfWork.DataContext.Membership_Users
                             join mur in _localUnitOfWork.DataContext.Membership_UserRoles on mu.UserId equals mur.UserId
@@ -570,12 +570,23 @@ namespace Trinity.DAL
 
         public void UnblockSuperviseeById(string userId, string reason)
         {
-            var localUserRepo = _localUnitOfWork.GetRepository<Membership_Users>();
-            var centralUserRepo = _centralizedUnitOfWork.GetRepository<Membership_Users>();
-            UpdateStatusAndReasonSuperviseeUnblock(userId, reason, localUserRepo);
-            UpdateStatusAndReasonSuperviseeUnblock(userId, reason, centralUserRepo);
-            _localUnitOfWork.Save();
-            _centralizedUnitOfWork.Save();
+            if (EnumAppConfig.IsLocal)
+            {
+                bool centralizeStatus = false;
+                var centralUpdate = CallCentralized.Post<Setting>(EnumAPIParam.User, "UnblockSuperviseeById", out centralizeStatus, "userId=" + userId, "reason=" + reason);
+                if (centralizeStatus || EnumAppConfig.ByPassCentralizedDB)
+                {
+                    var localUserRepo = _localUnitOfWork.GetRepository<Membership_Users>();
+                    UpdateStatusAndReasonSuperviseeUnblock(userId, reason, localUserRepo);
+                    _localUnitOfWork.Save();
+                }
+            }
+            else
+            {
+                var centralUserRepo = _centralizedUnitOfWork.GetRepository<Membership_Users>();
+                UpdateStatusAndReasonSuperviseeUnblock(userId, reason, centralUserRepo);
+                _centralizedUnitOfWork.Save();
+            }
         }
 
         private void UpdateStatusAndReasonSuperviseeUnblock(string userId, string reason, IRepository<Membership_Users> userRepo)

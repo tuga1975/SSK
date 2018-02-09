@@ -299,10 +299,11 @@ namespace Trinity.DAL
             return null;
         }
 
-        public List<Notification> GetNotificationsSentToDutyOfficer(bool isLocal, List<string> modules)
+        public List<Notification> GetNotificationsSentToDutyOfficer()
         {
             IQueryable<Trinity.BE.Notification> queryNotifications = null;
-            if (isLocal)
+            List<string> modules = new List<string>() { "APS", "SSK", "SSA", "UHP", "ESP" };
+            if (EnumAppConfig.IsLocal)
             {
                 //queryNotifications = _localUnitOfWork.DataContext.Notifications.Where(n => n.ToUserId == null);
                 queryNotifications = (from n in _localUnitOfWork.DataContext.Notifications
@@ -317,6 +318,21 @@ namespace Trinity.DAL
                                           Type = n.Type,
                                           Source = n.Source
                                       }).Where(x => modules.Contains(x.Source));
+
+                if ((queryNotifications != null && queryNotifications.Count() > 0) || EnumAppConfig.ByPassCentralizedDB)
+                {
+                    return queryNotifications.ToList();
+                }
+                else
+                {
+                    bool centralizeStatus;
+                    var centralUpdate = CallCentralized.Get<List<Notification>>(EnumAPIParam.Notification, "GetNotificationsSentToDutyOfficer", out centralizeStatus);
+                    if (centralizeStatus)
+                    {
+                        return centralUpdate;
+                    }
+                    return queryNotifications.ToList();
+                }
             }
             else
             {
@@ -332,12 +348,9 @@ namespace Trinity.DAL
                                           Type = n.Type,
                                           Source = n.Source
                                       }).Where(x => modules.Contains(x.Source));
-            }
-            if (queryNotifications.Count() > 0)
-            {
+
                 return queryNotifications.ToList<Notification>();
             }
-            return null;
         }
 
 
