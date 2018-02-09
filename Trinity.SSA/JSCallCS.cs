@@ -180,7 +180,7 @@ namespace SSA
 
                 var dalLabel = new DAL_Labels();
                 var update = dalLabel.UpdateLabel(labelInfo);
-                if (update)
+                if (update != null)
                 {
                     var dalAppointment = new DAL_Appointments();
                     var dalQueue = new DAL_QueueNumber();
