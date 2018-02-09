@@ -44,20 +44,6 @@ namespace DutyOfficer
             _printMUBAndTTLabel.OnPrintUBLabelsFailed += PrintUBLabels_OnPrintUBLabelFailed;
         }
 
-        public List<Notification> getAlertsSendToDutyOfficer()
-        {
-
-            var dalNotify = new DAL_Notification();
-            string userID = ((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId;
-            if(userID != null || userID != "")
-            {
-                //Receive alerts and notifications from APS, SSK, SSA, UHP and ESP 
-                List<string> modules = new List<string>() { "APS", "SSK", "SSA", "UHP", "ESP" };
-                return dalNotify.GetAllNotifications(userID, modules);
-            }
-            return null;
-        }
-
         public StationColorDevice GetStationClolorDevice()
         {
             var dalDeviceStatus = new DAL_DeviceStatus();
@@ -143,10 +129,16 @@ namespace DutyOfficer
 
         public List<Notification> getAlertsSendToDutyOfficer()
         {
+
             var dalNotify = new DAL_Notification();
-            //Receive alerts and notifications from APS, SSK, SSA, UHP and ESP 
-            List<string> modules = new List<string>() { "APS", "SSK", "SSA", "UHP", "ESP" };
-            return dalNotify.GetNotificationsSentToDutyOfficer();
+            string userID = ((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId;
+            if (userID != null || userID != "")
+            {
+                //Receive alerts and notifications from APS, SSK, SSA, UHP and ESP 
+                List<string> modules = new List<string>() { "APS", "SSK", "SSA", "UHP", "ESP" };
+                return dalNotify.GetAllNotifications(userID, modules);
+            }
+            return null;
         }
 
         public void LoadPopupAlert(string jsonData)
