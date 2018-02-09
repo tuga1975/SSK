@@ -117,13 +117,27 @@ namespace DutyOfficer
             Session session = Session.Instance;
             session.IsFingerprintAuthenticated = true;
 
-            LayerWeb.RunScript("$('.status-text').css('color','#000').text('Fingerprint authentication is successful.');");
-            //APIUtils.SignalR.GetLatestNotifications();
+            Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+            if (user.Role == EnumUserRoles.DutyOfficer)
+            {
+                LayerWeb.RunScript("$('.status-text').css('color','#000').text('Fingerprint authentication is successful.');");
+                //APIUtils.SignalR.GetLatestNotifications();
 
-            Thread.Sleep(1000);
+                Thread.Sleep(1000);
 
-            APIUtils.SignalR.UserLogined(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId);
-            NavigateTo(NavigatorEnums.Queue);
+                APIUtils.SignalR.UserLogined(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId);
+                NavigateTo(NavigatorEnums.Queue);
+            }
+            else
+            {
+                MessageBox.Show("You do not have permission to access this page.");
+                //Logout();
+                session.IsSmartCardAuthenticated = false;
+                session.IsFingerprintAuthenticated = false;
+                session[CommonConstants.USER_LOGIN] = null;
+                session[CommonConstants.PROFILE_DATA] = null;
+                NavigateTo(NavigatorEnums.Authentication_SmartCard);
+            }           
 
         }
 
