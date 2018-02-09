@@ -17,34 +17,26 @@ namespace Trinity.DAL
         #region refactor 2018
         public List<Notification> GetAllNotifications(string userId)
         {
-            // local request
             if (EnumAppConfig.IsLocal)
             {
-                // select from localdb
-                List<Notification> notifications = _localUnitOfWork.DataContext.Notifications
-                    .Where(d => (!string.IsNullOrEmpty(d.FromUserId) && d.FromUserId == userId) || (!string.IsNullOrEmpty(d.ToUserId) && d.ToUserId == userId))
-                    .Select(item => new Notification()
-                    {
-                        Content = item.Content,
-                        Datetime = item.Datetime,
-                        FromUserId = item.FromUserId,
-                        NotificationID = item.NotificationID,
-                        IsRead = item.IsRead.HasValue ? item.IsRead.Value : false,
-                        Subject = item.Subject,
-                        ToUserId = item.ToUserId
-                    }).ToList();
-
-                // if null, get data from centralized (check bypass)
-                if (notifications == null && notifications.Count == 0 && !EnumAppConfig.ByPassCentralizedDB)
+                List<Notification> arrayNoti = arrayNoti = _localUnitOfWork.DataContext.Notifications.Where(d => (!string.IsNullOrEmpty(d.FromUserId) && d.FromUserId == userId) || (!string.IsNullOrEmpty(d.ToUserId) && d.ToUserId == userId)).Select(item => new Notification()
                 {
-
+                    Content = item.Content,
+                    Datetime = item.Datetime,
+                    FromUserId = item.FromUserId,
+                    NotificationID = item.NotificationID,
+                    IsRead = item.IsRead.HasValue ? item.IsRead.Value : false,
+                    Subject = item.Subject,
+                    ToUserId = item.ToUserId
+                }).ToList();
+                if (arrayNoti.Count == 0)
+                {
+                    arrayNoti = CallCentralized.Get<List<Notification>>("Notification", "GetAllNotifications", "userId=" + userId);
+                    arrayNoti = arrayNoti == null ? new List<Notification>() : arrayNoti;
                 }
-
-                // if centralized had data, update local
-
-                return notifications;
+                return arrayNoti;
             }
-            else // centralized api request
+            else
             {
                 return _centralizedUnitOfWork.DataContext.Notifications.Where(d => (!string.IsNullOrEmpty(d.FromUserId) && d.FromUserId == userId) || (!string.IsNullOrEmpty(d.ToUserId) && d.ToUserId == userId)).Select(item => new Notification()
                 {
@@ -238,42 +230,7 @@ namespace Trinity.DAL
                 return _centralizedUnitOfWork.DataContext.Notifications.Count(n => n.ToUserId == myUserId && n.IsRead.HasValue && !n.IsRead.Value);
             }
         }
-
-        public List<Notification> GetMyNotifications(string userId)
-        {
-            if (EnumAppConfig.IsLocal)
-            {
-                bool statusCentralized;
-                List<Notification> arrayNoti = CallCentralized.Get<List<Notification>>("Notification", "GetMyNotifications",out statusCentralized, "userId="+ userId);
-                if(arrayNoti==null || !statusCentralized)
-                {
-                    arrayNoti = _localUnitOfWork.DataContext.Notifications.Where(d => (!string.IsNullOrEmpty(d.FromUserId) && d.FromUserId == userId) || (!string.IsNullOrEmpty(d.ToUserId) && d.ToUserId == userId)).Select(item => new Notification()
-                    {
-                        Content = item.Content,
-                        Datetime = item.Datetime,
-                        FromUserId = item.FromUserId,
-                        NotificationID = item.NotificationID,
-                        IsRead = item.IsRead.HasValue ? item.IsRead.Value : false,
-                        Subject = item.Subject,
-                        ToUserId = item.ToUserId
-                    }).ToList();
-                }
-                return arrayNoti;
-            }
-            else
-            {
-                return _centralizedUnitOfWork.DataContext.Notifications.Where(d => (!string.IsNullOrEmpty(d.FromUserId) && d.FromUserId == userId) || (!string.IsNullOrEmpty(d.ToUserId) && d.ToUserId == userId)).Select(item => new Notification()
-                {
-                    Content = item.Content,
-                    Datetime = item.Datetime,
-                    FromUserId = item.FromUserId,
-                    NotificationID = item.NotificationID,
-                    IsRead = item.IsRead.HasValue ? item.IsRead.Value : false,
-                    Subject = item.Subject,
-                    ToUserId = item.ToUserId
-                }).ToList();
-            }
-        }
+        
 
         public List<Notification> GetNotificationsByUserId(string userId)
         {

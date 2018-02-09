@@ -66,6 +66,7 @@ namespace Trinity.Device
 
         public void PrintBarcodeLabel(LabelInfo labelInfo)
         {
+
             // validation
             if (string.IsNullOrEmpty(labelInfo.Name))
             {
@@ -89,6 +90,7 @@ namespace Trinity.Device
 
                 return;
             }
+
 
             // print label
             BarcodePrinterUtil printerUtils = BarcodePrinterUtil.Instance;

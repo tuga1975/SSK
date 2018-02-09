@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
@@ -27,6 +28,7 @@ namespace SSA
         private int _fingerprintFailed;
         private bool _displayLoginButtonStatus = false;
         private bool _isFirstTimeLoaded = true;
+        private Trinity.BE.PopupModel _popupModel;
 
         public Main()
         {
@@ -38,6 +40,7 @@ namespace SSA
             _smartCardFailed = 0;
             _fingerprintFailed = 0;
             _displayLoginButtonStatus = false;
+            _popupModel = new Trinity.BE.PopupModel();
 
             #region Initialize and register events
             // _jsCallCS
@@ -133,8 +136,8 @@ namespace SSA
             else
             {
                 // raise failed event
-                //SmartCard_OnSmartCardFailed("Unable to read your smart card. Please report to the Duty Officer");
-                SmartCard_OnSmartCardSucceeded();
+                SmartCard_OnSmartCardFailed("Unable to read your smart card. Please report to the Duty Officer");
+                //SmartCard_OnSmartCardSucceeded();
             }
         }
 
@@ -216,13 +219,12 @@ namespace SSA
 
                 // show message box to user
                 //MessageBox.Show(message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Trinity.BE.PopupModel popupModel = new Trinity.BE.PopupModel();
-                popupModel.Title = "Authorization Failed";
-                popupModel.Message = "Unable to read your smart card.\nPlease report to the Duty Officer";
-                popupModel.IsShowLoading = false;
-                popupModel.IsShowOK = true;
+                _popupModel.Title = "Authorization Failed";
+                _popupModel.Message = "Unable to read your smart card.\nPlease report to the Duty Officer";
+                _popupModel.IsShowLoading = false;
+                _popupModel.IsShowOK = true;
 
-                LayerWeb.InvokeScript("showPopupModal", JsonConvert.SerializeObject(popupModel));
+                LayerWeb.InvokeScript("showPopupModal", JsonConvert.SerializeObject(_popupModel));
 
                 // reset counter
                 _smartCardFailed = 0;
@@ -299,8 +301,10 @@ namespace SSA
                 Thread.Sleep(1000);
                 _fingerprintFailed = 0;
 
+                // Temporary comment Authentication_Facial to testing
                 // Navigate to next page: Facial Authentication
-                NavigateTo(NavigatorEnums.Authentication_Facial);
+                //NavigateTo(NavigatorEnums.Authentication_Facial);
+                NavigateTo(NavigatorEnums.Authentication_SmartCard);
 
                 return;
             }
@@ -409,24 +413,44 @@ namespace SSA
             else if (e.Name.Equals(EventNames.LOGIN_FAILED))
             {
                 //NavigateTo(NavigatorEnums.Authentication_NRIC);
-                MessageBox.Show(e.Message, "Login Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //MessageBox.Show(e.Message, "Login Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                _popupModel.Title = "Login Failed";
+                _popupModel.Message = e.Message;
+                _popupModel.IsShowLoading = false;
+                _popupModel.IsShowOK = true;
+                LayerWeb.InvokeScript("showPopupModal", JsonConvert.SerializeObject(_popupModel));
             }
         }
 
         #region events
         private void JSCallCS_OnNRICFailed(object sender, NRICEventArgs e)
         {
-            MessageBox.Show(e.Message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //MessageBox.Show(e.Message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            _popupModel.Title = "Authentication Failed";
+            _popupModel.Message = e.Message;
+            _popupModel.IsShowLoading = false;
+            _popupModel.IsShowOK = true;
+            LayerWeb.InvokeScript("showPopupModal", JsonConvert.SerializeObject(_popupModel));
         }
 
         private void JSCallCS_ShowMessage(object sender, ShowMessageEventArgs e)
         {
-            MessageBox.Show(e.Message, e.Caption, e.Button, e.Icon);
+            //MessageBox.Show(e.Message, e.Caption, e.Button, e.Icon);
+            _popupModel.Title = e.Caption;
+            _popupModel.Message = e.Message;
+            _popupModel.IsShowLoading = false;
+            _popupModel.IsShowOK = true;
+            LayerWeb.InvokeScript("showPopupModal", JsonConvert.SerializeObject(_popupModel));
         }
 
         private void OnShowMessage(object sender, ShowMessageEventArgs e)
         {
-            MessageBox.Show(e.Message, e.Caption, e.Button, e.Icon);
+            //MessageBox.Show(e.Message, e.Caption, e.Button, e.Icon);
+            _popupModel.Title = e.Caption;
+            _popupModel.Message = e.Message;
+            _popupModel.IsShowLoading = false;
+            _popupModel.IsShowOK = true;
+            LayerWeb.InvokeScript("showPopupModal", JsonConvert.SerializeObject(_popupModel));
         }
 
         private void NavigateTo(NavigatorEnums navigatorEnum)
@@ -443,7 +467,7 @@ namespace SSA
                 Session session = Session.Instance;
                 Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
                 LayerWeb.LoadPageHtml("Authentication/FingerPrint.html");
-                LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please place your finger on the reader.');");
+                LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please place your thumb print on the reader.');");
                 Fingerprint.Instance.Start(new System.Collections.Generic.List<byte[]>() { user.LeftThumbFingerprint, user.RightThumbFingerprint });
             }
             else if (navigatorEnum == NavigatorEnums.Authentication_Facial)

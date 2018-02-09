@@ -106,20 +106,9 @@ namespace Trinity.DAL
             if (EnumAppConfig.IsLocal)
             {
                 // need to be refactored
-                var data = _localUnitOfWork.DataContext.QueueDetails
-                    .Where(d => d.Station == station
-                    && (d.Status.Equals(EnumQueueStatuses.Waiting, StringComparison.InvariantCultureIgnoreCase) 
-                    || d.Status.Equals(EnumQueueStatuses.Processing, StringComparison.InvariantCultureIgnoreCase)) 
-                    && DbFunctions.TruncateTime(d.Queue.CreatedTime).Value == DateTime.Today)
-                    .Select(d => d.Queue).Distinct()
-                    .Select(d => new Trinity.BE.Queue()
-                    {
-                        ID = d.Queue_ID,
-                        AppointmentId = d.Appointment_ID,
-                        Status = d.QueueDetails.FirstOrDefault(qd => qd.Queue_ID == d.Queue_ID && qd.Station == station).Status,
-                        QueueNumber = d.QueuedNumber,
-                        Time = d.CreatedTime
-                    }).ToList();
+                DateTime date = DateTime.Today;
+                var data = _localUnitOfWork.DataContext.Queues.Where(item => DbFunctions.TruncateTime(item.Appointment.Date).Value == date).ToList()
+                    .Select(item => item.Map<BE.Queue>()).ToList();
 
                 return data;
             }

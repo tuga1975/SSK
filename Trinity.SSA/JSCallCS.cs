@@ -15,9 +15,9 @@ using Trinity.Identity;
 namespace SSA
 {
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    public class JSCallCS: JSCallCSBase
+    public class JSCallCS : JSCallCSBase
     {
-        
+
         private CodeBehind.PrintMUBAndTTLabels _printMUBAndTTLabel;
 
         public event EventHandler<NRICEventArgs> OnNRICFailed;
@@ -25,6 +25,7 @@ namespace SSA
         public event Action OnLogOutCompleted;
         private static bool _PrintMUBSucceed = false;
         private static bool _PrintTTSucceed = false;
+        private Trinity.BE.PopupModel _popupModel;
 
         public JSCallCS(WebBrowser web)
         {
@@ -36,6 +37,7 @@ namespace SSA
             _printMUBAndTTLabel.OnPrintTTLabelsSucceeded += PrintTTLabels_OnPrintTTLabelSucceeded;
             _printMUBAndTTLabel.OnPrintTTLabelsFailed += PrintTTLabels_OnPrintTTLabelFailed;
             _printMUBAndTTLabel.OnPrintMUBAndTTLabelsException += PrintMUBAndTTLabels_OnPrintTTLabelException;
+            _popupModel = new Trinity.BE.PopupModel();
         }
 
         #region virtual events
@@ -56,7 +58,7 @@ namespace SSA
             OnLogOutCompleted?.Invoke();
         }
         #endregion
-        
+
         public void SubmitNRIC(string strNRIC)
         {
             NRIC nric = NRIC.GetInstance(_web);
@@ -144,27 +146,11 @@ namespace SSA
                 PrintCount = e.LabelInfo.PrintCount,
                 ReprintReason = e.LabelInfo.ReprintReason,
                 PrintStatus = e.LabelInfo.PrintStatus,
-                Message=e.LabelInfo.Message
+                Message = e.LabelInfo.Message
             };
 
             var dalLabel = new DAL_Labels();
             dalLabel.UpdateLabel(labelInfo);
-
-            //this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').hide(); ; ");
-            //this._web.RunScript("$('.status-text').css('color','#000').text('Sent problem to Duty Officer. Please wait to check !');");
-            ////MessageBox.Show("Unable to print MUB labels\nPlease report to the Duty Officer", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-            //Trinity.BE.PopupModel popupModel = new Trinity.BE.PopupModel();
-            //popupModel.Title = "Printing Failed";
-            //popupModel.Message = "Unable to print MUB labels.\nPlease report to the Duty Officer";
-            //popupModel.IsShowLoading = false;
-            //popupModel.IsShowOK = true;
-
-            //if (!_PrintTTSucced)
-            //{
-            //    popupModel.Message = "Unable to print labels.\nPlease report to the Duty Officer";
-            //}
-            //this._web.InvokeScript("showPopupModal", JsonConvert.SerializeObject(popupModel));
 
             APIUtils.SignalR.SendAllDutyOfficer(e.LabelInfo.UserId, "Print MUB Label", "Don't print MUB, Please check !", NotificationType.Error);
 
@@ -174,44 +160,50 @@ namespace SSA
 
         private void PrintTTLabels_OnPrintTTLabelSucceeded(object sender, PrintMUBAndTTLabelsEventArgs e)
         {
-            _PrintTTSucceed = true;
-            var labelInfo = new Trinity.BE.Label
+            try
             {
-                UserId = e.LabelInfo.UserId,
-                Label_Type = EnumLabelType.TT,
-                CompanyName = e.LabelInfo.CompanyName,
-                MarkingNo = e.LabelInfo.MarkingNo,
-                //DrugType = e.LabelInfo.DrugType,
-                NRIC = e.LabelInfo.NRIC,
-                Name = e.LabelInfo.Name,
-                Date = DateTime.Now,
-                LastStation = e.LabelInfo.LastStation,
-                PrintCount = e.LabelInfo.PrintCount,
-                ReprintReason = e.LabelInfo.ReprintReason
-            };
-
-            var dalLabel = new DAL_Labels();
-            var update = dalLabel.UpdateLabel(labelInfo);
-            if (update)
-            {
-                var dalAppointment = new DAL_Appointments();
-                var dalQueue = new DAL_QueueNumber();
-                var appointment = dalAppointment.GetTodayAppointmentByUserId(labelInfo.UserId);
-                //var appointment = result.Data;
-
-                if (appointment != null)
+                _PrintTTSucceed = true;
+                var labelInfo = new Trinity.BE.Label
                 {
-                    var sskQueue = new DAL_QueueNumber().GetQueueDetailByAppointment(appointment, EnumStations.SSK);
+                    UserId = e.LabelInfo.UserId,
+                    Label_Type = EnumLabelType.TT,
+                    CompanyName = e.LabelInfo.CompanyName,
+                    MarkingNo = e.LabelInfo.MarkingNo,
+                    //DrugType = e.LabelInfo.DrugType,
+                    NRIC = e.LabelInfo.NRIC,
+                    Name = e.LabelInfo.Name,
+                    Date = DateTime.Now,
+                    LastStation = e.LabelInfo.LastStation,
+                    PrintCount = e.LabelInfo.PrintCount,
+                    ReprintReason = e.LabelInfo.ReprintReason
+                };
 
-                    dalQueue.UpdateQueueStatus(sskQueue.Queue_ID, EnumQueueStatuses.Finished, EnumStations.SSK);
-                    dalQueue.UpdateQueueStatus(sskQueue.Queue_ID, EnumQueueStatuses.Processing, EnumStations.SSA);
+                var dalLabel = new DAL_Labels();
+                var update = dalLabel.UpdateLabel(labelInfo);
+                if (update != null)
+                {
+                    var dalAppointment = new DAL_Appointments();
+                    var dalQueue = new DAL_QueueNumber();
+                    var appointment = dalAppointment.GetTodayAppointmentByUserId(labelInfo.UserId);
+                    //var appointment = result.Data;
+
+                    if (appointment != null)
+                    {
+                        var sskQueue = new DAL_QueueNumber().GetQueueDetailByAppointment(appointment, EnumStations.SSK);
+
+                        dalQueue.UpdateQueueStatus(sskQueue.Queue_ID, EnumQueueStatuses.Finished, EnumStations.SSK);
+                        dalQueue.UpdateQueueStatus(sskQueue.Queue_ID, EnumQueueStatuses.Processing, EnumStations.SSA);
+                    }
+                    //this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').show(); ; ");
+                    //this._web.RunScript("$('.status-text').css('color','#000').text('Please collect your labels');");
+
+                    //DeleteQRCodeImageFileTemp();
                 }
             }
-            //this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').show(); ; ");
-            //this._web.RunScript("$('.status-text').css('color','#000').text('Please collect your labels');");
+            catch (Exception ex)
+            {
 
-            //DeleteQRCodeImageFileTemp();
-            
+            }
         }
 
         private void PrintTTLabels_OnPrintTTLabelFailed(object sender, PrintMUBAndTTLabelsEventArgs e)
@@ -238,16 +230,7 @@ namespace SSA
             var dalLabel = new DAL_Labels();
             dalLabel.UpdateLabel(labelInfo);
 
-            //this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').hide(); ; ");
-            //this._web.RunScript("$('.status-text').css('color','#000').text('Sent problem to Duty Officer. Please wait to check !');");
-            //Trinity.BE.PopupModel popupModel = new Trinity.BE.PopupModel();
-            //popupModel.Title = "Printing Failed";
-            //popupModel.Message = "Unable to print TT labels.\nPlease report to the Duty Officer";
-            //popupModel.IsShowLoading = false;
-            //popupModel.IsShowOK = true;
-            //this._web.InvokeScript("showPopupModal", JsonConvert.SerializeObject(popupModel));
-
-            APIUtils.SignalR.SendAllDutyOfficer(e.LabelInfo.UserId,"Print TT Label", "Don't print TT, Please check !", NotificationType.Error);
+            APIUtils.SignalR.SendAllDutyOfficer(e.LabelInfo.UserId, "Print TT Label", "Don't print TT, Please check !", NotificationType.Error);
 
             //DeleteQRCodeImageFileTemp();
             //LogOut();
@@ -260,7 +243,7 @@ namespace SSA
             //this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').hide(); ; ");
             //this._web.RunScript("$('.status-text').css('color','#000').text('Sent problem to Duty Officer. Please wait to check !');");
             //MessageBox.Show(e.ErrorMessage, "", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            APIUtils.SignalR.SendAllDutyOfficer(null,"MUB & TT", "Don't print MUB & TT, Please check !", NotificationType.Error);
+            APIUtils.SignalR.SendAllDutyOfficer(null, "MUB & TT", "Don't print MUB & TT, Please check !", NotificationType.Error);
 
             //DeleteQRCodeImageFileTemp();
             //LogOut();
@@ -338,21 +321,20 @@ namespace SSA
             }
             else
             {
-                Trinity.BE.PopupModel popupModel = new Trinity.BE.PopupModel();
-                popupModel.Title = "Printing Failed";
-                popupModel.Message = "Unable to print labels.\nPlease report to the Duty Officer";
-                popupModel.IsShowLoading = false;
-                popupModel.IsShowOK = true;
+                _popupModel.Title = "Printing Failed";
+                _popupModel.Message = "Unable to print labels.\nPlease report to the Duty Officer";
+                _popupModel.IsShowLoading = false;
+                _popupModel.IsShowOK = true;
 
                 if (_PrintTTSucceed)
                 {
-                    popupModel.Message = "Unable to print MUB labels.\nPlease report to the Duty Officer";
+                    _popupModel.Message = "Unable to print MUB labels.\nPlease report to the Duty Officer";
                 }
                 if (_PrintMUBSucceed)
                 {
-                    popupModel.Message = "Unable to print TT labels.\nPlease report to the Duty Officer";
+                    _popupModel.Message = "Unable to print TT labels.\nPlease report to the Duty Officer";
                 }
-                this._web.InvokeScript("showPopupModal", JsonConvert.SerializeObject(popupModel));
+                this._web.InvokeScript("showPopupModal", JsonConvert.SerializeObject(_popupModel));
             }
         }
     }
