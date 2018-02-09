@@ -444,7 +444,7 @@ namespace SSA
                 Session session = Session.Instance;
                 Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
                 LayerWeb.LoadPageHtml("Authentication/FingerPrint.html");
-                LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please place your finger on the reader.');");
+                LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please place your thumb print on the reader.');");
                 Fingerprint.Instance.Start(new System.Collections.Generic.List<byte[]>() { user.LeftThumbFingerprint, user.RightThumbFingerprint });
             }
             else if (navigatorEnum == NavigatorEnums.Authentication_Facial)

@@ -10,36 +10,37 @@
     margin: 20px 40px;
 }
 
-/*Header Layout*/
+/*Header*/
 #header {
     width: 100%;
     height: auto;
     float: left;
     margin-bottom: 50px;
+    background-color: #fff;
 }
 .logo {
     position: relative;
-    width: 70%;
+    width: calc(100% - 100px);
     height: auto;
     float: left;
 }
 .logo img {
     width: 235px;
 }
-.logout {
+.logoutWrapper {
     position: relative;
-    width: 30%;
+    width: 100px;
     font-size: 14px;
     cursor: pointer;
     float: right;
     color: #1CACF6;
     text-align: right;
     font-weight: bold;
-    padding: 1.17% 1.87%;
-    background-color: #fff;
+    padding: 10px 20px 10px 0;
+    margin-top: 10px;
 }
 .logout img {
-    width: 25px;
+    width: 30px;
 }
 
 /*Content layout*/
@@ -257,7 +258,7 @@
 
 /*FingerPrint*/
 .fingerPrint {
-    height: calc(100vh - 330px);
+    height: calc(100vh - 300px);
     width: auto;
     text-align: center;
     padding: 40px 0 20px 0;
@@ -271,7 +272,7 @@
 .titles {
     overflow:hidden;
     width: 100%;
-    margin-bottom: 5%;
+    margin-bottom: 20px;
     font-size: 16px;
     text-align: center;
     font-weight: bold;
@@ -283,11 +284,21 @@
 
 
 /*Collect command paste labels*/
+.collectLabels {
+    height: calc(100vh - 300px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 40px 0 20px 0;
+    text-align: center;
+    overflow: hidden;
+}
+
 .SucessesPrint {
     font-size: 24px;
     padding: 5px;
     color: #808080;
-    height: 100%;
+    flex: 1;
 }
  /*Tooltip*/
 [data-tip] {
@@ -296,7 +307,6 @@
 
 [data-tip]:before {
     content: '';
-    /* hides the tooltip when not hovered */
     display: none;
     content: '';
     border-left: 5px solid transparent;
