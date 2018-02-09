@@ -15,9 +15,9 @@ using Trinity.Identity;
 namespace SSA
 {
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
-    public class JSCallCS: JSCallCSBase
+    public class JSCallCS : JSCallCSBase
     {
-        
+
         private CodeBehind.PrintMUBAndTTLabels _printMUBAndTTLabel;
 
         public event EventHandler<NRICEventArgs> OnNRICFailed;
@@ -58,7 +58,7 @@ namespace SSA
             OnLogOutCompleted?.Invoke();
         }
         #endregion
-        
+
         public void SubmitNRIC(string strNRIC)
         {
             NRIC nric = NRIC.GetInstance(_web);
@@ -146,12 +146,12 @@ namespace SSA
                 PrintCount = e.LabelInfo.PrintCount,
                 ReprintReason = e.LabelInfo.ReprintReason,
                 PrintStatus = e.LabelInfo.PrintStatus,
-                Message=e.LabelInfo.Message
+                Message = e.LabelInfo.Message
             };
 
             var dalLabel = new DAL_Labels();
             dalLabel.UpdateLabel(labelInfo);
-            
+
             APIUtils.SignalR.SendAllDutyOfficer(e.LabelInfo.UserId, "Print MUB Label", "Don't print MUB, Please check !", NotificationType.Error);
 
             //DeleteQRCodeImageFileTemp();
@@ -230,7 +230,7 @@ namespace SSA
             var dalLabel = new DAL_Labels();
             dalLabel.UpdateLabel(labelInfo);
 
-            APIUtils.SignalR.SendAllDutyOfficer(e.LabelInfo.UserId,"Print TT Label", "Don't print TT, Please check !", NotificationType.Error);
+            APIUtils.SignalR.SendAllDutyOfficer(e.LabelInfo.UserId, "Print TT Label", "Don't print TT, Please check !", NotificationType.Error);
 
             //DeleteQRCodeImageFileTemp();
             //LogOut();
@@ -243,7 +243,7 @@ namespace SSA
             //this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').hide(); ; ");
             //this._web.RunScript("$('.status-text').css('color','#000').text('Sent problem to Duty Officer. Please wait to check !');");
             //MessageBox.Show(e.ErrorMessage, "", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            APIUtils.SignalR.SendAllDutyOfficer(null,"MUB & TT", "Don't print MUB & TT, Please check !", NotificationType.Error);
+            APIUtils.SignalR.SendAllDutyOfficer(null, "MUB & TT", "Don't print MUB & TT, Please check !", NotificationType.Error);
 
             //DeleteQRCodeImageFileTemp();
             //LogOut();
@@ -337,6 +337,8 @@ namespace SSA
                 this._web.InvokeScript("showPopupModal", JsonConvert.SerializeObject(_popupModel));
             }
         }
+    }
+
     #region Custom Events
     public class NRICEventArgs
     {
