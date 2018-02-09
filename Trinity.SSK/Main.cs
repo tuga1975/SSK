@@ -197,9 +197,9 @@ namespace SSK
                 session.IsSmartCardAuthenticated = true;
                 session.IsFingerprintAuthenticated = true;
 
-                //////NavigateTo(NavigatorEnums.Authentication_Fingerprint);
+                //NavigateTo(NavigatorEnums.Authentication_Fingerprint);
                 NavigateTo(NavigatorEnums.Supervisee);
-                //////NavigateTo(NavigatorEnums.Authentication_NRIC);                
+                //NavigateTo(NavigatorEnums.Authentication_NRIC);                
 
                 _isFirstTimeLoaded = false;
                 
@@ -449,7 +449,7 @@ namespace SSK
                     Session session = Session.Instance;
                     Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
                     LayerWeb.LoadPageHtml("Authentication/FingerPrint.html");
-                    LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please place your finger on the reader.');");
+                    LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please place your thumb print on the reader.');");
                     Fingerprint.Instance.Start(new System.Collections.Generic.List<byte[]>() { user.LeftThumbFingerprint, user.RightThumbFingerprint });
                 }
                 catch (System.IO.FileNotFoundException ex)

@@ -1,20 +1,24 @@
-﻿<div class="subcontent">
+﻿<!--<div class="subcontent">
     <span>Please scan supervisee NRIC:</span>
     <input type="text" id="txtNRIC" class="txtNRIC" autofocus />
     <input type="button" value="Enter manually" onclick="enterManually()" />
     <input type="button" value="Submit" onclick="api.server.SubmitNRIC($('#txtNRIC').val())" />
+</div>-->
+<div class="subcontent">
+    <div class="titles"><span>Verification</span></div><br />
+    <div class="contentWrapper">
+        <div class="contentForm">
+            <div class="input-group" data-tip="Enter your Supervisee NRIC No" id="editable">
+                <!--<span class="input-group-addon">Supervisee NRIC No</span>-->
+                <input type="text" id="txtNRIC" class="txtNRIC" placeholder="Supervisee NRIC No" autofocus />
+            </div>
+        </div>
+    </div>
+    <div id="divSave">
+        <button type="button" class="btn btn-dark" onclick="api.server.LogOut()">Cancel</button>
+        <button type="button" class="btn btn-dark" onclick="api.server.SubmitNRIC($('#txtNRIC').val())">Submit</button>
+    </div>
 </div>
-
-<style type="text/css">
-    .subcontent {
-        width: calc(100% - 20px);
-        margin-top: 200px;
-        text-align: center;
-    }
-    .txtNRIC {
-        height: 28px;
-    }
-</style>
 
 <script type="text/javascript">
     function enterManually() {
