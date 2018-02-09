@@ -25,6 +25,7 @@ namespace SSA
         public event Action OnLogOutCompleted;
         private static bool _PrintMUBSucceed = false;
         private static bool _PrintTTSucceed = false;
+        private Trinity.BE.PopupModel _popupModel;
 
         public JSCallCS(WebBrowser web)
         {
@@ -36,6 +37,7 @@ namespace SSA
             _printMUBAndTTLabel.OnPrintTTLabelsSucceeded += PrintTTLabels_OnPrintTTLabelSucceeded;
             _printMUBAndTTLabel.OnPrintTTLabelsFailed += PrintTTLabels_OnPrintTTLabelFailed;
             _printMUBAndTTLabel.OnPrintMUBAndTTLabelsException += PrintMUBAndTTLabels_OnPrintTTLabelException;
+            _popupModel = new Trinity.BE.PopupModel();
         }
 
         #region virtual events
@@ -149,23 +151,7 @@ namespace SSA
 
             var dalLabel = new DAL_Labels();
             dalLabel.UpdateLabel(labelInfo);
-
-            //this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').hide(); ; ");
-            //this._web.RunScript("$('.status-text').css('color','#000').text('Sent problem to Duty Officer. Please wait to check !');");
-            ////MessageBox.Show("Unable to print MUB labels\nPlease report to the Duty Officer", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-            //Trinity.BE.PopupModel popupModel = new Trinity.BE.PopupModel();
-            //popupModel.Title = "Printing Failed";
-            //popupModel.Message = "Unable to print MUB labels.\nPlease report to the Duty Officer";
-            //popupModel.IsShowLoading = false;
-            //popupModel.IsShowOK = true;
-
-            //if (!_PrintTTSucced)
-            //{
-            //    popupModel.Message = "Unable to print labels.\nPlease report to the Duty Officer";
-            //}
-            //this._web.InvokeScript("showPopupModal", JsonConvert.SerializeObject(popupModel));
-
+            
             APIUtils.SignalR.SendAllDutyOfficer(e.LabelInfo.UserId, "Print MUB Label", "Don't print MUB, Please check !", NotificationType.Error);
 
             //DeleteQRCodeImageFileTemp();
@@ -237,15 +223,6 @@ namespace SSA
 
             var dalLabel = new DAL_Labels();
             dalLabel.UpdateLabel(labelInfo);
-
-            //this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').hide(); ; ");
-            //this._web.RunScript("$('.status-text').css('color','#000').text('Sent problem to Duty Officer. Please wait to check !');");
-            //Trinity.BE.PopupModel popupModel = new Trinity.BE.PopupModel();
-            //popupModel.Title = "Printing Failed";
-            //popupModel.Message = "Unable to print TT labels.\nPlease report to the Duty Officer";
-            //popupModel.IsShowLoading = false;
-            //popupModel.IsShowOK = true;
-            //this._web.InvokeScript("showPopupModal", JsonConvert.SerializeObject(popupModel));
 
             APIUtils.SignalR.SendAllDutyOfficer(e.LabelInfo.UserId,"Print TT Label", "Don't print TT, Please check !", NotificationType.Error);
 
@@ -338,21 +315,20 @@ namespace SSA
             }
             else
             {
-                Trinity.BE.PopupModel popupModel = new Trinity.BE.PopupModel();
-                popupModel.Title = "Printing Failed";
-                popupModel.Message = "Unable to print labels.\nPlease report to the Duty Officer";
-                popupModel.IsShowLoading = false;
-                popupModel.IsShowOK = true;
+                _popupModel.Title = "Printing Failed";
+                _popupModel.Message = "Unable to print labels.\nPlease report to the Duty Officer";
+                _popupModel.IsShowLoading = false;
+                _popupModel.IsShowOK = true;
 
                 if (_PrintTTSucceed)
                 {
-                    popupModel.Message = "Unable to print MUB labels.\nPlease report to the Duty Officer";
+                    _popupModel.Message = "Unable to print MUB labels.\nPlease report to the Duty Officer";
                 }
                 if (_PrintMUBSucceed)
                 {
-                    popupModel.Message = "Unable to print TT labels.\nPlease report to the Duty Officer";
+                    _popupModel.Message = "Unable to print TT labels.\nPlease report to the Duty Officer";
                 }
-                this._web.InvokeScript("showPopupModal", JsonConvert.SerializeObject(popupModel));
+                this._web.InvokeScript("showPopupModal", JsonConvert.SerializeObject(_popupModel));
             }
         }
     }
