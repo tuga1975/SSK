@@ -361,30 +361,6 @@ namespace SSA
                 this._web.InvokeScript("showPopupModal", JsonConvert.SerializeObject(popupModel));
             }
         }
-    }
-
-    public static class Log
-    {
-        public static void WriteLog(string content)
-        {
-            string path = @"c:\temp\MyTest.txt";
-
-            // This text is added only once to the file.
-            if (!File.Exists(path))
-            {
-                // Create a file to write to.
-                string createText = "2018" + Environment.NewLine;
-                File.WriteAllText(path, createText);
-            }
-
-            // This text is always added, making the file longer over time
-            // if it is not deleted.
-            string appendText = content + Environment.NewLine;
-            File.AppendAllText(path, appendText);
-        }
-
-    }
-
     #region Custom Events
     public class NRICEventArgs
     {

@@ -144,8 +144,6 @@ namespace SSA
             //FormQueueNumber f = FormQueueNumber.GetInstance();
             //f.ShowOnSecondaryScreen();
             //f.Show();
-
-            Log.WriteLog(DateTime.Now.ToString());
         }
 
         private void Main_FormClosing(object sender, FormClosingEventArgs e)
