@@ -20,7 +20,7 @@ namespace Trinity.DAL
             if (EnumAppConfig.IsLocal)
             {
                 DBContext.Label label = _localUnitOfWork.DataContext.Labels.FirstOrDefault(d => DbFunctions.TruncateTime(d.Date).Value == Date && d.UserId == UserId);
-                if (label != null)
+                if (label != null || EnumAppConfig.ByPassCentralizedDB)
                 {
                     return label;
                 }
@@ -41,7 +41,7 @@ namespace Trinity.DAL
             }
         }
 
-        public bool UpdateLabel(BE.Label model)
+        public Label UpdateLabel(BE.Label model)
         {
             try
             {
@@ -57,7 +57,15 @@ namespace Trinity.DAL
                         if (dbLabel == null)
                         {
                             dbLabel = new Label();
-                            dbLabel.Label_ID = Guid.NewGuid();
+                            if (!EnumAppConfig.ByPassCentralizedDB && centralUpdate != null)
+                            {
+                                dbLabel.Label_ID = centralUpdate.Label_ID;
+                            }
+                            else
+                            {
+                                dbLabel.Label_ID = Guid.NewGuid();
+                            }
+
                             dbLabel.Label_Type = model.Label_Type;
                             dbLabel.CompanyName = model.CompanyName;
                             dbLabel.MarkingNo = model.MarkingNo;
@@ -97,7 +105,7 @@ namespace Trinity.DAL
 
                         _localUnitOfWork.Save();
 
-                        return true;
+                        return dbLabel;
                     }
                     else
                     {
@@ -150,11 +158,11 @@ namespace Trinity.DAL
                     }
                     _centralizedUnitOfWork.Save();
                 }
-                return true;
+                return dbLabel;
             }
             catch (Exception e)
             {
-                return false;
+                return null;
             }
         }
 
@@ -174,7 +182,7 @@ namespace Trinity.DAL
                             UserId = d.UserId
                         });
 
-                    if (lstModels != null && lstModels.Count() > 0)
+                    if ((lstModels != null && lstModels.Count() > 0) || EnumAppConfig.ByPassCentralizedDB)
                     {
                         return lstModels.ToList();
                     }
@@ -182,7 +190,7 @@ namespace Trinity.DAL
                     {
                         bool centralizeStatus;
                         var centralUpdate = CallCentralized.Get<List<BE.Label>>(EnumAPIParam.Label, "GetAllLabelsForMUBAndTT", out centralizeStatus);
-                        if (centralizeStatus && centralUpdate != null)
+                        if (centralizeStatus)
                         {
                             return centralUpdate;
                         }
@@ -226,7 +234,7 @@ namespace Trinity.DAL
                         UserId = d.UserId
                     });
 
-                    if (lstModels != null && lstModels.Count() > 0)
+                    if ((lstModels != null && lstModels.Count() > 0) || EnumAppConfig.ByPassCentralizedDB)
                     {
                         return lstModels.ToList();
                     }
@@ -234,7 +242,7 @@ namespace Trinity.DAL
                     {
                         bool centralizeStatus;
                         var centralUpdate = CallCentralized.Get<List<BE.Label>>(EnumAPIParam.Label, "GetAllLabelsForUB", out centralizeStatus);
-                        if (centralizeStatus && centralUpdate != null)
+                        if (centralizeStatus)
                         {
                             return centralUpdate;
                         }

@@ -188,7 +188,7 @@ namespace Trinity.DAL
                 if (EnumAppConfig.IsLocal)
                 {
                     var data = _localUnitOfWork.DataContext.Appointments.FirstOrDefault(d => d.UserId == userId && d.Date == date);
-                    if (data != null)
+                    if (data != null || EnumAppConfig.ByPassCentralizedDB)
                     {
                         return data;
                     }
@@ -684,7 +684,7 @@ namespace Trinity.DAL
                         StartTime = d.Timeslot.StartTime,
                         EndTime = d.Timeslot.EndTime
                     }).ToList();
-                    if (data != null)
+                    if (data != null || EnumAppConfig.ByPassCentralizedDB)
                     {
                         return data;
                     }
@@ -766,7 +766,7 @@ namespace Trinity.DAL
                         Date = d.Date
                     }).ToList();
 
-                    if (data != null)
+                    if (data != null || EnumAppConfig.ByPassCentralizedDB)
                     {
                         return data;
                     }
@@ -840,7 +840,7 @@ namespace Trinity.DAL
                     {
                         return data.Count();
                     }
-                    else
+                    else if (!EnumAppConfig.ByPassCentralizedDB)
                     {
                         bool centralizeStatus;
                         var centralData = CallCentralized.Get<int>(EnumAPIParam.Appointment, EnumAPIParam.CountBookedByTimeslot, out centralizeStatus);
@@ -880,7 +880,7 @@ namespace Trinity.DAL
                     {
                         return data.Count();
                     }
-                    else
+                    else if(!EnumAppConfig.ByPassCentralizedDB)
                     {
                         bool centralizeStatus;
                         var centralData = CallCentralized.Get<int>(EnumAPIParam.Appointment, EnumAPIParam.CountReportedByTimeslot, out centralizeStatus);
@@ -919,7 +919,7 @@ namespace Trinity.DAL
                     {
                         return data.Count();
                     }
-                    else
+                    else if (!EnumAppConfig.ByPassCentralizedDB)
                     {
                         bool centralizeStatus;
                         var centralData = CallCentralized.Get<int>(EnumAPIParam.Appointment, EnumAPIParam.CountNoShowdByTimeslot, out centralizeStatus);
@@ -959,7 +959,7 @@ namespace Trinity.DAL
                     {
                         return timeslot.MaximumSupervisee.Value;
                     }
-                    else
+                    else if (!EnumAppConfig.ByPassCentralizedDB)
                     {
                         bool centralizeStatus;
                         var centralData = CallCentralized.Get<int>(EnumAPIParam.Appointment, EnumAPIParam.GetMaximumNumberOfTimeslot, out centralizeStatus);
@@ -1040,7 +1040,7 @@ namespace Trinity.DAL
                 if (EnumAppConfig.IsLocal)
                 {
                     var data = _localUnitOfWork.DataContext.Timeslots.Where(t => DbFunctions.TruncateTime(t.Date) >= currentDate.Date && t.StartTime.Value >= currentDate.TimeOfDay).OrderBy(t => t.Date).ThenBy(t => t.StartTime).FirstOrDefault();
-                    if (data != null)
+                    if (data != null || EnumAppConfig.ByPassCentralizedDB)
                     {
                         return data;
                     }

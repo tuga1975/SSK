@@ -5,37 +5,38 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="8d20fa7148f941f48dc517cdb36815f0" Name="Diagram1" ZoomLevel="69">
-        <EntityTypeShape EntityType="SSKModel.AbsenceReporting" Width="1.5" PointX="3.75" PointY="33.875" />
-        <EntityTypeShape EntityType="SSKModel.ActionLog" Width="1.5" PointX="3" PointY="14.625" />
-        <EntityTypeShape EntityType="SSKModel.Address" Width="1.5" PointX="0.75" PointY="27.625" />
-        <EntityTypeShape EntityType="SSKModel.ApplicationDevice_Status" Width="1.5" PointX="11" PointY="5.875" />
-        <EntityTypeShape EntityType="SSKModel.Appointment" Width="1.5" PointX="6" PointY="21.375" />
-        <EntityTypeShape EntityType="SSKModel.APS_USER_ACT_LOG" Width="1.5" PointX="5.25" PointY="30" />
-        <EntityTypeShape EntityType="SSKModel.Device" Width="1.5" PointX="8.75" PointY="6.125" />
-        <EntityTypeShape EntityType="SSKModel.DrugResult" Width="1.5" PointX="0.75" PointY="0.75" />
+        <EntityTypeShape EntityType="SSKModel.AbsenceReporting" Width="1.5" PointX="0.75" PointY="31.875" />
+        <EntityTypeShape EntityType="SSKModel.ActionLog" Width="1.5" PointX="3" PointY="37.625" />
+        <EntityTypeShape EntityType="SSKModel.Address" Width="1.5" PointX="3.75" PointY="7.625" />
+        <EntityTypeShape EntityType="SSKModel.ApplicationDevice_Status" Width="1.5" PointX="10" PointY="5.875" />
+        <EntityTypeShape EntityType="SSKModel.Appointment" Width="1.5" PointX="3" PointY="25.375" />
+        <EntityTypeShape EntityType="SSKModel.APS_USER_ACT_LOG" Width="1.5" PointX="8.25" PointY="20" />
+        <EntityTypeShape EntityType="SSKModel.Device" Width="1.5" PointX="7.75" PointY="6.125" />
+        <EntityTypeShape EntityType="SSKModel.DrugResult" Width="1.5" PointX="5.75" PointY="8.75" />
         <EntityTypeShape EntityType="SSKModel.EMAIL_LOG" Width="1.5" PointX="0.75" PointY="6.75" />
-        <EntityTypeShape EntityType="SSKModel.Holiday" Width="1.5" PointX="2.75" PointY="0.75" />
-        <EntityTypeShape EntityType="SSKModel.IssuedCard" Width="1.5" PointX="3" PointY="37.125" />
-        <EntityTypeShape EntityType="SSKModel.Label" Width="1.5" PointX="3" PointY="41.125" />
-        <EntityTypeShape EntityType="SSKModel.Membership_RoleClaims" Width="1.5" PointX="6" PointY="8" />
-        <EntityTypeShape EntityType="SSKModel.Membership_Roles" Width="1.5" PointX="3.75" PointY="8.125" />
-        <EntityTypeShape EntityType="SSKModel.Membership_UserClaims" Width="1.5" PointX="3" PointY="46" />
-        <EntityTypeShape EntityType="SSKModel.Membership_UserDevices" Width="1.5" PointX="3" PointY="17.75" />
+        <EntityTypeShape EntityType="SSKModel.Holiday" Width="1.5" PointX="0.75" PointY="0.75" />
+        <EntityTypeShape EntityType="SSKModel.IssuedCard" Width="1.5" PointX="3" PointY="33.625" />
+        <EntityTypeShape EntityType="SSKModel.Label" Width="1.5" PointX="3" PointY="40.75" />
+        <EntityTypeShape EntityType="SSKModel.Membership_RoleClaims" Width="1.5" PointX="3" PointY="4" />
+        <EntityTypeShape EntityType="SSKModel.Membership_Roles" Width="1.5" PointX="0.75" PointY="16.125" />
+        <EntityTypeShape EntityType="SSKModel.Membership_UserClaims" Width="1.5" PointX="3" PointY="11.25" />
+        <EntityTypeShape EntityType="SSKModel.Membership_UserDevices" Width="1.5" PointX="3" PointY="17" />
         <EntityTypeShape EntityType="SSKModel.Membership_UserLogins" Width="1.5" PointX="3" PointY="49" />
-        <EntityTypeShape EntityType="SSKModel.Membership_UserRoles" Width="1.5" PointX="6" PointY="18" />
+        <EntityTypeShape EntityType="SSKModel.Membership_UserRoles" Width="1.5" PointX="3" PointY="22" />
         <EntityTypeShape EntityType="SSKModel.Membership_Users" Width="1.5" PointX="0.75" PointY="19.25" />
-        <EntityTypeShape EntityType="SSKModel.MsgRecipient" Width="1.5" PointX="7.5" PointY="25.75" />
-        <EntityTypeShape EntityType="SSKModel.Notification" Width="1.5" PointX="8.75" PointY="9.75" />
+        <EntityTypeShape EntityType="SSKModel.MsgRecipient" Width="1.5" PointX="10.5" PointY="22.75" />
+        <EntityTypeShape EntityType="SSKModel.Notification" Width="1.5" PointX="7.75" PointY="9.75" />
         <EntityTypeShape EntityType="SSKModel.OperationSetting" Width="1.5" PointX="5.75" PointY="1.125" />
         <EntityTypeShape EntityType="SSKModel.OperationSettings_ChangeHist" Width="1.5" PointX="8" PointY="2.75" />
-        <EntityTypeShape EntityType="SSKModel.QueueDetail" Width="1.5" PointX="10.5" PointY="22" />
-        <EntityTypeShape EntityType="SSKModel.Queue" Width="1.5" PointX="8.25" PointY="21.75" />
-        <EntityTypeShape EntityType="SSKModel.Security_QA" Width="1.5" PointX="3" PointY="11.25" />
-        <EntityTypeShape EntityType="SSKModel.SentMessage" Width="1.5" PointX="5.25" PointY="26.25" />
-        <EntityTypeShape EntityType="SSKModel.Setting" Width="1.5" PointX="10.75" PointY="0.75" />
-        <EntityTypeShape EntityType="SSKModel.SMS_LOG" Width="1.5" PointX="5.75" PointY="10.75" />
-        <EntityTypeShape EntityType="SSKModel.Timeslot" Width="1.5" PointX="3.75" PointY="3.75" />
-        <EntityTypeShape EntityType="SSKModel.User_Profiles" Width="1.5" PointX="3" PointY="21.625" />
+        <EntityTypeShape EntityType="SSKModel.QueueDetail" Width="1.5" PointX="7.5" PointY="31" />
+        <EntityTypeShape EntityType="SSKModel.Queue" Width="1.5" PointX="5.25" PointY="30.75" />
+        <EntityTypeShape EntityType="SSKModel.Security_QA" Width="1.5" PointX="3" PointY="45.625" />
+        <EntityTypeShape EntityType="SSKModel.SentMessage" Width="1.5" PointX="8.25" PointY="26.375" />
+        <EntityTypeShape EntityType="SSKModel.Setting" Width="1.5" PointX="2.75" PointY="0.75" />
+        <EntityTypeShape EntityType="SSKModel.SMS_LOG" Width="1.5" PointX="9.75" PointY="9.75" />
+        <EntityTypeShape EntityType="SSKModel.sysdiagram" Width="1.5" PointX="10.75" PointY="0.75" />
+        <EntityTypeShape EntityType="SSKModel.Timeslot" Width="1.5" PointX="0.75" PointY="27.875" />
+        <EntityTypeShape EntityType="SSKModel.User_Profiles" Width="1.5" PointX="6" PointY="18.625" />
         <AssociationConnector Association="SSKModel.FK_Appointments_AbsenceReporting" />
         <AssociationConnector Association="SSKModel.FK_ActionLog_Membership_Users" />
         <AssociationConnector Association="SSKModel.FK_ActionLog_Membership_Users1" />

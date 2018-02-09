@@ -110,6 +110,12 @@ namespace Trinity.CentralizedAPI.Controllers
             new DAL.DAL_UserProfile().UpdateCardInfo(UserId, CardNumber, Date_of_Issue, Expired_Date);
         }
 
+        [HttpPost]
+        [Route("api/User/UnblockSuperviseeById")]
+        public void UnblockSuperviseeById(string userId, string reason)
+        {
+            new DAL.DAL_User().UnblockSuperviseeById(userId, reason);
+        }
 
         #endregion
 
