@@ -138,7 +138,7 @@ namespace Trinity.DAL
                     Source = Station,
                     Subject = Subject,
                     ToUserId = DutyOfficerID,
-                    Type = notificationType.ToString()
+                    Type = notificationType
                 });
                 return _localUnitOfWork.Save();
             }
@@ -154,7 +154,7 @@ namespace Trinity.DAL
                     Source = Station,
                     Subject = Subject,
                     ToUserId = DutyOfficerID,
-                    Type = notificationType.ToString()
+                    Type = notificationType
                 });
                 return _centralizedUnitOfWork.Save();
             }

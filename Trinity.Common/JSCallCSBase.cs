@@ -63,7 +63,7 @@ public class JSCallCSBase
             }
         }
         catch (Exception ex)
-        
+        {
             this._web.InvokeScript("ShowMessageBox", ex.InnerException!=null? ex.InnerException.Message:ex.Message);
         }
         this._web.SetLoading(false);
