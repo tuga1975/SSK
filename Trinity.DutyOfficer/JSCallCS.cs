@@ -44,14 +44,6 @@ namespace DutyOfficer
             _printMUBAndTTLabel.OnPrintUBLabelsFailed += PrintUBLabels_OnPrintUBLabelFailed;
         }
 
-        public List<Notification> getAlertsSendToDutyOfficer()
-        {
-            var dalNotify = new DAL_Notification();
-            //Receive alerts and notifications from APS, SSK, SSA, UHP and ESP 
-            List<string> modules = new List<string>() { "APS", "SSK", "SSA", "UHP", "ESP" };
-            return dalNotify.GetNotificationsSentToDutyOfficer(true, modules);
-        }
-
         public StationColorDevice GetStationClolorDevice()
         {
             var dalDeviceStatus = new DAL_DeviceStatus();
@@ -134,6 +126,20 @@ namespace DutyOfficer
         #endregion
 
         #region Alert & Notification Popup Detail
+
+        public List<Notification> getAlertsSendToDutyOfficer()
+        {
+
+            var dalNotify = new DAL_Notification();
+            string userID = ((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId;
+            if (userID != null || userID != "")
+            {
+                //Receive alerts and notifications from APS, SSK, SSA, UHP and ESP 
+                List<string> modules = new List<string>() { "APS", "SSK", "SSA", "UHP", "ESP" };
+                return dalNotify.GetAllNotifications(userID, modules);
+            }
+            return null;
+        }
 
         public void LoadPopupAlert(string jsonData)
         {
@@ -238,7 +244,7 @@ namespace DutyOfficer
         public List<User> GetAllSuperviseesBlocked()
         {
             var dalUser = new DAL_User();
-            return dalUser.GetAllSuperviseeBlocked(true);
+            return dalUser.GetAllSuperviseeBlocked();
         }
 
         public void LoadPopupBlock(string userId)
@@ -551,7 +557,7 @@ namespace DutyOfficer
             }
 
             DAL_Labels dalLabel = new DAL_Labels();
-            if (dalLabel.UpdateLabel(labelInfo))
+            if (dalLabel.UpdateLabel(labelInfo) != null)
             {
                 string message = "Print MUB for " + e.LabelInfo.Name + " successful.";
                 //MessageBox.Show(message, "", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -589,7 +595,7 @@ namespace DutyOfficer
             };
 
             var dalLabel = new DAL_Labels();
-            if (dalLabel.UpdateLabel(labelInfo))
+            if (dalLabel.UpdateLabel(labelInfo) != null)
             {
                 string message = "Print TT for " + e.LabelInfo.Name + " successful.";
                 MessageBox.Show(message, "", MessageBoxButtons.OK, MessageBoxIcon.Error);

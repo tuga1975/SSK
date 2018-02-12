@@ -17,6 +17,42 @@ namespace Trinity.DAL
         #region refactor 2018
         public List<Notification> GetAllNotifications(string userId)
         {
+            if (EnumAppConfig.IsLocal)
+            {
+                List<Notification> arrayNoti = arrayNoti = _localUnitOfWork.DataContext.Notifications.Where(d => (!string.IsNullOrEmpty(d.FromUserId) && d.FromUserId == userId) || (!string.IsNullOrEmpty(d.ToUserId) && d.ToUserId == userId)).Select(item => new Notification()
+                {
+                    Content = item.Content,
+                    Datetime = item.Datetime,
+                    FromUserId = item.FromUserId,
+                    NotificationID = item.NotificationID,
+                    IsRead = item.IsRead.HasValue ? item.IsRead.Value : false,
+                    Subject = item.Subject,
+                    ToUserId = item.ToUserId
+                }).ToList();
+                if (arrayNoti.Count == 0)
+                {
+                    arrayNoti = CallCentralized.Get<List<Notification>>("Notification", "GetAllNotifications", "userId=" + userId);
+                    arrayNoti = arrayNoti == null ? new List<Notification>() : arrayNoti;
+                }
+                return arrayNoti;
+            }
+            else
+            {
+                return _centralizedUnitOfWork.DataContext.Notifications.Where(d => (!string.IsNullOrEmpty(d.FromUserId) && d.FromUserId == userId) || (!string.IsNullOrEmpty(d.ToUserId) && d.ToUserId == userId)).Select(item => new Notification()
+                {
+                    Content = item.Content,
+                    Datetime = item.Datetime,
+                    FromUserId = item.FromUserId,
+                    NotificationID = item.NotificationID,
+                    IsRead = item.IsRead.HasValue ? item.IsRead.Value : false,
+                    Subject = item.Subject,
+                    ToUserId = item.ToUserId
+                }).ToList();
+            }
+        }
+
+        public List<Notification> GetAllNotifications(string userId, List<string> modules)
+        {
             // local request
             if (EnumAppConfig.IsLocal)
             {
@@ -31,8 +67,10 @@ namespace Trinity.DAL
                         NotificationID = item.NotificationID,
                         IsRead = item.IsRead.HasValue ? item.IsRead.Value : false,
                         Subject = item.Subject,
-                        ToUserId = item.ToUserId
-                    }).ToList();
+                        ToUserId = item.ToUserId,
+                        Type = item.Type,
+                        Source = item.Source
+                    }).Where(x => modules.Contains(x.Source)).ToList();
 
                 // if null, get data from centralized (check bypass)
                 if (notifications == null && notifications.Count == 0 && !EnumAppConfig.ByPassCentralizedDB)
@@ -54,8 +92,10 @@ namespace Trinity.DAL
                     NotificationID = item.NotificationID,
                     IsRead = item.IsRead.HasValue ? item.IsRead.Value : false,
                     Subject = item.Subject,
-                    ToUserId = item.ToUserId
-                }).ToList();
+                    ToUserId = item.ToUserId,
+                     Type = item.Type,
+                    Source = item.Source
+                }).Where(x => modules.Contains(x.Source)).ToList();
             }
         }
 
@@ -84,7 +124,7 @@ namespace Trinity.DAL
         /// <param name="Content"></param>
         /// <param name="notificationType"></param>
         /// <param name="Station"></param>
-        public void SendToDutyOfficer(string MessageID,string UserId, string DutyOfficerID, string Subject, string Content, string notificationType, string Station)
+        public int SendToDutyOfficer(string MessageID,string UserId, string DutyOfficerID, string Subject, string Content, string notificationType, string Station)
         {
             if (EnumAppConfig.IsLocal)
             {
@@ -98,9 +138,9 @@ namespace Trinity.DAL
                     Source = Station,
                     Subject = Subject,
                     ToUserId = DutyOfficerID,
-                    Type = notificationType.ToString()
+                    Type = notificationType
                 });
-                _localUnitOfWork.Save();
+                return _localUnitOfWork.Save();
             }
             else
             {
@@ -114,9 +154,9 @@ namespace Trinity.DAL
                     Source = Station,
                     Subject = Subject,
                     ToUserId = DutyOfficerID,
-                    Type = notificationType.ToString()
+                    Type = notificationType
                 });
-                _centralizedUnitOfWork.Save();
+                return _centralizedUnitOfWork.Save();
             }
         }
         /// <summary>
@@ -190,42 +230,7 @@ namespace Trinity.DAL
                 return _centralizedUnitOfWork.DataContext.Notifications.Count(n => n.ToUserId == myUserId && n.IsRead.HasValue && !n.IsRead.Value);
             }
         }
-
-        public List<Notification> GetMyNotifications(string userId)
-        {
-            if (EnumAppConfig.IsLocal)
-            {
-                bool statusCentralized;
-                List<Notification> arrayNoti = CallCentralized.Get<List<Notification>>("Notification", "GetMyNotifications",out statusCentralized, "userId="+ userId);
-                if(arrayNoti==null || !statusCentralized)
-                {
-                    arrayNoti = _localUnitOfWork.DataContext.Notifications.Where(d => (!string.IsNullOrEmpty(d.FromUserId) && d.FromUserId == userId) || (!string.IsNullOrEmpty(d.ToUserId) && d.ToUserId == userId)).Select(item => new Notification()
-                    {
-                        Content = item.Content,
-                        Datetime = item.Datetime,
-                        FromUserId = item.FromUserId,
-                        NotificationID = item.NotificationID,
-                        IsRead = item.IsRead.HasValue ? item.IsRead.Value : false,
-                        Subject = item.Subject,
-                        ToUserId = item.ToUserId
-                    }).ToList();
-                }
-                return arrayNoti;
-            }
-            else
-            {
-                return _centralizedUnitOfWork.DataContext.Notifications.Where(d => (!string.IsNullOrEmpty(d.FromUserId) && d.FromUserId == userId) || (!string.IsNullOrEmpty(d.ToUserId) && d.ToUserId == userId)).Select(item => new Notification()
-                {
-                    Content = item.Content,
-                    Datetime = item.Datetime,
-                    FromUserId = item.FromUserId,
-                    NotificationID = item.NotificationID,
-                    IsRead = item.IsRead.HasValue ? item.IsRead.Value : false,
-                    Subject = item.Subject,
-                    ToUserId = item.ToUserId
-                }).ToList();
-            }
-        }
+        
 
         public List<Notification> GetNotificationsByUserId(string userId)
         {
@@ -342,10 +347,11 @@ namespace Trinity.DAL
             return null;
         }
 
-        public List<Notification> GetNotificationsSentToDutyOfficer(bool isLocal, List<string> modules)
+        public List<Notification> GetNotificationsSentToDutyOfficer()
         {
             IQueryable<Trinity.BE.Notification> queryNotifications = null;
-            if (isLocal)
+            List<string> modules = new List<string>() { "APS", "SSK", "SSA", "UHP", "ESP" };
+            if (EnumAppConfig.IsLocal)
             {
                 //queryNotifications = _localUnitOfWork.DataContext.Notifications.Where(n => n.ToUserId == null);
                 queryNotifications = (from n in _localUnitOfWork.DataContext.Notifications
@@ -360,6 +366,21 @@ namespace Trinity.DAL
                                           Type = n.Type,
                                           Source = n.Source
                                       }).Where(x => modules.Contains(x.Source));
+
+                if ((queryNotifications != null && queryNotifications.Count() > 0) || EnumAppConfig.ByPassCentralizedDB)
+                {
+                    return queryNotifications.ToList();
+                }
+                else
+                {
+                    bool centralizeStatus;
+                    var centralUpdate = CallCentralized.Get<List<Notification>>(EnumAPIParam.Notification, "GetNotificationsSentToDutyOfficer", out centralizeStatus);
+                    if (centralizeStatus)
+                    {
+                        return centralUpdate;
+                    }
+                    return queryNotifications.ToList();
+                }
             }
             else
             {
@@ -375,12 +396,41 @@ namespace Trinity.DAL
                                           Type = n.Type,
                                           Source = n.Source
                                       }).Where(x => modules.Contains(x.Source));
-            }
-            if (queryNotifications.Count() > 0)
-            {
+
                 return queryNotifications.ToList<Notification>();
             }
-            return null;
+        }
+
+        public void InsertNotification(string NotificationID, string subject, string content, string fromUserId,
+            string toUserId, bool isFromSupervisee, bool isLocal, string notifyType,
+            string source)
+        {
+            Trinity.DAL.DBContext.Notification notifcation = new DBContext.Notification()
+            {
+                Content = content,
+                Datetime = DateTime.Now,
+                FromUserId = fromUserId,
+                IsFromSupervisee = isFromSupervisee,
+                IsRead = false,
+                Subject = subject,
+                ToUserId = toUserId,
+                Type = notifyType,
+                Source = source,
+                NotificationID = NotificationID
+            };
+            IRepository<Trinity.DAL.DBContext.Notification> notificationRepo = null;
+            if (isLocal)
+            {
+                notificationRepo = _localUnitOfWork.GetRepository<Trinity.DAL.DBContext.Notification>();
+                notificationRepo.Add(notifcation);
+                _localUnitOfWork.Save();
+            }
+            else
+            {
+                notificationRepo = _centralizedUnitOfWork.GetRepository<Trinity.DAL.DBContext.Notification>();
+                notificationRepo.Add(notifcation);
+                _centralizedUnitOfWork.Save();
+            }
         }
 
 
