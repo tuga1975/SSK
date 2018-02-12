@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using Trinity.DAL;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Trinity.DAL.DBContext;
 
 namespace SSK
 {
@@ -81,47 +82,114 @@ namespace SSK
         }
         public void RefreshQueueNumbers()
         {
-            
-            Stopwatch stopWatch = new Stopwatch();
-            stopWatch.Start();
-            DAL_QueueNumber dalQueue = new DAL_QueueNumber();
-            List<Trinity.BE.Queue> allQueue = dalQueue.GetAllQueueToday(EnumStations.SSK);
-
-            var setting = new DAL_Setting().GetCurrentApptmtTime();
-            var today = DateTime.Now;
-            List<Trinity.BE.Queue> currentTimeslotQueue = new List<Trinity.BE.Queue>();
-            List<Trinity.BE.Queue> nextTimesloteQueue = new List<Trinity.BE.Queue>();
-            string servingQueueNumber = string.Empty;
-            string currentQueueNumber = string.Empty;
-            var waitingQueueNumbers = new List<string>();
-            //var holdingList = new List<string>();
-
-            Trinity.DAL.DBContext.Timeslot _currentTs = null;
-            Trinity.DAL.DBContext.Timeslot _nextTs = null;
-
-            var currentTimeslot = string.Empty;
-            var nextTimeslot = string.Empty;
-
-            var listTodayTimeslot = new DAL_Setting().GetListTodayTimeslot();
-            _currentTs = listTodayTimeslot.FirstOrDefault(d => d.StartTime.Value <= DateTime.Now.TimeOfDay && d.EndTime.Value > DateTime.Now.TimeOfDay);
-            if (_currentTs != null)
+            //holding-blocked user: user.block
+            List<string> holdingList = new DAL_QueueNumber().GetHoldingListByDate(DateTime.Now);
+            List<string> todayHoldingList = new List<string>();
+            if (holdingList != null && holdingList.Count > 0)
             {
-                currentTimeslot = _currentTs.FromTimeTxt + " - " + _currentTs.ToTimeTxt;
-                _nextTs = listTodayTimeslot.FirstOrDefault(d => d.StartTime.Value >= _currentTs.EndTime.Value);
-                if (_nextTs != null)
+                for (int i = 0; i < holdingList.Count; i++)
                 {
-                    nextTimeslot = _nextTs.FromTimeTxt + " - " + _nextTs.ToTimeTxt;
+                    todayHoldingList.Add(Trinity.Common.CommonUtil.GetQueueNumber(holdingList[i]));
                 }
+            }
+
+            // Get list timeslot today
+            List<Timeslot> timeslots = new DAL_Timeslots().GetTimeSlots(DateTime.Now);
+
+            // get currentTimeslot
+            Timeslot currentTimeslot = timeslots.FirstOrDefault(d => d.StartTime.Value <= DateTime.Now.TimeOfDay && d.EndTime.Value > DateTime.Now.TimeOfDay);
+
+            // get nextTimeslot
+            Timeslot nextTimeslot;
+            if (currentTimeslot != null)
+            {
+                nextTimeslot = timeslots.FirstOrDefault(d => d.StartTime.Value >= currentTimeslot.EndTime.Value);
             }
             else
             {
-                _nextTs = listTodayTimeslot.FirstOrDefault(d => d.StartTime.Value >= DateTime.Now.TimeOfDay);
-                if (_nextTs != null)
-                {
-                    nextTimeslot = _nextTs.FromTimeTxt + " - " + _nextTs.ToTimeTxt;
-                }
-
+                nextTimeslot = timeslots.FirstOrDefault(d => d.StartTime.Value >= DateTime.Now.TimeOfDay);
             }
+
+            // update queue status waiting to processing
+            new DAL_QueueNumber().UpdateQueueStatus_SSK(currentTimeslot.Timeslot_ID);
+
+            // Get list queue todaynew DAL_QueueNumber();
+            List<Trinity.BE.QueueDetail> allQueue = new DAL_QueueNumber().GetAllQueue_SSK(DateTime.Now);
+            // remove blocked users
+            foreach (var queuedNumber in todayHoldingList)
+            {
+                allQueue.RemoveAll(q => q.QueuedNumber == queuedNumber);
+            }
+
+            //serving: SSK status = processing
+            //current: SSK status = waiting, timeslot = current
+            //next: SSK status = waiting, timeslot = next
+            string servingQueuedNumber = string.Empty;
+            string currentQueuedNumber = string.Empty;
+            List<string> nextQueuedNumber = new List<string>();
+            foreach (var queue in allQueue)
+            {
+                if (queue.Status == EnumQueueStatuses.Processing)
+                {
+                    //serving
+                    servingQueuedNumber += queue.QueuedNumber + "-";
+                }
+                else if (queue.Status == EnumQueueStatuses.Waiting && queue.Timeslot_ID == currentTimeslot?.Timeslot_ID)
+                {
+                    //current
+                    currentQueuedNumber += queue.QueuedNumber + "-";
+                }
+                else if (queue.Status == EnumQueueStatuses.Waiting && queue.Timeslot_ID == nextTimeslot?.Timeslot_ID)
+                {
+                    //next
+                    nextQueuedNumber.Add(queue.QueuedNumber);
+                }
+            }
+
+            // display
+            wbQueueNumber.RefreshQueueNumbers(servingQueuedNumber, currentQueuedNumber, nextQueuedNumber.ToArray(), todayHoldingList.ToArray());
+            wbQueueNumber.InvokeScript("setTimeslot", currentTimeslot?.FromTimeTxt + " - " + currentTimeslot?.ToTimeTxt, nextTimeslot?.FromTimeTxt + " - " + nextTimeslot?.ToTimeTxt);
+
+            //Stopwatch stopWatch = new Stopwatch();
+            //stopWatch.Start();
+            //DAL_QueueNumber dalQueue = new DAL_QueueNumber();
+            //List<Trinity.BE.Queue> allQueue = dalQueue.GetAllQueueToday(EnumStations.SSK);
+
+            //var setting = new DAL_Setting().GetCurrentApptmtTime();
+            //var today = DateTime.Now;
+            //List<Trinity.BE.Queue> currentTimeslotQueue = new List<Trinity.BE.Queue>();
+            //List<Trinity.BE.Queue> nextTimesloteQueue = new List<Trinity.BE.Queue>();
+            //string servingQueueNumber = string.Empty;
+            //string currentQueueNumber = string.Empty;
+            //var waitingQueueNumbers = new List<string>();
+            ////var holdingList = new List<string>();
+
+            //Trinity.DAL.DBContext.Timeslot _currentTs = null;
+            //Trinity.DAL.DBContext.Timeslot _nextTs = null;
+
+            //var currentTimeslot = string.Empty;
+            //var nextTimeslot = string.Empty;
+
+            //var listTodayTimeslot = new DAL_Setting().GetListTodayTimeslot();
+            //_currentTs = listTodayTimeslot.FirstOrDefault(d => d.StartTime.Value <= DateTime.Now.TimeOfDay && d.EndTime.Value > DateTime.Now.TimeOfDay);
+            //if (_currentTs != null)
+            //{
+            //    currentTimeslot = _currentTs.FromTimeTxt + " - " + _currentTs.ToTimeTxt;
+            //    _nextTs = listTodayTimeslot.FirstOrDefault(d => d.StartTime.Value >= _currentTs.EndTime.Value);
+            //    if (_nextTs != null)
+            //    {
+            //        nextTimeslot = _nextTs.FromTimeTxt + " - " + _nextTs.ToTimeTxt;
+            //    }
+            //}
+            //else
+            //{
+            //    _nextTs = listTodayTimeslot.FirstOrDefault(d => d.StartTime.Value >= DateTime.Now.TimeOfDay);
+            //    if (_nextTs != null)
+            //    {
+            //        nextTimeslot = _nextTs.FromTimeTxt + " - " + _nextTs.ToTimeTxt;
+            //    }
+
+            //}
             //for (int i = 0; i < listTodayTimeslot.Count; i++)
             //{
             //    var timeSlot = listTodayTimeslot[i];
@@ -142,97 +210,103 @@ namespace SSK
             //    }
             //}
 
-            for (int i = 0; i < allQueue.Count; i++)
-            {
-                var result= new DAL_Appointments().GetAppmtDetails(allQueue[i].AppointmentId);
-                var appointmentStartTime = result;
-                var diffHour = appointmentStartTime.StartTime.Value.Hours - today.Hour;
-                var diffStartMin = appointmentStartTime.StartTime.Value.Minutes - today.Minute;
-                var diffEndHour = appointmentStartTime.EndTime.Value.Hours - today.Hour;
-                var diffEndMin = appointmentStartTime.EndTime.Value.Minutes - today.Minute;
-                //queue - serving
-                if (allQueue[i].Status == EnumQueueStatuses.Processing)
-                {
-                    servingQueueNumber += allQueue[i].QueueNumber + "-";
-                }
-                //queue - current
-                if (allQueue[i].Status == EnumQueueStatuses.Waiting && diffHour == 0 && diffStartMin <= 0 && ((diffEndHour > 0 && diffEndMin <= 0) || (diffEndHour == 0 && diffEndMin >= 0)))
-                {
-                    currentTimeslotQueue.Add(allQueue[i]);
-                    servingQueueNumber += allQueue[i].QueueNumber + "-";
+            //for (int i = 0; i < allQueue.Count; i++)
+            //{
+            //    var result= new DAL_Appointments().GetAppmtDetails(allQueue[i].AppointmentId);
+            //    var appointmentStartTime = result;
+            //    var diffHour = appointmentStartTime.StartTime.Value.Hours - today.Hour;
+            //    var diffStartMin = appointmentStartTime.StartTime.Value.Minutes - today.Minute;
+            //    var diffEndHour = appointmentStartTime.EndTime.Value.Hours - today.Hour;
+            //    var diffEndMin = appointmentStartTime.EndTime.Value.Minutes - today.Minute;
+            //    //queue - serving
+            //    if (allQueue[i].Status == EnumQueueStatuses.Processing)
+            //    {
+            //        servingQueueNumber += allQueue[i].QueueNumber + "-";
+            //    }
+            //    //queue - current
+            //    if (allQueue[i].Status == EnumQueueStatuses.Waiting && diffHour == 0 && diffStartMin <= 0 && ((diffEndHour > 0 && diffEndMin <= 0) || (diffEndHour == 0 && diffEndMin >= 0)))
+            //    {
+            //        currentTimeslotQueue.Add(allQueue[i]);
+            //        servingQueueNumber += allQueue[i].QueueNumber + "-";
 
-                }
-                //waiting - next
-                else if (allQueue[i].Status == EnumQueueStatuses.Waiting && diffHour > 0)
-                {
-                    if (_nextTs != null && (appointmentStartTime.StartTime.Value.Hours - _nextTs.StartTime.Value.Hours) == 0 && (appointmentStartTime.StartTime.Value.Minutes - _nextTs.StartTime.Value.Minutes) == 0)
-                    {
-                        nextTimesloteQueue.Add(allQueue[i]);
-                    }
-                }
-                //waiting -next
-                else if (allQueue[i].Status == EnumQueueStatuses.Waiting && diffHour == 0 && (diffStartMin > 0 || (diffEndHour > 0 && diffEndMin <= 0)))
-                {
-                    if (_nextTs != null && (appointmentStartTime.StartTime.Value.Hours - _nextTs.StartTime.Value.Hours) == 0 && (appointmentStartTime.StartTime.Value.Minutes - _nextTs.StartTime.Value.Minutes) == 0)
-                    {
-                        nextTimesloteQueue.Add(allQueue[i]);
-                    }
-                }
+            //    }
+            //    //waiting - next
+            //    else if (allQueue[i].Status == EnumQueueStatuses.Waiting && diffHour > 0)
+            //    {
+            //        if (_nextTs != null && (appointmentStartTime.StartTime.Value.Hours - _nextTs.StartTime.Value.Hours) == 0 && (appointmentStartTime.StartTime.Value.Minutes - _nextTs.StartTime.Value.Minutes) == 0)
+            //        {
+            //            nextTimesloteQueue.Add(allQueue[i]);
+            //        }
+            //    }
+            //    //waiting -next
+            //    else if (allQueue[i].Status == EnumQueueStatuses.Waiting && diffHour == 0 && (diffStartMin > 0 || (diffEndHour > 0 && diffEndMin <= 0)))
+            //    {
+            //        if (_nextTs != null && (appointmentStartTime.StartTime.Value.Hours - _nextTs.StartTime.Value.Hours) == 0 && (appointmentStartTime.StartTime.Value.Minutes - _nextTs.StartTime.Value.Minutes) == 0)
+            //        {
+            //            nextTimesloteQueue.Add(allQueue[i]);
+            //        }
+            //    }
 
-            }
-            if (currentTimeslotQueue.Count > 0)
-            {
-                for (int i = 0; i < currentTimeslotQueue.Count; i++)
-                {
-                    var currentTs = currentTimeslotQueue[i];
+            //}
+            //if (currentTimeslotQueue.Count > 0)
+            //{
+            //    for (int i = 0; i < currentTimeslotQueue.Count; i++)
+            //    {
+            //        var currentTs = currentTimeslotQueue[i];
 
-                   // var appointment = new DAL_Appointments().GetMyAppointmentByID(currentTs.AppointmentId);
-                    //new DAL_QueueNumber().UpdateQueueStatus(currentTs.ID, EnumQueueStatuses.Processing, EnumStations.SSK);
+            //       // var appointment = new DAL_Appointments().GetMyAppointmentByID(currentTs.AppointmentId);
+            //        //new DAL_QueueNumber().UpdateQueueStatus(currentTs.ID, EnumQueueStatuses.Processing, EnumStations.SSK);
 
-                        currentQueueNumber += currentTs.QueueNumber + "-";
+            //            currentQueueNumber += currentTs.QueueNumber + "-";
 
 
-                }
+            //    }
 
-            }
+            //}
             //get NRIC for booked current timeslot and have not queued
-            if (_currentTs != null)
-            {
-                var result= new DAL_Appointments().GetAllCurrentTimeslotApptmt(_currentTs.StartTime.Value);
-                var todayAppointment = result;
-                foreach (var item in todayAppointment)
-                {
-                    
-                    var userNRIC = new DAL_User().GetUserByUserId(item.UserId).Data.NRIC;
-                    var qNumber = userNRIC.GetLast(5);
-                    currentQueueNumber += qNumber + "-";
-                }
-            }
+            //if (_currentTs != null)
+            //{
+            //    var result= new DAL_Appointments().GetAllCurrentTimeslotApptmt(_currentTs.StartTime.Value);
+            //    var todayAppointment = result;
+            //    foreach (var item in todayAppointment)
+            //    {
 
-            if (nextTimesloteQueue.Count > 0)
-            {
-                List<Trinity.DAL.DBContext.Queue> allNextQueue = GetAllNextQueue(nextTimesloteQueue);
-                foreach (var item in allNextQueue)
-                {
-                    waitingQueueNumbers.Add(item.QueuedNumber);
-                }
-            }
+            //        var userNRIC = new DAL_User().GetUserByUserId(item.UserId).Data.NRIC;
+            //        var qNumber = userNRIC.GetLast(5);
+            //        currentQueueNumber += qNumber + "-";
+            //    }
+            //}
 
-            List<string> holdingList = new DAL_QueueNumber().GetHoldingListByDate(DateTime.Now);
-            List<string> todayHoldingList = new List<string>();
-            if (holdingList != null && holdingList.Count > 0)
-            {
-                for (int i = 0; i < holdingList.Count; i++)
-                {
-                    todayHoldingList.Add(Trinity.Common.CommonUtil.GetQueueNumber(holdingList[i]));
-                }
-            }
-           
+            //if (nextTimesloteQueue.Count > 0)
+            //{
+            //    List<Trinity.DAL.DBContext.Queue> allNextQueue = GetAllNextQueue(nextTimesloteQueue);
+            //    foreach (var item in allNextQueue)
+            //    {
+            //        waitingQueueNumbers.Add(item.QueuedNumber);
+            //    }
+            //}
+
+            //List<string> holdingList = new DAL_QueueNumber().GetHoldingListByDate(DateTime.Now);
+            //List<string> todayHoldingList = new List<string>();
+            //if (holdingList != null && holdingList.Count > 0)
+            //{
+            //    for (int i = 0; i < holdingList.Count; i++)
+            //    {
+            //        todayHoldingList.Add(Trinity.Common.CommonUtil.GetQueueNumber(holdingList[i]));
+            //    }
+            //}
+
+
+            //serving: SSK status = processing
+            //current: SSK status = waiting, timeslot = current
+            //next: SSK status = waiting, timeslot = next
+            //holding-blocked user: user.block
+
             //serving  //current //next  //holding-blocked user
-            wbQueueNumber.RefreshQueueNumbers(servingQueueNumber, currentQueueNumber, waitingQueueNumbers.Distinct().ToArray(), todayHoldingList.ToArray());
-            wbQueueNumber.InvokeScript("setTimeslot", currentTimeslot, nextTimeslot);
-            stopWatch.Stop();
-            Console.WriteLine(stopWatch.Elapsed.TotalSeconds+"--"+ stopWatch.Elapsed.TotalSeconds);
+            //wbQueueNumber.RefreshQueueNumbers(servingQueueNumber, currentQueueNumber, waitingQueueNumbers.Distinct().ToArray(), todayHoldingList.ToArray());
+            //wbQueueNumber.InvokeScript("setTimeslot", currentTimeslot, nextTimeslot);
+            //stopWatch.Stop();
+            //Console.WriteLine(stopWatch.Elapsed.TotalSeconds+"--"+ stopWatch.Elapsed.TotalSeconds);
         }
 
         //private static string SetNextTimeslotTxt(List<Trinity.BE.Queue> allQueue, string nextTimeslot, int i)

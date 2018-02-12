@@ -101,14 +101,43 @@ namespace Trinity.DAL
             }
         }
 
-        public List<BE.Queue> GetAllQueueToday(string station)
+        public void UpdateQueueStatus_SSK(string timeslot_ID)
+        {
+            try
+            {
+                var queues = _localUnitOfWork.DataContext.Queues
+                    .Where(item => item.Appointment.Timeslot_ID == timeslot_ID 
+                    && item.QueueDetails.Any(x => x.Station == EnumStations.SSK)
+                    && item.QueueDetails.Any(x => x.Status == EnumQueueStatuses.Waiting))
+                    .Select(item => item.QueueDetails.Where(x => x.Station == EnumStations.SSK && x.Status == EnumQueueStatuses.Waiting).FirstOrDefault()).ToList();
+
+                foreach (var item in queues)
+                {
+                    item.Status = EnumQueueStatuses.Processing;
+                }
+
+                _localUnitOfWork.DataContext.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                
+            }
+        }
+
+        public List<BE.QueueDetail> GetAllQueue_SSK(DateTime date)
         {
             if (EnumAppConfig.IsLocal)
             {
-                // need to be refactored
-                DateTime date = DateTime.Today;
-                var data = _localUnitOfWork.DataContext.Queues.Where(item => DbFunctions.TruncateTime(item.Appointment.Date).Value == date).ToList()
-                    .Select(item => item.Map<BE.Queue>()).ToList();
+                var data = _localUnitOfWork.DataContext.Queues.Where(item => DbFunctions.TruncateTime(item.CreatedTime).Value == date.Date).ToList()
+                    .Select(item => new QueueDetail()
+                    {
+                        Queue_ID = item.Queue_ID,
+                        Station = item.QueueDetails.FirstOrDefault(dt => dt.Station == EnumStations.SSK)?.Station,
+                        Status = item.QueueDetails.FirstOrDefault(dt => dt.Station == EnumStations.SSK)?.Status,
+                        Message = item.QueueDetails.FirstOrDefault(dt => dt.Station == EnumStations.SSK)?.Message,
+                        QueuedNumber = item.QueuedNumber,
+                        Timeslot_ID = item.Appointment.Timeslot_ID
+                    }).ToList();
 
                 return data;
             }
@@ -524,7 +553,10 @@ namespace Trinity.DAL
                 date = date.Date;
                 if (EnumAppConfig.IsLocal)
                 {
-                    List<string> data = _localUnitOfWork.DataContext.Appointments.Include("Membership_Users").Where(d => DbFunctions.TruncateTime(d.Date).Value == date && d.Membership_Users.Status.Equals(EnumUserStatuses.Blocked, StringComparison.InvariantCultureIgnoreCase)).Select(d => d.Membership_Users.NRIC).Distinct().ToList();
+                    List<string> data = _localUnitOfWork.DataContext.Appointments.Include("Membership_Users")
+                        .Where(d => DbFunctions.TruncateTime(d.Date).Value == date
+                        && d.Membership_Users.Status.Equals(EnumUserStatuses.Blocked, StringComparison.InvariantCultureIgnoreCase))
+                        .Select(d => d.Membership_Users.NRIC).Distinct().ToList();
 
                     if (data != null)
                     {
