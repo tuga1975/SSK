@@ -15,6 +15,11 @@ namespace Trinity.DAL
         Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
 
         #region refactor 2018
+        public Queue GetMyQueueToday(string UserId)
+        {
+            DateTime today = DateTime.Today;
+            return _localUnitOfWork.DataContext.Queues.Include("Appointment").FirstOrDefault(d => d.Appointment.UserId == UserId && DbFunctions.TruncateTime(d.Appointment.Date).Value == today).Map<Queue>();
+        } 
         public bool IsInQueue(string appointment_ID, string station)
         {
             if (EnumAppConfig.IsLocal)

@@ -17,10 +17,12 @@ namespace SSA.CodeBehind
         public event EventHandler<ExceptionArgs> OnPrintMUBAndTTLabelsException;
 
         WebBrowser _web;
+        JSCallCS _jsCallCs;
 
-        public PrintMUBAndTTLabels(WebBrowser web)
+        public PrintMUBAndTTLabels(JSCallCS _jsCallCs)
         {
-            _web = web;
+            _web = Lib.LayerWeb;
+            this._jsCallCs = _jsCallCs;
         }
 
         internal void Start(LabelInfo labelInfo)
@@ -102,7 +104,8 @@ namespace SSA.CodeBehind
                     #endregion
 
                     this._web.InvokeScript("closePopup");
-                    new JSCallCS(this._web).OnEventPrintFinished();
+
+                    _jsCallCs.OnEventPrintFinished();
                 }
             }
             catch (Exception ex)

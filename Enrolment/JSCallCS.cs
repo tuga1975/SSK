@@ -43,27 +43,20 @@ namespace Enrolment
             //var dbUsers = CallCentralized.Get<List<Trinity.BE.User>>("User", "GetAllSupervisees");
             var dbUsers = new DAL_User().GetListAllSupervisees();
             var listSupervisee = new List<Trinity.BE.ProfileModel>();
-            if (dbUsers != null)
+            foreach (var item in dbUsers)
             {
-                foreach (var item in dbUsers)
+                var model = new Trinity.BE.ProfileModel()
                 {
-                    var model = new Trinity.BE.ProfileModel()
-                    {
-                        User = item,
-                        //UserProfile = CallCentralized.Get<Trinity.BE.UserProfile>("User", "GetUserProfileByUserId", "userId=" + item.UserId),
-                        UserProfile = new DAL_UserProfile().GetProfile(item.UserId),
-                        Addresses = null
-                    };
-                    listSupervisee.Add(model);
-                }
+                    User = item,
+                    //UserProfile = CallCentralized.Get<Trinity.BE.UserProfile>("User", "GetUserProfileByUserId", "userId=" + item.UserId),
+                    UserProfile = new DAL_UserProfile().GetProfile(item.UserId),
+                    Addresses = null
+                };
+                listSupervisee.Add(model);
+            }
 
-                //eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = 0, Name = EventNames.GET_LIST_SUPERVISEE_SUCCEEDED, Data = listSupervisee, Source = "Supervisee.html" });
-                _web.LoadPageHtml("Supervisee.html", listSupervisee);
-            }
-            else
-            {
-                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.GET_LIST_SUPERVISEE_FAILED, Source = "Login.html" });
-            }
+            //eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = 0, Name = EventNames.GET_LIST_SUPERVISEE_SUCCEEDED, Data = listSupervisee, Source = "Supervisee.html" });
+            _web.LoadPageHtml("Supervisee.html", listSupervisee);
         }
 
         public void SearchSuperviseeByNRIC(string nric)

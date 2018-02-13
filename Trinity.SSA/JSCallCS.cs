@@ -31,7 +31,7 @@ namespace SSA
         {
             this._web = web;
             _thisType = this.GetType();
-            _printMUBAndTTLabel = new CodeBehind.PrintMUBAndTTLabels(web);
+            _printMUBAndTTLabel = new CodeBehind.PrintMUBAndTTLabels(this);
             _printMUBAndTTLabel.OnPrintMUBLabelsSucceeded += PrintMUBLabels_OnPrintMUBLabelSucceeded;
             _printMUBAndTTLabel.OnPrintMUBLabelsFailed += PrintMUBLabels_OnPrintMUBLabelFailed;
             _printMUBAndTTLabel.OnPrintTTLabelsSucceeded += PrintTTLabels_OnPrintTTLabelSucceeded;
@@ -317,6 +317,10 @@ namespace SSA
                 this._web.InvokeScript("countdownLogout");
 
                 DeleteQRCodeImageFileTemp();
+
+
+                Trinity.BE.User user = (Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN];
+                APIUtils.SignalR.QueueFinished(user.UserId);
                 LogOut();
             }
             else

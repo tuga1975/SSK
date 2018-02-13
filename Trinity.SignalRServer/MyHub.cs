@@ -17,7 +17,10 @@ namespace SignalRChat
             }
         }
 
-
+        public void QueueFinished(Trinity.BE.Queue queue)
+        {
+            Clients.Clients(Program.ProfileConnected.Where(d => d.isApp && d.Station == EnumStations.SSK).Select(d => d.ConnectionId).ToList()).QueueFinished(queue);
+        }
         public string SendToDutyOfficer(string UserId, string DutyOfficerID, string Subject, string Content, string notificationType)
         {
             if (EnumAppConfig.ByPassCentralizedDB)

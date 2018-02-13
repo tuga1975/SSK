@@ -15,7 +15,9 @@ namespace SSK.Utils
         }
         public override void IncomingEvents()
         {
-
+            HubProxy.On<Queue>("QueueFinished", (queue) => {
+                // Xử lý status device
+            });
         }
         public override void Connection_Closed()
         {
