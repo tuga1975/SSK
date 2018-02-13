@@ -20,7 +20,6 @@ namespace Trinity.BE
         public Guid AppointmentId { get; set; }
 
         public Guid ID { get; set; }
-
     }
 
     public class QueueInfo
@@ -39,5 +38,7 @@ namespace Trinity.BE
         public string Station { get; set; }
         public string Status { get; set; }
         public string Message { get; set; }
+        public string QueuedNumber { get; set; }
+        public string Timeslot_ID { get; set; }
     }
 }

@@ -995,17 +995,28 @@ namespace Trinity.DAL
                         _localUnitOfWork.GetRepository<Appointment>().Delete(t => t.Date.Year == date.Year && t.Date.Month == date.Month && t.Date.Day == date.Day);
                         _localUnitOfWork.Save();
 
-                        _localUnitOfWork.GetRepository<Appointment>().AddRange(_localUnitOfWork.DataContext.Membership_Users.Select(d => d.UserId).Select(d => new Appointment()
+                        var superviseeRoleId = _localUnitOfWork.DataContext.Membership_Roles.Where(item => item.Name == EnumUserRoles.Supervisee).Select(item => item.Id).FirstOrDefault();
+
+                        var userIds = _localUnitOfWork.DataContext.Membership_Users.Where(item => item.Membership_UserRoles.Any(item2 => item2.RoleId == superviseeRoleId))
+                            .Select(d => d.UserId).ToList();
+
+                        List<Appointment> appointments = new List<Appointment>();
+                        foreach (var item in userIds)
                         {
-                            ID = Guid.NewGuid(),
-                            UserId = d,
-                            ChangedCount = 0,
-                            Date = date,
-                            Status = (int)EnumAppointmentStatuses.Pending
-                        }).ToList());
+                            appointments.Add(new Appointment()
+                            {
+                                ID = Guid.NewGuid(),
+                                UserId = item,
+                                ChangedCount = 0,
+                                Date = date,
+                                Status = (int)EnumAppointmentStatuses.Pending
+                            });
+                        }
+
+                        _localUnitOfWork.GetRepository<Appointment>().AddRange(appointments);
                         _localUnitOfWork.Save();
 
-                        return centralData;
+                        return centralizeStatus;
                     }
                 }
                 else
@@ -1013,14 +1024,25 @@ namespace Trinity.DAL
                     _centralizedUnitOfWork.GetRepository<Appointment>().Delete(t => t.Date.Year == date.Year && t.Date.Month == date.Month && t.Date.Day == date.Day);
                     _centralizedUnitOfWork.Save();
 
-                    _centralizedUnitOfWork.GetRepository<Appointment>().AddRange(_localUnitOfWork.DataContext.Membership_Users.Select(d => d.UserId).Select(d => new Appointment()
+                    var superviseeRoleId = _centralizedUnitOfWork.DataContext.Membership_Roles.Where(item => item.Name == EnumUserRoles.Supervisee).Select(item => item.Id).FirstOrDefault();
+
+                    var userIds = _centralizedUnitOfWork.DataContext.Membership_Users.Where(item => item.Membership_UserRoles.Any(item2 => item2.RoleId == superviseeRoleId))
+                        .Select(d => d.UserId).ToList();
+
+                    List<Appointment> appointments = new List<Appointment>();
+                    foreach (var item in userIds)
                     {
-                        ID = Guid.NewGuid(),
-                        UserId = d,
-                        ChangedCount = 0,
-                        Date = date,
-                        Status = (int)EnumAppointmentStatuses.Pending
-                    }).ToList());
+                        appointments.Add(new Appointment()
+                        {
+                            ID = Guid.NewGuid(),
+                            UserId = item,
+                            ChangedCount = 0,
+                            Date = date,
+                            Status = (int)EnumAppointmentStatuses.Pending
+                        });
+                    }
+
+                    _centralizedUnitOfWork.GetRepository<Appointment>().AddRange(appointments);
                     _centralizedUnitOfWork.Save();
                     return true;
                 }

@@ -209,6 +209,33 @@ namespace Trinity.DAL
                 return;
             }
 
+            switch (date.DayOfWeek)
+            {
+                case DayOfWeek.Sunday:
+                    GenerateTimeslotAndInsert(date.Date, settings.Sunday, createdBy);
+                    break;
+                case DayOfWeek.Monday:
+                    GenerateTimeslotAndInsert(date.Date, settings.Monday, createdBy);
+                    break;
+                case DayOfWeek.Tuesday:
+                    GenerateTimeslotAndInsert(date.Date, settings.Tuesday, createdBy);
+                    break;
+                case DayOfWeek.Wednesday:
+                    GenerateTimeslotAndInsert(date.Date, settings.Wednesday, createdBy);
+                    break;
+                case DayOfWeek.Thursday:
+                    GenerateTimeslotAndInsert(date.Date, settings.Thursday, createdBy);
+                    break;
+                case DayOfWeek.Friday:
+                    GenerateTimeslotAndInsert(date.Date, settings.Friday, createdBy);
+                    break;
+                case DayOfWeek.Saturday:
+                    GenerateTimeslotAndInsert(date.Date, settings.Saturday, createdBy);
+                    break;
+                default:
+                    break;
+            }
+
             //mon
             //GenerateTimeslotAndInsert(date.Date, settings.Monday, createdBy);
 
@@ -219,7 +246,7 @@ namespace Trinity.DAL
             //GenerateTimeslotAndInsert(date.Date, settings.Wednesday, createdBy);
 
             ////thu
-            GenerateTimeslotAndInsert(date.Date, settings.Thursday, createdBy);
+            //GenerateTimeslotAndInsert(date.Date, settings.Thursday, createdBy);
 
             ////fri
             //GenerateTimeslotAndInsert(date.Date, settings.Friday, createdBy);
