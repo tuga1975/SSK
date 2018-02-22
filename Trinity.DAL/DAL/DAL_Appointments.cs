@@ -594,21 +594,28 @@ namespace Trinity.DAL
                     var dbAppointment = new List<Appointment>();
                     foreach (var item in listSelected)
                     {
-                        var find = _localUnitOfWork.DataContext.Appointments.Find(Guid.Parse(item));
-                        if (find != null)
+                        var guid = Guid.Empty;
+                        if (Guid.TryParse(item, out guid))
                         {
-                            dbAppointment.Add(find);
-                        }
-                        else
-                        {
-                            bool centralizeStatus;
-                            var centralData = CallCentralized.Get<List<Appointment>>(EnumAPIParam.Appointment, EnumAPIParam.GetListFromSelectedDate, out centralizeStatus, "listAppointmentId=" + listID);
-                            if (centralizeStatus)
+                            var find = _localUnitOfWork.DataContext.Appointments.Find(guid);
+                            if (find != null)
                             {
-                                return centralData;
+                                dbAppointment.Add(find);
                             }
+                            else
+                            {
+                                bool centralizeStatus;
+                                var centralData = CallCentralized.Get<List<Appointment>>(EnumAPIParam.Appointment, EnumAPIParam.GetListFromSelectedDate, out centralizeStatus, "listAppointmentId=" + listID);
+                                if (centralizeStatus)
+                                {
+                                    return centralData;
+                                }
+                            }
+
                         }
+                      
                     }
+                    return dbAppointment;
                 }
                 else
                 {
@@ -621,11 +628,10 @@ namespace Trinity.DAL
                     return dbAppointment;
                 }
 
-                return null;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                Console.WriteLine(ex.Message);
                 return null;
             }
         }
