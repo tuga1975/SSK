@@ -94,6 +94,7 @@ namespace SSK
             if (appointment == null)
             {
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_MESSAGE, Message = "You have no appointment" });
+                return;
             }
 
             // get timeslots of appoitment day
@@ -102,6 +103,7 @@ namespace SSK
             if (timeslots ==null)
             {
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_MESSAGE, Message = "Have no timeslot to select. \nPlease contact Duty officer." });
+                return;
             }
 
             // get GetOperationSetting of appointment day
@@ -137,6 +139,7 @@ namespace SSK
             if (settingDetail == null)
             {
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_MESSAGE, Message = "Can not get timeslots. \nPlease contact Duty officer." });
+                return;
             }
 
             // set workingTimeshift
