@@ -318,6 +318,11 @@ namespace SSK
             }
         }
 
+        public void LoadSupervisee()
+        {
+            var _suppervisee = new CodeBehind.Suppervisee(_web);
+            _suppervisee.Start();
+        }
         public void SaveProfile(string param, bool primaryInfoChange)
         {
             try
