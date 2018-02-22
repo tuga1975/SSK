@@ -179,7 +179,7 @@ namespace Trinity.DAL
             {
                 SettingModel setting = GetSettings();
 
-                
+
                 if (EnumAppConfig.IsLocal)
                 {
                     return _localUnitOfWork.DataContext.Timeslots.Where(t => DbFunctions.TruncateTime(t.Date) == date.Date).ToList();
@@ -188,7 +188,7 @@ namespace Trinity.DAL
                 {
                     return _centralizedUnitOfWork.DataContext.Timeslots.Where(t => DbFunctions.TruncateTime(t.Date) == date.Date).ToList();
                 }
-                
+
 
             }
             catch (Exception)
@@ -283,9 +283,10 @@ namespace Trinity.DAL
             var toTime = closeTime;
             var morningTimeSpan = new TimeSpan(12, 0, 0);
             var eveningTimeSpan = new TimeSpan(17, 0, 0);
-            var id = _localUnitOfWork.DataContext.Timeslots.Any() ? _localUnitOfWork.DataContext.Timeslots.Max(t => t.Timeslot_ID) : null;
+            
             while (fromTime < toTime)
             {
+              
                 var timeSlot = new BE.TimeslotDetails();
 
 
@@ -318,9 +319,14 @@ namespace Trinity.DAL
                 {
                     timeSlot.Category = EnumTimeshift.Afternoon;
                 }
-
+                var _endTime = fromTime.Value.Add(new TimeSpan(0, duration.Value, 0));
+                var exist = _localUnitOfWork.DataContext.Timeslots.Any(t => DbFunctions.TruncateTime(t.Date) == date.Date && t.StartTime == fromTime.Value && t.EndTime==_endTime) ? true : false;
+                
                 fromTime = fromTime.Value.Add(TimeSpan.FromMinutes(duration.Value));
-
+                if (exist)
+                {
+                    return;
+                }
                 _localUnitOfWork.GetRepository<Timeslot>().Add(SetInfo(new Timeslot(), timeSlot));
                 _localUnitOfWork.Save();
             }
@@ -426,7 +432,7 @@ namespace Trinity.DAL
             var dayOfWeek = (int)CommonUtil.ConvertToCustomDateOfWeek(DateTime.Now.DayOfWeek);
             if (EnumAppConfig.IsLocal)
             {
-                dbSetting = _localUnitOfWork.DataContext.OperationSettings.Where(s=>s.DayOfWeek==dayOfWeek).FirstOrDefault();
+                dbSetting = _localUnitOfWork.DataContext.OperationSettings.Where(s => s.DayOfWeek == dayOfWeek).FirstOrDefault();
             }
             else
             {
@@ -453,6 +459,12 @@ namespace Trinity.DAL
             SetInfoToSettingBE(settingBE, dbSeting);
 
             return new BE.SettingBE().ToSettingModel(settingBE);
+        }
+        public void InsertTimeslots(List<Timeslot> listTimeslot)
+        {
+            var timeSlotRepo = _localUnitOfWork.GetRepository<Timeslot>();
+            timeSlotRepo.AddRange(listTimeslot);
+            _localUnitOfWork.Save();
         }
 
         public void UpdateTimeslots(DateTime date, string createdBy)
@@ -1337,7 +1349,7 @@ namespace Trinity.DAL
                     }
 
                     return modelReturn;
-                }                
+                }
             }
             catch (Exception e)
             {

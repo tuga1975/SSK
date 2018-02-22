@@ -31,6 +31,9 @@ namespace Trinity.DAL
                         var centralData = CallCentralized.Get<List<Timeslot>>(EnumAPIParam.Setting, "GetTimeslots",out centralizeStatus, date.ToString());
                         if (centralizeStatus)
                         {
+                            //update local
+                            new DAL_Setting().InsertTimeslots(centralData);
+                            //return data
                             return centralData;
                         }
                     }
