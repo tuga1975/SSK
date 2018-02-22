@@ -103,6 +103,8 @@ namespace SSK
             Timeslot nextTimeslot;
             if (currentTimeslot != null)
             {
+                // update queue status waiting to processing
+                new DAL_QueueNumber().UpdateQueueStatus_SSK(currentTimeslot.Timeslot_ID);
                 nextTimeslot = timeslots.FirstOrDefault(d => d.StartTime.Value >= currentTimeslot.EndTime.Value);
             }
             else
@@ -110,8 +112,7 @@ namespace SSK
                 nextTimeslot = timeslots.FirstOrDefault(d => d.StartTime.Value >= DateTime.Now.TimeOfDay);
             }
 
-            // update queue status waiting to processing
-            new DAL_QueueNumber().UpdateQueueStatus_SSK(currentTimeslot.Timeslot_ID);
+           
 
             // Get list queue todaynew DAL_QueueNumber();
             List<Trinity.BE.QueueDetail> allQueue = new DAL_QueueNumber().GetAllQueue_SSK(DateTime.Now);
