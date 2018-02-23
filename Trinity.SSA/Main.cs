@@ -303,8 +303,8 @@ namespace SSA
 
                 // Temporary comment Authentication_Facial to testing
                 // Navigate to next page: Facial Authentication
-                //NavigateTo(NavigatorEnums.Authentication_Facial);
-                NavigateTo(NavigatorEnums.Authentication_SmartCard);
+                NavigateTo(NavigatorEnums.Authentication_Facial);
+                //NavigateTo(NavigatorEnums.Authentication_SmartCard);
 
                 return;
             }

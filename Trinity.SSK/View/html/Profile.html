@@ -183,9 +183,9 @@
             <button type="button" class="btn btn-dark" style="position:fixed;bottom:10px;left:10px;float:left;" onclick="api.server.LoadPage('Supervisee.html');">Back</button>
         </div>
         <!--<div style="float:right;" id="tempSupportDocument">
-            <button type="button" class="btn btn-danger" style="position:fixed;bottom:10px;right:150px;" id="btnScan">Scan documents</button>
+        <button type="button" class="btn btn-danger" style="position:fixed;bottom:10px;right:150px;" id="btnScan">Scan documents</button>
 
-        </div>-->
+    </div>-->
 
         <div style="display:none">
             <input type="text" name="SerialNumber" id="SerialNumber" />
@@ -193,22 +193,23 @@
             <input type="text" name="Gender" id="Gender" />
             <input type="text" name="Race" id="Race" />
         </div>
+        <div style="display:none;float:right;" id="divConfirm">
+            <p style="position:fixed;z-index:100;bottom:45px;right:10px;"><strong>Are you sure ?</strong></p>
+            <button type="button" class="btn btn-dark" style="position:fixed;bottom:10px;right:60px; float:right;" id="btnCancel">Cancel</button>
+            <input type="submit" class="btn btn-success" style="position:fixed;bottom:10px;right:10px; float:right;" id="btnOK" value="OK">
+        </div>
+        <div class="noticeMessage">
+            <div style="display:none;" id="divError"><span class="text-danger">Following input must not null!</span></div>
+            <div id="noticeMess"><span class="text-danger">* Supporting documents required </span></div>
+        </div>
+        <div style="display:block;float:right;" id="divSave">
+            <!--<button type="button" class="btn btn-dark" onclick="api.server.LoadPage('Supervisee.html');">Back</button>-->
+            <button type="button" class="btn btn-dark" onclick="api.server.LoadSupervisee()">Cancel</button>
+            <button type="button" class="btn btn-success" id="SaveBtn">Update</button>
+        </div>
     </form>
 </div>
-<div style="display:none;float:right;" id="divConfirm">
-    <p style="position:fixed;z-index:100;bottom:45px;right:10px;"><strong>Are you sure ?</strong></p>
-    <button type="button" class="btn btn-dark" style="position:fixed;bottom:10px;right:60px; float:right;" id="btnCancel">Cancel</button>
-    <button type="submit" class="btn btn-success" style="position:fixed;bottom:10px;right:10px; float:right;" id="btnOK">OK</button>
-</div>
-<div class="noticeMessage">
-    <div style="display:none;" id="divError"><span class="text-danger">Following input must not null!</span></div>
-    <div id="noticeMess"><span class="text-danger">* Supporting documents required </span></div>
-</div>
-<div style="display:block;float:right;" id="divSave">
-    <!--<button type="button" class="btn btn-dark" onclick="api.server.LoadPage('Supervisee.html');">Back</button>-->
-    <button type="button" class="btn btn-dark" onclick="api.server.LoadSupervisee()">Cancel</button>
-    <button type="button" class="btn btn-success" id="SaveBtn">Update</button>
-</div>
+
 <script type="text/javascript">
     var _particularName, _nric, _dob, _nationality, _maritalStatus = "";
     api.ready(function (model) {
@@ -306,6 +307,31 @@
         var json = JSON.stringify(data);
         api.server.LoadScanDocument(json);
     });
+
+    function UpdateProfile() {
+        $("#profileFrm").submit(function (e) {
+
+            var $form = $("#profileFrm");
+            var data = getFormData($form);
+            var dobtxt = data.DOB.split('/');
+            data.DOB = dobtxt[2] + '-' + dobtxt[1] + '-' + dobtxt[0];
+            var json = JSON.stringify(data);
+
+            //for testing purpose
+            api.server.SaveProfile(json, true);
+
+            //api.server.SaveProfile(json, false);
+
+            e.preventDefault(); // avoid to execute the actual submit of the form.
+        });
+    }
+    //$('#btnOK').click(function () {
+        
+    //    var $form = $("#profileFrm");
+    //    $form.submit();
+    //});
+
+
     function getFormData($form) {
         var unindexed_array = $form.serializeArray();
         var indexed_array = {};
