@@ -8,14 +8,17 @@
             pagination: true,
             pageSize:10,
             pageList: [10, 20, 40, 60,80,100],
+            onClickCell: function (field, value, row, $element) {
+                if (field == "HSA" && $.trim(value).length > 0) {
+                    api.server.LoadDrugsTest(row.Date, row.UserId, function () {
+                        $('#idQueueDrugs').modal();
+                    });
+                }
+            },
             onDblClickCell: function (field, value, row, $element) {
                 if (field == 'Message') {
                     api.server.LoadPopupQueue(row.Queue_ID, function () {
                         $('#idQueue').modal();
-                    });
-                } else if (field == "HSA" && $.trim(value).length>0) {
-                    api.server.LoadDrugsTest(row.Date, row.UserId, function () {
-                        $('#idQueueDrugs').modal();
                     });
                 }
             },
@@ -74,7 +77,7 @@
                 },
                 {
                     field: 'HSA',
-                    title: 'HSA',
+                    title: 'UT',
                     align: 'center', formatter: function (value, row, index, field) {
                         return '<span style="display:inline-block;padding:2px 5px;border:1px solid #CCC;">' + value + '</span>';
                     }

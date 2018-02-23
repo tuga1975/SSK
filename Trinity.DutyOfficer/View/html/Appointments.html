@@ -67,7 +67,7 @@
             if (data) {
                 data.forEach(function (element, index) {
                     dataSource.push({
-                        TimeSlot: element.StartTime + ' to ' + element.EndTime,
+                        TimeSlot: element.StartTime ,//+ ' to ' + element.EndTime,
                         NRIC: element.NRIC,
                         Name: element.Name,
                         ReportTime: element.ReportTime,
@@ -80,7 +80,7 @@
 
                     if (Date.parse(element.AppointmentDate) == Date.parse(today)) {
                         searchSource.push({
-                            TimeSlot: element.StartTime + ' to ' + element.EndTime,
+                            TimeSlot: element.StartTime ,//+ ' to ' + element.EndTime,
                             NRIC: element.NRIC,
                             Name: element.Name,
                             ReportTime: element.ReportTime,
@@ -144,12 +144,24 @@
                             case 2:
                                 return 'Reported';
                             default:
-                                return "No-show";
+                                return "Absent";
                         }
                     }
                 }],
                 data: searchSource
             });
+        });
+
+        // For case redirected from Statistics
+        api.ready(function (strDateAndStartTime) {
+            if (strDateAndStartTime){
+                var dateAppt = strDateAndStartTime.split(';')[0];
+                var startTimeAppt = strDateAndStartTime.split(';')[1];
+                $('#dateSearch').val(dateAppt);
+                getTimeslot();
+                $('#timeslot').val(startTimeAppt);
+                searchAppointment();
+            };
         });
     });
 

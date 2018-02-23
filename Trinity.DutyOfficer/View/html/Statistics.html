@@ -35,6 +35,24 @@
             $('#datetimepicker1').datepicker();
         });
 
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth() + 1; //January is 0!
+        var yyyy = today.getFullYear();
+
+        if (dd < 10) {
+            dd = '0' + dd
+        }
+
+        if (mm < 10) {
+            mm = '0' + mm
+        }
+
+        today = mm + '/' + dd + '/' + yyyy;
+        $('#dateSearch').val(today);
+
+        var searchDateStatistic = $('#dateSearch').val();
+
         api.server.GetStatistics(function (data) {
             if (data) {
                 data.forEach(function (element, index) {
@@ -44,7 +62,7 @@
                         Max: element.Max,
                         Booked: element.Booked,
                         Reported: element.Reported,
-                        NoShow: element.No_Show,
+                        Absent: element.Absent,
                         Available: element.Available,
                         Date: element.Date
                     });
@@ -56,7 +74,7 @@
                             Max: element.Max,
                             Booked: element.Booked,
                             Reported: element.Reported,
-                            NoShow: element.No_Show,
+                            Absent: element.Absent,
                             Available: element.Available,
                             Date: element.Date
                         });
@@ -96,20 +114,23 @@
                     width: '10%',
                     align: 'center'
                 }, {
-                    field: 'NoShow',
-                    title: 'No-show',
+                    field: 'Absent',
+                    title: 'Absent',
                     width: '10%',
                     align: 'center'
                 }, {
                     field: 'Available',
-                    title: 'Available',
+                    title: 'Avaliable',
                     width: '10%',
                     align: 'center'
                 }, {
                     field: '',
-                    title: '',
+                    title: 'Details',
                     width: '30%',
-                    align: 'center'
+                    align: 'center',
+                    formatter: function (value, row, index, field) {
+                        return '<a style="text-decoration: underline;" href="javascript:;" onclick = "loadAppointmentPage(\'' + searchDateStatistic + '\', \'' + row.StartTime + '\');" >View Time Slot Information</a>';
+                    }
                 }],
                 data: searchSource
             });
@@ -119,21 +140,6 @@
 
     var dataSource = [];
     var searchSource = [];
-    var today = new Date();
-    var dd = today.getDate();
-    var mm = today.getMonth() + 1; //January is 0!
-    var yyyy = today.getFullYear();
-
-    if (dd < 10) {
-        dd = '0' + dd
-    }
-
-    if (mm < 10) {
-        mm = '0' + mm
-    }
-
-    today = mm + '/' + dd + '/' + yyyy;
-    $('#dateSearch').val(today);
     
     $('#pageSize').change(function () {
         pageSize = $("#pageSize option:selected").text();
@@ -155,7 +161,7 @@
                     Max: dataSource[i].Max,
                     Booked: dataSource[i].Booked,
                     Reported: dataSource[i].Reported,
-                    NoShow: dataSource[i].No_Show,
+                    Absent: dataSource[i].Absent,
                     Available: dataSource[i].Available
                 });
             }
@@ -169,4 +175,8 @@
             data: source
         });
     });
+
+    function loadAppointmentPage(dateLoad, startTimeLoad) {
+        api.server.LoadPageAppointment(dateLoad, startTimeLoad);
+    };   
 </script>

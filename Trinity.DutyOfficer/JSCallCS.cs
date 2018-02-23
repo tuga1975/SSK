@@ -107,7 +107,7 @@ namespace DutyOfficer
                     SSK = queue.QueueDetails.Where(c => c.Station == EnumStations.SSK).FirstOrDefault().Color,
                     SSA = queue.QueueDetails.Where(c => c.Station == EnumStations.SSA).FirstOrDefault().Color,
                     UHP = queue.QueueDetails.Where(c => c.Station == EnumStations.UHP).FirstOrDefault().Color,
-                    HSA = queue.QueueDetails.Where(c => c.Station == EnumStations.HSA).FirstOrDefault().Status == EnumQueueStatuses.Finished ? "Drugs" : string.Empty,
+                    HSA = queue.QueueDetails.Where(c => c.Station == EnumStations.HSA).FirstOrDefault().Status == EnumQueueStatuses.Finished ? "Result" : string.Empty,
                     ESP = queue.QueueDetails.Where(c => c.Station == EnumStations.ESP).FirstOrDefault().Color,
                     Outcome = queue.Outcome,
                     Message = new
@@ -308,12 +308,17 @@ namespace DutyOfficer
                 item.Booked = bookedResult;
                 var reportedResult = dalAppointment.CountApptmtReportedByTimeslot(item.Timeslot_ID);
                 item.Reported = reportedResult;
-                var noShowResult= dalAppointment.CountApptmtNoShowByTimeslot(item.Timeslot_ID);
-                item.No_Show = noShowResult;
-                item.Available = item.Max - item.Booked - item.Reported - item.No_Show;
+                var absentResult= dalAppointment.CountApptmtAbsentByTimeslot(item.Timeslot_ID);
+                item.Absent = absentResult;
+                item.Available = item.Max - item.Booked - item.Reported - item.Absent;
             }
 
             return data;
+        }
+
+        public void LoadPageAppointment(string dateSearch, string startTime)
+        {
+            _web.LoadPageHtml("Appointments.html", dateSearch + ";" + startTime);
         }
         #endregion
 
