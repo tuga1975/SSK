@@ -15,6 +15,34 @@ namespace Trinity.DAL
         Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
 
         #region refactor 2018
+
+
+        public DBContext.Timeslot GetTimeSlotEmpty()
+        {
+            List<DBContext.Timeslot> arrayTimeslot = _localUnitOfWork.DataContext.Timeslots.Where(d => d.Date == DateTime.Today).ToList().OrderBy(d=>d.SortCategory).ThenBy(d=>d.StartTime).ToList();
+            DBContext.Timeslot timeslotReturn = null;
+            while (timeslotReturn == null && arrayTimeslot.Count>0)
+            {
+                DBContext.Timeslot time = arrayTimeslot[0];
+                arrayTimeslot.RemoveAt(0);
+                if (time.EndTime>DateTime.Now.TimeOfDay)
+                {
+                    int totalSlot = _localUnitOfWork.DataContext.Appointments.Count(d => !string.IsNullOrEmpty(d.Timeslot_ID) && d.Timeslot_ID == time.Timeslot_ID) + _localUnitOfWork.DataContext.Queues.Count(d => d.Timeslot_ID == time.Timeslot_ID && (!d.Appointment_ID.HasValue || (d.Appointment_ID.HasValue && !string.IsNullOrEmpty(d.Appointment.Timeslot_ID) && d.Appointment.Timeslot_ID != time.Timeslot_ID)));
+                    if (totalSlot < time.MaximumSupervisee)
+                    {
+                        timeslotReturn = time;
+                    }
+                }
+            }
+            return timeslotReturn;
+
+        }
+        public List<Trinity.DAL.DBContext.Queue> SSKGetQueueToDay()
+        {
+            
+            return _localUnitOfWork.DataContext.Queues.Where(item => DbFunctions.TruncateTime(item.CreatedTime).Value == DateTime.Today).ToList();
+        }
+
         public Queue GetMyQueueToday(string UserId)
         {
             DateTime today = DateTime.Today;
@@ -29,41 +57,90 @@ namespace Trinity.DAL
 
             return false;
         }
+        public bool IsUserAlreadyQueue(string UserID,DateTime date)
+        {
+            date = date.Date;
+            if (EnumAppConfig.IsLocal)
+            {
+                return _localUnitOfWork.DataContext.Queues.Any(item => item.UserId==UserID && DbFunctions.TruncateTime(item.CreatedTime)==date);
+            }
+
+            return false;
+        }
         #endregion
 
 
-        public Trinity.DAL.DBContext.Queue InsertQueueNumber(Guid appointmentID, string userId, string station)
+        public Trinity.DAL.DBContext.Queue InsertQueueNumberFromDO(string UserID, string station, string userCreateQueue)
+        {
+            var timeslot = GetTimeSlotEmpty();
+            if (timeslot == null)
+            {
+                throw new Exception("Sorry all timeslots are fully booked!");
+            }
+            else
+            {
+                var listStation = EnumStations.GetListStation();
+                var generateQNo = Trinity.Common.CommonUtil.GetQueueNumber(_localUnitOfWork.DataContext.Membership_Users.Find(UserID).NRIC);
+                Trinity.DAL.DBContext.Queue dataInsert = new Trinity.DAL.DBContext.Queue()
+                {
+                    Queue_ID = Guid.NewGuid(),
+                    UserId = UserID,
+                    Timeslot_ID = timeslot.Timeslot_ID,
+                    CurrentStation = station,
+                    Outcome = EnumOutcome.GetQueue,
+                    CreatedTime = DateTime.Now,
+                    QueuedNumber = generateQNo,
+                    Created_By = userCreateQueue
+                };
+                List<Trinity.DAL.DBContext.QueueDetail> arrayQueueDetail = new List<Trinity.DAL.DBContext.QueueDetail>();
+                foreach (var item in listStation)
+                {
+                    var queueDetails = new Trinity.DAL.DBContext.QueueDetail { Queue_ID = dataInsert.Queue_ID, Station = item, Status = EnumQueueStatuses.Waiting };
+                    arrayQueueDetail.Add(queueDetails);
+
+                }
+                _localUnitOfWork.GetRepository<Trinity.DAL.DBContext.Queue>().Add(dataInsert);
+                _localUnitOfWork.GetRepository<Trinity.DAL.DBContext.QueueDetail>().AddRange(arrayQueueDetail);
+                _localUnitOfWork.Save();
+                return dataInsert;
+            }
+        }
+
+        public Trinity.DAL.DBContext.Queue InsertQueueNumber(Guid appointmentID, string userId, string station,string userCreateQueue)
         {
             try
             {
                 var generateQNo = Trinity.Common.CommonUtil.GetQueueNumber(_localUnitOfWork.DataContext.Membership_Users.Find(userId).NRIC);
                 var listStation = EnumStations.GetListStation();
                 var today = DateTime.Now;
-                var result = new DAL_Appointments().GetAppmtDetails(appointmentID);
-                var appointmentDetails = result;
-                var diffHour = appointmentDetails.StartTime.Value.Hours - today.Hour;
-                var diffStartMin = appointmentDetails.StartTime.Value.Minutes - today.Minute;
-                var diffEndHour = appointmentDetails.EndTime.Value.Hours - today.Hour;
-                var diffEndMin = appointmentDetails.EndTime.Value.Minutes - today.Minute;
+                var appointment = new DAL_Appointments().GetAppmtDetails(appointmentID);
+
+
+                var timeslot = GetTimeSlotEmpty();
+                string timeslotID = appointment.Timeslot_ID;
+                if(timeslot!=null && timeslot.EndTime< appointment.EndTime)
+                {
+                    timeslotID = timeslot.Timeslot_ID;
+                }
+
 
                 Trinity.DAL.DBContext.Queue dataInsert = new Trinity.DAL.DBContext.Queue()
                 {
-                    Appointment_ID = appointmentID,
                     Queue_ID = Guid.NewGuid(),
+                    UserId = userId,
+                    Timeslot_ID = timeslotID,
+                    Appointment_ID = appointmentID,
+                    CurrentStation = station,
+                    Outcome = EnumOutcome.GetQueue,
                     CreatedTime = DateTime.Now,
                     QueuedNumber = generateQNo,
-                    CurrentStation = station,
-                    Outcome = EnumOutcome.Processing
+                    Created_By = userCreateQueue
                 };
                 //insert to queue details
                 List<Trinity.DAL.DBContext.QueueDetail> arrayQueueDetail = new List<Trinity.DAL.DBContext.QueueDetail>();
                 foreach (var item in listStation)
                 {
                     var queueDetails = new Trinity.DAL.DBContext.QueueDetail { Queue_ID = dataInsert.Queue_ID, Station = item, Status = EnumQueueStatuses.Waiting };
-                    if (queueDetails.Station == station && diffHour == 0 && diffStartMin <= 0 && ((diffEndHour > 0 && diffEndMin <= 0) || (diffEndHour == 0 && diffEndMin >= 0)))
-                    {
-                        queueDetails.Status = EnumQueueStatuses.Processing;
-                    }
                     arrayQueueDetail.Add(queueDetails);
 
                 }

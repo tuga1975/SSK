@@ -319,8 +319,12 @@ namespace SSA
                 this._web.InvokeScript("countdownLogout");
 
                 DeleteQRCodeImageFileTemp();
-                
+                //Trinity.BE.User user = (Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN];
+                new DAL_QueueDetails().RemoveQueueFromSSK(user.UserId);
+
                 APIUtils.SignalR.QueueFinished(user.UserId);
+
+
                 LogOut();
             }
             else

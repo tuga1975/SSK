@@ -41,14 +41,14 @@
         </div>
     </div>
     <div id="menu" style="background-color:#fff;">
-        <span item-menu="Queue" onclick="api.server.LoadPage('Queue.html')"></span>
-        <span item-menu="Alerts" onclick="api.server.LoadPage('Alerts.html')"></span>
-        <span item-menu="Appointments" onclick="api.server.LoadPage('Appointments.html')"></span>
-        <span item-menu="Blocked" onclick="api.server.LoadPage('Blocked.html')"></span>
-        <span item-menu="Statistics" onclick="api.server.LoadPage('Statistics.html')"></span>
-        <span item-menu="MUB/TT Lablels" onclick="api.server.LoadPage('MUBAndTTlabel.html')"></span>
-        <span item-menu="UB Lablels" onclick="api.server.LoadPage('UBlabel.html')"></span>
-        <span item-menu="Settings" onclick="api.server.LoadPage('Settings.html')"></span>
+        <span id="Queue" item-menu="Queue" onclick="api.server.LoadPage('Queue.html')"></span>
+        <span id = "Alerts" item-menu="Alerts" onclick="api.server.LoadPage('Alerts.html')"><span class="notifyCount">10+</span></span>
+        <span id = "Appointments" item-menu="Appointments" onclick="api.server.LoadPage('Appointments.html')"></span>
+        <span id = "Blocked" item-menu="Blocked" onclick="api.server.LoadPage('Blocked.html')"></span>
+        <span id = "Statistics" item-menu="Statistics" onclick="api.server.LoadPage('Statistics.html')"></span>
+        <span id = "MUB" item-menu="MUB/TT Lablels" onclick="api.server.LoadPage('MUBAndTTlabel.html')"></span>
+        <span id = "UB" item-menu="UB Lablels" onclick="api.server.LoadPage('UBlabel.html')"></span>
+        <span id = "Settings" item-menu="Settings" onclick="api.server.LoadPage('Settings.html')"></span>
     </div>
     <div id="parent-content">
         <div id="content"></div>
@@ -82,6 +82,8 @@
             $('#colorStatus_UHP').css("background-color", data.UHPColor);
             $('#colorStatus_ESP').css("background-color", data.ESPColor);
         });
+
+        $(".notifyCount").hide();
 
         window.setInterval(function () {
             api.server.GetStationClolorDevice(function (data) {

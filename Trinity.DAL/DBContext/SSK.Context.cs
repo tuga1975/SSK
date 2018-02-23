@@ -52,7 +52,6 @@ namespace Trinity.DAL.DBContext
         public virtual DbSet<SentMessage> SentMessages { get; set; }
         public virtual DbSet<Setting> Settings { get; set; }
         public virtual DbSet<SMS_LOG> SMS_LOG { get; set; }
-        public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
         public virtual DbSet<Timeslot> Timeslots { get; set; }
         public virtual DbSet<User_Profiles> User_Profiles { get; set; }
         public virtual DbSet<ApplicationDevice_Status> ApplicationDevice_Status { get; set; }

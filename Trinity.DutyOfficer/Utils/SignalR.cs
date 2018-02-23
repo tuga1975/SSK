@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Forms;
 using Trinity.BE;
 using Trinity.Common;
 using Trinity.DAL;
@@ -74,7 +75,19 @@ namespace DutyOfficer.Utils
                     notification.Datetime = DateTime.Now;
                     object result = JsonConvert.SerializeObject(notification, Formatting.Indented,
                     new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
-                    Lib.LayerWeb.InvokeScript("getRealtimeNotificationServer", result);
+                    Lib.LayerWeb.Invoke((MethodInvoker)(() =>
+                    {
+                        string activeTab = Lib.LayerWeb.Document.InvokeScript("getActiveTab").ToString();
+                        if (activeTab != "Alerts")
+                        {
+                            Lib.LayerWeb.InvokeScript("getRealtimeNotificationServer", result);
+                        }
+                        else
+                        {
+                            Lib.LayerWeb.InvokeScript("getNotificationInCurrentTab", result);
+                        }
+                    }));
+                    
                 }
             }
         }

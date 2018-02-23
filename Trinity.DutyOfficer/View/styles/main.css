@@ -339,3 +339,15 @@ input {
     background-repeat: no-repeat;
     background-size: contain;
 }
+.notifyCount {
+    background: red;
+    color: white;
+    border-radius: 50%;
+    position: relative;
+    right: 0;
+    top: -5px;
+    padding: 3px 5px;
+    font-size: 10px;
+    margin-left: 5px;
+    margin-top: 3px;
+}

@@ -153,6 +153,18 @@ namespace DutyOfficer
             return null;
         }
 
+        public bool updateReadedStatus(string NotificationID)
+        {
+            var dalNotify = new DAL_Notification();
+            string userID = ((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId;
+            if (userID != null || userID != "")
+            {
+                Response<bool> response =  dalNotify.updateReadStatus(NotificationID, true);
+                return response.ResponseCode == (int)EnumResponseStatuses.Success;
+            }
+            return false;
+        }
+
         public void LoadPopupAlert(string jsonData)
         {
             this._web.LoadPopupHtml("AlertPopupDetail.html", jsonData);

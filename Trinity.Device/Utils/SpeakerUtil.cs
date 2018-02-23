@@ -1,8 +1,5 @@
-﻿using System;
-using System.Diagnostics;
-using System.IO;
-using System.Runtime.InteropServices;
-using Trinity.Common;
+﻿using NAudio.CoreAudioApi;
+using System;
 
 namespace Trinity.Util
 {
@@ -37,7 +34,25 @@ namespace Trinity.Util
 
         public EnumDeviceStatuses[] GetDeviceStatus()
         {
-            return new EnumDeviceStatuses[] { EnumDeviceStatuses.Disconnected };
+            // refer: https://stackoverflow.com/questions/33872895/detect-if-headphones-are-plugged-in-or-not-via-c-sharp
+
+            var enumerator = new MMDeviceEnumerator();
+            var endpoints = enumerator.EnumerateAudioEndPoints(DataFlow.Render, DeviceState.Active);
+
+            // check state
+            //foreach (var endpoint in endpoints)
+            //{
+            //    Debug.WriteLine("{0} - {1}", endpoint.DeviceFriendlyName, endpoint.State);
+            //}
+
+            if (endpoints.Count > 0)
+            {
+                return new EnumDeviceStatuses[] { EnumDeviceStatuses.Connected };
+            }
+            else
+            {
+                return new EnumDeviceStatuses[] { EnumDeviceStatuses.Disconnected };
+            }
         }
     }
 }

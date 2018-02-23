@@ -1,4 +1,297 @@
-﻿<div style="width:100%;display:block;padding:15px 25px">
+﻿<div id="left">
+    <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+            <td title="">NOW SERVING</td>
+        </tr>
+        <tr>
+            <td item="1">&nbsp;</td>
+        </tr>
+        <tr>
+            <td item="2">&nbsp;</td>
+        </tr>
+        <tr>
+            <td item="3">&nbsp;</td>
+        </tr>
+        <tr>
+            <td item="4">&nbsp;</td>
+        </tr>
+        <tr>
+            <td item="5">&nbsp;</td>
+        </tr>
+    </table>
+</div>
+<div id="rigth-top">
+    <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+            <td colspan="4" title=""></td>
+        </tr>
+        <tr>
+            <td item="1">&nbsp;</td>
+            <td item="2">&nbsp;</td>
+            <td item="3">&nbsp;</td>
+            <td item="4">&nbsp;</td>
+        </tr>
+        <tr>
+            <td item="5">&nbsp;</td>
+            <td item="6">&nbsp;</td>
+            <td item="7">&nbsp;</td>
+            <td item="8">&nbsp;</td>
+        </tr>
+        <tr>
+            <td item="9">&nbsp;</td>
+            <td item="10">&nbsp;</td>
+            <td item="11">&nbsp;</td>
+            <td item="12">&nbsp;</td>
+        </tr>
+    </table>
+</div>
+<div id="rigth-bottom">
+    <table cellpadding="0" cellspacing="0" border="0">
+
+        <tr>
+            <td colspan="4" title="OTHERS"></td>
+        </tr>
+        <tr>
+            <td item="1">&nbsp;</td>
+            <td item="2">&nbsp;</td>
+            <td item="3">&nbsp;</td>
+            <td item="4">&nbsp;</td>
+        </tr>
+        <tr>
+            <td item="5">&nbsp;</td>
+            <td item="6">&nbsp;</td>
+            <td item="7">&nbsp;</td>
+            <td item="8">&nbsp;</td>
+        </tr>
+    </table>
+</div>
+<script type="text/javascript">
+    function ShowTimeSlot(timeshow, arrNow, arrCurent, arrOther) {
+        arrNow = JSON.parse(arrNow);
+        arrCurent = JSON.parse(arrCurent);
+        arrOther = JSON.parse(arrOther);
+        $('#rigth-top [title]').attr('title', timeshow);
+
+        for (var i = 0; i < 5; i++) {
+            if (arrNow.length >= i + 1) {
+                $('#left [item="' + (i + 1) + '"]').html(arrNow[i].QueuedNumber);
+            } else {
+                $('#left [item="' + (i + 1) + '"]').html('&nbsp;');
+            }
+        }
+        for (var i = 0; i < 12; i++) {
+            if (arrCurent.length >= i + 1) {
+                $('#rigth-top [item="' + (i + 1) + '"]').html(arrCurent[i].QueuedNumber);
+            } else {
+                $('#rigth-top [item="' + (i + 1) + '"]').html('&nbsp;');
+            }
+        }
+        for (var i = 0; i < 8; i++) {
+            if (arrCurent.length >= i + 1) {
+                $('#rigth-bottom [item="' + (i + 1) + '"]').html(arrOther[i].QueuedNumber);
+            } else {
+                $('#rigth-bottom [item="' + (i + 1) + '"]').html('&nbsp;');
+            }
+        }
+    }
+</script>
+<style type="text/css">
+    #left {
+        width: 25%;
+        position: absolute;
+        left: 0px;
+        top: 50px;
+        height: calc(100% - 80px);
+    }
+
+        #left table {
+            height: 100%;
+            width: 100%;
+            vertical-align: middle;
+            text-align: center;
+        }
+
+            #left table [title] {
+                color: #FFF;
+                background-color: #334352;
+                font-size: 28px;
+                font-weight: bold;
+                height: 80px;
+            }
+
+            #left table [item] {
+                text-align: right;
+                padding-right: 33px;
+                font-weight: bold;
+                font-size: 36px;
+                color: #16ad59;
+                border-bottom: 1px solid #e7e7e7;
+                position: relative;
+            }
+
+                #left table [item]::after {
+                    content: "";
+                    position: absolute;
+                    width: 100px;
+                    left: 0px;
+                    bottom: 0px;
+                    font-size: 32px;
+                    border-bottom: 2px solid #ff005a;
+                }
+
+                #left table [item]::before {
+                    content: attr(item);
+                    width: 50px;
+                    left: 0px;
+                    text-align: center;
+                    color: #334352;
+                    font-size: 32px;
+                    position: absolute;
+                    height: 100%;
+                }
+
+    #rigth-top {
+        width: calc(75% - 30px);
+        position: absolute;
+        right: 0px;
+        top: 50px;
+        height: calc(56% - 50px);
+    }
+
+        #rigth-top table {
+            height: 100%;
+            width: 100%;
+            border-radius: 3px 3px 0px 0px;
+        }
+
+            #rigth-top table [title] {
+                text-align: left;
+                vertical-align: middle;
+                height: 80px;
+                position: relative;
+            }
+
+                #rigth-top table [title]::after {
+                    content: attr(title);
+                    position: relative;
+                    z-index: 2;
+                    left: 20px;
+                    color: #334352;
+                    font-weight: bold;
+                    font-size: 24px;
+                }
+
+                #rigth-top table [title]::before {
+                    content: " ";
+                    position: absolute;
+                    z-index: 1;
+                    background-color: #f6f6f6;
+                    border-radius: 3px 3px 0px 0px;
+                    height: calc(80px + 2px);
+                    width: calc(100% + 2px);
+                    left: -1px;
+                    top: -1px;
+                }
+
+            #rigth-top table [item] {
+                text-align: right;
+                padding-right: 33px;
+                font-weight: bold;
+                font-size: 28px;
+                color: #16ad59;
+                border-bottom: 1px solid #e7e7e7;
+                border-left: 1px solid #e7e7e7;
+                position: relative;
+                width: 25%;
+            }
+
+            #rigth-top table tr [item]:last-child {
+                border-right: 1px solid #e7e7e7;
+            }
+
+            #rigth-top table [item]::after {
+                content: attr(item);
+                width: 50px;
+                left: 0px;
+                text-align: center;
+                color: #334352;
+                font-size: 28px;
+                position: absolute;
+                height: 100%;
+            }
+
+    #rigth-bottom {
+        width: calc(75% - 30px);
+        position: absolute;
+        right: 0px;
+        bottom: 29px;
+        height: calc(44% - 50px);
+    }
+
+        #rigth-bottom table {
+            height: 100%;
+            width: 100%;
+            border-radius: 3px 3px 0px 0px;
+        }
+
+            #rigth-bottom table [title] {
+                text-align: left;
+                vertical-align: middle;
+                height: 80px;
+                position: relative;
+            }
+
+                #rigth-bottom table [title]::after {
+                    content: attr(title);
+                    position: relative;
+                    z-index: 2;
+                    left: 20px;
+                    color: #334352;
+                    font-weight: bold;
+                    font-size: 24px;
+                }
+
+                #rigth-bottom table [title]::before {
+                    content: " ";
+                    position: absolute;
+                    z-index: 1;
+                    background-color: #f6f6f6;
+                    border-radius: 3px 3px 0px 0px;
+                    height: calc(80px + 2px);
+                    width: calc(100% + 2px);
+                    left: -1px;
+                    top: -1px;
+                }
+
+            #rigth-bottom table [item] {
+                text-align: right;
+                padding-right: 20px;
+                font-weight: bold;
+                font-size: 28px;
+                color: #16ad59;
+                border-bottom: 1px solid #e7e7e7;
+                border-left: 1px solid #e7e7e7;
+                position: relative;
+                width: 25%;
+            }
+
+            #rigth-bottom table tr [item]:last-child {
+                border-right: 1px solid #e7e7e7;
+            }
+
+            #rigth-bottom table [item]::after {
+                content: attr(item);
+                width: 50px;
+                left: 0px;
+                text-align: center;
+                color: #334352;
+                font-size: 28px;
+                position: absolute;
+                height: 100%;
+            }
+</style>
+
+<!--<div style="width:100%;display:block;padding:15px 25px">
     <div style="width:100%;margin: 0 auto;">
         <span style="display: inline-block;font-size:20px;border:1px solid #CCC;background-color:#FFF;padding:10px;float:left;border:1px solid #000"><img src="../img/central_narco_logo.png" /></span>
 
@@ -35,7 +328,7 @@
     }
 </script>
 <style type="text/css">
-   
+
     .wrap_box strong {
         display: block;
         padding-top: 15px;
@@ -70,11 +363,11 @@
             .box-child span {
             width: 100%;
             border: 1px solid;
-            
+
             display: inline-block;
         }
         .box-child:last-child span.content {
             border-bottom: 1px solid
         }
-          
-  </style>
+
+  </style>-->

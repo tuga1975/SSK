@@ -125,7 +125,7 @@ public enum EnumDeviceIds
     MUBLabelPrinter = 9,
     UBLabelPrinter = 10,
     TTLabelPrinter = 11,
-    Speaker = 11
+    Speaker = 12
 }
 
 
@@ -412,6 +412,7 @@ public static class EnumIssuedCards
 public static class EnumOutcome
 {
     public const string Processing = "Processing...";
+    public const string GetQueue = "Get Queue Number";
 
 };
 

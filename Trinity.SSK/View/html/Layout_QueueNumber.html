@@ -7,17 +7,36 @@
     <meta charset="utf-8" />
     <link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet" />
     <link href="../bootstrap/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="../keyboard/jquery.ml-keyboard.css" rel="stylesheet" />
     <link href="../styles/main.css" rel="stylesheet" />
     <script src="../scripts/jquery-1.10.2.min.js"></script>
     <script src="../bootstrap/js/bootstrap.min.js"></script>
+    <script src="../keyboard/jquery.ml-keyboard.min.js"></script>
     <script src="../scripts/utils.js"></script>
     <script src="../scripts/lib.js"></script>
-
+    <script type="text/javascript">
+        function RefreshClock(date,time) {
+            $('#header [header-date]').html(date);
+            $('#header [header-time]').html(time);
+        }
+    </script>
 </head>
 <body>
-    <div id="parent-content" style="margin-top:-70px">
-        <div id="content">
-            <!--Place QueueNumber content page here-->
+    <div class="bodyContent">
+        <div id="header">
+            <div class="logo"></div>
+            <div class="header-right" style="background-image:none;width: calc(100% - 330px);text-align: right;height: 100%;">
+                <span style="color:#334352;font-size:28px;line-height: -11px;position: relative;top: -7px;margin-right: 20px;" header-date="">27 Apr, Monday</span>
+                <span style="color:#334352;font-size:48px;font-weight:bold;"  header-time="">09:33am</span>
+            </div>
+        </div>
+        <div id="parent-content">
+            <div id="content">
+                
+            </div>
+        </div>
+        <div class="loading">
+            <span class="loader"></span>
         </div>
     </div>
 </body>

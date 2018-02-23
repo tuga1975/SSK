@@ -17,6 +17,7 @@ namespace SSK.Utils
         {
             HubProxy.On<Queue>("QueueFinished", (queue) => {
                 // Xử lý status device
+                APIUtils.FormQueueNumber.RefreshQueueNumbers();
             });
         }
         public override void Connection_Closed()

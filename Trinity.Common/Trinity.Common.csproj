@@ -200,6 +200,12 @@
     <Content Include="View\html2canvas\jquery.plugin.html2canvas.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="View\keyboard\jquery.ml-keyboard.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="View\keyboard\jquery.ml-keyboard.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="View\scripts\jquery-1.10.2.min.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

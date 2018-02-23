@@ -117,6 +117,7 @@
     <Compile Include="DAL\DAL_DeviceStatus.cs" />
     <Compile Include="DAL\DAL_DrugResults.cs" />
     <Compile Include="DAL\DAL_GetCardInfo.cs" />
+    <Compile Include="DAL\DAL_QueueDetails.cs" />
     <Compile Include="DAL\DAL_SettingSystem.cs" />
     <Compile Include="DAL\DAL_Timeslots.cs" />
     <Compile Include="DAL\DAL_IssueCard.cs" />
@@ -216,9 +217,6 @@
     <Compile Include="DBContext\SMS_LOG.cs">
       <DependentUpon>SSK.tt</DependentUpon>
     </Compile>
-    <Compile Include="DBContext\sysdiagram.cs">
-      <DependentUpon>SSK.tt</DependentUpon>
-    </Compile>
     <Compile Include="DBContext\Timeslot.cs">
       <DependentUpon>SSK.tt</DependentUpon>
     </Compile>
@@ -240,6 +238,8 @@
     <Compile Include="DBContext\User_Profiles.cs">
       <DependentUpon>SSK.tt</DependentUpon>
     </Compile>
+    <Compile Include="Partial\Timeslot.cs" />
+    <Compile Include="Partial\Queue.cs" />
     <Compile Include="Partial\QueueDetail.cs" />
     <Compile Include="Partial\Appointment.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
