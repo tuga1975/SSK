@@ -28,7 +28,7 @@ namespace DutyOfficer
         private bool _isPrintFailMUB = false;
         private bool _isPrintFailTT = false;
         private bool _isPrintFailUB = false;
-
+        public static StationColorDevice _StationColorDevice;
 
         public JSCallCS(WebBrowser web)
         {
@@ -42,17 +42,19 @@ namespace DutyOfficer
             _printMUBAndTTLabel.OnPrintTTLabelsFailed += PrintTTLabels_OnPrintTTLabelFailed;
             _printMUBAndTTLabel.OnPrintMUBAndTTLabelsException += PrintMUBAndTTLabels_OnPrintTTLabelException;
             _printMUBAndTTLabel.OnPrintUBLabelsFailed += PrintUBLabels_OnPrintUBLabelFailed;
+            _StationColorDevice = new StationColorDevice();
         }
 
         public StationColorDevice GetStationClolorDevice()
         {
-            var dalDeviceStatus = new DAL_DeviceStatus();
-            StationColorDevice stationColorDevice = new StationColorDevice();
-            stationColorDevice.SSAColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStations.SSA) ? EnumColors.Green : EnumColors.Red;
-            stationColorDevice.SSKColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStations.SSK) ? EnumColors.Green : EnumColors.Red;
-            stationColorDevice.ESPColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStations.ESP) ? EnumColors.Green : EnumColors.Red;
-            stationColorDevice.UHPColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStations.UHP) ? EnumColors.Green : EnumColors.Red;
-            return stationColorDevice;
+            //var dalDeviceStatus = new DAL_DeviceStatus();
+            //StationColorDevice stationColorDevice = new StationColorDevice();
+            //stationColorDevice.SSAColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStations.SSA) ? EnumColors.Green : EnumColors.Red;
+            //stationColorDevice.SSKColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStations.SSK) ? EnumColors.Green : EnumColors.Red;
+            //stationColorDevice.ESPColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStations.ESP) ? EnumColors.Green : EnumColors.Red;
+            //stationColorDevice.UHPColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStations.UHP) ? EnumColors.Green : EnumColors.Red;
+            //return stationColorDevice;
+            return _StationColorDevice;
         }
 
         #region Queue

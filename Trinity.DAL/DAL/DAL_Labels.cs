@@ -70,6 +70,7 @@ namespace Trinity.DAL
                         dbLabel.PrintCount = 1;
                         dbLabel.PrintStatus = model.PrintStatus;
                         dbLabel.Message = model.Message;
+                        dbLabel.Queue_ID = queueID;
 
                         locallabelRepo.Add(dbLabel);
                     }
@@ -89,6 +90,7 @@ namespace Trinity.DAL
                         dbLabel.ReprintReason = model.ReprintReason;
                         dbLabel.PrintStatus = model.PrintStatus;
                         dbLabel.Message = model.Message;
+                        dbLabel.Queue_ID = queueID;
 
                         locallabelRepo.Update(dbLabel);
                     }
@@ -136,6 +138,7 @@ namespace Trinity.DAL
                         dbLabel.PrintCount = 1;
                         dbLabel.PrintStatus = model.PrintStatus;
                         dbLabel.Message = model.Message;
+                        dbLabel.Queue_ID = queueID;
 
                         centralizeLabelRepo.Add(dbLabel);
                     }
@@ -155,6 +158,7 @@ namespace Trinity.DAL
                         dbLabel.ReprintReason = model.ReprintReason;
                         dbLabel.PrintStatus = model.PrintStatus;
                         dbLabel.Message = model.Message;
+                        dbLabel.Queue_ID = queueID;
 
                         centralizeLabelRepo.Update(dbLabel);
                     }
@@ -174,6 +178,11 @@ namespace Trinity.DAL
             {
                 if (EnumAppConfig.IsLocal)
                 {
+                    //var lst = from l in _localUnitOfWork.DataContext.Labels
+                    //          join u in _localUnitOfWork.DataContext.Membership_Users on l.UserId equals u.UserId
+                    //          join q in _localUnitOfWork.DataContext.Queues on l.Queue_ID equals q.Queue_ID
+                    //          join t in _localUnitOfWork.DataContext.Timeslots on q.Timeslot_ID equals t.Timeslot_ID
+
                     var lstModels = _localUnitOfWork.DataContext.Labels.Include("Membership_Users")
                         .Where(l => l.Label_Type.Equals(EnumLabelType.MUB) || l.Label_Type.Equals(EnumLabelType.TT))
                         .Select(d => new BE.Label()
