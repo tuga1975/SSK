@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Trinity.Device;
 
 namespace SSK
 {
@@ -18,8 +19,17 @@ namespace SSK
             Application.SetCompatibleTextRenderingDefault(false);
             try
             {
-               Application.Run(new Main());
+                // Health checker
+                CameraMonitor.Start();
+                SpeakerMonitor.Start();
+                DocumentScannerMonitor.Start();
+                FingerprintReaderMonitor.Start();
+                BarcodeScannerMonitor.Start();
+                SmartCardReaderMonitor.Start();
+                ReceiptPrinterMonitor.Start();
+                LEDDisplayMonitor.Start();
 
+                Application.Run(new Main());
             }
             catch (Exception ex)
             {

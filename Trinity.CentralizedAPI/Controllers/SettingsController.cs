@@ -64,6 +64,22 @@ namespace Trinity.CentralizedAPI.Controllers
             return Ok(new DAL.DAL_Setting().GetOperationSettings());
         }
 
+        [HttpGet]
+        [Route("api/Setting/GetTimeslots")]
+        public IHttpActionResult GetTimeslots(string date)
+        {
+            var _date = DateTime.Now;
+            if (DateTime.TryParse(date,out _date))
+            {
+                return Ok(new DAL.DAL_Timeslots().GetTimeSlots(_date));
+            }
+            else
+            {
+                return null;
+            }
+          
+        }
+
         [HttpPost]
         [Route("api/Setting/UpdateSettingAndTimeSlot")]
         public IHttpActionResult UpdateSettingAndTimeSlot(BE.SettingUpdate settingUpdate)

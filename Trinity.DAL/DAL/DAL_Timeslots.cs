@@ -28,14 +28,23 @@ namespace Trinity.DAL
                     // if local have no data, get data from centralizedapi, then update local
                     if (timeslots == null && !EnumAppConfig.ByPassCentralizedDB)
                     {
-
+                        bool centralizeStatus;
+                        var centralData = CallCentralized.Get<List<Timeslot>>(EnumAPIParam.Setting, "GetTimeslots",out centralizeStatus, date.ToString());
+                        if (centralizeStatus)
+                        {
+                            //update local
+                            new DAL_Setting().InsertTimeslots(centralData);
+                            //return data
+                            return centralData;
+                        }
                     }
 
                     return timeslots;
                 }
                 else // request from centralized api
                 {
-                    return null;
+                    List<Timeslot> timeslots = _centralizedUnitOfWork.DataContext.Timeslots.Where(item => DbFunctions.TruncateTime(item.Date) == date.Date).OrderBy(item => item.StartTime).ToList();
+                    return timeslots;
                 }
             }
             catch (Exception ex)

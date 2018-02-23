@@ -25,10 +25,18 @@ namespace Trinity.BE
         }
 
         [DataMember]
-        public DateTime Datetime { get; set; }
+        public DateTime? Datetime { get; set; }
+
+        public string StrDateTime
+        {
+            get
+            {
+                return Datetime.HasValue ? Datetime.Value.ToString("dd/MM/yyyy") : string.Empty;
+            }
+        }
 
         [DataMember]
-        public DateTime Date
+        public DateTime? Date
         {
             get
             {

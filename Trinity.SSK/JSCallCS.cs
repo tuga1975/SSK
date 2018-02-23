@@ -50,7 +50,7 @@ namespace SSK
         }
         public void LoadNotications()
         {
-            
+
             Session currentSession = Session.Instance;
             Trinity.BE.User user = (Trinity.BE.User)currentSession[CommonConstants.USER_LOGIN];
 
@@ -96,14 +96,16 @@ namespace SSK
             if (appointment == null)
             {
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_MESSAGE, Message = "You have no appointment" });
+                return;
             }
 
             // get timeslots of appoitment day
             List<Timeslot> timeslots = new DAL_Timeslots().GetTimeSlots(appointment.Date);
 
-            if (timeslots ==null)
+            if (timeslots == null)
             {
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_MESSAGE, Message = "Have no timeslot to select. \nPlease contact Duty officer." });
+                return;
             }
 
             // get GetOperationSetting of appointment day
@@ -139,6 +141,7 @@ namespace SSK
             if (settingDetail == null)
             {
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_MESSAGE, Message = "Can not get timeslots. \nPlease contact Duty officer." });
+                return;
             }
 
             // set workingTimeshift
@@ -188,7 +191,7 @@ namespace SSK
 
         //private static void SetSelectedTime(Appointment appointment, List<Trinity.BE.WorkingShiftDetails> selectedTimes)
         //{
-            
+
 
         //    var item = selectedTimes.Where(d => appointment.Timeslot != null && appointment.Timeslot.StartTime != null && d.StartTime == appointment.Timeslot.StartTime.Value && d.EndTime == appointment.Timeslot.EndTime.Value).FirstOrDefault();
         //    if (item != null)
@@ -248,7 +251,7 @@ namespace SSK
             //var dalQueue = new DAL_QueueNumber();
             //if (dbAppointment != null)
             //{
-                //if (!dalQueue.CheckQueueExistToday(dbAppointment.UserId, EnumStations.SSK))
+            //if (!dalQueue.CheckQueueExistToday(dbAppointment.UserId, EnumStations.SSK))
             //    {
             //        //var data = JsonConvert.SerializeObject(new { IDAppointment, timeStart, timeEnd });
             //        new DAL_Appointments().UpdateBookingTime(IDAppointment, timeStart, timeEnd);
@@ -274,7 +277,7 @@ namespace SSK
 
         public void PrintAppointmentDetails(string appointmentId)
         {
-            
+
             var dalAppointment = new DAL_Appointments();
             Trinity.BE.Appointment appointment = new DAL_Appointments().GetAppmtDetails(Guid.Parse(appointmentId));
             //Trinity.BE.Appointment appointment = dalAppointment.GetAppointmentDetails(Guid.Parse(appointmentId));
@@ -291,7 +294,7 @@ namespace SSK
         {
             try
             {
-                
+
                 Session session = Session.Instance;
                 if (session.IsAuthenticated)
                 {
@@ -303,8 +306,8 @@ namespace SSK
                     {
                         User = user,
                         UserProfile = new DAL_UserProfile().GetProfile(user.UserId),
-                        Addresses = new DAL_UserProfile().GetAddByUserId(user.UserId) ,
-                        OtherAddress = new DAL_UserProfile().GetAddByUserId(user.UserId, true) ,
+                        Addresses = new DAL_UserProfile().GetAddByUserId(user.UserId),
+                        OtherAddress = new DAL_UserProfile().GetAddByUserId(user.UserId, true),
                     };
 
                     //profile model 
@@ -317,14 +320,19 @@ namespace SSK
             }
         }
 
+        public void LoadSupervisee()
+        {
+            var _suppervisee = new CodeBehind.Suppervisee(_web);
+            _suppervisee.Start();
+        }
         public void SaveProfile(string param, bool primaryInfoChange)
         {
             try
             {
-                
+
                 var rawData = JsonConvert.DeserializeObject<Trinity.BE.ProfileRawMData>(param);
                 var data = new Trinity.BE.ProfileRawMData().ToProfileModel(rawData);
-               
+                Session session = Session.Instance;
                 if (primaryInfoChange)
                 {
                     var updateUserResult = new DAL_User().Update(data.User);
@@ -335,6 +343,9 @@ namespace SSK
                     // dalUserprofile.UpdateUserProfile(data.UserProfile,data.User.UserId , true);
                     //send notifiy to duty officer
                     APIUtils.SignalR.SendAllDutyOfficer(data.User.UserId, "A supervisee has updated profile.", "Please check Supervisee's information!", NotificationType.Notification);
+                  
+                    session[CommonConstants.USER_LOGIN] = data.User;
+
                 }
                 else
                 {
@@ -343,7 +354,7 @@ namespace SSK
                     var updateUProfileResult = new DAL_UserProfile().UpdateProfile(userProfileModel);
                     // dalUserprofile.UpdateUserProfile(data.UserProfile, data.User.UserId, true);
                     //send notifiy to case officer
-                    APIUtils.SignalR.SendAllDutyOfficer(data.User.UserId,"A supervisee has updated profile.", "Please check Supervisee's information!", NotificationType.Notification);
+                    APIUtils.SignalR.SendAllDutyOfficer(data.User.UserId, "A supervisee has updated profile.", "Please check Supervisee's information!", NotificationType.Notification);
                 }
 
                 //load Supervisee page 
@@ -362,7 +373,7 @@ namespace SSK
             {
                 Session session = Session.Instance;
                 session[CommonConstants.PROFILE_DATA] = jsonData;
-                APIUtils.SignalR.SendAllDutyOfficer(null,"Supervisee's information changed!", "Please check the Supervisee's information!", NotificationType.Notification);
+                APIUtils.SignalR.SendAllDutyOfficer(null, "Supervisee's information changed!", "Please check the Supervisee's information!", NotificationType.Notification);
                 LoadPage("Document.html");
 
             }
@@ -375,12 +386,12 @@ namespace SSK
         }
         public void LoadScanDocumentForAbsence(string jsonData, string reason)
         {
-            
+
             try
             {
                 Session session = Session.Instance;
 
-              
+
                 var reasonModel = JsonConvert.DeserializeObject<Trinity.BE.Reason>(reason);
                 var result = new DAL_AbsenceReporting().SetInfo(reasonModel);
                 //var absenceModel = dalAbsence.SetInfo(reasonModel);
@@ -412,7 +423,7 @@ namespace SSK
 
         public int GetCountMyAbsence()
         {
-            
+
             Session session = Session.Instance;
             Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
 
@@ -428,7 +439,7 @@ namespace SSK
         // Reporting for Queue Number
         public void ReportingForQueueNumber()
         {
-            
+
             // get user info
             Session session = Session.Instance;
             Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
@@ -461,7 +472,7 @@ namespace SSK
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ABSENCE_MORE_THAN_3, Message = "You have been blocked for 3 or more absences \n Please report to the Duty Officer" });
                 //for testing purpose
                 //notify to officer
-                APIUtils.SignalR.SendAllDutyOfficer(user.UserId,"Supervisee got blocked for 3 or more absences", "Please check the Supervisee's information!", NotificationType.Caution);
+                APIUtils.SignalR.SendAllDutyOfficer(user.UserId, "Supervisee got blocked for 3 or more absences", "Please check the Supervisee's information!", NotificationType.Caution);
                 var dalUser = new DAL_User();
                 //active the user
                 //dalUser.ChangeUserStatus(user.UserId, EnumUserStatuses.New);
@@ -474,7 +485,7 @@ namespace SSK
             }
             else if (countAbsence > 0 && countAbsence < 3)
             {
-                
+
                 var listAppointment = new DAL_Appointments().GetAbsentAppointments(user.UserId);
                 var eventCenter = Trinity.Common.Common.EventCenter.Default;
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ABSENCE_LESS_THAN_3, Message = "You have been absent for " + countAbsence + " times.\nPlease provide reasons and the supporting documents." });
@@ -575,11 +586,11 @@ namespace SSK
 
         public void SaveReasonForQueue(/*string data,*/ string reason, string selectedID)
         {
-            
+
             //send message to case office if no support document
             if (reason == "No Supporting Document")
             {
-                APIUtils.SignalR.SendAllDutyOfficer(null,"Supervisee get queue without supporting document", "Please check the Supervisee's information!", NotificationType.Notification);
+                APIUtils.SignalR.SendAllDutyOfficer(null, "Supervisee get queue without supporting document", "Please check the Supervisee's information!", NotificationType.Notification);
             }
             var charSeparators = new char[] { ',' };
             var listSplitID = selectedID.Split(charSeparators, StringSplitOptions.RemoveEmptyEntries);
@@ -613,7 +624,7 @@ namespace SSK
                 {
                     var absenceId = absenceModel.ID;
                     dalAppointment.UpdateAbsenceReason(item.ID, absenceModel.ID);
-                 
+
                     //dalAppointment.UpdateReason(item.ID, absenceModel.ID);
                 }
 
@@ -622,14 +633,14 @@ namespace SSK
             //send notify to case officer
             Session currentSession = Session.Instance;
             Trinity.BE.User user = (Trinity.BE.User)currentSession[CommonConstants.USER_LOGIN];
-            APIUtils.SignalR.SendAllDutyOfficer(user.UserId,user.Name + " has provided absent reason", user.Name + " has provided absent reason.", NotificationType.Notification);
+            APIUtils.SignalR.SendAllDutyOfficer(user.UserId, user.Name + " has provided absent reason", user.Name + " has provided absent reason.", NotificationType.Notification);
             ReportingForQueueNumber();
             LoadPage("Supervisee.html");
         }
 
         public void UpdateAbsenceAfterScanDoc()
         {
-            
+
             Session session = Session.Instance;
             Trinity.BE.AbsenceReporting absenceData = (Trinity.BE.AbsenceReporting)session[CommonConstants.ABSENCE_REPORTING_DATA];
             //get scanned data from session
