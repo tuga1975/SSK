@@ -18,6 +18,7 @@ namespace Trinity.DAL.DBContext
         public string Station { get; set; }
         public string Status { get; set; }
         public string Message { get; set; }
+        public Nullable<System.DateTime> LastUpdatedDate { get; set; }
     
         public virtual Queue Queue { get; set; }
     }
