@@ -46,70 +46,71 @@ namespace Trinity.DAL
             try
             {
                 Label dbLabel = null;
+                Guid labelID_NewGuid = Guid.NewGuid();
                 if (EnumAppConfig.IsLocal)
                 {
-                    bool centralizeStatus;
-                    var centralUpdate = CallCentralized.Post<Label>(EnumAPIParam.Label, EnumAPIParam.UpdateLabel, out centralizeStatus, model);
-                    if (centralizeStatus)
+                    var locallabelRepo = _localUnitOfWork.GetRepository<Label>();
+                    dbLabel = _localUnitOfWork.DataContext.Labels.FirstOrDefault(d => d.UserId == model.UserId && d.Label_Type.Equals(model.Label_Type));
+                    if (dbLabel == null)
                     {
-                        var locallabelRepo = _localUnitOfWork.GetRepository<Label>();
-                        dbLabel = _localUnitOfWork.DataContext.Labels.FirstOrDefault(d => d.UserId == model.UserId && d.Label_Type.Equals(model.Label_Type));
-                        if (dbLabel == null)
-                        {
-                            dbLabel = new Label();
-                            if (!EnumAppConfig.ByPassCentralizedDB && centralUpdate != null)
-                            {
-                                dbLabel.Label_ID = centralUpdate.Label_ID;
-                            }
-                            else
-                            {
-                                dbLabel.Label_ID = Guid.NewGuid();
-                            }
+                        dbLabel = new Label();
+                        dbLabel.Label_ID = labelID_NewGuid;
+                        dbLabel.Label_Type = model.Label_Type;
+                        dbLabel.CompanyName = model.CompanyName;
+                        dbLabel.MarkingNo = model.MarkingNo;
+                        dbLabel.DrugType = model.DrugType;
+                        dbLabel.UserId = model.UserId;
+                        dbLabel.NRIC = model.NRIC;
+                        dbLabel.Name = model.Name;
+                        dbLabel.Date = model.Date.Value;
+                        dbLabel.QRCode = model.QRCode;
+                        dbLabel.LastStation = model.LastStation;
+                        dbLabel.ReprintReason = model.ReprintReason;
+                        dbLabel.PrintCount = 1;
+                        dbLabel.PrintStatus = model.PrintStatus;
+                        dbLabel.Message = model.Message;
 
-                            dbLabel.Label_Type = model.Label_Type;
-                            dbLabel.CompanyName = model.CompanyName;
-                            dbLabel.MarkingNo = model.MarkingNo;
-                            dbLabel.DrugType = model.DrugType;
-                            dbLabel.UserId = model.UserId;
-                            dbLabel.NRIC = model.NRIC;
-                            dbLabel.Name = model.Name;
-                            dbLabel.Date = model.Date.Value;
-                            dbLabel.QRCode = model.QRCode;
-                            dbLabel.LastStation = model.LastStation;
-                            dbLabel.ReprintReason = model.ReprintReason;
-                            dbLabel.PrintCount = 1;
-                            dbLabel.PrintStatus = model.PrintStatus;
-                            dbLabel.Message = model.Message;
+                        locallabelRepo.Add(dbLabel);
+                    }
+                    else
+                    {
+                        dbLabel.Label_Type = model.Label_Type;
+                        dbLabel.CompanyName = model.CompanyName;
+                        dbLabel.MarkingNo = model.MarkingNo;
+                        dbLabel.DrugType = model.DrugType;
+                        dbLabel.UserId = model.UserId;
+                        dbLabel.NRIC = model.NRIC;
+                        dbLabel.Name = model.Name;
+                        dbLabel.Date = model.Date.Value;
+                        dbLabel.QRCode = model.QRCode;
+                        dbLabel.LastStation = model.LastStation;
+                        dbLabel.PrintCount += 1;
+                        dbLabel.ReprintReason = model.ReprintReason;
+                        dbLabel.PrintStatus = model.PrintStatus;
+                        dbLabel.Message = model.Message;
 
-                            locallabelRepo.Add(dbLabel);
-                        }
-                        else
-                        {
-                            dbLabel.Label_Type = model.Label_Type;
-                            dbLabel.CompanyName = model.CompanyName;
-                            dbLabel.MarkingNo = model.MarkingNo;
-                            dbLabel.DrugType = model.DrugType;
-                            dbLabel.UserId = model.UserId;
-                            dbLabel.NRIC = model.NRIC;
-                            dbLabel.Name = model.Name;
-                            dbLabel.Date = model.Date.Value;
-                            dbLabel.QRCode = model.QRCode;
-                            dbLabel.LastStation = model.LastStation;
-                            dbLabel.PrintCount += 1;
-                            dbLabel.ReprintReason = model.ReprintReason;
-                            dbLabel.PrintStatus = model.PrintStatus;
-                            dbLabel.Message = model.Message;
+                        locallabelRepo.Update(dbLabel);
+                    }
 
-                            locallabelRepo.Update(dbLabel);
-                        }
+                    _localUnitOfWork.Save();
 
-                        _localUnitOfWork.Save();
-
+                    if (EnumAppConfig.ByPassCentralizedDB)
+                    {
                         return dbLabel;
                     }
                     else
                     {
-                        throw new Exception(EnumMessage.NotConnectCentralized);
+
+                        bool centralizeStatus;
+                        var centralUpdate = CallCentralized.Post<Label>(EnumAPIParam.Label, EnumAPIParam.UpdateLabel, out centralizeStatus, model);
+                        if (centralizeStatus)
+                        {                            
+                            return centralUpdate;
+                        }
+                        else
+                        {
+                            throw new Exception(EnumMessage.NotConnectCentralized);
+                        }
                     }
                 }
                 else
@@ -119,7 +120,7 @@ namespace Trinity.DAL
                     if (dbLabel == null)
                     {
                         dbLabel = new Label();
-                        dbLabel.Label_ID = Guid.NewGuid();
+                        dbLabel.Label_ID = labelID_NewGuid;
                         dbLabel.Label_Type = model.Label_Type;
                         dbLabel.CompanyName = model.CompanyName;
                         dbLabel.MarkingNo = model.MarkingNo;
@@ -194,7 +195,7 @@ namespace Trinity.DAL
                         {
                             return centralUpdate;
                         }
-                        return lstModels.ToList(); 
+                        return lstModels.ToList();
                     }
                 }
                 else
