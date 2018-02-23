@@ -17,12 +17,13 @@ namespace Trinity.DAL
 
         public List<Timeslot> GetTimeSlots(DateTime date)
         {
+            date = date.Date;
             try
             {
                 // get data from local db
                 if (EnumAppConfig.IsLocal)
                 {
-                    List<Timeslot> timeslots = _localUnitOfWork.DataContext.Timeslots.Where(item => DbFunctions.TruncateTime(item.Date) == date.Date).OrderBy(item => item.StartTime).ToList();
+                    List<Timeslot> timeslots = _localUnitOfWork.DataContext.Timeslots.Where(item => DbFunctions.TruncateTime(item.Date) == date).OrderBy(item => item.StartTime).ToList();
 
                     // if local have no data, get data from centralizedapi, then update local
                     if (timeslots == null && !EnumAppConfig.ByPassCentralizedDB)

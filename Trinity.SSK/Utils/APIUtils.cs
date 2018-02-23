@@ -10,6 +10,8 @@ class APIUtils
     public static SSK.Utils.Printer Printer { get; set; }
     public static SSK.Utils.TextToSpeech TextToSpeech { get; set; }
 
+    public static SSK.FormQueueNumber FormQueueNumber { get; set; }
+
     public static void Start()
     {
         SignalR = new SSK.Utils.SignalR();

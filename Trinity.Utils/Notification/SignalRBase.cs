@@ -32,6 +32,13 @@ namespace Trinity.Utils.Notification
             ConnectAsync();
             Lib.SignalR = this;
         }
+        private async Task WaitConnectFalse()
+        {
+            while (!IsConnected)
+            {
+                await Task.Delay(1000);
+            }
+        }
         private async void ConnectAsync()
         {
             Connection = new HubConnection(EnumAppConfig.NotificationServerUrl + "/signalr");
@@ -64,24 +71,32 @@ namespace Trinity.Utils.Notification
         public abstract void IncomingEvents();
         public abstract void Connection_Closed();
 
-        public void UserLogined(string userID)
+        public async void UserLogined(string userID)
         {
+            await WaitConnectFalse();
+
             if (IsConnected)
-                HubProxy.Invoke("UserLogined", userID);
+                await HubProxy.Invoke("UserLogined", userID);
         }
-        public void UserLogout(string userID)
+        public async void UserLogout(string userID)
         {
+            await WaitConnectFalse();
+
             if (IsConnected)
-                HubProxy.Invoke("UserLogout", userID);
+                await HubProxy.Invoke("UserLogout", userID);
         }
 
-        public void DeviceStatusUpdate(int deviceId, EnumDeviceStatuses[] deviceStatuses)
+        public async void DeviceStatusUpdate(int deviceId, EnumDeviceStatuses[] deviceStatuses)
         {
+            await WaitConnectFalse();
+
             if (IsConnected)
-                HubProxy.Invoke("DeviceStatusUpdate", deviceId, deviceStatuses);
+                await HubProxy.Invoke("DeviceStatusUpdate", deviceId, deviceStatuses);
         }
         public async void SendToDutyOfficer(string UserId, string DutyOfficerID, string Subject, string Content, string notificationType)
         {
+            await WaitConnectFalse();
+
             if (IsConnected)
             {
                 string IDMessage = await HubProxy.Invoke<string>("SendToDutyOfficer", UserId, DutyOfficerID, Subject, Content, notificationType);
@@ -97,6 +112,8 @@ namespace Trinity.Utils.Notification
         }
         public async void SendAllDutyOfficer(string UserId, string Subject, string Content, string notificationType)
         {
+            await WaitConnectFalse();
+
             if (IsConnected)
             {
                 List<Trinity.BE.Notification> arrraySend = await HubProxy.Invoke<List<Trinity.BE.Notification>>("SendAllDutyOfficer", UserId, Subject, Content, notificationType);

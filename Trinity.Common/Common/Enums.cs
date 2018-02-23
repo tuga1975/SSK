@@ -411,6 +411,7 @@ public static class EnumIssuedCards
 public static class EnumOutcome
 {
     public const string Processing = "Processing...";
+    public const string GetQueue = "Get Queue Number";
 
 };
 

@@ -95,13 +95,6 @@ namespace SSK
             {
                 LayerWeb.InvokeScript("alertBookAppointment", e.Message);
             }
-            if (e.Name == EventNames.FINGERPRINT_FAILED_MORE_THAN_3)
-            {
-                NavigateTo(NavigatorEnums.Authentication_SmartCard);
-                LayerWeb.InvokeScript("showMessage", e.Message);
-
-            }
-
         }
 
         /// <summary>
@@ -184,21 +177,21 @@ namespace SSK
             if (_isFirstTimeLoaded)
             {
                 // Start page
-                //NavigateTo(NavigatorEnums.Authentication_SmartCard);
+                NavigateTo(NavigatorEnums.Authentication_SmartCard);
 
 
                 ////// For testing purpose
-                Session session = Session.Instance;
+                //Session session = Session.Instance;
                 ////////Supervisee
-                Trinity.BE.User user = new DAL_User().GetUserByUserId("bb67863c-c330-41aa-b397-c220428ad16x").Data;
+                //Trinity.BE.User user = new DAL_User().GetUserByUserId("bb67863c-c330-41aa-b397-c220428ad16x").Data;
                 //////// Duty Officer
                 //////Trinity.BE.User user = new DAL_User().GetUserByUserId("ead039f9-b9a1-45bb-8186-0bb7248aafac", true);
-                session[CommonConstants.USER_LOGIN] = user;
-                session.IsSmartCardAuthenticated = true;
-                session.IsFingerprintAuthenticated = true;
+                ///session[CommonConstants.USER_LOGIN] = user;
+                //session.IsSmartCardAuthenticated = true;
+                //session.IsFingerprintAuthenticated = true;
 
                 //NavigateTo(NavigatorEnums.Authentication_Fingerprint);
-                NavigateTo(NavigatorEnums.Supervisee);
+                //NavigateTo(NavigatorEnums.Supervisee);
                 //NavigateTo(NavigatorEnums.Authentication_NRIC);                
 
                 _isFirstTimeLoaded = false;
@@ -238,7 +231,10 @@ namespace SSK
                 // Send Notification to duty officer
                 APIUtils.SignalR.SendAllDutyOfficer(null,message, message, NotificationType.Error);
                 // show message box to user
-                MessageBox.Show(message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //MessageBox.Show(message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                _jsCallCS.PopupMessage("Authentication failed", message);
+
                 // reset counter
                 _smartCardFailed = 0;
                 // display failed on UI
@@ -375,7 +371,9 @@ namespace SSK
                 // Send Notification to duty officer
                 APIUtils.SignalR.SendAllDutyOfficer(user.UserId,"Fingerprint Authentication failed", errorMessage, NotificationType.Error);
 
-                EventCenter.Default.RaiseEvent(new EventInfo {Name=EventNames.FINGERPRINT_FAILED_MORE_THAN_3 ,Code=-1,Message= "Fingerprint's Authenication failed!\n Please contact your officer."});
+                _jsCallCS.PopupMessage("Authentication failed", "Fingerprint's Authenication failed!<br /> Please contact your officer.");
+                NavigateTo(NavigatorEnums.Authentication_SmartCard);
+                
 
                 //for testing purpose
                 // Pause for 1 second and goto Facial Login Screen
@@ -503,9 +501,9 @@ namespace SSK
 
         private void Main_Load(object sender, EventArgs e)
         {
-            FormQueueNumber f = FormQueueNumber.GetInstance();
-            f.ShowOnSecondaryScreen();
-            f.Show();
+            APIUtils.FormQueueNumber = FormQueueNumber.GetInstance();
+            APIUtils.FormQueueNumber.ShowOnSecondaryScreen();
+            APIUtils.FormQueueNumber.Show();
         }
     }
 }

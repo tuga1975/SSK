@@ -21,14 +21,22 @@ namespace Trinity.DAL.DBContext
         }
     
         public System.Guid Queue_ID { get; set; }
-        public System.Guid Appointment_ID { get; set; }
+        public string UserId { get; set; }
+        public string Timeslot_ID { get; set; }
+        public Nullable<System.Guid> Appointment_ID { get; set; }
         public string CurrentStation { get; set; }
         public string Outcome { get; set; }
         public System.DateTime CreatedTime { get; set; }
         public string QueuedNumber { get; set; }
+        public string Created_By { get; set; }
+        public string Note { get; set; }
+        public Nullable<System.DateTime> LastUpdatedDate { get; set; }
     
         public virtual Appointment Appointment { get; set; }
+        public virtual Membership_Users Membership_Users { get; set; }
+        public virtual Membership_Users Membership_Users1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<QueueDetail> QueueDetails { get; set; }
+        public virtual Timeslot Timeslot { get; set; }
     }
 }
