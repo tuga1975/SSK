@@ -45,8 +45,9 @@ namespace SSK
         }
         #endregion
 
-        public void PopupMessage(string title,string content) {
-            this._web.LoadPopupHtml("PopupMessage.html",new object[] { title, content });
+        public void PopupMessage(string title, string content)
+        {
+            this._web.LoadPopupHtml("PopupMessage.html", new object[] { title, content });
         }
         public void LoadNotications()
         {
@@ -163,7 +164,7 @@ namespace SSK
         {
             try
             {
-                
+
                 List<WorkingShiftDetails> returnValue = timeslots.Where(item => item.Category == timeshift)
                     .Select(item => new WorkingShiftDetails()
                     {
@@ -174,7 +175,7 @@ namespace SSK
                         IsSelected = selected_Timeslot_ID == item.Timeslot_ID,
                         Category = item.Category
                     }).OrderBy(item => item.StartTime).ToList();
-               
+
                 return returnValue;
             }
             catch (Exception ex)
@@ -349,7 +350,7 @@ namespace SSK
                     // dalUserprofile.UpdateUserProfile(data.UserProfile,data.User.UserId , true);
                     //send notifiy to duty officer
                     APIUtils.SignalR.SendAllDutyOfficer(data.User.UserId, "A supervisee has updated profile.", "Please check Supervisee's information!", NotificationType.Notification);
-                  
+
                     session[CommonConstants.USER_LOGIN] = data.User;
 
                 }
@@ -503,7 +504,7 @@ namespace SSK
 
         private void GetMyQueueNumber()
         {
-            
+
             // get user info
             Session session = Session.Instance;
             Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
@@ -544,7 +545,7 @@ namespace SSK
                     }
                     else
                     {
-                        queueNumber = _dalQueue.InsertQueueNumberFromDO(appointment.UserId, EnumStations.SSK,user.UserId);
+                        queueNumber = _dalQueue.InsertQueueNumberFromDO(appointment.UserId, EnumStations.SSK, user.UserId);
                         var eventCenter = Trinity.Common.Common.EventCenter.Default;
                         eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_MESSAGE, Message = "Your queue number is:" + queueNumber.QueuedNumber });
                     }
@@ -558,7 +559,7 @@ namespace SSK
                 ////check queue exist
                 //if (!_dalQueue.IsUserAlreadyQueue(userSupervise.UserId, DateTime.Today))
                 //{
-                    
+
                 //    if (appointment.Timeslot_ID != null)
                 //    {
                 //        queueNumber = _dalQueue.InsertQueueNumber(appointment.ID, appointment.UserId, EnumStations.SSK);
@@ -674,17 +675,20 @@ namespace SSK
         {
             // reset session value
             Session session = Session.Instance;
+            var user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+            if (user != null)
+            {
+                APIUtils.SignalR.UserLogout(((Trinity.BE.User)session[CommonConstants.USER_LOGIN]).UserId);
 
-            APIUtils.SignalR.UserLogout(((Trinity.BE.User)session[CommonConstants.USER_LOGIN]).UserId);
+                session.IsSmartCardAuthenticated = false;
+                session.IsFingerprintAuthenticated = false;
+                session[CommonConstants.USER_LOGIN] = null;
+                session[CommonConstants.PROFILE_DATA] = null;
 
-            session.IsSmartCardAuthenticated = false;
-            session.IsFingerprintAuthenticated = false;
-            session[CommonConstants.USER_LOGIN] = null;
-            session[CommonConstants.PROFILE_DATA] = null;
-
-            //
-            // RaiseLogOutCompletedEvent
-            RaiseLogOutCompletedEvent();
+                //
+                // RaiseLogOutCompletedEvent
+                RaiseLogOutCompletedEvent();
+            }
         }
     }
 
