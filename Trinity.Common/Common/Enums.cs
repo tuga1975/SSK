@@ -125,7 +125,7 @@ public enum EnumDeviceIds
     MUBLabelPrinter = 9,
     UBLabelPrinter = 10,
     TTLabelPrinter = 11,
-    Speaker = 11
+    Speaker = 12
 }
 
 

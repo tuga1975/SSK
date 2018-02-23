@@ -31,7 +31,7 @@ namespace Trinity.Device
             try
             {
                 // get statuses
-                var statuses = SpeakerUtil.Instance.GetDeviceStatus();
+                var statuses = LEDDisplayUtil.Instance.GetDeviceStatus();
 
                 // update local ApplicationDevice_Status
                 DAL_DeviceStatus dAL_DeviceStatus = new DAL_DeviceStatus();
