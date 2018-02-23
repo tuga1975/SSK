@@ -319,6 +319,8 @@ namespace Trinity.DAL
                 {
                     timeSlot.Category = EnumTimeshift.Afternoon;
                 }
+
+                //check exist timeslot before insert
                 var _endTime = fromTime.Value.Add(new TimeSpan(0, duration.Value, 0));
                 var exist = _localUnitOfWork.DataContext.Timeslots.Any(t => DbFunctions.TruncateTime(t.Date) == date.Date && t.StartTime == fromTime.Value && t.EndTime==_endTime) ? true : false;
                 
