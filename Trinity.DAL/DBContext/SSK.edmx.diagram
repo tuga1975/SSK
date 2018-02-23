@@ -8,7 +8,6 @@
         <EntityTypeShape EntityType="SSKModel.AbsenceReporting" Width="1.5" PointX="0.75" PointY="31.875" />
         <EntityTypeShape EntityType="SSKModel.ActionLog" Width="1.5" PointX="3" PointY="37.625" />
         <EntityTypeShape EntityType="SSKModel.Address" Width="1.5" PointX="3.75" PointY="7.625" />
-        <EntityTypeShape EntityType="SSKModel.ApplicationDevice_Status" Width="1.5" PointX="10" PointY="5.875" />
         <EntityTypeShape EntityType="SSKModel.Appointment" Width="1.5" PointX="3" PointY="25.375" />
         <EntityTypeShape EntityType="SSKModel.APS_USER_ACT_LOG" Width="1.5" PointX="8.25" PointY="20" />
         <EntityTypeShape EntityType="SSKModel.Device" Width="1.5" PointX="7.75" PointY="6.125" />
@@ -29,7 +28,6 @@
         <EntityTypeShape EntityType="SSKModel.OperationSetting" Width="1.5" PointX="5.75" PointY="1.125" />
         <EntityTypeShape EntityType="SSKModel.OperationSettings_ChangeHist" Width="1.5" PointX="8" PointY="2.75" />
         <EntityTypeShape EntityType="SSKModel.QueueDetail" Width="1.5" PointX="7.5" PointY="31" />
-        <EntityTypeShape EntityType="SSKModel.Queue" Width="1.5" PointX="5.25" PointY="30.75" />
         <EntityTypeShape EntityType="SSKModel.Security_QA" Width="1.5" PointX="3" PointY="45.625" />
         <EntityTypeShape EntityType="SSKModel.SentMessage" Width="1.5" PointX="8.25" PointY="26.375" />
         <EntityTypeShape EntityType="SSKModel.Setting" Width="1.5" PointX="2.75" PointY="0.75" />
@@ -42,10 +40,8 @@
         <AssociationConnector Association="SSKModel.FK_ActionLog_Membership_Users1" />
         <AssociationConnector Association="SSKModel.FK_User_Profiles_Addresses2" />
         <AssociationConnector Association="SSKModel.FK_User_Profiles_Addresses3" />
-        <AssociationConnector Association="SSKModel.FK_ApplicationDevice_Status_Devices" />
         <AssociationConnector Association="SSKModel.FK_Appointments_Membership_Users" />
         <AssociationConnector Association="SSKModel.FK_Appointments_Timeslots" />
-        <AssociationConnector Association="SSKModel.FK_Queues_Appointments" />
         <AssociationConnector Association="SSKModel.FK_APS_USER_ACT_LOG_User_Profiles" />
         <AssociationConnector Association="SSKModel.FK_IssuedCards_Membership_Users" />
         <AssociationConnector Association="SSKModel.FK_Labels_Membership_Users" />
@@ -60,8 +56,13 @@
         <AssociationConnector Association="SSKModel.FK_MsgRecipients_SentMessages" />
         <AssociationConnector Association="SSKModel.FK_MsgRecipients_User_Profiles" />
         <AssociationConnector Association="SSKModel.FK_OperationSettings_ChangeHist_OperationSettings" />
-        <AssociationConnector Association="SSKModel.FK_QueueDetails_Queues" />
         <AssociationConnector Association="SSKModel.FK_SentMessages_User_Profiles" />
+        <EntityTypeShape EntityType="SSKModel.ApplicationDevice_Status" Width="1.5" PointX="10" PointY="5.875" />
+        <AssociationConnector Association="SSKModel.FK_ApplicationDevice_Status_Devices" />
+        <EntityTypeShape EntityType="SSKModel.Queue" Width="1.5" PointX="5.25" PointY="28.25" />
+        <AssociationConnector Association="SSKModel.FK_Queues_Appointments" />
+        <AssociationConnector Association="SSKModel.FK_Queues_Membership_Users" />
+        <AssociationConnector Association="SSKModel.FK_QueueDetails_Queues" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -3,8 +3,9 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Trinity.DAL;
+using Trinity.Util;
 
-namespace Trinity.Util
+namespace Trinity.Device
 {
     public static class DocumentScannerMonitor
     {
@@ -30,11 +31,11 @@ namespace Trinity.Util
             try
             {
                 // get statuses
-                var statuses = DocumentScannerUtils.Instance.GetDeviceStatus();
+                var statuses = DocumentScannerUtil.Instance.GetDeviceStatus();
 
                 // update local ApplicationDevice_Status
                 DAL_DeviceStatus dAL_DeviceStatus = new DAL_DeviceStatus();
-                dAL_DeviceStatus.Update((int)EnumDeviceIds.SmartCardPrinter, statuses);
+                dAL_DeviceStatus.Update((int)EnumDeviceIds.DocumentScanner, statuses);
             }
             catch (Exception ex)
             {

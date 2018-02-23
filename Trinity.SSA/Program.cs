@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Trinity.Device;
 
 namespace SSA
 {
@@ -16,6 +17,15 @@ namespace SSA
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+
+            // Health checker
+            CameraMonitor.Start();
+            DocumentScannerMonitor.Start();
+            FingerprintReaderMonitor.Start();
+            SmartCardReaderMonitor.Start();
+            MUBLabelPrinterMonitor.Start();
+            TTLabelPrinterMonitor.Start();
+
             Application.Run(new Main());
         }
     }

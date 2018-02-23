@@ -1,17 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Trinity.BE;
-using Trinity.Common;
 using Trinity.DAL;
+using Trinity.Util;
 
 namespace Trinity.Device
 {
-    public static class FingerprintReaderMonitor
+    public static class BarcodeScannerMonitor
     {
         public static bool Start()
         {
@@ -25,7 +21,7 @@ namespace Trinity.Device
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("FingerprintReaderMonitor.Start exception: " + ex.ToString());
+                Debug.WriteLine("BarcodeScannerMonitor.Start exception: " + ex.ToString());
                 return false;
             }
         }
@@ -34,17 +30,16 @@ namespace Trinity.Device
         {
             try
             {
-                Debug.WriteLine("FingerprintReaderMonitor.ReportDeviceStatus " + DateTime.Now.ToString());
-                // get status
-                var status = FingerprintReaderUtil.Instance.GetDeviceStatus();
+                // get statuses
+                var statuses = BarcodeScannerUtil.Instance.GetDeviceStatus();
 
                 // update local ApplicationDevice_Status
                 DAL_DeviceStatus dAL_DeviceStatus = new DAL_DeviceStatus();
-                dAL_DeviceStatus.Update((int)EnumDeviceIds.FingerprintScanner, status);
+                dAL_DeviceStatus.Update((int)EnumDeviceIds.BarcodeScanner, statuses);
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("FingerprintReaderMonitor.ReportDeviceStatus exception: " + ex.ToString());
+                Debug.WriteLine("BarcodeScannerMonitor.ReportDeviceStatus exception: " + ex.ToString());
             }
         }
     }

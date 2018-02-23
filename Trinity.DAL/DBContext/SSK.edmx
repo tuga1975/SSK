@@ -42,7 +42,7 @@
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
-          <Property Name="Station" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="Station" Type="nvarchar" MaxLength="50" />
           <Property Name="DeviceID" Type="int" />
           <Property Name="StatusCode" Type="int" Nullable="false" />
           <Property Name="StatusMessage" Type="nvarchar" MaxLength="100" Nullable="false" />
@@ -146,6 +146,7 @@
             <PropertyRef Name="Label_ID" />
           </Key>
           <Property Name="Label_ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Queue_ID" Type="uniqueidentifier" />
           <Property Name="Label_Type" Type="varchar" MaxLength="5" Nullable="false" />
           <Property Name="CompanyName" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="MarkingNo" Type="varchar" MaxLength="15" Nullable="false" />
@@ -318,17 +319,22 @@
           <Property Name="Station" Type="varchar" MaxLength="20" Nullable="false" />
           <Property Name="Status" Type="varchar" MaxLength="20" />
           <Property Name="Message" Type="nvarchar" MaxLength="50" />
+          <Property Name="LastUpdatedDate" Type="datetime" />
         </EntityType>
         <EntityType Name="Queues">
           <Key>
             <PropertyRef Name="Queue_ID" />
           </Key>
           <Property Name="Queue_ID" Type="uniqueidentifier" Nullable="false" />
-          <Property Name="Appointment_ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="Appointment_ID" Type="uniqueidentifier" />
           <Property Name="CurrentStation" Type="varchar" MaxLength="20" Nullable="false" />
           <Property Name="Outcome" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="CreatedTime" Type="datetime" Nullable="false" />
           <Property Name="QueuedNumber" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="Created_By" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="Note" Type="nvarchar" MaxLength="255" />
+          <Property Name="LastUpdatedDate" Type="datetime" />
         </EntityType>
         <EntityType Name="Security_QA">
           <Key>
@@ -695,7 +701,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Queues_Appointments">
-          <End Role="Appointments" Type="Self.Appointments" Multiplicity="1" />
+          <End Role="Appointments" Type="Self.Appointments" Multiplicity="0..1" />
           <End Role="Queues" Type="Self.Queues" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Appointments">
@@ -703,6 +709,18 @@
             </Principal>
             <Dependent Role="Queues">
               <PropertyRef Name="Appointment_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Queues_Membership_Users">
+          <End Role="Membership_Users" Type="Self.Membership_Users" Multiplicity="1" />
+          <End Role="Queues" Type="Self.Queues" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Membership_Users">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="Queues">
+              <PropertyRef Name="Created_By" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -871,6 +889,10 @@
             <End Role="Appointments" EntitySet="Appointments" />
             <End Role="Queues" EntitySet="Queues" />
           </AssociationSet>
+          <AssociationSet Name="FK_Queues_Membership_Users" Association="Self.FK_Queues_Membership_Users">
+            <End Role="Membership_Users" EntitySet="Membership_Users" />
+            <End Role="Queues" EntitySet="Queues" />
+          </AssociationSet>
           <AssociationSet Name="FK_SentMessages_User_Profiles" Association="Self.FK_SentMessages_User_Profiles">
             <End Role="User_Profiles" EntitySet="User_Profiles" />
             <End Role="SentMessages" EntitySet="SentMessages" />
@@ -896,7 +918,6 @@
           <EntitySet Name="AbsenceReportings" EntityType="SSKModel.AbsenceReporting" />
           <EntitySet Name="ActionLogs" EntityType="SSKModel.ActionLog" />
           <EntitySet Name="Addresses" EntityType="SSKModel.Address" />
-          <EntitySet Name="ApplicationDevice_Status" EntityType="SSKModel.ApplicationDevice_Status" />
           <EntitySet Name="Appointments" EntityType="SSKModel.Appointment" />
           <EntitySet Name="APS_USER_ACT_LOG" EntityType="SSKModel.APS_USER_ACT_LOG" />
           <EntitySet Name="Devices" EntityType="SSKModel.Device" />
@@ -917,7 +938,6 @@
           <EntitySet Name="OperationSettings" EntityType="SSKModel.OperationSetting" />
           <EntitySet Name="OperationSettings_ChangeHist" EntityType="SSKModel.OperationSettings_ChangeHist" />
           <EntitySet Name="QueueDetails" EntityType="SSKModel.QueueDetail" />
-          <EntitySet Name="Queues" EntityType="SSKModel.Queue" />
           <EntitySet Name="Security_QA" EntityType="SSKModel.Security_QA" />
           <EntitySet Name="SentMessages" EntityType="SSKModel.SentMessage" />
           <EntitySet Name="Settings" EntityType="SSKModel.Setting" />
@@ -945,10 +965,6 @@
             <End Role="Address" EntitySet="Addresses" />
             <End Role="User_Profiles" EntitySet="User_Profiles" />
           </AssociationSet>
-          <AssociationSet Name="FK_ApplicationDevice_Status_Devices" Association="SSKModel.FK_ApplicationDevice_Status_Devices">
-            <End Role="Device" EntitySet="Devices" />
-            <End Role="ApplicationDevice_Status" EntitySet="ApplicationDevice_Status" />
-          </AssociationSet>
           <AssociationSet Name="FK_Appointments_Membership_Users" Association="SSKModel.FK_Appointments_Membership_Users">
             <End Role="Membership_Users" EntitySet="Membership_Users" />
             <End Role="Appointment" EntitySet="Appointments" />
@@ -956,10 +972,6 @@
           <AssociationSet Name="FK_Appointments_Timeslots" Association="SSKModel.FK_Appointments_Timeslots">
             <End Role="Timeslot" EntitySet="Timeslots" />
             <End Role="Appointment" EntitySet="Appointments" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Queues_Appointments" Association="SSKModel.FK_Queues_Appointments">
-            <End Role="Appointment" EntitySet="Appointments" />
-            <End Role="Queue" EntitySet="Queues" />
           </AssociationSet>
           <AssociationSet Name="FK_APS_USER_ACT_LOG_User_Profiles" Association="SSKModel.FK_APS_USER_ACT_LOG_User_Profiles">
             <End Role="User_Profiles" EntitySet="User_Profiles" />
@@ -1017,13 +1029,27 @@
             <End Role="OperationSetting" EntitySet="OperationSettings" />
             <End Role="OperationSettings_ChangeHist" EntitySet="OperationSettings_ChangeHist" />
           </AssociationSet>
-          <AssociationSet Name="FK_QueueDetails_Queues" Association="SSKModel.FK_QueueDetails_Queues">
-            <End Role="Queue" EntitySet="Queues" />
-            <End Role="QueueDetail" EntitySet="QueueDetails" />
-          </AssociationSet>
           <AssociationSet Name="FK_SentMessages_User_Profiles" Association="SSKModel.FK_SentMessages_User_Profiles">
             <End Role="User_Profiles" EntitySet="User_Profiles" />
             <End Role="SentMessage" EntitySet="SentMessages" />
+          </AssociationSet>
+          <EntitySet Name="ApplicationDevice_Status" EntityType="SSKModel.ApplicationDevice_Status" />
+          <AssociationSet Name="FK_ApplicationDevice_Status_Devices" Association="SSKModel.FK_ApplicationDevice_Status_Devices">
+            <End Role="Device" EntitySet="Devices" />
+            <End Role="ApplicationDevice_Status" EntitySet="ApplicationDevice_Status" />
+          </AssociationSet>
+          <EntitySet Name="Queues" EntityType="SSKModel.Queue" />
+          <AssociationSet Name="FK_Queues_Appointments" Association="SSKModel.FK_Queues_Appointments">
+            <End Role="Appointment" EntitySet="Appointments" />
+            <End Role="Queue" EntitySet="Queues" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Queues_Membership_Users" Association="SSKModel.FK_Queues_Membership_Users">
+            <End Role="Membership_Users" EntitySet="Membership_Users" />
+            <End Role="Queue" EntitySet="Queues" />
+          </AssociationSet>
+          <AssociationSet Name="FK_QueueDetails_Queues" Association="SSKModel.FK_QueueDetails_Queues">
+            <End Role="Queue" EntitySet="Queues" />
+            <End Role="QueueDetail" EntitySet="QueueDetails" />
           </AssociationSet>
         </EntityContainer>
         <EntityType Name="AbsenceReporting">
@@ -1062,17 +1088,6 @@
           <Property Name="Postal_Code" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="User_Profiles" Relationship="SSKModel.FK_User_Profiles_Addresses2" FromRole="Address" ToRole="User_Profiles" />
           <NavigationProperty Name="User_Profiles1" Relationship="SSKModel.FK_User_Profiles_Addresses3" FromRole="Address" ToRole="User_Profiles" />
-        </EntityType>
-        <EntityType Name="ApplicationDevice_Status">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Guid" Nullable="false" />
-          <Property Name="Station" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="DeviceID" Type="Int32" />
-          <Property Name="StatusCode" Type="Int32" Nullable="false" />
-          <Property Name="StatusMessage" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Device" Relationship="SSKModel.FK_ApplicationDevice_Status_Devices" FromRole="ApplicationDevice_Status" ToRole="Device" />
         </EntityType>
         <EntityType Name="Appointment">
           <Key>
@@ -1195,6 +1210,7 @@
           <Property Name="PrintStatus" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="Message" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Membership_Users" Relationship="SSKModel.FK_Labels_Membership_Users" FromRole="Label" ToRole="Membership_Users" />
+          <Property Name="Queue_ID" Type="Guid" />
         </EntityType>
         <EntityType Name="Membership_RoleClaims">
           <Key>
@@ -1298,6 +1314,7 @@
           <NavigationProperty Name="Membership_UserRoles" Relationship="SSKModel.FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId" FromRole="Membership_Users" ToRole="Membership_UserRoles" />
           <NavigationProperty Name="Security_QA" Relationship="SSKModel.FK_PWD_QA_Membership_Users" FromRole="Membership_Users" ToRole="Security_QA" />
           <NavigationProperty Name="User_Profiles" Relationship="SSKModel.FK_User_Profiles_Membership_Users" FromRole="Membership_Users" ToRole="User_Profiles" />
+          <NavigationProperty Name="Queues" Relationship="SSKModel.FK_Queues_Membership_Users" FromRole="Membership_Users" ToRole="Queue" />
         </EntityType>
         <EntityType Name="MsgRecipient">
           <Key>
@@ -1376,20 +1393,8 @@
           <Property Name="Station" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="Status" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="Message" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="LastUpdatedDate" Type="DateTime" Precision="3" />
           <NavigationProperty Name="Queue" Relationship="SSKModel.FK_QueueDetails_Queues" FromRole="QueueDetail" ToRole="Queue" />
-        </EntityType>
-        <EntityType Name="Queue">
-          <Key>
-            <PropertyRef Name="Queue_ID" />
-          </Key>
-          <Property Name="Queue_ID" Type="Guid" Nullable="false" />
-          <Property Name="Appointment_ID" Type="Guid" Nullable="false" />
-          <Property Name="CurrentStation" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="Outcome" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="CreatedTime" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="QueuedNumber" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Appointment" Relationship="SSKModel.FK_Queues_Appointments" FromRole="Queue" ToRole="Appointment" />
-          <NavigationProperty Name="QueueDetails" Relationship="SSKModel.FK_QueueDetails_Queues" FromRole="Queue" ToRole="QueueDetail" />
         </EntityType>
         <EntityType Name="Security_QA">
           <Key>
@@ -1577,18 +1582,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_ApplicationDevice_Status_Devices">
-          <End Type="SSKModel.Device" Role="Device" Multiplicity="0..1" />
-          <End Type="SSKModel.ApplicationDevice_Status" Role="ApplicationDevice_Status" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Device">
-              <PropertyRef Name="DeviceID" />
-            </Principal>
-            <Dependent Role="ApplicationDevice_Status">
-              <PropertyRef Name="DeviceID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_Appointments_Membership_Users">
           <End Type="SSKModel.Membership_Users" Role="Membership_Users" Multiplicity="1" />
           <End Type="SSKModel.Appointment" Role="Appointment" Multiplicity="*" />
@@ -1610,18 +1603,6 @@
             </Principal>
             <Dependent Role="Appointment">
               <PropertyRef Name="Timeslot_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Queues_Appointments">
-          <End Type="SSKModel.Appointment" Role="Appointment" Multiplicity="1" />
-          <End Type="SSKModel.Queue" Role="Queue" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Appointment">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="Queue">
-              <PropertyRef Name="Appointment_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1801,18 +1782,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_QueueDetails_Queues">
-          <End Type="SSKModel.Queue" Role="Queue" Multiplicity="1" />
-          <End Type="SSKModel.QueueDetail" Role="QueueDetail" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Queue">
-              <PropertyRef Name="Queue_ID" />
-            </Principal>
-            <Dependent Role="QueueDetail">
-              <PropertyRef Name="Queue_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_SentMessages_User_Profiles">
           <End Type="SSKModel.User_Profiles" Role="User_Profiles" Multiplicity="0..1" />
           <End Type="SSKModel.SentMessage" Role="SentMessage" Multiplicity="*" />
@@ -1822,6 +1791,83 @@
             </Principal>
             <Dependent Role="SentMessage">
               <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="ApplicationDevice_Status">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="Station" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DeviceID" Type="Int32" />
+          <Property Name="StatusCode" Type="Int32" Nullable="false" />
+          <Property Name="StatusMessage" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Device" Relationship="SSKModel.FK_ApplicationDevice_Status_Devices" FromRole="ApplicationDevice_Status" ToRole="Device" />
+        </EntityType>
+        <Association Name="FK_ApplicationDevice_Status_Devices">
+          <End Type="SSKModel.Device" Role="Device" Multiplicity="0..1" />
+          <End Type="SSKModel.ApplicationDevice_Status" Role="ApplicationDevice_Status" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Device">
+              <PropertyRef Name="DeviceID" />
+            </Principal>
+            <Dependent Role="ApplicationDevice_Status">
+              <PropertyRef Name="DeviceID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Queue">
+          <Key>
+            <PropertyRef Name="Queue_ID" />
+          </Key>
+          <Property Name="Queue_ID" Type="Guid" Nullable="false" />
+          <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Appointment_ID" Type="Guid" />
+          <Property Name="CurrentStation" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Outcome" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="QueuedNumber" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="Created_By" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Note" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="LastUpdatedDate" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Appointment" Relationship="SSKModel.FK_Queues_Appointments" FromRole="Queue" ToRole="Appointment" />
+          <NavigationProperty Name="Membership_Users" Relationship="SSKModel.FK_Queues_Membership_Users" FromRole="Queue" ToRole="Membership_Users" />
+          <NavigationProperty Name="QueueDetails" Relationship="SSKModel.FK_QueueDetails_Queues" FromRole="Queue" ToRole="QueueDetail" />
+        </EntityType>
+        <Association Name="FK_Queues_Appointments">
+          <End Type="SSKModel.Appointment" Role="Appointment" Multiplicity="0..1" />
+          <End Type="SSKModel.Queue" Role="Queue" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Appointment">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Queue">
+              <PropertyRef Name="Appointment_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Queues_Membership_Users">
+          <End Type="SSKModel.Membership_Users" Role="Membership_Users" Multiplicity="1" />
+          <End Type="SSKModel.Queue" Role="Queue" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Membership_Users">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="Queue">
+              <PropertyRef Name="Created_By" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_QueueDetails_Queues">
+          <End Type="SSKModel.Queue" Role="Queue" Multiplicity="1" />
+          <End Type="SSKModel.QueueDetail" Role="QueueDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Queue">
+              <PropertyRef Name="Queue_ID" />
+            </Principal>
+            <Dependent Role="QueueDetail">
+              <PropertyRef Name="Queue_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1863,17 +1909,6 @@
                 <ScalarProperty Name="BlkHouse_Number" ColumnName="BlkHouse_Number" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Address_ID" ColumnName="Address_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="ApplicationDevice_Status">
-            <EntityTypeMapping TypeName="SSKModel.ApplicationDevice_Status">
-              <MappingFragment StoreEntitySet="ApplicationDevice_Status">
-                <ScalarProperty Name="StatusMessage" ColumnName="StatusMessage" />
-                <ScalarProperty Name="StatusCode" ColumnName="StatusCode" />
-                <ScalarProperty Name="DeviceID" ColumnName="DeviceID" />
-                <ScalarProperty Name="Station" ColumnName="Station" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1980,6 +2015,7 @@
           <EntitySetMapping Name="Labels">
             <EntityTypeMapping TypeName="SSKModel.Label">
               <MappingFragment StoreEntitySet="Labels">
+                <ScalarProperty Name="Queue_ID" ColumnName="Queue_ID" />
                 <ScalarProperty Name="Message" ColumnName="Message" />
                 <ScalarProperty Name="PrintStatus" ColumnName="PrintStatus" />
                 <ScalarProperty Name="ReprintReason" ColumnName="ReprintReason" />
@@ -2157,21 +2193,10 @@
           <EntitySetMapping Name="QueueDetails">
             <EntityTypeMapping TypeName="SSKModel.QueueDetail">
               <MappingFragment StoreEntitySet="QueueDetails">
+                <ScalarProperty Name="LastUpdatedDate" ColumnName="LastUpdatedDate" />
                 <ScalarProperty Name="Message" ColumnName="Message" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="Station" ColumnName="Station" />
-                <ScalarProperty Name="Queue_ID" ColumnName="Queue_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Queues">
-            <EntityTypeMapping TypeName="SSKModel.Queue">
-              <MappingFragment StoreEntitySet="Queues">
-                <ScalarProperty Name="QueuedNumber" ColumnName="QueuedNumber" />
-                <ScalarProperty Name="CreatedTime" ColumnName="CreatedTime" />
-                <ScalarProperty Name="Outcome" ColumnName="Outcome" />
-                <ScalarProperty Name="CurrentStation" ColumnName="CurrentStation" />
-                <ScalarProperty Name="Appointment_ID" ColumnName="Appointment_ID" />
                 <ScalarProperty Name="Queue_ID" ColumnName="Queue_ID" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -2295,6 +2320,33 @@
                 <ScalarProperty Name="Secondary_Phone" ColumnName="Secondary_Phone" />
                 <ScalarProperty Name="Primary_Phone" ColumnName="Primary_Phone" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ApplicationDevice_Status">
+            <EntityTypeMapping TypeName="SSKModel.ApplicationDevice_Status">
+              <MappingFragment StoreEntitySet="ApplicationDevice_Status">
+                <ScalarProperty Name="StatusMessage" ColumnName="StatusMessage" />
+                <ScalarProperty Name="StatusCode" ColumnName="StatusCode" />
+                <ScalarProperty Name="DeviceID" ColumnName="DeviceID" />
+                <ScalarProperty Name="Station" ColumnName="Station" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Queues">
+            <EntityTypeMapping TypeName="SSKModel.Queue">
+              <MappingFragment StoreEntitySet="Queues">
+                <ScalarProperty Name="LastUpdatedDate" ColumnName="LastUpdatedDate" />
+                <ScalarProperty Name="Note" ColumnName="Note" />
+                <ScalarProperty Name="Created_By" ColumnName="Created_By" />
+                <ScalarProperty Name="QueuedNumber" ColumnName="QueuedNumber" />
+                <ScalarProperty Name="CreatedTime" ColumnName="CreatedTime" />
+                <ScalarProperty Name="Outcome" ColumnName="Outcome" />
+                <ScalarProperty Name="CurrentStation" ColumnName="CurrentStation" />
+                <ScalarProperty Name="Appointment_ID" ColumnName="Appointment_ID" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="Queue_ID" ColumnName="Queue_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

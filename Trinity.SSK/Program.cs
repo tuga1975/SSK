@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Trinity.Device;
 
 namespace SSK
 {
@@ -20,6 +21,13 @@ namespace SSK
             {
                Application.Run(new Main());
 
+                // Health checker
+                CameraMonitor.Start();
+                DocumentScannerMonitor.Start();
+                FingerprintReaderMonitor.Start();
+                SmartCardReaderMonitor.Start();
+                MUBLabelPrinterMonitor.Start();
+                TTLabelPrinterMonitor.Start();
             }
             catch (Exception ex)
             {

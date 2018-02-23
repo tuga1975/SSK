@@ -55,6 +55,9 @@
     <Compile Include="Authentication\Fingerprint.cs" />
     <Compile Include="Authentication\SmartCard.cs" />
     <Compile Include="Monitor\BarcodePrinterMonitor.cs" />
+    <Compile Include="Monitor\BarcodeScannerMonitor.cs" />
+    <Compile Include="Monitor\CameraMonitor.cs" />
+    <Compile Include="Monitor\DocumentScannerMonitor.cs" />
     <Compile Include="Monitor\FingerprintReaderMonitor.cs" />
     <Compile Include="Monitor\PrinterMonitor.cs" />
     <Compile Include="Repeat.cs" />
@@ -62,7 +65,10 @@
     <Compile Include="Monitor\SmartCardReaderMonitor.cs" />
     <Compile Include="TSCLIB_DLL.cs" />
     <Compile Include="Utils\BarcodePrinterUtil.cs" />
+    <Compile Include="Utils\BarcodeScannerUtil.cs" />
     <Compile Include="Utils\DeviceUtil.cs" />
+    <Compile Include="Utils\CameraUtil.cs" />
+    <Compile Include="Utils\DocumentScannerUtil.cs" />
     <Compile Include="Utils\FingerprintReaderUtil.cs" />
     <Compile Include="Utils\ReceiptPrinterUtil.cs" />
     <Compile Include="Utils\SmartCardPrinterUtil.cs" />
