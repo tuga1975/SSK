@@ -1,4 +1,6 @@
-﻿function activemenu(name) {
+﻿var lstAlerts = [];
+
+function activemenu(name) {
     $('[item-menu]').removeClass('active');
     $('[item-menu="' + name + '"]').addClass('active');
 }
@@ -34,6 +36,22 @@ function displayLogoutButton(display) {
     }
 }
 
+function getRealtimeNotificationServer(notification){
+    debugger;
+    var objNotify = JSON.parse(notification);
+    if(objNotify){
+        lstAlerts.push({
+                    source: objNotify.Source,
+                    type: objNotify.Type,
+                    dateTime: objNotify.Date,
+                    message: objNotify.Content
+                });
+    }
+    var isLarge = lstAlerts.length >= 10;
+    $(".notifyCount").text(isLarge ? "10+" : lstAlerts.length);
+    $(".notifyCount").show();
+}
+
 function refreshQueueNumbers(currentQueueNumber, nextQueueNumberList) {
     if (currentQueueNumber) {
         $('[show-queue]').text(currentQueueNumber);
@@ -52,5 +70,13 @@ function refreshQueueNumbers(currentQueueNumber, nextQueueNumberList) {
             $('[show-queue-list]').append('<span>' + nextQueueNumbers[i] + '</span>');
         }
     }
+}
+
+function getActiveTab(){
+    var activeTabNameNode = $("#menu span.active");
+    if(activeTabNameNode){
+        return activeTabNameNode[0].id;
+    }
+    return "";
 }
 

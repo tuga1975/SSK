@@ -102,72 +102,67 @@
         });
     } 
 
-
-    $(window).ready(function () {
-
-        $('#pageSize').change(function () {
-            pageSize = $("#pageSize option:selected").text();
-            $('#MUBAndTTlabel').bootstrapTable('refreshOptions', {
-                pagination: true,
-                pageSize: pageSize
-            });
+    $('#pageSize').change(function () {
+        pageSize = $("#pageSize option:selected").text();
+        $('#MUBAndTTlabel').bootstrapTable('refreshOptions', {
+            pagination: true,
+            pageSize: pageSize
         });
+    });
 
-        var checkedRows = [];
-        var $result = $('#eventsResult');
+    var checkedRows = [];
+    var $result = $('#eventsResult');
 
-        $('#MUBAndTTlabel').on('check.bs.table', function (e, row) {
-            $("#MUBAndTTlabel").each(function () {
-                $(this).find("tr.selected td:nth-child(2)").addClass("checked");
-            })
-            checkedRows.push({
-                NRIC: row.NRIC,
-                Name: row.Name,
-                LastStation: row.LastStation
-            });
+    $('#MUBAndTTlabel').on('check.bs.table', function (e, row) {
+        $("#MUBAndTTlabel").each(function () {
+            $(this).find("tr.selected td:nth-child(2)").addClass("checked");
         })
-
-        $('#MUBAndTTlabel').on('uncheck.bs.table', function (e, row) {
-            $.each(checkedRows, function (index, value) {
-                if (value.id === row.id) {
-                    checkedRows.splice(index, 1);
-                }
-            });
+        checkedRows.push({
+            NRIC: row.NRIC,
+            Name: row.Name,
+            LastStation: row.LastStation
         });
-
-        var model = [];
-            
-
-        $('#PrintMUBAndTTbutton').click(function () {            
-            var rows = document.getElementById('MUBAndTTlabel').rows;
-            for (i = 0; i < rows.length; i++) {
-                var row = rows[i];
-                
-                if (row.cells[0].firstChild.checked == true || row.cells[1].firstChild.checked == true) {
-                    model.push({
-                        NRIC: row.cells[2].innerHTML,
-                        Name: row.cells[3].innerHTML,
-                        LastStation: row.cells[4].innerHTML,
-                        IsMUB: row.cells[0].firstChild.checked,
-                        IsTT: row.cells[1].firstChild.checked,
-                        UserId: row.cells[5].innerHTML
-                    });
-                };
-            } ;
-            
-            if (model.length > 0) {
-                var data = JSON.stringify(model);
-                api.server.LoadPopupMUBAndTTLabel(data, function () {
-                    $('#popupMUBandTTLabel').modal();
-                })
-            }
-            else {
-                alert('Please choose the supervisee you want to print');
-            }
-
-        })
-
-        activemenu('MUB/TT Lablels');
     })
-    
+
+    $('#MUBAndTTlabel').on('uncheck.bs.table', function (e, row) {
+        $.each(checkedRows, function (index, value) {
+            if (value.id === row.id) {
+                checkedRows.splice(index, 1);
+            }
+        });
+    });
+
+    var model = [];
+        
+
+    $('#PrintMUBAndTTbutton').click(function () {            
+        var rows = document.getElementById('MUBAndTTlabel').rows;
+        for (i = 0; i < rows.length; i++) {
+            var row = rows[i];
+            
+            if (row.cells[0].firstChild.checked == true || row.cells[1].firstChild.checked == true) {
+                model.push({
+                    NRIC: row.cells[2].innerHTML,
+                    Name: row.cells[3].innerHTML,
+                    LastStation: row.cells[4].innerHTML,
+                    IsMUB: row.cells[0].firstChild.checked,
+                    IsTT: row.cells[1].firstChild.checked,
+                    UserId: row.cells[5].innerHTML
+                });
+            };
+        } ;
+        
+        if (model.length > 0) {
+            var data = JSON.stringify(model);
+            api.server.LoadPopupMUBAndTTLabel(data, function () {
+                $('#popupMUBandTTLabel').modal();
+            })
+        }
+        else {
+            alert('Please choose the supervisee you want to print');
+        }
+
+    });
+
+    activemenu('MUB/TT Lablels');
 </script>

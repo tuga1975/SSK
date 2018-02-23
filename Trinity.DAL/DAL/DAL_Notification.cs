@@ -69,8 +69,9 @@ namespace Trinity.DAL
                         Subject = item.Subject,
                         ToUserId = item.ToUserId,
                         Type = item.Type,
-                        Source = item.Source
-                    }).Where(x => modules.Contains(x.Source)).ToList();
+                        Source = item.Source,
+                    }).Where(x => modules.Contains(x.Source))
+                    .OrderByDescending(x => x.Datetime).ToList();
 
                 // if null, get data from centralized (check bypass)
                 if (notifications == null && notifications.Count == 0 && !EnumAppConfig.ByPassCentralizedDB)
@@ -94,8 +95,9 @@ namespace Trinity.DAL
                     Subject = item.Subject,
                     ToUserId = item.ToUserId,
                      Type = item.Type,
-                    Source = item.Source
-                }).Where(x => modules.Contains(x.Source)).ToList();
+                    Source = item.Source,
+                }).Where(x => modules.Contains(x.Source))
+                .OrderByDescending(x => x.Datetime).ToList();
             }
         }
 
@@ -430,6 +432,58 @@ namespace Trinity.DAL
                 notificationRepo = _centralizedUnitOfWork.GetRepository<Trinity.DAL.DBContext.Notification>();
                 notificationRepo.Add(notifcation);
                 _centralizedUnitOfWork.Save();
+            }
+        }
+
+
+        public Response<bool> updateReadStatus(string NotificationID, bool isReaded)
+        {
+            try
+            {
+                if (EnumAppConfig.IsLocal)
+                {
+                    //updateReadStatusCentral(NotificationID, isReaded);
+                    updateReadStatusLocal(NotificationID, isReaded);
+                    return new Response<bool>((int)EnumResponseStatuses.Success, EnumResponseMessage.Success, true);
+                }
+                else
+                {
+                    updateReadStatusCentral(NotificationID, isReaded);
+                    return new Response<bool>((int)EnumResponseStatuses.Success, EnumResponseMessage.Success, true);
+                }
+            }
+            catch (Exception ex)
+            {
+                return new Response<bool>((int)EnumResponseStatuses.ErrorSystem, EnumResponseMessage.ErrorSystem, false);
+            }
+        }
+
+        public Notification updateReadStatusCentral(string NotificationID, bool isReaded)
+        {
+            var centralNotificationRepo = _centralizedUnitOfWork.GetRepository<Trinity.DAL.DBContext.Notification>();
+            Trinity.DAL.DBContext.Notification notificationContext = centralNotificationRepo.GetById(NotificationID);
+            setStatusRead(notificationContext, isReaded);
+            centralNotificationRepo.Update(notificationContext);
+            _centralizedUnitOfWork.Save();
+            return notificationContext.Map<Notification>();
+        }
+
+        public Notification updateReadStatusLocal(string NotificationID, bool isReaded)
+        {
+            var localNotificationRepo = _localUnitOfWork.GetRepository<Trinity.DAL.DBContext.Notification>();
+            Trinity.DAL.DBContext.Notification notificationContext = localNotificationRepo.GetById(NotificationID);
+            setStatusRead(notificationContext, isReaded);
+            localNotificationRepo.Update(notificationContext);
+            _localUnitOfWork.Save();
+            return notificationContext.Map<Notification>();
+        }
+
+
+        public void setStatusRead(Trinity.DAL.DBContext.Notification notification, bool isReaded)
+        {
+            if (notification != null)
+            {
+                notification.IsRead = isReaded;
             }
         }
 

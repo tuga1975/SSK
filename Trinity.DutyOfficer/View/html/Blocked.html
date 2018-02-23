@@ -30,48 +30,45 @@
 <table id="table"></table>
 <script type="text/javascript">
     activemenu('Blocked');
-    $(document).ready(function () {
+    
+    var pageSize = $('#pageSize').length > 0 ? 10 : 0;
 
-        var pageSize = $('#pageSize');
-        if (pageSize)
-            pageSize = 10;
-
-        api.server.GetAllSuperviseesBlocked(function (data) {
-            dataSource = data;
-            $('#table').bootstrapTable({
-                pagination: true,
-                pageSize: 10,
-                search: true,
-                columns: [{
-                    field: 'NRIC',
-                    title: 'NRIC',
-                    sortable: true,
-                    width: '10%',
-                    align: 'center'
-                }, {
-                    field: 'Name',
-                    title: 'Name',
-                    sortable: true,
-                    width: '40%',
-                    align: 'center'
-                }, {
-                    field: 'Reason',
-                    title: 'Reason',
-                    width: '40%',
-                    align: 'center'
-                }, {
-                    field: 'Action',
-                    title: 'Action',
-                    width: '10%',
-                    align: 'center',
-                    formatter: function (value, row, index, field) {
-                        return '<button class="btn btn-info " onclick = "openPopup(\'' + row.UserId + '\');">Unblock</button> ';
-                    }
-                }],
-                data: dataSource
-            });
+    api.server.GetAllSuperviseesBlocked(function (data) {
+        dataSource = data;
+        $('#table').bootstrapTable({
+            pagination: true,
+            pageSize: 10,
+            search: true,
+            columns: [{
+                field: 'NRIC',
+                title: 'NRIC',
+                sortable: true,
+                width: '10%',
+                align: 'center'
+            }, {
+                field: 'Name',
+                title: 'Name',
+                sortable: true,
+                width: '40%',
+                align: 'center'
+            }, {
+                field: 'Reason',
+                title: 'Reason',
+                width: '40%',
+                align: 'center'
+            }, {
+                field: 'Action',
+                title: 'Action',
+                width: '10%',
+                align: 'center',
+                formatter: function (value, row, index, field) {
+                    return '<button class="btn btn-info " onclick = "openPopup(\'' + row.UserId + '\');">Unblock</button> ';
+                }
+            }],
+            data: dataSource
         });
     });
+
     $('#pageSize').change(function () {
         pageSize = $("#pageSize option:selected").text();
         $('#table').bootstrapTable('refreshOptions', {

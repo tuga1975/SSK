@@ -25,9 +25,8 @@
 <table id="table"></table>
 <script type="text/javascript">
     activemenu('Statistics');
-    $(document).ready(function () {
 
-        var pageSize = $('#pageSize');
+    var pageSize = $('#pageSize');
         if (pageSize)
             pageSize = 10;
 
@@ -114,8 +113,6 @@
                 data: searchSource
             });
         });
-
-    });
 
     var dataSource = [];
     var searchSource = [];

@@ -149,7 +149,7 @@ namespace OfficerDesktopApp
                     dgvNotifications[colFromUserName.Index, 0].Value = notifications[i].FromUserName;
                     dgvNotifications[ColSubject.Index, 0].Value = notifications[i].Subject;
                     dgvNotifications[ColContent.Index, 0].Value = notifications[i].Content;
-                    dgvNotifications[ColDate.Index, 0].Value = notifications[i].Datetime.ToString("dd/MM/yyyy HH:mm");
+                    dgvNotifications[ColDate.Index, 0].Value = notifications[i].Datetime.Value.ToString("dd/MM/yyyy HH:mm");
                 }
             }
         }
