@@ -32,7 +32,7 @@ namespace SSK
             this.timer = new System.Timers.Timer();
             this.timer.AutoReset = false;
             this.timer.Elapsed += RefreshQueueNumberTimer_Elapsed;
-            TimerStart();
+            //TimerStart();
         }
         private void ClockStart()
         {
@@ -49,7 +49,7 @@ namespace SSK
         public void TimerStart()
         {
             //this.timer.Interval = 1;
-            this.timer.Interval = 30000; 
+            this.timer.Interval = 30000;
             this.timer.Enabled = true;
         }
         public void TimerStop()
@@ -122,7 +122,7 @@ namespace SSK
                 currentTimeslot = minTimeSlot;
             }
 
-            if (currentTimeslot!=null)
+            if (currentTimeslot != null)
             {
                 queueCurrent = arrQueue.Where(d => d.Timeslot_ID == currentTimeslot.Timeslot_ID).OrderBy(d => d.InTimeSlot).ThenBy(d => d.Priority).ToList();
                 textTimeSlot = (DateTime.Today + currentTimeslot.StartTime.Value).ToString("hh:mm tt") + " - " + (DateTime.Today + currentTimeslot.EndTime.Value).ToString("hh:mm tt");
@@ -145,14 +145,24 @@ namespace SSK
                     queueOther = arrQueue.Where(d => d.Timeslot_ID == nextTimeSlot.Timeslot_ID).OrderBy(d => d.InTimeSlot).ThenBy(d => d.Priority).ToList();
                 }
             }
-            
+
 
             if (queueNowServing.Count < 5 && queueCurrent.Count > 0)
             {
-                Queue addNowServing = queueCurrent[0];
-                queueNowServing.Add(addNowServing);
-                queueCurrent.RemoveAt(0);
-                new DAL_QueueDetails().UpdateStatusQueueDetail(addNowServing.Queue_ID, EnumStations.SSK, EnumQueueStatuses.Processing);
+                int maxAdd = 5 - queueNowServing.Count;
+                maxAdd = queueCurrent.Count < maxAdd ? queueCurrent.Count : maxAdd;
+                for (int i = 0; i < maxAdd; i++)
+                {
+                    Queue addNowServing = queueCurrent[0];
+                    queueNowServing.Add(addNowServing);
+                    queueCurrent.RemoveAt(0);
+                    new DAL_QueueDetails().UpdateStatusQueueDetail(addNowServing.Queue_ID, EnumStations.SSK, EnumQueueStatuses.Processing);
+                }
+                if (queueNowServing.Count < 5 && queueOther.Count > 0)
+                {
+                    RefreshQueueNumbers();
+                    return;
+                }
             }
 
             if (string.IsNullOrEmpty(textTimeSlot))
@@ -161,15 +171,15 @@ namespace SSK
                 if (time != null)
                     textTimeSlot = (DateTime.Today + time.StartTime.Value).ToString("hh:mm tt") + " - " + (DateTime.Today + time.EndTime.Value).ToString("hh:mm tt");
             }
-            
-            wbQueueNumber.InvokeScript("ShowTimeSlot", 
+
+            wbQueueNumber.InvokeScript("ShowTimeSlot",
                 textTimeSlot,
                 JsonConvert.SerializeObject(queueNowServing.Select(d => new { d.QueuedNumber })),
                 JsonConvert.SerializeObject(queueCurrent.Select(d => new { d.QueuedNumber }).Take(12)),
                 JsonConvert.SerializeObject(queueOther.Select(d => new { d.QueuedNumber }).Take(8))
                 );
         }
-        
+
 
         private static List<Trinity.DAL.DBContext.Queue> GetAllNextQueue(List<Trinity.BE.Queue> allQueue)
         {
