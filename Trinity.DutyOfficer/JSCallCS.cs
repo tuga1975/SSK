@@ -123,6 +123,16 @@ namespace DutyOfficer
             Trinity.BE.QueueInfo queueInfo = dalQueue.GetQueueInfoByQueueID(new Guid(queue_ID));
             this._web.LoadPopupHtml("QueuePopupDetail.html", queueInfo);
         }
+
+        public void LoadPopupOutcome()
+        {
+            this._web.LoadPopupHtml("QueuePopupOutcome.html");
+        }
+
+        public void SaveOutcome(string outcomeType)
+        {
+
+        }
         #endregion
 
         #region Alert & Notification Popup Detail

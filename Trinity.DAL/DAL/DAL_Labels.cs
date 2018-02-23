@@ -47,6 +47,7 @@ namespace Trinity.DAL
             {
                 Label dbLabel = null;
                 Guid labelID_NewGuid = Guid.NewGuid();
+                var queueID = new DAL_QueueNumber().GetMyQueueToday(model.UserId).Queue_ID;
                 if (EnumAppConfig.IsLocal)
                 {
                     var locallabelRepo = _localUnitOfWork.GetRepository<Label>();

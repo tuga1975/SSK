@@ -32,16 +32,18 @@
         $('#OfficerNRICBlock').val(model.OfficerNRIC);
         $('#OfficerNameBlock').val(model.OfficerName);
         $("#UnblockBtn").click(function (e) {
-            api.server.UnblockSuperviseeByUserId(model.UserId, $('#Reason').val());
-            // Waiting 1 second to update DB then refresh
-            setTimeout(function () {
-                api.server.LoadPage('Blocked.html')
+            api.server.UnblockSuperviseeByUserId(model.UserId, $('#Reason').val(), function () {
+                api.server.LoadPage('Blocked.html');
                 $('#idBlock').modal('toggle');
-            }, 1000);
+            });
+
+            //api.server.UnblockSuperviseeByUserId(model.UserId, $('#Reason').val());
+            //// Waiting 1 second to update DB then refresh
+            //setTimeout(function () {
+            //    api.server.LoadPage('Blocked.html')
+            //    $('#idBlock').modal('toggle');
+            //}, 1000);
             e.preventDefault(); // avoid to execute the actual submit of the form.
         });
-    });
-
-    
-
+    });  
 </script>
