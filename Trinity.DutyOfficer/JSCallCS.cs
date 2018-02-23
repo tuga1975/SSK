@@ -280,6 +280,8 @@ namespace DutyOfficer
 
         private void GetQueueForSupervisee(string userId)
         {
+            Session session = Session.Instance;
+            Trinity.BE.User dutyOfficer = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
             DAL_Appointments _Appointment = new DAL_Appointments();
             var result= _Appointment.GetAppointmentByDate(userId, DateTime.Today);
             Trinity.DAL.DBContext.Appointment appointment = result;
@@ -290,7 +292,7 @@ namespace DutyOfficer
                 var response= _Appointment.UpdateTimeslotForApptmt(appointment.ID, timeslot.Timeslot_ID);
                 appointment = response;
                 var _dalQueue = new DAL_QueueNumber();
-                Trinity.DAL.DBContext.Queue queueNumber = _dalQueue.InsertQueueNumber(appointment.ID, appointment.UserId, EnumStations.SSK);
+                Trinity.DAL.DBContext.Queue queueNumber = _dalQueue.InsertQueueNumber(appointment.ID, appointment.UserId, EnumStations.SSK, dutyOfficer.UserId);
             }
         }
         #endregion

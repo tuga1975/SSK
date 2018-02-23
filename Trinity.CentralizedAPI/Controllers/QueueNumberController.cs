@@ -17,7 +17,7 @@ namespace Trinity.CentralizedAPI.Controllers
             if (Guid.TryParse(appointmentId, out guid))
             {
 
-                var result = new DAL.DAL_QueueNumber().InsertQueueNumber(guid, userId, station);
+                var result = new DAL.DAL_QueueNumber().InsertQueueNumber(guid, userId, station,"");
                 return Ok(result);
             }
             return null;
