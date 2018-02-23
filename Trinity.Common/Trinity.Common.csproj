@@ -134,6 +134,7 @@
     <Compile Include="Utils\Convertor2.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Libs\Camera\DirectShowLib-2005.dll" />
     <Content Include="Libs\Futronic Fingerprint Reader\ftrScanAPI.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

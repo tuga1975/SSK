@@ -36,24 +36,24 @@
             // 
             this.LayerWeb.Dock = System.Windows.Forms.DockStyle.Fill;
             this.LayerWeb.Location = new System.Drawing.Point(0, 0);
-            this.LayerWeb.Margin = new System.Windows.Forms.Padding(4);
-            this.LayerWeb.MinimumSize = new System.Drawing.Size(27, 25);
+            this.LayerWeb.MinimumSize = new System.Drawing.Size(20, 20);
             this.LayerWeb.Name = "LayerWeb";
-            this.LayerWeb.Size = new System.Drawing.Size(1201, 716);
+            this.LayerWeb.Size = new System.Drawing.Size(901, 582);
             this.LayerWeb.TabIndex = 0;
             this.LayerWeb.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.LayerWeb_DocumentCompleted);
             // 
             // Main
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1201, 716);
+            this.ClientSize = new System.Drawing.Size(901, 582);
             this.Controls.Add(this.LayerWeb);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "Main";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Self-Servie Kiosk";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Main_FormClosing);
             this.Load += new System.EventHandler(this.Main_Load);
             this.ResumeLayout(false);

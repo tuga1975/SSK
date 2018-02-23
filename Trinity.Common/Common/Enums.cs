@@ -124,7 +124,8 @@ public enum EnumDeviceIds
     SmartCardPrinter = 8,
     MUBLabelPrinter = 9,
     UBLabelPrinter = 10,
-    TTLabelPrinter = 11
+    TTLabelPrinter = 11,
+    Speaker = 11
 }
 
 

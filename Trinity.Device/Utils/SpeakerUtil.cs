@@ -1,5 +1,4 @@
-﻿using DirectShowLib;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -7,18 +6,18 @@ using Trinity.Common;
 
 namespace Trinity.Util
 {
-    public class CameraUtil
+    public class SpeakerUtil
     {
         #region Singleton Implementation
         // The variable is declared to be volatile to ensure that assignment to the instance variable completes before the instance variable can be accessed
-        private static volatile CameraUtil _instance;
+        private static volatile SpeakerUtil _instance;
 
         // Uses a syncRoot instance to lock on, rather than locking on the type itself, to avoid deadlocks.
         private static object syncRoot = new Object();
 
-        private CameraUtil() { }
+        private SpeakerUtil() { }
 
-        public static CameraUtil Instance
+        public static SpeakerUtil Instance
         {
             get
             {
@@ -27,7 +26,7 @@ namespace Trinity.Util
                     lock (syncRoot)
                     {
                         if (_instance == null)
-                            _instance = new CameraUtil();
+                            _instance = new SpeakerUtil();
                     }
                 }
 
@@ -38,19 +37,7 @@ namespace Trinity.Util
 
         public EnumDeviceStatuses[] GetDeviceStatus()
         {
-            // refer: https://web.archive.org/web/20140716211944/http://www.barebonescoder.com/2012/01/finding-your-web-cam-with-c-directshow-net/
-            DsDevice[] videoInputDevices = DsDevice.GetDevicesOfCat(FilterCategory.VideoInputDevice);
-
-            // connected
-            if (videoInputDevices != null && videoInputDevices.Length > 0)
-            {
-                return new EnumDeviceStatuses[] { EnumDeviceStatuses.Connected };
-            }
-            else
-            {
-                // disconnected
-                return new EnumDeviceStatuses[] { EnumDeviceStatuses.Disconnected };
-            }
+            return new EnumDeviceStatuses[] { EnumDeviceStatuses.Disconnected };
         }
     }
 }
