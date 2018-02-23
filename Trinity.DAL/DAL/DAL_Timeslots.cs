@@ -86,9 +86,46 @@ namespace Trinity.DAL
             }
         }
 
-        //public bool CheckAvailableTimeslot(Timeslot time)
-        //{
-        //    int totalSlot = _localUnitOfWork.DataContext.Appointments.Count(d => !string.IsNullOrEmpty(d.Timeslot_ID) && d.Timeslot_ID == time.Timeslot_ID) + _localUnitOfWork.DataContext.Queues.Count(d => d.Timeslot_ID == time.Timeslot_ID && (!d.Appointment_ID.HasValue || (d.Appointment_ID.HasValue && !string.IsNullOrEmpty(d.Appointment.Timeslot_ID) && d.Appointment.Timeslot_ID != time.Timeslot_ID)));
-        //}
+        public bool CheckAvailableTimeslot(Timeslot time)
+        {
+            int totalSlot = _localUnitOfWork.DataContext.Appointments.Count(d => !string.IsNullOrEmpty(d.Timeslot_ID) && d.Timeslot_ID == time.Timeslot_ID) + _localUnitOfWork.DataContext.Queues.Count(d => d.Timeslot_ID == time.Timeslot_ID && (!d.Appointment_ID.HasValue || (d.Appointment_ID.HasValue && !string.IsNullOrEmpty(d.Appointment.Timeslot_ID) && d.Appointment.Timeslot_ID != time.Timeslot_ID)));
+
+            //var dayOfWeek = Common.CommonUtil.ConvertToCustomDateOfWeek(DateTime.Now.Date.DayOfWeek);
+
+            //var todaySetting = new DAL_Setting().GetSettingDetails(dayOfWeek);
+            //switch (time.Category)
+            //{
+            //    case EnumTimeshift.Morning:
+            //        if (todaySetting.Morning_MaximumSupervisee == totalSlot)
+            //        {
+            //            return false;
+            //        }
+            //        return true;
+
+            //    case EnumTimeshift.Afternoon:
+            //        if (todaySetting.Afternoon_MaximumSupervisee == totalSlot)
+            //        {
+            //            return false;
+            //        }
+            //        return true;
+            //    case EnumTimeshift.Evening:
+            //        if (todaySetting.Evening_MaximumSupervisee == totalSlot)
+            //        {
+            //            return false;
+            //        }
+            //        return true;
+
+            //    default:
+            //        return false;
+            //}
+
+            if (totalSlot>=time.MaximumSupervisee)
+            {
+                return false;
+            }
+            return true;
+        }
+
+
     }
 }
