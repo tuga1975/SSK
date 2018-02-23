@@ -15,6 +15,7 @@ namespace Trinity.DAL.DBContext
     public partial class Label
     {
         public System.Guid Label_ID { get; set; }
+        public Nullable<System.Guid> Queue_ID { get; set; }
         public string Label_Type { get; set; }
         public string CompanyName { get; set; }
         public string MarkingNo { get; set; }
@@ -29,6 +30,7 @@ namespace Trinity.DAL.DBContext
         public string ReprintReason { get; set; }
         public string PrintStatus { get; set; }
         public string Message { get; set; }
+        public Nullable<System.Guid> Queue_ID { get; set; }
     
         public virtual Membership_Users Membership_Users { get; set; }
     }

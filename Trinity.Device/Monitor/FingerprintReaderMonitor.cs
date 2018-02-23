@@ -40,7 +40,7 @@ namespace Trinity.Device
 
                 // update local ApplicationDevice_Status
                 DAL_DeviceStatus dAL_DeviceStatus = new DAL_DeviceStatus();
-                dAL_DeviceStatus.Update((int)EnumDeviceIds.MUBLabelPrinter, status);
+                dAL_DeviceStatus.Update((int)EnumDeviceIds.FingerprintScanner, status);
             }
             catch (Exception ex)
             {

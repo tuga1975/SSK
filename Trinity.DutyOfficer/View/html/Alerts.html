@@ -2,16 +2,22 @@
 
 <style>
     .tableContent {
-        text-align: center
+        text-align: center;
     }
     .error{
-        background-color: red
+        color: red;
     }
     .notification{
-        background-color: #66ff33
+        color: blue;
     }
     .caution{
-        background-color: yellow
+        color: yellow;
+    }
+    .row_unread{
+        background-color: #e0e0eb;
+    }
+    .row_readed{
+        background-color: white;
     }
     .table-hover tbody tr:hover > td {
         cursor: pointer;
@@ -36,12 +42,13 @@
 <table id="alertNotificationTable" class="tableContent"></table>
 
 <script type="text/javascript">
+    activemenu('Alerts');
 
     var $table = $('#alertNotificationTable');
 
-     var dataSource = [];
+    var dataSource = [];
 
-    function getRealtimeNotificationServer(notification){
+    function getNotificationInCurrentTab(notification){
         var objNotify = JSON.parse(notification);
         dataSource.unshift({
                     source: objNotify.Source,
@@ -52,8 +59,19 @@
         $table.bootstrapTable('load', dataSource);
     }
 
+    function clearNotificationAlerts(){
+        if(lstAlerts){
+            lstAlerts = [];
+        }
+        $(".notifyCount").text("");
+        $(".notifyCount").hide();
+    }
+
     api.server.getAlertsSendToDutyOfficer(function (data) {
         
+
+        clearNotificationAlerts();
+
         var Type = {
             error: "Error",
             notification: "Notification",
@@ -66,7 +84,9 @@
                     source: element.Source,
                     type: element.Type,
                     dateTime: element.Date,
-                    message: element.Content
+                    message: element.Content,
+                    isReaded : element.IsRead,
+                    notificationId : element.NotificationID
                 });
             });
         }
@@ -76,15 +96,15 @@
             switch (type) {
                 case Type.error:
                     return {
-                        classes: "error"
+                        classes: row.isReaded ? "error row_readed" : "error row_unread"
                     };
                 case Type.notification:
                     return {
-                        classes: "notification"
+                        classes: row.isReaded ? "notification row_readed" : "notification row_unread"
                     };
                 case Type.caution:
                     return {
-                        classes: "caution"
+                        classes: row.isReaded ? "caution row_readed" : "caution row_unread"
                     };
             }
             return {};
@@ -149,10 +169,21 @@
             onDblClickRow: onRowDblClick
         });
 
-        function onRowDblClick(row, index) {
-            var data = JSON.stringify(row);
+        function onRowDblClick(rowData, $element, field) {
+            var data = JSON.stringify(rowData);
+            if ($element && !data.isReaded) {
+                $element.removeClass("row_unread");
+                $element.addClass("row_readed");
+            }
             api.server.LoadPopupAlert(data, function () {
-                $('#alertPopup').modal();
+                var notificationId = rowData.notificationId;
+                if (notificationId){
+                     api.server.updateReadedStatus(notificationId, function(isUpdateSuccessed){
+                         // if(isUpdateSuccessed){
+                             $('#alertPopup').modal();
+                         // }
+                     });
+                }
             });
         }
 
@@ -172,5 +203,6 @@
             return formatedMonth + "/" + formatedDay + "/" + year + " " + formatedHour + ':' + formatedMinute;
         }
     });
-activemenu('Alerts');
+
+    
 </script>

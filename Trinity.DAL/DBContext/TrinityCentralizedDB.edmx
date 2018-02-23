@@ -324,11 +324,14 @@
             <PropertyRef Name="Queue_ID" />
           </Key>
           <Property Name="Queue_ID" Type="uniqueidentifier" Nullable="false" />
-          <Property Name="Appointment_ID" Type="uniqueidentifier" Nullable="false" />
-          <Property Name="CurrentStation" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="Appointment_ID" Type="uniqueidentifier" />
+          <Property Name="CurrentStation" Type="varchar" MaxLength="20" Nullable="false" />
           <Property Name="Outcome" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="CreatedTime" Type="datetime" Nullable="false" />
           <Property Name="QueuedNumber" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="Created_By" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="Note" Type="nvarchar" MaxLength="255" />
+          <Property Name="LastUpdatedDate" Type="datetime" />
         </EntityType>
         <EntityType Name="Security_QA">
           <Key>
@@ -685,7 +688,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Queues_Appointments">
-          <End Role="Appointments" Type="Self.Appointments" Multiplicity="1" />
+          <End Role="Appointments" Type="Self.Appointments" Multiplicity="0..1" />
           <End Role="Queues" Type="Self.Queues" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Appointments">
@@ -693,6 +696,18 @@
             </Principal>
             <Dependent Role="Queues">
               <PropertyRef Name="Appointment_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Queues_Membership_Users">
+          <End Role="Membership_Users" Type="Self.Membership_Users" Multiplicity="1" />
+          <End Role="Queues" Type="Self.Queues" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Membership_Users">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="Queues">
+              <PropertyRef Name="Created_By" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -860,6 +875,10 @@
             <End Role="Appointments" EntitySet="Appointments" />
             <End Role="Queues" EntitySet="Queues" />
           </AssociationSet>
+          <AssociationSet Name="FK_Queues_Membership_Users" Association="Self.FK_Queues_Membership_Users">
+            <End Role="Membership_Users" EntitySet="Membership_Users" />
+            <End Role="Queues" EntitySet="Queues" />
+          </AssociationSet>
           <AssociationSet Name="FK_SentMessages_User_Profiles" Association="Self.FK_SentMessages_User_Profiles">
             <End Role="User_Profiles" EntitySet="User_Profiles" />
             <End Role="SentMessages" EntitySet="SentMessages" />
@@ -988,6 +1007,10 @@
           <AssociationSet Name="FK_PWD_QA_Membership_Users" Association="TrinityCentralizedDBModel.FK_PWD_QA_Membership_Users">
             <End Role="Membership_Users" EntitySet="Membership_Users" />
             <End Role="Security_QA" EntitySet="Security_QA" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Queues_Membership_Users" Association="TrinityCentralizedDBModel.FK_Queues_Membership_Users">
+            <End Role="Membership_Users" EntitySet="Membership_Users" />
+            <End Role="Queue" EntitySet="Queues" />
           </AssociationSet>
           <AssociationSet Name="FK_User_Profiles_Membership_Users" Association="TrinityCentralizedDBModel.FK_User_Profiles_Membership_Users">
             <End Role="Membership_Users" EntitySet="Membership_Users" />
@@ -1285,6 +1308,7 @@
           <NavigationProperty Name="Membership_UserLogins" Relationship="TrinityCentralizedDBModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" FromRole="Membership_Users" ToRole="Membership_UserLogins" />
           <NavigationProperty Name="Membership_UserRoles" Relationship="TrinityCentralizedDBModel.FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId" FromRole="Membership_Users" ToRole="Membership_UserRoles" />
           <NavigationProperty Name="Security_QA" Relationship="TrinityCentralizedDBModel.FK_PWD_QA_Membership_Users" FromRole="Membership_Users" ToRole="Security_QA" />
+          <NavigationProperty Name="Queues" Relationship="TrinityCentralizedDBModel.FK_Queues_Membership_Users" FromRole="Membership_Users" ToRole="Queue" />
           <NavigationProperty Name="User_Profiles" Relationship="TrinityCentralizedDBModel.FK_User_Profiles_Membership_Users" FromRole="Membership_Users" ToRole="User_Profiles" />
         </EntityType>
         <EntityType Name="MsgRecipient">
@@ -1371,12 +1395,16 @@
             <PropertyRef Name="Queue_ID" />
           </Key>
           <Property Name="Queue_ID" Type="Guid" Nullable="false" />
-          <Property Name="Appointment_ID" Type="Guid" Nullable="false" />
-          <Property Name="CurrentStation" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="Appointment_ID" Type="Guid" />
+          <Property Name="CurrentStation" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="Outcome" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CreatedTime" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="QueuedNumber" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="Created_By" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Note" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="LastUpdatedDate" Type="DateTime" Precision="3" />
           <NavigationProperty Name="Appointment" Relationship="TrinityCentralizedDBModel.FK_Queues_Appointments" FromRole="Queue" ToRole="Appointment" />
+          <NavigationProperty Name="Membership_Users" Relationship="TrinityCentralizedDBModel.FK_Queues_Membership_Users" FromRole="Queue" ToRole="Membership_Users" />
           <NavigationProperty Name="QueueDetails" Relationship="TrinityCentralizedDBModel.FK_QueueDetails_Queues" FromRole="Queue" ToRole="QueueDetail" />
         </EntityType>
         <EntityType Name="Security_QA">
@@ -1592,7 +1620,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Queues_Appointments">
-          <End Type="TrinityCentralizedDBModel.Appointment" Role="Appointment" Multiplicity="1" />
+          <End Type="TrinityCentralizedDBModel.Appointment" Role="Appointment" Multiplicity="0..1" />
           <End Type="TrinityCentralizedDBModel.Queue" Role="Queue" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Appointment">
@@ -1728,6 +1756,18 @@
             </Principal>
             <Dependent Role="Security_QA">
               <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Queues_Membership_Users">
+          <End Type="TrinityCentralizedDBModel.Membership_Users" Role="Membership_Users" Multiplicity="1" />
+          <End Type="TrinityCentralizedDBModel.Queue" Role="Queue" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Membership_Users">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="Queue">
+              <PropertyRef Name="Created_By" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2145,6 +2185,9 @@
           <EntitySetMapping Name="Queues">
             <EntityTypeMapping TypeName="TrinityCentralizedDBModel.Queue">
               <MappingFragment StoreEntitySet="Queues">
+                <ScalarProperty Name="LastUpdatedDate" ColumnName="LastUpdatedDate" />
+                <ScalarProperty Name="Note" ColumnName="Note" />
+                <ScalarProperty Name="Created_By" ColumnName="Created_By" />
                 <ScalarProperty Name="QueuedNumber" ColumnName="QueuedNumber" />
                 <ScalarProperty Name="CreatedTime" ColumnName="CreatedTime" />
                 <ScalarProperty Name="Outcome" ColumnName="Outcome" />

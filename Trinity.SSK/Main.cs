@@ -95,13 +95,6 @@ namespace SSK
             {
                 LayerWeb.InvokeScript("alertBookAppointment", e.Message);
             }
-            if (e.Name == EventNames.FINGERPRINT_FAILED_MORE_THAN_3)
-            {
-                NavigateTo(NavigatorEnums.Authentication_SmartCard);
-                LayerWeb.InvokeScript("showMessage", e.Message);
-
-            }
-
         }
 
         /// <summary>
@@ -238,7 +231,10 @@ namespace SSK
                 // Send Notification to duty officer
                 APIUtils.SignalR.SendAllDutyOfficer(null,message, message, NotificationType.Error);
                 // show message box to user
-                MessageBox.Show(message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //MessageBox.Show(message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                _jsCallCS.PopupMessage("Authentication failed", message);
+
                 // reset counter
                 _smartCardFailed = 0;
                 // display failed on UI
@@ -375,7 +371,9 @@ namespace SSK
                 // Send Notification to duty officer
                 APIUtils.SignalR.SendAllDutyOfficer(user.UserId,"Fingerprint Authentication failed", errorMessage, NotificationType.Error);
 
-                EventCenter.Default.RaiseEvent(new EventInfo {Name=EventNames.FINGERPRINT_FAILED_MORE_THAN_3 ,Code=-1,Message= "Fingerprint's Authenication failed!\n Please contact your officer."});
+                _jsCallCS.PopupMessage("Authentication failed", "Fingerprint's Authenication failed!<br /> Please contact your officer.");
+                NavigateTo(NavigatorEnums.Authentication_SmartCard);
+                
 
                 //for testing purpose
                 // Pause for 1 second and goto Facial Login Screen
@@ -503,9 +501,9 @@ namespace SSK
 
         private void Main_Load(object sender, EventArgs e)
         {
-            FormQueueNumber f = FormQueueNumber.GetInstance();
-            f.ShowOnSecondaryScreen();
-            f.Show();
+            APIUtils.FormQueueNumber = FormQueueNumber.GetInstance();
+            APIUtils.FormQueueNumber.ShowOnSecondaryScreen();
+            APIUtils.FormQueueNumber.Show();
         }
     }
 }

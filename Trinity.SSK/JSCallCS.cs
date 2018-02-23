@@ -45,7 +45,9 @@ namespace SSK
         }
         #endregion
 
-
+        public void PopupMessage(string title,string content) {
+            this._web.LoadPopupHtml("PopupMessage.html",new object[] { title, content });
+        }
         public void LoadNotications()
         {
 
@@ -500,14 +502,23 @@ namespace SSK
 
         private void GetMyQueueNumber()
         {
-
+            
+            // get user info
             Session session = Session.Instance;
             Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-
+            Trinity.BE.User userSupervise = null;
+            if (user.Role == EnumUserRoles.DutyOfficer)
+            {
+                userSupervise = (Trinity.BE.User)session[CommonConstants.SUPERVISEE];
+            }
+            else
+            {
+                userSupervise = user;
+            }
             DAL_Appointments _Appointment = new DAL_Appointments();
-            Trinity.DAL.DBContext.Appointment appointment = new DAL_Appointments().GetAppointmentByDate(user.UserId, DateTime.Today);
+            Trinity.DAL.DBContext.Appointment appointment = new DAL_Appointments().GetAppointmentByDate(userSupervise.UserId, DateTime.Today);
             //Trinity.DAL.DBContext.Appointment appointment = _Appointment.GetMyAppointmentByDate(user.UserId, DateTime.Today);
-            if (appointment == null)
+            if (appointment == null && user.Role == EnumUserRoles.Supervisee)
             {
                 var eventCenter = Trinity.Common.Common.EventCenter.Default;
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_MESSAGE, Message = "You have no appointment today" });
@@ -516,35 +527,63 @@ namespace SSK
             {
                 var _dalQueue = new DAL_QueueNumber();
                 Trinity.DAL.DBContext.Queue queueNumber = null;
-                //check queue exist
-                if (!_dalQueue.IsInQueue(appointment.UserId, EnumStations.SSK))
-                {
-                    if (appointment.Timeslot_ID != null)
-                    {
-                        queueNumber = _dalQueue.InsertQueueNumber(appointment.ID, appointment.UserId, EnumStations.SSK);
 
+                if (!_dalQueue.IsUserAlreadyQueue(userSupervise.UserId, DateTime.Today))
+                {
+                    if (appointment != null && string.IsNullOrEmpty(appointment.Timeslot_ID))
+                    {
+                        var eventCenter = Trinity.Common.Common.EventCenter.Default;
+                        eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_MESSAGE, Message = "You have not selected the timeslot!\n Please go to Book Appointment page to select a timeslot." });
+                    }
+                    else if (appointment != null && !string.IsNullOrEmpty(appointment.Timeslot_ID))
+                    {
+                        queueNumber = _dalQueue.InsertQueueNumber(appointment.ID, appointment.UserId, EnumStations.SSK, user.UserId);
                         var eventCenter = Trinity.Common.Common.EventCenter.Default;
                         eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_MESSAGE, Message = "Your queue number is:" + queueNumber.QueuedNumber });
                     }
                     else
                     {
+                        queueNumber = _dalQueue.InsertQueueNumberFromDO(appointment.UserId, EnumStations.SSK,user.UserId);
                         var eventCenter = Trinity.Common.Common.EventCenter.Default;
-                        eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_MESSAGE, Message = "You have not selected the timeslot!\n Please go to Book Appointment page to select a timeslot." });
-                        //BookAppointment();
+                        eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_MESSAGE, Message = "Your queue number is:" + queueNumber.QueuedNumber });
                     }
-
-                    //RaiseOnShowMessageEvent(new ShowMessageEventArgs("Your queue number is: " + queueNumber.QueuedNumber, "Queue Number", MessageBoxButtons.OK, MessageBoxIcon.Information));
                 }
                 else
                 {
                     var eventCenter = Trinity.Common.Common.EventCenter.Default;
                     eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_MESSAGE, Message = "You have already queued!\n Please wait for your turn." });
                 }
-                //var model = _dalQueue.GetAllQueueNumberByDate(DateTime.Today).Select(d => new Trinity.BE.Queue()
+
+                ////check queue exist
+                //if (!_dalQueue.IsUserAlreadyQueue(userSupervise.UserId, DateTime.Today))
                 //{
-                //    Status = d.Status,
-                //    QueueNumber = d.QueuedNumber
-                //}).ToArray();
+                    
+                //    if (appointment.Timeslot_ID != null)
+                //    {
+                //        queueNumber = _dalQueue.InsertQueueNumber(appointment.ID, appointment.UserId, EnumStations.SSK);
+
+                //        var eventCenter = Trinity.Common.Common.EventCenter.Default;
+                //        eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_MESSAGE, Message = "Your queue number is:" + queueNumber.QueuedNumber });
+                //    }
+                //    else
+                //    {
+                //        var eventCenter = Trinity.Common.Common.EventCenter.Default;
+                //        eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_MESSAGE, Message = "You have not selected the timeslot!\n Please go to Book Appointment page to select a timeslot." });
+                //        //BookAppointment();
+                //    }
+
+                //    //RaiseOnShowMessageEvent(new ShowMessageEventArgs("Your queue number is: " + queueNumber.QueuedNumber, "Queue Number", MessageBoxButtons.OK, MessageBoxIcon.Information));
+                //}
+                //else
+                //{
+                //    var eventCenter = Trinity.Common.Common.EventCenter.Default;
+                //    eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_MESSAGE, Message = "You have already queued!\n Please wait for your turn." });
+                //}
+                ////var model = _dalQueue.GetAllQueueNumberByDate(DateTime.Today).Select(d => new Trinity.BE.Queue()
+                ////{
+                ////    Status = d.Status,
+                ////    QueueNumber = d.QueuedNumber
+                ////}).ToArray();
                 FormQueueNumber f = FormQueueNumber.GetInstance();
                 f.RefreshQueueNumbers();
             }

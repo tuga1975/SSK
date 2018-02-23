@@ -1,4 +1,12 @@
-﻿function pushNoti(count) {
+﻿function PopupMessage(title, body) {
+    api.server.PopupMessage(title, body, function () {
+        $('#PopupMessage').modal({
+            backdrop: 'static',
+            keyboard: false
+        });
+    });
+}
+function pushNoti(count) {
     api.countNoti = count;
     $('[notinumber]').text(api.countNoti > 0 ? api.countNoti : '');
 }
@@ -47,7 +55,7 @@ function getToday() {
     today = dd + '/' + MM + '/' + yyyy + '  ' + hh + ':' + mm;
     return today;
 }
-function refreshQueueNumbers(servingQueueNumber,currentQueueNumber, nextQueueNumberList, holdingList) {
+function refreshQueueNumbers(servingQueueNumber, currentQueueNumber, nextQueueNumberList, holdingList) {
 
     var today = getToday();
     $('#currentDateTime').text(today);
@@ -61,7 +69,7 @@ function refreshQueueNumbers(servingQueueNumber,currentQueueNumber, nextQueueNum
                 queue += "<li class='box-child'><span style='margin-top:-8px' ><i>" + (i + 1) + "</i><b>" + split[i] + "</b></span></li>";
 
             }
-         
+
             $('[add-time-NowServing]').html(queue);
         }
 
@@ -79,7 +87,7 @@ function refreshQueueNumbers(servingQueueNumber,currentQueueNumber, nextQueueNum
                 queue += "<li class='box-child'><span style='margin-top:-8px' ><i>" + (i + 1) + "</i><b>" + split[i] + "</b></span></li>";
 
             }
-         
+
             $('[add-time-CurrentTimeslot]').html(queue);
         }
 
@@ -107,7 +115,7 @@ function refreshQueueNumbers(servingQueueNumber,currentQueueNumber, nextQueueNum
 
     $('[add-time-HoldingList] span').remove();
     if (holdingQueueNumbers != null && holdingQueueNumbers.length > 0) {
-        
+
         for (var i = 0; i < holdingQueueNumbers.length; i++) {
             $('[add-time-HoldingList]').append('<li class="box-child" > <span style="margin-top:-8px"><i>' + (i + 1) + '</i><b>' + holdingQueueNumbers[i] + '</b></span></li >');
         }

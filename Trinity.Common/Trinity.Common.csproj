@@ -134,6 +134,7 @@
     <Compile Include="Utils\Convertor2.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Libs\Camera\DirectShowLib-2005.dll" />
     <Content Include="Libs\Futronic Fingerprint Reader\ftrScanAPI.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -197,6 +198,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="View\html2canvas\jquery.plugin.html2canvas.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="View\keyboard\jquery.ml-keyboard.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="View\keyboard\jquery.ml-keyboard.min.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="View\scripts\jquery-1.10.2.min.js">

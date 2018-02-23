@@ -54,7 +54,7 @@
     }
 
     .error {
-        background-color: red;
+        color: red;
     }
 
     .close {
@@ -130,18 +130,17 @@
             switch(data.type){
                 case Type.error :
                     $("#valType").text(Type.error);
-                    $("#valType").css("background-color", "red" );
+                    $("#valType").css("color", "red" );
                     break;
                 case Type.notification:
                     $("#valType").text(Type.notification);
-                    $("#valType").css("background-color", "#66ff33");
+                    $("#valType").css("color", "blue");
                     break;
                 case Type.caution:
                     $("#valType").text(Type.caution);
-                    $("#valType").css("background-color", "yellow" );
+                    $("#valType").css("color", "yellow" );
                     break;
             }
-            
         }
         function formatDate(strDate) {
             var date = new Date(Date.parse(strDate)),

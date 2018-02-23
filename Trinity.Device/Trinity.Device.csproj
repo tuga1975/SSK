@@ -55,6 +55,12 @@
     <Compile Include="Authentication\Fingerprint.cs" />
     <Compile Include="Authentication\SmartCard.cs" />
     <Compile Include="Monitor\BarcodePrinterMonitor.cs" />
+    <Compile Include="Monitor\BarcodeScannerMonitor.cs" />
+    <Compile Include="Monitor\ReceiptPrinterMonitor.cs" />
+    <Compile Include="Monitor\LedDisplayMonitor.cs" />
+    <Compile Include="Monitor\SpeakerMonitor.cs" />
+    <Compile Include="Monitor\CameraMonitor.cs" />
+    <Compile Include="Monitor\DocumentScannerMonitor.cs" />
     <Compile Include="Monitor\FingerprintReaderMonitor.cs" />
     <Compile Include="Monitor\PrinterMonitor.cs" />
     <Compile Include="Repeat.cs" />
@@ -62,7 +68,12 @@
     <Compile Include="Monitor\SmartCardReaderMonitor.cs" />
     <Compile Include="TSCLIB_DLL.cs" />
     <Compile Include="Utils\BarcodePrinterUtil.cs" />
+    <Compile Include="Utils\BarcodeScannerUtil.cs" />
+    <Compile Include="Utils\LEDDisplayUtil.cs" />
+    <Compile Include="Utils\SpeakerUtil.cs" />
     <Compile Include="Utils\DeviceUtil.cs" />
+    <Compile Include="Utils\CameraUtil.cs" />
+    <Compile Include="Utils\DocumentScannerUtil.cs" />
     <Compile Include="Utils\FingerprintReaderUtil.cs" />
     <Compile Include="Utils\ReceiptPrinterUtil.cs" />
     <Compile Include="Utils\SmartCardPrinterUtil.cs" />
@@ -70,6 +81,9 @@
     <Compile Include="Utils\SmartCardUtil.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="DirectShowLib-2005">
+      <HintPath>..\Trinity.Common\Libs\Camera\DirectShowLib-2005.dll</HintPath>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
@@ -79,6 +93,9 @@
     <Reference Include="ftrSDKHelper13, Version=4.5.0.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Trinity.Common\Libs\Futronic Fingerprint Reader\x86\ftrSDKHelper13.dll</HintPath>
+    </Reference>
+    <Reference Include="NAudio, Version=1.8.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\NAudio.1.8.4\lib\net35\NAudio.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -94,6 +111,7 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Management" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="ZMotifGraphics, Version=1.8.4100.0, Culture=neutral, PublicKeyToken=e38255d558fcaa39, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Trinity.Common\Libs\Zerbra XZP Serries 9\ZMotifGraphics.dll</HintPath>
