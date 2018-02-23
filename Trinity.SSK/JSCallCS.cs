@@ -170,7 +170,7 @@ namespace SSK
                         Timeslot_ID = item.Timeslot_ID,
                         StartTime = item.StartTime.Value,
                         EndTime = item.EndTime.Value,
-                        IsAvailble = true,
+                        IsAvailble = new DAL_Timeslots().CheckAvailableTimeslot(item),
                         IsSelected = selected_Timeslot_ID == item.Timeslot_ID,
                         Category = item.Category
                     }).OrderBy(item => item.StartTime).ToList();
@@ -369,7 +369,8 @@ namespace SSK
             catch (Exception ex)
             {
                 Debug.WriteLine("JSCallCS.SaveProfile exception: " + ex.ToString());
-                LoadPage("Supervisee.html");
+                CSCallJS.InvokeScript(_web, "showMessage", "Update failed!!!\n Please check the input information.");
+                return;
             }
         }
 
