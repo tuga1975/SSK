@@ -154,10 +154,16 @@ namespace SSK
             this._web.LoadPageHtml("BookAppointment.html", new object[] { appointment, workingTimeshift });
         }
 
+        public bool CheckBookingTime(string timeslotId)
+        {
+            return new DAL_Timeslots().CheckTimeslot(timeslotId);
+        }
+
         private List<WorkingShiftDetails> GetWorkingTimeshift(List<Timeslot> timeslots, string selected_Timeslot_ID, string timeshift)
         {
             try
             {
+                
                 List<WorkingShiftDetails> returnValue = timeslots.Where(item => item.Category == timeshift)
                     .Select(item => new WorkingShiftDetails()
                     {
@@ -168,7 +174,7 @@ namespace SSK
                         IsSelected = selected_Timeslot_ID == item.Timeslot_ID,
                         Category = item.Category
                     }).OrderBy(item => item.StartTime).ToList();
-
+               
                 return returnValue;
             }
             catch (Exception ex)
