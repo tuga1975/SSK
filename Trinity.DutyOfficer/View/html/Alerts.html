@@ -174,17 +174,25 @@
             if ($element && !data.isReaded) {
                 $element.removeClass("row_unread");
                 $element.addClass("row_readed");
+                var index = $element.closest('tr').data('index');
+                $table.bootstrapTable('updateRow', {
+                    index: index,
+                    row: {
+                        isReaded : true
+                    }
+                });
+                api.server.LoadPopupAlert(data, function () {
+                    var notificationId = rowData.notificationId;
+                    if (notificationId){
+                         api.server.updateReadedStatus(notificationId, function(isUpdateSuccessed){
+                             // if(isUpdateSuccessed){
+                                 $('#alertPopup').modal();
+                             // }
+                         });
+                    }
+                });
             }
-            api.server.LoadPopupAlert(data, function () {
-                var notificationId = rowData.notificationId;
-                if (notificationId){
-                     api.server.updateReadedStatus(notificationId, function(isUpdateSuccessed){
-                         // if(isUpdateSuccessed){
-                             $('#alertPopup').modal();
-                         // }
-                     });
-                }
-            });
+            
         }
 
         function formatDate(strDate) {
