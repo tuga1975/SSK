@@ -36,7 +36,6 @@ namespace DutyOfficer.Utils
 
         public void CheckStatusDevicesStation(string station)
         {
-            //JSCallCS jSCall = new JSCallCS(Lib.LayerWeb);
             DAL_DeviceStatus device = new DAL_DeviceStatus();
 
             if (station == EnumStations.SSA)
@@ -55,6 +54,9 @@ namespace DutyOfficer.Utils
             {
                 JSCallCS._StationColorDevice.UHPColor = device.CheckStatusDevicesStation(station) ? EnumColors.Green : EnumColors.Red;
             }
+
+            JSCallCS jSCall = new JSCallCS(Lib.LayerWeb);
+            jSCall.LoadStationColorDevice();
         }
 
         private void saveNotification(string NotificationID, string UserId, string Subject, string Content, string notificationType, string Station)
