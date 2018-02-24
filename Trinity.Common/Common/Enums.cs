@@ -458,6 +458,7 @@ public static class EnumAPIParam
     public const string QueueNumber = "QueueNumber";
     public const string SettingSystem = "SettingSystem";
     public const string Label = "Label";
+    public const string DrugResult = "DrugResult";
 
     //action
     public const string GetByToday = "GetByToday";

@@ -827,5 +827,45 @@ namespace Trinity.DAL
             }
 
         }
+
+        public int UpdateQueueOutcomeByQueueId(Guid queueId, string outcome)
+        {
+            try
+            {
+                if (EnumAppConfig.IsLocal)
+                {
+                    var queueRepo = _localUnitOfWork.GetRepository<Trinity.DAL.DBContext.Queue>();
+                    var dbQueue = queueRepo.Get(q => q.Queue_ID == queueId);
+                    dbQueue.Outcome = outcome;
+                    queueRepo.Update(dbQueue);
+                    _localUnitOfWork.Save();
+
+                    if (!EnumAppConfig.ByPassCentralizedDB)
+                    {
+                        bool centralizeStatus;
+                        var centralData = CallCentralized.Post<int>(EnumAPIParam.QueueNumber, "UpdateQueueOutcomeByQueueId", out centralizeStatus, "queueId=" + queueId.ToString(), "outcome=" + outcome);
+                        if (!centralizeStatus)
+                        {
+                            throw new Exception(EnumMessage.NotConnectCentralized);
+                        }
+                    }
+
+                    return 1;
+                }
+                else
+                {
+                    var queueRepo = _centralizedUnitOfWork.GetRepository<Trinity.DAL.DBContext.Queue>();
+                    var dbQueue = queueRepo.Get(q => q.Queue_ID == queueId);
+                    dbQueue.Outcome = outcome;
+                    queueRepo.Update(dbQueue);
+
+                    return _centralizedUnitOfWork.Save();
+                }
+            }
+            catch (Exception e)
+            {
+                return 0;
+            }
+        }
     }
 }

@@ -130,6 +130,15 @@
             data: data
         });
     });
+
+    api.server.startInstanceSmartcard();
+
+    function openPopupOutcome(queueId) {
+        api.server.LoadPopupOutcome(queueId, function () {
+            $('#idQueueOutcome').modal();
+        });
+    };
+    
 </script>
 <style>
     span[color] {
