@@ -19,13 +19,13 @@ namespace Trinity.DAL
 
         public DBContext.Timeslot GetTimeSlotEmpty()
         {
-            List<DBContext.Timeslot> arrayTimeslot = _localUnitOfWork.DataContext.Timeslots.Where(d => d.Date == DateTime.Today).ToList().OrderBy(d=>d.SortCategory).ThenBy(d=>d.StartTime).ToList();
+            List<DBContext.Timeslot> arrayTimeslot = _localUnitOfWork.DataContext.Timeslots.Where(d => d.Date == DateTime.Today).ToList().OrderBy(d => d.SortCategory).ThenBy(d => d.StartTime).ToList();
             DBContext.Timeslot timeslotReturn = null;
-            while (timeslotReturn == null && arrayTimeslot.Count>0)
+            while (timeslotReturn == null && arrayTimeslot.Count > 0)
             {
                 DBContext.Timeslot time = arrayTimeslot[0];
                 arrayTimeslot.RemoveAt(0);
-                if (time.EndTime>DateTime.Now.TimeOfDay)
+                if (time.EndTime > DateTime.Now.TimeOfDay)
                 {
                     int totalSlot = _localUnitOfWork.DataContext.Appointments.Count(d => !string.IsNullOrEmpty(d.Timeslot_ID) && d.Timeslot_ID == time.Timeslot_ID) + _localUnitOfWork.DataContext.Queues.Count(d => d.Timeslot_ID == time.Timeslot_ID && (!d.Appointment_ID.HasValue || (d.Appointment_ID.HasValue && !string.IsNullOrEmpty(d.Appointment.Timeslot_ID) && d.Appointment.Timeslot_ID != time.Timeslot_ID)));
                     if (totalSlot < time.MaximumSupervisee)
@@ -39,7 +39,7 @@ namespace Trinity.DAL
         }
         public List<Trinity.DAL.DBContext.Queue> SSKGetQueueToDay()
         {
-            
+
             return _localUnitOfWork.DataContext.Queues.Where(item => DbFunctions.TruncateTime(item.CreatedTime).Value == DateTime.Today).ToList();
         }
 
@@ -57,12 +57,12 @@ namespace Trinity.DAL
 
             return false;
         }
-        public bool IsUserAlreadyQueue(string UserID,DateTime date)
+        public bool IsUserAlreadyQueue(string UserID, DateTime date)
         {
             date = date.Date;
             if (EnumAppConfig.IsLocal)
             {
-                return _localUnitOfWork.DataContext.Queues.Any(item => item.UserId==UserID && DbFunctions.TruncateTime(item.CreatedTime)==date);
+                return _localUnitOfWork.DataContext.Queues.Any(item => item.UserId == UserID && DbFunctions.TruncateTime(item.CreatedTime) == date);
             }
 
             return false;
@@ -106,7 +106,7 @@ namespace Trinity.DAL
             }
         }
 
-        public Trinity.DAL.DBContext.Queue InsertQueueNumber(Guid appointmentID, string userId, string station,string userCreateQueue)
+        public Trinity.DAL.DBContext.Queue InsertQueueNumber(Guid appointmentID, string userId, string station, string userCreateQueue)
         {
             try
             {
@@ -117,12 +117,24 @@ namespace Trinity.DAL
 
 
                 var timeslot = GetTimeSlotEmpty();
-                string timeslotID = appointment.Timeslot_ID;
-                if(timeslot!=null && timeslot.EndTime< appointment.EndTime)
+                string timeslotID = string.Empty;
+                if (timeslot != null && timeslot.EndTime < appointment.EndTime)
+                {
+                    timeslotID = timeslot.Timeslot_ID;
+                }
+                else if (appointment.EndTime > DateTime.Now.TimeOfDay)
+                {
+                    timeslotID = appointment.Timeslot_ID;
+                }
+                else if (timeslot != null && appointment.EndTime < DateTime.Now.TimeOfDay)
                 {
                     timeslotID = timeslot.Timeslot_ID;
                 }
 
+                if (string.IsNullOrEmpty(timeslotID))
+                {
+                    throw new Exception("Sorry all timeslots are fully booked!");
+                }
 
                 Trinity.DAL.DBContext.Queue dataInsert = new Trinity.DAL.DBContext.Queue()
                 {
