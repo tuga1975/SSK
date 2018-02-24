@@ -28,7 +28,7 @@ namespace DutyOfficer
         private bool _isPrintFailMUB = false;
         private bool _isPrintFailTT = false;
         private bool _isPrintFailUB = false;
-
+        public static StationColorDevice _StationColorDevice;
 
         public JSCallCS(WebBrowser web)
         {
@@ -42,17 +42,22 @@ namespace DutyOfficer
             _printMUBAndTTLabel.OnPrintTTLabelsFailed += PrintTTLabels_OnPrintTTLabelFailed;
             _printMUBAndTTLabel.OnPrintMUBAndTTLabelsException += PrintMUBAndTTLabels_OnPrintTTLabelException;
             _printMUBAndTTLabel.OnPrintUBLabelsFailed += PrintUBLabels_OnPrintUBLabelFailed;
+            _StationColorDevice = new StationColorDevice();
         }
 
         public StationColorDevice GetStationClolorDevice()
         {
             var dalDeviceStatus = new DAL_DeviceStatus();
-            StationColorDevice stationColorDevice = new StationColorDevice();
-            stationColorDevice.SSAColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStations.SSA) ? EnumColors.Green : EnumColors.Red;
-            stationColorDevice.SSKColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStations.SSK) ? EnumColors.Green : EnumColors.Red;
-            stationColorDevice.ESPColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStations.ESP) ? EnumColors.Green : EnumColors.Red;
-            stationColorDevice.UHPColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStations.UHP) ? EnumColors.Green : EnumColors.Red;
-            return stationColorDevice;
+            _StationColorDevice.SSAColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStations.SSA) ? EnumColors.Green : EnumColors.Red;
+            _StationColorDevice.SSKColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStations.SSK) ? EnumColors.Green : EnumColors.Red;
+            _StationColorDevice.ESPColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStations.ESP) ? EnumColors.Green : EnumColors.Red;
+            _StationColorDevice.UHPColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStations.UHP) ? EnumColors.Green : EnumColors.Red;
+            return _StationColorDevice;
+        }
+
+        public void LoadStationColorDevice()
+        {
+            this._web.InvokeScript("LoadStationColorDevice");
         }
 
         #region Queue
@@ -107,7 +112,7 @@ namespace DutyOfficer
                     SSK = queue.QueueDetails.Where(c => c.Station == EnumStations.SSK).FirstOrDefault().Color,
                     SSA = queue.QueueDetails.Where(c => c.Station == EnumStations.SSA).FirstOrDefault().Color,
                     UHP = queue.QueueDetails.Where(c => c.Station == EnumStations.UHP).FirstOrDefault().Color,
-                    HSA = queue.QueueDetails.Where(c => c.Station == EnumStations.HSA).FirstOrDefault().Status == EnumQueueStatuses.Finished ? "Drugs" : string.Empty,
+                    HSA = queue.QueueDetails.Where(c => c.Station == EnumStations.HSA).FirstOrDefault().Status == EnumQueueStatuses.Finished ? "Result" : string.Empty,
                     ESP = queue.QueueDetails.Where(c => c.Station == EnumStations.ESP).FirstOrDefault().Color,
                     Outcome = queue.Outcome,
                     Message = new
@@ -122,6 +127,16 @@ namespace DutyOfficer
             var dalQueue = new DAL_QueueNumber();
             Trinity.BE.QueueInfo queueInfo = dalQueue.GetQueueInfoByQueueID(new Guid(queue_ID));
             this._web.LoadPopupHtml("QueuePopupDetail.html", queueInfo);
+        }
+
+        public void LoadPopupOutcome()
+        {
+            this._web.LoadPopupHtml("QueuePopupOutcome.html");
+        }
+
+        public void SaveOutcome(string outcomeType)
+        {
+
         }
         #endregion
 
@@ -322,12 +337,17 @@ namespace DutyOfficer
                 item.Booked = bookedResult;
                 var reportedResult = dalAppointment.CountApptmtReportedByTimeslot(item.Timeslot_ID);
                 item.Reported = reportedResult;
-                var noShowResult= dalAppointment.CountApptmtNoShowByTimeslot(item.Timeslot_ID);
-                item.No_Show = noShowResult;
-                item.Available = item.Max - item.Booked - item.Reported - item.No_Show;
+                var absentResult= dalAppointment.CountApptmtAbsentByTimeslot(item.Timeslot_ID);
+                item.Absent = absentResult;
+                item.Available = item.Max - item.Booked - item.Reported - item.Absent;
             }
 
             return data;
+        }
+
+        public void LoadPageAppointment(string dateSearch, string startTime)
+        {
+            _web.LoadPageHtml("Appointments.html", dateSearch + ";" + startTime);
         }
         #endregion
 

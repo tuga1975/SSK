@@ -117,14 +117,10 @@ namespace SSA
             var dalLabel = new DAL_Labels();
             dalLabel.UpdateLabel(labelInfo);
 
-            // Update queue status is finished
-            var dalQueue = new DAL_QueueNumber();
-            dalQueue.UpdateQueueStatusByUserId(labelInfo.UserId, EnumStations.SSA, EnumStations.UHP, EnumQueueStatuses.Finished, "Printer MUB/TT Label");
-
-            //this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').show(); ; ");
-            //this._web.RunScript("$('.status-text').css('color','#000').text('Please collect your labels');");
-            //this._web.InvokeScript("countdownLogout");
-
+            //// Update queue status is finished
+            //var dalQueue = new DAL_QueueNumber();
+            //dalQueue.UpdateQueueStatusByUserId(labelInfo.UserId, EnumStations.SSA, EnumStations.UHP, EnumQueueStatuses.Finished, "Printer MUB/TT Label");
+            
             //DeleteQRCodeImageFileTemp();
         }
 
@@ -311,13 +307,19 @@ namespace SSA
 
             if (_PrintMUBSucceed && _PrintTTSucceed)
             {
+                // Update queue status is finished
+                Session session = Session.Instance;
+                Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.SUPERVISEE];
+                var dalQueue = new DAL_QueueNumber();
+                dalQueue.UpdateQueueStatusByUserId(user.UserId, EnumStations.SSA, EnumStations.UHP, EnumQueueStatuses.Finished, EnumQueueOutcomeText.Processing);
+
                 this._web.LoadPageHtml("PrintingMUBAndTTLabels.html");
                 this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').show(); ; ");
                 this._web.RunScript("$('.status-text').css('color','#000').text('Please collect your labels');");
                 this._web.InvokeScript("countdownLogout");
 
                 DeleteQRCodeImageFileTemp();
-                Trinity.BE.User user = (Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN];
+                //Trinity.BE.User user = (Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN];
                 new DAL_QueueDetails().RemoveQueueFromSSK(user.UserId);
 
                 APIUtils.SignalR.QueueFinished(user.UserId);

@@ -53,32 +53,21 @@
     today = mm + '/' + dd + '/' + yyyy;
     $('#dateSearch').val(today);
 
-     var pageSize = $('#pageSize');
+    $(document).ready(function () {
+
+        var pageSize = $('#pageSize');
         if (pageSize)
             pageSize = 10;
 
-    $(function () {
-        $('#datetimepicker').datepicker();
-    });
+        $(function () {
+            $('#datetimepicker').datepicker();
+        });
 
-    api.server.GetAllAppoinments(function (data) {
-        if (data) {
-            data.forEach(function (element, index) {
-                dataSource.push({
-                    TimeSlot: element.StartTime + ' to ' + element.EndTime,
-                    NRIC: element.NRIC,
-                    Name: element.Name,
-                    ReportTime: element.ReportTime,
-                    Status: element.Status,
-                    Date: element.AppointmentDate,
-                    StartTime: element.StartTime,
-                    EndTime: element.EndTime,
-                    Category: element.Category
-                });
-
-                if (Date.parse(element.AppointmentDate) == Date.parse(today)) {
-                    searchSource.push({
-                        TimeSlot: element.StartTime + ' to ' + element.EndTime,
+        api.server.GetAllAppoinments(function (data) {
+            if (data) {
+                data.forEach(function (element, index) {
+                    dataSource.push({
+                        TimeSlot: element.StartTime ,//+ ' to ' + element.EndTime,
                         NRIC: element.NRIC,
                         Name: element.Name,
                         ReportTime: element.ReportTime,
@@ -88,65 +77,91 @@
                         EndTime: element.EndTime,
                         Category: element.Category
                     });
-                }
-            });
 
-            searchSource.forEach(function (element, index) {
-                $('#timeslot').append($('<option></option>').val(element.TimeSlot).html(element.TimeSlot));
-            });
-        }
+                    if (Date.parse(element.AppointmentDate) == Date.parse(today)) {
+                        searchSource.push({
+                            TimeSlot: element.StartTime ,//+ ' to ' + element.EndTime,
+                            NRIC: element.NRIC,
+                            Name: element.Name,
+                            ReportTime: element.ReportTime,
+                            Status: element.Status,
+                            Date: element.AppointmentDate,
+                            StartTime: element.StartTime,
+                            EndTime: element.EndTime,
+                            Category: element.Category
+                        });
+                    }
+                });
 
-        $('#table').bootstrapTable({
-            pagination: true,
-            pageSize: 10,
-            columns: [{
-                field: 'TimeSlot',
-                title: 'Time Slot',
-                sortable: true,
-                width: '15%',
-                align: 'center'
-            }, {
-                field: 'NRIC',
-                title: 'NRIC',
-                sortable: true,
-                width: '15%',
-                align: 'center'
-            }, {
-                field: 'Name',
-                title: 'Name',
-                sortable: true,
-                width: '40%',
-                align: 'center'
-            }, {
-                field: 'ReportTime',
-                title: 'Report Time',
-                sortable: true,
-                width: '15%',
-                align: 'center',
-                formatter: function (value, row, index, field) {
-                    if (value) {
-                        return formatDate(value);
+                searchSource.forEach(function (element, index) {
+                    $('#timeslot').append($('<option></option>').val(element.TimeSlot).html(element.TimeSlot));
+                });
+            }
+
+            $('#table').bootstrapTable({
+                pagination: true,
+                pageSize: 10,
+                columns: [{
+                    field: 'TimeSlot',
+                    title: 'Time Slot',
+                    sortable: true,
+                    width: '15%',
+                    align: 'center'
+                }, {
+                    field: 'NRIC',
+                    title: 'NRIC',
+                    sortable: true,
+                    width: '15%',
+                    align: 'center'
+                }, {
+                    field: 'Name',
+                    title: 'Name',
+                    sortable: true,
+                    width: '40%',
+                    align: 'center'
+                }, {
+                    field: 'ReportTime',
+                    title: 'Report Time',
+                    sortable: true,
+                    width: '15%',
+                    align: 'center',
+                    formatter: function (value, row, index, field) {
+                        if (value) {
+                            return formatDate(value);
+                        }
+                        return "";
                     }
-                    return "";
-                }
-            }, {
-                field: 'Status',
-                title: 'Status',
-                sortable: true,
-                width: '15%',
-                align: 'center',
-                formatter: function (value, row, index, field) {
-                    switch (value) {
-                        case 1:
-                            return 'Booked';
-                        case 2:
-                            return 'Reported';
-                        default:
-                            return "No-show";
+                }, {
+                    field: 'Status',
+                    title: 'Status',
+                    sortable: true,
+                    width: '15%',
+                    align: 'center',
+                    formatter: function (value, row, index, field) {
+                        switch (value) {
+                            case 1:
+                                return 'Booked';
+                            case 2:
+                                return 'Reported';
+                            default:
+                                return "Absent";
+                        }
                     }
-                }
-            }],
-            data: searchSource
+                }],
+                data: searchSource
+            });
+        });
+
+        // For case redirected from Statistics
+        api.ready(function (strDateAndStartTime) {
+            if (strDateAndStartTime){
+                var dateAppt = strDateAndStartTime.split(';')[0];
+                var startTimeAppt = strDateAndStartTime.split(';')[1];
+                $('#dateSearch').val(dateAppt);
+                getTimeslot();
+                $('#timeslot').val(startTimeAppt);
+                searchAppointment();
+            };
         });
     });
 

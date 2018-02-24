@@ -16,7 +16,7 @@
             <div id="texts" style="display:inline;">
                 <div class="SucessesPrint"><span>(Collect Master Urine Bottle <br /> and Test Tube Video.)</span></div>
                 <br />
-                <!--<p style="font-size:38px;">System will be logout in <span style="font-size:42px;" id="countdown">5</span> seconds</p>-->
+                <p style="font-size:38px;">System will be logout in <span style="font-size:42px;" id="countdown">5</span> seconds</p>
             </div>
         </div>
     </div>
@@ -32,15 +32,15 @@
         $('#CompletedSection').hide();
     });
 
-    //function countdownLogout() {
-    //    var timeleft = 5;
-    //    var downloadTimer = setInterval(function () {
-    //        timeleft--;
-    //        document.getElementById("countdown").textContent = timeleft;
-    //        if (timeleft <= 0) {
-    //            clearInterval(downloadTimer);
-    //            api.server.LogOut();
-    //        }
-    //    }, 1000);
-    //};
+    function countdownLogout() {
+        var timeleft = 5;
+        var downloadTimer = setInterval(function () {
+            timeleft--;
+            document.getElementById("countdown").textContent = timeleft;
+            if (timeleft <= 0) {
+                clearInterval(downloadTimer);
+                api.server.LogOut();
+            }
+        }, 1000);
+    };
 </script>

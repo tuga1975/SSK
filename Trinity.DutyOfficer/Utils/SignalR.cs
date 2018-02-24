@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 using Trinity.BE;
 using Trinity.Common;
@@ -19,6 +20,7 @@ namespace DutyOfficer.Utils
         {
             HubProxy.On<int, EnumDeviceStatuses[],string>("DeviceStatusUpdate", (deviceId, deviceStatuses, Station) => {
                 // Xử lý status device
+                CheckStatusDevicesStation(Station);
             });
 
             HubProxy.On<string, string, string, string, string,string>("MessageTo", (NotificationID, UserId, Subject, Content, notificationType, Station) => {
@@ -32,6 +34,30 @@ namespace DutyOfficer.Utils
             
         }
 
+        public void CheckStatusDevicesStation(string station)
+        {
+            DAL_DeviceStatus device = new DAL_DeviceStatus();
+
+            if (station == EnumStations.SSA)
+            {
+                JSCallCS._StationColorDevice.SSAColor = device.CheckStatusDevicesStation(station) ? EnumColors.Green : EnumColors.Red;
+            }
+            if (station == EnumStations.SSK)
+            {
+                JSCallCS._StationColorDevice.SSKColor = device.CheckStatusDevicesStation(station) ? EnumColors.Green : EnumColors.Red;
+            }
+            if (station == EnumStations.ESP)
+            {
+                JSCallCS._StationColorDevice.ESPColor = device.CheckStatusDevicesStation(station) ? EnumColors.Green : EnumColors.Red;
+            }
+            if (station == EnumStations.UHP)
+            {
+                JSCallCS._StationColorDevice.UHPColor = device.CheckStatusDevicesStation(station) ? EnumColors.Green : EnumColors.Red;
+            }
+
+            JSCallCS jSCall = new JSCallCS(Lib.LayerWeb);
+            jSCall.LoadStationColorDevice();
+        }
 
         private void saveNotification(string NotificationID, string UserId, string Subject, string Content, string notificationType, string Station)
         {

@@ -42,9 +42,20 @@ function Api() {
     this.DumpDataToTxt = function (content, model) {
         for (var item in model) {
             var data = model[item];
+            if (data != null && (item == 'Morning_Open_Time' || item == 'Morning_Close_Time' || item == 'Afternoon_Open_Time' || item == 'Afternoon_Close_Time' || item == 'Evening_Open_Time' || item == 'Evening_Close_Time')) {
+                data = tConvert24hrTo12hr(data);
+            }
             content = content.replace(new RegExp('{' + item + '}', "g"), data == null ? '' : data);
         }
         return content;
+    };
+    function tConvert24hrTo12hr(time) {
+        var hourEnd = time.indexOf(":");
+        var H = +time.substr(0, hourEnd);
+        var h = H % 12 || 12;
+        var ampm = (H < 12 || H === 24) ? " AM" : " PM";
+        time = h + time.substr(hourEnd, 3) + ampm;
+        return time; // return adjusted time or original string
     };
 }
 function AddContentPage(html, model) {

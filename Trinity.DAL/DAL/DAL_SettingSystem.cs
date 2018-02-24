@@ -19,7 +19,7 @@ namespace Trinity.DAL
             int currentYear = DateTime.Now.Year;
             Setting settingSystem = GetSettingSystemByYear(currentYear);
 
-            if(settingSystem != null)
+            if (settingSystem != null)
             {
                 settingSystem.MaxMarkingNo += 1;
             }
@@ -33,7 +33,7 @@ namespace Trinity.DAL
             result = "CSA" + (settingSystem.Year % 100).ToString() + settingSystem.MaxMarkingNo.ToString().PadLeft(6, '0');
 
             UpdateSettingSystem(settingSystem);
-            
+
             return result;
         }
 
@@ -78,29 +78,36 @@ namespace Trinity.DAL
             {
                 if (EnumAppConfig.IsLocal)
                 {
-                    bool centralizeStatus = false;
-                    var centralUpdate = CallCentralized.Post<Setting>(EnumAPIParam.SettingSystem, EnumAPIParam.UpdateSettingSystem, out centralizeStatus, setting);
-                    if (centralizeStatus)
+                    Setting dbLocalSetting = _localUnitOfWork.DataContext.Settings.FirstOrDefault(s => s.Year == setting.Year);
+
+                    if (dbLocalSetting == null)
                     {
-                        Setting dbLocalSetting = _localUnitOfWork.DataContext.Settings.FirstOrDefault(s => s.Year == setting.Year);
-
-                        if (dbLocalSetting == null)
-                        {
-                            _localUnitOfWork.GetRepository<Setting>().Add(setting);
-                        }
-                        else
-                        {
-                            _localUnitOfWork.GetRepository<Setting>().Update(setting);
-                        }
-
-                        _localUnitOfWork.Save();
-
-                        return centralUpdate;
+                        _localUnitOfWork.GetRepository<Setting>().Add(setting);
                     }
                     else
                     {
-                        throw new Exception(EnumMessage.NotConnectCentralized);
+                        _localUnitOfWork.GetRepository<Setting>().Update(setting);
                     }
+
+                    _localUnitOfWork.Save();
+                    
+                    if (EnumAppConfig.ByPassCentralizedDB)
+                    {
+                        return setting;
+                    }
+                    else
+                    {
+                        bool centralizeStatus = false;
+                        var centralUpdate = CallCentralized.Post<Setting>(EnumAPIParam.SettingSystem, EnumAPIParam.UpdateSettingSystem, out centralizeStatus, setting);
+                        if (centralizeStatus)
+                        {
+                            return centralUpdate;
+                        }
+                        else
+                        {
+                            throw new Exception(EnumMessage.NotConnectCentralized);
+                        }
+                    }                    
                 }
                 else
                 {
@@ -118,7 +125,7 @@ namespace Trinity.DAL
                     return setting;
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return null;
             }
