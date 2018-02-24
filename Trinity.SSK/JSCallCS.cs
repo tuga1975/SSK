@@ -294,7 +294,7 @@ namespace SSK
                 Name = appointment.Name,
                 Venue = appointment.NRIC
             });
-            //APIUtils.Printer.PrintAppointmentDetails("AppointmentDetailsTemplate.html", appointment);
+            APIUtils.Printer.PrintAppointmentDetails("AppointmentDetailsTemplate.html", appointment);
         }
         #endregion
         public void LoadProfile()
