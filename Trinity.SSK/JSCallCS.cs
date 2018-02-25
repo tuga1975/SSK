@@ -239,7 +239,14 @@ namespace SSK
                 if (updateResult)
                 {
                     Trinity.BE.Appointment appointment = new DAL_Appointments().GetAppointment(appointment_ID);
-                    APIUtils.Printer.PrintAppointmentDetails("AppointmentDetailsTemplate.html", appointment);
+
+                    //APIUtils.Printer.PrintAppointmentDetails("AppointmentDetailsTemplate.html", appointment);
+                    ReceiptPrinterUtil.Instance.PrintAppointmentDetails(new AppointmentDetails()
+                    {
+                        Date = appointment.AppointmentDate.Value,
+                        Name = appointment.Name,
+                        Venue = appointment.NRIC
+                    });
                     FormQueueNumber f = FormQueueNumber.GetInstance();
                     f.RefreshQueueNumbers();
                     return true;

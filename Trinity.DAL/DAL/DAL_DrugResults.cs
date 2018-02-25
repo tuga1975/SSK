@@ -95,5 +95,86 @@ namespace Trinity.DAL
 
             return result.ToString().Remove(result.ToString().Length - 1);
         }
+
+        public DrugResult UpdateDrugSeal(string userId,bool COCA, bool BARB, bool LSD, bool METH, bool MTQL, bool PCP, bool KET, bool BUPRE, bool CAT, bool PPZ, bool NPS)
+        {
+            try
+            {
+                string NRIC = new DAL_User().GetUserByUserId(userId).Data.NRIC;
+
+                if (EnumAppConfig.IsLocal)
+                {
+                    var localRepo = _localUnitOfWork.GetRepository<DrugResult>();
+                    DrugResult drug = _localUnitOfWork.DataContext.DrugResults.FirstOrDefault(d => d.NRIC.Equals(NRIC));
+                    
+                    if(drug != null)
+                    {
+                        drug.COCA = COCA;
+                        drug.BARB = BARB;
+                        drug.LSD = LSD;
+                        drug.METH = METH;
+                        drug.MTQL = MTQL;
+                        drug.PCP = PCP;
+                        drug.KET = KET;
+                        drug.BUPRE = BUPRE;
+                        drug.CAT = CAT;
+                        drug.PPZ = PPZ;
+                        drug.NPS = NPS;
+
+                        localRepo.Update(drug);
+                        _localUnitOfWork.Save();                                               
+                    }
+
+                    if(EnumAppConfig.ByPassCentralizedDB)
+                    {
+                        return drug;
+                    }
+                    else 
+                    {
+                        bool centralizeStatus;
+                        var centralData = CallCentralized.Post<DrugResult>(EnumAPIParam.DrugResult, "UpdateDrugSeal", out centralizeStatus, "userId=" + userId, "COCA=" + COCA.ToString(),
+                                            "BARB=" + BARB.ToString(), "LSD=" + LSD.ToString(), "METH=" + METH.ToString(), "MTQL=" + MTQL.ToString(), "PCP=" + PCP.ToString(), "KET=" + KET.ToString(),
+                                            "BUPRE=" + BUPRE.ToString(), "CAT=" + CAT.ToString(), "PPZ=" + PPZ.ToString(), "NPS=" + NPS.ToString());
+                        if (centralizeStatus)
+                        {
+                            return centralData;
+                        }
+                        else
+                        {
+                            throw new Exception(EnumMessage.NotConnectCentralized);
+                        }
+                    }                    
+                }
+                else
+                {
+                    var centralRepo = _centralizedUnitOfWork.GetRepository<DrugResult>();
+                    DrugResult drug = _centralizedUnitOfWork.DataContext.DrugResults.FirstOrDefault(d => d.NRIC.Equals(NRIC));
+
+                    if (drug != null)
+                    {
+                        drug.COCA = COCA;
+                        drug.BARB = BARB;
+                        drug.LSD = LSD;
+                        drug.METH = METH;
+                        drug.MTQL = MTQL;
+                        drug.PCP = PCP;
+                        drug.KET = KET;
+                        drug.BUPRE = BUPRE;
+                        drug.CAT = CAT;
+                        drug.PPZ = PPZ;
+                        drug.NPS = NPS;
+
+                        centralRepo.Update(drug);
+                        _centralizedUnitOfWork.Save();
+                    }
+
+                    return drug;
+                }
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
     }
 }

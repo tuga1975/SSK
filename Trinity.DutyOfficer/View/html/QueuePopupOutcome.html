@@ -7,22 +7,22 @@
             <div class="modal-body">
                 <div style="padding:15px; vertical-align:central" id='type'>
                     <div>
-                        <input type='radio' id='outcome1' name='typeOutcome' value='1' />
+                        <input type='radio' id='outcome1' name='typeOutcome' value='Released on bail' />
                         <span class="control-label" style="display:inline-block;height:33px; padding:7px;box-sizing:border-box;border:1px solid #CCC;text-align:center;"><b>Released on bail</b></span>
                     </div>
                     <br />
                     <div>
-                        <input type='radio' id='outcome2' name='typeOutcome' value='2' />
+                        <input type='radio' id='outcome2' name='typeOutcome' value='Referred to DRC' />
                         <span class="control-label" style="display:inline-block;height:33px; padding:7px;box-sizing:border-box;border:1px solid #CCC;text-align:center;"><b>Referred to DRC</b></span>
                     </div>
                     <br />
                     <div>
-                        <input type='radio' id='outcome3' name='typeOutcome' value='3' />
+                        <input type='radio' id='outcome3' name='typeOutcome' value='Referred to Investigation Division' />
                         <span class="control-label" style="display:inline-block;height:33px; padding:7px;box-sizing:border-box;border:1px solid #CCC;text-align:center;"><b>Referred to Investigation Division</b></span>
                     </div>
                     <br />
                     <div>
-                        <input type='radio' id='outcome4' name='typeOutcome' value='4' />
+                        <input type='radio' id='outcome4' name='typeOutcome' value='Referred to External Agencies' />
                         <span class="control-label" style="display:inline-block;height:33px; padding:7px;box-sizing:border-box;border:1px solid #CCC;text-align:center;"><b>Referred to External Agencies</b></span>
                     </div>
                 </div>
@@ -36,11 +36,11 @@
     </div>
 </div>
 <script type="text/javascript">
-    api.ready(function () {
+    api.ready(function (queueID) {
         $("#btnOutcome").click(function (e) {
             var outcomeChoose = $("input:radio[name ='typeOutcome']:checked").val();
             if (outcomeChoose != null) {
-                api.server.SaveOutcome(outcomeChoose, function () {
+                api.server.SaveOutcome(queueID, outcomeChoose, function () {
                     $('#idQueueOutcome').modal('toggle');
                 });
             };

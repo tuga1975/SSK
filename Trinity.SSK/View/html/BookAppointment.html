@@ -143,6 +143,7 @@
           });
         });
         $('#btnPrintDetail').click(function () {
+            alert(model[0].ID);
             api.server.PrintAppointmentDetails(model[0].ID)
         });
     });
