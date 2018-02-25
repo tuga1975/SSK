@@ -540,14 +540,31 @@ namespace SSK
                     else if (appointment != null && !string.IsNullOrEmpty(appointment.Timeslot_ID))
                     {
                         queueNumber = _dalQueue.InsertQueueNumber(appointment.ID, appointment.UserId, EnumStations.SSK, user.UserId);
-                        var eventCenter = Trinity.Common.Common.EventCenter.Default;
-                        eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_MESSAGE, Message = "Your queue number is:" + queueNumber.QueuedNumber });
+                        if (queueNumber!=null)
+                        {
+                            APIUtils.FormQueueNumber.RefreshQueueNumbers();
+                            var eventCenter = Trinity.Common.Common.EventCenter.Default;
+                            eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_MESSAGE, Message = "Your queue number is:" + queueNumber.QueuedNumber });
+                        }
+                        else
+                        {
+                            this._web.InvokeScript("ShowMessageBox", "Sorry all timeslots are fully booked!");
+                        }
+                        
                     }
                     else
                     {
                         queueNumber = _dalQueue.InsertQueueNumberFromDO(appointment.UserId, EnumStations.SSK, user.UserId);
-                        var eventCenter = Trinity.Common.Common.EventCenter.Default;
-                        eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_MESSAGE, Message = "Your queue number is:" + queueNumber.QueuedNumber });
+                        if (queueNumber != null)
+                        {
+                            APIUtils.FormQueueNumber.RefreshQueueNumbers();
+                            var eventCenter = Trinity.Common.Common.EventCenter.Default;
+                            eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_MESSAGE, Message = "Your queue number is:" + queueNumber.QueuedNumber });
+                        }
+                        else
+                        {
+                            this._web.InvokeScript("ShowMessageBox", "Sorry all timeslots are fully booked!");
+                        }
                     }
                 }
                 else
@@ -586,8 +603,6 @@ namespace SSK
                 ////    Status = d.Status,
                 ////    QueueNumber = d.QueuedNumber
                 ////}).ToArray();
-                FormQueueNumber f = FormQueueNumber.GetInstance();
-                f.RefreshQueueNumbers();
             }
         }
 
