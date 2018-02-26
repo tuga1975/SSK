@@ -67,8 +67,6 @@ namespace Trinity.DAL
                         return true;//is past
                     }
                     return false;
-
-
                 }
                 else // request from centralized api
                 {
@@ -119,13 +117,11 @@ namespace Trinity.DAL
             //        return false;
             //}
 
-            if (totalSlot>=time.MaximumSupervisee)
+            if (totalSlot >= time.MaximumSupervisee)
             {
                 return false;
             }
             return true;
         }
-
-
     }
 }

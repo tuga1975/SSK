@@ -82,7 +82,6 @@ namespace Trinity.DAL
         #region NEW DAL_APPOINTMENT
         public Appointment GetAppointmentByID(Guid ID)
         {
-
             try
             {
                 if (EnumAppConfig.IsLocal)
@@ -113,21 +112,16 @@ namespace Trinity.DAL
                     }
                     return null;
                 }
-
-
             }
             catch (Exception)
             {
 
                 return null;
             }
-
         }
 
         public BE.Appointment GetAppmtDetails(Guid ID)
         {
-
-
             if (EnumAppConfig.IsLocal)
             {
                 Appointment appointment = _localUnitOfWork.DataContext.Appointments.Include("TimeSlot").Include("Membership_Users").FirstOrDefault(d => d.ID == ID);
@@ -158,8 +152,6 @@ namespace Trinity.DAL
                 }
                 return null;
             }
-
-
         }
 
         private static BE.Appointment SetAppointmentBE(Appointment appointment)
@@ -182,7 +174,6 @@ namespace Trinity.DAL
 
         public Appointment GetAppointmentByDate(string userId, DateTime date)
         {
-
             try
             {
                 if (EnumAppConfig.IsLocal)
@@ -211,15 +202,12 @@ namespace Trinity.DAL
                         return data;
                     }
                     return null;
-
                 }
             }
             catch (Exception)
             {
-
                 return null;
             }
-
         }
 
         public List<Appointment> GetAppointmentByUserId(string userId)
@@ -243,7 +231,6 @@ namespace Trinity.DAL
                         }
                         return null;
                     }
-
                 }
                 else
                 {
@@ -298,7 +285,6 @@ namespace Trinity.DAL
             }
             catch (Exception)
             {
-
                 return null;
             }
         }
@@ -318,7 +304,6 @@ namespace Trinity.DAL
 
                     return _localUnitOfWork.DataContext.SaveChanges() > 0;
                 }
-
                 return false;
             }
             catch (Exception ex)
@@ -331,7 +316,6 @@ namespace Trinity.DAL
         {
             try
             {
-
                 if (EnumAppConfig.IsLocal)
                 {
                     var data = _localUnitOfWork.DataContext.Appointments.Include("Queues").Include("Timeslot").Where(d => d.Date == DateTime.Today && !string.IsNullOrEmpty(d.Timeslot_ID) && d.Timeslot.StartTime.Value == currentTime && d.Queues.Any(q => q.Appointment_ID == d.ID) == false).OrderBy(d => d.Date).ToList();
@@ -349,7 +333,6 @@ namespace Trinity.DAL
                         }
                         return null;
                     }
-
                 }
                 else
                 {
@@ -363,11 +346,8 @@ namespace Trinity.DAL
             }
             catch (Exception)
             {
-
                 return null;
             }
-
-
         }
 
         public Appointment GetNearestApptmt(string UserId)
@@ -401,11 +381,9 @@ namespace Trinity.DAL
                     }
                     return null;
                 }
-
             }
             catch (Exception)
             {
-
                 return null;
             }
         }
@@ -424,8 +402,6 @@ namespace Trinity.DAL
             {
                 appointment.ChangedCount = 1;
             }
-
-
             appointment.Status = (int)EnumAppointmentStatuses.Booked;
             try
             {
@@ -495,7 +471,6 @@ namespace Trinity.DAL
             }
             catch (Exception)
             {
-
                 return 0;
             }
         }
@@ -535,18 +510,15 @@ namespace Trinity.DAL
                     }
                     return null;
                 }
-
             }
             catch (Exception)
             {
-
                 return null;
             }
         }
 
         public Appointment UpdateAbsenceReason(Guid appointmentId, Guid absenceId)
         {
-
             try
             {
                 var appointment = GetAppointmentByID(appointmentId);
@@ -564,7 +536,6 @@ namespace Trinity.DAL
 
                     }
                     return null;
-
                 }
                 else
                 {
@@ -578,8 +549,6 @@ namespace Trinity.DAL
 
                 return null;
             }
-
-
         }
 
         public List<Appointment> GetListAppointmentFromListSelectedDate(string listID)
@@ -587,7 +556,6 @@ namespace Trinity.DAL
             try
             {
                 var listSelected = listID.Split(',').ToList();
-
 
                 if (EnumAppConfig.IsLocal)
                 {
@@ -611,9 +579,7 @@ namespace Trinity.DAL
                                     return centralData;
                                 }
                             }
-
                         }
-
                     }
                     return dbAppointment;
                 }
@@ -627,7 +593,6 @@ namespace Trinity.DAL
                     }
                     return dbAppointment;
                 }
-
             }
             catch (Exception ex)
             {
@@ -671,7 +636,6 @@ namespace Trinity.DAL
 
             }
             return 0;
-
         }
 
         public List<BE.Appointment> GetAllApptmts()
@@ -731,9 +695,6 @@ namespace Trinity.DAL
                     }
                     return null;
                 }
-
-
-
                 //var lstModels = from a in _localUnitOfWork.DataContext.Appointments
                 //                join tl in _localUnitOfWork.DataContext.Timeslots on a.Timeslot_ID equals tl.Timeslot_ID
                 //                join u in _localUnitOfWork.DataContext.Membership_Users on a.UserId equals u.UserId
@@ -873,11 +834,9 @@ namespace Trinity.DAL
                         return data.Count();
                     }
                 }
-
             }
             catch (Exception)
             {
-
                 return 0;
             }
             return 0;
@@ -917,7 +876,6 @@ namespace Trinity.DAL
             }
             catch (Exception)
             {
-
                 return 0;
             }
         }
@@ -956,7 +914,6 @@ namespace Trinity.DAL
             }
             catch (Exception)
             {
-
                 return 0;
             }
         }
@@ -1089,7 +1046,6 @@ namespace Trinity.DAL
                             return centralData;
                         }
                     }
-
                 }
                 else
                 {
@@ -1104,7 +1060,6 @@ namespace Trinity.DAL
             }
             catch (Exception)
             {
-
                 return null;
             }
         }
@@ -1127,8 +1082,6 @@ namespace Trinity.DAL
 
                         return centralData;
                     }
-
-
                 }
                 else
                 {
@@ -1140,12 +1093,10 @@ namespace Trinity.DAL
             }
             catch (Exception)
             {
-
                 return null;
             }
         }
         #endregion
-
 
 
         /// <summary>
@@ -1181,23 +1132,5 @@ namespace Trinity.DAL
             }
 
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     }
 }
