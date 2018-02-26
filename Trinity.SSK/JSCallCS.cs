@@ -171,7 +171,7 @@ namespace SSK
                         Timeslot_ID = item.Timeslot_ID,
                         StartTime = item.StartTime.Value,
                         EndTime = item.EndTime.Value,
-                        IsAvailble = new DAL_Timeslots().CheckAvailableTimeslot(item),
+                        IsAvailble = item.MaximumSupervisee.HasValue? new DAL_Appointments().CountApptmtBookedByTimeslot(item.Timeslot_ID)<item.MaximumSupervisee.Value:false,
                         IsSelected = selected_Timeslot_ID == item.Timeslot_ID,
                         Category = item.Category
                     }).OrderBy(item => item.StartTime).ToList();

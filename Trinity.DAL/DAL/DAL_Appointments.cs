@@ -77,9 +77,7 @@ namespace Trinity.DAL
                 return null;
             }
         }
-        #endregion
 
-        #region NEW DAL_APPOINTMENT
         public Appointment GetAppointmentByID(Guid ID)
         {
 
@@ -849,29 +847,26 @@ namespace Trinity.DAL
             {
                 if (EnumAppConfig.IsLocal)
                 {
-                    var data = _localUnitOfWork.DataContext.Appointments.Where(a => a.Timeslot_ID == timeslotID && a.Status == (int)EnumAppointmentStatuses.Booked);
-                    if (data != null)
-                    {
-                        return data.Count();
-                    }
-                    else if (!EnumAppConfig.ByPassCentralizedDB)
-                    {
-                        bool centralizeStatus;
-                        var centralData = CallCentralized.Get<int>(EnumAPIParam.Appointment, EnumAPIParam.CountBookedByTimeslot, out centralizeStatus);
-                        if (centralizeStatus)
-                        {
-                            return centralData;
-                        }
-                        return 0;
-                    }
+                    var data = _localUnitOfWork.DataContext.Appointments.Count(d => !string.IsNullOrEmpty(d.Timeslot_ID) && d.Timeslot_ID == timeslotID) + _localUnitOfWork.DataContext.Queues.Count(d => d.Timeslot_ID == timeslotID && (!d.Appointment_ID.HasValue || (d.Appointment_ID.HasValue && !string.IsNullOrEmpty(d.Appointment.Timeslot_ID) && d.Appointment.Timeslot_ID != timeslotID)));
+
+                    return data;
+                    // if (!EnumAppConfig.ByPassCentralizedDB)
+                    //{
+                    //    bool centralizeStatus;
+                    //    var centralData = CallCentralized.Get<int>(EnumAPIParam.Appointment, EnumAPIParam.CountBookedByTimeslot, out centralizeStatus);
+                    //    if (centralizeStatus)
+                    //    {
+                    //        return centralData;
+                    //    }
+                    //}
+
                 }
                 else
                 {
-                    var data = _centralizedUnitOfWork.DataContext.Appointments.Where(a => a.Timeslot_ID == timeslotID && a.Status == (int)EnumAppointmentStatuses.Booked);
-                    if (data != null)
-                    {
-                        return data.Count();
-                    }
+                    var data = _localUnitOfWork.DataContext.Appointments.Count(d => !string.IsNullOrEmpty(d.Timeslot_ID) && d.Timeslot_ID == timeslotID) + _localUnitOfWork.DataContext.Queues.Count(d => d.Timeslot_ID == timeslotID && (!d.Appointment_ID.HasValue || (d.Appointment_ID.HasValue && !string.IsNullOrEmpty(d.Appointment.Timeslot_ID) && d.Appointment.Timeslot_ID != timeslotID)));
+
+                    return data;
+
                 }
 
             }
@@ -986,6 +981,7 @@ namespace Trinity.DAL
                 else
                 {
                     timeslot = _centralizedUnitOfWork.DataContext.Timeslots.FirstOrDefault(t => t.Timeslot_ID == timeslotID);
+                    return timeslot.MaximumSupervisee != null ? timeslot.MaximumSupervisee.Value : 0;
                 }
                 return 0;
 
@@ -1146,8 +1142,6 @@ namespace Trinity.DAL
         }
         #endregion
 
-
-
         /// <summary>
         /// UpdateReason for absence appointment 
         /// </summary>
@@ -1181,23 +1175,5 @@ namespace Trinity.DAL
             }
 
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     }
 }

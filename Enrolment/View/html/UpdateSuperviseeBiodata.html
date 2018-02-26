@@ -1,5 +1,360 @@
-﻿
-<div style="width:100%">
+﻿<style>
+
+
+    /*Create New Supervisee Title*/
+    .createNewSuperviseeTitle {
+        border-bottom: 1px solid #dee2e6;
+        padding: 20px 20px 0;
+    }
+
+        .createNewSuperviseeTitle h5 {
+            border-bottom: 2px solid red;
+            width: fit-content;
+            padding-bottom: 5px;
+            margin-bottom: 0;
+        }
+
+    /*Create New Supervisee Process*/
+    .newSuperviseeProcess {
+        text-align: center;
+        padding: 30px 0;
+        font-size: 15px;
+        color: #dee2e6;
+        overflow: hidden;
+    }
+
+        .newSuperviseeProcess .newSupervisee:before {
+            content: "\f105";
+            font-family: FontAwesome;
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            height: 50px;
+            width: 25px;
+            font-size: 45px;
+            font-weight: normal;
+        }
+
+        .newSuperviseeProcess .newSupervisee:last-child:before {
+            display: none;
+        }
+
+        .newSuperviseeProcess .newSupervisee.active {
+            color: #1CACF6;
+        }
+
+        .newSuperviseeProcess .newSuperviseeStep {
+            margin-bottom: 15px;
+        }
+
+            .newSuperviseeProcess .newSuperviseeStep span {
+                border-radius: 50%;
+                background: #dee2e6;
+                text-align: center;
+                padding: 10px 16px;
+                color: #fff;
+                font-size: 22px;
+            }
+
+        .newSuperviseeProcess .newSupervisee.active .newSuperviseeStep span {
+            background: #1CACF6;
+        }
+
+        .newSuperviseeProcess .newSuperviseeStepname span {
+            text-align: right;
+        }
+
+    .newSuperviseeContent {
+        overflow: hidden;
+    }
+
+    button {
+        background: none;
+        border: none;
+        color: #1CACF6;
+        margin-top: 20px;
+    }
+
+    .controlprocess i:before {
+        font-size: 100px;
+    }
+
+    .carousel-control-next:focus,
+    .carousel-control-next:hover,
+    .carousel-control-prev:focus,
+    .carousel-control-prev:hover {
+        color: #1CACF6 !important;
+    }
+
+    .nav-item i {
+        font-size: 18px;
+    }
+
+    .nav-item .nav-link {
+        color: #1CACF6;
+    }
+
+    .carousel-indicators {
+        top: 0;
+        position: relative;
+        bottom: none;
+        margin-right: 0;
+    }
+
+    #newSupervisee {
+        text-align: center;
+    }
+
+    /*New Supervisee Content */
+    .newSuperviseeContent .newSuperviseeContentWrapper {
+        text-align: center;
+        height: 340px;
+    }
+
+        .newSuperviseeContent .newSuperviseeContentWrapper img {
+            color: #696969;
+            background: #F5F5F5;
+            padding: 30px 20px;
+            margin: 5px 0;
+        }
+
+        .newSuperviseeContent .newSuperviseeContentWrapper a {
+            color: #dee2e6;
+            text-decoration: underline;
+            line-height: 1.2;
+        }
+
+            .newSuperviseeContent .newSuperviseeContentWrapper a:hover,
+            .newSuperviseeContent .newSuperviseeContentWrapper a:focus {
+                color: #1CACF6;
+            }
+
+    .verifyCardview {
+        background-image: url(../images/viewlayer.png);
+        background-size: cover;
+        width: 87%;
+        height: 190px;
+        background-repeat: no-repeat;
+        font-size: 22px;
+        font-weight: bold;
+        position: relative;
+    }
+
+        .verifyCardview p {
+            top: 38%;
+            position: absolute;
+            text-align: center;
+            width: 100%;
+        }
+
+    .printingCard img {
+        background: none !important;
+        width: 100px;
+    }
+
+    .modal-dialog {
+        width: 450px;
+    }
+
+    .modal-header {
+        border: none;
+    }
+
+    .modal-body button {
+        padding: 10px 0;
+        border-radius: 4px;
+    }
+</style>
+<div class="container">
+    <div class="PrintCard">
+        <div>
+            <!-- Nav tabs -->
+            <ul class="nav nav-tabs" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" data-toggle="tab" href="#printCard" role="tab">
+                        <i class="ion-printer"></i>
+                        Print Card
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#superviseeDetails" role="tab">
+                        <i class="ion-information-circled"></i>
+                        Supervisee Details
+                    </a>
+                </li>
+
+            </ul>
+
+            <!-- Tab panes -->
+            <div class="tab-content">
+                <div class="tab-pane active" id="printCard" role="tabpanel">
+                    <div class="createNewSupervisee">
+                        <div class="createNewSuperviseeTitle">
+                            <h5>Create New Supervisee</h5>
+                        </div>
+                        <div id="createNewSupervisee" class="row carousel slide" data-ride="carousel" data-interval="false">
+                            <div class="newSuperviseeProcess col-8 offset-2 carousel-indicators">
+                                <div class="newSupervisee col-3 takePhotos active" data-target="#createNewSupervisee" data-slide-to="0">
+                                    <div class="newSuperviseeStep"><span>1</span></div>
+                                    <div class="newSuperviseeStepname">Take Photos</div>
+                                </div>
+                                <div class="newSupervisee col-3 getFingerPrints" data-target="#createNewSupervisee" data-slide-to="1">
+                                    <div class="newSuperviseeStep"><span>2</span></div>
+                                    <div class="newSuperviseeStepname">Get Fingerprints</div>
+
+                                </div>
+                                <div class="newSupervisee col-3 verifyCard" data-target="#createNewSupervisee" data-slide-to="2">
+                                    <div class="newSuperviseeStep"><span>3</span></div>
+                                    <div class="newSuperviseeStepname">Verify Card</div>
+                                </div>
+                                <div class="newSupervisee col-3 PrintCard" data-target="#createNewSupervisee" data-slide-to="3">
+                                    <div class="newSuperviseeStep"><span>4</span></div>
+                                    <div class="newSuperviseeStepname">Print Card</div>
+                                </div>
+                            </div>
+                            <div class="cancelButton col-2 ml-auto">
+                                <button onclick="api.server.LogOut();">CLICK TO CANCEL</button>
+                            </div>
+
+
+                            <div class="newSuperviseeContent carousel-inner ">
+                                <div class="carousel-item col-8 offset-2 active">
+                                    <div class="newSuperviseeContentWrapper row">
+                                        <div class="col-6">
+                                            <br/ >
+                                            <img id="image1" src="../images/icon-takepicture.png" class="img-fluid"><br />
+                                            <a href="javascript:;" onclick="api.server.OpenPictureCaptureForm('1')">Take Picture 1</a>
+                                        </div>
+                                        <div class="col-6">
+                                            <br/ >
+                                            <img id="image2" src="../images/icon-takepicture.png" class="img-fluid"><br />
+                                            <a href="javascript:;" onclick="api.server.OpenPictureCaptureForm('2')">Take Picture 2</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="carousel-item col-8 offset-2">
+                                    <div class="newSuperviseeContentWrapper row">
+                                        <div class="col-6">
+                                            <div><strong>Place left thumb onto scanner.</strong></div>
+                                            <div class="row col-10 offset-1">
+                                                <div class="col-12"><img src='../images/leftthumb.png'></div>
+                                                <div class="scan col-6 ml-auto"><a href="" data-target="#fingerPrint" data-toggle="modal" id="leftThumbScanBtn" onclick="ActionScanFingerPrint(false)">Scan</a></div>
+                                                <div class="clear col-6 mr-auto"><a href="" id="leftThumbClearBtn">Clear</a></div>
+                                            </div><br />
+                                            <div>Left Thumb-Fingerprint Preview</div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div><strong>Place right thumb onto scanner.</strong></div>
+                                            <div class="row col-10 offset-1">
+                                                <div class="col-12"><img src='../images/rightthumb.png'></div><br />
+                                                <div class="scan col-6 ml-auto"><a href="" data-target="#fingerPrint" data-toggle="modal" id="rightThumbScanBtn" onclick="ActionScanFingerPrint(true)">Scan</a></div>
+                                                <div class="clear col-6 mr-auto"><a href="" id="rightThumbClearBtn">Clear</a></div>
+                                            </div><br />
+                                            <div>Right Thumb-Fingerprint Preview</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="carousel-item col-8 offset-2">
+                                    <div class="newSuperviseeContentWrapper row">
+                                        <div class="col-6">
+                                            <br/ >
+                                            <div class="verifyCardview" data-target="#printSmartCard" data-toggle="modal">
+                                                <p>
+                                                    <div style="z-index:1;color:#FFF;">
+                                                        <div style="position:absolute;font-size: 15px;font-weight: bold;font-style: italic;top: 10px;left: 20px;">
+                                                            CNB Supervisee Card
+                                                        </div>
+                                                        <div style="height:95px;width:75px;position:absolute;top:40px;left:20px;text-align:center;padding:1px;border-radius:5px;background-color:#FFF;">
+                                                            <img src="../images/usr-default.jpg" id="verifyPhoto" style="height:100%;max-width:100%;border-radius:5px;" />
+                                                        </div>
+                                                        <img src="../images/central_narco_logo.png" style="position:absolute;height: 35px;top: 119px;left: 40px;z-index: 1;">
+                                                        <div style="position:absolute;top:40px;left: 110px;font-size: 12px;font-weight: bold;line-height: 16px;">
+                                                            <div><span name="verifyName"></span></div>
+                                                            <div><span name="verifyNRIC"></span></div>
+                                                            <div style="clear:both"></div>
+                                                        </div>
+                                                        <div style="position:absolute;width:auto;left:110px;bottom:45px;background-color:#FFF;border-radius:5px;padding:5px;">
+                                                            <img name="verifyBarcode" />
+                                                        </div>
+                                                        <div style="position:absolute;right:15px;bottom:10px;text-align:right;font-size:10px;font-weight:bold;">
+                                                            <span name="verifyCardNumber"></span>
+                                                        </div>
+                                                    </div>
+                                                </p>
+
+                                            </div><br /><br />
+                                        </div>
+                                        <div class="col-6">
+                                            <br/ >
+                                            <div class="verifyCardview" data-target="#printSmartCard" data-toggle="modal">
+                                                <p>
+                                                    <div style="position:absolute;bottom:15px;left:15px;z-index:1;color:#FFF;">
+                                                        <div style="font-size: 12px;font-weight: bold;">
+                                                            <div>Date of Issue: <span name="issueDate"></span></div>
+                                                        </div>
+                                                        <div style="margin-top:10px;font-size: 8px;font-weight: bold;text-shadow: 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black;">
+                                                            “If this card is found, please return to any Police Station or to:<br />
+                                                            <span name="verifyCompanyName"></span><br />
+                                                            <span name="verifyVenueName"></span><br />
+                                                            <span name="verifyAddress"></span><br />
+                                                            Contact Number: <span name="verifyContactNumber"></span><br />
+                                                        </div>
+                                                    </div>
+                                                </p>
+                                            </div><br /><br />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="carousel-item col-8 offset-2">
+                                    <div class="newSuperviseeContentWrapper row">
+                                        <div class="printingCard col-12">
+                                            <img src="../images/loading.gif">
+                                            <p>Printing card in progress. Please wait.....</p>
+                                        </div>
+                                        <div class="successedPrinting col-12 d-none">
+                                            <br /><br /><br />
+                                            <p id="printSuccessMessage"> <!--Smart Card was printed successfully. Please collect the smart card from the printer and place on the reader to verify.--></p>
+                                            <div>
+                                                <button  onclick="api.server.PrintSmartCard(frontCardImg, backCardImg, JSON.stringify(CardInfo));">REPRINT</button>
+                                                <button>DONE</button>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="controlprocess">
+                                <a class="carousel-control-prev" href="#createNewSupervisee" role="button" data-slide="prev">
+
+                                    <span aria-hidden="true"><i class="fal fa fa-angle-left"></i></span>
+                                    <span class="sr-only">Previous</span>
+                                </a>
+                                <a class="carousel-control-next" href="#createNewSupervisee" role="button" data-slide="next">
+                                    <span aria-hidden="true"><i class="fal fa fa-angle-right"></i></span>
+                                    <span class="sr-only">Next</span>
+                                </a>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+                <div class="tab-pane" id="superviseeDetails" role="tabpanel">...</div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!--<script>
+    $('#createNewSupervisee').on('slide.bs.carousel', function () {
+        alert(1);
+    })
+</script>-->
+
+<!--<div style="width:100%">
     <div class="header  header-form-supervisee">
         <img class="logo" src="../images/logo.png" />
         <h3>Enrol New Supervisee</h3>
@@ -8,8 +363,7 @@
     <div class="form-supervisee">
         <input class="name-supervisee" type="text" value="Enrol Supervisee" />
         <nav class="nav nav-tabs" id="myTab" role="tablist">
-            <!--<a class="nav-item nav-link active" data-toggle="tab" href="#print-card" role="tab" aria-controls="nav-home" aria-selected="true">Print Card</a>
-            <a class="nav-item nav-link" data-toggle="tab" href="#supervisee-details" role="tab" aria-controls="nav-profile" aria-selected="false">Supervisee Details</a>-->
+           
             <a class="nav-item nav-link active" href="javascript:;">Print Card</a>
             <a class="nav-item nav-link" href="javascript:;" onclick="api.server.EditSupervisee(userIDNew,'UpdateSupervisee');">Supervisee Details</a>
         </nav>
@@ -29,11 +383,7 @@
                                 <br />
                                 <button type="button" onclick="api.server.OpenPictureCaptureForm('2')">Take Picture 2</button>
                             </div>
-                            <!--<div class="col">
-                                <img class="avatar" src="../images/usr-default.jpg" />
-
-                                <button type="button">Get Image</button>
-                            </div>-->
+                           
                         </div>
                     </section>
 
@@ -46,16 +396,14 @@
                                 <br />
                                 <div> <img class="avatar" id="leftFingerprint" style="max-width:35%;" /></div>
                                 <br />
-                                <!--<button type="button" onclick="api.server.OpenFingerprintCaptureForm('1')">Left Fingerprint Preview</button>-->
                                 <div style="border:1px solid #000000">Left Fingerprint Preview</div>
                             </div>
                             <div class="col" id="rightThumbDiv">
                                 <div style="border:1px solid #000000;color:#000000" id="rightProcessMessage">Place right thumb onto scanner</div>
-                                <div><button style="float:left" id="rightThumbScanBtn" class="btn-form" onclick="ActionScanFingerPrint(true)">Scan</button><button style="float:right;" id="rightThumbClearBtn" class="btn-form">Clear</button></div>
+                                <div><button style="float:left" class="btn-form" id="rightThumbScanBtn" onclick="ActionScanFingerPrint(true)">Scan</button><button style="float:right;" id="rightThumbClearBtn" class="btn-form">Clear</button></div>
                                 <br />
                                 <div> <img class="avatar" id="rightFingerprint" style="max-width:35%" /></div>
                                 <br />
-                                <!--<button type="button" onclick="api.server.OpenFingerprintCaptureForm('2')">Right Fingerprint Preview</button>-->
                                 <div style="border:1px solid #000000">Right Fingerprint Preview</div>
                             </div>
                         </div>
@@ -127,7 +475,6 @@
                                     <img src="" style="margin-left:10px;" id="backCardImg" />
                                 </div>
                             </div>
-                            <!--<button type="submit" class="btn-form">Save</button>-->
 
                         </div>
                     </section>
@@ -138,7 +485,9 @@
 
         </div>
     </div>
-</div>
+</div>-->
+
+
 <script>
     var userIDNew = '';
     api.ready(function (model) {
