@@ -107,7 +107,6 @@ namespace SSK
 
             // get currentTimeslot
             Trinity.DAL.DBContext.Timeslot currentTimeslot = timeslots.FirstOrDefault(d => d.StartTime.Value <= DateTime.Now.TimeOfDay && d.EndTime.Value > DateTime.Now.TimeOfDay);
-
             // lấy ra timeslot nhỏ nhất vẫn còn người chờ
             Trinity.DAL.DBContext.Timeslot minTimeSlot = arrQueue.Count > 0 ? arrQueue[0].Timeslot : null;
             Trinity.DAL.DBContext.Timeslot nextTimeSlot = null;
@@ -118,28 +117,35 @@ namespace SSK
             List<Trinity.DAL.DBContext.Queue> queueOther = new List<Queue>();
             if (currentTimeslot != null && minTimeSlot != null && minTimeSlot.EndTime.Value < currentTimeslot.StartTime)
             {
-                // Lấy ra những queue của currentTimeslot
+                // Neu time slot nho hon hien tai chua het nguoi
                 currentTimeslot = minTimeSlot;
             }
-
             if (currentTimeslot != null)
             {
                 queueCurrent = arrQueue.Where(d => d.Timeslot_ID == currentTimeslot.Timeslot_ID).OrderBy(d => d.InTimeSlot).ThenBy(d => d.Priority).ToList();
                 textTimeSlot = (DateTime.Today + currentTimeslot.StartTime.Value).ToString("hh:mm tt") + " - " + (DateTime.Today + currentTimeslot.EndTime.Value).ToString("hh:mm tt");
             }
-            // Nếu Timeslot trên đã hết ==> lấy tiếp time slot
-            if (queueCurrent.Count == 0 && minTimeSlot != null)
-            {
-                currentTimeslot = minTimeSlot;
-                queueCurrent = arrQueue.Where(d => d.Timeslot_ID == currentTimeslot.Timeslot_ID).OrderBy(d => d.InTimeSlot).ThenBy(d => d.Priority).ToList();
-                textTimeSlot = (DateTime.Today + currentTimeslot.StartTime.Value).ToString("hh:mm tt") + " - " + (DateTime.Today + currentTimeslot.EndTime.Value).ToString("hh:mm tt");
-            }
+            //// Nếu Timeslot trên đã hết ==> lấy tiếp time slot
+            //if (queueCurrent.Count == 0 && minTimeSlot != null)
+            //{
+            //    currentTimeslot = minTimeSlot;
+            //    queueCurrent = arrQueue.Where(d => d.Timeslot_ID == currentTimeslot.Timeslot_ID).OrderBy(d => d.InTimeSlot).ThenBy(d => d.Priority).ToList();
+            //    textTimeSlot = (DateTime.Today + currentTimeslot.StartTime.Value).ToString("hh:mm tt") + " - " + (DateTime.Today + currentTimeslot.EndTime.Value).ToString("hh:mm tt");
+            //}
 
 
             // Show List Other
             if (currentTimeslot != null)
             {
                 nextTimeSlot = timeslots.FirstOrDefault(d => d.StartTime.Value >= currentTimeslot.EndTime.Value);
+                if (nextTimeSlot != null)
+                {
+                    queueOther = arrQueue.Where(d => d.Timeslot_ID == nextTimeSlot.Timeslot_ID).OrderBy(d => d.InTimeSlot).ThenBy(d => d.Priority).ToList();
+                }
+            }
+            else
+            {
+                nextTimeSlot = timeslots.FirstOrDefault(d => d.StartTime.Value >= DateTime.Now.TimeOfDay);
                 if (nextTimeSlot != null)
                 {
                     queueOther = arrQueue.Where(d => d.Timeslot_ID == nextTimeSlot.Timeslot_ID).OrderBy(d => d.InTimeSlot).ThenBy(d => d.Priority).ToList();
@@ -158,19 +164,14 @@ namespace SSK
                     queueCurrent.RemoveAt(0);
                     new DAL_QueueDetails().UpdateStatusQueueDetail(addNowServing.Queue_ID, EnumStations.SSK, EnumQueueStatuses.Processing);
                 }
-                if (queueNowServing.Count < 5 && queueOther.Count > 0)
-                {
-                    RefreshQueueNumbers();
-                    return;
-                }
             }
 
-            if (string.IsNullOrEmpty(textTimeSlot))
-            {
-                var time = timeslots.FirstOrDefault(d => d.StartTime >= DateTime.Now.TimeOfDay);
-                if (time != null)
-                    textTimeSlot = (DateTime.Today + time.StartTime.Value).ToString("hh:mm tt") + " - " + (DateTime.Today + time.EndTime.Value).ToString("hh:mm tt");
-            }
+            //if (string.IsNullOrEmpty(textTimeSlot))
+            //{
+            //    var time = timeslots.FirstOrDefault(d => d.StartTime >= DateTime.Now.TimeOfDay);
+            //    if (time != null)
+            //        textTimeSlot = (DateTime.Today + time.StartTime.Value).ToString("hh:mm tt") + " - " + (DateTime.Today + time.EndTime.Value).ToString("hh:mm tt");
+            //}
 
             wbQueueNumber.InvokeScript("ShowTimeSlot",
                 textTimeSlot,
