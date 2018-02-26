@@ -259,25 +259,25 @@ namespace Trinity.DAL
 
         }
 
-        private void GenerateTimeslotAndInsert(DateTime date, Trinity.BE.SettingDetails model, string createBy, int maxSupervisee = 0)
+        private void GenerateTimeslotAndInsert(DateTime date, Trinity.BE.SettingDetails model, string createBy)
         {
             if (model.Morning_Open_Time.HasValue && model.Morning_Close_Time.HasValue && model.Morning_Interval.HasValue && !model.Morning_Is_Closed)
             {
-                GenerateByTimeshift(date, model.Morning_Open_Time, model.Morning_Close_Time, model.Morning_Interval, createBy, maxSupervisee);
+                GenerateByTimeshift(date, model.Morning_Open_Time, model.Morning_Close_Time, model.Morning_Interval, createBy, model.Morning_MaximumSupervisee.HasValue?model.Morning_MaximumSupervisee.Value:0);
             }
 
             if (model.Afternoon_Open_Time.HasValue && model.Afternoon_Close_Time.HasValue && model.Afternoon_Interval.HasValue && !model.Afternoon_Is_Closed)
             {
-                GenerateByTimeshift(date, model.Afternoon_Open_Time, model.Afternoon_Close_Time, model.Afternoon_Interval, createBy, maxSupervisee);
+                GenerateByTimeshift(date, model.Afternoon_Open_Time, model.Afternoon_Close_Time, model.Afternoon_Interval, createBy, model.Afternoon_MaximumSupervisee.HasValue ? model.Afternoon_MaximumSupervisee.Value :0);
             }
 
             if (model.Evening_Open_Time.HasValue && model.Evening_Close_Time.HasValue && model.Evening_Interval.HasValue && !model.Evening_Is_Closed)
             {
-                GenerateByTimeshift(date, model.Evening_Open_Time, model.Evening_Close_Time, model.Evening_Interval, createBy, maxSupervisee);
+                GenerateByTimeshift(date, model.Evening_Open_Time, model.Evening_Close_Time, model.Evening_Interval, createBy, model.Evening_MaximumSupervisee.HasValue ? model.Evening_MaximumSupervisee.Value : 0);
             }
 
         }
-        private void GenerateByTimeshift(DateTime date, TimeSpan? openTime, TimeSpan? closeTime, int? duration, string createBy, int maxSupervisee = 0)
+        private void GenerateByTimeshift(DateTime date, TimeSpan? openTime, TimeSpan? closeTime, int? duration, string createBy, int maxSupervisee)
         {
             var fromTime = openTime;
             var toTime = closeTime;
@@ -321,16 +321,16 @@ namespace Trinity.DAL
                 }
 
                 //check exist timeslot before insert
-                var _endTime = fromTime.Value.Add(new TimeSpan(0, duration.Value, 0));
-                var exist = _localUnitOfWork.DataContext.Timeslots.Any(t => DbFunctions.TruncateTime(t.Date) == date.Date && t.StartTime == fromTime.Value && t.EndTime==_endTime) ? true : false;
+                var _endTime = fromTime.Value.Add(TimeSpan.FromMinutes(duration.Value));
+                var exist = _localUnitOfWork.DataContext.Timeslots.Any(t => DbFunctions.TruncateTime(t.Date) == date.Date && t.StartTime == fromTime.Value && t.EndTime==_endTime);
                 
-                fromTime = fromTime.Value.Add(TimeSpan.FromMinutes(duration.Value));
-                if (exist)
+                fromTime = _endTime;
+                if (!exist)
                 {
-                    return;
+                    _localUnitOfWork.GetRepository<Timeslot>().Add(SetInfo(new Timeslot(), timeSlot));
+                    _localUnitOfWork.Save();
                 }
-                _localUnitOfWork.GetRepository<Timeslot>().Add(SetInfo(new Timeslot(), timeSlot));
-                _localUnitOfWork.Save();
+               
             }
         }
 
