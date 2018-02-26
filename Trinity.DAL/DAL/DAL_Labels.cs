@@ -47,7 +47,8 @@ namespace Trinity.DAL
             {
                 Label dbLabel = null;
                 Guid labelID_NewGuid = Guid.NewGuid();
-                var queueID = new DAL_QueueNumber().GetMyQueueToday(model.UserId).Queue_ID;
+                var queue = new DAL_QueueNumber().GetMyQueueToday(model.UserId);
+                
                 if (EnumAppConfig.IsLocal)
                 {
                     var locallabelRepo = _localUnitOfWork.GetRepository<Label>();
@@ -70,7 +71,10 @@ namespace Trinity.DAL
                         dbLabel.PrintCount = 1;
                         dbLabel.PrintStatus = model.PrintStatus;
                         dbLabel.Message = model.Message;
-                        dbLabel.Queue_ID = queueID;
+                        if (queue != null)
+                        {
+                            dbLabel.Queue_ID = queue.Queue_ID;
+                        }
 
                         locallabelRepo.Add(dbLabel);
                     }
@@ -90,7 +94,10 @@ namespace Trinity.DAL
                         dbLabel.ReprintReason = model.ReprintReason;
                         dbLabel.PrintStatus = model.PrintStatus;
                         dbLabel.Message = model.Message;
-                        dbLabel.Queue_ID = queueID;
+                        if (queue != null)
+                        {
+                            dbLabel.Queue_ID = queue.Queue_ID;
+                        }
 
                         locallabelRepo.Update(dbLabel);
                     }
@@ -138,7 +145,10 @@ namespace Trinity.DAL
                         dbLabel.PrintCount = 1;
                         dbLabel.PrintStatus = model.PrintStatus;
                         dbLabel.Message = model.Message;
-                        dbLabel.Queue_ID = queueID;
+                        if (queue != null)
+                        {
+                            dbLabel.Queue_ID = queue.Queue_ID;
+                        }
 
                         centralizeLabelRepo.Add(dbLabel);
                     }
@@ -158,7 +168,10 @@ namespace Trinity.DAL
                         dbLabel.ReprintReason = model.ReprintReason;
                         dbLabel.PrintStatus = model.PrintStatus;
                         dbLabel.Message = model.Message;
-                        dbLabel.Queue_ID = queueID;
+                        if (queue != null)
+                        {
+                            dbLabel.Queue_ID = queue.Queue_ID;
+                        }
 
                         centralizeLabelRepo.Update(dbLabel);
                     }
