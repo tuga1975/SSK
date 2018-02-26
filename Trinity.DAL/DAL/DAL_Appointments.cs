@@ -866,7 +866,6 @@ namespace Trinity.DAL
                     var data = _localUnitOfWork.DataContext.Appointments.Count(d => !string.IsNullOrEmpty(d.Timeslot_ID) && d.Timeslot_ID == timeslotID) + _localUnitOfWork.DataContext.Queues.Count(d => d.Timeslot_ID == timeslotID && (!d.Appointment_ID.HasValue || (d.Appointment_ID.HasValue && !string.IsNullOrEmpty(d.Appointment.Timeslot_ID) && d.Appointment.Timeslot_ID != timeslotID)));
 
                     return data;
-
                 }
 
             }
@@ -875,7 +874,6 @@ namespace Trinity.DAL
 
                 return 0;
             }
-            return 0;
         }
 
         public int CountApptmtReportedByTimeslot(string timeslotID)
