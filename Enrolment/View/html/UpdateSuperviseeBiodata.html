@@ -164,6 +164,10 @@
         padding: 10px 0;
         border-radius: 4px;
     }
+
+    .cancelButton{
+        z-index: 9;
+    }
 </style>
 <div class="container">
     <div class="PrintCard">
@@ -213,7 +217,7 @@
                                 </div>
                             </div>
                             <div class="cancelButton col-2 ml-auto">
-                                <button onclick="api.server.LogOut();">CLICK TO CANCEL</button>
+                                <button onclick="api.server.LoadListSupervisee();">CLICK TO CANCEL</button>
                             </div>
 
 
@@ -235,7 +239,7 @@
                                 <div class="carousel-item col-8 offset-2">
                                     <div class="newSuperviseeContentWrapper row">
                                         <div class="col-6">
-                                            <div><strong>Place left thumb onto scanner.</strong></div>
+                                            <div><strong id="leftProcessMessage">Place left thumb onto scanner.</strong></div>
                                             <div class="row col-10 offset-1">
                                                 <div class="col-12"><img src='../images/leftthumb.png'></div>
                                                 <div class="scan col-6 ml-auto"><a href="" data-target="#fingerPrint" data-toggle="modal" id="leftThumbScanBtn" onclick="ActionScanFingerPrint(false)">Scan</a></div>
@@ -244,7 +248,7 @@
                                             <div>Left Thumb-Fingerprint Preview</div>
                                         </div>
                                         <div class="col-6">
-                                            <div><strong>Place right thumb onto scanner.</strong></div>
+                                            <div><strong id="rightProcessMessage">Place right thumb onto scanner.</strong></div>
                                             <div class="row col-10 offset-1">
                                                 <div class="col-12"><img src='../images/rightthumb.png'></div><br />
                                                 <div class="scan col-6 ml-auto"><a href="" data-target="#fingerPrint" data-toggle="modal" id="rightThumbScanBtn" onclick="ActionScanFingerPrint(true)">Scan</a></div>
@@ -315,7 +319,7 @@
                                             <br /><br /><br />
                                             <p id="printSuccessMessage"> <!--Smart Card was printed successfully. Please collect the smart card from the printer and place on the reader to verify.--></p>
                                             <div>
-                                                <button  onclick="api.server.PrintSmartCard(frontCardImg, backCardImg, JSON.stringify(CardInfo));">REPRINT</button>
+                                                <button onclick="api.server.PrintSmartCard(frontCardImg, backCardImg, JSON.stringify(CardInfo));">REPRINT</button>
                                                 <button>DONE</button>
                                             </div>
 
@@ -353,7 +357,6 @@
         alert(1);
     })
 </script>-->
-
 <!--<div style="width:100%">
     <div class="header  header-form-supervisee">
         <img class="logo" src="../images/logo.png" />
@@ -363,7 +366,7 @@
     <div class="form-supervisee">
         <input class="name-supervisee" type="text" value="Enrol Supervisee" />
         <nav class="nav nav-tabs" id="myTab" role="tablist">
-           
+
             <a class="nav-item nav-link active" href="javascript:;">Print Card</a>
             <a class="nav-item nav-link" href="javascript:;" onclick="api.server.EditSupervisee(userIDNew,'UpdateSupervisee');">Supervisee Details</a>
         </nav>
@@ -383,7 +386,7 @@
                                 <br />
                                 <button type="button" onclick="api.server.OpenPictureCaptureForm('2')">Take Picture 2</button>
                             </div>
-                           
+
                         </div>
                     </section>
 
@@ -605,6 +608,82 @@
     var backCardImg = null;
     var CardInfo = null;
     var countPrinterSmartCard = 0;
+
+    //sliding
+    $('#createNewSupervisee').on('slide.bs.carousel', function (data) {
+        if (data.to == 2) {
+            api.server.loadDataVerify(function (dataRe) {
+
+                var model = dataRe[0];
+                CardInfo = dataRe[1];
+
+                $('[name="issueDate"]').text(CardInfo.Date_Of_Issue_Txt);
+                $('[name="verifyCardNumber"]').text(CardInfo.CardNumberFull);
+
+                $('[name="verifyCompanyName"]').text(CardInfo.CompanyName);
+                $('[name="verifyVenueName"]').text(CardInfo.VenueName);
+                $('[name="verifyAddress"]').text(CardInfo.Address);
+                $('[name="verifyContactNumber"]').text(CardInfo.ContactNumber);
+
+                $('[name="verifyName"]').text(model.User.Name);
+                if (model.UserProfile.DOB != null) {
+                    $('[name="verifyDOB"]').text(model.UserProfile.DOBTxt);
+                }
+
+                $('[name="verifyNRIC"]').text(model.User.NRIC);
+                $('[name="verifyGender"]').text(model.UserProfile.Gender == null ? '' : model.UserProfile.Gender);
+                $('[name="verifyNation"]').text(model.UserProfile.Nationality);
+                //if (model.UserProfile.DateOfIssue != null) {
+
+                //    $('[name="issueDate"]').text(model.UserProfile.DateOfIssueTxt);
+                //    $('[name="issueDateBack"]').text(model.UserProfile.DateOfIssueTxt);
+                //}
+                //if (model.UserProfile.Expired_Date != null) {
+                //    $('[name="expireDate"]').text(model.UserProfile.Expired_DateTxt);
+                //}
+                $('[name="verifyRace"]').text(model.UserProfile.Race == null ? '' : model.UserProfile.Race);
+                frontCardImg = null;
+                backCardImg = null;
+                JsBarcode('[name="verifyBarcode"]', model.User.NRIC, { height: 20, fontSize: 8, width: 1, margin: 0, font: "Arial" });
+            });
+        } else if (data.to == 3) {
+            //if (frontCardImg == null && backCardImg == null) {
+
+            //    return false;
+            //}
+            if (frontCardImg == null || backCardImg == null) {
+                html2canvas($('#frontCard'), {
+                    onrendered: function (froncanvas) {
+                        html2canvas($('#backCard'), {
+                            onrendered: function (backcanvas) {
+                                frontCardImg = froncanvas.toDataURL("image/png");
+                                backCardImg = backcanvas.toDataURL("image/png");
+                                $('.actions > ul > li > a[href="#next"]').click();
+                            }
+                        });
+                    }
+                });
+                api.loading(true);
+                return false;
+            } else {
+                api.loading(false);
+            }
+        }
+    });
+
+    //slid 
+    $('#createNewSupervisee').on('slid.bs.carousel', function (data) {
+        if (data.relatedTarget==3) {
+            if (frontCardImg == null) {
+                frontCardImg = '';
+            }
+            if (backCardImg == null) {
+                backCardImg = '';
+            }
+            api.server.UpdateSuperviseeBiodata(frontCardImg, backCardImg, JSON.stringify(CardInfo));
+        }
+    });
+
     $(function () {
 
         var isUpdated = false;

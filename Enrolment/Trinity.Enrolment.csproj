@@ -165,6 +165,7 @@
     <Content Include="View\images\Calendar-Clock-Icon.jpeg" />
     <Content Include="View\images\central_narco_logo.png" />
     <Content Include="View\images\fingerprint.png" />
+    <Content Include="View\images\leftthumb.png" />
     <Content Include="View\images\loading.gif" />
     <Content Include="View\images\log-out.png" />
     <Content Include="View\images\logo.png" />
@@ -176,6 +177,7 @@
     <Content Include="View\images\QRCode.png" />
     <Content Include="View\images\refresh-512.png" />
     <Content Include="View\images\Reporting-Icon-300x300.png" />
+    <Content Include="View\images\rightthumb.png" />
     <Content Include="View\images\ScanFingerPrint.png" />
     <Content Include="View\images\ScanSmartCard.png" />
     <Content Include="View\images\usr-default.jpg" />
