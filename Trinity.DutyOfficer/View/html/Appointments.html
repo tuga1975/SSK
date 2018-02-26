@@ -67,7 +67,7 @@
             if (data) {
                 data.forEach(function (element, index) {
                     dataSource.push({
-                        TimeSlot: element.StartTime ,//+ ' to ' + element.EndTime,
+                        TimeSlot: convert24hrTo12hr(element.StartTime) ,//+ ' to ' + element.EndTime,
                         NRIC: element.NRIC,
                         Name: element.Name,
                         ReportTime: element.ReportTime,
@@ -80,7 +80,7 @@
 
                     if (Date.parse(element.AppointmentDate) == Date.parse(today)) {
                         searchSource.push({
-                            TimeSlot: element.StartTime ,//+ ' to ' + element.EndTime,
+                            TimeSlot: convert24hrTo12hr(element.StartTime) ,//+ ' to ' + element.EndTime,
                             NRIC: element.NRIC,
                             Name: element.Name,
                             ReportTime: element.ReportTime,
@@ -239,5 +239,14 @@
             formatedSecond = (second.length === 1) ? ("0" + second) : second;
         return formatedMonth + "/" + formatedDay + "/" + year;
     }
+
+    function convert24hrTo12hr(time) {
+        var hourEnd = time.indexOf(":");
+        var H = +time.substr(0, hourEnd);
+        var h = H % 12 || 12;
+        var ampm = (H < 12 || H === 24) ? " AM" : " PM";
+        time = h + time.substr(hourEnd, 3) + ampm;
+        return time; // return adjusted time or original string
+    };
     
 </script>

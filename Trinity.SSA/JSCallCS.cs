@@ -304,7 +304,6 @@ namespace SSA
 
         public void OnEventPrintFinished()
         {
-
             if (_PrintMUBSucceed && _PrintTTSucceed)
             {
                 // Update queue status is finished
