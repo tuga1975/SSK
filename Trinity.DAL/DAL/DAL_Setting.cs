@@ -321,16 +321,16 @@ namespace Trinity.DAL
                 }
 
                 //check exist timeslot before insert
-                var _endTime = fromTime.Value.Add(new TimeSpan(0, duration.Value, 0));
-                var exist = _localUnitOfWork.DataContext.Timeslots.Any(t => DbFunctions.TruncateTime(t.Date) == date.Date && t.StartTime == fromTime.Value && t.EndTime==_endTime) ? true : false;
+                var _endTime = fromTime.Value.Add(TimeSpan.FromMinutes(duration.Value));
+                var exist = _localUnitOfWork.DataContext.Timeslots.Any(t => DbFunctions.TruncateTime(t.Date) == date.Date && t.StartTime == fromTime.Value && t.EndTime==_endTime);
                 
-                fromTime = fromTime.Value.Add(TimeSpan.FromMinutes(duration.Value));
-                if (exist)
+                fromTime = _endTime;
+                if (!exist)
                 {
-                    return;
+                    _localUnitOfWork.GetRepository<Timeslot>().Add(SetInfo(new Timeslot(), timeSlot));
+                    _localUnitOfWork.Save();
                 }
-                _localUnitOfWork.GetRepository<Timeslot>().Add(SetInfo(new Timeslot(), timeSlot));
-                _localUnitOfWork.Save();
+               
             }
         }
 
