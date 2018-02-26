@@ -717,7 +717,7 @@ namespace Trinity.DAL
         {
             if (EnumAppConfig.ByPassCentralizedDB)
             {
-                return _localUnitOfWork.DataContext.OperationSettings_ChangeHist.Any() ? _centralizedUnitOfWork.DataContext.OperationSettings_ChangeHist.Max(t => t.ID) : 0;
+                return _localUnitOfWork.DataContext.OperationSettings_ChangeHist.Any() ? _localUnitOfWork.DataContext.OperationSettings_ChangeHist.Max(t => t.ID) : 0;
             }
             else
             {
