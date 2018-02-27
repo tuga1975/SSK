@@ -7,7 +7,7 @@ using Trinity.DAL;
 
 namespace SSK.Utils
 {
-    class SignalR : Trinity.Utils.Notification.SignalRBase
+    class SignalR : Trinity.SignalRClient.Notification.SignalRBase
     {
         public SignalR()
         {
