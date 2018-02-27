@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Linq;
 
-namespace Trinity.Utils.Notification
+namespace Trinity.SignalRClient.Notification
 {
     public abstract class SignalRBase : ISignalR
     {
@@ -81,51 +82,28 @@ namespace Trinity.Utils.Notification
         public async void UserLogout(string userID)
         {
             await WaitConnectFalse();
-
-            if (IsConnected)
-                await HubProxy.Invoke("UserLogout", userID);
+            await HubProxy.Invoke("UserLogout", userID);
         }
 
         public async void DeviceStatusUpdate(int deviceId, EnumDeviceStatuses[] deviceStatuses)
         {
             await WaitConnectFalse();
-
-            if (IsConnected)
-                await HubProxy.Invoke("DeviceStatusUpdate", deviceId, deviceStatuses);
+            await HubProxy.Invoke("DeviceStatusUpdate", deviceId, deviceStatuses);
         }
         public async void SendToDutyOfficer(string UserId, string DutyOfficerID, string Subject, string Content, string notificationType)
         {
             await WaitConnectFalse();
-
-            if (IsConnected)
+            string IDMessage = Guid.NewGuid().ToString().Trim();
+            if (new DAL.DAL_Notification().SendToDutyOfficer(IDMessage, UserId, DutyOfficerID, Subject, Content, notificationType, Station) > 0)
             {
-                string IDMessage = await HubProxy.Invoke<string>("SendToDutyOfficer", UserId, DutyOfficerID, Subject, Content, notificationType);
-                if (IDMessage == null)
-                {
-                    Lib.LayerWeb.InvokeScript("ShowMessageBox", EnumMessage.NotConnectCentralized);
-                }
-                else
-                {
-                    new DAL.DAL_Notification().SendToDutyOfficer(IDMessage, UserId, DutyOfficerID, Subject, Content, notificationType,Station);
-                }
+                bool status = await HubProxy.Invoke<bool>("SendToDutyOfficer", IDMessage, UserId, DutyOfficerID, Subject, Content, notificationType);
             }
         }
         public async void SendAllDutyOfficer(string UserId, string Subject, string Content, string notificationType)
         {
             await WaitConnectFalse();
-
-            if (IsConnected)
-            {
-                List<Trinity.BE.Notification> arrraySend = await HubProxy.Invoke<List<Trinity.BE.Notification>>("SendAllDutyOfficer", UserId, Subject, Content, notificationType);
-                if (arrraySend != null)
-                {
-                    new DAL.DAL_Notification().SendAllDutyOfficer(arrraySend);
-                }
-                else
-                {
-                    Lib.LayerWeb.InvokeScript("ShowMessageBox", EnumMessage.NotConnectCentralized);
-                }
-            }
+            Dictionary<string, string> arrraySend = new DAL.DAL_Notification().SendAllDutyOfficer(UserId, Subject, Content, notificationType, Station).ToDictionary(f => f.ToUserId, f => f.NotificationID);
+            bool status = await HubProxy.Invoke<bool>("SendAllDutyOfficer", arrraySend, UserId, Subject, Content, notificationType);
         }
         public void Dispose()
         {
