@@ -388,7 +388,7 @@ namespace SSK
             {
                 Session session = Session.Instance;
                 session[CommonConstants.PROFILE_DATA] = jsonData;
-                APIUtils.SignalR.SendAllDutyOfficer(null, "Supervisee's information changed!", "Please check the Supervisee's information!", NotificationType.Notification);
+                APIUtils.SignalR.SendAllDutyOfficer(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId, "Supervisee's information changed!", "Please check the Supervisee's information!", NotificationType.Notification);
                 LoadPage("Document.html");
 
             }
@@ -616,16 +616,21 @@ namespace SSK
 
         public void SaveReasonForQueue(/*string data,*/ string reason, string selectedID)
         {
-
+            Session currentSession = Session.Instance;
+            Trinity.BE.User user = (Trinity.BE.User)currentSession[CommonConstants.USER_LOGIN];
             //send message to case office if no support document
             if (reason == "No Supporting Document")
             {
-                APIUtils.SignalR.SendAllDutyOfficer(null, "Supervisee get queue without supporting document", "Please check the Supervisee's information!", NotificationType.Notification);
+                APIUtils.SignalR.SendAllDutyOfficer(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId, "Supervisee get queue without supporting document", "Please check the Supervisee's information!", NotificationType.Notification);
             }
             var charSeparators = new char[] { ',' };
             var listSplitID = selectedID.Split(charSeparators, StringSplitOptions.RemoveEmptyEntries);
 
-
+            if (listSplitID.Count()<=0)
+            {
+                CSCallJS.InvokeScript(_web, "showMessage", "You have select a date to report!");
+                return;
+            }
             //var listAppointment = JsonConvert.DeserializeObject<List<Appointment>>(data);
             Trinity.BE.Reason reasonModel = JsonConvert.DeserializeObject<Trinity.BE.Reason>(reason);
             if (reasonModel == null)
@@ -635,6 +640,7 @@ namespace SSK
                     Detail = "",
                     Value = (int)EnumAbsenceReasons.No_Valid_Reason
                 };
+               
             }
             //create absence report 
             var dalAbsence = new DAL_AbsenceReporting();
@@ -661,8 +667,13 @@ namespace SSK
             }
 
             //send notify to case officer
-            Session currentSession = Session.Instance;
-            Trinity.BE.User user = (Trinity.BE.User)currentSession[CommonConstants.USER_LOGIN];
+            if (reasonModel.Value == (int)EnumAbsenceReasons.No_Valid_Reason)
+            {
+                APIUtils.SignalR.SendAllDutyOfficer(user.UserId, user.Name + " has not provided any valid reason", " Please check the Supervisee's information!", NotificationType.Notification);
+                LoadPage("Supervisee.html");
+                return;
+            }
+
             APIUtils.SignalR.SendAllDutyOfficer(user.UserId, user.Name + " has provided absent reason", user.Name + " has provided absent reason.", NotificationType.Notification);
             ReportingForQueueNumber();
             LoadPage("Supervisee.html");

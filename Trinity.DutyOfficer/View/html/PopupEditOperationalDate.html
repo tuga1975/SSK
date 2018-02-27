@@ -7,9 +7,20 @@
         margin: 1em 0;
         padding: 0;
     }
+    #idEditOperationalDate {
+        width: 100%;
+    }
+    #idEditOperationalDate .modal-dialog {
+        margin-left: calc((100vw -  850px)/2);
+    }
+    #idEditOperationalDate .modal-content {
+        width: 850px !important;
+    }
+
+    
 </style>
-<div class="modal fade" role="dialog" id="idEditOperationalDate">
-    <div class="modal-dialog modal-sm" style="width:65%;">
+<div class="modal fade col-12" role="dialog" id="idEditOperationalDate">
+    <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Edit Operational Date</h5>
@@ -31,9 +42,11 @@
                     <hr />
                     <div class="form-inline" style="margin-bottom:20px;">
                         <span class="control-label" style="display:inline-block;width:150px;height:33px; padding-top:3px;box-sizing:border-box;border:1px solid #CCC;text-align:center;">Morning Slots</span>
-                        <div style="display:inline-block; float:right;">
-                            <span class="control-label" style="display:inline-block;width:110px;height:48px; padding-top:3px;box-sizing:border-box;border:1px solid #CCC;text-align:center; font-size:13px;">Check to<br />close slots</span>
-                            <input type="checkbox" class="form-control" id="morning-Closed" />
+                        <div class="col-6 ml-auto">
+                            <div class="float-right">
+                                <span class="control-label" style="display:inline-block;width:110px;height:48px; padding-top:3px;box-sizing:border-box;border:1px solid #CCC;text-align:center; font-size:13px;">Check to<br />close slots</span>
+                                <input type="checkbox" class="form-control" id="morning-Closed" />
+                            </div>
                         </div>
                     </div>
                     <div class="form-inline" style="margin-bottom:20px;">
@@ -53,9 +66,11 @@
                     <hr />
                     <div class="form-inline" style="margin-bottom:20px;">
                         <span class="control-label" style="display:inline-block;width:150px;height:33px; padding-top:3px;box-sizing:border-box;border:1px solid #CCC;text-align:center;">Afternoon Slots</span>
-                        <div style="display:inline-block; float:right;">
-                            <span class="control-label" style="display:inline-block;width:110px;height:48px; padding-top:3px;box-sizing:border-box;border:1px solid #CCC;text-align:center; font-size:13px;">Check to<br />close slots</span>
-                            <input type="checkbox" class="form-control" id="afternoon-Closed" />
+                        <div class="col-6 ml-auto">
+                            <div class="float-right">
+                                <span class="control-label" style="display:inline-block;width:110px;height:48px; padding-top:3px;box-sizing:border-box;border:1px solid #CCC;text-align:center; font-size:13px;">Check to<br />close slots</span>
+                                <input type="checkbox" class="form-control" id="afternoon-Closed" />
+                            </div>
                         </div>
                     </div>
                     <div class="form-inline" style="margin-bottom:20px;">
@@ -75,9 +90,11 @@
                     <hr />
                     <div class="form-inline" style="margin-bottom:20px;">
                         <span class="control-label" style="display:inline-block;width:150px;height:33px; padding-top:3px;box-sizing:border-box;border:1px solid #CCC;text-align:center;">Evening Slots</span>
-                        <div style="display:inline-block; float:right;">
-                            <span class="control-label" style="display:inline-block;width:110px;height:48px; padding-top:3px;box-sizing:border-box;border:1px solid #CCC;text-align:center; font-size:13px;">Check to<br />close slots</span>
-                            <input type="checkbox" class="form-control" id="evening-Closed" />
+                        <div class="col-6 ml-auto">
+                            <div class="float-right">
+                                <span class="control-label" style="display:inline-block;width:110px;height:48px; padding-top:3px;box-sizing:border-box;border:1px solid #CCC;text-align:center; font-size:13px;">Check to<br />close slots</span>
+                                <input type="checkbox" class="form-control" id="evening-Closed" />
+                            </div>
                         </div>
                     </div>
                     <div class="form-inline" style="margin-bottom:20px;">
