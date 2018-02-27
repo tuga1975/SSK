@@ -224,8 +224,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="AppSettings.config" />
-    <None Include="ConnectionStrings.config" />
+    <None Include="AppSettings.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="ConnectionStrings.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Libs\TSC Barcode Printer\x64\TSCLIB.lib" />
     <None Include="Libs\TSC Barcode Printer\x64\UL.PCX" />
     <None Include="Libs\TSC Barcode Printer\x86\TSCLIB.lib" />
