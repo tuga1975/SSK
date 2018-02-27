@@ -259,25 +259,25 @@ namespace Trinity.DAL
 
         }
 
-        private void GenerateTimeslotAndInsert(DateTime date, Trinity.BE.SettingDetails model, string createBy, int maxSupervisee = 0)
+        private void GenerateTimeslotAndInsert(DateTime date, Trinity.BE.SettingDetails model, string createBy)
         {
             if (model.Morning_Open_Time.HasValue && model.Morning_Close_Time.HasValue && model.Morning_Interval.HasValue && !model.Morning_Is_Closed)
             {
-                GenerateByTimeshift(date, model.Morning_Open_Time, model.Morning_Close_Time, model.Morning_Interval, createBy, maxSupervisee);
+                GenerateByTimeshift(date, model.Morning_Open_Time, model.Morning_Close_Time, model.Morning_Interval, createBy, model.Morning_MaximumSupervisee.HasValue?model.Morning_MaximumSupervisee.Value:0);
             }
 
             if (model.Afternoon_Open_Time.HasValue && model.Afternoon_Close_Time.HasValue && model.Afternoon_Interval.HasValue && !model.Afternoon_Is_Closed)
             {
-                GenerateByTimeshift(date, model.Afternoon_Open_Time, model.Afternoon_Close_Time, model.Afternoon_Interval, createBy, maxSupervisee);
+                GenerateByTimeshift(date, model.Afternoon_Open_Time, model.Afternoon_Close_Time, model.Afternoon_Interval, createBy, model.Afternoon_MaximumSupervisee.HasValue ? model.Afternoon_MaximumSupervisee.Value :0);
             }
 
             if (model.Evening_Open_Time.HasValue && model.Evening_Close_Time.HasValue && model.Evening_Interval.HasValue && !model.Evening_Is_Closed)
             {
-                GenerateByTimeshift(date, model.Evening_Open_Time, model.Evening_Close_Time, model.Evening_Interval, createBy, maxSupervisee);
+                GenerateByTimeshift(date, model.Evening_Open_Time, model.Evening_Close_Time, model.Evening_Interval, createBy, model.Evening_MaximumSupervisee.HasValue ? model.Evening_MaximumSupervisee.Value : 0);
             }
 
         }
-        private void GenerateByTimeshift(DateTime date, TimeSpan? openTime, TimeSpan? closeTime, int? duration, string createBy, int maxSupervisee = 0)
+        private void GenerateByTimeshift(DateTime date, TimeSpan? openTime, TimeSpan? closeTime, int? duration, string createBy, int maxSupervisee)
         {
             var fromTime = openTime;
             var toTime = closeTime;
@@ -321,16 +321,16 @@ namespace Trinity.DAL
                 }
 
                 //check exist timeslot before insert
-                var _endTime = fromTime.Value.Add(new TimeSpan(0, duration.Value, 0));
-                var exist = _localUnitOfWork.DataContext.Timeslots.Any(t => DbFunctions.TruncateTime(t.Date) == date.Date && t.StartTime == fromTime.Value && t.EndTime==_endTime) ? true : false;
+                var _endTime = fromTime.Value.Add(TimeSpan.FromMinutes(duration.Value));
+                var exist = _localUnitOfWork.DataContext.Timeslots.Any(t => DbFunctions.TruncateTime(t.Date) == date.Date && t.StartTime == fromTime.Value && t.EndTime==_endTime);
                 
-                fromTime = fromTime.Value.Add(TimeSpan.FromMinutes(duration.Value));
-                if (exist)
+                fromTime = _endTime;
+                if (!exist)
                 {
-                    return;
+                    _localUnitOfWork.GetRepository<Timeslot>().Add(SetInfo(new Timeslot(), timeSlot));
+                    _localUnitOfWork.Save();
                 }
-                _localUnitOfWork.GetRepository<Timeslot>().Add(SetInfo(new Timeslot(), timeSlot));
-                _localUnitOfWork.Save();
+               
             }
         }
 
@@ -611,52 +611,59 @@ namespace Trinity.DAL
             {
                 if (EnumAppConfig.IsLocal)
                 {
-                    bool centralizeStatus;
-                    var centralUpdate = CallCentralized.Post<DBContext.Holiday>(EnumAPIParam.Setting, "AddHoliday", out centralizeStatus, "date=" + date.ToString(), "shortDesc=" + shortDesc, "notes=" + notes, "updatedByName=" + updatedByName, "updatedByID=" + updatedByID);
-                    if (centralizeStatus)
+                    DBContext.Holiday holiday = new DBContext.Holiday()
                     {
-                        DBContext.Holiday holiday = new DBContext.Holiday()
-                        {
-                            Holiday1 = date,
-                            ShortDesc = shortDesc,
-                            Notes = notes
-                        };
+                        Holiday1 = date,
+                        ShortDesc = shortDesc,
+                        Notes = notes
+                    };
 
-                        _localUnitOfWork.GetRepository<DBContext.Holiday>().Add(holiday);
+                    _localUnitOfWork.GetRepository<DBContext.Holiday>().Add(holiday);
 
-                        // Insert to Change History Setting
-                        int dayOfWeek = (int)Common.CommonUtil.ConvertToCustomDateOfWeek(holiday.Holiday1.DayOfWeek);
-                        var operationSetting = _localUnitOfWork.DataContext.OperationSettings.FirstOrDefault(s => s.DayOfWeek == dayOfWeek);
-                        if (operationSetting == null)
-                        {
-                            operationSetting = new OperationSetting();
-                            operationSetting.DayOfWeek = dayOfWeek;
-                            operationSetting.Morning_Is_Closed = false;
-                            operationSetting.Afternoon_Is_Closed = false;
-                            operationSetting.Evening_Is_Closed = false;
-                            operationSetting.Last_Updated_By = updatedByID;
-                            operationSetting.Last_Updated_Date = DateTime.Now;
-                            _localUnitOfWork.GetRepository<OperationSetting>().Add(operationSetting);
-                        }
+                    // Insert to Change History Setting
+                    int dayOfWeek = (int)Common.CommonUtil.ConvertToCustomDateOfWeek(holiday.Holiday1.DayOfWeek);
+                    var operationSetting = _localUnitOfWork.DataContext.OperationSettings.FirstOrDefault(s => s.DayOfWeek == dayOfWeek);
+                    if (operationSetting == null)
+                    {
+                        operationSetting = new OperationSetting();
+                        operationSetting.DayOfWeek = dayOfWeek;
+                        operationSetting.Morning_Is_Closed = false;
+                        operationSetting.Afternoon_Is_Closed = false;
+                        operationSetting.Evening_Is_Closed = false;
+                        operationSetting.Last_Updated_By = updatedByID;
+                        operationSetting.Last_Updated_Date = DateTime.Now;
+                        _localUnitOfWork.GetRepository<OperationSetting>().Add(operationSetting);
+                    }
 
-                        //var changeHistoryID = _localUnitOfWork.DataContext.OperationSettings_ChangeHist.Any() ? _localUnitOfWork.DataContext.OperationSettings_ChangeHist.Max(t => t.ID) : 0;
-                        var changeHistoryID = GetMaxIDChangeHist();
-                        DBContext.OperationSettings_ChangeHist changeHistory = new DBContext.OperationSettings_ChangeHist();
-                        changeHistory.ID = changeHistoryID + 1;
-                        changeHistory.DayOfWeek = dayOfWeek;
-                        changeHistory.LastUpdatedBy = updatedByName;
-                        changeHistory.LastUpdatedDate = DateTime.Now;
-                        changeHistory.ChangeDetails = "The holiday " + date.ToString("dd/MM/yyyy") + " has been added";
+                    //var changeHistoryID = _localUnitOfWork.DataContext.OperationSettings_ChangeHist.Any() ? _localUnitOfWork.DataContext.OperationSettings_ChangeHist.Max(t => t.ID) : 0;
+                    var changeHistoryID = GetMaxIDChangeHist();
+                    DBContext.OperationSettings_ChangeHist changeHistory = new DBContext.OperationSettings_ChangeHist();
+                    changeHistory.ID = changeHistoryID + 1;
+                    changeHistory.DayOfWeek = dayOfWeek;
+                    changeHistory.LastUpdatedBy = updatedByName;
+                    changeHistory.LastUpdatedDate = DateTime.Now;
+                    changeHistory.ChangeDetails = "The holiday " + date.ToString("dd/MM/yyyy") + " has been added";
 
-                        _localUnitOfWork.GetRepository<DBContext.OperationSettings_ChangeHist>().Add(changeHistory);
+                    _localUnitOfWork.GetRepository<DBContext.OperationSettings_ChangeHist>().Add(changeHistory);
 
-                        _localUnitOfWork.Save();
+                    _localUnitOfWork.Save();
 
-                        return centralUpdate;
+                    if (EnumAppConfig.ByPassCentralizedDB)
+                    {
+                        return holiday;
                     }
                     else
                     {
-                        throw new Exception(EnumMessage.NotConnectCentralized);
+                        bool centralizeStatus;
+                        var centralUpdate = CallCentralized.Post<DBContext.Holiday>(EnumAPIParam.Setting, "AddHoliday", out centralizeStatus, "date=" + date.ToString(), "shortDesc=" + shortDesc, "notes=" + notes, "updatedByName=" + updatedByName, "updatedByID=" + updatedByID);
+                        if (centralizeStatus)
+                        {
+                            return centralUpdate;
+                        }
+                        else
+                        {
+                            throw new Exception(EnumMessage.NotConnectCentralized);
+                        }
                     }
                 }
                 else
@@ -710,7 +717,7 @@ namespace Trinity.DAL
         {
             if (EnumAppConfig.ByPassCentralizedDB)
             {
-                return _localUnitOfWork.DataContext.OperationSettings_ChangeHist.Any() ? _centralizedUnitOfWork.DataContext.OperationSettings_ChangeHist.Max(t => t.ID) : 0;
+                return _localUnitOfWork.DataContext.OperationSettings_ChangeHist.Any() ? _localUnitOfWork.DataContext.OperationSettings_ChangeHist.Max(t => t.ID) : 0;
             }
             else
             {
@@ -724,30 +731,37 @@ namespace Trinity.DAL
             {
                 if (EnumAppConfig.IsLocal)
                 {
-                    bool centralizeStatus;
-                    var centralUpdate = CallCentralized.Post<bool>(EnumAPIParam.Setting, "DeleteHoliday", out centralizeStatus, "date=" + date.ToString(), "updatedBy=" + updatedBy);
-                    if (centralizeStatus)
+                    _localUnitOfWork.GetRepository<DBContext.Holiday>().Delete(h => h.Holiday1.Year == date.Year && h.Holiday1.Month == date.Month && h.Holiday1.Day == date.Day);
+
+                    // Insert to Change History Setting
+                    var changeHistoryID = GetMaxIDChangeHist();
+                    DBContext.OperationSettings_ChangeHist changeHistory = new DBContext.OperationSettings_ChangeHist();
+                    changeHistory.ID = changeHistoryID + 1;
+                    changeHistory.DayOfWeek = (int)Common.CommonUtil.ConvertToCustomDateOfWeek(date.DayOfWeek);
+                    changeHistory.LastUpdatedBy = updatedBy;
+                    changeHistory.LastUpdatedDate = DateTime.Now;
+                    changeHistory.ChangeDetails = "The holiday " + date.ToString("dd/MM/yyyy") + " has been deleted";
+
+                    _localUnitOfWork.GetRepository<DBContext.OperationSettings_ChangeHist>().Add(changeHistory);
+
+                    _localUnitOfWork.Save();
+
+                    if (EnumAppConfig.ByPassCentralizedDB)
                     {
-                        _localUnitOfWork.GetRepository<DBContext.Holiday>().Delete(h => h.Holiday1.Year == date.Year && h.Holiday1.Month == date.Month && h.Holiday1.Day == date.Day);
-
-                        // Insert to Change History Setting
-                        var changeHistoryID = GetMaxIDChangeHist();
-                        DBContext.OperationSettings_ChangeHist changeHistory = new DBContext.OperationSettings_ChangeHist();
-                        changeHistory.ID = changeHistoryID + 1;
-                        changeHistory.DayOfWeek = (int)Common.CommonUtil.ConvertToCustomDateOfWeek(date.DayOfWeek);
-                        changeHistory.LastUpdatedBy = updatedBy;
-                        changeHistory.LastUpdatedDate = DateTime.Now;
-                        changeHistory.ChangeDetails = "The holiday " + date.ToString("dd/MM/yyyy") + " has been deleted";
-
-                        _localUnitOfWork.GetRepository<DBContext.OperationSettings_ChangeHist>().Add(changeHistory);
-
-                        _localUnitOfWork.Save();
-
                         return true;
                     }
                     else
                     {
-                        throw new Exception(EnumMessage.NotConnectCentralized);
+                        bool centralizeStatus;
+                        var centralUpdate = CallCentralized.Post<bool>(EnumAPIParam.Setting, "DeleteHoliday", out centralizeStatus, "date=" + date.ToString(), "updatedBy=" + updatedBy);
+                        if (centralizeStatus)
+                        {
+                            return centralUpdate;
+                        }
+                        else
+                        {
+                            throw new Exception(EnumMessage.NotConnectCentralized);
+                        }
                     }
                 }
                 else
@@ -839,19 +853,23 @@ namespace Trinity.DAL
             {
                 if (EnumAppConfig.IsLocal)
                 {
-                    bool centralizeStatus;
-                    var centralUpdate = CallCentralized.Post<bool>(EnumAPIParam.Setting, "UpdateSettingAndTimeSlot", out centralizeStatus, settingUpdateModel);
+                    UpdateSettingAndTimeslotForLocal(settingUpdateModel.CheckWarningSaveSetting, settingUpdateModel.SettingDetails);
 
-                    if (centralizeStatus)
+                    if(!EnumAppConfig.ByPassCentralizedDB)
                     {
-                        UpdateSettingAndTimeslotForLocal(settingUpdateModel.CheckWarningSaveSetting, settingUpdateModel.SettingDetails);
+                        bool centralizeStatus;
+                        var centralUpdate = CallCentralized.Post<bool>(EnumAPIParam.Setting, "UpdateSettingAndTimeSlot", out centralizeStatus, settingUpdateModel);
 
-                        return centralUpdate;
+                        if (centralizeStatus)
+                        {
+                            return centralUpdate;
+                        }
+                        else
+                        {
+                            throw new Exception(EnumMessage.NotConnectCentralized);
+                        }
                     }
-                    else
-                    {
-                        throw new Exception(EnumMessage.NotConnectCentralized);
-                    }
+                    return true;
                 }
                 else
                 {

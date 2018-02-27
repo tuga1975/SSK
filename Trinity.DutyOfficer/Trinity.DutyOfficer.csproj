@@ -294,6 +294,7 @@
     <Content Include="View\html\PopupAddHoliday.html" />
     <Content Include="View\html\PopupConfirmDeleteAppointment.html" />
     <Content Include="View\html\PopupEditOperationalDate.html" />
+    <Content Include="View\html\QueuePopupOutcome.html" />
     <Content Include="View\html\PrintingUBLabels.html" />
     <Content Include="View\html\PrintingMUBAndTTLabels.html" />
     <Content Include="View\html\PrintingTemplates\UBLabelTemplate .html" />

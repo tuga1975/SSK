@@ -387,10 +387,10 @@ namespace Trinity.CentralizedAPI.Controllers
         [HttpGet]
         [Route("api/Appointment/CountNoShowdByTimeslot")]
         //[ResponseType(typeof(ResponseModel))]
-        public IHttpActionResult CountNoShowdByTimeslot(string timeslotId)
+        public IHttpActionResult CountAbsentdByTimeslot(string timeslotId)
         {
             var responseModel = new ResponseModel();
-            var result = new DAL.DAL_Appointments().CountApptmtNoShowByTimeslot(timeslotId);
+            var result = new DAL.DAL_Appointments().CountApptmtAbsentByTimeslot(timeslotId);
             //responseModel.ResponseCode = result.ResponseCode;
             //responseModel.ResponseMessage = result.ResponseMessage;
             //responseModel.Data = result.Data;

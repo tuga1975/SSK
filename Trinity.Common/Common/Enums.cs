@@ -458,6 +458,7 @@ public static class EnumAPIParam
     public const string QueueNumber = "QueueNumber";
     public const string SettingSystem = "SettingSystem";
     public const string Label = "Label";
+    public const string DrugResult = "DrugResult";
 
     //action
     public const string GetByToday = "GetByToday";
@@ -497,4 +498,11 @@ public static class EnumMessage
 {
     public const string NotConnectCentralized = "Can not connect to Centralized";
     public const string SmartCardIsAlreadyInUse = "This smart card is already in use";
+}
+
+public static class EnumQueueOutcomeText
+{
+    public const string Processing = "Processing...";
+    public const string UnconditionalRelease = "Unconditional Release";
+    public const string TapSmartCardToContinue = "Tap smart card to continue";
 }

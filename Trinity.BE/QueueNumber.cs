@@ -19,7 +19,7 @@ namespace Trinity.BE
 
         public Guid AppointmentId { get; set; }
 
-        public Guid ID { get; set; }
+        public Guid Queue_ID { get; set; }
     }
 
     public class QueueInfo

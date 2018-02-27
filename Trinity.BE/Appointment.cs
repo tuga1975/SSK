@@ -7,8 +7,6 @@ using System.Threading.Tasks;
 
 namespace Trinity.BE
 {
-    
-
     public class Appointment
     {
         [DataMember]
@@ -25,7 +23,6 @@ namespace Trinity.BE
 
         [DataMember]
         public Nullable<System.DateTime> ReportTime { get; set; }
-
 
         [DataMember]
         public Nullable<short> ChangedCount { get; set; }
@@ -45,5 +42,7 @@ namespace Trinity.BE
         public Nullable<System.TimeSpan> TimeSlot { get; set; }
 
         public string Category { get; set; }
+
+        public Nullable<Guid> AbsenceReporting_ID { get; set; }
     }
 }

@@ -1,4 +1,253 @@
-﻿.loading {
+﻿body {
+    font-family: Verdana,sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    background: url('../images/Background.png') no-repeat;
+    width: 100%;
+    background-size: cover;
+}
+
+.bodyContent {
+    margin: 20px 40px;
+}
+
+/*Header*/
+#header {
+    height: 80px;
+    position: fixed;
+    top: 0px;
+    left: 10px;
+    width: calc(100% - 20px);
+}
+
+    #header .logo {
+        position: absolute;
+        background-image: url('../images/logoCNB.png');
+        height: 80px;
+        width: 293px;
+        top: 5px;
+        left: 0px;
+        background-position: left center;
+        background-repeat: no-repeat;
+        background-size: contain;
+    }
+
+    #header .header-right {
+        position: absolute;
+        background-image: url('../images/Logout.png');
+        height: 40px;
+        width: 54px;
+        top: 5px;
+        right: 0px;
+        background-position: right center;
+        background-repeat: no-repeat;
+        background-size: contain;
+    }
+
+.box-shadow {
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.5);
+    background-color: #FFF;
+}
+/*Content layout*/
+#parent-content {
+    position: fixed;
+    top: 80px;
+    left: 10px;
+    width: calc(100% - 20px);
+    height: calc(100% - 90px);
+}
+
+    #parent-content #content {
+        position: absolute;
+        left: 0px;
+        top: 0px;
+        height: 100%;
+        width: 100%;
+        max-height: 100%;
+        overflow-y:scroll;
+    }
+
+
+
+.contentWrapper {
+    position: relative;
+    width: 500px;
+    height: auto;
+    overflow: hidden;
+    margin-bottom: 40px;
+    box-shadow: 0px 0px 15px 2px rgba(204,204,204,1);
+    background-color: #ffffff;
+    margin: 0 auto;
+    padding: 20px 0;
+}
+
+.contentForm {
+    width: calc(100% - 40px);
+    overflow: hidden;
+    padding: 20px;
+}
+
+.input-group {
+    width: 100%;
+    float: left;
+    border-bottom: 1px solid #ccc;
+    margin: 10px 0;
+    display: flex;
+    flex-direction: row;
+}
+
+    .input-group:hover,
+    .input-group:focus,
+    .input-group:visited,
+    .input-group:active,
+    .input-group::selection {
+        border-bottom: 1px solid #1CACF6;
+    }
+
+    .input-group span.input-group-addon,
+    .form-inline .input-group span.input-group-addon {
+        color: #1CACF6;
+        width: 200px;
+        text-align: left;
+        background: none;
+        border: none;
+        padding-left: 0;
+        flex: 1;
+    }
+
+    .input-group input,
+    .form-inline .input-group input {
+        background: none;
+        border: none;
+        box-shadow: none;
+        width: calc(100% - 200px);
+        flex: 1;
+        text-align: left;
+    }
+
+        .input-group input[readonly='readonly'],
+        .input-group input[disabled='disabled'] {
+            background: none;
+        }
+
+        .input-group input:hover,
+        .input-group input:focus,
+        .input-group input:active {
+            border: none;
+            box-shadow: none;
+            background: none;
+        }
+
+.btn {
+    color: #1CACF6;
+    background: #ffffff;
+    border: none;
+    border-radius: 0;
+}
+
+    .btn:hover,
+    .btn:focus {
+        color: #ffffff;
+        background: #1CACF6;
+    }
+
+#divSave {
+    display: block;
+    margin: 20px auto;
+    width: 500px;
+    text-align: right;
+}
+
+highlight {
+    border-color: red;
+}
+
+.validation {
+    color: red;
+}
+/*Form Layout*/
+.formWrapper #profileFrm {
+    padding: 20px;
+    box-shadow: 0px 0px 15px 2px rgba(204,204,204,1);
+    background-color: #ffffff;
+    border-left: 1px solid rgba(204,204,204,1);
+    border-right: 1px solid rgba(204,204,204,1);
+}
+
+.formWrapper .nav-tabs li a {
+    border: 1px solid rgba(204,204,204,1);
+    background: #fff;
+    color: #1CACF6;
+    font-weight: bold;
+}
+
+.formWrapper .nav-tabs li.active a {
+    color: #000;
+    border-bottom: 1px solid #fff;
+}
+
+.formWrapper .tab-pane {
+    max-height: calc(100vh - 400px);
+    overflow-y: scroll;
+    margin-bottom: 20px;
+}
+
+.noticeMessage {
+    margin-top: 20px;
+    float: left;
+}
+/*Modal Layout*/
+
+.modal-content {
+    border-radius: 0px !important;
+}
+
+.modal {
+    text-align: center;
+    padding: 0 !important;
+}
+
+    .modal:before {
+        content: '';
+        display: inline-block;
+        height: 100%;
+        vertical-align: middle;
+        margin-right: -4px;
+    }
+
+.modal-dialog {
+    display: inline-block;
+    text-align: left;
+    vertical-align: middle;
+    width: 350px;
+}
+
+.modal-content {
+    padding: 20px;
+}
+
+.modal-body .title {
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.modal-body .contentMesg {
+    text-align: center;
+    padding: 10px 0 20px 0;
+}
+
+.modal-body button {
+    width: 100%;
+    background-color: #1CACF6;
+    text-align: center;
+    color: #fff;
+    font-weight: bold;
+}
+
+
+
+.loading {
     position: fixed;
     z-index: 100;
     background-color: rgba(255,255,255,0.5);
@@ -10,8 +259,8 @@
 }
 
 .loader {
-    border: 5px solid #f3f3f3; /* Light grey */
-    border-top: 5px solid #3498db; /* Blue */
+    border: 5px solid #f3f3f3; 
+    border-top: 5px solid #3498db;
     border-radius: 50%;
     width: 50px;
     height: 50px;
@@ -21,6 +270,9 @@
     top: calc(50% - 25px);
 }
 
+#divLoading {
+    text-align: center;
+}
 @keyframes spin {
     0% {
         transform: rotate(0deg);
@@ -30,3 +282,132 @@
         transform: rotate(360deg);
     }
 }
+
+/*Scan Smart Card*/
+.scanSmartCart {
+    height: calc(100vh - 330px);
+    width: auto;
+    text-align: center;
+    /*padding: 40px 0 20px 0;*/
+    background-image: url('../images/ScanSmartCard.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+/*.scanSmartCart img {
+    width: auto;
+    height: 100%;
+}*/
+
+/*.manualLogin {
+    display: block;
+    padding: 20px;
+    width: 500px;
+    margin: 0 auto;
+    text-align: right;
+}
+
+.manualLogin a {
+    color: #1CACF6;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.manualLogin img {
+    width: 25px;
+}*/
+
+/*FingerPrint*/
+.fingerPrint {
+    height: calc(100vh - 300px);
+    width: auto;
+    text-align: center;
+    /*padding: 40px 0 20px 0;*/
+    background-image: url('../images/FingerPrint.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+/*Label Printer*/
+.titles {
+    overflow: hidden;
+    width: 100%;
+    margin-bottom: 20px;
+    font-size: 16px;
+    text-align: center;
+    font-weight: bold;
+}
+
+    .titles span {
+        border-bottom: 2px solid pink;
+        padding-bottom: 10px;
+    }
+
+
+/*Collect command paste labels*/
+/*.collectLabels {
+    height: calc(100vh - 300px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 40px 0 20px 0;
+    text-align: center;
+    overflow: hidden;
+}
+
+.SucessesPrint {
+    font-size: 24px;
+    padding: 5px;
+    color: #808080;
+    flex: 1;
+}*/
+/*Tooltip*/
+[data-tip] {
+    position: relative;
+}
+
+    [data-tip]:before {
+        content: '';
+        display: none;
+        content: '';
+        border-left: 5px solid transparent;
+        border-right: 5px solid transparent;
+        border-top: 5px solid #1a1a1a;
+        position: absolute;
+        top: -10px;
+        left: 35px;
+        z-index: 9;
+        font-size: 0;
+        line-height: 0;
+        width: 0;
+        height: 0;
+    }
+
+    [data-tip]:after {
+        display: none;
+        content: attr(data-tip);
+        position: absolute;
+        top: -35px;
+        left: 0px;
+        padding: 5px 8px;
+        background: #1a1a1a;
+        color: #fff;
+        z-index: 9;
+        font-size: 0.75em;
+        height: 25px;
+        line-height: 18px;
+        -webkit-border-radius: 3px;
+        -moz-border-radius: 3px;
+        border-radius: 3px;
+        white-space: nowrap;
+        word-wrap: normal;
+    }
+
+    [data-tip]:hover:before,
+    [data-tip]:hover:after,
+    [data-tip]:focus:before,
+    [data-tip]:focus:after {
+        display: block;
+    }
