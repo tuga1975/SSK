@@ -10,7 +10,7 @@ using Trinity.DAL;
 
 namespace DutyOfficer.Utils
 {
-    class SignalR : Trinity.SignalRClient.Notification.SignalRBase
+    class SignalR : Trinity.SignalR.Client.Notification.SignalRBase
     {
         public SignalR()
         {

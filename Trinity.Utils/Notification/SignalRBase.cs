@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Linq;
 
-namespace Trinity.SignalRClient.Notification
+namespace Trinity.SignalR.Client.Notification
 {
     public abstract class SignalRBase : ISignalR
     {
