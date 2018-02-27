@@ -107,7 +107,7 @@ namespace SSK
             string message = "The fingerprint reader is not connected, please report to the Duty Officer!";
 
             // Send Notification to duty officer
-            APIUtils.SignalR.SendAllDutyOfficer(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId,"The fingerprinter is not connected", "The fingerprinter is not connected.", NotificationType.Error);
+            APIUtils.SignalR.SendAllDutyOfficer(null,"The fingerprinter is not connected", "The fingerprinter is not connected.", NotificationType.Error);
 
 
             // show message box to user
@@ -229,7 +229,7 @@ namespace SSK
             if (_smartCardFailed > 3)
             {
                 // Send Notification to duty officer
-                APIUtils.SignalR.SendAllDutyOfficer(null,message, message, NotificationType.Error);
+                APIUtils.SignalR.SendAllDutyOfficer(null, message, message, NotificationType.Error);
                 // show message box to user
                 //MessageBox.Show(message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
 

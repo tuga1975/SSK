@@ -168,6 +168,10 @@
     .cancelButton{
         z-index: 9;
     }
+
+    .carousel-control {
+        opacity: 0;
+    }
 </style>
 <div class="container">
     <div class="PrintCard">
@@ -264,11 +268,11 @@
                                             <br/ >
                                             <div class="verifyCardview" data-target="#printSmartCard" data-toggle="modal">
                                                 <p>
-                                                    <div style="z-index:1;color:#FFF;">
+                                                    <div style="z-index:1;color:#000;">
                                                         <div style="position:absolute;font-size: 15px;font-weight: bold;font-style: italic;top: 10px;left: 20px;">
                                                             CNB Supervisee Card
                                                         </div>
-                                                        <div style="height:95px;width:75px;position:absolute;top:40px;left:20px;text-align:center;padding:1px;border-radius:5px;background-color:#FFF;">
+                                                        <div style="height:95px;width:75px;position:absolute;top:40px;left:20px;text-align:center;padding:1px;border-radius:5px;">
                                                             <img src="../images/usr-default.jpg" id="verifyPhoto" style="height:100%;max-width:100%;border-radius:5px;" />
                                                         </div>
                                                         <img src="../images/central_narco_logo.png" style="position:absolute;height: 35px;top: 119px;left: 40px;z-index: 1;">
@@ -292,11 +296,11 @@
                                             <br/ >
                                             <div class="verifyCardview" data-target="#printSmartCard" data-toggle="modal">
                                                 <p>
-                                                    <div style="position:absolute;bottom:15px;left:15px;z-index:1;color:#FFF;">
+                                                    <div style="bottom:15px;left:15px;z-index:1;color:#000;">
                                                         <div style="font-size: 12px;font-weight: bold;">
                                                             <div>Date of Issue: <span name="issueDate"></span></div>
                                                         </div>
-                                                        <div style="margin-top:10px;font-size: 8px;font-weight: bold;text-shadow: 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black;">
+                                                        <div style="margin-top:10px;font-size: 8px;font-weight: bold;">
                                                             “If this card is found, please return to any Police Station or to:<br />
                                                             <span name="verifyCompanyName"></span><br />
                                                             <span name="verifyVenueName"></span><br />
@@ -350,6 +354,7 @@
 
         </div>
     </div>
+    
 </div>
 
 <!--<script>
@@ -492,6 +497,33 @@
 
 
 <script>
+
+    jQuery(function ($) {
+
+        // Carousel not allow for cycle    
+        $('.carousel').carousel({
+            wrap: false
+        })
+
+        carouselControl();
+
+        $('.carousel').on('slid.bs.carousel', function () {
+            $('.carousel').find('.carousel-control').show();
+            carouselControl();
+        })
+
+        function carouselControl() {
+            if ($('.carousel-inner .carousel-item:first-child').hasClass('active')) {
+                $('.carousel').find('.carousel-control-prev.carousel-control').css('opacity', '0');
+                $('.carousel').find('.carousel-control-next.carousel-control').css('opacity', '1');
+            }
+            else if ($('.carousel-inner .carousel-item:last-child').hasClass('active')) {
+                $('.carousel').find('.carousel-control-prev.carousel-control').css('opacity', '1');
+                $('.carousel').find('.carousel-control-next.carousel-control').css('opacity', '0');
+            }
+        }
+
+    });
     var userIDNew = '';
     api.ready(function (model) {
         userIDNew = model.User.UserId;
@@ -501,13 +533,7 @@
         image.src = src;
     }
 
-    //function Test() {
-    //    html2canvas($('#backCard'), {
-    //        onrendered: function (backcanvas) {
-    //            $('[ad]').attr('src', backcanvas.toDataURL("image/png"))
-    //        }
-    //    });
-    //}
+
     $(document).ready(function () {
         $('#leftThumbClearBtn').attr('disabled', 'disabled');
         $('#rightThumbClearBtn').attr('disabled', 'disabled');
@@ -656,31 +682,27 @@
                     onrendered: function (froncanvas) {
                         html2canvas($('#backCard'), {
                             onrendered: function (backcanvas) {
+                               
                                 frontCardImg = froncanvas.toDataURL("image/png");
                                 backCardImg = backcanvas.toDataURL("image/png");
-                                $('.actions > ul > li > a[href="#next"]').click();
+
+                                api.server.UpdateSuperviseeBiodata(frontCardImg, backCardImg, JSON.stringify(CardInfo));
+                                //$('.actions > ul > li > a[href="#next"]').click();
                             }
                         });
                     }
                 });
-                api.loading(true);
-                return false;
+               
             } else {
-                api.loading(false);
+                //api.loading(false);
+                if (frontCardImg == null) {
+                    frontCardImg = '';
+                }
+                if (backCardImg == null) {
+                    backCardImg = '';
+                }
+                api.server.UpdateSuperviseeBiodata(frontCardImg, backCardImg, JSON.stringify(CardInfo));
             }
-        }
-    });
-
-    //slid 
-    $('#createNewSupervisee').on('slid.bs.carousel', function (data) {
-        if (data.relatedTarget==3) {
-            if (frontCardImg == null) {
-                frontCardImg = '';
-            }
-            if (backCardImg == null) {
-                backCardImg = '';
-            }
-            api.server.UpdateSuperviseeBiodata(frontCardImg, backCardImg, JSON.stringify(CardInfo));
         }
     });
 

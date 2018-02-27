@@ -56,7 +56,7 @@ namespace Enrolment
             }
 
             //eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = 0, Name = EventNames.GET_LIST_SUPERVISEE_SUCCEEDED, Data = listSupervisee, Source = "Supervisee.html" });
-            _web.LoadPageHtml("Supervisee.html", listSupervisee);
+            this._web.LoadPageHtml("Supervisee.html", listSupervisee);
         }
 
         public void SearchSuperviseeByNRIC(string nric)
@@ -369,7 +369,7 @@ namespace Enrolment
             var updateUProfileResult = dalUserprofile.UpdateProfile(userProfileModel);
 
             ////send notifiy to case officer
-            APIUtils.SignalR.SendAllDutyOfficer(null, "A supervisee has updated profile.", "Please check Supervisee's information!", NotificationType.Notification);
+            APIUtils.SignalR.SendAllDutyOfficer(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId, "A supervisee has updated profile.", "Please check Supervisee's information!", NotificationType.Notification);
 
 
             //session[CommonConstants.CURRENT_EDIT_USER] = data;
