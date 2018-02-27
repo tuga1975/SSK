@@ -25,6 +25,7 @@ namespace DutyOfficer
         private int _fingerprintFailed;
         private bool _displayLoginButtonStatus = false;
         private bool _isFirstTimeLoaded = true;
+        private bool _isSmartCardToLogin = false;
 
         public Main()
         {
@@ -78,33 +79,36 @@ namespace DutyOfficer
 
         private void GetCardInfoSucceeded(string cardUID)
         {
-            // get local user info
-            DAL_User dAL_User = new DAL_User();
-            var user = dAL_User.GetUserBySmartCardId(cardUID);
+            if (_isSmartCardToLogin)
+            {
+                // get local user info
+                DAL_User dAL_User = new DAL_User();
+                var user = dAL_User.GetUserBySmartCardId(cardUID);
 
-            // if local user is null, get user from centralized, and sync db
-            if (user == null)
-            {
-                user = dAL_User.GetUserBySmartCardId(cardUID);
-                if (user != null && user.Role != EnumUserRoles.DutyOfficer)
-                    user = null;
-            }
+                // if local user is null, get user from centralized, and sync db
+                if (user == null)
+                {
+                    user = dAL_User.GetUserBySmartCardId(cardUID);
+                    if (user != null && user.Role != EnumUserRoles.DutyOfficer)
+                        user = null;
+                }
 
-            if (user != null)
-            {
-                Session session = Session.Instance;
-                session.IsSmartCardAuthenticated = true;
-                Session.Instance[CommonConstants.USER_LOGIN] = user;
-                this.LayerWeb.RunScript("$('.status-text').css('color','#000').text('Your smart card is authenticated.');");
-                // Stop SCardMonitor
-                SmartCardReaderUtil.Instance.StopSmartCardMonitor();
-                // raise succeeded event
-                SmartCard_OnSmartCardSucceeded();
-            }
-            else
-            {
-                // raise failed event
-                SmartCard_OnSmartCardFailed("Unable to read your smart card. Please report to the Duty Officer");
+                if (user != null)
+                {
+                    Session session = Session.Instance;
+                    session.IsSmartCardAuthenticated = true;
+                    Session.Instance[CommonConstants.USER_LOGIN] = user;
+                    this.LayerWeb.RunScript("$('.status-text').css('color','#000').text('Your smart card is authenticated.');");
+                    // Stop SCardMonitor
+                    SmartCardReaderUtil.Instance.StopSmartCardMonitor();
+                    // raise succeeded event
+                    SmartCard_OnSmartCardSucceeded();
+                }
+                else
+                {
+                    // raise failed event
+                    SmartCard_OnSmartCardFailed("Unable to read your smart card. Please report to the Duty Officer");
+                }
             }
         }
 
@@ -227,6 +231,7 @@ namespace DutyOfficer
             // navigate
             if (navigatorEnum == NavigatorEnums.Authentication_SmartCard)
             {
+                _isSmartCardToLogin = true;
                 LayerWeb.LoadPageHtml("Authentication/SmartCard.html");
                 LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please place your smart card on the reader.');");
                 SmartCard.Instance.Start();
@@ -248,6 +253,7 @@ namespace DutyOfficer
                 }
             }else if (navigatorEnum == NavigatorEnums.Queue)
             {
+                _isSmartCardToLogin = false;
                 LayerWeb.LoadPageHtml("Queue.html");
             }
 

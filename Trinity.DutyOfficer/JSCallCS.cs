@@ -160,10 +160,6 @@ namespace DutyOfficer
 
                 if (user != null)
                 {
-                    // Stop SCardMonitor
-                    //Trinity.Device.SmartCardReaderUtil.Instance.StopSmartCardMonitor();
-                    // raise succeeded event
-
                     var lstQueueToday = new DAL_QueueNumber().GetAllQueueByDateIncludeDetail(DateTime.Now.Date)
                     .Select(queue => new
                     {
@@ -200,7 +196,12 @@ namespace DutyOfficer
 
         public List<Notification> getAlertsSendToDutyOfficer()
         {
-            _isFocusQueue = false;
+            if(_isFocusQueue)
+            {
+                Trinity.Device.SmartCardReaderUtil.Instance.StopSmartCardMonitor();
+                _isFocusQueue = false;
+            }
+            
             var dalNotify = new DAL_Notification();
             string userID = ((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId;
             if (userID != null || userID != "")
@@ -244,7 +245,12 @@ namespace DutyOfficer
 
         public SettingModel GetSettings()
         {
-            _isFocusQueue = false;
+            if (_isFocusQueue)
+            {
+                Trinity.Device.SmartCardReaderUtil.Instance.StopSmartCardMonitor();
+                _isFocusQueue = false;
+            }
+
             DAL_Setting dalSetting = new DAL_Setting();
             return dalSetting.GetOperationSettings();
         }
@@ -327,7 +333,12 @@ namespace DutyOfficer
         #region Blocked
         public List<User> GetAllSuperviseesBlocked()
         {
-            _isFocusQueue = false;
+            if (_isFocusQueue)
+            {
+                Trinity.Device.SmartCardReaderUtil.Instance.StopSmartCardMonitor();
+                _isFocusQueue = false;
+            }
+
             var dalUser = new DAL_User();
             return dalUser.GetAllSuperviseeBlocked();
         }
@@ -373,7 +384,12 @@ namespace DutyOfficer
         #region Appointment
         public List<Appointment> GetAllAppoinments()
         {
-            _isFocusQueue = false;
+            if (_isFocusQueue)
+            {
+                Trinity.Device.SmartCardReaderUtil.Instance.StopSmartCardMonitor();
+                _isFocusQueue = false;
+            }
+
             var dalAppointment = new DAL_Appointments();
             var result= dalAppointment.GetAllApptmts();
             return result;            
@@ -384,7 +400,12 @@ namespace DutyOfficer
         #region Statistics
         public List<Statistics> GetStatistics()
         {
-            _isFocusQueue = false;
+            if (_isFocusQueue)
+            {
+                Trinity.Device.SmartCardReaderUtil.Instance.StopSmartCardMonitor();
+                _isFocusQueue = false;
+            }
+
             var dalAppointment = new DAL_Appointments();
             var result= dalAppointment.GetAllStats();
             List<Statistics> data = result;
@@ -414,7 +435,12 @@ namespace DutyOfficer
         #region Print UB
         public List<Trinity.BE.Label> GetAllUBlabels()
         {
-            _isFocusQueue = false;
+            if (_isFocusQueue)
+            {
+                Trinity.Device.SmartCardReaderUtil.Instance.StopSmartCardMonitor();
+                _isFocusQueue = false;
+            }
+
             var dalUBlabels = new DAL_Labels();
             return dalUBlabels.GetAllLabelsForUB();
         }
@@ -522,7 +548,12 @@ namespace DutyOfficer
         #region Print MUB And TT
         public List<Trinity.BE.Label> GetAllMUBAndTTlabels()
         {
-            _isFocusQueue = false;
+            if (_isFocusQueue)
+            {
+                Trinity.Device.SmartCardReaderUtil.Instance.StopSmartCardMonitor();
+                _isFocusQueue = false;
+            }
+
             var dalMUBAndTTlabels = new DAL_Labels();
             return dalMUBAndTTlabels.GetAllLabelsForMUBAndTT();
         }
