@@ -37,7 +37,6 @@ function displayLogoutButton(display) {
 }
 
 function getRealtimeNotificationServer(notification){
-    debugger;
     var objNotify = JSON.parse(notification);
     if(objNotify){
         lstAlerts.push({
