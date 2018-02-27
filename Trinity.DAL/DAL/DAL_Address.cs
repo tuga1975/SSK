@@ -47,22 +47,36 @@ namespace Trinity.DAL
             }
             if (EnumAppConfig.IsLocal)
             {
-                bool statusCentralized;
-                CallCentralized.Post("Address", "SaveAddress", out statusCentralized, model);
-                if (!statusCentralized)
-                {
-                    throw new Exception(EnumMessage.NotConnectCentralized);
-                }
-                else
-                {
-                    UpdateOrInsert(model, _localUnitOfWork);
-                }
+                //bool statusCentralized;
+                //CallCentralized.Post("Address", "SaveAddress", out statusCentralized, model);
+                //if (!statusCentralized)
+                //{
+                //    throw new Exception(EnumMessage.NotConnectCentralized);
+                //}
+                //else
+                //{
+                UpdateOrInsert(model, _localUnitOfWork);
+                //}
             }
             else
             {
                 UpdateOrInsert(model, _centralizedUnitOfWork);
             }
             return model.Address_ID;
+        }
+
+        public string SaveOtherAddress(BE.OtherAddress model)
+        {
+            if (string.IsNullOrEmpty(model.OAddress_ID))
+            {
+                model.OAddress_ID = Guid.NewGuid().ToString();
+            }
+
+            var add = new BE.Address() { Address_ID = model.OAddress_ID, BlkHouse_Number = model.OBlkHouse_Number, Country = model.OCountry, FlrUnit_Number = model.OFlrUnit_Number, Postal_Code = model.OPostal_Code, Street_Name = model.OStreet_Name };
+            UpdateOrInsert(add, _localUnitOfWork);
+
+
+            return model.OAddress_ID;
         }
         #endregion
 

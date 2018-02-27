@@ -1,244 +1,1065 @@
-<div style="width:100%;">
-	<div class="header header-form-supervisee">
-		<img class="logo" src="../images/logo.png" />
-		<h3>Edit Supervisee</h3>
-		<div class="clear"></div>
-	</div>
-	<div class="form-supervisee">
-		<form id="superviseeFrm">
-			<input class="name-supervisee" type="text" value="Edit Supervisee" disabled="disabled" />
-			<nav class="nav nav-tabs">
-				<a class="nav-item nav-link active" href="javascript:;">Supervisee Details</a>
-				<a class="nav-item nav-link" href="javascript:api.server.LoadPage('ReprintSmartCard.html');">Issued Cards</a>
-			</nav>
-			<div class="tab-content" id="nav-tabContent">
-			<input type="hidden" name="userId" class="userId"  />
-			<div class="tab-pane fade show active" id="supervisee-details" role="tabpanel" aria-labelledby="nav-home-tab">
-				<span class="s_label" >Supervisee's Biodata</span>
-				<div class="s_detail" style="display:block">
-					<div class="row">								
-						<div class="col-7">
-							<div class="row">								
-								<div class="col">
-									<img class="avatar" id="userPhoto1" src="../images/usr-default.jpg" />
-									<input type="hidden" id="User_Photo1" name="User_Photo1" />
-								</div>
-								<div class="col">
-									<img class="avatar" id="userPhoto2" src="../images/usr-default.jpg" />									
-									<input type="hidden" id="User_Photo2" name="User_Photo2" />
-								</div>
-							</div>
-						</div>
-						<div class="col-5">
-							<div class="row">
-								<div class="col">
-									<img class="avatar" id="LeftThumbFingerprint" src="../images/fingerprint.png" style="max-width:70%" />
-								</div>
-								<div class="col">
-									<img class="avatar" id="RightThumbFingerprint" src="../images/fingerprint.png" style="max-width:70%" />
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="row">								
-						<div class="col-7" style="text-align:center;padding-top:5px;">
-							<button type="button" class="btn-form" id="updatePhotos">Update Photos</button>
-						</div>
-                        <div class="col-5" style="text-align:center;padding-top:5px;">
-                            <!--<button type="button" class="btn-form" id="updateFingerprints">Update Fingerprints</button>-->
-                            <button type="button" class="btn-form" onclick="api.server.UpdateFingerprints()">Update Fingerprints</button>
+﻿<style>
+
+    body {
+        background: #fff;
+    }
+
+    .collapsible {
+        list-style: none;
+        padding: 0;
+        margin: 1rem 0;
+    }
+
+        .collapsible li {
+            list-style: none;
+            padding: 0;
+        }
+
+        .collapsible .collapsible-header {
+            font-size: 1.2rem;
+            border-bottom: 1px solid #ccc;
+            position: relative;
+            padding-top: 1rem;
+        }
+
+            .collapsible .collapsible-header:after {
+                color: #1cacf6;
+                content: "\f126";
+                display: inline-block;
+                font-family: "Ionicons";
+                speak: none;
+                font-style: normal;
+                font-weight: normal;
+                font-variant: normal;
+                text-transform: none;
+                text-rendering: auto;
+                line-height: 1;
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+                position: absolute;
+                right: 0;
+            }
+
+            .collapsible .collapsible-header.collapsed:after {
+                content: "\f123";
+            }
+
+        .collapsible .collapsible-body {
+            margin: 1rem 0;
+        }
+
+    #superviseeDetails .btn {
+        text-transform: uppercase;
+    }
+
+    .form-material .input-group-prepend {
+        min-width: 35%;
+    }
+
+    .form-material .input-group .input-group-text {
+        border: 0;
+        border-radius: 0;
+        background-color: transparent;
+        color: #209CDD;
+    }
+
+    .form-material .btn {
+        background: #1CACF6;
+        color: #fff;
+        text-transform: uppercase;
+    }
+
+        .form-material .btn.btn-light {
+            background-color: transparent;
+            color: #1CACF6;
+        }
+
+    .form-group {
+        margin-bottom: 1rem;
+        position: relative;
+        min-height: 50px;
+    }
+
+    .form-select {
+        width: 100%;
+        float: left;
+        border-bottom: 1px solid #ccc;
+        margin: 10px 0;
+        display: flex;
+        flex-direction: row;
+    }
+
+        .form-select .input-group-select {
+            min-width: 35%;
+        }
+
+        .form-select .form-label {
+            border: 0;
+            border-radius: 0;
+            background-color: transparent;
+            color: #209CDD;
+            padding: .375rem .75rem;
+            margin-bottom: 0;
+            font-size: 1rem;
+            font-weight: 400;
+            line-height: 1.5;
+            position: absolute;
+        }
+
+        .form-select select {
+            padding: .375rem .75rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #495057;
+            -moz-appearance: none; /* Firefox */
+            -webkit-appearance: none; /* Safari and Chrome */
+            text-indent: 1px;
+            text-overflow: '';
+            border: 0;
+            position: relative;
+        }
+
+            .form-select select + label {
+                float: right;
+                margin-top: 7px;
+                margin-right: 5px;
+                pointer-events: none;
+                background-color: #fff;
+                padding-right: 5px;
+                color: #209CDD;
+            }
+
+            .form-select select::-ms-expand {
+                display: none;
+            }
+
+        .form-select .select-wrap {
+            position: relative;
+        }
+
+    .tab-fix {
+        position: relative;
+        max-width: 100%;
+        max-height: calc(100% - 80px);
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+    .form-material input::-webkit-input-placeholder {
+        font-style: italic;
+        color: #ccc;
+    }
+
+    .form-material input:-moz-placeholder {
+        font-style: italic;
+        color: #ccc;
+    }
+
+    .form-material input::-moz-placeholder {
+        font-style: italic;
+        color: #ccc;
+    }
+
+    .form-material input:-ms-input-placeholder {
+        font-style: italic;
+        color: #ccc;
+    }
+
+    .nav-tabs-custom {
+        height: 50px;
+        background: #F6F6F6;
+        border: 0;
+    }
+
+        .nav-tabs-custom a {
+            height: 50px;
+            font-size: 1.1rem;
+            border: 0;
+            font-weight: bold;
+        }
+
+            .nav-tabs-custom a i {
+                padding-right: 10px;
+            }
+
+        .nav-tabs-custom .nav-link {
+            padding: 1rem;
+            line-height: 1rem;
+        }
+
+            .nav-tabs-custom .nav-link.active {
+                border: 0;
+                border-radius: 0;
+            }
+
+    .title-border-red {
+        margin-top: 30px;
+    }
+
+        .title-border-red > h5 {
+            border-bottom: 2px solid red;
+            margin-bottom: -1px;
+            display: inline-block;
+            padding: 5px 0;
+        }
+
+    .hidden-scrollbar {
+        position: relative;
+        height: 450px;
+        width: 100%;
+        overflow: hidden;
+    }
+
+        .hidden-scrollbar .scrollbar {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: -17px;
+            padding-right: 17px;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+    #issuedCardList {
+        width: calc(100% - 60px);
+        margin: 30px;
+        text-align: center;
+    }
+
+    .modal-dialog {
+        width: 450px;
+    }
+
+    .modal-header {
+        border: none;
+    }
+
+    button {
+        margin-top: 20px;
+        padding: 10px 0;
+        border-radius: 4px;
+        border: none;
+    }
+
+    #reprintCard .modal-body button {
+        background: none;
+        border: none;
+        color: #1CACF6;
+    }
+
+        #reprintCard .modal-body button:hover,
+        #reprintCard .modal-body button:focus {
+            color: #fff;
+            background: #1CACF6;
+            cursor: pointer;
+        }
+
+    textarea {
+        resize: none;
+    }
+</style>
+
+<!-- Nav tabs -->
+<ul class="nav nav-tabs nav-tabs-custom" role="tablist">
+    <li class="nav-item">
+        <a class="nav-link active" data-toggle="tab" href="#superviseeDetails" role="tab">
+            <i class="ion-information-circled"></i> Supervisee Details
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#issued" role="tab">
+            <i class="fa fa-address-card"></i> Issued card
+        </a>
+    </li>
+</ul>
+
+<!-- Tab panes -->
+<div class="tab-content">
+    <div class="tab-pane active" id="superviseeDetails" role="tabpanel">
+        <div class="title-border-red border-bottom px-3">
+            <h5>Edit Supervisee</h5>
+        </div>
+
+
+        <div class="hidden-scrollbar">
+            <div class="scrollbar">
+                <div class="container">
+                    <form class="form-material" id="superviseeFrm">
+
+                        <input type="hidden" id="userId" name="userId" />
+                        <input type="hidden" id="Address_ID" name="address_ID" />
+                        <input type="hidden" id="OAddress_ID" name="Other_Address_ID" />
+
+                        <ul id="accordion" class="collapsible">
+                            <li>
+                                <!-- Suppervisee's Biodata-->
+                                <div class="collapsible-header collapsed" data-toggle="collapse"
+                                     data-target="#suppervisee" id="biodata">
+                                    Suppervisee's Biodata
+                                </div>
+                                <div id="suppervisee" class="collapsible-body collapse"
+                                     aria-labelledby="Suppervisee's Biodata" data-parent="#accordion">
+                                    <div class="row">
+                                        <div class="col-md-6 col-sm-12">
+                                            <div class="row">
+                                                <div class="col-md-6 col-sm-12">
+                                                    <img src="../images/avatar-demo.jpg" alt="avatar"
+                                                         class="img-fluid" id="userPhoto1" />
+                                                    <input type="hidden" id="User_Photo1" name="User_Photo1" />
+                                                </div>
+                                                <div class="col-md-6 col-sm-12">
+                                                    <img src="../images/avatar-demo.jpg" alt="avatar"
+                                                         class="img-fluid" id="userPhoto2" />
+                                                    <input type="hidden" id="User_Photo2" name="User_Photo2" />
+                                                </div>
+                                            </div>
+                                            <a href="#" id="updatePhotos">Update Photos</a>
+                                        </div>
+                                        <div class="col-md-6 col-sm-12">
+                                            <div class="row">
+                                                <div class="col-md-6 col-sm-12">
+                                                    <img src="../img/avatar-demo.jpg" alt="avatar"
+                                                         class="img-fluid" id="LeftThumbFingerprint" name="LeftThumbFingerprint" />
+
+                                                </div>
+                                                <div class="col-md-6 col-sm-12">
+                                                    <img src="../img/avatar-demo.jpg" alt="avatar"
+                                                         class="img-fluid" id="RightThumbFingerprint" name="RightThumbFingerprint" />
+                                                </div>
+                                            </div>
+                                            <a href="#" onclick="api.server.UpdateFingerprints()">Update Fingerprints</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <!-- Residential Address-->
+                                <div class="collapsible-header collapsed" data-toggle="collapse"
+                                     data-target="#residential">
+                                    Residential Address
+                                </div>
+                                <div id="residential" class="collapsible-body collapse"
+                                     aria-labelledby="Residential Address" data-parent="#accordion">
+
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="house">
+                                                    House No.
+                                                </span>
+                                            </div>
+                                            <input type="text" class="form-control"
+                                                   placeholder="Enter House No."
+                                                   aria-label="house" aria-describedby="house" id="BlkHouse_Number" name="BlkHouse_Number">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="unit">
+                                                    Unit No.
+                                                </span>
+                                            </div>
+                                            <input type="text" class="form-control"
+                                                   placeholder="Enter Unit No."
+                                                   aria-label="unit" aria-describedby="unit" id="FlrUnit_Number" name="FlrUnit_Number">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="street">
+                                                    Street name
+                                                </span>
+                                            </div>
+                                            <input type="text" class="form-control"
+                                                   placeholder="Enter Street name"
+                                                   aria-label="street" aria-describedby="street" id="Street_Name" name="Street_Name">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="country">
+                                                    Country
+                                                </span>
+                                            </div>
+                                            <input type="text" class="form-control"
+                                                   placeholder="Enter Country"
+                                                   aria-label="country" aria-describedby="country" id="Country" name="country">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="zip">
+                                                    Postal code
+                                                </span>
+                                            </div>
+                                            <input type="text" class="form-control"
+                                                   placeholder="Enter Postal code"
+                                                   aria-label="zip" aria-describedby="zip" id="Postal_Code" name="Postal_Code">
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <!-- Other Address -->
+                                <div class="collapsible-header collapsed" data-toggle="collapse"
+                                     data-target="#otherAddress">
+                                    Other Address
+                                </div>
+                                <div id="otherAddress" class="collapsible-body collapse"
+                                     aria-labelledby="Other Address" data-parent="#accordion">
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="house2">
+                                                    House No.
+                                                </span>
+                                            </div>
+                                            <input type="text" class="form-control"
+                                                   placeholder="Enter House No."
+                                                   aria-label="house2" aria-describedby="house2" id="OBlkHouse_Number" name="OBlkHouse_Number">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="unit2">
+                                                    Unit No.
+                                                </span>
+                                            </div>
+                                            <input type="text" class="form-control"
+                                                   placeholder="Enter Unit No."
+                                                   aria-label="unit2" aria-describedby="unit2" id="OFlrUnit_Number" name="OFlrUnit_Number">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="street2">
+                                                    Street name
+                                                </span>
+                                            </div>
+                                            <input type="text" class="form-control"
+                                                   placeholder="Enter Street name"
+                                                   aria-label="street2" aria-describedby="street2" id="OStreet_Name" name="OStreet_Name">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="country2">
+                                                    Country
+                                                </span>
+                                            </div>
+                                            <input type="text" class="form-control"
+                                                   placeholder="Enter Country"
+                                                   aria-label="country2" aria-describedby="country2" id="OCountry" name="OCountry">
+                                        </div>
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="zip2">
+                                                    Postal code
+                                                </span>
+                                            </div>
+                                            <input type="text" class="form-control"
+                                                   placeholder="Enter Postal code"
+                                                   aria-label="zip2" aria-describedby="zip2" id="OPostal_Code" name="OPostal_Code">
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <!-- Next-of-Kin -->
+                                <div class="collapsible-header collapsed" data-toggle="collapse"
+                                     data-target="#nextOfKin">
+                                    Next-of-Kin
+                                </div>
+                                <div id="nextOfKin" class="collapsible-body collapse"
+                                     aria-labelledby="Next-of-Kin" data-parent="#accordion">
+
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="nok-name">
+                                                    Next-of-Kin Name
+                                                </span>
+                                            </div>
+                                            <input type="text" class="form-control"
+                                                   placeholder="Enter Next-of-Kin Name"
+                                                   aria-label="nok-name" aria-describedby="nok-name" id="NextOfKin_Name" name="NextOfKin_Name">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="nok-contact">
+                                                    Next-of-Kin Contact No.
+                                                </span>
+                                            </div>
+                                            <input type="text" class="form-control"
+                                                   placeholder="Enter Next-of-Kin Contact No."
+                                                   aria-label="nok-contact" aria-describedby="nok-contact" id="NextOfKin_Contact_Number" name="NextOfKin_Contact_Number">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="nok-relationship">
+                                                    Next-of-Kin Relationship
+                                                </span>
+                                            </div>
+                                            <input type="text" class="form-control"
+                                                   placeholder="Enter Next-of-Kin Relationship"
+                                                   aria-label="nok-relationship"
+                                                   aria-describedby="nok-relationship" id="NextOfKin_Relationship" name="NextOfKin_Relationship">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="nok-house">
+                                                    Next-of-Kin Blk House No.
+                                                </span>
+                                            </div>
+                                            <input type="text" class="form-control"
+                                                   placeholder="Enter Next-of-Kin Blk House No."
+                                                   aria-label="nok-house" aria-describedby="nok-house" id="NextOfKin_BlkHouse_Number" name="NextOfKin_BlkHouse_Number">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="nok-unit">
+                                                    Next-of-Kin Unit No.
+                                                </span>
+                                            </div>
+                                            <input type="text" class="form-control"
+                                                   placeholder="Enter Next-of-Kin Unit No."
+                                                   aria-label="nok-unit" aria-describedby="nok-unit" id="NextOfKin_FlrUnit_Number" name="NextOfKin_FlrUnit_Number">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="nok-street">
+                                                    Next-of-Kin Street Name
+                                                </span>
+                                            </div>
+                                            <input type="text" class="form-control"
+                                                   placeholder="Enter Next-of-Kin Street Name"
+                                                   aria-label="nok-street" aria-describedby="nok-street" id="NextOfKin_Street_Name" name="NextOfKin_Street_Name">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="nok-country">
+                                                    Next-of-Kin Country
+                                                </span>
+                                            </div>
+                                            <input type="text" class="form-control"
+                                                   placeholder="Enter Next-of-Kin Country"
+                                                   aria-label="nok-country" aria-describedby="nok-country" id="NextOfKin_Country" name="NextOfKin_Country">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="nok-zip">
+                                                    Next-of-Kin Postal code
+                                                </span>
+                                            </div>
+                                            <input type="text" class="form-control"
+                                                   placeholder="Enter Next-of-Kin Postal code"
+                                                   aria-label="nok-zip" aria-describedby="nok-zip" id="NextOfKin_PostalCode" name="NextOfKin_PostalCode">
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <!-- Next-of-Kin -->
+                                <div class="collapsible-header collapsed" data-toggle="collapse"
+                                     data-target="#employment">
+                                    Employment Details
+                                </div>
+                                <div id="employment" class="collapsible-body collapse"
+                                     aria-labelledby="Employment Details" data-parent="#accordion">
+
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="e-name">
+                                                    Employer Name
+                                                </span>
+                                            </div>
+                                            <input type="text" class="form-control"
+                                                   placeholder="Enter Employer Name"
+                                                   aria-label="e-name" aria-describedby="e-name" id="Employment_Name" name="Employment_Name">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="e-contact">
+                                                    Employer Contact No.
+                                                </span>
+                                            </div>
+                                            <input type="text" class="form-control"
+                                                   placeholder="Enter Contact No."
+                                                   aria-label="e-contact" aria-describedby="e-contact" id="Employment_Contact_Number" name="Employment_Contact_Number">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="e-company">
+                                                    Employer Company Name
+                                                </span>
+                                            </div>
+                                            <input type="text" class="form-control"
+                                                   placeholder="Enter Company Name"
+                                                   aria-label="e-company" aria-describedby="e-company" id="Employment_Company_Name" name="Employment_Company_Name">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="e-job">
+                                                    Employer Job Title
+                                                </span>
+                                            </div>
+                                            <input type="text" class="form-control"
+                                                   placeholder="Enter Job Title"
+                                                   aria-label="e-job" aria-describedby="e-job" id="Employment_Job_Title" name="Employment_Job_Title">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="form-select">
+                                            <div class="input-group-select">
+                                                <span class="form-label" id="e-start">
+                                                    Employer Start Date
+                                                </span>
+                                            </div>
+                                            <input type="text" style="display:none" value="" id="Employment_Start_Date" name="Employment_Start_Date" />
+                                            <div class="select-wrap">
+
+                                                <select id="day" title="day">
+                                                    <option>DD</option>
+
+                                                </select>
+                                                <label for="day">
+                                                    <i class="ion-chevron-down"></i>
+                                                </label>
+                                            </div>
+                                            <div class="select-wrap">
+                                                <select id="month" title="month" onchange="setCalendar('day','month','year')">
+                                                    <option>MM</option>
+
+                                                </select>
+                                                <label for="month">
+                                                    <i class="ion-chevron-down"></i>
+                                                </label>
+                                            </div>
+                                            <div class="select-wrap">
+                                                <select id="year" title="year" onchange="setCalendar('day','month','year')">
+                                                    <option>YYYY</option>
+
+                                                </select>
+                                                <label for="year">
+                                                    <i class="ion-chevron-down"></i>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="form-select">
+                                            <div class="input-group-select">
+                                                <span class="form-label" id="e-start">
+                                                    Employer End Date
+                                                </span>
+                                            </div>
+                                            <input type="text" style="display:none" value="" id="Employment_End_Date" name="Employment_End_Date" />
+                                            <div class="select-wrap">
+                                                <select id="day_end" title="day">
+                                                    <option>DD</option>
+
+                                                </select>
+                                                <label for="day_end">
+                                                    <i class="ion-chevron-down"></i>
+                                                </label>
+                                            </div>
+                                            <div class="select-wrap">
+                                                <select id="month_end" title="month" onchange="setCalendar('day_end','month_end','year_end')">
+                                                    <option>MM</option>
+                                                </select>
+                                                <label for="month_end">
+                                                    <i class="ion-chevron-down"></i>
+                                                </label>
+                                            </div>
+                                            <div class="select-wrap">
+                                                <select id="year_end" title="year" onchange="setCalendar('day_end','month_end','year_end')">
+                                                    <option>YYYY</option>
+
+                                                </select>
+                                                <label for="year_end">
+                                                    <i class="ion-chevron-down"></i>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="e-remarks">
+                                                    Employer Remarks
+                                                </span>
+                                            </div>
+                                            <input type="text" class="form-control"
+                                                   placeholder="Enter Remarks"
+                                                   aria-label="e-remarks" aria-describedby="e-remarks" id="Employment_Remarks" name="Employment_Remarks">
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+
+                        <div class="pull-right">
+                            <button class="btn btn-light" onclick="api.server.CancelEditSupervisee();">Cancel</button>
+                            <button class="btn btn-primary" id="SaveBtn">Save</button>
                         </div>
-					</div>
-				</div>
-				<span class="s_label">Supervisee's Address</span>
-				<div class="s_detail">
-					<div class="row">
-						<input type="hidden" name="Address_ID" class="address_ID" />
-						<div class="col">
-							<div class="form-group row">
-								<label class="col-sm-4 col-form-label">BlkHouseNumber</label>
-								<div class="col-sm-8">
-									<input type="text" class="blkHouse_Number" name="BlkHouse_Number" />
-								</div>
-							</div>
-							<div class="form-group row">
-								<label class="col-sm-4 col-form-label">FlrUnit Number</label>
-								<div class="col-sm-8">
-									<input type="text" class="flrUnit_Number" name="FlrUnit_Number" />
-								</div>
-							</div>
-							<div class="form-group row">
-								<label class="col-sm-4 col-form-label">Street Name</label>
-								<div class="col-sm-8">
-									<input type="text" class="street_Name" name="Street_Name" />
-								</div>
-							</div>
-							<div class="form-group row">
-								<label class="col-sm-4 col-form-label">Country</label>
-								<div class="col-sm-8">
-									<input type="text" class="country" name="Country" />
-								</div>
-							</div>
-							<div class="form-group row">
-								<label class="col-sm-4 col-form-label">Postal Code</label>
-								<div class="col-sm-8">
-									<input type="text" class="postal_Code" name="Postal_Code" />
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<span class="s_label">Other Address</span>
-				<div class="s_detail">
-					<div class="row">
-						<input type="hidden" name="OAddress_ID" class="Other_Address_ID" />
-						<div class="col">
-							<div class="form-group row">
-								<label class="col-sm-4 col-form-label">BlkHouseNumber</label>
-								<div class="col-sm-8">
-									<input type="text" class="o_blkHouse_Number" name="OBlkHouse_Number" />
-								</div>
-							</div>
-							<div class="form-group row">
-								<label class="col-sm-4 col-form-label">FlrUnit Number</label>
-								<div class="col-sm-8">
-									<input type="text" class="o_flrUnit_Number" name="OFlrUnit_Number" />
-								</div>
-							</div>
-							<div class="form-group row">
-								<label class="col-sm-4 col-form-label">Street Name</label>
-								<div class="col-sm-8">
-									<input type="text" class="o_street_Name" name="OStreet_Name" />
-								</div>
-							</div>
-							<div class="form-group row">
-								<label class="col-sm-4 col-form-label">Country</label>
-								<div class="col-sm-8">
-									<input type="text" class="o_country" name="OCountry" />
-								</div>
-							</div>
-							<div class="form-group row">
-								<label class="col-sm-4 col-form-label">Postal Code</label>
-								<div class="col-sm-8">
-									<input type="text" class="o_postal_Code" name="OPostal_Code" />
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<span class="s_label">Next Of Kin</span>
-				<div class="s_detail">
-					<div class="row">
-						<div class="col">
-							<div class="form-group row">
-								<label class="col-sm-4 col-form-label">NextOfKin Name</label>
-								<div class="col-sm-8">
-									<input type="text" class="nok_name" value="" name="NextOfKinDetailsName" />
-								</div>
-							</div>
-							<div class="form-group row">
-								<label class="col-sm-4 col-form-label">NextOfKin Contact Number</label>
-								<div class="col-sm-8">
-									<input type="text" class="nok_contact_number" value="" name="ContactNumber" />
-								</div>
-							</div>
-							<div class="form-group row">
-								<label class="col-sm-4 col-form-label">NextOfKin Relationship</label>
-								<div class="col-sm-8">
-									<input type="text" class="nok_relationship" value="" name="Relationship" />
-								</div>
-							</div>
-							<div class="form-group row">
-								<label class="col-sm-4 col-form-label">NextOfKin BlkHouse Number</label>
-								<div class="col-sm-8">
-									<input type="text" class="nok_blkhousr_number" value="" name="NextOfKinDetailsHouseNumber" />
-								</div>
-							</div>
-							<div class="form-group row">
-								<label class="col-sm-4 col-form-label">NextOfKin FlrUnit Number</label>
-								<div class="col-sm-8">
-									<input type="text" class="nok_flrunit_number" value="" name="NextOfKinDetailsUnitNumber" />
-								</div>
-							</div>
-							<div class="form-group row">
-								<label class="col-sm-4 col-form-label">NextOfKin Street Name</label>
-								<div class="col-sm-8">
-									<input type="text" class="nok_street_name" value="" name="NextOfKinDetailsStreetName" />
-								</div>
-							</div>
-							<div class="form-group row">
-								<label class="col-sm-4 col-form-label">NextOfKin Country</label>
-								<div class="col-sm-8">
-									<input type="text" class="nok_country" value="" name="NextOfKinDetailsCountry" />
-								</div>
-							</div>
-							<div class="form-group row">
-								<label class="col-sm-4 col-form-label">NextOfKin PostalCode</label>
-								<div class="col-sm-8">
-									<input type="text" class="nok_postalcode" value="" name="NextOfKinDetailsPostalCode" />
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<span class="s_label">Employment details</span>
-				<div class="s_detail">
-					<div class="row">
-						<div class="col">
-							<div class="form-group row">
-								<label class="col-sm-4 col-form-label">Employment Name</label>
-								<div class="col-sm-8">
-									<input type="text" class="e_name" value="" name="EmployerName" />
-								</div>
-							</div>
-							<div class="form-group row">
-								<label class="col-sm-4 col-form-label">Employment Contact Number</label>
-								<div class="col-sm-8">
-									<input type="text" class="e_contact_number" value="" name="EmployerContact" />
-								</div>
-							</div>
-							<div class="form-group row">
-								<label class="col-sm-4 col-form-label">Employment Company Name</label>
-								<div class="col-sm-8">
-									<input type="text" class="e_company_name" value="" name="CompanyName" />
-								</div>
-							</div>
-							<div class="form-group row">
-								<label class="col-sm-4 col-form-label">Employment Job Title</label>
-								<div class="col-sm-8">
-									<input type="text" class="e_job_title" value="" name="JobTitle" />
-								</div>
-							</div>
-							<div class="form-group row">
-								<label class="col-sm-4 col-form-label">Employment Start Date</label>
-								<div class="col-sm-8">
-									<input type="text" class="e_start_date" value="" name="StartDate" />
-								</div>
-							</div>
-							<div class="form-group row">
-								<label class="col-sm-4 col-form-label">Employment End Date</label>
-								<div class="col-sm-8">
-									<input type="text" class="e_end_date" value="" name="EndDate" />
-								</div>
-							</div>
-							<div class="form-group row">
-								<label class="col-sm-4 col-form-label">Employment Remarks</label>
-								<div class="col-sm-8">
-									<input type="text" class="e_remarks" value="" name="Remarks" />
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="btn-group">
-					<button type="button" class="btn-form" id="SaveBtn">Save</button>
-					<button type="button" class="btn-form" onclick="api.server.CancelEditSupervisee();">Cancel</button>
-				</div>
-			</div>
-		</div>
-		</form>
-	</div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--<div class="tab-pane" id="issued" role="tabpanel">
+        <div class="title-border-red border-bottom px-3">
+            <h5>Issued Cards List</h5>
+        </div>
+        <div class="row">
+            <table class="table" id="issuedCardList">
+                <thead class="thead-light">
+                    <tr>
+                        <th scope="col">No.</th>
+                        <th scope="col">Supervisee Name</th>
+                        <th scope="col">Issued Date</th>
+                        <th scope="col">Expiry Date</th>
+                        <th scope="col">Card Number</th>
+                        <th scope="col">Status</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th scope="row">1</th>
+                        <td>TAN AH JUAN GEORGE</td>
+                        <td>02/01/2014</td>
+                        <td>02/01/2020</td>
+                        <td>CDC354543543</td>
+                        <td>Active</td>
+                        <td><a href="" data-target="#reprintCard" data-toggle="modal"><i class="ion-printer"></i></a></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">2</th>
+                        <td>TAN AH JUAN GEORGE</td>
+                        <td>02/01/2014</td>
+                        <td>02/01/2020</td>
+                        <td>CDC354543543</td>
+                        <td>Active</td>
+                        <td><a href="" data-target="#reprintCard" data-toggle="modal"><i class="ion-printer"></i></a></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">3</th>
+                        <td>TAN AH JUAN GEORGE</td>
+                        <td>02/01/2014</td>
+                        <td>02/01/2020</td>
+                        <td>CDC354543543</td>
+                        <td>Active</td>
+                        <td><a href="" data-target="#reprintCard" data-toggle="modal"><i class="ion-printer"></i></a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>-->
 </div>
+
+
+<!--- HTML ở đây -->
+<!--POPUP Reset-->
+
+
+<script>
+    jQuery(function ($) {
+        var modal_lv = 0;
+        $('.modal').on('shown.bs.modal', function (e) {
+            a = $('.modal-backdrop:last').css('zIndex', 1051 + modal_lv); console.log(a);
+            b = $(e.currentTarget).css('zIndex', 1052 + modal_lv); console.log(b);
+            modal_lv++
+        });
+
+        $('.modal').on('hidden.bs.modal', function (e) {
+            modal_lv--
+        });
+    });
+</script>
+
+<!--<div style="width:100%;">
+    <div class="header header-form-supervisee">
+        <img class="logo" src="../images/logo.png" />
+        <h3>Edit Supervisee</h3>
+        <div class="clear"></div>
+    </div>
+    <div class="form-supervisee">
+        <form id="superviseeFrm">
+            <input class="name-supervisee" type="text" value="Edit Supervisee" disabled="disabled" />
+            <nav class="nav nav-tabs">
+                <a class="nav-item nav-link active" href="javascript:;">Supervisee Details</a>
+                <a class="nav-item nav-link" href="javascript:api.server.LoadPage('ReprintSmartCard.html');">Issued Cards</a>
+            </nav>
+            <div class="tab-content" id="nav-tabContent">
+                <input type="hidden" name="userId" class="userId" />
+                <div class="tab-pane fade show active" id="supervisee-details" role="tabpanel" aria-labelledby="nav-home-tab">
+                    <span class="s_label">Supervisee's Biodata</span>
+                    <div class="s_detail" style="display:block">
+                        <div class="row">
+                            <div class="col-7">
+                                <div class="row">
+                                    <div class="col">
+                                        <img class="avatar" id="userPhoto1" src="../images/usr-default.jpg" />
+                                        <input type="hidden" id="User_Photo1" name="User_Photo1" />
+                                    </div>
+                                    <div class="col">
+                                        <img class="avatar" id="userPhoto2" src="../images/usr-default.jpg" />
+                                        <input type="hidden" id="User_Photo2" name="User_Photo2" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-5">
+                                <div class="row">
+                                    <div class="col">
+                                        <img class="avatar" id="LeftThumbFingerprint" src="../images/fingerprint.png" style="max-width:70%" />
+                                    </div>
+                                    <div class="col">
+                                        <img class="avatar" id="RightThumbFingerprint" src="../images/fingerprint.png" style="max-width:70%" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-7" style="text-align:center;padding-top:5px;">
+                                <button type="button" class="btn-form" id="updatePhotos">Update Photos</button>
+                            </div>
+                            <div class="col-5" style="text-align:center;padding-top:5px;">
+
+                                <button type="button" class="btn-form" onclick="api.server.UpdateFingerprints()">Update Fingerprints</button>
+                            </div>
+                        </div>
+                    </div>
+                    <span class="s_label">Supervisee's Address</span>
+                    <div class="s_detail">
+                        <div class="row">
+                            <input type="hidden" name="Address_ID" class="address_ID" />
+                            <div class="col">
+                                <div class="form-group row">
+                                    <label class="col-sm-4 col-form-label">BlkHouseNumber</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="BlkHouse_Number" name="BlkHouse_Number" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-4 col-form-label">FlrUnit Number</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="FlrUnit_Number" name="FlrUnit_Number" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-4 col-form-label">Street Name</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="Street_Name" name="Street_Name" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-4 col-form-label">Country</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="country" name="Country" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-4 col-form-label">Postal Code</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="Postal_Code" name="Postal_Code" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <span class="s_label">Other Address</span>
+                    <div class="s_detail">
+                        <div class="row">
+                            <input type="hidden" name="OAddress_ID" class="Other_Address_ID" />
+                            <div class="col">
+                                <div class="form-group row">
+                                    <label class="col-sm-4 col-form-label">BlkHouseNumber</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="OStreet_Name" name="OBlkHouse_Number" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-4 col-form-label">FlrUnit Number</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="OFlrUnit_Number" name="OFlrUnit_Number" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-4 col-form-label">Street Name</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="OStreet_Name" name="OStreet_Name" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-4 col-form-label">Country</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="OCountry" name="OCountry" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-4 col-form-label">Postal Code</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="OPostal_Code" name="OPostal_Code" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <span class="s_label">Next Of Kin</span>
+                    <div class="s_detail">
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-group row">
+                                    <label class="col-sm-4 col-form-label">NextOfKin Name</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="NextOfKin_Name" value="" name="NextOfKinDetailsName" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-4 col-form-label">NextOfKin Contact Number</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="NextOfKin_Contact_Number" value="" name="ContactNumber" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-4 col-form-label">NextOfKin Relationship</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="NextOfKin_Relationship" value="" name="Relationship" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-4 col-form-label">NextOfKin BlkHouse Number</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="NextOfKin_BlkHouse_Number" value="" name="NextOfKinDetailsHouseNumber" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-4 col-form-label">NextOfKin FlrUnit Number</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="NextOfKin_FlrUnit_Number" value="" name="NextOfKinDetailsUnitNumber" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-4 col-form-label">NextOfKin Street Name</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="NextOfKin_Street_Name" value="" name="NextOfKinDetailsStreetName" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-4 col-form-label">NextOfKin Country</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="NextOfKin_Country" value="" name="NextOfKinDetailsCountry" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-4 col-form-label">NextOfKin PostalCode</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="NextOfKin_PostalCode" value="" name="NextOfKinDetailsPostalCode" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <span class="s_label">Employment details</span>
+                    <div class="s_detail">
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-group row">
+                                    <label class="col-sm-4 col-form-label">Employment Name</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="Employment_Name" value="" name="EmployerName" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-4 col-form-label">Employment Contact Number</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="Employment_Contact_Number" value="" name="EmployerContact" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-4 col-form-label">Employment Company Name</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="Employment_Company_Name" value="" name="CompanyName" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-4 col-form-label">Employment Job Title</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="Employment_Job_Title" value="" name="JobTitle" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-4 col-form-label">Employment Start Date</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="Employment_Start_Date" value="" name="StartDate" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-4 col-form-label">Employment End Date</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="Employment_End_Date" value="" name="EndDate" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-4 col-form-label">Employment Remarks</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="Employment_Remarks" value="" name="Remarks" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="btn-group">
+                        <button type="button" class="btn-form" id="SaveBtn">Save</button>
+                        <button type="button" class="btn-form" onclick="api.server.CancelEditSupervisee();">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>-->
 
 <div id="pageUpdatePhotos">
     <div style="width:100%;">
@@ -258,7 +1079,7 @@
                             <!--<img class="avatar" id="PopupUserPhoto1" style="min-height:300px;max-height:300px;width:auto !important;" src="../images/usr-default.jpg" />-->
                             <button type="button" class="btn-form" id="updatePhoto2" onclick="api.server.OpenPictureCaptureForm('1')">Take Picture 1</button>
                         </div>
-                        <div class="col-6"style="text-align:center;vertical-align:top;">
+                        <div class="col-6" style="text-align:center;vertical-align:top;">
                             <div id="PopupUserPhoto2" style="background-position:center center;background-repeat:no-repeat;background-size:cover;height:200px;width:100%;background-image:url(../images/usr-default.jpg);"></div>
                             <!--<img class="avatar" id="PopupUserPhoto2" style="min-height:300px;max-height:300px;width:auto !important;" src="http://3.bp.blogspot.com/-iFUz_2u-CEg/U-grZTCf7iI/AAAAAAAABwc/AIRhqn2ocmw/7.jpg?imgmax=16383" />-->
                             <button type="button" class="btn-form" id="updatePhoto2" onclick="api.server.OpenPictureCaptureForm('2')">Take Picture 2</button>
@@ -279,81 +1100,173 @@
         $('.s_label').click(function () {
             $(this).next().fadeToggle(200);
         });
-        if (api.model != null) {
-			$('.userId').val(api.model.User.UserId);
-			// NextOfKin
-			$('.nok_name').val(api.model.UserProfile.NextOfKin_Name);
-			$('.nok_contact_number').val(api.model.UserProfile.NextOfKin_Contact_Number);
-			$('.nok_relationship').val(api.model.UserProfile.NextOfKin_Relationship);
-			$('.nok_blkhousr_number').val(api.model.UserProfile.NextOfKin_BlkHouse_Number);
-			$('.nok_flrunit_number').val(api.model.UserProfile.NextOfKin_FlrUnit_Number);
-			$('.nok_street_name').val(api.model.UserProfile.NextOfKin_Street_Name);
-			$('.nok_country').val(api.model.UserProfile.NextOfKin_Country);
-			$('.nok_postalcode').val(api.model.UserProfile.NextOfKin_PostalCode);
-			// Employment
-			$('.e_name').val(api.model.UserProfile.Employment_Name);
-			$('.e_contact_number').val(api.model.UserProfile.Employment_Contact_Number);
-			$('.e_company_name').val(api.model.UserProfile.Employment_Company_Name);
-			$('.e_job_title').val(api.model.UserProfile.Employment_Job_Title);
-			$('.e_start_date').val(api.model.UserProfile.Employment_Start_Date_Text);
-			$('.e_end_date').val(api.model.UserProfile.Employment_End_Date_Text);
-			$('.e_remarks').val(api.model.UserProfile.Employment_Remarks);
-			// Residential Address
-			$('.address_ID').val(api.model.UserProfile.Residential_Addess_ID);
-			$('.street_Name').val(api.model.Addresses.Street_Name);
-			$('.blkHouse_Number').val(api.model.Addresses.BlkHouse_Number);
-			$('.flrUnit_Number').val(api.model.Addresses.FlrUnit_Number);
-			$('.country').val(api.model.Addresses.Country);
-			$('.postal_Code').val(api.model.Addresses.Postal_Code);
-			// Other Address
-			$('.Other_Address_ID').val(api.model.UserProfile.Other_Address_ID);
-			$('.o_street_Name').val(api.model.OtherAddress.Street_Name);
-			$('.o_blkHouse_Number').val(api.model.OtherAddress.BlkHouse_Number);
-			$('.o_flrUnit_Number').val(api.model.OtherAddress.FlrUnit_Number);
-			$('.o_country').val(api.model.OtherAddress.Country);
-			$('.o_postal_Code').val(api.model.OtherAddress.Postal_Code);
-			// photo
-			$('#User_Photo1').val(api.model.UserProfile.User_Photo1);
-			$('#User_Photo2').val(api.model.UserProfile.User_Photo2);
+        var d = new Date();
+        var month = new Array();
+        var year = d.getFullYear();
+        var years = new Array();
+        var days = new Array();
+
+        for (var i = 0; i < 31; i++) {
+            days[i] = (i + 1);
+        }
+        $.each(days, function (key, value) {
+            $('#day').append($('<option>', { value: value })
+                .text(value));
+            $('#day_end').append($('<option>', { value: value })
+                .text(value));
+        });
+
+        for (var i = 1; i < 13; i++) {
+            month[i] = i;
         }
 
-		validate();		
-		$('#SaveBtn').click(function() {
-			if($("#superviseeFrm").valid()){
-				var $form = $("#superviseeFrm");
-				var data = getFormData($form);
-				var json = JSON.stringify(data);
-				api.server.SaveSupervisee(json);
-			}
-		});
+        $.each(month, function (key, value) {
+            $('#month').append($('<option>', { value: value })
+                .text(value));
+            $('#month_end').append($('<option>', { value: value })
+                .text(value));
+        });
+        for (var i = 0; i < 100; i++) {
+            years[i] = (year - i);
+        }
+        $.each(years, function (key, value) {
+            $('#year').append($('<option>', { value: value })
+                .text(value));
+            $('#year_end').append($('<option>', { value: value })
+                .text(value));
+        });
+
+
+
+        if (api.model != null) {
+            $('#userId').val(api.model.User.UserId);
+            // NextOfKin
+            $('#NextOfKin_Name').val(api.model.UserProfile.NextOfKin_Name);
+            $('#NextOfKin_Contact_Number').val(api.model.UserProfile.NextOfKin_Contact_Number);
+            $('#NextOfKin_Relationship').val(api.model.UserProfile.NextOfKin_Relationship);
+            $('#NextOfKin_BlkHouse_Number').val(api.model.UserProfile.NextOfKin_BlkHouse_Number);
+            $('#NextOfKin_FlrUnit_Number').val(api.model.UserProfile.NextOfKin_FlrUnit_Number);
+            $('#NextOfKin_Street_Name').val(api.model.UserProfile.NextOfKin_Street_Name);
+            $('#NextOfKin_Country').val(api.model.UserProfile.NextOfKin_Country);
+            $('#NextOfKin_PostalCode').val(api.model.UserProfile.NextOfKin_PostalCode);
+            // Employment
+            $('#Employment_Name').val(api.model.UserProfile.Employment_Name);
+            $('#Employment_Contact_Number').val(api.model.UserProfile.Employment_Contact_Number);
+            $('#Employment_Company_Name').val(api.model.UserProfile.Employment_Company_Name);
+            $('#Employment_Job_Title').val(api.model.UserProfile.Employment_Job_Title);
+            $('#Employment_Start_Date').val(api.model.UserProfile.Employment_Start_Date);
+            $('#Employment_End_Date').val(api.model.UserProfile.Employment_End_Date);
+            $('#Employment_Remarks').val(api.model.UserProfile.Employment_Remarks);
+            // Residential Address
+            $('#address_ID').val(api.model.UserProfile.Residential_Addess_ID);
+            $('#Street_Name').val(api.model.Addresses.Street_Name);
+            $('#BlkHouse_Number').val(api.model.Addresses.BlkHouse_Number);
+            $('#FlrUnit_Number').val(api.model.Addresses.FlrUnit_Number);
+            $('#Country').val(api.model.Addresses.Country);
+            $('#Postal_Code').val(api.model.Addresses.Postal_Code);
+            // Other Address
+            $('#Other_Address_ID').val(api.model.UserProfile.Other_Address_ID);
+            $('#OStreet_Name').val(api.model.OtherAddress.Street_Name);
+            $('#OBlkHouse_Number').val(api.model.OtherAddress.BlkHouse_Number);
+            $('#OFlrUnit_Number').val(api.model.OtherAddress.FlrUnit_Number);
+            $('#OCountry').val(api.model.OtherAddress.Country);
+            $('#OPostal_Code').val(api.model.OtherAddress.Postal_Code);
+            // photo
+            $('#User_Photo1').val(api.model.UserProfile.User_Photo1);
+            $('#User_Photo2').val(api.model.UserProfile.User_Photo2);
+          
+            var startYear = $('#Employment_Start_Date').val().trim() != "" ? new Date($('#Employment_Start_Date').val()) : null;
+            var endYear = $('#Employment_End_Date').val().trim() != "" ? new Date($('#Employment_End_Date').val()) : null;
+            
+            if (startYear != null) {
+                $('#year').val(startYear.getFullYear());
+                $('#month').val(startYear.getMonth() + 1); //January is 0
+                $('#day').val(startYear.getDate());
+              
+            }
+          
+            if (endYear != null) {
+                
+                $('#year_end').val(endYear.getFullYear());
+                $('#month_end').val(endYear.getMonth() + 1); //January is 0
+                $('#day_end').val(endYear.getDate());
+              
+            }
+
+        }
+
+
+        $('#SaveBtn').click(function () {
+
+            $('#Employment_Start_Date').val(setDate('day', 'month', 'year'));
+            $('#Employment_End_Date').val(setDate('day_end', 'month_end', 'year_end'));
+
+            var $form = $("#superviseeFrm");
+            var data = getFormData($form);
+            var json = JSON.stringify(data);
+            api.server.SaveSupervisee(json);
+
+        });
     });
-	function validate(){
-		$("#superviseeFrm").validate({
-			rules: {
-				StartDate: {date : true},
-				EndDate: {date : true}
-			},
-			messages: {
-				StartDate: { date : "Please input type Date or Empty" },
-				EndDate: { date : "Please input type Date or Empty" }
-			}
-		});
-	}
-    function setPopUpPhotoServerCall(photo1, photo2) {
-        $('#PopupUserPhoto1').css('background-image', 'url(data:image/jpg;base64,' + photo1+')');
-        $('#PopupUserPhoto2').css('background-image', 'url(data:image/jpg;base64,' + photo2 + ')');
+
+    function setDate(day_Id, month_Id, year_Id) {
+        var _day = $('#' + day_Id + '').val().trim();
+        var _month = $('#' + month_Id + '').val().trim();
+        var _year = $('#' + year_Id + '').val().trim();
+        if (_day != "" && _month != "" && _year != "") {
+            return _year + "-" + _month + "-" + _day;
+        }
     }
-	function setFingerprintServerCall(finger1, finger2) {
-            $('#LeftThumbFingerprint').attr('src', finger1);
-            $('#RightThumbFingerprint').attr('src', finger2);  
+    function setCalendar(day_Id, month_Id, year_Id) {
+        var _month = $('#' + month_Id + '').val();
+        var _year = $('#' + year_Id + '').val();
+
+        var _daysInMonth = daysInMonth(_month, _year);
+
+        $('#' + day_Id + '').find('option').remove();
+        var days = new Array();
+
+        for (var i = 0; i < 31; i++) {
+            days[i] = (i + 1);
+        }
+        $.each(days, function (key, value) {
+            if (value <= _daysInMonth) {
+                $('#' + day_Id + '').append($('<option>', { value: value })
+                    .text(value));
+            }
+
+        });
     }
 
-	function saveNewDataToSession(){
-		var $form = $("#superviseeFrm");
+    function daysInMonth(month, year) { // Use 1 for January, 2 for February, etc.
+        return new Date(year, month, 0).getDate();
+    }
+
+    function getFormData($form) {
+        var unindexed_array = $form.serializeArray();
+        var indexed_array = {};
+
+        $.map(unindexed_array, function (n, i) {
+            indexed_array[n['name']] = n['value'];
+        });
+
+        return indexed_array;
+    }
+    function setPopUpPhotoServerCall(photo1, photo2) {
+        $('#PopupUserPhoto1').css('background-image', 'url(data:image/jpg;base64,' + photo1 + ')');
+        $('#PopupUserPhoto2').css('background-image', 'url(data:image/jpg;base64,' + photo2 + ')');
+    }
+    function setFingerprintServerCall(finger1, finger2) {
+        $('#LeftThumbFingerprint').attr('src', finger1);
+        $('#RightThumbFingerprint').attr('src', finger2);
+    }
+
+    function saveNewDataToSession() {
+        var $form = $("#superviseeFrm");
         var data = getFormData($form);
         var json = JSON.stringify(data);
         api.server.saveNewDataToSession(json);
-	}
+    }
 
     /*$("#SaveBtn").on('click', function () {
         var $form = $("#superviseeFrm");
@@ -380,11 +1293,11 @@
         hidePopUp();
     })
     function showPopUp(elem_id) {
-		saveNewDataToSession();
+        saveNewDataToSession();
         $("#" + elem_id).show();
     }
     function hidePopUp() {
-		api.server.ReplaceOldPhotos();
+        api.server.ReplaceOldPhotos();
         $("#pageUpdatePhotos").hide();
     }
 

@@ -5,53 +5,6 @@
         background: #fff;
     }
 
-    .collapsible {
-        list-style: none;
-        padding: 0;
-        margin: 1rem 0;
-    }
-
-        .collapsible li {
-            list-style: none;
-            padding: 0;
-        }
-
-        .collapsible .collapsible-header {
-            font-size: 1.2rem;
-            border-bottom: 1px solid #ccc;
-            position: relative;
-            padding-top: 1rem;
-        }
-
-            .collapsible .collapsible-header:after {
-                color: #1cacf6;
-                content: "\f126";
-                display: inline-block;
-                font-family: "Ionicons";
-                speak: none;
-                font-style: normal;
-                font-weight: normal;
-                font-variant: normal;
-                text-transform: none;
-                text-rendering: auto;
-                line-height: 1;
-                -webkit-font-smoothing: antialiased;
-                -moz-osx-font-smoothing: grayscale;
-                position: absolute;
-                right: 0;
-            }
-
-            .collapsible .collapsible-header.collapsed:after {
-                content: "\f123";
-            }
-
-        .collapsible .collapsible-body {
-            margin: 1rem 0;
-        }
-
-    #superviseeDetails .btn {
-        text-transform: uppercase;
-    }
 
     .form-material .input-group-prepend {
         min-width: 35%;
@@ -216,8 +169,8 @@
             top: 0;
             bottom: 0;
             left: 0;
-            right: -17px;
-            padding-right: 17px;
+            right: 0;
+            padding-right: 0;
             overflow-y: auto;
             overflow-x: hidden;
         }
@@ -260,9 +213,6 @@
         resize: none;
     }
 
-    #listCardList {
-        width: calc(100% - 1rem);
-    }
 
     .title-italic {
         font-style: italic;
@@ -281,26 +231,19 @@
             padding-left: 10px;
         }
 
-        .input-group-search .input-group-text {
+        .input-group-search .btn {
             background-color: #dee2e6;
             border: 0;
+            height: 50px;
+            margin: 0;
         }
 </style>
 <!-- Tab panes -->
-<div class="header-landingPage">
-    <img class="logo" src="../images/logoCNB.png" />
-    <div class="clear"></div>
-</div>
-<div class="header-landingPage" style="background-color:#5D5D5D">
-   
-    <h3 style="color:white"><i class="fa fa-home" style="color:#0094ff"></i> Enrolment</h3>
-    <a href="#" onclick="api.server.LogOut()" style="float:right;color:white">Logout</a>
-    <div class="clear"></div>
-</div>
+
 <div class="title-border-red border-bottom px-3">
     <h5>Issued Cards List</h5>
 </div>
-<br />
+<br />  
 <div class="row">
     <div class="col-sm-12 col-md-7">
         <div class="mx-3">
@@ -312,26 +255,33 @@
             <div class="input-group input-group-search">
                 <input type="text" name="nric" id="nric" class="form-control" placeholder="Please input keyword" />
                 <div class="input-group-prepend">
-                    <span class="input-group-text" id="basic-addon1">
-                        <button type="submit">  <i class="fa fa-search"> </i></button>
-                    </span>
+                  
+                        <button class="btn" type="button">
+                            <i class="fa fa-search"></i>
+                        </button>
+                  
                 </div>
             </div>
         </form>
     </div>
     <div class="col-sm-12">
-        <table class="table mx-3" id="listCardList">
-            <thead class="thead-light">
-                <tr>
-                    <th scope="col">No.</th>
-                    <th scope="col">Supervisee Name</th>
-                    <th scope="col">Supervisee NRIC</th>
-                    <th scope="col">Date of birth</th>
-                    <th scope="col">Status</th>
-                </tr>
-            </thead>
-            <tbody id="listSupervisee"></tbody>
-        </table>
+        <div class="hidden-scrollbar">
+            <div class="scrollbar">
+                <table class="table mx-3" id="listCardList">
+                    <thead class="thead-light">
+                        <tr>
+                            <th scope="col">No.</th>
+                            <th scope="col">Supervisee Name</th>
+                            <th scope="col">Supervisee NRIC</th>
+                            <th scope="col">Date of birth</th>
+                            <th scope="col">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="listSupervisee"></tbody>
+                </table>
+            </div>
+        </div>
+      
     </div>
 </div>
 

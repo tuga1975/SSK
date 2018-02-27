@@ -687,8 +687,8 @@ namespace Enrolment
                 session[CommonConstants.CURRENT_EDIT_USER] = profileModel;
                 CSCallJS.LoadPageHtml(this.LayerWeb, "Edit-Supervisee.html", profileModel);
                 // convert photo to base64 and add to html
-                string photo1 = "../images/usr-default.jpg";
-                string photo2 = "../images/usr-default.jpg";
+                string photo1 = string.Empty;
+                string photo2 = string.Empty;
                 if (profileModel.UserProfile.User_Photo1 != null)
                 {
                     photo1 = Convert.ToBase64String(profileModel.UserProfile.User_Photo1);
@@ -697,11 +697,15 @@ namespace Enrolment
                 {
                     photo2 = Convert.ToBase64String(profileModel.UserProfile.User_Photo2);
                 }
-                LayerWeb.InvokeScript("setAvatar", photo1, photo2);
-                LayerWeb.InvokeScript("setPopUpPhotoServerCall", photo1, photo2);
+                if (!string.IsNullOrEmpty(photo1)||!string.IsNullOrEmpty(photo2))
+                {
+                    LayerWeb.InvokeScript("setAvatar", photo1, photo2);
+                    LayerWeb.InvokeScript("setPopUpPhotoServerCall", photo1, photo2);
+                }
+                
                 // convert fingerprint to base64 and add to html
-                string fingerprintLeft = "../images/fingerprint.png";
-                string fingerprintRight = "../images/fingerprint.png";
+                string fingerprintLeft = "../images/leftthumb.png";
+                string fingerprintRight = "../images/rightthumb.png";
                 if (profileModel.UserProfile.LeftThumbImage != null)
                 {
                     fingerprintLeft = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(profileModel.UserProfile.LeftThumbImage));

@@ -55,21 +55,21 @@ namespace Trinity.DAL
         {
             if (EnumAppConfig.IsLocal)
             {
-                bool statusCentralized;
-                CallCentralized.Post<bool>("User", "Update", out statusCentralized, model);
-                if (!statusCentralized)
-                {
-                    throw new Exception(EnumMessage.NotConnectCentralized);
-                }
-                else
-                {
+                //bool statusCentralized;
+                //CallCentralized.Post<bool>("User", "Update", out statusCentralized, model);
+                //if (!statusCentralized)
+                //{
+                //    throw new Exception(EnumMessage.NotConnectCentralized);
+                //}
+                //else
+                //{
                     Membership_Users dbUser;
                     var localUserRepo = _localUnitOfWork.GetRepository<Membership_Users>();
                     dbUser = localUserRepo.GetById(model.UserId);
                     SetInfo(dbUser, model);
                     localUserRepo.Update(dbUser);
                     return _localUnitOfWork.Save()>0;
-                }
+                //}
             }
             else
             {

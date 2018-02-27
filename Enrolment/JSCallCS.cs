@@ -321,7 +321,7 @@ namespace Enrolment
             rawDataAddress.Country = rawDataOtherAddress.OCountry;
             rawDataAddress.Postal_Code = rawDataOtherAddress.OPostal_Code;
 
-            var other_Address_ID = address.SaveAddress(rawDataAddress);
+            var other_Address_ID = address.SaveOtherAddress(rawDataOtherAddress);
             data.OtherAddress = rawDataAddress;
             // set address again to reload page
             data.Addresses.Address_ID = residential_Addess_ID;

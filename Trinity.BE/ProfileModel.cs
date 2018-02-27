@@ -44,21 +44,21 @@ namespace Trinity.BE
         public string Residential_Addess_ID { get; set; }
         public string Other_Address_ID { get; set; }
         public string Postal_Code { get; set; }
-        public string NextOfKinDetailsName { get; set; }
-        public string ContactNumber { get; set; }   // NextOfKinDetailsContactNumber
-        public string Relationship { get; set; }
-        public string NextOfKinDetailsHouseNumber { get; set; }
-        public string NextOfKinDetailsUnitNumber { get; set; }
-        public string NextOfKinDetailsStreetName { get; set; }
-        public string NextOfKinDetailsPostalCode { get; set; }
-        public string NextOfKinDetailsCountry { get; set; }
-        public string EmployerName { get; set; }
-        public string EmployerContact { get; set; }
-        public string CompanyName { get; set; }
-        public string JobTitle { get; set; }
-        public DateTime? StartDate { get; set; }
-        public DateTime? EndDate { get; set; }
-        public string Remarks { get; set; }
+        public string NextOfKin_Name { get; set; }
+        public string NextOfKin_Contact_Number { get; set; }   // NextOfKinDetailsContactNumber
+        public string NextOfKin_Relationship { get; set; }
+        public string NextOfKin_BlkHouse_Number { get; set; }
+        public string NextOfKin_FlrUnit_Number { get; set; }
+        public string NextOfKin_Street_Name { get; set; }
+        public string NextOfKin_PostalCode { get; set; }
+        public string NextOfKin_Country { get; set; }
+        public string Employment_Name { get; set; }
+        public string Employment_Contact_Number { get; set; }
+        public string Employment_Company_Name { get; set; }
+        public string Employment_Job_Title { get; set; }
+        public DateTime? Employment_Start_Date { get; set; }
+        public DateTime? Employment_End_Date { get; set; }
+        public string Employment_Remarks { get; set; }
         public string SmartCardId { get; set; }
         public byte[] RightThumbFingerprint { get; set; }
         public byte[] LeftThumbFingerprint { get; set; }
@@ -94,23 +94,23 @@ namespace Trinity.BE
                 {
                     UserId = rawData.UserId,
                     DOB = rawData.DOB,
-                    Employment_Company_Name = rawData.CompanyName,
-                    Employment_Contact_Number = rawData.EmployerContact,
-                    Employment_End_Date = rawData.EndDate,
-                    Employment_Job_Title = rawData.JobTitle,
-                    Employment_Name = rawData.EmployerName,
-                    Employment_Remarks = rawData.Remarks,
-                    Employment_Start_Date = rawData.StartDate,
+                    Employment_Company_Name = rawData.Employment_Company_Name,
+                    Employment_Contact_Number = rawData.Employment_Contact_Number,
+                    Employment_End_Date = rawData.Employment_End_Date,
+                    Employment_Job_Title = rawData.Employment_Job_Title,
+                    Employment_Name = rawData.Employment_Name,
+                    Employment_Remarks = rawData.Employment_Remarks,
+                    Employment_Start_Date = rawData.Employment_Start_Date,
                     Maritial_Status = rawData.MaritalStatus,
                     Nationality = rawData.Nationality,
-                    NextOfKin_BlkHouse_Number = rawData.NextOfKinDetailsHouseNumber,
-                    NextOfKin_Contact_Number = rawData.ContactNumber,
-                    NextOfKin_Country = rawData.NextOfKinDetailsCountry,
-                    NextOfKin_FlrUnit_Number = rawData.NextOfKinDetailsUnitNumber,
-                    NextOfKin_Name = rawData.NextOfKinDetailsName,
-                    NextOfKin_PostalCode = rawData.NextOfKinDetailsPostalCode,
-                    NextOfKin_Relationship = rawData.Relationship,
-                    NextOfKin_Street_Name = rawData.NextOfKinDetailsStreetName,
+                    NextOfKin_BlkHouse_Number = rawData.NextOfKin_BlkHouse_Number,
+                    NextOfKin_Contact_Number = rawData.NextOfKin_Contact_Number,
+                    NextOfKin_Country = rawData.NextOfKin_Country,
+                    NextOfKin_FlrUnit_Number = rawData.NextOfKin_FlrUnit_Number,
+                    NextOfKin_Name = rawData.NextOfKin_Name,
+                    NextOfKin_PostalCode = rawData.NextOfKin_PostalCode,
+                    NextOfKin_Relationship = rawData.NextOfKin_Relationship,
+                    NextOfKin_Street_Name = rawData.NextOfKin_Street_Name,
                     Primary_Email = rawData.PrimaryEmail,
                     Primary_Phone = rawData.PrimaryContact,
                     Secondary_Email = rawData.SecondaryEmail,

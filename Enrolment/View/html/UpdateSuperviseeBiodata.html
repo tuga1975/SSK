@@ -165,7 +165,7 @@
         border-radius: 4px;
     }
 
-    .cancelButton{
+    .cancelButton {
         z-index: 9;
     }
 
@@ -354,7 +354,7 @@
 
         </div>
     </div>
-    
+
 </div>
 
 <!--<script>
@@ -495,12 +495,11 @@
     </div>
 </div>-->
 
-
 <script>
 
     jQuery(function ($) {
 
-        // Carousel not allow for cycle    
+        // Carousel not allow for cycle
         $('.carousel').carousel({
             wrap: false
         })
@@ -535,8 +534,10 @@
 
 
     $(document).ready(function () {
+
         $('#leftThumbClearBtn').attr('disabled', 'disabled');
         $('#rightThumbClearBtn').attr('disabled', 'disabled');
+
 
     });
     function ActionScanFingerPrint(isRight) {
@@ -630,6 +631,7 @@
     }
 </script>
 <script>
+
     var frontCardImg = null;
     var backCardImg = null;
     var CardInfo = null;
@@ -677,22 +679,23 @@
 
             //    return false;
             //}
+
             if (frontCardImg == null || backCardImg == null) {
                 html2canvas($('#frontCard'), {
                     onrendered: function (froncanvas) {
                         html2canvas($('#backCard'), {
                             onrendered: function (backcanvas) {
-                               
+
                                 frontCardImg = froncanvas.toDataURL("image/png");
                                 backCardImg = backcanvas.toDataURL("image/png");
-
+                                
                                 api.server.UpdateSuperviseeBiodata(frontCardImg, backCardImg, JSON.stringify(CardInfo));
                                 //$('.actions > ul > li > a[href="#next"]').click();
                             }
                         });
                     }
                 });
-               
+
             } else {
                 //api.loading(false);
                 if (frontCardImg == null) {
@@ -704,126 +707,105 @@
                 api.server.UpdateSuperviseeBiodata(frontCardImg, backCardImg, JSON.stringify(CardInfo));
             }
         }
-    });
-
-    $(function () {
-
-        var isUpdated = false;
-        $("#wizard").steps({
-            headerTag: "h2",
-            bodyTag: "section",
-            transitionEffect: "slideLeft",
-            loading: "Processing ...",
-            enableCancelButton: true,
-            //onInit: function (event, currentIndex) {
-            //    var cancelA = $("<a>").attr("href", "#").attr("onclick", "api.server.LoadListSupervisee()").addClass("cancelBtn").text("Cancel");
-            //    var cancelBtn = $("<li>").attr("aria-disabled", false).append(cancelA);
-
-            //    $(document).find(".actions ul").prepend(cancelBtn)
-
-            //},
-            //onContentLoaded: function (event, currentIndex) {
-
-            //},
-            onStepChanging: function (event, currentIndex, newIndex) {
-
-
-                if (newIndex == 2) {
-                    api.server.loadDataVerify(function (dataRe) {
-
-                        var model = dataRe[0];
-                        CardInfo = dataRe[1];
-
-                        $('[name="issueDate"]').text(CardInfo.Date_Of_Issue_Txt);
-                        $('[name="verifyCardNumber"]').text(CardInfo.CardNumberFull);
-
-                        $('[name="verifyCompanyName"]').text(CardInfo.CompanyName);
-                        $('[name="verifyVenueName"]').text(CardInfo.VenueName);
-                        $('[name="verifyAddress"]').text(CardInfo.Address);
-                        $('[name="verifyContactNumber"]').text(CardInfo.ContactNumber);
-
-                        $('[name="verifyName"]').text(model.User.Name);
-                        if (model.UserProfile.DOB != null) {
-                            $('[name="verifyDOB"]').text(model.UserProfile.DOBTxt);
-                        }
-
-                        $('[name="verifyNRIC"]').text(model.User.NRIC);
-                        $('[name="verifyGender"]').text(model.UserProfile.Gender == null ? '' : model.UserProfile.Gender);
-                        $('[name="verifyNation"]').text(model.UserProfile.Nationality);
-                        //if (model.UserProfile.DateOfIssue != null) {
-
-                        //    $('[name="issueDate"]').text(model.UserProfile.DateOfIssueTxt);
-                        //    $('[name="issueDateBack"]').text(model.UserProfile.DateOfIssueTxt);
-                        //}
-                        //if (model.UserProfile.Expired_Date != null) {
-                        //    $('[name="expireDate"]').text(model.UserProfile.Expired_DateTxt);
-                        //}
-                        $('[name="verifyRace"]').text(model.UserProfile.Race == null ? '' : model.UserProfile.Race);
-                        frontCardImg = null;
-                        backCardImg = null;
-                        JsBarcode('[name="verifyBarcode"]', model.User.NRIC, { height: 20, fontSize: 8, width: 1, margin: 0, font: "Arial" });
-                    });
-                } else if (newIndex == 3) {
-                    //if (frontCardImg == null && backCardImg == null) {
-
-                    //    return false;
-                    //}
-                    if (frontCardImg == null || backCardImg == null) {
-                        html2canvas($('#frontCard'), {
-                            onrendered: function (froncanvas) {
-                                html2canvas($('#backCard'), {
-                                    onrendered: function (backcanvas) {
-                                        frontCardImg = froncanvas.toDataURL("image/png");
-                                        backCardImg = backcanvas.toDataURL("image/png");
-                                        $('.actions > ul > li > a[href="#next"]').click();
-                                    }
-                                });
-                            }
-                        });
-                        api.loading(true);
-                        return false;
-                    } else {
-                        api.loading(false);
-                    }
-                }
-                return true;
-            },
-            onStepChanged: function (event, currentIndex, priorIndex) {
-                //0 - photo
-                //1 - fingerprint
-                //2 - verify
-                //3 - print
-
-                if (currentIndex == 3) {
-                    //update to db
-                    //api.server.UpdateSuperviseeBiodata(function () {
-                    //    $('#frontCardImg').attr('src', frontCardImg);
-                    //    $('#backCardImg').attr('src', backCardImg);
-                    //    api.server.PrintSmartCard(frontCardImg, backCardImg);
-                    //});
-                    if (frontCardImg == null) {
-                        frontCardImg = '';
-                    }
-                    if (backCardImg == null) {
-                        backCardImg = '';
-                    }
-                    api.server.UpdateSuperviseeBiodata(frontCardImg, backCardImg, JSON.stringify(CardInfo));
-                }
-            },
-            onFinished: function (event, currentIndex) {
-                api.server.LoadListSupervisee();
-            },
-            onCanceled: function (event) {
-                api.server.LoadListSupervisee();
-            }
-        });
-
-
-
         $("input[type='image']").click(function () {
             $("input[id='my_file']").click();
         });
     });
+
+    //$(function () {
+
+    //    var isUpdated = false;
+    //    $("#wizard").steps({
+    //        headerTag: "h2",
+    //        bodyTag: "section",
+    //        transitionEffect: "slideLeft",
+    //        loading: "Processing ...",
+    //        enableCancelButton: true,
+
+    //        onStepChanging: function (event, currentIndex, newIndex) {
+
+
+    //            if (newIndex == 2) {
+    //                api.server.loadDataVerify(function (dataRe) {
+
+    //                    var model = dataRe[0];
+    //                    CardInfo = dataRe[1];
+
+    //                    $('[name="issueDate"]').text(CardInfo.Date_Of_Issue_Txt);
+    //                    $('[name="verifyCardNumber"]').text(CardInfo.CardNumberFull);
+
+    //                    $('[name="verifyCompanyName"]').text(CardInfo.CompanyName);
+    //                    $('[name="verifyVenueName"]').text(CardInfo.VenueName);
+    //                    $('[name="verifyAddress"]').text(CardInfo.Address);
+    //                    $('[name="verifyContactNumber"]').text(CardInfo.ContactNumber);
+
+    //                    $('[name="verifyName"]').text(model.User.Name);
+    //                    if (model.UserProfile.DOB != null) {
+    //                        $('[name="verifyDOB"]').text(model.UserProfile.DOBTxt);
+    //                    }
+
+    //                    $('[name="verifyNRIC"]').text(model.User.NRIC);
+    //                    $('[name="verifyGender"]').text(model.UserProfile.Gender == null ? '' : model.UserProfile.Gender);
+    //                    $('[name="verifyNation"]').text(model.UserProfile.Nationality);
+
+    //                    $('[name="verifyRace"]').text(model.UserProfile.Race == null ? '' : model.UserProfile.Race);
+    //                    frontCardImg = null;
+    //                    backCardImg = null;
+    //                    JsBarcode('[name="verifyBarcode"]', model.User.NRIC, { height: 20, fontSize: 8, width: 1, margin: 0, font: "Arial" });
+    //                });
+    //            } else if (newIndex == 3) {
+
+    //                if (frontCardImg == null || backCardImg == null) {
+    //                    html2canvas($('#frontCard'), {
+    //                        onrendered: function (froncanvas) {
+    //                            html2canvas($('#backCard'), {
+    //                                onrendered: function (backcanvas) {
+    //                                    frontCardImg = froncanvas.toDataURL("image/png");
+    //                                    backCardImg = backcanvas.toDataURL("image/png");
+    //                                    $('.actions > ul > li > a[href="#next"]').click();
+    //                                }
+    //                            });
+    //                        }
+    //                    });
+    //                    api.loading(true);
+    //                    return false;
+    //                } else {
+    //                    api.loading(false);
+    //                }
+    //            }
+    //            return true;
+    //        },
+    //        onStepChanged: function (event, currentIndex, priorIndex) {
+    //            //0 - photo
+    //            //1 - fingerprint
+    //            //2 - verify
+    //            //3 - print
+
+    //            if (currentIndex == 3) {
+
+    //                if (frontCardImg == null) {
+    //                    frontCardImg = '';
+    //                }
+    //                if (backCardImg == null) {
+    //                    backCardImg = '';
+    //                }
+    //                api.server.UpdateSuperviseeBiodata(frontCardImg, backCardImg, JSON.stringify(CardInfo));
+    //            }
+    //        },
+    //        onFinished: function (event, currentIndex) {
+    //            api.server.LoadListSupervisee();
+    //        },
+    //        onCanceled: function (event) {
+    //            api.server.LoadListSupervisee();
+    //        }
+    //    });
+
+
+
+    //    $("input[type='image']").click(function () {
+    //        $("input[id='my_file']").click();
+    //    });
+    //});
 
     $(document).ready(function () {
         countPrinterSmartCard = 0;
