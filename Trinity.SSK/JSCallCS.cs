@@ -388,7 +388,7 @@ namespace SSK
             {
                 Session session = Session.Instance;
                 session[CommonConstants.PROFILE_DATA] = jsonData;
-                APIUtils.SignalR.SendAllDutyOfficer(null, "Supervisee's information changed!", "Please check the Supervisee's information!", NotificationType.Notification);
+                APIUtils.SignalR.SendAllDutyOfficer(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId, "Supervisee's information changed!", "Please check the Supervisee's information!", NotificationType.Notification);
                 LoadPage("Document.html");
 
             }
@@ -621,7 +621,7 @@ namespace SSK
             //send message to case office if no support document
             if (reason == "No Supporting Document")
             {
-                APIUtils.SignalR.SendAllDutyOfficer(null, "Supervisee get queue without supporting document", "Please check the Supervisee's information!", NotificationType.Notification);
+                APIUtils.SignalR.SendAllDutyOfficer(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId, "Supervisee get queue without supporting document", "Please check the Supervisee's information!", NotificationType.Notification);
             }
             var charSeparators = new char[] { ',' };
             var listSplitID = selectedID.Split(charSeparators, StringSplitOptions.RemoveEmptyEntries);

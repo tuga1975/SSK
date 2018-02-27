@@ -369,7 +369,7 @@ namespace Enrolment
             var updateUProfileResult = dalUserprofile.UpdateProfile(userProfileModel);
 
             ////send notifiy to case officer
-            APIUtils.SignalR.SendAllDutyOfficer(null, "A supervisee has updated profile.", "Please check Supervisee's information!", NotificationType.Notification);
+            APIUtils.SignalR.SendAllDutyOfficer(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId, "A supervisee has updated profile.", "Please check Supervisee's information!", NotificationType.Notification);
 
 
             //session[CommonConstants.CURRENT_EDIT_USER] = data;
