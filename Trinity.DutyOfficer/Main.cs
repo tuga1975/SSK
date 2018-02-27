@@ -299,7 +299,7 @@ namespace DutyOfficer
                 _isFirstTimeLoaded = false;
             }
 
-            ////// For testing purpose
+            //// For testing purpose
             //Session session = Session.Instance;
             //// Duty Officer
             //Trinity.BE.User user = new DAL_User().GetUserByUserId("dfbb2a6a-9e45-4a76-9f75-af1a7824a947").Data;
@@ -315,6 +315,7 @@ namespace DutyOfficer
         {
             if (e.Name == EventNames.LOGIN_SUCCEEDED)
             {
+                APIUtils.SignalR.UserLogined(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId);
                 NavigateTo(NavigatorEnums.Queue);
             }
             else if (e.Name.Equals(EventNames.LOGIN_FAILED))
