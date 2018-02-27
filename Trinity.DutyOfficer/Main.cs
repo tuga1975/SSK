@@ -186,10 +186,15 @@ namespace DutyOfficer
             // increase counter
             _fingerprintFailed++;
 
+            // get USER_LOGIN
+            Session session = Session.Instance;
+            Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+
             // exceeded max failed
             if (_fingerprintFailed > 3)
             {
-                string message = "Unable to read your fingerprint. Please report to the Duty Officer";
+                //string message = "Unable to read your fingerprint. Please report to the Duty Officer";
+                string message = "Unable to read " + user.Name + "'s fingerprint.";
                 // Send Notification to duty officer
                 //APIUtils.SignalR.SendNotificationToDutyOfficer(message, message);
 
@@ -209,7 +214,6 @@ namespace DutyOfficer
             LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please place your finger on the reader. Failed: " + _fingerprintFailed + "');");
 
             // restart identification
-            Trinity.BE.User user = (Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN];
             if (user != null)
             {
                 List<byte[]> fingerprintTemplates = new List<byte[]>()
