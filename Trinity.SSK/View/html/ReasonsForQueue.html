@@ -92,7 +92,10 @@
                 $('#divReasonDescription').show();
                
             }
-            _reason = '{"Value":"' + $('#reasonValue').val() + '", "Detail":" ' + $('#reasonDetail').val() + '"}';
+            var value = $('#reasonValue').val();
+            var detail = $('#reasonDetail').val();
+             _reason = JSON.stringify({ Value: value, Detail: detail });
+            
         });
 
 
@@ -110,7 +113,9 @@
             }
             else {
                 if ($('#reasonDetail').val().trim() != "") {
-                    _reason = '{"Value":"' + $('#reasonValue').val() + '", "Detail":" ' + $('#reasonDetail').val() + '"}';
+                    var value = $('#reasonValue').val();
+                    var detail = $('#reasonDetail').val();
+                    _reason = JSON.stringify({ Value: value, Detail: detail });
                     api.server.SaveReasonForQueue(_reason, selectedID);
                 }
                 else {
