@@ -41,16 +41,18 @@
             this.LayerWeb.MinimumSize = new System.Drawing.Size(20, 20);
             this.LayerWeb.Name = "LayerWeb";
             this.LayerWeb.ScriptErrorsSuppressed = true;
-            this.LayerWeb.Size = new System.Drawing.Size(901, 582);
+            this.LayerWeb.Size = new System.Drawing.Size(884, 639);
             this.LayerWeb.TabIndex = 0;
             this.LayerWeb.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.LayerWeb_DocumentCompleted);
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Location = new System.Drawing.Point(9, 10);
+            this.pictureBox1.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.pictureBox1.Location = new System.Drawing.Point(89, 149);
             this.pictureBox1.Margin = new System.Windows.Forms.Padding(2);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(766, 562);
+            this.pictureBox1.Size = new System.Drawing.Size(718, 490);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox1.TabIndex = 1;
             this.pictureBox1.TabStop = false;
             // 
@@ -75,9 +77,8 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.WebBrowser LayerWeb;
         private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.WebBrowser LayerWeb;
     }
 }
 

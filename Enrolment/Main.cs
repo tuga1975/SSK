@@ -43,12 +43,14 @@ namespace Enrolment
             APIUtils.Start();
 
             pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
+           
             // setup variables
             _smartCardFailed = 0;
             _fingerprintFailed = 0;
             webcam = new Webcam(pictureBox1);
             _displayLoginButtonStatus = false;
             pictureBox1.Hide();
+          
             #region Initialize and register events
             // _jsCallCS
             _jsCallCS = new JSCallCS(this.LayerWeb);
@@ -356,6 +358,7 @@ namespace Enrolment
                             _imgBox = e.Message;
                             NavigateTo(NavigatorEnums.WebcamCapture);
                             pictureBox1.Show();
+                            
                         }
                         catch
                         {
@@ -479,6 +482,8 @@ namespace Enrolment
 
                         CSCallJS.LoadPageHtml(this.LayerWeb, "UpdateSuperviseeBiodata.html", currentEditUser);
                         LayerWeb.InvokeScript("setAvatar", currentNewPhotos.Item1, currentNewPhotos.Item2);
+                        
+
                     }
                     else if (currentPage.ToString() == "UpdateSupervisee")
                     {
@@ -560,6 +565,19 @@ namespace Enrolment
                             if (currentPage.ToString() == "EditSupervisee")
                             {
                                 LayerWeb.LoadPageHtml("UpdateSuperviseeBiodata.html", currentEditUser);
+                                LayerWeb.InvokeScript("setAvatar", currentEditUser.UserProfile.User_Photo1_Base64, currentEditUser.UserProfile.User_Photo2_Base64);
+
+                                string fingerprintLeft = "../images/fingerprint.png";
+                                string fingerprintRight = "../images/fingerprint.png";
+                                if (currentEditUser.UserProfile.LeftThumbImage != null)
+                                {
+                                    fingerprintLeft = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(currentEditUser.UserProfile.LeftThumbImage));
+                                }
+                                if (currentEditUser.UserProfile.RightThumbImage != null)
+                                {
+                                    fingerprintRight = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(currentEditUser.UserProfile.RightThumbImage));
+                                }
+                                LayerWeb.InvokeScript("setFingerprintServerCall", fingerprintLeft, fingerprintRight);
                             }
                             else if (currentPage.ToString() == "UpdateSupervisee")
                             {
@@ -581,7 +599,6 @@ namespace Enrolment
                             CaptureAttempt(CommonConstants.CAPTURE_PHOTO_ATTEMPT);
                         }
                     }));
-                    return;
                 }
             }
             else if (e.Name.Equals(EventNames.CANCEL_CONFIRM_CAPTURE_PICTURE))
@@ -627,6 +644,8 @@ namespace Enrolment
             {
                 var profileModel = (Trinity.BE.ProfileModel)e.Data;
                 CSCallJS.LoadPageHtml(this.LayerWeb, "UpdateSuperviseeBiodata.html", profileModel);
+
+
                 if (profileModel.UserProfile.LeftThumbImage != null && profileModel.UserProfile.RightThumbImage != null)
                 {
                     var leftFingerprint = profileModel.UserProfile.LeftThumbImage;
@@ -635,8 +654,8 @@ namespace Enrolment
                     LayerWeb.InvokeScript("setBase64FingerprintOnloadServerCall", Convert.ToBase64String(leftFingerprint), Convert.ToBase64String(rightFingerprint));
 
                 }
-                string photo1 = "../images/usr-default.jpg";
-                string photo2 = "../images/usr-default.jpg";
+                string photo1 = string.Empty;
+                string photo2 = string.Empty;
                 if (profileModel.UserProfile.User_Photo1 != null)
                 {
                     photo1 = Convert.ToBase64String(profileModel.UserProfile.User_Photo1);
@@ -801,6 +820,7 @@ namespace Enrolment
 
         }
 
+        
     }
 }
 

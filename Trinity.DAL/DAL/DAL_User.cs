@@ -19,14 +19,14 @@ namespace Trinity.DAL
         {
             if (EnumAppConfig.IsLocal)
             {
-                bool statusCentralized;
-                CallCentralized.Post<bool>("User", "ChangeUserStatus", out statusCentralized, "userId=" + userId, "status=" + status);
-                if (!statusCentralized)
-                {
-                    throw new Exception(EnumMessage.NotConnectCentralized);
-                }
-                else
-                {
+                //bool statusCentralized;
+                //CallCentralized.Post<bool>("User", "ChangeUserStatus", out statusCentralized, "userId=" + userId, "status=" + status);
+                //if (!statusCentralized)
+                //{
+                //    throw new Exception(EnumMessage.NotConnectCentralized);
+                //}
+                //else
+                //{
                     var localUserRepo = _localUnitOfWork.GetRepository<Membership_Users>();
                     var dbUser = localUserRepo.GetById(userId);
                     if (dbUser != null)
@@ -36,7 +36,7 @@ namespace Trinity.DAL
 
                     }
                     _localUnitOfWork.Save();
-                }
+                //}
             }
             else
             {
@@ -132,18 +132,18 @@ namespace Trinity.DAL
                         select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, SmartCardId = mu.SmartCardId, RightThumbFingerprint = mu.RightThumbFingerprint, LeftThumbFingerprint = mu.LeftThumbFingerprint, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name, IsFirstAttempt = mu.IsFirstAttempt }).ToList();
             }
         }
-        public Trinity.BE.User GetSuperviseeByNRIC(string nric)
+        public List<Trinity.BE.User> GetSuperviseeByNRIC(string nric)
         {
             if (EnumAppConfig.IsLocal)
             {
                 var user = (from mu in _localUnitOfWork.DataContext.Membership_Users
                             join mur in _localUnitOfWork.DataContext.Membership_UserRoles on mu.UserId equals mur.UserId
                             join mr in _localUnitOfWork.DataContext.Membership_Roles on mur.RoleId equals mr.Id
-                            where mu.NRIC == nric
-                            select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, SmartCardId = mu.SmartCardId, RightThumbFingerprint = mu.RightThumbFingerprint, LeftThumbFingerprint = mu.LeftThumbFingerprint, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name, IsFirstAttempt = mu.IsFirstAttempt }).FirstOrDefault();
-                if (user == null) {
-                    user = CallCentralized.Get<Trinity.BE.User>("User", "GetSuperviseeByNRIC", "nric=" + nric);
-                }
+                            where mu.NRIC.Contains(nric)
+                            select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, SmartCardId = mu.SmartCardId, RightThumbFingerprint = mu.RightThumbFingerprint, LeftThumbFingerprint = mu.LeftThumbFingerprint, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name, IsFirstAttempt = mu.IsFirstAttempt }).ToList();
+                //if (user == null) {
+                //    user = CallCentralized.Get<Trinity.BE.User>("User", "GetSuperviseeByNRIC", "nric=" + nric);
+                //}
                 return user;
             }
             else
@@ -151,8 +151,8 @@ namespace Trinity.DAL
                 return (from mu in _centralizedUnitOfWork.DataContext.Membership_Users
                         join mur in _centralizedUnitOfWork.DataContext.Membership_UserRoles on mu.UserId equals mur.UserId
                         join mr in _centralizedUnitOfWork.DataContext.Membership_Roles on mur.RoleId equals mr.Id
-                        where mu.NRIC == nric
-                        select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, SmartCardId = mu.SmartCardId, RightThumbFingerprint = mu.RightThumbFingerprint, LeftThumbFingerprint = mu.LeftThumbFingerprint, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name, IsFirstAttempt = mu.IsFirstAttempt }).FirstOrDefault();
+                        where mu.NRIC.Contains(nric)
+                        select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, SmartCardId = mu.SmartCardId, RightThumbFingerprint = mu.RightThumbFingerprint, LeftThumbFingerprint = mu.LeftThumbFingerprint, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name, IsFirstAttempt = mu.IsFirstAttempt }).ToList();
             }
         }
         public ApplicationUser Login(string username, string password)

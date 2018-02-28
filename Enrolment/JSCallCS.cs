@@ -65,18 +65,23 @@ namespace Enrolment
             Session session = Session.Instance;
             var dalUser = new DAL_User();
             var dalUserProfile = new DAL_UserProfile();
-            var dbUser = dalUser.GetSuperviseeByNRIC(nric);
+            var dbUsers = dalUser.GetSuperviseeByNRIC(nric);
             var listSupervisee = new List<Trinity.BE.ProfileModel>();
-            if (dbUser != null)
+            if (dbUsers != null)
             {
-                var model = new Trinity.BE.ProfileModel()
+                foreach (var item in dbUsers)
                 {
-                    User = dbUser,
-                    UserProfile = dalUserProfile.GetProfile(dbUser.UserId),
-                    Addresses = null
-                };
-                session[CommonConstants.SUPERVISEE] = dbUser;
-                listSupervisee.Add(model);
+                    var model = new Trinity.BE.ProfileModel()
+                    {
+                        User = item,
+                        UserProfile = dalUserProfile.GetProfile(item.UserId),
+                        Addresses = null
+                    };
+                    listSupervisee.Add(model);
+                }
+               
+              //  session[CommonConstants.SUPERVISEE] = dbUser;
+              
                 //  _web.LoadPageHtml("Supervisee.html", listSupervisee);
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = 0, Name = EventNames.GET_LIST_SUPERVISEE_SUCCEEDED, Data = listSupervisee, Source = "Supervisee.html" });
             }
@@ -489,7 +494,7 @@ namespace Enrolment
         public void PrintSmartCard(string frontBase64, string backBase64, string cardInfo)
         {
             _CardInfo = JsonConvert.DeserializeObject<Trinity.BE.CardInfo>(cardInfo);
-            this._web.InvokeScript("showPrintMessage", null, "Printing card please wait ...");
+            this._web.InvokeScript("showPrintMessage", null, @"<img src='../images/loading.gif'><p> Printing card in progress.Please wait.....</p>");
             frontBase64 = frontBase64.Replace("data:image/png;base64,", string.Empty);
             backBase64 = backBase64.Replace("data:image/png;base64,", string.Empty);
             Session session = Session.Instance;
