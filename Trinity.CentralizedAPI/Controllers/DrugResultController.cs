@@ -10,11 +10,19 @@ namespace Trinity.CentralizedAPI.Controllers
     public class DrugResultController : ApiController
     {
         [HttpPost]
-        [Route("api/Label/UpdateDrugSeal")]
+        [Route("api/DrugResult/UpdateDrugSeal")]
         public IHttpActionResult UpdateDrugSeal(string userId, string COCA, string BARB, string LSD, string METH, string MTQL, string PCP, string KET, string BUPRE, string CAT, string PPZ, string NPS)
         {
             var result = new DAL.DAL_DrugResults().UpdateDrugSeal(userId, Convert.ToBoolean(COCA), Convert.ToBoolean(BARB), Convert.ToBoolean(LSD), Convert.ToBoolean(METH), Convert.ToBoolean(MTQL), 
                                                                 Convert.ToBoolean(PCP), Convert.ToBoolean(KET), Convert.ToBoolean(BUPRE), Convert.ToBoolean(CAT), Convert.ToBoolean(PPZ), Convert.ToBoolean(NPS));
+            return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("api/DrugResult/UpdateSealForUser")]
+        public IHttpActionResult UpdateSealForUser(string userId, string seal, string uploadedBy, string sealedOrDiscardedBy)
+        {
+            var result = new DAL.DAL_DrugResults().UpdateSealForUser(userId, Convert.ToBoolean(seal), uploadedBy, sealedOrDiscardedBy);
             return Ok(result);
         }
     }
