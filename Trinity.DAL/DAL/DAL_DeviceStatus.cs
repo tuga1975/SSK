@@ -145,5 +145,10 @@ namespace Trinity.DAL
             }
             return !_localUnitOfWork.DataContext.ApplicationDevice_Status.Any(d => d.Station.ToUpper() == station.ToUpper() && d.StatusCode == (int)EnumDeviceStatuses.Disconnected);
         }
+        public void RemoveDevice(string Station)
+        {
+            _localUnitOfWork.GetRepository<ApplicationDevice_Status>().Delete(d => d.Station == Station);
+            _localUnitOfWork.Save();
+        }
     }
 }

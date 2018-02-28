@@ -123,7 +123,7 @@ namespace DutyOfficer
                     SSK = queue.QueueDetails.Where(c => c.Station == EnumStations.SSK).FirstOrDefault().Color,
                     SSA = queue.QueueDetails.Where(c => c.Station == EnumStations.SSA).FirstOrDefault().Color,
                     UHP = queue.QueueDetails.Where(c => c.Station == EnumStations.UHP).FirstOrDefault().Color,
-                    HSA = queue.QueueDetails.Where(c => c.Station == EnumStations.HSA).FirstOrDefault().Status == EnumQueueStatuses.Finished ? "Result" : string.Empty,
+                    HSA = queue.QueueDetails.Where(c => c.Station == EnumStations.HSA).FirstOrDefault().Status == EnumQueueStatuses.Finished ? GetResultUT(queue.Appointment.Membership_Users.NRIC) : string.Empty,
                     ESP = queue.QueueDetails.Where(c => c.Station == EnumStations.ESP).FirstOrDefault().Color,
                     Outcome = queue.Outcome,
                     Message = new
@@ -132,6 +132,35 @@ namespace DutyOfficer
                     }
                 });
             return data;
+        }
+        private string GetResultUT(string NRIC)
+        {
+            DAL_DrugResults dalDrug = new DAL_DrugResults();
+            return dalDrug.GetResultUTByNRIC(NRIC);
+        }
+        public void LoadPopupSeal(string Date, string UserId, string queueID, string UTResult)
+        {
+            this._web.LoadPopupHtml("QueuePopupSeal.html", new
+            {
+                Date = Date,
+                UserId = UserId,
+                Queue_ID = queueID,
+                UTResult = UTResult // NEG or POS
+            });
+        }
+        public void UpdateSealForUser(string UserId, string queueID, bool seal)
+        {
+            Session session = Session.Instance;
+            Trinity.BE.User dutyOfficer = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+            DAL_DrugResults dalDrug = new DAL_DrugResults();
+            dalDrug.UpdateSealForUser(UserId, seal, dutyOfficer.UserId, dutyOfficer.UserId);
+
+            // If Discard, will update Outcome queue to 'Tap smart card to continue'
+            if (!seal)
+            {
+                DAL_QueueNumber dalQueue = new DAL_QueueNumber();
+                dalQueue.UpdateQueueOutcomeByQueueId(new Guid(queueID), EnumQueueOutcomeText.TapSmartCardToContinue);
+            }
         }
         public void LoadPopupQueue(string queue_ID)
         {
@@ -160,10 +189,6 @@ namespace DutyOfficer
 
                 if (user != null)
                 {
-                    // Stop SCardMonitor
-                    //Trinity.Device.SmartCardReaderUtil.Instance.StopSmartCardMonitor();
-                    // raise succeeded event
-
                     var lstQueueToday = new DAL_QueueNumber().GetAllQueueByDateIncludeDetail(DateTime.Now.Date)
                     .Select(queue => new
                     {
@@ -186,7 +211,24 @@ namespace DutyOfficer
 
         public void TapSmartCardOnQueueSucceed(string queueId)
         {
-            this._web.InvokeScript("openPopupOutcome", queueId);
+            DAL_QueueNumber dalQueue = new DAL_QueueNumber();
+            var queueDetail = dalQueue.GetQueueInfoByQueueID(new Guid(queueId));
+            if (queueDetail !=null)
+            {
+                string resultUT = GetResultUT(queueDetail.NRIC);
+
+                if (resultUT == "NEG")
+                {
+                    // update outcome to 'Unconditional Release'
+                    dalQueue.UpdateQueueOutcomeByQueueId(new Guid(queueId), EnumQueueOutcomeText.UnconditionalRelease);
+
+                    // Need to reload here
+                }
+                else
+                {
+                    this._web.InvokeScript("openPopupOutcome", queueId);
+                }
+            }
         }
 
         public void SaveOutcome(string queueID, string outcome)
@@ -200,7 +242,12 @@ namespace DutyOfficer
 
         public List<Notification> getAlertsSendToDutyOfficer()
         {
-            _isFocusQueue = false;
+            if(_isFocusQueue)
+            {
+                Trinity.Device.SmartCardReaderUtil.Instance.StopSmartCardMonitor();
+                _isFocusQueue = false;
+            }
+            
             var dalNotify = new DAL_Notification();
             string userID = ((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId;
             if (userID != null || userID != "")
@@ -244,7 +291,12 @@ namespace DutyOfficer
 
         public SettingModel GetSettings()
         {
-            _isFocusQueue = false;
+            if (_isFocusQueue)
+            {
+                Trinity.Device.SmartCardReaderUtil.Instance.StopSmartCardMonitor();
+                _isFocusQueue = false;
+            }
+
             DAL_Setting dalSetting = new DAL_Setting();
             return dalSetting.GetOperationSettings();
         }
@@ -327,7 +379,12 @@ namespace DutyOfficer
         #region Blocked
         public List<User> GetAllSuperviseesBlocked()
         {
-            _isFocusQueue = false;
+            if (_isFocusQueue)
+            {
+                Trinity.Device.SmartCardReaderUtil.Instance.StopSmartCardMonitor();
+                _isFocusQueue = false;
+            }
+
             var dalUser = new DAL_User();
             return dalUser.GetAllSuperviseeBlocked();
         }
@@ -373,7 +430,12 @@ namespace DutyOfficer
         #region Appointment
         public List<Appointment> GetAllAppoinments()
         {
-            _isFocusQueue = false;
+            if (_isFocusQueue)
+            {
+                Trinity.Device.SmartCardReaderUtil.Instance.StopSmartCardMonitor();
+                _isFocusQueue = false;
+            }
+
             var dalAppointment = new DAL_Appointments();
             var result= dalAppointment.GetAllApptmts();
             return result;            
@@ -384,7 +446,12 @@ namespace DutyOfficer
         #region Statistics
         public List<Statistics> GetStatistics()
         {
-            _isFocusQueue = false;
+            if (_isFocusQueue)
+            {
+                Trinity.Device.SmartCardReaderUtil.Instance.StopSmartCardMonitor();
+                _isFocusQueue = false;
+            }
+
             var dalAppointment = new DAL_Appointments();
             var result= dalAppointment.GetAllStats();
             List<Statistics> data = result;
@@ -414,7 +481,12 @@ namespace DutyOfficer
         #region Print UB
         public List<Trinity.BE.Label> GetAllUBlabels()
         {
-            _isFocusQueue = false;
+            if (_isFocusQueue)
+            {
+                Trinity.Device.SmartCardReaderUtil.Instance.StopSmartCardMonitor();
+                _isFocusQueue = false;
+            }
+
             var dalUBlabels = new DAL_Labels();
             return dalUBlabels.GetAllLabelsForUB();
         }
@@ -445,9 +517,11 @@ namespace DutyOfficer
                     if (_isPrintFailUB)
                         break;
 
+                    DAL_User dalUser = new DAL_User();
+                    string userID = dalUser.GetSuperviseeByNRIC(item.NRIC).UserId;
                     LabelInfo labelInfo = new LabelInfo
                     {
-                        UserId = item.UserId,
+                        UserId = userID,
                         Name = item.Name,
                         NRIC = item.NRIC,
                         Label_Type = EnumLabelType.MUB,
@@ -522,7 +596,12 @@ namespace DutyOfficer
         #region Print MUB And TT
         public List<Trinity.BE.Label> GetAllMUBAndTTlabels()
         {
-            _isFocusQueue = false;
+            if (_isFocusQueue)
+            {
+                Trinity.Device.SmartCardReaderUtil.Instance.StopSmartCardMonitor();
+                _isFocusQueue = false;
+            }
+
             var dalMUBAndTTlabels = new DAL_Labels();
             return dalMUBAndTTlabels.GetAllLabelsForMUBAndTT();
         }
@@ -555,9 +634,11 @@ namespace DutyOfficer
                     if (_isPrintFailMUB && _isPrintFailTT)
                         break;
 
+                    DAL_User dalUser = new DAL_User();
+                    string userID = dalUser.GetSuperviseeByNRIC(item.NRIC).UserId;
                     LabelInfo labelInfo = new LabelInfo
                     {
-                        UserId = item.UserId,
+                        UserId = userID,
                         Name = item.Name,
                         NRIC = item.NRIC,
                         Label_Type = EnumLabelType.MUB,

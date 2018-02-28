@@ -1,0 +1,141 @@
+﻿<div class="tab-content" wap-area>
+    <div>
+        <div class="">
+            <strong class="header" style="width:100px">
+                Absence Reporting
+            </strong>
+        </div>
+    </div>
+    <br />
+    <div class="form-border">
+        <div class="form-border" style="display:table-cell">
+            You have been absent for <span id="countdate"></span> reporting date.<br />
+            Select date:
+        </div>
+        <div id="choosedate">
+        </div>
+        <div class="form-border" style="display:table-cell;padding: 5px !important;">
+            Reason for absence:
+        </div>
+        <div id="reason-area" style="margin:10px 0px;">
+
+
+            <div class="btn btn-default reason" id="0">Medical Certificate (MC)</div>
+            <div class="btn btn-default reason" id="1">Work Commitment</div>
+            <div class="btn btn-default reason" id="2">Family Matters</div>
+            <div class="btn btn-default reason" id="3" otherReason>Other Reasons</div>
+            <div class="btn btn-default reason" id="4">No Valid Reason</div>
+            <!--don't change it-->
+            <div class="btn btn-default reason" id="5">No Supporting Document</div>
+
+        </div>
+        <div class="form-border" style="display:none;padding: 5px !important;" id="divReasonDescription">
+            Description:
+            <textarea id="otherReasonInput" rows="12" />
+        </div>
+
+    </div>
+</div>
+<style type="text/css">
+    [wap-area] {
+        padding: 40px;
+        font-weight: bold;
+    }
+
+    .header {
+        border: 1px solid black;
+        padding: 10px;
+        margin-top: 10px;
+        font-size: 26px;
+    }
+
+    .form-border {
+        border: 1px solid black;
+        padding: 10px;
+    }
+
+    .reason {
+        width: 245px;
+        border: 1px solid black;
+        display: inline-block;
+        padding: 5px;
+        margin-left: 5px;
+        border-radius: 7px;
+        margin: 5px 5px !important;
+    }
+</style>
+
+<div style="float:right;" id="absenceSupportDocument">
+    <button type="button" class="btn btn-danger" style="position:fixed;bottom:10px;right:150px;" id="btnAbsenceScan">Scan documents</button>
+
+</div>
+<button type="button" class="btn btn-danger" style="position:fixed;bottom:10px;left:10px;" onclick="window.external.LoadPage('Supervisee.html');">Back</button>
+<button type="button" id="saveReason" class="btn btn-danger" style="position:fixed;bottom:10px;right:10px;">Save</button>
+<input type="hidden" id="reasonDetail" />
+<input type="hidden" id="reasonValue" />
+<input type="hidden" id="selectedAbsenceDate" />
+<script type="text/javascript">
+    api.ready(function (model) {
+
+        $("#countdate").text(model.length);
+        $.each(model, function (index, item) {
+            $('#choosedate').append(' <input type="checkbox" id="dateChoice' + (index + 1) + '" value= "' + item.ID + '" > <label for="dateChoice' + (index + 1) + '">' + item.GetDateTxt + '</label>');
+        });
+        var _reason = "";
+        $('.reason').click(function () {
+            $('.reason').removeClass("btn-primary");
+            $(this).removeClass("btn-default").addClass("btn-primary");
+            $('#reasonDetail').val("" + $(this).text());
+            $('#reasonValue').val($(this).attr('id'));
+            if ($(this).attr('id') == '3') {
+                $('#divReasonDescription').css('display', 'table-cell');
+                $('#divReasonDescription').show();
+               
+            }
+            var value = $('#reasonValue').val();
+            var detail = $('#reasonDetail').val();
+             _reason = JSON.stringify({ Value: value, Detail: detail });
+            
+        });
+
+
+        $("#saveReason").click(function () {
+            if ($('#reasonValue').val()=='3') {
+                $('#reasonDetail').val($('#otherReasonInput').text());
+            }
+          
+            var selectedID = "";
+            $('input[type=checkbox]').each(function () {
+                selectedID += (this.checked ? $(this).val() + "," : "");
+            });
+            if ($('#reasonValue').val() == "") {
+                alert("You must provide a reason!");
+            }
+            else {
+                if ($('#reasonDetail').val().trim() != "") {
+                    var value = $('#reasonValue').val();
+                    var detail = $('#reasonDetail').val();
+                    _reason = JSON.stringify({ Value: value, Detail: detail });
+                    api.server.SaveReasonForQueue(_reason, selectedID);
+                }
+                else {
+                    alert("You must provide a reason!");
+                    $('#otherReasonInput').focus();
+                }
+
+            }
+
+        });
+
+        $('#btnAbsenceScan').click(function () {
+            api.server.LoadScanDocumentForAbsence(JSON.stringify(model), _reason);
+        });
+
+    });
+
+
+    $('[otherReason]').click(function () {
+     
+    });
+
+</script>

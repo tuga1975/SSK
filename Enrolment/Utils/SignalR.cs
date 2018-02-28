@@ -7,7 +7,7 @@ using Trinity.DAL;
 
 namespace Enrolment.Utils
 {
-    class SignalR : Trinity.Utils.Notification.SignalRBase
+    class SignalR : Trinity.SignalR.Client.Notification.SignalRBase
     {
         public SignalR()
         {

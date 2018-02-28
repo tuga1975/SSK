@@ -33,5 +33,10 @@ namespace Trinity.DAL.DBContext
         public Nullable<bool> CAT { get; set; }
         public Nullable<bool> PPZ { get; set; }
         public Nullable<bool> NPS { get; set; }
+        public Nullable<bool> IsSealed { get; set; }
+        public Nullable<System.DateTime> UploadedDate { get; set; }
+        public string UploadedBy { get; set; }
+        public Nullable<System.DateTime> SealedOrDiscardedDate { get; set; }
+        public string SealedOrDiscardedBy { get; set; }
     }
 }

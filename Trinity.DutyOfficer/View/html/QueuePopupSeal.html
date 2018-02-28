@@ -1,0 +1,71 @@
+﻿<div class="modal fade" role="dialog" id="idQueueSeal">
+    <div class="modal-dialog" style="width:600px;">
+        <div class="modal-content" style="width:600px;">
+            <div class="modal-header">
+                <h5 class="modal-title">Sealing </h5>
+            </div>
+            <div class="modal-body">
+                <div style="padding:15px; vertical-align:central" id='type'>
+                    <div style="display:inline-block;height:33px; padding:7px;box-sizing:border-box;border:1px solid #CCC;text-align:center;">
+                        <b>Test Results: </b>
+                        <b><span class="control-label" id="UTResult"></span></b>
+                    </div>
+                    <br />
+                    <div style="margin-top:20px;">
+                        <span class="control-label">Do you want to seal the specimen and send to HSA for testing?</span>
+                    </div>
+                </div>
+                <div style="clear:both;margin-bottom:20px;"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" id="btnSeal">Seal</button>
+                <button type="button" class="btn btn-default" id="btnDiscard">Discard</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    api.ready(function (model) {
+        if (model != null) {
+            $('#UTResult').text(model.UTResult);
+
+            if (model.UTResult == 'POS') {
+                $('#UTResult').css('color', 'red');
+            }
+            else {
+                $('#UTResult').css('color', 'green');
+            }
+        }
+        $("#btnSeal").click(function (e) {
+            api.server.UpdateSealForUser(model.UserId, model.Queue_ID, true, function () {
+                api.server.LoadDrugsTest(model.Date, model.UserId, function () {
+                    $('#idQueueSeal').modal('toggle');
+                    $('#idQueueDrugs').modal();
+                });
+            });
+            
+            e.preventDefault(); // avoid to execute the actual submit of the form.
+        });
+        $("#btnDiscard").click(function (e) {
+            if (model.UTResult == 'POS') {
+                //show confirm message to discard a POS specimen
+                var result = confirm("Do you want to discard a POS specimen?");
+                if (result) {
+                    api.server.UpdateSealForUser(model.UserId, model.Queue_ID, false, function () {
+                        $('#idQueueSeal').modal('toggle');
+                    });
+                }
+                //else {
+                //    $('#idQueueSeal').modal('toggle');
+                //}
+            }
+            else {
+                api.server.UpdateSealForUser(model.UserId, model.Queue_ID, false, function () {
+                    $('#idQueueSeal').modal('toggle');
+                });
+            }          
+
+            e.preventDefault(); // avoid to execute the actual submit of the form.
+        });
+    });
+</script>

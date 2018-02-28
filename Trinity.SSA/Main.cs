@@ -85,7 +85,8 @@ namespace SSA
             MessageBox.Show(message, "Authentication failed!", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
             // navigate to smartcard login page
-            NavigateTo(NavigatorEnums.Authentication_SmartCard);
+            //NavigateTo(NavigatorEnums.Authentication_SmartCard);
+            NavigateTo(NavigatorEnums.Authentication_Facial);
         }
 
         private void Fingerprint_OnIdentificationCompleted(bool bVerificationSuccess)

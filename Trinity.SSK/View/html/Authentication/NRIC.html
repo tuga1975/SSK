@@ -1,28 +1,48 @@
-﻿<!--<div class="subcontent">
-    <span>Please scan supervisee NRIC:</span>
-    <input type="text" id="txtNRIC" class="txtNRIC" autofocus />
-    <input type="button" value="Enter manually" onclick="enterManually()" />
-    <input type="button" value="Submit" onclick="api.server.SubmitNRIC($('#txtNRIC').val())" />
-</div>-->
-<div class="subcontent">
-    <div class="titles"><span>Verification</span></div><br />
-    <div class="contentWrapper">
-        <div class="contentForm">
-            <div class="input-group" data-tip="Enter your Supervisee NRIC No" id="editable">
-                <!--<span class="input-group-addon">Supervisee NRIC No</span>-->
-                <input type="text" id="txtNRIC" class="txtNRIC" placeholder="Supervisee NRIC No" autofocus />
-            </div>
-        </div>
-    </div>
-    <div id="divSave">
-        <button type="button" class="btn btn-dark" onclick="api.server.LogOut()">Cancel</button>
-        <button type="button" class="btn btn-dark" onclick="api.server.SubmitNRIC($('#txtNRIC').val())">Submit</button>
+﻿<div name-page="Verification"></div>
+<div style="box-shadow:0px 0px 10px rgba(0,0,0,0.5);padding:40px;background-color:#FFF;margin-top:40px;">
+    <div group-input="Supervisee NRIC NO.">
+        <input type="text" placeholder="Scan Supervisee NRIC" id="txtNRIC" />
     </div>
 </div>
-
+<div id="footer" style="position:relative;text-align:right;margin-top:40px;">
+    <input type="button" value="CANCEL" style="background-color:#FFF;color:#1cacf6;border:none;border-radius:5px;padding:8px 20px;border:1px solid #DDD;margin-right:20px;" onclick="api.server.LoadPage('Supervisee.html');" />
+    <input type="button" value="SUBMIT" style="background-color:#1cacf6;color:#FFF;border:none;border-radius:5px;padding:8px 20px;border:1px solid #1cacf6;" onclick="api.server.SubmitNRIC($('#txtNRIC').val())" />
+</div>
 <script type="text/javascript">
     function enterManually() {
         $('#txtNRIC').val('');
         $('#txtNRIC').focus();
     }
 </script>
+<style type="text/css">
+    [group-input] {
+        border-bottom: 1px solid #ccc;
+        position: relative;
+    }
+
+        [group-input]::before {
+            content: attr(group-input);
+            color: #209CDD;
+            font-size: 16px;
+            position: absolute;
+            z-index: 0;
+            top: 6px;
+            left: 0px;
+        }
+
+        [group-input] > input {
+            border: none;
+            height: 36px;
+            font-size: 16px;
+            width: 100%;
+            padding-left: 200px;
+            position: relative;
+            z-index: 1;
+            background-color: transparent;
+        }
+
+
+    :-ms-input-placeholder { /* Internet Explorer 10-11 */
+        font-style: italic;
+    }
+</style>
