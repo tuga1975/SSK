@@ -471,9 +471,11 @@ namespace DutyOfficer
                     if (_isPrintFailUB)
                         break;
 
+                    DAL_User dalUser = new DAL_User();
+                    string userID = dalUser.GetSuperviseeByNRIC(item.NRIC).UserId;
                     LabelInfo labelInfo = new LabelInfo
                     {
-                        UserId = item.UserId,
+                        UserId = userID,
                         Name = item.Name,
                         NRIC = item.NRIC,
                         Label_Type = EnumLabelType.MUB,
@@ -586,9 +588,11 @@ namespace DutyOfficer
                     if (_isPrintFailMUB && _isPrintFailTT)
                         break;
 
+                    DAL_User dalUser = new DAL_User();
+                    string userID = dalUser.GetSuperviseeByNRIC(item.NRIC).UserId;
                     LabelInfo labelInfo = new LabelInfo
                     {
-                        UserId = item.UserId,
+                        UserId = userID,
                         Name = item.Name,
                         NRIC = item.NRIC,
                         Label_Type = EnumLabelType.MUB,

@@ -191,20 +191,33 @@ namespace Trinity.DAL
             {
                 if (EnumAppConfig.IsLocal)
                 {
-                    //var lst = from l in _localUnitOfWork.DataContext.Labels
-                    //          join u in _localUnitOfWork.DataContext.Membership_Users on l.UserId equals u.UserId
-                    //          join q in _localUnitOfWork.DataContext.Queues on l.Queue_ID equals q.Queue_ID
-                    //          join t in _localUnitOfWork.DataContext.Timeslots on q.Timeslot_ID equals t.Timeslot_ID
+                    //var lstModels = _localUnitOfWork.DataContext.Labels.Include("Membership_Users")
+                    //    .Where(l => l.Label_Type.Equals(EnumLabelType.MUB) || l.Label_Type.Equals(EnumLabelType.TT))
+                    //    .Select(d => new BE.Label()
+                    //    {
+                    //        NRIC = d.Membership_Users.NRIC,
+                    //        Name = d.Membership_Users.Name,
+                    //        LastStation = d.LastStation,
+                    //        UserId = d.UserId
+                    //    });
 
-                    var lstModels = _localUnitOfWork.DataContext.Labels.Include("Membership_Users")
-                        .Where(l => l.Label_Type.Equals(EnumLabelType.MUB) || l.Label_Type.Equals(EnumLabelType.TT))
-                        .Select(d => new BE.Label()
-                        {
-                            NRIC = d.Membership_Users.NRIC,
-                            Name = d.Membership_Users.Name,
-                            LastStation = d.LastStation,
-                            UserId = d.UserId
-                        });
+                    var lstModels = from l in _localUnitOfWork.DataContext.Labels
+                                    join u in _localUnitOfWork.DataContext.Membership_Users on l.UserId equals u.UserId
+                                    join q in _localUnitOfWork.DataContext.Queues on l.Queue_ID equals q.Queue_ID
+                                    join t in _localUnitOfWork.DataContext.Timeslots on q.Timeslot_ID equals t.Timeslot_ID
+                                    where (l.Label_Type.Equals(EnumLabelType.MUB) || l.Label_Type.Equals(EnumLabelType.TT))
+                                    orderby System.Data.Entity.DbFunctions.TruncateTime(l.Date) descending, t.StartTime descending, l.PrintCount
+                                    select new BE.Label()
+                                    {
+                                        NRIC = u.NRIC,
+                                        Name = u.Name,
+                                        LastStation = l.LastStation,
+                                        UserId = l.UserId,
+                                        TimeSlot_ID = q.Timeslot_ID,
+                                        StartTime = t.StartTime,
+                                        EndTime = t.EndTime,
+                                        PrintCount = l.PrintCount
+                                    };
 
                     if ((lstModels != null && lstModels.Count() > 0) || EnumAppConfig.ByPassCentralizedDB)
                     {

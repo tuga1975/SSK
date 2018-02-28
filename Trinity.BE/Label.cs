@@ -54,5 +54,9 @@ namespace Trinity.BE
         public string PrintStatus { get; set; }
         [DataMember]
         public string Message { get; set; }
+        public string TimeSlot_ID { get; set; }
+        public Guid Queue_ID { get; set; }
+        public TimeSpan? StartTime { get; set; }
+        public TimeSpan? EndTime { get; set; }
     }
 }
