@@ -29,6 +29,11 @@ namespace DutyOfficer.Utils
                 // Xử lý Message
                 saveNotification(NotificationID, UserId, Subject, Content, notificationType, Station);
             });
+            HubProxy.On<string>("AppDisconnect", (Station) => {
+                // Xử lý Message
+                new DAL_DeviceStatus().RemoveDevice(Station);
+            });
+            
         }
 
         public override void Connection_Closed()
