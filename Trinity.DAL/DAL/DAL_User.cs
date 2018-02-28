@@ -572,13 +572,18 @@ namespace Trinity.DAL
         {
             if (EnumAppConfig.IsLocal)
             {
-                bool centralizeStatus = false;
-                var centralUpdate = CallCentralized.Post<Setting>(EnumAPIParam.User, "UnblockSuperviseeById", out centralizeStatus, "userId=" + userId, "reason=" + reason);
-                if (centralizeStatus || EnumAppConfig.ByPassCentralizedDB)
+                var localUserRepo = _localUnitOfWork.GetRepository<Membership_Users>();
+                UpdateStatusAndReasonSuperviseeUnblock(userId, reason, localUserRepo);
+                _localUnitOfWork.Save();
+
+                if (!EnumAppConfig.ByPassCentralizedDB)
                 {
-                    var localUserRepo = _localUnitOfWork.GetRepository<Membership_Users>();
-                    UpdateStatusAndReasonSuperviseeUnblock(userId, reason, localUserRepo);
-                    _localUnitOfWork.Save();
+                    bool centralizeStatus = false;
+                    var centralUpdate = CallCentralized.Post<Setting>(EnumAPIParam.User, "UnblockSuperviseeById", out centralizeStatus, "userId=" + userId, "reason=" + reason);
+                    if (!centralizeStatus)
+                    {
+                        throw new Exception(EnumMessage.NotConnectCentralized);
+                    }
                 }
             }
             else

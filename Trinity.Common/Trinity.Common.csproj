@@ -185,12 +185,18 @@
     <Content Include="View\bootstrap\css\font-awesome.min.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="View\bootstrap\css\ionicons.css" />
+    <Content Include="View\bootstrap\css\ionicons.min.css" />
     <Content Include="View\bootstrap\fonts\fontawesome-webfont.svg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="View\bootstrap\fonts\glyphicons-halflings-regular.svg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="View\bootstrap\fonts\ionicons.svg" />
+    <Content Include="View\bootstrap\js\bootstrap.bundle.js" />
+    <Content Include="View\bootstrap\js\bootstrap.bundle.min.js" />
+    <Content Include="View\bootstrap\js\bootstrap.js" />
     <Content Include="View\bootstrap\js\bootstrap.min.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -217,13 +223,13 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <None Include="ConnectionStrings.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <None Include="App.config" />
     <None Include="AppSettings.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="App.config" />
+    <None Include="ConnectionStrings.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Libs\TSC Barcode Printer\x64\TSCLIB.lib" />
     <None Include="Libs\TSC Barcode Printer\x64\UL.PCX" />
     <None Include="Libs\TSC Barcode Printer\x86\TSCLIB.lib" />
@@ -273,6 +279,13 @@
     <None Include="View\bootstrap\fonts\glyphicons-halflings-regular.woff2">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="View\bootstrap\fonts\ionicons.eot" />
+    <None Include="View\bootstrap\fonts\ionicons.ttf" />
+    <None Include="View\bootstrap\fonts\ionicons.woff" />
+    <None Include="View\bootstrap\js\bootstrap.bundle.js.map" />
+    <None Include="View\bootstrap\js\bootstrap.bundle.min.js.map" />
+    <None Include="View\bootstrap\js\bootstrap.js.map" />
+    <None Include="View\bootstrap\js\bootstrap.min.js.map" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DeviceMonitor\" />

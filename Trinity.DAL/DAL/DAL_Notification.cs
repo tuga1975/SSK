@@ -138,6 +138,7 @@ namespace Trinity.DAL
                     IsFromSupervisee = true,
                     NotificationID = MessageID,
                     Source = Station,
+                    IsRead = false,
                     Subject = Subject,
                     ToUserId = DutyOfficerID,
                     Type = notificationType
@@ -154,6 +155,7 @@ namespace Trinity.DAL
                     IsFromSupervisee = true,
                     NotificationID = MessageID,
                     Source = Station,
+                    IsRead = false,
                     Subject = Subject,
                     ToUserId = DutyOfficerID,
                     Type = notificationType
@@ -172,41 +174,34 @@ namespace Trinity.DAL
         /// <param name="Station"></param
         public List<BE.Notification> SendAllDutyOfficer(string UserId, string Subject, string Content, string notificationType, string Station)
         {
+            List<string> DOId = _localUnitOfWork.DataContext.Membership_UserRoles.Include("Membership_Roles").Where(d => d.Membership_Roles.Name == EnumUserRoles.DutyOfficer).Select(d => d.UserId).ToList();
+            List<DBContext.Notification> arrayInsert = DOId.Select(d => new DBContext.Notification()
+            {
+                Content = Content,
+                Datetime = DateTime.Now,
+                FromUserId = UserId,
+                IsFromSupervisee = true,
+                NotificationID = Guid.NewGuid().ToString().Trim(),
+                Source = Station,
+                Subject = Subject,
+                ToUserId = d,
+                Type = notificationType
+            }).ToList();
+            _localUnitOfWork.GetRepository<DBContext.Notification>().AddRange(arrayInsert);
+            _localUnitOfWork.Save();
+            return arrayInsert.Select(item => item.Map<BE.Notification>()).ToList();
+
             
-            if (EnumAppConfig.IsLocal)
-            {
-                return null;
-            }
-            else
-            {
-                List<string> DOId = _centralizedUnitOfWork.DataContext.Membership_UserRoles.Include("Membership_Roles").Where(d => d.Membership_Roles.Name == EnumUserRoles.DutyOfficer).Select(d => d.UserId).ToList();
-                List<DBContext.Notification> arrayInsert = DOId.Select(d => new DBContext.Notification()
-                {
-                    Content = Content,
-                    Datetime = DateTime.Now,
-                    FromUserId = UserId,
-                    IsFromSupervisee = true,
-                    NotificationID = Guid.NewGuid().ToString().Trim(),
-                    Source = Station,
-                    Subject = Subject,
-                    ToUserId = d,
-                    Type = notificationType
-                }).ToList();
-                _centralizedUnitOfWork.GetRepository<DBContext.Notification>().AddRange(arrayInsert);
-                _centralizedUnitOfWork.Save();
-
-                return arrayInsert.Select(item => item.Map<BE.Notification>()).ToList();
-            }
         }
-        public void SendAllDutyOfficer(List<BE.Notification> arrayInsert)
-        {
+        //public void SendAllDutyOfficer(List<BE.Notification> arrayInsert)
+        //{
 
-            if (EnumAppConfig.IsLocal)
-            {
-                _localUnitOfWork.GetRepository<DBContext.Notification>().AddRange(arrayInsert.Select(item => item.Map<DBContext.Notification>()).ToList());
-                _localUnitOfWork.Save();
-            }
-        }
+        //    if (EnumAppConfig.IsLocal)
+        //    {
+        //        _localUnitOfWork.GetRepository<DBContext.Notification>().AddRange(arrayInsert.Select(item => item.Map<DBContext.Notification>()).ToList());
+        //        _localUnitOfWork.Save();
+        //    }
+        //}
 
 
         public string GetNotificationContentById(Guid id, bool isLocal)

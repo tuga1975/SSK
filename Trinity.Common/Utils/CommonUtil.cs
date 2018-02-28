@@ -13,8 +13,8 @@ namespace Trinity.Common
     {
         public static byte[] CreateLabelQRCode(LabelInfo labelInfo, string AESKey, bool printUB = false)
         {
-            var width = 200; // width of the Qr Code    
-            var height = 200; // height of the Qr Code    
+            var width = 350; // width of the Qr Code    
+            var height = 340; // height of the Qr Code    
             var margin = 0;
             var qrCodeWriter = new ZXing.BarcodeWriterPixelData
             {

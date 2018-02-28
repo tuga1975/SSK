@@ -106,43 +106,42 @@
 
             var _this = $(this);
             var timeslot_ID = _this.attr('timeslot_ID');
-          
+
             var startTime = _this.attr('start');
             var endTime = _this.attr('end');
 
-          api.server.CheckBookingTime(timeslot_ID, function (isPast) {
-              
-              if (isPast) {
-                alert('You cant choose the time in the past.');
-            }
-            else {
+            api.server.CheckBookingTime(timeslot_ID, function (isPast) {
 
-
-                if (model[0].ChangedCount >= 3) {
-                    alert('You have exceeded the number of times allowed for time slot change. Please keep to your timeslot ' + startTime + ' on ' + model[0].GetDateTxt + '. Otherwise, please contact your case officer.');
-                } else {
-                    var re = confirm('You have selected the time slot\n' + startTime + ' on ' + model[0].GetDateTxt + '\nConfirm time slot?', 'Warning');
-                    if (re == true) {
-                        api.server.UpdateTimeAppointment(model[0].ID, timeslot_ID, function (isUpdated) {
-                            if (isUpdated) {
-                                model[0].ChangedCount += 1;
-                                //$('[item-select-time][selecttime="true"]').removeAttr('selecttime').removeAttr('availble');
-                                //_this.attr('availble', false).attr('selecttime', true);
-                                $('[item-select-time][selecttime="true"]').removeAttr('selecttime');
-                                _this.attr('selecttime', true);
-                                $('[app-time]').text(startTime);
-                                $('[info-notime]').remove();
-                            }
-                            else {
-                                alert("You have already queued!\n The timeslot cannot be changed.");
-                            }
-                        });
+                if (isPast) {
+                    alert('You cant choose the time in the past.');
+                }
+                else {
+                    if (model[0].ChangedCount >= 3) {
+                        alert('You have exceeded the number of times allowed for time slot change. Please keep to your timeslot ' + startTime + ' on ' + model[0].GetDateTxt + '. Otherwise, please contact your case officer.');
+                    } else {
+                        var re = confirm('You have selected the time slot\n' + startTime + ' on ' + model[0].GetDateTxt + '\nConfirm time slot?', 'Warning');
+                        if (re == true) {
+                            api.server.UpdateTimeAppointment(model[0].ID, timeslot_ID, function (isUpdated) {
+                                if (isUpdated) {
+                                    model[0].ChangedCount += 1;
+                                    //$('[item-select-time][selecttime="true"]').removeAttr('selecttime').removeAttr('availble');
+                                    //_this.attr('availble', false).attr('selecttime', true);
+                                    $('[item-select-time][selecttime="true"]').removeAttr('selecttime');
+                                    _this.attr('selecttime', true);
+                                    $('[app-time]').text(startTime);
+                                    $('[info-notime]').remove();
+                                }
+                                else {
+                                    alert("You have already queued!\n The timeslot cannot be changed.");
+                                }
+                            });
+                        }
                     }
                 }
-              }
-          });
+            });
         });
         $('#btnPrintDetail').click(function () {
+            alert(model[0].ID);
             api.server.PrintAppointmentDetails(model[0].ID)
         });
     });

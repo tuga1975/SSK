@@ -12,6 +12,21 @@ namespace Trinity.DAL
         Local_UnitOfWork _localUnitOfWork = new Local_UnitOfWork();
         Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
 
+        public void UpdateAbsence(List<Dictionary<string, string>> dataUpdate)
+        {
+            List<Guid> ArrayIDAppointments = dataUpdate.Select(d => new Guid(d["ID"])).ToList();
+            var arrayUpdate = _localUnitOfWork.DataContext.Appointments.Where(d => ArrayIDAppointments.Contains(d.ID) && d.AbsenceReporting_ID.HasValue).ToList();
+            foreach (var item in arrayUpdate)
+            {
+                var data = dataUpdate.FirstOrDefault(d => new Guid(d["ID"]) == item.ID);
+                item.AbsenceReporting.AbsenceReason = short.Parse(data["ChoseNumber"]);
+                item.AbsenceReporting.ReportingDate = DateTime.Now;
+                _localUnitOfWork.GetRepository<DBContext.AbsenceReporting>().Update(item.AbsenceReporting);
+                if (item.AbsenceReporting.AbsenceReason == 5)
+                    Lib.SignalR.SendAllDutyOfficer(item.UserId, "Supervisee get queue without supporting document", "Please check the Supervisee's information!", NotificationType.Notification);
+            }
+            _localUnitOfWork.Save();
+        }
         public List<AbsenceReporting> GetByUserID(string userId)
         {
             return _localUnitOfWork.DataContext.AbsenceReportings.Include("Appointments").Where(d => d.Appointments.Any(c => c.UserId == userId)).ToList();
@@ -23,7 +38,7 @@ namespace Trinity.DAL
             return _localUnitOfWork.Save();
         }
 
-        public bool CreateAbsenceReporting(Trinity.BE.AbsenceReporting model,bool isLocal)
+        public bool CreateAbsenceReporting(Trinity.BE.AbsenceReporting model, bool isLocal)
         {
             try
             {
@@ -67,7 +82,7 @@ namespace Trinity.DAL
             dbAbsence.AbsenceReason = model.AbsenceReason;
             return dbAbsence;
         }
-      
+
 
         /// <summary>
         /// Set new info and reason

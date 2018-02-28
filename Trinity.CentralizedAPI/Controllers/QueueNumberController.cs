@@ -158,6 +158,18 @@ namespace Trinity.CentralizedAPI.Controllers
             return Ok(result);
         }
 
+        [HttpPost]
+        [Route("api/QueueNumber/UpdateQueueOutcomeByQueueId")]
+        public IHttpActionResult UpdateQueueOutcomeByQueueId(string queueId, string outcome)
+        {            
+            var _queueId = Guid.Empty;
+            if (Guid.TryParse(queueId, out _queueId))
+            {
+                var result = new DAL.DAL_QueueNumber().UpdateQueueOutcomeByQueueId(_queueId, outcome);
+                return Ok(result);
+            }
+            return null;
+        }
     }
 }
 

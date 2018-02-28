@@ -19,7 +19,7 @@ namespace Trinity.BE
 
         public int? Reported { get; set; }
 
-        public int? No_Show { get; set; }
+        public int? Absent { get; set; }
 
         public int? Available { get; set; }
 
