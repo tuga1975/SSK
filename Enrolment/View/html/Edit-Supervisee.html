@@ -1061,7 +1061,7 @@
     </div>
 </div>-->
 
-<div id="pageUpdatePhotos">
+<!--<div id="pageUpdatePhotos">
     <div style="width:100%;">
         <div class="header header-form-supervisee">
             <img class="logo" src="../images/logo.png" />
@@ -1076,12 +1076,12 @@
                     <div class="row updateSuperviseePhoto">
                         <div class="col-6" style="text-align:center;vertical-align:top;">
                             <div id="PopupUserPhoto1" style="background-position:center center;background-repeat:no-repeat;background-size:cover;height:200px;width:100%;background-image:url(../images/usr-default.jpg);"></div>
-                            <!--<img class="avatar" id="PopupUserPhoto1" style="min-height:300px;max-height:300px;width:auto !important;" src="../images/usr-default.jpg" />-->
+                           
                             <button type="button" class="btn-form" id="updatePhoto2" onclick="api.server.OpenPictureCaptureForm('1')">Take Picture 1</button>
                         </div>
                         <div class="col-6" style="text-align:center;vertical-align:top;">
                             <div id="PopupUserPhoto2" style="background-position:center center;background-repeat:no-repeat;background-size:cover;height:200px;width:100%;background-image:url(../images/usr-default.jpg);"></div>
-                            <!--<img class="avatar" id="PopupUserPhoto2" style="min-height:300px;max-height:300px;width:auto !important;" src="http://3.bp.blogspot.com/-iFUz_2u-CEg/U-grZTCf7iI/AAAAAAAABwc/AIRhqn2ocmw/7.jpg?imgmax=16383" />-->
+                           
                             <button type="button" class="btn-form" id="updatePhoto2" onclick="api.server.OpenPictureCaptureForm('2')">Take Picture 2</button>
                         </div>
                     </div>
@@ -1090,11 +1090,11 @@
 
             <div class="btn-group">
                 <button type="button" class="btn-form" onclick="hidePopUp()">Back</button>
-                <!--<button type="button" class="btn-form" onclick="api.server.CancelCapturePicture();">Cancel</button>-->
+               
             </div>
         </div>
     </div>
-</div>
+</div>-->
 <script>
     $(function () {
         $('.s_label').click(function () {
@@ -1197,7 +1197,7 @@
 
 
         $('#SaveBtn').click(function () {
-
+            alert(1);
             $('#Employment_Start_Date').val(setDate('day', 'month', 'year'));
             $('#Employment_End_Date').val(setDate('day_end', 'month_end', 'year_end'));
 
@@ -1205,6 +1205,7 @@
             var data = getFormData($form);
             var json = JSON.stringify(data);
             api.server.SaveSupervisee(json);
+            
 
         });
     });
@@ -1287,7 +1288,7 @@
     });*/
 
     $("#updatePhotos").click(function () {
-        showPopUp("pageUpdatePhotos");
+        api.server.UpdatePhotos();
     });
     $("#Close_popup").click(function () {
         hidePopUp();
@@ -1304,11 +1305,11 @@
     function setAvatar(base64Str1, base64Str2) {
         if (base64Str1 != "") {
             $('#userPhoto1').attr('src', 'data:image/jpg;base64,' + base64Str1);
-            $('#PopupUserPhoto1').css('background-image', 'url(data:image/jpg;base64,' + base64Str1 + ')');
+           // $('#PopupUserPhoto1').css('background-image', 'url(data:image/jpg;base64,' + base64Str1 + ')');
         }
         if (base64Str2 != "") {
             $('#userPhoto2').attr('src', 'data:image/jpg;base64,' + base64Str2);
-            $('#PopupUserPhoto2').css('background-image', 'url(data:image/jpg;base64,' + base64Str2 + ')');
+          //  $('#PopupUserPhoto2').css('background-image', 'url(data:image/jpg;base64,' + base64Str2 + ')');
         }
     }
 

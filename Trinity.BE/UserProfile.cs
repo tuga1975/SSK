@@ -156,7 +156,7 @@ namespace Trinity.BE
             get
             {
                 if (User_Photo1 == null)
-                    return "../images/usr-default.jpg";
+                    return "../images/avatar-demo.jpg";
                 return Convert.ToBase64String(User_Photo1);
             }
         }
@@ -170,7 +170,7 @@ namespace Trinity.BE
             get
             {
                 if (User_Photo2 == null)
-                    return "../images/usr-default.jpg";
+                    return "../images/avatar-demo.jpg";
                 return Convert.ToBase64String(User_Photo2);
             }
         }

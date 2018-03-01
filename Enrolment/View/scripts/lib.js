@@ -54,10 +54,10 @@ function failAlert(message) {
 function setAvatar(base64Str1, base64Str2) {
     if (base64Str1 != "") {
         $('#userPhoto1').attr('src', 'data:image/jpg;base64,' + base64Str1);
-        $('#PopupUserPhoto1').css('background-image', 'url(data:image/jpg;base64,' + base64Str1 + ')');
+       // $('#PopupUserPhoto1').css('background-image', 'url(data:image/jpg;base64,' + base64Str1 + ')');
     }
     if (base64Str2 != "") {
         $('#userPhoto2').attr('src', 'data:image/jpg;base64,' + base64Str2);
-        $('#PopupUserPhoto2').css('background-image', 'url(data:image/jpg;base64,' + base64Str2 + ')');
+       // $('#PopupUserPhoto2').css('background-image', 'url(data:image/jpg;base64,' + base64Str2 + ')');
     }
 }
