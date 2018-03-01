@@ -392,7 +392,6 @@ namespace Enrolment
                             LayerWeb.InvokeScript("failAlert", "Cant find this device camera!");
                         }
                     }));
-                    return;
                 }
             }
             else if (e.Name.Equals(EventNames.CAPTURE_PICTURE))
@@ -515,8 +514,8 @@ namespace Enrolment
                     else if (currentPage.ToString() == "UpdateSupervisee")
                     {
                         LayerWeb.LoadPageHtml("Edit-Supervisee.html", currentEditUser);
-                        LayerWeb.InvokeScript("setPopUpPhotoServerCall", currentNewPhotos.Item1, currentNewPhotos.Item2);
-                        LayerWeb.InvokeScript("showPopUp", "pageUpdatePhotos");
+                        //LayerWeb.InvokeScript("setPopUpPhotoServerCall", currentNewPhotos.Item1, currentNewPhotos.Item2);
+                        //LayerWeb.InvokeScript("showPopUp", "pageUpdatePhotos");
 
                         LayerWeb.InvokeScript("setAvatar", currentNewPhotos.Item1, currentNewPhotos.Item2);
 
