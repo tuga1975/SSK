@@ -58,5 +58,6 @@ namespace Trinity.BE
         public Guid Queue_ID { get; set; }
         public TimeSpan? StartTime { get; set; }
         public TimeSpan? EndTime { get; set; }
+        public bool? IsSealed { get; set; }
     }
 }

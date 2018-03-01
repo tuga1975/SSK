@@ -836,9 +836,13 @@ namespace Trinity.DAL
                 {
                     var queueRepo = _localUnitOfWork.GetRepository<Trinity.DAL.DBContext.Queue>();
                     var dbQueue = queueRepo.Get(q => q.Queue_ID == queueId);
-                    dbQueue.Outcome = outcome;
-                    queueRepo.Update(dbQueue);
-                    _localUnitOfWork.Save();
+                    if (dbQueue != null)
+                    {
+                        dbQueue.Outcome = outcome;
+                        dbQueue.LastUpdatedDate = DateTime.Now;
+                        queueRepo.Update(dbQueue);
+                        _localUnitOfWork.Save();
+                    }
 
                     if (!EnumAppConfig.ByPassCentralizedDB)
                     {
@@ -856,8 +860,12 @@ namespace Trinity.DAL
                 {
                     var queueRepo = _centralizedUnitOfWork.GetRepository<Trinity.DAL.DBContext.Queue>();
                     var dbQueue = queueRepo.Get(q => q.Queue_ID == queueId);
-                    dbQueue.Outcome = outcome;
-                    queueRepo.Update(dbQueue);
+                    if (dbQueue != null)
+                    {
+                        dbQueue.Outcome = outcome;
+                        dbQueue.LastUpdatedDate = DateTime.Now;
+                        queueRepo.Update(dbQueue);
+                    }
 
                     return _centralizedUnitOfWork.Save();
                 }

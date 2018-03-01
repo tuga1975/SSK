@@ -11,10 +11,10 @@ namespace Trinity.CentralizedAPI.Controllers
     {
         [HttpPost]
         [Route("api/DrugResult/UpdateDrugSeal")]
-        public IHttpActionResult UpdateDrugSeal(string userId, string COCA, string BARB, string LSD, string METH, string MTQL, string PCP, string KET, string BUPRE, string CAT, string PPZ, string NPS)
+        public IHttpActionResult UpdateDrugSeal(string userId, string COCA, string BARB, string LSD, string METH, string MTQL, string PCP, string KET, string BUPRE, string CAT, string PPZ, string NPS, string updatedBy)
         {
             var result = new DAL.DAL_DrugResults().UpdateDrugSeal(userId, Convert.ToBoolean(COCA), Convert.ToBoolean(BARB), Convert.ToBoolean(LSD), Convert.ToBoolean(METH), Convert.ToBoolean(MTQL), 
-                                                                Convert.ToBoolean(PCP), Convert.ToBoolean(KET), Convert.ToBoolean(BUPRE), Convert.ToBoolean(CAT), Convert.ToBoolean(PPZ), Convert.ToBoolean(NPS));
+                                                                Convert.ToBoolean(PCP), Convert.ToBoolean(KET), Convert.ToBoolean(BUPRE), Convert.ToBoolean(CAT), Convert.ToBoolean(PPZ), Convert.ToBoolean(NPS), updatedBy);
             return Ok(result);
         }
 
