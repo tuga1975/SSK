@@ -181,6 +181,7 @@
     <Content Include="View\images\rightthumb.png" />
     <Content Include="View\images\ScanFingerPrint.png" />
     <Content Include="View\images\ScanSmartCard.png" />
+    <Content Include="View\images\transparentHead.png" />
     <Content Include="View\images\usr-default.jpg" />
     <Content Include="View\images\viewlayer.png" />
     <Content Include="View\scripts\bootstrap\bootstrap.min.css" />

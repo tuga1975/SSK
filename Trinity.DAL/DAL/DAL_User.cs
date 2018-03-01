@@ -132,7 +132,30 @@ namespace Trinity.DAL
                         select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, SmartCardId = mu.SmartCardId, RightThumbFingerprint = mu.RightThumbFingerprint, LeftThumbFingerprint = mu.LeftThumbFingerprint, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name, IsFirstAttempt = mu.IsFirstAttempt }).ToList();
             }
         }
-        public List<Trinity.BE.User> GetSuperviseeByNRIC(string nric)
+        public Trinity.BE.User GetSuperviseeByNRIC(string nric)
+        {
+            if (EnumAppConfig.IsLocal)
+            {
+                var user = (from mu in _localUnitOfWork.DataContext.Membership_Users
+                            join mur in _localUnitOfWork.DataContext.Membership_UserRoles on mu.UserId equals mur.UserId
+                            join mr in _localUnitOfWork.DataContext.Membership_Roles on mur.RoleId equals mr.Id
+                            where mu.NRIC == nric
+                            select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, SmartCardId = mu.SmartCardId, RightThumbFingerprint = mu.RightThumbFingerprint, LeftThumbFingerprint = mu.LeftThumbFingerprint, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name, IsFirstAttempt = mu.IsFirstAttempt }).FirstOrDefault();
+                //if (user == null) {
+                //    user = CallCentralized.Get<Trinity.BE.User>("User", "GetSuperviseeByNRIC", "nric=" + nric);
+                //}
+                return user;
+            }
+            else
+            {
+                return (from mu in _centralizedUnitOfWork.DataContext.Membership_Users
+                        join mur in _centralizedUnitOfWork.DataContext.Membership_UserRoles on mu.UserId equals mur.UserId
+                        join mr in _centralizedUnitOfWork.DataContext.Membership_Roles on mur.RoleId equals mr.Id
+                        where mu.NRIC== nric
+                        select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, SmartCardId = mu.SmartCardId, RightThumbFingerprint = mu.RightThumbFingerprint, LeftThumbFingerprint = mu.LeftThumbFingerprint, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name, IsFirstAttempt = mu.IsFirstAttempt }).FirstOrDefault();
+            }
+        }
+        public List<Trinity.BE.User> SearchSuperviseeByNRIC(string nric)
         {
             if (EnumAppConfig.IsLocal)
             {
