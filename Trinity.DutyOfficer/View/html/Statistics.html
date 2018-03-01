@@ -25,7 +25,8 @@
 <table id="table"></table>
 <script type="text/javascript">
     activemenu('Statistics');
-
+    $("#menu .menu-item").removeClass("active");
+    $("#menu [item-menu].active").parent().addClass("active");
     var pageSize = $('#pageSize');
         if (pageSize)
             pageSize = 10;

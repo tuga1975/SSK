@@ -30,6 +30,8 @@
 <table id="table"></table>
 <script type="text/javascript">
     activemenu('Blocked');
+    $("#menu .menu-item").removeClass("active");
+    $("#menu [item-menu].active").parent().addClass("active");
     
     var pageSize = $('#pageSize').length > 0 ? 10 : 0;
 

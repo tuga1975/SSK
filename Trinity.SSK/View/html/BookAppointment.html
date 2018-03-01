@@ -1,148 +1,205 @@
-﻿<span style="display: inline-block;font-size:20px;border:1px solid #CCC;background-color:#FFF;padding:10px;border-bottom:none;">Book Appointment</span>
-<br />
-<span style="display: inline-block;font-size:15px;border:1px solid #CCC;background-color:#FFF;padding:5px;">
-    Your next appointment will be on: <span app-date></span> <span app-time></span>
-    <span style="display:block;" info-notime>You have not selected a time slot.</span>
-</span>
-
-<div style="overflow:auto;height:300px;">
-    <div style="width:32%;padding:10px;margin-top:10px;float:left">
-        <div><p style="text-align:center;"><strong>Morning</strong></p></div>
-        <div style="" add-time-Morning>
-        </div>
-    </div>
-    <div style="width:32%;padding:10px;margin-top:10px;float:left">
-        <div><p style="text-align:center;"><strong>Afternoon</strong></p></div>
-        <div add-time-Afternoon>
-        </div>
-    </div>
-    <div style="width:32%;padding:10px;margin-top:10px;float:left">
-        <div><p style="text-align:center;"><strong>Evening</strong></p></div>
-        <div add-time-Evening>
-        </div>
-    </div>
-    <div style="clear:both;"></div>
+﻿<div name-page="Book Appointment"></div>
+<div style="font-size:18px;color:#5c5c5c;margin-top:30px;text-align:center;">
+    Your next appointment will be on  <b><span app-date></span> <span app-time></span></b>
 </div>
-<div style="position:fixed;bottom:10px;left:20px;width:60%">
-    <div style="height:25px;width:90px;border:solid 1px #000;text-align:center;">Legends</div>
-    <br />
-    <div>
-        <div style="float:left;width:150px;">
-            <div style="height:25px;width:25px;border:solid 1px #000;text-align:center;float:left;"></div>
-            <div style="height:25px;width:100px;border:solid 1px #000;text-align:center;">Available</div>
-        </div>
-        <div style="float:left;width:150px;">
-            <div style="height:25px;width:25px;border:solid 1px #000;text-align:center;float:left;background-color:deepskyblue"></div>
-            <div style="height:25px;width:100px;border:solid 1px #000;text-align:center;">Selected</div>
-        </div>
-        <div style="float:left;width:180px;">
-            <div style="height:25px;width:25px;border:solid 1px #000;text-align:center;float:left;background-color:#808080"></div>
-            <div style="height:25px;width:150px;border:solid 1px #000;text-align:center;">Fully Booked</div>
-        </div>
-        <div style="clear:both;"></div>
+
+<div parent-tab="" style="margin-top:30px;">
+    <div header-tab="">
+        <span item="Morning"></span>
+        <span item="Afternoon"></span>
+        <span item="Evening"></span>
     </div>
+    <div content-tab="">
+        <div item="Morning">
+            <div style="font-size:20px;color:#5c5c5c;text-align:left;">Please select time slot</div>
+            <div style="margin-top:10px;" content="">
+
+            </div>
+        </div>
+        <div item="Afternoon">
+            <div style="font-size:20px;color:#5c5c5c;text-align:left;">Please select time slot</div>
+            <div style="margin-top:10px;" content="">
+
+            </div>
+        </div>
+        <div item="Evening">
+            <div style="font-size:20px;color:#5c5c5c;text-align:left;">Please select time slot</div>
+            <div style="margin-top:10px;" content="">
+            </div>
+        </div>
+    </div>
+</div>
+<div id="footer" style="position:absolute;bottom:-5px;left:0px;width:calc(100%);height:50px;text-align:right;">
+    <input type="button" value="CANCEL" style="background-color:#FFF;color:#1cacf6;border:none;border-radius:5px;padding:8px 20px;border:1px solid #DDD;margin-right:20px;font-weight:bold;" onclick="api.server.LoadPage('Supervisee.html');" />
+    <input type="button" value="CONFIRM" style="background-color:#1cacf6;color:#FFF;border:none;border-radius:5px;padding:8px 20px;border:1px solid #1cacf6;font-weight:bold;" btn-save-bookappointment="" />
 </div>
 <style type="text/css">
-    .input-group-addon {
-        padding: 10px;
+    [parent-tab] {
     }
 
-    [item-select-time] {
+        [parent-tab] [header-tab] {
+        }
+
+            [parent-tab] [header-tab] [item] {
+                display: inline-block;
+                min-width: 200px;
+                height: 70px;
+                box-shadow: 0px 1px 10px rgba(0,0,0,0.5);
+                border-radius: 3px 3px 0px 0px;
+                padding: 0px 10px;
+                font-size: 21px;
+                color: #1cacf6;
+                font-weight: bold;
+                text-align: center;
+                box-sizing: border-box;
+                line-height: 70px;
+                margin-right: 10px;
+                background-color: #FFF;
+                position: relative;
+                z-index: 0;
+                cursor: pointer;
+            }
+
+                [parent-tab] [header-tab] [item]:before {
+                    content: attr(item);
+                }
+
+                [parent-tab] [header-tab] [item][active] {
+                    z-index: 2;
+                    pointer-events: none;
+                    color: #334352;
+                }
+
+                    [parent-tab] [header-tab] [item][active]::after {
+                        content: " ";
+                        position: absolute;
+                        width: calc(100% + 60px);
+                        height: 20px;
+                        bottom: -20px;
+                        left: -15px;
+                        background-color: #FFF;
+                    }
+
+                [parent-tab] [header-tab] [item]:first-child[active]::after {
+                    width: calc(100% + 30px);
+                    left: 0px;
+                }
+
+        [parent-tab] [content-tab] {
+            box-shadow: 0px 1px 10px rgba(0,0,0,0.5);
+            padding: 30px 40px 20px 40px;
+            z-index: 1;
+            position: absolute;
+            background-color: #FFF;
+            border-radius: 0px 3px 3px 3px;
+            width: 100%;
+            overflow-x: hidden;
+            overflow-y: auto;
+            height: calc(100% - 270px);
+        }
+
+            [parent-tab] [content-tab] [item] {
+                display: none;
+            }
+
+                [parent-tab] [content-tab] [item][active] {
+                    display: block;
+                }
+
+    [item-reason] {
         display: inline-block;
-        width: calc(25% - 24px);
-        margin: 5px 10px;
-        border: 1px solid #CCC;
-        border-radius: 5px;
-        padding: 5px 10px;
-        box-sizing: border-box;
+        width: calc(50% - 40px);
+        border: 1px solid #334352;
+        color: #26b0f6;
+        height: 50px;
+        line-height: 50px;
+        margin: 10px 15px;
         text-align: center;
+        border-radius: 5px;
+        font-size: 22px;
+        font-weight: bold;
         cursor: pointer;
     }
 
-        [item-select-time]:hover {
-            background-color: #CCC;
-        }
-
-        [item-select-time][selecttime="true"] {
-            background-color: deepskyblue !important;
+        [item-reason][active="true"] {
+            background-color: #334352;
+            color: #FFF;
             pointer-events: none;
         }
 
-        [item-select-time][selecttime="true"] {
-            background-color: deepskyblue !important;
-            pointer-events: none;
-        }
-
-        [item-select-time][availble="false"] {
+        [item-reason][availble="false"] {
             background-color: #999;
+            border-color: #999;
+            color: #333;
             pointer-events: none;
         }
 </style>
-
-<button type="button" class="btn btn-danger" style="position:fixed;bottom:10px;right:100px;" id="btnPrintDetail">Print Appointment Details</button>
-<button type="button" class="btn btn-dark" style="position:fixed;bottom:10px;right:20px;" onclick="window.external.LoadPage('Supervisee.html');">Back</button>
-
 <script type="text/javascript">
+    var timeslotOldId = null;
     api.ready(function (model) {
         $('[app-date]').text(model[0].GetDateTxt);
-
         if (model[0].FromTimeTxt != null) {
             $('[info-notime]').remove();
             $('[app-time]').text(model[0].FromTimeTxt);
         }
         //
         $.each(model[1].Morning, function (index, item) {
-            $('[add-time-Morning]').append('<span style="width:100%" item-select-time availble="' + item.IsAvailble + '" selecttime="' + item.IsSelected + '" start="' + item.StartTimeTxt + '" end="' + item.EndTimeTxt + '" timeslot_ID="' + item.Timeslot_ID + '">' + item.StartTimeTxt + ' to ' + item.EndTimeTxt + '</span>');
+            $('[content-tab] [item="Morning"] [content]').append('<div item-reason="" availble="' + item.IsAvailble + '" active="' + item.IsSelected + '" start="' + item.StartTimeTxt + '" end="' + item.EndTimeTxt + '" timeslot_ID="' + item.Timeslot_ID + '">' + item.StartTimeTxt + ' to ' + item.EndTimeTxt + '</div>');
         });
 
         $.each(model[1].Afternoon, function (index, item) {
-            $('[add-time-Afternoon]').append('<span style="width:100%" item-select-time availble="' + item.IsAvailble + '" selecttime="' + item.IsSelected + '" start="' + item.StartTimeTxt + '" end="' + item.EndTimeTxt + '" timeslot_ID="' + item.Timeslot_ID + '">' + item.StartTimeTxt + ' to ' + item.EndTimeTxt + '</span>');
+            $('[content-tab] [item="Afternoon"] [content]').append('<div item-reason="" availble="' + item.IsAvailble + '" active="' + item.IsSelected + '" start="' + item.StartTimeTxt + '" end="' + item.EndTimeTxt + '" timeslot_ID="' + item.Timeslot_ID + '">' + item.StartTimeTxt + ' to ' + item.EndTimeTxt + '</div>');
         });
         $.each(model[1].Evening, function (index, item) {
-            $('[add-time-Evening]').append('<span style="width:100%" item-select-time availble="' + item.IsAvailble + '" selecttime="' + item.IsSelected + '" start="' + item.StartTimeTxt + '" end="' + item.EndTimeTxt + '" timeslot_ID="' + item.Timeslot_ID + '">' + item.StartTimeTxt + ' to ' + item.EndTimeTxt + '</span>');
+            $('[content-tab] [item="Evening"] [content]').append('<div item-reason="" availble="' + item.IsAvailble + '" active="' + item.IsSelected + '" start="' + item.StartTimeTxt + '" end="' + item.EndTimeTxt + '" timeslot_ID="' + item.Timeslot_ID + '">' + item.StartTimeTxt + ' to ' + item.EndTimeTxt + '</div>');
+        });
+        timeslotOldId = $('[item-reason][active="true"]').length > 0 ? $('[item-reason][active="true"]').attr('timeslot_ID') : null;
+
+        $('[parent-tab] [header-tab] [item]').click(function () {
+            var index = $(this).index();
+            $(this).parent('[header-tab]').children('[item]').removeAttr('active').eq(index).attr('active', '');
+            $(this).parent('[header-tab]').parent('[parent-tab]').find('[content-tab] [item]').removeAttr('active').eq(index).attr('active', '');
+        }).eq(0).click();
+
+        $('[item-reason]').click(function () {
+            $('[item-reason]').attr('active', 'false');
+            $(this).attr('active', 'true');
         });
 
-        $('[item-select-time]').click(function () {
+        $('[btn-save-bookappointment]').click(function () {
+            var timeslotNowId = $('[item-reason][active="true"]').length > 0 ? $('[item-reason][active="true"]').attr('timeslot_ID') : null;
+            if (timeslotNowId == null || timeslotNowId == timeslotOldId) {
+                alert('Please choose the timeslot');
+            } else {
+                var _this = $('[item-reason][active="true"]').eq(0);
+                var timeslot_ID = _this.attr('timeslot_ID');
+                var startTime = _this.attr('start');
+                var endTime = _this.attr('end');
 
-            var _this = $(this);
-            var timeslot_ID = _this.attr('timeslot_ID');
-
-            var startTime = _this.attr('start');
-            var endTime = _this.attr('end');
-
-            api.server.CheckBookingTime(timeslot_ID, function (isPast) {
-
-                if (isPast) {
-                    alert('You cant choose the time in the past.');
-                }
-                else {
-                    if (model[0].ChangedCount >= 3) {
-                        alert('You have exceeded the number of times allowed for time slot change. Please keep to your timeslot ' + startTime + ' on ' + model[0].GetDateTxt + '. Otherwise, please contact your case officer.');
-                    } else {
-                        var re = confirm('You have selected the time slot\n' + startTime + ' on ' + model[0].GetDateTxt + '\nConfirm time slot?', 'Warning');
-                        if (re == true) {
-                            api.server.UpdateTimeAppointment(model[0].ID, timeslot_ID, function (isUpdated) {
-                                if (isUpdated) {
-                                    model[0].ChangedCount += 1;
-                                    //$('[item-select-time][selecttime="true"]').removeAttr('selecttime').removeAttr('availble');
-                                    //_this.attr('availble', false).attr('selecttime', true);
-                                    $('[item-select-time][selecttime="true"]').removeAttr('selecttime');
-                                    _this.attr('selecttime', true);
-                                    $('[app-time]').text(startTime);
-                                    $('[info-notime]').remove();
-                                }
-                                else {
-                                    alert("You have already queued!\n The timeslot cannot be changed.");
-                                }
-                            });
+                api.server.CheckBookingTime(timeslot_ID, function (isPast) {
+                    if (isPast) {
+                        alert('You cant choose the time in the past.');
+                    }
+                    else {
+                        if (model[0].ChangedCount >= 3) {
+                            alert('You have exceeded the number of times allowed for time slot change. Please keep to your timeslot ' + startTime + ' on ' + model[0].GetDateTxt + '. Otherwise, please contact your case officer.');
+                        } else {
+                            var re = confirm('You have selected the time slot\n' + startTime + ' on ' + model[0].GetDateTxt + '\nConfirm time slot?', 'Warning');
+                            if (re == true) {
+                                api.server.UpdateTimeAppointment(model[0].ID, timeslot_ID, function (isUpdated) {
+                                    if (isUpdated) {
+                                        model[0].ChangedCount += 1;
+                                        $('[app-time]').text(startTime);
+                                    }
+                                    else {
+                                        alert("You have already queued!\n The timeslot cannot be changed.");
+                                    }
+                                });
+                            }
                         }
                     }
-                }
-            });
-        });
-        $('#btnPrintDetail').click(function () {
-            alert(model[0].ID);
-            api.server.PrintAppointmentDetails(model[0].ID)
+                });
+            }
         });
     });
 </script>

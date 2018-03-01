@@ -14,7 +14,7 @@ namespace Enrolment
 {
     class Webcam
     {
-        VideoCaptureDevice videoSource;
+       public VideoCaptureDevice videoSource;
         PictureBox pictureBox;
         public Webcam(PictureBox pic)
         {

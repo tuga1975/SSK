@@ -296,6 +296,7 @@
     <Content Include="View\html\PrintingTemplates\UBLabelTemplate .html" />
     <Content Include="View\html\PrintingTemplates\MUBLabelTemplate.html" />
     <Content Include="View\html\QueuePopupDrugs.html" />
+    <Content Include="View\html\QueuePopupSeal.html" />
     <Content Include="View\html\Settings.html" />
     <Content Include="View\html\Queue.html" />
     <Content Include="View\html\AlertPopupDetail.html" />
@@ -307,6 +308,7 @@
     <Content Include="View\img\central_narco_logo.png" />
     <Content Include="View\img\FingerPrint.png" />
     <Content Include="View\img\Logo.png" />
+    <Content Include="View\img\logoCNB.png" />
     <Content Include="View\img\ManualLogin.png" />
     <Content Include="View\img\ScanSmartCard.png" />
     <Content Include="View\scripts\lib.js" />

@@ -1,6 +1,6 @@
 ﻿<div class="modal fade" role="dialog" id="idQueueDrugs">
     <div class="modal-dialog" style="width:750px;">
-        <div class="modal-content">
+        <div class="modal-content" style="width:750px;">
             <div class="modal-header">
                 <h5 class="modal-title">Drug Test <span namedrug="time" style="margin-left:10px;font-weight:normal;font-size:13px;"></span></h5>
             </div>
@@ -111,7 +111,7 @@
                 <div style="clear:both;margin-bottom:20px;"></div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" id="btnSeal">Seal</button>
+                <button type="button" class="btn btn-default" id="btnSealTest">Seal</button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
             </div>
         </div>
@@ -145,7 +145,7 @@
             $('#seal-NPS').prop('checked', model.Seal['NPS']);
         };
 
-        $("#btnSeal").click(function (e) {
+        $("#btnSealTest").click(function (e) {
             var COCA = $('#seal-COCA').is(":checked");
             var BARB = $('#seal-BARB').is(":checked");
             var LSD = $('#seal-LSD').is(":checked");

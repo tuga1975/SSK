@@ -161,6 +161,7 @@
     <Content Include="View\html\WebcamCapture.html" />
     <Content Include="View\images\avatar-demo.jpg" />
     <Content Include="View\images\background-smart-card.png" />
+    <Content Include="View\images\background-takephoto.png" />
     <Content Include="View\images\Background.png" />
     <Content Include="View\images\Calendar-Clock-Icon.jpeg" />
     <Content Include="View\images\central_narco_logo.png" />
@@ -180,6 +181,7 @@
     <Content Include="View\images\rightthumb.png" />
     <Content Include="View\images\ScanFingerPrint.png" />
     <Content Include="View\images\ScanSmartCard.png" />
+    <Content Include="View\images\transparentHead.png" />
     <Content Include="View\images\usr-default.jpg" />
     <Content Include="View\images\viewlayer.png" />
     <Content Include="View\scripts\bootstrap\bootstrap.min.css" />

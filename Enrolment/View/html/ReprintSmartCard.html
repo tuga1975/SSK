@@ -1,38 +1,311 @@
-<div style="width:100%;">
-    <div class="header header-form-supervisee">
-        <img class="logo" src="../images/logo.png" />
-        <h3>Reprint Smart Card</h3>
-        <div class="clear"></div>
+<style>
+
+    body {
+        background: #fff;
+    }
+
+    .collapsible {
+        list-style: none;
+        padding: 0;
+        margin: 1rem 0;
+    }
+
+        .collapsible li {
+            list-style: none;
+            padding: 0;
+        }
+
+        .collapsible .collapsible-header {
+            font-size: 1.2rem;
+            border-bottom: 1px solid #ccc;
+            position: relative;
+            padding-top: 1rem;
+        }
+
+            .collapsible .collapsible-header:after {
+                color: #1cacf6;
+                content: "\f126";
+                display: inline-block;
+                font-family: "Ionicons";
+                speak: none;
+                font-style: normal;
+                font-weight: normal;
+                font-variant: normal;
+                text-transform: none;
+                text-rendering: auto;
+                line-height: 1;
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+                position: absolute;
+                right: 0;
+            }
+
+            .collapsible .collapsible-header.collapsed:after {
+                content: "\f123";
+            }
+
+        .collapsible .collapsible-body {
+            margin: 1rem 0;
+        }
+
+    #superviseeDetails .btn {
+        text-transform: uppercase;
+    }
+
+    .form-material .input-group-prepend {
+        min-width: 35%;
+    }
+
+    .form-material .input-group .input-group-text {
+        border: 0;
+        border-radius: 0;
+        background-color: transparent;
+        color: #209CDD;
+    }
+
+    .form-material .btn {
+        background: #1CACF6;
+        color: #fff;
+        text-transform: uppercase;
+    }
+
+        .form-material .btn.btn-light {
+            background-color: transparent;
+            color: #1CACF6;
+        }
+
+    .form-group {
+        margin-bottom: 1rem;
+        position: relative;
+        min-height: 50px;
+    }
+
+    .form-select {
+        width: 100%;
+        float: left;
+        border-bottom: 1px solid #ccc;
+        margin: 10px 0;
+        display: flex;
+        flex-direction: row;
+    }
+
+        .form-select .input-group-select {
+            min-width: 35%;
+        }
+
+        .form-select .form-label {
+            border: 0;
+            border-radius: 0;
+            background-color: transparent;
+            color: #209CDD;
+            padding: .375rem .75rem;
+            margin-bottom: 0;
+            font-size: 1rem;
+            font-weight: 400;
+            line-height: 1.5;
+            position: absolute;
+        }
+
+        .form-select select {
+            padding: .375rem .75rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #495057;
+            -moz-appearance: none; /* Firefox */
+            -webkit-appearance: none; /* Safari and Chrome */
+            text-indent: 1px;
+            text-overflow: '';
+            border: 0;
+            position: relative;
+        }
+
+            .form-select select + label {
+                float: right;
+                margin-top: 7px;
+                margin-right: 5px;
+                pointer-events: none;
+                background-color: #fff;
+                padding-right: 5px;
+                color: #209CDD;
+            }
+
+            .form-select select::-ms-expand {
+                display: none;
+            }
+
+        .form-select .select-wrap {
+            position: relative;
+        }
+
+    .tab-fix {
+        position: relative;
+        max-width: 100%;
+        max-height: calc(100% - 80px);
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+    .form-material input::-webkit-input-placeholder {
+        font-style: italic;
+        color: #ccc;
+    }
+
+    .form-material input:-moz-placeholder {
+        font-style: italic;
+        color: #ccc;
+    }
+
+    .form-material input::-moz-placeholder {
+        font-style: italic;
+        color: #ccc;
+    }
+
+    .form-material input:-ms-input-placeholder {
+        font-style: italic;
+        color: #ccc;
+    }
+
+    .nav-tabs-custom {
+        height: 50px;
+        background: #F6F6F6;
+        border: 0;
+    }
+
+        .nav-tabs-custom a {
+            height: 50px;
+            font-size: 1.1rem;
+            border: 0;
+            font-weight: bold;
+        }
+
+            .nav-tabs-custom a i {
+                padding-right: 10px;
+            }
+
+        .nav-tabs-custom .nav-link {
+            padding: 1rem;
+            line-height: 1rem;
+        }
+
+            .nav-tabs-custom .nav-link.active {
+                border: 0;
+                border-radius: 0;
+            }
+
+    .title-border-red {
+        margin-top: 30px;
+    }
+
+        .title-border-red > h5 {
+            border-bottom: 2px solid red;
+            margin-bottom: -1px;
+            display: inline-block;
+            padding: 5px 0;
+        }
+
+    .hidden-scrollbar {
+        position: relative;
+        height: 450px;
+        width: 100%;
+        overflow: hidden;
+    }
+
+        .hidden-scrollbar .scrollbar {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: -17px;
+            padding-right: 17px;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+    #issuedCardList {
+        width: calc(100% - 60px);
+        margin: 30px;
+        text-align: center;
+    }
+
+    .modal-dialog {
+        width: 450px;
+    }
+
+    .modal-header {
+        border: none;
+    }
+
+    button {
+        margin-top: 20px;
+        padding: 10px 0;
+        border-radius: 4px;
+        border: none;
+    }
+
+    #reprintCard .modal-body button {
+        background: none;
+        border: none;
+        color: #1CACF6;
+    }
+
+        #reprintCard .modal-body button:hover,
+        #reprintCard .modal-body button:focus {
+            color: #fff;
+            background: #1CACF6;
+            cursor: pointer;
+        }
+
+    textarea {
+        resize: none;
+    }
+</style>
+<ul class="nav nav-tabs nav-tabs-custom" role="tablist" style="margin-top:50px;">
+    <li class="nav-item">
+        <a class="nav-link active" data-toggle="tab" href="javascript:LoadSuperviseeDetails();" role="tab">
+            <i class="ion-information-circled"></i> Supervisee Details
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" role="tab" href="javascript:api.server.LoadPage('ReprintSmartCard.html');">
+            <i class="fa fa-address-card"></i> Issued card
+        </a>
+    </li>
+</ul>
+<div class="tab-pane" id="issued" role="tabpanel">
+    <div class="title-border-red border-bottom px-3">
+        <h5>Issued Cards List</h5>
     </div>
-    <div class="form-supervisee">
+
+</div>
+
+<!--<div class="form-supervisee">-->
+    <div >
         <form id="superviseeFrm">
-            <input class="name-supervisee" type="text" value="Reprint Smart Card" disabled="disabled" />
-            <nav class="nav nav-tabs" id="myTab" role="tablist">
-                <a class="nav-item nav-link" href="javascript:LoadSuperviseeDetails();">Supervisee Details</a>
-                <a class="nav-item nav-link active">Issued Cards</a>
-            </nav>
+
+
             <div class="tab-content" id="nav-tabContent">
                 <div class="tab-pane fade show active" id="issued-cards" role="tabpanel" aria-labelledby="nav-profile-tab">
                     <div>
-                        <table class="table table-bordered" id="data-issuedcards">
+                        <table class="table" id="data-issuedcards">
                             <colgroup></colgroup>
-                            <thead>
+                            <thead class="thead-light">
                                 <tr>
-                                    <th>NRIC</th>
-                                    <th>Name</th>
+                                    <th>No</th>
+                                    <th>Supervisee Name</th>
                                     <th>Issued Date</th>
                                     <th>Expired Date</th>
                                     <th>Card Number</th>
                                     <th>Status</th>
-                                    <th style="text-align:center;">Action</th>
+                                    <th style="text-align:center;"></th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
                         </table>
                         <div enterreprint style="display:none;margin-top:10px;">
-                            <span style="height:30px;display:inline-block;vertical-align:middle;box-sizing:border-box;padding:0px 10px;border:1px solid #333;line-height:30px;float:left;">Enter reason to reprint:</span>
-                            <input type="text" name="reprint" style="height:30px;display:inline-block;vertical-align:middle;box-sizing:border-box;padding:0px 10px;border:1px solid #333;width:calc(100% - 280px);float:left;margin:0px 10px;" />
-                            <button type="button" style="border:1px solid #333; float:right;" onclick="ReprintIssuedCard();">Reprint</button>
+                            <span style="height:35px;display:inline-block;vertical-align:middle;padding:0px 10px;line-height:30px;float:left;">Enter reason to reprint:</span>
+                            <input type="text" name="reprint" style="height:35px;display:inline-block;vertical-align:middle;width:calc(100% - 300px);float:left;margin:0px 10px;" />
+                            <button type="button"  onclick="ReprintIssuedCard();">Reprint</button>
                             <div style="clear:both;"></div>
                         </div>
                     </div>
@@ -40,122 +313,122 @@
             </div>
         </form>
     </div>
-</div>
-<div style="opacity:1;position:fixed;z-index:-1;right:0px;top:0px;overflow:hidden;width:0px;height:0px;">
-    <div style="width:300px;height:182px;border:1px solid #000;float:right;position:relative;overflow:hidden;border-radius:5px;font-family:Arial;" id="frontCard">
-        <img src="../images/background-smart-card.png" style="position:absolute;z-index:0;left:0px;top:0px;height:100%;width:100%;" />
-        <div style="z-index:1;color:#FFF;">
-            <div style="position:absolute;font-size: 15px;font-weight: bold;font-style: italic;top: 10px;left: 20px;">
-                CNB Supervisee Card
-            </div>
-            <div style="height:95px;width:75px;position:absolute;top:40px;left:20px;text-align:center;padding:1px;border-radius:5px;background-color:#FFF;">
-                <img src="../images/usr-default.jpg" id="verifyPhoto" style="height:100%;max-width:100%;border-radius:5px;" />
-            </div>
-            <img src="../images/central_narco_logo.png" style="position:absolute;height: 35px;top: 119px;left: 40px;z-index: 1;">
-            <div style="position:absolute;top:40px;left: 110px;font-size: 12px;font-weight: bold;line-height: 16px;">
-                <div><span name="verifyName"></span></div>
-                <div><span name="verifyNRIC"></span></div>
-                <div style="clear:both"></div>
-            </div>
-            <div style="position:absolute;width:auto;left:110px;bottom:45px;background-color:#FFF;border-radius:5px;padding:5px;">
-                <img name="verifyBarcode" />
-            </div>
-            <div style="position:absolute;right:15px;bottom:10px;text-align:right;font-size:10px;font-weight:bold;">
-                <span name="verifyCardNumber"></span>
-            </div>
-        </div>
-    </div>
-    <div style="width:300px;height:182px;border:1px solid #000;float:right;position:relative;overflow:hidden;border-radius:5px;font-family:Arial;" id="backCard">
-        <img src="../images/background-smart-card.png" style="position:absolute;z-index:0;left:0px;top:0px;height:100%;width:100%;" />
 
-        <div style="position:absolute;bottom:15px;left:15px;z-index:1;color:#FFF;">
-            <div style="font-size: 12px;font-weight: bold;">
-                <div>Date of Issue: <span name="issueDate"></span></div>
-            </div>
-            <div style="margin-top:10px;font-size: 8px;font-weight: bold;text-shadow: 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black;">
-                “If this card is found, please return to any Police Station or to:<br />
-                <span name="verifyCompanyName"></span><br />
-                <span name="verifyVenueName"></span><br />
-                <span name="verifyAddress"></span><br />
-                Contact Number: <span name="verifyContactNumber"></span><br />
+    <div style="opacity:1;position:fixed;z-index:-1;right:0px;top:0px;overflow:hidden;width:0px;height:0px;">
+        <div style="width:300px;height:182px;float:right;position:relative;overflow:hidden;font-family:Arial;" id="frontCard">
+            <img src="../images/background-smart-card.png" style="position:absolute;z-index:0;left:0px;top:0px;height:100%;width:100%;" />
+            <div style="z-index:1;color:#FFF;">
+                <div style="position:absolute;font-size: 15px;font-weight: bold;font-style: italic;top: 10px;left: 20px;">
+                    CNB Supervisee Card
+                </div>
+                <div style="height:95px;width:75px;position:absolute;top:40px;left:20px;text-align:center;padding:1px;background-color:#FFF;">
+                    <img src="../images/usr-default.jpg" id="verifyPhoto" style="height:100%;max-width:100%;" />
+                </div>
+                <img src="../images/central_narco_logo.png" style="position:absolute;height: 35px;top: 119px;left: 40px;z-index: 1;">
+                <div style="position:absolute;top:40px;left: 110px;font-size: 12px;font-weight: bold;line-height: 16px;">
+                    <div><span name="verifyName"></span></div>
+                    <div><span name="verifyNRIC"></span></div>
+                    <div style="clear:both"></div>
+                </div>
+                <div style="position:absolute;width:auto;left:110px;bottom:45px;background-color:#FFF;padding:5px;">
+                    <img name="verifyBarcode" />
+                </div>
+                <div style="position:absolute;right:15px;bottom:10px;text-align:right;font-size:10px;font-weight:bold;">
+                    <span name="verifyCardNumber"></span>
+                </div>
             </div>
         </div>
-        <div style="clear:both"></div>
+        <div style="width:300px;height:182px;float:right;position:relative;overflow:hidden;font-family:Arial;" id="backCard">
+            <img src="../images/background-smart-card.png" style="position:absolute;z-index:0;left:0px;top:0px;height:100%;width:100%;" />
+
+            <div style="position:absolute;bottom:15px;left:15px;z-index:1;color:#FFF;">
+                <div style="font-size: 12px;font-weight: bold;">
+                    <div>Date of Issue: <span name="issueDate"></span></div>
+                </div>
+                <div style="margin-top:10px;font-size: 8px;font-weight: bold;text-shadow: 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black;">
+                    “If this card is found, please return to any Police Station or to:<br />
+                    <span name="verifyCompanyName"></span><br />
+                    <span name="verifyVenueName"></span><br />
+                    <span name="verifyAddress"></span><br />
+                    Contact Number: <span name="verifyContactNumber"></span><br />
+                </div>
+            </div>
+            <div style="clear:both"></div>
+        </div>
     </div>
-</div>
-<script>
-    var CardInfo = null;
-    var UserID = null;
-    api.server.GetIssuedCards(function (data) {
-        UserID = data[1];
-        $.each(data[0], function (index, item) {
-            $('#data-issuedcards tbody').append(api.DumpDataToTxt('<tr><td>{NRIC}</td><td>{Name}</td><td>{Date_Of_Issue_Txt}</td><td>{Expired_Date_Txt}</td><td>{Serial_Number}</td><td reprintsmartcard-status>{Status}</td><td style="text-align:center;">' + (index == 0 ? '<a href="javascript:ShowPrintIssuedCard();"><img style="cursor:pointer;" src="../images/printer.png"/></a>' : '') + '</td></tr>', item));
+    <script>
+        var CardInfo = null;
+        var UserID = null;
+        api.server.GetIssuedCards(function (data) {
+            UserID = data[1];
+            $.each(data[0], function (index, item) {
+                $('#data-issuedcards tbody').append(api.DumpDataToTxt('<tr><td>' + (index + 1) + '</td><td>{Name}</td><td>{Date_Of_Issue_Txt}</td><td>{Expired_Date_Txt}</td><td>{Serial_Number}</td><td reprintsmartcard-status>{Status}</td><td style="text-align:center;">' + (index == 0 ? '<a href="javascript:ShowPrintIssuedCard();"><i class="fa fa-address-card"></i></a>' : '') + '</td></tr>', item));
+            });
+
+            api.server.loadDataVerify(function (dataRe) {
+
+                var model = dataRe[0];
+                CardInfo = dataRe[1];
+                $('[name="issueDate"]').text(CardInfo.Date_Of_Issue_Txt);
+                $('[name="verifyCardNumber"]').text(CardInfo.CardNumberFull);
+
+                $('[name="verifyCompanyName"]').text(CardInfo.CompanyName);
+                $('[name="verifyVenueName"]').text(CardInfo.VenueName);
+                $('[name="verifyAddress"]').text(CardInfo.Address);
+                $('[name="verifyContactNumber"]').text(CardInfo.ContactNumber);
+
+
+
+                //User_Photo1_Base64
+                $('#verifyPhoto').attr('src', 'data:image/jpg;base64,' + model.UserProfile.User_Photo1);
+
+                $('[name="verifyName"]').text(model.User.Name);
+                if (model.UserProfile.DOB != null) {
+                    $('[name="verifyDOB"]').text(model.UserProfile.DOBTxt);
+                }
+
+                $('[name="verifyNRIC"]').text(model.User.NRIC);
+                $('[name="verifyGender"]').text(model.UserProfile.Gender == null ? '' : model.UserProfile.Gender);
+                $('[name="verifyNation"]').text(model.UserProfile.Nationality);
+                //if (model.UserProfile.DateOfIssue != null) {
+
+                //    $('[name="issueDate"]').text(model.UserProfile.DateOfIssueTxt);
+                //    $('[name="issueDateBack"]').text(model.UserProfile.DateOfIssueTxt);
+                //}
+                //if (model.UserProfile.Expired_Date != null) {
+                //    $('[name="expireDate"]').text(model.UserProfile.Expired_DateTxt);
+                //}
+                $('[name="verifyRace"]').text(model.UserProfile.Race == null ? '' : model.UserProfile.Race);
+                JsBarcode('[name="verifyBarcode"]', model.User.NRIC, { height: 20, fontSize: 8, width: 1, margin: 0, font: "Arial" });
+            });
+
         });
-
-        api.server.loadDataVerify(function (dataRe) {
-
-            var model = dataRe[0];
-            CardInfo = dataRe[1];
-            $('[name="issueDate"]').text(CardInfo.Date_Of_Issue_Txt);
-            $('[name="verifyCardNumber"]').text(CardInfo.CardNumberFull);
-
-            $('[name="verifyCompanyName"]').text(CardInfo.CompanyName);
-            $('[name="verifyVenueName"]').text(CardInfo.VenueName);
-            $('[name="verifyAddress"]').text(CardInfo.Address);
-            $('[name="verifyContactNumber"]').text(CardInfo.ContactNumber);
-
-
-
-            //User_Photo1_Base64
-            $('#verifyPhoto').attr('src', 'data:image/jpg;base64,' + model.UserProfile.User_Photo1);
-
-            $('[name="verifyName"]').text(model.User.Name);
-            if (model.UserProfile.DOB != null) {
-                $('[name="verifyDOB"]').text(model.UserProfile.DOBTxt);
-            }
-
-            $('[name="verifyNRIC"]').text(model.User.NRIC);
-            $('[name="verifyGender"]').text(model.UserProfile.Gender == null ? '' : model.UserProfile.Gender);
-            $('[name="verifyNation"]').text(model.UserProfile.Nationality);
-            //if (model.UserProfile.DateOfIssue != null) {
-
-            //    $('[name="issueDate"]').text(model.UserProfile.DateOfIssueTxt);
-            //    $('[name="issueDateBack"]').text(model.UserProfile.DateOfIssueTxt);
-            //}
-            //if (model.UserProfile.Expired_Date != null) {
-            //    $('[name="expireDate"]').text(model.UserProfile.Expired_DateTxt);
-            //}
-            $('[name="verifyRace"]').text(model.UserProfile.Race == null ? '' : model.UserProfile.Race);
-            JsBarcode('[name="verifyBarcode"]', model.User.NRIC, { height: 20, fontSize: 8, width: 1, margin: 0, font: "Arial" });
-        });
-
-    });
-    function LoadSuperviseeDetails() {
-        api.server.EditSupervisee(UserID);
-    }
-    function OnIssuedCardReprinted(status, item) {
-        if (status) {
-            item = JSON.parse(item);
-            $('#data-issuedcards tbody [reprintsmartcard-status]').text('Inactive');
-            $('#data-issuedcards tbody td img').remove();
-            $('#data-issuedcards tbody').prepend(api.DumpDataToTxt('<tr><td>{NRIC}</td><td>{Name}</td><td>{Date_Of_Issue_Txt}</td><td>{Expired_Date_Txt}</td><td>{Serial_Number}</td><td reprintsmartcard-status>{Status}</td><td  style="text-align:center;"><a href="javascript:ShowPrintIssuedCard();"><img style="cursor:pointer;" src="../images/printer.png"/></a></td></tr>', item))
-            $('[enterreprint]').css('display', 'none');
-        } else {
-            alert('Could not reprint. Please the Smart Card Printer and try again!');
+        function LoadSuperviseeDetails() {
+            api.server.EditSupervisee(UserID);
         }
-    }
-    function ReprintIssuedCard() {
-        html2canvas($('#frontCard'), {
-            onrendered: function (froncanvas) {
-                html2canvas($('#backCard'), {
-                    onrendered: function (backcanvas) {
-                        api.server.ReprintIssuedCard($('[name="reprint"]').val(), JSON.stringify(CardInfo), froncanvas.toDataURL("image/png"), backcanvas.toDataURL("image/png"));
-                    }
-                });
+        function OnIssuedCardReprinted(status, item) {
+            if (status) {
+                item = JSON.parse(item);
+                $('#data-issuedcards tbody [reprintsmartcard-status]').text('Inactive');
+                $('#data-issuedcards tbody td img').remove();
+                $('#data-issuedcards tbody').prepend(api.DumpDataToTxt('<tr><td>{NRIC}</td><td>{Name}</td><td>{Date_Of_Issue_Txt}</td><td>{Expired_Date_Txt}</td><td>{Serial_Number}</td><td reprintsmartcard-status>{Status}</td><td  style="text-align:center;"><a href="javascript:ShowPrintIssuedCard();"><img style="cursor:pointer;" src="../images/printer.png"/></a></td></tr>', item))
+                $('[enterreprint]').css('display', 'none');
+            } else {
+                alert('Could not reprint. Please the Smart Card Printer and try again!');
             }
-        });
-    }
-    function ShowPrintIssuedCard() {
-        $('[enterreprint]').css('display', 'block');
-    }
-</script>
+        }
+        function ReprintIssuedCard() {
+            html2canvas($('#frontCard'), {
+                onrendered: function (froncanvas) {
+                    html2canvas($('#backCard'), {
+                        onrendered: function (backcanvas) {
+                            api.server.ReprintIssuedCard($('[name="reprint"]').val(), JSON.stringify(CardInfo), froncanvas.toDataURL("image/png"), backcanvas.toDataURL("image/png"));
+                        }
+                    });
+                }
+            });
+        }
+        function ShowPrintIssuedCard() {
+            $('[enterreprint]').css('display', 'block');
+        }
+    </script>

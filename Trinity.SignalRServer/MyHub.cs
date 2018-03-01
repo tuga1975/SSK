@@ -97,19 +97,26 @@ namespace SignalRChat
         public override Task OnDisconnected(bool stopCalled)
         {
 
-            Program.ProfileConnected.RemoveWhere(d => d.isOffline && d.HoursOffline >= 5);
+
             foreach (var item in Program.ProfileConnected.Where(d => d.ConnectionId == Context.ConnectionId))
             {
                 item.DateOffline = DateTime.Now;
                 if (item.isApp)
                 {
                     Program.MainForm.WriteToConsole("[" + item.Station + "] => App Disconnected");
+                    foreach (var itemConnect in Program.ProfileConnected.Where(d => d.isUser && d.Station == EnumStations.DUTYOFFICER))
+                    {
+                        Clients.Client(itemConnect.ConnectionId).AppDisconnect(Station);
+                    }
                 }
                 else
                 {
                     Program.MainForm.WriteToConsole("[" + item.Station + "] => User Disconnected " + item.UserID);
                 }
             }
+
+            Program.ProfileConnected.RemoveWhere(d => d.isOffline);
+
             return base.OnDisconnected(stopCalled);
         }
     }
