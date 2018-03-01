@@ -34,7 +34,8 @@
 <table id="table"></table>
 <script type="text/javascript">
     activemenu('Appointments');
-
+    $("#menu .menu-item").removeClass("active");
+    $("#menu [item-menu].active").parent().addClass("active");
     var dataSource = [];
     var searchSource = [];
     var today = new Date();

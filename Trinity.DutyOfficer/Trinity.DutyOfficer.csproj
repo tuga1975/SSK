@@ -311,6 +311,7 @@
     <Content Include="View\img\central_narco_logo.png" />
     <Content Include="View\img\FingerPrint.png" />
     <Content Include="View\img\Logo.png" />
+    <Content Include="View\img\logoCNB.png" />
     <Content Include="View\img\ManualLogin.png" />
     <Content Include="View\img\ScanSmartCard.png" />
     <Content Include="View\scripts\lib.js" />
