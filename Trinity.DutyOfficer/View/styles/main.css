@@ -26,9 +26,6 @@ input {
     position: relative;
 }
 
-    #content .chi-content {
-    }
-
 .loading {
     position: fixed;
     z-index: 100;
@@ -70,75 +67,113 @@ input {
     background-color: #FFF;
     top: 0px;
     left: 0px;
+    padding: 15px 30px;
 }
 
-.logo {
-    position: absolute;
-    width: 60px;
-    height: 60px;
-    text-align: center;
-    line-height: 40px;
-    left: 10px;
-    top: 10px;
-    padding: 5px;
-    font-weight: bold;
-    box-sizing: border-box;
-    background-image: url('../img/central_narco_logo.png');
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-size: contain;
+    #header .logoGoverment {
+        margin-top: 10px;
+    }
+
+.CheckerDeviceStatus {
+    margin-top: 15px;
+    color: #9a9a9a;
 }
 
 .logout {
-    position: absolute;
-    width: 50px;
-    height: 50px;
-    line-height: 50px;
-    right: 10px;
-    top: 10px;
-    font-size: 45px;
+    text-decoration: underline;
+}
+
+.sskStatus, .ssaStatus,
+.uhpStatus, .espStatus {
+    margin-right: 15px;
+}
+
+span[color] {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+    box-sizing: border-box;
+}
+
+.sskStatus span, .ssaStatus span,
+.uhpStatus span, .espStatus span {
+    margin-right: 5px;
+}
+
+.sskStatus span {
+    background-color: chartreuse;
+}
+
+.ssaStatus span {
+    background-color: chartreuse;
+}
+
+.uhpStatus span {
+    background-color: yellow;
+}
+
+.espStatus span {
+    background-color: red;
+}
+
+/*End Header*/
+
+/*Menu*/
+#menu {
+    border: none;
+    position: fixed;
+    top: 150px;
+    width: 100%;
+    z-index: 10;
+    background: #334352;
+    color: #1cacf6;
+    display: flex;
+    align-items: flex-start;
+    flex-wrap: nowrap;
+}
+
+#menu .fa{
+    margin-right: 10px;
+    margin-top: 5px;
+}
+
+#menu span {
+    width: auto;
+    float: left
+}
+
+#menu .menu-item {
+    padding: 15px 10px;
     cursor: pointer;
 }
 
-#menu {
-    border: 1px solid #CCC;
-    border-left: none;
-    border-right: none;
-    position: fixed;
-    top: 75px;
-    width: 100%;
-    z-index: 10;
+#menu .menu-item:hover,
+#menu .menu-item.active,
+#menu .menu-item:focus {
+    background: #fff;
+    color: #334352;
 }
 
-    #menu [item-menu] {
-        display: table-cell;
-        padding: 5px 10px;
-        position: relative;
-        cursor: pointer;
-    }
+#menu [item-menu] {
+    display: table-cell;
+    /*padding: 5px 10px;*/
+    position: relative;
+    /*cursor: pointer;*/
+}
 
-        #menu [item-menu]::after {
-            content: " ";
-            border-right: 1px solid #CCC;
-            position: absolute;
-            right: 0px;
-            width: 1px;
-            height: 100%;
-            top: 0px;
-        }
+#menu [item-menu]::before {
+    content: attr(item-menu);
+}
 
-        #menu [item-menu]::before {
-            content: attr(item-menu);
-        }
+#menu [item-menu]:hover {
+    background-color: #fff;
+}
 
-        #menu [item-menu]:hover {
-            background-color: #EEE;
-        }
-
-        #menu [item-menu].active {
-            background-color: #CCC;
-        }
-
+#menu [item-menu].active {
+    background-color: #fff;
+}
+/*End MENU*/
 
 [itemview] {
     position: relative;
@@ -146,39 +181,39 @@ input {
     min-height: 40px;
 }
 
-    [itemview] [itemview-title] {
-        width: 150px;
-        height: 100%;
-        border: 1px solid #333;
-        vertical-align: middle;
-        text-align: left;
-        box-sizing: border-box;
-        position: absolute;
-        top: 0px;
-        left: 0px;
-        padding: 0px 5px;
-    }
+[itemview] [itemview-title] {
+    width: 150px;
+    height: 100%;
+    border: 1px solid #333;
+    vertical-align: middle;
+    text-align: left;
+    box-sizing: border-box;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    padding: 0px 5px;
+}
 
-        [itemview] [itemview-title]:before {
-            content: attr(title);
-            position: absolute;
-            top: 50%;
-            -webkit-transform: translate(0px, -50%);
-            -moz-transform: translate(0px, -50%);
-            -ms-transform: translate(0px, -50%);
-            -o-transform: translate(0px, -50%);
-            transform: translate(0px, -50%);
-        }
+[itemview] [itemview-title]:before {
+    content: attr(title);
+    position: absolute;
+    top: 50%;
+    -webkit-transform: translate(0px, -50%);
+    -moz-transform: translate(0px, -50%);
+    -ms-transform: translate(0px, -50%);
+    -o-transform: translate(0px, -50%);
+    transform: translate(0px, -50%);
+}
 
-    [itemview] [itemview-content] {
-        display: block;
-        width: calc(100% - 170px);
-        margin-left: 170px;
-        padding: 10px;
-        text-align: center;
-        border: 1px solid #333;
-        min-height: 40px;
-    }
+[itemview] [itemview-content] {
+    display: block;
+    width: calc(100% - 170px);
+    margin-left: 170px;
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #333;
+    min-height: 40px;
+}
 
 .contentWrapper {
     position: relative;
@@ -205,10 +240,10 @@ input {
     margin: 10px 0;
 }
 
-    .contentWrapper .input-group:hover,
-    .contentWrapper .input-group:focus {
-        border-bottom: 1px solid #1CACF6;
-    }
+.contentWrapper .input-group:hover,
+.contentWrapper .input-group:focus {
+    border-bottom: 1px solid #1CACF6;
+}
 
 .contentWrapper .input-group-addon {
     color: #1CACF6;
@@ -226,17 +261,17 @@ input {
     width: calc(100% - 100px);
 }
 
-    .contentWrapper input[readonly='readonly'] {
-        background: none;
-    }
+.contentWrapper input[readonly='readonly'] {
+    background: none;
+}
 
-    .contentWrapper input:hover,
-    .contentWrapper input:focus,
-    .contentWrapper input:active {
-        border: none;
-        box-shadow: none;
-        background: none;
-    }
+.contentWrapper input:hover,
+.contentWrapper input:focus,
+.contentWrapper input:active {
+    border: none;
+    box-shadow: none;
+    background: none;
+}
 
 .btn {
     color: #1CACF6;
@@ -245,11 +280,11 @@ input {
     border-radius: 0;
 }
 
-    .btn:hover,
-    .btn:focus {
-        color: #ffffff;
-        background: #1CACF6;
-    }
+.btn:hover,
+.btn:focus {
+    color: #ffffff;
+    background: #1CACF6;
+}
 
 #divSave {
     display: block;
@@ -265,7 +300,7 @@ input {
     width: 100%;
     overflow: hidden;
     margin-bottom: 50px;
-    
+    top: 170px;    
 }
 
 #content {
@@ -279,6 +314,23 @@ input {
     text-align: center;
     font-weight: bold;
     color: #334352;
+}
+
+/*table content*/
+.tab-content {
+    margin-top: 50px;
+}
+
+.tab-content .tab-header {
+    border-bottom: 1px solid #d2d2d2;
+    padding-bottom: 9px;
+    width: 100%;
+}
+
+.tab-content .tab-header span {
+    border-bottom: 2px solid #ff005a;
+    font-weight: bold;
+    padding-bottom: 10px;
 }
 
 /*Scan Smart Card*/
@@ -351,3 +403,5 @@ input {
     margin-left: 5px;
     margin-top: 3px;
 }
+
+/*header*/
