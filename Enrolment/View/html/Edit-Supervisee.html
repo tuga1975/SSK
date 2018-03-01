@@ -289,8 +289,8 @@
                     <form class="form-material" id="superviseeFrm">
 
                         <input type="hidden" id="userId" name="userId" />
-                        <input type="hidden" id="Address_ID" name="address_ID" />
-                        <input type="hidden" id="OAddress_ID" name="Other_Address_ID" />
+                        <input type="hidden" id="Address_ID" name="Address_ID" />
+                        <input type="hidden" id="OAddress_ID" name="OAddress_ID" />
 
                         <ul id="accordion" class="collapsible">
                             <li>
@@ -1158,14 +1158,14 @@
             $('#Employment_End_Date').val(api.model.UserProfile.Employment_End_Date);
             $('#Employment_Remarks').val(api.model.UserProfile.Employment_Remarks);
             // Residential Address
-            $('#address_ID').val(api.model.UserProfile.Residential_Addess_ID);
+            $('#Address_ID').val(api.model.UserProfile.Residential_Addess_ID);
             $('#Street_Name').val(api.model.Addresses.Street_Name);
             $('#BlkHouse_Number').val(api.model.Addresses.BlkHouse_Number);
             $('#FlrUnit_Number').val(api.model.Addresses.FlrUnit_Number);
             $('#Country').val(api.model.Addresses.Country);
             $('#Postal_Code').val(api.model.Addresses.Postal_Code);
             // Other Address
-            $('#Other_Address_ID').val(api.model.UserProfile.Other_Address_ID);
+            $('#OAddress_ID').val(api.model.UserProfile.Other_Address_ID);
             $('#OStreet_Name').val(api.model.OtherAddress.Street_Name);
             $('#OBlkHouse_Number').val(api.model.OtherAddress.BlkHouse_Number);
             $('#OFlrUnit_Number').val(api.model.OtherAddress.FlrUnit_Number);
