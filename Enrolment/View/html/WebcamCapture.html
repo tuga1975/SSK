@@ -1,4 +1,18 @@
-﻿<script>
+﻿<style>
+    .go-to {
+        text-transform: uppercase;
+    }
+</style>
+
+<h5 class="text-center" style="margin-top:30px;">
+    Please position your face within the frame and click the camera
+</h5>
+<div class="my-5">
+    <a href="#" class="go-to" onclick="api.server.CancelCapturePicture()">Click to go back</a>
+
+</div>
+
+<script>
     function confirmMode() {
         document.getElementById('capture').style.display = 'none';
         document.getElementById('confirm').style.display = 'block';
@@ -8,23 +22,22 @@
         document.getElementById('confirm').style.display = 'none';
     }
 </script>
-<div style="width:100%; padding:10px;">
-    <div style="text-align:right;padding-right:20px">
+<div style="width:100%; position:fixed; bottom: 10px;  margin: auto;">
+
+    <div class="text-center">
         <div id="capture">
             <div>
-                <button type="button" onclick="api.server.CapturePicture()">Capture</button>
-            </div>
-            <div>
-                <button type="button" onclick="api.server.CancelCapturePicture()">Cancel</button>
+                <a href="#" onclick="api.server.CapturePicture()"><i class="fa fa-camera" style="font-size:50px;color:red"></i></a>
+
             </div>
         </div>
         <div id="confirm" style="display:none">
             <div>
-                <button type="button" onclick="api.server.ConfirmCapturePicture()">Confirm</button>
-            </div>
-            <div>
-                <button type="button" onclick="api.server.CancelConfirmCapturePicture()">Cancel</button>
+                <a href="#" onclick="api.server.ConfirmCapturePicture()" class="btn btn-success">Confirm</a>
+
+                <a href="#" onclick="api.server.CancelConfirmCapturePicture()" class="btn btn-default">Cancel</a>
             </div>
         </div>
     </div>
+
 </div>

@@ -117,9 +117,11 @@ namespace Trinity.Common
         public const string OPEN_PICTURE_CAPTURE_FORM = "OpenPictureCaptureForm";
         public const string OPEN_PICTURE_CAPTURE_FORM_FAILED = "OpenPictureCaptureFormFailed";
         public const string CAPTURE_PICTURE = "CapturePicture";
+        public const string LOAD_UPDATE_PHOTOS = "LoadUpdatePhotos";
         public const string CONFIRM_CAPTURE_PICTURE = "ConfirmCapturePicture";
         public const string CANCEL_CONFIRM_CAPTURE_PICTURE = "CancelConfirmCapturePicture";
         public const string CANCEL_CAPTURE_PICTURE = "CancelCapturePicture";
+        public const string CANCEL_UPDATE_PICTURE = "CancelUpdatePicture";
         public const string SUPERVISEE_DATA_UPDATE_CANCELED = "SuperviseeDataUpdateCanceled";
         public const string OPEN_FINGERPRINT_CAPTURE_FORM = "OpenFingerprintCaptureForm";
         public const string PHOTO_CAPTURE_FAILED = "PhotoCaptureFailed";

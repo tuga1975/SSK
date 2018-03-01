@@ -19,23 +19,35 @@
     <script type="text/javascript" src="../scripts/JsBarcode.all.min.js"></script>
     <script src="../scripts/utils.js"></script>
     <script type="text/javascript" src="../scripts/lib.js"></script>
-    <script type="text/javascript" src="../html2canvas/html2canvas.js"></script>
-    <script type="text/javascript" src="../html2canvas/jquery.plugin.html2canvas.js"></script>
+
     <script src="../keyboard/jquery.ml-keyboard.min.js"></script>
 
+    <script type="text/javascript" src="../html2canvas/html2canvas.js"></script>
+    <script type="text/javascript" src="../html2canvas/jquery.plugin.html2canvas.js"></script>
 
 </head>
 
 <body>
-    <div id="header"></div>
+    <div id="header">
+        <div class="header-landingPage">
+            <img class="logo" src="../images/logoCNB.png" />
+            <div class="clear"></div>
+        </div>
+
+        <div class="header-landingPage" style="background-color:#5D5D5D;margin-top:75px">
+            <h3 style="color:white"><i class="fa fa-home" style="color:#0094ff;margin-left:15px;"></i> Enrolment</h3>
+            <a href="#" onclick="api.server.LogOut()" style="float:right;color:white;margin-right:20px;">Logout</a>
+            <div class="clear"></div>
+        </div>
+    </div>
     <div id="parent-content">
-       
-        <div id="content" style="position:relative">
+        <div id="content">
 
         </div>
     </div>
     <div class="loading">
         <span class="loader"></span>
     </div>
+   
 </body>
 </html>

@@ -102,6 +102,11 @@
           <Property Name="CAT" Type="bit" />
           <Property Name="PPZ" Type="bit" />
           <Property Name="NPS" Type="bit" />
+          <Property Name="IsSealed" Type="bit" />
+          <Property Name="UploadedDate" Type="datetime" />
+          <Property Name="UploadedBy" Type="nvarchar" MaxLength="128" />
+          <Property Name="SealedOrDiscardedDate" Type="datetime" />
+          <Property Name="SealedOrDiscardedBy" Type="nvarchar" MaxLength="128" />
         </EntityType>
         <EntityType Name="EMAIL_LOG">
           <Key>
@@ -1190,6 +1195,11 @@
           <Property Name="CAT" Type="Boolean" />
           <Property Name="PPZ" Type="Boolean" />
           <Property Name="NPS" Type="Boolean" />
+          <Property Name="IsSealed" Type="Boolean" />
+          <Property Name="UploadedDate" Type="DateTime" Precision="3" />
+          <Property Name="UploadedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="SealedOrDiscardedDate" Type="DateTime" Precision="3" />
+          <Property Name="SealedOrDiscardedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="EMAIL_LOG">
           <Key>
@@ -2009,6 +2019,11 @@
           <EntitySetMapping Name="DrugResults">
             <EntityTypeMapping TypeName="SSKModel.DrugResult">
               <MappingFragment StoreEntitySet="DrugResults">
+                <ScalarProperty Name="SealedOrDiscardedBy" ColumnName="SealedOrDiscardedBy" />
+                <ScalarProperty Name="SealedOrDiscardedDate" ColumnName="SealedOrDiscardedDate" />
+                <ScalarProperty Name="UploadedBy" ColumnName="UploadedBy" />
+                <ScalarProperty Name="UploadedDate" ColumnName="UploadedDate" />
+                <ScalarProperty Name="IsSealed" ColumnName="IsSealed" />
                 <ScalarProperty Name="NPS" ColumnName="NPS" />
                 <ScalarProperty Name="PPZ" ColumnName="PPZ" />
                 <ScalarProperty Name="CAT" ColumnName="CAT" />

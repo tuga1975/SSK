@@ -463,8 +463,7 @@ namespace Trinity.DAL
             {
                 if (EnumAppConfig.IsLocal)
                 {
-                    var data = _localUnitOfWork.DataContext.Appointments.Where(d => d.UserId == UserID && d.Date < DateTime.Today && (d.Status == (int)EnumAppointmentStatuses.Pending ||
-                d.Status == (int)EnumAppointmentStatuses.Booked) && d.AbsenceReporting_ID == null);
+                    var data = _localUnitOfWork.DataContext.Appointments.Where(d => d.UserId == UserID && d.Date < DateTime.Today && !d.Queues.Any() && d.AbsenceReporting_ID == null);
                     if (data != null)
                     {
                         return data.Count();
@@ -482,8 +481,7 @@ namespace Trinity.DAL
                 }
                 else
                 {
-                    var data = _centralizedUnitOfWork.DataContext.Appointments.Where(d => d.UserId == UserID && d.Date < DateTime.Today && (d.Status == (int)EnumAppointmentStatuses.Pending ||
-               d.Status == (int)EnumAppointmentStatuses.Booked) && d.AbsenceReporting_ID == null);
+                    var data = _centralizedUnitOfWork.DataContext.Appointments.Where(d => d.UserId == UserID && d.Date < DateTime.Today && !d.Queues.Any() && d.AbsenceReporting_ID == null);
                     if (data != null)
                     {
                         return data.Count();
@@ -504,8 +502,7 @@ namespace Trinity.DAL
             {
                 if (EnumAppConfig.IsLocal)
                 {
-                    var data = _localUnitOfWork.DataContext.Appointments.Where(d => d.UserId == UserID && System.Data.Entity.DbFunctions.AddDays(d.Date, 1) <= DateTime.Today && (d.Status == (int)EnumAppointmentStatuses.Pending ||
-                 d.Status == (int)EnumAppointmentStatuses.Booked) && d.AbsenceReporting_ID == null).ToList();
+                    var data = _localUnitOfWork.DataContext.Appointments.Where(d => d.UserId == UserID && System.Data.Entity.DbFunctions.TruncateTime(d.Date) < DateTime.Today && !d.Queues.Any()  && d.AbsenceReporting_ID == null).ToList();
 
                     if (data != null)
                     {
@@ -524,8 +521,7 @@ namespace Trinity.DAL
                 }
                 else
                 {
-                    var data = _centralizedUnitOfWork.DataContext.Appointments.Where(d => d.UserId == UserID && System.Data.Entity.DbFunctions.AddDays(d.Date, 1) <= DateTime.Today && (d.Status == (int)EnumAppointmentStatuses.Pending ||
-                 d.Status == (int)EnumAppointmentStatuses.Booked) && d.AbsenceReporting_ID == null).ToList();
+                    var data = _centralizedUnitOfWork.DataContext.Appointments.Where(d => d.UserId == UserID && System.Data.Entity.DbFunctions.TruncateTime(d.Date) < DateTime.Today && !d.Queues.Any() && d.AbsenceReporting_ID == null).ToList();
 
                     if (data != null)
                     {

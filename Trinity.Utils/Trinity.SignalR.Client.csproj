@@ -7,8 +7,8 @@
     <ProjectGuid>{C2EE0B7A-1CBF-4403-807E-8AC9F455C661}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Trinity.Utils</RootNamespace>
-    <AssemblyName>Trinity.Utils</AssemblyName>
+    <RootNamespace>Trinity.SignalR.Client</RootNamespace>
+    <AssemblyName>Trinity.SignalR.Client</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

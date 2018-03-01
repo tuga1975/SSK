@@ -23,8 +23,8 @@
     #header .logo {
         position: absolute;
         background-image: url('../images/logoCNB.png');
-        height: 80px;
-        width: 293px;
+        height: 65px;
+        width:238px;
         top: 5px;
         left: 0px;
         background-position: left center;
@@ -64,7 +64,7 @@
         height: 100%;
         width: 100%;
         max-height: 100%;
-        overflow-y:scroll;
+        overflow: hidden;
     }
 
 

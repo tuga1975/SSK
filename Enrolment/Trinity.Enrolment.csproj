@@ -57,7 +57,7 @@
     </Reference>
     <Reference Include="ftrSDKHelper13, Version=4.5.0.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>Libs\ftrSDKHelper13.dll</HintPath>
+      <HintPath>..\Trinity.Common\Libs\Futronic Fingerprint Reader\x64\ftrSDKHelper13.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.1\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
@@ -161,6 +161,7 @@
     <Content Include="View\html\WebcamCapture.html" />
     <Content Include="View\images\avatar-demo.jpg" />
     <Content Include="View\images\background-smart-card.png" />
+    <Content Include="View\images\background-takephoto.png" />
     <Content Include="View\images\Background.png" />
     <Content Include="View\images\Calendar-Clock-Icon.jpeg" />
     <Content Include="View\images\central_narco_logo.png" />
@@ -180,6 +181,7 @@
     <Content Include="View\images\rightthumb.png" />
     <Content Include="View\images\ScanFingerPrint.png" />
     <Content Include="View\images\ScanSmartCard.png" />
+    <Content Include="View\images\transparentHead.png" />
     <Content Include="View\images\usr-default.jpg" />
     <Content Include="View\images\viewlayer.png" />
     <Content Include="View\scripts\bootstrap\bootstrap.min.css" />
@@ -221,9 +223,9 @@
       <Project>{b25053fb-2050-4115-9441-8edf5c03fb1d}</Project>
       <Name>Trinity.Identity</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Trinity.Utils\Trinity.Utils.csproj">
+    <ProjectReference Include="..\Trinity.Utils\Trinity.SignalR.Client.csproj">
       <Project>{c2ee0b7a-1cbf-4403-807e-8ac9f455c661}</Project>
-      <Name>Trinity.Utils</Name>
+      <Name>Trinity.SignalR.Client</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

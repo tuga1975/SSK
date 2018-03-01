@@ -1,5 +1,5 @@
 ﻿body {
-    font-family: Verdana,sans-serif;
+    font-family: Arial,sans-serif;
     font-size: 14px;
     line-height: 1.5;
     background: url('../img/Background.png') no-repeat;
@@ -409,4 +409,19 @@ highlight {
     [data-tip]:focus:before,
     [data-tip]:focus:after {
         display: block;
+    }
+
+
+[name-page] {
+    text-align: center;
+}
+
+    [name-page]::before {
+        content: attr(name-page);
+        padding: 0px 10px 10px 10px;
+        border-bottom: 2px solid #ff005a;
+        color: #334352;
+        font-size: 24px;
+        font-weight: bold;
+        display: inline-block;
     }

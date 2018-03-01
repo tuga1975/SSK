@@ -195,7 +195,6 @@ namespace SSK
                 //NavigateTo(NavigatorEnums.Authentication_NRIC);                
 
                 _isFirstTimeLoaded = false;
-                
             }
         }
 

@@ -65,18 +65,23 @@ namespace Enrolment
             Session session = Session.Instance;
             var dalUser = new DAL_User();
             var dalUserProfile = new DAL_UserProfile();
-            var dbUser = dalUser.GetSuperviseeByNRIC(nric);
+            var dbUsers = dalUser.SearchSuperviseeByNRIC(nric);
             var listSupervisee = new List<Trinity.BE.ProfileModel>();
-            if (dbUser != null)
+            if (dbUsers != null)
             {
-                var model = new Trinity.BE.ProfileModel()
+                foreach (var item in dbUsers)
                 {
-                    User = dbUser,
-                    UserProfile = dalUserProfile.GetProfile(dbUser.UserId),
-                    Addresses = null
-                };
-                session[CommonConstants.SUPERVISEE] = dbUser;
-                listSupervisee.Add(model);
+                    var model = new Trinity.BE.ProfileModel()
+                    {
+                        User = item,
+                        UserProfile = dalUserProfile.GetProfile(item.UserId),
+                        Addresses = null
+                    };
+                    listSupervisee.Add(model);
+                }
+
+                //  session[CommonConstants.SUPERVISEE] = dbUser;
+
                 //  _web.LoadPageHtml("Supervisee.html", listSupervisee);
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = 0, Name = EventNames.GET_LIST_SUPERVISEE_SUCCEEDED, Data = listSupervisee, Source = "Supervisee.html" });
             }
@@ -289,7 +294,7 @@ namespace Enrolment
                 }
             }
         }
-
+        
         public void SaveSupervisee(string param)
         {
             Session session = Session.Instance;
@@ -321,7 +326,7 @@ namespace Enrolment
             rawDataAddress.Country = rawDataOtherAddress.OCountry;
             rawDataAddress.Postal_Code = rawDataOtherAddress.OPostal_Code;
 
-            var other_Address_ID = address.SaveAddress(rawDataAddress);
+            var other_Address_ID = address.SaveOtherAddress(rawDataOtherAddress);
             data.OtherAddress = rawDataAddress;
             // set address again to reload page
             data.Addresses.Address_ID = residential_Addess_ID;
@@ -489,7 +494,7 @@ namespace Enrolment
         public void PrintSmartCard(string frontBase64, string backBase64, string cardInfo)
         {
             _CardInfo = JsonConvert.DeserializeObject<Trinity.BE.CardInfo>(cardInfo);
-            this._web.InvokeScript("showPrintMessage", null, "Printing card please wait ...");
+            this._web.InvokeScript("showPrintMessage", null, @"<img src='../images/loading.gif'><p> Printing card in progress.Please wait.....</p>");
             frontBase64 = frontBase64.Replace("data:image/png;base64,", string.Empty);
             backBase64 = backBase64.Replace("data:image/png;base64,", string.Empty);
             Session session = Session.Instance;
@@ -726,6 +731,20 @@ namespace Enrolment
             }
             EditSupervisee(currentEditUser.User.UserId);
         }
+
+        public void CancelUpdatePicture()
+        {
+            EventCenter eventCenter = EventCenter.Default;
+            eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.CANCEL_UPDATE_PICTURE });
+        }
+        public void UpdatePhotos()
+        {
+
+            EventCenter eventCenter = EventCenter.Default;
+            eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.LOAD_UPDATE_PHOTOS });
+        }
+
+
         public void UpdateFingerprints()
         {
             FingerprintNumber = 0;
@@ -733,6 +752,7 @@ namespace Enrolment
             var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
             this._web.LoadPageHtml("UpdateSuperviseeFingerprint.html", new object[] { currentEditUser.UserProfile.LeftThumbImage == null ? null : Convert.ToBase64String(currentEditUser.UserProfile.LeftThumbImage), currentEditUser.UserProfile.RightThumbImage == null ? null : Convert.ToBase64String(currentEditUser.UserProfile.RightThumbImage) });
         }
+
         public void CancelUpdateFingerprints()
         {
             FingerprintReaderUtil.Instance.DisposeCapture();
