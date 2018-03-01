@@ -18,7 +18,6 @@ namespace Trinity.CentralizedAPI.Controllers
         {
             return Ok(new DAL.DAL_Notification().GetAllNotifications(userId));
         }
-
         [HttpPost]
         [Route("api/Notification/SendToDutyOfficer")]
         public IHttpActionResult SendToDutyOfficer(string UserId, string DutyOfficerID, string Subject, string Content, string Type, string Station)
