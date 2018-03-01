@@ -524,7 +524,7 @@ namespace DutyOfficer
                         break;
 
                     DAL_User dalUser = new DAL_User();
-                    string userID = dalUser.GetSuperviseeByNRIC(item.NRIC).FirstOrDefault().UserId;
+                    string userID = dalUser.GetSuperviseeByNRIC(item.NRIC).UserId;
                     LabelInfo labelInfo = new LabelInfo
                     {
                         UserId = userID,
@@ -641,7 +641,7 @@ namespace DutyOfficer
                         break;
 
                     DAL_User dalUser = new DAL_User();
-                    string userID = dalUser.GetSuperviseeByNRIC(item.NRIC).FirstOrDefault().UserId;
+                    string userID = dalUser.GetSuperviseeByNRIC(item.NRIC).UserId;
                     LabelInfo labelInfo = new LabelInfo
                     {
                         UserId = userID,
