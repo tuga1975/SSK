@@ -336,6 +336,64 @@
         setEnableControls('evening', $('#evening-Closed').is(":checked"));
     });
 
+    $('#morning-start-HH').change(function () {
+        var morningStart = $('#morning-start-HH').val();
+        var morningEnd = $('#morning-end-HH').val();
+        var optionHHEndMorning = optionsHH.slice(morningStart, optionsHH.length);
+        $('#morning-end-HH').empty();
+        $.each(optionHHEndMorning, function (i, p) {
+            $('#morning-end-HH').append($('<option></option>').val(p).html(p));
+        });
+        if (morningEnd > morningStart) {
+            $('#morning-end-HH').val(morningEnd);
+        }
+    });
+
+    $('#afternoon-start-HH').change(function () {
+        var afternoonStart = $('#afternoon-start-HH').val();
+        var afternoonEnd = $('#afternoon-end-HH').val();
+        var optionHHEndAfternoon = optionsHH.slice(afternoonStart, optionsHH.length);
+        $('#afternoon-end-HH').empty();
+        $.each(optionHHEndAfternoon, function (i, p) {
+            $('#afternoon-end-HH').append($('<option></option>').val(p).html(p));
+        });
+        if (afternoonEnd > afternoonStart) {
+            $('#afternoon-end-HH').val(afternoonEnd);
+        }
+    });
+
+    $('#afternoon-end-HH').change(function () {
+        var afternoonEnd = $('#afternoon-end-HH').val();
+        var eveningStart = $('#evening-start-HH').val();
+        var eveningEnd = $('#evening-end-HH').val();
+        var optionHHForEvening = optionsHH.slice(afternoonEnd, optionsHH.length);
+        $('#evening-start-HH').empty();
+        $('#evening-end-HH').empty();
+        $.each(optionHHForEvening, function (i, p) {
+            $('#evening-start-HH').append($('<option></option>').val(p).html(p));
+            $('#evening-end-HH').append($('<option></option>').val(p).html(p));
+        });
+        if (eveningStart > afternoonEnd) {
+            $('#evening-start-HH').val(eveningStart);
+        };
+        if (eveningEnd > afternoonEnd) {
+            $('#evening-end-HH').val(eveningEnd);
+        };
+    });
+
+    $('#evening-start-HH').change(function () {
+        var eveningStart = $('#evening-start-HH').val();
+        var eveningEnd = $('#evening-end-HH').val();
+        var optionHHEndEvening = optionsHH.slice(eveningStart, optionsHH.length);
+        $('#evening-end-HH').empty();
+        $.each(optionHHEndEvening, function (i, p) {
+            $('#evening-end-HH').append($('<option></option>').val(p).html(p));
+        });
+        if (eveningEnd > eveningStart) {
+            $('#evening-end-HH').val(eveningEnd);
+        }
+    });
+
     var operationSetting;
     $("#SaveBtn").click(function (e) {
         var dayOfWeek;
