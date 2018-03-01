@@ -35,220 +35,226 @@
         border: 1px solid #000000;
     }
 </style>
-<div style="display:block; padding:10px;">
-    <span style=" font-size:22px; float:left; text-align:left;"><b>Settings</b></span>
-    <br />
-    <!--<span style="padding:4px 10px;border:1px solid #CCC;"><b>Operation Time:</b></span>-->
-</div>
-<div id="panel-operationTime" style="width:100%; padding:10px;">
-    <div style="display:block;">
-        <span style="padding:4px 10px;border:1px solid #CCC;"><b>Operation Time:</b></span>
+<div class="row col-12 tab-content">
+    <div class="tab-header">
+        <span><b>Settings</b></span>
+        <br />
+        <!--<span style="padding:4px 10px;border:1px solid #CCC;"><b>Operation Time:</b></span>-->
     </div>
-    <br />
-    <table id="operationTable" class="table table-bordered" style="width:100%;">
-        <thead>
-            <tr>
-                <th>Day of Week</th>
-                <th>Morning Slots<br />Start time</th>
-                <th>Morning Slots<br />End time</th>
-                <th>Max Supervisee</th>
-                <th>Spare Slots</th>
-                <th>Interval</th>
-                <th>Afternoon Slots<br />Start time</th>
-                <th>Afternoon Slots<br />End time</th>
-                <th>Max Supervisee</th>
-                <th>Spare Slots</th>
-                <th>Interval</th>
-                <th>Evening Slots<br />Start time</th>
-                <th>Evening Slots<br />End time</th>
-                <th>Max Supervisee</th>
-                <th>Spare Slots</th>
-                <th>Interval</th>
-                <th>Edit</th>
-            </tr>
-        </thead>
-        <tbody table-settings>
-            <!--<tr>
-                <td style="background-color:gainsboro">{DayOfWeekTxt}</td>
-                <td>{Morning_Open_Time}</td>
-                <td>{Morning_Close_Time}</td>
-                <td>{Morning_MaximumSupervisee}</td>
-                <td>{Morning_Spare_Slots}</td>
-                <td>{Morning_Interval} mins</td>
-                <td>{Afternoon_Open_Time}</td>
-                <td>{Afternoon_Close_Time}</td>
-                <td>{Afternoon_MaximumSupervisee}</td>
-                <td>{Afternoon_Spare_Slots}</td>
-                <td>{Afternoon_Interval} mins</td>
-                <td>{Evening_Open_Time}</td>
-                <td>{Evening_Close_Time}</td>
-                <td>{Evening_MaximumSupervisee}</td>
-                <td>{Evening_Spare_Slots}</td>
-                <td>{Evening_Interval} mins</td>
-                <th style="background-color:#808080;cursor:pointer;" onclick="showPopupSettingDetail(\'{DayOfWeekTxt}\');">Edit</th>
-            </tr>
-            <tr id="Tuesday">
-                <td style="background-color:gainsboro">Tuesday</td>
-                <td id="tue-MorningStartTime" MorningStartTime="3">7:00</td>
-                <td id="tue-MorningEndTime" MorningEndTime="3">18:00</td>
-                <td id="tue-MorningMax" MorningMax="3">8</td>
-                <td id="tue-MorningSpare" MorningSpare="3">2</td>
-                <td id="tue-MorningInterval" MorningInterval="3">30 mins</td>
-                <td id="tue-AfternoonStartTime">9:00</td>
-                <td id="tue-AfternoonEndTime">17:00</td>
-                <td id="tue-AfternoonMax">6</td>
-                <td id="tue-AfternoonSpare">3</td>
-                <td id="tue-AfternoonInterval">30 mins</td>
-                <td id="tue-EveningStartTime">9:00</td>
-                <td id="tue-EveningEndTime">18:00</td>
-                <td id="tue-EveningMax">10</td>
-                <td id="tue-EveningSpare">5</td>
-                <td id="tue-EveningInterval">30 mins</td>
-                <th id="tue-Edit" style="background-color:#808080;cursor:pointer;" onclick="showPopupSettingDetail('Tuesday');">Edit</th>
-            </tr>
-            <tr id="Wednesday">
-                <td style="background-color:gainsboro">Wednesday</td>
-                <td id="wed-MorningStartTime">9:00</td>
-                <td id="wed-MorningEndTime">19:00</td>
-                <td id="wed-MorningMax">8</td>
-                <td id="wed-MorningSpare">2</td>
-                <td id="wed-MorningInterval">30 mins</td>
-                <td id="wed-AfternoonStartTime">9:00</td>
-                <td id="wed-AfternoonEndTime">17:00</td>
-                <td id="wed-AfternoonMax">6</td>
-                <td id="wed-AfternoonSpare">3</td>
-                <td id="wed-AfternoonInterval">30 mins</td>
-                <td id="wed-EveningStartTime">9:00</td>
-                <td id="wed-EveningEndTime">18:00</td>
-                <td id="wed-EveningMax">10</td>
-                <td id="wed-EveningSpare">5</td>
-                <td id="wed-EveningInterval">30 mins</td>
-                <th id="wed-Edit" style="background-color:#808080;cursor:pointer;" onclick="showPopupSettingDetail('Wednesday');">Edit</th>
-            </tr>
-            <tr id="Thurday">
-                <td style="background-color:gainsboro">Thurday</td>
-                <td id="thu-MorningStartTime">9:00</td>
-                <td id="thu-MorningEndTime">19:00</td>
-                <td id="thu-MorningMax">8</td>
-                <td id="thu-MorningSpare">2</td>
-                <td id="thu-MorningInterval">30 mins</td>
-                <td id="thu-AfternoonStartTime">9:00</td>
-                <td id="thu-AfternoonEndTime">17:00</td>
-                <td id="thu-AfternoonMax">6</td>
-                <td id="thu-AfternoonSpare">3</td>
-                <td id="thu-AfternoonInterval">30 mins</td>
-                <td id="thu-EveningStartTime">9:00</td>
-                <td id="thu-EveningEndTime">18:00</td>
-                <td id="thu-EveningMax">10</td>
-                <td id="thu-EveningSpare">5</td>
-                <td id="thu-EveningInterval">30 mins</td>
-                <th id="thu-Edit" style="background-color:#808080;cursor:pointer;" onclick="showPopupSettingDetail('Thurday');">Edit</th>
-            </tr>
-            <tr id="Friday">
-                <td style="background-color:gainsboro">Friday</td>
-                <td id="fri-MorningStartTime">9:00</td>
-                <td id="fri-MorningEndTime">19:00</td>
-                <td id="fri-MorningMax">8</td>
-                <td id="fri-MorningSpare">2</td>
-                <td id="fri-MorningInterval">30 mins</td>
-                <td id="fri-AfternoonStartTime">9:00</td>
-                <td id="fri-AfternoonEndTime">17:00</td>
-                <td id="fri-AfternoonMax">6</td>
-                <td id="fri-AfternoonSpare">3</td>
-                <td id="fri-AfternoonInterval">30 mins</td>
-                <td id="fri-EveningStartTime">9:00</td>
-                <td id="fri-EveningEndTime">18:00</td>
-                <td id="fri-EveningMax">10</td>
-                <td id="fri-EveningSpare">5</td>
-                <td id="fri-EveningInterval">30 mins</td>
-                <th id="fri-Edit" style="background-color:#808080;cursor:pointer;" onclick="showPopupSettingDetail('Friday');">Edit</th>
-            </tr>
-            <tr id="Saturday">
-                <td style="background-color:gainsboro">Saturday</td>
-                <td id="sat-MorningStartTime">9:00</td>
-                <td id="sat-MorningEndTime">19:00</td>
-                <td id="sat-MorningMax">8</td>
-                <td id="sat-MorningSpare">2</td>
-                <td id="sat-MorningInterval">30 mins</td>
-                <td id="sat-AfternoonStartTime">9:00</td>
-                <td id="sat-AfternoonEndTime">17:00</td>
-                <td id="sat-AfternoonMax">6</td>
-                <td id="sat-AfternoonSpare">3</td>
-                <td id="sat-AfternoonInterval">30 mins</td>
-                <td id="sat-EveningStartTime">9:00</td>
-                <td id="sat-EveningEndTime">18:00</td>
-                <td id="sat-EveningMax">10</td>
-                <td id="sat-EveningSpare">5</td>
-                <td id="sat-EveningInterval">30 mins</td>
-                <th id="sat-Edit" style="background-color:#808080;cursor:pointer;" onclick="showPopupSettingDetail('Saturday');">Edit</th>
-            </tr>
-            <tr id="Sunday">
-                <td style="background-color:gainsboro">Sunday</td>
-                <td id="sun-MorningStartTime">9:00</td>
-                <td id="sun-MorningEndTime">19:00</td>
-                <td id="sun-MorningMax">8</td>
-                <td id="sun-MorningSpare">2</td>
-                <td id="sun-MorningInterval">30 mins</td>
-                <td id="sun-AfternoonStartTime">9:00</td>
-                <td id="sun-AfternoonEndTime">17:00</td>
-                <td id="sun-AfternoonMax">6</td>
-                <td id="sun-AfternoonSpare">3</td>
-                <td id="sun-AfternoonInterval">30 mins</td>
-                <td id="sun-EveningStartTime">9:00</td>
-                <td id="sun-EveningEndTime">18:00</td>
-                <td id="sun-EveningMax">10</td>
-                <td id="sun-EveningSpare">5</td>
-                <td id="sun-EveningInterval">30 mins</td>
-                <th id="sun-Edit" style="background-color:#808080;cursor:pointer;" onclick="showPopupSettingDetail('Sunday');">Edit</th>
-            </tr>-->
-        </tbody>
-    </table>
+    <div id="panel-operationTime" style="width:100%; padding:10px;">
+        <div style="display:block;">
+            <span style="padding:4px 10px;border:1px solid #CCC;"><b>Operation Time:</b></span>
+        </div>
+        <br />
+        <table id="operationTable" class="table table-bordered" style="width:100%;">
+            <thead>
+                <tr>
+                    <th>Day of Week</th>
+                    <th>Morning Slots<br />Start time</th>
+                    <th>Morning Slots<br />End time</th>
+                    <th>Max Supervisee</th>
+                    <th>Spare Slots</th>
+                    <th>Interval</th>
+                    <th>Afternoon Slots<br />Start time</th>
+                    <th>Afternoon Slots<br />End time</th>
+                    <th>Max Supervisee</th>
+                    <th>Spare Slots</th>
+                    <th>Interval</th>
+                    <th>Evening Slots<br />Start time</th>
+                    <th>Evening Slots<br />End time</th>
+                    <th>Max Supervisee</th>
+                    <th>Spare Slots</th>
+                    <th>Interval</th>
+                    <th>Edit</th>
+                </tr>
+            </thead>
+            <tbody table-settings>
+                <!--<tr>
+                    <td style="background-color:gainsboro">{DayOfWeekTxt}</td>
+                    <td>{Morning_Open_Time}</td>
+                    <td>{Morning_Close_Time}</td>
+                    <td>{Morning_MaximumSupervisee}</td>
+                    <td>{Morning_Spare_Slots}</td>
+                    <td>{Morning_Interval} mins</td>
+                    <td>{Afternoon_Open_Time}</td>
+                    <td>{Afternoon_Close_Time}</td>
+                    <td>{Afternoon_MaximumSupervisee}</td>
+                    <td>{Afternoon_Spare_Slots}</td>
+                    <td>{Afternoon_Interval} mins</td>
+                    <td>{Evening_Open_Time}</td>
+                    <td>{Evening_Close_Time}</td>
+                    <td>{Evening_MaximumSupervisee}</td>
+                    <td>{Evening_Spare_Slots}</td>
+                    <td>{Evening_Interval} mins</td>
+                    <th style="background-color:#808080;cursor:pointer;" onclick="showPopupSettingDetail(\'{DayOfWeekTxt}\');">Edit</th>
+                </tr>
+                <tr id="Tuesday">
+                    <td style="background-color:gainsboro">Tuesday</td>
+                    <td id="tue-MorningStartTime" MorningStartTime="3">7:00</td>
+                    <td id="tue-MorningEndTime" MorningEndTime="3">18:00</td>
+                    <td id="tue-MorningMax" MorningMax="3">8</td>
+                    <td id="tue-MorningSpare" MorningSpare="3">2</td>
+                    <td id="tue-MorningInterval" MorningInterval="3">30 mins</td>
+                    <td id="tue-AfternoonStartTime">9:00</td>
+                    <td id="tue-AfternoonEndTime">17:00</td>
+                    <td id="tue-AfternoonMax">6</td>
+                    <td id="tue-AfternoonSpare">3</td>
+                    <td id="tue-AfternoonInterval">30 mins</td>
+                    <td id="tue-EveningStartTime">9:00</td>
+                    <td id="tue-EveningEndTime">18:00</td>
+                    <td id="tue-EveningMax">10</td>
+                    <td id="tue-EveningSpare">5</td>
+                    <td id="tue-EveningInterval">30 mins</td>
+                    <th id="tue-Edit" style="background-color:#808080;cursor:pointer;" onclick="showPopupSettingDetail('Tuesday');">Edit</th>
+                </tr>
+                <tr id="Wednesday">
+                    <td style="background-color:gainsboro">Wednesday</td>
+                    <td id="wed-MorningStartTime">9:00</td>
+                    <td id="wed-MorningEndTime">19:00</td>
+                    <td id="wed-MorningMax">8</td>
+                    <td id="wed-MorningSpare">2</td>
+                    <td id="wed-MorningInterval">30 mins</td>
+                    <td id="wed-AfternoonStartTime">9:00</td>
+                    <td id="wed-AfternoonEndTime">17:00</td>
+                    <td id="wed-AfternoonMax">6</td>
+                    <td id="wed-AfternoonSpare">3</td>
+                    <td id="wed-AfternoonInterval">30 mins</td>
+                    <td id="wed-EveningStartTime">9:00</td>
+                    <td id="wed-EveningEndTime">18:00</td>
+                    <td id="wed-EveningMax">10</td>
+                    <td id="wed-EveningSpare">5</td>
+                    <td id="wed-EveningInterval">30 mins</td>
+                    <th id="wed-Edit" style="background-color:#808080;cursor:pointer;" onclick="showPopupSettingDetail('Wednesday');">Edit</th>
+                </tr>
+                <tr id="Thurday">
+                    <td style="background-color:gainsboro">Thurday</td>
+                    <td id="thu-MorningStartTime">9:00</td>
+                    <td id="thu-MorningEndTime">19:00</td>
+                    <td id="thu-MorningMax">8</td>
+                    <td id="thu-MorningSpare">2</td>
+                    <td id="thu-MorningInterval">30 mins</td>
+                    <td id="thu-AfternoonStartTime">9:00</td>
+                    <td id="thu-AfternoonEndTime">17:00</td>
+                    <td id="thu-AfternoonMax">6</td>
+                    <td id="thu-AfternoonSpare">3</td>
+                    <td id="thu-AfternoonInterval">30 mins</td>
+                    <td id="thu-EveningStartTime">9:00</td>
+                    <td id="thu-EveningEndTime">18:00</td>
+                    <td id="thu-EveningMax">10</td>
+                    <td id="thu-EveningSpare">5</td>
+                    <td id="thu-EveningInterval">30 mins</td>
+                    <th id="thu-Edit" style="background-color:#808080;cursor:pointer;" onclick="showPopupSettingDetail('Thurday');">Edit</th>
+                </tr>
+                <tr id="Friday">
+                    <td style="background-color:gainsboro">Friday</td>
+                    <td id="fri-MorningStartTime">9:00</td>
+                    <td id="fri-MorningEndTime">19:00</td>
+                    <td id="fri-MorningMax">8</td>
+                    <td id="fri-MorningSpare">2</td>
+                    <td id="fri-MorningInterval">30 mins</td>
+                    <td id="fri-AfternoonStartTime">9:00</td>
+                    <td id="fri-AfternoonEndTime">17:00</td>
+                    <td id="fri-AfternoonMax">6</td>
+                    <td id="fri-AfternoonSpare">3</td>
+                    <td id="fri-AfternoonInterval">30 mins</td>
+                    <td id="fri-EveningStartTime">9:00</td>
+                    <td id="fri-EveningEndTime">18:00</td>
+                    <td id="fri-EveningMax">10</td>
+                    <td id="fri-EveningSpare">5</td>
+                    <td id="fri-EveningInterval">30 mins</td>
+                    <th id="fri-Edit" style="background-color:#808080;cursor:pointer;" onclick="showPopupSettingDetail('Friday');">Edit</th>
+                </tr>
+                <tr id="Saturday">
+                    <td style="background-color:gainsboro">Saturday</td>
+                    <td id="sat-MorningStartTime">9:00</td>
+                    <td id="sat-MorningEndTime">19:00</td>
+                    <td id="sat-MorningMax">8</td>
+                    <td id="sat-MorningSpare">2</td>
+                    <td id="sat-MorningInterval">30 mins</td>
+                    <td id="sat-AfternoonStartTime">9:00</td>
+                    <td id="sat-AfternoonEndTime">17:00</td>
+                    <td id="sat-AfternoonMax">6</td>
+                    <td id="sat-AfternoonSpare">3</td>
+                    <td id="sat-AfternoonInterval">30 mins</td>
+                    <td id="sat-EveningStartTime">9:00</td>
+                    <td id="sat-EveningEndTime">18:00</td>
+                    <td id="sat-EveningMax">10</td>
+                    <td id="sat-EveningSpare">5</td>
+                    <td id="sat-EveningInterval">30 mins</td>
+                    <th id="sat-Edit" style="background-color:#808080;cursor:pointer;" onclick="showPopupSettingDetail('Saturday');">Edit</th>
+                </tr>
+                <tr id="Sunday">
+                    <td style="background-color:gainsboro">Sunday</td>
+                    <td id="sun-MorningStartTime">9:00</td>
+                    <td id="sun-MorningEndTime">19:00</td>
+                    <td id="sun-MorningMax">8</td>
+                    <td id="sun-MorningSpare">2</td>
+                    <td id="sun-MorningInterval">30 mins</td>
+                    <td id="sun-AfternoonStartTime">9:00</td>
+                    <td id="sun-AfternoonEndTime">17:00</td>
+                    <td id="sun-AfternoonMax">6</td>
+                    <td id="sun-AfternoonSpare">3</td>
+                    <td id="sun-AfternoonInterval">30 mins</td>
+                    <td id="sun-EveningStartTime">9:00</td>
+                    <td id="sun-EveningEndTime">18:00</td>
+                    <td id="sun-EveningMax">10</td>
+                    <td id="sun-EveningSpare">5</td>
+                    <td id="sun-EveningInterval">30 mins</td>
+                    <th id="sun-Edit" style="background-color:#808080;cursor:pointer;" onclick="showPopupSettingDetail('Sunday');">Edit</th>
+                </tr>-->
+            </tbody>
+        </table>
 
-</div>
-<div id="panel-holidays" style="width:100%; padding:10px;">
-    <div style="display:block;">
-        <span style="padding:4px 10px;border:1px solid #CCC;"><b>Public Holiday and Non-Operational Days</b></span>
     </div>
-    <br />
-    <div style="width:70%;display:inline-block;box-sizing:border-box;position:relative;vertical-align:top;">
-        <div style="width:calc(100% - 50px);">
-            <table id="holidayTable" class="table table-bordered">
+    <div id="panel-holidays" style="width:100%; padding:10px;">
+        <div style="display:block;">
+            <span style="padding:4px 10px;border:1px solid #CCC;"><b>Public Holiday and Non-Operational Days</b></span>
+        </div>
+        <br />
+        <div style="width:70%;display:inline-block;box-sizing:border-box;position:relative;vertical-align:top;">
+            <div style="width:calc(100% - 50px);">
+                <table id="holidayTable" class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th data-field="Date">Date</th>
+                            <th data-field="ShortDesc">Short Description</th>
+                            <th data-field="Notes">Notes</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+            <span style="position:absolute;top:12px;right:0px;font-size:22px;height:40px;width:40px;text-align:center;line-height:40px;border:1px solid #000;cursor:pointer;background-color:#808080;" onclick="api.server.PopupAddHoliday(function () {$('#idAddHoliday').modal(); });">
+                <b>+</b>
+            </span>
+            <span style="position:absolute;top:60px;right:0px;font-size:22px;height:40px;width:40px;text-align:center;line-height:40px;border:1px solid #000;cursor:pointer;background-color:#808080;" id="deleteBtn">
+                <b>-</b>
+            </span>
+        </div>
+    </div>
+
+    <div id="panel-changeHistory" style="width:100%; padding:10px;">
+        <div style="display:block;">
+            <span style="padding:4px 10px;border:1px solid #CCC;"><b>Change History</b></span>
+        </div>
+        <br />
+        <div style="width:90%;display:inline-block;box-sizing:border-box;position:relative;vertical-align:top;">
+            <table id="changeHistoryTable" class="table table-bordered">
                 <thead>
                     <tr>
                         <th data-field="Date">Date</th>
-                        <th data-field="ShortDesc">Short Description</th>
-                        <th data-field="Notes">Notes</th>
+                        <th data-field="Officer">Officer</th>
+                        <th data-field="ChangeDetails">Change Details</th>
                     </tr>
                 </thead>
             </table>
         </div>
-        <span style="position:absolute;top:12px;right:0px;font-size:22px;height:40px;width:40px;text-align:center;line-height:40px;border:1px solid #000;cursor:pointer;background-color:#808080;" onclick="api.server.PopupAddHoliday(function () {$('#idAddHoliday').modal(); });"><b>+</b>
-        </span>
-        <span style="position:absolute;top:60px;right:0px;font-size:22px;height:40px;width:40px;text-align:center;line-height:40px;border:1px solid #000;cursor:pointer;background-color:#808080;" id="deleteBtn"><b>-</b>
-        </span>
     </div>
 </div>
-
-<div id="panel-changeHistory" style="width:100%; padding:10px;">
-    <div style="display:block;">
-        <span style="padding:4px 10px;border:1px solid #CCC;"><b>Change History</b></span>
-    </div>
-    <br />
-    <div style="width:90%;display:inline-block;box-sizing:border-box;position:relative;vertical-align:top;">
-        <table id="changeHistoryTable" class="table table-bordered">
-            <thead>
-                <tr>
-                    <th data-field="Date">Date</th>
-                    <th data-field="Officer">Officer</th>
-                    <th data-field="ChangeDetails">Change Details</th>
-                </tr>
-            </thead>
-        </table>
-    </div>
-</div>
-
 <script type="text/javascript">
+    
     activemenu("Settings");
+    $("#menu .menu-item").removeClass("active");
+    $("#menu [item-menu].active").parent().addClass("active");
     var model = [];
     var holidaySelected;
     api.server.GetSettings(function (data) {

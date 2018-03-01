@@ -111,7 +111,7 @@
                 <div style="clear:both;margin-bottom:20px;"></div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" id="btnSeal">Seal</button>
+                <button type="button" class="btn btn-default" id="btnSealTest">Seal</button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
             </div>
         </div>
@@ -145,7 +145,7 @@
             $('#seal-NPS').prop('checked', model.Seal['NPS']);
         };
 
-        $("#btnSeal").click(function (e) {
+        $("#btnSealTest").click(function (e) {
             var COCA = $('#seal-COCA').is(":checked");
             var BARB = $('#seal-BARB').is(":checked");
             var LSD = $('#seal-LSD').is(":checked");

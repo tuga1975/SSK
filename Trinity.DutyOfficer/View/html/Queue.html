@@ -1,5 +1,5 @@
 ﻿<div style="display:block; padding:10px;">
-    <span style=" font-size:22px; float:left; text-align:left;"><b>Queue</b></span>
+    <span style=" font-size:22px; float:left; text-align:left;"><b><ion-icon name="notifications"></ion-icon>Queue</b></span>
     <span style=" font-size:20px; float:left; text-align:left; margin-left:12px;" current-date></span>
     <div class="form-inline" style="position: absolute; right: 200px; top: 30px">
         <select class="form-control" id="pageSize" style="width:70px; display:inline-block;">
@@ -13,8 +13,11 @@
 
 <table id="table-queue"></table>
 <script type="text/javascript">
+    
     $('#menu').show();
     activemenu('Queue');
+    $("#menu .menu-item").removeClass("active");
+    $("#menu [item-menu].active").parent().addClass("active");
     var today = new Date();
     var dd = today.getDate();
     var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -141,14 +144,14 @@
     
 </script>
 <style>
-    span[color] {
+    /*span[color] {
         width: 20px;
         height: 20px;
         border-radius: 50%;
         display: inline-block;
         border: 1px solid #333;
         box-sizing: border-box;
-    }
+    }*/
 
     span[color="notrequired"] {
         background-color: white;

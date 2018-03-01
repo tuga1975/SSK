@@ -392,7 +392,14 @@ namespace SSA
             APIUtils.SignalR.SendAllDutyOfficer(user.UserId, "Facial authentication failed", errorMessage, NotificationType.Error);
 
             // show message box to user
-            MessageBox.Show("Facial authentication failed", "Facial Authentication", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //MessageBox.Show("Facial authentication failed", "Facial Authentication", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            Trinity.BE.PopupModel popupModel = new Trinity.BE.PopupModel();
+            popupModel.Title = "Authorization Failed";
+            popupModel.Message = "Facial Recognition failed.\nPlease report to the Duty Officer";
+            popupModel.IsShowLoading = false;
+            popupModel.IsShowOK = true;
+
+            LayerWeb.InvokeScript("showPopupModal", JsonConvert.SerializeObject(popupModel));
 
             // navigate to smartcard login page
             NavigateTo(NavigatorEnums.Authentication_SmartCard);
@@ -475,7 +482,8 @@ namespace SSA
             {
                 Session session = Session.Instance;
                 Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-                LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please wait while initializing camera...');");
+                LayerWeb.LoadPageHtml("Authentication/FacialRecognition.html");
+                LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please remain still as Facial Recognition Check takes place.');");
                 FacialRecognition.Instance.OnFacialRecognitionFailed += Main_OnFacialRecognitionFailed;
                 FacialRecognition.Instance.OnFacialRecognitionSucceeded += Main_OnFacialRecognitionSucceeded;
                 FacialRecognition.Instance.OnFacialRecognitionProcessing += Main_OnFacialRecognitionProcessing;
