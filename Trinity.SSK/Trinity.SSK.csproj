@@ -273,6 +273,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="View\img\Background.png" />
+    <Content Include="View\img\bookappointment.png" />
     <Content Include="View\img\Calendar-Clock-Icon.jpeg" />
     <Content Include="View\img\central_narco_logo.png" />
     <Content Include="View\img\FingerPrint.png" />
@@ -284,11 +285,14 @@
     <Content Include="View\img\logoCNB.png" />
     <Content Include="View\img\ManualLogin.png" />
     <Content Include="View\img\Notification-512.png" />
+    <Content Include="View\img\Notification.png" />
     <Content Include="View\img\QRCode.png" />
+    <Content Include="View\img\queuenumber.png" />
     <Content Include="View\img\refresh-512.png" />
     <Content Include="View\img\Reporting-Icon-300x300.png" />
     <Content Include="View\img\ScanFingerPrint.png" />
     <Content Include="View\img\ScanSmartCard.png" />
+    <Content Include="View\img\updateprofile.png" />
     <Content Include="View\scripts\lib.js" />
     <Content Include="View\styles\main.css" />
   </ItemGroup>
