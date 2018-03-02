@@ -134,7 +134,7 @@ namespace DutyOfficer
                     Outcome = queue.Outcome,
                     Message = new
                     {
-                        content = queue.QueueDetails.Where(c => c.Station == queue.CurrentStation).FirstOrDefault().Message
+                        content = queue.QueueDetails.Where(c => c.Station == queue.CurrentStation).FirstOrDefault().Message == null ? "" : queue.QueueDetails.Where(c => c.Station == queue.CurrentStation).FirstOrDefault().Message
                     }
                 });
             return data;
@@ -444,6 +444,13 @@ namespace DutyOfficer
 
             var dalAppointment = new DAL_Appointments();
             var result= dalAppointment.GetAllApptmts();
+            foreach(var item in result)
+            {
+                if (item.ReportTime.HasValue)
+                {
+                    item.ReportTimeSpan = item.ReportTime.Value.TimeOfDay;
+                }
+            }
             return result;            
         }
 
@@ -478,9 +485,9 @@ namespace DutyOfficer
             return data;
         }
 
-        public void LoadPageAppointment(string dateSearch, string startTime)
+        public void LoadPageAppointment(string dateSearch, string startTime, string endTime)
         {
-            _web.LoadPageHtml("Appointments.html", dateSearch + ";" + startTime);
+            _web.LoadPageHtml("Appointments.html", dateSearch + ";" + startTime + ";" + endTime);
         }
         #endregion
 

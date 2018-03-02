@@ -57,6 +57,7 @@ public enum EnumAppointmentStatuses
     Booked = 1,
     Reported = 2,
     Completed = 3,
+    Absent = 4
 }
 public enum EnumAbsenceReasons
 {

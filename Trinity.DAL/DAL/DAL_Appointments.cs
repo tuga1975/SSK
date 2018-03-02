@@ -667,7 +667,7 @@ namespace Trinity.DAL
                                     NRIC = d.Membership_Users.NRIC,
                                     Name = d.Membership_Users.Name,
                                     ReportTime = d.ReportTime,
-                                    Status = (EnumAppointmentStatuses)d.Status,
+                                    Status = d.AbsenceReporting_ID != null ? EnumAppointmentStatuses.Absent : (EnumAppointmentStatuses)d.Status,
                                     AppointmentDate = d.Date,
                                     StartTime = d.Timeslot.StartTime,
                                     EndTime = d.Timeslot.EndTime,
@@ -699,7 +699,7 @@ namespace Trinity.DAL
                                     NRIC = d.Membership_Users.NRIC,
                                     Name = d.Membership_Users.Name,
                                     ReportTime = d.ReportTime,
-                                    Status = (EnumAppointmentStatuses)d.Status,
+                                    Status = d.AbsenceReporting_ID != null ? EnumAppointmentStatuses.Absent : (EnumAppointmentStatuses)d.Status,
                                     AppointmentDate = d.Date,
                                     StartTime = d.Timeslot.StartTime,
                                     EndTime = d.Timeslot.EndTime,
@@ -823,13 +823,38 @@ namespace Trinity.DAL
             //return model.ToList();
         }
 
-        public int CountApptmtBookedByTimeslot(string timeslotID)
+        public int CountApptmtHasUseByTimeslot(string timeslotID)
         {
             try
             {
                 if (EnumAppConfig.IsLocal)
                 {
                     var data = _localUnitOfWork.DataContext.Appointments.Count(d => !string.IsNullOrEmpty(d.Timeslot_ID) && d.Timeslot_ID == timeslotID) + _localUnitOfWork.DataContext.Queues.Count(d => d.Timeslot_ID == timeslotID && (!d.Appointment_ID.HasValue || (d.Appointment_ID.HasValue && !string.IsNullOrEmpty(d.Appointment.Timeslot_ID) && d.Appointment.Timeslot_ID != timeslotID)));
+                    
+                    return data;
+                }
+                else
+                {
+                    var data = _centralizedUnitOfWork.DataContext.Appointments.Count(d => !string.IsNullOrEmpty(d.Timeslot_ID) && d.Timeslot_ID == timeslotID) + _localUnitOfWork.DataContext.Queues.Count(d => d.Timeslot_ID == timeslotID && (!d.Appointment_ID.HasValue || (d.Appointment_ID.HasValue && !string.IsNullOrEmpty(d.Appointment.Timeslot_ID) && d.Appointment.Timeslot_ID != timeslotID)));
+                    
+                    return data;
+                }
+
+            }
+            catch (Exception)
+            {
+
+                return 0;
+            }
+        }
+
+        public int CountApptmtBookedByTimeslot(string timeslotID)
+        {
+            try
+            {
+                if (EnumAppConfig.IsLocal)
+                {
+                    var data = _localUnitOfWork.DataContext.Appointments.Count(a => a.Timeslot_ID == timeslotID && a.Status == (int)EnumAppointmentStatuses.Booked);
 
                     return data;
                     // if (!EnumAppConfig.ByPassCentralizedDB)
@@ -845,7 +870,7 @@ namespace Trinity.DAL
                 }
                 else
                 {
-                    var data = _localUnitOfWork.DataContext.Appointments.Count(d => !string.IsNullOrEmpty(d.Timeslot_ID) && d.Timeslot_ID == timeslotID) + _localUnitOfWork.DataContext.Queues.Count(d => d.Timeslot_ID == timeslotID && (!d.Appointment_ID.HasValue || (d.Appointment_ID.HasValue && !string.IsNullOrEmpty(d.Appointment.Timeslot_ID) && d.Appointment.Timeslot_ID != timeslotID)));
+                    var data = _centralizedUnitOfWork.DataContext.Appointments.Count(a => a.Timeslot_ID == timeslotID && a.Status == (int)EnumAppointmentStatuses.Booked);
 
                     return data;
                 }
