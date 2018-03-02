@@ -1,4 +1,4 @@
-﻿<div style="display:block; padding:10px;">
+﻿<!--<div style="display:block; padding:10px;">
     <span style=" font-size:22px; float:left; text-align:left;"><b>Appointments</b></span>
     <br/>
     <div class="form-inline" style="right:10px; float:right; padding-bottom:10px;">
@@ -31,7 +31,51 @@
     </div>
 </div>
 <br />
-<table id="table"></table>
+<table id="table"></table>-->
+<div class="table-wrapper formWrapper">
+    <div class="tab-header">
+        <span class="formHeader"><b>Appointments</b></span>
+    </div>
+    <div class="tab-content">
+        <div class="form-inline formFilter float-left">
+            <div class="filters"><b>Filter by:</b></div>
+
+            <div class="filters">Period</div>
+            <select class="form-control" id="period">
+                <option>All Day</option>
+                <option>Morning</option>
+                <option>Afternoon</option>
+                <option>Evening</option>
+            </select>
+
+            <div class="filters">Timeslot</div>
+            <select class="form-control" id="timeslot">
+                <option>All</option>
+            </select>
+
+            <div class="filters">Date</div>
+            <div class="filters">
+                <div class="input-group date" id="datetimepicker">
+                    <input type='text' class="form-control" id="dateSearch" />
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>
+            </div>
+
+        </div>
+        <div class="form-inline formEntries float-right">
+            <div class="entries">Display </div>
+            <select class="form-control" id="pageSize">
+                <option>10</option>
+                <option>2</option>
+                <option>3</option>
+            </select>
+            <div class="entries"> entries per page</div>
+        </div>
+        <table id="table"></table>
+    </div>
+</div>
 <script type="text/javascript">
     activemenu('Appointments');
     $("#menu .menu-item").removeClass("active");

@@ -27,7 +27,7 @@
     }
 </style>
 
-<div style="display:block; padding:10px;">
+<!--<div style="display:block; padding:10px;">
     <span style=" font-size:22px; float:left; text-align:left;"><b>Alerts</b></span>
     <div class="form-inline" style="position: absolute; right: 200px; top: 30px">
         <select class="form-control" id="pageSize" style="width:70px; display:inline-block;">
@@ -39,7 +39,26 @@
     </div>
 </div>
 
-<table id="alertNotificationTable" class="tableContent"></table>
+<table id="alertNotificationTable" class="tableContent"></table>-->
+
+<div class="table-wrapper formWrapper">
+    <div class="tab-header">
+        <span class="formHeader"><b>Alerts</b></span>
+    </div>
+    <div class="tab-content">
+        <div class="form-inline formEntries float-right">
+            <div class="entries">Display </div>
+            <select class="form-control" id="pageSize">
+                <option>10</option>
+                <option>2</option>
+                <option>3</option>
+            </select>
+            <div class="entries">entries per page</div>
+        </div>
+        <table id="alertNotificationTable" class="tableContent"></table>
+
+    </div>
+</div>
 
 <script type="text/javascript">
     activemenu('Alerts');
