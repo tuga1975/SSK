@@ -36,7 +36,6 @@ namespace Trinity.DAL
             _localUnitOfWork.GetRepository<Trinity.DAL.DBContext.AbsenceReporting>().AddRange(arrayInssert);
             foreach (var item in arrayUpdate)
             {
-                //item.Status = AppointmentStatus.Reported;
                 _localUnitOfWork.GetRepository<Trinity.DAL.DBContext.Appointment>().Update(item);
             }
             _localUnitOfWork.Save();

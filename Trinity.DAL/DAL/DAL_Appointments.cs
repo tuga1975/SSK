@@ -190,20 +190,19 @@ namespace Trinity.DAL
         {
             if (EnumAppConfig.IsLocal)
             {
-                //return _localUnitOfWork.DataContext.Appointments.Count(d => d.UserId == UserID && d.Status == AppointmentStatus.Absent);
+                return _localUnitOfWork.DataContext.Appointments.Count(d => d.UserId == UserID && d.Status == AppointmentStatus.Absent && d.AbsenceReporting_ID==null);
             }
             else
             {
-                //return _centralizedUnitOfWork.DataContext.Appointments.Count(d => d.UserId == UserID && d.Status == AppointmentStatus.Absent);
+                return _centralizedUnitOfWork.DataContext.Appointments.Count(d => d.UserId == UserID && d.Status == AppointmentStatus.Absent && d.AbsenceReporting_ID == null);
             }
-            return 0;
         }
 
         public List<Appointment> GetAbsentAppointments(string UserID)
         {
             try
             {
-                var data = _localUnitOfWork.DataContext.Appointments.Where(d => d.UserId == UserID && System.Data.Entity.DbFunctions.TruncateTime(d.Date) < DateTime.Today && !d.Queues.Any() && d.AbsenceReporting_ID == null).ToList();
+                var data = _localUnitOfWork.DataContext.Appointments.Where(d => d.UserId == UserID && d.Status == AppointmentStatus.Absent && d.AbsenceReporting_ID == null).ToList();
 
                 return data;
             }
