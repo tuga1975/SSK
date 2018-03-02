@@ -26,7 +26,7 @@ namespace Trinity.DAL
                 dbAddress.Country = model.Country;
                 dbAddress.Postal_Code = model.Postal_Code;
                 AddressRespon.Add(dbAddress);
-                _localUnitOfWork.Save();
+                unitOfWork.Save();
             }
             else
             {
@@ -36,7 +36,7 @@ namespace Trinity.DAL
                 dbAddress.Country = model.Country;
                 dbAddress.Postal_Code = model.Postal_Code;
                 AddressRespon.Update(dbAddress);
-                _localUnitOfWork.Save();
+                unitOfWork.Save();
             }
         }
         public string SaveAddress(BE.Address model)

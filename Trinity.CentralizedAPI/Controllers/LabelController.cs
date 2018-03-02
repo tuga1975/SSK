@@ -26,40 +26,40 @@ namespace Trinity.CentralizedAPI.Controllers
 
         }
 
-        [HttpPost]
-        [Route("api/Label/UpdateLabel")]
-        public IHttpActionResult UpdateLabel(BE.Label label)
-        {
-            var result = new DAL.DAL_Labels().UpdateLabel(label);
-            return Ok(result);
-        }
+        //[HttpPost]
+        //[Route("api/Label/UpdateLabel")]
+        //public IHttpActionResult UpdateLabel(BE.Label label)
+        //{
+        //    var result = new DAL.DAL_Labels().UpdateLabel(label);
+        //    return Ok(result);
+        //}
 
-        [HttpGet]
-        [Route("api/Label/GetByDateAndUserId")]
-        public IHttpActionResult GetByDateAndUserId(string date, string UserId)
-        {
-            DateTime _date = Convert.ToDateTime(date);
-            var result = new DAL.DAL_Labels().GetByDateAndUserId(_date, UserId);
-            return Ok(result);
+        //[HttpGet]
+        //[Route("api/Label/GetByDateAndUserId")]
+        //public IHttpActionResult GetByDateAndUserId(string date, string UserId)
+        //{
+        //    DateTime _date = Convert.ToDateTime(date);
+        //    var result = new DAL.DAL_Labels().GetByDateAndUserId(_date, UserId);
+        //    return Ok(result);
 
-        }
+        //}
 
-        [HttpGet]
-        [Route("api/Label/GetAllLabelsForMUBAndTT")]
-        public IHttpActionResult GetAllLabelsForMUBAndTT()
-        {
-            var result = new DAL.DAL_Labels().GetAllLabelsForMUBAndTT();
-            return Ok(result);
+        //[HttpGet]
+        //[Route("api/Label/GetAllLabelsForMUBAndTT")]
+        //public IHttpActionResult GetAllLabelsForMUBAndTT()
+        //{
+        //    var result = new DAL.DAL_Labels().GetAllLabelsForMUBAndTT();
+        //    return Ok(result);
 
-        }
+        //}
 
-        [HttpGet]
-        [Route("api/Label/GetAllLabelsForUB")]
-        public IHttpActionResult GetAllLabelsForUB()
-        {
-            var result = new DAL.DAL_Labels().GetAllLabelsForMUBAndTT();
-            return Ok(result);
+        //[HttpGet]
+        //[Route("api/Label/GetAllLabelsForUB")]
+        //public IHttpActionResult GetAllLabelsForUB()
+        //{
+        //    var result = new DAL.DAL_Labels().GetAllLabelsForMUBAndTT();
+        //    return Ok(result);
 
-        }
+        //}
     }
 }

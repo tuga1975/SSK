@@ -12,33 +12,33 @@ namespace Trinity.CentralizedAPI.Controllers
     public class IssueCardController : ApiController
     {
 
-        [HttpGet]
-        [Route("api/IssueCard/GetMyIssueCards")]
-        public IHttpActionResult GetMyIssueCards(string UserId)
-        {
-            return Ok( new DAL.DAL_IssueCard().GetMyIssueCards(UserId));
-        }
+        //[HttpGet]
+        //[Route("api/IssueCard/GetMyIssueCards")]
+        //public IHttpActionResult GetMyIssueCards(string UserId)
+        //{
+        //    return Ok( new DAL.DAL_IssueCard().GetMyIssueCards(UserId));
+        //}
 
-        [HttpPost]
-        [Route("api/IssueCard/Insert")]
-        public void Insert([FromBody] Trinity.BE.IssueCard model)
-        {
-            new DAL.DAL_IssueCard().Insert(model);
-        }
+        //[HttpPost]
+        //[Route("api/IssueCard/Insert")]
+        //public void Insert([FromBody] Trinity.BE.IssueCard model)
+        //{
+        //    new DAL.DAL_IssueCard().Insert(model);
+        //}
 
-        [HttpPost]
-        [Route("api/IssueCard/UpdateStatusByUserId")]
-        public void UpdateStatusByUserId(string userId, string Status)
-        {
-            new DAL.DAL_IssueCard().UpdateStatusByUserId(userId, Status);
-        }
+        //[HttpPost]
+        //[Route("api/IssueCard/UpdateStatusByUserId")]
+        //public void UpdateStatusByUserId(string userId, string Status)
+        //{
+        //    new DAL.DAL_IssueCard().UpdateStatusByUserId(userId, Status);
+        //}
 
-        [HttpGet]
-        [Route("api/IssueCard/GetIssueCardBySmartCardId")]
-        public IHttpActionResult GetIssueCardBySmartCardId(string SmartCardId)
-        {
-            return Ok(new DAL.DAL_IssueCard().GetIssueCardBySmartCardId(SmartCardId));
-        }
+        //[HttpGet]
+        //[Route("api/IssueCard/GetIssueCardBySmartCardId")]
+        //public IHttpActionResult GetIssueCardBySmartCardId(string SmartCardId)
+        //{
+        //    return Ok(new DAL.DAL_IssueCard().GetIssueCardBySmartCardId(SmartCardId));
+        //}
 
     }
 }

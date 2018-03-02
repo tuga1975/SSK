@@ -171,7 +171,7 @@ namespace SSK
                         Timeslot_ID = item.Timeslot_ID,
                         StartTime = item.StartTime.Value,
                         EndTime = item.EndTime.Value,
-                        IsAvailble = item.MaximumSupervisee.HasValue? new DAL_Appointments().CountApptmtBookedByTimeslot(item.Timeslot_ID)<item.MaximumSupervisee.Value:false,
+                        IsAvailble = item.MaximumSupervisee.HasValue? new DAL_Appointments().CountApptmtHasUseByTimeslot(item.Timeslot_ID)<item.MaximumSupervisee.Value:false,
                         IsSelected = selected_Timeslot_ID == item.Timeslot_ID,
                         Category = item.Category
                     }).OrderBy(item => item.StartTime).ToList();
@@ -616,7 +616,7 @@ namespace SSK
         public void SaveReasonForQueue(string dataTxt)
         {
             List<Dictionary<string, string>> data = JsonConvert.DeserializeObject<List<Dictionary<string, string>>>(dataTxt);
-            new DAL_AbsenceReporting().UpdateAbsence(data);
+            new DAL_AbsenceReporting().InsertAbsence(data);
             LoadPage("Supervisee.html");
         }
 

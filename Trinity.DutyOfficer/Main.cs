@@ -36,6 +36,7 @@ namespace DutyOfficer
             Trinity.SignalR.Client.SignalR.Instance.Event_DeviceStatusUpdate += Instance_Event_DeviceStatusUpdate;
             Trinity.SignalR.Client.SignalR.Instance.Event_MessageTo += Instance_Event_MessageTo;
             Trinity.SignalR.Client.SignalR.Instance.Event_AppDisconnect += Instance_Event_AppDisconnect;
+            Trinity.SignalR.Client.SignalR.Instance.Event_QueueFinished += Instance_Event_QueueFinished;
 
             // setup variables
             _smartCardFailed = 0;
@@ -67,6 +68,7 @@ namespace DutyOfficer
         private void Instance_Event_AppDisconnect(string Station)
         {
             new DAL_DeviceStatus().RemoveDevice(Station);
+            _jsCallCS.LoadStationColorDevice();
         }
 
         private void Instance_Event_MessageTo(string NotificationID, string UserId, string Subject, string Content, string notificationType, string Station)
@@ -118,9 +120,14 @@ namespace DutyOfficer
             {
                 JSCallCS._StationColorDevice.UHPColor = device.CheckStatusDevicesStation(station) ? EnumColors.Green : EnumColors.Red;
             }
+            
+            _jsCallCS.LoadStationColorDevice();
+        }
 
-            JSCallCS jSCall = new JSCallCS(Lib.LayerWeb);
-            jSCall.LoadStationColorDevice();
+        private void Instance_Event_QueueFinished(Trinity.BE.Queue queue)
+        {
+            // Refresh data queue
+            LayerWeb.InvokeScript("reloadDataQueues");
         }
 
         private void Fingerprint_OnDeviceDisconnected()

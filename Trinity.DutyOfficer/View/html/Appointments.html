@@ -68,8 +68,9 @@
             <div class="entries">Display </div>
             <select class="form-control" id="pageSize">
                 <option>10</option>
-                <option>2</option>
-                <option>3</option>
+                <option>25</option>
+                <option>50</option>
+                <option>100</option>
             </select>
             <div class="entries"> entries per page</div>
         </div>
@@ -110,9 +111,9 @@
 
         api.server.GetAllAppoinments(function (data) {
             if (data) {
-                data.forEach(function (element, index) {
+                data.forEach(function (element, index) {                    
                     dataSource.push({
-                        TimeSlot: convert24hrTo12hr(element.StartTime) ,//+ ' to ' + element.EndTime,
+                        TimeSlot: convert24hrTo12hr(element.StartTime) + ' - ' + convert24hrTo12hr(element.EndTime),
                         NRIC: element.NRIC,
                         Name: element.Name,
                         ReportTime: element.ReportTime,
@@ -120,12 +121,13 @@
                         Date: element.AppointmentDate,
                         StartTime: element.StartTime,
                         EndTime: element.EndTime,
-                        Category: element.Category
+                        Category: element.Category,
+                        ReportTimeSpan: element.ReportTimeSpan
                     });
 
                     if (Date.parse(element.AppointmentDate) == Date.parse(today)) {
                         searchSource.push({
-                            TimeSlot: convert24hrTo12hr(element.StartTime) ,//+ ' to ' + element.EndTime,
+                            TimeSlot: convert24hrTo12hr(element.StartTime) + ' - ' + convert24hrTo12hr(element.EndTime),
                             NRIC: element.NRIC,
                             Name: element.Name,
                             ReportTime: element.ReportTime,
@@ -133,7 +135,8 @@
                             Date: element.AppointmentDate,
                             StartTime: element.StartTime,
                             EndTime: element.EndTime,
-                            Category: element.Category
+                            Category: element.Category,
+                            ReportTimeSpan: element.ReportTimeSpan
                         });
                     }
                 });
@@ -165,14 +168,14 @@
                     width: '40%',
                     align: 'center'
                 }, {
-                    field: 'ReportTime',
+                    field: 'ReportTimeSpan',
                     title: 'Report Time',
                     sortable: true,
                     width: '15%',
                     align: 'center',
                     formatter: function (value, row, index, field) {
                         if (value) {
-                            return formatDate(value);
+                            return convert24hrTo12hr(value);
                         }
                         return "";
                     }
@@ -188,7 +191,7 @@
                                 return 'Booked';
                             case 2:
                                 return 'Reported';
-                            default:
+                            case 4:
                                 return "Absent";
                         }
                     }
@@ -199,12 +202,15 @@
 
         // For case redirected from Statistics
         api.ready(function (strDateAndStartTime) {
-            if (strDateAndStartTime){
-                var dateAppt = strDateAndStartTime.split(';')[0];
-                var startTimeAppt = strDateAndStartTime.split(';')[1];
+            if (strDateAndStartTime) {
+                var splitDateAndTime = strDateAndStartTime.split(';');
+                var dateAppt = splitDateAndTime[0];
+                var startTimeAppt = splitDateAndTime[1];
+                var endTimeAppt = splitDateAndTime[2];
                 $('#dateSearch').val(dateAppt);
                 getTimeslot();
-                $('#timeslot').val(startTimeAppt);
+                var timeslotFromStatictis = convert24hrTo12hr(startTimeAppt) + ' - ' + convert24hrTo12hr(endTimeAppt);
+                $('#timeslot').val(timeslotFromStatictis);
                 searchAppointment();
             };
         });
@@ -249,7 +255,8 @@
                     Status: dataSource[i].Status,
                     Date: dataSource[i].AppointmentDate,
                     StartTime: dataSource[i].StartTime,
-                    EndTime: dataSource[i].EndTime
+                    EndTime: dataSource[i].EndTime,
+                    ReportTimeSpan: dataSource[i].ReportTimeSpan
                 });
             }
         }
@@ -286,11 +293,13 @@
     }
 
     function convert24hrTo12hr(time) {
-        var hourEnd = time.indexOf(":");
-        var H = +time.substr(0, hourEnd);
-        var h = H % 12 || 12;
-        var ampm = (H < 12 || H === 24) ? " AM" : " PM";
-        time = h + time.substr(hourEnd, 3) + ampm;
+        if (time != null && time != '') {
+            var hourEnd = time.indexOf(":");
+            var H = +time.substr(0, hourEnd);
+            var h = H % 12 || 12;
+            var ampm = (H < 12 || H === 24) ? " AM" : " PM";
+            time = h + time.substr(hourEnd, 3) + ampm;
+        }
         return time; // return adjusted time or original string
     };
     

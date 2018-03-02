@@ -28,7 +28,7 @@ namespace Trinity.BE
         public Nullable<short> ChangedCount { get; set; }
 
         [DataMember]
-        public EnumAppointmentStatuses Status { get; set; }
+        public string Status { get; set; }
 
         [DataMember]
         public string Timeslot_ID { get; set; }
@@ -44,5 +44,7 @@ namespace Trinity.BE
         public string Category { get; set; }
 
         public Nullable<Guid> AbsenceReporting_ID { get; set; }
+
+        public Nullable<System.TimeSpan> ReportTimeSpan { get; set; }
     }
 }

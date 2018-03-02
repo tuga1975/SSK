@@ -156,11 +156,15 @@ namespace Trinity.DAL
                     arrayQueueDetail.Add(queueDetails);
 
                 }
-
                 if (EnumAppConfig.IsLocal)
                 {
                     _localUnitOfWork.GetRepository<Trinity.DAL.DBContext.Queue>().Add(dataInsert);
                     _localUnitOfWork.GetRepository<Trinity.DAL.DBContext.QueueDetail>().AddRange(arrayQueueDetail);
+
+                    Trinity.DAL.DBContext.Appointment appointmentUpdate = _localUnitOfWork.DataContext.Appointments.FirstOrDefault(d => d.ID == appointmentID);
+                    appointmentUpdate.Status = AppointmentStatus.Reported;
+                    _localUnitOfWork.GetRepository<Trinity.DAL.DBContext.Appointment>().Update(appointmentUpdate);
+
                     _localUnitOfWork.Save();
                     return dataInsert;
                 }

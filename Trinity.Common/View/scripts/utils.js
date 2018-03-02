@@ -148,4 +148,12 @@ $(document).ready(function () {
             }
         }
     });
+    $('body').on('click', 'button[onclick]', function (event) {
+        event.preventDefault();
+        try {
+            eval($(this).attr('onclick'));
+        } catch (e) {
+
+        }
+    });
 });

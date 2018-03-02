@@ -899,7 +899,6 @@ namespace Enrolment
 
         private void NavigateTo(NavigatorEnums navigatorEnum)
         {
-            //LayerWeb.InvokeScript("createEvent", JsonConvert.SerializeObject(_jsCallCS.GetType().GetMethods().Where(d => d.IsPublic && !d.IsVirtual && !d.IsSecuritySafeCritical).ToArray().Select(d => d.Name)));
             // navigate
             if (navigatorEnum == NavigatorEnums.Authentication_NRIC)
             {

@@ -24,8 +24,9 @@ namespace Trinity.DAL.DBContext
         public System.DateTime ReportingDate { get; set; }
         public short AbsenceReason { get; set; }
         public string ReasonDetails { get; set; }
-        public byte[] ScannedDocument { get; set; }
+        public Nullable<System.Guid> Document_ID { get; set; }
     
+        public virtual UploadedDocument UploadedDocument { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Appointment> Appointments { get; set; }
     }

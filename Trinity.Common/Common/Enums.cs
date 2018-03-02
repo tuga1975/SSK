@@ -50,14 +50,26 @@ public enum EnumErrorCodes
     NRICNull = -6
 };
 
-public enum EnumAppointmentStatuses
+//public enum EnumAppointmentStatuses
+//{
+//    Deleted = -1,
+//    Pending = 0,
+//    Booked = 1,
+//    Reported = 2,
+//    Completed = 3,
+//    Absent = 4
+//}
+
+public static class EnumAppointmentStatuses
 {
-    Deleted = -1,
-    Pending = 0,
-    Booked = 1,
-    Reported = 2,
-    Completed = 3,
+    public const string Deleted = "Deleted";
+    public const string Pending = "Pending";
+    public const string Booked = "Booked";
+    public const string Reported = "Reported";
+    public const string Completed = "Completed";
+    public const string Absent = "Absent";
 }
+
 public enum EnumAbsenceReasons
 {
     Medical_Certificate = 0,
@@ -506,3 +518,12 @@ public static class EnumQueueOutcomeText
     public const string UnconditionalRelease = "Unconditional Release";
     public const string TapSmartCardToContinue = "Tap smart card to continue";
 }
+
+public static class AppointmentStatus
+{
+    public const string Pending = "Pending";
+    public const string Booked = "Booked";
+    public const string Reported = "Reported";
+    public const string Absent = "Absent";
+}
+
