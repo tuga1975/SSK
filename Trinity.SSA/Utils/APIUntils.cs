@@ -6,13 +6,11 @@ using System.Threading.Tasks;
 
  class APIUtils
 {
-    public static SSA.Utils.SignalR SignalR { get; set; }
     public static SSA.Utils.Printer Printer { get; set; }
     public static SSA.Utils.TextToSpeech TextToSpeech { get; set; }
 
     public static void Start()
     {
-        SignalR = new SSA.Utils.SignalR();
         Printer = new SSA.Utils.Printer();
         TextToSpeech = new SSA.Utils.TextToSpeech();
     }
@@ -20,6 +18,5 @@ using System.Threading.Tasks;
 
     public static void Dispose()
     {
-        SignalR.Dispose();
     }
 }
