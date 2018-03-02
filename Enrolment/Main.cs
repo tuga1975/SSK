@@ -43,6 +43,8 @@ namespace Enrolment
             InitializeComponent();
 
             APIUtils.Start();
+            //Notification
+            Trinity.SignalR.Client.SignalR signalR = Trinity.SignalR.Client.SignalR.Instance;
 
             pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
 

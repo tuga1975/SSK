@@ -32,7 +32,7 @@ namespace SSK
             this.timer = new System.Timers.Timer();
             this.timer.AutoReset = false;
             this.timer.Elapsed += RefreshQueueNumberTimer_Elapsed;
-            //TimerStart();
+            TimerStart();
         }
         private void ClockStart()
         {

@@ -100,7 +100,7 @@ namespace Enrolment
             if (attempt > 3)
             {
                 session[CommonConstants.CAPTURE_PHOTO_ATTEMPT] = null;
-                APIUtils.SignalR.SendAllDutyOfficer(null, "Supervisee failed to capture photo!", "Supervisee failed to capture photo!\n Please check the status", NotificationType.Error);
+                Trinity.SignalR.Client.SignalR.Instance.SendAllDutyOfficer(null, "Supervisee failed to capture photo!", "Supervisee failed to capture photo!\n Please check the status", NotificationType.Error);
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.PHOTO_CAPTURE_FAILED, Message = "Unable to capture photo", Source = "FailToCapture.html" });
             }
             else
@@ -119,7 +119,7 @@ namespace Enrolment
             if (attempt > 3)
             {
                 session[CommonConstants.CAPTURE_FINGERPRINT_ATTEMPT] = null;
-                APIUtils.SignalR.SendAllDutyOfficer(null, "Supervisee failed to capture photo!", "Supervisee failed to capture fingerprint!\n Please check the status", NotificationType.Error);
+                Trinity.SignalR.Client.SignalR.Instance.SendAllDutyOfficer(null, "Supervisee failed to capture photo!", "Supervisee failed to capture fingerprint!\n Please check the status", NotificationType.Error);
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.PHOTO_CAPTURE_FAILED, Message = "Unable to capture fingerprint", Source = "FailToCapture.html" });
             }
             else
@@ -138,7 +138,7 @@ namespace Enrolment
             if (attempt > 3)
             {
                 session[CommonConstants.PRINT_SMARTCARD_ATTEMPT] = null;
-                APIUtils.SignalR.SendAllDutyOfficer(null, "Supervisee failed to capture photo!", "Supervisee failed to print smart card!\n Please check the status", NotificationType.Error);
+                Trinity.SignalR.Client.SignalR.Instance.SendAllDutyOfficer(null, "Supervisee failed to capture photo!", "Supervisee failed to print smart card!\n Please check the status", NotificationType.Error);
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.ABLE_TO_PRINT_FAILED, Message = "Unable to print smart card", Source = "FailToCapture.html" });
             }
             else
@@ -204,7 +204,7 @@ namespace Enrolment
             }
             else
             {
-                APIUtils.SignalR.SendAllDutyOfficer(null, "Unable to scan supervisee's NRIC", "Unable to scan supervisee's NRIC! Please check the manually input information!", NotificationType.Caution);
+                Trinity.SignalR.Client.SignalR.Instance.SendAllDutyOfficer(null, "Unable to scan supervisee's NRIC", "Unable to scan supervisee's NRIC! Please check the manually input information!", NotificationType.Caution);
                 LoadListSupervisee();
 
             }
@@ -374,7 +374,7 @@ namespace Enrolment
             var updateUProfileResult = dalUserprofile.UpdateProfile(userProfileModel);
 
             ////send notifiy to case officer
-            APIUtils.SignalR.SendAllDutyOfficer(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId, "A supervisee has updated profile.", "Please check Supervisee's information!", NotificationType.Notification);
+            Trinity.SignalR.Client.SignalR.Instance.SendAllDutyOfficer(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId, "A supervisee has updated profile.", "Please check Supervisee's information!", NotificationType.Notification);
 
 
             //session[CommonConstants.CURRENT_EDIT_USER] = data;
@@ -665,7 +665,7 @@ namespace Enrolment
                     session.Role = EnumUserRoles.EnrolmentOfficer;
                     session[CommonConstants.USER_LOGIN] = user;
 
-                    APIUtils.SignalR.UserLogined(user.UserId);
+                    Trinity.SignalR.Client.SignalR.Instance.UserLogined(user.UserId);
 
                     eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = 0, Name = EventNames.LOGIN_SUCCEEDED });
                 }
@@ -691,7 +691,7 @@ namespace Enrolment
             // reset session value
             Session session = Session.Instance;
 
-            APIUtils.SignalR.UserLogout(((Trinity.BE.User)session[CommonConstants.USER_LOGIN]).UserId);
+            Trinity.SignalR.Client.SignalR.Instance.UserLogout(((Trinity.BE.User)session[CommonConstants.USER_LOGIN]).UserId);
 
             session.IsSmartCardAuthenticated = false;
             session.IsFingerprintAuthenticated = false;

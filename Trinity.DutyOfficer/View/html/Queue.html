@@ -1,4 +1,4 @@
-﻿<div style="display:block; padding:10px;">
+﻿<!--<div style="display:block; padding:10px;">
     <span style=" font-size:22px; float:left; text-align:left;"><b><ion-icon name="notifications"></ion-icon>Queue</b></span>
     <span style=" font-size:20px; float:left; text-align:left; margin-left:12px;" current-date></span>
     <div class="form-inline" style="position: absolute; right: 200px; top: 30px">
@@ -11,7 +11,24 @@
     </div>
 </div>
 
-<table id="table-queue"></table>
+<table id="table-queue"></table>-->
+<div class="table-wrapper formWrapper">
+    <div class="tab-header">
+        <span class="formHeader"><b>Queue</b></span>
+    </div>
+    <div class="tab-content">
+        <div class="form-inline formEntries float-right">
+            <div class="entries">Display </div>
+            <select class="form-control" id="pageSize">
+                <option>10</option>
+                <option>2</option>
+                <option>3</option>
+            </select>
+            <div class="entries"> entries per page</div>
+        </div>
+        <table id="table-queue"></table>
+    </div>
+</div>
 <script type="text/javascript">
     
     $('#menu').show();
