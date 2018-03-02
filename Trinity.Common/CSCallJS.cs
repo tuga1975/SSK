@@ -33,14 +33,10 @@ public static class CSCallJS
     {
         try
         {
+            var a = Lib.LayerWeb;
             web.Invoke((MethodInvoker)(() =>
           {
-              if (web.Document!=null)
-              {
-                  var doc = web.Document;
-                  web.Document.InvokeScript(function, pram);
-              }
-              
+              web.Document.InvokeScript(function, pram);
           }));
 
         }

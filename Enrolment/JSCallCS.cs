@@ -592,6 +592,7 @@ namespace Enrolment
 
         public void CancelEditSupervisee()
         {
+            var a = Lib.LayerWeb;
             Session session = Session.Instance;
             session[CommonConstants.CURRENT_EDIT_USER] = null;
             session[CommonConstants.CURRENT_FINGERPRINT_DATA] = null;

@@ -320,7 +320,7 @@
         }
 
         .newSuperviseeContent .newSuperviseeContentWrapper a {
-            color: #dee2e6;
+            color: #696969;
             text-decoration: underline;
             line-height: 1.2;
         }
@@ -447,7 +447,7 @@
                                             <div class="row col-10 offset-1">
                                                 <div class="col-12"><img src='../images/leftthumb.png' id="leftFingerprint" style="max-width:35%;"></div>
                                                 <div class="scan col-6 ml-auto"><a href="" data-target="#fingerPrint" data-toggle="modal" id="leftThumbScanBtn" >Scan</a></div>
-                                                <div class="clear col-6 mr-auto"><a href="" id="leftThumbClearBtn">Clear</a></div>
+                                                <div class="clear col-6 mr-auto"><a href="#" id="leftThumbClearBtn">Clear</a></div>
                                             </div><br />
                                             <div>Left Thumb-Fingerprint Preview</div>
                                         </div>
@@ -456,7 +456,7 @@
                                             <div class="row col-10 offset-1">
                                                 <div class="col-12"><img src='../images/rightthumb.png' id="rightFingerprint" style="max-width:35%;"></div><br />
                                                 <div class="scan col-6 ml-auto"><a href="" data-target="#fingerPrint" data-toggle="modal" id="rightThumbScanBtn" >Scan</a></div>
-                                                <div class="clear col-6 mr-auto"><a href="" id="rightThumbClearBtn">Clear</a></div>
+                                                <div class="clear col-6 mr-auto"><a href="#" id="rightThumbClearBtn">Clear</a></div>
                                             </div><br />
                                             <div>Right Thumb-Fingerprint Preview</div>
                                         </div>
@@ -1007,8 +1007,10 @@
                                 </ul>
 
                                 <div class="pull-right">
-                                    <button class="btn btn-light" id="btnCancelEdit">Cancel</button>
-                                    <a href="#"  class="btn btn-primary" id="SaveBtn">Save</a>
+                                   <!-- <button class="btn btn-light" id="btnCancelEdit" onclick="api.server.LoadListSupervisee();">Cancel</button>-->
+                                    <button class="btn btn-light" onclick="api.server.LoadListSupervisee();">Cancel</button>
+
+                                    <a href="#" class="btn btn-primary" id="SaveBtn">Save</a>
                                 </div>
                             </form>
 
@@ -1204,8 +1206,24 @@
         api.server.LoadListSupervisee();
     });
 
+
+    $('#leftThumbClearBtn').click(function () {
+        api.server.CancelCaptureFingerprint();
+        $('#leftFingerprint').attr('src', '../images/leftthumb.png');
+        $('#leftThumbClearBtn').attr('disabled', 'disabled');
+        $('#leftThumbScanBtn').removeAttr('disabled');
+        $('#leftProcessMessage').text('Place left thumb onto scanner').css('color', '#000');
+
+    });
+    $('#rightThumbClearBtn').click(function () {
+        api.server.CancelCaptureFingerprint();
+        $('#rightFingerprint').attr('src', '../images/rightthumb.png');
+        $('#rightThumbClearBtn').attr('disabled', 'disabled');
+        $('#rightThumbScanBtn').removeAttr('disabled');
+        $('#rightProcessMessage').text('Place right thumb onto scanner').css('color', '#000');
+    });
+
     $('#SaveBtn').click(function () {
-        alert(1);
         $('#Employment_Start_Date').val(setDate('day', 'month', 'year'));
         $('#Employment_End_Date').val(setDate('day_end', 'month_end', 'year_end'));
         var $form = $("#superviseeFrm");
@@ -1215,6 +1233,7 @@
         e.preventDefault();
 
     });
+
 
     $('#createNewSupervisee').on('slide.bs.carousel', function (data) {
         if (data.to == 2) {
@@ -1290,18 +1309,7 @@
         });
     });
 
-    jQuery(function ($) {
-        var modal_lv = 0;
-        $('.modal').on('shown.bs.modal', function (e) {
-            a = $('.modal-backdrop:last').css('zIndex', 1051 + modal_lv); console.log(a);
-            b = $(e.currentTarget).css('zIndex', 1052 + modal_lv); console.log(b);
-            modal_lv++
-        });
-
-        $('.modal').on('hidden.bs.modal', function (e) {
-            modal_lv--
-        });
-    });
+  
     jQuery(function ($) {
 
         // Carousel not allow for cycle
@@ -1395,22 +1403,6 @@
             $('#leftProcessMessage').text(message).css('color', color);
         }
     }
-
-    $('#leftThumbClearBtn').click(function () {
-        api.server.CancelCaptureFingerprint();
-        $('#leftFingerprint').attr('src', '');
-        $('#leftThumbClearBtn').attr('disabled', 'disabled');
-        $('#leftThumbScanBtn').removeAttr('disabled');
-        $('#leftProcessMessage').text('Place left thumb onto scanner').css('color', '#000');
-
-    });
-    $('#rightThumbClearBtn').click(function () {
-        api.server.CancelCaptureFingerprint();
-        $('#rightFingerprint').attr('src', '');
-        $('#rightThumbClearBtn').attr('disabled', 'disabled');
-        $('#rightThumbScanBtn').removeAttr('disabled');
-        $('#rightProcessMessage').text('Place right thumb onto scanner').css('color', '#000');
-    });
 
     function setBase64FingerprintOnloadServerCall(leftFinger, rightFinger) {
         if (leftFinger != "") {
@@ -1774,6 +1766,17 @@
     //    api.server.ReplaceOldPhotos();
     //    $("#pageUpdatePhotos").hide();
     //}
+    jQuery(function ($) {
+        var modal_lv = 0;
+        $('.modal').on('shown.bs.modal', function (e) {
+            a = $('.modal-backdrop:last').css('zIndex', 1051 + modal_lv); console.log(a);
+            b = $(e.currentTarget).css('zIndex', 1052 + modal_lv); console.log(b);
+            modal_lv++
+        });
 
+        $('.modal').on('hidden.bs.modal', function (e) {
+            modal_lv--
+        });
+    });
    
 </script>
