@@ -159,24 +159,10 @@ namespace Trinity.DAL
 
                 if (EnumAppConfig.IsLocal)
                 {
-                    if (EnumAppConfig.ByPassCentralizedDB)
-                    {
-                        _localUnitOfWork.GetRepository<Trinity.DAL.DBContext.Queue>().Add(dataInsert);
-                        _localUnitOfWork.GetRepository<Trinity.DAL.DBContext.QueueDetail>().AddRange(arrayQueueDetail);
-                        _localUnitOfWork.Save();
-                        return dataInsert;
-                    }
-
-                    bool centralizeStatus;
-                    var centralData = CallCentralized.Post<Trinity.DAL.DBContext.Queue>(EnumAPIParam.QueueNumber, "InserNewQueue", out centralizeStatus, "appointmentId=" + appointmentID, "userId=" + userId, "station=" + station);
-                    if (centralizeStatus)
-                    {
-                        _localUnitOfWork.GetRepository<Trinity.DAL.DBContext.Queue>().Add(dataInsert);
-                        _localUnitOfWork.GetRepository<Trinity.DAL.DBContext.QueueDetail>().AddRange(arrayQueueDetail);
-                        _localUnitOfWork.Save();
-                        return centralData;
-
-                    }
+                    _localUnitOfWork.GetRepository<Trinity.DAL.DBContext.Queue>().Add(dataInsert);
+                    _localUnitOfWork.GetRepository<Trinity.DAL.DBContext.QueueDetail>().AddRange(arrayQueueDetail);
+                    _localUnitOfWork.Save();
+                    return dataInsert;
                 }
                 else
                 {
