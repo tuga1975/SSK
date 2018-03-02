@@ -142,6 +142,7 @@ namespace Trinity.DAL
                     var appointment = _localUnitOfWork.DataContext.Appointments.FirstOrDefault(item => item.ID.ToString() == appointment_ID);
                     appointment.Timeslot_ID = timeslot_ID;
                     appointment.ChangedCount += 1;
+                    appointment.Status = EnumAppointmentStatuses.Booked;
 
                     var entry = _localUnitOfWork.DataContext.Entry(appointment);
                     entry.State = EntityState.Modified;
@@ -190,11 +191,11 @@ namespace Trinity.DAL
         {
             if (EnumAppConfig.IsLocal)
             {
-                return _localUnitOfWork.DataContext.Appointments.Count(d => d.UserId == UserID && d.Status == AppointmentStatus.Absent && d.AbsenceReporting_ID==null);
+                return _localUnitOfWork.DataContext.Appointments.Count(d => d.UserId == UserID && d.Status == EnumAppointmentStatuses.Absent && d.AbsenceReporting_ID==null);
             }
             else
             {
-                return _centralizedUnitOfWork.DataContext.Appointments.Count(d => d.UserId == UserID && d.Status == AppointmentStatus.Absent && d.AbsenceReporting_ID == null);
+                return _centralizedUnitOfWork.DataContext.Appointments.Count(d => d.UserId == UserID && d.Status == EnumAppointmentStatuses.Absent && d.AbsenceReporting_ID == null);
             }
         }
 
@@ -202,7 +203,7 @@ namespace Trinity.DAL
         {
             try
             {
-                var data = _localUnitOfWork.DataContext.Appointments.Where(d => d.UserId == UserID && d.Status == AppointmentStatus.Absent && d.AbsenceReporting_ID == null).ToList();
+                var data = _localUnitOfWork.DataContext.Appointments.Where(d => d.UserId == UserID && d.Status == EnumAppointmentStatuses.Absent && d.AbsenceReporting_ID == null).ToList();
 
                 return data;
             }

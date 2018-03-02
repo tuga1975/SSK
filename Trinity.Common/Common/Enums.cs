@@ -519,11 +519,5 @@ public static class EnumQueueOutcomeText
     public const string TapSmartCardToContinue = "Tap smart card to continue";
 }
 
-public static class AppointmentStatus
-{
-    public const string Pending = "Pending";
-    public const string Booked = "Booked";
-    public const string Reported = "Reported";
-    public const string Absent = "Absent";
-}
+
 

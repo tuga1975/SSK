@@ -162,7 +162,7 @@ namespace Trinity.DAL
                     _localUnitOfWork.GetRepository<Trinity.DAL.DBContext.QueueDetail>().AddRange(arrayQueueDetail);
 
                     Trinity.DAL.DBContext.Appointment appointmentUpdate = _localUnitOfWork.DataContext.Appointments.FirstOrDefault(d => d.ID == appointmentID);
-                    appointmentUpdate.Status = AppointmentStatus.Reported;
+                    appointmentUpdate.Status = EnumAppointmentStatuses.Reported;
                     _localUnitOfWork.GetRepository<Trinity.DAL.DBContext.Appointment>().Update(appointmentUpdate);
 
                     _localUnitOfWork.Save();
