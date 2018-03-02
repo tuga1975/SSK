@@ -856,6 +856,7 @@ namespace Enrolment
             }
             else if (e.Name == EventNames.SUPERVISEE_DATA_UPDATE_CANCELED)
             {
+                
                 NavigateTo(NavigatorEnums.Supervisee);
             }
         }

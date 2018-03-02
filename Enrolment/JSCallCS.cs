@@ -55,8 +55,8 @@ namespace Enrolment
                 listSupervisee.Add(model);
             }
 
-            //eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = 0, Name = EventNames.GET_LIST_SUPERVISEE_SUCCEEDED, Data = listSupervisee, Source = "Supervisee.html" });
-            this._web.LoadPageHtml("Supervisee.html", listSupervisee);
+            eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = 0, Name = EventNames.GET_LIST_SUPERVISEE_SUCCEEDED, Data = listSupervisee, Source = "Supervisee.html" });
+           // this._web.LoadPageHtml("Supervisee.html", listSupervisee);
         }
 
         public void SearchSuperviseeByNRIC(string nric)
@@ -564,7 +564,8 @@ namespace Enrolment
             }
             else
             {
-                this._web.InvokeScript("showPrintMessage", false, result.Description);
+                var failMessage="Cannot print smart card!";
+                this._web.InvokeScript("showPrintMessage", false, failMessage);
             }
         }
         public void AddNewSupervisee()
@@ -585,7 +586,7 @@ namespace Enrolment
             {
                 session[CommonConstants.IS_PRIMARY_PHOTO] = false;
             }
-
+            _web.LoadPageHtml("WebcamCapture.html");
             eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.OPEN_PICTURE_CAPTURE_FORM, Message = number });
         }
 
@@ -597,6 +598,7 @@ namespace Enrolment
             session[CommonConstants.CURRENT_LEFT_FINGERPRINT_IMAGE] = null;
             session[CommonConstants.CURRENT_RIGHT_FINGERPRINT_IMAGE] = null;
             session[CommonConstants.CURRENT_PHOTO_DATA] = null;
+
 
             EventCenter eventCenter = EventCenter.Default;
             eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.SUPERVISEE_DATA_UPDATE_CANCELED });
