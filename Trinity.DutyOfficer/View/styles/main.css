@@ -22,7 +22,7 @@ input {
 }
 
 #content {
-    margin: 10px 10px 10px 10px;
+    /*margin: 10px 10px 10px 10px;*/
     position: relative;
 }
 
@@ -59,20 +59,20 @@ input {
     }
 }
 
+/*Header*/
 #header {
     position: fixed;
     z-index: 10;
     width: 100%;
-    height: 75px;
     background-color: #FFF;
     top: 0px;
     left: 0px;
     padding: 15px 30px;
 }
 
-    #header .logoGoverment {
-        margin-top: 10px;
-    }
+#header .logoGoverment {
+    margin-top: 10px;
+}
 
 .CheckerDeviceStatus {
     margin-top: 15px;
@@ -121,9 +121,8 @@ span[color] {
 
 /*Menu*/
 #menu {
-    border: none;
     position: fixed;
-    top: 150px;
+    top: 148px;
     width: 100%;
     z-index: 10;
     background: #334352;
@@ -131,6 +130,7 @@ span[color] {
     display: flex;
     align-items: flex-start;
     flex-wrap: nowrap;
+    /*font-size: 18px;*/
 }
 
 #menu .fa{
@@ -140,7 +140,7 @@ span[color] {
 
 #menu span {
     width: auto;
-    float: left
+    float: left;
 }
 
 #menu .menu-item {
@@ -317,20 +317,45 @@ span[color] {
 }
 
 /*table content*/
-.tab-content {
-    margin-top: 50px;
-}
-
-.tab-content .tab-header {
-    border-bottom: 1px solid #d2d2d2;
-    padding-bottom: 9px;
+.table-wrapper {
+    margin-top: 20px;
     width: 100%;
+    overflow: hidden;
 }
 
-.tab-content .tab-header span {
+.tab-header {
+    border-bottom: 1px solid #d2d2d2;
+    padding: 40px 0 9px 40px;
+
+}
+
+.tab-header span {
     border-bottom: 2px solid #ff005a;
     font-weight: bold;
     padding-bottom: 10px;
+    font-size: 18px;
+}
+.tab-content {
+    padding: 20px 40px;
+}
+
+.tab-content .tabtitle span {
+    color: #1cacf6;
+    font-weight: 500;
+}
+
+table {
+    font-size: 14px;
+    width: 100%;
+    overflow: hidden;
+    text-align: center;
+    border: none;
+    position: relative;
+}
+table th,
+table tr.active {
+    background-color: #f6f6f6;
+    border-color: #fff;
 }
 
 /*Scan Smart Card*/
@@ -345,10 +370,10 @@ span[color] {
     background-size: contain;
 }
 
-    .scanSmartCart img {
-        width: auto;
-        height: 100%;
-    }
+.scanSmartCart img {
+    width: auto;
+    height: 100%;
+}
 
 .manualLogin {
     display: block;
@@ -404,4 +429,47 @@ span[color] {
     margin-top: 3px;
 }
 
-/*header*/
+/*Search, Filter*/
+.fixed-table-toolbar .search {
+    position: absolute;
+    top: -80px;
+    left: 230px;
+}
+
+.formFilter {
+    padding-bottom: 20px;
+}
+.formEntries .entries,
+.formFilter .filters {
+    font-size: 14px;
+    margin: 0 5px;
+    color: #848484;
+    display: inline-block;
+    width: auto;
+    float: left;
+}
+.formEntries select#pageSize {
+    font-size: 14px;
+    padding: 0 5px;
+    height: 25px;
+    background: #F6F6F6;
+    color: #848484;
+    border: none;
+    margin: 0;
+    display: inline-block;
+}
+.formFilter select#period,
+.formFilter select#timeslot,
+.formFilter #datetimepicker input {
+    font-size: 14px;
+    padding: 0 5px;
+    height: 25px;
+    background: #F6F6F6;
+    color: #848484;
+    border: none;
+    margin: 0;
+    display: inline-block;
+    width: auto;
+    float: left;
+    margin-right: 5px;
+}

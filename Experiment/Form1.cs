@@ -114,5 +114,11 @@ namespace Experiment
         {
             var status = FingerprintReaderUtil.Instance.GetDeviceStatus();
         }
+
+        private void btnTestSerialComm_Click(object sender, EventArgs e)
+        {
+            FormLEDLightControl f = new FormLEDLightControl();
+            f.Show();
+        }
     }
 }
