@@ -19,13 +19,14 @@ namespace Trinity.SignalR.Client.Notification
                 return System.Reflection.Assembly.GetEntryAssembly().GetName().Name;
             }
         }
+
         protected bool IsConnected
         {
             get
             {
-                if (Connection == null || (Connection != null && string.IsNullOrEmpty(Connection.ConnectionId)))
-                    return false;
-                return true;
+                if (Connection.State == ConnectionState.Connected)
+                    return true;
+                return false;
             }
         }
         protected void StartConnect()
@@ -45,7 +46,6 @@ namespace Trinity.SignalR.Client.Notification
             Connection = new HubConnection(EnumAppConfig.NotificationServerUrl + "/signalr");
             Connection.Headers.Add("Station", Station);
             Connection.Closed += _Connection_Closed;
-
             HubProxy = Connection.CreateHubProxy("MyHub");
             //Handle incoming event from server: use Invoke to write to console from SignalR's thread
             _IncomingEvents();

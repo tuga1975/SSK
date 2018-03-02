@@ -243,9 +243,6 @@ highlight {
     color: #fff;
     font-weight: bold;
 }
-
-/*
-
 .loading {
     position: fixed;
     z-index: 100;
@@ -258,7 +255,7 @@ highlight {
 }
 
 .loader {
-    border: 5px solid #f3f3f3; 
+    border: 5px solid #f3f3f3;
     border-top: 5px solid #3498db;
     border-radius: 50%;
     width: 50px;
@@ -268,6 +265,9 @@ highlight {
     left: calc(50% - 25px);
     top: calc(50% - 25px);
 }
+/*
+
+
 
 #divLoading {
     text-align: center;
