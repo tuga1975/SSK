@@ -185,16 +185,6 @@
                     sortable: true,
                     width: '15%',
                     align: 'center',
-                    formatter: function (value, row, index, field) {
-                        switch (value) {
-                            case 1:
-                                return 'Booked';
-                            case 2:
-                                return 'Reported';
-                            case 4:
-                                return "Absent";
-                        }
-                    }
                 }],
                 data: searchSource
             });
