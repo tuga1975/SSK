@@ -74,28 +74,27 @@ namespace DutyOfficer
             string dutiOfficerId = ((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId;
             if (dutiOfficerId != null && dutiOfficerId != "")
             {
-                //Trinity.BE.Notification notification = new Trinity.BE.Notification();
-                //notification.Subject = Subject;
-                //notification.ToUserId = UserId;
-                //notification.Content = Content;
-                //notification.Source = Station;
-                //notification.Type = notificationType;
-                //notification.Datetime = DateTime.Now;
-                //object result = JsonConvert.SerializeObject(notification, Formatting.Indented,
-                //new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
-                //Lib.LayerWeb.Invoke((MethodInvoker)(() =>
-                //{
-                //    string activeTab = Lib.LayerWeb.Document.InvokeScript("getActiveTab").ToString();
-                //    if (activeTab != "Alerts")
-                //    {
-                //        Lib.LayerWeb.InvokeScript("getRealtimeNotificationServer", result);
-                //    }
-                //    else
-                //    {
-                //        Lib.LayerWeb.InvokeScript("getNotificationInCurrentTab", result);
-                //    }
-                //}));
-                Lib.LayerWeb.InvokeScript("ShowMessageBox", Subject);
+                Trinity.BE.Notification notification = new Trinity.BE.Notification();
+                notification.Subject = Subject;
+                notification.ToUserId = UserId;
+                notification.Content = Content;
+                notification.Source = Station;
+                notification.Type = notificationType;
+                notification.Datetime = DateTime.Now;
+                object result = JsonConvert.SerializeObject(notification, Formatting.Indented,
+                new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
+                Lib.LayerWeb.Invoke((MethodInvoker)(() =>
+                {
+                    string activeTab = Lib.LayerWeb.Document.InvokeScript("getActiveTab").ToString();
+                    if (activeTab != "Alerts")
+                    {
+                        Lib.LayerWeb.InvokeScript("getRealtimeNotificationServer", result);
+                    }
+                    else
+                    {
+                        Lib.LayerWeb.InvokeScript("getNotificationInCurrentTab", result);
+                    }
+                }));
             }
         }
 
@@ -366,23 +365,23 @@ namespace DutyOfficer
         {
             LayerWeb.InvokeScript("createEvent", JsonConvert.SerializeObject(_jsCallCS.GetType().GetMethods().Where(d => (d.IsPublic && !d.IsVirtual && !d.IsSecuritySafeCritical) || (d.IsPublic && d.IsSecurityCritical)).ToArray().Select(d => d.Name)));
 
-            //if (_isFirstTimeLoaded)
-            //{
-            //    NavigateTo(NavigatorEnums.Authentication_SmartCard);
+            if (_isFirstTimeLoaded)
+            {
+                NavigateTo(NavigatorEnums.Authentication_SmartCard);
 
-            //    _isFirstTimeLoaded = false;
-            //}
+                _isFirstTimeLoaded = false;
+            }
 
             //// For testing purpose
-            Session session = Session.Instance;
+            //Session session = Session.Instance;
             //// Duty Officer
-            Trinity.BE.User user = new DAL_User().GetUserByUserId("dfbb2a6a-9e45-4a76-9f75-af1a7824a947").Data;
-            session[CommonConstants.USER_LOGIN] = user;
-            session.IsSmartCardAuthenticated = true;
-            session.IsFingerprintAuthenticated = true;
+            //Trinity.BE.User user = new DAL_User().GetUserByUserId("dfbb2a6a-9e45-4a76-9f75-af1a7824a947").Data;
+            //session[CommonConstants.USER_LOGIN] = user;
+            //session.IsSmartCardAuthenticated = true;
+            //session.IsFingerprintAuthenticated = true;
 
-            NavigateTo(NavigatorEnums.Queue);
-            Trinity.SignalR.Client.SignalR.Instance.UserLogined(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId);
+            //NavigateTo(NavigatorEnums.Queue);
+            //Trinity.SignalR.Client.SignalR.Instance.UserLogined(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId);
         }
 
         private void EventCenter_OnNewEvent(object sender, EventInfo e)
