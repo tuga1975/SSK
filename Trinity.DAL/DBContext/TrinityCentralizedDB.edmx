@@ -13,7 +13,7 @@
           <Property Name="ReportingDate" Type="datetime" Nullable="false" />
           <Property Name="AbsenceReason" Type="smallint" Nullable="false" />
           <Property Name="ReasonDetails" Type="nvarchar" MaxLength="500" />
-          <Property Name="ScannedDocument" Type="varbinary(max)" />
+          <Property Name="Document_ID" Type="uniqueidentifier" />
         </EntityType>
         <EntityType Name="ActionLog">
           <Key>
@@ -42,7 +42,7 @@
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
-          <Property Name="Station" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="Station" Type="nvarchar" MaxLength="50" />
           <Property Name="DeviceID" Type="int" />
           <Property Name="StatusCode" Type="int" Nullable="false" />
           <Property Name="StatusMessage" Type="nvarchar" MaxLength="100" Nullable="false" />
@@ -57,7 +57,7 @@
           <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
           <Property Name="Date" Type="date" Nullable="false" />
           <Property Name="ChangedCount" Type="smallint" Nullable="false" />
-          <Property Name="Status" Type="int" Nullable="false" />
+          <Property Name="Status" Type="varchar" MaxLength="10" Nullable="false" />
           <Property Name="ReportTime" Type="datetime" />
         </EntityType>
         <EntityType Name="APS_USER_ACT_LOG">
@@ -102,6 +102,11 @@
           <Property Name="CAT" Type="bit" />
           <Property Name="PPZ" Type="bit" />
           <Property Name="NPS" Type="bit" />
+          <Property Name="IsSealed" Type="bit" />
+          <Property Name="UploadedDate" Type="datetime" />
+          <Property Name="UploadedBy" Type="nvarchar" MaxLength="128" />
+          <Property Name="SealedOrDiscardedDate" Type="datetime" />
+          <Property Name="SealedOrDiscardedBy" Type="nvarchar" MaxLength="128" />
         </EntityType>
         <EntityType Name="EMAIL_LOG">
           <Key>
@@ -146,6 +151,7 @@
             <PropertyRef Name="Label_ID" />
           </Key>
           <Property Name="Label_ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Queue_ID" Type="uniqueidentifier" />
           <Property Name="Label_Type" Type="varchar" MaxLength="5" Nullable="false" />
           <Property Name="CompanyName" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="MarkingNo" Type="varchar" MaxLength="15" Nullable="false" />
@@ -315,15 +321,18 @@
             <PropertyRef Name="Station" />
           </Key>
           <Property Name="Queue_ID" Type="uniqueidentifier" Nullable="false" />
-          <Property Name="Station" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="Station" Type="varchar" MaxLength="20" Nullable="false" />
           <Property Name="Status" Type="varchar" MaxLength="20" />
           <Property Name="Message" Type="nvarchar" MaxLength="50" />
+          <Property Name="LastUpdatedDate" Type="datetime" />
         </EntityType>
         <EntityType Name="Queues">
           <Key>
             <PropertyRef Name="Queue_ID" />
           </Key>
           <Property Name="Queue_ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="Timeslot_ID" Type="nvarchar" MaxLength="128" Nullable="false" />
           <Property Name="Appointment_ID" Type="uniqueidentifier" />
           <Property Name="CurrentStation" Type="varchar" MaxLength="20" Nullable="false" />
           <Property Name="Outcome" Type="nvarchar" MaxLength="50" Nullable="false" />
@@ -400,6 +409,18 @@
           <Property Name="LastUpdatedDate" Type="datetime" />
           <Property Name="Description" Type="nvarchar" MaxLength="255" />
         </EntityType>
+        <EntityType Name="UploadedDocuments">
+          <Key>
+            <PropertyRef Name="Document_ID" />
+          </Key>
+          <Property Name="Document_ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="DocumentName" Type="nvarchar" MaxLength="128" />
+          <Property Name="UploadedBy" Type="nvarchar" MaxLength="128" />
+          <Property Name="UploadedDate" Type="datetime" />
+          <Property Name="Extension" Type="varchar" MaxLength="10" />
+          <Property Name="DocumentContent" Type="varbinary(max)" />
+          <Property Name="Note" Type="nchar" MaxLength="10" Nullable="false" />
+        </EntityType>
         <EntityType Name="User_Profiles">
           <Key>
             <PropertyRef Name="UserId" />
@@ -438,6 +459,7 @@
           <Property Name="Race" Type="nvarchar" MaxLength="50" />
           <Property Name="RightThumb_Photo" Type="varbinary(max)" />
           <Property Name="LeftThumb_Photo" Type="varbinary(max)" />
+          <Property Name="Document_ID" Type="uniqueidentifier" />
         </EntityType>
         <Association Name="FK__Restauran__UserI__1CFC3D38">
           <End Role="Membership_Users" Type="Self.Membership_Users" Multiplicity="0..1" />
@@ -448,6 +470,18 @@
             </Principal>
             <Dependent Role="Membership_UserDevices">
               <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AbsenceReporting_UploadedDocuments">
+          <End Role="UploadedDocuments" Type="Self.UploadedDocuments" Multiplicity="0..1" />
+          <End Role="AbsenceReporting" Type="Self.AbsenceReporting" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UploadedDocuments">
+              <PropertyRef Name="Document_ID" />
+            </Principal>
+            <Dependent Role="AbsenceReporting">
+              <PropertyRef Name="Document_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -711,6 +745,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Queues_Membership_Users1">
+          <End Role="Membership_Users" Type="Self.Membership_Users" Multiplicity="1" />
+          <End Role="Queues" Type="Self.Queues" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Membership_Users">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="Queues">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Queues_Timeslots">
+          <End Role="Timeslots" Type="Self.Timeslots" Multiplicity="1" />
+          <End Role="Queues" Type="Self.Queues" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Timeslots">
+              <PropertyRef Name="Timeslot_ID" />
+            </Principal>
+            <Dependent Role="Queues">
+              <PropertyRef Name="Timeslot_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_SentMessages_User_Profiles">
           <End Role="User_Profiles" Type="Self.User_Profiles" Multiplicity="0..1" />
           <End Role="SentMessages" Type="Self.SentMessages" Multiplicity="*" />
@@ -759,6 +817,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_User_Profiles_UploadedDocuments">
+          <End Role="UploadedDocuments" Type="Self.UploadedDocuments" Multiplicity="0..1" />
+          <End Role="User_Profiles" Type="Self.User_Profiles" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UploadedDocuments">
+              <PropertyRef Name="Document_ID" />
+            </Principal>
+            <Dependent Role="User_Profiles">
+              <PropertyRef Name="Document_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="TrinityCentralizedDBModelStoreContainer">
           <EntitySet Name="AbsenceReporting" EntityType="Self.AbsenceReporting" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ActionLog" EntityType="Self.ActionLog" Schema="dbo" store:Type="Tables" />
@@ -790,10 +860,15 @@
           <EntitySet Name="Settings" EntityType="Self.Settings" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SMS_LOG" EntityType="Self.SMS_LOG" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Timeslots" EntityType="Self.Timeslots" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UploadedDocuments" EntityType="Self.UploadedDocuments" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User_Profiles" EntityType="Self.User_Profiles" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK__Restauran__UserI__1CFC3D38" Association="Self.FK__Restauran__UserI__1CFC3D38">
             <End Role="Membership_Users" EntitySet="Membership_Users" />
             <End Role="Membership_UserDevices" EntitySet="Membership_UserDevices" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AbsenceReporting_UploadedDocuments" Association="Self.FK_AbsenceReporting_UploadedDocuments">
+            <End Role="UploadedDocuments" EntitySet="UploadedDocuments" />
+            <End Role="AbsenceReporting" EntitySet="AbsenceReporting" />
           </AssociationSet>
           <AssociationSet Name="FK_ActionLog_Membership_Users" Association="Self.FK_ActionLog_Membership_Users">
             <End Role="Membership_Users" EntitySet="Membership_Users" />
@@ -879,6 +954,14 @@
             <End Role="Membership_Users" EntitySet="Membership_Users" />
             <End Role="Queues" EntitySet="Queues" />
           </AssociationSet>
+          <AssociationSet Name="FK_Queues_Membership_Users1" Association="Self.FK_Queues_Membership_Users1">
+            <End Role="Membership_Users" EntitySet="Membership_Users" />
+            <End Role="Queues" EntitySet="Queues" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Queues_Timeslots" Association="Self.FK_Queues_Timeslots">
+            <End Role="Timeslots" EntitySet="Timeslots" />
+            <End Role="Queues" EntitySet="Queues" />
+          </AssociationSet>
           <AssociationSet Name="FK_SentMessages_User_Profiles" Association="Self.FK_SentMessages_User_Profiles">
             <End Role="User_Profiles" EntitySet="User_Profiles" />
             <End Role="SentMessages" EntitySet="SentMessages" />
@@ -895,20 +978,21 @@
             <End Role="Membership_Users" EntitySet="Membership_Users" />
             <End Role="User_Profiles" EntitySet="User_Profiles" />
           </AssociationSet>
+          <AssociationSet Name="FK_User_Profiles_UploadedDocuments" Association="Self.FK_User_Profiles_UploadedDocuments">
+            <End Role="UploadedDocuments" EntitySet="UploadedDocuments" />
+            <End Role="User_Profiles" EntitySet="User_Profiles" />
+          </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="TrinityCentralizedDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityContainer Name="TrinityCentralizedDBEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="AbsenceReportings" EntityType="TrinityCentralizedDBModel.AbsenceReporting" />
           <EntitySet Name="ActionLogs" EntityType="TrinityCentralizedDBModel.ActionLog" />
           <EntitySet Name="Addresses" EntityType="TrinityCentralizedDBModel.Address" />
           <EntitySet Name="ApplicationDevice_Status" EntityType="TrinityCentralizedDBModel.ApplicationDevice_Status" />
-          <EntitySet Name="Appointments" EntityType="TrinityCentralizedDBModel.Appointment" />
           <EntitySet Name="APS_USER_ACT_LOG" EntityType="TrinityCentralizedDBModel.APS_USER_ACT_LOG" />
           <EntitySet Name="Devices" EntityType="TrinityCentralizedDBModel.Device" />
-          <EntitySet Name="DrugResults" EntityType="TrinityCentralizedDBModel.DrugResult" />
           <EntitySet Name="EMAIL_LOG" EntityType="TrinityCentralizedDBModel.EMAIL_LOG" />
           <EntitySet Name="Holidays" EntityType="TrinityCentralizedDBModel.Holiday" />
           <EntitySet Name="IssuedCards" EntityType="TrinityCentralizedDBModel.IssuedCard" />
@@ -932,10 +1016,6 @@
           <EntitySet Name="SMS_LOG" EntityType="TrinityCentralizedDBModel.SMS_LOG" />
           <EntitySet Name="Timeslots" EntityType="TrinityCentralizedDBModel.Timeslot" />
           <EntitySet Name="User_Profiles" EntityType="TrinityCentralizedDBModel.User_Profiles" />
-          <AssociationSet Name="FK_Appointments_AbsenceReporting" Association="TrinityCentralizedDBModel.FK_Appointments_AbsenceReporting">
-            <End Role="AbsenceReporting" EntitySet="AbsenceReportings" />
-            <End Role="Appointment" EntitySet="Appointments" />
-          </AssociationSet>
           <AssociationSet Name="FK_ActionLog_Membership_Users" Association="TrinityCentralizedDBModel.FK_ActionLog_Membership_Users">
             <End Role="Membership_Users" EntitySet="Membership_Users" />
             <End Role="ActionLog" EntitySet="ActionLogs" />
@@ -955,18 +1035,6 @@
           <AssociationSet Name="FK_ApplicationDevice_Status_Devices" Association="TrinityCentralizedDBModel.FK_ApplicationDevice_Status_Devices">
             <End Role="Device" EntitySet="Devices" />
             <End Role="ApplicationDevice_Status" EntitySet="ApplicationDevice_Status" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Appointments_Membership_Users" Association="TrinityCentralizedDBModel.FK_Appointments_Membership_Users">
-            <End Role="Membership_Users" EntitySet="Membership_Users" />
-            <End Role="Appointment" EntitySet="Appointments" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Appointments_Timeslots" Association="TrinityCentralizedDBModel.FK_Appointments_Timeslots">
-            <End Role="Timeslot" EntitySet="Timeslots" />
-            <End Role="Appointment" EntitySet="Appointments" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Queues_Appointments" Association="TrinityCentralizedDBModel.FK_Queues_Appointments">
-            <End Role="Appointment" EntitySet="Appointments" />
-            <End Role="Queue" EntitySet="Queues" />
           </AssociationSet>
           <AssociationSet Name="FK_APS_USER_ACT_LOG_User_Profiles" Association="TrinityCentralizedDBModel.FK_APS_USER_ACT_LOG_User_Profiles">
             <End Role="User_Profiles" EntitySet="User_Profiles" />
@@ -1036,18 +1104,43 @@
             <End Role="User_Profiles" EntitySet="User_Profiles" />
             <End Role="SentMessage" EntitySet="SentMessages" />
           </AssociationSet>
+          <EntitySet Name="UploadedDocuments" EntityType="TrinityCentralizedDBModel.UploadedDocument" />
+          <AssociationSet Name="FK_Queues_Membership_Users1" Association="TrinityCentralizedDBModel.FK_Queues_Membership_Users1">
+            <End Role="Membership_Users" EntitySet="Membership_Users" />
+            <End Role="Queue" EntitySet="Queues" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Queues_Timeslots" Association="TrinityCentralizedDBModel.FK_Queues_Timeslots">
+            <End Role="Timeslot" EntitySet="Timeslots" />
+            <End Role="Queue" EntitySet="Queues" />
+          </AssociationSet>
+          <AssociationSet Name="FK_User_Profiles_UploadedDocuments" Association="TrinityCentralizedDBModel.FK_User_Profiles_UploadedDocuments">
+            <End Role="UploadedDocument" EntitySet="UploadedDocuments" />
+            <End Role="User_Profiles" EntitySet="User_Profiles" />
+          </AssociationSet>
+          <EntitySet Name="Appointments" EntityType="TrinityCentralizedDBModel.Appointment" />
+          <AssociationSet Name="FK_Appointments_Membership_Users" Association="TrinityCentralizedDBModel.FK_Appointments_Membership_Users">
+            <End Role="Membership_Users" EntitySet="Membership_Users" />
+            <End Role="Appointment" EntitySet="Appointments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Appointments_Timeslots" Association="TrinityCentralizedDBModel.FK_Appointments_Timeslots">
+            <End Role="Timeslot" EntitySet="Timeslots" />
+            <End Role="Appointment" EntitySet="Appointments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Queues_Appointments" Association="TrinityCentralizedDBModel.FK_Queues_Appointments">
+            <End Role="Appointment" EntitySet="Appointments" />
+            <End Role="Queue" EntitySet="Queues" />
+          </AssociationSet>
+          <EntitySet Name="DrugResults" EntityType="TrinityCentralizedDBModel.DrugResult" />
+          <EntitySet Name="AbsenceReportings" EntityType="TrinityCentralizedDBModel.AbsenceReporting" />
+          <AssociationSet Name="FK_AbsenceReporting_UploadedDocuments" Association="TrinityCentralizedDBModel.FK_AbsenceReporting_UploadedDocuments">
+            <End Role="UploadedDocument" EntitySet="UploadedDocuments" />
+            <End Role="AbsenceReporting" EntitySet="AbsenceReportings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Appointments_AbsenceReporting" Association="TrinityCentralizedDBModel.FK_Appointments_AbsenceReporting">
+            <End Role="AbsenceReporting" EntitySet="AbsenceReportings" />
+            <End Role="Appointment" EntitySet="Appointments" />
+          </AssociationSet>
         </EntityContainer>
-        <EntityType Name="AbsenceReporting">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Guid" Nullable="false" />
-          <Property Name="ReportingDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="AbsenceReason" Type="Int16" Nullable="false" />
-          <Property Name="ReasonDetails" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="ScannedDocument" Type="Binary" MaxLength="Max" FixedLength="false" />
-          <NavigationProperty Name="Appointments" Relationship="TrinityCentralizedDBModel.FK_Appointments_AbsenceReporting" FromRole="AbsenceReporting" ToRole="Appointment" />
-        </EntityType>
         <EntityType Name="ActionLog">
           <Key>
             <PropertyRef Name="Action_ID" />
@@ -1079,28 +1172,11 @@
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Guid" Nullable="false" />
-          <Property Name="Station" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="Station" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="DeviceID" Type="Int32" />
           <Property Name="StatusCode" Type="Int32" Nullable="false" />
           <Property Name="StatusMessage" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Device" Relationship="TrinityCentralizedDBModel.FK_ApplicationDevice_Status_Devices" FromRole="ApplicationDevice_Status" ToRole="Device" />
-        </EntityType>
-        <EntityType Name="Appointment">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Guid" Nullable="false" />
-          <Property Name="Timeslot_ID" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="AbsenceReporting_ID" Type="Guid" />
-          <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="Date" Type="DateTime" Nullable="false" Precision="0" />
-          <Property Name="ChangedCount" Type="Int16" Nullable="false" />
-          <Property Name="Status" Type="Int32" Nullable="false" />
-          <Property Name="ReportTime" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="AbsenceReporting" Relationship="TrinityCentralizedDBModel.FK_Appointments_AbsenceReporting" FromRole="Appointment" ToRole="AbsenceReporting" />
-          <NavigationProperty Name="Membership_Users" Relationship="TrinityCentralizedDBModel.FK_Appointments_Membership_Users" FromRole="Appointment" ToRole="Membership_Users" />
-          <NavigationProperty Name="Timeslot" Relationship="TrinityCentralizedDBModel.FK_Appointments_Timeslots" FromRole="Appointment" ToRole="Timeslot" />
-          <NavigationProperty Name="Queues" Relationship="TrinityCentralizedDBModel.FK_Queues_Appointments" FromRole="Appointment" ToRole="Queue" />
         </EntityType>
         <EntityType Name="APS_USER_ACT_LOG">
           <Key>
@@ -1122,30 +1198,6 @@
           <Property Name="DeviceName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Details" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="ApplicationDevice_Status" Relationship="TrinityCentralizedDBModel.FK_ApplicationDevice_Status_Devices" FromRole="Device" ToRole="ApplicationDevice_Status" />
-        </EntityType>
-        <EntityType Name="DrugResult">
-          <Key>
-            <PropertyRef Name="DrugResultsID" />
-          </Key>
-          <Property Name="DrugResultsID" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="NRIC" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="timestamp" Type="DateTime" Precision="3" />
-          <Property Name="markingnumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="AMPH" Type="Boolean" />
-          <Property Name="BENZ" Type="Boolean" />
-          <Property Name="OPI" Type="Boolean" />
-          <Property Name="THC" Type="Boolean" />
-          <Property Name="COCA" Type="Boolean" />
-          <Property Name="BARB" Type="Boolean" />
-          <Property Name="LSD" Type="Boolean" />
-          <Property Name="METH" Type="Boolean" />
-          <Property Name="MTQL" Type="Boolean" />
-          <Property Name="PCP" Type="Boolean" />
-          <Property Name="KET" Type="Boolean" />
-          <Property Name="BUPRE" Type="Boolean" />
-          <Property Name="CAT" Type="Boolean" />
-          <Property Name="PPZ" Type="Boolean" />
-          <Property Name="NPS" Type="Boolean" />
         </EntityType>
         <EntityType Name="EMAIL_LOG">
           <Key>
@@ -1206,6 +1258,7 @@
           <Property Name="PrintStatus" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="Message" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Membership_Users" Relationship="TrinityCentralizedDBModel.FK_Labels_Membership_Users" FromRole="Label" ToRole="Membership_Users" />
+          <Property Name="Queue_ID" Type="Guid" />
         </EntityType>
         <EntityType Name="Membership_RoleClaims">
           <Key>
@@ -1300,7 +1353,6 @@
           <Property Name="Note" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="ActionLogs" Relationship="TrinityCentralizedDBModel.FK_ActionLog_Membership_Users" FromRole="Membership_Users" ToRole="ActionLog" />
           <NavigationProperty Name="ActionLogs1" Relationship="TrinityCentralizedDBModel.FK_ActionLog_Membership_Users1" FromRole="Membership_Users" ToRole="ActionLog" />
-          <NavigationProperty Name="Appointments" Relationship="TrinityCentralizedDBModel.FK_Appointments_Membership_Users" FromRole="Membership_Users" ToRole="Appointment" />
           <NavigationProperty Name="IssuedCards" Relationship="TrinityCentralizedDBModel.FK_IssuedCards_Membership_Users" FromRole="Membership_Users" ToRole="IssuedCard" />
           <NavigationProperty Name="Labels" Relationship="TrinityCentralizedDBModel.FK_Labels_Membership_Users" FromRole="Membership_Users" ToRole="Label" />
           <NavigationProperty Name="Membership_UserClaims" Relationship="TrinityCentralizedDBModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" FromRole="Membership_Users" ToRole="Membership_UserClaims" />
@@ -1310,6 +1362,8 @@
           <NavigationProperty Name="Security_QA" Relationship="TrinityCentralizedDBModel.FK_PWD_QA_Membership_Users" FromRole="Membership_Users" ToRole="Security_QA" />
           <NavigationProperty Name="Queues" Relationship="TrinityCentralizedDBModel.FK_Queues_Membership_Users" FromRole="Membership_Users" ToRole="Queue" />
           <NavigationProperty Name="User_Profiles" Relationship="TrinityCentralizedDBModel.FK_User_Profiles_Membership_Users" FromRole="Membership_Users" ToRole="User_Profiles" />
+          <NavigationProperty Name="Queues1" Relationship="TrinityCentralizedDBModel.FK_Queues_Membership_Users1" FromRole="Membership_Users" ToRole="Queue" />
+          <NavigationProperty Name="Appointments" Relationship="TrinityCentralizedDBModel.FK_Appointments_Membership_Users" FromRole="Membership_Users" ToRole="Appointment" />
         </EntityType>
         <EntityType Name="MsgRecipient">
           <Key>
@@ -1385,10 +1439,11 @@
             <PropertyRef Name="Station" />
           </Key>
           <Property Name="Queue_ID" Type="Guid" Nullable="false" />
-          <Property Name="Station" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="Station" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="Status" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="Message" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Queue" Relationship="TrinityCentralizedDBModel.FK_QueueDetails_Queues" FromRole="QueueDetail" ToRole="Queue" />
+          <Property Name="LastUpdatedDate" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="Queue">
           <Key>
@@ -1403,9 +1458,13 @@
           <Property Name="Created_By" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="Note" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="LastUpdatedDate" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="Appointment" Relationship="TrinityCentralizedDBModel.FK_Queues_Appointments" FromRole="Queue" ToRole="Appointment" />
           <NavigationProperty Name="Membership_Users" Relationship="TrinityCentralizedDBModel.FK_Queues_Membership_Users" FromRole="Queue" ToRole="Membership_Users" />
           <NavigationProperty Name="QueueDetails" Relationship="TrinityCentralizedDBModel.FK_QueueDetails_Queues" FromRole="Queue" ToRole="QueueDetail" />
+          <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Timeslot_ID" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Membership_Users1" Relationship="TrinityCentralizedDBModel.FK_Queues_Membership_Users1" FromRole="Queue" ToRole="Membership_Users" />
+          <NavigationProperty Name="Timeslot" Relationship="TrinityCentralizedDBModel.FK_Queues_Timeslots" FromRole="Queue" ToRole="Timeslot" />
+          <NavigationProperty Name="Appointment" Relationship="TrinityCentralizedDBModel.FK_Queues_Appointments" FromRole="Queue" ToRole="Appointment" />
         </EntityType>
         <EntityType Name="Security_QA">
           <Key>
@@ -1476,6 +1535,7 @@
           <Property Name="LastUpdatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="LastUpdatedDate" Type="DateTime" Precision="3" />
           <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Queues" Relationship="TrinityCentralizedDBModel.FK_Queues_Timeslots" FromRole="Timeslot" ToRole="Queue" />
           <NavigationProperty Name="Appointments" Relationship="TrinityCentralizedDBModel.FK_Appointments_Timeslots" FromRole="Timeslot" ToRole="Appointment" />
         </EntityType>
         <EntityType Name="User_Profiles">
@@ -1522,19 +1582,9 @@
           <NavigationProperty Name="Membership_Users" Relationship="TrinityCentralizedDBModel.FK_User_Profiles_Membership_Users" FromRole="User_Profiles" ToRole="Membership_Users" />
           <NavigationProperty Name="MsgRecipients" Relationship="TrinityCentralizedDBModel.FK_MsgRecipients_User_Profiles" FromRole="User_Profiles" ToRole="MsgRecipient" />
           <NavigationProperty Name="SentMessages" Relationship="TrinityCentralizedDBModel.FK_SentMessages_User_Profiles" FromRole="User_Profiles" ToRole="SentMessage" />
+          <Property Name="Document_ID" Type="Guid" />
+          <NavigationProperty Name="UploadedDocument" Relationship="TrinityCentralizedDBModel.FK_User_Profiles_UploadedDocuments" FromRole="User_Profiles" ToRole="UploadedDocument" />
         </EntityType>
-        <Association Name="FK_Appointments_AbsenceReporting">
-          <End Type="TrinityCentralizedDBModel.AbsenceReporting" Role="AbsenceReporting" Multiplicity="0..1" />
-          <End Type="TrinityCentralizedDBModel.Appointment" Role="Appointment" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="AbsenceReporting">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="Appointment">
-              <PropertyRef Name="AbsenceReporting_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_ActionLog_Membership_Users">
           <End Type="TrinityCentralizedDBModel.Membership_Users" Role="Membership_Users" Multiplicity="0..1" />
           <End Type="TrinityCentralizedDBModel.ActionLog" Role="ActionLog" Multiplicity="*" />
@@ -1592,42 +1642,6 @@
             </Principal>
             <Dependent Role="ApplicationDevice_Status">
               <PropertyRef Name="DeviceID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Appointments_Membership_Users">
-          <End Type="TrinityCentralizedDBModel.Membership_Users" Role="Membership_Users" Multiplicity="1" />
-          <End Type="TrinityCentralizedDBModel.Appointment" Role="Appointment" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Membership_Users">
-              <PropertyRef Name="UserId" />
-            </Principal>
-            <Dependent Role="Appointment">
-              <PropertyRef Name="UserId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Appointments_Timeslots">
-          <End Type="TrinityCentralizedDBModel.Timeslot" Role="Timeslot" Multiplicity="0..1" />
-          <End Type="TrinityCentralizedDBModel.Appointment" Role="Appointment" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Timeslot">
-              <PropertyRef Name="Timeslot_ID" />
-            </Principal>
-            <Dependent Role="Appointment">
-              <PropertyRef Name="Timeslot_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Queues_Appointments">
-          <End Type="TrinityCentralizedDBModel.Appointment" Role="Appointment" Multiplicity="0..1" />
-          <End Type="TrinityCentralizedDBModel.Queue" Role="Queue" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Appointment">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="Queue">
-              <PropertyRef Name="Appointment_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1843,23 +1857,180 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="UploadedDocument">
+          <Key>
+            <PropertyRef Name="Document_ID" />
+          </Key>
+          <Property Name="Document_ID" Type="Guid" Nullable="false" />
+          <Property Name="DocumentName" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="UploadedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="UploadedDate" Type="DateTime" Precision="3" />
+          <Property Name="Extension" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="DocumentContent" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="Note" Type="String" Nullable="false" MaxLength="10" FixedLength="true" Unicode="true" />
+          <NavigationProperty Name="User_Profiles" Relationship="TrinityCentralizedDBModel.FK_User_Profiles_UploadedDocuments" FromRole="UploadedDocument" ToRole="User_Profiles" />
+          <NavigationProperty Name="AbsenceReportings" Relationship="TrinityCentralizedDBModel.FK_AbsenceReporting_UploadedDocuments" FromRole="UploadedDocument" ToRole="AbsenceReporting" />
+        </EntityType>
+        <Association Name="FK_Queues_Membership_Users1">
+          <End Type="TrinityCentralizedDBModel.Membership_Users" Role="Membership_Users" Multiplicity="1" />
+          <End Type="TrinityCentralizedDBModel.Queue" Role="Queue" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Membership_Users">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="Queue">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Queues_Timeslots">
+          <End Type="TrinityCentralizedDBModel.Timeslot" Role="Timeslot" Multiplicity="1" />
+          <End Type="TrinityCentralizedDBModel.Queue" Role="Queue" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Timeslot">
+              <PropertyRef Name="Timeslot_ID" />
+            </Principal>
+            <Dependent Role="Queue">
+              <PropertyRef Name="Timeslot_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_User_Profiles_UploadedDocuments">
+          <End Type="TrinityCentralizedDBModel.UploadedDocument" Role="UploadedDocument" Multiplicity="0..1" />
+          <End Type="TrinityCentralizedDBModel.User_Profiles" Role="User_Profiles" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UploadedDocument">
+              <PropertyRef Name="Document_ID" />
+            </Principal>
+            <Dependent Role="User_Profiles">
+              <PropertyRef Name="Document_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Appointment">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="Timeslot_ID" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="AbsenceReporting_ID" Type="Guid" />
+          <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Date" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="ChangedCount" Type="Int16" Nullable="false" />
+          <Property Name="Status" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="ReportTime" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Membership_Users" Relationship="TrinityCentralizedDBModel.FK_Appointments_Membership_Users" FromRole="Appointment" ToRole="Membership_Users" />
+          <NavigationProperty Name="Timeslot" Relationship="TrinityCentralizedDBModel.FK_Appointments_Timeslots" FromRole="Appointment" ToRole="Timeslot" />
+          <NavigationProperty Name="Queues" Relationship="TrinityCentralizedDBModel.FK_Queues_Appointments" FromRole="Appointment" ToRole="Queue" />
+          <NavigationProperty Name="AbsenceReporting" Relationship="TrinityCentralizedDBModel.FK_Appointments_AbsenceReporting" FromRole="Appointment" ToRole="AbsenceReporting" />
+        </EntityType>
+        <Association Name="FK_Appointments_Membership_Users">
+          <End Type="TrinityCentralizedDBModel.Membership_Users" Role="Membership_Users" Multiplicity="1" />
+          <End Type="TrinityCentralizedDBModel.Appointment" Role="Appointment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Membership_Users">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="Appointment">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Appointments_Timeslots">
+          <End Type="TrinityCentralizedDBModel.Timeslot" Role="Timeslot" Multiplicity="0..1" />
+          <End Type="TrinityCentralizedDBModel.Appointment" Role="Appointment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Timeslot">
+              <PropertyRef Name="Timeslot_ID" />
+            </Principal>
+            <Dependent Role="Appointment">
+              <PropertyRef Name="Timeslot_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Queues_Appointments">
+          <End Type="TrinityCentralizedDBModel.Appointment" Role="Appointment" Multiplicity="0..1" />
+          <End Type="TrinityCentralizedDBModel.Queue" Role="Queue" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Appointment">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Queue">
+              <PropertyRef Name="Appointment_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="DrugResult">
+          <Key>
+            <PropertyRef Name="DrugResultsID" />
+          </Key>
+          <Property Name="DrugResultsID" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="NRIC" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="timestamp" Type="DateTime" Precision="3" />
+          <Property Name="markingnumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="AMPH" Type="Boolean" />
+          <Property Name="BENZ" Type="Boolean" />
+          <Property Name="OPI" Type="Boolean" />
+          <Property Name="THC" Type="Boolean" />
+          <Property Name="COCA" Type="Boolean" />
+          <Property Name="BARB" Type="Boolean" />
+          <Property Name="LSD" Type="Boolean" />
+          <Property Name="METH" Type="Boolean" />
+          <Property Name="MTQL" Type="Boolean" />
+          <Property Name="PCP" Type="Boolean" />
+          <Property Name="KET" Type="Boolean" />
+          <Property Name="BUPRE" Type="Boolean" />
+          <Property Name="CAT" Type="Boolean" />
+          <Property Name="PPZ" Type="Boolean" />
+          <Property Name="NPS" Type="Boolean" />
+          <Property Name="IsSealed" Type="Boolean" />
+          <Property Name="UploadedDate" Type="DateTime" Precision="3" />
+          <Property Name="UploadedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="SealedOrDiscardedDate" Type="DateTime" Precision="3" />
+          <Property Name="SealedOrDiscardedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="AbsenceReporting">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="ReportingDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="AbsenceReason" Type="Int16" Nullable="false" />
+          <Property Name="ReasonDetails" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Document_ID" Type="Guid" />
+          <NavigationProperty Name="UploadedDocument" Relationship="TrinityCentralizedDBModel.FK_AbsenceReporting_UploadedDocuments" FromRole="AbsenceReporting" ToRole="UploadedDocument" />
+          <NavigationProperty Name="Appointments" Relationship="TrinityCentralizedDBModel.FK_Appointments_AbsenceReporting" FromRole="AbsenceReporting" ToRole="Appointment" />
+        </EntityType>
+        <Association Name="FK_AbsenceReporting_UploadedDocuments">
+          <End Type="TrinityCentralizedDBModel.UploadedDocument" Role="UploadedDocument" Multiplicity="0..1" />
+          <End Type="TrinityCentralizedDBModel.AbsenceReporting" Role="AbsenceReporting" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UploadedDocument">
+              <PropertyRef Name="Document_ID" />
+            </Principal>
+            <Dependent Role="AbsenceReporting">
+              <PropertyRef Name="Document_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Appointments_AbsenceReporting">
+          <End Type="TrinityCentralizedDBModel.AbsenceReporting" Role="AbsenceReporting" Multiplicity="0..1" />
+          <End Type="TrinityCentralizedDBModel.Appointment" Role="Appointment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AbsenceReporting">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Appointment">
+              <PropertyRef Name="AbsenceReporting_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="TrinityCentralizedDBModelStoreContainer" CdmEntityContainer="TrinityCentralizedDBEntities">
-          <EntitySetMapping Name="AbsenceReportings">
-            <EntityTypeMapping TypeName="TrinityCentralizedDBModel.AbsenceReporting">
-              <MappingFragment StoreEntitySet="AbsenceReporting">
-                <ScalarProperty Name="ScannedDocument" ColumnName="ScannedDocument" />
-                <ScalarProperty Name="ReasonDetails" ColumnName="ReasonDetails" />
-                <ScalarProperty Name="AbsenceReason" ColumnName="AbsenceReason" />
-                <ScalarProperty Name="ReportingDate" ColumnName="ReportingDate" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="ActionLogs">
             <EntityTypeMapping TypeName="TrinityCentralizedDBModel.ActionLog">
               <MappingFragment StoreEntitySet="ActionLog">
@@ -1895,20 +2066,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Appointments">
-            <EntityTypeMapping TypeName="TrinityCentralizedDBModel.Appointment">
-              <MappingFragment StoreEntitySet="Appointments">
-                <ScalarProperty Name="ReportTime" ColumnName="ReportTime" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="ChangedCount" ColumnName="ChangedCount" />
-                <ScalarProperty Name="Date" ColumnName="Date" />
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
-                <ScalarProperty Name="AbsenceReporting_ID" ColumnName="AbsenceReporting_ID" />
-                <ScalarProperty Name="Timeslot_ID" ColumnName="Timeslot_ID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="APS_USER_ACT_LOG">
             <EntityTypeMapping TypeName="TrinityCentralizedDBModel.APS_USER_ACT_LOG">
               <MappingFragment StoreEntitySet="APS_USER_ACT_LOG">
@@ -1927,31 +2084,6 @@
                 <ScalarProperty Name="Details" ColumnName="Details" />
                 <ScalarProperty Name="DeviceName" ColumnName="DeviceName" />
                 <ScalarProperty Name="DeviceID" ColumnName="DeviceID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="DrugResults">
-            <EntityTypeMapping TypeName="TrinityCentralizedDBModel.DrugResult">
-              <MappingFragment StoreEntitySet="DrugResults">
-                <ScalarProperty Name="NPS" ColumnName="NPS" />
-                <ScalarProperty Name="PPZ" ColumnName="PPZ" />
-                <ScalarProperty Name="CAT" ColumnName="CAT" />
-                <ScalarProperty Name="BUPRE" ColumnName="BUPRE" />
-                <ScalarProperty Name="KET" ColumnName="KET" />
-                <ScalarProperty Name="PCP" ColumnName="PCP" />
-                <ScalarProperty Name="MTQL" ColumnName="MTQL" />
-                <ScalarProperty Name="METH" ColumnName="METH" />
-                <ScalarProperty Name="LSD" ColumnName="LSD" />
-                <ScalarProperty Name="BARB" ColumnName="BARB" />
-                <ScalarProperty Name="COCA" ColumnName="COCA" />
-                <ScalarProperty Name="THC" ColumnName="THC" />
-                <ScalarProperty Name="OPI" ColumnName="OPI" />
-                <ScalarProperty Name="BENZ" ColumnName="BENZ" />
-                <ScalarProperty Name="AMPH" ColumnName="AMPH" />
-                <ScalarProperty Name="markingnumber" ColumnName="markingnumber" />
-                <ScalarProperty Name="timestamp" ColumnName="timestamp" />
-                <ScalarProperty Name="NRIC" ColumnName="NRIC" />
-                <ScalarProperty Name="DrugResultsID" ColumnName="DrugResultsID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1998,6 +2130,7 @@
           <EntitySetMapping Name="Labels">
             <EntityTypeMapping TypeName="TrinityCentralizedDBModel.Label">
               <MappingFragment StoreEntitySet="Labels">
+                <ScalarProperty Name="Queue_ID" ColumnName="Queue_ID" />
                 <ScalarProperty Name="Message" ColumnName="Message" />
                 <ScalarProperty Name="PrintStatus" ColumnName="PrintStatus" />
                 <ScalarProperty Name="ReprintReason" ColumnName="ReprintReason" />
@@ -2175,6 +2308,7 @@
           <EntitySetMapping Name="QueueDetails">
             <EntityTypeMapping TypeName="TrinityCentralizedDBModel.QueueDetail">
               <MappingFragment StoreEntitySet="QueueDetails">
+                <ScalarProperty Name="LastUpdatedDate" ColumnName="LastUpdatedDate" />
                 <ScalarProperty Name="Message" ColumnName="Message" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="Station" ColumnName="Station" />
@@ -2185,6 +2319,8 @@
           <EntitySetMapping Name="Queues">
             <EntityTypeMapping TypeName="TrinityCentralizedDBModel.Queue">
               <MappingFragment StoreEntitySet="Queues">
+                <ScalarProperty Name="Timeslot_ID" ColumnName="Timeslot_ID" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
                 <ScalarProperty Name="LastUpdatedDate" ColumnName="LastUpdatedDate" />
                 <ScalarProperty Name="Note" ColumnName="Note" />
                 <ScalarProperty Name="Created_By" ColumnName="Created_By" />
@@ -2271,6 +2407,7 @@
           <EntitySetMapping Name="User_Profiles">
             <EntityTypeMapping TypeName="TrinityCentralizedDBModel.User_Profiles">
               <MappingFragment StoreEntitySet="User_Profiles">
+                <ScalarProperty Name="Document_ID" ColumnName="Document_ID" />
                 <ScalarProperty Name="LeftThumb_Photo" ColumnName="LeftThumb_Photo" />
                 <ScalarProperty Name="RightThumb_Photo" ColumnName="RightThumb_Photo" />
                 <ScalarProperty Name="Race" ColumnName="Race" />
@@ -2305,6 +2442,74 @@
                 <ScalarProperty Name="Secondary_Phone" ColumnName="Secondary_Phone" />
                 <ScalarProperty Name="Primary_Phone" ColumnName="Primary_Phone" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UploadedDocuments">
+            <EntityTypeMapping TypeName="TrinityCentralizedDBModel.UploadedDocument">
+              <MappingFragment StoreEntitySet="UploadedDocuments">
+                <ScalarProperty Name="Note" ColumnName="Note" />
+                <ScalarProperty Name="DocumentContent" ColumnName="DocumentContent" />
+                <ScalarProperty Name="Extension" ColumnName="Extension" />
+                <ScalarProperty Name="UploadedDate" ColumnName="UploadedDate" />
+                <ScalarProperty Name="UploadedBy" ColumnName="UploadedBy" />
+                <ScalarProperty Name="DocumentName" ColumnName="DocumentName" />
+                <ScalarProperty Name="Document_ID" ColumnName="Document_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Appointments">
+            <EntityTypeMapping TypeName="TrinityCentralizedDBModel.Appointment">
+              <MappingFragment StoreEntitySet="Appointments">
+                <ScalarProperty Name="ReportTime" ColumnName="ReportTime" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="ChangedCount" ColumnName="ChangedCount" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="AbsenceReporting_ID" ColumnName="AbsenceReporting_ID" />
+                <ScalarProperty Name="Timeslot_ID" ColumnName="Timeslot_ID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DrugResults">
+            <EntityTypeMapping TypeName="TrinityCentralizedDBModel.DrugResult">
+              <MappingFragment StoreEntitySet="DrugResults">
+                <ScalarProperty Name="SealedOrDiscardedBy" ColumnName="SealedOrDiscardedBy" />
+                <ScalarProperty Name="SealedOrDiscardedDate" ColumnName="SealedOrDiscardedDate" />
+                <ScalarProperty Name="UploadedBy" ColumnName="UploadedBy" />
+                <ScalarProperty Name="UploadedDate" ColumnName="UploadedDate" />
+                <ScalarProperty Name="IsSealed" ColumnName="IsSealed" />
+                <ScalarProperty Name="NPS" ColumnName="NPS" />
+                <ScalarProperty Name="PPZ" ColumnName="PPZ" />
+                <ScalarProperty Name="CAT" ColumnName="CAT" />
+                <ScalarProperty Name="BUPRE" ColumnName="BUPRE" />
+                <ScalarProperty Name="KET" ColumnName="KET" />
+                <ScalarProperty Name="PCP" ColumnName="PCP" />
+                <ScalarProperty Name="MTQL" ColumnName="MTQL" />
+                <ScalarProperty Name="METH" ColumnName="METH" />
+                <ScalarProperty Name="LSD" ColumnName="LSD" />
+                <ScalarProperty Name="BARB" ColumnName="BARB" />
+                <ScalarProperty Name="COCA" ColumnName="COCA" />
+                <ScalarProperty Name="THC" ColumnName="THC" />
+                <ScalarProperty Name="OPI" ColumnName="OPI" />
+                <ScalarProperty Name="BENZ" ColumnName="BENZ" />
+                <ScalarProperty Name="AMPH" ColumnName="AMPH" />
+                <ScalarProperty Name="markingnumber" ColumnName="markingnumber" />
+                <ScalarProperty Name="timestamp" ColumnName="timestamp" />
+                <ScalarProperty Name="NRIC" ColumnName="NRIC" />
+                <ScalarProperty Name="DrugResultsID" ColumnName="DrugResultsID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AbsenceReportings">
+            <EntityTypeMapping TypeName="TrinityCentralizedDBModel.AbsenceReporting">
+              <MappingFragment StoreEntitySet="AbsenceReporting">
+                <ScalarProperty Name="Document_ID" ColumnName="Document_ID" />
+                <ScalarProperty Name="ReasonDetails" ColumnName="ReasonDetails" />
+                <ScalarProperty Name="AbsenceReason" ColumnName="AbsenceReason" />
+                <ScalarProperty Name="ReportingDate" ColumnName="ReportingDate" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

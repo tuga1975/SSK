@@ -20,32 +20,23 @@ namespace Trinity.DAL
             date = date.Date;
             try
             {
-                // get data from local db
-                if (EnumAppConfig.IsLocal)
-                {
-                    List<Timeslot> timeslots = _localUnitOfWork.DataContext.Timeslots.Where(item => DbFunctions.TruncateTime(item.Date) == date).OrderBy(item => item.StartTime).ToList();
+                List<Timeslot> timeslots = _localUnitOfWork.DataContext.Timeslots.Where(item => DbFunctions.TruncateTime(item.Date) == date).OrderBy(item => item.StartTime).ToList();
 
-                    // if local have no data, get data from centralizedapi, then update local
-                    if (timeslots == null && !EnumAppConfig.ByPassCentralizedDB)
+                // if local have no data, get data from centralizedapi, then update local
+                if (timeslots == null && !EnumAppConfig.ByPassCentralizedDB)
+                {
+                    bool centralizeStatus;
+                    var centralData = CallCentralized.Get<List<Timeslot>>(EnumAPIParam.Setting, "GetTimeslots", out centralizeStatus, date.ToString());
+                    if (centralizeStatus)
                     {
-                        bool centralizeStatus;
-                        var centralData = CallCentralized.Get<List<Timeslot>>(EnumAPIParam.Setting, "GetTimeslots", out centralizeStatus, date.ToString());
-                        if (centralizeStatus)
-                        {
-                            //update local
-                            new DAL_Setting().InsertTimeslots(centralData);
-                            //return data
-                            return centralData;
-                        }
+                        //update local
+                        new DAL_Setting().InsertTimeslots(centralData);
+                        //return data
+                        return centralData;
                     }
+                }
 
-                    return timeslots;
-                }
-                else // request from centralized api
-                {
-                    List<Timeslot> timeslots = _centralizedUnitOfWork.DataContext.Timeslots.Where(item => DbFunctions.TruncateTime(item.Date) == date.Date).OrderBy(item => item.StartTime).ToList();
-                    return timeslots;
-                }
+                return timeslots;
             }
             catch (Exception ex)
             {

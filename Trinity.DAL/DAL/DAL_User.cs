@@ -112,47 +112,131 @@ namespace Trinity.DAL
         {
             if (EnumAppConfig.IsLocal)
             {
-                var user = (from mu in _localUnitOfWork.DataContext.Membership_Users
-                            join mur in _localUnitOfWork.DataContext.Membership_UserRoles on mu.UserId equals mur.UserId
-                            join mr in _localUnitOfWork.DataContext.Membership_Roles on mur.RoleId equals mr.Id
-                            where mr.Name == EnumUserRoles.Supervisee
-                            select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, SmartCardId = mu.SmartCardId, RightThumbFingerprint = mu.RightThumbFingerprint, LeftThumbFingerprint = mu.LeftThumbFingerprint, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name, IsFirstAttempt = mu.IsFirstAttempt }).ToList();
-                if (user == null || user.Count == 0)
+                // get roleId
+                string superviseeRoleId = _localUnitOfWork.DataContext.Membership_Roles.Where(item => item.Name == EnumUserRoles.Supervisee).FirstOrDefault()?.Id;
+                if (string.IsNullOrEmpty(superviseeRoleId))
                 {
-                    user = CallCentralized.Get<List<BE.User>>(EnumAPIParam.User, "GetAllSupervisees");
+                    return null;
                 }
-                return user;
+
+                // get list user
+                List<Trinity.BE.User> returnValue = _localUnitOfWork.DataContext.Membership_Users.Where(item => item.Membership_UserRoles.Any(role => role.RoleId == superviseeRoleId))
+                    .Select(item => new Trinity.BE.User()
+                    {
+                        UserId = item.UserId,
+                        Status = item.Status,
+                        SmartCardId = item.SmartCardId,
+                        RightThumbFingerprint =
+                        item.RightThumbFingerprint,
+                        LeftThumbFingerprint = item.LeftThumbFingerprint,
+                        Name = item.Name,
+                        NRIC = item.NRIC,
+                        Role = EnumUserRoles.Supervisee,
+                        IsFirstAttempt = item.IsFirstAttempt
+                    }).ToList();
+
+                if (returnValue == null || returnValue.Count == 0)
+                {
+                    returnValue = CallCentralized.Get<List<BE.User>>(EnumAPIParam.User, "GetAllSupervisees");
+                }
+
+                // return value
+                return returnValue;
             }
             else
             {
-                return (from mu in _centralizedUnitOfWork.DataContext.Membership_Users
-                        join mur in _centralizedUnitOfWork.DataContext.Membership_UserRoles on mu.UserId equals mur.UserId
-                        join mr in _centralizedUnitOfWork.DataContext.Membership_Roles on mur.RoleId equals mr.Id
-                        where mr.Name == EnumUserRoles.Supervisee
-                        select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, SmartCardId = mu.SmartCardId, RightThumbFingerprint = mu.RightThumbFingerprint, LeftThumbFingerprint = mu.LeftThumbFingerprint, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name, IsFirstAttempt = mu.IsFirstAttempt }).ToList();
+                // get roleId
+                string superviseeRoleId = _centralizedUnitOfWork.DataContext.Membership_Roles.Where(item => item.Name == EnumUserRoles.Supervisee).FirstOrDefault()?.Id;
+                if (string.IsNullOrEmpty(superviseeRoleId))
+                {
+                    return null;
+                }
+
+                // get list user
+                List<Trinity.BE.User> returnValue = _centralizedUnitOfWork.DataContext.Membership_Users.Where(item => item.Membership_UserRoles.Any(role => role.RoleId == superviseeRoleId))
+                    .Select(item => new Trinity.BE.User()
+                    {
+                        UserId = item.UserId,
+                        Status = item.Status,
+                        SmartCardId = item.SmartCardId,
+                        RightThumbFingerprint =
+                        item.RightThumbFingerprint,
+                        LeftThumbFingerprint = item.LeftThumbFingerprint,
+                        Name = item.Name,
+                        NRIC = item.NRIC,
+                        Role = EnumUserRoles.Supervisee,
+                        IsFirstAttempt = item.IsFirstAttempt
+                    }).ToList();
+
+                // return value
+                return returnValue;
             }
         }
         public Trinity.BE.User GetSuperviseeByNRIC(string nric)
         {
             if (EnumAppConfig.IsLocal)
             {
-                var user = (from mu in _localUnitOfWork.DataContext.Membership_Users
-                            join mur in _localUnitOfWork.DataContext.Membership_UserRoles on mu.UserId equals mur.UserId
-                            join mr in _localUnitOfWork.DataContext.Membership_Roles on mur.RoleId equals mr.Id
-                            where mu.NRIC == nric
-                            select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, SmartCardId = mu.SmartCardId, RightThumbFingerprint = mu.RightThumbFingerprint, LeftThumbFingerprint = mu.LeftThumbFingerprint, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name, IsFirstAttempt = mu.IsFirstAttempt }).FirstOrDefault();
-                //if (user == null) {
-                //    user = CallCentralized.Get<Trinity.BE.User>("User", "GetSuperviseeByNRIC", "nric=" + nric);
-                //}
-                return user;
+
+                // get Supervisee roleId
+                string superviseeRoleId = _localUnitOfWork.DataContext.Membership_Roles.Where(item => item.Name == EnumUserRoles.Supervisee).FirstOrDefault()?.Id;
+                if (string.IsNullOrEmpty(superviseeRoleId))
+                {
+                    return null;
+                }
+
+                // get list user
+                BE.User returnValue = _localUnitOfWork.DataContext.Membership_Users
+                    .Where(item => item.Membership_UserRoles.Any(role => role.RoleId == superviseeRoleId) && item.NRIC == nric)
+                    .Select(item => new Trinity.BE.User()
+                    {
+                        UserId = item.UserId,
+                        Status = item.Status,
+                        SmartCardId = item.SmartCardId,
+                        RightThumbFingerprint =
+                        item.RightThumbFingerprint,
+                        LeftThumbFingerprint = item.LeftThumbFingerprint,
+                        Name = item.Name,
+                        NRIC = item.NRIC,
+                        Role = EnumUserRoles.Supervisee,
+                        IsFirstAttempt = item.IsFirstAttempt
+                    }).FirstOrDefault();
+
+                if (returnValue == null)
+                {
+                    returnValue = CallCentralized.Get<Trinity.BE.User>("User", "GetSuperviseeByNRIC", "nric=" + nric);
+                }
+
+                // return value
+                return returnValue;
             }
             else
             {
-                return (from mu in _centralizedUnitOfWork.DataContext.Membership_Users
-                        join mur in _centralizedUnitOfWork.DataContext.Membership_UserRoles on mu.UserId equals mur.UserId
-                        join mr in _centralizedUnitOfWork.DataContext.Membership_Roles on mur.RoleId equals mr.Id
-                        where mu.NRIC== nric
-                        select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, SmartCardId = mu.SmartCardId, RightThumbFingerprint = mu.RightThumbFingerprint, LeftThumbFingerprint = mu.LeftThumbFingerprint, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name, IsFirstAttempt = mu.IsFirstAttempt }).FirstOrDefault();
+                // get Supervisee roleId
+                string superviseeRoleId = _centralizedUnitOfWork.DataContext.Membership_Roles.Where(item => item.Name == EnumUserRoles.Supervisee).FirstOrDefault()?.Id;
+                if (string.IsNullOrEmpty(superviseeRoleId))
+                {
+                    return null;
+                }
+
+                // get list user
+                BE.User returnValue = _centralizedUnitOfWork.DataContext.Membership_Users
+                    .Where(item => item.Membership_UserRoles.Any(role => role.RoleId == superviseeRoleId) && item.NRIC == nric)
+                    .Select(item => new Trinity.BE.User()
+                    {
+                        UserId = item.UserId,
+                        Status = item.Status,
+                        SmartCardId = item.SmartCardId,
+                        RightThumbFingerprint =
+                        item.RightThumbFingerprint,
+                        LeftThumbFingerprint = item.LeftThumbFingerprint,
+                        Name = item.Name,
+                        NRIC = item.NRIC,
+                        Role = EnumUserRoles.Supervisee,
+                        IsFirstAttempt = item.IsFirstAttempt
+                    }).FirstOrDefault();
+
+                // return value
+                return returnValue;
             }
         }
         public List<Trinity.BE.User> SearchSuperviseeByNRIC(string nric)
@@ -191,9 +275,54 @@ namespace Trinity.DAL
             }
             else
             {
-                return ApplicationIdentityManager.GetUserManager().Find(username, password);
+                return null;
+                //return ApplicationIdentityManager.GetUserManager().Find(username, password);
             }
         }
+
+        public BE.User Login_Centralized(string username, string password)
+        {
+            if (EnumAppConfig.IsLocal)
+            {
+                return null;
+            }
+
+            //password = CreatePasswordHash(password);
+
+            ApplicationUser applicationUser = ApplicationIdentityManager.GetUserManager().Find(username, password);
+
+            if (applicationUser != null)
+            {
+                // get data
+                BE.User returnValue = _centralizedUnitOfWork.DataContext.Membership_Users
+                    .Where(item => item.NRIC == applicationUser.NRIC)
+                    .Select(item => new Trinity.BE.User()
+                    {
+                        UserId = item.UserId,
+                        Status = item.Status,
+                        SmartCardId = item.SmartCardId,
+                        RightThumbFingerprint =
+                        item.RightThumbFingerprint,
+                        LeftThumbFingerprint = item.LeftThumbFingerprint,
+                        Name = item.Name,
+                        NRIC = item.NRIC,
+                        Role = EnumUserRoles.Supervisee,
+                        IsFirstAttempt = item.IsFirstAttempt
+                    }).FirstOrDefault();
+
+                // return value
+                return returnValue;
+            }
+
+            return null;
+        }
+        public static string CreatePasswordHash(string plainpassword)
+        {
+            byte[] data = System.Text.Encoding.ASCII.GetBytes(plainpassword);
+            data = new System.Security.Cryptography.SHA256Managed().ComputeHash(data);
+            return System.Text.Encoding.ASCII.GetString(data);
+        }
+
         public bool IsInRole(string Id, string Role)
         {
             if (EnumAppConfig.IsLocal)
@@ -284,34 +413,58 @@ namespace Trinity.DAL
                 if (EnumAppConfig.IsLocal)
                 {
                     // get from localdb
-                    var user = (from mu in _localUnitOfWork.DataContext.Membership_Users
-                                join mur in _localUnitOfWork.DataContext.Membership_UserRoles on mu.UserId equals mur.UserId
-                                join mr in _localUnitOfWork.DataContext.Membership_Roles on mur.RoleId equals mr.Id
-                                where mu.SmartCardId == smartCardId
-                                select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, SmartCardId = mu.SmartCardId, RightThumbFingerprint = mu.RightThumbFingerprint, LeftThumbFingerprint = mu.LeftThumbFingerprint, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name, IsFirstAttempt = mu.IsFirstAttempt, User_Photo1 = mu.User_Profiles.User_Photo1, User_Photo2 = mu.User_Profiles.User_Photo2 }).FirstOrDefault();
+                    BE.User returnValue = _localUnitOfWork.DataContext.Membership_Users
+                        .Where(item => item.SmartCardId == smartCardId)
+                        .Select(item => new Trinity.BE.User()
+                        {
+                            UserId = item.UserId,
+                            Status = item.Status,
+                            SmartCardId = item.SmartCardId,
+                            RightThumbFingerprint =
+                            item.RightThumbFingerprint,
+                            LeftThumbFingerprint = item.LeftThumbFingerprint,
+                            Name = item.Name,
+                            NRIC = item.NRIC,
+                            Role = EnumUserRoles.Supervisee,
+                            IsFirstAttempt = item.IsFirstAttempt
+                        }).FirstOrDefault();
+
 
                     // if local null, get data from centralized - check bypass
-                    if (user == null && !EnumAppConfig.ByPassCentralizedDB)
+                    if (returnValue == null && !EnumAppConfig.ByPassCentralizedDB)
                     {
 
                         bool centralizeStatus = false;
                         var centralData = CallCentralized.Get<BE.User>(EnumAPIParam.User, "GetUserBySmartCardId", out centralizeStatus, "smartCardId=" + smartCardId);
                         if (centralizeStatus)
                         {
-                            user = centralData;
+                            returnValue = centralData;
                         }
                     }
 
-                    return user;
+                    // return value
+                    return returnValue;
                 }
                 else // centralized api request
                 {
-                    var user = (from mu in _centralizedUnitOfWork.DataContext.Membership_Users
-                                join mur in _centralizedUnitOfWork.DataContext.Membership_UserRoles on mu.UserId equals mur.UserId
-                                join mr in _centralizedUnitOfWork.DataContext.Membership_Roles on mur.RoleId equals mr.Id
-                                where mu.SmartCardId == smartCardId
-                                select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, SmartCardId = mu.SmartCardId, RightThumbFingerprint = mu.RightThumbFingerprint, LeftThumbFingerprint = mu.LeftThumbFingerprint, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name, IsFirstAttempt = mu.IsFirstAttempt, AccessFailedCount = mu.AccessFailedCount, User_Photo1 = mu.User_Profiles.User_Photo1, User_Photo2 = mu.User_Profiles.User_Photo2 });
-                    return user.FirstOrDefault();
+                    BE.User returnValue = _centralizedUnitOfWork.DataContext.Membership_Users
+                        .Where(item => item.SmartCardId == smartCardId)
+                        .Select(item => new Trinity.BE.User()
+                        {
+                            UserId = item.UserId,
+                            Status = item.Status,
+                            SmartCardId = item.SmartCardId,
+                            RightThumbFingerprint =
+                            item.RightThumbFingerprint,
+                            LeftThumbFingerprint = item.LeftThumbFingerprint,
+                            Name = item.Name,
+                            NRIC = item.NRIC,
+                            Role = EnumUserRoles.Supervisee,
+                            IsFirstAttempt = item.IsFirstAttempt
+                        }).FirstOrDefault();
+
+                    // return value
+                    return returnValue;
                 }
             }
             catch (Exception ex)

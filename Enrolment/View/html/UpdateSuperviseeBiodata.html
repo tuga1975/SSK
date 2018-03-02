@@ -421,7 +421,7 @@
                                 </div>
                             </div>
                             <div class="cancelButton col-2 ml-auto">
-                                <a href="#" onclick="api.server.LoadListSupervisee();">CLICK TO CANCEL</a>
+                                <a href="#" id="btnCancel">CLICK TO CANCEL</a>
                             </div>
 
 
@@ -431,12 +431,12 @@
                                         <div class="col-6">
 
                                             <img id="image1" src="../images/avatar-demo.jpg" class="img-fluid"><br />
-                                            <a href="javascript:;" onclick="api.server.OpenPictureCaptureForm('1')">Take Picture 1</a>
+                                            <a href="#" id="btnTakePic1" >Take Picture 1</a>
                                         </div>
                                         <div class="col-6">
 
                                             <img id="image2" src="../images/avatar-demo.jpg" class="img-fluid"><br />
-                                            <a href="javascript:;" onclick="api.server.OpenPictureCaptureForm('2')">Take Picture 2</a>
+                                            <a href="#" id="btnTakePic2">Take Picture 2</a>
                                         </div>
                                     </div>
                                 </div>
@@ -446,7 +446,7 @@
                                             <div><strong id="leftProcessMessage">Place left thumb onto scanner.</strong></div>
                                             <div class="row col-10 offset-1">
                                                 <div class="col-12"><img src='../images/leftthumb.png' id="leftFingerprint" style="max-width:35%;"></div>
-                                                <div class="scan col-6 ml-auto"><a href="" data-target="#fingerPrint" data-toggle="modal" id="leftThumbScanBtn" onclick="ActionScanFingerPrint(false)">Scan</a></div>
+                                                <div class="scan col-6 ml-auto"><a href="" data-target="#fingerPrint" data-toggle="modal" id="leftThumbScanBtn" >Scan</a></div>
                                                 <div class="clear col-6 mr-auto"><a href="" id="leftThumbClearBtn">Clear</a></div>
                                             </div><br />
                                             <div>Left Thumb-Fingerprint Preview</div>
@@ -455,7 +455,7 @@
                                             <div><strong id="rightProcessMessage">Place right thumb onto scanner.</strong></div>
                                             <div class="row col-10 offset-1">
                                                 <div class="col-12"><img src='../images/rightthumb.png' id="rightFingerprint" style="max-width:35%;"></div><br />
-                                                <div class="scan col-6 ml-auto"><a href="" data-target="#fingerPrint" data-toggle="modal" id="rightThumbScanBtn" onclick="ActionScanFingerPrint(true)">Scan</a></div>
+                                                <div class="scan col-6 ml-auto"><a href="" data-target="#fingerPrint" data-toggle="modal" id="rightThumbScanBtn" >Scan</a></div>
                                                 <div class="clear col-6 mr-auto"><a href="" id="rightThumbClearBtn">Clear</a></div>
                                             </div><br />
                                             <div>Right Thumb-Fingerprint Preview</div>
@@ -520,7 +520,7 @@
                                         <div class="printingCard col-12" style="display:none" id="printSuccessMessage">
                                         </div>
                                         <div>
-                                            <input class="btn" type="button" value="Reprint" onclick="api.server.PrintSmartCard(frontCardImg, backCardImg, JSON.stringify(CardInfo));" />
+                                            <input class="btn" type="button" value="Reprint" id="btnReprint"  />
                                         </div>
                                         <!--<div>
                                             <input class="btn" type="button" value="Done" onclick="api.server.LoadListSupervisee();" />
@@ -935,7 +935,7 @@
                                                         </label>
                                                     </div>
                                                     <div class="select-wrap">
-                                                        <select id="month" title="month" onchange="setCalendar('day','month','year')">
+                                                        <select id="month" title="month" >
                                                             <option>MM</option>
 
                                                         </select>
@@ -944,7 +944,7 @@
                                                         </label>
                                                     </div>
                                                     <div class="select-wrap">
-                                                        <select id="year" title="year" onchange="setCalendar('day','month','year')">
+                                                        <select id="year" title="year">
                                                             <option>YYYY</option>
 
                                                         </select>
@@ -972,7 +972,7 @@
                                                         </label>
                                                     </div>
                                                     <div class="select-wrap">
-                                                        <select id="month_end" title="month" onchange="setCalendar('day_end','month_end','year_end')">
+                                                        <select id="month_end" title="month" >
                                                             <option>MM</option>
                                                         </select>
                                                         <label for="month_end">
@@ -980,7 +980,7 @@
                                                         </label>
                                                     </div>
                                                     <div class="select-wrap">
-                                                        <select id="year_end" title="year" onchange="setCalendar('day_end','month_end','year_end')">
+                                                        <select id="year_end" title="year" >
                                                             <option>YYYY</option>
 
                                                         </select>
@@ -1007,8 +1007,8 @@
                                 </ul>
 
                                 <div class="pull-right">
-                                    <button class="btn btn-light" onclick="api.server.CancelEditSupervisee();">Cancel</button>
-                                    <button class="btn btn-primary" id="SaveBtn">Save</button>
+                                    <button class="btn btn-light" id="btnCancelEdit">Cancel</button>
+                                    <a href="#"  class="btn btn-primary" id="SaveBtn">Save</a>
                                 </div>
                             </form>
 
@@ -1167,6 +1167,54 @@
     var CardInfo = null;
     var countPrinterSmartCard = 0;
 
+    $('#btnCancel').click(function () {
+        api.server.LoadListSupervisee();
+    });
+
+    $('#btnTakePic1').click(function () {
+        api.server.OpenPictureCaptureForm('1');
+    });
+    $('#btnTakePic2').click(function () {
+        api.server.OpenPictureCaptureForm('2');
+    });
+    $('#rightThumbScanBtn').click(function () {
+        ActionScanFingerPrint(true);
+    });
+    $('#leftThumbScanBtn').click(function () {
+        ActionScanFingerPrint(false);
+    });
+    $('#btnReprint').click(function () {
+        api.server.PrintSmartCard(frontCardImg, backCardImg, JSON.stringify(CardInfo));
+    });
+
+    $('#month').change(function () {
+        setCalendar('day','month','year');
+    });
+    $('#year').change(function () {
+        setCalendar('day', 'month', 'year');
+    });
+
+    $('#month_end').change(function () {
+        setCalendar('day_end', 'month_end', 'year_end');
+    });
+    $('#year_end').change(function () {
+        setCalendar('day_end', 'month_end', 'year_end');
+    });
+    $('#btnCancelEdit').click(function () {
+        api.server.LoadListSupervisee();
+    });
+
+    $('#SaveBtn').click(function () {
+        alert(1);
+        $('#Employment_Start_Date').val(setDate('day', 'month', 'year'));
+        $('#Employment_End_Date').val(setDate('day_end', 'month_end', 'year_end'));
+        var $form = $("#superviseeFrm");
+        var data = getFormData($form);
+        var json = JSON.stringify(data);
+        api.server.SaveSupervisee(json);
+        e.preventDefault();
+
+    });
 
     $('#createNewSupervisee').on('slide.bs.carousel', function (data) {
         if (data.to == 2) {
@@ -1389,7 +1437,7 @@
     }
 </script>
 <script>
-
+  
 
 
 
@@ -1626,17 +1674,10 @@
 
         }
 
-
-        $('#SaveBtn').click(function () {
-
-            $('#Employment_Start_Date').val(setDate('day', 'month', 'year'));
-            $('#Employment_End_Date').val(setDate('day_end', 'month_end', 'year_end'));
-            var $form = $("#superviseeFrm");
-            var data = getFormData($form);
-            var json = JSON.stringify(data);
-            api.server.SaveSupervisee(json);
-
-        });
+     
+       
+        
+     
     });
 
     function setDate(day_Id, month_Id, year_Id) {
@@ -1725,14 +1766,14 @@
     $("#Close_popup").click(function () {
         hidePopUp();
     })
-    function showPopUp(elem_id) {
-        saveNewDataToSession();
-        $("#" + elem_id).show();
-    }
-    function hidePopUp() {
-        api.server.ReplaceOldPhotos();
-        $("#pageUpdatePhotos").hide();
-    }
+    //function showPopUp(elem_id) {
+    //    saveNewDataToSession();
+    //    $("#" + elem_id).show();
+    //}
+    //function hidePopUp() {
+    //    api.server.ReplaceOldPhotos();
+    //    $("#pageUpdatePhotos").hide();
+    //}
 
-
+   
 </script>

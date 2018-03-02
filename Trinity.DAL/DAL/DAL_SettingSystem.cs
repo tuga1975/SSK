@@ -61,9 +61,9 @@ namespace Trinity.DAL
             //}
             //else
             //{
-            if (EnumAppConfig.ByPassCentralizedDB)
+            if (EnumAppConfig.IsLocal)
             {
-                return _localUnitOfWork.DataContext.Settings.FirstOrDefault(s => s.Year == year); ;
+                return _localUnitOfWork.DataContext.Settings.FirstOrDefault(s => s.Year == year);
             }
             else
             {

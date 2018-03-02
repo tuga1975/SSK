@@ -161,7 +161,7 @@
                     width: '30%',
                     align: 'center',
                     formatter: function (value, row, index, field) {
-                        return '<a style="text-decoration: underline;" href="javascript:;" onclick = "loadAppointmentPage(\'' + searchDateStatistic + '\', \'' + row.StartTime + '\');" >View Time Slot Information</a>';
+                        return '<a style="text-decoration: underline;" href="javascript:;" onclick = "loadAppointmentPage(\'' + searchDateStatistic + '\', \'' + row.StartTime + '\', \'' + row.EndTime + '\');" >View Time Slot Information</a>';
                     }
                 }],
                 data: searchSource
@@ -206,7 +206,7 @@
         });
     });
 
-    function loadAppointmentPage(dateLoad, startTimeLoad) {
-        api.server.LoadPageAppointment(dateLoad, startTimeLoad);
+    function loadAppointmentPage(dateLoad, startTimeLoad, endTimeLoad) {
+        api.server.LoadPageAppointment(dateLoad, startTimeLoad, endTimeLoad);
     };   
 </script>

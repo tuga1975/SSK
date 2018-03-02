@@ -326,6 +326,12 @@ span[color] {
 .tab-header {
     border-bottom: 1px solid #d2d2d2;
     padding: 40px 0 9px 40px;
+    position: fixed;
+    z-index: 100;
+    top: 180px;
+    left: 0;
+    width: 100%;
+    background: #fff;
 
 }
 
@@ -337,6 +343,9 @@ span[color] {
 }
 .tab-content {
     padding: 20px 40px;
+    margin-top: 70px;
+    height: calc(100vh - 260px);
+    overflow-y: scroll;
 }
 
 .tab-content .tabtitle span {
@@ -347,17 +356,73 @@ span[color] {
 table {
     font-size: 14px;
     width: 100%;
-    overflow: hidden;
+    /*overflow: hidden;*/
     text-align: center;
     border: none;
     position: relative;
+    height: 100%;
 }
 table th,
 table tr.active {
     background-color: #f6f6f6;
     border-color: #fff;
 }
+/*Search, Filter*/
+.fixed-table-toolbar .search {
+    /*position: absolute;
+    top: -80px;
+    left: 230px;
+    background-color: #f6f6f6;*/
+    font-size: 14px;
+    position: fixed;
+    z-index: 200;
+    top: -80px;
+    left: 230px;
+    /*width: 50%;*/
+    background: #fff;
+    display: inline-block;
+}
 
+.formFilter {
+    padding-bottom: 20px;
+}
+
+    .formEntries .entries,
+    .formFilter .filters {
+        font-size: 14px;
+        margin: 0 5px;
+        color: #848484;
+        display: inline-block;
+        width: auto;
+        float: left;
+    }
+
+.formEntries select#pageSize {
+    font-size: 14px;
+    padding: 0 5px;
+    height: 25px;
+    background: #F6F6F6;
+    color: #848484;
+    border: none;
+    margin: 0;
+    display: inline-block;
+}
+
+.formFilter select#period,
+.formFilter select#timeslot,
+.formFilter #datetimepicker input {
+    font-size: 14px;
+    padding: 0 5px;
+    height: 25px;
+    background: #F6F6F6;
+    color: #848484;
+    border: none;
+    margin: 0;
+    display: inline-block;
+    width: auto;
+    float: left;
+    margin-right: 5px;
+}
 /*Scan Smart Card*/
 .scanSmartCart {
     height: calc(100vh - 330px);
@@ -429,47 +494,4 @@ table tr.active {
     margin-top: 3px;
 }
 
-/*Search, Filter*/
-.fixed-table-toolbar .search {
-    position: absolute;
-    top: -80px;
-    left: 230px;
-}
 
-.formFilter {
-    padding-bottom: 20px;
-}
-.formEntries .entries,
-.formFilter .filters {
-    font-size: 14px;
-    margin: 0 5px;
-    color: #848484;
-    display: inline-block;
-    width: auto;
-    float: left;
-}
-.formEntries select#pageSize {
-    font-size: 14px;
-    padding: 0 5px;
-    height: 25px;
-    background: #F6F6F6;
-    color: #848484;
-    border: none;
-    margin: 0;
-    display: inline-block;
-}
-.formFilter select#period,
-.formFilter select#timeslot,
-.formFilter #datetimepicker input {
-    font-size: 14px;
-    padding: 0 5px;
-    height: 25px;
-    background: #F6F6F6;
-    color: #848484;
-    border: none;
-    margin: 0;
-    display: inline-block;
-    width: auto;
-    float: left;
-    margin-right: 5px;
-}

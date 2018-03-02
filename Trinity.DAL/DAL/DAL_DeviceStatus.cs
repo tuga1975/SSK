@@ -17,104 +17,52 @@ namespace Trinity.DAL
 
         public bool Update(int deviceId, EnumDeviceStatuses[] deviceStatuses,string Station = null)
         {
-            if (EnumAppConfig.IsLocal)
+            try
             {
-                try
+                // validate
+                if (!DeviceIdExist(deviceId))
                 {
-                    // validate
-                    if (!DeviceIdExist(deviceId))
-                    {
-                        throw new Exception("DeviceID is not valid");
-                    }
-
-                    // local db
-                    // delete old statuses
-                    string station = System.Reflection.Assembly.GetEntryAssembly().GetName().Name;
-                    var oldRows = _localUnitOfWork.DataContext.ApplicationDevice_Status.Where(item => item.DeviceID == deviceId && item.Station.Equals(station));
-                    _localUnitOfWork.DataContext.ApplicationDevice_Status.RemoveRange(oldRows);
-
-                    // insert new statuses
-                    if (deviceStatuses != null && deviceStatuses.Count() > 0)
-                    {
-                        // create new status entites
-                        ApplicationDevice_Status deviceStatus;
-                        foreach (var status in deviceStatuses)
-                        {
-                            deviceStatus = new ApplicationDevice_Status();
-                            deviceStatus.Station = station;
-                            deviceStatus.DeviceID = deviceId;
-                            deviceStatus.ID = Guid.NewGuid();
-                            deviceStatus.StatusCode = (int)status;
-                            deviceStatus.StatusMessage = CommonUtil.GetDeviceStatusText(status);
-
-                            // insert new statuses
-                            _localUnitOfWork.DataContext.ApplicationDevice_Status.Add(deviceStatus);
-                        }
-                    }
-
-                    // savechanges
-                    if (_localUnitOfWork.DataContext.SaveChanges() < 0)
-                    {
-                        throw new Exception("Save data to local database failed.");
-                    }
-                    // Send Noti server
-                    Lib.SignalR.DeviceStatusUpdate(deviceId, deviceStatuses);
-                    return true;
+                    throw new Exception("DeviceID is not valid");
                 }
-                catch (Exception ex)
+
+                // local db
+                // delete old statuses
+                string station = System.Reflection.Assembly.GetEntryAssembly().GetName().Name;
+                var oldRows = _localUnitOfWork.DataContext.ApplicationDevice_Status.Where(item => item.DeviceID == deviceId && item.Station.Equals(station));
+                _localUnitOfWork.DataContext.ApplicationDevice_Status.RemoveRange(oldRows);
+
+                // insert new statuses
+                if (deviceStatuses != null && deviceStatuses.Count() > 0)
                 {
-                    Debug.WriteLine("DAL_DeviceStatus.Update exception: " + ex.ToString());
-                    return false;
+                    // create new status entites
+                    ApplicationDevice_Status deviceStatus;
+                    foreach (var status in deviceStatuses)
+                    {
+                        deviceStatus = new ApplicationDevice_Status();
+                        deviceStatus.Station = station;
+                        deviceStatus.DeviceID = deviceId;
+                        deviceStatus.ID = Guid.NewGuid();
+                        deviceStatus.StatusCode = (int)status;
+                        deviceStatus.StatusMessage = CommonUtil.GetDeviceStatusText(status);
+
+                        // insert new statuses
+                        _localUnitOfWork.DataContext.ApplicationDevice_Status.Add(deviceStatus);
+                    }
                 }
+
+                // savechanges
+                if (_localUnitOfWork.DataContext.SaveChanges() < 0)
+                {
+                    throw new Exception("Save data to local database failed.");
+                }
+                // Send Noti server
+                Lib.SignalR.DeviceStatusUpdate(deviceId, deviceStatuses);
+                return true;
             }
-            else
+            catch (Exception ex)
             {
-                try
-                {
-                    // validate
-                    if (!DeviceIdExist(deviceId))
-                    {
-                        throw new Exception("DeviceID is not valid");
-                    }
-
-                    // local db
-                    // delete old statuses
-                    string station = Station;
-                    var oldRows = _centralizedUnitOfWork.DataContext.ApplicationDevice_Status.Where(item => item.DeviceID == deviceId && item.Station.Equals(station));
-                    _centralizedUnitOfWork.DataContext.ApplicationDevice_Status.RemoveRange(oldRows);
-
-                    // insert new statuses
-                    if (deviceStatuses != null && deviceStatuses.Count() > 0)
-                    {
-                        // create new status entites
-                        ApplicationDevice_Status deviceStatus;
-                        foreach (var status in deviceStatuses)
-                        {
-                            deviceStatus = new ApplicationDevice_Status();
-                            deviceStatus.Station = station;
-                            deviceStatus.DeviceID = deviceId;
-                            deviceStatus.ID = Guid.NewGuid();
-                            deviceStatus.StatusCode = (int)status;
-                            deviceStatus.StatusMessage = CommonUtil.GetDeviceStatusText(status);
-
-                            // insert new statuses
-                            _centralizedUnitOfWork.DataContext.ApplicationDevice_Status.Add(deviceStatus);
-                        }
-                    }
-
-                    // savechanges
-                    if (_centralizedUnitOfWork.DataContext.SaveChanges() < 0)
-                    {
-                        throw new Exception("Save data to local database failed.");
-                    }
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine("DAL_DeviceStatus.Update exception: " + ex.ToString());
-                    return false;
-                }
-
+                Debug.WriteLine("DAL_DeviceStatus.Update exception: " + ex.ToString());
+                return false;
             }
         }
 

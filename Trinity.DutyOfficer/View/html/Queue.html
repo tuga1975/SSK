@@ -21,8 +21,9 @@
             <div class="entries">Display </div>
             <select class="form-control" id="pageSize">
                 <option>10</option>
-                <option>2</option>
-                <option>3</option>
+                <option>25</option>
+                <option>50</option>
+                <option>100</option>
             </select>
             <div class="entries"> entries per page</div>
         </div>
@@ -50,7 +51,7 @@
             search: true,
             pagination: true,
             pageSize:10,
-            pageList: [10, 20, 40, 60,80,100],
+            //pageList: [10, 20, 40, 60,80,100],
             onClickCell: function (field, value, row, $element) {
                 if (field == "HSA" && $.trim(value).length > 0) {                    
                     api.server.LoadPopupSeal(row.Date, row.UserId, row.Queue_ID, value, function () {
@@ -91,7 +92,7 @@
                     title: 'APS',
                     align: 'center',
                     formatter: function (value, row, index, field) {
-                        return '<span color style="background-color:' + value + ';"></span>';
+                        return '<span colorState style="background-color:' + value + ';"></span>';
                     }
                 },
                 {
@@ -99,7 +100,7 @@
                     title: 'SSK',
                     align: 'center',
                     formatter: function (value, row, index, field) {
-                        return '<span color style="background-color:' + value + ';"></span>';
+                        return '<span colorState style="background-color:' + value + ';"></span>';
                     }
                 },
                 {
@@ -107,7 +108,7 @@
                     title: 'SSA',
                     align: 'center',
                     formatter: function (value, row, index, field) {
-                        return '<span color style="background-color:' + value + ';"></span>';
+                        return '<span colorState style="background-color:' + value + ';"></span>';
                     }
                 },
                 {
@@ -115,7 +116,7 @@
                     title: 'UHP',
                     align: 'center',
                     formatter: function (value, row, index, field) {
-                        return '<span color style="background-color:' + value + ';"></span>';
+                        return '<span colorState style="background-color:' + value + ';"></span>';
                     }
                 },
                 {
@@ -130,7 +131,7 @@
                     title: 'ESP',
                     align: 'center',
                     formatter: function (value, row, index, field) {
-                        return '<span color="' + value + '" style="background-color:' + value + ';"></span>';
+                        return '<span colorState="' + value + '" style="background-color:' + value + ';"></span>';
                     }
                 },
                 {
@@ -153,6 +154,12 @@
 
     api.server.startInstanceSmartcard();
 
+    function reloadDataQueues() {
+        api.server.getDataQueue(function (data) {
+            $('#table-queue').bootstrapTable('load', data);
+        });
+    };
+
     function openPopupOutcome(queueId) {
         api.server.LoadPopupOutcome(queueId, function () {
             $('#idQueueOutcome').modal();
@@ -161,20 +168,20 @@
     
 </script>
 <style>
-    /*span[color] {
+    span[colorState] {
         width: 20px;
         height: 20px;
         border-radius: 50%;
         display: inline-block;
         border: 1px solid #333;
         box-sizing: border-box;
-    }*/
+    }
 
-    span[color="notrequired"] {
+    span[colorState="notrequired"] {
         background-color: white;
     }
 
-        span[color="notrequired"]::after {
+        span[colorState="notrequired"]::after {
             content: "X";
             line-height: 0px;
             text-align: center;

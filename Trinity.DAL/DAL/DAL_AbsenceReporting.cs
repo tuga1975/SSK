@@ -56,22 +56,10 @@ namespace Trinity.DAL
         {
             try
             {
-                if (isLocal)
-                {
-                    var absenceRepo = _localUnitOfWork.GetRepository<AbsenceReporting>();
-                    AbsenceReporting dbAbsence = SetInfo(model);
-                    absenceRepo.Add(dbAbsence);
-                    _localUnitOfWork.Save();
-
-                }
-                else
-                {
-                    var absenceRepo = _centralizedUnitOfWork.GetRepository<AbsenceReporting>();
-                    AbsenceReporting dbAbsence = SetInfo(model);
-                    absenceRepo.Add(dbAbsence);
-                    _centralizedUnitOfWork.Save();
-
-                }
+                var absenceRepo = _localUnitOfWork.GetRepository<AbsenceReporting>();
+                AbsenceReporting dbAbsence = SetInfo(model);
+                absenceRepo.Add(dbAbsence);
+                _localUnitOfWork.Save();
                 return true;
             }
             catch (Exception ex)
@@ -92,7 +80,7 @@ namespace Trinity.DAL
             dbAbsence.ID = model.ID;
             dbAbsence.ReportingDate = model.ReportingDate;
             dbAbsence.ReasonDetails = model.ReasonDetails;
-            dbAbsence.ScannedDocument = model.ScannedDocument;
+            //dbAbsence.ScannedDocument = model.ScannedDocument;
             dbAbsence.AbsenceReason = model.AbsenceReason;
             return dbAbsence;
         }

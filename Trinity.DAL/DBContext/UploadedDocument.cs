@@ -12,30 +12,26 @@ namespace Trinity.DAL.DBContext
     using System;
     using System.Collections.Generic;
     
-    public partial class Timeslot
+    public partial class UploadedDocument
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Timeslot()
+        public UploadedDocument()
         {
-            this.Queues = new HashSet<Queue>();
-            this.Appointments = new HashSet<Appointment>();
+            this.User_Profiles = new HashSet<User_Profiles>();
+            this.AbsenceReportings = new HashSet<AbsenceReporting>();
         }
     
-        public string Timeslot_ID { get; set; }
-        public string Category { get; set; }
-        public Nullable<System.DateTime> Date { get; set; }
-        public Nullable<System.TimeSpan> StartTime { get; set; }
-        public Nullable<System.TimeSpan> EndTime { get; set; }
-        public Nullable<int> MaximumSupervisee { get; set; }
-        public string CreatedBy { get; set; }
-        public Nullable<System.DateTime> CreatedDate { get; set; }
-        public string LastUpdatedBy { get; set; }
-        public Nullable<System.DateTime> LastUpdatedDate { get; set; }
-        public string Description { get; set; }
+        public System.Guid Document_ID { get; set; }
+        public string DocumentName { get; set; }
+        public string UploadedBy { get; set; }
+        public Nullable<System.DateTime> UploadedDate { get; set; }
+        public string Extension { get; set; }
+        public byte[] DocumentContent { get; set; }
+        public string Note { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Queue> Queues { get; set; }
+        public virtual ICollection<User_Profiles> User_Profiles { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Appointment> Appointments { get; set; }
+        public virtual ICollection<AbsenceReporting> AbsenceReportings { get; set; }
     }
 }
