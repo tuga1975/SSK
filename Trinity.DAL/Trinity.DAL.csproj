@@ -235,6 +235,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>TrinityCentralizedDB.edmx</DependentUpon>
     </Compile>
+    <Compile Include="DBContext\UploadedDocument.cs">
+      <DependentUpon>SSK.tt</DependentUpon>
+    </Compile>
     <Compile Include="DBContext\User_Profiles.cs">
       <DependentUpon>SSK.tt</DependentUpon>
     </Compile>

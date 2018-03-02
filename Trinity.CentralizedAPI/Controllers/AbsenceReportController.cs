@@ -12,12 +12,12 @@ namespace Trinity.CentralizedAPI.Controllers
 
     public class AbsenceReportController : ApiController
     {
-        [HttpPost]
-        [Route("api/AbsenceReport/SetReasonInfo")]
-        public IHttpActionResult SetReasonInfo(Trinity.BE.Reason model)
-        {
-            var result = new DAL.DAL_AbsenceReporting().SetInfo(model);
-            return Ok(result);
-        }
+        //[HttpPost]
+        //[Route("api/AbsenceReport/SetReasonInfo")]
+        //public IHttpActionResult SetReasonInfo(Trinity.BE.Reason model)
+        //{
+        //    var result = new DAL.DAL_AbsenceReporting().SetInfo(model);
+        //    return Ok(result);
+        //}
     }
 }

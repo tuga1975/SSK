@@ -63,51 +63,6 @@ namespace Trinity.DAL
             }
         }
 
-        public WorkingTimeshift GetApptmtTime(DateTime date)
-        {
-            try
-            {
-                List<Timeslot> listTimeSlot;
-                if (EnumAppConfig.IsLocal)
-                {
-
-                    var data = GetTimeslots(date);
-                    if (data != null)
-                    {
-                        listTimeSlot = data;
-                        WorkingTimeshift appointmentTime = SetAppointTime(listTimeSlot);
-                        if (appointmentTime != null)
-                        {
-                            return appointmentTime;
-                        }
-                        else
-                        {
-                            bool centralizeStatus;
-                            var centralData = CallCentralized.Get<WorkingTimeshift>(EnumAPIParam.Setting, "GetAppointmentTime", out centralizeStatus, "date=" + date);
-                            if (centralizeStatus)
-                            {
-                                return centralData;
-                            }
-                        }
-                    }
-
-
-                }
-                else
-                {
-                    listTimeSlot = GetTimeslots(date);
-                    WorkingTimeshift appointmentTime = SetAppointTime(listTimeSlot);
-                    return appointmentTime;
-                }
-                return null;
-            }
-            catch (Exception)
-            {
-
-                return null;
-            }
-        }
-
         private WorkingTimeshift SetAppointTime(List<Timeslot> listTimeSlot)
         {
             try
@@ -166,12 +121,12 @@ namespace Trinity.DAL
             return result;
         }
 
-        public WorkingTimeshift GetCurrentApptmtTime()
-        {
-            var today = DateTime.Today;
-            var result = GetApptmtTime(today);
-            return result;
-        }
+        //public WorkingTimeshift GetCurrentApptmtTime()
+        //{
+        //    var today = DateTime.Today;
+        //    var result = GetApptmtTime(today);
+        //    return result;
+        //}
 
         public List<Timeslot> GetTimeslots(DateTime date)
         {
@@ -509,64 +464,28 @@ namespace Trinity.DAL
         // Save OperationSetting from DutyOfficer
         public BE.SettingModel GetOperationSettings()
         {
-            if (EnumAppConfig.IsLocal)
+            List<OperationSetting> arraySetting = _localUnitOfWork.DataContext.OperationSettings.ToList();
+
+            var settingModel = new BE.SettingModel
             {
-                List<OperationSetting> arraySetting = _localUnitOfWork.DataContext.OperationSettings.ToList();
+                Monday = arraySetting.FirstOrDefault(d => d.DayOfWeek == (int)EnumDayOfWeek.Monday).Map<BE.SettingDetails>(),
+                Tuesday = arraySetting.FirstOrDefault(d => d.DayOfWeek == (int)EnumDayOfWeek.Tuesday).Map<BE.SettingDetails>(),
+                Wednesday = arraySetting.FirstOrDefault(d => d.DayOfWeek == (int)EnumDayOfWeek.Wednesday).Map<BE.SettingDetails>(),
+                Thursday = arraySetting.FirstOrDefault(d => d.DayOfWeek == (int)EnumDayOfWeek.Thursday).Map<BE.SettingDetails>(),
+                Friday = arraySetting.FirstOrDefault(d => d.DayOfWeek == (int)EnumDayOfWeek.Friday).Map<BE.SettingDetails>(),
+                Saturday = arraySetting.FirstOrDefault(d => d.DayOfWeek == (int)EnumDayOfWeek.Saturday).Map<BE.SettingDetails>(),
+                Sunday = arraySetting.FirstOrDefault(d => d.DayOfWeek == (int)EnumDayOfWeek.Sunday).Map<BE.SettingDetails>(),
+                HoliDays = GetHolidays(_localUnitOfWork.GetRepository<DBContext.Holiday>()),
+                ChangeHistorySettings = GetHistoryChangeSettings(_localUnitOfWork.GetRepository<DBContext.OperationSettings_ChangeHist>())
+            };
 
-                var settingModel = new BE.SettingModel
-                {
-                    Monday = arraySetting.FirstOrDefault(d => d.DayOfWeek == (int)EnumDayOfWeek.Monday).Map<BE.SettingDetails>(),
-                    Tuesday = arraySetting.FirstOrDefault(d => d.DayOfWeek == (int)EnumDayOfWeek.Tuesday).Map<BE.SettingDetails>(),
-                    Wednesday = arraySetting.FirstOrDefault(d => d.DayOfWeek == (int)EnumDayOfWeek.Wednesday).Map<BE.SettingDetails>(),
-                    Thursday = arraySetting.FirstOrDefault(d => d.DayOfWeek == (int)EnumDayOfWeek.Thursday).Map<BE.SettingDetails>(),
-                    Friday = arraySetting.FirstOrDefault(d => d.DayOfWeek == (int)EnumDayOfWeek.Friday).Map<BE.SettingDetails>(),
-                    Saturday = arraySetting.FirstOrDefault(d => d.DayOfWeek == (int)EnumDayOfWeek.Saturday).Map<BE.SettingDetails>(),
-                    Sunday = arraySetting.FirstOrDefault(d => d.DayOfWeek == (int)EnumDayOfWeek.Sunday).Map<BE.SettingDetails>(),
-                    HoliDays = GetHolidays(_localUnitOfWork.GetRepository<DBContext.Holiday>()),
-                    ChangeHistorySettings = GetHistoryChangeSettings(_localUnitOfWork.GetRepository<DBContext.OperationSettings_ChangeHist>())
-                };
-
-                if ((settingModel.Monday == null || settingModel.Tuesday == null || settingModel.Wednesday == null || settingModel.Thursday == null || settingModel.Friday == null
-                    || settingModel.Saturday == null || settingModel.Sunday == null || settingModel.HoliDays == null || settingModel.ChangeHistorySettings == null) && !EnumAppConfig.ByPassCentralizedDB)
-                {
-                    bool centralizeStatus;
-                    var centralData = CallCentralized.Get<BE.SettingModel>(EnumAPIParam.Setting, "GetOperationSettings", out centralizeStatus);
-                    if (centralizeStatus)
-                    {
-                        return centralData;
-                    }
-                    return null;
-                }
-                else
-                {
-                    settingModel.Monday = settingModel.Monday == null ? new SettingDetails() { DayOfWeek = (int)EnumDayOfWeek.Monday } : settingModel.Monday;
-                    settingModel.Tuesday = settingModel.Tuesday == null ? new SettingDetails() { DayOfWeek = (int)EnumDayOfWeek.Tuesday } : settingModel.Tuesday;
-                    settingModel.Wednesday = settingModel.Wednesday == null ? new SettingDetails() { DayOfWeek = (int)EnumDayOfWeek.Wednesday } : settingModel.Wednesday;
-                    settingModel.Thursday = settingModel.Thursday == null ? new SettingDetails() { DayOfWeek = (int)EnumDayOfWeek.Thursday } : settingModel.Thursday;
-                    settingModel.Friday = settingModel.Friday == null ? new SettingDetails() { DayOfWeek = (int)EnumDayOfWeek.Friday } : settingModel.Friday;
-                    settingModel.Saturday = settingModel.Saturday == null ? new SettingDetails() { DayOfWeek = (int)EnumDayOfWeek.Saturday } : settingModel.Saturday;
-                    settingModel.Sunday = settingModel.Sunday == null ? new SettingDetails() { DayOfWeek = (int)EnumDayOfWeek.Sunday } : settingModel.Sunday;
-
-                    return settingModel;
-                }
+            if ((settingModel.Monday == null || settingModel.Tuesday == null || settingModel.Wednesday == null || settingModel.Thursday == null || settingModel.Friday == null
+                || settingModel.Saturday == null || settingModel.Sunday == null || settingModel.HoliDays == null || settingModel.ChangeHistorySettings == null))
+            {
+                return null;
             }
             else
             {
-                List<OperationSetting> arraySetting = _centralizedUnitOfWork.DataContext.OperationSettings.ToList();
-
-                var settingModel = new BE.SettingModel
-                {
-                    Monday = arraySetting.FirstOrDefault(d => d.DayOfWeek == (int)EnumDayOfWeek.Monday).Map<BE.SettingDetails>(),
-                    Tuesday = arraySetting.FirstOrDefault(d => d.DayOfWeek == (int)EnumDayOfWeek.Tuesday).Map<BE.SettingDetails>(),
-                    Wednesday = arraySetting.FirstOrDefault(d => d.DayOfWeek == (int)EnumDayOfWeek.Wednesday).Map<BE.SettingDetails>(),
-                    Thursday = arraySetting.FirstOrDefault(d => d.DayOfWeek == (int)EnumDayOfWeek.Thursday).Map<BE.SettingDetails>(),
-                    Friday = arraySetting.FirstOrDefault(d => d.DayOfWeek == (int)EnumDayOfWeek.Friday).Map<BE.SettingDetails>(),
-                    Saturday = arraySetting.FirstOrDefault(d => d.DayOfWeek == (int)EnumDayOfWeek.Saturday).Map<BE.SettingDetails>(),
-                    Sunday = arraySetting.FirstOrDefault(d => d.DayOfWeek == (int)EnumDayOfWeek.Sunday).Map<BE.SettingDetails>(),
-                    HoliDays = GetHolidays(_centralizedUnitOfWork.GetRepository<DBContext.Holiday>()),
-                    ChangeHistorySettings = GetHistoryChangeSettings(_centralizedUnitOfWork.GetRepository<DBContext.OperationSettings_ChangeHist>())
-                };
-
                 settingModel.Monday = settingModel.Monday == null ? new SettingDetails() { DayOfWeek = (int)EnumDayOfWeek.Monday } : settingModel.Monday;
                 settingModel.Tuesday = settingModel.Tuesday == null ? new SettingDetails() { DayOfWeek = (int)EnumDayOfWeek.Tuesday } : settingModel.Tuesday;
                 settingModel.Wednesday = settingModel.Wednesday == null ? new SettingDetails() { DayOfWeek = (int)EnumDayOfWeek.Wednesday } : settingModel.Wednesday;
@@ -577,7 +496,6 @@ namespace Trinity.DAL
 
                 return settingModel;
             }
-
         }
 
         #region Duty Officer        
@@ -609,103 +527,43 @@ namespace Trinity.DAL
         {
             try
             {
-                if (EnumAppConfig.IsLocal)
+                DBContext.Holiday holiday = new DBContext.Holiday()
                 {
-                    DBContext.Holiday holiday = new DBContext.Holiday()
-                    {
-                        Holiday1 = date,
-                        ShortDesc = shortDesc,
-                        Notes = notes
-                    };
+                    Holiday1 = date,
+                    ShortDesc = shortDesc,
+                    Notes = notes
+                };
 
-                    _localUnitOfWork.GetRepository<DBContext.Holiday>().Add(holiday);
+                _localUnitOfWork.GetRepository<DBContext.Holiday>().Add(holiday);
 
-                    // Insert to Change History Setting
-                    int dayOfWeek = (int)Common.CommonUtil.ConvertToCustomDateOfWeek(holiday.Holiday1.DayOfWeek);
-                    var operationSetting = _localUnitOfWork.DataContext.OperationSettings.FirstOrDefault(s => s.DayOfWeek == dayOfWeek);
-                    if (operationSetting == null)
-                    {
-                        operationSetting = new OperationSetting();
-                        operationSetting.DayOfWeek = dayOfWeek;
-                        operationSetting.Morning_Is_Closed = false;
-                        operationSetting.Afternoon_Is_Closed = false;
-                        operationSetting.Evening_Is_Closed = false;
-                        operationSetting.Last_Updated_By = updatedByID;
-                        operationSetting.Last_Updated_Date = DateTime.Now;
-                        _localUnitOfWork.GetRepository<OperationSetting>().Add(operationSetting);
-                    }
-
-                    //var changeHistoryID = _localUnitOfWork.DataContext.OperationSettings_ChangeHist.Any() ? _localUnitOfWork.DataContext.OperationSettings_ChangeHist.Max(t => t.ID) : 0;
-                    var changeHistoryID = GetMaxIDChangeHist();
-                    DBContext.OperationSettings_ChangeHist changeHistory = new DBContext.OperationSettings_ChangeHist();
-                    changeHistory.ID = changeHistoryID + 1;
-                    changeHistory.DayOfWeek = dayOfWeek;
-                    changeHistory.LastUpdatedBy = updatedByName;
-                    changeHistory.LastUpdatedDate = DateTime.Now;
-                    changeHistory.ChangeDetails = "The holiday " + date.ToString("dd/MM/yyyy") + " has been added";
-
-                    _localUnitOfWork.GetRepository<DBContext.OperationSettings_ChangeHist>().Add(changeHistory);
-
-                    _localUnitOfWork.Save();
-
-                    if (EnumAppConfig.ByPassCentralizedDB)
-                    {
-                        return holiday;
-                    }
-                    else
-                    {
-                        bool centralizeStatus;
-                        var centralUpdate = CallCentralized.Post<DBContext.Holiday>(EnumAPIParam.Setting, "AddHoliday", out centralizeStatus, "date=" + date.ToString(), "shortDesc=" + shortDesc, "notes=" + notes, "updatedByName=" + updatedByName, "updatedByID=" + updatedByID);
-                        if (centralizeStatus)
-                        {
-                            return centralUpdate;
-                        }
-                        else
-                        {
-                            throw new Exception(EnumMessage.NotConnectCentralized);
-                        }
-                    }
-                }
-                else
+                // Insert to Change History Setting
+                int dayOfWeek = (int)Common.CommonUtil.ConvertToCustomDateOfWeek(holiday.Holiday1.DayOfWeek);
+                var operationSetting = _localUnitOfWork.DataContext.OperationSettings.FirstOrDefault(s => s.DayOfWeek == dayOfWeek);
+                if (operationSetting == null)
                 {
-                    DBContext.Holiday holiday = new DBContext.Holiday()
-                    {
-                        Holiday1 = date,
-                        ShortDesc = shortDesc,
-                        Notes = notes
-                    };
-
-                    _centralizedUnitOfWork.GetRepository<DBContext.Holiday>().Add(holiday);
-
-                    // Insert to Change History Setting
-                    int dayOfWeek = (int)Common.CommonUtil.ConvertToCustomDateOfWeek(date.DayOfWeek);
-                    var operationSetting = _centralizedUnitOfWork.DataContext.OperationSettings.FirstOrDefault(s => s.DayOfWeek == dayOfWeek);
-                    if (operationSetting == null)
-                    {
-                        operationSetting = new OperationSetting();
-                        operationSetting.DayOfWeek = dayOfWeek;
-                        operationSetting.Morning_Is_Closed = false;
-                        operationSetting.Afternoon_Is_Closed = false;
-                        operationSetting.Evening_Is_Closed = false;
-                        operationSetting.Last_Updated_By = updatedByID;
-                        operationSetting.Last_Updated_Date = DateTime.Now;
-                        _centralizedUnitOfWork.GetRepository<OperationSetting>().Add(operationSetting);
-                    }
-
-                    var changeHistoryID = _centralizedUnitOfWork.DataContext.OperationSettings_ChangeHist.Any() ? _centralizedUnitOfWork.DataContext.OperationSettings_ChangeHist.Max(t => t.ID) : 0;
-                    DBContext.OperationSettings_ChangeHist changeHistory = new DBContext.OperationSettings_ChangeHist();
-                    changeHistory.ID = changeHistoryID + 1;
-                    changeHistory.DayOfWeek = dayOfWeek;
-                    changeHistory.LastUpdatedBy = updatedByName;
-                    changeHistory.LastUpdatedDate = DateTime.Now;
-                    changeHistory.ChangeDetails = "The holiday " + date.ToString("dd/MM/yyyy") + " has been added";
-
-                    _centralizedUnitOfWork.GetRepository<DBContext.OperationSettings_ChangeHist>().Add(changeHistory);
-
-                    _centralizedUnitOfWork.Save();
-
-                    return holiday;
+                    operationSetting = new OperationSetting();
+                    operationSetting.DayOfWeek = dayOfWeek;
+                    operationSetting.Morning_Is_Closed = false;
+                    operationSetting.Afternoon_Is_Closed = false;
+                    operationSetting.Evening_Is_Closed = false;
+                    operationSetting.Last_Updated_By = updatedByID;
+                    operationSetting.Last_Updated_Date = DateTime.Now;
+                    _localUnitOfWork.GetRepository<OperationSetting>().Add(operationSetting);
                 }
+
+                //var changeHistoryID = _localUnitOfWork.DataContext.OperationSettings_ChangeHist.Any() ? _localUnitOfWork.DataContext.OperationSettings_ChangeHist.Max(t => t.ID) : 0;
+                var changeHistoryID = GetMaxIDChangeHist();
+                DBContext.OperationSettings_ChangeHist changeHistory = new DBContext.OperationSettings_ChangeHist();
+                changeHistory.ID = changeHistoryID + 1;
+                changeHistory.DayOfWeek = dayOfWeek;
+                changeHistory.LastUpdatedBy = updatedByName;
+                changeHistory.LastUpdatedDate = DateTime.Now;
+                changeHistory.ChangeDetails = "The holiday " + date.ToString("dd/MM/yyyy") + " has been added";
+
+                _localUnitOfWork.GetRepository<DBContext.OperationSettings_ChangeHist>().Add(changeHistory);
+
+                _localUnitOfWork.Save();
+                return holiday;
             }
             catch (Exception e)
             {
@@ -1277,71 +1135,10 @@ namespace Trinity.DAL
                 var _dayOfWeek = DayOfWeek == 8 ? 1 : DayOfWeek;
                 var DateNow = DateTime.Now.Date;
 
-                if (EnumAppConfig.IsLocal)
+                var arrayBookAppoint = _localUnitOfWork.DataContext.Appointments.Include("Membership_Users").Include("Timeslot").Include("Queues").Where(d => !string.IsNullOrEmpty(d.Timeslot_ID) && DbFunctions.TruncateTime(d.Date) >= DateNow && SqlFunctions.DatePart("dw", d.Date) == _dayOfWeek).ToList();
+
+                if (arrayBookAppoint != null)
                 {
-                    var arrayBookAppoint = _localUnitOfWork.DataContext.Appointments.Include("Membership_Users").Include("Timeslot").Include("Queues").Where(d => !string.IsNullOrEmpty(d.Timeslot_ID) && DbFunctions.TruncateTime(d.Date) >= DateNow && SqlFunctions.DatePart("dw", d.Date) == _dayOfWeek).ToList();
-
-                    if (arrayBookAppoint != null || EnumAppConfig.ByPassCentralizedDB)
-                    {
-                        List<CheckWarningSaveSetting> arrayListUser = new List<CheckWarningSaveSetting>();
-                        if ((int)DayOfWeek == DateTime.Now.DayOfWeek())
-                        {
-                            //Nếu là thứ hiện tại cập nhật và chưa đã có queue đc chạy
-                            bool isQueueStarted = arrayBookAppoint.Any(d => d.Date.Date == DateTime.Now.Date && d.Timeslot.StartTime.Value <= DateTime.Now.TimeOfDay);
-                            if (!isQueueStarted)
-                            {
-                                modelReturn.arrayDetail = arrayBookAppoint.Select(d => new CheckWarningSaveSettingDetail()
-                                {
-                                    Date = d.Date,
-                                    Email = d.Membership_Users.Email,
-                                    StartTime = d.Timeslot.StartTime.Value,
-                                    EndTime = d.Timeslot.EndTime.Value,
-                                    Timeslot_ID = d.Timeslot_ID,
-                                    UserId = d.UserId,
-                                    UserName = d.Membership_Users.UserName,
-                                    Queue_ID = d.Queues.Select(c => c.Queue_ID).FirstOrDefault(),
-                                    AppointmentID = d.ID
-                                }).ToList();
-                                modelReturn.isDeleteTimeSlot = true;
-                            }
-                        }
-                        else
-                        {
-                            modelReturn.arrayDetail = arrayBookAppoint.Select(d => new CheckWarningSaveSettingDetail()
-                            {
-                                Date = d.Date,
-                                Email = d.Membership_Users.Email,
-                                StartTime = d.Timeslot.StartTime.Value,
-                                EndTime = d.Timeslot.EndTime.Value,
-                                Timeslot_ID = d.Timeslot_ID,
-                                UserId = d.UserId,
-                                UserName = d.Membership_Users.UserName,
-                                Queue_ID = d.Queues.Select(c => c.Queue_ID).FirstOrDefault(),
-                                AppointmentID = d.ID
-                            }).ToList();
-                            modelReturn.isDeleteTimeSlot = true;
-                        }
-
-                        return modelReturn;
-                    }
-                    else
-                    {
-                        bool centralizeStatus;
-                        var centralData = CallCentralized.Get<CheckWarningSaveSetting>(EnumAPIParam.Setting, "CheckWarningSaveSetting", out centralizeStatus, "DayOfWeek=" + DayOfWeek.ToString());
-                        if (centralizeStatus)
-                        {
-                            return centralData;
-                        }
-                        else
-                        {
-                            throw new Exception(EnumMessage.NotConnectCentralized);
-                        }
-                    }
-                }
-                else
-                {
-                    var arrayBookAppoint = _centralizedUnitOfWork.DataContext.Appointments.Include("Membership_Users").Include("Timeslot").Include("Queues").Where(d => !string.IsNullOrEmpty(d.Timeslot_ID) && DbFunctions.TruncateTime(d.Date) >= DateNow && SqlFunctions.DatePart("dw", d.Date) == _dayOfWeek).ToList();
-
                     List<CheckWarningSaveSetting> arrayListUser = new List<CheckWarningSaveSetting>();
                     if ((int)DayOfWeek == DateTime.Now.DayOfWeek())
                     {
@@ -1383,6 +1180,8 @@ namespace Trinity.DAL
 
                     return modelReturn;
                 }
+
+                return null;
             }
             catch (Exception e)
             {

@@ -11,12 +11,12 @@ namespace Trinity.CentralizedAPI.Controllers
     public class AddressController : ApiController
     {
         #region 2018
-        [HttpPost]
-        [Route("api/Address/SaveAddress")]
-        public void SaveAddress([FromBody] BE.Address model)
-        {
-            new DAL.DAL_Address().SaveAddress(model);
-        }
+        //[HttpPost]
+        //[Route("api/Address/SaveAddress")]
+        //public void SaveAddress([FromBody] BE.Address model)
+        //{
+        //    new DAL.DAL_Address().SaveAddress(model);
+        //}
 
         
         #endregion
