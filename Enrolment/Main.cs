@@ -43,6 +43,8 @@ namespace Enrolment
             InitializeComponent();
 
             APIUtils.Start();
+            //Notification
+            Trinity.SignalR.Client.SignalR signalR = Trinity.SignalR.Client.SignalR.Instance;
 
             pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
 
@@ -856,6 +858,7 @@ namespace Enrolment
             }
             else if (e.Name == EventNames.SUPERVISEE_DATA_UPDATE_CANCELED)
             {
+                
                 NavigateTo(NavigatorEnums.Supervisee);
             }
         }

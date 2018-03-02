@@ -35,7 +35,8 @@ namespace SSA
             InitializeComponent();
 
             APIUtils.Start();
-
+            //Notification
+            Trinity.SignalR.Client.SignalR signalR  =  Trinity.SignalR.Client.SignalR.Instance;
             // setup variables
             _smartCardFailed = 0;
             _fingerprintFailed = 0;
@@ -79,7 +80,7 @@ namespace SSA
             string message = "The fingerprint reader is not connected, please report to the Duty Officer!";
 
             // Send Notification to duty officer
-            APIUtils.SignalR.SendAllDutyOfficer(null,"The fingerprinter is not connected", "The fingerprinter is not connected.", NotificationType.Error);
+            Trinity.SignalR.Client.SignalR.Instance.SendAllDutyOfficer(null,"The fingerprinter is not connected", "The fingerprinter is not connected.", NotificationType.Error);
 
             // show message box to user
             MessageBox.Show(message, "Authentication failed!", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -188,7 +189,7 @@ namespace SSA
         private void NRIC_OnNRICSucceeded()
         {
             // navigate to Supervisee page
-            APIUtils.SignalR.UserLogined(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId);
+            Trinity.SignalR.Client.SignalR.Instance.UserLogined(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId);
 
             NavigateTo(NavigatorEnums.Supervisee_NRIC);
         }
@@ -216,7 +217,7 @@ namespace SSA
             if (_smartCardFailed > 3)
             {
                 // Send Notification to duty officer
-                APIUtils.SignalR.SendAllDutyOfficer(null,message, message, NotificationType.Error);
+                Trinity.SignalR.Client.SignalR.Instance.SendAllDutyOfficer(null,message, message, NotificationType.Error);
 
                 // show message box to user
                 //MessageBox.Show(message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -269,7 +270,7 @@ namespace SSA
                 session[CommonConstants.SUPERVISEE] = user;
                 session[CommonConstants.USER_LOGIN] = null;
                 // navigate to SuperviseeParticulars page
-                APIUtils.SignalR.UserLogined(user.UserId);
+                Trinity.SignalR.Client.SignalR.Instance.UserLogined(user.UserId);
                 NavigateTo(NavigatorEnums.Supervisee_Particulars);
             }
         }
@@ -288,7 +289,7 @@ namespace SSA
                 string errorMessage = "Unable to read " + user.Name + "'s fingerprint.";
 
                 // Send Notification to duty officer
-                APIUtils.SignalR.SendAllDutyOfficer(user.UserId, "Fingerprint Authentication failed", errorMessage, NotificationType.Error);
+                Trinity.SignalR.Client.SignalR.Instance.SendAllDutyOfficer(user.UserId, "Fingerprint Authentication failed", errorMessage, NotificationType.Error);
 
                 Trinity.BE.PopupModel popupModel = new Trinity.BE.PopupModel();
                 popupModel.Title = "Authorization Failed";
@@ -366,7 +367,7 @@ namespace SSA
                 session[CommonConstants.SUPERVISEE] = user;
                 session[CommonConstants.USER_LOGIN] = null;
                 // navigate to SuperviseeParticulars page
-                APIUtils.SignalR.UserLogined(user.UserId);
+                Trinity.SignalR.Client.SignalR.Instance.UserLogined(user.UserId);
                 NavigateTo(NavigatorEnums.Supervisee_Particulars);
             }
         }
@@ -389,7 +390,7 @@ namespace SSA
             Session session = Session.Instance;
             Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
             string errorMessage = "User '" + user.Name + "' cannot complete facial authentication";
-            APIUtils.SignalR.SendAllDutyOfficer(user.UserId, "Facial authentication failed", errorMessage, NotificationType.Error);
+            Trinity.SignalR.Client.SignalR.Instance.SendAllDutyOfficer(user.UserId, "Facial authentication failed", errorMessage, NotificationType.Error);
 
             // show message box to user
             //MessageBox.Show("Facial authentication failed", "Facial Authentication", MessageBoxButtons.OK, MessageBoxIcon.Error);

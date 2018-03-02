@@ -269,14 +269,14 @@
     </li>
 
     <li class="nav-item">
-        <a class="nav-link" data-toggle="tab"  role="tab" href="javascript:api.server.LoadPage('ReprintSmartCard.html');">
+        <a class="nav-link" data-toggle="tab" role="tab" href="javascript:api.server.LoadPage('ReprintSmartCard.html');">
             <i class="fa fa-address-card"></i> Issued card
         </a>
     </li>
 </ul>
 
 <!-- Tab panes -->
-<div class="tab-content" >
+<div class="tab-content">
     <div class="tab-pane active" id="superviseeDetails" role="tabpanel">
         <div class="title-border-red border-bottom px-3">
             <h5>Edit Supervisee</h5>
@@ -741,7 +741,8 @@
 
                         <div class="pull-right">
                             <button class="btn btn-light" onclick="api.server.CancelEditSupervisee();">Cancel</button>
-                            <button class="btn btn-primary" id="SaveBtn">Save</button>
+                            <!--<a href="#" class="btn btn-light" id="btnCancel">Cancel</a>-->
+                            <button class="btn btn-primary" onclick="UpdateSupervisee();" id="SaveBtn">Save</button>
                         </div>
                     </form>
                 </div>
@@ -805,18 +806,7 @@
 
 
 <script>
-    jQuery(function ($) {
-        var modal_lv = 0;
-        $('.modal').on('shown.bs.modal', function (e) {
-            a = $('.modal-backdrop:last').css('zIndex', 1051 + modal_lv); console.log(a);
-            b = $(e.currentTarget).css('zIndex', 1052 + modal_lv); console.log(b);
-            modal_lv++
-        });
-
-        $('.modal').on('hidden.bs.modal', function (e) {
-            modal_lv--
-        });
-    });
+   
 </script>
 
 <!--<div style="width:100%;">
@@ -1060,7 +1050,6 @@
         </form>
     </div>
 </div>-->
-
 <!--<div id="pageUpdatePhotos">
     <div style="width:100%;">
         <div class="header header-form-supervisee">
@@ -1076,12 +1065,12 @@
                     <div class="row updateSuperviseePhoto">
                         <div class="col-6" style="text-align:center;vertical-align:top;">
                             <div id="PopupUserPhoto1" style="background-position:center center;background-repeat:no-repeat;background-size:cover;height:200px;width:100%;background-image:url(../images/usr-default.jpg);"></div>
-                           
+
                             <button type="button" class="btn-form" id="updatePhoto2" onclick="api.server.OpenPictureCaptureForm('1')">Take Picture 1</button>
                         </div>
                         <div class="col-6" style="text-align:center;vertical-align:top;">
                             <div id="PopupUserPhoto2" style="background-position:center center;background-repeat:no-repeat;background-size:cover;height:200px;width:100%;background-image:url(../images/usr-default.jpg);"></div>
-                           
+
                             <button type="button" class="btn-form" id="updatePhoto2" onclick="api.server.OpenPictureCaptureForm('2')">Take Picture 2</button>
                         </div>
                     </div>
@@ -1090,16 +1079,20 @@
 
             <div class="btn-group">
                 <button type="button" class="btn-form" onclick="hidePopUp()">Back</button>
-               
+
             </div>
         </div>
     </div>
 </div>-->
 <script>
+    $('#btnCancel').click(function () {
+        api.server.CancelEditSupervisee();
+    });
     $(function () {
-        $('.s_label').click(function () {
-            $(this).next().fadeToggle(200);
-        });
+      
+        //$('.s_label').click(function () {
+        //    $(this).next().fadeToggle(200);
+        //});
         var d = new Date();
         var month = new Array();
         var year = d.getFullYear();
@@ -1174,30 +1167,33 @@
             // photo
             $('#User_Photo1').val(api.model.UserProfile.User_Photo1);
             $('#User_Photo2').val(api.model.UserProfile.User_Photo2);
-          
+
             var startYear = $('#Employment_Start_Date').val().trim() != "" ? new Date($('#Employment_Start_Date').val()) : null;
             var endYear = $('#Employment_End_Date').val().trim() != "" ? new Date($('#Employment_End_Date').val()) : null;
-            
+
             if (startYear != null) {
                 $('#year').val(startYear.getFullYear());
                 $('#month').val(startYear.getMonth() + 1); //January is 0
                 $('#day').val(startYear.getDate());
-              
+
             }
-          
+
             if (endYear != null) {
-                
+
                 $('#year_end').val(endYear.getFullYear());
                 $('#month_end').val(endYear.getMonth() + 1); //January is 0
                 $('#day_end').val(endYear.getDate());
-              
+
             }
 
         }
 
 
-        $('#SaveBtn').click(function () {
-            alert(1);
+        
+    });
+
+    function UpdateSupervisee() {
+        $('#superviseeFrm').submit(function (e) {
             $('#Employment_Start_Date').val(setDate('day', 'month', 'year'));
             $('#Employment_End_Date').val(setDate('day_end', 'month_end', 'year_end'));
 
@@ -1205,18 +1201,36 @@
             var data = getFormData($form);
             var json = JSON.stringify(data);
             api.server.SaveSupervisee(json);
-            
 
+            e.preventDefault();
         });
-    });
+    }
 
+    //$('#SaveBtn').click(function () {
+    //    $('#superviseeFrm').submit(function (e) {
+
+    //        $('#Employment_Start_Date').val(setDate('day', 'month', 'year'));
+    //        $('#Employment_End_Date').val(setDate('day_end', 'month_end', 'year_end'));
+
+    //        var $form = $("#superviseeFrm");
+    //        var data = getFormData($form);
+    //        var json = JSON.stringify(data);
+    //        api.server.SaveSupervisee(json);
+
+    //        e.preventDefault();
+    //    });
+    //});
     function setDate(day_Id, month_Id, year_Id) {
         var _day = $('#' + day_Id + '').val().trim();
         var _month = $('#' + month_Id + '').val().trim();
         var _year = $('#' + year_Id + '').val().trim();
-        if (_day != "" && _month != "" && _year != "") {
+        if (_day != "" && _month != "" && _year != "" && _day != "DD" && _month != "MM" && _year != "YYYY") {
             return _year + "-" + _month + "-" + _day;
         }
+        else {
+            return null;
+        }
+       
     }
     function setCalendar(day_Id, month_Id, year_Id) {
         var _month = $('#' + month_Id + '').val();
@@ -1305,12 +1319,24 @@
     function setAvatar(base64Str1, base64Str2) {
         if (base64Str1 != "") {
             $('#userPhoto1').attr('src', 'data:image/jpg;base64,' + base64Str1);
-           // $('#PopupUserPhoto1').css('background-image', 'url(data:image/jpg;base64,' + base64Str1 + ')');
+            // $('#PopupUserPhoto1').css('background-image', 'url(data:image/jpg;base64,' + base64Str1 + ')');
         }
         if (base64Str2 != "") {
             $('#userPhoto2').attr('src', 'data:image/jpg;base64,' + base64Str2);
-          //  $('#PopupUserPhoto2').css('background-image', 'url(data:image/jpg;base64,' + base64Str2 + ')');
+            //  $('#PopupUserPhoto2').css('background-image', 'url(data:image/jpg;base64,' + base64Str2 + ')');
         }
     }
 
+    jQuery(function ($) {
+        var modal_lv = 0;
+        $('.modal').on('shown.bs.modal', function (e) {
+            a = $('.modal-backdrop:last').css('zIndex', 1051 + modal_lv); console.log(a);
+            b = $(e.currentTarget).css('zIndex', 1052 + modal_lv); console.log(b);
+            modal_lv++
+        });
+
+        $('.modal').on('hidden.bs.modal', function (e) {
+            modal_lv--
+        });
+    });
 </script>
