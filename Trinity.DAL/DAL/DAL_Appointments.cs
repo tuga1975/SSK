@@ -459,27 +459,15 @@ namespace Trinity.DAL
 
         public int CountAbsenceReport(string UserID)
         {
-            try
+            if (EnumAppConfig.IsLocal)
             {
-                if (EnumAppConfig.IsLocal)
-                {
-                    return _localUnitOfWork.DataContext.Appointments.Count(d => d.UserId == UserID && d.AbsenceReporting_ID != null && d.AbsenceReporting.ReportingDate == null);
-                }
-                else
-                {
-                    var data = _centralizedUnitOfWork.DataContext.Appointments.Where(d => d.UserId == UserID && d.Date < DateTime.Today && !d.Queues.Any() && d.AbsenceReporting_ID == null);
-                    if (data != null)
-                    {
-                        return data.Count();
-                    }
-                    return 0;
-                }
+                //return _localUnitOfWork.DataContext.Appointments.Count(d => d.UserId == UserID && d.Status == AppointmentStatus.Absent);
             }
-            catch (Exception)
+            else
             {
-
-                return 0;
+                //return _centralizedUnitOfWork.DataContext.Appointments.Count(d => d.UserId == UserID && d.Status == AppointmentStatus.Absent);
             }
+            return 0;
         }
 
         public List<Appointment> GetAbsentAppointments(string UserID)

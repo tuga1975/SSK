@@ -12,18 +12,32 @@ namespace Trinity.DAL
         Local_UnitOfWork _localUnitOfWork = new Local_UnitOfWork();
         Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
 
-        public void UpdateAbsence(List<Dictionary<string, string>> dataUpdate)
+        public void InsertAbsence(List<Dictionary<string, string>> dataUpdate)
         {
             List<Guid> ArrayIDAppointments = dataUpdate.Select(d => new Guid(d["ID"])).ToList();
             var arrayUpdate = _localUnitOfWork.DataContext.Appointments.Where(d => ArrayIDAppointments.Contains(d.ID) && d.AbsenceReporting_ID.HasValue).ToList();
+            List<Trinity.DAL.DBContext.AbsenceReporting> arrayInssert = new List<Trinity.DAL.DBContext.AbsenceReporting>();
             foreach (var item in arrayUpdate)
             {
+
                 var data = dataUpdate.FirstOrDefault(d => new Guid(d["ID"]) == item.ID);
-                item.AbsenceReporting.AbsenceReason = short.Parse(data["ChoseNumber"]);
-                item.AbsenceReporting.ReportingDate = DateTime.Now;
-                _localUnitOfWork.GetRepository<DBContext.AbsenceReporting>().Update(item.AbsenceReporting);
-                if (item.AbsenceReporting.AbsenceReason == 5)
+
+                Trinity.DAL.DBContext.AbsenceReporting dataAbsence = new Trinity.DAL.DBContext.AbsenceReporting()
+                {
+                    AbsenceReason = short.Parse(data["ChoseNumber"]),
+                    ID = Guid.NewGuid(),
+                    ReportingDate = DateTime.Now
+                };
+                item.AbsenceReporting_ID = dataAbsence.ID;
+                arrayInssert.Add(dataAbsence);
+                if (dataAbsence.AbsenceReason == 5)
                     Lib.SignalR.SendAllDutyOfficer(item.UserId, "Supervisee get queue without supporting document", "Please check the Supervisee's information!", NotificationType.Notification);
+            }
+            _localUnitOfWork.GetRepository<Trinity.DAL.DBContext.AbsenceReporting>().AddRange(arrayInssert);
+            foreach (var item in arrayUpdate)
+            {
+                //item.Status = AppointmentStatus.Reported;
+                _localUnitOfWork.GetRepository<Trinity.DAL.DBContext.Appointment>().Update(item);
             }
             _localUnitOfWork.Save();
         }
