@@ -219,20 +219,22 @@ namespace Trinity.DAL
                                         PrintCount = l.PrintCount
                                     };
 
-                    if ((lstModels != null && lstModels.Count() > 0) || EnumAppConfig.ByPassCentralizedDB)
-                    {
-                        return lstModels.Distinct().ToList();
-                    }
-                    else
-                    {
-                        bool centralizeStatus;
-                        var centralUpdate = CallCentralized.Get<List<BE.Label>>(EnumAPIParam.Label, "GetAllLabelsForMUBAndTT", out centralizeStatus);
-                        if (centralizeStatus)
-                        {
-                            return centralUpdate;
-                        }
-                        return lstModels.ToList();
-                    }
+                    return lstModels.Distinct().ToList();
+
+                    //if ((lstModels != null && lstModels.Count() > 0) || EnumAppConfig.ByPassCentralizedDB)
+                    //{
+                    //    return lstModels.Distinct().ToList();
+                    //}
+                    //else
+                    //{
+                    //    bool centralizeStatus;
+                    //    var centralUpdate = CallCentralized.Get<List<BE.Label>>(EnumAPIParam.Label, "GetAllLabelsForMUBAndTT", out centralizeStatus);
+                    //    if (centralizeStatus)
+                    //    {
+                    //        return centralUpdate;
+                    //    }
+                    //    return lstModels.ToList();
+                    //}
                 }
                 else
                 {
@@ -292,28 +294,22 @@ namespace Trinity.DAL
                                     IsSealed = d.IsSealed
                                 })
                     .Where(d => d.IsSealed == true);
-                    //.Select(d => new BE.Label()
-                    //{
-                    //    NRIC = d.Membership_Users.NRIC,
-                    //    Name = d.Membership_Users.Name,
-                    //    LastStation = d.LastStation,
-                    //    UserId = d.UserId
-                    //});
+                    return lstModels.ToList();
 
-                    if ((lstModels != null && lstModels.Count() > 0) || EnumAppConfig.ByPassCentralizedDB)
-                    {
-                        return lstModels.ToList();
-                    }
-                    else
-                    {
-                        bool centralizeStatus;
-                        var centralUpdate = CallCentralized.Get<List<BE.Label>>(EnumAPIParam.Label, "GetAllLabelsForUB", out centralizeStatus);
-                        if (centralizeStatus)
-                        {
-                            return centralUpdate;
-                        }
-                        return lstModels.ToList();
-                    }
+                    //if ((lstModels != null && lstModels.Count() > 0) || EnumAppConfig.ByPassCentralizedDB)
+                    //{
+                    //    return lstModels.ToList();
+                    //}
+                    //else
+                    //{
+                    //    bool centralizeStatus;
+                    //    var centralUpdate = CallCentralized.Get<List<BE.Label>>(EnumAPIParam.Label, "GetAllLabelsForUB", out centralizeStatus);
+                    //    if (centralizeStatus)
+                    //    {
+                    //        return centralUpdate;
+                    //    }
+                    //    return lstModels.ToList();
+                    //}
                 }
                 else
                 {
