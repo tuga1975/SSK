@@ -31,11 +31,23 @@ public static class CSCallJS
 
     public static void InvokeScript(this WebBrowser web, string function,params object[] pram)
     {
-        web.Invoke((MethodInvoker)(() =>
+        try
         {
-            web.Document.InvokeScript(function, pram);
-        }));
-        
+            web.Invoke((MethodInvoker)(() =>
+          {
+              if (web.Document!=null)
+              {
+                  var doc = web.Document;
+                  web.Document.InvokeScript(function, pram);
+              }
+              
+          }));
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
     }
     
     public static void PushNoti(this WebBrowser web, int count)

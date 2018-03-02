@@ -1,5 +1,5 @@
 ﻿<style>
-    .formWrapper {
+    /*.formWrapper {
         display: block;
         padding: 10px;
     }
@@ -21,36 +21,42 @@
     #UBlabel,
     #UBlabel th {
         text-align: center;
-    }
+    }*/
 </style>
-<div class="formWrapper">
-    <span class="formHeader"><b>UB Labels</b></span>
-    <div class="form-inline formEntries">
-        <select class="form-control" id="pageSize">
-            <option>10</option>
-            <option>2</option>
-            <option>3</option>
-        </select>
-        <div style="display:inline-block;">Entries</div>
+<div class="table-wrapper formWrapper">
+    <div class="tab-header">
+        <span class="formHeader"><b>Manual Printing of UB Labels</b></span>
     </div>
-</div>
-<table id="UBlabel" data-click-to-select="true">
-    <thead>
-        <tr>
-            <th data-field="state" data-checkbox="true" class="col-xs-1">Select</th>
-            <th data-field="NRIC" data-sortable="true" class="col-xs-3">NRIC</th>
-            <th data-field="Name" data-sortable="true" class="col-xs-6">Name</th>
-            <th data-field="LastStation" class="col-xs-2">Last Station</th>
-        </tr>
-    </thead>
-</table>
-<br />
-<div id="PrintUBlabel" class="text-right">
-    <button id="PrintUBbutton" class="btn btn-default">Print</button>
+    <div class="tab-content">
+        <div class="form-inline formEntries float-right">
+            <div class="entries">Display </div>
+            <select class="form-control" id="pageSize">
+                <option>10</option>
+                <option>25</option>
+                <option>50</option>
+                <option>100</option>
+            </select>
+            <div class="entries"> entries per page</div>
+        </div>
+        <table id="UBlabel" data-click-to-select="true" class="table">
+            <thead>
+                <tr>
+                    <th data-field="state" data-checkbox="true" class="col-xs-1">Select</th>
+                    <th data-field="NRIC" data-sortable="true" class="col-xs-3">NRIC</th>
+                    <th data-field="Name" data-sortable="true" class="col-xs-6">Name</th>
+                    <th data-field="LastStation" class="col-xs-2">Last Station</th>
+                </tr>
+            </thead>
+        </table>
+        <br />
+        <div id="PrintUBlabel" class="text-right">
+            <button id="PrintUBbutton" class="btn btn-default">Print</button>
+        </div>
+    </div>
 </div>
 
 <script type="text/javascript">
-       
+
 
     var dataSource = [];
 
@@ -92,7 +98,7 @@
             pageSize = $("#pageSize option:selected").text();
             $('#UBlabel').bootstrapTable('refreshOptions', {
                 pagination: true,
-                search: true,                
+                search: true,
                 pageSize: pageSize
             });
         });
@@ -132,5 +138,5 @@
         $("#menu .menu-item").removeClass("active");
         $("#menu [item-menu].active").parent().addClass("active");
     })
-    
+
 </script>

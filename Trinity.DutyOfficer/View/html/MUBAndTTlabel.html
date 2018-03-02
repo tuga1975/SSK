@@ -1,4 +1,4 @@
-﻿<style>
+﻿<!--<style>
     .formWrapper {
         display: block;
         padding: 10px;
@@ -26,8 +26,8 @@
     #MUBAndTTlabel th {
         text-align: center;
     }
-</style>
-<div class="formWrapper">
+</style>-->
+<!--<div class="formWrapper">
     <span class="formHeader"><b>MUB / TT Label</b></span>
     <div class="form-inline formEntries">
         <select class="form-control" id="pageSize">
@@ -37,26 +37,64 @@
         </select>
         <div style="display:inline-block;">entries</div>
     </div>
-</div>
-<table id="MUBAndTTlabel">
+</div>-->
+<!--<table id="MUBAndTTlabel">
     <thead>
         <tr>
             <th data-field="IsMUB" data-formatter="cbFormatter" class="col-xs-1" id="PrintMUB">Print MUB</th>
             <th data-field="IsTT" data-formatter="cbFormatter" class="col-xs-1" id="PrintTT">Print TT</th>
             <th data-field="NRIC" data-sortable="true" class="col-xs-3">NRIC</th>
             <th data-field="Name" data-sortable="true" class="col-xs-5">Name</th>
-            <th data-field="LastStation" class="col-xs-2">Last Station</th>
+            <th data-field="LastStation" class="col-xs-2">Last Station</th>-->
             <!--<th data-field="UserId" class="hidden"></th>-->
-        </tr>
+        <!--</tr>
     </thead>
 </table>
 <div class="alert alert-success" id="eventsResult">
 </div>
-<br />
-<div id="PrintMUBAndTTlabel" class="text-right">
+<br />-->
+<!--<div id="PrintMUBAndTTlabel" class="text-right">
     <button id="PrintMUBAndTTbutton" class="btn btn-default">Print</button>
 </div>
-<ul id="output"></ul>
+<ul id="output"></ul>-->
+
+<div class="table-wrapper formWrapper">
+    <div class="tab-header">
+        <span class="formHeader"><b>MUB / TT Label</b></span>
+    </div>
+    <div class="tab-content">
+        <div class="form-inline formEntries float-right">
+            <div class="entries">Display </div>
+            <select class="form-control" id="pageSize">
+                <option>10</option>
+                <option>25</option>
+                <option>50</option>
+                <option>100</option>
+            </select>
+            <div class="entries"> entries per page</div>
+        </div>
+        <table id="MUBAndTTlabel" class="table">
+            <thead>
+                <tr>
+                    <th data-field="IsMUB" data-formatter="cbFormatter" class="col-xs-1" id="PrintMUB">Print MUB</th>
+                    <th data-field="IsTT" data-formatter="cbFormatter" class="col-xs-1" id="PrintTT">Print TT</th>
+                    <th data-field="NRIC" data-sortable="true" class="col-xs-3">NRIC</th>
+                    <th data-field="Name" data-sortable="true" class="col-xs-5">Name</th>
+                    <th data-field="LastStation" class="col-xs-2">Last Station</th>
+                    <!--<th data-field="UserId" class="hidden"></th>-->
+                </tr>
+            </thead>
+        </table>
+        <div class="alert alert-success" id="eventsResult">
+        </div>
+        <br />
+        <div id="PrintMUBAndTTlabel" class="text-right">
+            <button id="PrintMUBAndTTbutton" class="btn btn-default">Print</button>
+        </div>
+        <ul id="output"></ul>
+        <br />
+    </div>
+</div>
 
 <script type="text/javascript">
 

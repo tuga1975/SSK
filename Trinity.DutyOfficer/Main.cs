@@ -32,6 +32,11 @@ namespace DutyOfficer
             InitializeComponent();
 
             APIUtils.Start();
+            //Notification
+            Trinity.SignalR.Client.SignalR.Instance.Event_DeviceStatusUpdate += Instance_Event_DeviceStatusUpdate;
+            Trinity.SignalR.Client.SignalR.Instance.Event_MessageTo += Instance_Event_MessageTo;
+            Trinity.SignalR.Client.SignalR.Instance.Event_AppDisconnect += Instance_Event_AppDisconnect;
+            Trinity.SignalR.Client.SignalR.Instance.Event_QueueFinished += Instance_Event_QueueFinished;
 
             // setup variables
             _smartCardFailed = 0;
@@ -58,6 +63,71 @@ namespace DutyOfficer
             LayerWeb.Url = new Uri(String.Format("file:///{0}/View/html/Layout.html", CSCallJS.curDir));
             LayerWeb.ObjectForScripting = _jsCallCS;
 
+        }
+
+        private void Instance_Event_AppDisconnect(string Station)
+        {
+            new DAL_DeviceStatus().RemoveDevice(Station);
+            _jsCallCS.LoadStationColorDevice();
+        }
+
+        private void Instance_Event_MessageTo(string NotificationID, string UserId, string Subject, string Content, string notificationType, string Station)
+        {
+            string dutiOfficerId = ((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId;
+            if (dutiOfficerId != null && dutiOfficerId != "")
+            {
+                Trinity.BE.Notification notification = new Trinity.BE.Notification();
+                notification.Subject = Subject;
+                notification.ToUserId = UserId;
+                notification.Content = Content;
+                notification.Source = Station;
+                notification.Type = notificationType;
+                notification.Datetime = DateTime.Now;
+                object result = JsonConvert.SerializeObject(notification, Formatting.Indented,
+                new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
+                Lib.LayerWeb.Invoke((MethodInvoker)(() =>
+                {
+                    string activeTab = Lib.LayerWeb.Document.InvokeScript("getActiveTab").ToString();
+                    if (activeTab != "Alerts")
+                    {
+                        Lib.LayerWeb.InvokeScript("getRealtimeNotificationServer", result);
+                    }
+                    else
+                    {
+                        Lib.LayerWeb.InvokeScript("getNotificationInCurrentTab", result);
+                    }
+                }));
+            }
+        }
+
+        private void Instance_Event_DeviceStatusUpdate(int deviceId, EnumDeviceStatuses[] deviceStatuses, string station)
+        {
+            DAL_DeviceStatus device = new DAL_DeviceStatus();
+
+            if (station == EnumStations.SSA)
+            {
+                JSCallCS._StationColorDevice.SSAColor = device.CheckStatusDevicesStation(station) ? EnumColors.Green : EnumColors.Red;
+            }
+            if (station == EnumStations.SSK)
+            {
+                JSCallCS._StationColorDevice.SSKColor = device.CheckStatusDevicesStation(station) ? EnumColors.Green : EnumColors.Red;
+            }
+            if (station == EnumStations.ESP)
+            {
+                JSCallCS._StationColorDevice.ESPColor = device.CheckStatusDevicesStation(station) ? EnumColors.Green : EnumColors.Red;
+            }
+            if (station == EnumStations.UHP)
+            {
+                JSCallCS._StationColorDevice.UHPColor = device.CheckStatusDevicesStation(station) ? EnumColors.Green : EnumColors.Red;
+            }
+            
+            _jsCallCS.LoadStationColorDevice();
+        }
+
+        private void Instance_Event_QueueFinished(Trinity.BE.Queue queue)
+        {
+            // Refresh data queue
+            LayerWeb.InvokeScript("reloadDataQueues");
         }
 
         private void Fingerprint_OnDeviceDisconnected()
@@ -129,7 +199,7 @@ namespace DutyOfficer
 
                 Thread.Sleep(1000);
 
-                APIUtils.SignalR.UserLogined(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId);
+                Trinity.SignalR.Client.SignalR.Instance.UserLogined(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId);
                 NavigateTo(NavigatorEnums.Queue);
             }
             else
@@ -318,14 +388,14 @@ namespace DutyOfficer
             //session.IsFingerprintAuthenticated = true;
 
             //NavigateTo(NavigatorEnums.Queue);
-            //APIUtils.SignalR.UserLogined(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId);
+            //Trinity.SignalR.Client.SignalR.Instance.UserLogined(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId);
         }
 
         private void EventCenter_OnNewEvent(object sender, EventInfo e)
         {
             if (e.Name == EventNames.LOGIN_SUCCEEDED)
             {
-                APIUtils.SignalR.UserLogined(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId);
+                Trinity.SignalR.Client.SignalR.Instance.UserLogined(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId);
                 NavigateTo(NavigatorEnums.Queue);
             }
             else if (e.Name.Equals(EventNames.LOGIN_FAILED))

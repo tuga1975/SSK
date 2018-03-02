@@ -44,5 +44,7 @@ namespace Trinity.BE
         public string Category { get; set; }
 
         public Nullable<Guid> AbsenceReporting_ID { get; set; }
+
+        public Nullable<System.TimeSpan> ReportTimeSpan { get; set; }
     }
 }

@@ -340,12 +340,61 @@ namespace Trinity.DAL
             }
         }
 
+        public int CountApptmtHasUseByTimeslot(string timeslotID)
+        {
+            try
+            {
+                if (EnumAppConfig.IsLocal)
+                {
+                    var data = _localUnitOfWork.DataContext.Appointments.Count(d => !string.IsNullOrEmpty(d.Timeslot_ID) && d.Timeslot_ID == timeslotID) + _localUnitOfWork.DataContext.Queues.Count(d => d.Timeslot_ID == timeslotID && (!d.Appointment_ID.HasValue || (d.Appointment_ID.HasValue && !string.IsNullOrEmpty(d.Appointment.Timeslot_ID) && d.Appointment.Timeslot_ID != timeslotID)));
+                    
+                    return data;
+                }
+                else
+                {
+                    var data = _centralizedUnitOfWork.DataContext.Appointments.Count(d => !string.IsNullOrEmpty(d.Timeslot_ID) && d.Timeslot_ID == timeslotID) + _localUnitOfWork.DataContext.Queues.Count(d => d.Timeslot_ID == timeslotID && (!d.Appointment_ID.HasValue || (d.Appointment_ID.HasValue && !string.IsNullOrEmpty(d.Appointment.Timeslot_ID) && d.Appointment.Timeslot_ID != timeslotID)));
+                    
+                    return data;
+                }
+
+            }
+            catch (Exception)
+            {
+
+                return 0;
+            }
+        }
+
         public int CountApptmtBookedByTimeslot(string timeslotID)
         {
             try
             {
                 var data = _localUnitOfWork.DataContext.Appointments.Count(d => !string.IsNullOrEmpty(d.Timeslot_ID) && d.Timeslot_ID == timeslotID) + _localUnitOfWork.DataContext.Queues.Count(d => d.Timeslot_ID == timeslotID && (!d.Appointment_ID.HasValue || (d.Appointment_ID.HasValue && !string.IsNullOrEmpty(d.Appointment.Timeslot_ID) && d.Appointment.Timeslot_ID != timeslotID)));
                 return data;
+            }
+                if (EnumAppConfig.IsLocal)
+                {
+                    var data = _localUnitOfWork.DataContext.Appointments.Count(a => a.Timeslot_ID == timeslotID && a.Status == (int)EnumAppointmentStatuses.Booked);
+
+                    return data;
+                    // if (!EnumAppConfig.ByPassCentralizedDB)
+                    //{
+                    //    bool centralizeStatus;
+                    //    var centralData = CallCentralized.Get<int>(EnumAPIParam.Appointment, EnumAPIParam.CountBookedByTimeslot, out centralizeStatus);
+                    //    if (centralizeStatus)
+                    //    {
+                    //        return centralData;
+                    //    }
+                    //}
+
+                }
+                else
+                {
+                    var data = _centralizedUnitOfWork.DataContext.Appointments.Count(a => a.Timeslot_ID == timeslotID && a.Status == (int)EnumAppointmentStatuses.Booked);
+
+                    return data;
+                }
+
             }
             catch (Exception)
             {
