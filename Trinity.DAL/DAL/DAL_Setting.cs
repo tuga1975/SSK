@@ -1232,6 +1232,19 @@ namespace Trinity.DAL
             var toTime = closeTime;
             List<DBContext.Timeslot> array = new List<Timeslot>();
 
+            // If date is a Holiday or Non-Operational Days, do not gen timeslot
+            List<DateTime> lstHolidays = GetHolidaysAfterDate(date);
+            if (lstHolidays != null && lstHolidays.Count > 0)
+            {
+                foreach(var holiday in lstHolidays)
+                {
+                    if (holiday.Day == date.Day && holiday.Month == date.Month && holiday.Year == date.Year)
+                    {
+                        return array;
+                    }
+                }
+            }
+
             while (fromTime < toTime)
             {
                 var timeSlot = new DBContext.Timeslot();
@@ -1374,6 +1387,18 @@ namespace Trinity.DAL
             catch (Exception e)
             {
                 return null;
+            }
+        }
+
+        private List<DateTime> GetHolidaysAfterDate(DateTime date)
+        {
+            if (EnumAppConfig.IsLocal)
+            {
+                return _localUnitOfWork.DataContext.Holidays.Where(item => item.Holiday1 >= DateTime.Today).Select(h => h.Holiday1).ToList();
+            }
+            else
+            {
+                return _centralizedUnitOfWork.DataContext.Holidays.Where(item => item.Holiday1 >= DateTime.Today).Select(h => h.Holiday1).ToList();
             }
         }
         #endregion
