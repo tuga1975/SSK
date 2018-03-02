@@ -48,8 +48,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Notification\SignalRBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SignalR.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Trinity.BE\Trinity.BE.csproj">
