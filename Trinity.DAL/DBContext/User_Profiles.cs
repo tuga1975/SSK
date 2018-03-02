@@ -56,6 +56,7 @@ namespace Trinity.DAL.DBContext
         public string Race { get; set; }
         public byte[] RightThumb_Photo { get; set; }
         public byte[] LeftThumb_Photo { get; set; }
+        public Nullable<System.Guid> Document_ID { get; set; }
     
         public virtual Address Address { get; set; }
         public virtual Address Address1 { get; set; }
@@ -66,5 +67,6 @@ namespace Trinity.DAL.DBContext
         public virtual ICollection<MsgRecipient> MsgRecipients { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<SentMessage> SentMessages { get; set; }
+        public virtual UploadedDocument UploadedDocument { get; set; }
     }
 }

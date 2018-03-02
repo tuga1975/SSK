@@ -18,24 +18,10 @@ namespace Trinity.DAL
         {
             try
             {
-                // get from localdb
-                if (EnumAppConfig.IsLocal)
-                {
-                    Appointment appointment = _localUnitOfWork.DataContext.Appointments.Where(item => item.Date >= DateTime.Today && item.UserId == userId)
-                        .OrderBy(item => item.Date).FirstOrDefault();
+                Appointment appointment = _localUnitOfWork.DataContext.Appointments.Where(item => item.Date >= DateTime.Today && item.UserId == userId)
+                    .OrderBy(item => item.Date).FirstOrDefault();
 
-                    // if local have no data, get data from centralizeddb and update localdb
-                    if (appointment == null && !EnumAppConfig.ByPassCentralizedDB)
-                    {
-
-                    }
-
-                    return appointment;
-                }
-                else
-                {
-                    return null;
-                }
+                return appointment;
             }
             catch (Exception ex)
             {
@@ -60,7 +46,7 @@ namespace Trinity.DAL
                             Timeslot_ID = item.Timeslot_ID,
                             Name = item.Membership_Users.Name,
                             NRIC = item.Membership_Users.NRIC,
-                            Status = (EnumAppointmentStatuses)item.Status,
+                            Status = item.Status,
                             ReportTime = item.ReportTime,
                             StartTime = item.Timeslot.StartTime,
                             EndTime = item.Timeslot.EndTime,
@@ -112,7 +98,7 @@ namespace Trinity.DAL
                 Timeslot_ID = appointment.Timeslot_ID,
                 Name = appointment.Membership_Users.Name,
                 NRIC = appointment.Membership_Users.NRIC,
-                Status = (EnumAppointmentStatuses)appointment.Status,
+                Status = appointment.Status,
                 ReportTime = appointment.ReportTime,
                 StartTime = appointment.Timeslot.StartTime,
                 EndTime = appointment.Timeslot.EndTime,
@@ -187,7 +173,7 @@ namespace Trinity.DAL
             }
 
 
-            appointment.Status = (int)EnumAppointmentStatuses.Booked;
+            appointment.Status = EnumAppointmentStatuses.Booked;
             try
             {
                 _localUnitOfWork.GetRepository<Appointment>().Update(appointment);
@@ -232,7 +218,7 @@ namespace Trinity.DAL
             {
                 var appointment = GetAppointmentByID(appointmentId);
                 appointment.AbsenceReporting_ID = absenceId;
-                appointment.Status = (int)EnumAppointmentStatuses.Reported;
+                appointment.Status = EnumAppointmentStatuses.Absent;
 
                 _localUnitOfWork.GetRepository<Appointment>().Update(appointment);
                 _localUnitOfWork.Save();
@@ -293,13 +279,13 @@ namespace Trinity.DAL
             try
             {
                 var data = _localUnitOfWork.DataContext.Appointments.Include("Timeslot").Include("Membership_Users")
-                            .Where(d => !string.IsNullOrEmpty(d.Timeslot_ID) && (d.Status == (int)EnumAppointmentStatuses.Booked || d.Status == (int)EnumAppointmentStatuses.Reported || d.AbsenceReporting_ID != null))
+                            .Where(d => !string.IsNullOrEmpty(d.Timeslot_ID) && (d.Status == EnumAppointmentStatuses.Booked || d.Status == EnumAppointmentStatuses.Reported || d.Status == EnumAppointmentStatuses.Absent))
                             .OrderBy(d => d.Timeslot.StartTime).Select(d => new BE.Appointment()
                             {
                                 NRIC = d.Membership_Users.NRIC,
                                 Name = d.Membership_Users.Name,
                                 ReportTime = d.ReportTime,
-                                Status = (EnumAppointmentStatuses)d.Status,
+                                Status = d.Status,
                                 AppointmentDate = d.Date,
                                 StartTime = d.Timeslot.StartTime,
                                 EndTime = d.Timeslot.EndTime,
@@ -317,7 +303,7 @@ namespace Trinity.DAL
         {
             try
             {
-                var data = _localUnitOfWork.DataContext.Appointments.Include("Timeslot").Where(d => !string.IsNullOrEmpty(d.Timeslot_ID) && (d.Status == (int)EnumAppointmentStatuses.Booked || d.Status == (int)EnumAppointmentStatuses.Reported || d.AbsenceReporting_ID != null))
+                var data = _localUnitOfWork.DataContext.Appointments.Include("Timeslot").Where(d => !string.IsNullOrEmpty(d.Timeslot_ID) && (d.Status == EnumAppointmentStatuses.Booked || d.Status == EnumAppointmentStatuses.Reported || d.Status == EnumAppointmentStatuses.Absent))
                     .Select(d => new
                     {
                         Timeslot_ID = d.Timeslot_ID,
@@ -347,13 +333,13 @@ namespace Trinity.DAL
                 if (EnumAppConfig.IsLocal)
                 {
                     var data = _localUnitOfWork.DataContext.Appointments.Count(d => !string.IsNullOrEmpty(d.Timeslot_ID) && d.Timeslot_ID == timeslotID) + _localUnitOfWork.DataContext.Queues.Count(d => d.Timeslot_ID == timeslotID && (!d.Appointment_ID.HasValue || (d.Appointment_ID.HasValue && !string.IsNullOrEmpty(d.Appointment.Timeslot_ID) && d.Appointment.Timeslot_ID != timeslotID)));
-                    
+
                     return data;
                 }
                 else
                 {
                     var data = _centralizedUnitOfWork.DataContext.Appointments.Count(d => !string.IsNullOrEmpty(d.Timeslot_ID) && d.Timeslot_ID == timeslotID) + _localUnitOfWork.DataContext.Queues.Count(d => d.Timeslot_ID == timeslotID && (!d.Appointment_ID.HasValue || (d.Appointment_ID.HasValue && !string.IsNullOrEmpty(d.Appointment.Timeslot_ID) && d.Appointment.Timeslot_ID != timeslotID)));
-                    
+
                     return data;
                 }
 
@@ -372,30 +358,6 @@ namespace Trinity.DAL
                 var data = _localUnitOfWork.DataContext.Appointments.Count(d => !string.IsNullOrEmpty(d.Timeslot_ID) && d.Timeslot_ID == timeslotID) + _localUnitOfWork.DataContext.Queues.Count(d => d.Timeslot_ID == timeslotID && (!d.Appointment_ID.HasValue || (d.Appointment_ID.HasValue && !string.IsNullOrEmpty(d.Appointment.Timeslot_ID) && d.Appointment.Timeslot_ID != timeslotID)));
                 return data;
             }
-                if (EnumAppConfig.IsLocal)
-                {
-                    var data = _localUnitOfWork.DataContext.Appointments.Count(a => a.Timeslot_ID == timeslotID && a.Status == (int)EnumAppointmentStatuses.Booked);
-
-                    return data;
-                    // if (!EnumAppConfig.ByPassCentralizedDB)
-                    //{
-                    //    bool centralizeStatus;
-                    //    var centralData = CallCentralized.Get<int>(EnumAPIParam.Appointment, EnumAPIParam.CountBookedByTimeslot, out centralizeStatus);
-                    //    if (centralizeStatus)
-                    //    {
-                    //        return centralData;
-                    //    }
-                    //}
-
-                }
-                else
-                {
-                    var data = _centralizedUnitOfWork.DataContext.Appointments.Count(a => a.Timeslot_ID == timeslotID && a.Status == (int)EnumAppointmentStatuses.Booked);
-
-                    return data;
-                }
-
-            }
             catch (Exception)
             {
                 return 0;
@@ -406,7 +368,7 @@ namespace Trinity.DAL
         {
             try
             {
-                var data = _localUnitOfWork.DataContext.Appointments.Where(a => a.Timeslot_ID == timeslotID && a.Status == (int)EnumAppointmentStatuses.Reported);
+                var data = _localUnitOfWork.DataContext.Appointments.Where(a => a.Timeslot_ID == timeslotID && a.Status == EnumAppointmentStatuses.Reported);
                 if (data != null)
                 {
                     return data.Count();
@@ -478,7 +440,7 @@ namespace Trinity.DAL
                         UserId = item,
                         ChangedCount = 0,
                         Date = date,
-                        Status = (int)EnumAppointmentStatuses.Pending
+                        Status = EnumAppointmentStatuses.Pending
                     });
                 }
 
@@ -526,19 +488,12 @@ namespace Trinity.DAL
                 return null;
             }
         }
-        #endregion
-
-        /// <summary>
-        /// UpdateReason for absence appointment 
-        /// </summary>
-        /// <param name="appointmentId"></param>
-        /// <param name="absenceId"></param>
-        /// <returns></returns>
 
         private Timeslot GetTimeslotByAppointment(Appointment appointment)
         {
             var data = _localUnitOfWork.DataContext.Timeslots.FirstOrDefault(t => t.Timeslot_ID == appointment.Timeslot_ID);
             return data;
         }
+        #endregion
     }
 }

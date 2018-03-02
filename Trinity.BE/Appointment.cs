@@ -28,7 +28,7 @@ namespace Trinity.BE
         public Nullable<short> ChangedCount { get; set; }
 
         [DataMember]
-        public EnumAppointmentStatuses Status { get; set; }
+        public string Status { get; set; }
 
         [DataMember]
         public string Timeslot_ID { get; set; }
