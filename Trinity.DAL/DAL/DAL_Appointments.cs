@@ -463,21 +463,7 @@ namespace Trinity.DAL
             {
                 if (EnumAppConfig.IsLocal)
                 {
-                    var data = _localUnitOfWork.DataContext.Appointments.Where(d => d.UserId == UserID && d.Date < DateTime.Today && !d.Queues.Any() && d.AbsenceReporting_ID == null);
-                    if (data != null)
-                    {
-                        return data.Count();
-                    }
-                    else
-                    {
-                        bool centralizeStatus;
-                        var centralData = CallCentralized.Get<int>(EnumAPIParam.Appointment, EnumAPIParam.CountAbsenceByUserId, out centralizeStatus, "userId=" + UserID);
-                        if (centralizeStatus)
-                        {
-                            return centralData;
-                        }
-                        return 0;
-                    }
+                    return _localUnitOfWork.DataContext.Appointments.Count(d => d.UserId == UserID && d.AbsenceReporting_ID != null && d.AbsenceReporting.ReportingDate == null);
                 }
                 else
                 {

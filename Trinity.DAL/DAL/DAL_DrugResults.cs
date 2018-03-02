@@ -184,7 +184,7 @@ namespace Trinity.DAL
             }
         }
 
-        public DrugResult UpdateDrugSeal(string userId,bool COCA, bool BARB, bool LSD, bool METH, bool MTQL, bool PCP, bool KET, bool BUPRE, bool CAT, bool PPZ, bool NPS)
+        public DrugResult UpdateDrugSeal(string userId,bool COCA, bool BARB, bool LSD, bool METH, bool MTQL, bool PCP, bool KET, bool BUPRE, bool CAT, bool PPZ, bool NPS, string updatedBy)
         {
             try
             {
@@ -208,6 +208,7 @@ namespace Trinity.DAL
                         drug.CAT = CAT;
                         drug.PPZ = PPZ;
                         drug.NPS = NPS;
+                        drug.UploadedBy = updatedBy;
 
                         localRepo.Update(drug);
                         _localUnitOfWork.Save();                                               
@@ -222,7 +223,7 @@ namespace Trinity.DAL
                         bool centralizeStatus;
                         var centralData = CallCentralized.Post<DrugResult>(EnumAPIParam.DrugResult, "UpdateDrugSeal", out centralizeStatus, "userId=" + userId, "COCA=" + COCA.ToString(),
                                             "BARB=" + BARB.ToString(), "LSD=" + LSD.ToString(), "METH=" + METH.ToString(), "MTQL=" + MTQL.ToString(), "PCP=" + PCP.ToString(), "KET=" + KET.ToString(),
-                                            "BUPRE=" + BUPRE.ToString(), "CAT=" + CAT.ToString(), "PPZ=" + PPZ.ToString(), "NPS=" + NPS.ToString());
+                                            "BUPRE=" + BUPRE.ToString(), "CAT=" + CAT.ToString(), "PPZ=" + PPZ.ToString(), "NPS=" + NPS.ToString(), "updatedBy=" + updatedBy);
                         if (centralizeStatus)
                         {
                             return centralData;
@@ -251,6 +252,7 @@ namespace Trinity.DAL
                         drug.CAT = CAT;
                         drug.PPZ = PPZ;
                         drug.NPS = NPS;
+                        drug.UploadedBy = updatedBy;
 
                         centralRepo.Update(drug);
                         _centralizedUnitOfWork.Save();
@@ -274,8 +276,9 @@ namespace Trinity.DAL
                     return "NEG";
                 else
                 {
-                    if (drug.AMPH.Value || drug.BARB.Value || drug.BENZ.Value || drug.BUPRE.Value || drug.CAT.Value || drug.COCA.Value || drug.KET.Value || drug.LSD.Value 
-                        || drug.METH.Value || drug.MTQL.Value || drug.NPS.Value || drug.OPI.Value || drug.PCP.Value || drug.PPZ.Value || drug.THC.Value)
+                    if ((drug.AMPH.HasValue && drug.AMPH.Value) || (drug.BARB.HasValue && drug.BARB.Value) || (drug.BENZ.HasValue && drug.BENZ.Value) || (drug.BUPRE.HasValue && drug.BUPRE.Value) || (drug.CAT.HasValue && drug.CAT.Value) 
+                        || (drug.COCA.HasValue && drug.COCA.Value) || (drug.KET.HasValue && drug.KET.Value) || (drug.LSD.HasValue && drug.LSD.Value) || (drug.METH.HasValue && drug.METH.Value) || (drug.MTQL.HasValue && drug.MTQL.Value) 
+                        || (drug.NPS.HasValue && drug.NPS.Value) || (drug.OPI.HasValue) && drug.OPI.Value || (drug.PCP.HasValue && drug.PCP.Value) || (drug.PPZ.HasValue && drug.PPZ.Value) || (drug.THC.HasValue && drug.THC.Value))
                     {
                         return "POS";
                     }
@@ -317,15 +320,20 @@ namespace Trinity.DAL
 
                     if (drug == null)
                     {
+                        Trinity.DAL.DBContext.Label dbLabel = new Trinity.DAL.DAL_Labels().GetByDateAndUserId(DateTime.Now.Date, userId);
                         drug = new DrugResult();
+                        drug.DrugResultsID = NRIC;
                         drug.NRIC = NRIC;
                         drug.IsSealed = seal;
                         drug.UploadedBy = uploadedBy;
                         drug.UploadedDate = DateTime.Now;
                         drug.SealedOrDiscardedBy = sealedOrDiscardedBy;
                         drug.SealedOrDiscardedDate = DateTime.Now;
-
-                        localRepo.Update(drug);
+                        if (dbLabel != null)
+                        {
+                            drug.markingnumber = dbLabel.MarkingNo;
+                        }
+                        localRepo.Add(drug);
                     }
                     else
                     {
@@ -374,7 +382,7 @@ namespace Trinity.DAL
                         drug.SealedOrDiscardedBy = sealedOrDiscardedBy;
                         drug.SealedOrDiscardedDate = DateTime.Now;
 
-                        centralRepo.Update(drug);
+                        centralRepo.Add(drug);
                     }
                     else
                     {

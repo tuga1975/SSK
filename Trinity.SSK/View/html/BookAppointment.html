@@ -161,6 +161,7 @@
             $(this).parent('[header-tab]').parent('[parent-tab]').find('[content-tab] [item]').removeAttr('active').eq(index).attr('active', '');
         }).eq(0).click();
 
+        var $oldActive = $('[active="true"]');
         $('[item-reason]').click(function () {
             $('[item-reason]').attr('active', 'false');
             $(this).attr('active', 'true');
@@ -168,9 +169,13 @@
 
         $('[btn-save-bookappointment]').click(function () {
             var timeslotNowId = $('[item-reason][active="true"]').length > 0 ? $('[item-reason][active="true"]').attr('timeslot_ID') : null;
-            if (timeslotNowId == null || timeslotNowId == timeslotOldId) {
+            if (timeslotNowId == null ) {
                 alert('Please choose the timeslot');
-            } else {
+            }
+            else if (timeslotNowId == timeslotOldId) {
+                alert('You have already chosen this timeslot');
+            }
+            else {
                 var _this = $('[item-reason][active="true"]').eq(0);
                 var timeslot_ID = _this.attr('timeslot_ID');
                 var startTime = _this.attr('start');
@@ -183,6 +188,9 @@
                     else {
                         if (model[0].ChangedCount >= 3) {
                             alert('You have exceeded the number of times allowed for time slot change. Please keep to your timeslot ' + startTime + ' on ' + model[0].GetDateTxt + '. Otherwise, please contact your case officer.');
+                            $('[item-reason]').attr('active', 'false');
+                            $oldActive.attr('active', 'true');
+                           
                         } else {
                             var re = confirm('You have selected the time slot\n' + startTime + ' on ' + model[0].GetDateTxt + '\nConfirm time slot?', 'Warning');
                             if (re == true) {
@@ -190,6 +198,7 @@
                                     if (isUpdated) {
                                         model[0].ChangedCount += 1;
                                         $('[app-time]').text(startTime);
+                                        $oldActive = $('[active="true"]');
                                     }
                                     else {
                                         alert("You have already queued!\n The timeslot cannot be changed.");
@@ -197,6 +206,7 @@
                                 });
                             }
                         }
+                        //api.server.BookAppopintment();
                     }
                 });
             }

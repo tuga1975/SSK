@@ -246,10 +246,10 @@ namespace Trinity.DAL
                     //    UserId = d.UserId
                     //});
 
-                    var lstModels = from l in _localUnitOfWork.DataContext.Labels
-                                    join u in _localUnitOfWork.DataContext.Membership_Users on l.UserId equals u.UserId
-                                    join q in _localUnitOfWork.DataContext.Queues on l.Queue_ID equals q.Queue_ID
-                                    join t in _localUnitOfWork.DataContext.Timeslots on q.Timeslot_ID equals t.Timeslot_ID
+                    var lstModels = from l in _centralizedUnitOfWork.DataContext.Labels
+                                    join u in _centralizedUnitOfWork.DataContext.Membership_Users on l.UserId equals u.UserId
+                                    join q in _centralizedUnitOfWork.DataContext.Queues on l.Queue_ID equals q.Queue_ID
+                                    join t in _centralizedUnitOfWork.DataContext.Timeslots on q.Timeslot_ID equals t.Timeslot_ID
                                     where (l.Label_Type.Equals(EnumLabelType.MUB) || l.Label_Type.Equals(EnumLabelType.TT))
                                     orderby System.Data.Entity.DbFunctions.TruncateTime(l.Date) descending, t.StartTime descending, l.PrintCount
                                     select new BE.Label()
@@ -280,14 +280,25 @@ namespace Trinity.DAL
                 if (EnumAppConfig.IsLocal)
                 {
                     var lstModels = _localUnitOfWork.DataContext.Labels.Include("Membership_Users")
-                    .Where(l => l.Label_Type.Equals(EnumLabelType.UB))
-                    .Select(d => new BE.Label()
-                    {
-                        NRIC = d.Membership_Users.NRIC,
-                        Name = d.Membership_Users.Name,
-                        LastStation = d.LastStation,
-                        UserId = d.UserId
-                    });
+                        .Join(_localUnitOfWork.DataContext.DrugResults,
+                                l => l.Membership_Users.NRIC,
+                                d => d.NRIC,
+                                (l, d) => new BE.Label()
+                                {
+                                    NRIC = l.Membership_Users.NRIC,
+                                    Name = l.Membership_Users.Name,
+                                    LastStation = l.LastStation,
+                                    UserId = l.UserId,
+                                    IsSealed = d.IsSealed
+                                })
+                    .Where(d => d.IsSealed == true);
+                    //.Select(d => new BE.Label()
+                    //{
+                    //    NRIC = d.Membership_Users.NRIC,
+                    //    Name = d.Membership_Users.Name,
+                    //    LastStation = d.LastStation,
+                    //    UserId = d.UserId
+                    //});
 
                     if ((lstModels != null && lstModels.Count() > 0) || EnumAppConfig.ByPassCentralizedDB)
                     {

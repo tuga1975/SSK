@@ -262,11 +262,11 @@ namespace DutyOfficer
             }
 
 
-                // set current page
-                _currentPage = navigatorEnum;
+            // set current page
+            _currentPage = navigatorEnum;
 
             // display options in Authentication_SmartCard page
-            if (_displayLoginButtonStatus && _currentPage == NavigatorEnums.Authentication_SmartCard)
+            if (_currentPage == NavigatorEnums.Authentication_SmartCard)
             {
                 _displayLoginButtonStatus = false;
                 CSCallJS.DisplayLogoutButton(this.LayerWeb, _displayLoginButtonStatus);

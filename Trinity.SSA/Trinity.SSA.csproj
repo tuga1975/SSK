@@ -189,6 +189,7 @@
   <ItemGroup>
     <Content Include="Libs\ftrSDKHelper13.dll" />
     <Content Include="Libs\pcsc-sharp.dll" />
+    <Content Include="View\html\Authentication\FacialRecognition.html" />
     <Content Include="View\html\Authentication\FingerPrint.html" />
     <Content Include="View\html\Authentication\Key.png" />
     <Content Include="View\html\Authentication\ManualLogin.html" />
@@ -204,6 +205,7 @@
     <Content Include="View\html\QueueNumber.html" />
     <Content Include="View\html\LoadingPopup.html" />
     <Content Include="View\html\SuperviseeParticulars.html" />
+    <Content Include="View\img\camera.jpg" />
     <Content Include="View\img\central_narco_logo.png" />
     <Content Include="View\img\loading.gif" />
     <Content Include="View\img\Logo.png" />

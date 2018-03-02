@@ -182,7 +182,7 @@
         $('#holidayTable').bootstrapTable({
             pagination: true,
             pageSize: 5,
-            pageList: [5, 10, 20, 40, 60, 80, 100],
+            pageList: [5, 10, 25, 50, 100],
             columns: [{
                 field: 'Holiday1',
                 title: 'Date',
@@ -226,7 +226,7 @@
         $('#changeHistoryTable').bootstrapTable({
             pagination: true,
             pageSize: 5,
-            pageList: [5, 10, 20, 40, 60, 80, 100],
+            pageList: [5, 10, 25, 50, 100],
             columns: [{
                 field: 'LastUpdatedDate',
                 title: 'Date',
@@ -312,7 +312,8 @@
     $("#deleteBtn").click(function (e) {
 
         if (holidaySelected) {
-            var re = confirm('Are you sure?', 'Warning');
+            var messageConfirm = 'Are you sure you want to remove ' + formatDate(holidaySelected) + '?';
+            var re = confirm(messageConfirm, 'Warning');
             if (re) {
                 api.server.DeleteHoliday(holidaySelected, function () {
                     api.server.LoadPage('Settings.html');

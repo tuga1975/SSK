@@ -33,13 +33,15 @@
             this.btnReadSmartCardData = new System.Windows.Forms.Button();
             this.btnIdentifyFingerprint = new System.Windows.Forms.Button();
             this.btnStartHealthChecker = new System.Windows.Forms.Button();
+            this.btnTestSerialComm = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnPrintAppointmentDetails
             // 
-            this.btnPrintAppointmentDetails.Location = new System.Drawing.Point(12, 12);
+            this.btnPrintAppointmentDetails.Location = new System.Drawing.Point(16, 15);
+            this.btnPrintAppointmentDetails.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnPrintAppointmentDetails.Name = "btnPrintAppointmentDetails";
-            this.btnPrintAppointmentDetails.Size = new System.Drawing.Size(183, 23);
+            this.btnPrintAppointmentDetails.Size = new System.Drawing.Size(244, 28);
             this.btnPrintAppointmentDetails.TabIndex = 0;
             this.btnPrintAppointmentDetails.Text = "Print Appointment Details";
             this.btnPrintAppointmentDetails.UseVisualStyleBackColor = true;
@@ -47,9 +49,10 @@
             // 
             // btnPrintSuperviseeCard
             // 
-            this.btnPrintSuperviseeCard.Location = new System.Drawing.Point(12, 41);
+            this.btnPrintSuperviseeCard.Location = new System.Drawing.Point(16, 50);
+            this.btnPrintSuperviseeCard.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnPrintSuperviseeCard.Name = "btnPrintSuperviseeCard";
-            this.btnPrintSuperviseeCard.Size = new System.Drawing.Size(183, 23);
+            this.btnPrintSuperviseeCard.Size = new System.Drawing.Size(244, 28);
             this.btnPrintSuperviseeCard.TabIndex = 1;
             this.btnPrintSuperviseeCard.Text = "Print Supervisee Card";
             this.btnPrintSuperviseeCard.UseVisualStyleBackColor = true;
@@ -57,9 +60,10 @@
             // 
             // btnReadSmartCardData
             // 
-            this.btnReadSmartCardData.Location = new System.Drawing.Point(12, 70);
+            this.btnReadSmartCardData.Location = new System.Drawing.Point(16, 86);
+            this.btnReadSmartCardData.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnReadSmartCardData.Name = "btnReadSmartCardData";
-            this.btnReadSmartCardData.Size = new System.Drawing.Size(183, 23);
+            this.btnReadSmartCardData.Size = new System.Drawing.Size(244, 28);
             this.btnReadSmartCardData.TabIndex = 2;
             this.btnReadSmartCardData.Text = "Read Smart Card Data";
             this.btnReadSmartCardData.UseVisualStyleBackColor = true;
@@ -67,9 +71,10 @@
             // 
             // btnIdentifyFingerprint
             // 
-            this.btnIdentifyFingerprint.Location = new System.Drawing.Point(12, 172);
+            this.btnIdentifyFingerprint.Location = new System.Drawing.Point(16, 212);
+            this.btnIdentifyFingerprint.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnIdentifyFingerprint.Name = "btnIdentifyFingerprint";
-            this.btnIdentifyFingerprint.Size = new System.Drawing.Size(183, 23);
+            this.btnIdentifyFingerprint.Size = new System.Drawing.Size(244, 28);
             this.btnIdentifyFingerprint.TabIndex = 3;
             this.btnIdentifyFingerprint.Text = "Identify Fingerprint";
             this.btnIdentifyFingerprint.UseVisualStyleBackColor = true;
@@ -77,24 +82,37 @@
             // 
             // btnStartHealthChecker
             // 
-            this.btnStartHealthChecker.Location = new System.Drawing.Point(267, 12);
+            this.btnStartHealthChecker.Location = new System.Drawing.Point(356, 15);
+            this.btnStartHealthChecker.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnStartHealthChecker.Name = "btnStartHealthChecker";
-            this.btnStartHealthChecker.Size = new System.Drawing.Size(183, 23);
+            this.btnStartHealthChecker.Size = new System.Drawing.Size(244, 28);
             this.btnStartHealthChecker.TabIndex = 4;
             this.btnStartHealthChecker.Text = "Start Health Checker";
             this.btnStartHealthChecker.UseVisualStyleBackColor = true;
             this.btnStartHealthChecker.Click += new System.EventHandler(this.btnStartHealthChecker_Click);
             // 
+            // btnTestSerialComm
+            // 
+            this.btnTestSerialComm.Location = new System.Drawing.Point(356, 51);
+            this.btnTestSerialComm.Name = "btnTestSerialComm";
+            this.btnTestSerialComm.Size = new System.Drawing.Size(244, 23);
+            this.btnTestSerialComm.TabIndex = 5;
+            this.btnTestSerialComm.Text = "Test Serial Communication";
+            this.btnTestSerialComm.UseVisualStyleBackColor = true;
+            this.btnTestSerialComm.Click += new System.EventHandler(this.btnTestSerialComm_Click);
+            // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(971, 581);
+            this.ClientSize = new System.Drawing.Size(1295, 715);
+            this.Controls.Add(this.btnTestSerialComm);
             this.Controls.Add(this.btnStartHealthChecker);
             this.Controls.Add(this.btnIdentifyFingerprint);
             this.Controls.Add(this.btnReadSmartCardData);
             this.Controls.Add(this.btnPrintSuperviseeCard);
             this.Controls.Add(this.btnPrintAppointmentDetails);
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "Form1";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
@@ -109,6 +127,7 @@
         private System.Windows.Forms.Button btnReadSmartCardData;
         private System.Windows.Forms.Button btnIdentifyFingerprint;
         private System.Windows.Forms.Button btnStartHealthChecker;
+        private System.Windows.Forms.Button btnTestSerialComm;
     }
 }
 

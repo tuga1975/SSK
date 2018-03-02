@@ -65,9 +65,9 @@ namespace DutyOfficer
         }
 
         #region Queue
-        public void LoadDrugsTest(string Date, string UserId)
+        public void LoadDrugsTest(string Date, string userId)
         {
-            Trinity.DAL.DBContext.Label dbLabel = new Trinity.DAL.DAL_Labels().GetByDateAndUserId(Convert.ToDateTime(Date).Date, UserId);
+            Trinity.DAL.DBContext.Label dbLabel = new Trinity.DAL.DAL_Labels().GetByDateAndUserId(Convert.ToDateTime(Date).Date, userId);
             if (dbLabel != null)
             {
                 Trinity.DAL.DBContext.DrugResult dbDrugResult = new Trinity.DAL.DAL_DrugResults().GetByMarkingNumber(dbLabel.MarkingNo);
@@ -97,16 +97,22 @@ namespace DutyOfficer
                             PCP = dbDrugResult.PCP,
                             PPZ = dbDrugResult.PPZ
                         },
-                        UserId = UserId
+                        UserId = userId
                     });
                 }
             }
-            this._web.LoadPopupHtml("QueuePopupDrugs.html", null);
+            else
+            {
+                this._web.LoadPopupHtml("QueuePopupDrugs.html", null);
+            }
         }
         public void SaveDrugTest(string UserId, bool COCA, bool BARB, bool LSD, bool METH, bool MTQL, bool PCP, bool KET, bool BUPRE, bool CAT, bool PPZ, bool NPS)
         {
+            Session session = Session.Instance;
+            Trinity.BE.User dutyOfficer = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+
             DAL_DrugResults dalDrug = new DAL_DrugResults();
-            dalDrug.UpdateDrugSeal(UserId, COCA, BARB, LSD, METH, MTQL, PCP, KET, BUPRE, CAT, PPZ, NPS);
+            dalDrug.UpdateDrugSeal(UserId, COCA, BARB, LSD, METH, MTQL, PCP, KET, BUPRE, CAT, PPZ, NPS, dutyOfficer.UserId);
         }
         public object getDataQueue()
         {
