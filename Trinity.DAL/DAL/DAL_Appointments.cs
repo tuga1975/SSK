@@ -279,7 +279,7 @@ namespace Trinity.DAL
             try
             {
                 var data = _localUnitOfWork.DataContext.Appointments.Include("Timeslot").Include("Membership_Users")
-                            .Where(d => !string.IsNullOrEmpty(d.Timeslot_ID) && (d.Status == EnumAppointmentStatuses.Booked || d.Status == EnumAppointmentStatuses.Reported || d.Status == EnumAppointmentStatuses.Absent))
+                            .Where(d => !string.IsNullOrEmpty(d.Timeslot_ID) && (d.Status == EnumAppointmentStatuses.Booked || d.Status == EnumAppointmentStatuses.Reported || d.Status == EnumAppointmentStatuses.Absent || d.Status == EnumAppointmentStatuses.Pending))
                             .OrderBy(d => d.Timeslot.StartTime).Select(d => new BE.Appointment()
                             {
                                 NRIC = d.Membership_Users.NRIC,
@@ -355,7 +355,7 @@ namespace Trinity.DAL
         {
             try
             {
-                var data = _localUnitOfWork.DataContext.Appointments.Count(d => !string.IsNullOrEmpty(d.Timeslot_ID) && d.Timeslot_ID == timeslotID) + _localUnitOfWork.DataContext.Queues.Count(d => d.Timeslot_ID == timeslotID && (!d.Appointment_ID.HasValue || (d.Appointment_ID.HasValue && !string.IsNullOrEmpty(d.Appointment.Timeslot_ID) && d.Appointment.Timeslot_ID != timeslotID)));
+                var data = _localUnitOfWork.DataContext.Appointments.Count(d => !string.IsNullOrEmpty(d.Timeslot_ID) && d.Timeslot_ID == timeslotID && d.Status == EnumAppointmentStatuses.Booked);
                 return data;
             }
             catch (Exception)
@@ -387,7 +387,7 @@ namespace Trinity.DAL
         {
             try
             {
-                var data = _localUnitOfWork.DataContext.Appointments.Where(a => a.Timeslot_ID == timeslotID && a.AbsenceReporting_ID != null);
+                var data = _localUnitOfWork.DataContext.Appointments.Where(a => a.Timeslot_ID == timeslotID && a.Status == EnumAppointmentStatuses.Absent);
                 if (data != null)
                 {
                     return data.Count();
