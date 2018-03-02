@@ -21,8 +21,9 @@
             <div class="entries">Display </div>
             <select class="form-control" id="pageSize">
                 <option>10</option>
-                <option>2</option>
-                <option>3</option>
+                <option>25</option>
+                <option>50</option>
+                <option>100</option>
             </select>
             <div class="entries"> entries per page</div>
         </div>
@@ -50,7 +51,7 @@
             search: true,
             pagination: true,
             pageSize:10,
-            pageList: [10, 20, 40, 60,80,100],
+            //pageList: [10, 20, 40, 60,80,100],
             onClickCell: function (field, value, row, $element) {
                 if (field == "HSA" && $.trim(value).length > 0) {                    
                     api.server.LoadPopupSeal(row.Date, row.UserId, row.Queue_ID, value, function () {

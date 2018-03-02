@@ -32,8 +32,9 @@
             <div class="entries">Display </div>
             <select class="form-control" id="pageSize">
                 <option>10</option>
-                <option>2</option>
-                <option>3</option>
+                <option>25</option>
+                <option>50</option>
+                <option>100</option>
             </select>
             <div class="entries"> entries per page</div>
         </div>
@@ -53,91 +54,89 @@
         </div>
     </div>
 </div>
-        
-        
 
-        <script type="text/javascript">
+<script type="text/javascript">
 
 
-            var dataSource = [];
+    var dataSource = [];
 
-            api.server.GetAllUBlabels(function (data) {
-                dataSource = data;
-                $('#UBlabel').bootstrapTable({
-                    //pagination: true,
-                    search: true,
-                    pageSize: 10,
-                    singleSelect: true,
-                    data: dataSource
+    api.server.GetAllUBlabels(function (data) {
+        dataSource = data;
+        $('#UBlabel').bootstrapTable({
+            //pagination: true,
+            search: true,
+            pageSize: 10,
+            singleSelect: true,
+            data: dataSource
+        });
+    });
+
+    function getDataCallback(response) {
+
+        var data = JSON.parse(response);
+        if (data) {
+            data.forEach(function (element, index) {
+                dataSource.push({
+                    NRIC: element.NRIC,
+                    Name: element.Name,
+                    LastStation: element.LastStation,
+                    UserId: element.UserId
                 });
             });
+        }
 
-            function getDataCallback(response) {
+        $('#UBlabel').bootstrapTable({
+            //pagination: true,
+            search: true,
+            pageSize: 10,
+            singleSelect: true,
+            data: dataSource
+        });
+    }
+    $(window).ready(function () {
+        $('#pageSize').change(function () {
+            pageSize = $("#pageSize option:selected").text();
+            $('#UBlabel').bootstrapTable('refreshOptions', {
+                pagination: true,
+                search: true,
+                pageSize: pageSize
+            });
+        });
 
-                var data = JSON.parse(response);
-                if (data) {
-                    data.forEach(function (element, index) {
-                        dataSource.push({
-                            NRIC: element.NRIC,
-                            Name: element.Name,
-                            LastStation: element.LastStation,
-                            UserId: element.UserId
-                        });
-                    });
+        var checkedRows = [];
+
+        $('#UBlabel').on('check.bs.table', function (e, row) {
+            checkedRows.push({ NRIC: row.NRIC, Name: row.Name, LastStation: row.LastStation, UserId: row.UserId });
+        });
+
+        $('#UBlabel').on('uncheck.bs.table', function (e, row) {
+            $.each(checkedRows, function (index, value) {
+                if (value.id === row.id) {
+                    checkedRows.splice(index, 1);
                 }
+            });
+        });
 
-                $('#UBlabel').bootstrapTable({
-                    //pagination: true,
-                    search: true,
-                    pageSize: 10,
-                    singleSelect: true,
-                    data: dataSource
-                });
-            }
-            $(window).ready(function () {
-                $('#pageSize').change(function () {
-                    pageSize = $("#pageSize option:selected").text();
-                    $('#UBlabel').bootstrapTable('refreshOptions', {
-                        pagination: true,
-                        search: true,
-                        pageSize: pageSize
-                    });
-                });
+        var model;
 
-                var checkedRows = [];
-
-                $('#UBlabel').on('check.bs.table', function (e, row) {
-                    checkedRows.push({ NRIC: row.NRIC, Name: row.Name, LastStation: row.LastStation, UserId: row.UserId });
-                });
-
-                $('#UBlabel').on('uncheck.bs.table', function (e, row) {
-                    $.each(checkedRows, function (index, value) {
-                        if (value.id === row.id) {
-                            checkedRows.splice(index, 1);
-                        }
-                    });
-                });
-
-                var model;
-
-                $('#PrintUBbutton').click(function () {
-                    $.each(checkedRows, function (index, value) {
-                        model = value;
-                    })
-                    if (checkedRows.length > 0) {
-                        var data = JSON.stringify(checkedRows);
-                        api.server.LoadPopupUBLabel(data, function () {
-                            $('#UBLabelpopup').modal();
-                        })
-                    }
-                    else {
-                        alert('Please choose the supervisee you want to print');
-                    }
-
-                })
-                activemenu('UB Lablels');
-                $("#menu .menu-item").removeClass("active");
-                $("#menu [item-menu].active").parent().addClass("active");
+        $('#PrintUBbutton').click(function () {
+            $.each(checkedRows, function (index, value) {
+                model = value;
             })
+            if (checkedRows.length > 0) {
+                var data = JSON.stringify(checkedRows);
+                api.server.LoadPopupUBLabel(data, function () {
+                    $('#UBLabelpopup').modal();
+                })
+            }
+            else {
+                alert('Please choose the supervisee you want to print');
+            }
 
-        </script>
+        })
+        activemenu('UB Lablels');
+        $("#menu .menu-item").removeClass("active");
+        $("#menu [item-menu].active").parent().addClass("active");
+    })
+
+</script>
