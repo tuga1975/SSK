@@ -92,7 +92,7 @@
                     title: 'APS',
                     align: 'center',
                     formatter: function (value, row, index, field) {
-                        return '<span color style="background-color:' + value + ';"></span>';
+                        return '<span colorState style="background-color:' + value + ';"></span>';
                     }
                 },
                 {
@@ -100,7 +100,7 @@
                     title: 'SSK',
                     align: 'center',
                     formatter: function (value, row, index, field) {
-                        return '<span color style="background-color:' + value + ';"></span>';
+                        return '<span colorState style="background-color:' + value + ';"></span>';
                     }
                 },
                 {
@@ -108,7 +108,7 @@
                     title: 'SSA',
                     align: 'center',
                     formatter: function (value, row, index, field) {
-                        return '<span color style="background-color:' + value + ';"></span>';
+                        return '<span colorState style="background-color:' + value + ';"></span>';
                     }
                 },
                 {
@@ -116,7 +116,7 @@
                     title: 'UHP',
                     align: 'center',
                     formatter: function (value, row, index, field) {
-                        return '<span color style="background-color:' + value + ';"></span>';
+                        return '<span colorState style="background-color:' + value + ';"></span>';
                     }
                 },
                 {
@@ -131,7 +131,7 @@
                     title: 'ESP',
                     align: 'center',
                     formatter: function (value, row, index, field) {
-                        return '<span color="' + value + '" style="background-color:' + value + ';"></span>';
+                        return '<span colorState="' + value + '" style="background-color:' + value + ';"></span>';
                     }
                 },
                 {
@@ -154,6 +154,12 @@
 
     api.server.startInstanceSmartcard();
 
+    function reloadDataQueues() {
+        api.server.getDataQueue(function (data) {
+            $('#table-queue').bootstrapTable('load', data);
+        });
+    };
+
     function openPopupOutcome(queueId) {
         api.server.LoadPopupOutcome(queueId, function () {
             $('#idQueueOutcome').modal();
@@ -162,7 +168,7 @@
     
 </script>
 <style>
-    span[color] {
+    span[colorState] {
         width: 20px;
         height: 20px;
         border-radius: 50%;
@@ -171,11 +177,11 @@
         box-sizing: border-box;
     }
 
-    span[color="notrequired"] {
+    span[colorState="notrequired"] {
         background-color: white;
     }
 
-        span[color="notrequired"]::after {
+        span[colorState="notrequired"]::after {
             content: "X";
             line-height: 0px;
             text-align: center;

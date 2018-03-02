@@ -116,7 +116,6 @@ namespace DutyOfficer
         }
         public object getDataQueue()
         {
-            _isFocusQueue = true;
             var data = new DAL_QueueNumber().GetAllQueueByDateIncludeDetail(DateTime.Now.Date)
                 .Select(queue => new
                 {
@@ -182,6 +181,7 @@ namespace DutyOfficer
 
         public void startInstanceSmartcard()
         {
+            _isFocusQueue = true;
             SmartCard.Instance.Start();
         }
 
