@@ -616,7 +616,7 @@ namespace SSK
         public void SaveReasonForQueue(string dataTxt)
         {
             List<Dictionary<string, string>> data = JsonConvert.DeserializeObject<List<Dictionary<string, string>>>(dataTxt);
-            new DAL_AbsenceReporting().UpdateAbsence(data);
+            new DAL_AbsenceReporting().InsertAbsence(data);
             LoadPage("Supervisee.html");
         }
 

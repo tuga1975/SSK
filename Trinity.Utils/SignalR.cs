@@ -154,7 +154,15 @@ namespace Trinity.SignalR.Client
         public async void DeviceStatusUpdate(int deviceId, EnumDeviceStatuses[] deviceStatuses)
         {
             await WaitConnectFalse();
-            await HubProxy.Invoke("DeviceStatusUpdate", deviceId, deviceStatuses);
+            try
+            {
+                await HubProxy.Invoke("DeviceStatusUpdate", deviceId, deviceStatuses);
+            }
+            catch (Exception)
+            {
+
+                
+            }
         }
         public async void SendToDutyOfficer(string UserId, string DutyOfficerID, string Subject, string Content, string notificationType)
         {
