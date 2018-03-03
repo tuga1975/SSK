@@ -37,7 +37,7 @@
             }
         }
         $("#btnSeal").click(function (e) {
-            api.server.UpdateSealForUser(model.UserId, model.Queue_ID, true, function () {
+            api.server.UpdateSealForUser(model.UserId, model.Queue_ID, true, model.UTResult, function () {
                 api.server.LoadDrugsTest(model.Date, model.UserId, function () {
                     $('#idQueueSeal').modal('toggle');
                     $('#idQueueDrugs').modal();
@@ -51,7 +51,7 @@
                 //show confirm message to discard a POS specimen
                 var result = confirm("Do you want to discard a POS specimen?");
                 if (result) {
-                    api.server.UpdateSealForUser(model.UserId, model.Queue_ID, false, function () {
+                    api.server.UpdateSealForUser(model.UserId, model.Queue_ID, false, model.UTResult, function () {
                         $('#idQueueSeal').modal('toggle');
                     });
                 }
@@ -60,7 +60,7 @@
                 //}
             }
             else {
-                api.server.UpdateSealForUser(model.UserId, model.Queue_ID, false, function () {
+                api.server.UpdateSealForUser(model.UserId, model.Queue_ID, false, model.UTResult, function () {
                     $('#idQueueSeal').modal('toggle');
                 });
             }          

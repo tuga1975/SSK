@@ -27,6 +27,7 @@ namespace Trinity.BE
         public Guid Queue_ID { get; set; }
         public string NRIC { get; set; }
         public string Name { get; set; }
+        public string UserId { get; set; }
         public string CurrentStation { get; set; }
         public string Status { get; set; }
         public List<QueueDetail> QueueDetail { get; set; }

@@ -113,6 +113,13 @@ namespace DutyOfficer
 
             DAL_DrugResults dalDrug = new DAL_DrugResults();
             dalDrug.UpdateDrugSeal(UserId, COCA, BARB, LSD, METH, MTQL, PCP, KET, BUPRE, CAT, PPZ, NPS, dutyOfficer.UserId);
+
+            // Update next station is ESP, message of ESP to 'Waiting for ESP'
+            var dalQueue = new DAL_QueueNumber();
+            dalQueue.UpdateQueueStatusByUserId(UserId, EnumStations.HSA, EnumQueueStatuses.Finished, EnumStations.ESP, EnumQueueStatuses.Processing, "Waiting for ESP", EnumQueueOutcomeText.Processing);
+
+            // Re-load queue
+            this._web.InvokeScript("reloadDataQueues");
         }
         public object getDataQueue()
         {
@@ -143,17 +150,17 @@ namespace DutyOfficer
             DAL_DrugResults dalDrug = new DAL_DrugResults();
             return dalDrug.GetResultUTByNRIC(NRIC);
         }
-        public void LoadPopupSeal(string Date, string UserId, string queueID, string UTResult)
+        public void LoadPopupSeal(string date, string userId, string queueID, string resultUT)
         {
             this._web.LoadPopupHtml("QueuePopupSeal.html", new
             {
-                Date = Date,
-                UserId = UserId,
+                Date = date,
+                UserId = userId,
                 Queue_ID = queueID,
-                UTResult = UTResult // NEG or POS
+                UTResult = resultUT // NEG or POS
             });
         }
-        public void UpdateSealForUser(string UserId, string queueID, bool seal)
+        public void UpdateSealForUser(string UserId, string queueID, bool seal, string UTResult)
         {
             Session session = Session.Instance;
             Trinity.BE.User dutyOfficer = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
@@ -164,7 +171,21 @@ namespace DutyOfficer
             if (!seal)
             {
                 DAL_QueueNumber dalQueue = new DAL_QueueNumber();
-                dalQueue.UpdateQueueOutcomeByQueueId(new Guid(queueID), EnumQueueOutcomeText.TapSmartCardToContinue);
+                //dalQueue.UpdateQueueOutcomeByQueueId(new Guid(queueID), EnumQueueOutcomeText.TapSmartCardToContinue);   
+
+                string message = string.Empty;
+                if (UTResult.Equals(EnumUTResult.NEG))
+                {
+                    message = "Tap smard card to Unconditional Release";
+                }
+                else if (UTResult.Equals(EnumUTResult.POS))
+                {
+                    message = "Select outcome";
+                }
+                dalQueue.UpdateQueueStatusByUserId(UserId, EnumStations.HSA, EnumQueueStatuses.Finished, EnumStations.ESP, EnumQueueStatuses.Processing, message, EnumQueueOutcomeText.TapSmartCardToContinue);
+
+                // Re-load queue
+                this._web.InvokeScript("reloadDataQueues");
             }
         }
         public void LoadPopupQueue(string queue_ID)
@@ -223,12 +244,15 @@ namespace DutyOfficer
             {
                 string resultUT = GetResultUT(queueDetail.NRIC);
 
-                if (resultUT == "NEG")
+                if (resultUT == EnumUTResult.NEG)
                 {
                     // update outcome to 'Unconditional Release'
-                    dalQueue.UpdateQueueOutcomeByQueueId(new Guid(queueId), EnumQueueOutcomeText.UnconditionalRelease);
+                    //dalQueue.UpdateQueueOutcomeByQueueId(new Guid(queueId), EnumQueueOutcomeText.UnconditionalRelease);
 
-                    // Need to reload here
+                    dalQueue.UpdateQueueStatusByUserId(queueDetail.UserId, EnumStations.ESP, EnumQueueStatuses.NotRequired, EnumStations.ESP, EnumQueueStatuses.NotRequired, "", EnumQueueOutcomeText.UnconditionalRelease);
+
+                    // Re-load queue
+                    this._web.InvokeScript("reloadDataQueues");
                 }
                 else
                 {
@@ -240,7 +264,12 @@ namespace DutyOfficer
         public void SaveOutcome(string queueID, string outcome)
         {
             DAL_QueueNumber dalQueue = new DAL_QueueNumber();
-            dalQueue.UpdateQueueOutcomeByQueueId(new Guid(queueID), outcome);
+            //dalQueue.UpdateQueueOutcomeByQueueId(new Guid(queueID), outcome);
+            var queueDetail = dalQueue.GetQueueInfoByQueueID(new Guid(queueID));
+            dalQueue.UpdateQueueStatusByUserId(queueDetail.UserId, EnumStations.ESP, EnumQueueStatuses.Finished, EnumStations.ESP, EnumQueueStatuses.Finished, "", outcome);
+
+            // Re-load queue
+            this._web.InvokeScript("reloadDataQueues");
         }
         #endregion
 
