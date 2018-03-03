@@ -17,8 +17,8 @@ namespace Trinity.DAL.DBContext
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public UploadedDocument()
         {
-            this.User_Profiles = new HashSet<User_Profiles>();
             this.AbsenceReportings = new HashSet<AbsenceReporting>();
+            this.User_Profiles = new HashSet<User_Profiles>();
         }
     
         public System.Guid Document_ID { get; set; }
@@ -30,8 +30,8 @@ namespace Trinity.DAL.DBContext
         public string Note { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<User_Profiles> User_Profiles { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AbsenceReporting> AbsenceReportings { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<User_Profiles> User_Profiles { get; set; }
     }
 }

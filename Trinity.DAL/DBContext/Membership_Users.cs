@@ -19,6 +19,7 @@ namespace Trinity.DAL.DBContext
         {
             this.ActionLogs = new HashSet<ActionLog>();
             this.ActionLogs1 = new HashSet<ActionLog>();
+            this.Appointments = new HashSet<Appointment>();
             this.IssuedCards = new HashSet<IssuedCard>();
             this.Labels = new HashSet<Label>();
             this.Membership_UserClaims = new HashSet<Membership_UserClaims>();
@@ -28,7 +29,6 @@ namespace Trinity.DAL.DBContext
             this.Security_QA = new HashSet<Security_QA>();
             this.Queues = new HashSet<Queue>();
             this.Queues1 = new HashSet<Queue>();
-            this.Appointments = new HashSet<Appointment>();
         }
     
         public string UserId { get; set; }
@@ -59,6 +59,8 @@ namespace Trinity.DAL.DBContext
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ActionLog> ActionLogs1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Appointment> Appointments { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<IssuedCard> IssuedCards { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Label> Labels { get; set; }
@@ -77,7 +79,5 @@ namespace Trinity.DAL.DBContext
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Queue> Queues1 { get; set; }
         public virtual User_Profiles User_Profiles { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Appointment> Appointments { get; set; }
     }
 }
