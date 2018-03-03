@@ -407,10 +407,10 @@ namespace Trinity.DAL
             dbUserProfile.NextOfKin_PostalCode = model.NextOfKin_PostalCode;
             dbUserProfile.NextOfKin_Relationship = model.NextOfKin_Relationship;
             dbUserProfile.NextOfKin_Street_Name = model.NextOfKin_Street_Name;
-            dbUserProfile.Other_Address_ID = model.Other_Address_ID;
             dbUserProfile.Primary_Email = model.Primary_Email;
             dbUserProfile.Primary_Phone = model.Primary_Phone;
-            dbUserProfile.Residential_Addess_ID = model.Residential_Addess_ID;
+            dbUserProfile.Other_Address_ID = model.Other_Address_ID!=""? model.Other_Address_ID:null;
+            dbUserProfile.Residential_Addess_ID = model.Residential_Addess_ID!=""? model.Residential_Addess_ID:null;
             dbUserProfile.Secondary_Email = model.Secondary_Email;
             dbUserProfile.Secondary_Phone = model.Secondary_Phone;
             dbUserProfile.User_Photo1 = model.User_Photo1;
