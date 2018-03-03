@@ -29,6 +29,21 @@ namespace Trinity.DAL
             }
         }
 
+        public Trinity.DAL.DBContext.Appointment GetNextAppointmentByStatus(string userId,string status)
+        {
+            try
+            {
+                Appointment appointment = _localUnitOfWork.DataContext.Appointments.Where(item => item.Date > DateTime.Today && item.UserId == userId && (item.Status==EnumAppointmentStatuses.Booked||item.Status==EnumAppointmentStatuses.Pending))
+                    .OrderBy(item => item.Date).FirstOrDefault();
+
+                return appointment;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public Trinity.BE.Appointment GetAppointment(string appointment_ID)
         {
             try
