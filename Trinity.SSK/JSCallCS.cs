@@ -93,6 +93,10 @@ namespace SSK
 
             // check supervisee have appoitment
             Trinity.DAL.DBContext.Appointment appointment = new DAL_Appointments().GetNextAppointment(user.UserId);
+            if (appointment!=null && (appointment.Status==EnumAppointmentStatuses.Reported|| appointment.Status==EnumAppointmentStatuses.Absent))
+            {
+                appointment= new DAL_Appointments().GetNextAppointmentByStatus(user.UserId,EnumAppointmentStatuses.Pending);
+            }
 
             if (appointment == null)
             {

@@ -183,9 +183,9 @@
             <button type="button" class="btn btn-dark" style="position:fixed;bottom:10px;left:10px;float:left;" onclick="api.server.LoadPage('Supervisee.html');">Back</button>
         </div>
         <!--<div style="float:right;" id="tempSupportDocument">
-        <button type="button" class="btn btn-danger" style="position:fixed;bottom:10px;right:150px;" id="btnScan">Scan documents</button>
+            <button type="button" class="btn btn-danger" style="position:fixed;bottom:10px;right:150px;" id="btnScan">Scan documents</button>
 
-    </div>-->
+        </div>-->
 
         <div style="display:none">
             <input type="text" name="SerialNumber" id="SerialNumber" />
@@ -215,9 +215,8 @@
     api.ready(function (model) {
         _particularName = model.User.Name;
         _nric = model.User.NRIC;
-        _dob = model.UserProfile.DOB;
-        _nationality = model.UserProfile.Nationality;
-        _maritalStatus = model.UserProfile.Maritial_Status;
+      
+      
 
         $('#UserId').val(model.User.UserId);
         $('#LeftFingerprint').val(model.User.LeftThumbFingerprint);
@@ -228,24 +227,49 @@
         //user inforation
         $('#ParticularsName').val(model.User.Name);
         $('#NRIC').val(model.User.NRIC);
-        $('#DOB').val(model.UserProfile.DOBAsString);
         $('#LastLoginTime').val(model.User.LastLoginTime);
         $('#EnrolledDate').val(model.User.EnrolledDate);
         $('#Role').val(model.User.Role);
         $('#SmartCardId').val(model.User.SmartCardId);
         // profile
-        $('#Nationality').val(model.UserProfile.Nationality);
-        $('#SerialNumber').val(model.UserProfile.SerialNumber);
-        $('#DateOfIssue').val(model.UserProfile.DateOfIssue);
-        $('#Gender').val(model.UserProfile.Gender);
-        $('#Race').val(model.UserProfile.Race);
-        $('#MaritalStatus').val(model.UserProfile.Maritial_Status);
-        $('#PrimaryContact').val(model.UserProfile.Primary_Phone);
-        $('#SecondaryContact').val(model.UserProfile.Secondary_Phone);
-        $('#PrimaryEmail').val(model.UserProfile.Primary_Email);
-        $('#SecondaryEmail').val(model.UserProfile.Secondary_Email);
-        if (model.Addresses != null) {
+        if (model.UserProfile != null) {
 
+            _dob = model.UserProfile.DOB;
+            _nationality = model.UserProfile.Nationality;
+            _maritalStatus = model.UserProfile.Maritial_Status;
+            $('#DOB').val(model.UserProfile.DOBAsString);
+            $('#Nationality').val(model.UserProfile.Nationality);
+            $('#SerialNumber').val(model.UserProfile.SerialNumber);
+            $('#DateOfIssue').val(model.UserProfile.DateOfIssue);
+            $('#Gender').val(model.UserProfile.Gender);
+            $('#Race').val(model.UserProfile.Race);
+            $('#MaritalStatus').val(model.UserProfile.Maritial_Status);
+            $('#PrimaryContact').val(model.UserProfile.Primary_Phone);
+            $('#SecondaryContact').val(model.UserProfile.Secondary_Phone);
+            $('#PrimaryEmail').val(model.UserProfile.Primary_Email);
+            $('#SecondaryEmail').val(model.UserProfile.Secondary_Email);
+
+            //next of kin information
+            $('#NextOfKinDetailsName').val(model.UserProfile.NextOfKin_Name);
+            $('#NextOfKinDetailsContactNumber').val(model.UserProfile.NextOfKin_Contact_Number);
+            $('#NextOfKinDetailsRelationship').val(model.UserProfile.NextOfKin_Relationship);
+            $('#NextOfKinDetailsHouseNumber').val(model.UserProfile.NextOfKin_BlkHouse_Number);
+            $('#NextOfKinDetailsUnitNumber').val(model.UserProfile.NextOfKin_FlrUnit_Number);
+            $('#NextOfKinDetailsStreetName').val(model.UserProfile.NextOfKin_Street_Name);
+            $('#NextOfKinDetailsCountry').val(model.UserProfile.NextOfKin_Country);
+            $('#NextOfKinDetailsPostalCode').val(model.UserProfile.NextOfKin_PostalCode);
+
+            //employee details information
+            $('#EmployerName').val(model.UserProfile.Employment_Name);
+            $('#EmployerContact').val(model.UserProfile.Employment_Contact_Number);
+            $('#CompanyName').val(model.UserProfile.Employment_Company_Name);
+            $('#JobTitle').val(model.UserProfile.Employment_Job_Title);
+            $('#StartDate').val(model.UserProfile.Employment_Start_Date_Text);
+            $('#EndDate').val(model.UserProfile.Employment_End_Date_Text);
+            $('#Remarks').val(model.UserProfile.Employment_Remarks);
+        }
+
+        if (model.Addresses != null) {
             //address information
             $('#Residential_Addess_ID').val(model.Addresses.Address_ID);
             $('#Other_Address_ID').val(model.OtherAddress.Address_ID);
@@ -255,24 +279,7 @@
             $('#AddressCountry').val(model.Addresses.Country);
             $('#Postal_Code').val(model.Addresses.Postal_Code);
         }
-        //next of kin information
-        $('#NextOfKinDetailsName').val(model.UserProfile.NextOfKin_Name);
-        $('#NextOfKinDetailsContactNumber').val(model.UserProfile.NextOfKin_Contact_Number);
-        $('#NextOfKinDetailsRelationship').val(model.UserProfile.NextOfKin_Relationship);
-        $('#NextOfKinDetailsHouseNumber').val(model.UserProfile.NextOfKin_BlkHouse_Number);
-        $('#NextOfKinDetailsUnitNumber').val(model.UserProfile.NextOfKin_FlrUnit_Number);
-        $('#NextOfKinDetailsStreetName').val(model.UserProfile.NextOfKin_Street_Name);
-        $('#NextOfKinDetailsCountry').val(model.UserProfile.NextOfKin_Country);
-        $('#NextOfKinDetailsPostalCode').val(model.UserProfile.NextOfKin_PostalCode);
-
-        //employee details information
-        $('#EmployerName').val(model.UserProfile.Employment_Name);
-        $('#EmployerContact').val(model.UserProfile.Employment_Contact_Number);
-        $('#CompanyName').val(model.UserProfile.Employment_Company_Name);
-        $('#JobTitle').val(model.UserProfile.Employment_Job_Title);
-        $('#StartDate').val(model.UserProfile.Employment_Start_Date_Text);
-        $('#EndDate').val(model.UserProfile.Employment_End_Date_Text);
-        $('#Remarks').val(model.UserProfile.Employment_Remarks);
+       
 
     });
 
@@ -289,11 +296,15 @@
 
         var $form = $("#profileFrm");
         var data = getFormData($form);
-        var dobtxt = data.DOB.split('/');
-        data.DOB = dobtxt[2] + '-' + dobtxt[1] + '-' + dobtxt[0];
+        if (data.DOB!="") {
+            alert(1);
+            var dobtxt = data.DOB.split('/');
+            data.DOB = dobtxt[2] + '-' + dobtxt[1] + '-' + dobtxt[0];
+        }
+        
+      
         var json = JSON.stringify(data);
 
-        //for testing purpose
         api.server.SaveProfile(json, true);
 
         //api.server.SaveProfile(json, false);
@@ -326,7 +337,7 @@
         });
     }
     //$('#btnOK').click(function () {
-        
+
     //    var $form = $("#profileFrm");
     //    $form.submit();
     //});
