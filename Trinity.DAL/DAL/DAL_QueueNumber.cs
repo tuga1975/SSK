@@ -781,45 +781,59 @@ namespace Trinity.DAL
 
                     var result = _localUnitOfWork.Save();
 
-                    if (EnumAppConfig.ByPassCentralizedDB)
-                    {
-                        return result;
-                    }
-                    else
-                    {
-                        bool centralizeStatus;
-                        var centralData = CallCentralized.Post<int>(EnumAPIParam.QueueNumber, "UpdateQueueStatusByUserId", out centralizeStatus, "userId=" + userId, "currentStation=" + currentStation, "nextStation=" + nextStation, "status=" + status, "outcome=" + outcome);
-                        if (centralizeStatus)
-                        {
-                            return centralData;
-                        }
-                        else
-                        {
-                            throw new Exception(EnumMessage.NotConnectCentralized);
-                        }
-                    }
+                    return result;
+                    //if (EnumAppConfig.ByPassCentralizedDB)
+                    //{
+                    //    return result;
+                    //}
+                    //else
+                    //{
+                    //    bool centralizeStatus;
+                    //    var centralData = CallCentralized.Post<int>(EnumAPIParam.QueueNumber, "UpdateQueueStatusByUserId", out centralizeStatus, "userId=" + userId, "currentStation=" + currentStation, "nextStation=" + nextStation, "status=" + status, "outcome=" + outcome);
+                    //    if (centralizeStatus)
+                    //    {
+                    //        return centralData;
+                    //    }
+                    //    else
+                    //    {
+                    //        throw new Exception(EnumMessage.NotConnectCentralized);
+                    //    }
+                    //}
                 }
                 else
                 {
                     DBContext.Queue dbQueue = _centralizedUnitOfWork.DataContext.Queues.Include("Appointment").FirstOrDefault(d => d.Appointment.UserId == userId);
 
-                    if (dbQueue != null)
+                    if (dbQueue == null)
+                        return 0;
+
+                    dbQueue.CurrentStation = nextStation;
+                    if (!string.IsNullOrEmpty(outcome))
                     {
-                        dbQueue.CurrentStation = nextStation;
                         dbQueue.Outcome = outcome;
-                        DBContext.QueueDetail dbQueueDetail = _centralizedUnitOfWork.DataContext.QueueDetails.FirstOrDefault(d => d.Queue_ID == dbQueue.Queue_ID && d.Station == currentStation);
-                        if (dbQueueDetail != null)
-                        {
-                            dbQueueDetail.Status = status;
-                            _centralizedUnitOfWork.GetRepository<DBContext.QueueDetail>().Update(dbQueueDetail);
-                        }
-                        _centralizedUnitOfWork.GetRepository<DBContext.Queue>().Update(dbQueue);
-
-                        return _centralizedUnitOfWork.Save();
-
                     }
+                    DBContext.QueueDetail dbQueueDetailCurrent = _centralizedUnitOfWork.DataContext.QueueDetails.FirstOrDefault(d => d.Queue_ID == dbQueue.Queue_ID && d.Station == currentStation);
+                    if (dbQueueDetailCurrent != null)
+                    {
+                        dbQueueDetailCurrent.Status = statusCurrentStattion;
+                        _centralizedUnitOfWork.GetRepository<DBContext.QueueDetail>().Update(dbQueueDetailCurrent);
+                    }
+
+                    DBContext.QueueDetail dbQueueDetailNextStation = _centralizedUnitOfWork.DataContext.QueueDetails.FirstOrDefault(d => d.Queue_ID == dbQueue.Queue_ID && d.Station == nextStation);
+                    if (dbQueueDetailNextStation != null)
+                    {
+                        dbQueueDetailNextStation.Status = statusNextStation;
+                        dbQueueDetailNextStation.Message = messageNextStation;
+
+                        _centralizedUnitOfWork.GetRepository<DBContext.QueueDetail>().Update(dbQueueDetailNextStation);
+                    }
+
+                    _centralizedUnitOfWork.GetRepository<DBContext.Queue>().Update(dbQueue);
+
+                    var result = _centralizedUnitOfWork.Save();
+
+                    return result;
                 }
-                return 0;
 
             }
             catch (Exception)
