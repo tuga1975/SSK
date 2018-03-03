@@ -29,10 +29,10 @@ namespace Trinity.DAL.DBContext
         public string Status { get; set; }
         public Nullable<System.DateTime> ReportTime { get; set; }
     
+        public virtual AbsenceReporting AbsenceReporting { get; set; }
         public virtual Membership_Users Membership_Users { get; set; }
         public virtual Timeslot Timeslot { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Queue> Queues { get; set; }
-        public virtual AbsenceReporting AbsenceReporting { get; set; }
     }
 }

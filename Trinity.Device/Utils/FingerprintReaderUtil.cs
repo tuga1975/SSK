@@ -257,6 +257,21 @@ namespace Trinity.Device
             _lstFingerprint_Templates = lstFingerprint_Templates;
             _identificationCompleted = IdentificationCompleted;
 
+            // clear ole instance
+            if (_futronicIdentification != null)
+            {
+                // unregister events
+                _futronicIdentification.OnPutOn -= OnPutOn;
+                _futronicIdentification.OnTakeOff -= OnTakeOff;
+                //_futronicIdentification.UpdateScreenImage += new UpdateScreenImageHandler(this.UpdateScreenImage);
+                _futronicIdentification.OnFakeSource -= OnFakeSource;
+                _futronicIdentification.OnGetBaseTemplateComplete -= OnGetBaseTemplateComplete;
+
+                // set null
+                _futronicIdentification = null;
+            }
+
+            // create new instance 
             _futronicIdentification = new FutronicIdentification();
 
             // Set control property

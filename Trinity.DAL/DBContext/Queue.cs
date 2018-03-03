@@ -32,11 +32,11 @@ namespace Trinity.DAL.DBContext
         public string Note { get; set; }
         public Nullable<System.DateTime> LastUpdatedDate { get; set; }
     
+        public virtual Appointment Appointment { get; set; }
         public virtual Membership_Users Membership_Users { get; set; }
         public virtual Membership_Users Membership_Users1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<QueueDetail> QueueDetails { get; set; }
         public virtual Timeslot Timeslot { get; set; }
-        public virtual Appointment Appointment { get; set; }
     }
 }
