@@ -15,41 +15,17 @@ namespace Trinity.DAL
 
 
         #region 2018
-        public void ChangeUserStatus(string userId, string status)
+        public bool ChangeUserStatus(string userId, string status)
         {
-            if (EnumAppConfig.IsLocal)
+            var localUserRepo = _localUnitOfWork.GetRepository<Membership_Users>();
+            var dbUser = localUserRepo.GetById(userId);
+            if (dbUser != null)
             {
-                //bool statusCentralized;
-                //CallCentralized.Post<bool>("User", "ChangeUserStatus", out statusCentralized, "userId=" + userId, "status=" + status);
-                //if (!statusCentralized)
-                //{
-                //    throw new Exception(EnumMessage.NotConnectCentralized);
-                //}
-                //else
-                //{
-                    var localUserRepo = _localUnitOfWork.GetRepository<Membership_Users>();
-                    var dbUser = localUserRepo.GetById(userId);
-                    if (dbUser != null)
-                    {
-                        dbUser.Status = status;
-                        localUserRepo.Update(dbUser);
+                dbUser.Status = status;
+                localUserRepo.Update(dbUser);
 
-                    }
-                    _localUnitOfWork.Save();
-                //}
             }
-            else
-            {
-                var centralUserRepo = _centralizedUnitOfWork.GetRepository<Membership_Users>();
-                var dbUser = centralUserRepo.GetById(userId);
-                if (dbUser != null)
-                {
-                    dbUser.Status = status;
-                    centralUserRepo.Update(dbUser);
-
-                }
-                _centralizedUnitOfWork.Save();
-            }
+            return _localUnitOfWork.Save() > 0;
         }
         public bool Update(BE.User model)
         {
@@ -131,7 +107,7 @@ namespace Trinity.DAL
                         LeftThumbFingerprint = item.LeftThumbFingerprint,
                         Name = item.Name,
                         NRIC = item.NRIC,
-                        Role = EnumUserRoles.Supervisee,
+                        Role = item.Membership_UserRoles.FirstOrDefault().Membership_Roles.Name,
                         IsFirstAttempt = item.IsFirstAttempt
                     }).ToList();
 
@@ -164,7 +140,7 @@ namespace Trinity.DAL
                         LeftThumbFingerprint = item.LeftThumbFingerprint,
                         Name = item.Name,
                         NRIC = item.NRIC,
-                        Role = EnumUserRoles.Supervisee,
+                        Role = item.Membership_UserRoles.FirstOrDefault().Membership_Roles.Name,
                         IsFirstAttempt = item.IsFirstAttempt
                     }).ToList();
 
@@ -197,7 +173,7 @@ namespace Trinity.DAL
                         LeftThumbFingerprint = item.LeftThumbFingerprint,
                         Name = item.Name,
                         NRIC = item.NRIC,
-                        Role = EnumUserRoles.Supervisee,
+                        Role = item.Membership_UserRoles.FirstOrDefault().Membership_Roles.Name,
                         IsFirstAttempt = item.IsFirstAttempt
                     }).FirstOrDefault();
 
@@ -231,7 +207,7 @@ namespace Trinity.DAL
                         LeftThumbFingerprint = item.LeftThumbFingerprint,
                         Name = item.Name,
                         NRIC = item.NRIC,
-                        Role = EnumUserRoles.Supervisee,
+                        Role = item.Membership_UserRoles.FirstOrDefault().Membership_Roles.Name,
                         IsFirstAttempt = item.IsFirstAttempt
                     }).FirstOrDefault();
 
@@ -306,7 +282,7 @@ namespace Trinity.DAL
                         LeftThumbFingerprint = item.LeftThumbFingerprint,
                         Name = item.Name,
                         NRIC = item.NRIC,
-                        Role = EnumUserRoles.Supervisee,
+                        Role = item.Membership_UserRoles.FirstOrDefault().Membership_Roles.Name,
                         IsFirstAttempt = item.IsFirstAttempt
                     }).FirstOrDefault();
 
@@ -425,7 +401,7 @@ namespace Trinity.DAL
                             LeftThumbFingerprint = item.LeftThumbFingerprint,
                             Name = item.Name,
                             NRIC = item.NRIC,
-                            Role = EnumUserRoles.Supervisee,
+                            Role = item.Membership_UserRoles.FirstOrDefault().Membership_Roles.Name,
                             IsFirstAttempt = item.IsFirstAttempt
                         }).FirstOrDefault();
 
@@ -459,7 +435,7 @@ namespace Trinity.DAL
                             LeftThumbFingerprint = item.LeftThumbFingerprint,
                             Name = item.Name,
                             NRIC = item.NRIC,
-                            Role = EnumUserRoles.Supervisee,
+                            Role = item.Membership_UserRoles.FirstOrDefault().Membership_Roles.Name,
                             IsFirstAttempt = item.IsFirstAttempt
                         }).FirstOrDefault();
 
