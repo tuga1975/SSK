@@ -742,7 +742,8 @@
                         <div class="pull-right">
                             <!--<button class="btn btn-light" onclick="api.server.CancelEditSupervisee();">Cancel</button>-->
                             <a href="#" class="btn btn-light" id="btnCancel">Cancel</a>
-                            <a href="#" class="btn btn-primary" onclick="UpdateSupervisee();" id="SaveBtn">Save</a>
+                            <!--<button href="#" class="btn btn-primary" onclick="UpdateSupervisee();" id="SaveBtn">Save</button>-->
+                            <a href="#" class="btn btn-primary" id="SaveBtn">Save</a>
                         </div>
                     </form>
                 </div>
@@ -1088,6 +1089,33 @@
     $('#btnCancel').click(function () {
         api.server.CancelEditSupervisee();
     });
+    $('#SaveBtn').click(function () {
+       
+
+            $('#Employment_Start_Date').val(setDate('day', 'month', 'year'));
+            $('#Employment_End_Date').val(setDate('day_end', 'month_end', 'year_end'));
+
+            var $form = $("#superviseeFrm");
+            var data = getFormData($form);
+            var json = JSON.stringify(data);
+            api.server.SaveSupervisee(json);
+
+            e.preventDefault();
+        
+    });
+    //function UpdateSupervisee() {
+    //    $('#superviseeFrm').submit(function (e) {
+    //        $('#Employment_Start_Date').val(setDate('day', 'month', 'year'));
+    //        $('#Employment_End_Date').val(setDate('day_end', 'month_end', 'year_end'));
+
+    //        var $form = $("#superviseeFrm");
+    //        var data = getFormData($form);
+    //        var json = JSON.stringify(data);
+    //        api.server.SaveSupervisee(json);
+
+    //        e.preventDefault();
+    //    });
+    //}
     $(function () {
       
         //$('.s_label').click(function () {
@@ -1185,41 +1213,12 @@
                 $('#day_end').val(endYear.getDate());
 
             }
-
         }
-
-
-        
     });
 
-    function UpdateSupervisee() {
-        $('#superviseeFrm').submit(function (e) {
-            $('#Employment_Start_Date').val(setDate('day', 'month', 'year'));
-            $('#Employment_End_Date').val(setDate('day_end', 'month_end', 'year_end'));
+    
 
-            var $form = $("#superviseeFrm");
-            var data = getFormData($form);
-            var json = JSON.stringify(data);
-            api.server.SaveSupervisee(json);
-
-            e.preventDefault();
-        });
-    }
-
-    //$('#SaveBtn').click(function () {
-    //    $('#superviseeFrm').submit(function (e) {
-
-    //        $('#Employment_Start_Date').val(setDate('day', 'month', 'year'));
-    //        $('#Employment_End_Date').val(setDate('day_end', 'month_end', 'year_end'));
-
-    //        var $form = $("#superviseeFrm");
-    //        var data = getFormData($form);
-    //        var json = JSON.stringify(data);
-    //        api.server.SaveSupervisee(json);
-
-    //        e.preventDefault();
-    //    });
-    //});
+    
     function setDate(day_Id, month_Id, year_Id) {
         var _day = $('#' + day_Id + '').val().trim();
         var _month = $('#' + month_Id + '').val().trim();

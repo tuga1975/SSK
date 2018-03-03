@@ -520,7 +520,7 @@
                                         <div class="printingCard col-12" style="display:none" id="printSuccessMessage">
                                         </div>
                                         <div>
-                                            <input class="btn" type="button" value="Reprint" id="btnReprint"  />
+                                            <input class="btn" type="button" value="Reprint" id="rePrinter" style="display:none;"  />
                                         </div>
                                         <!--<div>
                                             <input class="btn" type="button" value="Done" onclick="api.server.LoadListSupervisee();" />
@@ -1429,11 +1429,6 @@
     }
 </script>
 <script>
-  
-
-
-
-    //sliding
 
     function LoadSuperviseeDetails() {
         api.server.EditSupervisee(userIDNew);
@@ -1542,7 +1537,7 @@
             if (status) {
                 $('#rePrinter').css('display', 'none');
                 $('#reCheckSCard').css('display', 'block');
-                $('.actions > ul > li:first-child').attr('style', 'display:none');
+                //$('.actions > ul > li:first-child').attr('style', 'display:none');
 
             } else {
                 $('#rePrinter').css('display', 'block');
@@ -1553,6 +1548,7 @@
                 }
             }
         }
+        $('#printSuccessMessage').text('');
         var $_message = message;
         $('#printSuccessMessage').append($_message).show();
     }
