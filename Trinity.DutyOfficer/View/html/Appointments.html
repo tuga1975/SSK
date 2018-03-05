@@ -96,7 +96,7 @@
         mm = '0' + mm
     }
 
-    today = mm + '/' + dd + '/' + yyyy;
+    today = dd + '/' + mm + '/' + yyyy;
     $('#dateSearch').val(today);
 
     $(document).ready(function () {
@@ -106,103 +106,103 @@
             pageSize = 10;
 
         $(function () {
-            $('#datetimepicker').datepicker();
+            $('#datetimepicker').datepicker({ format: 'dd/mm/yyyy'});
         });
-
-        api.server.GetAllAppoinments(function (data) {
-            if (data) {
-                data.forEach(function (element, index) {                    
-                    dataSource.push({
-                        TimeSlot: convert24hrTo12hr(element.StartTime) + ' - ' + convert24hrTo12hr(element.EndTime),
-                        NRIC: element.NRIC,
-                        Name: element.Name,
-                        ReportTime: element.ReportTime,
-                        Status: element.Status,
-                        Date: element.AppointmentDate,
-                        StartTime: element.StartTime,
-                        EndTime: element.EndTime,
-                        Category: element.Category,
-                        ReportTimeSpan: element.ReportTimeSpan
-                    });
-
-                    if (Date.parse(element.AppointmentDate) == Date.parse(today)) {
-                        searchSource.push({
+        
+        // For case redirected from Statistics
+        api.ready(function (strDateAndStartTime) {            
+            api.server.GetAllAppoinments(function (data) {                
+                if (data) {
+                    data.forEach(function (element, index) {
+                        dataSource.push({
                             TimeSlot: convert24hrTo12hr(element.StartTime) + ' - ' + convert24hrTo12hr(element.EndTime),
                             NRIC: element.NRIC,
                             Name: element.Name,
                             ReportTime: element.ReportTime,
                             Status: element.Status,
-                            Date: element.AppointmentDate,
+                            Date: formatDate(element.AppointmentDate),
                             StartTime: element.StartTime,
                             EndTime: element.EndTime,
                             Category: element.Category,
                             ReportTimeSpan: element.ReportTimeSpan
                         });
-                    }
-                });
 
-                searchSource.forEach(function (element, index) {
-                    $('#timeslot').append($('<option></option>').val(element.TimeSlot).html(element.TimeSlot));
-                });
-            }
-
-            $('#table').bootstrapTable({
-                pagination: true,
-                pageSize: 10,
-                columns: [{
-                    field: 'TimeSlot',
-                    title: 'Time Slot',
-                    sortable: true,
-                    width: '15%',
-                    align: 'center'
-                }, {
-                    field: 'NRIC',
-                    title: 'NRIC',
-                    sortable: true,
-                    width: '15%',
-                    align: 'center'
-                }, {
-                    field: 'Name',
-                    title: 'Name',
-                    sortable: true,
-                    width: '40%',
-                    align: 'center'
-                }, {
-                    field: 'ReportTimeSpan',
-                    title: 'Report Time',
-                    sortable: true,
-                    width: '15%',
-                    align: 'center',
-                    formatter: function (value, row, index, field) {
-                        if (value) {
-                            return convert24hrTo12hr(value);
+                        if (Date.parse(formatDate(element.AppointmentDate)) == Date.parse(today)) {
+                            searchSource.push({
+                                TimeSlot: convert24hrTo12hr(element.StartTime) + ' - ' + convert24hrTo12hr(element.EndTime),
+                                NRIC: element.NRIC,
+                                Name: element.Name,
+                                ReportTime: element.ReportTime,
+                                Status: element.Status,
+                                Date: formatDate(element.AppointmentDate),
+                                StartTime: element.StartTime,
+                                EndTime: element.EndTime,
+                                Category: element.Category,
+                                ReportTimeSpan: element.ReportTimeSpan
+                            });
                         }
-                        return "";
-                    }
-                }, {
-                    field: 'Status',
-                    title: 'Status',
-                    sortable: true,
-                    width: '15%',
-                    align: 'center',
-                }],
-                data: searchSource
-            });
-        });
+                    });
 
-        // For case redirected from Statistics
-        api.ready(function (strDateAndStartTime) {
-            if (strDateAndStartTime) {
-                var splitDateAndTime = strDateAndStartTime.split(';');
-                var dateAppt = splitDateAndTime[0];
-                var startTimeAppt = splitDateAndTime[1];
-                var endTimeAppt = splitDateAndTime[2];
-                $('#dateSearch').val(dateAppt);
-                getTimeslot();
-                var timeslotFromStatictis = convert24hrTo12hr(startTimeAppt) + ' - ' + convert24hrTo12hr(endTimeAppt);
-                $('#timeslot').val(timeslotFromStatictis);
-                searchAppointment();
-            };
+                    searchSource.forEach(function (element, index) {
+                        $('#timeslot').append($('<option></option>').val(element.TimeSlot).html(element.TimeSlot));
+                    });
+                }
+
+                $('#table').bootstrapTable({
+                    pagination: true,
+                    pageSize: 10,
+                    columns: [{
+                        field: 'TimeSlot',
+                        title: 'Time Slot',
+                        sortable: true,
+                        width: '15%',
+                        align: 'center'
+                    }, {
+                        field: 'NRIC',
+                        title: 'NRIC',
+                        sortable: true,
+                        width: '15%',
+                        align: 'center'
+                    }, {
+                        field: 'Name',
+                        title: 'Name',
+                        sortable: true,
+                        width: '40%',
+                        align: 'center'
+                    }, {
+                        field: 'ReportTimeSpan',
+                        title: 'Report Time',
+                        sortable: true,
+                        width: '15%',
+                        align: 'center',
+                        formatter: function (value, row, index, field) {
+                            if (value) {
+                                return convert24hrTo12hr(value);
+                            }
+                            return "";
+                        }
+                    }, {
+                        field: 'Status',
+                        title: 'Status',
+                        sortable: true,
+                        width: '15%',
+                        align: 'center',
+                    }],
+                    data: searchSource
+                });
+                
+                if (strDateAndStartTime) {
+                    var splitDateAndTime = strDateAndStartTime.split(';');
+                    var dateAppt = splitDateAndTime[0];
+                    var startTimeAppt = splitDateAndTime[1];
+                    var endTimeAppt = splitDateAndTime[2];
+                    var timeslotFromStatictis = convert24hrTo12hr(startTimeAppt) + ' - ' + convert24hrTo12hr(endTimeAppt);
+                    $('#dateSearch').val(dateAppt);
+                    searchByDateAndTimeslot(dateAppt, timeslotFromStatictis);
+                    getTimeslot();
+                    $('#timeslot').val(timeslotFromStatictis);
+                };
+            });
         });
     });
 
@@ -257,6 +257,30 @@
         });
     };
 
+    function searchByDateAndTimeslot(dateSearch, timeslot) {
+        searchSource = [];
+        for (var i = 0; i < dataSource.length; i++) {
+            if ((Date.parse(dataSource[i].Date) == Date.parse(dateSearch) || dateSearch == '') && (dataSource[i].TimeSlot == timeslot || timeslot == 'All')) {
+                searchSource.push({
+                    TimeSlot: dataSource[i].TimeSlot,
+                    NRIC: dataSource[i].NRIC,
+                    Name: dataSource[i].Name,
+                    ReportTime: dataSource[i].ReportTime,
+                    Status: dataSource[i].Status,
+                    Date: dataSource[i].AppointmentDate,
+                    StartTime: dataSource[i].StartTime,
+                    EndTime: dataSource[i].EndTime,
+                    ReportTimeSpan: dataSource[i].ReportTimeSpan
+                });
+            }
+        }
+
+        $('#table').bootstrapTable('refreshOptions', {
+            pagination: true,
+            data: searchSource
+        });
+    };
+
     function getTimeslot() {
         $('#timeslot').empty();
         $('#timeslot').append($('<option></option>').val('All').html('All'));
@@ -279,7 +303,7 @@
             formatedMinute = (minute.length === 1) ? ("0" + minute) : minute,
             second = date.getSeconds().toString(),
             formatedSecond = (second.length === 1) ? ("0" + second) : second;
-        return formatedMonth + "/" + formatedDay + "/" + year;
+        return formatedDay + "/" + formatedMonth + "/" + year;
     }
 
     function convert24hrTo12hr(time) {
