@@ -9,7 +9,7 @@ using System.Threading;
 using ZMOTIFPRINTERLib;
 using ZMTGraphics;
 
-namespace Trinity.Device
+namespace Trinity.Device.Util
 {
     public class SmartCardPrinterUtil : DeviceUtil
     {

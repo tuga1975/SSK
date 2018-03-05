@@ -1,6 +1,7 @@
 ﻿using PCSC;
 using System;
 using System.Diagnostics;
+using Trinity.Device.Util;
 
 namespace Trinity.Device.Authentication
 {

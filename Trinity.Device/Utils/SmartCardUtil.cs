@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Trinity.Device
+namespace Trinity.Device.Util
 {
     public class SmartCardUtil
     {

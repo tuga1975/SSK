@@ -11,6 +11,7 @@ using Trinity.Common.Common;
 using Trinity.DAL;
 using Trinity.Device;
 using Trinity.Device.Authentication;
+using Trinity.Device.Util;
 
 namespace DutyOfficer
 {

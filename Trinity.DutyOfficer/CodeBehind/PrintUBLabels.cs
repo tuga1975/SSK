@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 using Trinity.Common;
 using Trinity.Device;
+using Trinity.Device.Util;
 
 namespace DutyOfficer.CodeBehind
 {

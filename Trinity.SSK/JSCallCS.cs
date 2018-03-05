@@ -10,6 +10,7 @@ using Trinity.DAL;
 using Trinity.DAL.DBContext;
 using Trinity.Device;
 using Trinity.BE;
+using Trinity.Device.Util;
 
 namespace SSK
 {

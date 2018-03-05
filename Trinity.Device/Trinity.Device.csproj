@@ -69,7 +69,7 @@
     <Compile Include="TSCLIB_DLL.cs" />
     <Compile Include="Utils\BarcodePrinterUtil.cs" />
     <Compile Include="Utils\BarcodeScannerUtil.cs" />
-    <Compile Include="Utils\LEDDisplayUtil.cs" />
+    <Compile Include="Utils\QueueMonitorUtil.cs" />
     <Compile Include="Utils\SpeakerUtil.cs" />
     <Compile Include="Utils\DeviceUtil.cs" />
     <Compile Include="Utils\CameraUtil.cs" />

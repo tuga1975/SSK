@@ -54,6 +54,10 @@
             this.chkGreenLight = new System.Windows.Forms.CheckBox();
             this.chkBlueLight = new System.Windows.Forms.CheckBox();
             this.btnTurnOffAllLights = new System.Windows.Forms.Button();
+            this.label6 = new System.Windows.Forms.Label();
+            this.cboParity = new System.Windows.Forms.ComboBox();
+            this.chkSSA = new System.Windows.Forms.CheckBox();
+            this.chkSSK = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -62,7 +66,7 @@
             // 
             this.cboPortNames.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboPortNames.FormattingEnabled = true;
-            this.cboPortNames.Location = new System.Drawing.Point(19, 55);
+            this.cboPortNames.Location = new System.Drawing.Point(19, 31);
             this.cboPortNames.Name = "cboPortNames";
             this.cboPortNames.Size = new System.Drawing.Size(121, 24);
             this.cboPortNames.TabIndex = 0;
@@ -72,15 +76,16 @@
             this.cboBaudRate.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboBaudRate.FormattingEnabled = true;
             this.cboBaudRate.Items.AddRange(new object[] {
-            "19200"});
-            this.cboBaudRate.Location = new System.Drawing.Point(156, 56);
+            "19200",
+            "2400"});
+            this.cboBaudRate.Location = new System.Drawing.Point(156, 32);
             this.cboBaudRate.Name = "cboBaudRate";
             this.cboBaudRate.Size = new System.Drawing.Size(121, 24);
             this.cboBaudRate.TabIndex = 1;
             // 
             // progressBar1
             // 
-            this.progressBar1.Location = new System.Drawing.Point(498, 56);
+            this.progressBar1.Location = new System.Drawing.Point(498, 32);
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(100, 23);
             this.progressBar1.TabIndex = 2;
@@ -210,7 +215,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(19, 33);
+            this.label1.Location = new System.Drawing.Point(19, 9);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(75, 17);
             this.label1.TabIndex = 6;
@@ -219,7 +224,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(156, 33);
+            this.label2.Location = new System.Drawing.Point(156, 9);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(75, 17);
             this.label2.TabIndex = 7;
@@ -228,7 +233,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(495, 33);
+            this.label3.Location = new System.Drawing.Point(495, 9);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(48, 17);
             this.label3.TabIndex = 8;
@@ -312,11 +317,58 @@
             this.btnTurnOffAllLights.UseVisualStyleBackColor = true;
             this.btnTurnOffAllLights.Click += new System.EventHandler(this.btnTurnOffAllLights_Click);
             // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(619, 8);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(44, 17);
+            this.label6.TabIndex = 16;
+            this.label6.Text = "Parity";
+            // 
+            // cboParity
+            // 
+            this.cboParity.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboParity.FormattingEnabled = true;
+            this.cboParity.Items.AddRange(new object[] {
+            "Even",
+            "None"});
+            this.cboParity.Location = new System.Drawing.Point(622, 31);
+            this.cboParity.Name = "cboParity";
+            this.cboParity.Size = new System.Drawing.Size(121, 24);
+            this.cboParity.TabIndex = 17;
+            // 
+            // chkSSA
+            // 
+            this.chkSSA.AutoSize = true;
+            this.chkSSA.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chkSSA.Location = new System.Drawing.Point(12, 73);
+            this.chkSSA.Name = "chkSSA";
+            this.chkSSA.Size = new System.Drawing.Size(97, 36);
+            this.chkSSA.TabIndex = 18;
+            this.chkSSA.Text = "SSA";
+            this.chkSSA.UseVisualStyleBackColor = true;
+            // 
+            // chkSSK
+            // 
+            this.chkSSK.AutoSize = true;
+            this.chkSSK.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chkSSK.Location = new System.Drawing.Point(134, 73);
+            this.chkSSK.Name = "chkSSK";
+            this.chkSSK.Size = new System.Drawing.Size(97, 36);
+            this.chkSSK.TabIndex = 19;
+            this.chkSSK.Text = "SSK";
+            this.chkSSK.UseVisualStyleBackColor = true;
+            // 
             // FormLEDLightControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(857, 616);
+            this.Controls.Add(this.chkSSK);
+            this.Controls.Add(this.chkSSA);
+            this.Controls.Add(this.cboParity);
+            this.Controls.Add(this.label6);
             this.Controls.Add(this.btnTurnOffAllLights);
             this.Controls.Add(this.chkBlueLight);
             this.Controls.Add(this.chkGreenLight);
@@ -372,5 +424,9 @@
         private System.Windows.Forms.CheckBox chkGreenLight;
         private System.Windows.Forms.CheckBox chkBlueLight;
         private System.Windows.Forms.Button btnTurnOffAllLights;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.ComboBox cboParity;
+        private System.Windows.Forms.CheckBox chkSSA;
+        private System.Windows.Forms.CheckBox chkSSK;
     }
 }

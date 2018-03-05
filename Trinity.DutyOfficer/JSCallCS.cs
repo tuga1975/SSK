@@ -15,6 +15,7 @@ using Trinity.DAL;
 using Trinity.Identity;
 using System.Linq;
 using Trinity.Device.Authentication;
+using Trinity.Device.Util;
 
 namespace DutyOfficer
 {
@@ -279,7 +280,7 @@ namespace DutyOfficer
         {
             if(_isFocusQueue)
             {
-                Trinity.Device.SmartCardReaderUtil.Instance.StopSmartCardMonitor();
+                SmartCardReaderUtil.Instance.StopSmartCardMonitor();
                 _isFocusQueue = false;
             }
             
@@ -328,7 +329,7 @@ namespace DutyOfficer
         {
             if (_isFocusQueue)
             {
-                Trinity.Device.SmartCardReaderUtil.Instance.StopSmartCardMonitor();
+                SmartCardReaderUtil.Instance.StopSmartCardMonitor();
                 _isFocusQueue = false;
             }
 
@@ -416,7 +417,7 @@ namespace DutyOfficer
         {
             if (_isFocusQueue)
             {
-                Trinity.Device.SmartCardReaderUtil.Instance.StopSmartCardMonitor();
+                Trinity.Device.Util.SmartCardReaderUtil.Instance.StopSmartCardMonitor();
                 _isFocusQueue = false;
             }
 
@@ -467,7 +468,7 @@ namespace DutyOfficer
         {
             if (_isFocusQueue)
             {
-                Trinity.Device.SmartCardReaderUtil.Instance.StopSmartCardMonitor();
+                Trinity.Device.Util.SmartCardReaderUtil.Instance.StopSmartCardMonitor();
                 _isFocusQueue = false;
             }
 
@@ -490,7 +491,7 @@ namespace DutyOfficer
         {
             if (_isFocusQueue)
             {
-                Trinity.Device.SmartCardReaderUtil.Instance.StopSmartCardMonitor();
+                SmartCardReaderUtil.Instance.StopSmartCardMonitor();
                 _isFocusQueue = false;
             }
 
@@ -525,7 +526,7 @@ namespace DutyOfficer
         {
             if (_isFocusQueue)
             {
-                Trinity.Device.SmartCardReaderUtil.Instance.StopSmartCardMonitor();
+                Trinity.Device.Util.SmartCardReaderUtil.Instance.StopSmartCardMonitor();
                 _isFocusQueue = false;
             }
 
@@ -640,7 +641,7 @@ namespace DutyOfficer
         {
             if (_isFocusQueue)
             {
-                Trinity.Device.SmartCardReaderUtil.Instance.StopSmartCardMonitor();
+                Trinity.Device.Util.SmartCardReaderUtil.Instance.StopSmartCardMonitor();
                 _isFocusQueue = false;
             }
 

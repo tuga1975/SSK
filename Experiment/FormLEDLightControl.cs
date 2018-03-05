@@ -55,6 +55,15 @@ namespace Experiment
                     txtHEXStringToSend.Enabled = true;
                     btnOpenPort.Enabled = false;
                     btnClosePort.Enabled = true;
+                    //if (cboParity.SelectedIndex == 0)
+                    //{
+                    //    serialPort1.Parity = Parity.Even;
+                    //}
+                    //else
+                    //{
+                    //    serialPort1.Parity = Parity.None;
+                    //}
+                    serialPort1.Parity = Parity.None;
                     serialPort1.Open();
 
                     serialPort1.DataReceived += SerialPort1_DataReceived;
@@ -107,6 +116,7 @@ namespace Experiment
 
         private void btnSend_Click(object sender, EventArgs e)
         {
+
             string ascii = txtASCIIStringToSend.Text;
             string hex = txtHEXStringToSend.Text;
             if (!string.IsNullOrEmpty(ascii))
@@ -126,8 +136,6 @@ namespace Experiment
                 txtReceivedData.Text = ex.Message;
             }
 
-            //serialPort1.WriteLine(txtDataToSend.Text);
-            //txtHEXStringToSend.Text = "";
         }
 
         private void btnReceive_Click(object sender, EventArgs e)
@@ -174,6 +182,20 @@ namespace Experiment
             try
             {
                 serialPort1.Write(bytestosend, 0, bytestosend.Length);
+            }
+            catch (Exception ex)
+            {
+                txtReceivedData.Text = ex.Message;
+            }
+        }
+
+        private void SendASCIICommand(string asciiCommand)
+        {
+            txtReceivedData.Text = "";
+            try
+            {
+                MessageBox.Show("Starting to send command '" + asciiCommand + "' to SSK LED Status Lighting...");
+                serialPort1.WriteLine(asciiCommand);
             }
             catch (Exception ex)
             {
@@ -243,26 +265,33 @@ namespace Experiment
 
         private void btnTurnOffAllLights_Click(object sender, EventArgs e)
         {
-            string hexCommand = "";
-            string asciiCommand = "";
-            //
-            // Turn of RED light
-            //
-            asciiCommand = "WR 605 0";
-            hexCommand = ToHEX(asciiCommand);
-            SendCommand(hexCommand);
-            //
-            // Turn of GREEN light
-            //
-            asciiCommand = "WR 606 0";
-            hexCommand = ToHEX(asciiCommand);
-            SendCommand(hexCommand);
-            //
-            // Turn of BLUE light
-            //
-            asciiCommand = "WR 604 0";
-            hexCommand = ToHEX(asciiCommand);
-            SendCommand(hexCommand);
+            if (chkSSA.Checked)
+            {
+                string hexCommand = "";
+                string asciiCommand = "";
+                //
+                // Turn of RED light
+                //
+                asciiCommand = "WR 605 0";
+                hexCommand = ToHEX(asciiCommand);
+                SendCommand(hexCommand);
+                //
+                // Turn of GREEN light
+                //
+                asciiCommand = "WR 606 0";
+                hexCommand = ToHEX(asciiCommand);
+                SendCommand(hexCommand);
+                //
+                // Turn of BLUE light
+                //
+                asciiCommand = "WR 604 0";
+                hexCommand = ToHEX(asciiCommand);
+                SendCommand(hexCommand);
+            }
+            else
+            {
+
+            }
         }
     }
 }

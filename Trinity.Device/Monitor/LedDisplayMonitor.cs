@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Trinity.DAL;
+using Trinity.Device.Util;
 using Trinity.Util;
 
 namespace Trinity.Device
@@ -31,7 +32,7 @@ namespace Trinity.Device
             try
             {
                 // get statuses
-                var statuses = LEDDisplayUtil.Instance.GetDeviceStatus();
+                var statuses = QueueMonitorUtil.Instance.GetDeviceStatus();
 
                 // update local ApplicationDevice_Status
                 DAL_DeviceStatus dAL_DeviceStatus = new DAL_DeviceStatus();
