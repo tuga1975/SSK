@@ -151,6 +151,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\FacialRecognition\FacialRecognition.csproj">
+      <Project>{57b6577e-b550-4ed1-abe3-14928c72995b}</Project>
+      <Name>FacialRecognition</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Trinity.BE\Trinity.BE.csproj">
       <Project>{4321fa96-3a53-49c1-89ef-8a2f6e9b81c7}</Project>
       <Name>Trinity.BE</Name>
@@ -265,6 +269,7 @@
     <Content Include="View\bootstrap-datepicker\locales\bootstrap-datepicker.zh-TW.min.js" />
     <Content Include="View\html\Appointments.html" />
     <Content Include="View\html\Alerts.html" />
+    <Content Include="View\html\Authentication\FacialRecognition.html" />
     <Content Include="View\html\Authentication\FingerPrint.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -304,6 +309,7 @@
     <Content Include="View\html\Table.html" />
     <Content Include="View\html\UBlabel.html" />
     <Content Include="View\html\UBlabelPopup.html" />
+    <Content Include="View\img\camera.jpg" />
     <Content Include="View\img\central_narco_logo.png" />
     <Content Include="View\img\FingerPrint.png" />
     <Content Include="View\img\Logo.png" />

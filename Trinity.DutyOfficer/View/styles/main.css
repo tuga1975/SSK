@@ -494,6 +494,18 @@ table tr.active {
     margin-top: 3px;
 }
 
+/*FacialRecognition*/
+.facialRecognition {
+    height: calc(100vh - 300px);
+    width: auto;
+    text-align: center;
+    padding: 40px 0 20px 0;
+    background-image: url('../img/camera.jpg');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
 /*Modal Popup*/
 .modal-content {
     padding: 40px;
