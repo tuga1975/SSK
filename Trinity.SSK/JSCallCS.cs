@@ -155,8 +155,22 @@ namespace SSK
             workingTimeshift.Afternoon = GetWorkingTimeshift(timeslots, appointment.Timeslot_ID, EnumTimeshift.Afternoon);
             workingTimeshift.Evening = GetWorkingTimeshift(timeslots, appointment.Timeslot_ID, EnumTimeshift.Evening);
 
+            var appointmentBE = new Trinity.BE.Appointment()
+            {
+                ID = appointment.ID.ToString(),
+                AbsenceReporting_ID = appointment.AbsenceReporting_ID,
+                Timeslot_ID = appointment.Timeslot_ID,
+                UserId = appointment.UserId,
+                AppointmentDate = appointment.Date,
+                ChangedCount = appointment.ChangedCount,
+                Status = appointment.Status,
+                ReportTime = appointment.ReportTime,
+                StartTime = appointment.Timeslot != null ? appointment.Timeslot.StartTime : null,
+                EndTime = appointment.Timeslot != null ? appointment.Timeslot.EndTime : null,
+            };
+           
             // redirect
-            this._web.LoadPageHtml("BookAppointment.html", new object[] { appointment, workingTimeshift });
+            this._web.LoadPageHtml("BookAppointment.html", new object[] { appointmentBE, workingTimeshift });
         }
 
         public bool CheckBookingTime(string timeslotId)
