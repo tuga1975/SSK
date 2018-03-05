@@ -1,28 +1,33 @@
-﻿<div class="modal fade" role="dialog" id="idBlock">
+﻿<div class="modal fade" role="dialog" id="idBlock" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Unblock Supervisee</h5>
+                <h4 class="modal-title">Unblock Supervisee</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
             <div class="modal-body">
                 <div class="form-group">
                     <div class="input-group">
-                        <span class="input-group-addon">Officer NRIC</span>
-                        <input readonly="readonly" type="text" class="form-control pri" id="OfficerNRICBlock">
+                        <label class="input-group-addon">Officer NRIC</label>
+                        <span><input readonly="readonly" type="text" class="form-control pri" id="OfficerNRICBlock"></span>
                     </div>
                     <br />
                     <div class="input-group">
-                        <span class="input-group-addon">Officer Name</span>
-                        <input readonly="readonly" type="text" class="form-control pri" id="OfficerNameBlock">
+                        <label class="input-group-addon">Officer Name</label>
+                        <span><input readonly="readonly" type="text" class="form-control pri" id="OfficerNameBlock"></span>
                     </div>
                     <br />
-                    <span class="input-group-addon"  style="width:120px;">Reason:</span>
-                    <br />
-                    <textarea type="text" class="form-control pri" rows="4" id="Reason"></textarea>
+                    <div>
+                        <label class="textarea" >Reason:</label>
+                        <textarea type="text" class="form-control pri col-12" rows="4" id="Reason"></textarea>
+                    </div>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" id="UnblockBtn" class="btn btn-default" >Unblock</button>
+            <div class="modal-footer d-flex justify-content-center">
+                <button type="button" class="btn btn-default" data-dismiss="modal" aria-label="Close">CANCEL</button>
+                <button type="button" id="UnblockBtn" class="btn btn-default" >UNBLOCK</button>
             </div>
         </div>
     </div>
