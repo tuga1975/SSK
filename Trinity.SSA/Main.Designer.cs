@@ -35,19 +35,21 @@
             // 
             this.LayerWeb.Dock = System.Windows.Forms.DockStyle.Fill;
             this.LayerWeb.Location = new System.Drawing.Point(0, 0);
-            this.LayerWeb.MinimumSize = new System.Drawing.Size(20, 20);
+            this.LayerWeb.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.LayerWeb.MinimumSize = new System.Drawing.Size(27, 25);
             this.LayerWeb.Name = "LayerWeb";
-            this.LayerWeb.Size = new System.Drawing.Size(1256, 640);
+            this.LayerWeb.Size = new System.Drawing.Size(1675, 788);
             this.LayerWeb.TabIndex = 0;
             this.LayerWeb.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.LayerWeb_DocumentCompleted);
             // 
             // Main
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1256, 640);
+            this.ClientSize = new System.Drawing.Size(1675, 788);
             this.Controls.Add(this.LayerWeb);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "Main";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Supervisee Sample Authentication";
