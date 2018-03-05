@@ -310,7 +310,7 @@ namespace SSA
                 Session session = Session.Instance;
                 Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.SUPERVISEE];
                 var dalQueue = new DAL_QueueNumber();
-                dalQueue.UpdateQueueStatusByUserId(user.UserId, EnumStations.SSA, EnumStations.UHP, EnumQueueStatuses.Finished, EnumQueueOutcomeText.Processing);
+                dalQueue.UpdateQueueStatusByUserId(user.UserId, EnumStations.SSA, EnumQueueStatuses.Finished, EnumStations.UHP, EnumQueueStatuses.Processing, "", EnumQueueOutcomeText.Processing);
 
                 this._web.LoadPageHtml("PrintingMUBAndTTLabels.html");
                 this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').show(); ; ");
