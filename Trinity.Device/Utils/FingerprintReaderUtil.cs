@@ -6,7 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using Trinity.Common;
 
-namespace Trinity.Device
+namespace Trinity.Device.Util
 {
     public class FingerprintReaderUtil
     {

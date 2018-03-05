@@ -122,8 +122,17 @@
                 {
                     field: 'HSA',
                     title: 'UT',
-                    align: 'center', formatter: function (value, row, index, field) {
-                        return '<span style="display:inline-block;padding:2px 5px;border:1px solid #CCC;">' + value + '</span>';
+                    align: 'center',
+                    formatter: function (value, row, index, field) {
+                        if (value == 'NEG') {
+                            return '<span style="color:green;display:inline-block;padding:2px 5px;border:1px solid #CCC;">' + value + '</span>';
+                        }
+                        else if (value == 'POS') {
+                            return '<span style="color:red;display:inline-block;padding:2px 5px;border:1px solid #CCC;">' + value + '</span>';
+                        }
+                        else {
+                            return '';
+                        }
                     }
                 },
                 {

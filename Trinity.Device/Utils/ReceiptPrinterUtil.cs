@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Management;
 using Trinity.Common;
 
-namespace Trinity.Device
+namespace Trinity.Device.Util
 {
     public class ReceiptPrinterUtil : DeviceUtil
     {

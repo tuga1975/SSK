@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using Trinity.Common;
 using Trinity.DAL;
 using Trinity.Device;
+using Trinity.Device.Util;
 
 namespace Enrolment.CodeBehind.Authentication
 {

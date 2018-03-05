@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Trinity.Common;
+using Trinity.Device.Util;
 
 namespace Trinity.Device.Authentication
 {

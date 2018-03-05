@@ -13,6 +13,7 @@ using Trinity.Common.Common;
 using Trinity.DAL;
 using Trinity.Device;
 using Trinity.Device.Authentication;
+using Trinity.Device.Util;
 
 namespace SSK
 {
@@ -113,7 +114,7 @@ namespace SSK
             string message = "The fingerprint reader is not connected, please report to the Duty Officer!";
 
             // Send Notification to duty officer
-            Trinity.SignalR.Client.SignalR.Instance.SendAllDutyOfficer(null,"The fingerprinter is not connected", "The fingerprinter is not connected.", NotificationType.Error);
+            Trinity.SignalR.Client.SignalR.Instance.SendAllDutyOfficer(null, "The fingerprinter is not connected", "The fingerprinter is not connected.", NotificationType.Error);
 
 
             // show message box to user
@@ -189,20 +190,28 @@ namespace SSK
                 ////// For testing purpose
                 //Session session = Session.Instance;
                 ////////Supervisee
-                //Trinity.BE.User user = new DAL_User().GetUserByUserId("bb67863c-c330-41aa-b397-c220428ad16x").Data;
+                ////Trinity.BE.User user = new DAL_User().GetUserByUserId("26df26a0-73a3-4bdb-bce6-10e92265a3d7").Data;
                 //////// Duty Officer
-                //////Trinity.BE.User user = new DAL_User().GetUserByUserId("ead039f9-b9a1-45bb-8186-0bb7248aafac", true);
+                //Trinity.BE.User user = new DAL_User().GetUserByUserId("dfbb2a6a-9e45-4a76-9f75-af1a7824a947").Data;
                 //session[CommonConstants.USER_LOGIN] = user;
-               //session.IsSmartCardAuthenticated = true;
+                //session.IsSmartCardAuthenticated = true;
                 //session.IsFingerprintAuthenticated = true;
 
-                //NavigateTo(NavigatorEnums.Authentication_Fingerprint);
+                ////NavigateTo(NavigatorEnums.Authentication_Fingerprint);
                 //NavigateTo(NavigatorEnums.Supervisee);
-                //NavigateTo(NavigatorEnums.Authentication_NRIC);                
+                ////NavigateTo(NavigatorEnums.Authentication_NRIC);
 
                 _isFirstTimeLoaded = false;
 
                 //Trinity.SignalR.Client.SignalR.Instance.SendAllDutyOfficer(user.UserId,"a","a", NotificationType.Notification);
+            }
+
+            // SSK is ready to use - all is well
+            // Turn on GREEN Light
+            if (LEDStatusLightingUtil.Instance.IsPortOpen)
+            {
+                LEDStatusLightingUtil.Instance.TurnOffAllLEDs();
+                LEDStatusLightingUtil.Instance.SwitchGREENLightOnOff(true);
             }
         }
 
@@ -311,7 +320,7 @@ namespace SSK
             Session session = Session.Instance;
             Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
             string errorMessage = "User '" + user.Name + "' cannot complete facial authentication";
-            Trinity.SignalR.Client.SignalR.Instance.SendAllDutyOfficer(user.UserId,"Facial authentication failed", errorMessage, NotificationType.Error);
+            Trinity.SignalR.Client.SignalR.Instance.SendAllDutyOfficer(user.UserId, "Facial authentication failed", errorMessage, NotificationType.Error);
 
             // show message box to user
             MessageBox.Show("Facial authentication failed", "Facial Authentication", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -376,11 +385,11 @@ namespace SSK
                 string errorMessage = "Unable to read " + user.Name + "'s fingerprint.";
 
                 // Send Notification to duty officer
-                Trinity.SignalR.Client.SignalR.Instance.SendAllDutyOfficer(user.UserId,"Fingerprint Authentication failed", errorMessage, NotificationType.Error);
+                Trinity.SignalR.Client.SignalR.Instance.SendAllDutyOfficer(user.UserId, "Fingerprint Authentication failed", errorMessage, NotificationType.Error);
 
                 _jsCallCS.PopupMessage("Authentication failed", "Fingerprint's Authenication failed!<br /> Please contact your officer.");
                 NavigateTo(NavigatorEnums.Authentication_SmartCard);
-                
+
 
                 //for testing purpose
                 // Pause for 1 second and goto Facial Login Screen

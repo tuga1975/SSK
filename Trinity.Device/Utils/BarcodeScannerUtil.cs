@@ -4,7 +4,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using Trinity.Common;
 
-namespace Trinity.Util
+namespace Trinity.Device.Util
 {
     public class BarcodeScannerUtil
     {

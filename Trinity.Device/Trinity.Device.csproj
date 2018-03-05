@@ -57,7 +57,7 @@
     <Compile Include="Monitor\BarcodePrinterMonitor.cs" />
     <Compile Include="Monitor\BarcodeScannerMonitor.cs" />
     <Compile Include="Monitor\ReceiptPrinterMonitor.cs" />
-    <Compile Include="Monitor\LedDisplayMonitor.cs" />
+    <Compile Include="Monitor\QueueScreenMonitor.cs" />
     <Compile Include="Monitor\SpeakerMonitor.cs" />
     <Compile Include="Monitor\CameraMonitor.cs" />
     <Compile Include="Monitor\DocumentScannerMonitor.cs" />
@@ -69,7 +69,8 @@
     <Compile Include="TSCLIB_DLL.cs" />
     <Compile Include="Utils\BarcodePrinterUtil.cs" />
     <Compile Include="Utils\BarcodeScannerUtil.cs" />
-    <Compile Include="Utils\LEDDisplayUtil.cs" />
+    <Compile Include="Utils\LEDStatusLightingUtil.cs" />
+    <Compile Include="Utils\QueueMonitorUtil.cs" />
     <Compile Include="Utils\SpeakerUtil.cs" />
     <Compile Include="Utils\DeviceUtil.cs" />
     <Compile Include="Utils\CameraUtil.cs" />

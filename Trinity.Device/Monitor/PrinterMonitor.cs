@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using Trinity.Common;
+using Trinity.Device.Util;
 
 namespace Trinity.Device
 {

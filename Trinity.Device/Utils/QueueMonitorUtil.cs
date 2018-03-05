@@ -2,20 +2,20 @@
 using System.Linq;
 using System.Windows.Forms;
 
-namespace Trinity.Util
+namespace Trinity.Device.Util
 {
-    public class LEDDisplayUtil
+    public class QueueMonitorUtil
     {
         #region Singleton Implementation
         // The variable is declared to be volatile to ensure that assignment to the instance variable completes before the instance variable can be accessed
-        private static volatile LEDDisplayUtil _instance;
+        private static volatile QueueMonitorUtil _instance;
 
         // Uses a syncRoot instance to lock on, rather than locking on the type itself, to avoid deadlocks.
         private static object syncRoot = new Object();
 
-        private LEDDisplayUtil() { }
+        private QueueMonitorUtil() { }
 
-        public static LEDDisplayUtil Instance
+        public static QueueMonitorUtil Instance
         {
             get
             {
@@ -24,7 +24,7 @@ namespace Trinity.Util
                     lock (syncRoot)
                     {
                         if (_instance == null)
-                            _instance = new LEDDisplayUtil();
+                            _instance = new QueueMonitorUtil();
                     }
                 }
 

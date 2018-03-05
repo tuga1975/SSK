@@ -519,5 +519,10 @@ public static class EnumQueueOutcomeText
     public const string TapSmartCardToContinue = "Tap smart card to continue";
 }
 
+public static class EnumUTResult
+{
+    public const string NEG = "NEG";
+    public const string POS = "POS";
+}
 
 

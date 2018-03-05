@@ -273,18 +273,18 @@ namespace Trinity.DAL
             {
                 DrugResult drug = _localUnitOfWork.DataContext.DrugResults.FirstOrDefault(d => d.NRIC.Equals(NRIC));
                 if (drug == null)
-                    return "NEG";
+                    return EnumUTResult.NEG;
                 else
                 {
                     if ((drug.AMPH.HasValue && drug.AMPH.Value) || (drug.BARB.HasValue && drug.BARB.Value) || (drug.BENZ.HasValue && drug.BENZ.Value) || (drug.BUPRE.HasValue && drug.BUPRE.Value) || (drug.CAT.HasValue && drug.CAT.Value) 
                         || (drug.COCA.HasValue && drug.COCA.Value) || (drug.KET.HasValue && drug.KET.Value) || (drug.LSD.HasValue && drug.LSD.Value) || (drug.METH.HasValue && drug.METH.Value) || (drug.MTQL.HasValue && drug.MTQL.Value) 
                         || (drug.NPS.HasValue && drug.NPS.Value) || (drug.OPI.HasValue) && drug.OPI.Value || (drug.PCP.HasValue && drug.PCP.Value) || (drug.PPZ.HasValue && drug.PPZ.Value) || (drug.THC.HasValue && drug.THC.Value))
                     {
-                        return "POS";
+                        return EnumUTResult.POS;
                     }
                     else
                     {
-                        return "NEG";
+                        return EnumUTResult.NEG;
                     }
                 }
             }
@@ -292,17 +292,17 @@ namespace Trinity.DAL
             {
                 DrugResult drug = _centralizedUnitOfWork.DataContext.DrugResults.FirstOrDefault(d => d.NRIC.Equals(NRIC));
                 if (drug == null)
-                    return "NEG";
+                    return EnumUTResult.NEG;
                 else
                 {
                     if (drug.AMPH.Value || drug.BARB.Value || drug.BENZ.Value || drug.BUPRE.Value || drug.CAT.Value || drug.COCA.Value || drug.KET.Value || drug.LSD.Value
                         || drug.METH.Value || drug.MTQL.Value || drug.NPS.Value || drug.OPI.Value || drug.PCP.Value || drug.PPZ.Value || drug.THC.Value)
                     {
-                        return "POS";
+                        return EnumUTResult.POS;
                     }
                     else
                     {
-                        return "NEG";
+                        return EnumUTResult.NEG;
                     }
                 }
             }

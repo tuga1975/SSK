@@ -14,6 +14,7 @@ using Trinity.DAL;
 using Trinity.DAL.DBContext;
 using Trinity.Identity;
 using Trinity.Device;
+using Trinity.Device.Util;
 
 namespace Enrolment
 {

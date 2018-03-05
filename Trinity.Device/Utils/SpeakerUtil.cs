@@ -1,7 +1,7 @@
 ﻿using NAudio.CoreAudioApi;
 using System;
 
-namespace Trinity.Util
+namespace Trinity.Device.Util
 {
     public class SpeakerUtil
     {

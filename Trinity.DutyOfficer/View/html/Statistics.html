@@ -64,7 +64,7 @@
             pageSize = 10;
 
         $(function () {
-            $('#datetimepicker').datepicker();
+            $('#datetimepicker').datepicker({ format: 'dd/mm/yyyy' });
         });
 
         var today = new Date();
@@ -80,7 +80,7 @@
             mm = '0' + mm
         }
 
-        today = mm + '/' + dd + '/' + yyyy;
+        today = dd + '/' + mm + '/' + yyyy;
         $('#dateSearch').val(today);
 
         var searchDateStatistic = $('#dateSearch').val();
@@ -96,10 +96,10 @@
                         Reported: element.Reported,
                         Absent: element.Absent,
                         Available: element.Available,
-                        Date: element.Date
+                        Date: formatDate(element.Date)
                     });
 
-                    if (Date.parse(element.Date) == Date.parse(today)) {
+                    if (Date.parse(formatDate(element.Date)) == Date.parse(today)) {
                         searchSource.push({
                             StartTime: element.StartTime,
                             EndTime: element.EndTime,
@@ -108,7 +108,7 @@
                             Reported: element.Reported,
                             Absent: element.Absent,
                             Available: element.Available,
-                            Date: element.Date
+                            Date: formatDate(element.Date)
                         });
                     }
                 });
@@ -183,6 +183,7 @@
     $('#dateSearch').change(function () {
         var source = [];
         var dateSearch = $('#dateSearch').val();
+        searchDateStatistic = $('#dateSearch').val();
         for (var i = 0; i < dataSource.length; i++) {
             if (Date.parse(dataSource[i].Date) == Date.parse(dateSearch)) {
                 source.push({
@@ -208,5 +209,22 @@
 
     function loadAppointmentPage(dateLoad, startTimeLoad, endTimeLoad) {
         api.server.LoadPageAppointment(dateLoad, startTimeLoad, endTimeLoad);
-    };   
+    };
+
+    function formatDate(strDate) {
+        var date = new Date(Date.parse(strDate)),
+            year = date.getFullYear(),
+            month = (date.getMonth() + 1).toString(),
+            formatedMonth = (month.length === 1) ? ("0" + month) : month,
+            day = date.getDate().toString(),
+            formatedDay = (day.length === 1) ? ("0" + day) : day,
+            hour = date.getHours().toString(),
+            formatedHour = (hour.length === 1) ? ("0" + hour) : hour,
+            minute = date.getMinutes().toString(),
+            formatedMinute = (minute.length === 1) ? ("0" + minute) : minute,
+            second = date.getSeconds().toString(),
+            formatedSecond = (second.length === 1) ? ("0" + second) : second;
+        return formatedDay + "/" + formatedMonth + "/" + year;
+    };
+
 </script>

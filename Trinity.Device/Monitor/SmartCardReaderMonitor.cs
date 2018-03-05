@@ -9,6 +9,7 @@ using Trinity.Common;
 using Trinity.DAL;
 using Trinity.BE;
 using System.Threading;
+using Trinity.Device.Util;
 
 namespace Trinity.Device
 {
