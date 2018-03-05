@@ -8,7 +8,7 @@ using Trinity.Util;
 
 namespace Trinity.Device
 {
-    public static class LEDDisplayMonitor
+    public static class QueueScreenMonitor
     {
         public static bool Start()
         {

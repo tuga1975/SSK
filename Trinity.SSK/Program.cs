@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Trinity.Device;
+using Trinity.Device.Util;
 
 namespace SSK
 {
@@ -27,7 +29,16 @@ namespace SSK
                 BarcodeScannerMonitor.Start();
                 SmartCardReaderMonitor.Start();
                 ReceiptPrinterMonitor.Start();
-                LEDDisplayMonitor.Start();
+                QueueScreenMonitor.Start();
+
+                // SSK is initialisation for use.
+                // Turn on BLUE Light
+                string comPort = ConfigurationManager.AppSettings["COMPort"];
+                int baudRate = int.Parse(ConfigurationManager.AppSettings["BaudRate"]);
+                string parity = ConfigurationManager.AppSettings["Parity"];
+                LEDStatusLightingUtil.Instance.OpenPort("SSK", comPort, baudRate, parity);
+                LEDStatusLightingUtil.Instance.TurnOffAllLEDs();
+                LEDStatusLightingUtil.Instance.SwitchBLUELightOnOff(true);
 
                 Application.Run(new Main());
             }
