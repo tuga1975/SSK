@@ -344,8 +344,8 @@ span[color] {
 .tab-content {
     padding: 20px 40px;
     margin-top: 70px;
-    height: calc(100vh - 260px);
-    overflow-y: scroll;
+    max-height: calc(100vh - 290px);
+    overflow: auto;    
 }
 
 .tab-content .tabtitle span {
@@ -379,7 +379,7 @@ table tr.active {
     top: -80px;
     left: 230px;
     /*width: 50%;*/
-    background: #fff;
+    background: #f6f6f6;
     display: inline-block;
 }
 
@@ -387,15 +387,15 @@ table tr.active {
     padding-bottom: 20px;
 }
 
-    .formEntries .entries,
-    .formFilter .filters {
-        font-size: 14px;
-        margin: 0 5px;
-        color: #848484;
-        display: inline-block;
-        width: auto;
-        float: left;
-    }
+.formEntries .entries,
+.formFilter .filters {
+    font-size: 14px;
+    margin: 0 5px;
+    color: #848484;
+    /*display: inline-block;*/
+    width: auto;
+    float: left;
+}
 
 .formEntries select#pageSize {
     font-size: 14px;
@@ -418,7 +418,7 @@ table tr.active {
     color: #848484;
     border: none;
     margin: 0;
-    display: inline-block;
+    /*display: inline-block;*/
     width: auto;
     float: left;
     margin-right: 5px;
@@ -494,4 +494,61 @@ table tr.active {
     margin-top: 3px;
 }
 
-
+/*Modal Popup*/
+.modal-content {
+    padding: 40px;
+}
+.modal-header,
+.modal-body,
+.modal-footer {
+    border: none;
+}
+.modal-header h4 {
+    color: #334352;
+    font-weight: bold;
+}
+.modal-header span {
+    font-size: 50px;
+    font-weight: 300;
+    position: absolute;
+    right: 20px;
+    top: 30px;
+    color: #999;
+}
+.modal-body .input-group {
+    width: 100%;
+    float: left;
+    overflow: hidden;
+    padding: 15px 0;
+    border-bottom: 1px solid #e7e7e7;
+}
+.modal-body label {
+    color: #1cacf6;
+    width: 30%;
+    float: left;
+}
+.modal-body textarea {
+    border: 1px solid #e7e7e7;
+    box-shadow: none;
+    color: #334352;
+}
+.modal-body .textarea {
+    padding: 15px 0;
+}
+.modal-body span {
+    color: #334352;
+    width: 70%;
+    float: left;
+}
+.modal-body input {
+    background: none;
+    border: none;
+} 
+.modal-body input[readonly] {
+    background: none;
+}
+ .modal-footer button {
+        width: auto;
+        padding: 10px 40px;
+        border-radius: 5px;
+    }

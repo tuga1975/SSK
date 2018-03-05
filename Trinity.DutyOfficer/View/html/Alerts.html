@@ -43,7 +43,7 @@
 
 <div class="table-wrapper formWrapper">
     <div class="tab-header">
-        <span class="formHeader"><b>Alerts</b></span>
+        <span class="formHeader"><b>Alerts and Notifications</b></span>
     </div>
     <div class="tab-content">
         <div class="form-inline formEntries float-right">
@@ -135,7 +135,8 @@
             pageSize = $("#pageSize option:selected").text();
             $table.bootstrapTable('refreshOptions', {
                 pagination: true,
-                pageSize: pageSize
+                pageSize: pageSize,
+                search: true,
             });
         });
 
