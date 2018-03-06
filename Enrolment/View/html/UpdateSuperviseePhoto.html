@@ -30,24 +30,30 @@
                     <div class="row">
                         <div class="col-md-6 col-sm-12 px-5">
                             <img src="../images/avatar-demo.jpg" alt="avatar"
-                                 class="img-fluid" id="userPhoto1"  />
+                                 class="img-fluid" id="userPhoto1" />
                             <br />
-                            <a href="#" class="text-center d-block" id="updatePhoto1" onclick="api.server.OpenPictureCaptureForm('1')">
+                            <!--<a href="#" class="text-center d-block" id="updatePhoto1" onclick="api.server.OpenPictureCaptureForm('1')">
                                 Take Picture 1
-                            </a>
+                            </a>-->
+                            <button href="#" class="text-center d-block btn-default" id="updatePhoto1" onclick="OpenCaptureForm(1);" >
+                                Take Picture 1
+                            </button>
                         </div>
                         <div class="col-md-6 col-sm-12 px-5">
                             <img src="../images/avatar-demo.jpg" alt="avatar"
                                  class="img-fluid" id="userPhoto2" />
                             <br />
-                            <a href="#" class="text-center d-block" id="updatePhoto2" onclick="api.server.OpenPictureCaptureForm('2')">
+                            <!--<a href="#" class="text-center d-block" id="updatePhoto2" onclick="api.server.OpenPictureCaptureForm('2')">
                                 Take Picture 2
-                            </a>
+                            </a>-->
+                            <button href="#" class="text-center d-block btn-default" id="updatePhoto2" onclick="OpenCaptureForm(2);">
+                                Take Picture 2
+                            </button>
                         </div>
                     </div>
                     <div class="row mt-4">
                         <div class="offset-md-2 col-md-4 col-sm-12">
-                            <a  href="#" class="btn btn-light btn-block" id="cancelBtn" onclick="api.server.CancelUpdatePicture();">Cancel</a>
+                            <button  href="#" class="btn btn-light btn-block" id="cancelBtn" onclick="api.server.CancelUpdatePicture();">Cancel</button>
                         </div>
                         <div class="col-md-4 col-sm-12">
                             <button type="button" class="btn btn-primary btn-block" id="SaveBtn">Update</button>
@@ -96,6 +102,16 @@
 </div>-->
 
 <script>
+    function OpenCaptureForm(id) {
+        api.server.OpenPictureCaptureForm(''+id+'');
+    }
+    //$('#updatePhoto1').click(function () {
+    //    api.server.OpenPictureCaptureForm('1');
+    //});
+    //$('#updatePhoto2').click(function () {
+    //    api.server.OpenPictureCaptureForm('2');
+    //});
+
     $(function () {
         $('.s_label').click(function () {
             $(this).next().fadeToggle(200);

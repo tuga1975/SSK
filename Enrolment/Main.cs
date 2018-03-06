@@ -384,13 +384,13 @@ namespace Enrolment
                             NavigateTo(NavigatorEnums.WebcamCapture);
                             pictureBox1.Show();
 
-                           //pictureBoxHead.BackColor = Color.Transparent;
+                            //pictureBoxHead.BackColor = Color.Transparent;
                             // pictureBoxHead.Image = SetImageOpacity(Resources.background_takephoto, 0.25F);
                             //btnHead.BackgroundImage = bmp;
                             pictureBoxHead.BringToFront();
                             pictureBoxHead.Show();
                         }
-                        catch(Exception ex)
+                        catch (Exception ex)
                         {
                             LayerWeb.InvokeScript("failAlert", "Cant find this device camera!");
                         }
@@ -563,6 +563,7 @@ namespace Enrolment
                 {
                     photo2 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo2);
                 }
+                session[CommonConstants.CURRENT_PAGE] = "UpdateSuperviseePhoto";
                 LayerWeb.LoadPageHtml("UpdateSuperviseePhoto.html", currentEditUser);
                 LayerWeb.InvokeScript("setAvatar", photo1, photo2);
             }
@@ -718,6 +719,21 @@ namespace Enrolment
                                 }
                                 LayerWeb.InvokeScript("setFingerprintServerCall", fingerprintLeft, fingerprintRight);
                             }
+                            else if(currentPage.ToString() == "UpdateSuperviseePhoto")
+                            {
+                                if (currentEditUser.UserProfile.User_Photo1 != null)
+                                {
+                                    photo1 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo1);
+
+                                }
+                                if (currentEditUser.UserProfile.User_Photo2 != null)
+                                {
+                                    photo2 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo2);
+                                }
+                                session[CommonConstants.CURRENT_PAGE] = "UpdateSuperviseePhoto";
+                                LayerWeb.LoadPageHtml("UpdateSuperviseePhoto.html", currentEditUser);
+                                LayerWeb.InvokeScript("setAvatar", photo1, photo2);
+                            }
                             CaptureAttempt(CommonConstants.CAPTURE_PHOTO_ATTEMPT);
                         }
                     }));
@@ -841,7 +857,7 @@ namespace Enrolment
                 if (!string.IsNullOrEmpty(photo1) || !string.IsNullOrEmpty(photo2))
                 {
                     LayerWeb.InvokeScript("setAvatar", photo1, photo2);
-                    LayerWeb.InvokeScript("setPopUpPhotoServerCall", photo1, photo2);
+                    //LayerWeb.InvokeScript("setPopUpPhotoServerCall", photo1, photo2);
                 }
 
                 // convert fingerprint to base64 and add to html
@@ -859,7 +875,7 @@ namespace Enrolment
             }
             else if (e.Name == EventNames.SUPERVISEE_DATA_UPDATE_CANCELED)
             {
-                
+
                 NavigateTo(NavigatorEnums.Supervisee);
             }
         }
