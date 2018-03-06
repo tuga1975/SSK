@@ -2,28 +2,32 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title"><strong>Print Label</strong></h3>
+                <h4 class="modal-title">Print Label</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
             <div class="modal-body">
                 <div class="form-group">
                     <div class="input-group">
-                        <span class="input-group-addon">Officer NRIC</span>
+                        <label class="input-group-addon">Officer NRIC</label>
                         <input readonly="readonly" type="text" class="form-control pri" id="OfficerNRICUB">
                     </div>
                     <br />
                     <div class="input-group">
-                        <span class="input-group-addon">Officer Name</span>
+                        <label class="input-group-addon">Officer Name</label>
                         <input readonly="readonly" type="text" class="form-control pri" id="OfficerNameUB">
                     </div>
                     <br />
-                    <div class="input-group">
-                        <span class="input-group-addon">Reason:</span>
-                        <textarea type="text" class="form-control pri" rows="5" id="Reason"></textarea>
+                    <div>
+                        <label class="textarea" type="text">Reason:</label>
+                        <textarea type="text" class="form-control pri col-12" rows="5" id="Reason"></textarea>
                     </div>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal" id="PrintBtn">Print</button>
+            <div class="modal-footer d-flex justify-content-center">
+                <button type="button" class="btn btn-default" data-dismiss="modal" aria-label="Close">CANCEL</button>
+                <button type="button" id="PrintBtn" class="btn btn-default">PRINT</button>
             </div>
         </div>
     </div>
