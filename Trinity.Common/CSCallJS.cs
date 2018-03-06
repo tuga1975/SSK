@@ -24,20 +24,20 @@ public static class CSCallJS
     {
         web.InvokeScript("AddContentPage", File.ReadAllText(String.Format("{1}/View/html/{0}", file, CSCallJS.curDir), Encoding.UTF8));
     }
-    public static void LoadPageHtml(this WebBrowser web, string file,object model)
+    public static void LoadPageHtml(this WebBrowser web, string file, object model)
     {
-        web.InvokeScript("AddContentPage", File.ReadAllText(String.Format("{1}/View/html/{0}", file, CSCallJS.curDir), Encoding.UTF8),JsonConvert.SerializeObject(model, Formatting.Indented, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore }));
+        web.InvokeScript("AddContentPage", File.ReadAllText(String.Format("{1}/View/html/{0}", file, CSCallJS.curDir), Encoding.UTF8), JsonConvert.SerializeObject(model, Formatting.Indented, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore }));
     }
 
-    public static void InvokeScript(this WebBrowser web, string function,params object[] pram)
+    public static void InvokeScript(this WebBrowser web, string function, params object[] pram)
     {
         try
         {
-            var a = Lib.LayerWeb;
+            //var a = Lib.LayerWeb;
             web.Invoke((MethodInvoker)(() =>
-          {
-              web.Document.InvokeScript(function, pram);
-          }));
+            {
+                web.Document.InvokeScript(function, pram);
+            }));
 
         }
         catch (Exception ex)
@@ -45,7 +45,7 @@ public static class CSCallJS
             Console.WriteLine(ex.Message);
         }
     }
-    
+
     public static void PushNoti(this WebBrowser web, int count)
     {
         web.InvokeScript("pushNoti", count);
@@ -86,12 +86,12 @@ public static class CSCallJS
     }
 
     #region Queue Number
-    public static void RefreshQueueNumbers(this WebBrowser web, string servingQueueNumber,string currentQueueNumber, string[] nextQueueNumberList,string[] holdingList)
+    public static void RefreshQueueNumbers(this WebBrowser web, string servingQueueNumber, string currentQueueNumber, string[] nextQueueNumberList, string[] holdingList)
     {
         var nextQueue = JsonConvert.SerializeObject(nextQueueNumberList, Formatting.Indented, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
         var holdList = JsonConvert.SerializeObject(holdingList, Formatting.Indented, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
         web.InvokeScript("refreshQueueNumbers", servingQueueNumber, currentQueueNumber, nextQueue, holdList);
     }
-    
+
     #endregion
 }

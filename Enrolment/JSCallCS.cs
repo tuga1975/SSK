@@ -630,8 +630,10 @@ namespace Enrolment
 
         #region Authentication & Authorization
 
+        private static int _count = 0;
         public void Login(string username, string password)
         {
+            _count++;
             EventCenter eventCenter = EventCenter.Default;
             var dalUser = new DAL_User();
             ApplicationUser appUser = dalUser.Login(username, password);

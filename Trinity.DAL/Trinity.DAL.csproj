@@ -131,94 +131,109 @@
     <Compile Include="DAL\DAL_User.cs" />
     <Compile Include="DAL\DAL_UserProfile.cs" />
     <Compile Include="DBContext\AbsenceReporting.cs">
-      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
+      <DependentUpon>SSK.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\ActionLog.cs">
-      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
+      <DependentUpon>SSK.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\Address.cs">
-      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
+      <DependentUpon>SSK.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\ApplicationDevice_Status.cs">
-      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
+      <DependentUpon>SSK.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\Appointment.cs">
-      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
+      <DependentUpon>SSK.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\APS_USER_ACT_LOG.cs">
-      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
+      <DependentUpon>SSK.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\Device.cs">
-      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
+      <DependentUpon>SSK.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\DrugResult.cs">
-      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
+      <DependentUpon>SSK.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\EMAIL_LOG.cs">
-      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
+      <DependentUpon>SSK.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\Holiday.cs">
-      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
+      <DependentUpon>SSK.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\IssuedCard.cs">
-      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
+      <DependentUpon>SSK.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\Label.cs">
-      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
+      <DependentUpon>SSK.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\Membership_RoleClaims.cs">
-      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
+      <DependentUpon>SSK.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\Membership_Roles.cs">
-      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
+      <DependentUpon>SSK.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\Membership_UserClaims.cs">
-      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
+      <DependentUpon>SSK.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\Membership_UserDevices.cs">
-      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
+      <DependentUpon>SSK.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\Membership_UserLogins.cs">
-      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
+      <DependentUpon>SSK.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\Membership_UserRoles.cs">
-      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
+      <DependentUpon>SSK.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\Membership_Users.cs">
-      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
+      <DependentUpon>SSK.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\MsgRecipient.cs">
-      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
+      <DependentUpon>SSK.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\Notification.cs">
-      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
+      <DependentUpon>SSK.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\OperationSetting.cs">
-      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
+      <DependentUpon>SSK.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\OperationSettings_ChangeHist.cs">
-      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
+      <DependentUpon>SSK.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\Queue.cs">
-      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
+      <DependentUpon>SSK.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\QueueDetail.cs">
-      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
+      <DependentUpon>SSK.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\Security_QA.cs">
-      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
+      <DependentUpon>SSK.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\SentMessage.cs">
-      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
+      <DependentUpon>SSK.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\Setting.cs">
-      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
+      <DependentUpon>SSK.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\SMS_LOG.cs">
-      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
+      <DependentUpon>SSK.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBContext\SSK.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SSK.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBContext\SSK.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SSK.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBContext\SSK.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SSK.edmx</DependentUpon>
     </Compile>
     <Compile Include="DBContext\Timeslot.cs">
-      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
+      <DependentUpon>SSK.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\TrinityCentralizedDB.Context.cs">
       <AutoGen>True</AutoGen>
@@ -236,31 +251,16 @@
       <DependentUpon>TrinityCentralizedDB.edmx</DependentUpon>
     </Compile>
     <Compile Include="DBContext\UploadedDocument.cs">
-      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
+      <DependentUpon>SSK.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\User_Profiles.cs">
-      <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
+      <DependentUpon>SSK.tt</DependentUpon>
     </Compile>
     <Compile Include="Partial\Timeslot.cs" />
     <Compile Include="Partial\Queue.cs" />
     <Compile Include="Partial\QueueDetail.cs" />
     <Compile Include="Partial\Appointment.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="DBContext\SSK.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>SSK.Context.tt</DependentUpon>
-    </Compile>
-    <Compile Include="DBContext\SSK.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>SSK.tt</DependentUpon>
-    </Compile>
-    <Compile Include="DBContext\SSK.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>SSK.edmx</DependentUpon>
-    </Compile>
     <Compile Include="Repository\DatabaseFactory.cs" />
     <Compile Include="Repository\Disposable.cs" />
     <Compile Include="Repository\GenericRepository.cs" />
@@ -290,8 +290,8 @@
   <ItemGroup>
     <Content Include="DBContext\SSK.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>SSK.Context.cs</LastGenOutput>
       <DependentUpon>SSK.edmx</DependentUpon>
+      <LastGenOutput>SSK.Context.cs</LastGenOutput>
     </Content>
     <Content Include="DBContext\SSK.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -312,25 +312,23 @@
     <Content Include="DBScripts\TrinityCentralizedDB_CreateTables.sql" />
   </ItemGroup>
   <ItemGroup>
-    <EntityDeploy Include="DBContext\SSK.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>SSK.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="App.Config" />
     <None Include="Data\Database.zip" />
     <EntityDeploy Include="DBContext\TrinityCentralizedDB.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>TrinityCentralizedDB.Designer.cs</LastGenOutput>
     </EntityDeploy>
+    <EntityDeploy Include="DBContext\SSK.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>SSK.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="DBContext\SSK.edmx.diagram">
+      <DependentUpon>SSK.edmx</DependentUpon>
+    </None>
     <None Include="DBContext\TrinityCentralizedDB.edmx.diagram">
       <DependentUpon>TrinityCentralizedDB.edmx</DependentUpon>
     </None>
     <None Include="packages.config" />
-    <None Include="DBContext\SSK.edmx.diagram">
-      <DependentUpon>SSK.edmx</DependentUpon>
-    </None>
     <None Include="SSKDataSet.xsc">
       <DependentUpon>SSKDataSet.xsd</DependentUpon>
     </None>
