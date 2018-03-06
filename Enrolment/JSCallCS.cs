@@ -630,8 +630,10 @@ namespace Enrolment
 
         #region Authentication & Authorization
 
+        private static int _count = 0;
         public void Login(string username, string password)
         {
+            _count++;
             EventCenter eventCenter = EventCenter.Default;
             var dalUser = new DAL_User();
             ApplicationUser appUser = dalUser.Login(username, password);
@@ -746,6 +748,7 @@ namespace Enrolment
 
             EventCenter eventCenter = EventCenter.Default;
             eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.LOAD_UPDATE_PHOTOS });
+
         }
 
 
