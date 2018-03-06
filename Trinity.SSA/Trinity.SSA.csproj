@@ -208,6 +208,8 @@
     <Content Include="View\img\central_narco_logo.png" />
     <Content Include="View\img\loading.gif" />
     <Content Include="View\img\Logo.png" />
+    <Content Include="View\img\SmartCard.mp4" />
+    <Content Include="View\img\Thumbprint.mp4" />
     <Content Include="View\scripts\lib.js" />
     <Content Include="View\styles\main.css" />
   </ItemGroup>

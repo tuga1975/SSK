@@ -291,6 +291,8 @@
     <Content Include="View\img\Reporting-Icon-300x300.png" />
     <Content Include="View\img\ScanFingerPrint.png" />
     <Content Include="View\img\ScanSmartCard.png" />
+    <Content Include="View\img\SmartCard.mp4" />
+    <Content Include="View\img\Thumbprint.mp4" />
     <Content Include="View\img\updateprofile.png" />
     <Content Include="View\scripts\lib.js" />
     <Content Include="View\styles\main.css" />
