@@ -1,5 +1,8 @@
-﻿using System;
+﻿using ImageConvertor;
+using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
@@ -38,8 +41,10 @@ namespace Trinity.Common
                 contentQRCode = labelInfo.MarkingNo + "*" + labelInfo.NRIC.PadLeft(9, '0') + "*" + labelInfo.Name.PadLeft(60, '_') + "*" + "_".PadLeft(8, '_');
             }
 
-            var encryptContent = CommonUtil.EncryptString(contentQRCode, AESKey);
-            var pixelData = qrCodeWriter.Write(encryptContent);
+            //var encryptContent = CommonUtil.EncryptString(contentQRCode, AESKey);
+            //var pixelData = qrCodeWriter.Write(encryptContent);
+            var pixelData = qrCodeWriter.Write(contentQRCode);
+
             // creating a bitmap from the raw pixel data; if only black and white colors are used it makes no difference    
             // that the pixel data ist BGRA oriented and the bitmap is initialized with RGB    
             System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(pixelData.Width, pixelData.Height, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
@@ -333,9 +338,15 @@ namespace Trinity.Common
             {
                 using (System.Drawing.Image img = System.Drawing.Image.FromFile(imgPath))
                 {
-                    //rotate the picture by 90 degrees and re-save the picture as a Jpeg
+                    // Rotate the picture by 90 degrees and re-save the picture as a Jpeg
                     img.RotateFlip(System.Drawing.RotateFlipType.Rotate90FlipNone);
-                    img.Save(imgPath, System.Drawing.Imaging.ImageFormat.Png);
+
+
+                    Bitmap target = new Bitmap(img);
+
+                    Bitmap targe2t = Convertor1.ConvertTo8bppFormat(target);
+
+                    targe2t.Save(imgPath, ImageFormat.Bmp);
                 }
 
                 return true;

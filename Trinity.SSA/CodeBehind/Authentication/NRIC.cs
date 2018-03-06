@@ -88,20 +88,12 @@ namespace SSA.CodeBehind.Authentication
         public void NRICAuthentication(string nric)
         {
             DAL_User dal_User = new DAL_User();
-            var user = dal_User.GetSuperviseeByNRIC(nric);
+            var supervisee = dal_User.GetSuperviseeByNRIC(nric);
 
-            // if local user is null, get user from centralized, and sync db
-            if (user == null)
-            {
-                user = dal_User.GetSuperviseeByNRIC(nric);
-            }
-
-            // if centralized user is null
-            // raise failsed event and return false
-            if (user == null)
+            if (supervisee == null)
             {
                 // raise show message event, then return
-                RaiseShowMessage(new ShowMessageEventArgs("NRIC " + nric + ": not found. Please check NRIC again.", "Not found", MessageBoxButtons.OK, MessageBoxIcon.Warning));
+                RaiseShowMessage(new ShowMessageEventArgs("NRIC '" + nric + "' not found. Please check again.", "Not found", MessageBoxButtons.OK, MessageBoxIcon.Error));
                 return;
             }
 
@@ -109,7 +101,7 @@ namespace SSA.CodeBehind.Authentication
             Session session = Session.Instance;
             session.IsSmartCardAuthenticated = true;
             session.IsFingerprintAuthenticated = true;
-            session[CommonConstants.SUPERVISEE] = user;
+            session[CommonConstants.SUPERVISEE] = supervisee;
 
             // raise succeeded event
             RaiseNRICSucceededEvent();

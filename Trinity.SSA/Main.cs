@@ -172,7 +172,7 @@ namespace SSA
                 //Session session = Session.Instance;
                 //// Supervisee
                 //Trinity.BE.User user = new DAL_User().GetUserByUserId("bb67863c-c330-41aa-b397-c220428ad16f").Data;
-                //session[CommonConstants.SUPERVISEE] = user;
+                //session[CommonConstants.USER_LOGIN] = user;
                 ////// Duty Officer
                 //////Trinity.BE.User user = new DAL_User().GetUserByUserId("dfbb2a6a-9e45-4a76-9f75-af1a7824a947", true);
                 //////session[CommonConstants.USER_LOGIN] = user;
@@ -266,22 +266,20 @@ namespace SSA
 
             LayerWeb.RunScript("$('.status-text').css('color','#000').text('Fingerprint authentication is successful.');");
 
-            Thread.Sleep(1000);
+            Thread.Sleep(200);
 
             // if role = 0 (duty officer), redirect to NRIC.html
             // else (supervisee), redirect to Supervisee.html
-            Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-            if (user.Role == EnumUserRoles.DutyOfficer)
+            Trinity.BE.User currentUser = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+            if (currentUser.Role == EnumUserRoles.DutyOfficer)
             {
                 // navigate to Authentication_NRIC
                 NavigateTo(NavigatorEnums.Authentication_NRIC);
             }
             else
             {
-                session[CommonConstants.SUPERVISEE] = user;
-                session[CommonConstants.USER_LOGIN] = null;
                 // navigate to SuperviseeParticulars page
-                Trinity.SignalR.Client.SignalR.Instance.UserLogined(user.UserId);
+                Trinity.SignalR.Client.SignalR.Instance.UserLogined(currentUser.UserId);
                 NavigateTo(NavigatorEnums.Supervisee_Particulars);
             }
         }
@@ -360,22 +358,20 @@ namespace SSA
             Session session = Session.Instance;
             session.IsFacialAuthenticated = true;
 
-            Thread.Sleep(1000);
+            Thread.Sleep(200);
 
             // if role = 0 (duty officer), redirect to NRIC.html
             // else (supervisee), redirect to Supervisee.html
-            Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-            if (user.Role == EnumUserRoles.DutyOfficer)
+            Trinity.BE.User currentUser = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+            if (currentUser.Role == EnumUserRoles.DutyOfficer)
             {
                 // navigate to Authentication_NRIC
                 NavigateTo(NavigatorEnums.Authentication_NRIC);
             }
             else
             {
-                session[CommonConstants.SUPERVISEE] = user;
-                session[CommonConstants.USER_LOGIN] = null;
                 // navigate to SuperviseeParticulars page
-                Trinity.SignalR.Client.SignalR.Instance.UserLogined(user.UserId);
+                Trinity.SignalR.Client.SignalR.Instance.UserLogined(currentUser.UserId);
                 NavigateTo(NavigatorEnums.Supervisee_Particulars);
             }
         }
