@@ -21,11 +21,17 @@ namespace Trinity.DAL
             if (EnumAppConfig.IsLocal)
             {
                 var queueDetail = _localUnitOfWork.DataContext.Queues.Where(item => DbFunctions.TruncateTime(item.CreatedTime).Value == DateTime.Now.Date && ((item.Appointment_ID.HasValue && item.Appointment.UserId == UserID) || (!item.Appointment_ID.HasValue && item.Created_By == UserID))).SelectMany(d => d.QueueDetails).FirstOrDefault(d => d.Station == EnumStations.SSK);
-                queueDetail.Status = EnumQueueStatuses.Finished;
-                _localUnitOfWork.GetRepository<DAL.DBContext.QueueDetail>().Update(queueDetail);
-                _localUnitOfWork.Save();
+
+                // Need to check why queue detail is null
+                if (queueDetail != null)
+                {
+                    queueDetail.Status = EnumQueueStatuses.Finished;
+                    _localUnitOfWork.GetRepository<DAL.DBContext.QueueDetail>().Update(queueDetail);
+                    _localUnitOfWork.Save();
+                }
             }
-            else{
+            else
+            {
                 var queueDetail = _centralizedUnitOfWork.DataContext.Queues.Include("Appointment").Include("QueueDetails").Where(item => DbFunctions.TruncateTime(item.CreatedTime).Value == DateTime.Now.Date && ((item.Appointment_ID.HasValue && item.Appointment.UserId == UserID) || (!item.Appointment_ID.HasValue && item.Created_By == UserID))).SelectMany(d => d.QueueDetails).FirstOrDefault(d => d.Station == EnumStations.SSK);
                 if (queueDetail != null)
                 {
@@ -35,7 +41,7 @@ namespace Trinity.DAL
                 }
             }
         }
-        public void UpdateStatusQueueDetail(Guid QueueID,string Station,string Status)
+        public void UpdateStatusQueueDetail(Guid QueueID, string Station, string Status)
         {
             var queueDetail = _localUnitOfWork.DataContext.QueueDetails.FirstOrDefault(d => d.Queue_ID == QueueID && d.Station == Station);
             queueDetail.Status = Status;
@@ -44,8 +50,8 @@ namespace Trinity.DAL
         }
         #endregion
 
-        
-       
-        
+
+
+
     }
 }
