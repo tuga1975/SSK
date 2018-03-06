@@ -610,8 +610,8 @@ namespace Enrolment
                             LayerWeb.LoadPageHtml("UpdateSuperviseeBiodata.html", currentEditUser);
                             LayerWeb.InvokeScript("setAvatar", currentEditUser.UserProfile.User_Photo1_Base64, currentEditUser.UserProfile.User_Photo2_Base64);
 
-                            string fingerprintLeft = "../images/fingerprint.png";
-                            string fingerprintRight = "../images/fingerprint.png";
+                            string fingerprintLeft = "../images/leftthumb.png";
+                            string fingerprintRight = "../images/rightthumb.png";
                             if (currentEditUser.UserProfile.LeftThumbImage != null)
                             {
                                 fingerprintLeft = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(currentEditUser.UserProfile.LeftThumbImage));
@@ -624,20 +624,13 @@ namespace Enrolment
                         }
                         else if (currentPage.ToString() == "UpdateSupervisee")
                         {
-                            LayerWeb.LoadPageHtml("Edit-Supervisee.html", currentEditUser);
-                            LayerWeb.InvokeScript("setAvatar", photo1, photo2);
-
-                            string fingerprintLeft = "../images/fingerprint.png";
-                            string fingerprintRight = "../images/fingerprint.png";
-                            if (currentEditUser.UserProfile.LeftThumbImage != null)
-                            {
-                                fingerprintLeft = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(currentEditUser.UserProfile.LeftThumbImage));
-                            }
-                            if (currentEditUser.UserProfile.RightThumbImage != null)
-                            {
-                                fingerprintRight = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(currentEditUser.UserProfile.RightThumbImage));
-                            }
-                            LayerWeb.InvokeScript("setFingerprintServerCall", fingerprintLeft, fingerprintRight);
+                            LoadEditSupervisee(currentEditUser, photo1, photo2);
+                        }
+                        else if (currentPage.ToString() == "UpdateSuperviseePhoto")
+                        {
+                            photo1 = currentEditUser.UserProfile.User_Photo1 != null ? Convert.ToBase64String(currentEditUser.UserProfile.User_Photo1) : string.Empty;
+                            photo2 = currentEditUser.UserProfile.User_Photo1 != null ? Convert.ToBase64String(currentEditUser.UserProfile.User_Photo2) : string.Empty;
+                            LoadEditSupervisee(currentEditUser, photo1, photo2);
                         }
                     }
                 }
@@ -880,6 +873,23 @@ namespace Enrolment
             }
         }
 
+        private void LoadEditSupervisee(ProfileModel currentEditUser, string photo1, string photo2)
+        {
+            LayerWeb.LoadPageHtml("Edit-Supervisee.html", currentEditUser);
+            LayerWeb.InvokeScript("setAvatar", photo1, photo2);
+
+            string fingerprintLeft = "../images/leftthumb.png";
+            string fingerprintRight = "../images/rightthumb.png";
+            if (currentEditUser.UserProfile.LeftThumbImage != null)
+            {
+                fingerprintLeft = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(currentEditUser.UserProfile.LeftThumbImage));
+            }
+            if (currentEditUser.UserProfile.RightThumbImage != null)
+            {
+                fingerprintRight = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(currentEditUser.UserProfile.RightThumbImage));
+            }
+            LayerWeb.InvokeScript("setFingerprintServerCall", fingerprintLeft, fingerprintRight);
+        }
 
         private void CaptureAttempt(string sessionAttemptName)
         {
