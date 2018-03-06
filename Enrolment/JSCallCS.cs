@@ -746,6 +746,7 @@ namespace Enrolment
 
             EventCenter eventCenter = EventCenter.Default;
             eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.LOAD_UPDATE_PHOTOS });
+
         }
 
 
