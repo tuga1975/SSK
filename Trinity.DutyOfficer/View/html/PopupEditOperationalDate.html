@@ -131,8 +131,8 @@
             </div>
             <div class="modal-body">
                 <div class="form-group row">
-                    <div class="col-12">
-                        <label>Date</label>
+                    <div class="col-12 datetime">
+                        <label class="margin-top">Date</label>
                         <select class="form-control" id="dayOfWeek">
                             <option>Monday</option>
                             <option>Tuesday</option>
@@ -143,81 +143,129 @@
                             <option>Sunday</option>
                         </select>
                     </div>
-                    <div id="editSlot">
-                        <div class="formEdit">
-                            <div class="form-header heading border-bottom" id="headingOne">
-                                <div data-toggle="collapse" data-target="#morningSlot" aria-expanded="true" aria-controls="morningSlot">
-                                    <span><i class="fa fa-dot-circle"></i></span><span>Morning Slots</span><span class="float-right"><i class="fa fa-chevron-down"></i></span>
+                    <div id="editSlot" class="col-12">
+                        <div class="formEdit row">
+                            <div class="form-header heading col-12" id="headingOne">
+                                <div class="headingWrapper" data-toggle="collapse" data-target="#morningSlot" aria-expanded="true" aria-controls="morningSlot">
+                                    <span class="firstIcon"><i class="fa fa-circle"></i></span>
+                                    <span class="titleSlot">Morning Slots</span>
+                                    <span class="secIcon"><i class="fa fa-angle-down"></i></span>
                                 </div>
                             </div>
 
-                            <div id="morningSlot" class="collapse" aria-labelledby="headingOne" data-parent="#editSlot">
+                            <div id="morningSlot" class="collapse col-12" aria-labelledby="headingOne" data-parent="#editSlot">
                                 <div class="form-body">
-                                    <div class="form-inline">
-                                        <span class="control-label" style="display:inline-block;width:110px;height:33px; padding-top:3px;box-sizing:border-box;border:1px solid #CCC;text-align:center;">Start Time</span>
-                                        <select class="form-control" style="width:70px; margin-left:15px;" id="morning-start-HH"></select> : <select class="form-control" style="width:70px;" id="morning-start-MM"></select> : <select class="form-control" style="width:70px;" id="morning-start-XM"></select>
-                                        <span class="control-label" style="display:inline-block;width:110px;height:33px; padding-top:3px;box-sizing:border-box;border:1px solid #CCC;text-align:center; margin-left:50px;">End Time</span>
-                                        <select class="form-control" style="width:70px; margin-left:15px;" id="morning-end-HH"></select> : <select class="form-control" style="width:70px;" id="morning-end-MM"></select> : <select class="form-control" style="width:70px;" id="morning-end-XM"></select>
+                                    <div class="form-inline editSlotContent row">
+                                        <div class="col-6">
+                                            <span class="control-label margin-top">Start Time</span>
+                                            <select class="form-control margin" id="morning-start-HH"></select>
+                                            <select class="form-control margin" id="morning-start-MM"></select>
+                                            <select class="form-control margin" id="morning-start-XM"></select>
+                                        </div>
+                                        <div class="col-6">
+                                            <span class="control-label margin-top">End Time</span>
+                                            <select class="form-control margin" id="morning-end-HH"></select>
+                                            <select class="form-control margin" id="morning-end-MM"></select>
+                                            <select class="form-control" id="morning-end-XM"></select>
+                                        </div>
                                     </div>
-                                    <div class="form-inline" style="margin-bottom:20px;">
-                                        <span class="control-label" style="display:inline-block;width:180px;height:55px; padding-top:3px;box-sizing:border-box;border:1px solid #CCC;text-align:center;">Maximum Supervisee<br />per timeslot</span>
-                                        <input type="text" class="form-control" style="width:70px; margin-left:15px;" id="morning-max" />
-                                        <span class="control-label" style="display:inline-block;width:140px;height:55px; padding-top:3px;box-sizing:border-box;border:1px solid #CCC;text-align:center; margin-left:50px;">Reserved<br />for spare</span>
-                                        <input type="text" class="form-control" style="width:70px; margin-left:15px;" id="morning-spare" />
-                                        <span class="control-label" style="display:inline-block;width:120px;height:33px; padding-top:3px;box-sizing:border-box;border:1px solid #CCC;text-align:center; margin-left:50px;">Intervals</span>
-                                        <select class="form-control" style="width:70px; margin-left:15px;" id="morning-interval"></select>
+                                    <div class="form-inline editSlotContent row">
+                                        <div class="col-6 row">
+                                            <span class="control-label margin-top col-10">Maximum Supervisee per timeslot</span>
+                                            <input type="text" class="form-control col-2" id="morning-max" />
+                                        </div>
+                                        <div class="col-3 row">
+                                            <span class="control-label margin-top col-10">Reserved for spare</span>
+                                            <input type="text" class="form-control col-2" id="morning-spare" />
+                                        </div>
+                                        <div class="col-3 row">
+                                            <span class="control-label margin-top col-10">Intervals</span>
+                                            <select class="form-control col-2" id="morning-interval"></select>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="formEdit row">
-                            <div class="form-header colTitle col-12" id="headingSec">
-                                <div class="btn btn-link" data-toggle="collapse" data-target="#afternoonSlot" aria-expanded="true" aria-controls="afternoonSlot">
-                                    <span>x</span><span>Afternoon Slots</span><span>V</span>
+                            <div class="form-header heading col-12" id="headingSec">
+                                <div class="headingWrapper" data-toggle="collapse" data-target="#afternoonSlot" aria-expanded="true" aria-controls="afternoonSlot">
+                                    <span class="firstIcon"><i class="fa fa-circle"></i></span>
+                                    <span class="titleSlot">Afternoon Slots</span>
+                                    <span class="secIcon"><i class="fa fa-angle-down"></i></span>
                                 </div>
                             </div>
 
                             <div id="afternoonSlot" class="collapse col-12" aria-labelledby="headingSec" data-parent="#editSlot">
                                 <div class="form-body">
-                                    <div class="form-inline" style="margin-bottom:20px;">
-                                        <span class="control-label" style="display:inline-block;width:110px;height:33px; padding-top:3px;box-sizing:border-box;border:1px solid #CCC;text-align:center;">Start Time</span>
-                                        <select class="form-control" style="width:70px; margin-left:15px;" id="afternoon-start-HH"></select> : <select class="form-control" style="width:70px;" id="afternoon-start-MM"></select> : <select class="form-control" style="width:70px;" id="afternoon-start-XM"></select>
-                                        <span class="control-label" style="display:inline-block;width:110px;height:33px; padding-top:3px;box-sizing:border-box;border:1px solid #CCC;text-align:center; margin-left:50px;">End Time</span>
-                                        <select class="form-control" style="width:70px; margin-left:15px;" id="afternoon-end-HH"></select> : <select class="form-control" style="width:70px;" id="afternoon-end-MM"></select> : <select class="form-control" style="width:70px;" id="afternoon-end-XM"></select>
+                                    <div class="form-inline editSlotContent row">
+                                        <div class="col-6">
+                                            <span class="control-label margin-top">Start Time</span>
+                                            <select class="form-control margin" id="afternoon-start-HH"></select>
+                                            <select class="form-control margin" id="afternoon-start-MM"></select>
+                                            <select class="form-control margin" id="afternoon-start-XM"></select>
+                                        </div>
+                                        <div class="col-6">
+                                            <span class="control-label margin-top">End Time</span>
+                                            <select class="form-control margin" id="afternoon-end-HH"></select>
+                                            <select class="form-control margin" id="afternoon-end-MM"></select>
+                                            <select class="form-control margin" id="afternoon-end-XM"></select>
+                                        </div>
                                     </div>
-                                    <div class="form-inline" style="margin-bottom:20px;">
-                                        <span class="control-label" style="display:inline-block;width:180px;height:55px; padding-top:3px;box-sizing:border-box;border:1px solid #CCC;text-align:center;">Maximum Supervisee<br />per timeslot</span>
-                                        <input type="text" class="form-control" style="width:70px; margin-left:15px;" id="afternoon-max" />
-                                        <span class="control-label" style="display:inline-block;width:140px;height:55px; padding-top:3px;box-sizing:border-box;border:1px solid #CCC;text-align:center; margin-left:50px;">Reserved<br />for spare</span>
-                                        <input type="text" class="form-control" style="width:70px; margin-left:15px;" id="afternoon-spare" />
-                                        <span class="control-label" style="display:inline-block;width:120px;height:33px; padding-top:3px;box-sizing:border-box;border:1px solid #CCC;text-align:center; margin-left:50px;">Intervals</span>
-                                        <select class="form-control" style="width:70px; margin-left:15px;" id="afternoon-interval"></select>
+                                    <div class="form-inline editSlotContent row">
+                                        <div class="col-6 row">
+                                            <span class="control-label margin-top col-10">Maximum Supervisee per timeslot</span>
+                                            <input type="text" class="form-control col-2" id="afternoon-max" />
+                                        </div>
+                                        <div class="col-3 row">
+                                            <span class="control-label margin-top col-10">Reserved for spare</span>
+                                            <input type="text" class="form-control col-2" id="afternoon-spare" />
+                                        </div>
+                                        <div class="col-3 row">
+                                            <span class="control-label margin-top col-10">Intervals</span>
+                                            <select class="form-control col-2" id="afternoon-interval"></select>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="formEdit row">
-                            <div class="form-header colTitle col-12" id="headingThree">
-                                <div class="btn btn-link" data-toggle="collapse" data-target="#eveningSlot" aria-expanded="true" aria-controls="eveningSlot">
-                                    <span>x</span><span>Morning Slots</span><span>V</span>
+                            <div class="form-header heading col-12" id="headingThir">
+                                <div class="headingWrapper" data-toggle="collapse" data-target="#eveningSlot" aria-expanded="true" aria-controls="eveningSlot">
+                                    <span class="firstIcon"><i class="fa fa-circle"></i></span>
+                                    <span class="titleSlot">Evening Slots</span>
+                                    <span class="secIcon"><i class="fa fa-angle-down"></i></span>
                                 </div>
                             </div>
 
-                            <div id="eveningSlot" class="collapse col-12" aria-labelledby="headingThree" data-parent="#editSlot">
+                            <div id="eveningSlot" class="collapse col-12" aria-labelledby="headingThir" data-parent="#editSlot">
                                 <div class="form-body">
-                                    <div class="form-inline" style="margin-bottom:20px;">
-                                        <span class="control-label" style="display:inline-block;width:110px;height:33px; padding-top:3px;box-sizing:border-box;border:1px solid #CCC;text-align:center;">Start Time</span>
-                                        <select class="form-control" style="width:70px; margin-left:15px;" id="evening-start-HH"></select> : <select class="form-control" style="width:70px;" id="evening-start-MM"></select> : <select class="form-control" style="width:70px;" id="evening-start-XM"></select>
-                                        <span class="control-label" style="display:inline-block;width:110px;height:33px; padding-top:3px;box-sizing:border-box;border:1px solid #CCC;text-align:center; margin-left:50px;">End Time</span>
-                                        <select class="form-control" style="width:70px; margin-left:15px;" id="evening-end-HH"></select> : <select class="form-control" style="width:70px;" id="evening-end-MM"></select> : <select class="form-control" style="width:70px;" id="evening-end-XM"></select>
+                                    <div class="form-inline editSlotContent row">
+                                        <div class="col-6">
+                                            <span class="control-label margin-top">Start Time</span>
+                                            <select class="form-control margin" id="evening-start-HH"></select>
+                                            <select class="form-control margin" id="evening-start-MM"></select>
+                                            <select class="form-control margin" id="evening-start-XM"></select>
+                                        </div>
+                                        <div class="col-6">
+                                            <span class="control-label margin-top">End Time</span>
+                                            <select class="form-control margin" id="evening-end-HH"></select>
+                                            <select class="form-control margin" id="evening-end-MM"></select>
+                                            <select class="form-control margin" id="evening-end-XM"></select>
+                                        </div>
                                     </div>
-                                    <div class="form-inline" style="margin-bottom:20px;">
-                                        <span class="control-label" style="display:inline-block;width:180px;height:55px; padding-top:3px;box-sizing:border-box;border:1px solid #CCC;text-align:center;">Maximum Supervisee<br />per timeslot</span>
-                                        <input type="text" class="form-control" style="width:70px; margin-left:15px;" id="evening-max" />
-                                        <span class="control-label" style="display:inline-block;width:140px;height:55px; padding-top:3px;box-sizing:border-box;border:1px solid #CCC;text-align:center; margin-left:50px;">Reserved<br />for spare</span>
-                                        <input type="text" class="form-control" style="width:70px; margin-left:15px;" id="evening-spare" />
-                                        <span class="control-label" style="display:inline-block;width:120px;height:33px; padding-top:3px;box-sizing:border-box;border:1px solid #CCC;text-align:center; margin-left:50px;">Intervals</span>
-                                        <select class="form-control" style="width:70px; margin-left:15px;" id="evening-interval"></select>
+                                    <div class="form-inline editSlotContent row">
+                                        <div class="col-6 row">
+                                            <span class="control-label margin-top col-10">Maximum Supervisee per timeslot</span>
+                                            <input type="text" class="form-control col-2" id="evening-max" />
+                                        </div>
+                                        <div class="col-3 row">
+                                            <span class="control-label margin-top col-10">Reserved for spare</span>
+                                            <input type="text" class="form-control col-2" id="evening-spare" />
+                                        </div>
+                                        <div class="col-3 row">
+                                            <span class="control-label margin-top col-10">Intervals</span>
+                                            <select class="form-control col-2" id="evening-interval"></select>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
