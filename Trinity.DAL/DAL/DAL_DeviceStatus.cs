@@ -74,7 +74,7 @@ namespace Trinity.DAL
                 {
                     return _localUnitOfWork.DataContext.Devices.Any(item => item.DeviceID.Equals(deviceID));
                 }
-                catch
+                catch (Exception ex)
                 {
                     return false;
                 }
