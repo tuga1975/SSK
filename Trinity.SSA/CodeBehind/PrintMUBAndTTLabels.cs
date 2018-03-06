@@ -114,10 +114,10 @@ namespace SSA.CodeBehind
                 RaisePrintMUBAndTTLabelsExceptionEvent(new ExceptionArgs(new FailedInfo()
                 {
                     ErrorCode = (int)EnumErrorCodes.UnknownError,
-                    ErrorMessage = new ErrorInfo().GetErrorMessage(EnumErrorCodes.UnknownError)
+                    ErrorMessage = ex.Message
                 }));
             }
-        }        
+        }
 
         // Wrap event invocations inside a protected virtual method
         // to allow derived classes to override the event invocation behavior

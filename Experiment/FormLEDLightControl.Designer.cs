@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.cboPortNames = new System.Windows.Forms.ComboBox();
             this.cboBaudRate = new System.Windows.Forms.ComboBox();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
@@ -47,17 +46,17 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.serialPort1 = new System.IO.Ports.SerialPort(this.components);
             this.btnStartCommunication = new System.Windows.Forms.Button();
             this.btnResetPLC = new System.Windows.Forms.Button();
-            this.chkRedLight = new System.Windows.Forms.CheckBox();
-            this.chkGreenLight = new System.Windows.Forms.CheckBox();
-            this.chkBlueLight = new System.Windows.Forms.CheckBox();
             this.btnTurnOffAllLights = new System.Windows.Forms.Button();
             this.label6 = new System.Windows.Forms.Label();
             this.cboParity = new System.Windows.Forms.ComboBox();
             this.chkSSA = new System.Windows.Forms.CheckBox();
             this.chkSSK = new System.Windows.Forms.CheckBox();
+            this.radREDLight = new System.Windows.Forms.RadioButton();
+            this.radGREENLight = new System.Windows.Forms.RadioButton();
+            this.radBLUELight = new System.Windows.Forms.RadioButton();
+            this.radYELLOWLight = new System.Windows.Forms.RadioButton();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -239,12 +238,6 @@
             this.label3.TabIndex = 8;
             this.label3.Text = "Status";
             // 
-            // serialPort1
-            // 
-            this.serialPort1.Parity = System.IO.Ports.Parity.Even;
-            this.serialPort1.ReadTimeout = 1000;
-            this.serialPort1.WriteTimeout = 1000;
-            // 
             // btnStartCommunication
             // 
             this.btnStartCommunication.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -254,6 +247,7 @@
             this.btnStartCommunication.TabIndex = 9;
             this.btnStartCommunication.Text = "START COMMUNICATION";
             this.btnStartCommunication.UseVisualStyleBackColor = true;
+            this.btnStartCommunication.Visible = false;
             this.btnStartCommunication.Click += new System.EventHandler(this.btnStartCommunication_Click);
             // 
             // btnResetPLC
@@ -265,46 +259,8 @@
             this.btnResetPLC.TabIndex = 10;
             this.btnResetPLC.Text = "RESET PLC";
             this.btnResetPLC.UseVisualStyleBackColor = true;
+            this.btnResetPLC.Visible = false;
             this.btnResetPLC.Click += new System.EventHandler(this.btnResetPLC_Click);
-            // 
-            // chkRedLight
-            // 
-            this.chkRedLight.AutoSize = true;
-            this.chkRedLight.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkRedLight.ForeColor = System.Drawing.Color.Red;
-            this.chkRedLight.Location = new System.Drawing.Point(12, 561);
-            this.chkRedLight.Name = "chkRedLight";
-            this.chkRedLight.Size = new System.Drawing.Size(170, 33);
-            this.chkRedLight.TabIndex = 11;
-            this.chkRedLight.Text = "RED LIGHT";
-            this.chkRedLight.UseVisualStyleBackColor = true;
-            this.chkRedLight.CheckedChanged += new System.EventHandler(this.chkRedLight_CheckedChanged);
-            // 
-            // chkGreenLight
-            // 
-            this.chkGreenLight.AutoSize = true;
-            this.chkGreenLight.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkGreenLight.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
-            this.chkGreenLight.Location = new System.Drawing.Point(277, 561);
-            this.chkGreenLight.Name = "chkGreenLight";
-            this.chkGreenLight.Size = new System.Drawing.Size(207, 33);
-            this.chkGreenLight.TabIndex = 12;
-            this.chkGreenLight.Text = "GREEN LIGHT";
-            this.chkGreenLight.UseVisualStyleBackColor = true;
-            this.chkGreenLight.CheckedChanged += new System.EventHandler(this.chkGreenLight_CheckedChanged);
-            // 
-            // chkBlueLight
-            // 
-            this.chkBlueLight.AutoSize = true;
-            this.chkBlueLight.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkBlueLight.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
-            this.chkBlueLight.Location = new System.Drawing.Point(591, 561);
-            this.chkBlueLight.Name = "chkBlueLight";
-            this.chkBlueLight.Size = new System.Drawing.Size(183, 33);
-            this.chkBlueLight.TabIndex = 13;
-            this.chkBlueLight.Text = "BLUE LIGHT";
-            this.chkBlueLight.UseVisualStyleBackColor = true;
-            this.chkBlueLight.CheckedChanged += new System.EventHandler(this.chkBlueLight_CheckedChanged);
             // 
             // btnTurnOffAllLights
             // 
@@ -360,19 +316,76 @@
             this.chkSSK.Text = "SSK";
             this.chkSSK.UseVisualStyleBackColor = true;
             // 
+            // radREDLight
+            // 
+            this.radREDLight.AutoSize = true;
+            this.radREDLight.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.radREDLight.ForeColor = System.Drawing.Color.Red;
+            this.radREDLight.Location = new System.Drawing.Point(15, 547);
+            this.radREDLight.Name = "radREDLight";
+            this.radREDLight.Size = new System.Drawing.Size(169, 33);
+            this.radREDLight.TabIndex = 21;
+            this.radREDLight.TabStop = true;
+            this.radREDLight.Text = "RED LIGHT";
+            this.radREDLight.UseVisualStyleBackColor = true;
+            this.radREDLight.CheckedChanged += new System.EventHandler(this.radREDLight_CheckedChanged);
+            // 
+            // radGREENLight
+            // 
+            this.radGREENLight.AutoSize = true;
+            this.radGREENLight.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.radGREENLight.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
+            this.radGREENLight.Location = new System.Drawing.Point(191, 547);
+            this.radGREENLight.Name = "radGREENLight";
+            this.radGREENLight.Size = new System.Drawing.Size(206, 33);
+            this.radGREENLight.TabIndex = 22;
+            this.radGREENLight.TabStop = true;
+            this.radGREENLight.Text = "GREEN LIGHT";
+            this.radGREENLight.UseVisualStyleBackColor = true;
+            this.radGREENLight.CheckedChanged += new System.EventHandler(this.radGREENLight_CheckedChanged);
+            // 
+            // radBLUELight
+            // 
+            this.radBLUELight.AutoSize = true;
+            this.radBLUELight.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.radBLUELight.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
+            this.radBLUELight.Location = new System.Drawing.Point(412, 547);
+            this.radBLUELight.Name = "radBLUELight";
+            this.radBLUELight.Size = new System.Drawing.Size(182, 33);
+            this.radBLUELight.TabIndex = 23;
+            this.radBLUELight.TabStop = true;
+            this.radBLUELight.Text = "BLUE LIGHT";
+            this.radBLUELight.UseVisualStyleBackColor = true;
+            this.radBLUELight.CheckedChanged += new System.EventHandler(this.radBLUELight_CheckedChanged);
+            // 
+            // radYELLOWLight
+            // 
+            this.radYELLOWLight.AutoSize = true;
+            this.radYELLOWLight.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.radYELLOWLight.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
+            this.radYELLOWLight.Location = new System.Drawing.Point(625, 547);
+            this.radYELLOWLight.Name = "radYELLOWLight";
+            this.radYELLOWLight.Size = new System.Drawing.Size(221, 33);
+            this.radYELLOWLight.TabIndex = 24;
+            this.radYELLOWLight.TabStop = true;
+            this.radYELLOWLight.Text = "YELLOW LIGHT";
+            this.radYELLOWLight.UseVisualStyleBackColor = true;
+            this.radYELLOWLight.CheckedChanged += new System.EventHandler(this.radYELLOWLight_CheckedChanged);
+            // 
             // FormLEDLightControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(857, 616);
+            this.ClientSize = new System.Drawing.Size(857, 609);
+            this.Controls.Add(this.radYELLOWLight);
+            this.Controls.Add(this.radBLUELight);
+            this.Controls.Add(this.radGREENLight);
+            this.Controls.Add(this.radREDLight);
             this.Controls.Add(this.chkSSK);
             this.Controls.Add(this.chkSSA);
             this.Controls.Add(this.cboParity);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.btnTurnOffAllLights);
-            this.Controls.Add(this.chkBlueLight);
-            this.Controls.Add(this.chkGreenLight);
-            this.Controls.Add(this.chkRedLight);
             this.Controls.Add(this.btnResetPLC);
             this.Controls.Add(this.btnStartCommunication);
             this.Controls.Add(this.label3);
@@ -413,20 +426,20 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
-        private System.IO.Ports.SerialPort serialPort1;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox txtASCIIStringToSend;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Button btnClear;
         private System.Windows.Forms.Button btnStartCommunication;
         private System.Windows.Forms.Button btnResetPLC;
-        private System.Windows.Forms.CheckBox chkRedLight;
-        private System.Windows.Forms.CheckBox chkGreenLight;
-        private System.Windows.Forms.CheckBox chkBlueLight;
         private System.Windows.Forms.Button btnTurnOffAllLights;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.ComboBox cboParity;
         private System.Windows.Forms.CheckBox chkSSA;
         private System.Windows.Forms.CheckBox chkSSK;
+        private System.Windows.Forms.RadioButton radREDLight;
+        private System.Windows.Forms.RadioButton radGREENLight;
+        private System.Windows.Forms.RadioButton radBLUELight;
+        private System.Windows.Forms.RadioButton radYELLOWLight;
     }
 }

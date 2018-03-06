@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
@@ -273,7 +274,7 @@ namespace DutyOfficer
                 MessageBox.Show(message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
                 // navigate to smartcard login page
-                NavigateTo(NavigatorEnums.Authentication_SmartCard);
+                NavigateTo(NavigatorEnums.Authentication_Facial);
 
                 // reset counter
                 _fingerprintFailed = 0;
@@ -301,6 +302,85 @@ namespace DutyOfficer
             }
         }
 
+        #region Facial Authentication Event Handlers
+        private void Main_OnFacialRecognitionSucceeded()
+        {
+            LayerWeb.RunScript("$('.status-text').css('color','#000').text('You have been authenticated.');");
+            FacialRecognition.Instance.OnFacialRecognitionFailed -= Main_OnFacialRecognitionFailed;
+            FacialRecognition.Instance.OnFacialRecognitionSucceeded -= Main_OnFacialRecognitionSucceeded;
+            FacialRecognition.Instance.OnFacialRecognitionProcessing -= Main_OnFacialRecognitionProcessing;
+            this.Invoke((MethodInvoker)(() =>
+            {
+                FacialRecognition.Instance.Dispose();
+            }));
+
+            //
+            // Login successfully
+            //
+            // Create a session object to store UserLogin information
+            Session session = Session.Instance;
+            session.IsFacialAuthenticated = true;
+
+            Thread.Sleep(1000);
+
+            // if role = 0 (duty officer), redirect to NRIC.html
+            // else (supervisee), redirect to Supervisee.html
+            Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+            if (user.Role == EnumUserRoles.DutyOfficer)
+            {
+                // navigate to Authentication_NRIC
+                NavigateTo(NavigatorEnums.Authentication_NRIC);
+            }
+            else
+            {
+                session[CommonConstants.SUPERVISEE] = user;
+                session[CommonConstants.USER_LOGIN] = null;
+                // navigate to SuperviseeParticulars page
+                Trinity.SignalR.Client.SignalR.Instance.UserLogined(user.UserId);
+                NavigateTo(NavigatorEnums.Supervisee_Particulars);
+            }
+        }
+
+        private void Main_OnFacialRecognitionProcessing()
+        {
+            LayerWeb.RunScript("$('.status-text').css('color','#000').text('Scanning your face...');");
+        }
+
+        private void Main_OnFacialRecognitionFailed()
+        {
+            FacialRecognition.Instance.OnFacialRecognitionFailed -= Main_OnFacialRecognitionFailed;
+            FacialRecognition.Instance.OnFacialRecognitionSucceeded -= Main_OnFacialRecognitionSucceeded;
+            FacialRecognition.Instance.OnFacialRecognitionProcessing -= Main_OnFacialRecognitionProcessing;
+            this.Invoke((MethodInvoker)(() =>
+            {
+                FacialRecognition.Instance.Dispose();
+            }));
+
+            Session session = Session.Instance;
+            Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+            string errorMessage = "User '" + user.Name + "' cannot complete facial authentication";
+            Trinity.SignalR.Client.SignalR.Instance.SendAllDutyOfficer(user.UserId, "Facial authentication failed", errorMessage, NotificationType.Error);
+
+            // show message box to user
+            //MessageBox.Show("Facial authentication failed", "Facial Authentication", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            Trinity.BE.PopupModel popupModel = new Trinity.BE.PopupModel();
+            popupModel.Title = "Authorization Failed";
+            popupModel.Message = "Facial Recognition failed.\nPlease report to the Duty Officer";
+            popupModel.IsShowLoading = false;
+            popupModel.IsShowOK = true;
+
+            LayerWeb.InvokeScript("showPopupModal", JsonConvert.SerializeObject(popupModel));
+
+            // navigate to smartcard login page
+            NavigateTo(NavigatorEnums.Authentication_SmartCard);
+
+            // reset counter
+            _fingerprintFailed = 0;
+
+        }
+
+        #endregion
+
         private void NavigateTo(NavigatorEnums navigatorEnum)
         {
             // navigate
@@ -326,7 +406,24 @@ namespace DutyOfficer
                     Console.WriteLine("File missing:\n");
                     Console.WriteLine(ex.FileName);
                 }
-            }else if (navigatorEnum == NavigatorEnums.Queue)
+            }
+            else if (navigatorEnum == NavigatorEnums.Authentication_Facial)
+            {
+                Session session = Session.Instance;
+                Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+                LayerWeb.LoadPageHtml("Authentication/FacialRecognition.html");
+                LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please remain still as Facial Recognition Check takes place.');");
+                FacialRecognition.Instance.OnFacialRecognitionFailed += Main_OnFacialRecognitionFailed;
+                FacialRecognition.Instance.OnFacialRecognitionSucceeded += Main_OnFacialRecognitionSucceeded;
+                FacialRecognition.Instance.OnFacialRecognitionProcessing += Main_OnFacialRecognitionProcessing;
+
+                this.Invoke((MethodInvoker)(() =>
+                {
+                    Point startLocation = new Point((Screen.PrimaryScreen.Bounds.Size.Width / 2) - 400 / 2, (Screen.PrimaryScreen.Bounds.Size.Height / 2) - 400 / 2);
+                    FacialRecognition.Instance.StartFacialRecognition(startLocation, new System.Collections.Generic.List<byte[]>() { user.User_Photo1, user.User_Photo2 });
+                }));
+            }
+            else if (navigatorEnum == NavigatorEnums.Queue)
             {
                 _isSmartCardToLogin = false;
                 LayerWeb.LoadPageHtml("Queue.html");
