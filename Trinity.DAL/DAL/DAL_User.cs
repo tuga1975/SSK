@@ -39,12 +39,12 @@ namespace Trinity.DAL
                 //}
                 //else
                 //{
-                    Membership_Users dbUser;
-                    var localUserRepo = _localUnitOfWork.GetRepository<Membership_Users>();
-                    dbUser = localUserRepo.GetById(model.UserId);
-                    SetInfo(dbUser, model);
-                    localUserRepo.Update(dbUser);
-                    return _localUnitOfWork.Save()>0;
+                Membership_Users dbUser;
+                var localUserRepo = _localUnitOfWork.GetRepository<Membership_Users>();
+                dbUser = localUserRepo.GetById(model.UserId);
+                SetInfo(dbUser, model);
+                localUserRepo.Update(dbUser);
+                return _localUnitOfWork.Save() > 0;
                 //}
             }
             else
@@ -55,7 +55,7 @@ namespace Trinity.DAL
                 dbUser = centralUserRepo.GetById(model.UserId);
                 SetInfo(dbUser, model);
                 centralUserRepo.Update(dbUser);
-                return _centralizedUnitOfWork.Save()>0;
+                return _centralizedUnitOfWork.Save() > 0;
             }
         }
 
@@ -242,7 +242,7 @@ namespace Trinity.DAL
         {
             if (EnumAppConfig.IsLocal)
             {
-                ApplicationUser user = user = ApplicationIdentityManager.GetUserManager().Find(username, password); 
+                ApplicationUser user = user = ApplicationIdentityManager.GetUserManager().Find(username, password);
                 if (user == null)
                 {
                     user = CallCentralized.Get<ApplicationUser>("User", "Login", "username=" + username, "password=" + password);
@@ -332,14 +332,14 @@ namespace Trinity.DAL
                 return ApplicationIdentityManager.GetUserManager().FindByName(username);
             }
         }
-        
+
         public void ChangeAccessFailedCount(string userId, int count)
         {
             if (EnumAppConfig.IsLocal)
             {
                 bool statusCentralized;
-                CallCentralized.Post("User", "ChangeAccessFailedCount", out statusCentralized, "userId=" + userId, "count="+ count);
-                if(!statusCentralized)
+                CallCentralized.Post("User", "ChangeAccessFailedCount", out statusCentralized, "userId=" + userId, "count=" + count);
+                if (!statusCentralized)
                 {
                     throw new Exception(EnumMessage.NotConnectCentralized);
                 }
@@ -379,7 +379,7 @@ namespace Trinity.DAL
             }
         }
 
-        
+
 
         public Trinity.BE.User GetUserBySmartCardId(string smartCardId)
         {
@@ -402,6 +402,8 @@ namespace Trinity.DAL
                             Name = item.Name,
                             NRIC = item.NRIC,
                             Role = item.Membership_UserRoles.FirstOrDefault().Membership_Roles.Name,
+                            User_Photo1 = item.User_Profiles.User_Photo1,
+                            User_Photo2 = item.User_Profiles.User_Photo2,
                             IsFirstAttempt = item.IsFirstAttempt
                         }).FirstOrDefault();
 
@@ -568,7 +570,7 @@ namespace Trinity.DAL
             }
         }
 
-        
+
 
         private Membership_Users UpdateCentral(BE.User model, string userId)
         {
@@ -657,7 +659,7 @@ namespace Trinity.DAL
         //    }
         //}
 
-        
+
 
         private void UpdateStatus(string userId, string status, IRepository<Membership_Users> userRepo)
         {

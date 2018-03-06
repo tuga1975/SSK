@@ -184,26 +184,24 @@ namespace SSK
             if (_isFirstTimeLoaded)
             {
                 // Start page
-                NavigateTo(NavigatorEnums.Authentication_SmartCard);
+                //NavigateTo(NavigatorEnums.Authentication_SmartCard);
 
 
-                ////// For testing purpose
-                //Session session = Session.Instance;
-                //////////Supervisee
-                //Trinity.BE.User user = new DAL_User().GetUserByUserId("bb67863c-c330-41aa-b397-c220428ad16f").Data;
-                ////////// Duty Officer
-                ////Trinity.BE.User user = new DAL_User().GetUserByUserId("dfbb2a6a-9e45-4a76-9f75-af1a7824a947").Data;
-                //session[CommonConstants.USER_LOGIN] = user;
-                //session.IsSmartCardAuthenticated = true;
-                //session.IsFingerprintAuthenticated = true;
+                //// For testing purpose
+                Session session = Session.Instance;
+                //////Supervisee
+                //Trinity.BE.User user = new DAL_User().GetUserByUserId("26df26a0-73a3-4bdb-bce6-10e92265a3d7").Data;
+                ////// Duty Officer
+                Trinity.BE.User user = new DAL_User().GetUserByUserId("06a91b1b-99c3-428d-8a55-83892c2adf4c").Data;
+                session[CommonConstants.USER_LOGIN] = user;
+                session.IsSmartCardAuthenticated = true;
+                session.IsFingerprintAuthenticated = true;
 
-                //////NavigateTo(NavigatorEnums.Authentication_Fingerprint);
+                NavigateTo(NavigatorEnums.Authentication_Fingerprint);
                 //NavigateTo(NavigatorEnums.Supervisee);
-                ////NavigateTo(NavigatorEnums.Authentication_NRIC);
+                //NavigateTo(NavigatorEnums.Authentication_NRIC);
 
                 _isFirstTimeLoaded = false;
-
-                //Trinity.SignalR.Client.SignalR.Instance.SendAllDutyOfficer(user.UserId,"a","a", NotificationType.Notification);
             }
 
             // SSK is ready to use - all is well
@@ -388,7 +386,7 @@ namespace SSK
                 Trinity.SignalR.Client.SignalR.Instance.SendAllDutyOfficer(user.UserId, "Fingerprint Authentication failed", errorMessage, NotificationType.Error);
 
                 _jsCallCS.PopupMessage("Authentication failed", "Fingerprint's Authenication failed!<br /> Please contact your officer.");
-                NavigateTo(NavigatorEnums.Authentication_SmartCard);
+                //NavigateTo(NavigatorEnums.Authentication_SmartCard);
 
 
                 //for testing purpose
@@ -396,10 +394,8 @@ namespace SSK
                 //Thread.Sleep(1000);
                 _fingerprintFailed = 0;
 
-
-
                 // Navigate to next page: Facial Authentication
-                //NavigateTo(NavigatorEnums.Authentication_Facial);
+                NavigateTo(NavigatorEnums.Authentication_Facial);
 
                 return;
             }
@@ -427,6 +423,11 @@ namespace SSK
 
         private void Main_FormClosing(object sender, FormClosingEventArgs e)
         {
+            // Turn off all LED(s)
+            if (LEDStatusLightingUtil.Instance.IsPortOpen)
+            {
+                LEDStatusLightingUtil.Instance.TurnOffAllLEDs();
+            }
             Application.ExitThread();
             APIUtils.Dispose();
         }

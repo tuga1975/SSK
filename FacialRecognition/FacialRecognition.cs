@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Windows.Forms;
 
 public class FacialRecognition
 {
@@ -108,15 +109,17 @@ public class FacialRecognition
 
             libFace.Show_Window(formLocation, new Size(400, 400));
             OnFacialRecognitionProcessing();
-            Thread.Sleep(1000);
+            //Thread.Sleep(1000);
             libFace.FaceDetect += new AT_Facial_API.Library.FaceDetected(lib_FaceDetect);
             libFace.StartTracking();
+            
             try
             {
                 libFace.Photo_JPG = this.FaceJpg[0];
             }
             catch (Exception ex)
             {
+                MessageBox.Show(ex.Message);
                 if (this.FaceJpg.Count > 1)
                 {
                     libFace.Photo_JPG = this.FaceJpg[1];
