@@ -343,8 +343,7 @@ namespace SSA
                 new DAL_QueueDetails().RemoveQueueFromSSK(user.UserId);
 
                 Trinity.SignalR.Client.SignalR.Instance.QueueFinished(user.UserId);
-
-                LogOut();
+                //LogOut();
             }
             else
             {
