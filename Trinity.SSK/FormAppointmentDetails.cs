@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
@@ -136,6 +137,28 @@ namespace SSK
                     }
                 }
                 MessageBox.Show("failed");
+            }
+        }
+
+        private void btnRotateImage_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string imgInputPath = @"E:\GitHub\2018\Trinity\Enrolment\bin\Debug\temp\front.png";
+                string imgOutput = @"E:\GitHub\2018\Trinity\Enrolment\bin\Debug\temp\front_rotated.png";
+
+                if (CommonUtil.RotateImage90(imgInputPath))
+                {
+                    MessageBox.Show("Successfully");
+                }
+                else
+                {
+                    MessageBox.Show("Failed");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
             }
         }
     }

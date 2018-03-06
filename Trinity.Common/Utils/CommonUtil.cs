@@ -295,5 +295,55 @@ namespace Trinity.Common
             }
             return nric.Substring(nric.Length - 5);
         }
+
+        /// <summary>
+        /// Rotate image by 90 degrees
+        /// </summary>
+        /// <param name="imgInputPath">source image path</param>
+        /// <param name="imgOutputPath">destination image path</param>
+        /// <returns>Process success or not</returns>
+        public static bool RotateImage90(string imgInputPath, string imgOutputPath)
+        {
+            try
+            {
+                using (System.Drawing.Image img = System.Drawing.Image.FromFile(imgInputPath))
+                {
+                    //rotate the picture by 90 degrees and re-save the picture as a Jpeg
+                    img.RotateFlip(System.Drawing.RotateFlipType.Rotate90FlipNone);
+                    img.Save(imgOutputPath, System.Drawing.Imaging.ImageFormat.Png);
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+
+        /// <summary>
+        /// Rotate image by 90 degrees
+        /// </summary>
+        /// <param name="imgPath">image path (before and after rotated)</param>
+        /// <returns>Process success or not</returns>
+        public static bool RotateImage90(string imgPath)
+        {
+            try
+            {
+                using (System.Drawing.Image img = System.Drawing.Image.FromFile(imgPath))
+                {
+                    //rotate the picture by 90 degrees and re-save the picture as a Jpeg
+                    img.RotateFlip(System.Drawing.RotateFlipType.Rotate90FlipNone);
+                    img.Save(imgPath, System.Drawing.Imaging.ImageFormat.Png);
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
     }
 }
