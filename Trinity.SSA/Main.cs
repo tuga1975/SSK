@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
@@ -37,7 +38,7 @@ namespace SSA
 
             APIUtils.Start();
             //Notification
-            Trinity.SignalR.Client.SignalR signalR  =  Trinity.SignalR.Client.SignalR.Instance;
+            Trinity.SignalR.Client.SignalR signalR = Trinity.SignalR.Client.SignalR.Instance;
             // setup variables
             _smartCardFailed = 0;
             _fingerprintFailed = 0;
@@ -81,7 +82,7 @@ namespace SSA
             string message = "The fingerprint reader is not connected, please report to the Duty Officer!";
 
             // Send Notification to duty officer
-            Trinity.SignalR.Client.SignalR.Instance.SendAllDutyOfficer(null,"The fingerprinter is not connected", "The fingerprinter is not connected.", NotificationType.Error);
+            Trinity.SignalR.Client.SignalR.Instance.SendAllDutyOfficer(null, "The fingerprinter is not connected", "The fingerprinter is not connected.", NotificationType.Error);
 
             // show message box to user
             MessageBox.Show(message, "Authentication failed!", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -153,6 +154,11 @@ namespace SSA
 
         private void Main_FormClosing(object sender, FormClosingEventArgs e)
         {
+            // Turn off all LED(s)
+            //if (LEDStatusLightingUtil.Instance.IsPortOpen)
+            //{
+            LEDStatusLightingUtil.Instance.TurnOffAllLEDs();
+            //}
             Application.ExitThread();
             APIUtils.Dispose();
         }
@@ -179,6 +185,13 @@ namespace SSA
                 //////NavigateTo(NavigatorEnums.Authentication_NRIC);
 
                 _isFirstTimeLoaded = false;
+            }
+            // SSA is ready to use - all is well
+            // Turn on GREEN Light
+            if (LEDStatusLightingUtil.Instance.IsPortOpen)
+            {
+                LEDStatusLightingUtil.Instance.TurnOffAllLEDs();
+                LEDStatusLightingUtil.Instance.SwitchGREENLightOnOff(true);
             }
         }
 
@@ -218,7 +231,7 @@ namespace SSA
             if (_smartCardFailed > 3)
             {
                 // Send Notification to duty officer
-                Trinity.SignalR.Client.SignalR.Instance.SendAllDutyOfficer(null,message, message, NotificationType.Error);
+                Trinity.SignalR.Client.SignalR.Instance.SendAllDutyOfficer(null, message, message, NotificationType.Error);
 
                 // show message box to user
                 //MessageBox.Show(message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -255,7 +268,7 @@ namespace SSA
             session.IsFingerprintAuthenticated = true;
 
             LayerWeb.RunScript("$('.status-text').css('color','#000').text('Fingerprint authentication is successful.');");
-            
+
             Thread.Sleep(1000);
 
             // if role = 0 (duty officer), redirect to NRIC.html
@@ -478,7 +491,14 @@ namespace SSA
                 Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
                 LayerWeb.LoadPageHtml("Authentication/FingerPrint.html");
                 LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please place your thumb print on the reader.');");
-                Fingerprint.Instance.Start(new System.Collections.Generic.List<byte[]>() { user.LeftThumbFingerprint, user.RightThumbFingerprint });
+                try
+                {
+                    Fingerprint.Instance.Start(new System.Collections.Generic.List<byte[]>() { user.LeftThumbFingerprint, user.RightThumbFingerprint });
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
             }
             else if (navigatorEnum == NavigatorEnums.Authentication_Facial)
             {

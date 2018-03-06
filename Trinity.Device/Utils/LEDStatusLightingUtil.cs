@@ -2,6 +2,7 @@
 using System.IO;
 using System.IO.Ports;
 using System.Text;
+using System.Windows.Forms;
 
 namespace Trinity.Device.Util
 {
@@ -110,8 +111,9 @@ namespace Trinity.Device.Util
                     return string.Empty;
                 }
             }
-            catch (UnauthorizedAccessException ex)
+            catch (IOException ex)
             {
+                MessageBox.Show(ex.Message);
                 return ex.Message;
             }
         }

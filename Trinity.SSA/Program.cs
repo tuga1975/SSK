@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Trinity.Device;
+using Trinity.Device.Util;
 
 namespace SSA
 {
@@ -25,6 +27,15 @@ namespace SSA
             SmartCardReaderMonitor.Start();
             MUBLabelPrinterMonitor.Start();
             TTLabelPrinterMonitor.Start();
+
+            // SSA is initialisation for use.
+            // Turn on BLUE Light
+            string comPort = ConfigurationManager.AppSettings["COMPort"];
+            int baudRate = int.Parse(ConfigurationManager.AppSettings["BaudRate"]);
+            string parity = ConfigurationManager.AppSettings["Parity"];
+            LEDStatusLightingUtil.Instance.OpenPort("SSA", comPort, baudRate, parity);
+            LEDStatusLightingUtil.Instance.TurnOffAllLEDs();
+            LEDStatusLightingUtil.Instance.SwitchBLUELightOnOff(true);
 
             Application.Run(new Main());
         }

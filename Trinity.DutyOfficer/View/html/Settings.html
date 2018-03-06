@@ -1,41 +1,4 @@
-﻿<style>
-    /*table.table-bordered {
-        border: 1px solid #000000;
-    }*/
-
-    /*table tr.active {
-        background: gainsboro;
-    }*/
-
-    /*#operationTable th {
-        text-align: center;
-        font-size: 12px;
-        width: 5.8%;
-        background-color: gainsboro;
-        border: 1px solid #000000;
-    }*/
-
-    /*#operationTable td {
-        text-align: center;
-        font-size: 12px;
-        width: 5.8%;
-        border: 1px solid #000000;
-    }*/
-
-    /*#holidayTable th, #changeHistoryTable th {
-        text-align: center;
-        font-size: 12px;
-        background-color: gainsboro;
-        border: 1px solid #000000;
-    }*/
-
-    /*#holidayTable td, #changeHistoryTable td {
-        text-align: center;
-        font-size: 12px;
-        border: 1px solid #000000;
-    }*/
-</style>
-<div class="table-wrapper">
+﻿<div class="table-wrapper">
     <div class="tab-header">
         <span><b>Settings</b></span>
         <br />
@@ -49,7 +12,7 @@
             <br />
             <table id="operationTable" class="table">
                 <thead>
-                    <tr>
+                    <tr class="align-middle">
                         <th>Day of<br />the Week</th>
                         <th>Morning Slots<br />Start time</th>
                         <th>Morning Slots<br />End time</th>
@@ -73,16 +36,23 @@
                    
                 </tbody>
             </table>
-
         </div>
-        <div id="panel-holidays" style="width:100%; padding:10px;">
-            <div class="tabtitle">
-                <span>Public Holiday and Non-Operational Days</span>
+        <div id="panel-holidays">
+            <div class="tabtitle row">
+                <span class="col-6 float-left">Public Holiday and Non-Operational Days</span>
+                <div class="tabactive col-6 float-right text-right">
+                    <span id="deleteBtn">
+                        <button class="btn btn-default">DELETE</button>
+                    </span>
+                    <span onclick="api.server.PopupAddHoliday(function () {$('#idAddHoliday').modal(); });">
+                        <button class="btn btn-default">ADD</button>
+                    </span>
+                </div>
             </div>
             <br />
-            <div style="width:70%;display:inline-block;box-sizing:border-box;position:relative;vertical-align:top;">
-                <div style="width:calc(100% - 50px);">
-                    <table id="holidayTable" class="table table-bordered">
+            <div>
+                <div>
+                    <table id="holidayTable" class="table">
                         <thead>
                             <tr>
                                 <th data-field="Date">Date</th>
@@ -92,22 +62,17 @@
                         </thead>
                     </table>
                 </div>
-                <span style="position:absolute;top:12px;right:0px;font-size:22px;height:40px;width:40px;text-align:center;line-height:40px;border:1px solid #000;cursor:pointer;background-color:#808080;" onclick="api.server.PopupAddHoliday(function () {$('#idAddHoliday').modal(); });">
-                    <b>+</b>
-                </span>
-                <span style="position:absolute;top:60px;right:0px;font-size:22px;height:40px;width:40px;text-align:center;line-height:40px;border:1px solid #000;cursor:pointer;background-color:#808080;" id="deleteBtn">
-                    <b>-</b>
-                </span>
+                
             </div>
         </div>
 
-        <div id="panel-changeHistory" style="width:100%; padding:10px;">
+        <div id="panel-changeHistory">
             <div class="tabtitle">
                 <span>Change History</span>
             </div>
             <br />
-            <div style="width:90%;display:inline-block;box-sizing:border-box;position:relative;vertical-align:top;">
-                <table id="changeHistoryTable" class="table table-bordered">
+            <div>
+                <table id="changeHistoryTable" class="table">
                     <thead>
                         <tr>
                             <th data-field="Date">Date</th>
@@ -130,7 +95,7 @@
     api.server.GetSettings(function (data) {
         model = data;
         var html = '<tr id="{DayOfWeekTxt}">\
-                        <td style="background-color:gainsboro">{DayOfWeekTxt}</td>\
+                        <td style="background-color:#f6f6f6">{DayOfWeekTxt}</td>\
                         <td>{Morning_Open_Time}</td>\
                         <td>{Morning_Close_Time}</td>\
                         <td>{Morning_MaximumSupervisee}</td>\

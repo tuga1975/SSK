@@ -97,61 +97,75 @@ namespace SSA
 
         private void PrintMUBLabels_OnPrintMUBLabelSucceeded(object sender, PrintMUBAndTTLabelsEventArgs e)
         {
-            _PrintMUBSucceed = true;
-            var labelInfo = new Trinity.BE.Label
+            try
             {
-                UserId = e.LabelInfo.UserId,
-                Label_Type = EnumLabelType.MUB,
-                CompanyName = e.LabelInfo.CompanyName,
-                MarkingNo = e.LabelInfo.MarkingNo,
-                DrugType = e.LabelInfo.DrugType,
-                NRIC = e.LabelInfo.NRIC,
-                Name = e.LabelInfo.Name,
-                Date = DateTime.Now,
-                QRCode = e.LabelInfo.QRCode,
-                LastStation = e.LabelInfo.LastStation,
-                PrintCount = e.LabelInfo.PrintCount,
-                ReprintReason = e.LabelInfo.ReprintReason
-            };
+                _PrintMUBSucceed = true;
+                var labelInfo = new Trinity.BE.Label
+                {
+                    UserId = e.LabelInfo.UserId,
+                    Label_Type = EnumLabelType.MUB,
+                    CompanyName = e.LabelInfo.CompanyName,
+                    MarkingNo = e.LabelInfo.MarkingNo,
+                    DrugType = e.LabelInfo.DrugType,
+                    NRIC = e.LabelInfo.NRIC,
+                    Name = e.LabelInfo.Name,
+                    Date = DateTime.Now,
+                    QRCode = e.LabelInfo.QRCode,
+                    LastStation = e.LabelInfo.LastStation,
+                    PrintCount = e.LabelInfo.PrintCount,
+                    ReprintReason = e.LabelInfo.ReprintReason
+                };
 
-            var dalLabel = new DAL_Labels();
-            dalLabel.UpdateLabel(labelInfo);
+                var dalLabel = new DAL_Labels();
+                dalLabel.UpdateLabel(labelInfo);
 
-            //// Update queue status is finished
-            //var dalQueue = new DAL_QueueNumber();
-            //dalQueue.UpdateQueueStatusByUserId(labelInfo.UserId, EnumStations.SSA, EnumStations.UHP, EnumQueueStatuses.Finished, "Printer MUB/TT Label");
-            
-            //DeleteQRCodeImageFileTemp();
+                //// Update queue status is finished
+                //var dalQueue = new DAL_QueueNumber();
+                //dalQueue.UpdateQueueStatusByUserId(labelInfo.UserId, EnumStations.SSA, EnumStations.UHP, EnumQueueStatuses.Finished, "Printer MUB/TT Label");
+
+                //DeleteQRCodeImageFileTemp();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error in Trinity.SSA.JSCallCS.PrintMUBLabels_OnPrintMUBLabelSucceeded. Details:" + ex.Message);
+            }
         }
 
         private void PrintMUBLabels_OnPrintMUBLabelFailed(object sender, PrintMUBAndTTLabelsEventArgs e)
         {
-            _PrintMUBSucceed = false;
-            var labelInfo = new Trinity.BE.Label
+            try
             {
-                UserId = e.LabelInfo.UserId,
-                Label_Type = EnumLabelType.MUB,
-                CompanyName = e.LabelInfo.CompanyName,
-                MarkingNo = e.LabelInfo.MarkingNo,
-                DrugType = e.LabelInfo.DrugType,
-                NRIC = e.LabelInfo.NRIC,
-                Name = e.LabelInfo.Name,
-                Date = DateTime.Now,
-                QRCode = e.LabelInfo.QRCode,
-                LastStation = e.LabelInfo.LastStation,
-                PrintCount = e.LabelInfo.PrintCount,
-                ReprintReason = e.LabelInfo.ReprintReason,
-                PrintStatus = e.LabelInfo.PrintStatus,
-                Message = e.LabelInfo.Message
-            };
+                _PrintMUBSucceed = false;
+                var labelInfo = new Trinity.BE.Label
+                {
+                    UserId = e.LabelInfo.UserId,
+                    Label_Type = EnumLabelType.MUB,
+                    CompanyName = e.LabelInfo.CompanyName,
+                    MarkingNo = e.LabelInfo.MarkingNo,
+                    DrugType = e.LabelInfo.DrugType,
+                    NRIC = e.LabelInfo.NRIC,
+                    Name = e.LabelInfo.Name,
+                    Date = DateTime.Now,
+                    QRCode = e.LabelInfo.QRCode,
+                    LastStation = e.LabelInfo.LastStation,
+                    PrintCount = e.LabelInfo.PrintCount,
+                    ReprintReason = e.LabelInfo.ReprintReason,
+                    PrintStatus = e.LabelInfo.PrintStatus,
+                    Message = e.LabelInfo.Message
+                };
 
-            var dalLabel = new DAL_Labels();
-            dalLabel.UpdateLabel(labelInfo);
+                var dalLabel = new DAL_Labels();
+                dalLabel.UpdateLabel(labelInfo);
 
-            Trinity.SignalR.Client.SignalR.Instance.SendAllDutyOfficer(e.LabelInfo.UserId, "Print MUB Label", "Don't print MUB, Please check !", NotificationType.Error);
+                Trinity.SignalR.Client.SignalR.Instance.SendAllDutyOfficer(e.LabelInfo.UserId, "Print MUB Label", "Don't print MUB, Please check !", NotificationType.Error);
 
-            //DeleteQRCodeImageFileTemp();
-            //LogOut();
+                //DeleteQRCodeImageFileTemp();
+                //LogOut();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Trinity.SSA.JSCallCS.PrintMUBLabels_OnPrintMUBLabelFailed. Details:" + ex.Message);
+            }
         }
 
         private void PrintTTLabels_OnPrintTTLabelSucceeded(object sender, PrintMUBAndTTLabelsEventArgs e)
@@ -204,32 +218,39 @@ namespace SSA
 
         private void PrintTTLabels_OnPrintTTLabelFailed(object sender, PrintMUBAndTTLabelsEventArgs e)
         {
-            _PrintTTSucceed = false;
-            var labelInfo = new Trinity.BE.Label
+            try
             {
-                UserId = e.LabelInfo.UserId,
-                Label_Type = EnumLabelType.TT,
-                CompanyName = e.LabelInfo.CompanyName,
-                MarkingNo = e.LabelInfo.MarkingNo,
-                DrugType = e.LabelInfo.DrugType,
-                NRIC = e.LabelInfo.NRIC,
-                Name = e.LabelInfo.Name,
-                Date = DateTime.Now,
-                QRCode = e.LabelInfo.QRCode,
-                LastStation = e.LabelInfo.LastStation,
-                PrintCount = e.LabelInfo.PrintCount,
-                ReprintReason = e.LabelInfo.ReprintReason,
-                PrintStatus = e.LabelInfo.PrintStatus,
-                Message = e.LabelInfo.Message
-            };
+                _PrintTTSucceed = false;
+                var labelInfo = new Trinity.BE.Label
+                {
+                    UserId = e.LabelInfo.UserId,
+                    Label_Type = EnumLabelType.TT,
+                    CompanyName = e.LabelInfo.CompanyName,
+                    MarkingNo = e.LabelInfo.MarkingNo,
+                    DrugType = e.LabelInfo.DrugType,
+                    NRIC = e.LabelInfo.NRIC,
+                    Name = e.LabelInfo.Name,
+                    Date = DateTime.Now,
+                    QRCode = e.LabelInfo.QRCode,
+                    LastStation = e.LabelInfo.LastStation,
+                    PrintCount = e.LabelInfo.PrintCount,
+                    ReprintReason = e.LabelInfo.ReprintReason,
+                    PrintStatus = e.LabelInfo.PrintStatus,
+                    Message = e.LabelInfo.Message
+                };
 
-            var dalLabel = new DAL_Labels();
-            dalLabel.UpdateLabel(labelInfo);
+                var dalLabel = new DAL_Labels();
+                dalLabel.UpdateLabel(labelInfo);
 
-            Trinity.SignalR.Client.SignalR.Instance.SendAllDutyOfficer(e.LabelInfo.UserId, "Print TT Label", "Don't print TT, Please check !", NotificationType.Error);
+                Trinity.SignalR.Client.SignalR.Instance.SendAllDutyOfficer(e.LabelInfo.UserId, "Print TT Label", "Don't print TT, Please check !", NotificationType.Error);
 
-            //DeleteQRCodeImageFileTemp();
-            //LogOut();
+                //DeleteQRCodeImageFileTemp();
+                //LogOut();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error in Trinity.SSA.JSCallCS.PrintTTLabels_OnPrintTTLabelFailed. Details:" + ex.Message);
+            }
         }
 
         private void PrintMUBAndTTLabels_OnPrintTTLabelException(object sender, ExceptionArgs e)
@@ -318,7 +339,7 @@ namespace SSA
                 this._web.InvokeScript("countdownLogout");
 
                 DeleteQRCodeImageFileTemp();
-                //Trinity.BE.User user = (Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN];
+
                 new DAL_QueueDetails().RemoveQueueFromSSK(user.UserId);
 
                 Trinity.SignalR.Client.SignalR.Instance.QueueFinished(user.UserId);
