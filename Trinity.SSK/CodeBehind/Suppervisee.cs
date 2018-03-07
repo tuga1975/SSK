@@ -21,7 +21,7 @@ namespace SSK.CodeBehind
         {
             // load page
             _web.LoadPageHtml("Supervisee.html");
-
+            
 
 
             // get user login info
@@ -36,6 +36,8 @@ namespace SSK.CodeBehind
                     Lib.LayerWeb.PushNoti(unReadCount);
                 }));
             }
+            _web.InvokeScript("IsDutyOfficer", user.Role == EnumUserRoles.DutyOfficer);
+
             //// if user login is dutyofficer, implement duty officer override
             //if (user.Role == EnumUserRoles.DutyOfficer)
             //{

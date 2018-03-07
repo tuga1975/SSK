@@ -166,7 +166,7 @@ namespace Trinity.Device.Util
         {
             get
             {
-                return _serialPort.IsOpen;
+                return _serialPort!=null?_serialPort.IsOpen:false;
             }
         }
 

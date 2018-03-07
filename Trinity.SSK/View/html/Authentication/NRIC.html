@@ -5,7 +5,7 @@
     </div>
 </div>
 <div id="footer" style="position:relative;text-align:right;margin-top:40px;">
-    <input type="button" value="CANCEL" style="background-color:#FFF;color:#1cacf6;border:none;border-radius:5px;padding:8px 20px;border:1px solid #DDD;margin-right:20px;" onclick="api.server.LoadPage('Supervisee.html');" />
+    <input type="button" value="CANCEL" style="background-color:#FFF;color:#1cacf6;border:none;border-radius:5px;padding:8px 20px;border:1px solid #DDD;margin-right:20px;" onclick="api.server.CancelDOEnterNRIC();" />
     <input type="button" value="SUBMIT" style="background-color:#1cacf6;color:#FFF;border:none;border-radius:5px;padding:8px 20px;border:1px solid #1cacf6;" onclick="api.server.SubmitNRIC($('#txtNRIC').val())" />
 </div>
 <script type="text/javascript">
@@ -16,8 +16,8 @@
 </script>
 <style type="text/css">
     [group-input] {
-        border-bottom: 1px solid #ccc;
         position: relative;
+        margin-bottom: 20px;
     }
 
         [group-input]::before {
@@ -30,7 +30,7 @@
             left: 0px;
         }
 
-        [group-input] > input {
+        [group-input] > input, [group-input] > select {
             border: none;
             height: 36px;
             font-size: 16px;
@@ -39,10 +39,18 @@
             position: relative;
             z-index: 1;
             background-color: transparent;
+            outline: none;
         }
 
+        [group-input] > input, [group-input] > select {
+            border-bottom: 1px solid #ccc;
+        }
 
-    :-ms-input-placeholder { /* Internet Explorer 10-11 */
+            [group-input] > input:focus, [group-input] > input:hover, [group-input] > select:focus, [group-input] > select:hover {
+                border-bottom: 1px solid #1CACF6;
+            }
+
+    :-ms-input-placeholder {
         font-style: italic;
     }
 </style>
