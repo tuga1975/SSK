@@ -342,6 +342,10 @@
         bottom: 0;
         width: 100%;
     }
+
+    .input-group-prepend label{
+        width: 100%;
+    }
 </style>
 
 
@@ -435,9 +439,11 @@
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-prepend">
-                            <span class="input-group-text">
-                                Name <span>*</span>
-                            </span>
+                            <label for="ParticularsName">
+                                <span class="input-group-text">
+                                    Name <span>*</span>
+                                </span>
+                            </label>
                         </div>
                         <input type="text" class="form-control"
                                placeholder="Enter Name"
@@ -448,9 +454,12 @@
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-prepend">
-                            <span class="input-group-text">
-                                NRIC No. <span>*</span>
-                            </span>
+                            <label for="NRIC">
+                                <span class="input-group-text">
+                                    NRIC No. <span>*</span>
+                                </span>
+                            </label>
+                            
                         </div>
                         <input type="text" class="form-control"
                                placeholder="Enter NRIC No."
@@ -461,9 +470,12 @@
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-prepend">
-                            <span class="input-group-text">
-                                Date of Birth <span>*</span>
-                            </span>
+                            <label for="DOB">
+                                <span class="input-group-text">
+                                    Date of Birth <span>*</span>
+                                </span>
+                            </label>
+                           
                         </div>
                         <input type="text" class="form-control"
                                placeholder="DD/MM/YYYY"
@@ -474,15 +486,17 @@
                 <div class="form-group">
                     <div class="form-select">
                         <div class="input-group-select">
-                            <span class="form-label">
-                                Nationality  <span>*</span>
-                            </span>
+                            <label for="Nationality">
+                                <span class="form-label">
+                                    Nationality  <span>*</span>
+                                </span>
+                            </label>
+                           
                         </div>
                         <div class="select-wrap">
                             <select title="Nationality" class="form-control" id="Nationality" name="Nationality">
                                 <option>Singaporean</option>
-                                <option>Singaporean</option>
-                                <option>Singaporean</option>
+                                <option>Malaysian</option>
                             </select>
                             <label for="Nationality">
                                 <i class="ion-chevron-down"></i>
@@ -493,14 +507,17 @@
                 <div class="form-group">
                     <div class="form-select">
                         <div class="input-group-select">
-                            <span class="form-label">
-                                Marital Status <span>*</span>
-                            </span>
+                            <label for="MaritalStatus">
+                                <span class="form-label">
+                                    Marital Status <span>*</span>
+                                </span>
+                            </label>
+                            
                         </div>
                         <div class="select-wrap">
                             <select title="Marital Status" class="form-control" id="MaritalStatus" name="MaritalStatus">
                                 <option>Single</option>
-                                <option>Single</option>
+                                <option>Married</option>
                             </select>
                             <label for="year">
                                 <i class="ion-chevron-down"></i>
@@ -511,9 +528,12 @@
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-prepend">
-                            <span class="input-group-text">
-                                Primary Contact No.
-                            </span>
+                            <label for="PrimaryContact">
+                                <span class="input-group-text">
+                                    Primary Contact No.
+                                </span>
+                            </label>
+                            
                         </div>
                         <input type="text" class="form-control"
                                placeholder="eg. 98764324"
@@ -524,9 +544,12 @@
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-prepend">
-                            <span class="input-group-text">
-                                Secondary Contact No.
-                            </span>
+                            <label for="SecondaryContact">
+                                <span class="input-group-text">
+                                    Secondary Contact No.
+                                </span>
+                            </label>
+                          
                         </div>
                         <input type="text" class="form-control"
                                placeholder="eg. 98764324"
@@ -537,9 +560,12 @@
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-prepend">
-                            <span class="input-group-text">
-                                Primary Email
-                            </span>
+                            <label for="PrimaryEmail">
+                                <span class="input-group-text">
+                                    Primary Email
+                                </span>
+                            </label>
+                       
                         </div>
                         <input type="text" class="form-control"
                                placeholder="email@email.com"
@@ -550,9 +576,12 @@
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-prepend">
-                            <span class="input-group-text">
-                                Secondary Email
-                            </span>
+                            <label for="SecondaryEmail">
+                                <span class="input-group-text">
+                                    Secondary Email
+                                </span>
+                            </label>
+                            
                         </div>
                         <input type="text" class="form-control"
                                placeholder="email@email.com"
@@ -567,9 +596,12 @@
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-prepend">
-                            <span class="input-group-text">
-                                House Number
-                            </span>
+                            <label for="AddressesHouseNumber">
+                                <span class="input-group-text">
+                                    House Number
+                                </span>
+                            </label>
+                            
                         </div>
                         <input type="text" class="form-control"
                                placeholder="Enter House Number"
@@ -580,9 +612,12 @@
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-prepend">
-                            <span class="input-group-text">
-                                Unit Number
-                            </span>
+                            <label for="AddressUnitNumber">
+                                <span class="input-group-text">
+                                    Unit Number
+                                </span>
+                            </label>
+                            
                         </div>
                         <input type="text" class="form-control"
                                placeholder="Enter Unit Number"
@@ -593,9 +628,12 @@
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-prepend">
-                            <span class="input-group-text">
-                                Street Name
-                            </span>
+                            <label for="AddressStreetName">
+                                <span class="input-group-text">
+                                    Street Name
+                                </span>
+                            </label>
+                            
                         </div>
                         <input type="text" class="form-control"
                                placeholder="Enter Street Name"
@@ -606,9 +644,12 @@
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-prepend">
-                            <span class="input-group-text">
-                                Country
-                            </span>
+                            <label for="AddressCountry">
+                                <span class="input-group-text">
+                                    Country
+                                </span>
+                            </label>
+                           
                         </div>
                         <input type="text" class="form-control"
                                placeholder="Enter Country"
@@ -623,13 +664,16 @@
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-prepend">
-                            <span class="input-group-text">
-                                Name
-                            </span>
+                            <label for="NextOfKin_Name">
+                                <span class="input-group-text">
+                                    Name
+                                </span>
+                            </label>
+                          
                         </div>
                         <input type="text" class="form-control"
                                placeholder="Enter Name"
-                               aria-label="house" aria-describedby="house" id="NextOfKinDetailsName" name="NextOfKinDetailsName">
+                               aria-label="house" aria-describedby="house" id="NextOfKin_Name" name="NextOfKin_Name">
                     </div>
                     <div class="clearfix"></div>
                 </div>
@@ -637,91 +681,112 @@
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-prepend">
-                            <span class="input-group-text">
-                                Contact Number
-                            </span>
+                            <label for="NextOfKin_Contact_Number">
+                                <span class="input-group-text">
+                                    Contact Number
+                                </span>
+                            </label>
+                           
                         </div>
                         <input type="text" class="form-control"
                                placeholder="eg. 98764324"
-                               aria-label="house" aria-describedby="house" id="NextOfKinDetailsContactNumber" name="ContactNumber">
+                               aria-label="house" aria-describedby="house" id="NextOfKin_Contact_Number" name="NextOfKin_Contact_Number">
                     </div>
                     <div class="clearfix"></div>
                 </div>
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-prepend">
-                            <span class="input-group-text">
-                                Relationship
-                            </span>
+                            <label for="NextOfKin_Relationship">
+                                <span class="input-group-text">
+                                    Relationship
+                                </span>
+                            </label>
+                           
                         </div>
                         <input type="text" class="form-control"
                                placeholder="Enter Relationship"
-                               aria-label="house" aria-describedby="house" id="NextOfKinDetailsRelationship" name="Relationship">
+                               aria-label="house" aria-describedby="house" id="NextOfKin_Relationship" name="NextOfKin_Relationship">
                     </div>
                     <div class="clearfix"></div>
                 </div>
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-prepend">
-                            <span class="input-group-text">
-                                House Number
-                            </span>
+                            <label for="NextOfKin_BlkHouse_Number">
+                                <span class="input-group-text">
+                                    House Number
+                                </span>
+                            </label>
+                           
                         </div>
                         <input type="text" class="form-control"
                                placeholder="Enter House Number"
-                               aria-label="house" aria-describedby="house" id="NextOfKinDetailsHouseNumber" name="NextOfKinDetailsHouseNumber">
+                               aria-label="house" aria-describedby="house" id="NextOfKin_BlkHouse_Number" name="NextOfKin_BlkHouse_Number">
                     </div>
                     <div class="clearfix"></div>
                 </div>
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-prepend">
-                            <span class="input-group-text">
-                                Unit Number
-                            </span>
+                            <label for="NextOfKin_FlrUnit_Number">
+                                <span class="input-group-text">
+                                    Unit Number
+                                </span>
+                            </label>
+                            
                         </div>
                         <input type="text" class="form-control"
                                placeholder="Enter Unit Number"
-                               aria-label="house" aria-describedby="house" id="NextOfKinDetailsUnitNumber" name="NextOfKinDetailsUnitNumber">
+                               aria-label="house" aria-describedby="house" id="NextOfKin_FlrUnit_Number" name="NextOfKin_FlrUnit_Number">
                     </div>
                     <div class="clearfix"></div>
                 </div>
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-prepend">
-                            <span class="input-group-text">
-                                Street Name
-                            </span>
+                            <label for="NextOfKin_Street_Name">
+                                <span class="input-group-text">
+                                    Street Name
+                                </span>
+                            </label>
+                          
                         </div>
                         <input type="text" class="form-control"
                                placeholder="Enter Street Name"
-                               aria-label="house" aria-describedby="house" id="NextOfKinDetailsStreetName" name="NextOfKinDetailsStreetName">
+                               aria-label="house" aria-describedby="house" id="NextOfKin_Street_Name" name="NextOfKin_Street_Name">
                     </div>
                     <div class="clearfix"></div>
                 </div>
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-prepend">
-                            <span class="input-group-text">
-                                Postal Code
-                            </span>
+                            <label for="NextOfKin_PostalCode">
+                                <span class="input-group-text">
+                                    Postal Code
+                                </span>
+                            </label>
+                          
                         </div>
                         <input type="text" class="form-control"
                                placeholder="Enter Postal Code"
-                               aria-label="house" aria-describedby="house" id="NextOfKinDetailsPostalCode" name="NextOfKinDetailsPostalCode">
+                               aria-label="house" aria-describedby="house" id="NextOfKin_PostalCode" name="NextOfKin_PostalCode">
                     </div>
                     <div class="clearfix"></div>
                 </div>
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-prepend">
-                            <span class="input-group-text">
-                                Country
-                            </span>
+                            <label for="NextOfKin_Country">
+                                <span class="input-group-text">
+                                    Country
+                                </span>
+                            </label>
+                            
                         </div>
                         <input type="text" class="form-control"
                                placeholder="Enter Country"
-                               aria-label="house" aria-describedby="house" id="NextOfKinDetailsCountry" name="NextOfKinDetailsCountry">
+                               aria-label="house" aria-describedby="house" id="NextOfKin_Country" name="NextOfKin_Country">
                     </div>
                     <div class="clearfix"></div>
                 </div>
@@ -732,91 +797,112 @@
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-prepend">
-                            <span class="input-group-text">
-                                Employer Name
-                            </span>
+                            <label for="Employment_Name">
+                                <span class="input-group-text">
+                                    Employer Name
+                                </span>
+                            </label>
+                           
                         </div>
                         <input type="text" class="form-control"
                                placeholder="Enter Name"
-                               aria-label="house" aria-describedby="house" id="EmployerName" name="EmployerName">
+                               aria-label="house" aria-describedby="house" id="Employment_Name" name="Employment_Name">
                     </div>
                     <div class="clearfix"></div>
                 </div>
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-prepend">
-                            <span class="input-group-text">
-                                Employer Contact
-                            </span>
+                            <label for="Employment_Contact_Number">
+                                <span class="input-group-text">
+                                    Employer Contact
+                                </span>
+                            </label>
+                            
                         </div>
                         <input type="text" class="form-control"
                                placeholder="Enter Employer Contact"
-                               aria-label="house" aria-describedby="house" id="EmployerContact" name="EmployerContact">
+                               aria-label="house" aria-describedby="house" id="Employment_Contact_Number" name="Employment_Contact_Number">
                     </div>
                     <div class="clearfix"></div>
                 </div>
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-prepend">
-                            <span class="input-group-text">
-                                Company Name
-                            </span>
+                            <label for="Employment_Company_Name">
+                                <span class="input-group-text">
+                                    Company Name
+                                </span>
+                            </label>
+                            
                         </div>
                         <input type="text" class="form-control"
                                placeholder="Enter Company Name"
-                               aria-label="house" aria-describedby="house" id="CompanyName" name="CompanyName">
+                               aria-label="house" aria-describedby="house" id="Employment_Company_Name" name="Employment_Company_Name">
                     </div>
                     <div class="clearfix"></div>
                 </div>
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-prepend">
-                            <span class="input-group-text">
-                                Job Title
-                            </span>
+                            <label for="Employment_Job_Title">
+                                <span class="input-group-text">
+                                    Job Title
+                                </span>
+                            </label>
+                           
                         </div>
                         <input type="text" class="form-control"
                                placeholder="Enter Job Tittle"
-                               aria-label="house" aria-describedby="house" id="JobTitle" name="JobTitle">
+                               aria-label="house" aria-describedby="house" id="Employment_Job_Title" name="Employment_Job_Title">
                     </div>
                     <div class="clearfix"></div>
                 </div>
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-prepend">
-                            <span class="input-group-text">
-                                Start Date
-                            </span>
+                            <label for="Employment_Start_Date">
+                                <span class="input-group-text">
+                                    Start Date
+                                </span>
+                            </label>
+                            
                         </div>
                         <input type="text" class="form-control"
-                               placeholder="Enter Start Date"
-                               aria-label="house" aria-describedby="house" id="StartDate" name="StartDate">
+                               placeholder="Enter Start Date eg:YYYY-MM-DD"
+                               aria-label="house" aria-describedby="house" id="Employment_Start_Date" name="Employment_Start_Date">
                     </div>
                     <div class="clearfix"></div>
                 </div>
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-prepend">
-                            <span class="input-group-text">
-                                End Date
-                            </span>
+                            <label for="Employment_End_Date">
+                                <span class="input-group-text">
+                                    End Date
+                                </span>
+                            </label>
+                            
                         </div>
                         <input type="text" class="form-control"
-                               placeholder="Enter End Date"
-                               aria-label="house" aria-describedby="house" id="EndDate" name="EndDate">
+                               placeholder="Enter End Date eg:YYYY-MM-DD"
+                               aria-label="house" aria-describedby="house" id="Employment_End_Date" name="Employment_End_Date">
                     </div>
                     <div class="clearfix"></div>
                 </div>
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-prepend">
-                            <span class="input-group-text">
-                                Remarks
-                            </span>
+                            <label for="Employment_Remarks">
+                                <span class="input-group-text">
+                                    Remarks
+                                </span>
+                            </label>
+                            
                         </div>
                         <input type="text" class="form-control"
-                               placeholder="Enter Remarks"
-                               aria-label="house" aria-describedby="house" id="Remarks" name="Remarks">
+                               placeholder="Enter Employment_Remarks"
+                               aria-label="house" aria-describedby="house" id="Employment_Remarks" name="Employment_Remarks">
                     </div>
                     <div class="clearfix"></div>
                 </div>
@@ -970,74 +1056,74 @@
                 <br />
                 <div class="input-group">
                     <span class="input-group-addon">Contact Number</span>
-                    <input id="NextOfKinDetailsContactNumber" type="text" class="form-control" name="ContactNumber" />
+                    <input id="NextOfKin_Contact_Number" type="text" class="form-control" name="ContactNumber" />
                 </div>
                 <br />
                 <div class="input-group">
                     <span class="input-group-addon">Relationship</span>
-                    <input id="NextOfKinDetailsRelationship" type="text" class="form-control" name="Relationship" />
+                    <input id="NextOfKin_Relationship" type="text" class="form-control" name="Relationship" />
                 </div>
                 <br />
                 <div class="input-group">
                     <span class="input-group-addon">House Number</span>
-                    <input id="NextOfKinDetailsHouseNumber" type="text" class="form-control" name="NextOfKinDetailsHouseNumber" />
+                    <input id="NextOfKin_BlkHouse_Number" type="text" class="form-control" name="NextOfKin_BlkHouse_Number" />
                 </div>
                 <br />
                 <div class="input-group">
                     <span class="input-group-addon">Unit Number</span>
-                    <input id="NextOfKinDetailsUnitNumber" type="text" class="form-control" name="NextOfKinDetailsUnitNumber" />
+                    <input id="NextOfKin_FlrUnit_Number" type="text" class="form-control" name="NextOfKin_FlrUnit_Number" />
                 </div>
                 <br />
                 <div class="input-group">
                     <span class="input-group-addon">Street Name</span>
-                    <input id="NextOfKinDetailsStreetName" type="text" class="form-control" name="NextOfKinDetailsStreetName" />
+                    <input id="NextOfKin_Street_Name" type="text" class="form-control" name="NextOfKin_Street_Name" />
                 </div>
                 <br />
                 <div class="input-group">
                     <span class="input-group-addon">Postal Code</span>
-                    <input id="NextOfKinDetailsPostalCode" type="text" class="form-control" name="NextOfKinDetailsPostalCode" />
+                    <input id="NextOfKin_PostalCode" type="text" class="form-control" name="NextOfKin_PostalCode" />
                 </div>
                 <br />
                 <div class="input-group">
                     <span class="input-group-addon">Country</span>
-                    <input id="NextOfKinDetailsCountry" type="text" class="form-control" name="NextOfKinDetailsCountry" />
+                    <input id="NextOfKin_Country" type="text" class="form-control" name="NextOfKin_Country" />
                 </div>
                 <br />
             </div>
             <div id="Employment-Details" class="tab-pane fade" onclick="activeTab('Employment-Details');">
                 <div class="input-group">
                     <span class="input-group-addon">Employer Name</span>
-                    <input id="EmployerName" type="text" class="form-control" name="EmployerName" />
+                    <input id="Employment_Name" type="text" class="form-control" name="Employment_Name" />
                 </div>
                 <br />
                 <div class="input-group">
                     <span class="input-group-addon">Employer Contact</span>
-                    <input id="EmployerContact" type="text" class="form-control" name="EmployerContact" />
+                    <input id="Employment_Contact_Number" type="text" class="form-control" name="Employment_Contact_Number" />
                 </div>
                 <br />
                 <div class="input-group">
                     <span class="input-group-addon">Company Name</span>
-                    <input id="CompanyName" type="text" class="form-control" name="CompanyName" />
+                    <input id="Employment_Company_Name" type="text" class="form-control" name="Employment_Company_Name" />
                 </div>
                 <br />
                 <div class="input-group">
                     <span class="input-group-addon">Job Title</span>
-                    <input id="JobTitle" type="text" class="form-control" name="JobTitle" />
+                    <input id="Employment_Job_Title" type="text" class="form-control" name="Employment_Job_Title" />
                 </div>
                 <br />
                 <div class="input-group">
                     <span class="input-group-addon">Start Date</span>
-                    <input id="StartDate" type="text" class="form-control" name="StartDate" />
+                    <input id="Employment_Start_Date" type="text" class="form-control" name="Employment_Start_Date" />
                 </div>
                 <br />
                 <div class="input-group">
                     <span class="input-group-addon">End Date </span>
-                    <input id="EndDate" type="text" class="form-control" name="EndDate" />
+                    <input id="Employment_End_Date" type="text" class="form-control" name="Employment_End_Date" />
                 </div>
                 <br />
                 <div class="input-group">
-                    <span class="input-group-addon">Remarks</span>
-                    <input id="Remarks" type="text" class="form-control" name="Remarks" />
+                    <span class="input-group-addon">Employment_Remarks</span>
+                    <input id="Employment_Remarks" type="text" class="form-control" name="Employment_Remarks" />
                 </div>
             </div>
 
@@ -1112,23 +1198,23 @@
             $('#SecondaryEmail').val(model.UserProfile.Secondary_Email);
 
             //next of kin information
-            $('#NextOfKinDetailsName').val(model.UserProfile.NextOfKin_Name);
-            $('#NextOfKinDetailsContactNumber').val(model.UserProfile.NextOfKin_Contact_Number);
-            $('#NextOfKinDetailsRelationship').val(model.UserProfile.NextOfKin_Relationship);
-            $('#NextOfKinDetailsHouseNumber').val(model.UserProfile.NextOfKin_BlkHouse_Number);
-            $('#NextOfKinDetailsUnitNumber').val(model.UserProfile.NextOfKin_FlrUnit_Number);
-            $('#NextOfKinDetailsStreetName').val(model.UserProfile.NextOfKin_Street_Name);
-            $('#NextOfKinDetailsCountry').val(model.UserProfile.NextOfKin_Country);
-            $('#NextOfKinDetailsPostalCode').val(model.UserProfile.NextOfKin_PostalCode);
+            $('#NextOfKin_Name').val(model.UserProfile.NextOfKin_Name);
+            $('#NextOfKin_Contact_Number').val(model.UserProfile.NextOfKin_Contact_Number);
+            $('#NextOfKin_Relationship').val(model.UserProfile.NextOfKin_Relationship);
+            $('#NextOfKin_BlkHouse_Number').val(model.UserProfile.NextOfKin_BlkHouse_Number);
+            $('#NextOfKin_FlrUnit_Number').val(model.UserProfile.NextOfKin_FlrUnit_Number);
+            $('#NextOfKin_Street_Name').val(model.UserProfile.NextOfKin_Street_Name);
+            $('#NextOfKin_Country').val(model.UserProfile.NextOfKin_Country);
+            $('#NextOfKin_PostalCode').val(model.UserProfile.NextOfKin_PostalCode);
 
             //employee details information
-            $('#EmployerName').val(model.UserProfile.Employment_Name);
-            $('#EmployerContact').val(model.UserProfile.Employment_Contact_Number);
-            $('#CompanyName').val(model.UserProfile.Employment_Company_Name);
-            $('#JobTitle').val(model.UserProfile.Employment_Job_Title);
-            $('#StartDate').val(model.UserProfile.Employment_Start_Date_Text);
-            $('#EndDate').val(model.UserProfile.Employment_End_Date_Text);
-            $('#Remarks').val(model.UserProfile.Employment_Remarks);
+            $('#Employment_Name').val(model.UserProfile.Employment_Name);
+            $('#Employment_Contact_Number').val(model.UserProfile.Employment_Contact_Number);
+            $('#Employment_Company_Name').val(model.UserProfile.Employment_Company_Name);
+            $('#Employment_Job_Title').val(model.UserProfile.Employment_Job_Title);
+            $('#Employment_Start_Date').val(model.UserProfile.Employment_Start_Date_Text);
+            $('#Employment_End_Date').val(model.UserProfile.Employment_End_Date_Text);
+            $('#Employment_Remarks').val(model.UserProfile.Employment_Employment_Remarks);
         }
 
         if (model.Addresses != null) {
