@@ -192,13 +192,13 @@ namespace SSK
                 //////Supervisee
                 //Trinity.BE.User user = new DAL_User().GetUserByUserId("26df26a0-73a3-4bdb-bce6-10e92265a3d7").Data;
                 ////// Duty Officer
-                Trinity.BE.User user = new DAL_User().GetUserByUserId("06a91b1b-99c3-428d-8a55-83892c2adf4c").Data;
+                Trinity.BE.User user = new DAL_User().GetUserByUserId("bb67863c-c330-41aa-b397-c220428ad16f").Data;
                 session[CommonConstants.USER_LOGIN] = user;
                 session.IsSmartCardAuthenticated = true;
                 session.IsFingerprintAuthenticated = true;
 
-                NavigateTo(NavigatorEnums.Authentication_Fingerprint);
-                //NavigateTo(NavigatorEnums.Supervisee);
+               // NavigateTo(NavigatorEnums.Authentication_Fingerprint);
+                NavigateTo(NavigatorEnums.Supervisee);
                 //NavigateTo(NavigatorEnums.Authentication_NRIC);
 
                 _isFirstTimeLoaded = false;
