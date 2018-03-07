@@ -380,7 +380,7 @@
 </ul>
 
 <div class="profile-content">
-    <form class="form-material profile-wrap z-depth-2" method="post" action="#">
+    <form class="form-material profile-wrap z-depth-2"  id="profileFrm">
         <input type="hidden" id="activeTab" value="Particulars" />
         <input type="hidden" name="UserId" id="UserId" />
         <input type="hidden" name="LastLoginTime" id="LastLoginTime" />
@@ -437,7 +437,7 @@
                             </span>
                         </div>
                         <input type="text" class="form-control"
-                               placeholder="DDMMYYYY"
+                               placeholder="DD/MM/YYYY"
                                aria-label="house" aria-describedby="house" id="DOB" name="DOB">
                     </div>
                     <div class="clearfix"></div>
@@ -544,7 +544,7 @@
                         </div>
                         <input type="text" class="form-control"
                                placeholder="Enter House Number"
-                               aria-label="house" aria-describedby="house" id="AddressesHouseNumber" name="AddressesHouseNumber">
+                               aria-label="house" aria-describedby="house" id="AddressesHouseNumber" name="AddressesHouseNumber" disabled="disabled">
                     </div>
                     <div class="clearfix"></div>
                 </div>
@@ -557,7 +557,7 @@
                         </div>
                         <input type="text" class="form-control"
                                placeholder="Enter Unit Number"
-                               aria-label="house" aria-describedby="house" id="AddressUnitNumber" name="UnitNumber">
+                               aria-label="house" aria-describedby="house" id="AddressUnitNumber" name="UnitNumber" disabled="disabled">
                     </div>
                     <div class="clearfix"></div>
                 </div>
@@ -570,7 +570,7 @@
                         </div>
                         <input type="text" class="form-control"
                                placeholder="Enter Street Name"
-                               aria-label="house" aria-describedby="house" id="AddressStreetName" name="StreetName">
+                               aria-label="house" aria-describedby="house" id="AddressStreetName" name="StreetName" disabled="disabled">
                     </div>
                     <div class="clearfix"></div>
                 </div>
@@ -583,7 +583,7 @@
                         </div>
                         <input type="text" class="form-control"
                                placeholder="Enter Country"
-                               aria-label="house" aria-describedby="house" id="AddressCountry" name="Country">
+                               aria-label="house" aria-describedby="house" id="AddressCountry" name="Country" disabled="disabled">
                     </div>
                     <div class="clearfix"></div>
                 </div>
@@ -794,12 +794,13 @@
 
             </div>
         </div>
+    <button type="submit" style="display:none" id="btnSubmit"></button>
     </form>
 </div>
 <div class="profile-action">
 
     <div class="mt-4">
-        <p class="pull-left">
+        <!--<p class="pull-left">
             <span class="text-danger">*</span> Supporting documents required
         </p>
         <div class="group-button-right">
@@ -810,16 +811,15 @@
                 Confirm
             </button>
 
-        </div>
+        </div>-->
 
         <div style="display:none;float:right;" id="divSupportDocument">
-            <button type="button" class="btn btn-danger" style="position:fixed;bottom:10px;right:150px;" id="btnScan">Scan documents</button>
-            <button type="button" class="btn btn-dark" style="position:fixed;bottom:10px;left:10px;float:left;" onclick="api.server.LoadPage('Supervisee.html');">Back</button>
+            <button type="button" class="btn btn-danger" style="position:fixed;bottom:10px;right:170px;" id="btnScan">Scan documents</button>
         </div>
         <div style="display:none;float:right;" id="divConfirm">
             <p style="position:fixed;z-index:100;bottom:45px;right:10px;"><strong>Are you sure ?</strong></p>
             <button type="button" class="btn btn-dark" style="position:fixed;bottom:10px;right:60px; float:right;" id="btnCancel">Cancel</button>
-            <input type="submit" class="btn btn-success" style="position:fixed;bottom:10px;right:10px; float:right;" id="btnOK" value="OK">
+            <input type="button" class="btn btn-success" style="position:fixed;bottom:10px;right:10px; float:right;" id="btnOK" value="OK">
         </div>
         <div class="noticeMessage">
             <div style="display:none;" id="divError"><span class="text-danger">Following input must not null!</span></div>
@@ -827,8 +827,8 @@
         </div>
         <div style="display:block;float:right;" id="divSave">
             <!--<button type="button" class="btn btn-dark" onclick="api.server.LoadPage('Supervisee.html');">Back</button>-->
-            <button type="button" class="btn btn-dark" onclick="api.server.LoadSupervisee()">Cancel</button>
-            <button type="button" class="btn btn-success" id="SaveBtn">Update</button>
+            <button type="button" class="btn btn-dark" style="position:fixed;bottom:10px;right:90px; float:right;" onclick="api.server.LoadSupervisee()">Cancel</button>
+            <button type="button" class="btn btn-success" style="position:fixed;bottom:10px;right:10px; float:right;" id="SaveBtn">Update</button>
         </div>
     </div>
 </div>
@@ -1042,6 +1042,8 @@
 </div>-->
 
 <script type="text/javascript">
+
+    var jsonFormData = null;
     var _particularName, _nric, _dob, _nationality, _maritalStatus = "";
     api.ready(function (model) {
         _particularName = model.User.Name;
@@ -1123,55 +1125,40 @@
 
     }
 
-    $("#profileFrm").submit(function (e) {
+    $('#btnScan').click(function () {
+        $("#profileFrm").trigger('submit');
+        if (jsonFormData.length > 0) {
+            api.server.LoadScanDocument(jsonFormData);
+            jsonFormData = null;
+        }
+      
+    });
 
+    $('#btnOK').click(function () {
+        // $('#btnSubmit').trigger('click');
+        $("#profileFrm").trigger('submit');
+        if (jsonFormData.length>0) {
+            api.server.SaveProfile(jsonFormData, true);
+            jsonFormData = null;
+        }
+    });
+   
+    $("#profileFrm").submit(function (e) {
         var $form = $("#profileFrm");
         var data = getFormData($form);
-        if (data.DOB != "") {
-            alert(1);
+        if (data.DOB.length > 0) {
+            
             var dobtxt = data.DOB.split('/');
             data.DOB = dobtxt[2] + '-' + dobtxt[1] + '-' + dobtxt[0];
         }
 
-
-        var json = JSON.stringify(data);
-
-        api.server.SaveProfile(json, true);
-
+        jsonFormData = JSON.stringify(data);
+    
         //api.server.SaveProfile(json, false);
-
+        
         e.preventDefault(); // avoid to execute the actual submit of the form.
     });
-
-    $('#btnScan').click(function () {
-        var $form = $("#profileFrm");
-        var data = getFormData($form);
-        var json = JSON.stringify(data);
-        api.server.LoadScanDocument(json);
-    });
-
-    function UpdateProfile() {
-        $("#profileFrm").submit(function (e) {
-
-            var $form = $("#profileFrm");
-            var data = getFormData($form);
-            var dobtxt = data.DOB.split('/');
-            data.DOB = dobtxt[2] + '-' + dobtxt[1] + '-' + dobtxt[0];
-            var json = JSON.stringify(data);
-
-            //for testing purpose
-            api.server.SaveProfile(json, true);
-
-            //api.server.SaveProfile(json, false);
-
-            e.preventDefault(); // avoid to execute the actual submit of the form.
-        });
-    }
-    //$('#btnOK').click(function () {
-
-    //    var $form = $("#profileFrm");
-    //    $form.submit();
-    //});
+   
 
 
     function getFormData($form) {

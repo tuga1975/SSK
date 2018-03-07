@@ -26,13 +26,22 @@ namespace SSA.CodeBehind
 
                 if (session.IsAuthenticated)
                 {
-                    Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.SUPERVISEE];
-                    
+                    Trinity.BE.User currentUser = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+
+                    Trinity.BE.User supervisee = null;
+                    if (currentUser.Role == EnumUserRoles.DutyOfficer)
+                    {
+                        supervisee = (Trinity.BE.User)session[CommonConstants.SUPERVISEE];
+                    }
+                    else
+                    {
+                        supervisee = currentUser;
+                    }
                     var labelInfo = new LabelInfo
                     {
-                        UserId = user.UserId,
-                        Name = user.Name, 
-                        NRIC = user.NRIC,
+                        UserId = supervisee.UserId,
+                        Name = supervisee.Name,
+                        NRIC = supervisee.NRIC,
                         Label_Type = EnumLabelType.MUB,
                         Date = DateTime.Now.ToString("dd/MM/yyyy"),
                         CompanyName = CommonConstants.COMPANY_NAME,
@@ -48,7 +57,7 @@ namespace SSA.CodeBehind
                     using (var ms = new System.IO.MemoryStream(byteArrayQRCode))
                     {
                         System.IO.Directory.CreateDirectory(String.Format("{0}/Temp", CSCallJS.curDir));
-                        string fileName = String.Format("{0}/Temp/{1}", CSCallJS.curDir, "QRCode_" + user.NRIC + ".png");
+                        string fileName = String.Format("{0}/Temp/{1}", CSCallJS.curDir, "QRCode_" + supervisee.NRIC + ".png");
                         if (System.IO.File.Exists(fileName))
                             System.IO.File.Delete(fileName);
 

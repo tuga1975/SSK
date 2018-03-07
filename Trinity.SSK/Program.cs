@@ -21,24 +21,9 @@ namespace SSK
             Application.SetCompatibleTextRenderingDefault(false);
             try
             {
-                // Health checker
-                CameraMonitor.Start();
-                SpeakerMonitor.Start();
-                DocumentScannerMonitor.Start();
-                FingerprintReaderMonitor.Start();
-                BarcodeScannerMonitor.Start();
-                SmartCardReaderMonitor.Start();
-                ReceiptPrinterMonitor.Start();
-                QueueScreenMonitor.Start();
+                StartHealthChecker();
 
-                // SSK is initialisation for use.
-                // Turn on BLUE Light
-                string comPort = ConfigurationManager.AppSettings["COMPort"];
-                int baudRate = int.Parse(ConfigurationManager.AppSettings["BaudRate"]);
-                string parity = ConfigurationManager.AppSettings["Parity"];
-                LEDStatusLightingUtil.Instance.OpenPort("SSK", comPort, baudRate, parity);
-                LEDStatusLightingUtil.Instance.TurnOffAllLEDs();
-                LEDStatusLightingUtil.Instance.SwitchBLUELightOnOff(true);
+                StartLEDStatusLighting();
 
                 Application.Run(new Main());
             }
@@ -49,6 +34,31 @@ namespace SSK
             }
             //Application.Run(new FormTextToSpeech());
             //Application.Run(new FormAppointmentDetails());
+        }
+
+        private static void StartLEDStatusLighting()
+        {
+            // SSK is initialisation for use.
+            //string comPort = ConfigurationManager.AppSettings["COMPort"];
+            //int baudRate = int.Parse(ConfigurationManager.AppSettings["BaudRate"]);
+            //string parity = ConfigurationManager.AppSettings["Parity"];
+            //LEDStatusLightingUtil.Instance.OpenPort("SSK", comPort, baudRate, parity);
+
+            // Start flashing
+            //LEDStatusLightingUtil.Instance.TurnOffAllLEDs();
+            //LEDStatusLightingUtil.Instance.StartBLUELightFlashing();
+        }
+
+        private static void StartHealthChecker()
+        {
+            CameraMonitor.Start();
+            SpeakerMonitor.Start();
+            DocumentScannerMonitor.Start();
+            FingerprintReaderMonitor.Start();
+            BarcodeScannerMonitor.Start();
+            SmartCardReaderMonitor.Start();
+            ReceiptPrinterMonitor.Start();
+            QueueScreenMonitor.Start();
         }
     }
 }

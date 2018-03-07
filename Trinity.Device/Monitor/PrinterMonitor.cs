@@ -3,6 +3,7 @@ using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Windows.Forms;
 using Trinity.Common;
 using Trinity.Device.Util;
 
@@ -118,7 +119,7 @@ namespace Trinity.Device
 
         public void PrintMUBLabel(LabelInfo labelInfo)
         {
-            // validation
+            // Validate 
             if (string.IsNullOrEmpty(labelInfo.Name))
             {
                 // username is null
@@ -142,7 +143,7 @@ namespace Trinity.Device
                 return;
             }
 
-            // print label
+            // Print label
             BarcodePrinterUtil printerUtils = BarcodePrinterUtil.Instance;
 
             // create image file to print
@@ -151,6 +152,10 @@ namespace Trinity.Device
             using (var ms = new System.IO.MemoryStream(labelInfo.BitmapLabel))
             {
                 Bitmap bitmap = new System.Drawing.Bitmap(System.Drawing.Image.FromStream(ms));
+
+                // Rotate bitmap
+                bitmap.RotateFlip(System.Drawing.RotateFlipType.Rotate90FlipNone);
+
                 string curDir = Directory.GetCurrentDirectory();
 
                 // create directory
@@ -167,20 +172,28 @@ namespace Trinity.Device
                 target.Save(filePath, ImageFormat.Bmp);
             }
 
-            // print mub label
-            if (printerUtils.PrintMUBLabel(filePath))
+            // Print mub label
+            try
             {
-                // raise succeeded event
-                RaisePrintMUBLabelSucceededEvent(new PrintMUBAndTTLabelsEventArgs(labelInfo));
-            }
-            else
-            {
-                // raise failed event
-                RaiseMonitorExceptionEvent(new ExceptionArgs(new FailedInfo()
+                if (printerUtils.PrintMUBLabel(filePath))
                 {
-                    ErrorCode = (int)EnumErrorCodes.UnknownError,
-                    ErrorMessage = new ErrorInfo().GetErrorMessage(EnumErrorCodes.UnknownError)
-                }));
+                    // raise succeeded event
+                    RaisePrintMUBLabelSucceededEvent(new PrintMUBAndTTLabelsEventArgs(labelInfo));
+                }
+                else
+                {
+                    MessageBox.Show("Failed to print");
+                    // raise failed event
+                    RaiseMonitorExceptionEvent(new ExceptionArgs(new FailedInfo()
+                    {
+                        ErrorCode = (int)EnumErrorCodes.UnknownError,
+                        ErrorMessage = new ErrorInfo().GetErrorMessage(EnumErrorCodes.UnknownError)
+                    }));
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error while printing MUB Label, details: " + ex.Message);
             }
         }
     }
