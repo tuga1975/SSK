@@ -524,3 +524,10 @@ public enum EnumAbsentReasons
     No_Valid_Reason = 4,
     No_Supporting_Document = 5
 }
+
+public enum EnumHealthStatus
+{
+    Ready = 0,
+    Caution = 1,
+    Error = 2
+}
