@@ -464,6 +464,14 @@ namespace Trinity.DAL
         // Save OperationSetting from DutyOfficer
         public BE.SettingModel GetOperationSettings()
         {
+            CreateOperationSettingForDayOfWeek((int)EnumDayOfWeek.Monday);
+            CreateOperationSettingForDayOfWeek((int)EnumDayOfWeek.Tuesday);
+            CreateOperationSettingForDayOfWeek((int)EnumDayOfWeek.Wednesday);
+            CreateOperationSettingForDayOfWeek((int)EnumDayOfWeek.Thursday);
+            CreateOperationSettingForDayOfWeek((int)EnumDayOfWeek.Friday);
+            CreateOperationSettingForDayOfWeek((int)EnumDayOfWeek.Saturday);
+            CreateOperationSettingForDayOfWeek((int)EnumDayOfWeek.Sunday);
+
             List<OperationSetting> arraySetting = _localUnitOfWork.DataContext.OperationSettings.ToList();
 
             var settingModel = new BE.SettingModel
@@ -495,6 +503,22 @@ namespace Trinity.DAL
                 settingModel.Sunday = settingModel.Sunday == null ? new SettingDetails() { DayOfWeek = (int)EnumDayOfWeek.Sunday } : settingModel.Sunday;
 
                 return settingModel;
+            }
+        }
+
+        private bool CheckExistOperationSettingByDayOfWeek(int dayOfWeek)
+        {
+            return _localUnitOfWork.DataContext.OperationSettings.Any(o => o.DayOfWeek == dayOfWeek);
+        }
+
+        private void CreateOperationSettingForDayOfWeek(int dayOfWeek)
+        {
+            if (!CheckExistOperationSettingByDayOfWeek(dayOfWeek))
+            {
+                OperationSetting operationSetting = new OperationSetting();
+                operationSetting.DayOfWeek = dayOfWeek;
+                _localUnitOfWork.GetRepository<OperationSetting>().Add(operationSetting);
+                _localUnitOfWork.Save();
             }
         }
 

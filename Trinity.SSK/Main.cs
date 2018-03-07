@@ -103,6 +103,10 @@ namespace SSK
             {
                 LayerWeb.InvokeScript("alertBookAppointment", e.Message);
             }
+            else if (e.Name == EventNames.DO_CANCEL_ENTER_NRIC)
+            {
+                NavigateTo(NavigatorEnums.Authentication_SmartCard);
+            }
         }
 
         /// <summary>
@@ -192,20 +196,21 @@ namespace SSK
             {
                 // Start page
                 NavigateTo(NavigatorEnums.Authentication_SmartCard);
-                ////// For testing purpose
+
+
+                //// For testing purpose
                 //Session session = Session.Instance;
-                ////////Supervisee
-                ////Trinity.BE.User user = new DAL_User().GetUserByUserId("26df26a0-73a3-4bdb-bce6-10e92265a3d7").Data;
-                //////// Duty Officer
-                //Trinity.BE.User user = new DAL_User().GetUserByUserId("06a91b1b-99c3-428d-8a55-83892c2adf4c").Data;
+                //////Supervisee
+                //Trinity.BE.User user = new DAL_User().GetUserByUserId("26df26a0-73a3-4bdb-bce6-10e92265a3d7").Data;
+                ////// Duty Officer
+                //Trinity.BE.User user = new DAL_User().GetUserByUserId("87b3d624-f054-4d75-b1bf-b2981fc64a71").Data;
                 //session[CommonConstants.USER_LOGIN] = user;
                 //session.IsSmartCardAuthenticated = true;
                 //session.IsFingerprintAuthenticated = true;
 
                 //NavigateTo(NavigatorEnums.Authentication_Fingerprint);
-                ////NavigateTo(NavigatorEnums.Supervisee);
-                ////NavigateTo(NavigatorEnums.Authentication_NRIC);
-
+                //NavigateTo(NavigatorEnums.Supervisee);
+                //NavigateTo(NavigatorEnums.Authentication_NRIC);
                 _isFirstTimeLoaded = false;
             }
 
