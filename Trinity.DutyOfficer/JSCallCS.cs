@@ -53,10 +53,10 @@ namespace DutyOfficer
         public StationColorDevice GetStationClolorDevice()
         {
             var dalDeviceStatus = new DAL_DeviceStatus();
-            _StationColorDevice.SSAColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStations.SSA) ? EnumColors.Green : EnumColors.Red;
-            _StationColorDevice.SSKColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStations.SSK) ? EnumColors.Green : EnumColors.Red;
-            _StationColorDevice.ESPColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStations.ESP) ? EnumColors.Green : EnumColors.Red;
-            _StationColorDevice.UHPColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStations.UHP) ? EnumColors.Green : EnumColors.Red;
+            _StationColorDevice.SSAColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStations.SSA);
+            _StationColorDevice.SSKColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStations.SSK);
+            _StationColorDevice.ESPColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStations.ESP);
+            _StationColorDevice.UHPColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStations.UHP);
             return _StationColorDevice;
         }
 

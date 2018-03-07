@@ -85,13 +85,19 @@ namespace Trinity.DAL
             }
         }
 
-        public bool CheckStatusDevicesStation(string station)
+        public string CheckStatusDevicesStation(string station)
         {
             if (!_localUnitOfWork.DataContext.ApplicationDevice_Status.Any(a=>a.Station.ToUpper() == station.ToUpper()))
             {
-                return false;
+                return EnumColors.Red;
             }
-            return !_localUnitOfWork.DataContext.ApplicationDevice_Status.Any(d => d.Station.ToUpper() == station.ToUpper() && d.StatusCode == (int)EnumDeviceStatuses.Disconnected);
+
+            if (_localUnitOfWork.DataContext.ApplicationDevice_Status.Any(d => d.Station.ToUpper() == station.ToUpper() && d.StatusCode == (int)EnumDeviceStatuses.Disconnected))
+            {
+                return EnumColors.Red;
+            }
+
+            return EnumColors.Green;
         }
 
         /// <summary>

@@ -108,19 +108,19 @@ namespace DutyOfficer
 
             if (station == EnumStations.SSA)
             {
-                JSCallCS._StationColorDevice.SSAColor = device.CheckStatusDevicesStation(station) ? EnumColors.Green : EnumColors.Red;
+                JSCallCS._StationColorDevice.SSAColor = device.CheckStatusDevicesStation(station);
             }
             if (station == EnumStations.SSK)
             {
-                JSCallCS._StationColorDevice.SSKColor = device.CheckStatusDevicesStation(station) ? EnumColors.Green : EnumColors.Red;
+                JSCallCS._StationColorDevice.SSKColor = device.CheckStatusDevicesStation(station);
             }
             if (station == EnumStations.ESP)
             {
-                JSCallCS._StationColorDevice.ESPColor = device.CheckStatusDevicesStation(station) ? EnumColors.Green : EnumColors.Red;
+                JSCallCS._StationColorDevice.ESPColor = device.CheckStatusDevicesStation(station);
             }
             if (station == EnumStations.UHP)
             {
-                JSCallCS._StationColorDevice.UHPColor = device.CheckStatusDevicesStation(station) ? EnumColors.Green : EnumColors.Red;
+                JSCallCS._StationColorDevice.UHPColor = device.CheckStatusDevicesStation(station);
             }
             
             _jsCallCS.LoadStationColorDevice();
