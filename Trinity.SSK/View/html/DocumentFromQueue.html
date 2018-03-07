@@ -1,6 +1,13 @@
-﻿<video autoplay="autoplay" loop="loop">
+﻿<div id="header" style="background-color:#FFF;margin-top:20px;">
+    <div class="logo"></div>
+    <div style="float:right;width:20%;position: relative;top: 50%;-webkit-transform: translateY(-50%);-ms-transform: translateY(-50%);transform: translateY(-50%);">
+        <a href="javascript:;" onclick="api.server.LoadSupervisee()"><b class="ion-navicon-round" style="font-size:21px;color:#1cacf6;">Back to Main menu</b></a>
+    </div>
+</div>
+<div name-page="Scan Document" style=""></div>
+<!--<video autoplay="autoplay" loop="loop">
     <source src="Authentication/mov_bbb.mp4" type="video/mp4">
-</video>
+</video>-->
 <div style="clear:both"></div>
 <style type="text/css">
     video {
@@ -8,10 +15,10 @@
         width: calc(100% - 20px);
         height: calc(70% - 140px);
         left: 10px;
-        top: 80px;
+        top: 115px;
     }
 </style>
-<div style="width:100%;padding:10px 0px;text-align:center; margin-top:400px">
+<div style="width:100%;padding:10px 0px;text-align:center; margin-top:350px">
     <div type="button" id="btnScan" class="btn btn-warning" onclick="api.server.LoadPage('DocumentFromQueue.html');">Please scan your document in the scanner.</div>
 </div>
 
