@@ -131,8 +131,6 @@ namespace Trinity.SignalR
         {
             HubProxy.On<NotificationInfo>("OnNewNotification", (notificationInfo) =>
             {
-                OnNewNotification?.Invoke(this, notificationInfo);
-
                 if (notificationInfo.Name == NotificationNames.QUEUE_COMPLETED)
                 {
                     OnQueueCompleted?.Invoke(this, new EventInfo() { Name = EventNames.QUEUE_COMPLETED, Data = notificationInfo.FromUserId });
