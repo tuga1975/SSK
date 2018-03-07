@@ -1,5 +1,13 @@
-﻿<video autoplay="autoplay" loop="loop">
-    <source src="Authentication/mov_bbb.mp4" type="video/mp4">    
+﻿<div id="header" style="background-color:#FFF;margin-top:20px;">
+    <div class="logo"></div>
+    <div style="float:right;width:20%;position: relative;top: 50%;-webkit-transform: translateY(-50%);-ms-transform: translateY(-50%);transform: translateY(-50%);">
+        <a href="javascript:;" onclick="api.server.LoadSupervisee()"><b class="ion-navicon-round" style="font-size:21px;color:#1cacf6;">Back to Main menu</b></a>
+    </div>
+</div>
+<div name-page="Scan Document" style=""></div>
+
+<video autoplay="autoplay" loop="loop">
+    <source src="Authentication/mov_bbb.mp4" type="video/mp4">
 </video>
 <div style="clear:both"></div>
 <style type="text/css">
@@ -8,12 +16,12 @@
         width: calc(100% - 20px);
         height: calc(70% - 140px);
         left: 10px;
-        top: 80px;
+        top: 115px;
     }
 </style>
-<div style="width:100%;padding:10px 0px;text-align:center; margin-top:400px">
+<div style="width:100%;padding:10px 0px;text-align:center; margin-top:350px">
     <div type="button" class="btn btn-warning" onclick="api.server.LoadPage('Document.html');">Please scan your document in the scanner.</div>
-    
+
 </div>
 <div style="width:100%;padding:10px 0px;text-align:center; margin-top:10px">
     <div type="button" class="btn btn-success" id="divMessage" style="display:none;">Your document was scanned successfully! </div>
@@ -22,23 +30,23 @@
     <div id="divConfirm" style="display:none;">
         <strong>Confirm update information </strong>
         <button class="btn btn-dark">Cancel</button>
-        <button class="btn btn-success" id="btnOK" >OK</button>
+        <button class="btn btn-success" id="btnOK">OK</button>
     </div>
 </div>
 
-    <script>
-        var formData, json = null;
-        api.ready(function (model) {
-            $('#btnOK').click(function () {
-                api.server.UpdateProfileAfterScanDoc();
-            }); 
+<script>
+    var formData, json = null;
+    api.ready(function (model) {
+        $('#btnOK').click(function () {
+            api.server.UpdateProfileAfterScanDoc();
         });
-        var setSuccess = setTimeout(showMessage, 5000);
-        function showMessage() {
-            $('#divMessage').show();
-            $('#divConfirm').show();
-        }
-        
-        
-       
-    </script>
+    });
+    var setSuccess = setTimeout(showMessage, 5000);
+    function showMessage() {
+        $('#divMessage').show();
+        $('#divConfirm').show();
+    }
+
+
+
+</script>

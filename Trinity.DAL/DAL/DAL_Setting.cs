@@ -583,63 +583,80 @@ namespace Trinity.DAL
             }
         }
 
-        public bool DeleteHoliday(DateTime date, string updatedBy)
+        public bool DeleteHoliday(List<BE.Holiday> lstHolidays, string updatedBy)
         {
             try
             {
                 if (EnumAppConfig.IsLocal)
                 {
-                    _localUnitOfWork.GetRepository<DBContext.Holiday>().Delete(h => h.Holiday1.Year == date.Year && h.Holiday1.Month == date.Month && h.Holiday1.Day == date.Day);
-
-                    // Insert to Change History Setting
-                    var changeHistoryID = GetMaxIDChangeHist();
-                    DBContext.OperationSettings_ChangeHist changeHistory = new DBContext.OperationSettings_ChangeHist();
-                    changeHistory.ID = changeHistoryID + 1;
-                    changeHistory.DayOfWeek = (int)Common.CommonUtil.ConvertToCustomDateOfWeek(date.DayOfWeek);
-                    changeHistory.LastUpdatedBy = updatedBy;
-                    changeHistory.LastUpdatedDate = DateTime.Now;
-                    changeHistory.ChangeDetails = "The holiday " + date.ToString("dd/MM/yyyy") + " has been deleted";
-
-                    _localUnitOfWork.GetRepository<DBContext.OperationSettings_ChangeHist>().Add(changeHistory);
-
-                    _localUnitOfWork.Save();
-
-                    if (EnumAppConfig.ByPassCentralizedDB)
+                    if (lstHolidays != null && lstHolidays.Count > 0)
                     {
+                        var changeHistoryID = GetMaxIDChangeHist();
+                        foreach (var date in lstHolidays)
+                        {
+                            _localUnitOfWork.GetRepository<DBContext.Holiday>().Delete(h => h.Holiday1.Year == date.Holiday1.Year && h.Holiday1.Month == date.Holiday1.Month && h.Holiday1.Day == date.Holiday1.Day);
+
+                            // Insert to Change History Setting
+                            DBContext.OperationSettings_ChangeHist changeHistory = new DBContext.OperationSettings_ChangeHist();
+                            changeHistory.ID = changeHistoryID + 1;
+                            changeHistory.DayOfWeek = (int)Common.CommonUtil.ConvertToCustomDateOfWeek(date.Holiday1.DayOfWeek);
+                            changeHistory.LastUpdatedBy = updatedBy;
+                            changeHistory.LastUpdatedDate = DateTime.Now;
+                            changeHistory.ChangeDetails = "The holiday " + date.Holiday1.ToString("dd/MM/yyyy") + " has been deleted";
+
+                            _localUnitOfWork.GetRepository<DBContext.OperationSettings_ChangeHist>().Add(changeHistory);
+                            changeHistoryID++;
+                        }
+
+                        _localUnitOfWork.Save();
                         return true;
                     }
-                    else
-                    {
-                        bool centralizeStatus;
-                        var centralUpdate = CallCentralized.Post<bool>(EnumAPIParam.Setting, "DeleteHoliday", out centralizeStatus, "date=" + date.ToString(), "updatedBy=" + updatedBy);
-                        if (centralizeStatus)
-                        {
-                            return centralUpdate;
-                        }
-                        else
-                        {
-                            throw new Exception(EnumMessage.NotConnectCentralized);
-                        }
-                    }
+
+                    return false;
+
+                    //if (EnumAppConfig.ByPassCentralizedDB)
+                    //{
+                    //    return true;
+                    //}
+                    //else
+                    //{
+                    //    bool centralizeStatus;
+                    //    var centralUpdate = CallCentralized.Post<bool>(EnumAPIParam.Setting, "DeleteHoliday", out centralizeStatus, "date=" + date.ToString(), "updatedBy=" + updatedBy);
+                    //    if (centralizeStatus)
+                    //    {
+                    //        return centralUpdate;
+                    //    }
+                    //    else
+                    //    {
+                    //        throw new Exception(EnumMessage.NotConnectCentralized);
+                    //    }
+                    //}
                 }
                 else
                 {
-                    _centralizedUnitOfWork.GetRepository<DBContext.Holiday>().Delete(h => h.Holiday1.Year == date.Year && h.Holiday1.Month == date.Month && h.Holiday1.Day == date.Day);
+                    if (lstHolidays != null && lstHolidays.Count > 0)
+                    {
+                        var changeHistoryID = GetMaxIDChangeHist();
+                        foreach (var date in lstHolidays)
+                        {
+                            _centralizedUnitOfWork.GetRepository<DBContext.Holiday>().Delete(h => h.Holiday1.Year == date.Holiday1.Year && h.Holiday1.Month == date.Holiday1.Month && h.Holiday1.Day == date.Holiday1.Day);
 
-                    // Insert to Change History Setting
-                    var changeHistoryID = _centralizedUnitOfWork.DataContext.OperationSettings_ChangeHist.Any() ? _centralizedUnitOfWork.DataContext.OperationSettings_ChangeHist.Max(t => t.ID) : 0;
-                    DBContext.OperationSettings_ChangeHist changeHistory = new DBContext.OperationSettings_ChangeHist();
-                    changeHistory.ID = changeHistoryID + 1;
-                    changeHistory.DayOfWeek = (int)Common.CommonUtil.ConvertToCustomDateOfWeek(date.DayOfWeek);
-                    changeHistory.LastUpdatedBy = updatedBy;
-                    changeHistory.LastUpdatedDate = DateTime.Now;
-                    changeHistory.ChangeDetails = "The holiday " + date.ToString("dd/MM/yyyy") + " has been deleted";
+                            // Insert to Change History Setting
+                            DBContext.OperationSettings_ChangeHist changeHistory = new DBContext.OperationSettings_ChangeHist();
+                            changeHistory.ID = changeHistoryID + 1;
+                            changeHistory.DayOfWeek = (int)Common.CommonUtil.ConvertToCustomDateOfWeek(date.Holiday1.DayOfWeek);
+                            changeHistory.LastUpdatedBy = updatedBy;
+                            changeHistory.LastUpdatedDate = DateTime.Now;
+                            changeHistory.ChangeDetails = "The holiday " + date.Holiday1.ToString("dd/MM/yyyy") + " has been deleted";
 
-                    _centralizedUnitOfWork.GetRepository<DBContext.OperationSettings_ChangeHist>().Add(changeHistory);
+                            _centralizedUnitOfWork.GetRepository<DBContext.OperationSettings_ChangeHist>().Add(changeHistory);
+                            changeHistoryID++;
+                        }
+                        _centralizedUnitOfWork.Save();
 
-                    _centralizedUnitOfWork.Save();
-
-                    return true;
+                        return true;
+                    }
+                    return false;
                 }
             }
             catch (Exception e)

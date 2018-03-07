@@ -175,6 +175,12 @@ namespace SSK
 
         private void JSCallCS_OnLogOutCompleted()
         {
+            // Set machine status is busy
+            LEDStatusLightingUtil.Instance._isBusy = false;
+            // Display led light health status
+            LEDStatusLightingUtil.Instance.DisplayLedLight_DeviceStatus();
+
+            // navigate
             NavigateTo(NavigatorEnums.Authentication_SmartCard);
         }
 
@@ -233,6 +239,11 @@ namespace SSK
 
             // Testing purpose
             //NavigateTo(NavigatorEnums.Authentication_Facial);
+
+            // Set machine status is busy
+            LEDStatusLightingUtil.Instance._isBusy = true;
+            // Display led light health status
+            LEDStatusLightingUtil.Instance.DisplayLedLight_DeviceStatus();
         }
 
         private void SmartCard_OnSmartCardFailed(string message)
