@@ -22,7 +22,7 @@ namespace Trinity.DAL.DBContext
     
         public System.Guid ID { get; set; }
         public System.DateTime ReportingDate { get; set; }
-        public short AbsenceReason { get; set; }
+        public short AbsentReason { get; set; }
         public string ReasonDetails { get; set; }
         public Nullable<System.Guid> Document_ID { get; set; }
     

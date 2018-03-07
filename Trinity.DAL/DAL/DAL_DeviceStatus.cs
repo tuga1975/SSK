@@ -15,7 +15,7 @@ namespace Trinity.DAL
         Local_UnitOfWork _localUnitOfWork = new Local_UnitOfWork();
         Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
 
-        public bool Update(int deviceId, EnumDeviceStatuses[] deviceStatuses,string Station = null)
+        public bool Update(int deviceId, EnumDeviceStatuses[] deviceStatuses, string Station = null)
         {
             try
             {
@@ -55,8 +55,6 @@ namespace Trinity.DAL
                 {
                     throw new Exception("Save data to local database failed.");
                 }
-                // Send Noti server
-                Lib.SignalR.DeviceStatusUpdate(deviceId, deviceStatuses);
                 return true;
             }
             catch (Exception ex)
@@ -87,7 +85,7 @@ namespace Trinity.DAL
 
         public bool CheckStatusDevicesStation(string station)
         {
-            if (!_localUnitOfWork.DataContext.ApplicationDevice_Status.Any(a=>a.Station.ToUpper() == station.ToUpper()))
+            if (!_localUnitOfWork.DataContext.ApplicationDevice_Status.Any(a => a.Station.ToUpper() == station.ToUpper()))
             {
                 return false;
             }

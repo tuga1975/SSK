@@ -12,7 +12,7 @@ namespace Trinity.DAL
         Local_UnitOfWork _localUnitOfWork = new Local_UnitOfWork();
         Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
 
-        public void InsertAbsence(List<Dictionary<string, string>> dataUpdate)
+        public void InsertAbsentReason(List<Dictionary<string, string>> dataUpdate)
         {
             List<Guid> ArrayIDAppointments = dataUpdate.Select(d => new Guid(d["ID"])).ToList();
             var arrayUpdate = _localUnitOfWork.DataContext.Appointments.Where(d => ArrayIDAppointments.Contains(d.ID) && d.AbsenceReporting_ID.HasValue).ToList();
@@ -24,14 +24,14 @@ namespace Trinity.DAL
 
                 Trinity.DAL.DBContext.AbsenceReporting dataAbsence = new Trinity.DAL.DBContext.AbsenceReporting()
                 {
-                    AbsenceReason = short.Parse(data["ChoseNumber"]),
+                    AbsentReason = short.Parse(data["ChoseNumber"]),
                     ID = Guid.NewGuid(),
                     ReportingDate = DateTime.Now
                 };
                 item.AbsenceReporting_ID = dataAbsence.ID;
                 arrayInssert.Add(dataAbsence);
-                if (dataAbsence.AbsenceReason == 5)
-                    Lib.SignalR.SendToAllDutyOfficers(item.UserId, "Supervisee get queue without supporting document", "Please check the Supervisee's information!", NotificationType.Notification);
+                //if (dataAbsence.AbsentReason == (short)EnumAbsentReasons.No_Supporting_Document)
+                //    Lib.SignalR..SendToAllDutyOfficers(item.UserId, "Supervisee get queue without supporting document", "Please check the Supervisee's information!", EnumNotificationTypes.Notification);
             }
             _localUnitOfWork.GetRepository<Trinity.DAL.DBContext.AbsenceReporting>().AddRange(arrayInssert);
             foreach (var item in arrayUpdate)
@@ -80,7 +80,7 @@ namespace Trinity.DAL
             dbAbsence.ReportingDate = model.ReportingDate;
             dbAbsence.ReasonDetails = model.ReasonDetails;
             //dbAbsence.ScannedDocument = model.ScannedDocument;
-            dbAbsence.AbsenceReason = model.AbsenceReason;
+            dbAbsence.AbsentReason = model.AbsenceReason;
             return dbAbsence;
         }
 
