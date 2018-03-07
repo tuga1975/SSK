@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Ports;
 using System.Text;
+using System.Timers;
 using System.Windows.Forms;
 
 namespace Trinity.Device.Util
@@ -11,11 +13,18 @@ namespace Trinity.Device.Util
         public SerialPort SourceObject { get; set; }
         public SerialDataReceivedEventArgs Data { get; set; }
     }
+
     public class LEDStatusLightingUtil
     {
         public event EventHandler<SerialDataReceivedEventArgs2> DataReceived;
+        public bool _isBusy = false;
+
         private string _station = null;
         private System.IO.Ports.SerialPort _serialPort = null;
+        private System.Timers.Timer _timer_BlueLightFlashing = null;
+        private bool _isOn_BlueLightFlashing = true;
+        private System.Timers.Timer _timer_YellowLightFlashing = null;
+        private bool _isOn_YellowLightFlashing = true;
 
         #region Singleton Implementation
         // The variable is declared to be volatile to ensure that assignment to the instance variable completes before the instance variable can be accessed
@@ -24,7 +33,21 @@ namespace Trinity.Device.Util
         // Uses a syncRoot instance to lock on, rather than locking on the type itself, to avoid deadlocks.
         private static object syncRoot = new Object();
 
-        private LEDStatusLightingUtil() { }
+        private LEDStatusLightingUtil()
+        {
+            int interval = 500;
+
+            // BlueLightFlashing
+            _timer_BlueLightFlashing = new System.Timers.Timer(interval);
+            _timer_BlueLightFlashing.Enabled = false;
+            _timer_BlueLightFlashing.Elapsed += new System.Timers.ElapsedEventHandler(OnBlueLightFlashingTimedEvent);
+
+            // YellowLightFlashing
+            _timer_YellowLightFlashing = new System.Timers.Timer(interval);
+            _timer_YellowLightFlashing.Enabled = false;
+            _timer_YellowLightFlashing.Elapsed += new System.Timers.ElapsedEventHandler(OnYellowLightFlashingTimedEvent);
+            
+        }
 
         public static LEDStatusLightingUtil Instance
         {
@@ -151,6 +174,11 @@ namespace Trinity.Device.Util
         {
             if (_station.Equals("SSK", StringComparison.InvariantCultureIgnoreCase))
             {
+                // stop flashing
+                _timer_BlueLightFlashing.Enabled = false;
+                _timer_YellowLightFlashing.Enabled = false;
+
+                // turn off leds
                 string hexCommand = "00AAFF5501";
                 SendCommand(hexCommand);
             }
@@ -326,6 +354,102 @@ namespace Trinity.Device.Util
                 SendCommand(hexCommand);
             }
         }
+
+        public void StartBLUELightFlashing()
+        {
+            try
+            {
+                _isOn_BlueLightFlashing = true;
+                _timer_BlueLightFlashing.Enabled = true;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("LEDStatusLightingUtil.StartBLUELightFlashing exception: " + ex.ToString());
+            }
+        }
+
+        public void StopBLUELightFlashing()
+        {
+            try
+            {
+                _timer_BlueLightFlashing.Enabled = false;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("LEDStatusLightingUtil.StopBLUELightFlashing exception: " + ex.ToString());
+            }
+        }
+
+        public void StartYELLOWLightFlashing()
+        {
+            try
+            {
+                _isOn_YellowLightFlashing = true;
+                _timer_YellowLightFlashing.Enabled = true;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("LEDStatusLightingUtil.StartYELLOWLightFlashing exception: " + ex.ToString());
+            }
+        }
+
+        public void StopYELLOWLightFlashing()
+        {
+            try
+            {
+                _timer_YellowLightFlashing.Enabled = false;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("LEDStatusLightingUtil.StopYELLOWLightFlashing exception: " + ex.ToString());
+            }
+        }
+
+        public void DisplayLedLight_DeviceStatus()
+        {
+            try
+            {
+                // turn off all leds first
+                TurnOffAllLEDs();
+
+                // get device status
+                EnumHealthStatus applicationStatus = new DAL.DAL_DeviceStatus().GetApplicationStatus();
+
+                // ready to use
+                if (applicationStatus == EnumHealthStatus.Ready)
+                {
+                    if (_isBusy)
+                    {
+                        // if machine is busy, display blue light
+                        SwitchBLUELightOnOff(true);
+                        return;
+                    }
+                    else
+                    {
+                        // ready to use, display green light
+                        SwitchGREENLightOnOff(true);
+                        return;
+                    }
+                }
+
+                // caution
+                if (applicationStatus == EnumHealthStatus.Caution)
+                {
+                    SwitchYELLOWLightFlashingOnOff(true);
+                }
+
+                // error
+                if (applicationStatus == EnumHealthStatus.Error)
+                {
+                    SwitchREDLightOnOff(true);
+                }
+            }
+            catch (Exception ex)
+            {
+                // display error colour
+                SwitchREDLightOnOff(true);
+            }
+        }
         #endregion
 
         private void _serialPort_DataReceived(object sender, System.IO.Ports.SerialDataReceivedEventArgs e)
@@ -384,6 +508,32 @@ namespace Trinity.Device.Util
             }
         }
 
+        private void OnBlueLightFlashingTimedEvent(object sender, ElapsedEventArgs e)
+        {
+            try
+            {
+                //SwitchBLUELightOnOff(_isOn_BlueLightFlashing);
+                System.Diagnostics.Debug.WriteLine("LEDStatusLightingUtil.OnBlueLightFlashingTimedEvent : " + _isOn_BlueLightFlashing.ToString());
+                _isOn_BlueLightFlashing = !_isOn_BlueLightFlashing;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("LEDStatusLightingUtil.OnBlueLightFlashingTimedEvent exception: " + ex.ToString());
+            }
+        }
+
+        private void OnYellowLightFlashingTimedEvent(object sender, ElapsedEventArgs e)
+        {
+            try
+            {
+                SwitchYELLOWLightOnOff(_isOn_YellowLightFlashing);
+                _isOn_YellowLightFlashing = !_isOn_YellowLightFlashing;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("LEDStatusLightingUtil.OnYellowLightFlashingTimedEvent exception: " + ex.ToString());
+            }
+        }
         #endregion
 
     }

@@ -13,7 +13,7 @@
         <!--<input type="button" value="Enter manually" onclick="enterManually()" />
             <input type="button" value="Submit" onclick="api.server.SubmitNRIC($('#txtNRIC').val())" />-->
         <button type="button" class="btn btn-dark" onclick="api.server.LogOut()">Cancel</button>
-        <button type="button" class="btn btn-dark" onclick="api.server.SubmitNRIC($('#txtNRIC').val())">Submit</button>
+        <button type="button" class="btn btn-dark" onclick="api.server.SubmitNRIC($('#txtNRIC').val()); return false;">Submit</button>
     </div>
 </div>
 

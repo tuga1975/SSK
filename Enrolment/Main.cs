@@ -1,5 +1,4 @@
-﻿using Enrolment.Properties;
-using Futronic.SDKHelper;
+﻿using Futronic.SDKHelper;
 using Newtonsoft.Json;
 using System;
 using System.Data;
@@ -8,13 +7,11 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Windows.Forms;
 using Trinity.BE;
 using Trinity.Common;
 using Trinity.Common.Common;
 using Trinity.DAL;
-using Trinity.Device;
 using Trinity.Device.Util;
 
 namespace Enrolment
@@ -45,7 +42,7 @@ namespace Enrolment
 
             APIUtils.Start();
             //Notification
-            Trinity.SignalR.Client.SignalR signalR = Trinity.SignalR.Client.SignalR.Instance;
+            Trinity.SignalR.Client signalrClient = Trinity.SignalR.Client.Instance;
 
             pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
 
@@ -712,7 +709,7 @@ namespace Enrolment
                                 }
                                 LayerWeb.InvokeScript("setFingerprintServerCall", fingerprintLeft, fingerprintRight);
                             }
-                            else if(currentPage.ToString() == "UpdateSuperviseePhoto")
+                            else if (currentPage.ToString() == "UpdateSuperviseePhoto")
                             {
                                 if (currentEditUser.UserProfile.User_Photo1 != null)
                                 {

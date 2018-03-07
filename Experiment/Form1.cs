@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Linq;
 using System.Windows.Forms;
@@ -120,6 +121,27 @@ namespace Experiment
         {
             FormLEDLightControl f = new FormLEDLightControl();
             f.Show();
+        }
+
+        private void btnStartFlashing_Click(object sender, EventArgs e)
+        {
+            LEDStatusLightingUtil.Instance.StartBLUELightFlashing();
+        }
+
+        private void btnInitFlashing_Click(object sender, EventArgs e)
+        {
+            string comPort = ConfigurationManager.AppSettings["COMPort"];
+            int baudRate = int.Parse(ConfigurationManager.AppSettings["BaudRate"]);
+            string parity = ConfigurationManager.AppSettings["Parity"];
+            LEDStatusLightingUtil.Instance.OpenPort("SSK", comPort, baudRate, parity);
+            LEDStatusLightingUtil.Instance.TurnOffAllLEDs();
+            //LEDStatusLightingUtil.Instance.SwitchBLUELightOnOff(true);
+            //LEDStatusLightingUtil.Instance.SwitchBLUELightFlashingOnOff(true);
+        }
+
+        private void bnStopFlashing_Click(object sender, EventArgs e)
+        {
+            LEDStatusLightingUtil.Instance.SwitchBLUELightFlashingOnOff(false);
         }
     }
 }

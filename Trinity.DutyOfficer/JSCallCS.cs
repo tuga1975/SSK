@@ -399,15 +399,16 @@ namespace DutyOfficer
             dalSetting.AddHoliday(holiday.Holiday1, holiday.ShortDesc, holiday.Notes, dutyOfficer.Name, dutyOfficer.UserId);
         }
 
-        public void DeleteHoliday(string date)
+        public void DeleteHoliday(string json)
         {
-            DateTime dateHoliday = Convert.ToDateTime(date);
+            var data = JsonConvert.DeserializeObject<List<Trinity.BE.Holiday>>(json);
+            //DateTime dateHoliday = Convert.ToDateTime(date);
             var dalSetting = new DAL_Setting();
 
             Session session = Session.Instance;
             Trinity.BE.User dutyOfficer = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
 
-            dalSetting.DeleteHoliday(dateHoliday, dutyOfficer.Name);
+            dalSetting.DeleteHoliday(data, dutyOfficer.Name);
         }
 
         #endregion
@@ -865,7 +866,7 @@ namespace DutyOfficer
             // RaiseLogOutCompletedEvent
             RaiseLogOutCompletedEvent();
 
-            Trinity.SignalR.Client.SignalR.Instance.UserLogout(userID);
+            Trinity.SignalR.Client.Instance.UserLogout(userID);
         }
 
         public void ManualLogin(string username, string password)
