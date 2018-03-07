@@ -276,11 +276,19 @@ namespace SSA
                 // navigate to Authentication_NRIC
                 NavigateTo(NavigatorEnums.Authentication_NRIC);
             }
-            else
+            else if (currentUser.Role == EnumUserRoles.Supervisee)
             {
                 // navigate to SuperviseeParticulars page
                 Trinity.SignalR.Client.Instance.UserLoggedIn(currentUser.UserId);
                 NavigateTo(NavigatorEnums.Supervisee_Particulars);
+            }
+            else
+            {
+                _popupModel.Title = "Login Failed";
+                _popupModel.Message = "You do not have permission to access this page.";
+                _popupModel.IsShowLoading = false;
+                _popupModel.IsShowOK = true;
+                LayerWeb.InvokeScript("showPopupModal", JsonConvert.SerializeObject(_popupModel));
             }
         }
 
@@ -368,11 +376,19 @@ namespace SSA
                 // navigate to Authentication_NRIC
                 NavigateTo(NavigatorEnums.Authentication_NRIC);
             }
-            else
+            else if (currentUser.Role == EnumUserRoles.Supervisee)
             {
                 // navigate to SuperviseeParticulars page
                 Trinity.SignalR.Client.Instance.UserLoggedIn(currentUser.UserId);
                 NavigateTo(NavigatorEnums.Supervisee_Particulars);
+            }
+            else
+            {
+                _popupModel.Title = "Login Failed";
+                _popupModel.Message = "You do not have permission to access this page.";
+                _popupModel.IsShowLoading = false;
+                _popupModel.IsShowOK = true;
+                LayerWeb.InvokeScript("showPopupModal", JsonConvert.SerializeObject(_popupModel));
             }
         }
 
