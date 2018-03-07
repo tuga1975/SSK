@@ -141,7 +141,57 @@ namespace Experiment
 
         private void bnStopFlashing_Click(object sender, EventArgs e)
         {
-            LEDStatusLightingUtil.Instance.SwitchBLUELightFlashingOnOff(false);
+            LEDStatusLightingUtil.Instance.StopBLUELightFlashing();
+        }
+
+        private void btnPrintTTLabel_Click(object sender, EventArgs e)
+        {
+            BarcodePrinterUtil.Instance.PrintTTLabel(new TTLabelInfo()
+            {
+                ID = "S9872509D",
+                Name = "Do Duc Tu",
+                MarkingNumber = "CSA18001991"
+            });
+        }
+
+        private void btnPrintTTLabel_2_Click(object sender, EventArgs e)
+        {
+            BarcodePrinterUtil.Instance.PrintTTLabel(new TTLabelInfo()
+            {
+                ID = "S9872509D",
+                Name = "Do Duc Tu TVO Long Name",
+                MarkingNumber = "CSA18001901"
+            });
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            MUBLabelInfo mubLabelInfo = new MUBLabelInfo()
+            {
+                ID = "S9872509D",
+                Name = "Do Duc Tu",
+                MarkingNumber = "CSA18001991"
+            };
+
+            string qrCodeString = string.Format("{0}*{1}*{2}", mubLabelInfo.MarkingNumber, mubLabelInfo.ID, mubLabelInfo.Name).PadRight(91, '*');
+            mubLabelInfo.QRCodeString = qrCodeString;
+
+            BarcodePrinterUtil.Instance.PrintMUBLabel(mubLabelInfo);
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            MUBLabelInfo mubLabelInfo = new MUBLabelInfo()
+            {
+                ID = "S9872509D",
+                Name = "Do Duc Tu TVO Long Name",
+                MarkingNumber = "CSA18001991"
+            };
+
+            string qrCodeString = string.Format("{0}*{1}*{2}", mubLabelInfo.MarkingNumber, mubLabelInfo.ID, mubLabelInfo.Name).PadRight(91, '*');
+            mubLabelInfo.QRCodeString = qrCodeString;
+
+            BarcodePrinterUtil.Instance.PrintMUBLabel(mubLabelInfo);
         }
     }
 }
