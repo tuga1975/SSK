@@ -28,10 +28,10 @@ namespace Trinity.CentralizedAPI.Controllers
         //}
 
         //[HttpPost]
-        //[Route("api/Notification/SendAllDutyOfficer")]
-        //public IHttpActionResult SendAllDutyOfficer(string UserId, string Subject, string Content, string Type, string Station)
+        //[Route("api/Notification/SendToAllDutyOfficers")]
+        //public IHttpActionResult SendToAllDutyOfficers(string UserId, string Subject, string Content, string Type, string Station)
         //{
-        //    return Ok(new DAL.DAL_Notification().SendAllDutyOfficer(UserId, Subject, Content, Type, Station));
+        //    return Ok(new DAL.DAL_Notification().SendToAllDutyOfficers(UserId, Subject, Content, Type, Station));
         //}
 
         //[HttpGet]

@@ -1,4 +1,4 @@
-﻿namespace SignalRChat
+﻿namespace Trinity.NotificationServer
 {
     partial class WinFormsServer
     {

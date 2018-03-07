@@ -56,7 +56,7 @@ namespace Trinity.DAL
                     throw new Exception("Save data to local database failed.");
                 }
                 // Send Noti server
-                Lib.SignalR.DeviceStatusUpdate(deviceId, deviceStatuses);
+                //Lib.SignalR.DeviceStatusUpdate(deviceId, deviceStatuses);
                 return true;
             }
             catch (Exception ex)

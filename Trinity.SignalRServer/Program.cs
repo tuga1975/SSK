@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 
-namespace SignalRChat
+namespace Trinity.NotificationServer
 {
     public static class Program
     {

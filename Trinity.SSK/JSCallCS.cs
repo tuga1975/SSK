@@ -383,7 +383,7 @@ namespace SSK
                     var updateUProfileResult = new DAL_UserProfile().UpdateProfile(userProfileModel);
                     // dalUserprofile.UpdateUserProfile(data.UserProfile,data.User.UserId , true);
                     //send notifiy to duty officer
-                    Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(data.User.UserId, "A supervisee has updated profile.", "Please check Supervisee's information!", NotificationType.Notification);
+                    Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(data.User.UserId, "A supervisee has updated profile.", "Please check Supervisee's information!", EnumNotificationTypes.Notification);
 
                     session[CommonConstants.USER_LOGIN] = data.User;
 
@@ -395,7 +395,7 @@ namespace SSK
                     var updateUProfileResult = new DAL_UserProfile().UpdateProfile(userProfileModel);
                     // dalUserprofile.UpdateUserProfile(data.UserProfile, data.User.UserId, true);
                     //send notifiy to case officer
-                    Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(data.User.UserId, "A supervisee has updated profile.", "Please check Supervisee's information!", NotificationType.Notification);
+                    Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(data.User.UserId, "A supervisee has updated profile.", "Please check Supervisee's information!", EnumNotificationTypes.Notification);
                 }
 
                 //load Supervisee page 
@@ -415,7 +415,7 @@ namespace SSK
             {
                 Session session = Session.Instance;
                 session[CommonConstants.PROFILE_DATA] = jsonData;
-                Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId, "Supervisee's information changed!", "Please check the Supervisee's information!", NotificationType.Notification);
+                Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId, "Supervisee's information changed!", "Please check the Supervisee's information!", EnumNotificationTypes.Notification);
                 LoadPage("Document.html");
 
             }
@@ -522,7 +522,7 @@ namespace SSK
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ABSENCE_MORE_THAN_3, Message = "You have been blocked for 3 or more absences \n Please report to the Duty Officer" });
                 //for testing purpose
                 //notify to officer
-                Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(supervisee.UserId, "Supervisee got blocked for 3 or more absences", "Please check the Supervisee's information!", NotificationType.Caution);
+                Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(supervisee.UserId, "Supervisee got blocked for 3 or more absences", "Please check the Supervisee's information!", EnumNotificationTypes.Caution);
                 var dalUser = new DAL_User();
 
                 // Create absence reporting
@@ -647,7 +647,7 @@ namespace SSK
         public void SaveReasonForQueue(string dataTxt)
         {
             List<Dictionary<string, string>> data = JsonConvert.DeserializeObject<List<Dictionary<string, string>>>(dataTxt);
-            new DAL_AbsenceReporting().InsertAbsence(data);
+            new DAL_AbsenceReporting().InsertAbsentReason(data);
             LoadPage("Supervisee.html");
         }
 
@@ -658,7 +658,7 @@ namespace SSK
         //    //send message to case office if no support document
         //    if (reason == "No Supporting Document")
         //    {
-        //        APIUtils.SignalR.SendAllDutyOfficer(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId, "Supervisee get queue without supporting document", "Please check the Supervisee's information!", NotificationType.Notification);
+        //        APIUtils.SignalR.SendToAllDutyOfficers(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId, "Supervisee get queue without supporting document", "Please check the Supervisee's information!", NotificationType.Notification);
         //    }
         //    var charSeparators = new char[] { ',' };
         //    var listSplitID = selectedID.Split(charSeparators, StringSplitOptions.RemoveEmptyEntries);
@@ -706,12 +706,12 @@ namespace SSK
         //    //send notify to case officer
         //    if (reasonModel.Value == (int)EnumAbsenceReasons.No_Valid_Reason)
         //    {
-        //        APIUtils.SignalR.SendAllDutyOfficer(user.UserId, user.Name + " has not provided any valid reason", " Please check the Supervisee's information!", NotificationType.Notification);
+        //        APIUtils.SignalR.SendToAllDutyOfficers(user.UserId, user.Name + " has not provided any valid reason", " Please check the Supervisee's information!", NotificationType.Notification);
         //        LoadPage("Supervisee.html");
         //        return;
         //    }
 
-        //    APIUtils.SignalR.SendAllDutyOfficer(user.UserId, user.Name + " has provided absent reason", user.Name + " has provided absent reason.", NotificationType.Notification);
+        //    APIUtils.SignalR.SendToAllDutyOfficers(user.UserId, user.Name + " has provided absent reason", user.Name + " has provided absent reason.", NotificationType.Notification);
         //    ReportingForQueueNumber();
         //    LoadPage("Supervisee.html");
         //}
@@ -748,7 +748,7 @@ namespace SSK
             var user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
             if (user != null)
             {
-                Trinity.SignalR.Client.Instance.UserLogout(((Trinity.BE.User)session[CommonConstants.USER_LOGIN]).UserId);
+                Trinity.SignalR.Client.Instance.UserLoggedOut(((Trinity.BE.User)session[CommonConstants.USER_LOGIN]).UserId);
 
                 session.IsSmartCardAuthenticated = false;
                 session.IsFingerprintAuthenticated = false;
