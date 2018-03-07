@@ -46,7 +46,7 @@ namespace Trinity.Device.Util
             _timer_YellowLightFlashing = new System.Timers.Timer(interval);
             _timer_YellowLightFlashing.Enabled = false;
             _timer_YellowLightFlashing.Elapsed += new System.Timers.ElapsedEventHandler(OnYellowLightFlashingTimedEvent);
-            
+
         }
 
         public static LEDStatusLightingUtil Instance
@@ -166,12 +166,16 @@ namespace Trinity.Device.Util
         {
             get
             {
-                return _serialPort.IsOpen;
+                return _serialPort != null && _serialPort.IsOpen;
             }
         }
 
         public void TurnOffAllLEDs()
         {
+            if (!IsPortOpen)
+            {
+                return;
+            }
             if (_station.Equals("SSK", StringComparison.InvariantCultureIgnoreCase))
             {
                 // stop flashing
@@ -209,6 +213,10 @@ namespace Trinity.Device.Util
 
         public void SwitchREDLightOnOff(bool isOn)
         {
+            if (!IsPortOpen)
+            {
+                return;
+            }
             if (_station.Equals("SSA", StringComparison.InvariantCultureIgnoreCase))
             {
                 string hexCommand = "";
@@ -241,6 +249,10 @@ namespace Trinity.Device.Util
 
         public void SwitchGREENLightOnOff(bool isOn)
         {
+            if (!IsPortOpen)
+            {
+                return;
+            }
             if (_station.Equals("SSA", StringComparison.InvariantCultureIgnoreCase))
             {
                 string hexCommand = "";
@@ -273,6 +285,10 @@ namespace Trinity.Device.Util
 
         public void SwitchBLUELightOnOff(bool isOn)
         {
+            if (!IsPortOpen)
+            {
+                return;
+            }
             if (_station.Equals("SSA", StringComparison.InvariantCultureIgnoreCase))
             {
                 string hexCommand = "";
@@ -305,6 +321,10 @@ namespace Trinity.Device.Util
 
         public void SwitchYELLOWLightOnOff(bool isOn)
         {
+            if (!IsPortOpen)
+            {
+                return;
+            }
             if (_station.Equals("SSA", StringComparison.InvariantCultureIgnoreCase))
             {
                 string hexCommand = "";
@@ -407,6 +427,10 @@ namespace Trinity.Device.Util
 
         public void DisplayLedLight_DeviceStatus()
         {
+            if (!IsPortOpen)
+            {
+                return;
+            }
             try
             {
                 // turn off all leds first
@@ -495,6 +519,11 @@ namespace Trinity.Device.Util
 
         private string SendCommand(string hexCommand)
         {
+            if (!IsPortOpen)
+            {
+                return "The serial port is closed.";
+            }
+
             byte[] bytestosend = ToByteArray(hexCommand);
 
             try
