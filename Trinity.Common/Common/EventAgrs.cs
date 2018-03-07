@@ -138,6 +138,12 @@ namespace Trinity.Common
         public const string SOMETHING_WENT_WRONG = "SomethingWentWrong";
         public const string LOAD_EDIT_SUPERVISEE_SUCCEEDED = "LoadEditSupervisee";
         public const string FINGERPRINT_FAILED_MORE_THAN_3 = "ScanFingerprintFailMorethan3";
+
+        public const string USER_LOGGED_IN = "USER_LOGGED_IN";
+        public const string USER_LOGGED_OUT = "USER_LOGGED_OUT";
+        public const string QUEUE_COMPLETED = "QUEUE_COMPLETED";
+        public const string DEVICE_STATUS_CHANGED = "DEVICE_STATUS_CHANGED";
+        public const string APP_DISCONNECTED = "APP_DISCONNECTED";
         public const string DO_CANCEL_ENTER_NRIC = "DoCancelEnterNRIC";
     }
 
@@ -146,6 +152,29 @@ namespace Trinity.Common
         public string Name { get; set; }
         public int Code { get; set; }
         public string Message { get; set; }
+        public object Data { get; set; }
+        public object Source { get; set; }
+    }
+
+    public static class NotificationNames
+    {
+        public const string USER_LOGGED_IN = "USER_LOGGED_IN";
+        public const string USER_LOGGED_OUT = "USER_LOGGED_OUT";
+        public const string QUEUE_COMPLETED = "QUEUE_COMPLETED";
+        public const string DEVICE_STATUS_CHANGED = "DEVICE_STATUS_CHANGED";
+        public const string APP_DISCONNECTED = "APP_DISCONNECTED";
+        public const string ALERT_MESSAGE = "ALERT_MESSAGE";
+    }
+
+    public class NotificationInfo
+    {
+        public string Name { get; set; }
+        public string FromUserId { get; set; }
+        public string[] ToUserIds { get; set; }
+        public string Subject { get; set; }
+        public string Content { get; set; }
+        public string Type { get; set; }
+        public string Code { get; set; }
         public object Data { get; set; }
         public object Source { get; set; }
     }

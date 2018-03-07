@@ -27,7 +27,7 @@ namespace Trinity.DAL
                     NotificationID = item.NotificationID,
                     IsRead = item.IsRead.HasValue ? item.IsRead.Value : false,
                     Subject = item.Subject,
-                    ToUserId = item.ToUserId
+                    ToUserId = item.ToUserId,
                 }).ToList();
                 if (arrayNoti.Count == 0)
                 {
@@ -172,7 +172,7 @@ namespace Trinity.DAL
         /// <param name="Content"></param>
         /// <param name="notificationType"></param>
         /// <param name="Station"></param
-        public List<BE.Notification> SendAllDutyOfficer(string UserId, string Subject, string Content, string notificationType, string Station)
+        public List<BE.Notification> SendToAllDutyOfficers(string UserId, string Subject, string Content, string notificationType, string Station)
         {
             List<string> DOId = _localUnitOfWork.DataContext.Membership_UserRoles.Include("Membership_Roles").Where(d => d.Membership_Roles.Name == EnumUserRoles.DutyOfficer).Select(d => d.UserId).ToList();
             List<DBContext.Notification> arrayInsert = DOId.Select(d => new DBContext.Notification()
@@ -193,7 +193,7 @@ namespace Trinity.DAL
 
             
         }
-        //public void SendAllDutyOfficer(List<BE.Notification> arrayInsert)
+        //public void SendToAllDutyOfficers(List<BE.Notification> arrayInsert)
         //{
 
         //    if (EnumAppConfig.IsLocal)

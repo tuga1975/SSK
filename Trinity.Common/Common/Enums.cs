@@ -70,16 +70,6 @@ public static class EnumAppointmentStatuses
     public const string Absent = "Absent";
 }
 
-public enum EnumAbsenceReasons
-{
-    Medical_Certificate = 0,
-    Work_Commitment = 1,
-    Family_Matters = 2,
-    Other_Reasons = 3,
-    No_Valid_Reason = 4,
-    No_Supporting_Document = 5
-}
-
 public static class EnumQueueStatuses
 {
 
@@ -131,7 +121,7 @@ public enum EnumDeviceIds
     DocumentScanner = 3,
     ReceiptPrinter = 4,
     BarcodeScanner = 5,
-    LEDDisplayMonitor = 6,
+    QueueScreenMonitor = 6,
     Camera = 7,
     SmartCardPrinter = 8,
     MUBLabelPrinter = 9,
@@ -263,7 +253,6 @@ public enum EnumDeviceStatuses
     PowerSave = 16777216,
     Disconnected = -1
 }
-
 public static class EnumAppConfig
 {
     public static bool IsLocal
@@ -314,7 +303,7 @@ public static class EnumAppConfig
             return ConfigurationManager.AppSettings["NotificationServerUrl"];
         }
     }
-    
+
 }
 public static class EnumDeviceNames
 {
@@ -365,17 +354,7 @@ public static class EnumDeviceNames
     }
 }
 
-public enum EnumHealthStatus
-{
-    Ready = 0,
-    Caution = 1,
-    Error = 2
-    //public const string Ready = "Ready";
-    //public const string Caution = "Caution";
-    //public const string Error = "Error";
-}
-
-public static class NotificationType
+public static class EnumNotificationTypes
 {
     public const string Error = "Error";
     public const string Notification = "Notification";
@@ -514,7 +493,7 @@ public static class EnumAPIParam
 public static class EnumPrintStatus
 {
     public const string Successful = "Successful";
-    public const string Failed = "Failed"; 
+    public const string Failed = "Failed";
 }
 
 public static class EnumMessage
@@ -536,4 +515,19 @@ public static class EnumUTResult
     public const string POS = "POS";
 }
 
+public enum EnumAbsentReasons
+{
+    Medical_Certificate = 0,
+    Work_Commitment = 1,
+    Family_Matters = 2,
+    Other_Reasons = 3,
+    No_Valid_Reason = 4,
+    No_Supporting_Document = 5
+}
 
+public enum EnumHealthStatus
+{
+    Ready = 0,
+    Caution = 1,
+    Error = 2
+}
