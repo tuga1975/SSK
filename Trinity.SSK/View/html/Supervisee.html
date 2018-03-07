@@ -1,10 +1,14 @@
-﻿<div style="font-size:28px;font-weight:bold;margin-top:30px;text-align:center;">Please select what you wish to do</div>
+﻿<div id="header" style="background-color:#FFF;margin-top:20px;">
+    <div class="logo"></div>
+    <a href="javascript:;" onclick="confirm('Are you sure you want to logout?') == true ? api.server.LogOut() : null"><div class="header-right" style="width:85px;"></div></a>
+</div>
+<div style="font-size:28px;font-weight:bold;margin-top:30px;text-align:center;">Please select what you wish to do</div>
 <div style="position: absolute; height: calc(100% - 130px); width: 100%; margin-top: 30px;text-align:center;">
-    <div style="position: absolute; width: 100%; height: calc(50% - 5px); top: 0px;">
+    <div style="position: absolute; width: 100%; height: calc(50% - 5px); top: 0px;" item-first="false">
         <span item="Queue Number" style="background-image:url('../img/queuenumber.png');" onclick="api.server.ReportingForQueueNumber();" title-queue></span>
         <span item="Book Appointment" style="background-image:url('../img/bookappointment.png');" onclick="api.server.BookAppointment();"></span>
     </div>
-    <div style="position: absolute; width: 100%; height: calc(50% - 5px); bottom: 0px;">
+    <div style="position: absolute; width: 100%; height: calc(50% - 5px); bottom: 0px;" item-last="false">
         <span item="Update Profile" style="background-image:url('../img/updateprofile.png');" onclick="api.server.LoadProfile();"></span>
         <span item="Notifications" style="background-image:url('../img/Notification.png');" onclick="api.server.LoadNotications();"></span>
     </div>
@@ -15,19 +19,34 @@
 
         api.server.GetMyAbsencesCount(function (count) {
             if (count == 0) {
-                $('[title-queue]').attr('item','Queue Number');
+                $('[title-queue]').attr('item', 'Queue Number');
             } else {
-                $('[title-queue]').attr('item','Reporting for Queue Number');
+                $('[title-queue]').attr('item', 'Reporting for Queue Number');
             }
         });
     });
-
+    function IsDutyOfficer(status) {
+        $('[item-first]').attr('item-first', status);
+        $('[item-last]').attr('item-last', status);
+    }
     function alertBookAppointment(message) {
         alert(message);
 
     }
 </script>
 <style type="text/css">
+    [item-first="true"] {
+        top: calc(50% - ((70% - 5px) / 2)) !important;
+    }
+
+        [item-first="true"] [item="Book Appointment"] {
+            display: none;
+        }
+
+    [item-last="true"] {
+        display: none;
+    }
+
     [item] {
         width: calc(50% - 8px);
         height: 100%;

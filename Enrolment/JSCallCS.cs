@@ -101,7 +101,7 @@ namespace Enrolment
             if (attempt > 3)
             {
                 session[CommonConstants.CAPTURE_PHOTO_ATTEMPT] = null;
-                Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(null, "Supervisee failed to capture photo!", "Supervisee failed to capture photo!\n Please check the status", NotificationType.Error);
+                Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(null, "Supervisee failed to capture photo!", "Supervisee failed to capture photo!\n Please check the status", EnumNotificationTypes.Error);
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.PHOTO_CAPTURE_FAILED, Message = "Unable to capture photo", Source = "FailToCapture.html" });
             }
             else
@@ -120,7 +120,7 @@ namespace Enrolment
             if (attempt > 3)
             {
                 session[CommonConstants.CAPTURE_FINGERPRINT_ATTEMPT] = null;
-                Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(null, "Supervisee failed to capture photo!", "Supervisee failed to capture fingerprint!\n Please check the status", NotificationType.Error);
+                Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(null, "Supervisee failed to capture photo!", "Supervisee failed to capture fingerprint!\n Please check the status", EnumNotificationTypes.Error);
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.PHOTO_CAPTURE_FAILED, Message = "Unable to capture fingerprint", Source = "FailToCapture.html" });
             }
             else
@@ -139,7 +139,7 @@ namespace Enrolment
             if (attempt > 3)
             {
                 session[CommonConstants.PRINT_SMARTCARD_ATTEMPT] = null;
-                Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(null, "Supervisee failed to capture photo!", "Supervisee failed to print smart card!\n Please check the status", NotificationType.Error);
+                Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(null, "Supervisee failed to capture photo!", "Supervisee failed to print smart card!\n Please check the status", EnumNotificationTypes.Error);
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.ABLE_TO_PRINT_FAILED, Message = "Unable to print smart card", Source = "FailToCapture.html" });
             }
             else
@@ -205,7 +205,7 @@ namespace Enrolment
             }
             else
             {
-                Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(null, "Unable to scan supervisee's NRIC", "Unable to scan supervisee's NRIC! Please check the manually input information!", NotificationType.Caution);
+                Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(null, "Unable to scan supervisee's NRIC", "Unable to scan supervisee's NRIC! Please check the manually input information!", EnumNotificationTypes.Caution);
                 LoadListSupervisee();
 
             }
@@ -375,7 +375,7 @@ namespace Enrolment
             var updateUProfileResult = dalUserprofile.UpdateProfile(userProfileModel);
 
             ////send notifiy to case officer
-            Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId, "A supervisee has updated profile.", "Please check Supervisee's information!", NotificationType.Notification);
+            Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId, "A supervisee has updated profile.", "Please check Supervisee's information!", EnumNotificationTypes.Notification);
 
 
             //session[CommonConstants.CURRENT_EDIT_USER] = data;
@@ -506,12 +506,22 @@ namespace Enrolment
             string ImgBack = null;
             if (!string.IsNullOrEmpty(frontBase64))
             {
-                ImgFront = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".png";
+                System.IO.Directory.CreateDirectory(String.Format("{0}/Temp", CSCallJS.curDir));
+                ImgFront = String.Format("{0}/Temp/{1}", CSCallJS.curDir, "frontcard.png");
+                if (System.IO.File.Exists(ImgFront))
+                    System.IO.File.Delete(ImgFront);
+
+                //ImgFront = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".png";
                 new System.Drawing.Bitmap(new System.IO.MemoryStream(Convert.FromBase64String(frontBase64))).Save(ImgFront);
             }
             if (!string.IsNullOrEmpty(backBase64))
             {
-                ImgBack = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".png";
+                System.IO.Directory.CreateDirectory(String.Format("{0}/Temp", CSCallJS.curDir));
+                ImgBack = String.Format("{0}/Temp/{1}", CSCallJS.curDir, "backcard.png");
+                if (System.IO.File.Exists(ImgBack))
+                    System.IO.File.Delete(ImgBack);
+
+                //ImgBack = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".png";
                 new System.Drawing.Bitmap(new System.IO.MemoryStream(Convert.FromBase64String(backBase64))).Save(ImgBack);
             }
 
@@ -669,7 +679,7 @@ namespace Enrolment
                     session.Role = EnumUserRoles.EnrolmentOfficer;
                     session[CommonConstants.USER_LOGIN] = user;
 
-                    Trinity.SignalR.Client.Instance.UserLogined(user.UserId);
+                    Trinity.SignalR.Client.Instance.UserLoggedIn(user.UserId);
 
                     eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = 0, Name = EventNames.LOGIN_SUCCEEDED });
                 }
@@ -695,7 +705,7 @@ namespace Enrolment
             // reset session value
             Session session = Session.Instance;
 
-            Trinity.SignalR.Client.Instance.UserLogout(((Trinity.BE.User)session[CommonConstants.USER_LOGIN]).UserId);
+            Trinity.SignalR.Client.Instance.UserLoggedOut(((Trinity.BE.User)session[CommonConstants.USER_LOGIN]).UserId);
 
             session.IsSmartCardAuthenticated = false;
             session.IsFingerprintAuthenticated = false;

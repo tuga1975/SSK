@@ -1,4 +1,417 @@
-﻿<div>
+﻿<div id="header" style="background-color:#FFF;margin-top:20px;">
+    <div class="logo"></div>
+    <div style="float:right;width:20%;position: relative;top: 50%;-webkit-transform: translateY(-50%);-ms-transform: translateY(-50%);transform: translateY(-50%);">
+        <a href="javascript:;" onclick="api.server.LoadSupervisee()"><b class="ion-navicon-round" style="font-size:21px;color:#1cacf6;">Back to Main menu</b></a>
+    </div>
+</div>
+
+<style>
+    .z-depth-2 {
+        -webkit-box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+    }
+
+    .red-underline {
+        border-bottom: 2px solid #ff005a;
+        padding-bottom: 10px;
+    }
+
+    .profile-tabs {
+        position: relative;
+    }
+
+    .profile-tabs {
+        height: 60px;
+        position: relative;
+    }
+
+        .profile-tabs .nav-hover {
+            color: #dee2e6 !important;
+        }
+
+            .profile-tabs .nav-hover:hover {
+                color: #1cacf6 !important;
+            }
+
+        .profile-tabs .nav-item {
+            max-width: 25%;
+        }
+
+        .profile-tabs .nav-link {
+            height: 60px;
+            line-height: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            border-radius: 0;
+            position: relative;
+            margin-right: 5px;
+            padding: 0.5rem 2rem;
+            border-color: #dee2e6;
+            color: #1cacf6;
+            box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+            z-index: 0;
+            background: #fff;
+        }
+
+            .profile-tabs .nav-link.active:after {
+                position: absolute;
+                content: '';
+                bottom: -10px;
+                border-bottom: 10px solid #fff;
+                z-index: 0;
+                left: 0;
+                width: 100%;
+            }
+
+
+        .profile-tabs .nav-item:last-of-type .nav-link {
+            margin-right: 0;
+        }
+
+    .profile-tab-content {
+        z-index: 1;
+        position: relative;
+    }
+
+        .profile-tab-content .tab-pane {
+            padding: 2rem;
+        }
+
+    .btn-font-size {
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        font-weight: bold;
+        padding: .75rem;
+        margin-bottom: 2rem;
+        color: #1cacf6 !important;
+    }
+
+        .btn-font-size:hover, .btn-font-size:focus {
+            border-color: #334352;
+            color: #fff !important;
+            background-color: #334352;
+        }
+
+        .btn-font-size.font-small {
+            font-weight: normal;
+        }
+
+    .group-button-right {
+        float: right;
+    }
+
+        .group-button-right .btn {
+            text-transform: uppercase;
+        }
+
+    .btn-primary {
+        background: #1cacf6;
+        color: #fff;
+    }
+
+        .btn-primary:hover, .btn-primary:focus {
+            background: #1e87c3;
+            color: #fff;
+        }
+
+    @media (min-width: 769px) {
+        .form-material {
+            max-height: 300px;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+    }
+
+    .form-material input::-webkit-input-placeholder {
+        font-style: italic;
+        color: #ccc;
+    }
+
+    .form-material input:-moz-placeholder {
+        font-style: italic;
+        color: #ccc;
+    }
+
+    .form-material input::-moz-placeholder {
+        font-style: italic;
+        color: #ccc;
+    }
+
+    .form-material input:-ms-input-placeholder {
+        font-style: italic;
+        color: #ccc;
+    }
+
+    .form-material .input-group-prepend {
+        min-width: 35%;
+    }
+
+    .form-material .input-group .input-group-text {
+        border: 0;
+        border-radius: 0;
+        background-color: transparent;
+        color: #209CDD;
+    }
+
+        .form-material .input-group .input-group-text span, .form-select .form-label span {
+            padding-left: 5px;
+            color: red;
+        }
+
+    .form-material .btn {
+        background: #1CACF6;
+        color: #fff;
+        text-transform: uppercase;
+    }
+
+        .form-material .btn.btn-light {
+            background-color: transparent;
+            color: #1CACF6;
+        }
+
+    .form-group {
+        margin-bottom: 1rem;
+        position: relative;
+        min-height: 50px;
+    }
+
+    .form-select {
+        width: 100%;
+        float: left;
+        border-bottom: 1px solid #ccc;
+        margin: 10px 0;
+        display: flex;
+        flex-direction: row;
+    }
+
+        .form-select .input-group-select {
+            min-width: 35%;
+        }
+
+        .form-select .form-label {
+            border: 0;
+            border-radius: 0;
+            background-color: transparent;
+            color: #209CDD;
+            padding: .375rem .75rem;
+            margin-bottom: 0;
+            font-size: 1rem;
+            font-weight: 400;
+            line-height: 1.5;
+            position: absolute;
+        }
+
+        .form-select select {
+            padding: .375rem .75rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #495057;
+            -moz-appearance: none; /* Firefox */
+            -webkit-appearance: none; /* Safari and Chrome */
+            text-indent: 1px;
+            text-overflow: '';
+            border: 0;
+            position: relative;
+        }
+
+            .form-select select + label {
+                float: right;
+                margin-top: 8px;
+                margin-right: 5px;
+                pointer-events: none;
+                background-color: #fff;
+                padding-right: 5px;
+                color: #209CDD;
+                position: absolute;
+                top: 0;
+                right: 0;
+            }
+
+            .form-select select::-ms-expand {
+                display: none;
+            }
+
+        .form-select .select-wrap {
+            position: relative;
+            width: 100%;
+        }
+
+    .line-center {
+        display: block;
+        margin-top: 10px;
+    }
+
+    @media (min-width: 769px) {
+        .line-center-large {
+            display: block;
+            margin-top: 10px;
+        }
+    }
+
+    .panel-font-size {
+        position: relative;
+        width: 100%;
+    }
+
+        .panel-font-size .font-size {
+            display: inline-block;
+            float: right;
+        }
+
+        .panel-font-size .link {
+            position: absolute;
+            width: 100%;
+        }
+
+            .panel-font-size .link .wrap {
+                padding: 1rem;
+                display: inline-block;
+                float: right;
+            }
+
+        .panel-font-size.active .link .wrap {
+            background: #fff;
+            -webkit-box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+        }
+
+        .panel-font-size .panel {
+            display: none;
+            position: absolute;
+            width: 100%;
+            background: #fff;
+            top: 61px;
+            z-index: 9999;
+            padding: 2rem;
+            -webkit-box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+        }
+
+        .panel-font-size.active .panel {
+            display: block;
+        }
+
+    a.font-size {
+        font-size: 1.25rem;
+        color: #1cacf6;
+        font-weight: bold;
+        display: block;
+        position: relative;
+        padding-right: 10px;
+        text-decoration: none;
+    }
+
+        a.font-size:after {
+            position: absolute;
+            font-size: 12px;
+            top: 5px;
+            right: 0;
+            content: "\f10d";
+            display: inline-block;
+            font-family: "Ionicons";
+            speak: none;
+            font-style: normal;
+            font-weight: normal;
+            font-variant: normal;
+            text-transform: none;
+            text-rendering: auto;
+            line-height: 1;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a.font-size:before {
+            position: absolute;
+            font-size: 12px;
+            top: 12px;
+            right: 0;
+            content: "\f104";
+            display: inline-block;
+            font-family: "Ionicons";
+            speak: none;
+            font-style: normal;
+            font-weight: normal;
+            font-variant: normal;
+            text-transform: none;
+            text-rendering: auto;
+            line-height: 1;
+            -webkit-font-smoothing: antialiased;
+        }
+
+    .notification-content {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+    }
+
+        .notification-content .wrap {
+            width: 100%;
+            height: calc(100% - 210px);
+            overflow-x: hidden;
+            overflow-y: auto;
+            position: relative;
+        }
+</style>
+<div class="panel-font-size pull-right" id="panel_font_size">
+    <div class="link">
+        <div class="wrap">
+            <a href="#" class="font-size"
+               onclick="document.getElementById('panel_font_size').classList.toggle('active')">Aa</a>
+        </div>
+    </div>
+    <div class="panel">
+        <p style="font-size:initial;">Font size adjustment</p>
+        <div class="row">
+            <div class="col-sm-6">
+                <a class="btn btn-font-size font-small btn-block" onclick="editFontSize(false);">
+                    Aa <i class="ion-arrow-down-b"></i>
+                </a>
+            </div>
+            <div class="col-sm-6">
+                <a class="btn btn-font-size font-large btn-block" onclick="editFontSize(true);">
+                    Aa <i class="ion-arrow-up-b"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="d-block text-center">
+    <h5 class="d-inline-block red-underline my-3">Notifications</h5>
+    <p>Your next appointment will be on <strong> Thursday, 20 July 2018</strong></p>
+</div>
+
+
+<ul class="profile-tabs nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item">
+        <a class="nav-link active" id="notifications-tab" data-toggle="tab" href="#notifications"
+           role="tab"
+           aria-controls="notifications" aria-selected="true">
+            <span class="line-center"><span id="currentNumber"></span> of <span id="notificationsCount"></span></span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link nav-hover" href="#" id="prevNoti" prevID>
+            <span class="line-center"><i class="ion-chevron-left"></i> Previous</span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link nav-hover" href="#" id="nextNoti" nextID>
+            <span class="line-center">Next <i class="ion-chevron-right"></i></span>
+        </a>
+    </li>
+</ul>
+
+<div class="notification-content">
+    <div class="profile-tab-content wrap bg-white tab-content z-depth-2">
+        <div class="tab-pane fade show active" id="notifications" role="tabpanel"
+             aria-labelledby="notifications-tab">
+
+        </div>
+    </div>
+</div>
+
+
+
+<!--<div>
     <div style="text-align:left;width:50%;float:left;">
         <span style="border:1px solid #CCC;padding:5px 10px;">
             Notification
@@ -13,16 +426,16 @@
     <div style="clear:both;"></div>
 </div>
 
-<!--<div id="myCarousel" class="carousel slide" data-ride="carousel" noti style="margin-top:20px;">-->
+
 <div id="myCarousel" class="carousel slide" noti style="margin-top:20px;">
-    <!-- Indicators -->
+
     <ol class="carousel-indicators"></ol>
 
-    <!-- Wrapper for slides -->
+
     <div class="carousel-inner">
     </div>
 
-    <!-- Left and right controls -->
+
     <a class="left carousel-control" href="#myCarousel" data-slide="prev">
         <span class="glyphicon glyphicon-chevron-left"></span>
         <span class="sr-only">Previous</span>
@@ -34,30 +447,21 @@
 </div>
 
 
-<button type="button" class="btn btn-danger" style="position:fixed;bottom:10px;left:10px;" onclick="api.server.LoadPage('Supervisee.html');">Back</button>
+<button type="button" class="btn btn-danger" style="position:fixed;bottom:10px;left:10px;" onclick="api.server.LoadPage('Supervisee.html');">Back</button>-->
 
-<style type="text/css">
-    [noti] .carousel-inner {
-        width: 70%;
-        margin: auto;
-        border: 1px solid #CCC;
-        padding: 10px;
-    }
-
-    [noti] .carousel-control {
-        background-image: none;
-    }
-
-        [noti] .carousel-control .glyphicon {
-            font-size: 40px;
-            color: #000;
-        }
-</style>
 <script type="text/javascript">
-
+    var _prev = 0;
+    var _next = 1;
+    var _count = 1;
     api.ready(function (model) {
         if (model != null && model.length > 0) {
+            $('#currentNumber').text(1);
             var id = model[0].ID.toString();
+            api.server.GetUserName(model[0].ToUserId, function (to) {
+                $('#notifications').append('<p>To: ' + to + '</p><p><strong>' + model[0].Subject + '</strong></p><p>' + model[0].Datetime + '</p><br/><p>' + model[0].Content + '</p>');
+            })
+            $('[nextID]').val(_next);
+            $('[prevID]').val(_prev);
             api.server.SpeakNotification(id);
             api.server.ChangeReadStatus(id);
         }
@@ -66,52 +470,88 @@
 
 
             if (model.length > 1) {
-                $('#notificationsCount').text(model.length + ' notifications');
+                $('#notificationsCount').text(model.length);
             }
             else {
-                $('#notificationsCount').text(model.length + ' notification');
+                $('#notificationsCount').text(model.length);
             }
-            for (var i = 0; i < model.length; i++) {
-                $('[noti] .carousel-indicators').append('<li data-target="#myCarousel" data-slide-to="' + i + '" class="' + (i == 0 ? 'active' : '') + '"></li>');
-                $('[noti] .carousel-inner').append('<div id="' + model[i].ID + '" class="item ' + (i == 0 ? 'active' : '') + '">To: Suppervise<br />Date: <br />Subject: ' + model[i].Subject + '<div style="margin-top: 20px;">' + model[i].Content + '</div></div>');
-            }
-            api.countNoti = 0;
+            //for (var i = 0; i < model.length; i++) {
+            //    $('[noti] .carousel-indicators').append('<li data-target="#myCarousel" data-slide-to="' + i + '" class="' + (i == 0 ? 'active' : '') + '"></li>');
+            //    $('[noti] .carousel-inner').append('<div id="' + model[i].ID + '" class="item ' + (i == 0 ? 'active' : '') + '">To: Suppervise<br />Date: <br />Subject: ' + model[i].Subject + '<div style="margin-top: 20px;">' + model[i].Content + '</div></div>');
+            //}
+            //api.countNoti = 0;
         }
+        $('#prevNoti').click(function () {
+            api.server.StopSpeakNotification();
+            _prev =  parseInt($('[prevID]').val());
+            if (_prev > 0) {
+                _prev = (_prev-1);
+                _count = (_count-1);
+                $('#currentNumber').text(_count);
+            
 
+            api.server.GetUserName(model[_prev].ToUserId, function (to) {
+                $('#notifications').html('<p>To: ' + to + '</p><p><strong>' + model[_prev].Subject + '</strong></p><p>' + model[_prev].Datetime + '</p><br/><p>' + model[_prev].Content + '</p>');
+                });
+            
+            $('[prevID]').val(_prev);
+            $('[nextID]').val((_prev + 1));
+            api.server.SpeakNotification(model[_prev].ID.toString());
+            }
+        });
+        $('#nextNoti').click(function () {
+            api.server.StopSpeakNotification();
+            _next = parseInt($('[nextID]').val());
+            if (_next < model.length) {
+                _next = (_next+1);
+                _count = (_count+1);
+                $('#currentNumber').text(_count);
+            
 
-        var carouselEl = $('.carousel');
-        var carouselItems = carouselEl.find('.item');
+            api.server.GetUserName(model[_next].ToUserId, function (to) {
+                $('#notifications').html('<p>To: ' + to + '</p><p><strong>' + model[_next].Subject + '</strong></p><p>' + model[_next].Datetime + '</p><br/><p>' + model[_next].Content + '</p>');
+                });
+           
+           
+            $('[nextID]').val(_next);
+            $('[prevID]').val((_next - 1));
+            api.server.SpeakNotification(model[_next].ID.toString());
+            }
+        });
+
+        //var carouselEl = $('.carousel');
+        //var carouselItems = carouselEl.find('.item');
         //carouselEl.carousel({
         //}).on('slide.bs.carousel', function (event) {
 
         //})
 
 
-        $('.carousel-control.left').click(function () {
-            var hasPrev = carouselItems.siblings('.active').prev().length;
-            if (hasPrev) {
-                var id = carouselItems.siblings('.active').prev().attr('id');
-                api.server.ChangeReadStatus(id);
-                api.server.SpeakNotification(id);
-            }
-            else {
-                var id = model[0].ID.toString();
-                api.server.SpeakNotification(id);
-            }
-        });
+        //$('.carousel-control.left').click(function () {
+        //    var hasPrev = carouselItems.siblings('.active').prev().length;
+        //    if (hasPrev) {
+        //        var id = carouselItems.siblings('.active').prev().attr('id');
+        //        api.server.ChangeReadStatus(id);
+        //        api.server.SpeakNotification(id);
+        //    }
+        //    else {
+        //        var id = model[0].ID.toString();
+        //        api.server.SpeakNotification(id);
+        //    }
+        //});
 
-        $('.carousel-control.right').click(function () {
-            var hasNext = carouselItems.siblings('.active').next().length;
-            if (hasNext) {
-                var id = carouselItems.siblings('.active').next().attr('id');
-                api.server.ChangeReadStatus(id);
-                api.server.SpeakNotification(id);
-            }
-            else {
-                var id = model[0].ID.toString();
-                api.server.SpeakNotification(id);
-            }
-        });
+        //$('.carousel-control.right').click(function () {
+        //    var hasNext = carouselItems.siblings('.active').next().length;
+        //    if (hasNext) {
+        //        var id = carouselItems.siblings('.active').next().attr('id');
+        //        api.server.ChangeReadStatus(id);
+        //        api.server.SpeakNotification(id);
+        //    }
+        //    else {
+        //        var id = model[0].ID.toString();
+        //        api.server.SpeakNotification(id);
+        //    }
+        //});
     });
-
+   
 </script>

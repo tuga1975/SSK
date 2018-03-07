@@ -708,7 +708,16 @@ namespace Trinity.DAL
                             join mur in _localUnitOfWork.DataContext.Membership_UserRoles on mu.UserId equals mur.UserId
                             join mr in _localUnitOfWork.DataContext.Membership_Roles on mur.RoleId equals mr.Id
                             where mu.Status.ToUpper() == EnumUserStatuses.Blocked && mr.Name == EnumUserRoles.Supervisee
-                            select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name, IsFirstAttempt = mu.IsFirstAttempt, Note = mu.Note });
+                            select new Trinity.BE.User()
+                            {
+                                UserId = mu.UserId,
+                                Status = mu.Status,
+                                Name = mu.Name,
+                                NRIC = mu.NRIC,
+                                Role = mr.Name,
+                                IsFirstAttempt = mu.IsFirstAttempt,
+                                Note = mu.Note == null ? "" : mu.Note
+                            });
                 return user.ToList();
             }
             else
@@ -717,7 +726,16 @@ namespace Trinity.DAL
                             join mur in _centralizedUnitOfWork.DataContext.Membership_UserRoles on mu.UserId equals mur.UserId
                             join mr in _centralizedUnitOfWork.DataContext.Membership_Roles on mur.RoleId equals mr.Id
                             where mu.Status.ToUpper() == EnumUserStatuses.Blocked && mr.Name == EnumUserRoles.Supervisee
-                            select new Trinity.BE.User() { UserId = mu.UserId, Status = mu.Status, Name = mu.Name, NRIC = mu.NRIC, Role = mr.Name, IsFirstAttempt = mu.IsFirstAttempt, Note = mu.Note });
+                            select new Trinity.BE.User()
+                            {
+                                UserId = mu.UserId,
+                                Status = mu.Status,
+                                Name = mu.Name,
+                                NRIC = mu.NRIC,
+                                Role = mr.Name,
+                                IsFirstAttempt = mu.IsFirstAttempt,
+                                Note = mu.Note == null ? "" : mu.Note
+                            });
                 return user.ToList();
             }
         }

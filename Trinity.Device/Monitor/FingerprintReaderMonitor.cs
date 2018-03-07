@@ -37,11 +37,12 @@ namespace Trinity.Device
             {
                 Debug.WriteLine("FingerprintReaderMonitor.ReportDeviceStatus " + DateTime.Now.ToString());
                 // get status
-                var status = FingerprintReaderUtil.Instance.GetDeviceStatus();
+                var statuses = FingerprintReaderUtil.Instance.GetDeviceStatus();
 
                 // update local ApplicationDevice_Status
                 DAL_DeviceStatus dAL_DeviceStatus = new DAL_DeviceStatus();
-                dAL_DeviceStatus.Update((int)EnumDeviceIds.FingerprintScanner, status);
+                dAL_DeviceStatus.Update((int)EnumDeviceIds.FingerprintScanner, statuses);
+                Trinity.SignalR.Client.Instance.DeviceStatusChanged((int)EnumDeviceIds.FingerprintScanner, statuses);
             }
             catch (Exception ex)
             {

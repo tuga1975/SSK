@@ -32,9 +32,7 @@
                         <th>Edit</th>
                     </tr>
                 </thead>
-                <tbody table-settings>
-                   
-                </tbody>
+                <tbody table-settings></tbody>
             </table>
         </div>
         <div id="panel-holidays">
@@ -52,9 +50,10 @@
             <br />
             <div>
                 <div>
-                    <table id="holidayTable" class="table">
+                    <table id="holidayTable" data-click-to-select="true" class="table">
                         <thead>
                             <tr>
+                                <th data-field="state" data-checkbox="true"></th>
                                 <th data-field="Date">Date</th>
                                 <th data-field="ShortDesc">Short Description</th>
                                 <th data-field="Notes">Notes</th>
@@ -62,7 +61,7 @@
                         </thead>
                     </table>
                 </div>
-                
+
             </div>
         </div>
 
@@ -86,7 +85,7 @@
     </div>
 </div>
 <script type="text/javascript">
-    
+
     activemenu("Settings");
     $("#menu .menu-item").removeClass("active");
     $("#menu [item-menu].active").parent().addClass("active");
@@ -149,6 +148,11 @@
             pageSize: 5,
             pageList: [5, 10, 25, 50, 100],
             columns: [{
+                field: 'state',
+                title: '',
+                width: '10%',
+                align: 'center'
+            }, {
                 field: 'Holiday1',
                 title: 'Date',
                 width: '20%',
@@ -162,26 +166,29 @@
             }, {
                 field: 'ShortDesc',
                 title: 'Short Description',
-                width: '40%',
+                width: '35%',
                 align: 'center'
             }, {
                 field: 'Notes',
                 title: 'Notes',
-                width: '40%',
+                width: '35%',
                 align: 'center'
             }],
-            data: model.HoliDays,
-            onClickRow: onRowClick
-        });
-        $('#holidayTable').on('click', 'tr', function (event) {
-            //if ($(this).hasClass('active')) {
-            //    $(this).removeClass('active');
-            //} else {
-            $(this).addClass('active').siblings().removeClass('active');
-            //}
-            //$(this).toggleClass("active");
+            data: model.HoliDays
         });
 
+        $('#holidayTable').on('check.bs.table', function (e, row) {
+            checkedRows.push({ Holiday1: row.Holiday1 });
+        });
+
+        $('#holidayTable').on('uncheck.bs.table', function (e, row) {
+            $.each(checkedRows, function (index, value) {
+                if (value.Holiday1 === row.Holiday1) {
+                    checkedRows.splice(index, 1);
+                    return false;
+                }
+            });
+        });
 
         function onRowClick(row, index) {
             var data = JSON.stringify(row);
@@ -217,6 +224,8 @@
             data: model.ChangeHistorySettings
         });
     });
+
+    var checkedRows = [];
 
     function setColspanForClosed(dayOfWeek, isClosedMorning, isClosedAfternoon, isClosedEvening) {
         var row = document.getElementById(dayOfWeek);
@@ -275,20 +284,18 @@
     };
 
     $("#deleteBtn").click(function (e) {
-
-        if (holidaySelected) {
-            var messageConfirm = 'Are you sure you want to remove ' + formatDate(holidaySelected) + '?';
+        if (checkedRows.length > 0) {
+            var messageConfirm = 'Are you sure you want to remove the Holiday?';
             var re = confirm(messageConfirm, 'Warning');
             if (re) {
-                api.server.DeleteHoliday(holidaySelected, function () {
+                var data = JSON.stringify(checkedRows);
+                api.server.DeleteHoliday(data, function () {
                     api.server.LoadPage('Settings.html');
-                    holidaySelected = null;
                 });
             }
-            e.preventDefault();
-        };
+        }
     });
-
+    
     function showPopupSettingDetail(dayOfWeek) {
         var data = JSON.stringify(model[dayOfWeek]);
         api.server.PopupEditOperationalDate(data, function () { $('#idEditOperationalDate').modal(); });

@@ -64,7 +64,11 @@ function AddContentPage(html, model) {
     else
         api.model = null;
     $('#content').html('<div class="chi-content">' + html + '</div>');
-
+    $('#content button[onclick]').each(function () {
+        var value = $(this).attr('onclick');
+        $(this).removeAttr('onclick');
+        $(this).attr('valonclick', value);
+    });
     api.callReady(api.model);
 }
 function AddContentPopup(html, model, id) {
@@ -76,6 +80,12 @@ function AddContentPopup(html, model, id) {
         $('#panel-popup > [id="' + id + '"]').replaceWith(html);
     else
         $('#panel-popup').append(html);
+
+    $('#panel-popup > [id="' + id + '"]').find('button[onclick]').each(function () {
+        var value = $(this).attr('onclick');
+        $(this).removeAttr('onclick');
+        $(this).attr('valonclick', value);
+    });
     api.callReady(api.model);
 }
 function createEvent(arrayFun) {
@@ -148,12 +158,13 @@ $(document).ready(function () {
             }
         }
     });
-    $('body').on('click', 'button[onclick]', function (event) {
-        event.preventDefault();
+    $('body').on('click', 'button', function (event) {
         try {
-            eval($(this).attr('onclick'));
+            if ($(this).is('[valonclick]')) {
+                eval('(function() { ' + $(this).attr('valonclick') + ' })()');
+            }
         } catch (e) {
-
         }
+
     });
 });

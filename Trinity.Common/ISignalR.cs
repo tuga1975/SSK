@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 public interface ISignalR
 {
-    void UserLogined(string userID);
-    void UserLogout(string userID);
-    void DeviceStatusUpdate(int deviceId, EnumDeviceStatuses[] deviceStatuses);
-    void SendToDutyOfficer(string UserId, string DutyOfficerID, string Subject, string Content, string notificationType);
-    void SendToAllDutyOfficers(string UserId, string Subject, string Content, string notificationType);
+    void UserLoggedIn(string userId);
+    void UserLoggedOut(string userId);
+    void DeviceStatusChanged(int deviceId, EnumDeviceStatuses[] deviceStatuses);
+    void SendToDutyOfficer(string fromUserId, string dutyOfficerID, string subject, string content, string notificationType);
+    void SendToAllDutyOfficers(string fromUserId, string subject, string content, string notificationType);
 }

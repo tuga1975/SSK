@@ -56,7 +56,7 @@ namespace Trinity.DAL
                     throw new Exception("Save data to local database failed.");
                 }
                 // Send Noti server
-                Lib.SignalR.DeviceStatusUpdate(deviceId, deviceStatuses);
+                //Lib.SignalR.DeviceStatusUpdate(deviceId, deviceStatuses);
                 return true;
             }
             catch (Exception ex)
@@ -85,13 +85,26 @@ namespace Trinity.DAL
             }
         }
 
-        public bool CheckStatusDevicesStation(string station)
+        public string CheckStatusDevicesStation(string station)
         {
-            if (!_localUnitOfWork.DataContext.ApplicationDevice_Status.Any(a=>a.Station.ToUpper() == station.ToUpper()))
+            try
             {
-                return false;
+                if (!_localUnitOfWork.DataContext.ApplicationDevice_Status.Any(a => a.Station.ToUpper() == station.ToUpper()))
+                {
+                    return EnumColors.Red;
+                }
+
+                if (_localUnitOfWork.DataContext.ApplicationDevice_Status.Any(d => d.Station.ToUpper() == station.ToUpper() && d.StatusCode == (int)EnumDeviceStatuses.Disconnected))
+                {
+                    return EnumColors.Red;
+                }
+
+                return EnumColors.Green;
             }
-            return !_localUnitOfWork.DataContext.ApplicationDevice_Status.Any(d => d.Station.ToUpper() == station.ToUpper() && d.StatusCode == (int)EnumDeviceStatuses.Disconnected);
+            catch(Exception e)
+            {
+                return EnumColors.Red;
+            }
         }
 
         /// <summary>

@@ -53,10 +53,10 @@ namespace DutyOfficer
         public StationColorDevice GetStationClolorDevice()
         {
             var dalDeviceStatus = new DAL_DeviceStatus();
-            _StationColorDevice.SSAColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStations.SSA) ? EnumColors.Green : EnumColors.Red;
-            _StationColorDevice.SSKColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStations.SSK) ? EnumColors.Green : EnumColors.Red;
-            _StationColorDevice.ESPColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStations.ESP) ? EnumColors.Green : EnumColors.Red;
-            _StationColorDevice.UHPColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStations.UHP) ? EnumColors.Green : EnumColors.Red;
+            _StationColorDevice.SSAColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStations.SSA);
+            _StationColorDevice.SSKColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStations.SSK);
+            _StationColorDevice.ESPColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStations.ESP);
+            _StationColorDevice.UHPColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStations.UHP);
             return _StationColorDevice;
         }
 
@@ -334,7 +334,9 @@ namespace DutyOfficer
             }
 
             DAL_Setting dalSetting = new DAL_Setting();
-            return dalSetting.GetOperationSettings();
+            Session session = Session.Instance;
+            Trinity.BE.User dutyOfficer = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+            return dalSetting.GetOperationSettings(dutyOfficer.UserId);
         }
 
         public void UpdateOperationSetting(string json)
@@ -399,15 +401,16 @@ namespace DutyOfficer
             dalSetting.AddHoliday(holiday.Holiday1, holiday.ShortDesc, holiday.Notes, dutyOfficer.Name, dutyOfficer.UserId);
         }
 
-        public void DeleteHoliday(string date)
+        public void DeleteHoliday(string json)
         {
-            DateTime dateHoliday = Convert.ToDateTime(date);
+            var data = JsonConvert.DeserializeObject<List<Trinity.BE.Holiday>>(json);
+            //DateTime dateHoliday = Convert.ToDateTime(date);
             var dalSetting = new DAL_Setting();
 
             Session session = Session.Instance;
             Trinity.BE.User dutyOfficer = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
 
-            dalSetting.DeleteHoliday(dateHoliday, dutyOfficer.Name);
+            dalSetting.DeleteHoliday(data, dutyOfficer.Name);
         }
 
         #endregion
@@ -448,17 +451,16 @@ namespace DutyOfficer
         {
             Session session = Session.Instance;
             Trinity.BE.User dutyOfficer = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-            DAL_Appointments _Appointment = new DAL_Appointments();
-            var result= _Appointment.GetAppointmentByDate(userId, DateTime.Today);
-            Trinity.DAL.DBContext.Appointment appointment = result;
+            DAL_Appointments dalAppointment = new DAL_Appointments();
+            Trinity.DAL.DBContext.Appointment appointment = dalAppointment.GetAppointmentByDate(userId, DateTime.Today);
             if (appointment != null)
             {
-                var responseResult= _Appointment.GetTimeslotNearestAppointment();
-                Trinity.DAL.DBContext.Timeslot timeslot = responseResult;
-                var response= _Appointment.UpdateTimeslotForApptmt(appointment.ID, timeslot.Timeslot_ID);
+                //var responseResult= _Appointment.GetTimeslotNearestAppointment();
+                DAL_QueueNumber dalQueue = new DAL_QueueNumber();
+                Trinity.DAL.DBContext.Timeslot timeslot = dalQueue.GetTimeSlotEmpty();
+                var response= dalAppointment.UpdateTimeslotForApptmt(appointment.ID, timeslot.Timeslot_ID);
                 appointment = response;
-                var _dalQueue = new DAL_QueueNumber();
-                Trinity.DAL.DBContext.Queue queueNumber = _dalQueue.InsertQueueNumber(appointment.ID, appointment.UserId, EnumStations.SSK, dutyOfficer.UserId);
+                Trinity.DAL.DBContext.Queue queueNumber = dalQueue.InsertQueueNumber(appointment.ID, appointment.UserId, EnumStations.SSK, dutyOfficer.UserId);
             }
         }
         #endregion
@@ -865,7 +867,7 @@ namespace DutyOfficer
             // RaiseLogOutCompletedEvent
             RaiseLogOutCompletedEvent();
 
-            Trinity.SignalR.Client.Instance.UserLogout(userID);
+            Trinity.SignalR.Client.Instance.UserLoggedOut(userID);
         }
 
         public void ManualLogin(string username, string password)
