@@ -87,17 +87,24 @@ namespace Trinity.DAL
 
         public string CheckStatusDevicesStation(string station)
         {
-            if (!_localUnitOfWork.DataContext.ApplicationDevice_Status.Any(a=>a.Station.ToUpper() == station.ToUpper()))
+            try
+            {
+                if (!_localUnitOfWork.DataContext.ApplicationDevice_Status.Any(a => a.Station.ToUpper() == station.ToUpper()))
+                {
+                    return EnumColors.Red;
+                }
+
+                if (_localUnitOfWork.DataContext.ApplicationDevice_Status.Any(d => d.Station.ToUpper() == station.ToUpper() && d.StatusCode == (int)EnumDeviceStatuses.Disconnected))
+                {
+                    return EnumColors.Red;
+                }
+
+                return EnumColors.Green;
+            }
+            catch(Exception e)
             {
                 return EnumColors.Red;
             }
-
-            if (_localUnitOfWork.DataContext.ApplicationDevice_Status.Any(d => d.Station.ToUpper() == station.ToUpper() && d.StatusCode == (int)EnumDeviceStatuses.Disconnected))
-            {
-                return EnumColors.Red;
-            }
-
-            return EnumColors.Green;
         }
 
         /// <summary>
