@@ -508,7 +508,7 @@ table tr.active {
 
 /*Modal Popup*/
 .modal-content {
-    padding: 40px;
+    padding: 30px 40px 20px 40px;
 }
 .modal-header,
 .modal-body,
@@ -543,6 +543,7 @@ table tr.active {
     border: 1px solid #e7e7e7;
     box-shadow: none;
     color: #334352;
+    padding: 15px;
 }
 .modal-body .textarea {
     padding: 15px 0;
@@ -588,17 +589,115 @@ table tr.active {
     float: left;
     margin-top: 30px;
 }
-.tabtitle {
+/*.tabtitle {
     margin-bottom: 5px;
 }
 .formEdit {
     overflow: hidden;
     width: 100%;
     float: left;
-}
+}*/
+
+/*EDIT OPERATION DATE*/
 #dayOfWeek {
     width: 150px;
-    margin-left: 15px;
     float: left;
     border: none;
 }
+#editSlot .heading {
+    overflow: hidden;
+    border-bottom: 1px solid #dedede;
+    width: 100%;
+    float: left;
+    margin-bottom: 15px;
+    cursor: pointer;
+}
+#editSlot select {
+    width: auto;
+    float: left;
+    border: none;
+    border-bottom: 1px solid #dedede;
+    border-radius: 0;
+}
+.heading span,
+.datetime label {
+    color: #1cacf6;
+}
+.margin-top {
+    position: relative;
+    top: 7px;
+}
+.editSlotContent {
+    margin-bottom: 15px;
+}
+.datetime label,
+.datetime select,
+.editSlotContent span,
+.editSlotContent select,
+.editSlotContent input,
+.headingWrapper span {
+    float: left;
+    width: auto;
+    margin: 0;
+}
+.editSlotContent input[type="text"] {
+    border-bottom: 1px solid #dedede;
+    border-radius: 0;
+}
+.editSlotContent .margin {
+    margin: 0 5px;
+}
+
+.firstIcon i {
+    border: 1px solid #1cacf6;
+    border-radius: 4px;
+    padding: 1px;
+    font-size: 12px;
+    width: 15px;
+    height: 15px;
+    margin-right: 20px;
+    text-align: center
+}
+.secIcon {  
+    width: auto;
+    float: right;
+    position: absolute;
+    right: 0;
+}
+.secIcon i {
+    font-size: 30px;
+}
+.headingWrapper {
+    width: 100%;
+    float: left;
+    position: relative;
+    padding: 20px 0;
+}
+
+/*Popup address Holiday*/
+#idAddHoliday .date select {
+    width: auto;
+    float: left;
+    border: none;
+    border-bottom: 1px solid #dedede;
+    border-radius: 0;
+    margin-right: 15px;
+}
+#idAddHoliday .date {
+    border: none;
+    display: block;
+}
+#idAddHoliday .description {
+    border: none;
+    border-radius: 0;
+}
+#idAddHoliday .description input {
+    border: 1px solid #dedede;
+}
+#idAddHoliday .date label {
+    width: auto;
+    float: left;
+    margin-right: 30px;
+    margin-top: 5px;
+}
+

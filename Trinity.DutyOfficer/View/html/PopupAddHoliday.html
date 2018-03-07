@@ -1,4 +1,4 @@
-﻿<div class="modal fade" role="dialog" id="idAddHoliday">
+﻿<!--<div class="modal fade" role="dialog" id="idAddHoliday">
     <div class="modal-dialog" style="width:600px;">
         <div class="modal-content" style="width:600px;">
             <div class="modal-header">
@@ -24,6 +24,51 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" id="AddBtn">Add</button>
+            </div>
+        </div>
+    </div>
+</div>-->
+
+<div class="modal fade" role="dialog" id="idAddHoliday" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Add Non-Operational Date</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <div class="input-group date">
+                        <label class="input-group-addon">Date</label>
+                        <select class="form-control" id="day">
+                            <option>15</option>
+                        </select>
+                        <select class="form-control" id="month">
+                            <option>01</option>
+                            <option>02</option>
+                            <option>03</option>
+                        </select>
+                        <select class="form-control" id="year">
+                            <option>2018</option>
+                        </select>
+                    </div>
+                    <br />
+                    <div class="input-group description">
+                        <label class="input-group-addon">Short Description</label>
+                        <span><input type="text" class="form-control pri" id="description"></span>
+                    </div>
+                    <br />
+                    <div>
+                        <label class="textarea">Notes</label>
+                        <textarea type="text" class="form-control pri col-12" rows="5" id="note"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer d-flex justify-content-center">
+                <button type="button" class="btn btn-default" data-dismiss="modal" aria-label="Close">CANCEL</button>
+                <button type="button" id="AddBtn" class="btn btn-default">ADD</button>
             </div>
         </div>
     </div>
