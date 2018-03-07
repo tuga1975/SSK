@@ -34,7 +34,7 @@ namespace SSK
             InitializeComponent();
             APIUtils.Start();
             //Notification
-            Trinity.SignalR.Client.SignalR.Instance.Event_QueueFinished += Instance_Event_QueueFinished;
+            Trinity.SignalR.Client.Instance.Event_QueueFinished += Instance_Event_QueueFinished;
             // setup variables
             _smartCardFailed = 0;
             _fingerprintFailed = 0;
@@ -114,7 +114,7 @@ namespace SSK
             string message = "The fingerprint reader is not connected, please report to the Duty Officer!";
 
             // Send Notification to duty officer
-            Trinity.SignalR.Client.SignalR.Instance.SendAllDutyOfficer(null, "The fingerprinter is not connected", "The fingerprinter is not connected.", NotificationType.Error);
+            Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(null, "The fingerprinter is not connected", "The fingerprinter is not connected.", NotificationType.Error);
 
 
             // show message box to user
@@ -222,7 +222,7 @@ namespace SSK
         private void NRIC_OnNRICSucceeded()
         {
             // navigate to Supervisee page
-            Trinity.SignalR.Client.SignalR.Instance.UserLogined(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId);
+            Trinity.SignalR.Client.Instance.UserLogined(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId);
             NavigateTo(NavigatorEnums.Supervisee);
         }
 
@@ -254,7 +254,7 @@ namespace SSK
             if (_smartCardFailed > 3)
             {
                 // Send Notification to duty officer
-                Trinity.SignalR.Client.SignalR.Instance.SendAllDutyOfficer(null, message, message, NotificationType.Error);
+                Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(null, message, message, NotificationType.Error);
                 // show message box to user
                 //MessageBox.Show(message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
@@ -306,7 +306,7 @@ namespace SSK
             }
             else
             {
-                Trinity.SignalR.Client.SignalR.Instance.UserLogined(user.UserId);
+                Trinity.SignalR.Client.Instance.UserLogined(user.UserId);
                 // navigate to Supervisee page
                 NavigateTo(NavigatorEnums.Supervisee);
             }
@@ -329,7 +329,7 @@ namespace SSK
             Session session = Session.Instance;
             Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
             string errorMessage = "User '" + user.Name + "' cannot complete facial authentication";
-            Trinity.SignalR.Client.SignalR.Instance.SendAllDutyOfficer(user.UserId, "Facial authentication failed", errorMessage, NotificationType.Error);
+            Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(user.UserId, "Facial authentication failed", errorMessage, NotificationType.Error);
 
             // show message box to user
             MessageBox.Show("Facial authentication failed", "Facial Authentication", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -372,7 +372,7 @@ namespace SSK
             {
                 // navigate to Supervisee page
 
-                Trinity.SignalR.Client.SignalR.Instance.UserLogined(user.UserId);
+                Trinity.SignalR.Client.Instance.UserLogined(user.UserId);
 
                 NavigateTo(NavigatorEnums.Supervisee);
             }
@@ -394,7 +394,7 @@ namespace SSK
                 string errorMessage = "Unable to read " + user.Name + "'s fingerprint.";
 
                 // Send Notification to duty officer
-                Trinity.SignalR.Client.SignalR.Instance.SendAllDutyOfficer(user.UserId, "Fingerprint Authentication failed", errorMessage, NotificationType.Error);
+                Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(user.UserId, "Fingerprint Authentication failed", errorMessage, NotificationType.Error);
 
                 _jsCallCS.PopupMessage("Authentication failed", "Fingerprint's Authenication failed!<br /> Please contact your officer.");
                 //NavigateTo(NavigatorEnums.Authentication_SmartCard);
