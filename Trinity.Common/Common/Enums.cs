@@ -263,6 +263,7 @@ public enum EnumDeviceStatuses
     PowerSave = 16777216,
     Disconnected = -1
 }
+
 public static class EnumAppConfig
 {
     public static bool IsLocal
@@ -362,6 +363,16 @@ public static class EnumDeviceNames
     {
         get { return ConfigurationManager.AppSettings["SmartCardPrinterName"]; }
     }
+}
+
+public enum EnumHealthStatus
+{
+    Ready = 0,
+    Caution = 1,
+    Error = 2
+    //public const string Ready = "Ready";
+    //public const string Caution = "Caution";
+    //public const string Error = "Error";
 }
 
 public static class NotificationType

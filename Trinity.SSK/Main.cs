@@ -174,6 +174,12 @@ namespace SSK
 
         private void JSCallCS_OnLogOutCompleted()
         {
+            // Set machine status is busy
+            LEDStatusLightingUtil.Instance._isBusy = false;
+            // Display led light health status
+            LEDStatusLightingUtil.Instance.DisplayLedLight_DeviceStatus();
+
+            // navigate
             NavigateTo(NavigatorEnums.Authentication_SmartCard);
         }
 
@@ -204,6 +210,14 @@ namespace SSK
                 _isFirstTimeLoaded = false;
 
                 //Trinity.SignalR.Client.SignalR.Instance.SendAllDutyOfficer(user.UserId,"a","a", NotificationType.Notification);
+
+
+                //Thread.Sleep(7000);
+                //LEDStatusLightingUtil.Instance.TurnOffAllLEDs();
+                // Turn off led flashing after application initial success
+                //LEDStatusLightingUtil.Instance.SwitchBLUELightFlashingOnOff(false);
+                // Display led light health status
+                //LEDStatusLightingUtil.Instance.DisplayLedLight_DeviceStatus();
             }
 
             // SSK is ready to use - all is well
@@ -234,6 +248,11 @@ namespace SSK
 
             // Testing purpose
             //NavigateTo(NavigatorEnums.Authentication_Facial);
+
+            // Set machine status is busy
+            LEDStatusLightingUtil.Instance._isBusy = true;
+            // Display led light health status
+            LEDStatusLightingUtil.Instance.DisplayLedLight_DeviceStatus();
         }
 
         private void SmartCard_OnSmartCardFailed(string message)
