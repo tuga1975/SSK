@@ -123,7 +123,7 @@ namespace SSK
             }
 
             // get GetOperationSetting of appointment day
-            var operationSettings = new DAL_Setting().GetOperationSettings();
+            var operationSettings = new DAL_Setting().GetOperationSettings(user.UserId);
             Trinity.BE.SettingDetails settingDetail = null;
             switch (appointment.Date.DayOfWeek)
             {
