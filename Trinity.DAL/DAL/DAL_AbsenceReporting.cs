@@ -24,13 +24,13 @@ namespace Trinity.DAL
 
                 Trinity.DAL.DBContext.AbsenceReporting dataAbsence = new Trinity.DAL.DBContext.AbsenceReporting()
                 {
-                    AbsentReason = short.Parse(data["ChoseNumber"]),
+                    AbsenceReason = short.Parse(data["ChoseNumber"]),
                     ID = Guid.NewGuid(),
                     ReportingDate = DateTime.Now
                 };
                 item.AbsenceReporting_ID = dataAbsence.ID;
                 arrayInssert.Add(dataAbsence);
-                //if (dataAbsence.AbsentReason == (short)EnumAbsentReasons.No_Supporting_Document)
+                //if (dataAbsence.AbsenceReason == (short)EnumAbsentReasons.No_Supporting_Document)
                 //    Lib.SignalR..SendToAllDutyOfficers(item.UserId, "Supervisee get queue without supporting document", "Please check the Supervisee's information!", EnumNotificationTypes.Notification);
             }
             _localUnitOfWork.GetRepository<Trinity.DAL.DBContext.AbsenceReporting>().AddRange(arrayInssert);
@@ -80,7 +80,7 @@ namespace Trinity.DAL
             dbAbsence.ReportingDate = model.ReportingDate;
             dbAbsence.ReasonDetails = model.ReasonDetails;
             //dbAbsence.ScannedDocument = model.ScannedDocument;
-            dbAbsence.AbsentReason = model.AbsenceReason;
+            dbAbsence.AbsenceReason = model.AbsenceReason;
             return dbAbsence;
         }
 
