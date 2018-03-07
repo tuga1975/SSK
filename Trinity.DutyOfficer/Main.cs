@@ -35,10 +35,10 @@ namespace DutyOfficer
 
             APIUtils.Start();
             //Notification
-            Trinity.SignalR.Client.Instance.Event_DeviceStatusUpdate += Instance_Event_DeviceStatusUpdate;
-            Trinity.SignalR.Client.Instance.Event_MessageTo += Instance_Event_MessageTo;
-            Trinity.SignalR.Client.Instance.Event_AppDisconnect += Instance_Event_AppDisconnect;
-            Trinity.SignalR.Client.Instance.Event_QueueFinished += Instance_Event_QueueFinished;
+            Trinity.SignalR.Client.Instance.OnDeviceStatusChanged += OnDeviceStatusChanged_Handler;
+            Trinity.SignalR.Client.Instance.OnNewNotification += OnNewNotification_Handler ;
+            Trinity.SignalR.Client.Instance.OnAppDisconnected += OnAppDisconnected_Handler;
+            Trinity.SignalR.Client.Instance.OnQueueCompleted += OnQueueCompleted_Handler;
 
             // setup variables
             _smartCardFailed = 0;
@@ -64,26 +64,26 @@ namespace DutyOfficer
             Lib.LayerWeb = LayerWeb;
             LayerWeb.Url = new Uri(String.Format("file:///{0}/View/html/Layout.html", CSCallJS.curDir));
             LayerWeb.ObjectForScripting = _jsCallCS;
-
         }
 
-        private void Instance_Event_AppDisconnect(string Station)
+        private void OnAppDisconnected_Handler(object sender, EventInfo e)
         {
-            new DAL_DeviceStatus().RemoveDevice(Station);
+            string station = (string)e.Source;
+            new DAL_DeviceStatus().RemoveDevice(station);
             _jsCallCS.LoadStationColorDevice();
         }
 
-        private void Instance_Event_MessageTo(string NotificationID, string UserId, string Subject, string Content, string notificationType, string Station)
+        private void OnNewNotification_Handler(object sender, NotificationInfo e)
         {
-            string dutiOfficerId = ((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId;
-            if (dutiOfficerId != null && dutiOfficerId != "")
+            string dutyOfficerId = ((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId;
+            if (dutyOfficerId != null && dutyOfficerId != "")
             {
                 Trinity.BE.Notification notification = new Trinity.BE.Notification();
-                notification.Subject = Subject;
-                notification.ToUserId = UserId;
-                notification.Content = Content;
-                notification.Source = Station;
-                notification.Type = notificationType;
+                notification.Subject = e.Subject;
+                notification.ToUserId = e.ToUserIds[0];
+                notification.Content = e.Content;
+                notification.Source = (string)e.Source;
+                notification.Type = e.Type;
                 notification.Datetime = DateTime.Now;
                 object result = JsonConvert.SerializeObject(notification, Formatting.Indented,
                 new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
@@ -101,9 +101,10 @@ namespace DutyOfficer
                 }));
             }
         }
-
-        private void Instance_Event_DeviceStatusUpdate(int deviceId, EnumDeviceStatuses[] deviceStatuses, string station)
+        
+        private void OnDeviceStatusChanged_Handler(object sender, EventInfo e)
         {
+            string station = (string)e.Source;
             DAL_DeviceStatus device = new DAL_DeviceStatus();
 
             if (station == EnumStations.SSA)
@@ -126,7 +127,7 @@ namespace DutyOfficer
             _jsCallCS.LoadStationColorDevice();
         }
 
-        private void Instance_Event_QueueFinished(Trinity.BE.Queue queue)
+        private void OnQueueCompleted_Handler(object sender, EventInfo e)
         {
             // Refresh data queue
             LayerWeb.InvokeScript("reloadDataQueues");
@@ -199,7 +200,7 @@ namespace DutyOfficer
                 LayerWeb.RunScript("$('.status-text').css('color','#000').text('Fingerprint authentication is successful.');");
                 //APIUtils.SignalR.GetLatestNotifications();
 
-                Trinity.SignalR.Client.Instance.UserLogined(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId);
+                Trinity.SignalR.Client.Instance.UserLoggedIn(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId);
                 Thread.Sleep(400);
                 NavigateTo(NavigatorEnums.Queue);
             }
@@ -335,7 +336,7 @@ namespace DutyOfficer
                 session[CommonConstants.SUPERVISEE] = user;
                 session[CommonConstants.USER_LOGIN] = null;
                 // navigate to SuperviseeParticulars page
-                Trinity.SignalR.Client.Instance.UserLogined(user.UserId);
+                Trinity.SignalR.Client.Instance.UserLoggedIn(user.UserId);
                 NavigateTo(NavigatorEnums.Supervisee_Particulars);
             }
         }
@@ -358,7 +359,7 @@ namespace DutyOfficer
             Session session = Session.Instance;
             Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
             string errorMessage = "User '" + user.Name + "' cannot complete facial authentication";
-            Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(user.UserId, "Facial authentication failed", errorMessage, NotificationType.Error);
+            Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(user.UserId, "Facial authentication failed", errorMessage, EnumNotificationTypes.Error);
 
             // show message box to user
             //MessageBox.Show("Facial authentication failed", "Facial Authentication", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -492,7 +493,7 @@ namespace DutyOfficer
         {
             if (e.Name == EventNames.LOGIN_SUCCEEDED)
             {
-                Trinity.SignalR.Client.Instance.UserLogined(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId);
+                Trinity.SignalR.Client.Instance.UserLoggedIn(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId);
                 NavigateTo(NavigatorEnums.Queue);
             }
             else if (e.Name.Equals(EventNames.LOGIN_FAILED))

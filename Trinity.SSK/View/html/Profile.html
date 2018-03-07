@@ -29,13 +29,26 @@
             font-size: 0.9rem;
             font-weight: bold;
             border-radius: 0;
-            z-index: 2;
             position: relative;
             margin-right: 5px;
             padding: 0.5rem 2rem;
             border-color: #dee2e6;
             color: #1cacf6;
+            box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+            /*border-bottom: 4px solid #fff;*/
+            z-index: 0;
+            background: #fff;
         }
+
+            .profile-tabs .nav-link.active:after {
+                position: absolute;
+                content: '';
+                bottom: -10px;
+                border-bottom: 10px solid #fff;
+                z-index: 0;
+                left: 0;
+                width: 100%;
+            }
 
         .profile-tabs .nav-item:last-of-type .nav-link {
             margin-right: 0;
@@ -106,8 +119,13 @@
         color: #ccc;
     }
 
+    .form-material input {
+        font-size: 100%;
+    }
+
     .form-material .input-group-prepend {
         min-width: 35%;
+        font-size: 100%;
     }
 
     .form-material .input-group .input-group-text {
@@ -115,11 +133,13 @@
         border-radius: 0;
         background-color: transparent;
         color: #209CDD;
+        font-size: 100%;
     }
 
         .form-material .input-group .input-group-text span, .form-select .form-label span {
             padding-left: 5px;
             color: red;
+            font-size: 100%;
         }
 
     .form-material .btn {
@@ -159,15 +179,14 @@
             color: #209CDD;
             padding: .375rem .75rem;
             margin-bottom: 0;
-            font-size: 1rem;
             font-weight: 400;
             line-height: 1.5;
             position: absolute;
+            font-size: 100%;
         }
 
         .form-select select {
             padding: .375rem .75rem;
-            font-size: 1rem;
             line-height: 1.5;
             color: #495057;
             -moz-appearance: none; /* Firefox */
@@ -176,6 +195,8 @@
             text-overflow: '';
             border: 0;
             position: relative;
+            font-size: 100%;
+            height: inherit !important;
         }
 
             .form-select select + label {
@@ -189,6 +210,7 @@
                 position: absolute;
                 top: 0;
                 right: 0;
+                font-size: 90%;
             }
 
             .form-select select::-ms-expand {
@@ -309,7 +331,7 @@
 
         .profile-content .profile-wrap {
             width: 100%;
-            height: calc(100% - 270px);
+            height: calc(100% - 210px);
             overflow-x: hidden;
             overflow-y: auto;
             position: relative;

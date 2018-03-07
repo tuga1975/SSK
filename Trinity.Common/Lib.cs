@@ -6,7 +6,7 @@ using System.Reflection;
 
 public static class Lib
 {
-    public static ISignalR SignalR { get; set; }
+    //public static ISignalR SignalR { get; set; }
     public static System.Windows.Forms.WebBrowser LayerWeb { get; set; }
 
     public static int DayOfWeek(this DateTime date)
@@ -57,7 +57,7 @@ public static class Lib
         return null;
     }
 
-    public static TConvert Map<TConvert>(this object entity) where TConvert :new()
+    public static TConvert Map<TConvert>(this object entity) where TConvert : new()
     {
         if (entity != null)
         {
@@ -81,7 +81,7 @@ public static class Lib
         }
         else
         {
-            return default(TConvert);   
+            return default(TConvert);
         }
     }
     public static string JsonString(this object data)

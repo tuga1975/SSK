@@ -141,7 +141,7 @@ namespace Experiment
 
         private void bnStopFlashing_Click(object sender, EventArgs e)
         {
-            LEDStatusLightingUtil.Instance.SwitchBLUELightFlashingOnOff(false);
+            //LEDStatusLightingUtil.Instance.SwitchBLUELightFlashingOnOff(false);
         }
     }
 }

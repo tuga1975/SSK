@@ -865,7 +865,7 @@ namespace DutyOfficer
             // RaiseLogOutCompletedEvent
             RaiseLogOutCompletedEvent();
 
-            Trinity.SignalR.Client.Instance.UserLogout(userID);
+            Trinity.SignalR.Client.Instance.UserLoggedOut(userID);
         }
 
         public void ManualLogin(string username, string password)

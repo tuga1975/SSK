@@ -82,7 +82,7 @@ namespace SSA
             string message = "The fingerprint reader is not connected, please report to the Duty Officer!";
 
             // Send Notification to duty officer
-            Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(null, "The fingerprinter is not connected", "The fingerprinter is not connected.", NotificationType.Error);
+            Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(null, "The fingerprinter is not connected", "The fingerprinter is not connected.", EnumNotificationTypes.Error);
 
             // show message box to user
             MessageBox.Show(message, "Authentication failed!", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -200,7 +200,7 @@ namespace SSA
         private void NRIC_OnNRICSucceeded()
         {
             // navigate to Supervisee page
-            Trinity.SignalR.Client.Instance.UserLogined(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId);
+            Trinity.SignalR.Client.Instance.UserLoggedIn(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId);
 
             NavigateTo(NavigatorEnums.Supervisee_NRIC);
         }
@@ -228,7 +228,7 @@ namespace SSA
             if (_smartCardFailed > 3)
             {
                 // Send Notification to duty officer
-                Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(null, message, message, NotificationType.Error);
+                Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(null, message, message, EnumNotificationTypes.Error);
 
                 // show message box to user
                 //MessageBox.Show(message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -279,7 +279,7 @@ namespace SSA
             else
             {
                 // navigate to SuperviseeParticulars page
-                Trinity.SignalR.Client.Instance.UserLogined(currentUser.UserId);
+                Trinity.SignalR.Client.Instance.UserLoggedIn(currentUser.UserId);
                 NavigateTo(NavigatorEnums.Supervisee_Particulars);
             }
         }
@@ -298,7 +298,7 @@ namespace SSA
                 string errorMessage = "Unable to read " + user.Name + "'s fingerprint.";
 
                 // Send Notification to duty officer
-                Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(user.UserId, "Fingerprint Authentication failed", errorMessage, NotificationType.Error);
+                Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(user.UserId, "Fingerprint Authentication failed", errorMessage, EnumNotificationTypes.Error);
 
                 //Trinity.BE.PopupModel popupModel = new Trinity.BE.PopupModel();
                 //popupModel.Title = "Authorization Failed";
@@ -371,7 +371,7 @@ namespace SSA
             else
             {
                 // navigate to SuperviseeParticulars page
-                Trinity.SignalR.Client.Instance.UserLogined(currentUser.UserId);
+                Trinity.SignalR.Client.Instance.UserLoggedIn(currentUser.UserId);
                 NavigateTo(NavigatorEnums.Supervisee_Particulars);
             }
         }
@@ -394,7 +394,7 @@ namespace SSA
             Session session = Session.Instance;
             Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
             string errorMessage = "User '" + user.Name + "' cannot complete facial authentication";
-            Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(user.UserId, "Facial authentication failed", errorMessage, NotificationType.Error);
+            Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(user.UserId, "Facial authentication failed", errorMessage, EnumNotificationTypes.Error);
 
             // show message box to user
             //MessageBox.Show("Facial authentication failed", "Facial Authentication", MessageBoxButtons.OK, MessageBoxIcon.Error);

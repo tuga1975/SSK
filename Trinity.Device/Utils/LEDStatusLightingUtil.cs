@@ -435,7 +435,7 @@ namespace Trinity.Device.Util
                 // caution
                 if (applicationStatus == EnumHealthStatus.Caution)
                 {
-                    SwitchYELLOWLightFlashingOnOff(true);
+                    //SwitchYELLOWLightFlashingOnOff(true);
                 }
 
                 // error
