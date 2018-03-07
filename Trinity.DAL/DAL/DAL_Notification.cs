@@ -27,7 +27,7 @@ namespace Trinity.DAL
                     NotificationID = item.NotificationID,
                     IsRead = item.IsRead.HasValue ? item.IsRead.Value : false,
                     Subject = item.Subject,
-                    ToUserId = item.ToUserId
+                    ToUserId = item.ToUserId,
                 }).ToList();
                 if (arrayNoti.Count == 0)
                 {

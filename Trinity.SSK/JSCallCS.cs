@@ -63,6 +63,10 @@ namespace SSK
             var model = myNotifications;
             _web.LoadPageHtml("Notifications.html", myNotifications);
         }
+        public string GetUserName(string userId)
+        {
+            return new DAL_User().GetUserById(userId).Name;
+        }
 
         public void ChangeReadStatus(string notificationId)
         {
@@ -83,6 +87,10 @@ namespace SSK
             DAL_Notification dalNotify = new DAL_Notification();
             string content = dalNotify.GetNotification(notificationId);
             APIUtils.TextToSpeech.Speak(content);
+        }
+        public void StopSpeakNotification()
+        {
+            APIUtils.TextToSpeech.Stop();
         }
 
         #region BookAppointment
