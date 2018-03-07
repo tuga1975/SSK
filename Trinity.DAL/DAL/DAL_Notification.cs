@@ -19,7 +19,7 @@ namespace Trinity.DAL
         {
             if (EnumAppConfig.IsLocal)
             {
-                List<Notification> arrayNoti = arrayNoti = _localUnitOfWork.DataContext.Notifications.Where(d => (!string.IsNullOrEmpty(d.FromUserId) && d.FromUserId == userId) || (!string.IsNullOrEmpty(d.ToUserId) && d.ToUserId == userId)).Select(item => new Notification()
+                List<Notification> arrayNoti  = _localUnitOfWork.DataContext.Notifications.Where(d => (/*!string.IsNullOrEmpty(d.FromUserId) && d.FromUserId == userId) || (*/!string.IsNullOrEmpty(d.ToUserId) && d.ToUserId == userId)).Select(item => new Notification()
                 {
                     Content = item.Content,
                     Datetime = item.Datetime,
@@ -28,11 +28,11 @@ namespace Trinity.DAL
                     IsRead = item.IsRead.HasValue ? item.IsRead.Value : false,
                     Subject = item.Subject,
                     ToUserId = item.ToUserId,
-                }).ToList();
+                }).OrderByDescending(d=>d.Datetime).ToList();
                 if (arrayNoti.Count == 0)
                 {
                     arrayNoti = CallCentralized.Get<List<Notification>>("Notification", "GetAllNotifications", "userId=" + userId);
-                    arrayNoti = arrayNoti == null ? new List<Notification>() : arrayNoti;
+                    arrayNoti = arrayNoti ?? new List<Notification>();
                 }
                 return arrayNoti;
             }
