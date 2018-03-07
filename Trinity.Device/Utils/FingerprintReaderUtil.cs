@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Windows.Forms;
 using Trinity.Common;
 
 namespace Trinity.Device.Util
@@ -77,7 +78,6 @@ namespace Trinity.Device.Util
                     };
                     return returnValue;
                 }
-
                 Debug.WriteLine("Verification is starting, please wait ...");
                 _onVerificationComplete = onVerificationComplete;
 
@@ -104,10 +104,12 @@ namespace Trinity.Device.Util
 
                 // return value
                 returnValue.Success = true;
+
                 return returnValue;
             }
             catch (Exception ex)
             {
+
                 Debug.WriteLine("StartStartVerification Exception: ");
                 Debug.WriteLine(ex.Message);
 
@@ -199,7 +201,6 @@ namespace Trinity.Device.Util
         public void StartIdentification(List<byte[]> lstFingerprint_Templates, Action<bool> IdentificationCompleted)
         {
             Debug.WriteLine("Programme is loading database, please wait ...");
-
             // 
             _lstFingerprint_Templates = lstFingerprint_Templates;
             _identificationCompleted = IdentificationCompleted;

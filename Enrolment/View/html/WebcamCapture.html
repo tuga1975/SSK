@@ -2,26 +2,23 @@
     .go-to {
         text-transform: uppercase;
     }
+    button{
+        /*border:none;
+        cursor:pointer;
+        background-color:none;
+        color:#0094ff;*/
+    }
 </style>
 
 <h5 class="text-center" style="margin-top:30px;">
     Please position your face within the frame and click the camera
 </h5>
 <div class="my-5">
-    <a href="#" class="go-to"  id="btnBack">Click to go back</a>
+    <button  class="go-to btn btn-default"  id="btnBack">Click to go back</button>
 
 </div>
 
-<script>
-    function confirmMode() {
-        document.getElementById('capture').style.display = 'none';
-        document.getElementById('confirm').style.display = 'block';
-    }
-    function captureMode() {
-        document.getElementById('capture').style.display = 'block';
-        document.getElementById('confirm').style.display = 'none';
-    }
-</script>
+
 <div style="width:100%; position:fixed; bottom: 10px;  margin: auto;">
 
     <div class="text-center">
@@ -55,4 +52,14 @@
         api.server.CancelCapturePicture();
     });
 
+</script>
+<script>
+    function confirmMode() {
+        document.getElementById('capture').style.display = 'none';
+        document.getElementById('confirm').style.display = 'block';
+    }
+    function captureMode() {
+        document.getElementById('capture').style.display = 'block';
+        document.getElementById('confirm').style.display = 'none';
+    }
 </script>

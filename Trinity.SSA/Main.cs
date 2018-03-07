@@ -147,18 +147,15 @@ namespace SSA
 
         private void Main_Load(object sender, EventArgs e)
         {
-            //FormQueueNumber f = FormQueueNumber.GetInstance();
-            //f.ShowOnSecondaryScreen();
-            //f.Show();
         }
 
         private void Main_FormClosing(object sender, FormClosingEventArgs e)
         {
             // Turn off all LED(s)
-            //if (LEDStatusLightingUtil.Instance.IsPortOpen)
-            //{
-            LEDStatusLightingUtil.Instance.TurnOffAllLEDs();
-            //}
+            if (LEDStatusLightingUtil.Instance.IsPortOpen)
+            {
+                LEDStatusLightingUtil.Instance.TurnOffAllLEDs();
+            }
             Application.ExitThread();
             APIUtils.Dispose();
         }
@@ -175,7 +172,7 @@ namespace SSA
                 //Session session = Session.Instance;
                 //// Supervisee
                 //Trinity.BE.User user = new DAL_User().GetUserByUserId("bb67863c-c330-41aa-b397-c220428ad16f").Data;
-                //session[CommonConstants.SUPERVISEE] = user;
+                //session[CommonConstants.USER_LOGIN] = user;
                 ////// Duty Officer
                 //////Trinity.BE.User user = new DAL_User().GetUserByUserId("dfbb2a6a-9e45-4a76-9f75-af1a7824a947", true);
                 //////session[CommonConstants.USER_LOGIN] = user;
@@ -213,7 +210,7 @@ namespace SSA
         private void SmartCard_OnSmartCardSucceeded()
         {
             // Pause for 1 second and goto Fingerprint Login Screen
-            Thread.Sleep(1000);
+            Thread.Sleep(400);
 
             // navigate to next page: Authentication_Fingerprint
             NavigateTo(NavigatorEnums.Authentication_Fingerprint);
@@ -269,29 +266,27 @@ namespace SSA
 
             LayerWeb.RunScript("$('.status-text').css('color','#000').text('Fingerprint authentication is successful.');");
 
-            Thread.Sleep(1000);
+            Thread.Sleep(200);
 
             // if role = 0 (duty officer), redirect to NRIC.html
             // else (supervisee), redirect to Supervisee.html
-            Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-            if (user.Role == EnumUserRoles.DutyOfficer)
+            Trinity.BE.User currentUser = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+            if (currentUser.Role == EnumUserRoles.DutyOfficer)
             {
                 // navigate to Authentication_NRIC
                 NavigateTo(NavigatorEnums.Authentication_NRIC);
             }
             else
             {
-                session[CommonConstants.SUPERVISEE] = user;
-                session[CommonConstants.USER_LOGIN] = null;
                 // navigate to SuperviseeParticulars page
-                Trinity.SignalR.Client.SignalR.Instance.UserLogined(user.UserId);
+                Trinity.SignalR.Client.SignalR.Instance.UserLogined(currentUser.UserId);
                 NavigateTo(NavigatorEnums.Supervisee_Particulars);
             }
         }
 
         private void Fingerprint_OnFingerprintFailed()
         {
-            // increase counter
+            // Increase failed counter
             _fingerprintFailed++;
 
             Trinity.BE.User user = (Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN];
@@ -305,29 +300,27 @@ namespace SSA
                 // Send Notification to duty officer
                 Trinity.SignalR.Client.SignalR.Instance.SendAllDutyOfficer(user.UserId, "Fingerprint Authentication failed", errorMessage, NotificationType.Error);
 
-                Trinity.BE.PopupModel popupModel = new Trinity.BE.PopupModel();
-                popupModel.Title = "Authorization Failed";
-                popupModel.Message = "Unable to read your fingerprint.\nPlease report to the Duty Officer";
-                popupModel.IsShowLoading = false;
-                popupModel.IsShowOK = true;
+                //Trinity.BE.PopupModel popupModel = new Trinity.BE.PopupModel();
+                //popupModel.Title = "Authorization Failed";
+                //popupModel.Message = "Unable to read your fingerprint.\nPlease report to the Duty Officer";
+                //popupModel.IsShowLoading = false;
+                //popupModel.IsShowOK = true;
 
-                LayerWeb.InvokeScript("showPopupModal", JsonConvert.SerializeObject(popupModel));
+                //LayerWeb.InvokeScript("showPopupModal", JsonConvert.SerializeObject(popupModel));
 
-                // Pause for 1 second and goto Facial Login Screen
-                Thread.Sleep(1000);
+                // Reset failed count
                 _fingerprintFailed = 0;
 
-                // Temporary comment Authentication_Facial to testing
                 // Navigate to next page: Facial Authentication
-                NavigateTo(NavigatorEnums.Authentication_Facial);
-                //NavigateTo(NavigatorEnums.Authentication_SmartCard);
-
+                // Facial SDK has a trouble. Bypass temporarily
+                // NavigateTo(NavigatorEnums.Authentication_Facial);
+                NavigateTo(NavigatorEnums.Authentication_SmartCard);
                 return;
             }
 
             // display failed on UI
             LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please place your finger on the reader. Failed: " + _fingerprintFailed + "');");
-
+            
             // restart identification
             if (user != null)
             {
@@ -336,7 +329,6 @@ namespace SSA
                     user.LeftThumbFingerprint,
                     user.RightThumbFingerprint
                 };
-
                 FingerprintReaderUtil.Instance.StartIdentification(fingerprintTemplates, Fingerprint_OnIdentificationCompleted);
             }
             else
@@ -366,22 +358,20 @@ namespace SSA
             Session session = Session.Instance;
             session.IsFacialAuthenticated = true;
 
-            Thread.Sleep(1000);
+            Thread.Sleep(200);
 
             // if role = 0 (duty officer), redirect to NRIC.html
             // else (supervisee), redirect to Supervisee.html
-            Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-            if (user.Role == EnumUserRoles.DutyOfficer)
+            Trinity.BE.User currentUser = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+            if (currentUser.Role == EnumUserRoles.DutyOfficer)
             {
                 // navigate to Authentication_NRIC
                 NavigateTo(NavigatorEnums.Authentication_NRIC);
             }
             else
             {
-                session[CommonConstants.SUPERVISEE] = user;
-                session[CommonConstants.USER_LOGIN] = null;
                 // navigate to SuperviseeParticulars page
-                Trinity.SignalR.Client.SignalR.Instance.UserLogined(user.UserId);
+                Trinity.SignalR.Client.SignalR.Instance.UserLogined(currentUser.UserId);
                 NavigateTo(NavigatorEnums.Supervisee_Particulars);
             }
         }
@@ -491,6 +481,15 @@ namespace SSA
                 Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
                 LayerWeb.LoadPageHtml("Authentication/FingerPrint.html");
                 LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please place your thumb print on the reader.');");
+                //if (user.LeftThumbFingerprint == null && user.RightThumbFingerprint == null)
+                //{
+                //    LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please place your thumb print on the reader.');");
+                //}
+                //else
+                //{
+                //    string errMsg = user.Name + "'s Fingerprint could not be found.";
+                //    LayerWeb.RunScript("$('.status-text').css('color','#000').text('" + errMsg + "');");
+                //}
                 try
                 {
                     Fingerprint.Instance.Start(new System.Collections.Generic.List<byte[]>() { user.LeftThumbFingerprint, user.RightThumbFingerprint });
@@ -513,7 +512,14 @@ namespace SSA
                 this.Invoke((MethodInvoker)(() =>
                 {
                     Point startLocation = new Point((Screen.PrimaryScreen.Bounds.Size.Width / 2) - 400 / 2, (Screen.PrimaryScreen.Bounds.Size.Height / 2) - 400 / 2);
-                    FacialRecognition.Instance.StartFacialRecognition(startLocation, new System.Collections.Generic.List<byte[]>() { user.User_Photo1, user.User_Photo2 });
+                    try
+                    {
+                        FacialRecognition.Instance.StartFacialRecognition(startLocation, new System.Collections.Generic.List<byte[]>() { user.User_Photo1, user.User_Photo2 });
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                    }
                 }));
             }
             else if (navigatorEnum == NavigatorEnums.Authentication_NRIC)

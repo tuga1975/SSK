@@ -94,9 +94,9 @@ namespace SSK
 
             // check supervisee have appoitment
             Trinity.DAL.DBContext.Appointment appointment = new DAL_Appointments().GetNextAppointment(user.UserId);
-            if (appointment!=null && (appointment.Status==EnumAppointmentStatuses.Reported|| appointment.Status==EnumAppointmentStatuses.Absent))
+            if (appointment != null && (appointment.Status == EnumAppointmentStatuses.Reported || appointment.Status == EnumAppointmentStatuses.Absent))
             {
-                appointment= new DAL_Appointments().GetNextAppointmentByStatus(user.UserId,EnumAppointmentStatuses.Pending);
+                appointment = new DAL_Appointments().GetNextAppointmentByStatus(user.UserId, EnumAppointmentStatuses.Pending);
             }
 
             if (appointment == null)
@@ -169,7 +169,7 @@ namespace SSK
                 StartTime = appointment.Timeslot != null ? appointment.Timeslot.StartTime : null,
                 EndTime = appointment.Timeslot != null ? appointment.Timeslot.EndTime : null,
             };
-           
+
             // redirect
             this._web.LoadPageHtml("BookAppointment.html", new object[] { appointmentBE, workingTimeshift });
         }
@@ -190,7 +190,7 @@ namespace SSK
                         Timeslot_ID = item.Timeslot_ID,
                         StartTime = item.StartTime.Value,
                         EndTime = item.EndTime.Value,
-                        IsAvailble = item.MaximumSupervisee.HasValue? new DAL_Appointments().CountApptmtHasUseByTimeslot(item.Timeslot_ID)<item.MaximumSupervisee.Value:false,
+                        IsAvailble = item.MaximumSupervisee.HasValue ? new DAL_Appointments().CountApptmtHasUseByTimeslot(item.Timeslot_ID) < item.MaximumSupervisee.Value : false,
                         IsSelected = selected_Timeslot_ID == item.Timeslot_ID,
                         Category = item.Category
                     }).OrderBy(item => item.StartTime).ToList();
@@ -455,43 +455,51 @@ namespace SSK
             nric.NRICAuthentication(strNRIC);
         }
 
-        public int GetCountMyAbsence()
+        public int GetMyAbsencesCount()
         {
-
             Session session = Session.Instance;
             Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
 
-            // if duty officcer override, set supervisee info into user
+            Trinity.BE.User supervisee = null;
+            // Check if the current user is a duty officcer
             if (user.Role == EnumUserRoles.DutyOfficer)
             {
-                user = (Trinity.BE.User)session[CommonConstants.SUPERVISEE];
+                supervisee = (Trinity.BE.User)session[CommonConstants.SUPERVISEE];
             }
-            return new DAL_Appointments().CountAbsenceReport(user.UserId);
-            //return new DAL_Appointments().CountMyAbsence(user.UserId);
+            if (supervisee != null)
+            {
+                return new DAL_Appointments().CountAbsenceReport(supervisee.UserId);
+            }
+            else
+            {
+                return 0;
+            }
         }
 
         // Reporting for Queue Number
         public void ReportingForQueueNumber()
         {
-
-            // get user info
+            // Get current user
             Session session = Session.Instance;
-            Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+            Trinity.BE.User currentUser = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+            Trinity.BE.User supervisee = null;
 
-            // if duty officcer override, set supervisee info into user
-            if (user.Role == EnumUserRoles.DutyOfficer)
+            // Check if the current user is a duty officcer 
+            if (currentUser.Role == EnumUserRoles.DutyOfficer)
             {
-                user = (Trinity.BE.User)session[CommonConstants.SUPERVISEE];
+                supervisee = (Trinity.BE.User)session[CommonConstants.SUPERVISEE];
             }
 
             int countAbsence = 0;
 
-            countAbsence = new DAL_Appointments().CountAbsenceReport(user.UserId);
-            //countAbsence = dalAppointment.CountMyAbsence(user.UserId);
+            if (supervisee != null)
+            {
+                countAbsence = new DAL_Appointments().CountAbsenceReport(supervisee.UserId);
+            }
             if (countAbsence == 0)
             {
                 DAL_Notification noti = new DAL_Notification();
-                if (noti.CountGetMyNotifications(user.UserId, true) > 0)
+                if (noti.CountGetMyNotifications(supervisee.UserId, true) > 0)
                 {
                     LoadNotications();
                 }
@@ -506,21 +514,18 @@ namespace SSK
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ABSENCE_MORE_THAN_3, Message = "You have been blocked for 3 or more absences \n Please report to the Duty Officer" });
                 //for testing purpose
                 //notify to officer
-                Trinity.SignalR.Client.SignalR.Instance.SendAllDutyOfficer(user.UserId, "Supervisee got blocked for 3 or more absences", "Please check the Supervisee's information!", NotificationType.Caution);
+                Trinity.SignalR.Client.SignalR.Instance.SendAllDutyOfficer(supervisee.UserId, "Supervisee got blocked for 3 or more absences", "Please check the Supervisee's information!", NotificationType.Caution);
                 var dalUser = new DAL_User();
-                //active the user
-                //dalUser.ChangeUserStatus(user.UserId, EnumUserStatuses.New);
 
-                //create absence reporting
-                var listAppointment = new DAL_Appointments().GetAbsentAppointments(user.UserId);
-                // var listAppointment = dalAppointment.GetMyAbsentAppointments(user.UserId);
+                // Create absence reporting
+                var listAppointment = new DAL_Appointments().GetAbsentAppointments(supervisee.UserId);
                 session[CommonConstants.LIST_APPOINTMENT] = listAppointment;
                 _web.LoadPageHtml("ReasonsForQueue.html", listAppointment);
             }
             else if (countAbsence > 0 && countAbsence < 3)
             {
 
-                var listAppointment = new DAL_Appointments().GetAbsentAppointments(user.UserId);
+                var listAppointment = new DAL_Appointments().GetAbsentAppointments(supervisee.UserId);
                 var eventCenter = Trinity.Common.Common.EventCenter.Default;
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ABSENCE_LESS_THAN_3, Message = "You have been absent for " + countAbsence + " times.\nPlease provide reasons and the supporting documents." });
 
@@ -530,23 +535,22 @@ namespace SSK
 
         private void GetMyQueueNumber()
         {
-
-            // get user info
+            // Get current user
             Session session = Session.Instance;
-            Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-            Trinity.BE.User userSupervise = null;
-            if (user.Role == EnumUserRoles.DutyOfficer)
+            Trinity.BE.User currentUser = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+            Trinity.BE.User supervisee = null;
+            if (currentUser.Role == EnumUserRoles.DutyOfficer)
             {
-                userSupervise = (Trinity.BE.User)session[CommonConstants.SUPERVISEE];
+                supervisee = (Trinity.BE.User)session[CommonConstants.SUPERVISEE];
             }
             else
             {
-                userSupervise = user;
+                supervisee = currentUser;
             }
             DAL_Appointments _Appointment = new DAL_Appointments();
-            Trinity.DAL.DBContext.Appointment appointment = new DAL_Appointments().GetAppointmentByDate(userSupervise.UserId, DateTime.Today);
+            Trinity.DAL.DBContext.Appointment appointment = new DAL_Appointments().GetAppointmentByDate(supervisee.UserId, DateTime.Today);
             //Trinity.DAL.DBContext.Appointment appointment = _Appointment.GetMyAppointmentByDate(user.UserId, DateTime.Today);
-            if (appointment == null && user.Role == EnumUserRoles.Supervisee)
+            if (appointment == null && supervisee.Role == EnumUserRoles.Supervisee)
             {
                 var eventCenter = Trinity.Common.Common.EventCenter.Default;
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_MESSAGE, Message = "You have no appointment today" });
@@ -556,7 +560,7 @@ namespace SSK
                 var _dalQueue = new DAL_QueueNumber();
                 Trinity.DAL.DBContext.Queue queueNumber = null;
 
-                if (!_dalQueue.IsUserAlreadyQueue(userSupervise.UserId, DateTime.Today))
+                if (!_dalQueue.IsUserAlreadyQueue(supervisee.UserId, DateTime.Today))
                 {
                     if (appointment != null && string.IsNullOrEmpty(appointment.Timeslot_ID))
                     {
@@ -565,8 +569,8 @@ namespace SSK
                     }
                     else if (appointment != null && !string.IsNullOrEmpty(appointment.Timeslot_ID))
                     {
-                        queueNumber = _dalQueue.InsertQueueNumber(appointment.ID, appointment.UserId, EnumStations.SSK, user.UserId);
-                        if (queueNumber!=null)
+                        queueNumber = _dalQueue.InsertQueueNumber(appointment.ID, appointment.UserId, EnumStations.SSK, currentUser.UserId);
+                        if (queueNumber != null)
                         {
                             APIUtils.FormQueueNumber.RefreshQueueNumbers();
                             var eventCenter = Trinity.Common.Common.EventCenter.Default;
@@ -576,11 +580,11 @@ namespace SSK
                         {
                             this._web.InvokeScript("ShowMessageBox", "Sorry all timeslots are fully booked!");
                         }
-                        
+
                     }
                     else
                     {
-                        queueNumber = _dalQueue.InsertQueueNumberFromDO(appointment.UserId, EnumStations.SSK, user.UserId);
+                        queueNumber = _dalQueue.InsertQueueNumberFromDO(appointment.UserId, EnumStations.SSK, currentUser.UserId);
                         if (queueNumber != null)
                         {
                             APIUtils.FormQueueNumber.RefreshQueueNumbers();
@@ -665,7 +669,7 @@ namespace SSK
         //            Detail = "",
         //            Value = (int)EnumAbsenceReasons.No_Valid_Reason
         //        };
-               
+
         //    }
         //    //create absence report 
         //    var dalAbsence = new DAL_AbsenceReporting();
