@@ -138,6 +138,7 @@ namespace Trinity.Common
         public const string SOMETHING_WENT_WRONG = "SomethingWentWrong";
         public const string LOAD_EDIT_SUPERVISEE_SUCCEEDED = "LoadEditSupervisee";
         public const string FINGERPRINT_FAILED_MORE_THAN_3 = "ScanFingerprintFailMorethan3";
+        public const string DO_CANCEL_ENTER_NRIC = "DoCancelEnterNRIC";
     }
 
     public class EventInfo

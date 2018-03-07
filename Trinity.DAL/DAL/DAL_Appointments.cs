@@ -218,8 +218,7 @@ namespace Trinity.DAL
         {
             try
             {
-                var data = _localUnitOfWork.DataContext.Appointments.Where(d => d.UserId == UserID && d.Status == EnumAppointmentStatuses.Absent && d.AbsenceReporting_ID == null).ToList();
-
+                var data = _localUnitOfWork.DataContext.Appointments.Where(d => d.UserId == UserID && d.Status == EnumAppointmentStatuses.Absent && d.AbsenceReporting_ID == null).OrderBy(d=>d.Date).ToList();
                 return data;
             }
             catch (Exception)

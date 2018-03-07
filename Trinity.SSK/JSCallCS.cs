@@ -482,7 +482,7 @@ namespace SSK
             // Get current user
             Session session = Session.Instance;
             Trinity.BE.User currentUser = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-            Trinity.BE.User supervisee = null;
+            Trinity.BE.User supervisee = currentUser;
 
             // Check if the current user is a duty officcer 
             if (currentUser.Role == EnumUserRoles.DutyOfficer)
@@ -520,7 +520,10 @@ namespace SSK
                 // Create absence reporting
                 var listAppointment = new DAL_Appointments().GetAbsentAppointments(supervisee.UserId);
                 session[CommonConstants.LIST_APPOINTMENT] = listAppointment;
-                _web.LoadPageHtml("ReasonsForQueue.html", listAppointment);
+                _web.LoadPageHtml("ReasonsForQueue.html", listAppointment.Select(d=>new {
+                    ID=d.ID,
+                    GetDateTxt = d.GetDateTxt
+                }));
             }
             else if (countAbsence > 0 && countAbsence < 3)
             {
@@ -529,7 +532,10 @@ namespace SSK
                 var eventCenter = Trinity.Common.Common.EventCenter.Default;
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ABSENCE_LESS_THAN_3, Message = "You have been absent for " + countAbsence + " times.\nPlease provide reasons and the supporting documents." });
 
-                this._web.LoadPageHtml("ReasonsForQueue.html", listAppointment);
+                _web.LoadPageHtml("ReasonsForQueue.html", listAppointment.Select(d => new {
+                    ID = d.ID,
+                    GetDateTxt = d.GetDateTxt
+                }));
             }
         }
 
@@ -732,6 +738,19 @@ namespace SSK
 
             LoadPage("Supervisee.html");
 
+        }
+        public void CancelDOEnterNRIC()
+        {
+            Session session = Session.Instance;
+            var user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+            if (user != null)
+            {
+                session.IsSmartCardAuthenticated = false;
+                session.IsFingerprintAuthenticated = false;
+                session[CommonConstants.USER_LOGIN] = null;
+                session[CommonConstants.PROFILE_DATA] = null;
+                Trinity.Common.Common.EventCenter.Default.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.DO_CANCEL_ENTER_NRIC});
+            }
         }
         public void LogOut()
         {
