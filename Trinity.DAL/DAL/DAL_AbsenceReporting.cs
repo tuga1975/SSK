@@ -31,7 +31,7 @@ namespace Trinity.DAL
                 item.AbsenceReporting_ID = dataAbsence.ID;
                 arrayInssert.Add(dataAbsence);
                 if (dataAbsence.AbsenceReason == 5)
-                    Lib.SignalR.SendAllDutyOfficer(item.UserId, "Supervisee get queue without supporting document", "Please check the Supervisee's information!", NotificationType.Notification);
+                    Lib.SignalR.SendToAllDutyOfficers(item.UserId, "Supervisee get queue without supporting document", "Please check the Supervisee's information!", NotificationType.Notification);
             }
             _localUnitOfWork.GetRepository<Trinity.DAL.DBContext.AbsenceReporting>().AddRange(arrayInssert);
             foreach (var item in arrayUpdate)

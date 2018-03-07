@@ -10,5 +10,5 @@ public interface ISignalR
     void UserLogout(string userID);
     void DeviceStatusUpdate(int deviceId, EnumDeviceStatuses[] deviceStatuses);
     void SendToDutyOfficer(string UserId, string DutyOfficerID, string Subject, string Content, string notificationType);
-    void SendAllDutyOfficer(string UserId, string Subject, string Content, string notificationType);
+    void SendToAllDutyOfficers(string UserId, string Subject, string Content, string notificationType);
 }
