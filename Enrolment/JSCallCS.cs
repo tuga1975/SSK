@@ -506,12 +506,22 @@ namespace Enrolment
             string ImgBack = null;
             if (!string.IsNullOrEmpty(frontBase64))
             {
-                ImgFront = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".png";
+                System.IO.Directory.CreateDirectory(String.Format("{0}/Temp", CSCallJS.curDir));
+                ImgFront = String.Format("{0}/Temp/{1}", CSCallJS.curDir, "frontcard.png");
+                if (System.IO.File.Exists(ImgFront))
+                    System.IO.File.Delete(ImgFront);
+
+                //ImgFront = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".png";
                 new System.Drawing.Bitmap(new System.IO.MemoryStream(Convert.FromBase64String(frontBase64))).Save(ImgFront);
             }
             if (!string.IsNullOrEmpty(backBase64))
             {
-                ImgBack = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".png";
+                System.IO.Directory.CreateDirectory(String.Format("{0}/Temp", CSCallJS.curDir));
+                ImgBack = String.Format("{0}/Temp/{1}", CSCallJS.curDir, "backcard.png");
+                if (System.IO.File.Exists(ImgBack))
+                    System.IO.File.Delete(ImgBack);
+
+                //ImgBack = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".png";
                 new System.Drawing.Bitmap(new System.IO.MemoryStream(Convert.FromBase64String(backBase64))).Save(ImgBack);
             }
 
