@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Drawing.Printing;
 using System.IO;
 using System.Management;
+using System.Windows.Forms;
 using Trinity.Common;
 
 namespace Trinity.Device.Util
@@ -115,18 +116,12 @@ namespace Trinity.Device.Util
         {
             try
             {
-                // rotate image before print
-                if (!CommonUtil.RotateImage90(filePath))
-                {
-                    return false;
-                }
-
                 // Open specified printer driver
                 TSCLIB_DLL.openport(EnumDeviceNames.MUBLabelPrinter);
 
                 // Setup the media size and sensor type info
                 // page size 100mm x 55mm
-                TSCLIB_DLL.setup("100", "55", "4", "8", "0", "0", "0");
+                TSCLIB_DLL.setup("55", "100", "4", "8", "0", "0", "0");
 
                 //Clear image buffer
                 TSCLIB_DLL.clearbuffer();
@@ -150,6 +145,7 @@ namespace Trinity.Device.Util
             }
             catch (Exception ex)
             {
+                MessageBox.Show(ex.Message);
                 Debug.WriteLine("Print exception: " + ex.ToString());
                 // Delete temp file
                 File.Delete(filePath);

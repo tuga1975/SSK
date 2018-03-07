@@ -44,7 +44,7 @@ namespace SSA.CodeBehind
                 popupModel.IsShowOK = false;
                 Lib.LayerWeb.InvokeScript("showPopupModal", JsonConvert.SerializeObject(popupModel));
 
-                System.Threading.Thread.Sleep(1000);
+                System.Threading.Thread.Sleep(200);
 
                 PrinterMonitor printerMonitor = PrinterMonitor.Instance;
                 printerMonitor.OnPrintMUBLabelSucceeded += OnPrintMUBLabelsSucceeded;
@@ -105,9 +105,8 @@ namespace SSA.CodeBehind
             BarcodePrinterUtil barcodeScannerUtils = BarcodePrinterUtil.Instance;
             // Check status of Barcode printer
             string mubLabelPrinterName = ConfigurationManager.AppSettings["MUBLabelPrinterName"];
-            var mubLabelPrinterStatus = barcodeScannerUtils.GetDeviceStatus(mubLabelPrinterName);
-
-            if (mubLabelPrinterStatus.Contains(EnumDeviceStatuses.Connected))
+            EnumDeviceStatuses[] mubLabelPrinterStatuses = barcodeScannerUtils.GetDeviceStatus(mubLabelPrinterName);
+            if (mubLabelPrinterStatuses.Contains(EnumDeviceStatuses.Connected))
             {
                 printerMonitor.PrintMUBLabel(labelInfo);
             }
@@ -115,7 +114,7 @@ namespace SSA.CodeBehind
             {
                 // Printer disconnect, get list status of the causes disconnected
                 string causeOfPrintMUBFailure = string.Empty;
-                foreach (var item in mubLabelPrinterStatus)
+                foreach (var item in mubLabelPrinterStatuses)
                 {
                     causeOfPrintMUBFailure = causeOfPrintMUBFailure + CommonUtil.GetDeviceStatusText(item) + "; ";
                 }

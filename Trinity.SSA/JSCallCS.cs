@@ -157,7 +157,7 @@ namespace SSA
                 var dalLabel = new DAL_Labels();
                 dalLabel.UpdateLabel(labelInfo);
 
-                Trinity.SignalR.Client.SignalR.Instance.SendAllDutyOfficer(e.LabelInfo.UserId, "Print MUB Label", "Don't print MUB, Please check !", NotificationType.Error);
+                Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(e.LabelInfo.UserId, "Print MUB Label", "Don't print MUB, Please check !", NotificationType.Error);
 
                 //DeleteQRCodeImageFileTemp();
                 //LogOut();
@@ -242,7 +242,7 @@ namespace SSA
                 var dalLabel = new DAL_Labels();
                 dalLabel.UpdateLabel(labelInfo);
 
-                Trinity.SignalR.Client.SignalR.Instance.SendAllDutyOfficer(e.LabelInfo.UserId, "Print TT Label", "Don't print TT, Please check !", NotificationType.Error);
+                Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(e.LabelInfo.UserId, "Print TT Label", "Don't print TT, Please check !", NotificationType.Error);
 
                 //DeleteQRCodeImageFileTemp();
                 //LogOut();
@@ -260,7 +260,7 @@ namespace SSA
             //this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').hide(); ; ");
             //this._web.RunScript("$('.status-text').css('color','#000').text('Sent problem to Duty Officer. Please wait to check !');");
             //MessageBox.Show(e.ErrorMessage, "", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            Trinity.SignalR.Client.SignalR.Instance.SendAllDutyOfficer(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId, "MUB & TT", "Don't print MUB & TT, Please check !", NotificationType.Error);
+            Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId, "MUB & TT", "Don't print MUB & TT, Please check !", NotificationType.Error);
 
             //DeleteQRCodeImageFileTemp();
             //LogOut();
@@ -313,11 +313,27 @@ namespace SSA
         public void DeleteQRCodeImageFileTemp()
         {
             Session session = Session.Instance;
-            Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.SUPERVISEE];
-            string fileName = String.Format("{0}/Temp/{1}", CSCallJS.curDir, "QRCode_" + user.NRIC + ".png");
-            if (System.IO.File.Exists(fileName))
-                System.IO.File.Delete(fileName);
+            Trinity.BE.User currentUser = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+            if (currentUser != null)
+            {
+                Trinity.BE.User supervisee = null;
+                if (currentUser.Role == EnumUserRoles.DutyOfficer)
+                {
+                    supervisee = (Trinity.BE.User)session[CommonConstants.SUPERVISEE];
+                }
+                else
+                {
+                    supervisee = currentUser;
+                }
+                if (supervisee != null)
+                {
+                    string fileName = String.Format("{0}/Temp/{1}", CSCallJS.curDir, "QRCode_" + supervisee.NRIC + ".png");
+                    if (System.IO.File.Exists(fileName))
+                        System.IO.File.Delete(fileName);
+                }
+            }
         }
+
         public void popupLoading(string content)
         {
             this._web.LoadPopupHtml("LoadingPopup.html", content);
@@ -329,9 +345,15 @@ namespace SSA
             {
                 // Update queue status is finished
                 Session session = Session.Instance;
-                Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.SUPERVISEE];
+                Trinity.BE.User currentUser = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+                if (currentUser != null)
+                {
+                    // Check why current user is null
+                    this._web.RunScript("$('.status-text').css('color','#000').text('The current user is null');");
+                    return;
+                }
                 var dalQueue = new DAL_QueueNumber();
-                dalQueue.UpdateQueueStatusByUserId(user.UserId, EnumStations.SSA, EnumQueueStatuses.Finished, EnumStations.UHP, EnumQueueStatuses.Processing, "", EnumQueueOutcomeText.Processing);
+                dalQueue.UpdateQueueStatusByUserId(currentUser.UserId, EnumStations.SSA, EnumQueueStatuses.Finished, EnumStations.UHP, EnumQueueStatuses.Processing, "", EnumQueueOutcomeText.Processing);
 
                 this._web.LoadPageHtml("PrintingMUBAndTTLabels.html");
                 this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').show(); ; ");
@@ -340,10 +362,10 @@ namespace SSA
 
                 DeleteQRCodeImageFileTemp();
 
-                new DAL_QueueDetails().RemoveQueueFromSSK(user.UserId);
+                new DAL_QueueDetails().RemoveQueueFromSSK(currentUser.UserId);
 
-                Trinity.SignalR.Client.SignalR.Instance.QueueFinished(user.UserId);
-                //LogOut();
+                Trinity.SignalR.Client.Instance.QueueFinished(currentUser.UserId);
+                LogOut();
             }
             else
             {

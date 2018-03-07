@@ -4,21 +4,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Trinity.SignalR.Client
+namespace Trinity.SignalR
 {
-    public class SignalR:ISignalR
+    public class Client : ISignalR
     {
         #region Singleton Implementation
-        private static volatile SignalR _instance;
+        private static volatile Client _instance;
         private static object syncRoot = new Object();
         private IHubProxy HubProxy { get; set; }
         private HubConnection Connection { get; set; }
-        private SignalR()
+        private Client()
         {
             ConnectAsync();
             Lib.SignalR = this;
         }
-        public static SignalR Instance
+        public static Client Instance
         {
             get
             {
@@ -27,7 +27,7 @@ namespace Trinity.SignalR.Client
                     lock (syncRoot)
                     {
                         if (_instance == null)
-                            _instance = new SignalR();
+                            _instance = new Client();
                     }
                 }
                 return _instance;
@@ -46,7 +46,7 @@ namespace Trinity.SignalR.Client
         {
             get
             {
-                if (Connection!=null && Connection.State == ConnectionState.Connected)
+                if (Connection != null && Connection.State == ConnectionState.Connected)
                     return true;
                 return false;
             }
@@ -71,7 +71,7 @@ namespace Trinity.SignalR.Client
         }
         private void _Connection_Closed()
         {
-            if(Event_ConnectionClosed!=null)
+            if (Event_ConnectionClosed != null)
                 Event_ConnectionClosed();
             ConnectSignalr();
         }
@@ -161,7 +161,7 @@ namespace Trinity.SignalR.Client
             catch (Exception)
             {
 
-                
+
             }
         }
         public async void SendToDutyOfficer(string UserId, string DutyOfficerID, string Subject, string Content, string notificationType)
@@ -173,7 +173,7 @@ namespace Trinity.SignalR.Client
                 bool status = await HubProxy.Invoke<bool>("SendToDutyOfficer", IDMessage, UserId, DutyOfficerID, Subject, Content, notificationType);
             }
         }
-        public async void SendAllDutyOfficer(string UserId, string Subject, string Content, string notificationType)
+        public async void SendToAllDutyOfficers(string UserId, string Subject, string Content, string notificationType)
         {
             await WaitConnectFalse();
             Dictionary<string, string> arrraySend = new DAL.DAL_Notification().SendAllDutyOfficer(UserId, Subject, Content, notificationType, Station).ToDictionary(f => f.ToUserId, f => f.NotificationID);

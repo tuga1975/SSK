@@ -375,7 +375,7 @@ namespace SSK
                     var updateUProfileResult = new DAL_UserProfile().UpdateProfile(userProfileModel);
                     // dalUserprofile.UpdateUserProfile(data.UserProfile,data.User.UserId , true);
                     //send notifiy to duty officer
-                    Trinity.SignalR.Client.SignalR.Instance.SendAllDutyOfficer(data.User.UserId, "A supervisee has updated profile.", "Please check Supervisee's information!", NotificationType.Notification);
+                    Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(data.User.UserId, "A supervisee has updated profile.", "Please check Supervisee's information!", NotificationType.Notification);
 
                     session[CommonConstants.USER_LOGIN] = data.User;
 
@@ -387,7 +387,7 @@ namespace SSK
                     var updateUProfileResult = new DAL_UserProfile().UpdateProfile(userProfileModel);
                     // dalUserprofile.UpdateUserProfile(data.UserProfile, data.User.UserId, true);
                     //send notifiy to case officer
-                    Trinity.SignalR.Client.SignalR.Instance.SendAllDutyOfficer(data.User.UserId, "A supervisee has updated profile.", "Please check Supervisee's information!", NotificationType.Notification);
+                    Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(data.User.UserId, "A supervisee has updated profile.", "Please check Supervisee's information!", NotificationType.Notification);
                 }
 
                 //load Supervisee page 
@@ -407,7 +407,7 @@ namespace SSK
             {
                 Session session = Session.Instance;
                 session[CommonConstants.PROFILE_DATA] = jsonData;
-                Trinity.SignalR.Client.SignalR.Instance.SendAllDutyOfficer(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId, "Supervisee's information changed!", "Please check the Supervisee's information!", NotificationType.Notification);
+                Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId, "Supervisee's information changed!", "Please check the Supervisee's information!", NotificationType.Notification);
                 LoadPage("Document.html");
 
             }
@@ -514,7 +514,7 @@ namespace SSK
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ABSENCE_MORE_THAN_3, Message = "You have been blocked for 3 or more absences \n Please report to the Duty Officer" });
                 //for testing purpose
                 //notify to officer
-                Trinity.SignalR.Client.SignalR.Instance.SendAllDutyOfficer(supervisee.UserId, "Supervisee got blocked for 3 or more absences", "Please check the Supervisee's information!", NotificationType.Caution);
+                Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(supervisee.UserId, "Supervisee got blocked for 3 or more absences", "Please check the Supervisee's information!", NotificationType.Caution);
                 var dalUser = new DAL_User();
 
                 // Create absence reporting
@@ -740,7 +740,7 @@ namespace SSK
             var user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
             if (user != null)
             {
-                Trinity.SignalR.Client.SignalR.Instance.UserLogout(((Trinity.BE.User)session[CommonConstants.USER_LOGIN]).UserId);
+                Trinity.SignalR.Client.Instance.UserLogout(((Trinity.BE.User)session[CommonConstants.USER_LOGIN]).UserId);
 
                 session.IsSmartCardAuthenticated = false;
                 session.IsFingerprintAuthenticated = false;

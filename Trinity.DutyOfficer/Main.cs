@@ -35,10 +35,10 @@ namespace DutyOfficer
 
             APIUtils.Start();
             //Notification
-            Trinity.SignalR.Client.SignalR.Instance.Event_DeviceStatusUpdate += Instance_Event_DeviceStatusUpdate;
-            Trinity.SignalR.Client.SignalR.Instance.Event_MessageTo += Instance_Event_MessageTo;
-            Trinity.SignalR.Client.SignalR.Instance.Event_AppDisconnect += Instance_Event_AppDisconnect;
-            Trinity.SignalR.Client.SignalR.Instance.Event_QueueFinished += Instance_Event_QueueFinished;
+            Trinity.SignalR.Client.Instance.Event_DeviceStatusUpdate += Instance_Event_DeviceStatusUpdate;
+            Trinity.SignalR.Client.Instance.Event_MessageTo += Instance_Event_MessageTo;
+            Trinity.SignalR.Client.Instance.Event_AppDisconnect += Instance_Event_AppDisconnect;
+            Trinity.SignalR.Client.Instance.Event_QueueFinished += Instance_Event_QueueFinished;
 
             // setup variables
             _smartCardFailed = 0;
@@ -108,19 +108,19 @@ namespace DutyOfficer
 
             if (station == EnumStations.SSA)
             {
-                JSCallCS._StationColorDevice.SSAColor = device.CheckStatusDevicesStation(station) ? EnumColors.Green : EnumColors.Red;
+                JSCallCS._StationColorDevice.SSAColor = device.CheckStatusDevicesStation(station);
             }
             if (station == EnumStations.SSK)
             {
-                JSCallCS._StationColorDevice.SSKColor = device.CheckStatusDevicesStation(station) ? EnumColors.Green : EnumColors.Red;
+                JSCallCS._StationColorDevice.SSKColor = device.CheckStatusDevicesStation(station);
             }
             if (station == EnumStations.ESP)
             {
-                JSCallCS._StationColorDevice.ESPColor = device.CheckStatusDevicesStation(station) ? EnumColors.Green : EnumColors.Red;
+                JSCallCS._StationColorDevice.ESPColor = device.CheckStatusDevicesStation(station);
             }
             if (station == EnumStations.UHP)
             {
-                JSCallCS._StationColorDevice.UHPColor = device.CheckStatusDevicesStation(station) ? EnumColors.Green : EnumColors.Red;
+                JSCallCS._StationColorDevice.UHPColor = device.CheckStatusDevicesStation(station);
             }
             
             _jsCallCS.LoadStationColorDevice();
@@ -199,9 +199,8 @@ namespace DutyOfficer
                 LayerWeb.RunScript("$('.status-text').css('color','#000').text('Fingerprint authentication is successful.');");
                 //APIUtils.SignalR.GetLatestNotifications();
 
-                Thread.Sleep(1000);
-
-                Trinity.SignalR.Client.SignalR.Instance.UserLogined(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId);
+                Trinity.SignalR.Client.Instance.UserLogined(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId);
+                Thread.Sleep(400);
                 NavigateTo(NavigatorEnums.Queue);
             }
             else
@@ -336,7 +335,7 @@ namespace DutyOfficer
                 session[CommonConstants.SUPERVISEE] = user;
                 session[CommonConstants.USER_LOGIN] = null;
                 // navigate to SuperviseeParticulars page
-                Trinity.SignalR.Client.SignalR.Instance.UserLogined(user.UserId);
+                Trinity.SignalR.Client.Instance.UserLogined(user.UserId);
                 NavigateTo(NavigatorEnums.Supervisee_Particulars);
             }
         }
@@ -359,7 +358,7 @@ namespace DutyOfficer
             Session session = Session.Instance;
             Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
             string errorMessage = "User '" + user.Name + "' cannot complete facial authentication";
-            Trinity.SignalR.Client.SignalR.Instance.SendAllDutyOfficer(user.UserId, "Facial authentication failed", errorMessage, NotificationType.Error);
+            Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(user.UserId, "Facial authentication failed", errorMessage, NotificationType.Error);
 
             // show message box to user
             //MessageBox.Show("Facial authentication failed", "Facial Authentication", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -493,7 +492,7 @@ namespace DutyOfficer
         {
             if (e.Name == EventNames.LOGIN_SUCCEEDED)
             {
-                Trinity.SignalR.Client.SignalR.Instance.UserLogined(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId);
+                Trinity.SignalR.Client.Instance.UserLogined(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId);
                 NavigateTo(NavigatorEnums.Queue);
             }
             else if (e.Name.Equals(EventNames.LOGIN_FAILED))
