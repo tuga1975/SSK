@@ -126,7 +126,7 @@ namespace Trinity.Device.Util
                                        ZMotifGraphics.RibbonTypeEnum.Color);
 
                         img = g.ImageFileToByteArray(frontImagePath);
-                        g.DrawImage(ref img, ZMotifGraphics.ImagePositionEnum.Centered, 0, 0, 0);
+                        g.DrawImage(ref img, ZMotifGraphics.ImagePositionEnum.Centered, 1000, 700, 0);
 
                         int dataLen = 0;
                         bmpFront = g.CreateBitmap(out dataLen);
@@ -312,7 +312,7 @@ namespace Trinity.Device.Util
                 foreach (ManagementObject printer in searcher.Get())
                 {
                     printerTempName = printer["Name"].ToString().ToUpper();
-                    if (printerTempName.Equals(printerName))
+                    if (printerTempName.Equals(printerName.ToUpper()))
                     {
                         if (printer["WorkOffline"].ToString().ToLower().Equals("true"))
                         {

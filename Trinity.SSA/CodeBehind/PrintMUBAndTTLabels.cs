@@ -1,7 +1,9 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Trinity.Common;
 using Trinity.Device;
@@ -42,67 +44,20 @@ namespace SSA.CodeBehind
                 popupModel.IsShowOK = false;
                 Lib.LayerWeb.InvokeScript("showPopupModal", JsonConvert.SerializeObject(popupModel));
 
-                System.Threading.Thread.Sleep(1000);
+                System.Threading.Thread.Sleep(200);
 
                 PrinterMonitor printerMonitor = PrinterMonitor.Instance;
                 printerMonitor.OnPrintMUBLabelSucceeded += OnPrintMUBLabelsSucceeded;
                 printerMonitor.OnPrintTTLabelSucceeded += OnPrintTTLabelsSucceeded;//RaisePrintMUBAndTTLabelsSucceededEvent;
                 printerMonitor.OnMonitorException += OnPrintMUBAndTTLabelsException;
-
-                BarcodePrinterUtil barcodeScannerUtils = BarcodePrinterUtil.Instance;
-
+                
                 Session session = Session.Instance;
                 if (session.IsAuthenticated)
                 {
-                    #region Print TTLabel
-                    // Check status of Barcode printer
-                    string ttLabelPrinterName = ConfigurationManager.AppSettings["TTLabelPrinterName"];
-                    var ttLabelPrinterStatus = barcodeScannerUtils.GetDeviceStatus(ttLabelPrinterName);
-
-                    if (ttLabelPrinterStatus.Contains(EnumDeviceStatuses.Connected))
-                    {
-                        printerMonitor.PrintBarcodeLabel(labelInfo);
-                    }
-                    else
-                    {
-                        // Printer disconnect, get list status of the causes disconnected
-                        string causeOfPrintFailure = "";
-                        foreach (var item in ttLabelPrinterStatus)
-                        {
-                            causeOfPrintFailure = causeOfPrintFailure + CommonUtil.GetDeviceStatusText(item) + "; ";
-                        }
-
-                        labelInfo.PrintStatus = EnumPrintStatus.Failed;
-                        labelInfo.Message = causeOfPrintFailure;
-                        RaisePrintTTLabelsFailedEvent(new Trinity.Common.PrintMUBAndTTLabelsEventArgs(labelInfo));
-
-                        //return;
-                    }
-                    #endregion
-
-                    #region Print MUBLabel
-                    // Check status of Barcode printer
-                    string mubLabelPrinterName = ConfigurationManager.AppSettings["MUBLabelPrinterName"];
-                    var mubLabelPrinterStatus = barcodeScannerUtils.GetDeviceStatus(mubLabelPrinterName);
-
-                    if (mubLabelPrinterStatus.Contains(EnumDeviceStatuses.Connected))
-                    {
-                        printerMonitor.PrintMUBLabel(labelInfo);
-                    }
-                    else
-                    {
-                        // Printer disconnect, get list status of the causes disconnected
-                        string causeOfPrintMUBFailure = string.Empty;
-                        foreach (var item in mubLabelPrinterStatus)
-                        {
-                            causeOfPrintMUBFailure = causeOfPrintMUBFailure + CommonUtil.GetDeviceStatusText(item) + "; ";
-                        }
-
-                        labelInfo.PrintStatus = EnumPrintStatus.Failed;
-                        labelInfo.Message = causeOfPrintMUBFailure;
-                        RaisePrintMUBLabelsFailedEvent(new Trinity.Common.PrintMUBAndTTLabelsEventArgs(labelInfo));
-                    }
-                    #endregion
+                    List<Task> tasks = new List<Task>();
+                    tasks.Add(Task.Run(() => { PrintMUBLabel(printerMonitor, labelInfo); }));
+                    tasks.Add(Task.Run(() => { PrintTTLabel(printerMonitor, labelInfo); }));
+                    Task.WaitAll(tasks.ToArray());
 
                     Lib.LayerWeb.InvokeScript("closePopup");
 
@@ -116,6 +71,57 @@ namespace SSA.CodeBehind
                     ErrorCode = (int)EnumErrorCodes.UnknownError,
                     ErrorMessage = ex.Message
                 }));
+            }
+        }
+
+        private void PrintTTLabel(PrinterMonitor printerMonitor, LabelInfo labelInfo)
+        {
+            BarcodePrinterUtil barcodeScannerUtils = BarcodePrinterUtil.Instance;
+            // Check status of Barcode printer
+            string ttLabelPrinterName = ConfigurationManager.AppSettings["TTLabelPrinterName"];
+            var ttLabelPrinterStatus = barcodeScannerUtils.GetDeviceStatus(ttLabelPrinterName);
+
+            if (ttLabelPrinterStatus.Contains(EnumDeviceStatuses.Connected))
+            {
+                printerMonitor.PrintBarcodeLabel(labelInfo);
+            }
+            else
+            {
+                // Printer disconnect, get list status of the causes disconnected
+                string causeOfPrintFailure = "";
+                foreach (var item in ttLabelPrinterStatus)
+                {
+                    causeOfPrintFailure = causeOfPrintFailure + CommonUtil.GetDeviceStatusText(item) + "; ";
+                }
+
+                labelInfo.PrintStatus = EnumPrintStatus.Failed;
+                labelInfo.Message = causeOfPrintFailure;
+                RaisePrintTTLabelsFailedEvent(new Trinity.Common.PrintMUBAndTTLabelsEventArgs(labelInfo));
+            }
+        }
+
+        private void PrintMUBLabel(PrinterMonitor printerMonitor, LabelInfo labelInfo)
+        {
+            BarcodePrinterUtil barcodeScannerUtils = BarcodePrinterUtil.Instance;
+            // Check status of Barcode printer
+            string mubLabelPrinterName = ConfigurationManager.AppSettings["MUBLabelPrinterName"];
+            EnumDeviceStatuses[] mubLabelPrinterStatuses = barcodeScannerUtils.GetDeviceStatus(mubLabelPrinterName);
+            if (mubLabelPrinterStatuses.Contains(EnumDeviceStatuses.Connected))
+            {
+                printerMonitor.PrintMUBLabel(labelInfo);
+            }
+            else
+            {
+                // Printer disconnect, get list status of the causes disconnected
+                string causeOfPrintMUBFailure = string.Empty;
+                foreach (var item in mubLabelPrinterStatuses)
+                {
+                    causeOfPrintMUBFailure = causeOfPrintMUBFailure + CommonUtil.GetDeviceStatusText(item) + "; ";
+                }
+
+                labelInfo.PrintStatus = EnumPrintStatus.Failed;
+                labelInfo.Message = causeOfPrintMUBFailure;
+                RaisePrintMUBLabelsFailedEvent(new Trinity.Common.PrintMUBAndTTLabelsEventArgs(labelInfo));
             }
         }
 

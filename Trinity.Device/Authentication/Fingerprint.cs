@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Forms;
 using Trinity.Common;
 using Trinity.Device.Util;
 
@@ -45,11 +46,10 @@ namespace Trinity.Device.Authentication
         {
             _fingerprintTemplates = fingerprintTemplates;
 
-            // get fingerprint reader status
-            var fingerprintReaderStatus = FingerprintReaderUtil.Instance.GetDeviceStatus();
-
+            // Get fingerprint reader status
+            EnumDeviceStatuses[] fingerprintReaderStatuses = FingerprintReaderUtil.Instance.GetDeviceStatus();
             // if status is disconnected, raise disconnected event
-            if (!fingerprintReaderStatus.Contains(EnumDeviceStatuses.Connected))
+            if (!fingerprintReaderStatuses.Contains(EnumDeviceStatuses.Connected))
             {
                 RaiseDeviceDisconnectedEvent();
             }

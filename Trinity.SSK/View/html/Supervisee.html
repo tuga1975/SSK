@@ -13,7 +13,7 @@
     api.ready(function () {
         //$('[notinumber]').text(api.countNoti == 0 ? '' : api.countNoti);
 
-        api.server.GetCountMyAbsence(function (count) {
+        api.server.GetMyAbsencesCount(function (count) {
             if (count == 0) {
                 $('[title-queue]').attr('item','Queue Number');
             } else {

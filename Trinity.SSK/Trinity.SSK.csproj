@@ -291,6 +291,8 @@
     <Content Include="View\img\Reporting-Icon-300x300.png" />
     <Content Include="View\img\ScanFingerPrint.png" />
     <Content Include="View\img\ScanSmartCard.png" />
+    <Content Include="View\img\SmartCard.mp4" />
+    <Content Include="View\img\Thumbprint.mp4" />
     <Content Include="View\img\updateprofile.png" />
     <Content Include="View\scripts\lib.js" />
     <Content Include="View\styles\main.css" />
@@ -326,9 +328,9 @@
       <Project>{b25053fb-2050-4115-9441-8edf5c03fb1d}</Project>
       <Name>Trinity.Identity</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Trinity.Utils\Trinity.SignalR.Client.csproj">
+    <ProjectReference Include="..\Trinity.Utils\Trinity.SignalR.csproj">
       <Project>{c2ee0b7a-1cbf-4403-807e-8ac9f455c661}</Project>
-      <Name>Trinity.SignalR.Client</Name>
+      <Name>Trinity.SignalR</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

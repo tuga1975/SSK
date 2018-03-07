@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Drawing.Printing;
 using System.IO;
 using System.Management;
+using System.Windows.Forms;
 using Trinity.Common;
 
 namespace Trinity.Device.Util
@@ -74,29 +75,25 @@ namespace Trinity.Device.Util
                     return false;
                 }
 
-                // get printer name
-                string printerName = EnumDeviceNames.TTLabelPrinter;
-
                 //Open specified printer driver
-                TSCLIB_DLL.openport(printerName);
+                TSCLIB_DLL.openport(EnumDeviceNames.TTLabelPrinter);
 
                 //Setup the media size and sensor type info
-                // page size 2.8"x1.4"
-                // actually 71.12mm x 42.5mm
-                TSCLIB_DLL.setup("71.12", "42.5", "4", "8", "0", "0", "0");
+                // page size 45mm x 30mm
+                TSCLIB_DLL.setup("45", "30", "4", "8", "0", "0", "0");
 
                 //Clear image buffer
                 TSCLIB_DLL.clearbuffer();
 
                 //Draw windows font
-                TSCLIB_DLL.windowsfont(0, 0, 40, 0, 0, 0, "ARIAL", "Name: " + ttLabelInfo.Name);
-                TSCLIB_DLL.windowsfont(0, 50, 40, 0, 0, 0, "ARIAL", "ID: " + ttLabelInfo.ID);
+                TSCLIB_DLL.windowsfont(0, 0, 30, 0, 0, 0, "ARIAL", "Name: " + ttLabelInfo.Name);
+                TSCLIB_DLL.windowsfont(0, 40, 30, 0, 0, 0, "ARIAL", "ID: " + ttLabelInfo.ID);
 
                 //Drawing barcode
-                TSCLIB_DLL.barcode("0", "100", "128", "100", "0", "0", "4", "6", ttLabelInfo.MarkingNumber);
+                TSCLIB_DLL.barcode("0", "80", "128", "80", "0", "0", "4", "6", ttLabelInfo.MarkingNumber);
 
                 // Drawing barcode buildin function do not let us set text size of readable line, so we need to draw a line to display MarkingNumber
-                TSCLIB_DLL.windowsfont(0, 200, 40, 0, 0, 0, "ARIAL", ttLabelInfo.MarkingNumber);
+                TSCLIB_DLL.windowsfont(0, 170, 30, 0, 0, 0, "ARIAL", ttLabelInfo.MarkingNumber);
 
                 //Download PCX file into printer
                 TSCLIB_DLL.downloadpcx("UL.PCX", "UL.PCX");
@@ -119,38 +116,19 @@ namespace Trinity.Device.Util
         {
             try
             {
-                // get printer name
-                string printerName = EnumDeviceNames.MUBLabelPrinter;
+                // Open specified printer driver
+                TSCLIB_DLL.openport(EnumDeviceNames.MUBLabelPrinter);
 
-                //// create printDocument
-                //PrintDocument printDocument = new PrintDocument();
-                //printDocument.PrinterSettings.PrinterName = printerName;
-                //printDocument.DefaultPageSettings.Landscape = true; //or false!
-
-                //PrintDocument pd = new PrintDocument();
-                //pd.PrintPage += (sender, args) =>
-                //{
-                //    //Image image = Image.FromFile("C://Users//DucTu//Desktop//printimage2.png");
-                //    ////Point p = new Point(100, 100);
-                //    //args.Graphics.DrawImage(image, 0, 0);
-                //    args.Graphics.DrawImage(MUBLabelImage, 0, 0);
-                //};
-                //pd.Print();
-
-                //Open specified printer driver
-                TSCLIB_DLL.openport(printerName);
-
-                //Setup the media size and sensor type info
-                // page size 2.8"x1.4"
-                // actually 71.12mm x 42.5mm
-                TSCLIB_DLL.setup("71.12", "42.5", "4", "8", "0", "0", "0");
+                // Setup the media size and sensor type info
+                // page size 100mm x 55mm
+                TSCLIB_DLL.setup("55", "100", "4", "8", "0", "0", "0");
 
                 //Clear image buffer
                 TSCLIB_DLL.clearbuffer();
 
                 // Download PCX file into printer
-                //TSCLIB_DLL.downloadpcx("UL.PCX", "UL.PCX");
-                //Drawing PCX graphic
+                // TSCLIB_DLL.downloadpcx("UL.PCX", "UL.PCX");
+                // Drawing PCX graphic
                 TSCLIB_DLL.downloadpcx(filePath, "mublabel.bmp");  //Download PCX file into printer
 
                 TSCLIB_DLL.sendcommand("PUTBMP 1,1, \"mublabel.bmp\""); //Drawing PCX graphic
@@ -162,10 +140,12 @@ namespace Trinity.Device.Util
 
                 // Delete temp file
                 File.Delete(filePath);
+
                 return true;
             }
             catch (Exception ex)
             {
+                MessageBox.Show(ex.Message);
                 Debug.WriteLine("Print exception: " + ex.ToString());
                 // Delete temp file
                 File.Delete(filePath);

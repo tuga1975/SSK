@@ -1,5 +1,4 @@
-﻿using Enrolment.Properties;
-using Futronic.SDKHelper;
+﻿using Futronic.SDKHelper;
 using Newtonsoft.Json;
 using System;
 using System.Data;
@@ -8,13 +7,11 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Windows.Forms;
 using Trinity.BE;
 using Trinity.Common;
 using Trinity.Common.Common;
 using Trinity.DAL;
-using Trinity.Device;
 using Trinity.Device.Util;
 
 namespace Enrolment
@@ -45,7 +42,7 @@ namespace Enrolment
 
             APIUtils.Start();
             //Notification
-            Trinity.SignalR.Client.SignalR signalR = Trinity.SignalR.Client.SignalR.Instance;
+            Trinity.SignalR.Client signalrClient = Trinity.SignalR.Client.Instance;
 
             pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
 
@@ -384,13 +381,13 @@ namespace Enrolment
                             NavigateTo(NavigatorEnums.WebcamCapture);
                             pictureBox1.Show();
 
-                           //pictureBoxHead.BackColor = Color.Transparent;
+                            //pictureBoxHead.BackColor = Color.Transparent;
                             // pictureBoxHead.Image = SetImageOpacity(Resources.background_takephoto, 0.25F);
                             //btnHead.BackgroundImage = bmp;
                             pictureBoxHead.BringToFront();
                             pictureBoxHead.Show();
                         }
-                        catch(Exception ex)
+                        catch (Exception ex)
                         {
                             LayerWeb.InvokeScript("failAlert", "Cant find this device camera!");
                         }
@@ -563,6 +560,7 @@ namespace Enrolment
                 {
                     photo2 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo2);
                 }
+                session[CommonConstants.CURRENT_PAGE] = "UpdateSuperviseePhoto";
                 LayerWeb.LoadPageHtml("UpdateSuperviseePhoto.html", currentEditUser);
                 LayerWeb.InvokeScript("setAvatar", photo1, photo2);
             }
@@ -609,8 +607,8 @@ namespace Enrolment
                             LayerWeb.LoadPageHtml("UpdateSuperviseeBiodata.html", currentEditUser);
                             LayerWeb.InvokeScript("setAvatar", currentEditUser.UserProfile.User_Photo1_Base64, currentEditUser.UserProfile.User_Photo2_Base64);
 
-                            string fingerprintLeft = "../images/fingerprint.png";
-                            string fingerprintRight = "../images/fingerprint.png";
+                            string fingerprintLeft = "../images/leftthumb.png";
+                            string fingerprintRight = "../images/rightthumb.png";
                             if (currentEditUser.UserProfile.LeftThumbImage != null)
                             {
                                 fingerprintLeft = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(currentEditUser.UserProfile.LeftThumbImage));
@@ -623,20 +621,13 @@ namespace Enrolment
                         }
                         else if (currentPage.ToString() == "UpdateSupervisee")
                         {
-                            LayerWeb.LoadPageHtml("Edit-Supervisee.html", currentEditUser);
-                            LayerWeb.InvokeScript("setAvatar", photo1, photo2);
-
-                            string fingerprintLeft = "../images/fingerprint.png";
-                            string fingerprintRight = "../images/fingerprint.png";
-                            if (currentEditUser.UserProfile.LeftThumbImage != null)
-                            {
-                                fingerprintLeft = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(currentEditUser.UserProfile.LeftThumbImage));
-                            }
-                            if (currentEditUser.UserProfile.RightThumbImage != null)
-                            {
-                                fingerprintRight = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(currentEditUser.UserProfile.RightThumbImage));
-                            }
-                            LayerWeb.InvokeScript("setFingerprintServerCall", fingerprintLeft, fingerprintRight);
+                            LoadEditSupervisee(currentEditUser, photo1, photo2);
+                        }
+                        else if (currentPage.ToString() == "UpdateSuperviseePhoto")
+                        {
+                            photo1 = currentEditUser.UserProfile.User_Photo1 != null ? Convert.ToBase64String(currentEditUser.UserProfile.User_Photo1) : string.Empty;
+                            photo2 = currentEditUser.UserProfile.User_Photo1 != null ? Convert.ToBase64String(currentEditUser.UserProfile.User_Photo2) : string.Empty;
+                            LoadEditSupervisee(currentEditUser, photo1, photo2);
                         }
                     }
                 }
@@ -717,6 +708,21 @@ namespace Enrolment
                                     fingerprintRight = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(currentEditUser.UserProfile.RightThumbImage));
                                 }
                                 LayerWeb.InvokeScript("setFingerprintServerCall", fingerprintLeft, fingerprintRight);
+                            }
+                            else if (currentPage.ToString() == "UpdateSuperviseePhoto")
+                            {
+                                if (currentEditUser.UserProfile.User_Photo1 != null)
+                                {
+                                    photo1 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo1);
+
+                                }
+                                if (currentEditUser.UserProfile.User_Photo2 != null)
+                                {
+                                    photo2 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo2);
+                                }
+                                session[CommonConstants.CURRENT_PAGE] = "UpdateSuperviseePhoto";
+                                LayerWeb.LoadPageHtml("UpdateSuperviseePhoto.html", currentEditUser);
+                                LayerWeb.InvokeScript("setAvatar", photo1, photo2);
                             }
                             CaptureAttempt(CommonConstants.CAPTURE_PHOTO_ATTEMPT);
                         }
@@ -841,7 +847,7 @@ namespace Enrolment
                 if (!string.IsNullOrEmpty(photo1) || !string.IsNullOrEmpty(photo2))
                 {
                     LayerWeb.InvokeScript("setAvatar", photo1, photo2);
-                    LayerWeb.InvokeScript("setPopUpPhotoServerCall", photo1, photo2);
+                    //LayerWeb.InvokeScript("setPopUpPhotoServerCall", photo1, photo2);
                 }
 
                 // convert fingerprint to base64 and add to html
@@ -859,11 +865,28 @@ namespace Enrolment
             }
             else if (e.Name == EventNames.SUPERVISEE_DATA_UPDATE_CANCELED)
             {
-                
+
                 NavigateTo(NavigatorEnums.Supervisee);
             }
         }
 
+        private void LoadEditSupervisee(ProfileModel currentEditUser, string photo1, string photo2)
+        {
+            LayerWeb.LoadPageHtml("Edit-Supervisee.html", currentEditUser);
+            LayerWeb.InvokeScript("setAvatar", photo1, photo2);
+
+            string fingerprintLeft = "../images/leftthumb.png";
+            string fingerprintRight = "../images/rightthumb.png";
+            if (currentEditUser.UserProfile.LeftThumbImage != null)
+            {
+                fingerprintLeft = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(currentEditUser.UserProfile.LeftThumbImage));
+            }
+            if (currentEditUser.UserProfile.RightThumbImage != null)
+            {
+                fingerprintRight = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(currentEditUser.UserProfile.RightThumbImage));
+            }
+            LayerWeb.InvokeScript("setFingerprintServerCall", fingerprintLeft, fingerprintRight);
+        }
 
         private void CaptureAttempt(string sessionAttemptName)
         {

@@ -1,5 +1,8 @@
-﻿using System;
+﻿using ImageConvertor;
+using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
@@ -38,8 +41,10 @@ namespace Trinity.Common
                 contentQRCode = labelInfo.MarkingNo + "*" + labelInfo.NRIC.PadLeft(9, '0') + "*" + labelInfo.Name.PadLeft(60, '_') + "*" + "_".PadLeft(8, '_');
             }
 
-            var encryptContent = CommonUtil.EncryptString(contentQRCode, AESKey);
-            var pixelData = qrCodeWriter.Write(encryptContent);
+            //var encryptContent = CommonUtil.EncryptString(contentQRCode, AESKey);
+            //var pixelData = qrCodeWriter.Write(encryptContent);
+            var pixelData = qrCodeWriter.Write(contentQRCode);
+
             // creating a bitmap from the raw pixel data; if only black and white colors are used it makes no difference    
             // that the pixel data ist BGRA oriented and the bitmap is initialized with RGB    
             System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(pixelData.Width, pixelData.Height, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
@@ -294,6 +299,62 @@ namespace Trinity.Common
                 return nric;
             }
             return nric.Substring(nric.Length - 5);
+        }
+
+        /// <summary>
+        /// Rotate image by 90 degrees
+        /// </summary>
+        /// <param name="imgInputPath">source image path</param>
+        /// <param name="imgOutputPath">destination image path</param>
+        /// <returns>Process success or not</returns>
+        public static bool RotateImage90(string imgInputPath, string imgOutputPath)
+        {
+            try
+            {
+                using (System.Drawing.Image img = System.Drawing.Image.FromFile(imgInputPath))
+                {
+                    //rotate the picture by 90 degrees and re-save the picture as a Jpeg
+                    img.RotateFlip(System.Drawing.RotateFlipType.Rotate90FlipNone);
+                    img.Save(imgOutputPath, System.Drawing.Imaging.ImageFormat.Png);
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+
+        /// <summary>
+        /// Rotate image by 90 degrees
+        /// </summary>
+        /// <param name="imgPath">image path (before and after rotated)</param>
+        /// <returns>Process success or not</returns>
+        public static bool RotateImage90(string imgPath)
+        {
+            try
+            {
+                using (System.Drawing.Image img = System.Drawing.Image.FromFile(imgPath))
+                {
+                    // Rotate the picture by 90 degrees and re-save the picture as a Jpeg
+                    img.RotateFlip(System.Drawing.RotateFlipType.Rotate90FlipNone);
+
+
+                    Bitmap target = new Bitmap(img);
+
+                    Bitmap targe2t = Convertor1.ConvertTo8bppFormat(target);
+
+                    targe2t.Save(imgPath, ImageFormat.Bmp);
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
     }
 }

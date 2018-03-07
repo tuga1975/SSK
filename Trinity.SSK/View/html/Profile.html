@@ -1,5 +1,840 @@
 ﻿
-<div class="titles"><span>Update Profile</span></div><br />
+<style>
+    .z-depth-2 {
+        -webkit-box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+    }
+
+    .red-underline {
+        border-bottom: 2px solid #ff005a;
+        padding-bottom: 10px;
+    }
+
+    .profile-tabs {
+        position: relative;
+    }
+
+    .profile-tabs {
+        height: 60px;
+        position: relative;
+    }
+
+        .profile-tabs .nav-item {
+            max-width: 25%;
+        }
+
+        .profile-tabs .nav-link {
+            height: 60px;
+            line-height: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            border-radius: 0;
+            z-index: 2;
+            position: relative;
+            margin-right: 5px;
+            padding: 0.5rem 2rem;
+            border-color: #dee2e6;
+            color: #1cacf6;
+        }
+
+        .profile-tabs .nav-item:last-of-type .nav-link {
+            margin-right: 0;
+        }
+
+    .profile-tab-content {
+        z-index: 1;
+    }
+
+        .profile-tab-content .tab-pane {
+            padding: 2rem;
+        }
+
+    .btn-font-size {
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        font-weight: bold;
+        padding: .75rem;
+        margin-bottom: 2rem;
+        color: #1cacf6 !important;
+    }
+
+        .btn-font-size:hover, .btn-font-size:focus {
+            border-color: #334352;
+            color: #fff !important;
+            background-color: #334352;
+        }
+
+        .btn-font-size.font-small {
+            font-weight: normal;
+        }
+
+    .group-button-right {
+        float: right;
+    }
+
+        .group-button-right .btn {
+            text-transform: uppercase;
+        }
+
+    .btn-primary {
+        background: #1cacf6;
+        color: #fff;
+    }
+
+        .btn-primary:hover, .btn-primary:focus {
+            background: #1e87c3;
+            color: #fff;
+        }
+
+    .form-material input::-webkit-input-placeholder {
+        font-style: italic;
+        color: #ccc;
+    }
+
+    .form-material input:-moz-placeholder {
+        font-style: italic;
+        color: #ccc;
+    }
+
+    .form-material input::-moz-placeholder {
+        font-style: italic;
+        color: #ccc;
+    }
+
+    .form-material input:-ms-input-placeholder {
+        font-style: italic;
+        color: #ccc;
+    }
+
+    .form-material .input-group-prepend {
+        min-width: 35%;
+    }
+
+    .form-material .input-group .input-group-text {
+        border: 0;
+        border-radius: 0;
+        background-color: transparent;
+        color: #209CDD;
+    }
+
+        .form-material .input-group .input-group-text span, .form-select .form-label span {
+            padding-left: 5px;
+            color: red;
+        }
+
+    .form-material .btn {
+        background: #1CACF6;
+        color: #fff;
+        text-transform: uppercase;
+    }
+
+        .form-material .btn.btn-light {
+            background-color: transparent;
+            color: #1CACF6;
+        }
+
+    .form-group {
+        margin-bottom: 1rem;
+        position: relative;
+        min-height: 50px;
+    }
+
+    .form-select {
+        width: 100%;
+        float: left;
+        border-bottom: 1px solid #ccc;
+        margin: 10px 0;
+        display: flex;
+        flex-direction: row;
+    }
+
+        .form-select .input-group-select {
+            min-width: 35%;
+        }
+
+        .form-select .form-label {
+            border: 0;
+            border-radius: 0;
+            background-color: transparent;
+            color: #209CDD;
+            padding: .375rem .75rem;
+            margin-bottom: 0;
+            font-size: 1rem;
+            font-weight: 400;
+            line-height: 1.5;
+            position: absolute;
+        }
+
+        .form-select select {
+            padding: .375rem .75rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #495057;
+            -moz-appearance: none; /* Firefox */
+            -webkit-appearance: none; /* Safari and Chrome */
+            text-indent: 1px;
+            text-overflow: '';
+            border: 0;
+            position: relative;
+        }
+
+            .form-select select + label {
+                float: right;
+                margin-top: 8px;
+                margin-right: 5px;
+                pointer-events: none;
+                background-color: #fff;
+                padding-right: 5px;
+                color: #209CDD;
+                position: absolute;
+                top: 0;
+                right: 0;
+            }
+
+            .form-select select::-ms-expand {
+                display: none;
+            }
+
+        .form-select .select-wrap {
+            position: relative;
+            width: 100%;
+        }
+
+    .line-center {
+        display: block;
+        margin-top: 10px;
+    }
+
+    @media (min-width: 769px) {
+        .line-center-large {
+            display: block;
+            margin-top: 10px;
+        }
+    }
+
+    .panel-font-size {
+        position: relative;
+        width: 100%;
+    }
+
+        .panel-font-size .font-size {
+            display: inline-block;
+            float: right;
+        }
+
+        .panel-font-size .link {
+            position: absolute;
+            width: 100%;
+        }
+
+            .panel-font-size .link .wrap {
+                padding: 1rem;
+                display: inline-block;
+                float: right;
+            }
+
+        .panel-font-size.active .link .wrap {
+            background: #fff;
+            -webkit-box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+        }
+
+        .panel-font-size .panel {
+            display: none;
+            position: absolute;
+            width: 100%;
+            background: #fff;
+            top: 61px;
+            z-index: 9999;
+            padding: 2rem;
+            -webkit-box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+        }
+
+        .panel-font-size.active .panel {
+            display: block;
+        }
+
+    a.font-size {
+        font-size: 1.25rem;
+        color: #1cacf6;
+        font-weight: bold;
+        display: block;
+        position: relative;
+        padding-right: 10px;
+        text-decoration: none;
+    }
+
+        a.font-size:after {
+            position: absolute;
+            font-size: 12px;
+            top: 5px;
+            right: 0;
+            content: "\f10d";
+            display: inline-block;
+            font-family: "Ionicons";
+            speak: none;
+            font-style: normal;
+            font-weight: normal;
+            font-variant: normal;
+            text-transform: none;
+            text-rendering: auto;
+            line-height: 1;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a.font-size:before {
+            position: absolute;
+            font-size: 12px;
+            top: 12px;
+            right: 0;
+            content: "\f104";
+            display: inline-block;
+            font-family: "Ionicons";
+            speak: none;
+            font-style: normal;
+            font-weight: normal;
+            font-variant: normal;
+            text-transform: none;
+            text-rendering: auto;
+            line-height: 1;
+            -webkit-font-smoothing: antialiased;
+        }
+
+    .profile-content {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+    }
+
+        .profile-content .profile-wrap {
+            width: 100%;
+            height: calc(100% - 270px);
+            overflow-x: hidden;
+            overflow-y: auto;
+            position: relative;
+        }
+
+    .profile-action {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+    }
+</style>
+
+
+
+<div class="p-3">
+    <div class="panel-font-size pull-right" id="panel_font_size">
+        <div class="link">
+            <div class="wrap">
+                <a href="#" class="font-size"
+                   onclick="document.getElementById('panel_font_size').classList.toggle('active')">Aa</a>
+            </div>
+        </div>
+        <div class="panel">
+            <p>Font size adjustment</p>
+            <div class="row">
+                <div class="col-sm-6">
+                    <a class="btn btn-font-size font-small btn-block">
+                        Aa <i class="ion-arrow-down-b"></i>
+                    </a>
+                </div>
+                <div class="col-sm-6">
+                    <a class="btn btn-font-size font-large btn-block">
+                        Aa <i class="ion-arrow-up-b"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="d-block text-center">
+        <h5 class="d-inline-block red-underline my-3">Update profile</h5>
+    </div>
+</div>
+<ul class="profile-tabs nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item">
+        <a class="nav-link active" id="particulars-tab" data-toggle="tab" href="#particulars"
+           role="tab"
+           aria-controls="particulars" aria-selected="true">
+            <span class="line-center">Particulars</span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" id="addresses-tab" data-toggle="tab" href="#addresses" role="tab"
+           aria-controls="addresses" aria-selected="false">
+            <span class="line-center">Addresses</span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" id="next-of-kin-tab" data-toggle="tab" href="#next-of-kin"
+           role="tab"
+           aria-controls="profile" aria-selected="false">
+            <span class="line-center-large">Next-of-kin Details</span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" id="employment-tab" data-toggle="tab" href="#employment" role="tab"
+           aria-controls="employment" aria-selected="false"><span class="line-center-large">Employment Details</span></a>
+    </li>
+</ul>
+
+<div class="profile-content">
+    <form class="form-material profile-wrap z-depth-2"  id="profileFrm">
+        <input type="hidden" id="activeTab" value="Particulars" />
+        <input type="hidden" name="UserId" id="UserId" />
+        <input type="hidden" name="LastLoginTime" id="LastLoginTime" />
+        <input type="hidden" name="EnrolledDate" id="EnrolledDate" />
+        <input type="hidden" name="Role" id="Role" />
+        <input type="hidden" name="SmartCardId" id="SmartCardId" />
+        <input type="hidden" name="LeftFingerprint" id="LeftFingerprint" />
+        <input type="hidden" name="RightFingerprint" id="RightFingerprint" />
+        <input type="hidden" name="User_Photo1" id="User_Photo1" />
+        <input type="hidden" name="User_Photo2" id="User_Photo2" />
+        <input type="hidden" name="UserStatus" id="UserStatus" />
+        <input type="hidden" name="Residential_Addess_ID" id="Residential_Addess_ID" />
+        <input type="hidden" name="Other_Address_ID" id="Other_Address_ID" />
+        <input type="hidden" name="Postal_Code" id="Postal_Code" />
+        <input type="hidden" name="SerialNumber" id="SerialNumber" />
+        <input type="hidden" name="DateOfIssue" id="DateOfIssue" />
+        <input type="hidden" name="Gender" id="Gender" />
+        <input type="hidden" name="Race" id="Race" />
+        <div class="profile-tab-content bg-white tab-content">
+            <div class="tab-pane fade show active" id="particulars" role="tabpanel"
+                 aria-labelledby="particulars-tab">
+
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                Name <span>*</span>
+                            </span>
+                        </div>
+                        <input type="text" class="form-control"
+                               placeholder="Enter Name"
+                               aria-label="house" aria-describedby="house" id="ParticularsName" name="ParticularsName">
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                NRIC No. <span>*</span>
+                            </span>
+                        </div>
+                        <input type="text" class="form-control"
+                               placeholder="Enter NRIC No."
+                               aria-label="house" aria-describedby="house" id="NRIC" name="NRIC">
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                Date of Birth <span>*</span>
+                            </span>
+                        </div>
+                        <input type="text" class="form-control"
+                               placeholder="DD/MM/YYYY"
+                               aria-label="house" aria-describedby="house" id="DOB" name="DOB">
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="form-group">
+                    <div class="form-select">
+                        <div class="input-group-select">
+                            <span class="form-label">
+                                Nationality  <span>*</span>
+                            </span>
+                        </div>
+                        <div class="select-wrap">
+                            <select title="Nationality" class="form-control" id="Nationality" name="Nationality">
+                                <option>Singaporean</option>
+                                <option>Singaporean</option>
+                                <option>Singaporean</option>
+                            </select>
+                            <label for="Nationality">
+                                <i class="ion-chevron-down"></i>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="form-select">
+                        <div class="input-group-select">
+                            <span class="form-label">
+                                Marital Status <span>*</span>
+                            </span>
+                        </div>
+                        <div class="select-wrap">
+                            <select title="Marital Status" class="form-control" id="MaritalStatus" name="MaritalStatus">
+                                <option>Single</option>
+                                <option>Single</option>
+                            </select>
+                            <label for="year">
+                                <i class="ion-chevron-down"></i>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                Primary Contact No.
+                            </span>
+                        </div>
+                        <input type="text" class="form-control"
+                               placeholder="eg. 98764324"
+                               aria-label="house" aria-describedby="house" id="PrimaryContact" name="PrimaryContact">
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                Secondary Contact No.
+                            </span>
+                        </div>
+                        <input type="text" class="form-control"
+                               placeholder="eg. 98764324"
+                               aria-label="house" aria-describedby="house" id="SecondaryContact" name="SecondaryContact">
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                Primary Email
+                            </span>
+                        </div>
+                        <input type="text" class="form-control"
+                               placeholder="email@email.com"
+                               aria-label="house" aria-describedby="house" id="PrimaryEmail" name="PrimaryEmail">
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                Secondary Email
+                            </span>
+                        </div>
+                        <input type="text" class="form-control"
+                               placeholder="email@email.com"
+                               aria-label="house" aria-describedby="house" id="SecondaryEmail" name="SecondaryEmail">
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+
+            </div>
+            <div class="tab-pane fade show " id="addresses" role="tabpanel"
+                 aria-labelledby="particulars-tab">
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                House Number
+                            </span>
+                        </div>
+                        <input type="text" class="form-control"
+                               placeholder="Enter House Number"
+                               aria-label="house" aria-describedby="house" id="AddressesHouseNumber" name="AddressesHouseNumber" disabled="disabled">
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                Unit Number
+                            </span>
+                        </div>
+                        <input type="text" class="form-control"
+                               placeholder="Enter Unit Number"
+                               aria-label="house" aria-describedby="house" id="AddressUnitNumber" name="UnitNumber" disabled="disabled">
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                Street Name
+                            </span>
+                        </div>
+                        <input type="text" class="form-control"
+                               placeholder="Enter Street Name"
+                               aria-label="house" aria-describedby="house" id="AddressStreetName" name="StreetName" disabled="disabled">
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                Country
+                            </span>
+                        </div>
+                        <input type="text" class="form-control"
+                               placeholder="Enter Country"
+                               aria-label="house" aria-describedby="house" id="AddressCountry" name="Country" disabled="disabled">
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+            <div class="tab-pane fade show " id="next-of-kin" role="tabpanel"
+                 aria-labelledby="particulars-tab">
+
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                Name
+                            </span>
+                        </div>
+                        <input type="text" class="form-control"
+                               placeholder="Enter Name"
+                               aria-label="house" aria-describedby="house" id="NextOfKinDetailsName" name="NextOfKinDetailsName">
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                Contact Number
+                            </span>
+                        </div>
+                        <input type="text" class="form-control"
+                               placeholder="eg. 98764324"
+                               aria-label="house" aria-describedby="house" id="NextOfKinDetailsContactNumber" name="ContactNumber">
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                Relationship
+                            </span>
+                        </div>
+                        <input type="text" class="form-control"
+                               placeholder="Enter Relationship"
+                               aria-label="house" aria-describedby="house" id="NextOfKinDetailsRelationship" name="Relationship">
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                House Number
+                            </span>
+                        </div>
+                        <input type="text" class="form-control"
+                               placeholder="Enter House Number"
+                               aria-label="house" aria-describedby="house" id="NextOfKinDetailsHouseNumber" name="NextOfKinDetailsHouseNumber">
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                Unit Number
+                            </span>
+                        </div>
+                        <input type="text" class="form-control"
+                               placeholder="Enter Unit Number"
+                               aria-label="house" aria-describedby="house" id="NextOfKinDetailsUnitNumber" name="NextOfKinDetailsUnitNumber">
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                Street Name
+                            </span>
+                        </div>
+                        <input type="text" class="form-control"
+                               placeholder="Enter Street Name"
+                               aria-label="house" aria-describedby="house" id="NextOfKinDetailsStreetName" name="NextOfKinDetailsStreetName">
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                Postal Code
+                            </span>
+                        </div>
+                        <input type="text" class="form-control"
+                               placeholder="Enter Postal Code"
+                               aria-label="house" aria-describedby="house" id="NextOfKinDetailsPostalCode" name="NextOfKinDetailsPostalCode">
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                Country
+                            </span>
+                        </div>
+                        <input type="text" class="form-control"
+                               placeholder="Enter Country"
+                               aria-label="house" aria-describedby="house" id="NextOfKinDetailsCountry" name="NextOfKinDetailsCountry">
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+            <div class="tab-pane fade show " id="employment" role="tabpanel"
+                 aria-labelledby="particulars-tab">
+
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                Employer Name
+                            </span>
+                        </div>
+                        <input type="text" class="form-control"
+                               placeholder="Enter Name"
+                               aria-label="house" aria-describedby="house" id="EmployerName" name="EmployerName">
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                Employer Contact
+                            </span>
+                        </div>
+                        <input type="text" class="form-control"
+                               placeholder="Enter Employer Contact"
+                               aria-label="house" aria-describedby="house" id="EmployerContact" name="EmployerContact">
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                Company Name
+                            </span>
+                        </div>
+                        <input type="text" class="form-control"
+                               placeholder="Enter Company Name"
+                               aria-label="house" aria-describedby="house" id="CompanyName" name="CompanyName">
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                Job Title
+                            </span>
+                        </div>
+                        <input type="text" class="form-control"
+                               placeholder="Enter Job Tittle"
+                               aria-label="house" aria-describedby="house" id="JobTitle" name="JobTitle">
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                Start Date
+                            </span>
+                        </div>
+                        <input type="text" class="form-control"
+                               placeholder="Enter Start Date"
+                               aria-label="house" aria-describedby="house" id="StartDate" name="StartDate">
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                End Date
+                            </span>
+                        </div>
+                        <input type="text" class="form-control"
+                               placeholder="Enter End Date"
+                               aria-label="house" aria-describedby="house" id="EndDate" name="EndDate">
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                Remarks
+                            </span>
+                        </div>
+                        <input type="text" class="form-control"
+                               placeholder="Enter Remarks"
+                               aria-label="house" aria-describedby="house" id="Remarks" name="Remarks">
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+
+            </div>
+        </div>
+    <button type="submit" style="display:none" id="btnSubmit"></button>
+    </form>
+</div>
+<div class="profile-action">
+
+    <div class="mt-4">
+        <!--<p class="pull-left">
+            <span class="text-danger">*</span> Supporting documents required
+        </p>
+        <div class="group-button-right">
+            <button class="btn btn-primary-flat">
+                Cancel
+            </button>
+            <button class="btn btn-primary">
+                Confirm
+            </button>
+
+        </div>-->
+
+        <div style="display:none;float:right;" id="divSupportDocument">
+            <button type="button" class="btn btn-danger" style="position:fixed;bottom:10px;right:170px;" id="btnScan">Scan documents</button>
+        </div>
+        <div style="display:none;float:right;" id="divConfirm">
+            <p style="position:fixed;z-index:100;bottom:45px;right:10px;"><strong>Are you sure ?</strong></p>
+            <button type="button" class="btn btn-dark" style="position:fixed;bottom:10px;right:60px; float:right;" id="btnCancel">Cancel</button>
+            <input type="button" class="btn btn-success" style="position:fixed;bottom:10px;right:10px; float:right;" id="btnOK" value="OK">
+        </div>
+        <div class="noticeMessage">
+            <div style="display:none;" id="divError"><span class="text-danger">Following input must not null!</span></div>
+            <div id="noticeMess"><span class="text-danger">* Supporting documents required </span></div>
+        </div>
+        <div style="display:block;float:right;" id="divSave">
+            <!--<button type="button" class="btn btn-dark" onclick="api.server.LoadPage('Supervisee.html');">Back</button>-->
+            <button type="button" class="btn btn-dark" style="position:fixed;bottom:10px;right:90px; float:right;" onclick="api.server.LoadSupervisee()">Cancel</button>
+            <button type="button" class="btn btn-success" style="position:fixed;bottom:10px;right:10px; float:right;" id="SaveBtn">Update</button>
+        </div>
+    </div>
+</div>
+
+
+<!--<div class="titles"><span>Update Profile</span></div><br />
 <div class="formWrapper">
     <ul class="nav nav-tabs">
         <li class="active"><a data-toggle="tab" href="#Particulars">Particulars</a></li>
@@ -8,7 +843,8 @@
         <li><a data-toggle="tab" href="#Employment-Details">Employment Details</a></li>
     </ul>
     <form id="profileFrm">
-        <div class="tab-content" profile>
+        <div class="
+    " profile>
             <input type="hidden" id="activeTab" value="Particulars" />
             <input type="hidden" name="UserId" id="UserId" />
             <input type="hidden" name="LastLoginTime" id="LastLoginTime" />
@@ -182,10 +1018,6 @@
             <button type="button" class="btn btn-danger" style="position:fixed;bottom:10px;right:150px;" id="btnScan">Scan documents</button>
             <button type="button" class="btn btn-dark" style="position:fixed;bottom:10px;left:10px;float:left;" onclick="api.server.LoadPage('Supervisee.html');">Back</button>
         </div>
-        <!--<div style="float:right;" id="tempSupportDocument">
-            <button type="button" class="btn btn-danger" style="position:fixed;bottom:10px;right:150px;" id="btnScan">Scan documents</button>
-
-        </div>-->
 
         <div style="display:none">
             <input type="text" name="SerialNumber" id="SerialNumber" />
@@ -203,20 +1035,21 @@
             <div id="noticeMess"><span class="text-danger">* Supporting documents required </span></div>
         </div>
         <div style="display:block;float:right;" id="divSave">
-            <!--<button type="button" class="btn btn-dark" onclick="api.server.LoadPage('Supervisee.html');">Back</button>-->
             <button type="button" class="btn btn-dark" onclick="api.server.LoadSupervisee()">Cancel</button>
             <button type="button" class="btn btn-success" id="SaveBtn">Update</button>
         </div>
     </form>
-</div>
+</div>-->
 
 <script type="text/javascript">
+
+    var jsonFormData = null;
     var _particularName, _nric, _dob, _nationality, _maritalStatus = "";
     api.ready(function (model) {
         _particularName = model.User.Name;
         _nric = model.User.NRIC;
-      
-      
+
+
 
         $('#UserId').val(model.User.UserId);
         $('#LeftFingerprint').val(model.User.LeftThumbFingerprint);
@@ -279,7 +1112,7 @@
             $('#AddressCountry').val(model.Addresses.Country);
             $('#Postal_Code').val(model.Addresses.Postal_Code);
         }
-       
+
 
     });
 
@@ -292,55 +1125,40 @@
 
     }
 
-    $("#profileFrm").submit(function (e) {
+    $('#btnScan').click(function () {
+        $("#profileFrm").trigger('submit');
+        if (jsonFormData.length > 0) {
+            api.server.LoadScanDocument(jsonFormData);
+            jsonFormData = null;
+        }
+      
+    });
 
+    $('#btnOK').click(function () {
+        // $('#btnSubmit').trigger('click');
+        $("#profileFrm").trigger('submit');
+        if (jsonFormData.length>0) {
+            api.server.SaveProfile(jsonFormData, true);
+            jsonFormData = null;
+        }
+    });
+   
+    $("#profileFrm").submit(function (e) {
         var $form = $("#profileFrm");
         var data = getFormData($form);
-        if (data.DOB!="") {
-            alert(1);
+        if (data.DOB.length > 0) {
+            
             var dobtxt = data.DOB.split('/');
             data.DOB = dobtxt[2] + '-' + dobtxt[1] + '-' + dobtxt[0];
         }
-        
-      
-        var json = JSON.stringify(data);
 
-        api.server.SaveProfile(json, true);
-
+        jsonFormData = JSON.stringify(data);
+    
         //api.server.SaveProfile(json, false);
-
+        
         e.preventDefault(); // avoid to execute the actual submit of the form.
     });
-
-    $('#btnScan').click(function () {
-        var $form = $("#profileFrm");
-        var data = getFormData($form);
-        var json = JSON.stringify(data);
-        api.server.LoadScanDocument(json);
-    });
-
-    function UpdateProfile() {
-        $("#profileFrm").submit(function (e) {
-
-            var $form = $("#profileFrm");
-            var data = getFormData($form);
-            var dobtxt = data.DOB.split('/');
-            data.DOB = dobtxt[2] + '-' + dobtxt[1] + '-' + dobtxt[0];
-            var json = JSON.stringify(data);
-
-            //for testing purpose
-            api.server.SaveProfile(json, true);
-
-            //api.server.SaveProfile(json, false);
-
-            e.preventDefault(); // avoid to execute the actual submit of the form.
-        });
-    }
-    //$('#btnOK').click(function () {
-
-    //    var $form = $("#profileFrm");
-    //    $form.submit();
-    //});
+   
 
 
     function getFormData($form) {
