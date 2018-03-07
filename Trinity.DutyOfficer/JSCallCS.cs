@@ -334,7 +334,9 @@ namespace DutyOfficer
             }
 
             DAL_Setting dalSetting = new DAL_Setting();
-            return dalSetting.GetOperationSettings();
+            Session session = Session.Instance;
+            Trinity.BE.User dutyOfficer = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+            return dalSetting.GetOperationSettings(dutyOfficer.UserId);
         }
 
         public void UpdateOperationSetting(string json)
