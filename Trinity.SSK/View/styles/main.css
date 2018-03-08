@@ -32,16 +32,46 @@
         background-size: contain;
     }
 
-    #header .header-right {
+    #header .logout {
         position: absolute;
-        background-image: url('../img/Logout.png');
-        height: 40px;
-        width: 54px;
-        top: 5px;
+        background-image: url(../img/Logout.png);
+        height: 50px;
+        width: 120px;
+        top: 18px;
         right: 0px;
-        background-position: right center;
+        background-position: center;
         background-repeat: no-repeat;
-        background-size: contain;
+        background-size: 80px;
+        padding: 10px;
+        background-color: #FFF;
+        display: none;
+    }
+
+    #header .back-main {
+        position: absolute;
+        height: 50px;
+        top: 18px;
+        right: 0px;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: 80px;
+        padding: 0px 20px;
+        line-height: 50px;
+        background-color: #FFF;
+        font-size: 18px;
+        color: #1cacf6;
+        display: none;
+    }
+
+        #header .back-main .ion-navicon-round:before {
+            font-size: 32px;
+            margin-right: 5px;
+            position: relative;
+            top: 5px;
+        }
+
+    #header[right-show="logout"] .logout, #header[right-show="back-main"] .back-main {
+        display: block;
     }
 
 .box-shadow {
@@ -243,6 +273,7 @@ highlight {
     color: #fff;
     font-weight: bold;
 }
+
 .loading {
     position: fixed;
     z-index: 100;
