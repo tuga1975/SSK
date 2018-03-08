@@ -132,12 +132,12 @@ namespace DutyOfficer
                     UserId = queue.Appointment.UserId,
                     NRIC = queue.Appointment.Membership_Users.NRIC,
                     Name = queue.Appointment.Membership_Users.Name,
-                    APS = queue.QueueDetails.Where(c => c.Station == EnumStations.APS).FirstOrDefault().Color,
-                    SSK = queue.QueueDetails.Where(c => c.Station == EnumStations.SSK).FirstOrDefault().Color,
-                    SSA = queue.QueueDetails.Where(c => c.Station == EnumStations.SSA).FirstOrDefault().Color,
-                    UHP = queue.QueueDetails.Where(c => c.Station == EnumStations.UHP).FirstOrDefault().Color,
-                    HSA = queue.QueueDetails.Where(c => c.Station == EnumStations.HSA).FirstOrDefault().Status == EnumQueueStatuses.Finished ? GetResultUT(queue.Appointment.Membership_Users.NRIC) : string.Empty,
-                    ESP = queue.QueueDetails.Where(c => c.Station == EnumStations.ESP).FirstOrDefault().Color,
+                    APS = queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStations.SSK).Status!= EnumQueueStatuses.Finished?EnumColors.Green: EnumColors.White,
+                    SSK = queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStations.SSK).Status != EnumQueueStatuses.Finished ? EnumColors.Green : EnumColors.White,
+                    SSA = queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStations.SSA).Color,
+                    UHP = queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStations.UHP).Color,
+                    HSA = queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStations.HSA).Status == EnumQueueStatuses.Finished ? GetResultUT(queue.Appointment.Membership_Users.NRIC) : string.Empty,
+                    ESP = queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStations.ESP).Color,
                     Outcome = queue.Outcome,
                     Message = new
                     {

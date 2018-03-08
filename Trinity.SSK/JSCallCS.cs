@@ -601,7 +601,7 @@ namespace SSK
                     }
                     else
                     {
-                        queueNumber = _dalQueue.InsertQueueNumberFromDO(appointment.UserId, EnumStations.SSK, currentUser.UserId);
+                        queueNumber = _dalQueue.InsertQueueNumberFromDO(supervisee.UserId, EnumStations.SSK, currentUser.UserId);
                         if (queueNumber != null)
                         {
                             APIUtils.FormQueueNumber.RefreshQueueNumbers();
