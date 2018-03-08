@@ -701,3 +701,6 @@ table tr.active {
     margin-top: 5px;
 }
 
+::-ms-clear {
+    display: none;
+}
