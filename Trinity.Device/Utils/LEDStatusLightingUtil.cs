@@ -708,7 +708,8 @@ namespace Trinity.Device.Util
         private void MUBRemoveStatus_Received(object sender, string response)
         {
             this.DataReceived -= MUBRemoveStatus_Received;
-            if (response == "0")
+            MessageBox.Show("MUBRemoveStatus_Received:" + response);
+            if (response.Trim() == "0")
             {
                 this.DataReceived += MUBDoorClosedStatus_Received;
 

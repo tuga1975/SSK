@@ -464,14 +464,6 @@ namespace Trinity.DAL
         // Save OperationSetting from DutyOfficer
         public BE.SettingModel GetOperationSettings(string userId)
         {
-            CreateOperationSettingForDayOfWeek((int)EnumDayOfWeek.Monday, userId);
-            CreateOperationSettingForDayOfWeek((int)EnumDayOfWeek.Tuesday, userId);
-            CreateOperationSettingForDayOfWeek((int)EnumDayOfWeek.Wednesday, userId);
-            CreateOperationSettingForDayOfWeek((int)EnumDayOfWeek.Thursday, userId);
-            CreateOperationSettingForDayOfWeek((int)EnumDayOfWeek.Friday, userId);
-            CreateOperationSettingForDayOfWeek((int)EnumDayOfWeek.Saturday, userId);
-            CreateOperationSettingForDayOfWeek((int)EnumDayOfWeek.Sunday, userId);
-
             List<OperationSetting> arraySetting = _localUnitOfWork.DataContext.OperationSettings.ToList();
 
             var settingModel = new BE.SettingModel
@@ -486,46 +478,16 @@ namespace Trinity.DAL
                 HoliDays = GetHolidays(_localUnitOfWork.GetRepository<DBContext.Holiday>()),
                 ChangeHistorySettings = GetHistoryChangeSettings(_localUnitOfWork.GetRepository<DBContext.OperationSettings_ChangeHist>())
             };
+            
+            settingModel.Monday = settingModel.Monday == null ? new SettingDetails() { DayOfWeek = (int)EnumDayOfWeek.Monday } : settingModel.Monday;
+            settingModel.Tuesday = settingModel.Tuesday == null ? new SettingDetails() { DayOfWeek = (int)EnumDayOfWeek.Tuesday } : settingModel.Tuesday;
+            settingModel.Wednesday = settingModel.Wednesday == null ? new SettingDetails() { DayOfWeek = (int)EnumDayOfWeek.Wednesday } : settingModel.Wednesday;
+            settingModel.Thursday = settingModel.Thursday == null ? new SettingDetails() { DayOfWeek = (int)EnumDayOfWeek.Thursday } : settingModel.Thursday;
+            settingModel.Friday = settingModel.Friday == null ? new SettingDetails() { DayOfWeek = (int)EnumDayOfWeek.Friday } : settingModel.Friday;
+            settingModel.Saturday = settingModel.Saturday == null ? new SettingDetails() { DayOfWeek = (int)EnumDayOfWeek.Saturday } : settingModel.Saturday;
+            settingModel.Sunday = settingModel.Sunday == null ? new SettingDetails() { DayOfWeek = (int)EnumDayOfWeek.Sunday } : settingModel.Sunday;
 
-            if ((settingModel.Monday == null || settingModel.Tuesday == null || settingModel.Wednesday == null || settingModel.Thursday == null || settingModel.Friday == null
-                || settingModel.Saturday == null || settingModel.Sunday == null || settingModel.HoliDays == null || settingModel.ChangeHistorySettings == null))
-            {
-                return null;
-            }
-            else
-            {
-                settingModel.Monday = settingModel.Monday == null ? new SettingDetails() { DayOfWeek = (int)EnumDayOfWeek.Monday } : settingModel.Monday;
-                settingModel.Tuesday = settingModel.Tuesday == null ? new SettingDetails() { DayOfWeek = (int)EnumDayOfWeek.Tuesday } : settingModel.Tuesday;
-                settingModel.Wednesday = settingModel.Wednesday == null ? new SettingDetails() { DayOfWeek = (int)EnumDayOfWeek.Wednesday } : settingModel.Wednesday;
-                settingModel.Thursday = settingModel.Thursday == null ? new SettingDetails() { DayOfWeek = (int)EnumDayOfWeek.Thursday } : settingModel.Thursday;
-                settingModel.Friday = settingModel.Friday == null ? new SettingDetails() { DayOfWeek = (int)EnumDayOfWeek.Friday } : settingModel.Friday;
-                settingModel.Saturday = settingModel.Saturday == null ? new SettingDetails() { DayOfWeek = (int)EnumDayOfWeek.Saturday } : settingModel.Saturday;
-                settingModel.Sunday = settingModel.Sunday == null ? new SettingDetails() { DayOfWeek = (int)EnumDayOfWeek.Sunday } : settingModel.Sunday;
-
-                return settingModel;
-            }
-        }
-
-        private bool CheckExistOperationSettingByDayOfWeek(int dayOfWeek)
-        {
-            return _localUnitOfWork.DataContext.OperationSettings.Any(o => o.DayOfWeek == dayOfWeek);
-        }
-
-        private void CreateOperationSettingForDayOfWeek(int dayOfWeek, string userId)
-        {
-            if (!CheckExistOperationSettingByDayOfWeek(dayOfWeek))
-            {
-                OperationSetting operationSetting = new OperationSetting();
-                operationSetting.DayOfWeek = dayOfWeek;
-                operationSetting.Morning_Is_Closed = false;
-                operationSetting.Afternoon_Is_Closed = false;
-                operationSetting.Evening_Is_Closed = false;
-                operationSetting.Last_Updated_Date = DateTime.Now;
-                operationSetting.Last_Updated_By = userId;
-
-                _localUnitOfWork.GetRepository<OperationSetting>().Add(operationSetting);
-                _localUnitOfWork.Save();
-            }
+            return settingModel;
         }
 
         #region Duty Officer        
@@ -549,6 +511,11 @@ namespace Trinity.DAL
         {
             //var repoHolidays = _localUnitOfWork.GetRepository<DBContext.Holiday>();
             List<BE.Holiday> results = repoHolidays.GetAll().ToList().Select(d => d.Map<BE.Holiday>()).ToList();
+
+            if (results == null)
+            {
+                return new List<BE.Holiday>();
+            }
 
             return results;
         }

@@ -439,15 +439,15 @@ namespace SSA
             }
             else if (printingStatus == "4")
             {
+                MessageBox.Show("Nhay vao day");
                 // Verify Supervisee remove the MUB before close the door.
                 //lblStatus.Text = "You haven't removed the MUB. Please remove it";
-                this._web.RunScript("$('.status-text').css('color','#000').text('You haven't removed the MUB. Please remove it.');");
-
+                this._web.RunScript("$('.status-text').css('color','#000').text('Please remove MUB/TT');");
                 LEDStatusLightingUtil.Instance.MUBDoorFullyClosed += Instance_MUBDoorFullyClosed;
                 LEDStatusLightingUtil.Instance.CheckIfMUBRemoved();
 
                 //btnConfirm.Enabled = false;
-                this._web.RunScript("$('.ConfirmBtn').prop('disabled', true);");
+                //this._web.RunScript("$('.ConfirmBtn').prop('disabled', true);");
             }
         }
 
@@ -514,10 +514,11 @@ namespace SSA
 
         private void Instance_MUBDoorFullyClosed(object sender, string e)
         {
+            MessageBox.Show("Door fully closed");
             // Complete test. Remove queue number from Queue Monitor
             Session session = Session.Instance;
             Trinity.BE.User currentUser = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-            if (currentUser != null)
+            if (currentUser == null)
             {
                 // Check why current user is null
                 this._web.RunScript("$('.status-text').css('color','#000').text('The current user is null');");

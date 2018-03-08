@@ -117,25 +117,32 @@ namespace SSA
 
             if (user != null)
             {
-                // Only enrolled supervisees are allowed to login
-                if (user.Status == EnumUserStatuses.Blocked)
+                if (user.Role == EnumUserRoles.Supervisee || user.Role == EnumUserRoles.DutyOfficer)
                 {
-                    SmartCard_OnSmartCardFailed("You have been blocked.");
-                    return;
+                    // Only enrolled supervisees are allowed to login
+                    if (user.Status == EnumUserStatuses.Blocked)
+                    {
+                        SmartCard_OnSmartCardFailed("You have been blocked.");
+                        return;
+                    }
+                    if (user.Status == EnumUserStatuses.New)
+                    {
+                        SmartCard_OnSmartCardFailed("You haven't enrolled yet.");
+                        return;
+                    }
+                    Session session = Session.Instance;
+                    session.IsSmartCardAuthenticated = true;
+                    session[CommonConstants.USER_LOGIN] = user;
+                    this.LayerWeb.RunScript("$('.status-text').css('color','#000').text('Your smart card is authenticated.');");
+                    // Stop SCardMonitor
+                    SmartCardReaderUtil.Instance.StopSmartCardMonitor();
+                    // raise succeeded event
+                    SmartCard_OnSmartCardSucceeded();
                 }
-                if (user.Status == EnumUserStatuses.New)
+                else
                 {
-                    SmartCard_OnSmartCardFailed("You haven't enrolled yet.");
-                    return;
+                    SmartCard_OnSmartCardFailed("You do not have permission to access this page");
                 }
-                Session session = Session.Instance;
-                session.IsSmartCardAuthenticated = true;
-                session[CommonConstants.USER_LOGIN] = user;
-                this.LayerWeb.RunScript("$('.status-text').css('color','#000').text('Your smart card is authenticated.');");
-                // Stop SCardMonitor
-                SmartCardReaderUtil.Instance.StopSmartCardMonitor();
-                // raise succeeded event
-                SmartCard_OnSmartCardSucceeded();
             }
             else
             {
@@ -167,18 +174,18 @@ namespace SSA
             if (_isFirstTimeLoaded)
             {
                 // Start page
-                NavigateTo(NavigatorEnums.Authentication_SmartCard);
+                //NavigateTo(NavigatorEnums.Authentication_SmartCard);
                 ////// For testing purpose
-                //Session session = Session.Instance;
+                Session session = Session.Instance;
                 //// Supervisee
-                //Trinity.BE.User user = new DAL_User().GetUserByUserId("bb67863c-c330-41aa-b397-c220428ad16f").Data;
-                //session[CommonConstants.USER_LOGIN] = user;
+                Trinity.BE.User user = new DAL_User().GetUserByUserId("06a91b1b-99c3-428d-8a55-83892c2adf4c").Data;
+                session[CommonConstants.USER_LOGIN] = user;
                 ////// Duty Officer
                 //////Trinity.BE.User user = new DAL_User().GetUserByUserId("dfbb2a6a-9e45-4a76-9f75-af1a7824a947", true);
                 //////session[CommonConstants.USER_LOGIN] = user;
-                //session.IsSmartCardAuthenticated = true;
-                //session.IsFingerprintAuthenticated = true;
-                //NavigateTo(NavigatorEnums.Supervisee_Particulars);
+                session.IsSmartCardAuthenticated = true;
+                session.IsFingerprintAuthenticated = true;
+                NavigateTo(NavigatorEnums.Supervisee_Particulars);
                 //////NavigateTo(NavigatorEnums.Authentication_NRIC);
 
                 _isFirstTimeLoaded = false;
@@ -233,7 +240,7 @@ namespace SSA
                 // show message box to user
                 //MessageBox.Show(message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 _popupModel.Title = "Authorization Failed";
-                _popupModel.Message = "Unable to read your smart card.\nPlease report to the Duty Officer";
+                _popupModel.Message = message;
                 _popupModel.IsShowLoading = false;
                 _popupModel.IsShowOK = true;
 
