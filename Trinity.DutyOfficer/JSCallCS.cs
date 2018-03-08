@@ -913,6 +913,44 @@ namespace DutyOfficer
             }
         }
 
+        public void Login(string username,string password)
+        {
+            var dalUser = new DAL_User();
+            ApplicationUser appUser = dalUser.Login(username, password);
+            if (appUser != null)
+            {
+                if (dalUser.IsInRole(appUser.Id, EnumUserRoles.DutyOfficer))
+                {
+                    
+                    Trinity.BE.User user = new Trinity.BE.User()
+                    {
+                        UserId = appUser.Id,
+                            Status = appUser.Status,
+                            SmartCardId = appUser.SmartCardId,
+                            RightThumbFingerprint = appUser.RightThumbFingerprint,
+                            LeftThumbFingerprint = appUser.LeftThumbFingerprint,
+                            Name = appUser.Name,
+                            NRIC = appUser.NRIC,
+                            IsFirstAttempt = appUser.IsFirstAttempt
+                    };
+                    user.Role = EnumUserRoles.DutyOfficer;
+                    Session session = Session.Instance;
+                    session.IsUserNamePasswordAuthenticated = true;
+                    session.Role = EnumUserRoles.EnrolmentOfficer;
+                    session[CommonConstants.USER_LOGIN] = user;
+                    Trinity.SignalR.Client.Instance.UserLoggedIn(user.UserId);
+                    EventCenter.Default.RaiseEvent(new Trinity.Common.EventInfo() { Code = 0, Name = EventNames.LOGIN_SUCCEEDED });
+                }
+                else
+                {
+                    this._web.InvokeScript("ShowMessageBox", "You do not have permission to access this page.");
+                }
+            }
+            else
+            {
+                this._web.InvokeScript("ShowMessageBox", "Your username or password is incorrect.");
+            }
+        }
         protected virtual void RaiseLogOutCompletedEvent()
         {
             OnLogOutCompleted?.Invoke();

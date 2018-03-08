@@ -101,7 +101,7 @@ namespace Trinity.Device
                 Name = labelInfo.Name,
                 MarkingNumber = labelInfo.MarkingNo
             };
-            MessageBox.Show("Call PrintTTLabel");
+            //MessageBox.Show("Call PrintTTLabel");
             if (printerUtils.PrintTTLabel(infoTTLabel))
             {
                 // raise succeeded event

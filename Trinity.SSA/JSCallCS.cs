@@ -95,7 +95,7 @@ namespace SSA
             var labelInfo = JsonConvert.DeserializeObject<LabelInfo>(jsonModel);
             labelInfo.BitmapLabel = bitmapBytes;
             _printMUBAndTTLabel.Start(labelInfo);
-            MessageBox.Show("Check printing status:" + printingStatus);
+            //MessageBox.Show("Check printing status:" + printingStatus);
             if (printingStatus == "3")
             {
                 this._web.RunScript("$('.status-text').css('color','#000').text('Print completed. Please remove the MUB.');");
@@ -430,7 +430,7 @@ namespace SSA
                 var labelInfo = JsonConvert.DeserializeObject<LabelInfo>(json);
                 _web.LoadPageHtml("PrintingTemplates/MUBLabelTemplate.html", new object[] { printingStatus, labelInfo });
 
-                //LEDStatusLightingUtil.Instance.MUBAbleToRemove += Instance_MUBAbleToRemove;
+                //LEDStatusLightingUtil.Instance.MUBAbleToRemove += Instance_MUBReadyToRemove;
                 //LEDStatusLightingUtil.Instance.CheckMUBApplicatorFinishStatus();
                 ////btnConfirm.Enabled = false;
                 //this._web.RunScript("$('.ConfirmBtn').prop('disabled', true);");
@@ -441,13 +441,12 @@ namespace SSA
             {
                 // Verify Supervisee remove the MUB before close the door.
                 //lblStatus.Text = "You haven't removed the MUB. Please remove it";
-                this._web.RunScript("$('.status-text').css('color','#000').text('You haven't removed the MUB. Please remove it.');");
-
+                this._web.RunScript("$('.status-text').css('color','#000').text('Please remove MUB/TT');");
                 LEDStatusLightingUtil.Instance.MUBDoorFullyClosed += Instance_MUBDoorFullyClosed;
                 LEDStatusLightingUtil.Instance.CheckIfMUBRemoved();
 
                 //btnConfirm.Enabled = false;
-                this._web.RunScript("$('.ConfirmBtn').prop('disabled', true);");
+                //this._web.RunScript("$('.ConfirmBtn').prop('disabled', true);");
             }
         }
 
@@ -496,9 +495,9 @@ namespace SSA
             //btnConfirm.Tag = "3";
         }
 
-        private void Instance_MUBAbleToRemove(object sender, string e)
+        private void Instance_MUBReadyToRemove(object sender, string e)
         {
-            LEDStatusLightingUtil.Instance.MUBAbleToRemove -= Instance_MUBAbleToRemove;
+            LEDStatusLightingUtil.Instance.MUBReadyToRemove -= Instance_MUBReadyToRemove;
             //lblStatus.Text = "Print completed. Please remove the MUB";
             this._web.RunScript("$('.status-text').css('color','#000').text('Print completed. Please remove the MUB.');");
 
@@ -517,7 +516,7 @@ namespace SSA
             // Complete test. Remove queue number from Queue Monitor
             Session session = Session.Instance;
             Trinity.BE.User currentUser = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-            if (currentUser != null)
+            if (currentUser == null)
             {
                 // Check why current user is null
                 this._web.RunScript("$('.status-text').css('color','#000').text('The current user is null');");
@@ -537,7 +536,6 @@ namespace SSA
 
             //btnConfirm.Tag = "0";
             this._web.RunScript("$('#lblPrintingStatus').text('0');");
-
         }
 
         #endregion

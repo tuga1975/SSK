@@ -604,7 +604,7 @@ namespace SSA
             {
                 // Start to print
                 btnConfirm.Text = "Check printing status";
-                LEDStatusLightingUtil.Instance.MUBAbleToRemove += Instance_MUBAbleToRemove;
+                LEDStatusLightingUtil.Instance.MUBReadyToRemove += Instance_MUBReadyToRemove;
                 LEDStatusLightingUtil.Instance.CheckMUBApplicatorFinishStatus();
                 btnConfirm.Enabled = false;
             }
@@ -645,9 +645,9 @@ namespace SSA
             btnConfirm.Tag = "3";
         }
 
-        private void Instance_MUBAbleToRemove(object sender, string e)
+        private void Instance_MUBReadyToRemove(object sender, string e)
         {
-            LEDStatusLightingUtil.Instance.MUBAbleToRemove -= Instance_MUBAbleToRemove;
+            LEDStatusLightingUtil.Instance.MUBReadyToRemove -= Instance_MUBReadyToRemove;
             lblStatus.Text = "Print completed. Please remove the MUB";
             btnConfirm.Text = "Confirm to remove the MUB";
             btnConfirm.Enabled = true;

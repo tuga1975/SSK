@@ -1,0 +1,245 @@
+﻿<style>
+    #parent-content {
+        overflow: visible;
+        top: 80px;
+    }
+
+    #header {
+        visibility: hidden;
+    }
+
+    .z-depth-2 {
+        -webkit-box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+    }
+
+    .color-dark {
+        background-color: #334352;
+    }
+
+    .login-form a {
+        color: #209cdd;
+    }
+
+    .login-form .card {
+        border: 0;
+        border-radius: 0;
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+        margin-bottom: 0;
+    }
+
+        .login-form .card .card-footer {
+            border: 0;
+            border-radius: 0;
+            margin-bottom: 0;
+            background-color: transparent;
+        }
+
+    .form-material .form-control {
+        border: 0;
+        color: #fff;
+    }
+
+    .form-material .input-group .input-group-text {
+        border: 0;
+        border-radius: 0;
+        background-color: transparent;
+        color: #209CDD;
+    }
+
+    .form-material .btn {
+        background: #1CACF6;
+        color: #fff;
+    }
+
+    .copyright {
+        color: #5D5D5D;
+        font-size: 0.8rem;
+    }
+
+    .link {
+        display: inline-block;
+        padding: 0;
+    }
+
+        .link li {
+            display: inline-block;
+        }
+
+            .link li:after {
+                content: "|";
+                padding: 5px 0;
+            }
+
+            .link li:last-of-type:after {
+                content: "";
+                padding: 5px 0;
+            }
+
+            .link li a {
+                color: #000;
+                border-bottom: 1px solid #000;
+            }
+
+    body {
+        font-family: Verdana,sans-serif;
+        font-size: 14px;
+        line-height: 1.5;
+        background: url('../img/Background.png') no-repeat;
+        width: 100%;
+        background-size: cover;
+    }
+
+    .input-group {
+        width: 100%;
+        float: left;
+        border-bottom: 1px solid #ccc;
+        margin: 10px 0;
+        display: flex;
+        flex-direction: row;
+    }
+
+        .input-group:hover,
+        .input-group:focus,
+        .input-group:visited,
+        .input-group:active,
+        .input-group::selection {
+            border-bottom: 1px solid #1CACF6;
+        }
+
+        .input-group span.input-group-addon,
+        .form-inline .input-group span.input-group-addon {
+            color: #1CACF6;
+            width: 200px;
+            text-align: left;
+            background: none;
+            border: none;
+            padding-left: 0;
+            flex: 1;
+        }
+
+        .input-group input,
+        .form-inline .input-group input {
+            background: none;
+            border: none;
+            box-shadow: none;
+            width: calc(100% - 200px);
+            flex: 1;
+            text-align: left;
+        }
+
+            .input-group input[readonly='readonly'],
+            .input-group input[disabled='disabled'] {
+                background: none;
+            }
+
+            .input-group input:hover,
+            .input-group input:focus,
+            .input-group input:active {
+                border: none;
+                box-shadow: none;
+                background: none;
+            }
+
+    .card-body {
+        -webkit-box-flex: 1;
+        -ms-flex: 1 1 auto;
+        flex: 1 1 auto;
+        padding: 1.25rem;
+    }
+
+    .input-group-append, .input-group-prepend {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+    }
+
+    .input-group-prepend {
+        margin-right: -1px;
+    }
+
+    .input-group-text {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        padding: .375rem .75rem;
+        margin-bottom: 0;
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5;
+        color: #495057;
+        text-align: center;
+        white-space: nowrap;
+        background-color: #e9ecef;
+        border: 1px solid #ced4da;
+        border-radius: .25rem;
+    }
+</style>
+<div class="container">
+    <div class="login-form">
+        <div class="card-group z-depth-2 row">
+            <div class="card col-md-4 col-xs-12">
+                <div class="card-body">
+                    <div class="container">
+                        <img src="../img/logoCNB.png" alt="Logo" class="img-fluid" />
+                        <h1 class="my-5 text-muted">
+                            Duty Officer
+                        </h1>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <p class="copyright">
+                        Copyright &copy; 2018 Central Narcotis Bureau (CNB). All Rights Reserved.
+                    </p>
+                    <ul class="link">
+                        <li>
+                            <a href="#">Privacy policy</a>
+                        </li>
+                        <li>
+                            <a href="#">Terms of Use</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card col-md-8 col-xs-12 color-dark text-white">
+                <div class="card-body">
+                    <h1>Login</h1>
+                    <form class="form-material mt-3">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="username">
+                                    <i class="fa fa-user"></i>
+                                </span>
+                            </div>
+                            <input type="text" class="form-control" placeholder="Username"
+                                   aria-label="Username" aria-describedby="username" id="inputUsername">
+                        </div>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="password">
+                                    <i class="fa fa-lock"></i>
+                                </span>
+                            </div>
+                            <input type="password" class="form-control" placeholder="Password"
+                                   aria-label="password" aria-describedby="password" id="inputPassword">
+                        </div>
+                        <a href="#">Forget password ?</a>
+
+                        <button type="button" class="btn btn-lg btn-block my-5" data-toggle="modal" onclick="api.server.Login($('#inputUsername').val(), $('#inputPassword').val());">
+                            Login
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<style type="text/css">
+    #header, #menu {
+        display: none !important;
+    }
+</style>

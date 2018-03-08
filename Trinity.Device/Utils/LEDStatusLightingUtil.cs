@@ -22,7 +22,8 @@ namespace Trinity.Device.Util
         public event EventHandler<string> MUBAutoFlagApplicatorReadyOK;
         public event EventHandler<string> MUBIsPresent;
         public event EventHandler<string> MUBReadyToPrint;
-        public event EventHandler<string> MUBAbleToRemove;
+        public event EventHandler<string> MUBReadyToRemove;
+        public event EventHandler<string> MUBStatusUpdated;
         public event EventHandler<string> MUBDoorFullyClosed;
 
         public bool _isBusy = false;
@@ -687,7 +688,7 @@ namespace Trinity.Device.Util
             if (response == "1" || response.ToLower() == "ok" || response.ToLower() == "yes")
             {
                 // Inform the Supervisee to remove the MUB from the holder
-                MUBAbleToRemove?.Invoke(this, "");
+                MUBReadyToRemove?.Invoke(this, "");
             }
             else
             {
@@ -708,16 +709,24 @@ namespace Trinity.Device.Util
         private void MUBRemoveStatus_Received(object sender, string response)
         {
             this.DataReceived -= MUBRemoveStatus_Received;
+            //MessageBox.Show("MUBRemoveStatus_Received:" + response);
             if (response == "0")
             {
-                this.DataReceived += MUBDoorClosedStatus_Received;
+                MUBStatusUpdated?.Invoke(this, "0");
 
+                this.DataReceived += MUBDoorClosedStatus_Received;
                 // Close MUB Door
                 string asciiCommand = "WR MR509 1";
                 SendASCIICommand(asciiCommand);
+                
             }
-            else
+            else if (response == "1")
             {
+                MUBStatusUpdated?.Invoke(this, "1");
+            }
+            else 
+            {
+
                 Thread.Sleep(200);
                 CheckIfMUBRemoved();
             }
@@ -782,11 +791,7 @@ namespace Trinity.Device.Util
             //    SourceObject = _serialPort,
             //    Data = e
             //};
-            if (!string.IsNullOrEmpty(response))
-            {
-                response = response.Trim();
-            }
-            DataReceived?.Invoke(this, response);
+            DataReceived?.Invoke(this, response.Trim());
         }
 
         private string StartCommunication()
