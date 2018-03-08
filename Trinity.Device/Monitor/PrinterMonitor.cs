@@ -68,7 +68,6 @@ namespace Trinity.Device
 
         public void PrintBarcodeLabel(LabelInfo labelInfo)
         {
-
             // validation
             if (string.IsNullOrEmpty(labelInfo.Name))
             {
@@ -96,10 +95,12 @@ namespace Trinity.Device
 
             // print label
             BarcodePrinterUtil printerUtils = BarcodePrinterUtil.Instance;
-            TTLabelInfo infoTTLabel = new TTLabelInfo();
-            infoTTLabel.ID = labelInfo.NRIC;
-            infoTTLabel.Name = labelInfo.Name;
-            infoTTLabel.MarkingNumber = labelInfo.MarkingNo;
+            TTLabelInfo infoTTLabel = new TTLabelInfo
+            {
+                ID = labelInfo.NRIC,
+                Name = labelInfo.Name,
+                MarkingNumber = labelInfo.MarkingNo
+            };
 
             if (printerUtils.PrintTTLabel(infoTTLabel))
             {
@@ -193,7 +194,7 @@ namespace Trinity.Device
                 }
                 else
                 {
-                    MessageBox.Show("Failed to print");
+                    //MessageBox.Show("Failed to print");
                     // raise failed event
                     RaiseMonitorExceptionEvent(new ExceptionArgs(new FailedInfo()
                     {

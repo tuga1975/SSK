@@ -318,7 +318,6 @@ namespace SSK
 
         public void PrintAppointmentDetails(string appointmentId)
         {
-
             var dalAppointment = new DAL_Appointments();
             Trinity.BE.Appointment appointment = new DAL_Appointments().GetAppmtDetails(Guid.Parse(appointmentId));
             //Trinity.BE.Appointment appointment = dalAppointment.GetAppointmentDetails(Guid.Parse(appointmentId));
@@ -326,11 +325,13 @@ namespace SSK
             {
                 Date = appointment.AppointmentDate.Value,
                 Name = appointment.Name,
-                Venue = appointment.NRIC
+                Venue = appointment.NRIC,
+                StartTime = appointment.StartTime ?? new TimeSpan(0, 0, 0)
             });
             //APIUtils.Printer.PrintAppointmentDetails("AppointmentDetailsTemplate.html", appointment);
         }
         #endregion
+
         public void LoadProfile()
         {
             try

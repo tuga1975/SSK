@@ -69,9 +69,11 @@ namespace Trinity.Device.Util
         {
             try
             {
+                //MessageBox.Show("PrintTTLabel");
                 // validate
                 if (!ttLabelInfo.IsValid())
                 {
+                    //MessageBox.Show("!ttLabelInfo.IsValid");
                     return false;
                 }
 
@@ -130,7 +132,8 @@ namespace Trinity.Device.Util
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Print exception: " + ex.ToString());
+                //Debug.WriteLine("Print exception: " + ex.ToString());
+                //MessageBox.Show("Print exception: " + ex.ToString());
                 return false;
             }
         }
@@ -142,6 +145,7 @@ namespace Trinity.Device.Util
                 // validate
                 if (!mubLabelInfo.IsValid())
                 {
+                    //MessageBox.Show("Model is not valid.");
                     return false;
                 }
 
@@ -215,7 +219,8 @@ namespace Trinity.Device.Util
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Print exception: " + ex.ToString());
+                //Debug.WriteLine("Print exception: " + ex.ToString());
+                //MessageBox.Show("Print exception: " + ex.ToString());
                 return false;
             }
         }
