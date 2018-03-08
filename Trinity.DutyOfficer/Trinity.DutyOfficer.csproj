@@ -289,6 +289,7 @@
     <Content Include="View\html\html2canvas\html2canvas.js" />
     <Content Include="View\html\html2canvas\jquery.plugin.html2canvas.js" />
     <Content Include="View\html\Layout.html" />
+    <Content Include="View\html\Login.html" />
     <Content Include="View\html\MUBAndTTlabel.html" />
     <Content Include="View\html\MUBandTTPopup.html" />
     <Content Include="View\html\PopupAddHoliday.html" />
@@ -309,6 +310,7 @@
     <Content Include="View\html\Table.html" />
     <Content Include="View\html\UBlabel.html" />
     <Content Include="View\html\UBlabelPopup.html" />
+    <Content Include="View\img\Background.png" />
     <Content Include="View\img\camera.jpg" />
     <Content Include="View\img\central_narco_logo.png" />
     <Content Include="View\img\FingerPrint.png" />
@@ -317,6 +319,7 @@
     <Content Include="View\img\ManualLogin.png" />
     <Content Include="View\img\ScanSmartCard.png" />
     <Content Include="View\scripts\lib.js" />
+    <Content Include="View\scripts\popper.min.js" />
     <Content Include="View\styles\main.css" />
     <Content Include="View\table\bootstrap-table.css" />
     <Content Include="View\table\bootstrap-table.js" />
