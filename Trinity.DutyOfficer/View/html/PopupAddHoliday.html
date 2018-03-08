@@ -100,14 +100,16 @@
         var description = $('#description').val();
         var note = $('#note').val();
         var checkExist = false;
-        model.HoliDays.forEach(function (element, index) {
-            
-            if (Date.parse(element.Holiday1) == Date.parse(date)) {
-                checkExist = true;
-                alert('Date is duplicate!');
-                return;
-            }
-        });
+
+        if (model.HoliDays != null && model.HoliDays.length > 0) {
+            model.HoliDays.forEach(function (element, index) {
+                if (Date.parse(element.Holiday1) == Date.parse(date)) {
+                    checkExist = true;
+                    alert('Date is duplicate!');
+                    return;
+                }
+            });
+        }
 
         if (!checkExist) {
             //date.setHours(date.getHours() - date.getTimezoneOffset() / 60);

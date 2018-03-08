@@ -11,7 +11,7 @@ namespace Trinity.NotificationServer
 {
     public partial class WinFormsServer : Form
     {
-        private IDisposable SignalR { get; set; }
+        private IDisposable NotificationServer { get; set; }
         private string ServerURI = EnumAppConfig.NotificationServerUrl;
 
         internal WinFormsServer()
@@ -30,7 +30,7 @@ namespace Trinity.NotificationServer
         {
             //SignalR will be disposed in the FormClosing event
             //Close();
-            SignalR.Dispose();
+            NotificationServer.Dispose();
             ButtonStop.Enabled = false;
             ButtonStart.Enabled = true;
         }
@@ -39,7 +39,7 @@ namespace Trinity.NotificationServer
         {
             try
             {
-                SignalR = WebApp.Start(ServerURI);
+                NotificationServer = WebApp.Start(ServerURI);
             }
             catch (Exception ex)
             {
@@ -67,9 +67,9 @@ namespace Trinity.NotificationServer
         private void WinFormsServer_FormClosing(object sender, FormClosingEventArgs e)
         {
 
-            if (SignalR != null)
+            if (NotificationServer != null)
             {
-                SignalR.Dispose();
+                NotificationServer.Dispose();
             }
         }
     }
