@@ -167,18 +167,18 @@ namespace SSA
             if (_isFirstTimeLoaded)
             {
                 // Start page
-                NavigateTo(NavigatorEnums.Authentication_SmartCard);
+                //NavigateTo(NavigatorEnums.Authentication_SmartCard);
                 ////// For testing purpose
-                //Session session = Session.Instance;
+                Session session = Session.Instance;
                 //// Supervisee
-                //Trinity.BE.User user = new DAL_User().GetUserByUserId("bb67863c-c330-41aa-b397-c220428ad16f").Data;
-                //session[CommonConstants.USER_LOGIN] = user;
+                Trinity.BE.User user = new DAL_User().GetUserByUserId("06a91b1b-99c3-428d-8a55-83892c2adf4c").Data;
+                session[CommonConstants.USER_LOGIN] = user;
                 ////// Duty Officer
                 //////Trinity.BE.User user = new DAL_User().GetUserByUserId("dfbb2a6a-9e45-4a76-9f75-af1a7824a947", true);
                 //////session[CommonConstants.USER_LOGIN] = user;
-                //session.IsSmartCardAuthenticated = true;
-                //session.IsFingerprintAuthenticated = true;
-                //NavigateTo(NavigatorEnums.Supervisee_Particulars);
+                session.IsSmartCardAuthenticated = true;
+                session.IsFingerprintAuthenticated = true;
+                NavigateTo(NavigatorEnums.Supervisee_Particulars);
                 //////NavigateTo(NavigatorEnums.Authentication_NRIC);
 
                 _isFirstTimeLoaded = false;

@@ -69,21 +69,23 @@ namespace Trinity.Device.Util
         {
             try
             {
-                //MessageBox.Show("PrintTTLabel");
+                MessageBox.Show("PrintTTLabel ");
                 // validate
                 if (!ttLabelInfo.IsValid())
                 {
-                    //MessageBox.Show("!ttLabelInfo.IsValid");
+                    MessageBox.Show("!ttLabelInfo.IsValid");
                     return false;
                 }
 
                 //Open specified printer driver
+                    MessageBox.Show(EnumDeviceNames.TTLabelPrinter);
                 TSCLIB_DLL.openport(EnumDeviceNames.TTLabelPrinter);
 
                 //Setup the media size and sensor type info
                 // page size 55mm x 30mm
                 // template size 45mm x 30mm (actually 55mm x 32.5mm)
                 TSCLIB_DLL.setup("55", "32.5", "4", "8", "0", "0", "0");
+                MessageBox.Show("Setup compeleted");
 
                 //Clear image buffer
                 TSCLIB_DLL.clearbuffer();
@@ -128,12 +130,13 @@ namespace Trinity.Device.Util
                 TSCLIB_DLL.printlabel("1", "1");
                 TSCLIB_DLL.closeport();
 
+                MessageBox.Show("Print OK");
                 return true;
             }
             catch (Exception ex)
             {
                 //Debug.WriteLine("Print exception: " + ex.ToString());
-                //MessageBox.Show("Print exception: " + ex.ToString());
+                MessageBox.Show("Print exception: " + ex.ToString());
                 return false;
             }
         }
