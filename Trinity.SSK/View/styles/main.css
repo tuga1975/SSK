@@ -456,3 +456,7 @@ highlight {
         font-weight: bold;
         display: inline-block;
     }
+
+::-ms-clear {
+    display: none;
+}

@@ -51,10 +51,10 @@ namespace DutyOfficer
             _jsCallCS.OnLogOutCompleted += JSCallCS_OnLogOutCompleted;
 
             // SmartCard
-            SmartCard.Instance.GetCardInfoSucceeded += GetCardInfoSucceeded;
+            //SmartCard.Instance.GetCardInfoSucceeded += GetCardInfoSucceeded;
             // Fingerprint
-            Fingerprint.Instance.OnIdentificationCompleted += Fingerprint_OnIdentificationCompleted;
-            Fingerprint.Instance.OnDeviceDisconnected += Fingerprint_OnDeviceDisconnected;
+            //Fingerprint.Instance.OnIdentificationCompleted += Fingerprint_OnIdentificationCompleted;
+            //Fingerprint.Instance.OnDeviceDisconnected += Fingerprint_OnDeviceDisconnected;
 
             _eventCenter = EventCenter.Default;
             _eventCenter.OnNewEvent += EventCenter_OnNewEvent;
@@ -385,7 +385,11 @@ namespace DutyOfficer
         private void NavigateTo(NavigatorEnums navigatorEnum)
         {
             // navigate
-            if (navigatorEnum == NavigatorEnums.Authentication_SmartCard)
+            if (navigatorEnum == NavigatorEnums.Login)
+            {
+                LayerWeb.LoadPageHtml("Login.html");
+            }
+            else if (navigatorEnum == NavigatorEnums.Authentication_SmartCard)
             {
                 _isSmartCardToLogin = true;
                 LayerWeb.LoadPageHtml("Authentication/SmartCard.html");
@@ -469,12 +473,10 @@ namespace DutyOfficer
 
         private void LayerWeb_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
-            LayerWeb.InvokeScript("createEvent", JsonConvert.SerializeObject(_jsCallCS.GetType().GetMethods().Where(d => (d.IsPublic && !d.IsVirtual && !d.IsSecuritySafeCritical) || (d.IsPublic && d.IsSecurityCritical)).ToArray().Select(d => d.Name)));
-
             if (_isFirstTimeLoaded)
             {
-                NavigateTo(NavigatorEnums.Authentication_SmartCard);
-
+                LayerWeb.InvokeScript("createEvent", JsonConvert.SerializeObject(_jsCallCS.GetType().GetMethods().Where(d => (d.IsPublic && !d.IsVirtual && !d.IsSecuritySafeCritical) || (d.IsPublic && d.IsSecurityCritical)).ToArray().Select(d => d.Name)));
+                NavigateTo(NavigatorEnums.Login);
                 _isFirstTimeLoaded = false;
             }
 

@@ -913,6 +913,44 @@ namespace DutyOfficer
             }
         }
 
+        public void Login(string username,string password)
+        {
+            var dalUser = new DAL_User();
+            ApplicationUser appUser = dalUser.Login(username, password);
+            if (appUser != null)
+            {
+                if (dalUser.IsInRole(appUser.Id, EnumUserRoles.DutyOfficer))
+                {
+                    Trinity.BE.User user = new Trinity.BE.User()
+                    {
+                        RightThumbFingerprint = appUser.RightThumbFingerprint,
+                        LeftThumbFingerprint = appUser.LeftThumbFingerprint,
+                        IsFirstAttempt = appUser.IsFirstAttempt,
+                        Name = appUser.Name,
+                        NRIC = appUser.NRIC,
+                        Role = EnumUserRoles.EnrolmentOfficer,
+                        SmartCardId = appUser.SmartCardId,
+                        Status = appUser.Status,
+                        UserId = appUser.Id
+                    };
+                    Session session = Session.Instance;
+                    session.IsUserNamePasswordAuthenticated = true;
+                    session.Role = EnumUserRoles.EnrolmentOfficer;
+                    session[CommonConstants.USER_LOGIN] = user;
+
+                    Trinity.SignalR.Client.Instance.UserLoggedIn(user.UserId);
+
+                }
+                else
+                {
+                    this._web.InvokeScript("ShowMessageBox", "You do not have permission to access this page.");
+                }
+            }
+            else
+            {
+                this._web.InvokeScript("ShowMessageBox", "Your username or password is incorrect.");
+            }
+        }
         protected virtual void RaiseLogOutCompletedEvent()
         {
             OnLogOutCompleted?.Invoke();
