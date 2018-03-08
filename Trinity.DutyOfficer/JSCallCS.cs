@@ -132,12 +132,12 @@ namespace DutyOfficer
                     UserId = queue.Appointment.UserId,
                     NRIC = queue.Appointment.Membership_Users.NRIC,
                     Name = queue.Appointment.Membership_Users.Name,
-                    APS = queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStations.SSK).Status!= EnumQueueStatuses.Finished?EnumColors.Green: EnumColors.White,
-                    SSK = queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStations.SSK).Status != EnumQueueStatuses.Finished ? EnumColors.Green : EnumColors.White,
-                    SSA = queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStations.SSA).Color,
-                    UHP = queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStations.UHP).Color,
-                    HSA = queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStations.HSA).Status == EnumQueueStatuses.Finished ? GetResultUT(queue.Appointment.Membership_Users.NRIC) : string.Empty,
-                    ESP = queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStations.ESP).Color,
+                    APS = queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStation.SSK).Status!= EnumQueueStatuses.Finished?EnumColors.Green: EnumColors.White,
+                    SSK = queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStation.SSK).Status != EnumQueueStatuses.Finished ? EnumColors.Green : EnumColors.White,
+                    SSA = queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStation.SSA).Color,
+                    UHP = queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStation.UHP).Color,
+                    HSA = queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStation.HSA).Status == EnumQueueStatuses.Finished ? GetResultUT(queue.Appointment.Membership_Users.NRIC) : string.Empty,
+                    ESP = queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStation.ESP).Color,
                     Outcome = queue.Outcome,
                     Message = new
                     {

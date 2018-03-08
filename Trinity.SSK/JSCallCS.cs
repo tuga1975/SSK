@@ -292,7 +292,7 @@ namespace SSK
             //var dalQueue = new DAL_QueueNumber();
             //if (dbAppointment != null)
             //{
-            //if (!dalQueue.CheckQueueExistToday(dbAppointment.UserId, EnumStations.SSK))
+            //if (!dalQueue.CheckQueueExistToday(dbAppointment.UserId, EnumStation.SSK))
             //    {
             //        //var data = JsonConvert.SerializeObject(new { IDAppointment, timeStart, timeEnd });
             //        new DAL_Appointments().UpdateBookingTime(IDAppointment, timeStart, timeEnd);
@@ -601,7 +601,7 @@ namespace SSK
                     }
                     else
                     {
-                        queueNumber = _dalQueue.InsertQueueNumberFromDO(supervisee.UserId, EnumStations.SSK, currentUser.UserId);
+                        queueNumber = _dalQueue.InsertQueueNumberFromDO(supervisee.UserId, EnumStation.SSK, currentUser.UserId);
                         if (queueNumber != null)
                         {
                             APIUtils.FormQueueNumber.RefreshQueueNumbers();
@@ -626,7 +626,7 @@ namespace SSK
 
                 //    if (appointment.Timeslot_ID != null)
                 //    {
-                //        queueNumber = _dalQueue.InsertQueueNumber(appointment.ID, appointment.UserId, EnumStations.SSK);
+                //        queueNumber = _dalQueue.InsertQueueNumber(appointment.ID, appointment.UserId, EnumStation.SSK);
 
                 //        var eventCenter = Trinity.Common.Common.EventCenter.Default;
                 //        eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_MESSAGE, Message = "Your queue number is:" + queueNumber.QueuedNumber });

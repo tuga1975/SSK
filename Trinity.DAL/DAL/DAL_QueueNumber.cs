@@ -96,7 +96,7 @@ namespace Trinity.DAL
                 foreach (var item in listStation)
                 {
                     var queueDetails = new Trinity.DAL.DBContext.QueueDetail { Queue_ID = dataInsert.Queue_ID, Station = item, Status = EnumQueueStatuses.Waiting };
-                    if (queueDetails.Station == EnumStations.APS)
+                    if (queueDetails.Station == EnumStation.APS)
                         queueDetails.Status = EnumQueueStatuses.Finished;
                     arrayQueueDetail.Add(queueDetails);
 
@@ -155,7 +155,7 @@ namespace Trinity.DAL
                 foreach (var item in listStation)
                 {
                     var queueDetails = new Trinity.DAL.DBContext.QueueDetail { Queue_ID = dataInsert.Queue_ID, Station = item, Status = EnumQueueStatuses.Waiting };
-                    if (queueDetails.Station == EnumStations.APS)
+                    if (queueDetails.Station == EnumStation.APS)
                         queueDetails.Status = EnumQueueStatuses.Finished;
                     arrayQueueDetail.Add(queueDetails);
 
