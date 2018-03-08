@@ -206,11 +206,7 @@ namespace SSK
                 string dutyOfficerId = "bd6089d4-ab74-4cbc-9c8e-6867afe37ce8";
                 Session session = Session.Instance;
 
-                if (string.IsNullOrEmpty(startFrom))
-                {
-                    NavigateTo(NavigatorEnums.Authentication_SmartCard);
-                }
-                else if (startFrom == "Supervisee")
+                if (startFrom == "Supervisee")
                 {
                     Trinity.BE.User user = new DAL_User().GetUserByUserId(superviseeId).Data;
                     session[CommonConstants.USER_LOGIN] = user;
@@ -234,6 +230,11 @@ namespace SSK
                     session.IsFingerprintAuthenticated = true;
                     NavigateTo(NavigatorEnums.Authentication_NRIC);
                 }
+                else
+                {
+                    NavigateTo(NavigatorEnums.Authentication_SmartCard);
+                }
+
                 _isFirstTimeLoaded = false;
 
                 // LayerWeb initiation is compeleted, update application status

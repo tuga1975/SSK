@@ -176,16 +176,12 @@ namespace SSA
                 // Start page
                 //NavigateTo(NavigatorEnums.Authentication_SmartCard);
 
-                string startFrom = "Supervisee";
+                string startFrom = "Supervisee_Particulars";
                 string superviseeId = "06a91b1b-99c3-428d-8a55-83892c2adf4c";
                 string dutyOfficerId = "bd6089d4-ab74-4cbc-9c8e-6867afe37ce8";
                 Session session = Session.Instance;
-
-                if (string.IsNullOrEmpty(startFrom))
-                {
-                    NavigateTo(NavigatorEnums.Authentication_SmartCard);
-                }
-                else if (startFrom == "Supervisee_Particulars")
+                
+                if (startFrom == "Supervisee_Particulars")
                 {
                     Trinity.BE.User user = new DAL_User().GetUserByUserId(superviseeId).Data;
                     session[CommonConstants.USER_LOGIN] = user;
@@ -208,6 +204,10 @@ namespace SSA
                     session.IsSmartCardAuthenticated = true;
                     session.IsFingerprintAuthenticated = true;
                     NavigateTo(NavigatorEnums.Authentication_NRIC);
+                }
+                else
+                {
+                    NavigateTo(NavigatorEnums.Authentication_SmartCard);
                 }
                 ////// For testing purpose
                 //Session session = Session.Instance;
