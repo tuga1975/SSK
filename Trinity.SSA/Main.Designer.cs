@@ -35,14 +35,12 @@
             // 
             // LayerWeb
             // 
-            this.LayerWeb.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.LayerWeb.Dock = System.Windows.Forms.DockStyle.Fill;
             this.LayerWeb.Location = new System.Drawing.Point(0, 0);
             this.LayerWeb.Margin = new System.Windows.Forms.Padding(4);
             this.LayerWeb.MinimumSize = new System.Drawing.Size(27, 25);
             this.LayerWeb.Name = "LayerWeb";
-            this.LayerWeb.Size = new System.Drawing.Size(1675, 720);
+            this.LayerWeb.Size = new System.Drawing.Size(1675, 788);
             this.LayerWeb.TabIndex = 0;
             this.LayerWeb.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.LayerWeb_DocumentCompleted);
             // 
@@ -57,6 +55,7 @@
             this.btnConfirm.Tag = "0";
             this.btnConfirm.Text = "Initialize MUB Applicator";
             this.btnConfirm.UseVisualStyleBackColor = true;
+            this.btnConfirm.Visible = false;
             this.btnConfirm.Click += new System.EventHandler(this.btnConfirm_Click);
             // 
             // lblStatus
