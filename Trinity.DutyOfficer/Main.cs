@@ -360,15 +360,8 @@ namespace DutyOfficer
             string errorMessage = "User '" + user.Name + "' cannot complete facial authentication";
             Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(user.UserId, "Facial authentication failed", errorMessage, EnumNotificationTypes.Error);
 
-            // show message box to user
-            //MessageBox.Show("Facial authentication failed", "Facial Authentication", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            Trinity.BE.PopupModel popupModel = new Trinity.BE.PopupModel();
-            popupModel.Title = "Authorization Failed";
-            popupModel.Message = "Facial Recognition failed.\nPlease report to the Duty Officer";
-            popupModel.IsShowLoading = false;
-            popupModel.IsShowOK = true;
-
-            LayerWeb.InvokeScript("showPopupModal", JsonConvert.SerializeObject(popupModel));
+            // show message box to user            
+            MessageBox.Show("Facial Recognition failed.\nPlease report to the Duty Officer", "Authentication Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
             // navigate to smartcard login page
             NavigateTo(NavigatorEnums.Authentication_SmartCard);
