@@ -41,9 +41,9 @@ namespace Trinity.NotificationServer
             {
                 SignalR = WebApp.Start(ServerURI);
             }
-            catch (TargetInvocationException)
+            catch (Exception ex)
             {
-                WriteToConsole("Server could not start. Another instance is running...");
+                WriteToConsole("Server could not start. Details:" + ex.Message);
                 //Re-enable button to let user try to start server again
                 this.Invoke((Action)(() => ButtonStart.Enabled = true));
                 return;
