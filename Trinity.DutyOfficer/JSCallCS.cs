@@ -921,25 +921,25 @@ namespace DutyOfficer
             {
                 if (dalUser.IsInRole(appUser.Id, EnumUserRoles.DutyOfficer))
                 {
+                    
                     Trinity.BE.User user = new Trinity.BE.User()
                     {
-                        RightThumbFingerprint = appUser.RightThumbFingerprint,
-                        LeftThumbFingerprint = appUser.LeftThumbFingerprint,
-                        IsFirstAttempt = appUser.IsFirstAttempt,
-                        Name = appUser.Name,
-                        NRIC = appUser.NRIC,
-                        Role = EnumUserRoles.EnrolmentOfficer,
-                        SmartCardId = appUser.SmartCardId,
-                        Status = appUser.Status,
-                        UserId = appUser.Id
+                        UserId = appUser.Id,
+                            Status = appUser.Status,
+                            SmartCardId = appUser.SmartCardId,
+                            RightThumbFingerprint = appUser.RightThumbFingerprint,
+                            LeftThumbFingerprint = appUser.LeftThumbFingerprint,
+                            Name = appUser.Name,
+                            NRIC = appUser.NRIC,
+                            IsFirstAttempt = appUser.IsFirstAttempt
                     };
+                    user.Role = EnumUserRoles.DutyOfficer;
                     Session session = Session.Instance;
                     session.IsUserNamePasswordAuthenticated = true;
                     session.Role = EnumUserRoles.EnrolmentOfficer;
                     session[CommonConstants.USER_LOGIN] = user;
-
                     Trinity.SignalR.Client.Instance.UserLoggedIn(user.UserId);
-
+                    EventCenter.Default.RaiseEvent(new Trinity.Common.EventInfo() { Code = 0, Name = EventNames.LOGIN_SUCCEEDED });
                 }
                 else
                 {
