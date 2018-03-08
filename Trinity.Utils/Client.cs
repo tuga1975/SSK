@@ -194,7 +194,7 @@ namespace Trinity.SignalR
             //await HubProxy.Invoke("UserLogout", userID);
         }
 
-        public void DeviceStatusChanged(int deviceId, EnumDeviceStatuses[] newDeviceStatuses)
+        public void DeviceStatusChanged(int deviceId, EnumDeviceStatus[] newDeviceStatuses)
         {
             PostNotification(notificationInfo: new NotificationInfo() { Name = NotificationNames.DEVICE_STATUS_CHANGED, Type = EnumNotificationTypes.Notification, Data = new object[] { deviceId, newDeviceStatuses } });
 

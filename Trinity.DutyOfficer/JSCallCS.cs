@@ -53,10 +53,10 @@ namespace DutyOfficer
         public StationColorDevice GetStationClolorDevice()
         {
             var dalDeviceStatus = new DAL_DeviceStatus();
-            _StationColorDevice.SSAColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStations.SSA);
-            _StationColorDevice.SSKColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStations.SSK);
-            _StationColorDevice.ESPColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStations.ESP);
-            _StationColorDevice.UHPColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStations.UHP);
+            _StationColorDevice.SSAColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStation.SSA);
+            _StationColorDevice.SSKColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStation.SSK);
+            _StationColorDevice.ESPColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStation.ESP);
+            _StationColorDevice.UHPColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStation.UHP);
             return _StationColorDevice;
         }
 
@@ -117,7 +117,7 @@ namespace DutyOfficer
 
             // Update next station is ESP, message of ESP to 'Waiting for ESP'
             var dalQueue = new DAL_QueueNumber();
-            dalQueue.UpdateQueueStatusByUserId(UserId, EnumStations.HSA, EnumQueueStatuses.Finished, EnumStations.ESP, EnumQueueStatuses.Processing, "Waiting for ESP", EnumQueueOutcomeText.Processing);
+            dalQueue.UpdateQueueStatusByUserId(UserId, EnumStation.HSA, EnumQueueStatuses.Finished, EnumStation.ESP, EnumQueueStatuses.Processing, "Waiting for ESP", EnumQueueOutcomeText.Processing);
 
             // Re-load queue
             this._web.InvokeScript("reloadDataQueues");
@@ -132,12 +132,12 @@ namespace DutyOfficer
                     UserId = queue.Appointment.UserId,
                     NRIC = queue.Appointment.Membership_Users.NRIC,
                     Name = queue.Appointment.Membership_Users.Name,
-                    APS = queue.QueueDetails.Where(c => c.Station == EnumStations.APS).FirstOrDefault().Color,
-                    SSK = queue.QueueDetails.Where(c => c.Station == EnumStations.SSK).FirstOrDefault().Color,
-                    SSA = queue.QueueDetails.Where(c => c.Station == EnumStations.SSA).FirstOrDefault().Color,
-                    UHP = queue.QueueDetails.Where(c => c.Station == EnumStations.UHP).FirstOrDefault().Color,
-                    HSA = queue.QueueDetails.Where(c => c.Station == EnumStations.HSA).FirstOrDefault().Status == EnumQueueStatuses.Finished ? GetResultUT(queue.Appointment.Membership_Users.NRIC) : string.Empty,
-                    ESP = queue.QueueDetails.Where(c => c.Station == EnumStations.ESP).FirstOrDefault().Color,
+                    APS = queue.QueueDetails.Where(c => c.Station == EnumStation.APS).FirstOrDefault().Color,
+                    SSK = queue.QueueDetails.Where(c => c.Station == EnumStation.SSK).FirstOrDefault().Color,
+                    SSA = queue.QueueDetails.Where(c => c.Station == EnumStation.SSA).FirstOrDefault().Color,
+                    UHP = queue.QueueDetails.Where(c => c.Station == EnumStation.UHP).FirstOrDefault().Color,
+                    HSA = queue.QueueDetails.Where(c => c.Station == EnumStation.HSA).FirstOrDefault().Status == EnumQueueStatuses.Finished ? GetResultUT(queue.Appointment.Membership_Users.NRIC) : string.Empty,
+                    ESP = queue.QueueDetails.Where(c => c.Station == EnumStation.ESP).FirstOrDefault().Color,
                     Outcome = queue.Outcome,
                     Message = new
                     {
@@ -183,7 +183,7 @@ namespace DutyOfficer
                 {
                     message = "Select outcome";
                 }
-                dalQueue.UpdateQueueStatusByUserId(UserId, EnumStations.HSA, EnumQueueStatuses.Finished, EnumStations.ESP, EnumQueueStatuses.Processing, message, EnumQueueOutcomeText.TapSmartCardToContinue);
+                dalQueue.UpdateQueueStatusByUserId(UserId, EnumStation.HSA, EnumQueueStatuses.Finished, EnumStation.ESP, EnumQueueStatuses.Processing, message, EnumQueueOutcomeText.TapSmartCardToContinue);
 
                 // Re-load queue
                 this._web.InvokeScript("reloadDataQueues");
@@ -250,7 +250,7 @@ namespace DutyOfficer
                     // update outcome to 'Unconditional Release'
                     //dalQueue.UpdateQueueOutcomeByQueueId(new Guid(queueId), EnumQueueOutcomeText.UnconditionalRelease);
 
-                    dalQueue.UpdateQueueStatusByUserId(queueDetail.UserId, EnumStations.ESP, EnumQueueStatuses.NotRequired, EnumStations.ESP, EnumQueueStatuses.NotRequired, "", EnumQueueOutcomeText.UnconditionalRelease);
+                    dalQueue.UpdateQueueStatusByUserId(queueDetail.UserId, EnumStation.ESP, EnumQueueStatuses.NotRequired, EnumStation.ESP, EnumQueueStatuses.NotRequired, "", EnumQueueOutcomeText.UnconditionalRelease);
 
                     // Re-load queue
                     this._web.InvokeScript("reloadDataQueues");
@@ -267,7 +267,7 @@ namespace DutyOfficer
             DAL_QueueNumber dalQueue = new DAL_QueueNumber();
             //dalQueue.UpdateQueueOutcomeByQueueId(new Guid(queueID), outcome);
             var queueDetail = dalQueue.GetQueueInfoByQueueID(new Guid(queueID));
-            dalQueue.UpdateQueueStatusByUserId(queueDetail.UserId, EnumStations.ESP, EnumQueueStatuses.Finished, EnumStations.ESP, EnumQueueStatuses.Finished, "", outcome);
+            dalQueue.UpdateQueueStatusByUserId(queueDetail.UserId, EnumStation.ESP, EnumQueueStatuses.Finished, EnumStation.ESP, EnumQueueStatuses.Finished, "", outcome);
 
             // Re-load queue
             this._web.InvokeScript("reloadDataQueues");
@@ -460,7 +460,7 @@ namespace DutyOfficer
                 Trinity.DAL.DBContext.Timeslot timeslot = dalQueue.GetTimeSlotEmpty();
                 var response= dalAppointment.UpdateTimeslotForApptmt(appointment.ID, timeslot.Timeslot_ID);
                 appointment = response;
-                Trinity.DAL.DBContext.Queue queueNumber = dalQueue.InsertQueueNumber(appointment.ID, appointment.UserId, EnumStations.SSK, dutyOfficer.UserId);
+                Trinity.DAL.DBContext.Queue queueNumber = dalQueue.InsertQueueNumber(appointment.ID, appointment.UserId, EnumStation.SSK, dutyOfficer.UserId);
             }
         }
         #endregion
@@ -572,7 +572,7 @@ namespace DutyOfficer
                         Label_Type = EnumLabelType.MUB,
                         Date = DateTime.Now.ToString("dd/MM/yyyy"),
                         CompanyName = CommonConstants.COMPANY_NAME,
-                        LastStation = EnumStations.DUTYOFFICER,
+                        LastStation = EnumStation.DUTYOFFICER,
                         MarkingNo = new DAL_SettingSystem().GenerateMarkingNumber(),
                         DrugType = item.DrugType,
                         ReprintReason = reason,
@@ -689,7 +689,7 @@ namespace DutyOfficer
                         Label_Type = EnumLabelType.MUB,
                         Date = DateTime.Now.ToString("dd/MM/yyyy"),
                         CompanyName = CommonConstants.COMPANY_NAME,
-                        LastStation = EnumStations.DUTYOFFICER,
+                        LastStation = EnumStation.DUTYOFFICER,
                         MarkingNo = new DAL_SettingSystem().GenerateMarkingNumber(),
                         //DrugType = "NA",
                         ReprintReason = reason,
@@ -766,7 +766,7 @@ namespace DutyOfficer
                 Name = e.LabelInfo.Name,
                 Date = DateTime.Now,
                 QRCode = e.LabelInfo.QRCode,
-                LastStation = EnumStations.DUTYOFFICER,
+                LastStation = EnumStation.DUTYOFFICER,
                 PrintCount = e.LabelInfo.PrintCount,
                 ReprintReason = e.LabelInfo.ReprintReason
             };

@@ -35,9 +35,9 @@ namespace Trinity.Device.Util
         }
         #endregion
 
-        public EnumDeviceStatuses[] GetDeviceStatus()
+        public EnumDeviceStatus[] GetDeviceStatus()
         {
-            return new EnumDeviceStatuses[] { EnumDeviceStatuses.Disconnected };
+            return new EnumDeviceStatus[] { EnumDeviceStatus.Disconnected };
         }
     }
 }

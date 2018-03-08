@@ -45,7 +45,7 @@ namespace DutyOfficer.CodeBehind
                     string barcodePrinterName = ConfigurationManager.AppSettings["BarcodePrinterName"].ToUpper();
                     var statusPrinterBarcode = barcodeScannerUtils.GetDeviceStatus(barcodePrinterName);
 
-                    if (statusPrinterBarcode.Count() == 1 && statusPrinterBarcode[0] == EnumDeviceStatuses.Connected)
+                    if (statusPrinterBarcode.Count() == 1 && statusPrinterBarcode[0] == EnumDeviceStatus.Connected)
                         printerMonitor.PrintBarcodeLabel(labelInfo);
                     else
                     {
@@ -67,7 +67,7 @@ namespace DutyOfficer.CodeBehind
                     string UBPrinterName = ConfigurationManager.AppSettings["UBPrinterName"].ToUpper();
                     var statusPrinterUB = barcodeScannerUtils.GetDeviceStatus(UBPrinterName);
 
-                    if (statusPrinterUB.Count() == 1 && statusPrinterUB[0] == EnumDeviceStatuses.Connected)
+                    if (statusPrinterUB.Count() == 1 && statusPrinterUB[0] == EnumDeviceStatus.Connected)
                         printerMonitor.PrintMUBLabel(labelInfo);
                     else
                     {

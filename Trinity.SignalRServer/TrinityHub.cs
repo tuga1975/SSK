@@ -22,11 +22,11 @@ namespace Trinity.NotificationServer
         {
             if (notificationInfo.Name == NotificationNames.QUEUE_COMPLETED)
             {
-                Clients.Clients(Program.ProfileConnected.Where(d => d.isApp && d.Station == EnumStations.SSK).Select(d => d.ConnectionId).ToList()).OnNewNotification(notificationInfo);
+                Clients.Clients(Program.ProfileConnected.Where(d => d.isApp && d.Station == EnumStation.SSK).Select(d => d.ConnectionId).ToList()).OnNewNotification(notificationInfo);
             }
             else if (notificationInfo.Name == NotificationNames.DEVICE_STATUS_CHANGED)
             {
-                Clients.Clients(Program.ProfileConnected.Where(d => d.isApp && d.Station == EnumStations.DUTYOFFICER).Select(d => d.ConnectionId).ToList()).OnNewNotification(notificationInfo);
+                Clients.Clients(Program.ProfileConnected.Where(d => d.isApp && d.Station == EnumStation.DUTYOFFICER).Select(d => d.ConnectionId).ToList()).OnNewNotification(notificationInfo);
             }
             else if (notificationInfo.Name == NotificationNames.USER_LOGGED_IN)
             {
@@ -101,7 +101,7 @@ namespace Trinity.NotificationServer
                 if (item.isApp)
                 {
                     Program.MainForm.WriteToConsole("[" + item.Station + "] => App Disconnected");
-                    foreach (var itemConnect in Program.ProfileConnected.Where(d => d.isUser && d.Station == EnumStations.DUTYOFFICER))
+                    foreach (var itemConnect in Program.ProfileConnected.Where(d => d.isUser && d.Station == EnumStation.DUTYOFFICER))
                     {
                         NotificationInfo notificationInfo = new NotificationInfo()
                         {

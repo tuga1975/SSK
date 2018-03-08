@@ -254,7 +254,7 @@ namespace SSK
             try
             {
                 // if appointment is in queue, return false
-                bool inQueue = new DAL_QueueNumber().IsInQueue(appointment_ID, EnumStations.SSK);
+                bool inQueue = new DAL_QueueNumber().IsInQueue(appointment_ID, EnumStation.SSK);
                 if (inQueue)
                 {
                     return false;
@@ -586,7 +586,7 @@ namespace SSK
                     }
                     else if (appointment != null && !string.IsNullOrEmpty(appointment.Timeslot_ID))
                     {
-                        queueNumber = _dalQueue.InsertQueueNumber(appointment.ID, appointment.UserId, EnumStations.SSK, currentUser.UserId);
+                        queueNumber = _dalQueue.InsertQueueNumber(appointment.ID, appointment.UserId, EnumStation.SSK, currentUser.UserId);
                         if (queueNumber != null)
                         {
                             APIUtils.FormQueueNumber.RefreshQueueNumbers();
@@ -601,7 +601,7 @@ namespace SSK
                     }
                     else
                     {
-                        queueNumber = _dalQueue.InsertQueueNumberFromDO(appointment.UserId, EnumStations.SSK, currentUser.UserId);
+                        queueNumber = _dalQueue.InsertQueueNumberFromDO(appointment.UserId, EnumStation.SSK, currentUser.UserId);
                         if (queueNumber != null)
                         {
                             APIUtils.FormQueueNumber.RefreshQueueNumbers();
@@ -750,19 +750,6 @@ namespace SSK
             LoadPage("Supervisee.html");
 
         }
-        public void CancelDOEnterNRIC()
-        {
-            Session session = Session.Instance;
-            var user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-            if (user != null)
-            {
-                session.IsSmartCardAuthenticated = false;
-                session.IsFingerprintAuthenticated = false;
-                session[CommonConstants.USER_LOGIN] = null;
-                session[CommonConstants.PROFILE_DATA] = null;
-                Trinity.Common.Common.EventCenter.Default.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.DO_CANCEL_ENTER_NRIC});
-            }
-        }
         public void LogOut()
         {
             // reset session value
@@ -770,17 +757,13 @@ namespace SSK
             var user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
             if (user != null)
             {
-                Trinity.SignalR.Client.Instance.UserLoggedOut(((Trinity.BE.User)session[CommonConstants.USER_LOGIN]).UserId);
-
-                session.IsSmartCardAuthenticated = false;
-                session.IsFingerprintAuthenticated = false;
-                session[CommonConstants.USER_LOGIN] = null;
-                session[CommonConstants.PROFILE_DATA] = null;
-
-                //
-                // RaiseLogOutCompletedEvent
-                RaiseLogOutCompletedEvent();
+                Trinity.SignalR.Client.Instance.UserLoggedOut(((Trinity.BE.User)session[CommonConstants.USER_LOGIN]).UserId);   
             }
+            session.IsSmartCardAuthenticated = false;
+            session.IsFingerprintAuthenticated = false;
+            session[CommonConstants.USER_LOGIN] = null;
+            session[CommonConstants.PROFILE_DATA] = null;
+            RaiseLogOutCompletedEvent();
         }
     }
 

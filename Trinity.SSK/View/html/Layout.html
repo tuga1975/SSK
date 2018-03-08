@@ -18,37 +18,16 @@
 
 </head>
 <body>
-    <!--<div class="bodyContent">
-        <div id="header">
-            <div class="logo" title="logo">
-                <img src="../img/logoCNB.png" />
-            </div>
-            <div class="logoutWrapper">
-                <div class="logout" title="Logout" onclick="confirm('Are you sure you want to logout?') == true ? api.server.LogOut() : null" id="btn-logout">
-                    <img src="../img/Logout.png" /> Exit
-                </div>
-            </div>
-        </div>
-        <div id="parent-content">
-            <div id="content">
-
-            </div>
-        </div>
-
-        <div class="loading">
-            <span class="loader"></span>
-        </div>
-        <div id="panel-popup">
-
-        </div>
-    </div>-->
     <div class="bodyContent">
-        
+        <div id="header" right-show="">
+            <div class="logo"></div>
+            <div class="logout" onclick="(confirm('Are you sure you want to logout?') == true ? api.server.LogOut() : null)"></div>
+            <div class="back-main" onclick="api.server.LoadSupervisee()">
+                <b class="ion-navicon-round">Back to Main menu</b>
+            </div>
+        </div>
         <div id="parent-content">
             <div id="content">
-                <!--<div id="footer" style="position:fixed;bottom:0px;left:10px;width:calc(100% - 20px);height:50px;text-align:right;">
-                <input type="button" value="SUBMIT" style="background-color:aqua;color:#FFF;border:none;border-radius:5px;padding:8px 15px;" />
-            </div>-->
             </div>
         </div>
         <div class="loading">
@@ -60,24 +39,3 @@
     </div>
 </body>
 </html>
-<script type="text/javascript">
-    //function showPopupModal(popupModel) {
-    //    //api.ready(function () {
-    //    api.server.popupLoading(popupModel, function () {
-    //        $('#popupLoading').modal({
-    //            backdrop: 'static',
-    //            keyboard: false
-    //        });
-    //    });
-    //    //});
-    //};
-
-    //function closePopup() {
-    //    $('.modal-backdrop').remove();
-    //    $('#popupLoading').modal('toggle');
-    //};
-
-    ////$(".input-group input").focus(function () {
-    ////    $(this).
-    ////});
-</script>

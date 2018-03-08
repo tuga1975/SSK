@@ -2,6 +2,6 @@
 {
     public abstract class DeviceUtil
     {
-        public abstract EnumDeviceStatuses[] GetDeviceStatus();
+        public abstract EnumDeviceStatus[] GetDeviceStatus();
     }
 }
