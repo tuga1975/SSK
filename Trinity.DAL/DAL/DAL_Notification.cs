@@ -493,7 +493,7 @@ namespace Trinity.DAL
         /// <param name="isFromSupervisee"></param>
         /// <param name="isLocal"></param>
         /// <param name="notifyType">NotificationType : {Error : 'E', Notification : 'N', Caution : 'C'}</param>
-        /// <param name="source">EnumStations : {SSA, SSK, UHP, ASP, HSA, ASP}</param>
+        /// <param name="source">EnumStation : {SSA, SSK, UHP, ASP, HSA, ASP}</param>
         public void InsertNotification(string subject, string content, string fromUserId,
             string toUserId, bool isFromSupervisee, bool isLocal, string notifyType,
             string source)
