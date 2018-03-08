@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Drawing.Printing;
 using System.IO;
 using System.Management;
+using System.Threading;
 using System.Windows.Forms;
 using Trinity.Common;
 
@@ -69,7 +70,7 @@ namespace Trinity.Device.Util
         {
             try
             {
-                MessageBox.Show("PrintTTLabel ");
+                //MessageBox.Show("PrintTTLabel ");
                 // validate
                 if (!ttLabelInfo.IsValid())
                 {
@@ -78,14 +79,17 @@ namespace Trinity.Device.Util
                 }
 
                 //Open specified printer driver
-                    MessageBox.Show(EnumDeviceNames.TTLabelPrinter);
+
+                // Wait for 200 miliseconds
+                Thread.Sleep(200);
+                //MessageBox.Show(EnumDeviceNames.TTLabelPrinter);
                 TSCLIB_DLL.openport(EnumDeviceNames.TTLabelPrinter);
 
                 //Setup the media size and sensor type info
                 // page size 55mm x 30mm
                 // template size 45mm x 30mm (actually 55mm x 32.5mm)
                 TSCLIB_DLL.setup("55", "32.5", "4", "8", "0", "0", "0");
-                MessageBox.Show("Setup compeleted");
+                //MessageBox.Show("Setup compeleted");
 
                 //Clear image buffer
                 TSCLIB_DLL.clearbuffer();
@@ -130,7 +134,7 @@ namespace Trinity.Device.Util
                 TSCLIB_DLL.printlabel("1", "1");
                 TSCLIB_DLL.closeport();
 
-                MessageBox.Show("Print OK");
+                //MessageBox.Show("Print OK");
                 return true;
             }
             catch (Exception ex)
@@ -209,7 +213,7 @@ namespace Trinity.Device.Util
                 //Drawing barcode
                 //TSCLIB_DLL.barcode(startX.ToString(), (startY += fontHeight + 8).ToString(), "39", "72", "0", "0", "1", "3", mubLabelInfo.QRCodeString);
                 TSCLIB_DLL.sendcommand("DMATRIX 120,8,400,400, \"" + mubLabelInfo.QRCodeString + "\"");
-                
+
                 //Download PCX file into printer
                 //TSCLIB_DLL.downloadpcx("UL.PCX", "UL.PCX");
                 //Drawing PCX graphic
