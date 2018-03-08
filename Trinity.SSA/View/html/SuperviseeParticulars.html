@@ -33,10 +33,13 @@
             <span class="input-group-addon">Marking Number:</span>
             <input id="MarkingNumber" type="text" class="form-control pri" name="MarkingNumber" readonly="readonly" />
         </div>-->
-
+        <div"><label id="lblPrintingStatus">0</label></div>
+        <div class="status-text">
+            ádasdasd
+        </div>
         <div id="divSave">
             <button type="button" class="btn btn-dark" id="CancelBtn">CANCEL</button>
-            <button type="button" class="btn btn-primary" id="ConfirmBtn">CONFIRM</button>
+            <button type="button" class="btn btn-primary" id="ConfirmBtn">Initialize MUB Applicator</button>
 
         </div>
     </div>
@@ -52,8 +55,10 @@
         $("#imgQRCode").attr("src", srcQRCode);
 
         $("#ConfirmBtn").click(function (e) {
+            var printingStatus = $("#lblPrintingStatus").text(); 
             var json = JSON.stringify(model);
-            api.server.MappingTemplateMUBAndTTLabels(json);
+            //api.server.MappingTemplateMUBAndTTLabels(json);
+            api.server.ConfirmAction(printingStatus, json);
             e.preventDefault(); // avoid to execute the actual submit of the form.
         });
 

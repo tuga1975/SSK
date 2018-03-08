@@ -68,13 +68,15 @@
 
 <script type="text/javascript">
     api.ready(function (model) {
-        $('#companyName').text(model.CompanyName);
-        //$('#markingNo').text('Marking No: ' + model.MarkingNo);
-        $('#date').text(model.Date);
-        $('#name').text(model.Name);
-        $('#nric').text(model.NRIC);
-        $('#markingNumber').text(model.MarkingNo);
-        var srcQRCode = "../../Temp/QRCode_" + model.NRIC + ".png";
+        var printingStatus = model[0];
+        alert('Printing status:' + printingStatus);
+        $('#companyName').text(model[1].CompanyName);
+        //$('#markingNo').text('Marking No: ' + model[1].MarkingNo);
+        $('#date').text(model[1].Date);
+        $('#name').text(model[1].Name);
+        $('#nric').text(model[1].NRIC);
+        $('#markingNumber').text(model[1].MarkingNo);
+        var srcQRCode = "../../Temp/QRCode_" + model[1].NRIC + ".png";
         $("#imgQRCode").attr("src", srcQRCode);
         html2canvas($("#canvas"), {
             onrendered: function (canvas) {
@@ -82,8 +84,8 @@
                 //document.body.appendChild(canvas);
 
                 //$("#img-out").append(canvas);
-                var json = JSON.stringify(model);
-                api.server.CallPrintingMUBAndTT(json, canvas.toDataURL());
+                var json = JSON.stringify(model[1]);
+                api.server.CallPrintingMUBAndTT(printingStatus, json, canvas.toDataURL());
                 // Clean up
                 //document.body.removeChild(canvas);
             }

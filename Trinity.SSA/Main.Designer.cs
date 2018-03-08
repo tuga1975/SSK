@@ -48,6 +48,7 @@
             // 
             // btnConfirm
             // 
+            this.btnConfirm.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnConfirm.Enabled = false;
             this.btnConfirm.Location = new System.Drawing.Point(13, 727);
             this.btnConfirm.Name = "btnConfirm";
@@ -60,12 +61,12 @@
             // 
             // lblStatus
             // 
+            this.lblStatus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblStatus.AutoSize = true;
             this.lblStatus.Location = new System.Drawing.Point(295, 743);
             this.lblStatus.Name = "lblStatus";
-            this.lblStatus.Size = new System.Drawing.Size(46, 17);
+            this.lblStatus.Size = new System.Drawing.Size(0, 17);
             this.lblStatus.TabIndex = 2;
-            this.lblStatus.Text = "label1";
             // 
             // Main
             // 
