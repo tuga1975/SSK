@@ -172,11 +172,13 @@
                                     <div class="form-inline editSlotContent row">
                                         <div class="col-6 row">
                                             <span class="control-label margin-top col-10">Maximum Supervisee per timeslot</span>
-                                            <input type="text" class="form-control col-2" id="morning-max" />
+                                            <!--<input type="text" class="form-control col-2" id="morning-max" />-->
+                                            <select class="form-control col-2" id="morning-max"></select>
                                         </div>
                                         <div class="col-3 row">
                                             <span class="control-label margin-top col-10">Reserved for spare</span>
-                                            <input type="text" class="form-control col-2" id="morning-spare" />
+                                            <!--<input type="text" class="form-control col-2" id="morning-spare" />-->
+                                            <select class="form-control col-2" id="morning-spare"></select>
                                         </div>
                                         <div class="col-3 row">
                                             <span class="control-label margin-top col-10">Intervals</span>
@@ -214,11 +216,13 @@
                                     <div class="form-inline editSlotContent row">
                                         <div class="col-6 row">
                                             <span class="control-label margin-top col-10">Maximum Supervisee per timeslot</span>
-                                            <input type="text" class="form-control col-2" id="afternoon-max" />
+                                            <!--<input type="text" class="form-control col-2" id="afternoon-max" />-->
+                                            <select class="form-control col-2" id="afternoon-max"></select>
                                         </div>
                                         <div class="col-3 row">
                                             <span class="control-label margin-top col-10">Reserved for spare</span>
-                                            <input type="text" class="form-control col-2" id="afternoon-spare" />
+                                            <!--<input type="text" class="form-control col-2" id="afternoon-spare" />-->
+                                            <select class="form-control col-2" id="afternoon-spare"></select>
                                         </div>
                                         <div class="col-3 row">
                                             <span class="control-label margin-top col-10">Intervals</span>
@@ -256,11 +260,13 @@
                                     <div class="form-inline editSlotContent row">
                                         <div class="col-6 row">
                                             <span class="control-label margin-top col-10">Maximum Supervisee per timeslot</span>
-                                            <input type="text" class="form-control col-2" id="evening-max" />
+                                            <!--<input type="text" class="form-control col-2" id="evening-max" />-->
+                                            <select class="form-control col-2" id="evening-max"></select>
                                         </div>
                                         <div class="col-3 row">
                                             <span class="control-label margin-top col-10">Reserved for spare</span>
-                                            <input type="text" class="form-control col-2" id="evening-spare" />
+                                            <!--<input type="text" class="form-control col-2" id="evening-spare" />-->
+                                            <select class="form-control col-2" id="evening-spare"></select>
                                         </div>
                                         <div class="col-3 row">
                                             <span class="control-label margin-top col-10">Intervals</span>
@@ -284,7 +290,8 @@
     var optionsHH = ["00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"];
     var optionsMM = ["00", "05", "10", "15", "20", "25", "30", "35", "40", "45", "50", "55"];
     var optionsXM = ["AM", "PM"];
-    var optionsInterval = ["15", "30", "45", "60"];
+    var optionsSpare = ["0", "1", "2", "3", "4", "5"];
+    var optionsInterval = ["30", "45", "60"];
 
     $.each(optionsHH, function (i, p) {
         $('#morning-start-HH').append($('<option></option>').val(p).html(p));
@@ -318,6 +325,19 @@
         $('#afternoon-interval').append($('<option></option>').val(p).html(p));
         $('#evening-interval').append($('<option></option>').val(p).html(p));
     });
+
+    $.each(optionsSpare, function (i, p) {
+        $('#morning-spare').append($('<option></option>').val(p).html(p));
+        $('#afternoon-spare').append($('<option></option>').val(p).html(p));
+        $('#evening-spare').append($('<option></option>').val(p).html(p));
+    });
+
+    var i;
+    for (i = 0; i <= 20; i++) {
+        $('#morning-max').append($('<option></option>').val(i).html(i));
+        $('#afternoon-max').append($('<option></option>').val(i).html(i));
+        $('#evening-max').append($('<option></option>').val(i).html(i));
+    };
 
     api.ready(function (response) {
         var model = JSON.parse(response);

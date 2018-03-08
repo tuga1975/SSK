@@ -36,6 +36,7 @@ namespace Trinity.Device
                 // update local ApplicationDevice_Status
                 DAL_DeviceStatus dAL_DeviceStatus = new DAL_DeviceStatus();
                 dAL_DeviceStatus.Update((int)EnumDeviceIds.DocumentScanner, statuses);
+                Trinity.SignalR.Client.Instance.DeviceStatusChanged((int)EnumDeviceIds.DocumentScanner, statuses);
             }
             catch (Exception ex)
             {

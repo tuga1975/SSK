@@ -19,7 +19,7 @@ namespace Trinity.DAL
         {
             if (EnumAppConfig.IsLocal)
             {
-                List<Notification> arrayNoti = arrayNoti = _localUnitOfWork.DataContext.Notifications.Where(d => (!string.IsNullOrEmpty(d.FromUserId) && d.FromUserId == userId) || (!string.IsNullOrEmpty(d.ToUserId) && d.ToUserId == userId)).Select(item => new Notification()
+                List<Notification> arrayNoti  = _localUnitOfWork.DataContext.Notifications.Where(d => (/*!string.IsNullOrEmpty(d.FromUserId) && d.FromUserId == userId) || (*/!string.IsNullOrEmpty(d.ToUserId) && d.ToUserId == userId)).Select(item => new Notification()
                 {
                     Content = item.Content,
                     Datetime = item.Datetime,
@@ -27,12 +27,12 @@ namespace Trinity.DAL
                     NotificationID = item.NotificationID,
                     IsRead = item.IsRead.HasValue ? item.IsRead.Value : false,
                     Subject = item.Subject,
-                    ToUserId = item.ToUserId
-                }).ToList();
+                    ToUserId = item.ToUserId,
+                }).OrderByDescending(d=>d.Datetime).ToList();
                 if (arrayNoti.Count == 0)
                 {
                     arrayNoti = CallCentralized.Get<List<Notification>>("Notification", "GetAllNotifications", "userId=" + userId);
-                    arrayNoti = arrayNoti == null ? new List<Notification>() : arrayNoti;
+                    arrayNoti = arrayNoti ?? new List<Notification>();
                 }
                 return arrayNoti;
             }
@@ -172,7 +172,7 @@ namespace Trinity.DAL
         /// <param name="Content"></param>
         /// <param name="notificationType"></param>
         /// <param name="Station"></param
-        public List<BE.Notification> SendAllDutyOfficer(string UserId, string Subject, string Content, string notificationType, string Station)
+        public List<BE.Notification> SendToAllDutyOfficers(string UserId, string Subject, string Content, string notificationType, string Station)
         {
             List<string> DOId = _localUnitOfWork.DataContext.Membership_UserRoles.Include("Membership_Roles").Where(d => d.Membership_Roles.Name == EnumUserRoles.DutyOfficer).Select(d => d.UserId).ToList();
             List<DBContext.Notification> arrayInsert = DOId.Select(d => new DBContext.Notification()
@@ -193,7 +193,7 @@ namespace Trinity.DAL
 
             
         }
-        //public void SendAllDutyOfficer(List<BE.Notification> arrayInsert)
+        //public void SendToAllDutyOfficers(List<BE.Notification> arrayInsert)
         //{
 
         //    if (EnumAppConfig.IsLocal)

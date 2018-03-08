@@ -23,5 +23,9 @@ namespace SSK.Utils
         {
             _synthesizer.SpeakAsync(text);
         }
+        public void Stop()
+        {
+            _synthesizer.SpeakAsyncCancelAll();
+        }
     }
 }

@@ -3,20 +3,26 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Ports;
 using System.Text;
+using System.Threading;
 using System.Timers;
 using System.Windows.Forms;
 
 namespace Trinity.Device.Util
 {
-    public class SerialDataReceivedEventArgs2
-    {
-        public SerialPort SourceObject { get; set; }
-        public SerialDataReceivedEventArgs Data { get; set; }
-    }
+    //public class SerialDataReceivedEventArgs2
+    //{
+    //    public SerialPort SourceObject { get; set; }
+    //    public SerialDataReceivedEventArgs Data { get; set; }
+    //}
 
     public class LEDStatusLightingUtil
     {
-        public event EventHandler<SerialDataReceivedEventArgs2> DataReceived;
+        public event EventHandler<string> DataReceived;
+        public event EventHandler<string> MUBAutoFlagApplicatorReadyOK;
+        public event EventHandler<string> MUBReadyToPrint;
+        public event EventHandler<string> MUBAbleToRemove;
+        public event EventHandler<string> MUBDoorFullyClosed;
+
         public bool _isBusy = false;
 
         private string _station = null;
@@ -46,7 +52,7 @@ namespace Trinity.Device.Util
             _timer_YellowLightFlashing = new System.Timers.Timer(interval);
             _timer_YellowLightFlashing.Enabled = false;
             _timer_YellowLightFlashing.Elapsed += new System.Timers.ElapsedEventHandler(OnYellowLightFlashingTimedEvent);
-            
+
         }
 
         public static LEDStatusLightingUtil Instance
@@ -166,12 +172,18 @@ namespace Trinity.Device.Util
         {
             get
             {
-                return _serialPort.IsOpen;
+                return _serialPort != null && _serialPort.IsOpen;
             }
         }
+        #endregion
 
+        #region LED Control functions
         public void TurnOffAllLEDs()
         {
+            if (!IsPortOpen)
+            {
+                return;
+            }
             if (_station.Equals("SSK", StringComparison.InvariantCultureIgnoreCase))
             {
                 // stop flashing
@@ -209,6 +221,10 @@ namespace Trinity.Device.Util
 
         public void SwitchREDLightOnOff(bool isOn)
         {
+            if (!IsPortOpen)
+            {
+                return;
+            }
             if (_station.Equals("SSA", StringComparison.InvariantCultureIgnoreCase))
             {
                 string hexCommand = "";
@@ -241,6 +257,10 @@ namespace Trinity.Device.Util
 
         public void SwitchGREENLightOnOff(bool isOn)
         {
+            if (!IsPortOpen)
+            {
+                return;
+            }
             if (_station.Equals("SSA", StringComparison.InvariantCultureIgnoreCase))
             {
                 string hexCommand = "";
@@ -273,6 +293,10 @@ namespace Trinity.Device.Util
 
         public void SwitchBLUELightOnOff(bool isOn)
         {
+            if (!IsPortOpen)
+            {
+                return;
+            }
             if (_station.Equals("SSA", StringComparison.InvariantCultureIgnoreCase))
             {
                 string hexCommand = "";
@@ -305,6 +329,10 @@ namespace Trinity.Device.Util
 
         public void SwitchYELLOWLightOnOff(bool isOn)
         {
+            if (!IsPortOpen)
+            {
+                return;
+            }
             if (_station.Equals("SSA", StringComparison.InvariantCultureIgnoreCase))
             {
                 string hexCommand = "";
@@ -407,6 +435,10 @@ namespace Trinity.Device.Util
 
         public void DisplayLedLight_DeviceStatus()
         {
+            if (!IsPortOpen)
+            {
+                return;
+            }
             try
             {
                 // turn off all leds first
@@ -435,7 +467,7 @@ namespace Trinity.Device.Util
                 // caution
                 if (applicationStatus == EnumHealthStatus.Caution)
                 {
-                    SwitchYELLOWLightFlashingOnOff(true);
+                    //SwitchYELLOWLightFlashingOnOff(true);
                 }
 
                 // error
@@ -452,17 +484,242 @@ namespace Trinity.Device.Util
         }
         #endregion
 
-        private void _serialPort_DataReceived(object sender, System.IO.Ports.SerialDataReceivedEventArgs e)
+        #region MUB Labeller Control functions
+        public void CheckMUBApplicatorReadyStatus()
         {
-            SerialDataReceivedEventArgs2 eventArgs = new SerialDataReceivedEventArgs2()
-            {
-                SourceObject = _serialPort,
-                Data = e
-            };
-            DataReceived?.Invoke(this, eventArgs);
+            this.DataReceived += MUBApplicatorReadyStatus_Received;
+
+            // Auto Flag applicator Ready
+            string asciiCommand = "WR MR0 1";
+            SendASCIICommand(asciiCommand);
         }
 
+        /// <summary>
+        /// Auto Flag applicator Ready Status
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="response"></param>
+        private void MUBApplicatorReadyStatus_Received(object sender, string response)
+        {
+            this.DataReceived -= MUBApplicatorReadyStatus_Received;
+            if (response == "1" || response.ToLower() == "ok" || response.ToLower() == "yes")
+            {
+                this.DataReceived += MUBApplicatorReadyOKStatus_Received;
+
+                // Continue to check Auto Flag applicator Ready OK
+                string asciiCommand = "RD MR3";
+                SendASCIICommand(asciiCommand);
+            }
+            else
+            {
+                Thread.Sleep(200);
+                CheckMUBApplicatorReadyStatus();
+            }
+        }
+
+        /// <summary>
+        /// Auto Flag applicator Ready OK
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="response"></param>
+        private void MUBApplicatorReadyOKStatus_Received(object sender, string response)
+        {
+            this.DataReceived -= MUBApplicatorReadyOKStatus_Received;
+            if (response == "1" || response.ToLower() == "ok" || response.ToLower() == "yes")
+            {
+                // Inform the Supervisee to place the MUB on the holder
+                MUBAutoFlagApplicatorReadyOK?.Invoke(this, "");
+            }
+            else
+            {
+                Thread.Sleep(200);
+                this.DataReceived += MUBApplicatorReadyOKStatus_Received;
+
+                // Check Auto Flag applicator Ready OK
+                string asciiCommand = "RD MR3";
+                SendASCIICommand(asciiCommand);
+            }
+        }
+
+        public void VerifyMUBPresence()
+        {
+            this.DataReceived += BottleSensorStatus_Received;
+
+            string asciiCommand = "RD 14";
+            SendASCIICommand(asciiCommand);
+        }
+
+        private void BottleSensorStatus_Received(object sender, string response)
+        {
+            this.DataReceived -= BottleSensorStatus_Received;
+            if (response == "1" || response.ToLower() == "ok" || response.ToLower() == "yes")
+            {
+                this.DataReceived += MUBApplicatorStartStatus_Received;
+
+                // Continue to check Auto Flag applicator Start
+                string asciiCommand = "WR MR4 1";
+                SendASCIICommand(asciiCommand);
+            }
+            else
+            {
+                Thread.Sleep(200);
+                VerifyMUBPresence();
+            }
+        }
+
+        private void MUBApplicatorStartStatus_Received(object sender, string response)
+        {
+            this.DataReceived -= MUBApplicatorStartStatus_Received;
+            if (response == "1" || response.ToLower() == "ok" || response.ToLower() == "yes")
+            {
+                this.DataReceived += MUBApplicatorStandByStatus_Received;
+
+                // Continue to check Auto Flag applicator Stand by
+                string asciiCommand = "RD MR7";
+                SendASCIICommand(asciiCommand);
+            }
+            else
+            {
+                Thread.Sleep(200);
+                this.DataReceived += MUBApplicatorStartStatus_Received;
+
+                // Re-check Auto Flag applicator Start
+                string asciiCommand = "WR MR4 1";
+                SendASCIICommand(asciiCommand);
+            }
+        }
+
+        private void MUBApplicatorStandByStatus_Received(object sender, string response)
+        {
+            this.DataReceived -= MUBApplicatorStandByStatus_Received;
+            if (response == "1" || response.ToLower() == "ok" || response.ToLower() == "yes")
+            {
+                // Inform the Supervisee to place the MUB on the holder
+                MUBReadyToPrint?.Invoke(this, "");
+            }
+            else
+            {
+                Thread.Sleep(200);
+                this.DataReceived += MUBApplicatorStandByStatus_Received;
+
+                // Re-check Auto Flag applicator Stand by
+                string asciiCommand = "RD MR7";
+                SendASCIICommand(asciiCommand);
+            }
+        }
+
+        public void CheckMUBApplicatorFinishStatus()
+        {
+            this.DataReceived += MUBApplicatorFinishStatus_Received;
+
+            // Auto Flag applicator finish
+            string asciiCommand = "RD MR15";
+            SendASCIICommand(asciiCommand);
+        }
+
+        private void MUBApplicatorFinishStatus_Received(object sender, string response)
+        {
+            this.DataReceived -= MUBApplicatorFinishStatus_Received;
+            if (response == "1" || response.ToLower() == "ok" || response.ToLower() == "yes")
+            {
+                // Inform the Supervisee to remove the MUB from the holder
+                MUBAbleToRemove?.Invoke(this, "");
+            }
+            else
+            {
+                Thread.Sleep(200);
+                CheckMUBApplicatorFinishStatus();
+            }
+        }
+
+        public void CheckIfMUBRemoved()
+        {
+            this.DataReceived += MUBRemoveStatus_Received;
+
+            // Verify Supervisee remove the MUB before close the door.
+            string asciiCommand = "RD 14";
+            SendASCIICommand(asciiCommand);
+        }
+
+        private void MUBRemoveStatus_Received(object sender, string response)
+        {
+            this.DataReceived -= MUBRemoveStatus_Received;
+            if (response == "1" || response.ToLower() == "ok" || response.ToLower() == "yes")
+            {
+                this.DataReceived += MUBDoorClosedStatus_Received;
+
+                // Close MUB Door
+                string asciiCommand = "WR MR509 1";
+                SendASCIICommand(asciiCommand);
+            }
+            else
+            {
+                Thread.Sleep(200);
+                CheckIfMUBRemoved();
+            }
+        }
+
+        private void MUBDoorClosedStatus_Received(object sender, string response)
+        {
+            this.DataReceived -= MUBDoorClosedStatus_Received;
+            if (response == "1" || response.ToLower() == "ok" || response.ToLower() == "yes")
+            {
+                this.DataReceived += MUBDoorDoorFullyClosedStatus_Received;
+
+                // Verify door close fully
+                string asciiCommand = "RD 1";
+                SendASCIICommand(asciiCommand);
+            }
+            else
+            {
+                Thread.Sleep(200);
+                this.DataReceived += MUBDoorClosedStatus_Received;
+                // Re-close MUB Door
+                string asciiCommand = "WR MR509 1";
+                SendASCIICommand(asciiCommand);
+            }
+        }
+
+        private void MUBDoorDoorFullyClosedStatus_Received(object sender, string response)
+        {
+            this.DataReceived -= MUBDoorDoorFullyClosedStatus_Received;
+            if (response == "1" || response.ToLower() == "ok" || response.ToLower() == "yes")
+            {
+                // The MUB Door is fully closed
+                MUBDoorFullyClosed?.Invoke(this, "");
+            }
+            else
+            {
+                Thread.Sleep(200);
+                this.DataReceived += MUBDoorDoorFullyClosedStatus_Received;
+
+                // Re-verify
+                string asciiCommand = "RD 1";
+                SendASCIICommand(asciiCommand);
+            }
+        }
+        #endregion
+
         #region Private functions
+        private void _serialPort_DataReceived(object sender, System.IO.Ports.SerialDataReceivedEventArgs e)
+        {
+            // Initialize a buffer to hold the received data 
+            byte[] buffer = new byte[_serialPort.ReadBufferSize];
+
+            // There is no accurate method for checking how many bytes are read 
+            // unless you check the return from the Read method 
+            int bytesRead = _serialPort.Read(buffer, 0, buffer.Length);
+
+            //For the example assume the data we are received is ASCII data. 
+            string response = Encoding.ASCII.GetString(buffer, 0, bytesRead);
+
+            //SerialDataReceivedEventArgs2 eventArgs = new SerialDataReceivedEventArgs2()
+            //{
+            //    SourceObject = _serialPort,
+            //    Data = e
+            //};
+            DataReceived?.Invoke(this, response);
+        }
 
         private string StartCommunication()
         {
@@ -493,8 +750,13 @@ namespace Trinity.Device.Util
             return sb.Append("0D").ToString().Trim();
         }
 
-        private string SendCommand(string hexCommand)
+        public string SendCommand(string hexCommand)
         {
+            if (!IsPortOpen)
+            {
+                return "The serial port is closed.";
+            }
+
             byte[] bytestosend = ToByteArray(hexCommand);
 
             try
@@ -506,6 +768,11 @@ namespace Trinity.Device.Util
             {
                 return ex.Message;
             }
+        }
+        public string SendASCIICommand(string asciiCommand)
+        {
+            string hexCommand = ToHEX(asciiCommand);
+            return SendCommand(hexCommand);
         }
 
         private void OnBlueLightFlashingTimedEvent(object sender, ElapsedEventArgs e)

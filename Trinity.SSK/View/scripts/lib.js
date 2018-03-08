@@ -1,4 +1,13 @@
-﻿function PopupMessage(title, body) {
+﻿function editFontSize(status) {
+    var px = parseInt($('#content').css('font-size').replace('px', ''));
+    if (status) {
+        px++;
+    } else if (!status && px > 0) {
+        px--;
+    }
+    $('#content').css('font-size', px);
+}
+function PopupMessage(title, body) {
     api.server.PopupMessage(title, body, function () {
         $('#PopupMessage').modal({
             backdrop: 'static',

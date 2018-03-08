@@ -462,8 +462,16 @@ namespace Trinity.DAL
         //}
 
         // Save OperationSetting from DutyOfficer
-        public BE.SettingModel GetOperationSettings()
+        public BE.SettingModel GetOperationSettings(string userId)
         {
+            CreateOperationSettingForDayOfWeek((int)EnumDayOfWeek.Monday, userId);
+            CreateOperationSettingForDayOfWeek((int)EnumDayOfWeek.Tuesday, userId);
+            CreateOperationSettingForDayOfWeek((int)EnumDayOfWeek.Wednesday, userId);
+            CreateOperationSettingForDayOfWeek((int)EnumDayOfWeek.Thursday, userId);
+            CreateOperationSettingForDayOfWeek((int)EnumDayOfWeek.Friday, userId);
+            CreateOperationSettingForDayOfWeek((int)EnumDayOfWeek.Saturday, userId);
+            CreateOperationSettingForDayOfWeek((int)EnumDayOfWeek.Sunday, userId);
+
             List<OperationSetting> arraySetting = _localUnitOfWork.DataContext.OperationSettings.ToList();
 
             var settingModel = new BE.SettingModel
@@ -495,6 +503,28 @@ namespace Trinity.DAL
                 settingModel.Sunday = settingModel.Sunday == null ? new SettingDetails() { DayOfWeek = (int)EnumDayOfWeek.Sunday } : settingModel.Sunday;
 
                 return settingModel;
+            }
+        }
+
+        private bool CheckExistOperationSettingByDayOfWeek(int dayOfWeek)
+        {
+            return _localUnitOfWork.DataContext.OperationSettings.Any(o => o.DayOfWeek == dayOfWeek);
+        }
+
+        private void CreateOperationSettingForDayOfWeek(int dayOfWeek, string userId)
+        {
+            if (!CheckExistOperationSettingByDayOfWeek(dayOfWeek))
+            {
+                OperationSetting operationSetting = new OperationSetting();
+                operationSetting.DayOfWeek = dayOfWeek;
+                operationSetting.Morning_Is_Closed = false;
+                operationSetting.Afternoon_Is_Closed = false;
+                operationSetting.Evening_Is_Closed = false;
+                operationSetting.Last_Updated_Date = DateTime.Now;
+                operationSetting.Last_Updated_By = userId;
+
+                _localUnitOfWork.GetRepository<OperationSetting>().Add(operationSetting);
+                _localUnitOfWork.Save();
             }
         }
 
