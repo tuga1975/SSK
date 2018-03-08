@@ -700,7 +700,3 @@ table tr.active {
     margin-right: 30px;
     margin-top: 5px;
 }
-
-::-ms-clear {
-    display: none;
-}
