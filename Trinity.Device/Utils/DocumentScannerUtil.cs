@@ -32,14 +32,14 @@ namespace Trinity.Util
             pdiscan_errors pdiscan_error;
             string error_string;
 
-            string working_folder = ProgramFilesx86();
-            //Quick check to determine if we are running in x86 or x64 mode.
-            if (IntPtr.Size == 8)
-                working_folder += @"\Peripheral Dynamics Inc\PDIScanSDK\Bin\Scanning\x64";
-            else
-                working_folder += @"\Peripheral Dynamics Inc\PDIScanSDK\Bin\Scanning\x86";
-            if (Directory.Exists(working_folder))
-                Directory.SetCurrentDirectory(working_folder);
+            //string working_folder = ProgramFilesx86();
+            ////Quick check to determine if we are running in x86 or x64 mode.
+            //if (IntPtr.Size == 8)
+            //    working_folder += @"\Peripheral Dynamics Inc\PDIScanSDK\Bin\Scanning\x64";
+            //else
+            //    working_folder += @"\Peripheral Dynamics Inc\PDIScanSDK\Bin\Scanning\x86";
+            //if (Directory.Exists(working_folder))
+            //    Directory.SetCurrentDirectory(working_folder);
 
             pdiscan_error = PdiScanWrap.PdAllocateScanningHandle(out scanning_handle, out extra_info);
 
@@ -110,97 +110,104 @@ namespace Trinity.Util
         /// <param name="documentScannerCallback">DocumentScannerCallback(string frontPath, string error)</param>
         public void StartScanning(Action<string, string> documentScannerCallback)
         {
-            _documentScannerCallback = documentScannerCallback;
-
-            pdiscan_errors pdiscan_error;
-
-            pdiscan_error = PdiScanWrap.PdConnectToScanner(scanning_handle, "", 1);
-            if (pdiscan_error != pdiscan_errors.PDISCAN_ERR_NONE)
+            try
             {
-                if (pdiscan_error == pdiscan_errors.PDISCAN_ERR_SCANNER_NOT_FOUND)
+                _documentScannerCallback = documentScannerCallback;
+
+                pdiscan_errors pdiscan_error;
+
+                pdiscan_error = PdiScanWrap.PdConnectToScanner(scanning_handle, "", 1);
+                if (pdiscan_error != pdiscan_errors.PDISCAN_ERR_NONE)
                 {
-                    MessageBox.Show("The Document scanner (DPI) is not connected to the computer.");
+                    if (pdiscan_error == pdiscan_errors.PDISCAN_ERR_SCANNER_NOT_FOUND)
+                    {
+                        MessageBox.Show("The Document scanner (DPI) is not connected to the computer.");
+                    }
+                    else
+                        display_pdiscan_error(pdiscan_error);
                 }
-                else
+
+                int default_color;
+                pdiscan_error = PdiScanWrap.PdGetTagDefaultLong(scanning_handle, (int)pdiscan_tags.PDISCAN_TAG_COLOR_DEPTH, out default_color);
+                if (pdiscan_error != pdiscan_errors.PDISCAN_ERR_NONE)
                     display_pdiscan_error(pdiscan_error);
+                //if (default_color == (int)pd_color_depths.PD_COLOR_DEPTH_BITONAL)
+                //    radioBitonal.Checked = true;
+                //else
+                //    radioGreyscale.Checked = true;
+
+                //Detect the scanner dpi options
+                int num_dpi, default_dpi;
+                PdiScanWrap.PdGetTagDefaultLong(scanning_handle, (int)pdiscan_tags.PDISCAN_TAG_RESOLUTION, out default_dpi);
+                PdiScanWrap.PdGetTagChoiceCount(scanning_handle, (int)pdiscan_tags.PDISCAN_TAG_RESOLUTION, out num_dpi);
+                for (int i = 1; i <= num_dpi; i++)
+                {
+                    int dpi_option;
+                    PdiScanWrap.PdGetTagChoiceLong(scanning_handle, (int)pdiscan_tags.PDISCAN_TAG_RESOLUTION, i, out dpi_option);
+                    //if (i == 1)
+                    //{
+                    //    radioDPI1.Text = dpi_option.ToString() + " dpi";
+                    //    radioDPI1.Tag = dpi_option;
+                    //    if (default_dpi == dpi_option)
+                    //        radioDPI1.Checked = true;
+                    //}
+                    //else if (i == 2)
+                    //{
+                    //    radioDPI2.Text = dpi_option.ToString() + " dpi";
+                    //    radioDPI2.Tag = dpi_option;
+                    //    if (default_dpi == dpi_option)
+                    //        radioDPI2.Checked = true;
+                    //}
+                    //else if (i == 3)
+                    //{
+                    //    radioDPI3.Text = dpi_option.ToString() + " dpi";
+                    //    radioDPI3.Tag = dpi_option;
+                    //    if (default_dpi == dpi_option)
+                    //        radioDPI3.Checked = true;
+                    //}
+                }
+                //if (num_dpi < 3)
+                //    radioDPI3.Visible = false;
+
+                int default_duplex_on;
+                pdiscan_error = PdiScanWrap.PdGetTagDefaultLong(scanning_handle, (int)pdiscan_tags.PDISCAN_TAG_DUPLEX, out default_duplex_on);
+                if (pdiscan_error != pdiscan_errors.PDISCAN_ERR_NONE)
+                    display_pdiscan_error(pdiscan_error);
+                //if (default_duplex_on == 1)
+                //    radioDuplex.Checked = true;
+                //else
+                //    radioSimplex.Checked = false;
+
+                //This shows how to get a tag's range and current value.
+                //Populate the brightness combobox
+                int minimum, maximum, step, current, selected = 0;
+                //Get the minumum brightness
+                PdiScanWrap.PdGetTagChoiceLong(scanning_handle, (int)pdiscan_tags.PDISCAN_TAG_BRIGHTNESS_FRONT, -3, out minimum);
+                //Get the maximum brightness
+                PdiScanWrap.PdGetTagChoiceLong(scanning_handle, (int)pdiscan_tags.PDISCAN_TAG_BRIGHTNESS_FRONT, -2, out maximum);
+                //Get the step between different brightness levels
+                PdiScanWrap.PdGetTagChoiceLong(scanning_handle, (int)pdiscan_tags.PDISCAN_TAG_BRIGHTNESS_FRONT, -1, out step);
+                //Get the current brightness
+                PdiScanWrap.PdGetTagLong(scanning_handle, (int)pdiscan_tags.PDISCAN_TAG_BRIGHTNESS_FRONT, out current);
+                //cboBrightness.Items.Clear();
+                //for (int value = minimum, j = 0; value < maximum; j++, value += step)
+                //{
+                //    if (value == current)
+                //        selected = j;
+                //    cboBrightness.Items.Add(value);
+                //}
+                //cboBrightness.SelectedIndex = selected;
+
+                pdiscan_error = PdiScanWrap.PdEnableFeeder(scanning_handle);
+                if (pdiscan_error != pdiscan_errors.PDISCAN_ERR_NONE)
+                    display_pdiscan_error(pdiscan_error);
+
+                scanner_connected = true;
             }
-
-            int default_color;
-            pdiscan_error = PdiScanWrap.PdGetTagDefaultLong(scanning_handle, (int)pdiscan_tags.PDISCAN_TAG_COLOR_DEPTH, out default_color);
-            if (pdiscan_error != pdiscan_errors.PDISCAN_ERR_NONE)
-                display_pdiscan_error(pdiscan_error);
-            //if (default_color == (int)pd_color_depths.PD_COLOR_DEPTH_BITONAL)
-            //    radioBitonal.Checked = true;
-            //else
-            //    radioGreyscale.Checked = true;
-
-            //Detect the scanner dpi options
-            int num_dpi, default_dpi;
-            PdiScanWrap.PdGetTagDefaultLong(scanning_handle, (int)pdiscan_tags.PDISCAN_TAG_RESOLUTION, out default_dpi);
-            PdiScanWrap.PdGetTagChoiceCount(scanning_handle, (int)pdiscan_tags.PDISCAN_TAG_RESOLUTION, out num_dpi);
-            for (int i = 1; i <= num_dpi; i++)
+            catch (Exception ex)
             {
-                int dpi_option;
-                PdiScanWrap.PdGetTagChoiceLong(scanning_handle, (int)pdiscan_tags.PDISCAN_TAG_RESOLUTION, i, out dpi_option);
-                //if (i == 1)
-                //{
-                //    radioDPI1.Text = dpi_option.ToString() + " dpi";
-                //    radioDPI1.Tag = dpi_option;
-                //    if (default_dpi == dpi_option)
-                //        radioDPI1.Checked = true;
-                //}
-                //else if (i == 2)
-                //{
-                //    radioDPI2.Text = dpi_option.ToString() + " dpi";
-                //    radioDPI2.Tag = dpi_option;
-                //    if (default_dpi == dpi_option)
-                //        radioDPI2.Checked = true;
-                //}
-                //else if (i == 3)
-                //{
-                //    radioDPI3.Text = dpi_option.ToString() + " dpi";
-                //    radioDPI3.Tag = dpi_option;
-                //    if (default_dpi == dpi_option)
-                //        radioDPI3.Checked = true;
-                //}
+                MessageBox.Show("imprinter_string_callback exception: " + ex.ToString());
             }
-            //if (num_dpi < 3)
-            //    radioDPI3.Visible = false;
-
-            int default_duplex_on;
-            pdiscan_error = PdiScanWrap.PdGetTagDefaultLong(scanning_handle, (int)pdiscan_tags.PDISCAN_TAG_DUPLEX, out default_duplex_on);
-            if (pdiscan_error != pdiscan_errors.PDISCAN_ERR_NONE)
-                display_pdiscan_error(pdiscan_error);
-            //if (default_duplex_on == 1)
-            //    radioDuplex.Checked = true;
-            //else
-            //    radioSimplex.Checked = false;
-
-            //This shows how to get a tag's range and current value.
-            //Populate the brightness combobox
-            int minimum, maximum, step, current, selected = 0;
-            //Get the minumum brightness
-            PdiScanWrap.PdGetTagChoiceLong(scanning_handle, (int)pdiscan_tags.PDISCAN_TAG_BRIGHTNESS_FRONT, -3, out minimum);
-            //Get the maximum brightness
-            PdiScanWrap.PdGetTagChoiceLong(scanning_handle, (int)pdiscan_tags.PDISCAN_TAG_BRIGHTNESS_FRONT, -2, out maximum);
-            //Get the step between different brightness levels
-            PdiScanWrap.PdGetTagChoiceLong(scanning_handle, (int)pdiscan_tags.PDISCAN_TAG_BRIGHTNESS_FRONT, -1, out step);
-            //Get the current brightness
-            PdiScanWrap.PdGetTagLong(scanning_handle, (int)pdiscan_tags.PDISCAN_TAG_BRIGHTNESS_FRONT, out current);
-            //cboBrightness.Items.Clear();
-            //for (int value = minimum, j = 0; value < maximum; j++, value += step)
-            //{
-            //    if (value == current)
-            //        selected = j;
-            //    cboBrightness.Items.Add(value);
-            //}
-            //cboBrightness.SelectedIndex = selected;
-            
-            pdiscan_error = PdiScanWrap.PdEnableFeeder(scanning_handle);
-            if (pdiscan_error != pdiscan_errors.PDISCAN_ERR_NONE)
-                display_pdiscan_error(pdiscan_error);
-
-            scanner_connected = true;
         }
 
         public void StopScanning()
@@ -272,6 +279,7 @@ namespace Trinity.Util
             }
             catch (Exception ex)
             {
+                MessageBox.Show("Get_PDIScan_Error_Details exception: " + ex.ToString());
                 return string.Empty;
             }
         }
@@ -292,58 +300,65 @@ namespace Trinity.Util
         //Callbacks occur on a different thread.  In order to return to the main thread we must use delegates.
         public void page_end_callback(int PageNumber, IntPtr FrontSideDIB, IntPtr BackSideDIB, ref int AbortRequested, IntPtr UserData)
         {
-            Debug.Assert(FrontSideDIB != IntPtr.Zero);
-
-            //if (pictureBox1.Image != null)
-            //{
-            //    pictureBox1.Image.Dispose();
-            //    pictureBox1.Image = null;
-            //}
-
-            //if (chkMicr.Checked)
-            //{
-            //    IntPtr micr_line = Marshal.AllocHGlobal(256);
-            //    int size = 256;
-            //    pdiscan_errors error = PdiScanWrap.PdGetTagString(scanning_handle, (int)pdiscan_tags.PDISCAN_TAG_MICR_RESULTS, micr_line, ref size);
-            //    display_pdiscan_error(error);
-            //    string results = "Micr Results: " + Marshal.PtrToStringAnsi(micr_line) + "\n\n";
-            //    debug(results);
-            //    Marshal.FreeHGlobal(micr_line);
-            //}
-
-            string curDir = Directory.GetCurrentDirectory();
-
-            // create directory
-            if (!Directory.Exists(curDir + "\\Temp"))
+            try
             {
-                Directory.CreateDirectory(curDir + "\\Temp");
-            }
+                Debug.Assert(FrontSideDIB != IntPtr.Zero);
 
-            // set file path
-            string frontPath = string.Empty;
-            string error = string.Empty;
-            //Front
-            if (FrontSideDIB != IntPtr.Zero)
+                //if (pictureBox1.Image != null)
+                //{
+                //    pictureBox1.Image.Dispose();
+                //    pictureBox1.Image = null;
+                //}
+
+                //if (chkMicr.Checked)
+                //{
+                //    IntPtr micr_line = Marshal.AllocHGlobal(256);
+                //    int size = 256;
+                //    pdiscan_errors error = PdiScanWrap.PdGetTagString(scanning_handle, (int)pdiscan_tags.PDISCAN_TAG_MICR_RESULTS, micr_line, ref size);
+                //    display_pdiscan_error(error);
+                //    string results = "Micr Results: " + Marshal.PtrToStringAnsi(micr_line) + "\n\n";
+                //    debug(results);
+                //    Marshal.FreeHGlobal(micr_line);
+                //}
+
+                string curDir = Directory.GetCurrentDirectory();
+
+                // create directory
+                if (!Directory.Exists(curDir + "\\Temp"))
+                {
+                    Directory.CreateDirectory(curDir + "\\Temp");
+                }
+
+                // set file path
+                string frontPath = string.Empty;
+                string error = string.Empty;
+                //Front
+                if (FrontSideDIB != IntPtr.Zero)
+                {
+                    pdiscan_errors retval = PdiScanWrap.PdSaveImageToDisk(FrontSideDIB, curDir + "\\Temp\\document_front.bmp");
+                    if (retval == pdiscan_errors.PDISCAN_ERR_NONE)
+                    {
+                        frontPath = curDir + "\\Temp\\document_front.bmp";
+                    }
+                    else
+                    {
+                        error = Get_PDIScan_Error_Details(retval);
+                    }
+                }
+
+                //Back
+                //if (BackSideDIB != IntPtr.Zero)
+                //{
+                //    PdiScanWrap.PdSaveImageToDisk(BackSideDIB, temp_path + "testback.bmp");
+                //}
+
+                // callback
+                _documentScannerCallback(frontPath, error);
+            }
+            catch (Exception ex)
             {
-                pdiscan_errors retval = PdiScanWrap.PdSaveImageToDisk(FrontSideDIB, curDir + "\\Temp\\document_front.bmp");
-                if (retval == pdiscan_errors.PDISCAN_ERR_NONE)
-                {
-                    frontPath = curDir + "\\Temp\\document_front.bmp";
-                }
-                else
-                {
-                    error = Get_PDIScan_Error_Details(retval);
-                }
+                MessageBox.Show("page_end_callback exception: " + ex.ToString());
             }
-
-            //Back
-            //if (BackSideDIB != IntPtr.Zero)
-            //{
-            //    PdiScanWrap.PdSaveImageToDisk(BackSideDIB, temp_path + "testback.bmp");
-            //}
-
-            // callback
-            _documentScannerCallback(frontPath, error);
         }
 
         // This callback function is called for the page eject information.
@@ -367,13 +382,20 @@ namespace Trinity.Util
 
         private void imprinter_string_callback(int PageNumber, IntPtr ImprinterString, IntPtr UserData)
         {
-            IntPtr impstr = Marshal.StringToHGlobalAnsi("imprinttest we do\n word wrap");
-            PD_IMPRINT_SETUP setup = new PD_IMPRINT_SETUP();
-            setup.eBase = pd_imprinter_horizontal_offset_bases.PD_IMPRINTER_HORIZONTAL_OFFSET_BASE_LEADING_EDGE;
-            setup.eDirection = pd_imprint_directions.PD_IMPRINT_DIRECTION_FORWARD;
-            setup.eTextOrientation = pd_imprinter_text_orientations.PD_IMPRINTER_TEXT_ORIENTATION_90;
-            setup.iOffset = 0;
-            pdiscan_errors pdiscan_error = PdiScanWrap.PdImprintDocument(scanning_handle, pd_imprint_types.PD_IMPRINT_TYPE_TEXT, impstr, ref setup);
+            try
+            {
+                IntPtr impstr = Marshal.StringToHGlobalAnsi("imprinttest we do\n word wrap");
+                PD_IMPRINT_SETUP setup = new PD_IMPRINT_SETUP();
+                setup.eBase = pd_imprinter_horizontal_offset_bases.PD_IMPRINTER_HORIZONTAL_OFFSET_BASE_LEADING_EDGE;
+                setup.eDirection = pd_imprint_directions.PD_IMPRINT_DIRECTION_FORWARD;
+                setup.eTextOrientation = pd_imprinter_text_orientations.PD_IMPRINTER_TEXT_ORIENTATION_90;
+                setup.iOffset = 0;
+                pdiscan_errors pdiscan_error = PdiScanWrap.PdImprintDocument(scanning_handle, pd_imprint_types.PD_IMPRINT_TYPE_TEXT, impstr, ref setup);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("imprinter_string_callback exception: " + ex.ToString());
+            }
         }
         #endregion
     }

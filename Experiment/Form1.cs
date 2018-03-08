@@ -203,13 +203,20 @@ namespace Experiment
 
         private void DocumentScannerCallback(string frontPath, string error)
         {
-            if (string.IsNullOrEmpty(error))
+            try
             {
-                MessageBox.Show(frontPath);
+                if (string.IsNullOrEmpty(error))
+                {
+                    MessageBox.Show(frontPath);
+                }
+                else
+                {
+                    MessageBox.Show(error);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show(error);
+                MessageBox.Show(ex.ToString());
             }
         }
 
