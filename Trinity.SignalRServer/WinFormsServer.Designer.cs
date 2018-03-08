@@ -95,7 +95,7 @@
             this.Margin = new System.Windows.Forms.Padding(4);
             this.MaximizeBox = false;
             this.Name = "WinFormsServer";
-            this.Text = "SignalR Server";
+            this.Text = "Notification Server";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.WinFormsServer_FormClosing);
             this.ResumeLayout(false);
             this.PerformLayout();
