@@ -364,7 +364,3 @@
 [data-tip]:focus:after{
     display: block;
 }
-
-::-ms-clear {
-    display: none;
-}

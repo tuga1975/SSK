@@ -319,6 +319,7 @@
     <Content Include="View\img\ManualLogin.png" />
     <Content Include="View\img\ScanSmartCard.png" />
     <Content Include="View\scripts\lib.js" />
+    <Content Include="View\scripts\popper.min.js" />
     <Content Include="View\styles\main.css" />
     <Content Include="View\table\bootstrap-table.css" />
     <Content Include="View\table\bootstrap-table.js" />
