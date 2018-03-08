@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Ports;
@@ -80,6 +81,60 @@ namespace Trinity.Device.Util
         }
 
         #region Public functions
+
+        public bool OpenPort()
+        {
+            InitializeSerialPort();
+
+            try
+            {
+                if (string.IsNullOrEmpty(_station))
+                {
+                    _station = System.Reflection.Assembly.GetEntryAssembly().GetName().Name;
+                }
+
+                string comPort = ConfigurationManager.AppSettings["COMPort"];
+                int baudRate = int.Parse(ConfigurationManager.AppSettings["BaudRate"]);
+                string parity = ConfigurationManager.AppSettings["Parity"];
+
+                // Check if the port already open
+                if (_serialPort.IsOpen)
+                {
+                    // return "The serial port already open";
+                    return false;
+                }
+
+                _serialPort.PortName = comPort;
+                _serialPort.BaudRate = baudRate;
+
+                if (parity.Equals("None", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    _serialPort.Parity = System.IO.Ports.Parity.None;
+                }
+                else if (parity.Equals("Even", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    _serialPort.Parity = System.IO.Ports.Parity.Even;
+                }
+
+                _serialPort.Open();
+
+                _serialPort.DataReceived += _serialPort_DataReceived;
+
+                // Start Communication
+                StartCommunication();
+
+                // Reset PLC
+                ResetPLC();
+
+                return true;
+            }
+            catch (IOException ex)
+            {
+                MessageBox.Show(ex.Message);
+                return false;
+            }
+        }
+
         /// <summary>
         /// Return:
         ///     string.empty: Open port successfully
@@ -97,7 +152,7 @@ namespace Trinity.Device.Util
             {
                 if (string.IsNullOrEmpty(station))
                 {
-                    return "Please select a station: SSA or SSA";
+                    return "Please select a station: SSK or SSA";
                 }
                 if (string.IsNullOrEmpty(portName) || string.IsNullOrEmpty(parity))
                 {
@@ -176,7 +231,7 @@ namespace Trinity.Device.Util
             {
                 return;
             }
-            if (_station.Equals("SSK", StringComparison.InvariantCultureIgnoreCase))
+            if (_station.Equals(EnumStation.SSK, StringComparison.InvariantCultureIgnoreCase))
             {
                 // stop flashing
                 _timer_BlueLightFlashing.Enabled = false;
@@ -186,7 +241,7 @@ namespace Trinity.Device.Util
                 string hexCommand = "00AAFF5501";
                 SendCommand(hexCommand);
             }
-            else if (_station.Equals("SSA", StringComparison.InvariantCultureIgnoreCase))
+            else if (_station.Equals(EnumStation.SSA, StringComparison.InvariantCultureIgnoreCase))
             {
                 string hexCommand = "";
                 string asciiCommand = "";
@@ -217,7 +272,7 @@ namespace Trinity.Device.Util
             {
                 return;
             }
-            if (_station.Equals("SSA", StringComparison.InvariantCultureIgnoreCase))
+            if (_station.Equals(EnumStation.SSA, StringComparison.InvariantCultureIgnoreCase))
             {
                 string hexCommand = "";
                 string asciiCommand = "";
@@ -232,7 +287,7 @@ namespace Trinity.Device.Util
                 hexCommand = ToHEX(asciiCommand);
                 SendCommand(hexCommand);
             }
-            else if (_station.Equals("SSK", StringComparison.InvariantCultureIgnoreCase))
+            else if (_station.Equals(EnumStation.SSK, StringComparison.InvariantCultureIgnoreCase))
             {
                 string hexCommand = "";
                 if (isOn)
@@ -253,7 +308,7 @@ namespace Trinity.Device.Util
             {
                 return;
             }
-            if (_station.Equals("SSA", StringComparison.InvariantCultureIgnoreCase))
+            if (_station.Equals(EnumStation.SSA, StringComparison.InvariantCultureIgnoreCase))
             {
                 string hexCommand = "";
                 string asciiCommand = "";
@@ -268,7 +323,7 @@ namespace Trinity.Device.Util
                 hexCommand = ToHEX(asciiCommand);
                 SendCommand(hexCommand);
             }
-            else if (_station.Equals("SSK", StringComparison.InvariantCultureIgnoreCase))
+            else if (_station.Equals(EnumStation.SSK, StringComparison.InvariantCultureIgnoreCase))
             {
                 string hexCommand = "";
                 if (isOn)
@@ -289,7 +344,7 @@ namespace Trinity.Device.Util
             {
                 return;
             }
-            if (_station.Equals("SSA", StringComparison.InvariantCultureIgnoreCase))
+            if (_station.Equals(EnumStation.SSA, StringComparison.InvariantCultureIgnoreCase))
             {
                 string hexCommand = "";
                 string asciiCommand = "";
@@ -304,7 +359,7 @@ namespace Trinity.Device.Util
                 hexCommand = ToHEX(asciiCommand);
                 SendCommand(hexCommand);
             }
-            else if (_station.Equals("SSK", StringComparison.InvariantCultureIgnoreCase))
+            else if (_station.Equals(EnumStation.SSK, StringComparison.InvariantCultureIgnoreCase))
             {
                 string hexCommand = "";
                 if (isOn)
@@ -325,7 +380,7 @@ namespace Trinity.Device.Util
             {
                 return;
             }
-            if (_station.Equals("SSA", StringComparison.InvariantCultureIgnoreCase))
+            if (_station.Equals(EnumStation.SSA, StringComparison.InvariantCultureIgnoreCase))
             {
                 string hexCommand = "";
                 string asciiCommand = "";
@@ -360,7 +415,7 @@ namespace Trinity.Device.Util
                 hexCommand = ToHEX(asciiCommand);
                 SendCommand(hexCommand);
             }
-            else if (_station.Equals("SSK", StringComparison.InvariantCultureIgnoreCase))
+            else if (_station.Equals(EnumStation.SSK, StringComparison.InvariantCultureIgnoreCase))
             {
                 string hexCommand = "";
                 if (isOn)
@@ -437,10 +492,10 @@ namespace Trinity.Device.Util
                 TurnOffAllLEDs();
 
                 // get device status
-                EnumHealthStatus applicationStatus = new DAL.DAL_DeviceStatus().GetApplicationStatus();
+                EnumApplicationStatus applicationStatus = new DAL.DAL_DeviceStatus().GetApplicationStatus();
 
                 // ready to use
-                if (applicationStatus == EnumHealthStatus.Ready)
+                if (applicationStatus == EnumApplicationStatus.Ready)
                 {
                     if (_isBusy)
                     {
@@ -457,13 +512,13 @@ namespace Trinity.Device.Util
                 }
 
                 // caution
-                if (applicationStatus == EnumHealthStatus.Caution)
+                if (applicationStatus == EnumApplicationStatus.Caution)
                 {
                     //SwitchYELLOWLightFlashingOnOff(true);
                 }
 
                 // error
-                if (applicationStatus == EnumHealthStatus.Error)
+                if (applicationStatus == EnumApplicationStatus.Error)
                 {
                     SwitchREDLightOnOff(true);
                 }

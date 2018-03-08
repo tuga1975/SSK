@@ -81,7 +81,7 @@ namespace SSA.CodeBehind
             string ttLabelPrinterName = ConfigurationManager.AppSettings["TTLabelPrinterName"];
             var ttLabelPrinterStatus = barcodeScannerUtils.GetDeviceStatus(ttLabelPrinterName);
 
-            if (ttLabelPrinterStatus.Contains(EnumDeviceStatuses.Connected))
+            if (ttLabelPrinterStatus.Contains(EnumDeviceStatus.Connected))
             {
                 printerMonitor.PrintBarcodeLabel(labelInfo);
             }
@@ -105,8 +105,8 @@ namespace SSA.CodeBehind
             BarcodePrinterUtil barcodeScannerUtils = BarcodePrinterUtil.Instance;
             // Check status of Barcode printer
             string mubLabelPrinterName = ConfigurationManager.AppSettings["MUBLabelPrinterName"];
-            EnumDeviceStatuses[] mubLabelPrinterStatuses = barcodeScannerUtils.GetDeviceStatus(mubLabelPrinterName);
-            if (mubLabelPrinterStatuses.Contains(EnumDeviceStatuses.Connected))
+            EnumDeviceStatus[] mubLabelPrinterStatuses = barcodeScannerUtils.GetDeviceStatus(mubLabelPrinterName);
+            if (mubLabelPrinterStatuses.Contains(EnumDeviceStatus.Connected))
             {
                 printerMonitor.PrintMUBLabel(labelInfo);
             }

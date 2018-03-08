@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Trinity.Device;
+using Trinity.Device.Monitor;
 using Trinity.Device.Util;
 
 namespace SSK
@@ -21,12 +22,10 @@ namespace SSK
             Application.SetCompatibleTextRenderingDefault(false);
             try
             {
-
-
-                StartHealthChecker();
-
-                StartLEDStatusLighting();
-
+                // Start application status monitor and update application status
+                ApplicationStatusMonitor.Instance.StartInitialization();
+                //ApplicationStatusMonitor.Instance.UpdateApplicationStatus(EnumApplicationStatus.Initiation);
+                
                 Application.Run(new Main());
             }
             catch (Exception ex)
@@ -37,30 +36,17 @@ namespace SSK
             //Application.Run(new FormTextToSpeech());
             //Application.Run(new FormAppointmentDetails());
         }
-
-        private static void StartLEDStatusLighting()
-        {
-            // SSK is initialisation for use.
-            //string comPort = ConfigurationManager.AppSettings["COMPort"];
-            //int baudRate = int.Parse(ConfigurationManager.AppSettings["BaudRate"]);
-            //string parity = ConfigurationManager.AppSettings["Parity"];
-            //LEDStatusLightingUtil.Instance.OpenPort("SSK", comPort, baudRate, parity);
-
-            // Start flashing
-            //LEDStatusLightingUtil.Instance.TurnOffAllLEDs();
-            //LEDStatusLightingUtil.Instance.StartBLUELightFlashing();
-        }
-
-        private static void StartHealthChecker()
-        {
-            CameraMonitor.Start();
-            SpeakerMonitor.Start();
-            DocumentScannerMonitor.Start();
-            FingerprintReaderMonitor.Start();
-            BarcodeScannerMonitor.Start();
-            SmartCardReaderMonitor.Start();
-            ReceiptPrinterMonitor.Start();
-            QueueScreenMonitor.Start();
-        }
+        
+        //private static void StartHealthChecker()
+        //{
+        //    CameraMonitor.Start();
+        //    SpeakerMonitor.Start();
+        //    DocumentScannerMonitor.Start();
+        //    FingerprintReaderMonitor.Start();
+        //    BarcodeScannerMonitor.Start();
+        //    SmartCardReaderMonitor.Start();
+        //    ReceiptPrinterMonitor.Start();
+        //    QueueScreenMonitor.Start();
+        //}
     }
 }

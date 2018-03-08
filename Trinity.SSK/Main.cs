@@ -13,6 +13,7 @@ using Trinity.Common.Common;
 using Trinity.DAL;
 using Trinity.Device;
 using Trinity.Device.Authentication;
+using Trinity.Device.Monitor;
 using Trinity.Device.Util;
 
 namespace SSK
@@ -212,6 +213,9 @@ namespace SSK
                 //NavigateTo(NavigatorEnums.Supervisee);
                 //NavigateTo(NavigatorEnums.Authentication_NRIC);
                 _isFirstTimeLoaded = false;
+
+                // LayerWeb initiation is compeleted, update application status
+                ApplicationStatusMonitor.Instance.LayerWebInitilizationCompleted();
             }
 
             // SSK is ready to use - all is well

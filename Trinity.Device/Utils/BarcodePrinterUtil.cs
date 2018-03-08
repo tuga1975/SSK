@@ -89,7 +89,7 @@ namespace Trinity.Device.Util
                 // DPI = 203 => 8px = 1 mm
                 //Draw windows font
                 int startX = 54;
-                int startY = 0;
+                int startY = 8;
                 string fontName = "Arial";
                 int fontStyle = 2; // Bold
                 int fontHeight = 30;
@@ -100,7 +100,7 @@ namespace Trinity.Device.Util
                 if (ttLabelInfo.Name.Length > maxChar)
                 {
                     TSCLIB_DLL.windowsfont(startX + 70, startY, fontHeight, 0, fontStyle, 0, fontName, " : " + ttLabelInfo.Name.Substring(0, maxChar));
-                    // Addition line if name is too long. Need to improve (detech addition row by space char)
+                    // Add name line if name is too long. Need to improve (split name by space char)
                     TSCLIB_DLL.windowsfont(startX + 100, startY += fontHeight, fontHeight, 0, fontStyle, 0, fontName, "-" + ttLabelInfo.Name.Substring(maxChar, ttLabelInfo.Name.Length - maxChar));
                 }
                 else
@@ -119,9 +119,9 @@ namespace Trinity.Device.Util
                 TSCLIB_DLL.windowsfont(startX, startY += 80, fontHeight, 0, fontStyle, 0, fontName, ttLabelInfo.MarkingNumber);
 
                 //Download PCX file into printer
-                TSCLIB_DLL.downloadpcx("UL.PCX", "UL.PCX");
+                //TSCLIB_DLL.downloadpcx("UL.PCX", "UL.PCX");
                 //Drawing PCX graphic
-                TSCLIB_DLL.sendcommand("PUTPCX 100,400,\"UL.PCX\"");
+                //TSCLIB_DLL.sendcommand("PUTPCX 100,400,\"UL.PCX\"");
                 //Print labels
                 TSCLIB_DLL.printlabel("1", "1");
                 TSCLIB_DLL.closeport();
@@ -151,7 +151,7 @@ namespace Trinity.Device.Util
                 //Setup the media size and sensor type info
                 // page size 55mm x 100mm
                 // template size 55mm x 100mm (actually 56mm x 82mm)
-                TSCLIB_DLL.setup("56", "82", "4", "8", "0", "0", "0");
+                TSCLIB_DLL.setup("55", "82.5", "4", "8", "0", "0", "0");
 
                 //Clear image buffer
                 TSCLIB_DLL.clearbuffer();
@@ -204,9 +204,9 @@ namespace Trinity.Device.Util
                 TSCLIB_DLL.sendcommand("DMATRIX 120,8,400,400, \"" + mubLabelInfo.QRCodeString + "\"");
                 
                 //Download PCX file into printer
-                TSCLIB_DLL.downloadpcx("UL.PCX", "UL.PCX");
+                //TSCLIB_DLL.downloadpcx("UL.PCX", "UL.PCX");
                 //Drawing PCX graphic
-                TSCLIB_DLL.sendcommand("PUTPCX 100,400,\"UL.PCX\"");
+                //TSCLIB_DLL.sendcommand("PUTPCX 100,400,\"UL.PCX\"");
                 //Print labels
                 TSCLIB_DLL.printlabel("1", "1");
                 TSCLIB_DLL.closeport();
@@ -296,7 +296,7 @@ namespace Trinity.Device.Util
         /// get barcode printer status
         /// </summary>
         /// <returns>PrinterStatus</returns>
-        public EnumDeviceStatuses[] GetDeviceStatus(string printerName)
+        public EnumDeviceStatus[] GetDeviceStatus(string printerName)
         {
             // create default returnValue
             //List< EnumDeviceStatuses> returnValue = new List<EnumDeviceStatuses>();
@@ -305,11 +305,11 @@ namespace Trinity.Device.Util
             // check with Win32_Printer
             if (IsPrinterConnected(printerName?.ToUpper()))
             {
-                return new EnumDeviceStatuses[] { EnumDeviceStatuses.Connected };
+                return new EnumDeviceStatus[] { EnumDeviceStatus.Connected };
             }
             else
             {
-                return new EnumDeviceStatuses[] { EnumDeviceStatuses.Disconnected };
+                return new EnumDeviceStatus[] { EnumDeviceStatus.Disconnected };
             }
 
             // can not check printer status with PrintServer
