@@ -67,7 +67,7 @@ namespace Trinity.Device.Util
                 TSCLIB_DLL.windowsfont(70, 130, 25, 0, 0, 0, "ARIAL", "NRICNo.      : " + appointmentDetails.Venue);
 
                 TSCLIB_DLL.windowsfont(50, 180, 30, 0, 0, 0, "ARIAL", "Next Appointment");
-                TSCLIB_DLL.windowsfont(70, 210, 25, 0, 0, 0, "ARIAL", "Date              : " + appointmentDetails.Date.ToString("dd/MM/yyyyy HH:mm"));
+                TSCLIB_DLL.windowsfont(70, 210, 25, 0, 0, 0, "ARIAL", "Date              : " + appointmentDetails.Date.ToString("dd/MM/yyyyy") + " " + appointmentDetails.StartTime.ToString("HH:mm"));
 
                 // TSCLIB_DLL.windowsfont(100, 230, 25, 0, 0, 0, "ARIAL", "Printed at: " + DateTime.Now.ToString("dd/MM/yyyyy HH:mm"));
 
