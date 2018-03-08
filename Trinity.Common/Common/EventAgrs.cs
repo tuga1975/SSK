@@ -144,7 +144,6 @@ namespace Trinity.Common
         public const string QUEUE_COMPLETED = "QUEUE_COMPLETED";
         public const string DEVICE_STATUS_CHANGED = "DEVICE_STATUS_CHANGED";
         public const string APP_DISCONNECTED = "APP_DISCONNECTED";
-        public const string DO_CANCEL_ENTER_NRIC = "DoCancelEnterNRIC";
     }
 
     public class EventInfo

@@ -47,8 +47,8 @@ namespace Trinity.Device
 
                 // update local ApplicationDevice_Status
                 DAL_DeviceStatus dAL_DeviceStatus = new DAL_DeviceStatus();
-                dAL_DeviceStatus.Update((int)EnumDeviceIds.SmartCardReader, deviceStatuses);
-                Trinity.SignalR.Client.Instance.DeviceStatusChanged((int)EnumDeviceIds.SmartCardReader, deviceStatuses);
+                dAL_DeviceStatus.Update((int)EnumDeviceId.SmartCardReader, deviceStatuses);
+                Trinity.SignalR.Client.Instance.DeviceStatusChanged((int)EnumDeviceId.SmartCardReader, deviceStatuses);
             }
             catch (Exception)
             {
@@ -84,19 +84,19 @@ namespace Trinity.Device
 
         private static void Update_DeviceStatus(IEnumerable<string> readers)
         {
-            EnumDeviceStatuses[] deviceStatuses = new EnumDeviceStatuses[] { EnumDeviceStatuses.Connected };
+            EnumDeviceStatus[] deviceStatuses = new EnumDeviceStatus[] { EnumDeviceStatus.Connected };
 
             // check status
             if (readers == null || readers.Count() == 0 || !readers.Contains(EnumDeviceNames.SmartCardContactlessReader))
             {
                 // disconnected
-                deviceStatuses = new EnumDeviceStatuses[] { EnumDeviceStatuses.Disconnected };
+                deviceStatuses = new EnumDeviceStatus[] { EnumDeviceStatus.Disconnected };
             }
 
             // update local ApplicationDevice_Status
             DAL_DeviceStatus dAL_DeviceStatus = new DAL_DeviceStatus();
-            dAL_DeviceStatus.Update((int)EnumDeviceIds.SmartCardReader, deviceStatuses);
-            Trinity.SignalR.Client.Instance.DeviceStatusChanged((int)EnumDeviceIds.SmartCardReader, deviceStatuses);
+            dAL_DeviceStatus.Update((int)EnumDeviceId.SmartCardReader, deviceStatuses);
+            Trinity.SignalR.Client.Instance.DeviceStatusChanged((int)EnumDeviceId.SmartCardReader, deviceStatuses);
         }
     }
 }

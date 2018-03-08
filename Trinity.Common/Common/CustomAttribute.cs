@@ -6,6 +6,12 @@ using System.Threading.Tasks;
 
 public class CustomAttribute : Attribute
 {
+    public CustomAttribute() { }
+    public CustomAttribute(string Color, string Name)
+    {
+        this.Color = Color;
+        this.Name = Name;
+    }
     public string Color { get; set; }
     public string Name { get; set; }
 }

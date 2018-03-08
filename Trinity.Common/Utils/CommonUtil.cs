@@ -171,92 +171,92 @@ namespace Trinity.Common
             return plaintext;
         }
         
-        public static string GetDeviceStatusText(EnumDeviceStatuses deviceStatus)
+        public static string GetDeviceStatusText(EnumDeviceStatus deviceStatus)
         {
             switch (deviceStatus)
             {
-                case EnumDeviceStatuses.Connected:
+                case EnumDeviceStatus.Connected:
                     return "Device connected";
 
-                case EnumDeviceStatuses.None:
+                case EnumDeviceStatus.None:
                     return deviceStatus.ToString();
 
-                case EnumDeviceStatuses.Paused:
+                case EnumDeviceStatus.Paused:
                     return deviceStatus.ToString();
 
-                case EnumDeviceStatuses.Error:
+                case EnumDeviceStatus.Error:
                     return deviceStatus.ToString();
 
-                case EnumDeviceStatuses.PendingDeletion:
+                case EnumDeviceStatus.PendingDeletion:
                     return deviceStatus.ToString();
 
-                case EnumDeviceStatuses.PaperJam:
+                case EnumDeviceStatus.PaperJam:
                     return deviceStatus.ToString();
 
-                case EnumDeviceStatuses.PaperOut:
+                case EnumDeviceStatus.PaperOut:
                     return deviceStatus.ToString();
 
-                case EnumDeviceStatuses.ManualFeed:
+                case EnumDeviceStatus.ManualFeed:
                     return deviceStatus.ToString();
 
-                case EnumDeviceStatuses.PaperProblem:
+                case EnumDeviceStatus.PaperProblem:
                     return deviceStatus.ToString();
 
-                case EnumDeviceStatuses.Offline:
+                case EnumDeviceStatus.Offline:
                     return deviceStatus.ToString();
 
-                case EnumDeviceStatuses.IOActive:
+                case EnumDeviceStatus.IOActive:
                     return deviceStatus.ToString();
 
-                case EnumDeviceStatuses.Busy:
+                case EnumDeviceStatus.Busy:
                     return deviceStatus.ToString();
 
-                case EnumDeviceStatuses.Printing:
+                case EnumDeviceStatus.Printing:
                     return deviceStatus.ToString();
 
-                case EnumDeviceStatuses.OutputBinFull:
+                case EnumDeviceStatus.OutputBinFull:
                     return deviceStatus.ToString();
 
-                case EnumDeviceStatuses.NotAvailable:
+                case EnumDeviceStatus.NotAvailable:
                     return deviceStatus.ToString();
 
-                case EnumDeviceStatuses.Waiting:
+                case EnumDeviceStatus.Waiting:
                     return deviceStatus.ToString();
 
-                case EnumDeviceStatuses.Processing:
+                case EnumDeviceStatus.Processing:
                     return deviceStatus.ToString();
 
-                case EnumDeviceStatuses.Initializing:
+                case EnumDeviceStatus.Initializing:
                     return deviceStatus.ToString();
 
-                case EnumDeviceStatuses.WarmingUp:
+                case EnumDeviceStatus.WarmingUp:
                     return deviceStatus.ToString();
 
-                case EnumDeviceStatuses.TonerLow:
+                case EnumDeviceStatus.TonerLow:
                     return deviceStatus.ToString();
 
-                case EnumDeviceStatuses.NoToner:
+                case EnumDeviceStatus.NoToner:
                     return deviceStatus.ToString();
 
-                case EnumDeviceStatuses.PagePunt:
+                case EnumDeviceStatus.PagePunt:
                     return deviceStatus.ToString();
 
-                case EnumDeviceStatuses.UserIntervention:
+                case EnumDeviceStatus.UserIntervention:
                     return deviceStatus.ToString();
 
-                case EnumDeviceStatuses.OutOfMemory:
+                case EnumDeviceStatus.OutOfMemory:
                     return deviceStatus.ToString();
 
-                case EnumDeviceStatuses.DoorOpen:
+                case EnumDeviceStatus.DoorOpen:
                     return deviceStatus.ToString();
 
-                case EnumDeviceStatuses.ServerUnknown:
+                case EnumDeviceStatus.ServerUnknown:
                     return deviceStatus.ToString();
 
-                case EnumDeviceStatuses.PowerSave:
+                case EnumDeviceStatus.PowerSave:
                     return deviceStatus.ToString();
 
-                case EnumDeviceStatuses.Disconnected:
+                case EnumDeviceStatus.Disconnected:
                     return deviceStatus.ToString();
 
                 default:

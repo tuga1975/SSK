@@ -45,7 +45,7 @@ namespace SSA.CodeBehind
                         Label_Type = EnumLabelType.MUB,
                         Date = DateTime.Now.ToString("dd/MM/yyyy"),
                         CompanyName = CommonConstants.COMPANY_NAME,
-                        LastStation = EnumStations.SSA,
+                        LastStation = EnumStation.SSA,
                         MarkingNo = new DAL_SettingSystem().GenerateMarkingNumber(),
                         DrugType = "NA"
                     };

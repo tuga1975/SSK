@@ -30,12 +30,18 @@ namespace Experiment
         private void FormLEDLightControl_Load(object sender, EventArgs e)
         {
             GetAvailablePorts();
+            cboBaudRate.SelectedIndex = 0;
+            cboParity.SelectedIndex = 0;
         }
 
         public void GetAvailablePorts()
         {
             string[] ports = SerialPort.GetPortNames();
             cboPortNames.Items.AddRange(ports);
+            if (ports.Contains("COM5"))
+            {
+                cboPortNames.Text = "COM5";
+            }
         }
 
         private void btnOpenPort_Click(object sender, EventArgs e)
@@ -61,6 +67,7 @@ namespace Experiment
 
                 btnOpenPort.Enabled = false;
                 btnClosePort.Enabled = true;
+                btnSend.Enabled = true;
             }
             catch (Exception ex)
             {

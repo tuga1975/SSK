@@ -247,7 +247,7 @@ namespace Trinity.Device.Util
             }
         }
 
-        public override EnumDeviceStatuses[] GetDeviceStatus()
+        public override EnumDeviceStatus[] GetDeviceStatus()
         {
             try
             {
@@ -259,18 +259,18 @@ namespace Trinity.Device.Util
                 if (readerNames.Contains(_readerName))
                 {
                     // connected
-                    return new EnumDeviceStatuses[] { EnumDeviceStatuses.Connected };
+                    return new EnumDeviceStatus[] { EnumDeviceStatus.Connected };
                 }
                 else
                 {
                     // disconnected
-                    return new EnumDeviceStatuses[] { EnumDeviceStatuses.Disconnected };
+                    return new EnumDeviceStatus[] { EnumDeviceStatus.Disconnected };
                 }
             }
             catch (Exception ex)
             {
                 Debug.WriteLine("SmartCardReaderUtils.GetDeviceStatus exception: " + ex.Message);
-                return new EnumDeviceStatuses[] { EnumDeviceStatuses.None };
+                return new EnumDeviceStatus[] { EnumDeviceStatus.None };
             }
 
         }

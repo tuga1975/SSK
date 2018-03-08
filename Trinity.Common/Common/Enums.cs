@@ -70,20 +70,21 @@ public static class EnumAppointmentStatuses
     public const string Absent = "Absent";
 }
 
+
 public static class EnumQueueStatuses
 {
 
-    [Custom(Color = "red")]
+    [Custom(EnumColors.Red,"")]
     public static string Missed = "Missed";
-    [Custom(Color = "white")]
+    [Custom(EnumColors.White, "")]
     public const string Waiting = "Waiting";
-    [Custom(Color = "green")]
+    [Custom(EnumColors.Green, "")]
     public const string Processing = "Processing";
-    [Custom(Color = "red")]
+    [Custom(EnumColors.Red, "")]
     public const string Errors = "Errors";
-    [Custom(Color = "green")]
+    [Custom(EnumColors.Green, "")]
     public const string Finished = "Finished";
-    [Custom(Color = "notrequired")]
+    [Custom(EnumColors.Notrequired, "")]
     public const string NotRequired = "NotRequired";
 
 }
@@ -114,7 +115,7 @@ public static class EnumDeviceTypes
     public const string Camera = "Camera";
 }
 
-public enum EnumDeviceIds
+public enum EnumDeviceId
 {
     SmartCardReader = 1,
     FingerprintScanner = 2,
@@ -139,10 +140,10 @@ public static class EnumColors
     public const string White = "#ffffff";
     public const string Black = "#000000";
     public const string Green = "#00ff21";
-
+    public const string Notrequired = "notrequired";
 }
 
-public enum EnumDeviceStatuses
+public enum EnumDeviceStatus
 {
     Connected = 10,
     //
@@ -361,7 +362,7 @@ public static class EnumNotificationTypes
     public const string Caution = "Caution";
 }
 
-public static class EnumStations
+public static class EnumStation
 {
     public const string SSK = "SSK";
     public const string SSA = "SSA";
@@ -525,9 +526,11 @@ public enum EnumAbsentReasons
     No_Supporting_Document = 5
 }
 
-public enum EnumHealthStatus
+public enum EnumApplicationStatus
 {
-    Ready = 0,
-    Caution = 1,
-    Error = 2
+    Initiation = 0,
+    Ready = 1,
+    Caution = 2,
+    Error = 3,
+    Busy = 4
 }
