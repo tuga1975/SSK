@@ -157,25 +157,24 @@ namespace DutyOfficer
                 // get local user info
                 DAL_User dAL_User = new DAL_User();
                 var user = dAL_User.GetUserBySmartCardId(cardUID);
-
-                // if local user is null, get user from centralized, and sync db
-                if (user == null)
-                {
-                    user = dAL_User.GetUserBySmartCardId(cardUID);
-                    if (user != null && user.Role != EnumUserRoles.DutyOfficer)
-                        user = null;
-                }
-
+                
                 if (user != null)
                 {
-                    Session session = Session.Instance;
-                    session.IsSmartCardAuthenticated = true;
-                    Session.Instance[CommonConstants.USER_LOGIN] = user;
-                    this.LayerWeb.RunScript("$('.status-text').css('color','#000').text('Your smart card is authenticated.');");
-                    // Stop SCardMonitor
-                    SmartCardReaderUtil.Instance.StopSmartCardMonitor();
-                    // raise succeeded event
-                    SmartCard_OnSmartCardSucceeded();
+                    if (user.Role == EnumUserRoles.DutyOfficer)
+                    {
+                        Session session = Session.Instance;
+                        session.IsSmartCardAuthenticated = true;
+                        Session.Instance[CommonConstants.USER_LOGIN] = user;
+                        this.LayerWeb.RunScript("$('.status-text').css('color','#000').text('Your smart card is authenticated.');");
+                        // Stop SCardMonitor
+                        SmartCardReaderUtil.Instance.StopSmartCardMonitor();
+                        // raise succeeded event
+                        SmartCard_OnSmartCardSucceeded();
+                    }
+                    else
+                    {
+                        SmartCard_OnSmartCardFailed("You do not have permission to access this page");
+                    }
                 }
                 else
                 {
