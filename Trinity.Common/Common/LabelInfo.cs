@@ -84,9 +84,11 @@ namespace Trinity.Common
         /// </summary>
         public string MarkingNumber { get; set; }
 
-        internal bool IsValid()
+        public string QRCodeString { get; set; }
+
+        public bool IsValid()
         {
-            if (string.IsNullOrEmpty(ID) || string.IsNullOrEmpty(Name) || string.IsNullOrEmpty(MarkingNumber))
+            if (string.IsNullOrEmpty(ID) || string.IsNullOrEmpty(Name) || string.IsNullOrEmpty(MarkingNumber) || string.IsNullOrEmpty(QRCodeString))
             {
                 return false;
             }

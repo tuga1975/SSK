@@ -37,6 +37,10 @@
             this.btnStartFlashing = new System.Windows.Forms.Button();
             this.bnStopFlashing = new System.Windows.Forms.Button();
             this.btnInitFlashing = new System.Windows.Forms.Button();
+            this.btnPrintTTLabel = new System.Windows.Forms.Button();
+            this.btnPrintTTLabel_2 = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnPrintAppointmentDetails
@@ -92,7 +96,7 @@
             // btnTestSerialComm
             // 
             this.btnTestSerialComm.Location = new System.Drawing.Point(267, 41);
-            this.btnTestSerialComm.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnTestSerialComm.Margin = new System.Windows.Forms.Padding(2);
             this.btnTestSerialComm.Name = "btnTestSerialComm";
             this.btnTestSerialComm.Size = new System.Drawing.Size(183, 19);
             this.btnTestSerialComm.TabIndex = 5;
@@ -130,11 +134,59 @@
             this.btnInitFlashing.UseVisualStyleBackColor = true;
             this.btnInitFlashing.Click += new System.EventHandler(this.btnInitFlashing_Click);
             // 
+            // btnPrintTTLabel
+            // 
+            this.btnPrintTTLabel.Location = new System.Drawing.Point(267, 99);
+            this.btnPrintTTLabel.Margin = new System.Windows.Forms.Padding(2);
+            this.btnPrintTTLabel.Name = "btnPrintTTLabel";
+            this.btnPrintTTLabel.Size = new System.Drawing.Size(183, 23);
+            this.btnPrintTTLabel.TabIndex = 9;
+            this.btnPrintTTLabel.Text = "Print TT Label - Short name";
+            this.btnPrintTTLabel.UseVisualStyleBackColor = true;
+            this.btnPrintTTLabel.Click += new System.EventHandler(this.btnPrintTTLabel_Click);
+            // 
+            // btnPrintTTLabel_2
+            // 
+            this.btnPrintTTLabel_2.Location = new System.Drawing.Point(267, 126);
+            this.btnPrintTTLabel_2.Margin = new System.Windows.Forms.Padding(2);
+            this.btnPrintTTLabel_2.Name = "btnPrintTTLabel_2";
+            this.btnPrintTTLabel_2.Size = new System.Drawing.Size(183, 23);
+            this.btnPrintTTLabel_2.TabIndex = 10;
+            this.btnPrintTTLabel_2.Text = "Print TT Label - Long name";
+            this.btnPrintTTLabel_2.UseVisualStyleBackColor = true;
+            this.btnPrintTTLabel_2.Click += new System.EventHandler(this.btnPrintTTLabel_2_Click);
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(267, 198);
+            this.button1.Margin = new System.Windows.Forms.Padding(2);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(183, 23);
+            this.button1.TabIndex = 12;
+            this.button1.Text = "Print MUB Label - Long name";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(267, 169);
+            this.button2.Margin = new System.Windows.Forms.Padding(2);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(183, 23);
+            this.button2.TabIndex = 11;
+            this.button2.Text = "Print MUB Label - Short name";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(971, 581);
+            this.Controls.Add(this.button1);
+            this.Controls.Add(this.button2);
+            this.Controls.Add(this.btnPrintTTLabel_2);
+            this.Controls.Add(this.btnPrintTTLabel);
             this.Controls.Add(this.btnInitFlashing);
             this.Controls.Add(this.bnStopFlashing);
             this.Controls.Add(this.btnStartFlashing);
@@ -162,6 +214,10 @@
         private System.Windows.Forms.Button btnStartFlashing;
         private System.Windows.Forms.Button bnStopFlashing;
         private System.Windows.Forms.Button btnInitFlashing;
+        private System.Windows.Forms.Button btnPrintTTLabel;
+        private System.Windows.Forms.Button btnPrintTTLabel_2;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button button2;
     }
 }
 

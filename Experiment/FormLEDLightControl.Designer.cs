@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.cboPortNames = new System.Windows.Forms.ComboBox();
             this.cboBaudRate = new System.Windows.Forms.ComboBox();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
@@ -57,6 +58,7 @@
             this.radGREENLight = new System.Windows.Forms.RadioButton();
             this.radBLUELight = new System.Windows.Forms.RadioButton();
             this.radYELLOWLight = new System.Windows.Forms.RadioButton();
+            this.serialPort1 = new System.IO.Ports.SerialPort(this.components);
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -441,5 +443,6 @@
         private System.Windows.Forms.RadioButton radGREENLight;
         private System.Windows.Forms.RadioButton radBLUELight;
         private System.Windows.Forms.RadioButton radYELLOWLight;
+        private System.IO.Ports.SerialPort serialPort1;
     }
 }
