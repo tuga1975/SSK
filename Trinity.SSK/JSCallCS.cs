@@ -750,19 +750,6 @@ namespace SSK
             LoadPage("Supervisee.html");
 
         }
-        public void CancelDOEnterNRIC()
-        {
-            Session session = Session.Instance;
-            var user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-            if (user != null)
-            {
-                session.IsSmartCardAuthenticated = false;
-                session.IsFingerprintAuthenticated = false;
-                session[CommonConstants.USER_LOGIN] = null;
-                session[CommonConstants.PROFILE_DATA] = null;
-                Trinity.Common.Common.EventCenter.Default.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.DO_CANCEL_ENTER_NRIC});
-            }
-        }
         public void LogOut()
         {
             // reset session value
@@ -770,17 +757,13 @@ namespace SSK
             var user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
             if (user != null)
             {
-                Trinity.SignalR.Client.Instance.UserLoggedOut(((Trinity.BE.User)session[CommonConstants.USER_LOGIN]).UserId);
-
-                session.IsSmartCardAuthenticated = false;
-                session.IsFingerprintAuthenticated = false;
-                session[CommonConstants.USER_LOGIN] = null;
-                session[CommonConstants.PROFILE_DATA] = null;
-
-                //
-                // RaiseLogOutCompletedEvent
-                RaiseLogOutCompletedEvent();
+                Trinity.SignalR.Client.Instance.UserLoggedOut(((Trinity.BE.User)session[CommonConstants.USER_LOGIN]).UserId);   
             }
+            session.IsSmartCardAuthenticated = false;
+            session.IsFingerprintAuthenticated = false;
+            session[CommonConstants.USER_LOGIN] = null;
+            session[CommonConstants.PROFILE_DATA] = null;
+            RaiseLogOutCompletedEvent();
         }
     }
 

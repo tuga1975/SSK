@@ -102,36 +102,14 @@ namespace Experiment
             //}
         }
 
-        private void LedStatusLightingUtil_DataReceived(object sender, SerialDataReceivedEventArgs2 e)
+        private void LedStatusLightingUtil_DataReceived(object sender, string response)
         {
-            SerialPort serialPort = e.SourceObject;
-            //Initialize a buffer to hold the received data 
-            byte[] buffer = new byte[serialPort.ReadBufferSize];
-
-            //There is no accurate method for checking how many bytes are read 
-            //unless you check the return from the Read method 
-            int bytesRead = serialPort.Read(buffer, 0, buffer.Length);
-
-            //For the example assume the data we are received is ASCII data. 
-            string response = Encoding.ASCII.GetString(buffer, 0, bytesRead);
-            //Check if string contains the terminator  
-
-            //if (tString.IndexOf((char)_terminator) > -1)
-            //{
-            //    //If tString does contain terminator we cannot assume that it is the last character received 
-            //    string workingString = tString.Substring(0, tString.IndexOf((char)_terminator));
-            //    //Remove the data up to the terminator from tString 
-            //    tString = tString.Substring(tString.IndexOf((char)_terminator));
-            //    //Do something with workingString 
-            //    //Console.WriteLine(workingString);
-            //    txtReceivedData.Text = workingString + "\n" + txtReceivedData.Text;
-            //}
             txtReceivedData.Text = response;
         }
 
         private void SerialPort1_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
-            
+
         }
 
         private void btnClosePort_Click(object sender, EventArgs e)
@@ -153,6 +131,17 @@ namespace Experiment
 
         private void btnSend_Click(object sender, EventArgs e)
         {
+            LEDStatusLightingUtil ledStatusLightingUtil = LEDStatusLightingUtil.Instance;
+            string ascii = txtASCIIStringToSend.Text;
+            string hex = txtHEXStringToSend.Text;
+            if (!string.IsNullOrEmpty(ascii))
+            {
+                ledStatusLightingUtil.SendASCIICommand(ascii);
+            }
+            else
+            {
+                ledStatusLightingUtil.SendCommand(txtHEXStringToSend.Text);
+            }
             //string ascii = txtASCIIStringToSend.Text;
             //string hex = txtHEXStringToSend.Text;
             //if (!string.IsNullOrEmpty(ascii))

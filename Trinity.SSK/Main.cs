@@ -104,10 +104,6 @@ namespace SSK
             {
                 LayerWeb.InvokeScript("alertBookAppointment", e.Message);
             }
-            else if (e.Name == EventNames.DO_CANCEL_ENTER_NRIC)
-            {
-                NavigateTo(NavigatorEnums.Authentication_SmartCard);
-            }
         }
 
         /// <summary>
@@ -151,25 +147,32 @@ namespace SSK
             if (user != null)
             {
                 // Only enrolled supervisees are allowed to login
-                if (user.Status == EnumUserStatuses.Blocked)
+                if (user.Role==EnumUserRoles.Supervisee || user.Role == EnumUserRoles.DutyOfficer)
                 {
-                    SmartCard_OnSmartCardFailed("You have been blocked.");
-                    return;
+                    if (user.Status == EnumUserStatuses.Blocked)
+                    {
+                        SmartCard_OnSmartCardFailed("You have been blocked.");
+                        return;
+                    }
+                    if (user.Status == EnumUserStatuses.New)
+                    {
+                        SmartCard_OnSmartCardFailed("You haven't enrolled yet.");
+                        return;
+                    }
+                    Session session = Session.Instance;
+                    session.IsSmartCardAuthenticated = true;
+                    session[CommonConstants.USER_LOGIN] = user;
+                    this.LayerWeb.RunScript("$('.status-text').css('color','#000').text('Your smart card is authenticated.');");
+                    // Stop SCardMonitor
+                    SmartCardReaderUtil sCardMonitor = SmartCardReaderUtil.Instance;
+                    sCardMonitor.StopSmartCardMonitor();
+                    // raise succeeded event
+                    SmartCard_OnSmartCardSucceeded();
                 }
-                if (user.Status == EnumUserStatuses.New)
+                else
                 {
-                    SmartCard_OnSmartCardFailed("You haven't enrolled yet.");
-                    return;
+                    SmartCard_OnSmartCardFailed("You do not have permission to login to this system");
                 }
-                Session session = Session.Instance;
-                session.IsSmartCardAuthenticated = true;
-                session[CommonConstants.USER_LOGIN] = user;
-                this.LayerWeb.RunScript("$('.status-text').css('color','#000').text('Your smart card is authenticated.');");
-                // Stop SCardMonitor
-                SmartCardReaderUtil sCardMonitor = SmartCardReaderUtil.Instance;
-                sCardMonitor.StopSmartCardMonitor();
-                // raise succeeded event
-                SmartCard_OnSmartCardSucceeded();
             }
             else
             {
@@ -204,7 +207,7 @@ namespace SSK
                 //////Supervisee
                 //Trinity.BE.User user = new DAL_User().GetUserByUserId("26df26a0-73a3-4bdb-bce6-10e92265a3d7").Data;
                 ////// Duty Officer
-                //Trinity.BE.User user = new DAL_User().GetUserByUserId("87b3d624-f054-4d75-b1bf-b2981fc64a71").Data;
+                //Trinity.BE.User user = new DAL_User().GetUserByUserId("bd6089d4-ab74-4cbc-9c8e-6867afe37ce8").Data;
                 //session[CommonConstants.USER_LOGIN] = user;
                 //session.IsSmartCardAuthenticated = true;
                 //session.IsFingerprintAuthenticated = true;
