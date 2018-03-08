@@ -47,9 +47,9 @@ namespace Trinity.Device.Authentication
             _fingerprintTemplates = fingerprintTemplates;
 
             // Get fingerprint reader status
-            EnumDeviceStatuses[] fingerprintReaderStatuses = FingerprintReaderUtil.Instance.GetDeviceStatus();
+            EnumDeviceStatus[] fingerprintReaderStatuses = FingerprintReaderUtil.Instance.GetDeviceStatus();
             // if status is disconnected, raise disconnected event
-            if (!fingerprintReaderStatuses.Contains(EnumDeviceStatuses.Connected))
+            if (!fingerprintReaderStatuses.Contains(EnumDeviceStatus.Connected))
             {
                 RaiseDeviceDisconnectedEvent();
             }

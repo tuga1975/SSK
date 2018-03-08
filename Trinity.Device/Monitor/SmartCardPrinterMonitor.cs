@@ -35,8 +35,8 @@ namespace Trinity.Device
 
                 // update local ApplicationDevice_Status
                 DAL_DeviceStatus dAL_DeviceStatus = new DAL_DeviceStatus();
-                dAL_DeviceStatus.Update((int)EnumDeviceIds.SmartCardPrinter, statuses);
-                Trinity.SignalR.Client.Instance.DeviceStatusChanged((int)EnumDeviceIds.SmartCardPrinter, statuses);
+                dAL_DeviceStatus.Update((int)EnumDeviceId.SmartCardPrinter, statuses);
+                Trinity.SignalR.Client.Instance.DeviceStatusChanged((int)EnumDeviceId.SmartCardPrinter, statuses);
             }
             catch (Exception ex)
             {

@@ -199,10 +199,10 @@ namespace SSA
 
                     if (appointment != null)
                     {
-                        var sskQueue = new DAL_QueueNumber().GetQueueDetailByAppointment(appointment, EnumStations.SSK);
+                        var sskQueue = new DAL_QueueNumber().GetQueueDetailByAppointment(appointment, EnumStation.SSK);
 
-                        dalQueue.UpdateQueueStatus(sskQueue.Queue_ID, EnumQueueStatuses.Finished, EnumStations.SSK);
-                        dalQueue.UpdateQueueStatus(sskQueue.Queue_ID, EnumQueueStatuses.Processing, EnumStations.SSA);
+                        dalQueue.UpdateQueueStatus(sskQueue.Queue_ID, EnumQueueStatuses.Finished, EnumStation.SSK);
+                        dalQueue.UpdateQueueStatus(sskQueue.Queue_ID, EnumQueueStatuses.Processing, EnumStation.SSA);
                     }
                     //this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').show(); ; ");
                     //this._web.RunScript("$('.status-text').css('color','#000').text('Please collect your labels');");
@@ -353,7 +353,7 @@ namespace SSA
                     return;
                 }
                 var dalQueue = new DAL_QueueNumber();
-                dalQueue.UpdateQueueStatusByUserId(currentUser.UserId, EnumStations.SSA, EnumQueueStatuses.Finished, EnumStations.UHP, EnumQueueStatuses.Processing, "", EnumQueueOutcomeText.Processing);
+                dalQueue.UpdateQueueStatusByUserId(currentUser.UserId, EnumStation.SSA, EnumQueueStatuses.Finished, EnumStation.UHP, EnumQueueStatuses.Processing, "", EnumQueueOutcomeText.Processing);
 
                 this._web.LoadPageHtml("PrintingMUBAndTTLabels.html");
                 this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').show(); ; ");

@@ -88,15 +88,15 @@ namespace Trinity.Device.Util
             }
         }
 
-        public override EnumDeviceStatuses[] GetDeviceStatus()
+        public override EnumDeviceStatus[] GetDeviceStatus()
         {
             if (IsPrinterConnected(_printerName?.ToUpper()))
             {
-                return new EnumDeviceStatuses[] { EnumDeviceStatuses.Connected };
+                return new EnumDeviceStatus[] { EnumDeviceStatus.Connected };
             }
             else
             {
-                return new EnumDeviceStatuses[] { EnumDeviceStatuses.Disconnected };
+                return new EnumDeviceStatus[] { EnumDeviceStatus.Disconnected };
             }
         }
 

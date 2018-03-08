@@ -33,16 +33,16 @@ namespace Trinity.Device.Util
         }
         #endregion
 
-        public EnumDeviceStatuses[] GetDeviceStatus()
+        public EnumDeviceStatus[] GetDeviceStatus()
         {
             // count all screens, if > 1, its connected
             if (Screen.AllScreens.Count() > 1)
             {
-                return new EnumDeviceStatuses[] { EnumDeviceStatuses.Connected };
+                return new EnumDeviceStatus[] { EnumDeviceStatus.Connected };
             }
             else
             {
-                return new EnumDeviceStatuses[] { EnumDeviceStatuses.Disconnected };
+                return new EnumDeviceStatus[] { EnumDeviceStatus.Disconnected };
             }
         }
     }

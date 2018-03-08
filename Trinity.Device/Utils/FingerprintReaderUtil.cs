@@ -158,7 +158,7 @@ namespace Trinity.Device.Util
         /// start Verification event to capture connected status, need to be wait xxx miliseconds
         /// </summary>
         /// <returns>device connected's status</returns>
-        public EnumDeviceStatuses[] GetDeviceStatus()
+        public EnumDeviceStatus[] GetDeviceStatus()
         {
             try
             {
@@ -173,18 +173,18 @@ namespace Trinity.Device.Util
                 if (status != null && status.Contains(FTRSCAN_INTERFACE_STATUS.FTRSCAN_INTERFACE_STATUS_CONNECTED))
                 {
                     // connected
-                    return new EnumDeviceStatuses[] { EnumDeviceStatuses.Connected };
+                    return new EnumDeviceStatus[] { EnumDeviceStatus.Connected };
                 }
                 else
                 {
                     // disconnected
-                    return new EnumDeviceStatuses[] { EnumDeviceStatuses.Disconnected };
+                    return new EnumDeviceStatus[] { EnumDeviceStatus.Disconnected };
                 }
             }
             catch (Exception ex)
             {
                 Debug.WriteLine("FingerprintReaderUtils.GetDeviceStatus exception: " + ex.Message);
-                return new EnumDeviceStatuses[] { EnumDeviceStatuses.None };
+                return new EnumDeviceStatus[] { EnumDeviceStatus.None };
             }
         }
 

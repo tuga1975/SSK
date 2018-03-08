@@ -20,7 +20,7 @@ namespace Trinity.DAL
         {
             if (EnumAppConfig.IsLocal)
             {
-                var queueDetail = _localUnitOfWork.DataContext.Queues.Where(item => DbFunctions.TruncateTime(item.CreatedTime).Value == DateTime.Now.Date && ((item.Appointment_ID.HasValue && item.Appointment.UserId == UserID) || (!item.Appointment_ID.HasValue && item.Created_By == UserID))).SelectMany(d => d.QueueDetails).FirstOrDefault(d => d.Station == EnumStations.SSK);
+                var queueDetail = _localUnitOfWork.DataContext.Queues.Where(item => DbFunctions.TruncateTime(item.CreatedTime).Value == DateTime.Now.Date && ((item.Appointment_ID.HasValue && item.Appointment.UserId == UserID) || (!item.Appointment_ID.HasValue && item.Created_By == UserID))).SelectMany(d => d.QueueDetails).FirstOrDefault(d => d.Station == EnumStation.SSK);
 
                 // Need to check why queue detail is null
                 if (queueDetail != null)
@@ -32,7 +32,7 @@ namespace Trinity.DAL
             }
             else
             {
-                var queueDetail = _centralizedUnitOfWork.DataContext.Queues.Include("Appointment").Include("QueueDetails").Where(item => DbFunctions.TruncateTime(item.CreatedTime).Value == DateTime.Now.Date && ((item.Appointment_ID.HasValue && item.Appointment.UserId == UserID) || (!item.Appointment_ID.HasValue && item.Created_By == UserID))).SelectMany(d => d.QueueDetails).FirstOrDefault(d => d.Station == EnumStations.SSK);
+                var queueDetail = _centralizedUnitOfWork.DataContext.Queues.Include("Appointment").Include("QueueDetails").Where(item => DbFunctions.TruncateTime(item.CreatedTime).Value == DateTime.Now.Date && ((item.Appointment_ID.HasValue && item.Appointment.UserId == UserID) || (!item.Appointment_ID.HasValue && item.Created_By == UserID))).SelectMany(d => d.QueueDetails).FirstOrDefault(d => d.Station == EnumStation.SSK);
                 if (queueDetail != null)
                 {
                     queueDetail.Status = EnumQueueStatuses.Finished;

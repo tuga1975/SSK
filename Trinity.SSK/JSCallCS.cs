@@ -254,7 +254,7 @@ namespace SSK
             try
             {
                 // if appointment is in queue, return false
-                bool inQueue = new DAL_QueueNumber().IsInQueue(appointment_ID, EnumStations.SSK);
+                bool inQueue = new DAL_QueueNumber().IsInQueue(appointment_ID, EnumStation.SSK);
                 if (inQueue)
                 {
                     return false;
@@ -586,7 +586,7 @@ namespace SSK
                     }
                     else if (appointment != null && !string.IsNullOrEmpty(appointment.Timeslot_ID))
                     {
-                        queueNumber = _dalQueue.InsertQueueNumber(appointment.ID, appointment.UserId, EnumStations.SSK, currentUser.UserId);
+                        queueNumber = _dalQueue.InsertQueueNumber(appointment.ID, appointment.UserId, EnumStation.SSK, currentUser.UserId);
                         if (queueNumber != null)
                         {
                             APIUtils.FormQueueNumber.RefreshQueueNumbers();

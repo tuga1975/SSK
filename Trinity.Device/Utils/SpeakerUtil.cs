@@ -32,7 +32,7 @@ namespace Trinity.Device.Util
         }
         #endregion
 
-        public EnumDeviceStatuses[] GetDeviceStatus()
+        public EnumDeviceStatus[] GetDeviceStatus()
         {
             // refer: https://stackoverflow.com/questions/33872895/detect-if-headphones-are-plugged-in-or-not-via-c-sharp
 
@@ -47,11 +47,11 @@ namespace Trinity.Device.Util
 
             if (endpoints.Count > 0)
             {
-                return new EnumDeviceStatuses[] { EnumDeviceStatuses.Connected };
+                return new EnumDeviceStatus[] { EnumDeviceStatus.Connected };
             }
             else
             {
-                return new EnumDeviceStatuses[] { EnumDeviceStatuses.Disconnected };
+                return new EnumDeviceStatus[] { EnumDeviceStatus.Disconnected };
             }
         }
     }

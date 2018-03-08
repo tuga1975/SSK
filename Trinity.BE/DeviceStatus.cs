@@ -11,7 +11,7 @@ namespace Trinity.BE
     {
         public string Station { get; set; }
         public int DeviceID { get; set; }
-        public EnumDeviceStatuses[] StatusCode { get; set; }
+        public EnumDeviceStatus[] StatusCode { get; set; }
     }
 
     public class StationColorDevice

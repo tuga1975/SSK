@@ -115,7 +115,7 @@ public static class EnumDeviceTypes
     public const string Camera = "Camera";
 }
 
-public enum EnumDeviceIds
+public enum EnumDeviceId
 {
     SmartCardReader = 1,
     FingerprintScanner = 2,
@@ -143,7 +143,7 @@ public static class EnumColors
     public const string Notrequired = "notrequired";
 }
 
-public enum EnumDeviceStatuses
+public enum EnumDeviceStatus
 {
     Connected = 10,
     //
@@ -362,7 +362,7 @@ public static class EnumNotificationTypes
     public const string Caution = "Caution";
 }
 
-public static class EnumStations
+public static class EnumStation
 {
     public const string SSK = "SSK";
     public const string SSA = "SSA";
@@ -526,9 +526,11 @@ public enum EnumAbsentReasons
     No_Supporting_Document = 5
 }
 
-public enum EnumHealthStatus
+public enum EnumApplicationStatus
 {
-    Ready = 0,
-    Caution = 1,
-    Error = 2
+    Initiation = 0,
+    Ready = 1,
+    Caution = 2,
+    Error = 3,
+    Busy = 4
 }
