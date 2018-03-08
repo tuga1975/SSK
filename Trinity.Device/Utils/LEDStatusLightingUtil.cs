@@ -19,6 +19,7 @@ namespace Trinity.Device.Util
     {
         public event EventHandler<string> DataReceived;
         public event EventHandler<string> MUBAutoFlagApplicatorReadyOK;
+        public event EventHandler<string> MUBIsPresent;
         public event EventHandler<string> MUBReadyToPrint;
         public event EventHandler<string> MUBAbleToRemove;
         public event EventHandler<string> MUBDoorFullyClosed;
@@ -485,7 +486,7 @@ namespace Trinity.Device.Util
         #endregion
 
         #region MUB Labeller Control functions
-        public void CheckMUBApplicatorReadyStatus()
+        public void InitializeMUBApplicator()
         {
             this.DataReceived += MUBApplicatorReadyStatus_Received;
 
@@ -513,7 +514,7 @@ namespace Trinity.Device.Util
             else
             {
                 Thread.Sleep(200);
-                CheckMUBApplicatorReadyStatus();
+                InitializeMUBApplicator();
             }
         }
 
@@ -554,17 +555,29 @@ namespace Trinity.Device.Util
             this.DataReceived -= BottleSensorStatus_Received;
             if (response == "1" || response.ToLower() == "ok" || response.ToLower() == "yes")
             {
-                this.DataReceived += MUBApplicatorStartStatus_Received;
+                //this.DataReceived += MUBApplicatorStartStatus_Received;
 
-                // Continue to check Auto Flag applicator Start
-                string asciiCommand = "WR MR4 1";
-                SendASCIICommand(asciiCommand);
+                //// Continue to check Auto Flag applicator Start
+                //string asciiCommand = "WR MR4 1";
+                //SendASCIICommand(asciiCommand);
+
+                // Inform Supervisee that the MUB is present and ask his/her confirmation for the next steps
+                MUBIsPresent?.Invoke(this, "");
             }
             else
             {
                 Thread.Sleep(200);
                 VerifyMUBPresence();
             }
+        }
+
+        public void StartMUBApplicator()
+        {
+            this.DataReceived += MUBApplicatorStartStatus_Received;
+
+            // Start MUB applicator
+            string asciiCommand = "WR MR4 1";
+            SendASCIICommand(asciiCommand);
         }
 
         private void MUBApplicatorStartStatus_Received(object sender, string response)
@@ -581,11 +594,7 @@ namespace Trinity.Device.Util
             else
             {
                 Thread.Sleep(200);
-                this.DataReceived += MUBApplicatorStartStatus_Received;
-
-                // Re-check Auto Flag applicator Start
-                string asciiCommand = "WR MR4 1";
-                SendASCIICommand(asciiCommand);
+                StartMUBApplicator();
             }
         }
 
@@ -644,7 +653,7 @@ namespace Trinity.Device.Util
         private void MUBRemoveStatus_Received(object sender, string response)
         {
             this.DataReceived -= MUBRemoveStatus_Received;
-            if (response == "1" || response.ToLower() == "ok" || response.ToLower() == "yes")
+            if (response == "0")
             {
                 this.DataReceived += MUBDoorClosedStatus_Received;
 
@@ -718,6 +727,10 @@ namespace Trinity.Device.Util
             //    SourceObject = _serialPort,
             //    Data = e
             //};
+            if (!string.IsNullOrEmpty(response))
+            {
+                response = response.Trim();
+            }
             DataReceived?.Invoke(this, response);
         }
 
