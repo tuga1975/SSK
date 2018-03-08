@@ -299,6 +299,8 @@
             // chkSSA
             // 
             this.chkSSA.AutoSize = true;
+            this.chkSSA.Checked = true;
+            this.chkSSA.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkSSA.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.chkSSA.Location = new System.Drawing.Point(12, 73);
             this.chkSSA.Name = "chkSSA";

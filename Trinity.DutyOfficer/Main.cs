@@ -76,11 +76,12 @@ namespace DutyOfficer
         private void OnNewNotification_Handler(object sender, NotificationInfo e)
         {
             string dutyOfficerId = ((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId;
-            if (dutyOfficerId != null && dutyOfficerId != "")
+            string toDutyOfficerId = e.ToUserIds != null ? e.ToUserIds[0] : null;
+            if (dutyOfficerId != null && dutyOfficerId != "" && e.Name == NotificationNames.ALERT_MESSAGE)
             {
                 Trinity.BE.Notification notification = new Trinity.BE.Notification();
                 notification.Subject = e.Subject;
-                notification.ToUserId = e.ToUserIds[0];
+                notification.ToUserId = e.ToUserIds != null ? e.ToUserIds[0] : null;
                 notification.Content = e.Content;
                 notification.Source = (string)e.Source;
                 notification.Type = e.Type;
@@ -107,19 +108,19 @@ namespace DutyOfficer
             string station = (string)e.Source;
             DAL_DeviceStatus device = new DAL_DeviceStatus();
 
-            if (station == EnumStations.SSA)
+            if (station == EnumStation.SSA)
             {
                 JSCallCS._StationColorDevice.SSAColor = device.CheckStatusDevicesStation(station);
             }
-            if (station == EnumStations.SSK)
+            if (station == EnumStation.SSK)
             {
                 JSCallCS._StationColorDevice.SSKColor = device.CheckStatusDevicesStation(station);
             }
-            if (station == EnumStations.ESP)
+            if (station == EnumStation.ESP)
             {
                 JSCallCS._StationColorDevice.ESPColor = device.CheckStatusDevicesStation(station);
             }
-            if (station == EnumStations.UHP)
+            if (station == EnumStation.UHP)
             {
                 JSCallCS._StationColorDevice.UHPColor = device.CheckStatusDevicesStation(station);
             }
@@ -469,7 +470,7 @@ namespace DutyOfficer
                 _isFirstTimeLoaded = false;
             }
 
-            //// For testing purpose
+            // For testing purpose
             //Session session = Session.Instance;
             //// Duty Officer
             //Trinity.BE.User user = new DAL_User().GetUserByUserId("dfbb2a6a-9e45-4a76-9f75-af1a7824a947").Data;
@@ -478,7 +479,7 @@ namespace DutyOfficer
             //session.IsFingerprintAuthenticated = true;
 
             //NavigateTo(NavigatorEnums.Queue);
-            //Trinity.SignalR.Client.SignalR.Instance.UserLogined(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId);
+            //Trinity.SignalR.Client.Instance.UserLoggedIn(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId);
         }
 
         private void EventCenter_OnNewEvent(object sender, EventInfo e)

@@ -36,7 +36,7 @@ namespace Trinity.Device.Util
         }
         #endregion
 
-        public EnumDeviceStatuses[] GetDeviceStatus()
+        public EnumDeviceStatus[] GetDeviceStatus()
         {
             // refer: https://web.archive.org/web/20140716211944/http://www.barebonescoder.com/2012/01/finding-your-web-cam-with-c-directshow-net/
             DsDevice[] videoInputDevices = DsDevice.GetDevicesOfCat(FilterCategory.VideoInputDevice);
@@ -44,12 +44,12 @@ namespace Trinity.Device.Util
             // connected
             if (videoInputDevices != null && videoInputDevices.Length > 0)
             {
-                return new EnumDeviceStatuses[] { EnumDeviceStatuses.Connected };
+                return new EnumDeviceStatus[] { EnumDeviceStatus.Connected };
             }
             else
             {
                 // disconnected
-                return new EnumDeviceStatuses[] { EnumDeviceStatuses.Disconnected };
+                return new EnumDeviceStatus[] { EnumDeviceStatus.Disconnected };
             }
         }
     }

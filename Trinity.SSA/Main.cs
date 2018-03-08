@@ -174,18 +174,18 @@ namespace SSA
             if (_isFirstTimeLoaded)
             {
                 // Start page
-                NavigateTo(NavigatorEnums.Authentication_SmartCard);
+                //NavigateTo(NavigatorEnums.Authentication_SmartCard);
                 ////// For testing purpose
-                //Session session = Session.Instance;
+                Session session = Session.Instance;
                 //// Supervisee
-                //Trinity.BE.User user = new DAL_User().GetUserByUserId("bb67863c-c330-41aa-b397-c220428ad16f").Data;
-                //session[CommonConstants.USER_LOGIN] = user;
+                Trinity.BE.User user = new DAL_User().GetUserByUserId("06a91b1b-99c3-428d-8a55-83892c2adf4c").Data;
+                session[CommonConstants.USER_LOGIN] = user;
                 ////// Duty Officer
                 //////Trinity.BE.User user = new DAL_User().GetUserByUserId("dfbb2a6a-9e45-4a76-9f75-af1a7824a947", true);
                 //////session[CommonConstants.USER_LOGIN] = user;
-                //session.IsSmartCardAuthenticated = true;
-                //session.IsFingerprintAuthenticated = true;
-                //NavigateTo(NavigatorEnums.Supervisee_Particulars);
+                session.IsSmartCardAuthenticated = true;
+                session.IsFingerprintAuthenticated = true;
+                NavigateTo(NavigatorEnums.Supervisee_Particulars);
                 //////NavigateTo(NavigatorEnums.Authentication_NRIC);
 
                 _isFirstTimeLoaded = false;
@@ -335,7 +335,7 @@ namespace SSA
 
             // display failed on UI
             LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please place your finger on the reader. Failed: " + _fingerprintFailed + "');");
-            
+
             // restart identification
             if (user != null)
             {
@@ -552,6 +552,7 @@ namespace SSA
             else if (navigatorEnum == NavigatorEnums.Supervisee_Particulars)
             {
                 _supperviseeParticulars.Start();
+                btnConfirm.Enabled = true;
             }
             else if (navigatorEnum == NavigatorEnums.Supervisee_NRIC)
             {
@@ -576,6 +577,92 @@ namespace SSA
                 CSCallJS.DisplayLogoutButton(this.LayerWeb, _displayLoginButtonStatus);
             }
         }
+        #endregion
+
+        #region MUB printing & labelling sample process
+        private void btnConfirm_Click(object sender, EventArgs e)
+        {
+            if (btnConfirm.Tag.ToString() == "0")
+            {
+                LEDStatusLightingUtil.Instance.MUBAutoFlagApplicatorReadyOK += Instance_MUBAutoFlagApplicatorReadyOK;
+                LEDStatusLightingUtil.Instance.InitializeMUBApplicator();
+                btnConfirm.Enabled = false;
+            }
+            else if (btnConfirm.Tag.ToString() == "1")
+            {
+                LEDStatusLightingUtil.Instance.MUBIsPresent += Instance_MUBIsPresent;
+                LEDStatusLightingUtil.Instance.VerifyMUBPresence();
+                btnConfirm.Enabled = false;
+            }
+            else if (btnConfirm.Tag.ToString() == "2")
+            {
+                LEDStatusLightingUtil.Instance.MUBReadyToPrint += Instance_MUBReadyToPrint;
+                LEDStatusLightingUtil.Instance.StartMUBApplicator();
+                btnConfirm.Enabled = false;
+            }
+            else if (btnConfirm.Tag.ToString() == "3")
+            {
+                // Start to print
+                btnConfirm.Text = "Check printing status";
+                LEDStatusLightingUtil.Instance.MUBAbleToRemove += Instance_MUBAbleToRemove;
+                LEDStatusLightingUtil.Instance.CheckMUBApplicatorFinishStatus();
+                btnConfirm.Enabled = false;
+            }
+            else if (btnConfirm.Tag.ToString() == "4")
+            {
+                // Verify Supervisee remove the MUB before close the door.
+                lblStatus.Text = "You haven't removed the MUB. Please remove it";
+                LEDStatusLightingUtil.Instance.MUBDoorFullyClosed += Instance_MUBDoorFullyClosed;
+                LEDStatusLightingUtil.Instance.CheckIfMUBRemoved();
+                btnConfirm.Enabled = false;
+            }
+        }
+
+        private void Instance_MUBAutoFlagApplicatorReadyOK(object sender, string e)
+        {
+            LEDStatusLightingUtil.Instance.MUBAutoFlagApplicatorReadyOK -= Instance_MUBAutoFlagApplicatorReadyOK;
+            lblStatus.Text = "Please place the MUB on the holder";
+            btnConfirm.Enabled = true;
+            btnConfirm.Text = "Verify presence of MUB";
+            btnConfirm.Tag = "1";
+        }
+
+        private void Instance_MUBIsPresent(object sender, string e)
+        {
+            LEDStatusLightingUtil.Instance.MUBIsPresent -= Instance_MUBIsPresent;
+            lblStatus.Text = "Supervisee has placed the MUB on the holder";
+            btnConfirm.Enabled = true;
+            btnConfirm.Text = "Start Applicator";
+            btnConfirm.Tag = "2";
+        }
+
+        private void Instance_MUBReadyToPrint(object sender, string e)
+        {
+            LEDStatusLightingUtil.Instance.MUBReadyToPrint -= Instance_MUBReadyToPrint;
+            lblStatus.Text = "Ready to print";
+            btnConfirm.Enabled = true;
+            btnConfirm.Text = "Start to print MUB/TT Label";
+            btnConfirm.Tag = "3";
+        }
+
+        private void Instance_MUBAbleToRemove(object sender, string e)
+        {
+            LEDStatusLightingUtil.Instance.MUBAbleToRemove -= Instance_MUBAbleToRemove;
+            lblStatus.Text = "Print completed. Please remove the MUB";
+            btnConfirm.Text = "Confirm to remove the MUB";
+            btnConfirm.Enabled = true;
+            btnConfirm.Tag = "4";
+        }
+
+        private void Instance_MUBDoorFullyClosed(object sender, string e)
+        {
+            LEDStatusLightingUtil.Instance.MUBDoorFullyClosed -= Instance_MUBDoorFullyClosed;
+            lblStatus.Text = "The door is fully close";
+            btnConfirm.Text = "Initialize MUB Applicator";
+            btnConfirm.Enabled = true;
+            btnConfirm.Tag = "0";
+        }
+
         #endregion
     }
 }

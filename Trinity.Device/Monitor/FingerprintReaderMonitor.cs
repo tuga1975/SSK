@@ -41,8 +41,8 @@ namespace Trinity.Device
 
                 // update local ApplicationDevice_Status
                 DAL_DeviceStatus dAL_DeviceStatus = new DAL_DeviceStatus();
-                dAL_DeviceStatus.Update((int)EnumDeviceIds.FingerprintScanner, statuses);
-                Trinity.SignalR.Client.Instance.DeviceStatusChanged((int)EnumDeviceIds.FingerprintScanner, statuses);
+                dAL_DeviceStatus.Update((int)EnumDeviceId.FingerprintScanner, statuses);
+                Trinity.SignalR.Client.Instance.DeviceStatusChanged((int)EnumDeviceId.FingerprintScanner, statuses);
             }
             catch (Exception ex)
             {
