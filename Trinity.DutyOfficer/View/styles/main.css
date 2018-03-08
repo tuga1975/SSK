@@ -589,15 +589,10 @@ table tr.active {
     float: left;
     margin-top: 30px;
 }
-/*.tabtitle {
-    margin-bottom: 5px;
+#holidayTable .fixed-table-container input[type="checkbox"] {
+    background: #1cacf6;
+    color: #fff;
 }
-.formEdit {
-    overflow: hidden;
-    width: 100%;
-    float: left;
-}*/
-
 /*EDIT OPERATION DATE*/
 #dayOfWeek {
     width: 150px;
