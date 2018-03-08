@@ -21,6 +21,8 @@ namespace SSK
             Application.SetCompatibleTextRenderingDefault(false);
             try
             {
+
+
                 StartHealthChecker();
 
                 StartLEDStatusLighting();

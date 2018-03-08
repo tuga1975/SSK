@@ -15,7 +15,7 @@ namespace Trinity.DAL
         public void InsertAbsentReason(List<Dictionary<string, string>> dataUpdate)
         {
             List<Guid> ArrayIDAppointments = dataUpdate.Select(d => new Guid(d["ID"])).ToList();
-            var arrayUpdate = _localUnitOfWork.DataContext.Appointments.Where(d => ArrayIDAppointments.Contains(d.ID) && d.AbsenceReporting_ID.HasValue).ToList();
+            var arrayUpdate = _localUnitOfWork.DataContext.Appointments.Where(d => ArrayIDAppointments.Contains(d.ID) && !d.AbsenceReporting_ID.HasValue).ToList();
             List<Trinity.DAL.DBContext.AbsenceReporting> arrayInssert = new List<Trinity.DAL.DBContext.AbsenceReporting>();
             foreach (var item in arrayUpdate)
             {

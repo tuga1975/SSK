@@ -1,9 +1,9 @@
-﻿<div id="header" style="background-color:#FFF;margin-top:20px;">
+﻿<!--<div id="header" style="background-color:#FFF;margin-top:20px;">
     <div class="logo"></div>
     <div style="float:right;width:20%;position: relative;top: 50%;-webkit-transform: translateY(-50%);-ms-transform: translateY(-50%);transform: translateY(-50%);">
         <a href="javascript:;" onclick="api.server.LoadSupervisee()"><b class="ion-navicon-round" style="font-size:21px;color:#1cacf6;">Back to Main menu</b></a>
     </div>
-</div>
+</div>-->
 
 <style>
     .z-depth-2 {
@@ -488,14 +488,16 @@
                 _prev = (_prev-1);
                 _count = (_count-1);
                 $('#currentNumber').text(_count);
-            }
+            
 
             api.server.GetUserName(model[_prev].ToUserId, function (to) {
                 $('#notifications').html('<p>To: ' + to + '</p><p><strong>' + model[_prev].Subject + '</strong></p><p>' + model[_prev].Datetime + '</p><br/><p>' + model[_prev].Content + '</p>');
-            });
+                });
+            
             $('[prevID]').val(_prev);
             $('[nextID]').val((_prev + 1));
             api.server.SpeakNotification(model[_prev].ID.toString());
+            }
         });
         $('#nextNoti').click(function () {
             api.server.StopSpeakNotification();
@@ -504,14 +506,17 @@
                 _next = (_next+1);
                 _count = (_count+1);
                 $('#currentNumber').text(_count);
-            }
+            
 
             api.server.GetUserName(model[_next].ToUserId, function (to) {
                 $('#notifications').html('<p>To: ' + to + '</p><p><strong>' + model[_next].Subject + '</strong></p><p>' + model[_next].Datetime + '</p><br/><p>' + model[_next].Content + '</p>');
-            });
+                });
+           
+           
             $('[nextID]').val(_next);
             $('[prevID]').val((_next - 1));
             api.server.SpeakNotification(model[_next].ID.toString());
+            }
         });
 
         //var carouselEl = $('.carousel');
@@ -549,4 +554,8 @@
         //});
     });
    
+</script>
+<script type="text/javascript">
+    //show menu logout or back main
+    $('#header[right-show]').attr('right-show', 'back-main');
 </script>
