@@ -70,20 +70,21 @@ public static class EnumAppointmentStatuses
     public const string Absent = "Absent";
 }
 
+
 public static class EnumQueueStatuses
 {
 
-    [Custom(Color = "red")]
+    [Custom(EnumColors.Red,"")]
     public static string Missed = "Missed";
-    [Custom(Color = "white")]
+    [Custom(EnumColors.White, "")]
     public const string Waiting = "Waiting";
-    [Custom(Color = "green")]
+    [Custom(EnumColors.Green, "")]
     public const string Processing = "Processing";
-    [Custom(Color = "red")]
+    [Custom(EnumColors.Red, "")]
     public const string Errors = "Errors";
-    [Custom(Color = "green")]
+    [Custom(EnumColors.Green, "")]
     public const string Finished = "Finished";
-    [Custom(Color = "notrequired")]
+    [Custom(EnumColors.Notrequired, "")]
     public const string NotRequired = "NotRequired";
 
 }
@@ -139,7 +140,7 @@ public static class EnumColors
     public const string White = "#ffffff";
     public const string Black = "#000000";
     public const string Green = "#00ff21";
-
+    public const string Notrequired = "notrequired";
 }
 
 public enum EnumDeviceStatus

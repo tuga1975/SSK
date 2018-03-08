@@ -102,7 +102,7 @@ namespace Trinity.Common
         public string Name { get; set; }
         public string Venue { get; set; }
         public DateTime Date { get; set; }
-
+        public TimeSpan StartTime { get; set; }
         public bool IsValid()
         {
             if (string.IsNullOrEmpty(Name) || string.IsNullOrEmpty(Venue))

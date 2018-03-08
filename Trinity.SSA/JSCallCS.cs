@@ -130,7 +130,7 @@ namespace SSA
 
                 //// Update queue status is finished
                 //var dalQueue = new DAL_QueueNumber();
-                //dalQueue.UpdateQueueStatusByUserId(labelInfo.UserId, EnumStations.SSA, EnumStations.UHP, EnumQueueStatuses.Finished, "Printer MUB/TT Label");
+                //dalQueue.UpdateQueueStatusByUserId(labelInfo.UserId, EnumStation.SSA, EnumStation.UHP, EnumQueueStatuses.Finished, "Printer MUB/TT Label");
 
                 //DeleteQRCodeImageFileTemp();
             }

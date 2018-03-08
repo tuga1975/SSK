@@ -26,7 +26,7 @@ namespace SSK
                 //ApplicationStatusMonitor.Instance.StartInitialization();
                 //ApplicationStatusMonitor.Instance.UpdateApplicationStatus(EnumApplicationStatus.Initiation);
                 
-                Application.Run(new Main());
+                Application.Run(new FormAppointmentDetails());
             }
             catch (Exception ex)
             {
