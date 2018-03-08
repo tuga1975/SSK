@@ -23,7 +23,7 @@ namespace SSK
             try
             {
                 // Start application status monitor and update application status
-                ApplicationStatusMonitor.Instance.StartInitialization();
+                //ApplicationStatusMonitor.Instance.StartInitialization();
                 //ApplicationStatusMonitor.Instance.UpdateApplicationStatus(EnumApplicationStatus.Initiation);
                 
                 Application.Run(new Main());
@@ -36,17 +36,5 @@ namespace SSK
             //Application.Run(new FormTextToSpeech());
             //Application.Run(new FormAppointmentDetails());
         }
-        
-        //private static void StartHealthChecker()
-        //{
-        //    CameraMonitor.Start();
-        //    SpeakerMonitor.Start();
-        //    DocumentScannerMonitor.Start();
-        //    FingerprintReaderMonitor.Start();
-        //    BarcodeScannerMonitor.Start();
-        //    SmartCardReaderMonitor.Start();
-        //    ReceiptPrinterMonitor.Start();
-        //    QueueScreenMonitor.Start();
-        //}
     }
 }
