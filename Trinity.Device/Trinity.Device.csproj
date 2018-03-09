@@ -68,6 +68,7 @@
     <Compile Include="Monitor\DocumentScannerMonitor.cs" />
     <Compile Include="Monitor\FingerprintReaderMonitor.cs" />
     <Compile Include="Monitor\PrinterMonitor.cs" />
+    <Compile Include="PdiScanWrap.cs" />
     <Compile Include="Repeat.cs" />
     <Compile Include="Monitor\SmartCardPrinterMonitor.cs" />
     <Compile Include="Monitor\SmartCardReaderMonitor.cs" />

@@ -41,6 +41,8 @@
             this.btnPrintTTLabel_2 = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
+            this.btnConnectPDIScanner = new System.Windows.Forms.Button();
+            this.btnStopDPIScanner = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnPrintAppointmentDetails
@@ -178,11 +180,35 @@
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
+            // btnConnectPDIScanner
+            // 
+            this.btnConnectPDIScanner.Location = new System.Drawing.Point(12, 248);
+            this.btnConnectPDIScanner.Margin = new System.Windows.Forms.Padding(2);
+            this.btnConnectPDIScanner.Name = "btnConnectPDIScanner";
+            this.btnConnectPDIScanner.Size = new System.Drawing.Size(183, 23);
+            this.btnConnectPDIScanner.TabIndex = 13;
+            this.btnConnectPDIScanner.Text = "Start PDI Scanner";
+            this.btnConnectPDIScanner.UseVisualStyleBackColor = true;
+            this.btnConnectPDIScanner.Click += new System.EventHandler(this.btnConnectPDIScanner_Click);
+            // 
+            // btnStopDPIScanner
+            // 
+            this.btnStopDPIScanner.Location = new System.Drawing.Point(12, 275);
+            this.btnStopDPIScanner.Margin = new System.Windows.Forms.Padding(2);
+            this.btnStopDPIScanner.Name = "btnStopDPIScanner";
+            this.btnStopDPIScanner.Size = new System.Drawing.Size(183, 23);
+            this.btnStopDPIScanner.TabIndex = 14;
+            this.btnStopDPIScanner.Text = "Stop PDI Scanner";
+            this.btnStopDPIScanner.UseVisualStyleBackColor = true;
+            this.btnStopDPIScanner.Click += new System.EventHandler(this.btnStopDPIScanner_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(971, 581);
+            this.Controls.Add(this.btnStopDPIScanner);
+            this.Controls.Add(this.btnConnectPDIScanner);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.btnPrintTTLabel_2);
@@ -218,6 +244,8 @@
         private System.Windows.Forms.Button btnPrintTTLabel_2;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button btnConnectPDIScanner;
+        private System.Windows.Forms.Button btnStopDPIScanner;
     }
 }
 

@@ -526,16 +526,19 @@ namespace SSA
 
             LEDStatusLightingUtil.Instance.MUBDoorFullyClosed -= Instance_MUBDoorFullyClosed;
             //lblStatus.Text = "The door is fully close";
-            this._web.RunScript("$('.status-text').css('color','#000').text('The door is fully close.');");
+            this._web.RunScript("$('.status-text').css('color','#000').text('MUB and TT Labels Printing Completed.');");
 
             //btnConfirm.Text = "Initialize MUB Applicator";
-            this._web.RunScript("$('#ConfirmBtn').html('Initialize MUB Applicator');");
+            this._web.RunScript("$('#ConfirmBtn').html('Logout');");
 
             //btnConfirm.Enabled = true;
             //this._web.RunScript("$('.ConfirmBtn').prop('disabled', false);");
 
             //btnConfirm.Tag = "0";
-            this._web.RunScript("$('#lblPrintingStatus').text('0');");
+            this._web.RunScript("$('#lblPrintingStatus').text('-1');");
+
+            Thread.Sleep(300);
+            LogOut();
         }
 
         #endregion

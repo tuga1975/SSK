@@ -1,45 +1,48 @@
-﻿<div class="modal fade" role="dialog" id="idQueue">
+﻿<div class="modal fade" role="dialog"  id="idQueue" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Supervisee Detail</h5>
+                <h4 class="modal-title">Supervisee Details <em class="currentDate">15 February 2018</em> </h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                
             </div>
             <div class="modal-body">
-                <div itemview>
-                    <span itemview-title title="NRIC"></span>
-                    <span itemview-content id="supervisee_NRIC">NRIC</span>
+                <div class="form-group">
+                    <div class="input-group" itemview>
+                        <label type="text">NRIC No.</label>
+                        <span id="supervisee_NRIC"></span>
+                    </div>
+                    <div class="input-group" itemview>
+                        <label type="text" >Name</label>
+                        <span id="supervisee_Name"></span>
+                    </div>
+                    <div class="input-group" itemview>
+                        <label type="text">Current Station</label>
+                        <span id="supervisee_CurrentStation"></span>
+                    </div>
+                    <div class="input-group" itemview>
+                        <label type="text">Status</label>
+                        <span id="supervisee_Status"></span>
+                    </div>
+                    <div>
+                        <label class="textarea" title="Message:">Message</label>
+                        <table class="table table-bordered" id="tableMessage">
+                            <thead>
+                                <tr>
+                                    <th>Station</th>
+                                    <th>Message</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
                 </div>
-                <div itemview>
-                    <span itemview-title title="Name"></span>
-                    <span itemview-content id="supervisee_Name">Name</span>
-                </div>
-                <div itemview>
-                    <span itemview-title title="Curent Station"></span>
-                    <span itemview-content id="supervisee_CurrentStation"></span>
-                </div>
-                <div itemview>
-                    <span itemview-title title="Status"></span>
-                    <span itemview-content id="supervisee_Status">Status</span>
-                </div>
-                <div itemview>
-                    <span itemview-title title="Message:"></span>
-                </div>
-
-                <table class="table table-bordered" style="width:100%;" id="tableMessage">
-                    <thead>
-                        <tr>
-                            <th>Station</th>
-                            <th>Message</th>
-                        </tr>
-                    </thead>
-                </table>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
 </div>
+
 <script type="text/javascript">
     api.ready(function (model) {
         if (model != null) {
