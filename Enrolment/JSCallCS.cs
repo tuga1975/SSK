@@ -598,7 +598,7 @@ namespace Enrolment
                 session[CommonConstants.IS_PRIMARY_PHOTO] = false;
             }
 
-            _web.LoadPageHtml("WebcamCapture.html");
+           // _web.LoadPageHtml("WebcamCapture.html");
             eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.OPEN_PICTURE_CAPTURE_FORM, Message = number, Data = from });
         }
 
