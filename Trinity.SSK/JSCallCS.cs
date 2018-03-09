@@ -514,14 +514,14 @@ namespace SSK
                 Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(supervisee.UserId, "Supervisee got blocked for 3 or more absences", "Please check the Supervisee's information!", EnumNotificationTypes.Caution);
                 //var dalUser = new DAL_User();
 
-                // Create absence reporting
-                var listAppointment = new DAL_Appointments().GetAbsentAppointments(supervisee.UserId);
-                session[CommonConstants.LIST_APPOINTMENT] = listAppointment;
-                _web.LoadPageHtml("ReasonsForQueue.html", listAppointment.Select(d => new
-                {
-                    ID = d.ID,
-                    GetDateTxt = d.GetDateTxt
-                }));
+                //// Create absence reporting
+                //var listAppointment = new DAL_Appointments().GetAbsentAppointments(supervisee.UserId);
+                //session[CommonConstants.LIST_APPOINTMENT] = listAppointment;
+                //_web.LoadPageHtml("ReasonsForQueue.html", listAppointment.Select(d => new
+                //{
+                //    ID = d.ID,
+                //    GetDateTxt = d.GetDateTxt
+                //}));
             }
             else if (absenceCount > 0 && absenceCount < 3)
             {
