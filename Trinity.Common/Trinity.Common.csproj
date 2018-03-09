@@ -149,6 +149,8 @@
     <Content Include="Libs\Futronic Fingerprint Reader\x64\ftrSDKHelper13.dll" />
     <Content Include="Libs\Futronic Fingerprint Reader\x86\ftrSDKHelper13.dll" />
     <Content Include="Libs\PCSC Smart Card Reader\pcsc-sharp.dll" />
+    <Content Include="Libs\PDIScanning\x64\pdiscan.dll" />
+    <Content Include="Libs\PDIScanning\x86\pdiscan.dll" />
     <Content Include="Libs\TSC Barcode Printer\x64\TSCLIB.dll" />
     <Content Include="Libs\TSC Barcode Printer\x86\TSCLIB.dll" />
     <Content Include="Libs\Zerbra XZP Serries 9\ZMotifGraphics.dll" />
@@ -231,6 +233,8 @@
     <None Include="ConnectionStrings.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Libs\PDIScanning\x64\pdiscan.lib" />
+    <None Include="Libs\PDIScanning\x86\pdiscan.lib" />
     <None Include="Libs\TSC Barcode Printer\x64\TSCLIB.lib" />
     <None Include="Libs\TSC Barcode Printer\x64\UL.PCX" />
     <None Include="Libs\TSC Barcode Printer\x86\TSCLIB.lib" />

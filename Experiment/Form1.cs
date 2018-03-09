@@ -9,6 +9,7 @@ using Trinity.Common;
 using Trinity.DAL;
 using Trinity.Device;
 using Trinity.Device.Util;
+using Trinity.Util;
 
 namespace Experiment
 {
@@ -192,6 +193,36 @@ namespace Experiment
             mubLabelInfo.QRCodeString = qrCodeString;
 
             BarcodePrinterUtil.Instance.PrintMUBLabel(mubLabelInfo);
+        }
+
+        private void btnConnectPDIScanner_Click(object sender, EventArgs e)
+        {
+            DocumentScannerUtil.Instance.StartScanning(DocumentScannerCallback);
+            MessageBox.Show("Start OK");
+        }
+
+        private void DocumentScannerCallback(string frontPath, string error)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(error))
+                {
+                    MessageBox.Show(frontPath);
+                }
+                else
+                {
+                    MessageBox.Show(error);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private void btnStopDPIScanner_Click(object sender, EventArgs e)
+        {
+            DocumentScannerUtil.Instance.StopScanning();
         }
     }
 }
