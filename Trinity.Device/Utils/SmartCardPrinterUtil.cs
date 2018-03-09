@@ -201,7 +201,7 @@ namespace Trinity.Device.Util
                     }
                     catch (Exception e)
                     {
-                        Debug.WriteLine("");
+                        Debug.WriteLine(e.Message);
                     }
                     finally
                     {

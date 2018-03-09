@@ -147,7 +147,7 @@ namespace SSK
             if (user != null)
             {
                 // Only enrolled supervisees are allowed to login
-                if (user.Role==EnumUserRoles.Supervisee || user.Role == EnumUserRoles.DutyOfficer)
+                if (user.Role == EnumUserRoles.Supervisee || user.Role == EnumUserRoles.DutyOfficer)
                 {
                     if (user.Status == EnumUserStatuses.Blocked)
                     {
@@ -195,45 +195,44 @@ namespace SSK
         private void LayerWeb_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
             LayerWeb.InvokeScript("createEvent", JsonConvert.SerializeObject(_jsCallCS.GetType().GetMethods().Where(d => d.IsPublic && !d.IsVirtual && !d.IsSecuritySafeCritical).ToArray().Select(d => d.Name)));
-
             if (_isFirstTimeLoaded)
             {
                 // Start page
-                //NavigateTo(NavigatorEnums.Authentication_SmartCard);
+                NavigateTo(NavigatorEnums.Authentication_SmartCard);
 
-                string startFrom = "Supervisee";
-                string superviseeId = "06a91b1b-99c3-428d-8a55-83892c2adf4c";
-                string dutyOfficerId = "bd6089d4-ab74-4cbc-9c8e-6867afe37ce8";
-                Session session = Session.Instance;
+                //string startFrom = "Supervisee";
+                //string superviseeId = "06a91b1b-99c3-428d-8a55-83892c2adf4c";
+                //string dutyOfficerId = "bd6089d4-ab74-4cbc-9c8e-6867afe37ce8";
+                //Session session = Session.Instance;
 
-                if (startFrom == "Supervisee")
-                {
-                    Trinity.BE.User user = new DAL_User().GetUserByUserId(superviseeId).Data;
-                    session[CommonConstants.USER_LOGIN] = user;
-                    session.IsSmartCardAuthenticated = true;
-                    session.IsFingerprintAuthenticated = true;
-                    NavigateTo(NavigatorEnums.Supervisee);
-                }
-                else if (startFrom == "Authentication_Fingerprint")
-                {
-                    Trinity.BE.User user = new DAL_User().GetUserByUserId(superviseeId).Data;
-                    session[CommonConstants.USER_LOGIN] = user;
-                    session.IsSmartCardAuthenticated = true;
-                    session.IsFingerprintAuthenticated = true;
-                    NavigateTo(NavigatorEnums.Authentication_Fingerprint);
-                }
-                else if (startFrom == "Authentication_NRIC")
-                {
-                    Trinity.BE.User user = new DAL_User().GetUserByUserId(dutyOfficerId).Data;
-                    session[CommonConstants.USER_LOGIN] = user;
-                    session.IsSmartCardAuthenticated = true;
-                    session.IsFingerprintAuthenticated = true;
-                    NavigateTo(NavigatorEnums.Authentication_NRIC);
-                }
-                else
-                {
-                    NavigateTo(NavigatorEnums.Authentication_SmartCard);
-                }
+                //if (startFrom == "Supervisee")
+                //{
+                //    Trinity.BE.User user = new DAL_User().GetUserByUserId(superviseeId).Data;
+                //    session[CommonConstants.USER_LOGIN] = user;
+                //    session.IsSmartCardAuthenticated = true;
+                //    session.IsFingerprintAuthenticated = true;
+                //    NavigateTo(NavigatorEnums.Supervisee);
+                //}
+                //else if (startFrom == "Authentication_Fingerprint")
+                //{
+                //    Trinity.BE.User user = new DAL_User().GetUserByUserId(superviseeId).Data;
+                //    session[CommonConstants.USER_LOGIN] = user;
+                //    session.IsSmartCardAuthenticated = true;
+                //    session.IsFingerprintAuthenticated = true;
+                //    NavigateTo(NavigatorEnums.Authentication_Fingerprint);
+                //}
+                //else if (startFrom == "Authentication_NRIC")
+                //{
+                //    Trinity.BE.User user = new DAL_User().GetUserByUserId(dutyOfficerId).Data;
+                //    session[CommonConstants.USER_LOGIN] = user;
+                //    session.IsSmartCardAuthenticated = true;
+                //    session.IsFingerprintAuthenticated = true;
+                //    NavigateTo(NavigatorEnums.Authentication_NRIC);
+                //}
+                //else
+                //{
+                //    NavigateTo(NavigatorEnums.Authentication_SmartCard);
+                //}
 
                 _isFirstTimeLoaded = false;
 
@@ -288,9 +287,7 @@ namespace SSK
                 Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(null, message, message, EnumNotificationTypes.Error);
                 // show message box to user
                 //MessageBox.Show(message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-                _jsCallCS.PopupMessage("Authentication failed", message);
-
+                LayerWeb.ShowMessage("Authentication failed", "message");
                 // reset counter
                 _smartCardFailed = 0;
                 // display failed on UI
@@ -427,9 +424,8 @@ namespace SSK
                 // Send Notification to duty officer
                 Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(user.UserId, "Fingerprint Authentication failed", errorMessage, EnumNotificationTypes.Error);
 
-                _jsCallCS.PopupMessage("Authentication failed", "Fingerprint's Authenication failed!<br /> Please contact your officer.");
                 //NavigateTo(NavigatorEnums.Authentication_SmartCard);
-
+                LayerWeb.ShowMessage("Authentication failed", "Fingerprint's Authenication failed!<br /> Please contact your officer.");
 
                 //for testing purpose
                 // Pause for 1 second and goto Facial Login Screen

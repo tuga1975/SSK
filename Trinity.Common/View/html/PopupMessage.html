@@ -1,0 +1,82 @@
+﻿<div class="modal" role="dialog" id="PopupMessage">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="title">
+                    <span id="title"></span>
+                </div>
+                <div class="contentMesg">
+                    <span id="contentMesg"></span>
+                </div>
+                <div>
+                    <button type="button" class="btn btn-primary">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    api.ready(function (response) {
+        document.getElementById("title").textContent = response[0];
+        document.getElementById("contentMesg").textContent = response[1];
+        $('#PopupMessage button').click(function () {
+            if (response[2].length > 0) {
+                api.server.ExitWaitPopupMessage(response[2], function () {
+                    $('#PopupMessage').modal('toggle');
+                });
+            } else {
+                $('#PopupMessage').modal('toggle');
+            }
+        });
+    });
+</script>
+<style type="text/css">
+    /*Modal Layout*/
+
+    .modal-content {
+        border-radius: 0px !important;
+    }
+
+    .modal {
+        text-align: center;
+        padding: 0 !important;
+    }
+
+        .modal:before {
+            content: '';
+            display: inline-block;
+            height: 100%;
+            vertical-align: middle;
+            margin-right: -4px;
+        }
+
+    .modal-dialog {
+        display: inline-block;
+        text-align: left;
+        vertical-align: middle;
+        width: 350px;
+    }
+
+    .modal-content {
+        padding: 20px;
+    }
+
+    .modal-body .title {
+        text-align: center;
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .modal-body .contentMesg {
+        text-align: center;
+        padding: 10px 0 20px 0;
+    }
+
+    .modal-body button {
+        width: 100%;
+        background-color: #1CACF6;
+        text-align: center;
+        color: #fff;
+        font-weight: bold;
+    }
+</style>

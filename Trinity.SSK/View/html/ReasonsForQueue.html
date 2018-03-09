@@ -28,37 +28,36 @@
                                                                     <div item-reason="4">No Valid Reason</div>\
                                                                     <div item-reason="5">No Supporting Document</div>\
                                                                 </div>\
-                                                    </div>');
-            $('[parent-tab] [header-tab] [item]').click(function () {
-                var index = $(this).index();
-                $(this).parent('[header-tab]').children('[item]').removeAttr('active').eq(index).attr('active', '');
-                $(this).parent('[header-tab]').parent('[parent-tab]').find('[content-tab] [item]').removeAttr('active').eq(index).attr('active', '');
-            }).eq(0).click();
-            $('[item-reason]').click(function () {
-                $(this).parent('div').children('[item-reason]').removeAttr('active');
-                $(this).attr('active', '');
-            });
-
-            $('[btn-save-absence]').click(function () {
-                var arrrayAbsence = [];
-                // Quet toan bo absence neu absence nao da chon thi them vao arrrayAbsence
-                $('[parent-tab] [content-tab] [item]').each(function () {
-                    var id = $(this).attr('item');
-                    var chose = $(this).find('[item-reason][active]');
-                    if (chose.length > 0) {
-                        arrrayAbsence.push({
-                            ID: id,
-                            ChoseNumber: parseInt(chose.attr('item-reason'))
-                        });
-                    }
-                });
-                if (arrrayAbsence.length == 0) {
-                    alert("You must provide a reason!");
-                } else {
-                    api.server.SaveReasonForQueue(JSON.stringify(arrrayAbsence));
+                                      </div>');
+        });
+        $('[parent-tab] [header-tab] [item]').click(function () {
+            var index = $(this).index();
+            $(this).parent('[header-tab]').children('[item]').removeAttr('active').eq(index).attr('active', '');
+            $(this).parent('[header-tab]').parent('[parent-tab]').find('[content-tab] [item]').removeAttr('active').eq(index).attr('active', '');
+        }).eq(0).click();
+        $('[item-reason]').click(function () {
+            $(this).parent('div').children('[item-reason]').removeAttr('active');
+            $(this).attr('active', '');
+        });
+        $('[btn-save-absence]').click(function () {
+            var arrrayAbsence = [];
+            // Quet toan bo absence neu absence nao da chon thi them vao arrrayAbsence
+            $('[parent-tab] [content-tab] [item]').each(function () {
+                var id = $(this).attr('item');
+                var chose = $(this).find('[item-reason][active]');
+                if (chose.length > 0) {
+                    arrrayAbsence.push({
+                        ID: id,
+                        ChoseNumber: parseInt(chose.attr('item-reason'))
+                    });
                 }
-
             });
+            if (arrrayAbsence.length == 0) {
+                alert("You must provide a reason!");
+            } else {
+                api.server.SaveReasonForQueue(JSON.stringify(arrrayAbsence));
+            }
+
         });
     });
 </script>

@@ -24,9 +24,11 @@ namespace Experiment
         {
             AppointmentDetails appointmentDetails = new AppointmentDetails()
             {
+                CompanyName = "Central Narcotics Bureau",
                 Date = new DateTime(2018, 2, 25, 15, 00, 00),
                 Name = "Do Duc Tu",
-                Venue = "CNB ENF A"
+                Venue = "393 New Bridge Road",
+                StartTime = new TimeSpan(11, 30, 00)
             };
 
             bool result = ReceiptPrinterUtil.Instance.PrintAppointmentDetails(appointmentDetails);
@@ -51,13 +53,13 @@ namespace Experiment
             SmartCardPrinterUtil smartCardPrinterUtils = SmartCardPrinterUtil.Instance;
             PrintAndWriteSmartCardInfo superviseeCardInfo = new PrintAndWriteSmartCardInfo()
             {
-                FrontCardImagePath = @"E:\GitHub\SSK\DocumentScannerTest\bin\x64\Debug\Front.bmp",
-                BackCardImagePath = @"E:\GitHub\SSK\DocumentScannerTest\bin\x64\Debug\Back.bmp",
+                FrontCardImagePath = @"E:\GitHub\2018\Trinity\Experiment\bin\Debug\Temp\Front.png",
+                BackCardImagePath = @"E:\GitHub\2018\Trinity\Experiment\bin\Debug\Temp\Back.png",
                 SuperviseeBiodata = new SuperviseeBiodata()
                 {
                     Name = "Do Duc Tu",
                     DrugProfile = "ABC AND",
-                    NRIC = "S999999G",
+                    NRIC = "S9872509D",
                     SupervisionContactNo = "123123123",
                     SupervisionFrom = new DateTime(2018, 1, 1),
                     SupervisionTo = new DateTime(2020, 1, 1),

@@ -45,11 +45,6 @@ namespace SSK
             OnLogOutCompleted?.Invoke();
         }
         #endregion
-
-        public void PopupMessage(string title, string content)
-        {
-            this._web.LoadPopupHtml("PopupMessage.html", new object[] { title, content });
-        }
         public void LoadNotications()
         {
 
@@ -265,15 +260,8 @@ namespace SSK
 
                 if (updateResult)
                 {
-                    Trinity.BE.Appointment appointment = new DAL_Appointments().GetAppointment(appointment_ID);
-
-                    //APIUtils.Printer.PrintAppointmentDetails("AppointmentDetailsTemplate.html", appointment);
-                    ReceiptPrinterUtil.Instance.PrintAppointmentDetails(new AppointmentDetails()
-                    {
-                        Date = appointment.AppointmentDate.Value,
-                        Name = appointment.Name,
-                        Venue = appointment.NRIC
-                    });
+                    AppointmentDetails appointmentdetails = new DAL_Appointments().GetAppointmentDetails(appointment_ID);
+                    ReceiptPrinterUtil.Instance.PrintAppointmentDetails(appointmentdetails);
                     FormQueueNumber f = FormQueueNumber.GetInstance();
                     f.RefreshQueueNumbers();
                     return true;
@@ -318,17 +306,9 @@ namespace SSK
 
         public void PrintAppointmentDetails(string appointmentId)
         {
-            var dalAppointment = new DAL_Appointments();
-            Trinity.BE.Appointment appointment = new DAL_Appointments().GetAppmtDetails(Guid.Parse(appointmentId));
-            //Trinity.BE.Appointment appointment = dalAppointment.GetAppointmentDetails(Guid.Parse(appointmentId));
-            ReceiptPrinterUtil.Instance.PrintAppointmentDetails(new AppointmentDetails()
-            {
-                Date = appointment.AppointmentDate.Value,
-                Name = appointment.Name,
-                Venue = appointment.NRIC,
-                StartTime = appointment.StartTime ?? new TimeSpan(0, 0, 0)
-            });
-            //APIUtils.Printer.PrintAppointmentDetails("AppointmentDetailsTemplate.html", appointment);
+
+            AppointmentDetails appointmentdetails = new DAL_Appointments().GetAppointmentDetails(appointmentId);
+            ReceiptPrinterUtil.Instance.PrintAppointmentDetails(appointmentdetails);
         }
         #endregion
 
@@ -502,6 +482,10 @@ namespace SSK
             {
                 supervisee = currentUser;
             }
+            if (supervisee.Status==EnumUserStatuses.Blocked)
+            {
+
+            }
             int absenceCount = 0;
 
             if (supervisee != null)
@@ -527,15 +511,15 @@ namespace SSK
                 //for testing purpose
                 //notify to officer
                 Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(supervisee.UserId, "Supervisee got blocked for 3 or more absences", "Please check the Supervisee's information!", EnumNotificationTypes.Caution);
-                var dalUser = new DAL_User();
+                //var dalUser = new DAL_User();
 
-                // Create absence reporting
-                var listAppointment = new DAL_Appointments().GetAbsentAppointments(supervisee.UserId);
-                session[CommonConstants.LIST_APPOINTMENT] = listAppointment;
-                _web.LoadPageHtml("ReasonsForQueue.html", listAppointment.Select(d=>new {
-                    ID=d.ID,
-                    GetDateTxt = d.GetDateTxt
-                }));
+                //// Create absence reporting
+                //var listAppointment = new DAL_Appointments().GetAbsentAppointments(supervisee.UserId);
+                //session[CommonConstants.LIST_APPOINTMENT] = listAppointment;
+                //_web.LoadPageHtml("ReasonsForQueue.html", listAppointment.Select(d=>new {
+                //    ID=d.ID,
+                //    GetDateTxt = d.GetDateTxt
+                //}));
             }
             else if (absenceCount > 0 && absenceCount < 3)
             {

@@ -368,17 +368,18 @@ namespace Enrolment
             }
             else if (e.Name.Equals(EventNames.OPEN_PICTURE_CAPTURE_FORM))
             {
+                var from = e.Data;
                 //pictureBox1.Image.Save(AppDomain.CurrentDomain.BaseDirectory.ToString() + "/image" + _imgBox + ".jpg");
                 if (InvokeRequired)
                 {
-                    Invoke(new Action(() =>
+                    try
                     {
-                        try
+                        Invoke(new Action(() =>
                         {
                             webcam.InitializeWebCam();
                             webcam.startWebcam();
                             _imgBox = e.Message;
-                            NavigateTo(NavigatorEnums.WebcamCapture);
+
                             pictureBox1.Show();
 
                             //pictureBoxHead.BackColor = Color.Transparent;
@@ -386,12 +387,57 @@ namespace Enrolment
                             //btnHead.BackgroundImage = bmp;
                             pictureBoxHead.BringToFront();
                             pictureBoxHead.Show();
-                        }
-                        catch (Exception ex)
+                        }));
+                        LayerWeb.LoadPageHtml("WebcamCapture.html");
+                    }
+                    catch (Exception ex)
+                    {
+                        Session session = Session.Instance;
+                        var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
+                        LayerWeb.InvokeScript("failAlert", "Cant find this device camera!");
+                        if (currentEditUser != null && from != null)
                         {
-                            LayerWeb.InvokeScript("failAlert", "Cant find this device camera!");
+
+                            if (from.ToString() == "new")
+                            {
+                                LayerWeb.LoadPageHtml("UpdateSuperviseeBiodata.html", currentEditUser);
+                                LayerWeb.InvokeScript("setAvatar", currentEditUser.UserProfile.User_Photo1_Base64, currentEditUser.UserProfile.User_Photo2_Base64);
+
+                                string fingerprintLeft = "../images/leftthumb.png";
+                                string fingerprintRight = "../images/rightthumb.png";
+                                if (currentEditUser.UserProfile.LeftThumbImage != null)
+                                {
+                                    fingerprintLeft = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(currentEditUser.UserProfile.LeftThumbImage));
+                                }
+                                if (currentEditUser.UserProfile.RightThumbImage != null)
+                                {
+                                    fingerprintRight = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(currentEditUser.UserProfile.RightThumbImage));
+                                }
+                                LayerWeb.InvokeScript("setFingerprintServerCall", fingerprintLeft, fingerprintRight);
+                            }
+                            else if (from.ToString() == "edit")
+                            {
+                                string photo1 = currentEditUser.UserProfile.User_Photo1_Base64 ?? string.Empty;
+                                string photo2 = currentEditUser.UserProfile.User_Photo2_Base64 ?? string.Empty;
+                                //LoadEditSupervisee(currentEditUser, photo1, photo2);
+                                LayerWeb.LoadPageHtml("Edit-Supervisee.html", currentEditUser);
+                                LayerWeb.InvokeScript("setAvatar", photo1, photo2);
+
+                                string fingerprintLeft = "../images/leftthumb.png";
+                                string fingerprintRight = "../images/rightthumb.png";
+                                if (currentEditUser.UserProfile.LeftThumbImage != null)
+                                {
+                                    fingerprintLeft = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(currentEditUser.UserProfile.LeftThumbImage));
+                                }
+                                if (currentEditUser.UserProfile.RightThumbImage != null)
+                                {
+                                    fingerprintRight = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(currentEditUser.UserProfile.RightThumbImage));
+                                }
+                                LayerWeb.InvokeScript("setFingerprintServerCall", fingerprintLeft, fingerprintRight);
+                            }
                         }
-                    }));
+                    }
+
                 }
             }
             else if (e.Name.Equals(EventNames.CAPTURE_PICTURE))
@@ -497,7 +543,6 @@ namespace Enrolment
 
                             currentNewPhotos = new Tuple<string, string>(currentOldPhotos.Item1, base64Str2);
                         }
-
                     }
 
                     session[CommonConstants.CURRENT_PHOTOS] = currentNewPhotos;
@@ -508,7 +553,6 @@ namespace Enrolment
 
                         CSCallJS.LoadPageHtml(this.LayerWeb, "UpdateSuperviseeBiodata.html", currentEditUser);
                         LayerWeb.InvokeScript("setAvatar", currentNewPhotos.Item1, currentNewPhotos.Item2);
-
 
                     }
                     else if (currentPage.ToString() == "UpdateSupervisee")
@@ -568,6 +612,7 @@ namespace Enrolment
             {
                 Session session = Session.Instance;
                 var currentPage = session[CommonConstants.CURRENT_PAGE];
+                StopCamera();
                 if (webcam.videoSource == null)
                 {
                     if (session[CommonConstants.CURRENT_EDIT_USER] != null && currentPage != null)
@@ -642,91 +687,92 @@ namespace Enrolment
                     {
                         webcam.stopWebcam();
                         pictureBox1.Hide();
-                        // LayerWeb.LoadPageHtml("New-Supervisee.html");
-                        if (session[CommonConstants.CURRENT_EDIT_USER] != null && currentPage != null)
+                    }));
+                    // LayerWeb.LoadPageHtml("New-Supervisee.html");
+                    if (session[CommonConstants.CURRENT_EDIT_USER] != null && currentPage != null)
+                    {
+                        var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
+                        var oldPhotos = session["TempPhotos"];
+                        string photo1 = string.Empty;
+                        string photo2 = string.Empty;
+                        /*if (currentEditUser.UserProfile.User_Photo1 != null)
                         {
-                            var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
-                            var oldPhotos = session["TempPhotos"];
-                            string photo1 = string.Empty;
-                            string photo2 = string.Empty;
-                            /*if (currentEditUser.UserProfile.User_Photo1 != null)
+                            photo1 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo1);
+                        }
+                        if (currentEditUser.UserProfile.User_Photo2 != null)
+                        {
+                            photo2 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo2);
+                        }*/
+                        var photos = (Tuple<string, string>)session["TempPhotos"];
+                        if (photos != null && photos.Item1 != null)
+                        {
+                            photo1 = photos.Item1;
+                        }
+                        if (photos != null && photos.Item2 != null)
+                        {
+                            photo2 = photos.Item2;
+                        }
+                        session[CommonConstants.CURRENT_PHOTOS] = null;
+
+                        if (photos != null)
+                        {
+                            currentEditUser.UserProfile.User_Photo1 = photos.Item1 != null ? Convert.FromBase64String(photo1) : null;
+                            currentEditUser.UserProfile.User_Photo2 = photos.Item2 != null ? Convert.FromBase64String(photo2) : null;
+                        }
+
+                        session[CommonConstants.CURRENT_EDIT_USER] = currentEditUser;
+                        if (currentPage.ToString() == "EditSupervisee")
+                        {
+                            LayerWeb.LoadPageHtml("UpdateSuperviseeBiodata.html", currentEditUser);
+                            LayerWeb.InvokeScript("setAvatar", currentEditUser.UserProfile.User_Photo1_Base64, currentEditUser.UserProfile.User_Photo2_Base64);
+
+                            string fingerprintLeft = "../images/fingerprint.png";
+                            string fingerprintRight = "../images/fingerprint.png";
+                            if (currentEditUser.UserProfile.LeftThumbImage != null)
+                            {
+                                fingerprintLeft = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(currentEditUser.UserProfile.LeftThumbImage));
+                            }
+                            if (currentEditUser.UserProfile.RightThumbImage != null)
+                            {
+                                fingerprintRight = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(currentEditUser.UserProfile.RightThumbImage));
+                            }
+                            LayerWeb.InvokeScript("setFingerprintServerCall", fingerprintLeft, fingerprintRight);
+                        }
+                        else if (currentPage.ToString() == "UpdateSupervisee")
+                        {
+                            LayerWeb.LoadPageHtml("Edit-Supervisee.html", currentEditUser);
+                            LayerWeb.InvokeScript("setAvatar", photo1, photo2);
+
+                            string fingerprintLeft = "../images/fingerprint.png";
+                            string fingerprintRight = "../images/fingerprint.png";
+                            if (currentEditUser.UserProfile.LeftThumbImage != null)
+                            {
+                                fingerprintLeft = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(currentEditUser.UserProfile.LeftThumbImage));
+                            }
+                            if (currentEditUser.UserProfile.RightThumbImage != null)
+                            {
+                                fingerprintRight = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(currentEditUser.UserProfile.RightThumbImage));
+                            }
+                            LayerWeb.InvokeScript("setFingerprintServerCall", fingerprintLeft, fingerprintRight);
+                        }
+                        else if (currentPage.ToString() == "UpdateSuperviseePhoto")
+                        {
+                            if (currentEditUser.UserProfile.User_Photo1 != null)
                             {
                                 photo1 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo1);
+
                             }
                             if (currentEditUser.UserProfile.User_Photo2 != null)
                             {
                                 photo2 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo2);
-                            }*/
-                            var photos = (Tuple<string, string>)session["TempPhotos"];
-                            if (photos != null && photos.Item1 != null)
-                            {
-                                photo1 = photos.Item1;
                             }
-                            if (photos != null && photos.Item2 != null)
-                            {
-                                photo2 = photos.Item2;
-                            }
-                            session[CommonConstants.CURRENT_PHOTOS] = null;
-
-                            if (photos != null)
-                            {
-                                currentEditUser.UserProfile.User_Photo1 = photos.Item1 != null ? Convert.FromBase64String(photo1) : null;
-                                currentEditUser.UserProfile.User_Photo2 = photos.Item2 != null ? Convert.FromBase64String(photo2) : null;
-                            }
-
-                            session[CommonConstants.CURRENT_EDIT_USER] = currentEditUser;
-                            if (currentPage.ToString() == "EditSupervisee")
-                            {
-                                LayerWeb.LoadPageHtml("UpdateSuperviseeBiodata.html", currentEditUser);
-                                LayerWeb.InvokeScript("setAvatar", currentEditUser.UserProfile.User_Photo1_Base64, currentEditUser.UserProfile.User_Photo2_Base64);
-
-                                string fingerprintLeft = "../images/fingerprint.png";
-                                string fingerprintRight = "../images/fingerprint.png";
-                                if (currentEditUser.UserProfile.LeftThumbImage != null)
-                                {
-                                    fingerprintLeft = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(currentEditUser.UserProfile.LeftThumbImage));
-                                }
-                                if (currentEditUser.UserProfile.RightThumbImage != null)
-                                {
-                                    fingerprintRight = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(currentEditUser.UserProfile.RightThumbImage));
-                                }
-                                LayerWeb.InvokeScript("setFingerprintServerCall", fingerprintLeft, fingerprintRight);
-                            }
-                            else if (currentPage.ToString() == "UpdateSupervisee")
-                            {
-                                LayerWeb.LoadPageHtml("Edit-Supervisee.html", currentEditUser);
-                                LayerWeb.InvokeScript("setAvatar", photo1, photo2);
-
-                                string fingerprintLeft = "../images/fingerprint.png";
-                                string fingerprintRight = "../images/fingerprint.png";
-                                if (currentEditUser.UserProfile.LeftThumbImage != null)
-                                {
-                                    fingerprintLeft = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(currentEditUser.UserProfile.LeftThumbImage));
-                                }
-                                if (currentEditUser.UserProfile.RightThumbImage != null)
-                                {
-                                    fingerprintRight = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(currentEditUser.UserProfile.RightThumbImage));
-                                }
-                                LayerWeb.InvokeScript("setFingerprintServerCall", fingerprintLeft, fingerprintRight);
-                            }
-                            else if (currentPage.ToString() == "UpdateSuperviseePhoto")
-                            {
-                                if (currentEditUser.UserProfile.User_Photo1 != null)
-                                {
-                                    photo1 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo1);
-
-                                }
-                                if (currentEditUser.UserProfile.User_Photo2 != null)
-                                {
-                                    photo2 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo2);
-                                }
-                                session[CommonConstants.CURRENT_PAGE] = "UpdateSuperviseePhoto";
-                                LayerWeb.LoadPageHtml("UpdateSuperviseePhoto.html", currentEditUser);
-                                LayerWeb.InvokeScript("setAvatar", photo1, photo2);
-                            }
-                            CaptureAttempt(CommonConstants.CAPTURE_PHOTO_ATTEMPT);
+                            session[CommonConstants.CURRENT_PAGE] = "UpdateSuperviseePhoto";
+                            LayerWeb.LoadPageHtml("UpdateSuperviseePhoto.html", currentEditUser);
+                            LayerWeb.InvokeScript("setAvatar", photo1, photo2);
                         }
-                    }));
+                        CaptureAttempt(CommonConstants.CAPTURE_PHOTO_ATTEMPT);
+                    }
+
                 }
             }
             else if (e.Name.Equals(EventNames.CANCEL_CONFIRM_CAPTURE_PICTURE))
@@ -870,102 +916,125 @@ namespace Enrolment
             }
         }
 
-        private void LoadEditSupervisee(ProfileModel currentEditUser, string photo1, string photo2)
+        private void StopCamera()
         {
-            LayerWeb.LoadPageHtml("Edit-Supervisee.html", currentEditUser);
-            LayerWeb.InvokeScript("setAvatar", photo1, photo2);
+            try
+            {
+                if (InvokeRequired && webcam.videoSource != null)
+                {
+                    Invoke(new Action(() =>
+                    {
+                        webcam.stopWebcam();
+                        pictureBox1.Hide();
+                    }));
+                }
+            }
+            catch (Exception ex)
+            {
 
-            string fingerprintLeft = "../images/leftthumb.png";
-            string fingerprintRight = "../images/rightthumb.png";
-            if (currentEditUser.UserProfile.LeftThumbImage != null)
-            {
-                fingerprintLeft = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(currentEditUser.UserProfile.LeftThumbImage));
+                LayerWeb.InvokeScript("failAlert","Something wrong with camera!");
             }
-            if (currentEditUser.UserProfile.RightThumbImage != null)
-            {
-                fingerprintRight = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(currentEditUser.UserProfile.RightThumbImage));
-            }
-            LayerWeb.InvokeScript("setFingerprintServerCall", fingerprintLeft, fingerprintRight);
         }
 
-        private void CaptureAttempt(string sessionAttemptName)
-        {
-            Session session = Session.Instance;
-            var firstAttemp = 1;
-            if (session[sessionAttemptName] != null)
+            private void LoadEditSupervisee(ProfileModel currentEditUser, string photo1, string photo2)
             {
-                firstAttemp = (int)session[sessionAttemptName];
-                if (sessionAttemptName == CommonConstants.CAPTURE_PHOTO_ATTEMPT)
+                LayerWeb.LoadPageHtml("Edit-Supervisee.html", currentEditUser);
+                LayerWeb.InvokeScript("setAvatar", photo1, photo2);
+
+                string fingerprintLeft = "../images/leftthumb.png";
+                string fingerprintRight = "../images/rightthumb.png";
+                if (currentEditUser.UserProfile.LeftThumbImage != null)
                 {
-                    _jsCallCS.PreviewSuperviseePhoto(firstAttemp);
+                    fingerprintLeft = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(currentEditUser.UserProfile.LeftThumbImage));
+                }
+                if (currentEditUser.UserProfile.RightThumbImage != null)
+                {
+                    fingerprintRight = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(currentEditUser.UserProfile.RightThumbImage));
+                }
+                LayerWeb.InvokeScript("setFingerprintServerCall", fingerprintLeft, fingerprintRight);
+            }
+
+            private void CaptureAttempt(string sessionAttemptName)
+            {
+                Session session = Session.Instance;
+                var firstAttemp = 1;
+                if (session[sessionAttemptName] != null)
+                {
+                    firstAttemp = (int)session[sessionAttemptName];
+                    if (sessionAttemptName == CommonConstants.CAPTURE_PHOTO_ATTEMPT)
+                    {
+                        _jsCallCS.PreviewSuperviseePhoto(firstAttemp);
+                    }
+                    else
+                    {
+                        _jsCallCS.PreviewSuperviseeFingerprint(firstAttemp);
+                    }
                 }
                 else
                 {
-                    _jsCallCS.PreviewSuperviseeFingerprint(firstAttemp);
+                    session[sessionAttemptName] = firstAttemp;
+                    if (sessionAttemptName == CommonConstants.CAPTURE_PHOTO_ATTEMPT)
+                    {
+                        _jsCallCS.PreviewSuperviseePhoto(firstAttemp);
+                    }
+                    else
+                    {
+                        _jsCallCS.PreviewSuperviseeFingerprint(firstAttemp);
+                    }
+
                 }
             }
-            else
+
+            #endregion
+
+            private void NavigateTo(NavigatorEnums navigatorEnum)
             {
-                session[sessionAttemptName] = firstAttemp;
-                if (sessionAttemptName == CommonConstants.CAPTURE_PHOTO_ATTEMPT)
+                // navigate
+                if (navigatorEnum == NavigatorEnums.Authentication_NRIC)
                 {
-                    _jsCallCS.PreviewSuperviseePhoto(firstAttemp);
+                    _nric.Start();
                 }
-                else
+                else if (navigatorEnum == NavigatorEnums.Supervisee)
                 {
-                    _jsCallCS.PreviewSuperviseeFingerprint(firstAttemp);
+                    this.LayerWeb.LoadPageHtml("Supervisee.html");
+                    _suppervisee.Start();
+                }
+                else if (navigatorEnum == NavigatorEnums.Login)
+                {
+                    _login.Start();
+                }
+                else if (navigatorEnum == NavigatorEnums.WebcamCapture)
+                {
+                    _webcamCapture.Start();
                 }
 
+                // set current page
+                _currentPage = navigatorEnum;
+
+                // display options in Authentication_SmartCard page
+                if (_displayLoginButtonStatus && _currentPage == NavigatorEnums.Authentication_SmartCard)
+                {
+                    _displayLoginButtonStatus = false;
+                    CSCallJS.DisplayLogoutButton(this.LayerWeb, _displayLoginButtonStatus);
+                }
+
+                // display options in the rest
+                if (!_displayLoginButtonStatus && _currentPage != NavigatorEnums.Authentication_SmartCard)
+                {
+                    _displayLoginButtonStatus = true;
+                    CSCallJS.DisplayLogoutButton(this.LayerWeb, _displayLoginButtonStatus);
+                }
+            }
+
+            private void Main_Load(object sender, EventArgs e)
+            {
+
+            }
+
+            private void Main_FormClosed(object sender, FormClosedEventArgs e)
+            {
+                Environment.Exit(0);
             }
         }
-
-        #endregion
-
-        private void NavigateTo(NavigatorEnums navigatorEnum)
-        {
-            // navigate
-            if (navigatorEnum == NavigatorEnums.Authentication_NRIC)
-            {
-                _nric.Start();
-            }
-            else if (navigatorEnum == NavigatorEnums.Supervisee)
-            {
-                this.LayerWeb.LoadPageHtml("Supervisee.html");
-                _suppervisee.Start();
-            }
-            else if (navigatorEnum == NavigatorEnums.Login)
-            {
-                _login.Start();
-            }
-            else if (navigatorEnum == NavigatorEnums.WebcamCapture)
-            {
-                _webcamCapture.Start();
-            }
-
-            // set current page
-            _currentPage = navigatorEnum;
-
-            // display options in Authentication_SmartCard page
-            if (_displayLoginButtonStatus && _currentPage == NavigatorEnums.Authentication_SmartCard)
-            {
-                _displayLoginButtonStatus = false;
-                CSCallJS.DisplayLogoutButton(this.LayerWeb, _displayLoginButtonStatus);
-            }
-
-            // display options in the rest
-            if (!_displayLoginButtonStatus && _currentPage != NavigatorEnums.Authentication_SmartCard)
-            {
-                _displayLoginButtonStatus = true;
-                CSCallJS.DisplayLogoutButton(this.LayerWeb, _displayLoginButtonStatus);
-            }
-        }
-
-        private void Main_Load(object sender, EventArgs e)
-        {
-
-        }
-
-
     }
-}
 
