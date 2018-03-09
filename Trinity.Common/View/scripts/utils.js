@@ -143,8 +143,13 @@ function setLoading(status) {
 function RunScript(script) {
     eval(script);
 }
-function ShowMessageBox(message) {
-    alert(message);
+function ShowMessageBox(title, message,id) {
+    api.server.ShowPopupMessage(title, message, id, function () {
+        $('#PopupMessage').modal({
+            backdrop: 'static',
+            keyboard: false
+        });
+    });
 }
 $(document).ready(function () {
     $('body').on('click', 'a[href]', function (event) {

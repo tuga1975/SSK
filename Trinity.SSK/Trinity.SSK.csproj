@@ -328,7 +328,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="View\html\Layout_QueueNumber.html" />
-    <Content Include="View\html\PopupMessage.html" />
     <Content Include="View\html\PrintingTemplates\AppointmentDetailsTemplate.html" />
     <Content Include="View\html\ReasonsForQueue.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
