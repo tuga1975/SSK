@@ -183,10 +183,12 @@ namespace SSK
 
         private void JSCallCS_OnLogOutCompleted()
         {
+            ApplicationStatusMonitor.Instance.UpdateApplicationStatus(EnumApplicationStatus.Busy);
+
             // Set machine status is busy
-            LEDStatusLightingUtil.Instance._isBusy = false;
+            //LEDStatusLightingUtil.Instance._isBusy = false;
             // Display led light health status
-            LEDStatusLightingUtil.Instance.DisplayLedLight_DeviceStatus();
+            //LEDStatusLightingUtil.Instance.DisplayLedLight_DeviceStatus();
 
             // navigate
             NavigateTo(NavigatorEnums.Authentication_SmartCard);
@@ -261,6 +263,8 @@ namespace SSK
         #region Smart Card Authentication
         private void SmartCard_OnSmartCardSucceeded()
         {
+            ApplicationStatusMonitor.Instance.UpdateApplicationStatus(EnumApplicationStatus.Busy);
+
             // Pause for 1 second and goto Fingerprint Login Screen
             Thread.Sleep(1000);
 

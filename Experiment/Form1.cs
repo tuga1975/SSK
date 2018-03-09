@@ -226,5 +226,32 @@ namespace Experiment
         {
             DocumentScannerUtil.Instance.StopScanning();
         }
+
+        private void btnSendBTCommand_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                Alert(TSCLIB_DLL.openport(EnumDeviceNames.MUBLabelPrinter).ToString());
+                TSCLIB_DLL.clearbuffer();
+                List<string> cmdLines = new List<string>();
+                for (int i = 0; i < rtbBarTenderCommand.Lines.Length; i++)
+                {
+                    cmdLines.Add(rtbBarTenderCommand.Lines[i]);
+                    Alert(TSCLIB_DLL.sendcommand(rtbBarTenderCommand.Lines[i]).ToString());
+                }
+
+                //int result = TSCLIB_DLL.openport(EnumDeviceNames.MUBLabelPrinter);
+                ////TSCLIB_DLL.clearbuffer();
+
+                //result = TSCLIB_DLL.sendcommand("DMATRIX 120,8,400,400");
+                //TSCLIB_DLL.printlabel("1", "1");
+
+                TSCLIB_DLL.closeport();
+            }
+            catch (Exception ex)
+            {
+                Alert(ex.ToString());
+            }
+        }
     }
 }
