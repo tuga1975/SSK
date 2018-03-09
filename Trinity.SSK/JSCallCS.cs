@@ -45,11 +45,6 @@ namespace SSK
             OnLogOutCompleted?.Invoke();
         }
         #endregion
-
-        public void PopupMessage(string title, string content)
-        {
-            this._web.LoadPopupHtml("PopupMessage.html", new object[] { title, content });
-        }
         public void LoadNotications()
         {
 
@@ -487,6 +482,10 @@ namespace SSK
             {
                 supervisee = currentUser;
             }
+            if (supervisee.Status==EnumUserStatuses.Blocked)
+            {
+
+            }
             int absenceCount = 0;
 
             if (supervisee != null)
@@ -508,19 +507,21 @@ namespace SSK
             else if (absenceCount >= 3)
             {
                 var eventCenter = Trinity.Common.Common.EventCenter.Default;
-                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ABSENCE_MORE_THAN_3, Message = "You have been blocked for 3 or more absences \n Please report to the Duty Officer" });
+                //eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ABSENCE_MORE_THAN_3, Message = "You have been blocked for 3 or more absences \n Please report to the Duty Officer" });
+                this._web.ShowMessage("You have been blocked for 3 or more absences <br/> Please report to the Duty Officer");
                 //for testing purpose
                 //notify to officer
                 Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(supervisee.UserId, "Supervisee got blocked for 3 or more absences", "Please check the Supervisee's information!", EnumNotificationTypes.Caution);
-                var dalUser = new DAL_User();
+                //var dalUser = new DAL_User();
 
-                // Create absence reporting
-                var listAppointment = new DAL_Appointments().GetAbsentAppointments(supervisee.UserId);
-                session[CommonConstants.LIST_APPOINTMENT] = listAppointment;
-                _web.LoadPageHtml("ReasonsForQueue.html", listAppointment.Select(d=>new {
-                    ID=d.ID,
-                    GetDateTxt = d.GetDateTxt
-                }));
+                //// Create absence reporting
+                //var listAppointment = new DAL_Appointments().GetAbsentAppointments(supervisee.UserId);
+                //session[CommonConstants.LIST_APPOINTMENT] = listAppointment;
+                //_web.LoadPageHtml("ReasonsForQueue.html", listAppointment.Select(d => new
+                //{
+                //    ID = d.ID,
+                //    GetDateTxt = d.GetDateTxt
+                //}));
             }
             else if (absenceCount > 0 && absenceCount < 3)
             {
@@ -581,7 +582,7 @@ namespace SSK
                         }
                         else
                         {
-                            this._web.InvokeScript("ShowMessageBox", "Sorry all timeslots are fully booked!");
+                            this._web.ShowMessage("Sorry all timeslots are fully booked!");
                         }
 
                     }
@@ -596,7 +597,7 @@ namespace SSK
                         }
                         else
                         {
-                            this._web.InvokeScript("ShowMessageBox", "Sorry all timeslots are fully booked!");
+                            this._web.ShowMessage("Sorry all timeslots are fully booked!");
                         }
                     }
                 }
@@ -639,13 +640,33 @@ namespace SSK
             }
         }
 
-        public void SaveReasonForQueue(string dataTxt)
+        private string dataAbsenceReporting = string.Empty;
+        private void DocumentScannerCallback(string frontPath,string error)
+        {
+            Trinity.Util.DocumentScannerUtil.Instance.StopScanning();
+            Guid IDDocuemnt = new DAL_UploadedDocuments().Insert(Lib.ReadAllBytes(frontPath), ((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId);
+            _SaveReasonForQueue(dataAbsenceReporting, IDDocuemnt);
+        }
+        public void SaveReasonForQueue(string dataTxt,bool scandocument)
+        {
+            if (scandocument)
+            {
+                dataAbsenceReporting = dataTxt;
+                Trinity.Util.DocumentScannerUtil.Instance.StartScanning(DocumentScannerCallback);
+                LoadPage("Document.html");
+            }
+            else
+            {
+                
+                _SaveReasonForQueue(dataTxt,null);
+            }
+        }
+        private void _SaveReasonForQueue(string dataTxt,Nullable<Guid> IdDocument)
         {
             List<Dictionary<string, string>> data = JsonConvert.DeserializeObject<List<Dictionary<string, string>>>(dataTxt);
-            new DAL_AbsenceReporting().InsertAbsentReason(data);
+            new DAL_AbsenceReporting().InsertAbsentReason(data, IdDocument);
             LoadPage("Supervisee.html");
         }
-
         //public void SaveReasonForQueue(/*string data,*/ string reason, string selectedID)
         //{
         //    Session currentSession = Session.Instance;

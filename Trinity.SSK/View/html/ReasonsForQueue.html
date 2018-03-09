@@ -10,8 +10,8 @@
     </div>
 </div>
 <div id="footer" style="position:absolute;bottom:-5px;left:0px;width:calc(100%);height:50px;text-align:right;">
-    <input type="button" value="CANCEL" style="background-color:#FFF;color:#1cacf6;border:none;border-radius:5px;padding:8px 20px;border:1px solid #DDD;margin-right:20px;font-weight:bold;" onclick="api.server.LoadPage('Supervisee.html');"/>
-    <input type="button" value="SUBMIT" style="background-color:#1cacf6;color:#FFF;border:none;border-radius:5px;padding:8px 20px;border:1px solid #1cacf6;font-weight:bold;" btn-save-absence=""/>
+    <input type="button" value="CANCEL" style="background-color:#FFF;color:#1cacf6;border:none;border-radius:5px;padding:8px 20px;border:1px solid #DDD;margin-right:20px;font-weight:bold;" onclick="api.server.LoadPage('Supervisee.html');" />
+    <input type="button" value="SUBMIT" style="background-color:#1cacf6;color:#FFF;border:none;border-radius:5px;padding:8px 20px;border:1px solid #1cacf6;font-weight:bold;" btn-save-absence="" />
 </div>
 <script>
     api.ready(function (model) {
@@ -28,37 +28,40 @@
                                                                     <div item-reason="4">No Valid Reason</div>\
                                                                     <div item-reason="5">No Supporting Document</div>\
                                                                 </div>\
-                                                    </div>');
-            $('[parent-tab] [header-tab] [item]').click(function () {
-                var index = $(this).index();
-                $(this).parent('[header-tab]').children('[item]').removeAttr('active').eq(index).attr('active', '');
-                $(this).parent('[header-tab]').parent('[parent-tab]').find('[content-tab] [item]').removeAttr('active').eq(index).attr('active', '');
-            }).eq(0).click();
-            $('[item-reason]').click(function () {
-                $(this).parent('div').children('[item-reason]').removeAttr('active');
-                $(this).attr('active', '');
-            });
-
-            $('[btn-save-absence]').click(function () {
-                var arrrayAbsence = [];
-                // Quet toan bo absence neu absence nao da chon thi them vao arrrayAbsence
-                $('[parent-tab] [content-tab] [item]').each(function () {
-                    var id = $(this).attr('item');
-                    var chose = $(this).find('[item-reason][active]');
-                    if (chose.length > 0) {
-                        arrrayAbsence.push({
-                            ID: id,
-                            ChoseNumber: parseInt(chose.attr('item-reason'))
-                        });
+                                      </div>');
+        });
+        $('[parent-tab] [header-tab] [item]').click(function () {
+            var index = $(this).index();
+            $(this).parent('[header-tab]').children('[item]').removeAttr('active').eq(index).attr('active', '');
+            $(this).parent('[header-tab]').parent('[parent-tab]').find('[content-tab] [item]').removeAttr('active').eq(index).attr('active', '');
+        }).eq(0).click();
+        $('[item-reason]').click(function () {
+            $(this).parent('div').children('[item-reason]').removeAttr('active');
+            $(this).attr('active', '');
+        });
+        $('[btn-save-absence]').click(function () {
+            var scandocument = false;
+            var arrrayAbsence = [];
+            // Quet toan bo absence neu absence nao da chon thi them vao arrrayAbsence
+            $('[parent-tab] [content-tab] [item]').each(function () {
+                var id = $(this).attr('item');
+                var chose = $(this).find('[item-reason][active]');
+                if (chose.length > 0) {
+                    arrrayAbsence.push({
+                        ID: id,
+                        ChoseNumber: parseInt(chose.attr('item-reason'))
+                    });
+                    if (parseInt(chose.attr('item-reason')) != 5) {
+                        scandocument = true;
                     }
-                });
-                if (arrrayAbsence.length == 0) {
-                    alert("You must provide a reason!");
-                } else {
-                    api.server.SaveReasonForQueue(JSON.stringify(arrrayAbsence));
                 }
-
             });
+            if (arrrayAbsence.length == 0) {
+                alert("You must provide a reason!");
+            } else {
+                api.server.SaveReasonForQueue(JSON.stringify(arrrayAbsence), scandocument);
+            }
+
         });
     });
 </script>

@@ -170,7 +170,7 @@ namespace Trinity.Device.Util
                 // DPI = 203 => 8px = 1 mm
                 //Draw windows font
                 int startX = 348;
-                int startY = 182;
+                int startY = 134;
                 int startY_Value = startY + 160;
                 string fontName = "ARIAL";
                 int fontStyle = 0; // Normal
@@ -196,6 +196,7 @@ namespace Trinity.Device.Util
                 else
                 {
                     TSCLIB_DLL.windowsfont(startX, startY_Value, fontHeight, rotation, fontStyle, 0, fontName, " : " + mubLabelInfo.Name);
+                    startX -= (fontHeight + lineSpacing);
                 }
 
                 // ID line
@@ -212,7 +213,7 @@ namespace Trinity.Device.Util
 
                 //Drawing barcode
                 //TSCLIB_DLL.barcode(startX.ToString(), (startY += fontHeight + 8).ToString(), "39", "72", "0", "0", "1", "3", mubLabelInfo.QRCodeString);
-                TSCLIB_DLL.sendcommand("DMATRIX 120,8,400,400, \"" + mubLabelInfo.QRCodeString + "\"");
+                TSCLIB_DLL.sendcommand("DMATRIX 144,8,400,400,x3, \"" + mubLabelInfo.QRCodeString + "\"");
 
                 //Download PCX file into printer
                 //TSCLIB_DLL.downloadpcx("UL.PCX", "UL.PCX");

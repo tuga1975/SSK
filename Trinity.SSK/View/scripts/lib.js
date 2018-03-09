@@ -7,14 +7,6 @@
     }
     $('#content').css('font-size', px);
 }
-function PopupMessage(title, body) {
-    api.server.PopupMessage(title, body, function () {
-        $('#PopupMessage').modal({
-            backdrop: 'static',
-            keyboard: false
-        });
-    });
-}
 function pushNoti(count) {
     api.countNoti = count;
     $('[notinumber]').text(api.countNoti > 0 ? api.countNoti : '');

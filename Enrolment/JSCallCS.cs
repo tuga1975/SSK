@@ -686,7 +686,8 @@ namespace Enrolment
                 }
                 else
                 {
-                    eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -2, Name = EventNames.LOGIN_FAILED, Message = "You do not have permission to access this page." });
+                    _web.ShowMessage("You do not have permission to access this page.");
+                    //eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -2, Name = EventNames.LOGIN_FAILED, Message = "You do not have permission to access this page." });
                 }
             }
             else
@@ -697,7 +698,8 @@ namespace Enrolment
                     var userInfo = dalUser.GetUserByUserId(user.Id).Data;
                     dalUser.ChangeAccessFailedCount(user.Id, userInfo.AccessFailedCount + 1);
                 }
-                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.LOGIN_FAILED, Message = "Your username or password is incorrect." });
+                _web.ShowMessage("Your username or password is incorrect.");
+                //eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.LOGIN_FAILED, Message = "Your username or password is incorrect." });
             }
         }
 

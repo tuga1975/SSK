@@ -109,8 +109,19 @@ namespace Trinity.Device.Monitor
                     // Update application status
                     _applicationStatus = status;
 
-                    // Update LEDs light
-                    if (!_isInitializing)
+                    if (status == EnumApplicationStatus.Initiation)
+                    {
+                        _isInitializing = true;
+                        UpdateLEDsLight();
+                    }
+
+                    if (status == EnumApplicationStatus.Busy)
+                    {
+                        UpdateLEDsLight();
+                    }
+
+                    // Only update when application recieved device status reporting
+                    if (!_isInitializing && _applicationStatus != EnumApplicationStatus.Busy)
                     {
                         UpdateLEDsLight();
                     }
