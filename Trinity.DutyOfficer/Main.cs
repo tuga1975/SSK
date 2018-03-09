@@ -51,10 +51,10 @@ namespace DutyOfficer
             _jsCallCS.OnLogOutCompleted += JSCallCS_OnLogOutCompleted;
 
             // SmartCard
-            SmartCard.Instance.GetCardInfoSucceeded += GetCardInfoSucceeded;
+            //SmartCard.Instance.GetCardInfoSucceeded += GetCardInfoSucceeded;
             // Fingerprint
-            Fingerprint.Instance.OnIdentificationCompleted += Fingerprint_OnIdentificationCompleted;
-            Fingerprint.Instance.OnDeviceDisconnected += Fingerprint_OnDeviceDisconnected;
+            //Fingerprint.Instance.OnIdentificationCompleted += Fingerprint_OnIdentificationCompleted;
+            //Fingerprint.Instance.OnDeviceDisconnected += Fingerprint_OnDeviceDisconnected;
 
             _eventCenter = EventCenter.Default;
             _eventCenter.OnNewEvent += EventCenter_OnNewEvent;
@@ -76,11 +76,12 @@ namespace DutyOfficer
         private void OnNewNotification_Handler(object sender, NotificationInfo e)
         {
             string dutyOfficerId = ((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId;
-            if (dutyOfficerId != null && dutyOfficerId != "")
+            string toDutyOfficerId = e.ToUserIds != null ? e.ToUserIds[0] : null;
+            if (dutyOfficerId != null && dutyOfficerId != "" && e.Name == NotificationNames.ALERT_MESSAGE)
             {
                 Trinity.BE.Notification notification = new Trinity.BE.Notification();
                 notification.Subject = e.Subject;
-                notification.ToUserId = e.ToUserIds[0];
+                notification.ToUserId = e.ToUserIds != null ? e.ToUserIds[0] : null;
                 notification.Content = e.Content;
                 notification.Source = (string)e.Source;
                 notification.Type = e.Type;
@@ -107,19 +108,19 @@ namespace DutyOfficer
             string station = (string)e.Source;
             DAL_DeviceStatus device = new DAL_DeviceStatus();
 
-            if (station == EnumStations.SSA)
+            if (station == EnumStation.SSA)
             {
                 JSCallCS._StationColorDevice.SSAColor = device.CheckStatusDevicesStation(station);
             }
-            if (station == EnumStations.SSK)
+            if (station == EnumStation.SSK)
             {
                 JSCallCS._StationColorDevice.SSKColor = device.CheckStatusDevicesStation(station);
             }
-            if (station == EnumStations.ESP)
+            if (station == EnumStation.ESP)
             {
                 JSCallCS._StationColorDevice.ESPColor = device.CheckStatusDevicesStation(station);
             }
-            if (station == EnumStations.UHP)
+            if (station == EnumStation.UHP)
             {
                 JSCallCS._StationColorDevice.UHPColor = device.CheckStatusDevicesStation(station);
             }
@@ -157,25 +158,24 @@ namespace DutyOfficer
                 // get local user info
                 DAL_User dAL_User = new DAL_User();
                 var user = dAL_User.GetUserBySmartCardId(cardUID);
-
-                // if local user is null, get user from centralized, and sync db
-                if (user == null)
-                {
-                    user = dAL_User.GetUserBySmartCardId(cardUID);
-                    if (user != null && user.Role != EnumUserRoles.DutyOfficer)
-                        user = null;
-                }
-
+                
                 if (user != null)
                 {
-                    Session session = Session.Instance;
-                    session.IsSmartCardAuthenticated = true;
-                    Session.Instance[CommonConstants.USER_LOGIN] = user;
-                    this.LayerWeb.RunScript("$('.status-text').css('color','#000').text('Your smart card is authenticated.');");
-                    // Stop SCardMonitor
-                    SmartCardReaderUtil.Instance.StopSmartCardMonitor();
-                    // raise succeeded event
-                    SmartCard_OnSmartCardSucceeded();
+                    if (user.Role == EnumUserRoles.DutyOfficer)
+                    {
+                        Session session = Session.Instance;
+                        session.IsSmartCardAuthenticated = true;
+                        Session.Instance[CommonConstants.USER_LOGIN] = user;
+                        this.LayerWeb.RunScript("$('.status-text').css('color','#000').text('Your smart card is authenticated.');");
+                        // Stop SCardMonitor
+                        SmartCardReaderUtil.Instance.StopSmartCardMonitor();
+                        // raise succeeded event
+                        SmartCard_OnSmartCardSucceeded();
+                    }
+                    else
+                    {
+                        SmartCard_OnSmartCardFailed("You do not have permission to access this page");
+                    }
                 }
                 else
                 {
@@ -361,15 +361,8 @@ namespace DutyOfficer
             string errorMessage = "User '" + user.Name + "' cannot complete facial authentication";
             Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(user.UserId, "Facial authentication failed", errorMessage, EnumNotificationTypes.Error);
 
-            // show message box to user
-            //MessageBox.Show("Facial authentication failed", "Facial Authentication", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            Trinity.BE.PopupModel popupModel = new Trinity.BE.PopupModel();
-            popupModel.Title = "Authorization Failed";
-            popupModel.Message = "Facial Recognition failed.\nPlease report to the Duty Officer";
-            popupModel.IsShowLoading = false;
-            popupModel.IsShowOK = true;
-
-            LayerWeb.InvokeScript("showPopupModal", JsonConvert.SerializeObject(popupModel));
+            // show message box to user            
+            MessageBox.Show("Facial Recognition failed.\nPlease report to the Duty Officer", "Authentication Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
             // navigate to smartcard login page
             NavigateTo(NavigatorEnums.Authentication_SmartCard);
@@ -384,7 +377,11 @@ namespace DutyOfficer
         private void NavigateTo(NavigatorEnums navigatorEnum)
         {
             // navigate
-            if (navigatorEnum == NavigatorEnums.Authentication_SmartCard)
+            if (navigatorEnum == NavigatorEnums.Login)
+            {
+                LayerWeb.LoadPageHtml("Login.html");
+            }
+            else if (navigatorEnum == NavigatorEnums.Authentication_SmartCard)
             {
                 _isSmartCardToLogin = true;
                 LayerWeb.LoadPageHtml("Authentication/SmartCard.html");
@@ -468,16 +465,14 @@ namespace DutyOfficer
 
         private void LayerWeb_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
-            LayerWeb.InvokeScript("createEvent", JsonConvert.SerializeObject(_jsCallCS.GetType().GetMethods().Where(d => (d.IsPublic && !d.IsVirtual && !d.IsSecuritySafeCritical) || (d.IsPublic && d.IsSecurityCritical)).ToArray().Select(d => d.Name)));
-
             if (_isFirstTimeLoaded)
             {
-                NavigateTo(NavigatorEnums.Authentication_SmartCard);
-
+                LayerWeb.InvokeScript("createEvent", JsonConvert.SerializeObject(_jsCallCS.GetType().GetMethods().Where(d => (d.IsPublic && !d.IsVirtual && !d.IsSecuritySafeCritical) || (d.IsPublic && d.IsSecurityCritical)).ToArray().Select(d => d.Name)));
+                NavigateTo(NavigatorEnums.Login);
                 _isFirstTimeLoaded = false;
             }
 
-            //// For testing purpose
+            // For testing purpose
             //Session session = Session.Instance;
             //// Duty Officer
             //Trinity.BE.User user = new DAL_User().GetUserByUserId("dfbb2a6a-9e45-4a76-9f75-af1a7824a947").Data;
@@ -486,7 +481,7 @@ namespace DutyOfficer
             //session.IsFingerprintAuthenticated = true;
 
             //NavigateTo(NavigatorEnums.Queue);
-            //Trinity.SignalR.Client.SignalR.Instance.UserLogined(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId);
+            //Trinity.SignalR.Client.Instance.UserLoggedIn(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId);
         }
 
         private void EventCenter_OnNewEvent(object sender, EventInfo e)

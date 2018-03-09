@@ -216,7 +216,7 @@ namespace Trinity.Device.Util
                     }
                     #endregion
                 }
-                else if (SmartCardReaderUtil.Instance.GetDeviceStatus().Contains(EnumDeviceStatuses.Connected))
+                else if (SmartCardReaderUtil.Instance.GetDeviceStatus().Contains(EnumDeviceStatus.Connected))
                 {
                     #region use card reader
                     SmartCardData_Original cardData = new SmartCardData_Original()
@@ -258,7 +258,7 @@ namespace Trinity.Device.Util
         /// <param name="data"></param>
         /// <returns></returns>
 
-        public override EnumDeviceStatuses[] GetDeviceStatus()
+        public override EnumDeviceStatus[] GetDeviceStatus()
         {
             // create default returnValue
             //List< EnumDeviceStatuses> returnValue = new List<EnumDeviceStatuses>();
@@ -267,11 +267,11 @@ namespace Trinity.Device.Util
             // check with Win32_Printer
             if (IsPrinterConnected(_smartCardPrinterName))
             {
-                return new EnumDeviceStatuses[] { EnumDeviceStatuses.Connected };
+                return new EnumDeviceStatus[] { EnumDeviceStatus.Connected };
             }
             else
             {
-                return new EnumDeviceStatuses[] { EnumDeviceStatuses.Disconnected };
+                return new EnumDeviceStatus[] { EnumDeviceStatus.Disconnected };
             }
 
             // can not check printer status with PrintServer

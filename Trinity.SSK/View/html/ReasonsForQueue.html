@@ -1,10 +1,4 @@
-﻿<div id="header" style="background-color:#FFF;margin-top:20px;">
-    <div class="logo"></div>
-    <div style="float:right;width:20%;position: relative;top: 50%;-webkit-transform: translateY(-50%);-ms-transform: translateY(-50%);transform: translateY(-50%);">
-        <a href="javascript:;" onclick="api.server.LoadSupervisee()"><b class="ion-navicon-round" style="font-size:21px;color:#1cacf6;">Back to Main menu</b></a>
-    </div>
-</div>
-<div name-page="Absence Reporting" style="margin-top:20px"></div>
+﻿<div name-page="Absence Reporting"></div>
 <div style="font-size:18px;color:#5c5c5c;margin-top:30px;text-align:center;">
     You have been absent for <b><span count-absence></span> reporting dates</b>
 </div>
@@ -67,6 +61,10 @@
             });
         });
     });
+</script>
+<script type="text/javascript">
+    //show menu logout or back main
+    $('#header[right-show]').attr('right-show', 'back-main');
 </script>
 <style type="text/css">
     [parent-tab] {

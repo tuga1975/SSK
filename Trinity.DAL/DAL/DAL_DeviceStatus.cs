@@ -15,7 +15,7 @@ namespace Trinity.DAL
         Local_UnitOfWork _localUnitOfWork = new Local_UnitOfWork();
         Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
 
-        public bool Update(int deviceId, EnumDeviceStatuses[] deviceStatuses,string Station = null)
+        public bool Update(int deviceId, EnumDeviceStatus[] deviceStatuses,string Station = null)
         {
             try
             {
@@ -94,7 +94,7 @@ namespace Trinity.DAL
                     return EnumColors.Red;
                 }
 
-                if (_localUnitOfWork.DataContext.ApplicationDevice_Status.Any(d => d.Station.ToUpper() == station.ToUpper() && d.StatusCode == (int)EnumDeviceStatuses.Disconnected))
+                if (_localUnitOfWork.DataContext.ApplicationDevice_Status.Any(d => d.Station.ToUpper() == station.ToUpper() && d.StatusCode == (int)EnumDeviceStatus.Disconnected))
                 {
                     return EnumColors.Red;
                 }
@@ -111,7 +111,7 @@ namespace Trinity.DAL
         /// Get application's health status
         /// </summary>
         /// <returns></returns>
-        public EnumHealthStatus GetApplicationStatus()
+        public EnumApplicationStatus GetApplicationStatus()
         {
             try
             {
@@ -127,30 +127,30 @@ namespace Trinity.DAL
                 if (deviceStatuses == null || deviceStatuses.Count == 0)
                 {
                     // application is down (notification server will delete all device status rows ) or cannot update status, return error
-                    return EnumHealthStatus.Error;
+                    return EnumApplicationStatus.Error;
                 }
                 else
                 {
                     // if any device is disconnected, return error
-                    if (deviceStatuses.Any(item => item.StatusCode == (int)EnumDeviceStatuses.Disconnected))
+                    if (deviceStatuses.Any(item => item.StatusCode == (int)EnumDeviceStatus.Disconnected))
                     {
-                        return EnumHealthStatus.Error;
+                        return EnumApplicationStatus.Error;
                     }
 
                     // if application have no device disconnected, and have any device status is diffirent connected, return caution
                     // Need to define caution statuses group
-                    if (deviceStatuses.Any(item => item.StatusCode != (int)EnumDeviceStatuses.Connected))
+                    if (deviceStatuses.Any(item => item.StatusCode != (int)EnumDeviceStatus.Connected))
                     {
-                        return EnumHealthStatus.Caution;
+                        return EnumApplicationStatus.Caution;
                     }
 
                     // if all devices are connected and have no caution, return ready
-                    return EnumHealthStatus.Ready;
+                    return EnumApplicationStatus.Ready;
                 }
             }
             catch (Exception ex)
             {
-                return EnumHealthStatus.Error;
+                return EnumApplicationStatus.Error;
             }
         }
 

@@ -68,7 +68,6 @@ namespace Trinity.Device
 
         public void PrintBarcodeLabel(LabelInfo labelInfo)
         {
-
             // validation
             if (string.IsNullOrEmpty(labelInfo.Name))
             {
@@ -96,11 +95,13 @@ namespace Trinity.Device
 
             // print label
             BarcodePrinterUtil printerUtils = BarcodePrinterUtil.Instance;
-            TTLabelInfo infoTTLabel = new TTLabelInfo();
-            infoTTLabel.ID = labelInfo.NRIC;
-            infoTTLabel.Name = labelInfo.Name;
-            infoTTLabel.MarkingNumber = labelInfo.MarkingNo;
-
+            TTLabelInfo infoTTLabel = new TTLabelInfo
+            {
+                ID = labelInfo.NRIC,
+                Name = labelInfo.Name,
+                MarkingNumber = labelInfo.MarkingNo
+            };
+            //MessageBox.Show("Call PrintTTLabel");
             if (printerUtils.PrintTTLabel(infoTTLabel))
             {
                 // raise succeeded event
@@ -147,42 +148,53 @@ namespace Trinity.Device
             BarcodePrinterUtil printerUtils = BarcodePrinterUtil.Instance;
 
             // create image file to print
-            string filePath = string.Empty;
-            string fileName = string.Empty;
-            using (var ms = new System.IO.MemoryStream(labelInfo.BitmapLabel))
-            {
-                Bitmap bitmap = new System.Drawing.Bitmap(System.Drawing.Image.FromStream(ms));
+            //string filePath = string.Empty;
+            //string fileName = string.Empty;
+            //using (var ms = new System.IO.MemoryStream(labelInfo.BitmapLabel))
+            //{
+            //    Bitmap bitmap = new System.Drawing.Bitmap(System.Drawing.Image.FromStream(ms));
 
-                // Rotate bitmap
-                bitmap.RotateFlip(System.Drawing.RotateFlipType.Rotate90FlipNone);
+            //    // Rotate bitmap
+            //    bitmap.RotateFlip(System.Drawing.RotateFlipType.Rotate90FlipNone);
 
-                string curDir = Directory.GetCurrentDirectory();
+            //    string curDir = Directory.GetCurrentDirectory();
 
-                // create directory
-                if (!Directory.Exists(curDir + "\\Temp"))
-                {
-                    Directory.CreateDirectory(curDir + "\\Temp");
-                }
+            //    // create directory
+            //    if (!Directory.Exists(curDir + "\\Temp"))
+            //    {
+            //        Directory.CreateDirectory(curDir + "\\Temp");
+            //    }
 
-                // set file path
-                filePath = curDir + "\\Temp\\mublabel.bmp";
+            //    // set file path
+            //    filePath = curDir + "\\Temp\\mublabel.bmp";
 
-                // create image file (bit depth must be 8)
-                Bitmap target = Convertor1.ConvertTo8bppFormat(bitmap);
-                target.Save(filePath, ImageFormat.Bmp);
-            }
+            //    // create image file (bit depth must be 8)
+            //    Bitmap target = Convertor1.ConvertTo8bppFormat(bitmap);
+            //    target.Save(filePath, ImageFormat.Bmp);
+            //}
 
             // Print mub label
             try
             {
-                if (printerUtils.PrintMUBLabel(filePath))
+                // qr code string: 91 chars
+                string qrCodeString = string.Format("{0}*{1}*{2}", labelInfo.MarkingNo, labelInfo.NRIC, labelInfo.Name).PadRight(91, '*');
+                MUBLabelInfo mubLabelInfo = new MUBLabelInfo()
+                {
+                    ID = labelInfo.NRIC,
+                    Name = labelInfo.Name,
+                    MarkingNumber = labelInfo.MarkingNo,
+                    QRCodeString = qrCodeString
+                };
+
+                //if (printerUtils.PrintMUBLabel(filePath))
+                if (printerUtils.PrintMUBLabel(mubLabelInfo))
                 {
                     // raise succeeded event
                     RaisePrintMUBLabelSucceededEvent(new PrintMUBAndTTLabelsEventArgs(labelInfo));
                 }
                 else
                 {
-                    MessageBox.Show("Failed to print");
+                    //MessageBox.Show("Failed to print");
                     // raise failed event
                     RaiseMonitorExceptionEvent(new ExceptionArgs(new FailedInfo()
                     {

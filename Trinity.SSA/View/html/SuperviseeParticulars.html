@@ -1,6 +1,5 @@
 ﻿<form id="particularsFrm">
     <div class="container" particulars>
-        <!--<span style="display: inline-block;font-size:16px;border:1px solid #CCC;background-color:#FFF;padding:5px; margin-bottom:25px">Information to be printed</span>-->
         <div class="titles"><span>Information to be Printed</span></div>
         <br />
         <div class="contentWrapper">
@@ -33,13 +32,17 @@
             <span class="input-group-addon">Marking Number:</span>
             <input id="MarkingNumber" type="text" class="form-control pri" name="MarkingNumber" readonly="readonly" />
         </div>-->
-
-        <div id="divSave">
-            <button type="button" class="btn btn-dark" id="CancelBtn">CANCEL</button>
-            <button type="button" class="btn btn-primary" id="ConfirmBtn">CONFIRM</button>
-
-        </div>
+        <div style="visibility:hidden;"><label id="lblPrintingStatus">0</label>
     </div>
+    <div class="status-text">
+        
+    </div>
+    <div id="divSave">
+        <button type="button" class="btn btn-dark" id="CancelBtn">CANCEL</button>
+        <button type="button" class="btn btn-primary" id="ConfirmBtn">Initialize MUB Applicator</button>
+
+    </div>
+
 </form>
 
 <script type="text/javascript">
@@ -52,8 +55,10 @@
         $("#imgQRCode").attr("src", srcQRCode);
 
         $("#ConfirmBtn").click(function (e) {
+            var printingStatus = $("#lblPrintingStatus").text();
             var json = JSON.stringify(model);
-            api.server.MappingTemplateMUBAndTTLabels(json);
+            //api.server.MappingTemplateMUBAndTTLabels(json);
+            api.server.ConfirmAction(printingStatus, json);
             e.preventDefault(); // avoid to execute the actual submit of the form.
         });
 
