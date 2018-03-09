@@ -265,15 +265,8 @@ namespace SSK
 
                 if (updateResult)
                 {
-                    Trinity.BE.Appointment appointment = new DAL_Appointments().GetAppointment(appointment_ID);
-
-                    //APIUtils.Printer.PrintAppointmentDetails("AppointmentDetailsTemplate.html", appointment);
-                    ReceiptPrinterUtil.Instance.PrintAppointmentDetails(new AppointmentDetails()
-                    {
-                        Date = appointment.AppointmentDate.Value,
-                        Name = appointment.Name,
-                        Venue = appointment.NRIC
-                    });
+                    AppointmentDetails appointmentdetails = new DAL_Appointments().GetAppointmentDetails(appointment_ID);
+                    ReceiptPrinterUtil.Instance.PrintAppointmentDetails(appointmentdetails);
                     FormQueueNumber f = FormQueueNumber.GetInstance();
                     f.RefreshQueueNumbers();
                     return true;
@@ -318,17 +311,9 @@ namespace SSK
 
         public void PrintAppointmentDetails(string appointmentId)
         {
-            var dalAppointment = new DAL_Appointments();
-            Trinity.BE.Appointment appointment = new DAL_Appointments().GetAppmtDetails(Guid.Parse(appointmentId));
-            //Trinity.BE.Appointment appointment = dalAppointment.GetAppointmentDetails(Guid.Parse(appointmentId));
-            ReceiptPrinterUtil.Instance.PrintAppointmentDetails(new AppointmentDetails()
-            {
-                Date = appointment.AppointmentDate.Value,
-                Name = appointment.Name,
-                Venue = appointment.NRIC,
-                StartTime = appointment.StartTime ?? new TimeSpan(0, 0, 0)
-            });
-            //APIUtils.Printer.PrintAppointmentDetails("AppointmentDetailsTemplate.html", appointment);
+
+            AppointmentDetails appointmentdetails = new DAL_Appointments().GetAppointmentDetails(appointmentId);
+            ReceiptPrinterUtil.Instance.PrintAppointmentDetails(appointmentdetails);
         }
         #endregion
 

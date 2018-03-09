@@ -22,6 +22,8 @@ namespace Trinity.NotificationServer
         {
             if (notificationInfo.Name == NotificationNames.QUEUE_COMPLETED)
             {
+                Program.MainForm.WriteToConsole("[" + Station + "] => User '" + notificationInfo.FromUserId + "' has been processed. Queue Number has been removed.");
+
                 Clients.Clients(Program.ProfileConnected.Where(d => d.isApp && d.Station == EnumStation.SSK).Select(d => d.ConnectionId).ToList()).OnNewNotification(notificationInfo);
             }
             else if (notificationInfo.Name == NotificationNames.DEVICE_STATUS_CHANGED)

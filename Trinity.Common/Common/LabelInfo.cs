@@ -99,13 +99,14 @@ namespace Trinity.Common
 
     public class AppointmentDetails
     {
+        public string CompanyName { get; set; }
         public string Name { get; set; }
-        public string Venue { get; set; }
         public DateTime Date { get; set; }
-        public TimeSpan StartTime { get; set; }
+        public TimeSpan? StartTime { get; set; }
+        public string Venue { get; set; }
         public bool IsValid()
         {
-            if (string.IsNullOrEmpty(Name) || string.IsNullOrEmpty(Venue))
+            if (string.IsNullOrEmpty(CompanyName) || string.IsNullOrEmpty(Name) || string.IsNullOrEmpty(Venue))
             {
                 return false;
             }

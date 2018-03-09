@@ -500,7 +500,7 @@ namespace DutyOfficer
 
         private void JSCallCS_OnLogOutCompleted()
         {
-            NavigateTo(NavigatorEnums.Authentication_SmartCard);
+            NavigateTo(NavigatorEnums.Login);
         }
     }
 }
