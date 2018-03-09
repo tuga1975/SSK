@@ -308,7 +308,8 @@ namespace Trinity.DAL
                                 AppointmentDate = d.Date,
                                 StartTime = d.Timeslot.StartTime,
                                 EndTime = d.Timeslot.EndTime,
-                                AbsenceReporting_ID = d.AbsenceReporting_ID
+                                AbsenceReporting_ID = d.AbsenceReporting_ID,
+                                Category = d.Timeslot.Category
                             }).ToList();
                 return data;
             }
