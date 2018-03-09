@@ -81,8 +81,14 @@ namespace Trinity.Device.Util
                 TSCLIB_DLL.windowsfont(startX, startY += fontHeight, fontHeight, 0, 0, 0, fontName, "Date");
                 TSCLIB_DLL.windowsfont(startX_Detail, startY, fontHeight, 0, 0, 0, fontName, ": " + appointmentDetails.Date.ToString("dd/MM/yyyy"));
                 // Time line
+                // Convert time to datetime first, then use formatting
+                string timeFormatted = string.Empty;
+                if (appointmentDetails.StartTime.HasValue)
+                {
+                    timeFormatted = new DateTime(appointmentDetails.StartTime.Value.Ticks).ToString("hh:mm tt");
+                }
                 TSCLIB_DLL.windowsfont(startX, startY += fontHeight, fontHeight, 0, 0, 0, fontName, "Time");
-                TSCLIB_DLL.windowsfont(startX_Detail, startY, fontHeight, 0, 0, 0, fontName, ": " + (appointmentDetails.StartTime.HasValue ? appointmentDetails.StartTime.Value.ToString(@"hh\:mm") : ""));
+                TSCLIB_DLL.windowsfont(startX_Detail, startY, fontHeight, 0, 0, 0, fontName, ": " + timeFormatted);
                 // Venue line
                 TSCLIB_DLL.windowsfont(startX, startY += fontHeight, fontHeight, 0, 0, 0, fontName, "Venue");
                 TSCLIB_DLL.windowsfont(startX_Detail, startY, fontHeight, 0, 0, 0, fontName, ": " + appointmentDetails.Venue);
@@ -90,9 +96,9 @@ namespace Trinity.Device.Util
                 TSCLIB_DLL.windowsfont(startX, startY += fontHeight + space, fontHeight, 0, 2, 0, fontName, "Please be punctual to avoid cancellation");
                 TSCLIB_DLL.windowsfont(startX, startY += fontHeight, fontHeight, 0, 2, 0, fontName, "of appointment.");
                 // printed date line
-                TSCLIB_DLL.windowsfont(startX + 272, startY += fontHeight + space + space, fontHeight - 4, 0, 1, 0, fontName, "Printed date: " + DateTime.Now.ToString("dd/MM/yyyy"));
+                TSCLIB_DLL.windowsfont(startX + 272, startY += fontHeight + space + space, fontHeight - 4, 0, 1, 0, fontName, "Printed Date: " + DateTime.Now.ToString("dd/MM/yyyy"));
                 // printed time line
-                TSCLIB_DLL.windowsfont(startX + 272, startY += fontHeight, fontHeight - 4, 0, 1, 0, fontName, "Printed time: " + DateTime.Now.ToString("hh:mm tt"));
+                TSCLIB_DLL.windowsfont(startX + 272, startY += fontHeight, fontHeight - 4, 0, 1, 0, fontName, "Printed Time: " + DateTime.Now.ToString("hh:mm tt"));
 
                 TSCLIB_DLL.printlabel("1", "1");
                 TSCLIB_DLL.closeport();

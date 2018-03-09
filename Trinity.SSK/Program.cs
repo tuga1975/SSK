@@ -24,7 +24,7 @@ namespace SSK
             {
                 // Start application status monitor and update application status
                 //ApplicationStatusMonitor.Instance.StartInitialization();
-                //ApplicationStatusMonitor.Instance.UpdateApplicationStatus(EnumApplicationStatus.Initiation);
+                ApplicationStatusMonitor.Instance.UpdateApplicationStatus(EnumApplicationStatus.Initiation);
                 
                 Application.Run(new Main());
             }

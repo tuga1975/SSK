@@ -2,7 +2,7 @@
 
 namespace Trinity.Device
 {
-    class TSCLIB_DLL
+    public class TSCLIB_DLL
     {
         [DllImport("TSCLIB.dll", EntryPoint = "about")]
         public static extern int about();

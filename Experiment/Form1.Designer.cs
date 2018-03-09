@@ -43,6 +43,10 @@
             this.button2 = new System.Windows.Forms.Button();
             this.btnConnectPDIScanner = new System.Windows.Forms.Button();
             this.btnStopDPIScanner = new System.Windows.Forms.Button();
+            this.rtbBarTenderCommand = new System.Windows.Forms.RichTextBox();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.btnSendBTCommand = new System.Windows.Forms.Button();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnPrintAppointmentDetails
@@ -202,11 +206,41 @@
             this.btnStopDPIScanner.UseVisualStyleBackColor = true;
             this.btnStopDPIScanner.Click += new System.EventHandler(this.btnStopDPIScanner_Click);
             // 
+            // rtbBarTenderCommand
+            // 
+            this.rtbBarTenderCommand.Location = new System.Drawing.Point(6, 19);
+            this.rtbBarTenderCommand.Name = "rtbBarTenderCommand";
+            this.rtbBarTenderCommand.Size = new System.Drawing.Size(430, 118);
+            this.rtbBarTenderCommand.TabIndex = 15;
+            this.rtbBarTenderCommand.Text = "";
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.btnSendBTCommand);
+            this.groupBox1.Controls.Add(this.rtbBarTenderCommand);
+            this.groupBox1.Location = new System.Drawing.Point(517, 12);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(442, 209);
+            this.groupBox1.TabIndex = 16;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Bar Tender Command";
+            // 
+            // btnSendBTCommand
+            // 
+            this.btnSendBTCommand.Location = new System.Drawing.Point(6, 154);
+            this.btnSendBTCommand.Name = "btnSendBTCommand";
+            this.btnSendBTCommand.Size = new System.Drawing.Size(183, 29);
+            this.btnSendBTCommand.TabIndex = 17;
+            this.btnSendBTCommand.Text = "Send Command";
+            this.btnSendBTCommand.UseVisualStyleBackColor = true;
+            this.btnSendBTCommand.Click += new System.EventHandler(this.btnSendBTCommand_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(971, 581);
+            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.btnStopDPIScanner);
             this.Controls.Add(this.btnConnectPDIScanner);
             this.Controls.Add(this.button1);
@@ -225,6 +259,7 @@
             this.Name = "Form1";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
+            this.groupBox1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -246,6 +281,9 @@
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button btnConnectPDIScanner;
         private System.Windows.Forms.Button btnStopDPIScanner;
+        private System.Windows.Forms.RichTextBox rtbBarTenderCommand;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.Button btnSendBTCommand;
     }
 }
 
