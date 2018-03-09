@@ -195,7 +195,6 @@ namespace SSK
         private void LayerWeb_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
             LayerWeb.InvokeScript("createEvent", JsonConvert.SerializeObject(_jsCallCS.GetType().GetMethods().Where(d => d.IsPublic && !d.IsVirtual && !d.IsSecuritySafeCritical).ToArray().Select(d => d.Name)));
-            LayerWeb.ShowMessage("Alo", "Alo2");
             if (_isFirstTimeLoaded)
             {
                 // Start page
