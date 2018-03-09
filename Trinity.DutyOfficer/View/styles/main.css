@@ -485,15 +485,14 @@ table tr.active {
     background: red;
     color: white;
     border-radius: 50%;
-    position: relative;
-    right: 0;
-    top: -5px;
+    position: absolute;
+    left: 75px;
+    top: -15px;
     padding: 3px 5px;
     font-size: 10px;
-    margin-left: 5px;
-    margin-top: 3px;
+    margin-left: 15px;
+    margin-top: 5px;
 }
-
 /*FacialRecognition*/
 .facialRecognition {
     height: calc(100vh - 300px);
@@ -720,9 +719,142 @@ tr.selected input[type="checkbox"]:after {
 }
 
 /*Queue Popup*/
-#idQueue .currentDate {
+#idQueue .currentDate,
+#idQueueDrugs .currentDate {
     font-size: 14px;
     font-style: normal;
     font-weight: normal;
     color: #848484;
 }
+
+/*Queue Popup Drugs*/
+#idQueueDrugs .title {
+    color: #1cacf6;
+    border-bottom: 1px solid #dedede;
+    /*padding-bottom: 10px;*/
+    margin-bottom: 10px;
+}
+
+#idQueueDrugs .panel-data {
+    width: 100%;
+    float: left;
+    margin-bottom: 40px;
+}
+
+#idQueueDrugs .panel-data div {
+    float: left;
+    width: auto;
+    margin-right: 30px;
+}
+
+#idQueueDrugs [drugstatus], 
+#idQueueDrugs [drugchecked] {
+    position: relative;
+    height: 20px;
+    margin: 10px 0px;
+    border: none;
+}
+
+#idQueueDrugs [drugstatus]::before, 
+#idQueueDrugs [drugchecked]::before {
+    content: " ";
+    position: absolute;
+    top: 3px;
+    left: 0px;
+    width: 15px;
+    height: 15px;
+    box-sizing: border-box;
+    border: 2px solid #555;
+    border-radius: 50%;
+}
+
+#idQueueDrugs [drugchecked]::before {
+    border-radius: 0px;
+    box-shadow: inset 0 0 0 2px #FFF;
+}
+
+#idQueueDrugs [drugstatus="true"]::before {
+    background-color: forestgreen;
+}
+
+#idQueueDrugs [drugchecked="true"]::before {
+    background-color: #555;
+}
+
+#idQueueDrugs [drugstatus="false"]::before,
+#idQueueDrugs [drugchecked="false"]::before {
+    background-color: red;
+}
+
+#idQueueDrugs [drugstatus]::after, 
+#idQueueDrugs [drugchecked]::after {
+    line-height: 20px;
+    /*border: 2px solid #555;*/
+    margin-left: 15px;
+    padding: 0px 5px;
+    content: attr(namedrug);
+    box-sizing: border-box;
+    color: #848484;
+    font-size: 16px;
+}
+#idQueueDrugs .sealFlowingtestContent .item {
+    width: 20%;
+    float: left;
+    margin: 10px 0;
+}
+#idQueueDrugs .sealFlowingtestContent .item input[type=checkbox] {
+    width: auto;
+    float: left;
+    margin-right: 5px;
+    margin-top: 5px;
+    
+}
+#idQueueDrugs .sealFlowingtestContent .item .control-label {
+    float: left;
+    width: auto;
+    font-size: 16px;
+    color: #848484;
+}
+
+/*Queue popup seal*/
+#idQueueSeal .modal-body {
+    padding-bottom: 40px;
+}
+#idQueueSeal .testResult {
+    border: none;
+}
+
+/*Queue popup Outcome*/
+#idQueueOutcome .item {
+    margin: 20px 0;
+    width: 100%;
+    float: left;
+    position: relative
+}
+#idQueueOutcome .item input[type=checkbox] {
+    float: left;
+    width: auto;
+    margin-right: 10px;
+    margin-top: 7px;
+    /*position: absolute;
+    z-index: 2;*/
+}
+#idQueueOutcome .item .control-label {
+    width: auto;
+    float: left;
+    font-size: 18px;
+    color: #848484;
+    font-weight: normal;
+}
+/*#idQueueOutcome .item input[type=checkbox]:checked ~ span:before {
+    content: "\f14a";
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    left: 5px;
+    height: 20px;
+    width: 20px;
+    background: #fff;
+    color: #1cacf6;
+    font-family: FontAwesome;
+}*/
