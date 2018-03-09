@@ -90,8 +90,8 @@
             if (data) {
                 data.forEach(function (element, index) {
                     dataSource.push({
-                        StartTime: element.StartTime,
-                        EndTime: element.EndTime,
+                        StartTime: convert24hrTo12hr(element.StartTime),
+                        EndTime: convert24hrTo12hr(element.EndTime),
                         Max: element.Max,
                         Booked: element.Booked,
                         Reported: element.Reported,
@@ -102,8 +102,8 @@
 
                     if (Date.parse(formatDate(element.Date)) == Date.parse(today)) {
                         searchSource.push({
-                            StartTime: element.StartTime,
-                            EndTime: element.EndTime,
+                            StartTime: convert24hrTo12hr(element.StartTime),
+                            EndTime: convert24hrTo12hr(element.EndTime),
                             Max: element.Max,
                             Booked: element.Booked,
                             Reported: element.Reported,
@@ -229,4 +229,14 @@
         return formatedDay + "/" + formatedMonth + "/" + year;
     };
 
+    function convert24hrTo12hr(time) {
+        if (time != null && time != '') {
+            var hourEnd = time.indexOf(":");
+            var H = +time.substr(0, hourEnd);
+            var h = H % 12 || 12;
+            var ampm = (H < 12 || H === 24) ? " AM" : " PM";
+            time = h + time.substr(hourEnd, 3) + ampm;
+        }
+        return time; // return adjusted time or original string
+    };
 </script>
