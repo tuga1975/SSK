@@ -186,7 +186,7 @@
 
                 api.server.CheckBookingTime(timeslot_ID, function (isPast) {
                     if (isPast) {
-                        alert('You cant choose the time in the past.');
+                        alert('You can not choose the timeslot in the past.');
                     }
                     else {
                         if (model[0].ChangedCount >= 3) {
