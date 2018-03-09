@@ -368,6 +368,7 @@ namespace Enrolment
             }
             else if (e.Name.Equals(EventNames.OPEN_PICTURE_CAPTURE_FORM))
             {
+                var from = e.Data;
                 //pictureBox1.Image.Save(AppDomain.CurrentDomain.BaseDirectory.ToString() + "/image" + _imgBox + ".jpg");
                 if (InvokeRequired)
                 {
@@ -375,6 +376,7 @@ namespace Enrolment
                     {
                         try
                         {
+                           
                             webcam.InitializeWebCam();
                             webcam.startWebcam();
                             _imgBox = e.Message;
@@ -389,7 +391,50 @@ namespace Enrolment
                         }
                         catch (Exception ex)
                         {
+                            Session session = Session.Instance;
+                            var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
                             LayerWeb.InvokeScript("failAlert", "Cant find this device camera!");
+                            if (currentEditUser != null && from != null)
+                            {
+                               
+                                if (from.ToString() == "new")
+                                {
+                                    LayerWeb.LoadPageHtml("UpdateSuperviseeBiodata.html", currentEditUser);
+                                    LayerWeb.InvokeScript("setAvatar", currentEditUser.UserProfile.User_Photo1_Base64, currentEditUser.UserProfile.User_Photo2_Base64);
+
+                                    string fingerprintLeft = "../images/leftthumb.png";
+                                    string fingerprintRight = "../images/rightthumb.png";
+                                    if (currentEditUser.UserProfile.LeftThumbImage != null)
+                                    {
+                                        fingerprintLeft = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(currentEditUser.UserProfile.LeftThumbImage));
+                                    }
+                                    if (currentEditUser.UserProfile.RightThumbImage != null)
+                                    {
+                                        fingerprintRight = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(currentEditUser.UserProfile.RightThumbImage));
+                                    }
+                                    LayerWeb.InvokeScript("setFingerprintServerCall", fingerprintLeft, fingerprintRight);
+                                }
+                                else if (from.ToString() == "edit")
+                                {
+                                    string photo1 = currentEditUser.UserProfile.User_Photo1_Base64 ?? string.Empty;
+                                    string photo2 = currentEditUser.UserProfile.User_Photo2_Base64 ?? string.Empty;
+                                    //LoadEditSupervisee(currentEditUser, photo1, photo2);
+                                    LayerWeb.LoadPageHtml("Edit-Supervisee.html", currentEditUser);
+                                    LayerWeb.InvokeScript("setAvatar", photo1, photo2);
+
+                                    string fingerprintLeft = "../images/leftthumb.png";
+                                    string fingerprintRight = "../images/rightthumb.png";
+                                    if (currentEditUser.UserProfile.LeftThumbImage != null)
+                                    {
+                                        fingerprintLeft = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(currentEditUser.UserProfile.LeftThumbImage));
+                                    }
+                                    if (currentEditUser.UserProfile.RightThumbImage != null)
+                                    {
+                                        fingerprintRight = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(currentEditUser.UserProfile.RightThumbImage));
+                                    }
+                                    LayerWeb.InvokeScript("setFingerprintServerCall", fingerprintLeft, fingerprintRight);
+                                }
+                            }
                         }
                     }));
                 }

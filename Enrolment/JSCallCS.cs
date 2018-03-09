@@ -57,7 +57,7 @@ namespace Enrolment
             }
 
             eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = 0, Name = EventNames.GET_LIST_SUPERVISEE_SUCCEEDED, Data = listSupervisee, Source = "Supervisee.html" });
-           // this._web.LoadPageHtml("Supervisee.html", listSupervisee);
+            // this._web.LoadPageHtml("Supervisee.html", listSupervisee);
         }
 
         public void SearchSuperviseeByNRIC(string nric)
@@ -295,7 +295,7 @@ namespace Enrolment
                 }
             }
         }
-        
+
         public void SaveSupervisee(string param)
         {
             Session session = Session.Instance;
@@ -575,7 +575,7 @@ namespace Enrolment
             }
             else
             {
-                var failMessage="Cannot print smart card!";
+                var failMessage = "Cannot print smart card!";
                 this._web.InvokeScript("showPrintMessage", false, failMessage);
             }
         }
@@ -585,7 +585,7 @@ namespace Enrolment
         }
 
         #region Webcam event
-        public void OpenPictureCaptureForm(string number)
+        public void OpenPictureCaptureForm(string number, string from = null)
         {
             EventCenter eventCenter = EventCenter.Default;
             Session session = Session.Instance;
@@ -597,8 +597,9 @@ namespace Enrolment
             {
                 session[CommonConstants.IS_PRIMARY_PHOTO] = false;
             }
+
             _web.LoadPageHtml("WebcamCapture.html");
-            eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.OPEN_PICTURE_CAPTURE_FORM, Message = number });
+            eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.OPEN_PICTURE_CAPTURE_FORM, Message = number, Data = from });
         }
 
         public void CancelEditSupervisee()
@@ -757,7 +758,8 @@ namespace Enrolment
         {
 
             EventCenter eventCenter = EventCenter.Default;
-            eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.LOAD_UPDATE_PHOTOS });
+            //string from = "edit";
+            eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.LOAD_UPDATE_PHOTOS});
 
         }
 

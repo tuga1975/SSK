@@ -166,6 +166,7 @@
         margin: 10px 0;
         display: flex;
         flex-direction: row;
+        padding-bottom: 0.75rem;
     }
 
         .form-select .input-group-select {
@@ -183,6 +184,7 @@
             line-height: 1.5;
             position: absolute;
             font-size: 100%;
+            min-height: 50px;
         }
 
         .form-select select {
@@ -201,7 +203,7 @@
 
             .form-select select + label {
                 float: right;
-                margin-top: 8px;
+                margin-top: 0;
                 margin-right: 5px;
                 pointer-events: none;
                 background-color: #fff;
@@ -211,6 +213,7 @@
                 top: 0;
                 right: 0;
                 font-size: 90%;
+                padding-bottom: 0.75rem;
             }
 
             .form-select select::-ms-expand {
@@ -220,6 +223,7 @@
         .form-select .select-wrap {
             position: relative;
             width: 100%;
+            padding-bottom: .75rem;
         }
 
     .line-center {
@@ -343,9 +347,29 @@
         width: 100%;
     }
 
-    .input-group-prepend label{
+    .input-group-prepend label {
         width: 100%;
     }
+
+    .form-group-text {
+        display: inline-block;
+        margin: 10px 0;
+        width: 100%;
+    }
+
+        .form-group-text label {
+            display: inline-block;
+            padding: .375rem .75rem;
+            width: 35%;
+            font-size: 100%;
+        }
+
+        .form-group-text .value {
+            display: inline-block;
+            padding: .375rem .75rem;
+            font-weight: bold;
+            font-size: 100%;
+        }
 </style>
 
 <div class="p-3">
@@ -425,57 +449,36 @@
         <input type="hidden" name="DateOfIssue" id="DateOfIssue" />
         <input type="hidden" name="Gender" id="Gender" />
         <input type="hidden" name="Race" id="Race" />
+        <input type="hidden" id="ParticularsName" name="ParticularsName">
+        <input type="hidden" id="NRIC" name="NRIC">
+        <input type="hidden" id="DOB" name="DOB">
+
         <div class="profile-tab-content bg-white tab-content">
             <div class="tab-pane fade show active" id="particulars" role="tabpanel"
                  aria-labelledby="particulars-tab">
+                <div class="form-group-text">
+                    <label>
+                        Name
+                    </label>
+                    <div class="value" id="ParticularsNameDisplay">
+                    </div>
+                </div>
+                <div class="form-group-text">
+                    <label>
+                        NRIC No.
+                    </label>
+                    <div class="value" id="nricDisplay">
+                    </div>
+                </div>
 
-                <div class="form-group">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <label for="ParticularsName">
-                                <span class="input-group-text">
-                                    Name <span>*</span>
-                                </span>
-                            </label>
-                        </div>
-                        <input type="text" class="form-control"
-                               placeholder="Enter Name"
-                               aria-label="house" aria-describedby="house" id="ParticularsName" name="ParticularsName">
+                <div class="form-group-text">
+                    <label>
+                        Date of Birth
+                    </label>
+                    <div class="value" id="dobDisplay">
                     </div>
-                    <div class="clearfix"></div>
                 </div>
-                <div class="form-group">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <label for="NRIC">
-                                <span class="input-group-text">
-                                    NRIC No. <span>*</span>
-                                </span>
-                            </label>
-                            
-                        </div>
-                        <input type="text" class="form-control"
-                               placeholder="Enter NRIC No."
-                               aria-label="house" aria-describedby="house" id="NRIC" name="NRIC">
-                    </div>
-                    <div class="clearfix"></div>
-                </div>
-                <div class="form-group">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <label for="DOB">
-                                <span class="input-group-text">
-                                    Date of Birth <span>*</span>
-                                </span>
-                            </label>
-                           
-                        </div>
-                        <input type="text" class="form-control"
-                               placeholder="DD/MM/YYYY"
-                               aria-label="house" aria-describedby="house" id="DOB" name="DOB">
-                    </div>
-                    <div class="clearfix"></div>
-                </div>
+
                 <div class="form-group">
                     <div class="form-select">
                         <div class="input-group-select">
@@ -484,7 +487,7 @@
                                     Nationality  <span>*</span>
                                 </span>
                             </label>
-                           
+
                         </div>
                         <div class="select-wrap">
                             <select title="Nationality" class="form-control" id="Nationality" name="Nationality">
@@ -496,6 +499,7 @@
                             </label>
                         </div>
                     </div>
+                    <div class="clearfix"></div>
                 </div>
                 <div class="form-group">
                     <div class="form-select">
@@ -505,7 +509,7 @@
                                     Marital Status <span>*</span>
                                 </span>
                             </label>
-                            
+
                         </div>
                         <div class="select-wrap">
                             <select title="Marital Status" class="form-control" id="MaritalStatus" name="MaritalStatus">
@@ -517,6 +521,7 @@
                             </label>
                         </div>
                     </div>
+                    <div class="clearfix"></div>
                 </div>
                 <div class="form-group">
                     <div class="input-group">
@@ -526,7 +531,7 @@
                                     Primary Contact No.
                                 </span>
                             </label>
-                            
+
                         </div>
                         <input type="text" class="form-control"
                                placeholder="eg. 98764324"
@@ -542,7 +547,7 @@
                                     Secondary Contact No.
                                 </span>
                             </label>
-                          
+
                         </div>
                         <input type="text" class="form-control"
                                placeholder="eg. 98764324"
@@ -558,7 +563,7 @@
                                     Primary Email
                                 </span>
                             </label>
-                       
+
                         </div>
                         <input type="text" class="form-control"
                                placeholder="email@email.com"
@@ -574,7 +579,7 @@
                                     Secondary Email
                                 </span>
                             </label>
-                            
+
                         </div>
                         <input type="text" class="form-control"
                                placeholder="email@email.com"
@@ -594,7 +599,7 @@
                                     House Number
                                 </span>
                             </label>
-                            
+
                         </div>
                         <input type="text" class="form-control"
                                placeholder="Enter House Number"
@@ -610,7 +615,7 @@
                                     Unit Number
                                 </span>
                             </label>
-                            
+
                         </div>
                         <input type="text" class="form-control"
                                placeholder="Enter Unit Number"
@@ -626,7 +631,7 @@
                                     Street Name
                                 </span>
                             </label>
-                            
+
                         </div>
                         <input type="text" class="form-control"
                                placeholder="Enter Street Name"
@@ -642,7 +647,7 @@
                                     Country
                                 </span>
                             </label>
-                           
+
                         </div>
                         <input type="text" class="form-control"
                                placeholder="Enter Country"
@@ -662,7 +667,7 @@
                                     Name
                                 </span>
                             </label>
-                          
+
                         </div>
                         <input type="text" class="form-control"
                                placeholder="Enter Name"
@@ -679,7 +684,7 @@
                                     Contact Number
                                 </span>
                             </label>
-                           
+
                         </div>
                         <input type="text" class="form-control"
                                placeholder="eg. 98764324"
@@ -695,7 +700,7 @@
                                     Relationship
                                 </span>
                             </label>
-                           
+
                         </div>
                         <input type="text" class="form-control"
                                placeholder="Enter Relationship"
@@ -711,7 +716,7 @@
                                     House Number
                                 </span>
                             </label>
-                           
+
                         </div>
                         <input type="text" class="form-control"
                                placeholder="Enter House Number"
@@ -727,7 +732,7 @@
                                     Unit Number
                                 </span>
                             </label>
-                            
+
                         </div>
                         <input type="text" class="form-control"
                                placeholder="Enter Unit Number"
@@ -743,7 +748,7 @@
                                     Street Name
                                 </span>
                             </label>
-                          
+
                         </div>
                         <input type="text" class="form-control"
                                placeholder="Enter Street Name"
@@ -759,7 +764,7 @@
                                     Postal Code
                                 </span>
                             </label>
-                          
+
                         </div>
                         <input type="text" class="form-control"
                                placeholder="Enter Postal Code"
@@ -775,7 +780,7 @@
                                     Country
                                 </span>
                             </label>
-                            
+
                         </div>
                         <input type="text" class="form-control"
                                placeholder="Enter Country"
@@ -795,7 +800,7 @@
                                     Employer Name
                                 </span>
                             </label>
-                           
+
                         </div>
                         <input type="text" class="form-control"
                                placeholder="Enter Name"
@@ -811,7 +816,7 @@
                                     Employer Contact
                                 </span>
                             </label>
-                            
+
                         </div>
                         <input type="text" class="form-control"
                                placeholder="Enter Employer Contact"
@@ -827,7 +832,7 @@
                                     Company Name
                                 </span>
                             </label>
-                            
+
                         </div>
                         <input type="text" class="form-control"
                                placeholder="Enter Company Name"
@@ -843,7 +848,7 @@
                                     Job Title
                                 </span>
                             </label>
-                           
+
                         </div>
                         <input type="text" class="form-control"
                                placeholder="Enter Job Tittle"
@@ -859,7 +864,7 @@
                                     Start Date
                                 </span>
                             </label>
-                            
+
                         </div>
                         <input type="text" class="form-control"
                                placeholder="Enter Start Date eg:YYYY-MM-DD"
@@ -875,7 +880,7 @@
                                     End Date
                                 </span>
                             </label>
-                            
+
                         </div>
                         <input type="text" class="form-control"
                                placeholder="Enter End Date eg:YYYY-MM-DD"
@@ -891,7 +896,7 @@
                                     Remarks
                                 </span>
                             </label>
-                            
+
                         </div>
                         <input type="text" class="form-control"
                                placeholder="Enter Employment_Remarks"
@@ -1172,6 +1177,9 @@
         $('#EnrolledDate').val(model.User.EnrolledDate);
         $('#Role').val(model.User.Role);
         $('#SmartCardId').val(model.User.SmartCardId);
+
+        $('#ParticularsNameDisplay').text(model.User.Name);
+        $('#nricDisplay').val(model.User.NRIC);
         // profile
         if (model.UserProfile != null) {
 
@@ -1189,6 +1197,8 @@
             $('#SecondaryContact').val(model.UserProfile.Secondary_Phone);
             $('#PrimaryEmail').val(model.UserProfile.Primary_Email);
             $('#SecondaryEmail').val(model.UserProfile.Secondary_Email);
+
+            $('#dobDisplay').val(model.UserProfile.DOBAsString);
 
             //next of kin information
             $('#NextOfKin_Name').val(model.UserProfile.NextOfKin_Name);
