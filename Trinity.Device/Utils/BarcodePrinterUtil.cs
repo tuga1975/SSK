@@ -98,7 +98,7 @@ namespace Trinity.Device.Util
                 //Draw windows font
                 int startX = 54;
                 int startY = 8;
-                string fontName = "Arial";
+                string fontName = "ARIAL";
                 int fontStyle = 2; // Bold
                 int fontHeight = 30;
                 int maxChar = 17;   // max char of name at first name line
@@ -172,7 +172,7 @@ namespace Trinity.Device.Util
                 int startX = 348;
                 int startY = 182;
                 int startY_Value = startY + 160;
-                string fontName = "Arial";
+                string fontName = "ARIAL";
                 int fontStyle = 0; // Normal
                 int fontHeight = 30;
                 int lineSpacing = 10;
@@ -227,7 +227,7 @@ namespace Trinity.Device.Util
             catch (Exception ex)
             {
                 //Debug.WriteLine("Print exception: " + ex.ToString());
-                //MessageBox.Show("Print exception: " + ex.ToString());
+                MessageBox.Show("Print exception: " + ex.ToString());
                 return false;
             }
         }

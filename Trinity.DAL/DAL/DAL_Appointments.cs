@@ -44,34 +44,38 @@ namespace Trinity.DAL
             }
         }
 
-        public Trinity.BE.Appointment GetAppointment(string appointment_ID)
+        public AppointmentDetails GetAppointmentDetails(string appointment_ID)
         {
             try
             {
-                // get from localdb
-                if (EnumAppConfig.IsLocal)
-                {
-                    Trinity.BE.Appointment appointment = _localUnitOfWork.DataContext.Appointments
-                        .Where(item => item.ID.ToString() == appointment_ID)
-                        .Select(item => new BE.Appointment
-                        {
-                            UserId = item.UserId,
-                            AppointmentDate = item.Date,
-                            ChangedCount = item.ChangedCount,
-                            Timeslot_ID = item.Timeslot_ID,
-                            Name = item.Membership_Users.Name,
-                            NRIC = item.Membership_Users.NRIC,
-                            Status = item.Status,
-                            ReportTime = item.ReportTime,
-                            StartTime = item.Timeslot.StartTime,
-                            EndTime = item.Timeslot.EndTime,
+                // Get Company name and Venue
+                AppointmentDetails appointmentdetails = _localUnitOfWork.DataContext.Settings.Where(item => item.Year == DateTime.Now.Year)
+                    .Select(item => new AppointmentDetails
+                    {
+                        CompanyName = item.CompanyName,
+                        Venue = item.VenueName
+                    }).FirstOrDefault();
 
+                // Get supervisee info
+                if (appointmentdetails != null)
+                {
+                    var appointmentInfo = _localUnitOfWork.DataContext.Appointments.Where(item => item.ID.ToString() == appointment_ID)
+                        .Select(item => new
+                        {
+                            Name = item.Membership_Users.Name,
+                            Date = item.Date,
+                            StartTime = item.Timeslot.StartTime
                         }).FirstOrDefault();
 
-                    return appointment;
+                    if (appointmentInfo != null)
+                    {
+                        appointmentdetails.Name = appointmentInfo.Name;
+                        appointmentdetails.Date = appointmentInfo.Date;
+                        appointmentdetails.StartTime = appointmentInfo.StartTime;
+                    }
                 }
 
-                return null;
+                return appointmentdetails;
             }
             catch (Exception ex)
             {
