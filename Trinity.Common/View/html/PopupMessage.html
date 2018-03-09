@@ -2,11 +2,8 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-body">
-                <div class="title">
-                    <span id="title"></span>
-                </div>
+                <div class="title"></div>
                 <div class="contentMesg">
-                    <span id="contentMesg"></span>
                 </div>
                 <div>
                     <button type="button" class="btn btn-primary">OK</button>
@@ -17,8 +14,12 @@
 </div>
 <script type="text/javascript">
     api.ready(function (response) {
-        document.getElementById("title").textContent = response[0];
-        document.getElementById("contentMesg").textContent = response[1];
+        if (response[0].length == 0) {
+            $('#PopupMessage .title').css('display', 'none');
+        } else {
+            $('#PopupMessage .title').html(response[0]);
+        }
+        $('#PopupMessage .contentMesg').html(response[1]);
         $('#PopupMessage button').click(function () {
             if (response[2].length > 0) {
                 api.server.ExitWaitPopupMessage(response[2], function () {

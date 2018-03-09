@@ -943,12 +943,12 @@ namespace DutyOfficer
                 }
                 else
                 {
-                    this._web.InvokeScript("ShowMessageBox", "You do not have permission to access this page.");
+                    this._web.ShowMessage("You do not have permission to access this page.");
                 }
             }
             else
             {
-                this._web.InvokeScript("ShowMessageBox", "Your username or password is incorrect.");
+                this._web.ShowMessage("Your username or password is incorrect.");
             }
         }
         protected virtual void RaiseLogOutCompletedEvent()

@@ -580,7 +580,7 @@ namespace SSK
                         }
                         else
                         {
-                            this._web.InvokeScript("ShowMessageBox", "Sorry all timeslots are fully booked!");
+                            this._web.ShowMessage("Sorry all timeslots are fully booked!");
                         }
 
                     }
@@ -595,7 +595,7 @@ namespace SSK
                         }
                         else
                         {
-                            this._web.InvokeScript("ShowMessageBox", "Sorry all timeslots are fully booked!");
+                            this._web.ShowMessage("Sorry all timeslots are fully booked!");
                         }
                     }
                 }
