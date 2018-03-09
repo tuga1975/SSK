@@ -31,6 +31,14 @@ public static class CSCallJS
     {
         ShowMessage(web,string.Empty,content);
     }
+    public static void ShowMessageAsync(this WebBrowser web, string title, string content)
+    {
+        web.InvokeScript("ShowMessageBox", title, content, string.Empty);
+    }
+    public static void ShowMessageAsync(this WebBrowser web, string content)
+    {
+        ShowMessageAsync(web, string.Empty, content);
+    }
     public static void LoadPopupHtml(this WebBrowser web, string file)
     {
         web.InvokeScript("AddContentPopup", "<div id=\"" + file + "\">" + File.ReadAllText(String.Format("{1}/View/html/{0}", file, CSCallJS.curDir), Encoding.UTF8) + "</div>", null, file);

@@ -20,9 +20,13 @@
         document.getElementById("title").textContent = response[0];
         document.getElementById("contentMesg").textContent = response[1];
         $('#PopupMessage button').click(function () {
-            api.server.ExitWaitPopupMessage(response[2], function () {
+            if (response[2].length > 0) {
+                api.server.ExitWaitPopupMessage(response[2], function () {
+                    $('#PopupMessage').modal('toggle');
+                });
+            } else {
                 $('#PopupMessage').modal('toggle');
-            });
+            }
         });
     });
 </script>
