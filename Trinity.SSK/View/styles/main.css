@@ -31,7 +31,16 @@
         background-repeat: no-repeat;
         background-size: contain;
     }
-
+    #header .header-right {
+        position: absolute;
+        height: 40px;
+        width: 54px;
+        top: 5px;
+        right: 0px;
+        background-position: right center;
+        background-repeat: no-repeat;
+        background-size: contain;
+    }
     #header .logout {
         position: absolute;
         background-image: url(../img/Logout.png);
@@ -224,54 +233,6 @@ highlight {
 .noticeMessage {
     margin-top: 20px;
     float: left;
-}
-/*Modal Layout*/
-
-.modal-content {
-    border-radius: 0px !important;
-}
-
-.modal {
-    text-align: center;
-    padding: 0 !important;
-}
-
-    .modal:before {
-        content: '';
-        display: inline-block;
-        height: 100%;
-        vertical-align: middle;
-        margin-right: -4px;
-    }
-
-.modal-dialog {
-    display: inline-block;
-    text-align: left;
-    vertical-align: middle;
-    width: 350px;
-}
-
-.modal-content {
-    padding: 20px;
-}
-
-.modal-body .title {
-    text-align: center;
-    font-size: 16px;
-    font-weight: bold;
-}
-
-.modal-body .contentMesg {
-    text-align: center;
-    padding: 10px 0 20px 0;
-}
-
-.modal-body button {
-    width: 100%;
-    background-color: #1CACF6;
-    text-align: center;
-    color: #fff;
-    font-weight: bold;
 }
 
 .loading {

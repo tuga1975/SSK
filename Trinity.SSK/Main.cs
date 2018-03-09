@@ -195,14 +195,14 @@ namespace SSK
         private void LayerWeb_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
             LayerWeb.InvokeScript("createEvent", JsonConvert.SerializeObject(_jsCallCS.GetType().GetMethods().Where(d => d.IsPublic && !d.IsVirtual && !d.IsSecuritySafeCritical).ToArray().Select(d => d.Name)));
-
+            LayerWeb.ShowMessage("Alo", "Alo2");
             if (_isFirstTimeLoaded)
             {
                 // Start page
                 //NavigateTo(NavigatorEnums.Authentication_SmartCard);
 
                 string startFrom = "Supervisee";
-                string superviseeId = "06a91b1b-99c3-428d-8a55-83892c2adf4c";
+                string superviseeId = "73506476-DC03-4C0F-8647-F502AC429551";
                 string dutyOfficerId = "bd6089d4-ab74-4cbc-9c8e-6867afe37ce8";
                 Session session = Session.Instance;
 
@@ -288,9 +288,7 @@ namespace SSK
                 Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(null, message, message, EnumNotificationTypes.Error);
                 // show message box to user
                 //MessageBox.Show(message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-                _jsCallCS.PopupMessage("Authentication failed", message);
-
+                LayerWeb.ShowMessage("Authentication failed", "message");
                 // reset counter
                 _smartCardFailed = 0;
                 // display failed on UI
@@ -427,9 +425,8 @@ namespace SSK
                 // Send Notification to duty officer
                 Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(user.UserId, "Fingerprint Authentication failed", errorMessage, EnumNotificationTypes.Error);
 
-                _jsCallCS.PopupMessage("Authentication failed", "Fingerprint's Authenication failed!<br /> Please contact your officer.");
                 //NavigateTo(NavigatorEnums.Authentication_SmartCard);
-
+                LayerWeb.ShowMessage("Authentication failed", "Fingerprint's Authenication failed!<br /> Please contact your officer.");
 
                 //for testing purpose
                 // Pause for 1 second and goto Facial Login Screen

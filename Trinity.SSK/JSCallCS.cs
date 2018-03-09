@@ -45,11 +45,6 @@ namespace SSK
             OnLogOutCompleted?.Invoke();
         }
         #endregion
-
-        public void PopupMessage(string title, string content)
-        {
-            this._web.LoadPopupHtml("PopupMessage.html", new object[] { title, content });
-        }
         public void LoadNotications()
         {
 
@@ -502,6 +497,10 @@ namespace SSK
             {
                 supervisee = currentUser;
             }
+            if (supervisee.Status==EnumUserStatuses.Blocked)
+            {
+
+            }
             int absenceCount = 0;
 
             if (supervisee != null)
@@ -527,15 +526,15 @@ namespace SSK
                 //for testing purpose
                 //notify to officer
                 Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(supervisee.UserId, "Supervisee got blocked for 3 or more absences", "Please check the Supervisee's information!", EnumNotificationTypes.Caution);
-                var dalUser = new DAL_User();
+                //var dalUser = new DAL_User();
 
-                // Create absence reporting
-                var listAppointment = new DAL_Appointments().GetAbsentAppointments(supervisee.UserId);
-                session[CommonConstants.LIST_APPOINTMENT] = listAppointment;
-                _web.LoadPageHtml("ReasonsForQueue.html", listAppointment.Select(d=>new {
-                    ID=d.ID,
-                    GetDateTxt = d.GetDateTxt
-                }));
+                //// Create absence reporting
+                //var listAppointment = new DAL_Appointments().GetAbsentAppointments(supervisee.UserId);
+                //session[CommonConstants.LIST_APPOINTMENT] = listAppointment;
+                //_web.LoadPageHtml("ReasonsForQueue.html", listAppointment.Select(d=>new {
+                //    ID=d.ID,
+                //    GetDateTxt = d.GetDateTxt
+                //}));
             }
             else if (absenceCount > 0 && absenceCount < 3)
             {
