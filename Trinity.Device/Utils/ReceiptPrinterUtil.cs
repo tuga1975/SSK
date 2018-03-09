@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Management;
+using System.Windows.Forms;
 using Trinity.Common;
 
 namespace Trinity.Device.Util
@@ -52,30 +53,47 @@ namespace Trinity.Device.Util
                 //Open specified printer driver
                 TSCLIB_DLL.openport(_printerName);
 
+                int startX = 0;
+                int startX_Detail = startX + 100;
+                int startY = 0;
+                int fontHeight = 30;
+                int space = 30;
+                string fontName = "ARIAL";
+
                 //Setup the media size and sensor type info
                 // page size 2.8"x1.4"
                 // actually 71.12mm x 42.5mm
-                TSCLIB_DLL.setup("71.12", "42.5", "4", "8", "0", "0", "0");
+                // TSCLIB_DLL.setup("71.12", "42.5", "4", "8", "0", "0", "0");
+                TSCLIB_DLL.setup("71.12", "100", "4", "8", "0", "0", "0").ToString();
 
                 //Clear image buffer
                 TSCLIB_DLL.clearbuffer();
 
                 //Draw windows font
-                TSCLIB_DLL.windowsfont(100, 0, 40, 0, 0, 0, "ARIAL", "APPOINTMENT DETAILS");
-                TSCLIB_DLL.windowsfont(50, 70, 30, 0, 0, 0, "ARIAL", "Supervisee Information");
-                TSCLIB_DLL.windowsfont(70, 100, 25, 0, 0, 0, "ARIAL", "Name           : " + appointmentDetails.Name);
-                TSCLIB_DLL.windowsfont(70, 130, 25, 0, 0, 0, "ARIAL", "NRICNo.      : " + appointmentDetails.Venue);
+                // Company name line
+                TSCLIB_DLL.windowsfont(startX, startY, fontHeight + 20, 0, 2, 1, fontName, appointmentDetails.CompanyName);
+                // Next appointment line
+                TSCLIB_DLL.windowsfont(startX, startY += fontHeight + 20 + space, fontHeight + 10, 0, 2, 0, fontName, "Next Appointment");
+                // Name line
+                TSCLIB_DLL.windowsfont(startX, startY += fontHeight + 10 + space, fontHeight, 0, 0, 0, fontName, "Name");
+                TSCLIB_DLL.windowsfont(startX_Detail, startY, fontHeight, 0, 0, 0, fontName, ": " + appointmentDetails.Name);
+                // Date line
+                TSCLIB_DLL.windowsfont(startX, startY += fontHeight, fontHeight, 0, 0, 0, fontName, "Date");
+                TSCLIB_DLL.windowsfont(startX_Detail, startY, fontHeight, 0, 0, 0, fontName, ": " + appointmentDetails.Date.ToString("dd/MM/yyyy"));
+                // Time line
+                TSCLIB_DLL.windowsfont(startX, startY += fontHeight, fontHeight, 0, 0, 0, fontName, "Time");
+                TSCLIB_DLL.windowsfont(startX_Detail, startY, fontHeight, 0, 0, 0, fontName, ": " + (appointmentDetails.StartTime.HasValue ? appointmentDetails.StartTime.Value.ToString(@"hh\:mm") : ""));
+                // Venue line
+                TSCLIB_DLL.windowsfont(startX, startY += fontHeight, fontHeight, 0, 0, 0, fontName, "Venue");
+                TSCLIB_DLL.windowsfont(startX_Detail, startY, fontHeight, 0, 0, 0, fontName, ": " + appointmentDetails.Venue);
+                // Note line
+                TSCLIB_DLL.windowsfont(startX, startY += fontHeight + space, fontHeight, 0, 2, 0, fontName, "Please be punctual to avoid cancellation");
+                TSCLIB_DLL.windowsfont(startX, startY += fontHeight, fontHeight, 0, 2, 0, fontName, "of appointment.");
+                // printed date line
+                TSCLIB_DLL.windowsfont(startX + 272, startY += fontHeight + space + space, fontHeight - 4, 0, 1, 0, fontName, "Printed date: " + DateTime.Now.ToString("dd/MM/yyyy"));
+                // printed time line
+                TSCLIB_DLL.windowsfont(startX + 272, startY += fontHeight, fontHeight - 4, 0, 1, 0, fontName, "Printed time: " + DateTime.Now.ToString("hh:mm tt"));
 
-                TSCLIB_DLL.windowsfont(50, 180, 30, 0, 0, 0, "ARIAL", "Next Appointment");
-                TSCLIB_DLL.windowsfont(70, 210, 25, 0, 0, 0, "ARIAL", "Date              : " + appointmentDetails.Date.ToString("dd/MM/yyyyy") + " " + appointmentDetails.StartTime.ToString("HH:mm"));
-
-                // TSCLIB_DLL.windowsfont(100, 230, 25, 0, 0, 0, "ARIAL", "Printed at: " + DateTime.Now.ToString("dd/MM/yyyyy HH:mm"));
-
-                //Download PCX file into printer
-                TSCLIB_DLL.downloadpcx("UL.PCX", "UL.PCX");
-                //Drawing PCX graphic
-                TSCLIB_DLL.sendcommand("PUTPCX 100,400,\"UL.PCX\"");
-                //Print labels
                 TSCLIB_DLL.printlabel("1", "1");
                 TSCLIB_DLL.closeport();
 
@@ -83,7 +101,7 @@ namespace Trinity.Device.Util
             }
             catch (Exception ex)
             {
-
+                MessageBox.Show(ex.ToString());
                 return false;
             }
         }
