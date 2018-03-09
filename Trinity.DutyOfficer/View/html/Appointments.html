@@ -197,7 +197,8 @@
                     var dateAppt = splitDateAndTime[0];
                     var startTimeAppt = splitDateAndTime[1];
                     var endTimeAppt = splitDateAndTime[2];
-                    var timeslotFromStatictis = convert24hrTo12hr(startTimeAppt) + ' - ' + convert24hrTo12hr(endTimeAppt);
+                    //var timeslotFromStatictis = convert24hrTo12hr(startTimeAppt) + ' - ' + convert24hrTo12hr(endTimeAppt);
+                    var timeslotFromStatictis = startTimeAppt + ' - ' + endTimeAppt;
                     $('#dateSearch').val(dateAppt);
                     searchByDateAndTimeslot(dateAppt, timeslotFromStatictis);
                     getTimeslot();

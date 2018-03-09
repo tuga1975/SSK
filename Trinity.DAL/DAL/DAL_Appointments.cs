@@ -323,7 +323,8 @@ namespace Trinity.DAL
         {
             try
             {
-                var data = _localUnitOfWork.DataContext.Appointments.Include("Timeslot").Where(d => !string.IsNullOrEmpty(d.Timeslot_ID) && (d.Status == EnumAppointmentStatuses.Booked || d.Status == EnumAppointmentStatuses.Reported || d.Status == EnumAppointmentStatuses.Absent))
+                var data = _localUnitOfWork.DataContext.Appointments.Include("Timeslot")
+                    .Where(d => !string.IsNullOrEmpty(d.Timeslot_ID) && (d.Status == EnumAppointmentStatuses.Booked || d.Status == EnumAppointmentStatuses.Reported || d.Status == EnumAppointmentStatuses.Absent))
                     .Select(d => new
                     {
                         Timeslot_ID = d.Timeslot_ID,
@@ -336,7 +337,7 @@ namespace Trinity.DAL
                         StartTime = d.StartTime,
                         EndTime = d.EndTime,
                         Date = d.Date
-                    }).ToList();
+                    }).OrderBy(d => d.StartTime).ToList();
 
                 return data;
             }
