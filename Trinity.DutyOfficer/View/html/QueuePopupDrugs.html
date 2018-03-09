@@ -1,4 +1,4 @@
-﻿<div class="modal fade" role="dialog" id="idQueueDrugs">
+﻿<!--<div class="modal fade" role="dialog" id="idQueueDrugs">
     <div class="modal-dialog" style="width:750px;">
         <div class="modal-content" style="width:750px;">
             <div class="modal-header">
@@ -25,7 +25,7 @@
                 <div style="clear:both;margin-bottom:20px;"></div>
                 <div itemview>
                     <span itemview-title title="Seal for following tests:"></span>
-                </div>
+                </div>-->
 
                 <!--<div>
                     <span drugchecked="null" namedrug="COCA"></span>
@@ -60,7 +60,7 @@
                 <div>
                     <span drugchecked="null" namedrug="NPS"></span>
                 </div>-->
-                <div style="padding-left:30px; padding-top:20px; padding-bottom:20px; float:left;width:100%;">
+                <!--<div style="padding-left:30px; padding-top:20px; padding-bottom:20px; float:left;width:100%;">
                     <div style="width:120px;display: inline-block; margin-bottom:30px;">
                         <input type='checkbox' id='seal-COCA' name='drugseal' value='COCA' />
                         <span class="control-label" style="display:inline-block;height:33px; padding:7px;box-sizing:border-box;border:1px solid #CCC;text-align:center;">COCA</span>
@@ -116,6 +116,97 @@
             </div>
         </div>
     </div>
+</div>-->
+
+<div class="modal fade" role="dialog" id="idQueueDrugs" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Drug Tests <em class="currentDate">15 February 2018</em> </h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <div class="testResult">
+                        <div class="title">
+                            <p> Test Results</p>
+                        </div>
+                        <div class="panel-data">
+                            <div>
+                                <span drugstatus="null" namedrug="AMPH"></span>
+                            </div>
+                            <div>
+                                <span drugstatus="null" namedrug="BENZ"></span>
+                            </div>
+                            <div>
+                                <span drugstatus="null" namedrug="OPI"></span>
+                            </div>
+                            <div>
+                                <span drugstatus="null" namedrug="THC"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="sealFlowwingTests">
+                        <div class="title">
+                            <p>Seal for following tests</p>
+                        </div>
+                        <div class="sealFlowingtestContent">
+                            <div class="item">
+                                <input type='checkbox' id='seal-COCA' name='drugseal' value='COCA' />
+                                <span class="control-label">COCA</span>
+                            </div>
+                            <div class="item">
+                                <input type='checkbox' id='seal-BARB' name='drugseal' value='BARB' />
+                                <span class="control-label">BARB</span>
+                            </div>
+                            <div class="item">
+                                <input type='checkbox' id='seal-LSD' name='drugseal' value='LSD' />
+                                <span class="control-label">LSD</span>
+                            </div>
+                            <div class="item">
+                                <input type='checkbox' id='seal-METH' name='drugseal' value='METH' />
+                                <span class="control-label">METH</span>
+                            </div>
+                            <div class="item">
+                                <input type='checkbox' id='seal-MTQL' name='drugseal' value='MTQL' />
+                                <span class="control-label">MTQL</span>
+                            </div>
+                            <div class="item">
+                                <input type='checkbox' id='seal-PCP' name='drugseal' value='PCP' />
+                                <span class="control-label">PCP</span>
+                            </div>
+                            <div class="item">
+                                <input type='checkbox' id='seal-KET' name='drugseal' value='KET' />
+                                <span class="control-label">KET</span>
+                            </div>
+                            <div class="item">
+                                <input type='checkbox' id='seal-BUPRE' name='drugseal' value='BUPRE' />
+                                <span class="control-label">BUPRE</span>
+                            </div>
+                            <div class="item">
+                                <input type='checkbox' id='seal-CAT' name='drugseal' value='CAT' />
+                                <span class="control-label">CAT</span>
+                            </div>
+                            <div class="item">
+                                <input type='checkbox' id='seal-PPZ' name='drugseal' value='PPZ' />
+                                <span class="control-label">PPZ</span>
+                            </div>
+                            <div class="item">
+                                <input type='checkbox' id='seal-NPS' name='drugseal' value='NPS' />
+                                <span class="control-label">NPS</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer d-flex justify-content-center">
+                <button type="button" class="btn btn-default" data-dismiss="modal" aria-label="Close">CANCEL</button>
+                <button type="button" id="btnSealTest" class="btn btn-default">SEAL</button>
+            </div>
+        </div>
+    </div>
 </div>
 <script type="text/javascript">
     api.ready(function (model) {
@@ -164,54 +255,3 @@
         });
     });
 </script>
-<style type="text/css">
-    .panel-data div {
-        margin: 10px 0px;
-        float: left;
-        width: calc(100% / 4);
-    }
-
-    [drugstatus], [drugchecked] {
-        position: relative;
-        height: 20px;
-        margin: 10px 0px;
-    }
-
-        [drugstatus]::before, [drugchecked]::before {
-            content: " ";
-            position: absolute;
-            top: 0px;
-            left: 0px;
-            width: 20px;
-            height: 20px;
-            box-sizing: border-box;
-            border: 2px solid #555;
-            border-radius: 50%;
-        }
-
-        [drugchecked]::before {
-            border-radius: 0px;
-            box-shadow: inset 0 0 0 2px #FFF;
-        }
-
-    [drugstatus="true"]::before {
-        background-color: forestgreen;
-    }
-
-    [drugchecked="true"]::before {
-        background-color: #555;
-    }
-
-    [drugstatus="false"]::before, [drugchecked="false"]::before {
-        background-color: red;
-    }
-
-    [drugstatus]::after, [drugchecked]::after {
-        line-height: 20px;
-        border: 2px solid #555;
-        margin-left: 30px;
-        padding: 0px 5px;
-        content: attr(namedrug);
-        box-sizing: border-box;
-    }
-</style>

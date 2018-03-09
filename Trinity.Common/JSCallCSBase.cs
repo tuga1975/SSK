@@ -17,7 +17,7 @@ public class JSCallCSBase
     public Type _thisType = null;
     public JSCallCSBase()
     {
-
+        
     }
 
     public void LoadPage(string file)
@@ -72,5 +72,13 @@ public class JSCallCSBase
     public void ClientCallServer(string method, string guidEvent, params object[] pram)
     {
         ThreadPool.QueueUserWorkItem(new WaitCallback(actionThread), new object[] { method, guidEvent, pram });
+    }
+    public void ExitWaitPopupMessage(string ID)
+    {
+        Lib.ArrayIDWaitMessage.Remove(ID);
+    }
+    public void ShowPopupMessage(string title, string content,string id)
+    {
+        this._web.LoadPopupHtml("PopupMessage.html", new object[] { title, content,id });
     }
 }

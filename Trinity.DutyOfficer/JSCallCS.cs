@@ -132,8 +132,8 @@ namespace DutyOfficer
                     UserId = queue.Appointment.UserId,
                     NRIC = queue.Appointment.Membership_Users.NRIC,
                     Name = queue.Appointment.Membership_Users.Name,
-                    APS = queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStation.SSK).Status!= EnumQueueStatuses.Finished?EnumColors.Green: EnumColors.White,
-                    SSK = queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStation.SSK).Status != EnumQueueStatuses.Finished ? EnumColors.Green : EnumColors.White,
+                    APS = queue.Color(EnumStation.APS),
+                    SSK = queue.Color(EnumStation.SSK),
                     SSA = queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStation.SSA).Color,
                     UHP = queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStation.UHP).Color,
                     HSA = queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStation.HSA).Status == EnumQueueStatuses.Finished ? GetResultUT(queue.Appointment.Membership_Users.NRIC) : string.Empty,
@@ -943,12 +943,12 @@ namespace DutyOfficer
                 }
                 else
                 {
-                    this._web.InvokeScript("ShowMessageBox", "You do not have permission to access this page.");
+                    this._web.ShowMessage("You do not have permission to access this page.");
                 }
             }
             else
             {
-                this._web.InvokeScript("ShowMessageBox", "Your username or password is incorrect.");
+                this._web.ShowMessage("Your username or password is incorrect.");
             }
         }
         protected virtual void RaiseLogOutCompletedEvent()

@@ -18,9 +18,10 @@ namespace Trinity.Device.Util
 
     public class LEDStatusLightingUtil
     {
+        private int _mubRretryCount = 0;
         public event EventHandler<string> DataReceived;
         public event EventHandler<string> MUBAutoFlagApplicatorReadyOK;
-        public event EventHandler<string> MUBIsPresent;
+        //public event EventHandler<string> MUBIsPresent;
         public event EventHandler<string> MUBReadyToPrint;
         public event EventHandler<string> MUBReadyToRemove;
         public event EventHandler<string> MUBStatusUpdated;
@@ -544,6 +545,7 @@ namespace Trinity.Device.Util
         #region MUB Labeller Control functions
         public void InitializeMUBApplicator()
         {
+            _mubRretryCount = 0;
             this.DataReceived += MUBApplicatorReadyStatus_Received;
 
             // Auto Flag applicator Ready
@@ -567,10 +569,14 @@ namespace Trinity.Device.Util
                 string asciiCommand = "RD MR3";
                 SendASCIICommand(asciiCommand);
             }
-            else
+            else if (_mubRretryCount < 5)
             {
                 Thread.Sleep(200);
                 InitializeMUBApplicator();
+            }
+            else
+            {
+                // Do nothing
             }
         }
 
@@ -618,12 +624,11 @@ namespace Trinity.Device.Util
                 //SendASCIICommand(asciiCommand);
 
                 // Inform Supervisee that the MUB is present and ask his/her confirmation for the next steps
-                MUBIsPresent?.Invoke(this, "");
+                MUBStatusUpdated?.Invoke(this, "1");
             }
             else
             {
-                Thread.Sleep(200);
-                VerifyMUBPresence();
+                MUBStatusUpdated?.Invoke(this, "0");
             }
         }
 
@@ -718,13 +723,13 @@ namespace Trinity.Device.Util
                 // Close MUB Door
                 string asciiCommand = "WR MR509 1";
                 SendASCIICommand(asciiCommand);
-                
+
             }
             else if (response == "1")
             {
                 MUBStatusUpdated?.Invoke(this, "1");
             }
-            else 
+            else
             {
 
                 Thread.Sleep(200);
