@@ -191,12 +191,7 @@ namespace SSK
         }
         private void RefreshQueueNumberTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
-
-            //var setting = new DAL_Setting().GetCurrentApptmtTime();
-
-            //this.timer.Interval = 1000 * 60 * setting.Duration;
             this.RefreshQueueNumbers();
-
             this.timer.Interval = 30000;
             this.timer.Enabled = true;
         }

@@ -355,7 +355,7 @@ namespace SSA
                 // Update queue status is finished
                 Session session = Session.Instance;
                 Trinity.BE.User currentUser = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-                if (currentUser != null)
+                if (currentUser == null)
                 {
                     // Check why current user is null
                     this._web.RunScript("$('.status-text').css('color','#000').text('The current user is null');");
@@ -364,17 +364,16 @@ namespace SSA
                 var dalQueue = new DAL_QueueNumber();
                 dalQueue.UpdateQueueStatusByUserId(currentUser.UserId, EnumStation.SSA, EnumQueueStatuses.Finished, EnumStation.UHP, EnumQueueStatuses.Processing, "", EnumQueueOutcomeText.Processing);
 
-                this._web.LoadPageHtml("PrintingMUBAndTTLabels.html");
-                this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').show(); ; ");
-                this._web.RunScript("$('.status-text').css('color','#000').text('Please collect your labels');");
-                this._web.InvokeScript("countdownLogout");
+                //this._web.LoadPageHtml("PrintingMUBAndTTLabels.html");
+                //this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').show(); ; ");
+                //this._web.RunScript("$('.status-text').css('color','#000').text('Please collect your labels');");
+                //this._web.InvokeScript("countdownLogout");
 
                 DeleteQRCodeImageFileTemp();
 
-                new DAL_QueueDetails().RemoveQueueFromSSK(currentUser.UserId);
-
+                //new DAL_QueueDetails().RemoveQueueFromSSK(currentUser.UserId);
                 //Trinity.SignalR.Client.Instance.QueueCompleted(currentUser.UserId);
-                LogOut();
+                //LogOut();
             }
             else
             {
@@ -410,7 +409,7 @@ namespace SSA
             }
             else if (printingStatus == "1")
             {
-                LEDStatusLightingUtil.Instance.MUBIsPresent += Instance_MUBIsPresent;
+                LEDStatusLightingUtil.Instance.MUBStatusUpdated += Instance_MUBStatusUpdated;
                 LEDStatusLightingUtil.Instance.VerifyMUBPresence();
 
                 //btnConfirm.Enabled = false;
@@ -463,20 +462,32 @@ namespace SSA
             //btnConfirm.Tag = "1";
         }
 
-        private void Instance_MUBIsPresent(object sender, string e)
+        private void Instance_MUBStatusUpdated(object sender, string e)
         {
-            LEDStatusLightingUtil.Instance.MUBIsPresent -= Instance_MUBIsPresent;
-            //lblStatus.Text = "Supervisee has placed the MUB on the holder";
-            this._web.RunScript("$('.status-text').css('color','#000').text('The MUB has been placed on the holder.');");
+            LEDStatusLightingUtil.Instance.MUBStatusUpdated -= Instance_MUBStatusUpdated;
+            if (e == "1")
+            {
+                // MUB is placed on the holder
+                //lblStatus.Text = "Supervisee has placed the MUB on the holder";
+                this._web.RunScript("$('.status-text').css('color','#000').text('The MUB has been placed on the holder.');");
 
-            //btnConfirm.Enabled = true;
-            //this._web.RunScript("$('#ConfirmBtn').prop('disabled', false);");
+                //btnConfirm.Enabled = true;
+                //this._web.RunScript("$('#ConfirmBtn').prop('disabled', false);");
 
-            //btnConfirm.Text = "Start Applicator";
-            this._web.RunScript("$('#ConfirmBtn').html('Start Applicator.');");
+                //btnConfirm.Text = "Start Applicator";
+                this._web.RunScript("$('#ConfirmBtn').html('Start Applicator.');");
 
-            this._web.RunScript("$('#lblPrintingStatus').text('2');");
-            //btnConfirm.Tag = "2";
+                this._web.RunScript("$('#lblPrintingStatus').text('2');");
+                //btnConfirm.Tag = "2";
+            }
+            else if (e == "0")
+            {
+                // MUB is not present
+                this._web.RunScript("$('.status-text').css('color','#000').text('The MUB is not present.');");
+
+                //btnConfirm.Enabled = true;
+                //this._web.RunScript("$('#ConfirmBtn').prop('disabled', false);");
+            }
         }
 
         private void Instance_MUBReadyToPrint(object sender, string e)
@@ -522,6 +533,8 @@ namespace SSA
                 this._web.RunScript("$('.status-text').css('color','#000').text('The current user is null');");
                 return;
             }
+            // Remove queue number and inform others
+            //new DAL_QueueDetails().RemoveQueueFromSSK(currentUser.UserId);
             Trinity.SignalR.Client.Instance.QueueCompleted(currentUser.UserId);
 
             LEDStatusLightingUtil.Instance.MUBDoorFullyClosed -= Instance_MUBDoorFullyClosed;
