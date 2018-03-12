@@ -355,6 +355,7 @@ namespace Enrolment
             }
             else if (e.Name == EventNames.LOGOUT_SUCCEEDED)
             {
+                StopCamera();
                 NavigateTo(NavigatorEnums.Login);
             }
             else if (e.Name == EventNames.GET_LIST_SUPERVISEE_SUCCEEDED)
