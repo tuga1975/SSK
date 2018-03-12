@@ -504,7 +504,7 @@ namespace SSK
                     GetMyQueueNumber();
                 }
             }
-            else if (absenceCount >= 3)
+            else if (absenceCount >= 3 || supervisee.Status==EnumUserStatuses.Blocked)
             {
                 var eventCenter = Trinity.Common.Common.EventCenter.Default;
                 //eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ABSENCE_MORE_THAN_3, Message = "You have been blocked for 3 or more absences \n Please report to the Duty Officer" });
@@ -527,9 +527,7 @@ namespace SSK
             {
 
                 var listAppointment = new DAL_Appointments().GetAbsentAppointments(supervisee.UserId);
-                var eventCenter = Trinity.Common.Common.EventCenter.Default;
-                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ABSENCE_LESS_THAN_3, Message = "You have been absent for " + absenceCount + " times.\nPlease provide reasons and the supporting documents." });
-
+                this._web.ShowMessage("You have been absent for " + absenceCount + " times.<br/>Please provide reasons and the supporting documents.");
                 _web.LoadPageHtml("ReasonsForQueue.html", listAppointment.Select(d => new {
                     ID = d.ID,
                     GetDateTxt = d.GetDateTxt
