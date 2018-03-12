@@ -211,19 +211,21 @@ namespace Trinity.SignalR
         }
         public void SendToDutyOfficer(string fromUserId, string dutyOfficerID, string subject, string content, string notificationType)
         {
-            NotificationInfo notificationInfo = new NotificationInfo()
+            int result = new DAL.DAL_Notification().SendToDutyOfficer(fromUserId, dutyOfficerID, subject, content, notificationType, Station);
+            if (result > 0)
             {
-                Name = NotificationNames.ALERT_MESSAGE,
-                FromUserId = fromUserId,
-                ToUserIds = new string[] { dutyOfficerID },
-                Content = content,
-                Subject = subject,
-                Type = notificationType,
-                Source = Station
-            };
-            PostNotification(notificationInfo);
-
-
+                NotificationInfo notificationInfo = new NotificationInfo()
+                {
+                    Name = NotificationNames.ALERT_MESSAGE,
+                    FromUserId = fromUserId,
+                    ToUserIds = new string[] { dutyOfficerID },
+                    Content = content,
+                    Subject = subject,
+                    Type = notificationType,
+                    Source = Station
+                };
+                PostNotification(notificationInfo);
+            }
             //await WaitConnectFalse();
             //string IDMessage = Guid.NewGuid().ToString().Trim();
             //if (new DAL.DAL_Notification().SendToDutyOfficer(IDMessage, fromUserId, dutyOfficerID, subject, content, notificationType, Station) > 0)
@@ -254,6 +256,33 @@ namespace Trinity.SignalR
             //Dictionary<string, string> arrraySend = new DAL.DAL_Notification().SendToAllDutyOfficers(fromUserId, subject, content, notificationType, Station).ToDictionary(f => f.ToUserId, f => f.NotificationID);
             //bool status = await HubProxy.Invoke<bool>("SendToAllDutyOfficers", arrraySend, fromUserId, subject, content, notificationType);
         }
+
+        /// <summary>
+        /// Case Officer use this API to send notifications to supervisee
+        /// </summary>
+        /// <param name="fromUserId"></param>
+        /// <param name="subject"></param>
+        /// <param name="content"></param>
+        /// <param name="notificationType"></param>
+        public void SendToSupervisee(string fromUserId, string toUserId, string subject, string content, string notificationType)
+        {
+            int result = new DAL.DAL_Notification().SendToSupervisee(fromUserId, toUserId, subject, content, notificationType, Station);
+            if (result > 0)
+            {
+                NotificationInfo notificationInfo = new NotificationInfo()
+                {
+                    Name = NotificationNames.ALERT_MESSAGE,
+                    FromUserId = fromUserId,
+                    ToUserIds = new string[] { toUserId },
+                    Content = content,
+                    Subject = subject,
+                    Type = notificationType,
+                    Source = Station
+                };
+                PostNotification(notificationInfo);
+            }
+        }
+
         public void QueueCompleted(string userId)
         {
             PostNotification(notificationInfo: new NotificationInfo() { Name = NotificationNames.QUEUE_COMPLETED, Type = EnumNotificationTypes.Notification, FromUserId = userId });
