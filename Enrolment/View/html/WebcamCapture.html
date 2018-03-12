@@ -23,15 +23,15 @@
     <div class="text-center">
         <div id="capture">
             <div>
-                <a href="#" onclick="api.server.CapturePicture();"><i class="fa fa-camera" style="font-size:50px;color:red"></i></a>
+                <button style="background-color:none;border:none;" onclick="api.server.CapturePicture();"><i class="fa fa-camera" style="font-size:50px;color:red"></i></button>
 
             </div>
         </div>
         <div id="confirm" style="display:none">
             <div>
-                <a href="#" onclick="api.server.ConfirmCapturePicture();" class="btn btn-success">Confirm</a>
+                <button href="#" onclick="api.server.ConfirmCapturePicture();" class="btn btn-success">Confirm</button>
 
-                <a href="#" onclick="api.server.CancelConfirmCapturePicture();" class="btn btn-default">Cancel</a>
+                <button href="#" onclick="api.server.CancelConfirmCapturePicture();" class="btn btn-default">Cancel</button>
             </div>
         </div>
     </div>
