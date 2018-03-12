@@ -87,7 +87,7 @@
         }
         for (var i = 0; i < 8; i++) {
             if (arrOther.length >= i + 1) {
-                $('#rigth-bottom [item="' + (i + 1) + '"]').html(arrOther[i].QueuedNumber+"<span></span>").attr('type', arrOther[i].Type);
+                $('#rigth-bottom [item="' + (i + 1) + '"]').html(arrOther[i].QueuedNumber + "<span></span>").attr('type', arrOther[i].Type);
             } else {
                 $('#rigth-bottom [item="' + (i + 1) + '"]').html('&nbsp;').attr('type', '');
             }
@@ -304,6 +304,14 @@
 
         td[item][type="blue"] span::before {
             content: "u";
+        }
+
+    td[item][type="red"] {
+        color: #ff005a !important;
+    }
+
+        td[item][type="red"] span::before {
+            content: "A";
         }
 </style>
 

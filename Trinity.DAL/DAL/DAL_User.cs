@@ -15,6 +15,19 @@ namespace Trinity.DAL
 
 
         #region 2018
+        public List<Trinity.DAL.DBContext.Membership_Users> GetSuperviseeBlockedAppointmentsAvailable(DateTime DateAppointment,Nullable<int> take = null)
+        {
+            DateAppointment = DateAppointment.Date;
+            var query = _localUnitOfWork.DataContext.Appointments.Where(d => d.Date == DateAppointment && string.IsNullOrEmpty(d.Timeslot_ID) && d.Membership_Users.Status == EnumUserStatuses.Blocked).Select(d => d.Membership_Users);
+            if (take.HasValue)
+            {
+                return query.Take(take.Value).ToList();
+            }
+            else
+            {
+                return query.ToList();
+            }
+        }
         public bool ChangeUserStatus(string userId, string status)
         {
             var localUserRepo = _localUnitOfWork.GetRepository<Membership_Users>();

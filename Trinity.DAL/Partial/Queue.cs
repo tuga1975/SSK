@@ -65,11 +65,15 @@ namespace Trinity.DAL.DBContext
         {
             get
             {
-                if (!this.Appointment_ID.HasValue || (this.Appointment_ID.HasValue && this.Appointment.Timeslot_ID!=this.Timeslot_ID))
+                if (this.Queue_ID == Guid.Empty)
+                {
+                    return "red";
+                }
+                else if (!this.Appointment_ID.HasValue || (this.Appointment_ID.HasValue && this.Appointment.Timeslot_ID!=this.Timeslot_ID))
                 {
                     return "blue";
                 }
-                return "blue";
+                return string.Empty;
             }
         }
     }

@@ -154,7 +154,7 @@ namespace SSK
                 {
                     if (user.Status == EnumUserStatuses.Blocked)
                     {
-                        SmartCard_OnSmartCardFailed("You have been blocked.");
+                        SmartCard_OnSmartCardFailed("You have been blocked<br/>Contact Duty Officer for help");
                         return;
                     }
                     if (user.Status == EnumUserStatuses.New)

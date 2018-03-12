@@ -373,9 +373,9 @@
         </div>
     </div>
 </div>
-<div class="d-block text-center">
+<div class="d-block text-center" id="divNextAppointment" style="display:none;">
     <h5 class="d-inline-block red-underline my-3">Notifications</h5>
-    <p>Your next appointment will be on <strong> Thursday, 20 July 2018</strong></p>
+    <p>Your next appointment will be on <strong id="appointmentDate"> </strong></p>
 </div>
 
 
@@ -384,7 +384,7 @@
         <a class="nav-link active" id="notifications-tab" data-toggle="tab" href="#notifications"
            role="tab"
            aria-controls="notifications" aria-selected="true">
-            <span class="line-center"><span id="currentNumber"></span> of <span id="notificationsCount"></span></span>
+            <span class="line-center" id="spanNumber"><span id="currentNumber"></span> of <span id="notificationsCount"></span></span>
         </a>
     </li>
     <li class="nav-item">
@@ -468,7 +468,7 @@
             $('[prevID]').val(_prev);
             api.server.SpeakNotification(id);
             api.server.ChangeReadStatus(id);
-            if (model.length>1) {
+            if (model.length > 1) {
                 $('#nextNoti').addClass('active');
             }
         }
@@ -480,7 +480,7 @@
                 $('#notificationsCount').text(model.length);
 
             }
-           
+
             //for (var i = 0; i < model.length; i++) {
             //    $('[noti] .carousel-indicators').append('<li data-target="#myCarousel" data-slide-to="' + i + '" class="' + (i == 0 ? 'active' : '') + '"></li>');
             //    $('[noti] .carousel-inner').append('<div id="' + model[i].ID + '" class="item ' + (i == 0 ? 'active' : '') + '">To: Suppervise<br />Date: <br />Subject: ' + model[i].Subject + '<div style="margin-top: 20px;">' + model[i].Content + '</div></div>');
@@ -488,8 +488,10 @@
             //api.countNoti = 0;
         }
         else if (model.length == 0) {
-            $('#currentNumber').text(0);
-            $('#notificationsCount').text(0);
+            $('#spanNumber').html('<span>No notifications</span>')
+            $('#prevNoti').css('pointer-events', 'none');
+            $('#nextNoti').css('pointer-events', 'none');
+
         }
         $('#prevNoti').click(function () {
             api.server.StopSpeakNotification();
@@ -584,6 +586,15 @@
         //});
     });
 
+    api.server.GetNextAppointmentDate(function (_date) {
+        if (_date.trim() != "") {
+            $('#appointmentDate').text(_date);
+            $('#divNextAppointment').show();
+
+        }
+
+    });
+
 </script>
 <script type="text/javascript">
     //show menu logout or back main
@@ -597,9 +608,13 @@
     window.onclick = function (event) {
         var popup = document.getElementsByClassName('popup');
         if (event.target === document.getElementById('link_toggle')) {
-            document.getElementById('panel_font_size').classList.toggle('active');
+            if (document.getElementById('panel_font_size') && typeof document.getElementById('panel_font_size').classList !== 'undefined') {
+                document.getElementById('panel_font_size').classList.toggle('active');
+            }
         } else if (event.target !== document.getElementById('popup_font') && indexInClass(popup, event.target) === -1) {
-            document.getElementById('panel_font_size').classList.remove('active');
+            if (document.getElementById('panel_font_size') && typeof document.getElementById('panel_font_size').classList !== 'undefined') {
+                document.getElementById('panel_font_size').classList.remove('active');
+            }
         }
     };
     function indexInClass(collection, node) {

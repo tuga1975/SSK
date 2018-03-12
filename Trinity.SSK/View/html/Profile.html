@@ -1423,6 +1423,7 @@
 </script>
 
 
+
 <script>
     /**
      * POPUP font
@@ -1430,9 +1431,13 @@
     window.onclick = function (event) {
         var popup = document.getElementsByClassName('popup');
         if (event.target === document.getElementById('link_toggle')) {
-            document.getElementById('panel_font_size').classList.toggle('active');
+            if (document.getElementById('panel_font_size') && typeof document.getElementById('panel_font_size').classList !== 'undefined') {
+                document.getElementById('panel_font_size').classList.toggle('active');
+            }
         } else if (event.target !== document.getElementById('popup_font') && indexInClass(popup, event.target) === -1) {
-            document.getElementById('panel_font_size').classList.remove('active');
+            if (document.getElementById('panel_font_size') && typeof document.getElementById('panel_font_size').classList !== 'undefined') {
+                document.getElementById('panel_font_size').classList.remove('active');
+            }
         }
     };
     function indexInClass(collection, node) {
