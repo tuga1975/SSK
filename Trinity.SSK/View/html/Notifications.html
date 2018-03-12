@@ -29,7 +29,7 @@
             color: #dee2e6 !important;
         }
 
-            .profile-tabs .nav-hover:hover {
+            .profile-tabs .nav-hover:hover, .profile-tabs .nav-hover.active {
                 color: #1cacf6 !important;
             }
 
@@ -354,21 +354,20 @@
 <div class="panel-font-size pull-right" id="panel_font_size">
     <div class="link">
         <div class="wrap">
-            <a href="#" class="font-size"
-               onclick="document.getElementById('panel_font_size').classList.toggle('active')">Aa</a>
+            <a href="#" class="font-size" id="link_toggle">Aa</a>
         </div>
     </div>
-    <div class="panel">
-        <p style="font-size:initial;">Font size adjustment</p>
-        <div class="row">
-            <div class="col-sm-6">
-                <a class="btn btn-font-size font-small btn-block" onclick="editFontSize(false);">
-                    Aa <i class="ion-arrow-down-b"></i>
+    <div class="panel popup">
+        <p style="font-size:initial;" class="popup">Font size adjustment</p>
+        <div class="row popup">
+            <div class="col-sm-6 popup">
+                <a class="popup btn btn-font-size font-small btn-block" onclick="editFontSize(false);">
+                    Aa <i class="popup ion-arrow-down-b"></i>
                 </a>
             </div>
-            <div class="col-sm-6">
-                <a class="btn btn-font-size font-large btn-block" onclick="editFontSize(true);">
-                    Aa <i class="ion-arrow-up-b"></i>
+            <div class="col-sm-6 popup">
+                <a class="popup btn btn-font-size font-large btn-block" onclick="editFontSize(true);">
+                    Aa <i class="popup ion-arrow-up-b"></i>
                 </a>
             </div>
         </div>
@@ -451,19 +450,27 @@
 
 <script type="text/javascript">
     var _prev = 0;
+    var _first = 0;
     var _next = 1;
+    var _last = 1;
     var _count = 1;
+    var _modelLength = 0;
     api.ready(function (model) {
         if (model != null && model.length > 0) {
+            _modelLength = model.length;
+            _last = (_modelLength - 1);
             $('#currentNumber').text(1);
-            var id = model[0].ID.toString();
-            api.server.GetUserName(model[0].ToUserId, function (to) {
-                $('#notifications').append('<p>To: ' + to + '</p><p><strong>' + model[0].Subject + '</strong></p><p>' + model[0].Datetime + '</p><br/><p>' + model[0].Content + '</p>');
-            })
+            var id = model[_first].ID.toString();
+            api.server.GetUserName(model[_first].ToUserId, function (to) {
+                $('#notifications').html('<p>To: ' + to + '</p><p><strong>' + model[_first].Subject + '</strong></p><p>' + model[_first].Datetime + '</p><br/><p>' + model[_first].Content + '</p>');
+            });
             $('[nextID]').val(_next);
             $('[prevID]').val(_prev);
             api.server.SpeakNotification(id);
             api.server.ChangeReadStatus(id);
+            if (model.length>1) {
+                $('#nextNoti').addClass('active');
+            }
         }
 
         if (model != null && model.length > 0) {
@@ -471,51 +478,74 @@
 
             if (model.length > 1) {
                 $('#notificationsCount').text(model.length);
+
             }
-            else {
-                $('#notificationsCount').text(model.length);
-            }
+           
             //for (var i = 0; i < model.length; i++) {
             //    $('[noti] .carousel-indicators').append('<li data-target="#myCarousel" data-slide-to="' + i + '" class="' + (i == 0 ? 'active' : '') + '"></li>');
             //    $('[noti] .carousel-inner').append('<div id="' + model[i].ID + '" class="item ' + (i == 0 ? 'active' : '') + '">To: Suppervise<br />Date: <br />Subject: ' + model[i].Subject + '<div style="margin-top: 20px;">' + model[i].Content + '</div></div>');
             //}
             //api.countNoti = 0;
         }
+        else if (model.length == 0) {
+            $('#currentNumber').text(0);
+            $('#notificationsCount').text(0);
+        }
         $('#prevNoti').click(function () {
             api.server.StopSpeakNotification();
-            _prev =  parseInt($('[prevID]').val());
+            _prev = parseInt($('[prevID]').val());
             if (_prev > 0) {
-                _prev = (_prev-1);
-                _count = (_count-1);
+                //alert(_prev);
+                _prev = (_prev - 1);
+                _count = (_count - 1);
                 $('#currentNumber').text(_count);
-            
-
-            api.server.GetUserName(model[_prev].ToUserId, function (to) {
-                $('#notifications').html('<p>To: ' + to + '</p><p><strong>' + model[_prev].Subject + '</strong></p><p>' + model[_prev].Datetime + '</p><br/><p>' + model[_prev].Content + '</p>');
+                $('#nextNoti').addClass('active');
+                $('#prevNoti').addClass('active');
+                api.server.GetUserName(model[_prev].ToUserId, function (to) {
+                    $('#notifications').html('<p>To: ' + to + '</p><p><strong>' + model[_prev].Subject + '</strong></p><p>' + model[_prev].Datetime + '</p><br/><p>' + model[_prev].Content + '</p>');
                 });
-            
-            $('[prevID]').val(_prev);
-            $('[nextID]').val((_prev + 1));
-            api.server.SpeakNotification(model[_prev].ID.toString());
+
+                $('[prevID]').val(_prev);
+                $('[nextID]').val((_prev + 1));
+                api.server.SpeakNotification(model[_prev].ID.toString());
+            }
+            else if (_prev == 0) {
+                api.server.GetUserName(model[_first].ToUserId, function (to) {
+                    $('#notifications').html('<p>To: ' + to + '</p><p><strong>' + model[_first].Subject + '</strong></p><p>' + model[_first].Datetime + '</p><br/><p>' + model[_first].Content + '</p>');
+                });
+                _count = 1;
+                $('#currentNumber').text(_count);
+                $('#prevNoti').removeClass('active');
             }
         });
         $('#nextNoti').click(function () {
             api.server.StopSpeakNotification();
             _next = parseInt($('[nextID]').val());
-            if (_next < model.length) {
-                _next = (_next+1);
-                _count = (_count+1);
-                $('#currentNumber').text(_count);
-            
 
-            api.server.GetUserName(model[_next].ToUserId, function (to) {
-                $('#notifications').html('<p>To: ' + to + '</p><p><strong>' + model[_next].Subject + '</strong></p><p>' + model[_next].Datetime + '</p><br/><p>' + model[_next].Content + '</p>');
+            if (_next < _last) {
+
+                _next = (_next + 1);
+                _count = (_count + 1);
+
+                $('#currentNumber').text(_count);
+                $('#nextNoti').addClass('active');
+                $('#prevNoti').addClass('active');
+                api.server.GetUserName(model[_next].ToUserId, function (to) {
+                    $('#notifications').html('<p>To: ' + to + '</p><p><strong>' + model[_next].Subject + '</strong></p><p>' + model[_next].Datetime + '</p><br/><p>' + model[_next].Content + '</p>');
                 });
-           
-           
-            $('[nextID]').val(_next);
-            $('[prevID]').val((_next - 1));
-            api.server.SpeakNotification(model[_next].ID.toString());
+
+
+                $('[nextID]').val(_next);
+                $('[prevID]').val((_next - 1));
+                api.server.SpeakNotification(model[_next].ID.toString());
+            }
+            else if (_next == _last) {
+                api.server.GetUserName(model[_last].ToUserId, function (to) {
+                    $('#notifications').html('<p>To: ' + to + '</p><p><strong>' + model[_last].Subject + '</strong></p><p>' + model[_last].Datetime + '</p><br/><p>' + model[_last].Content + '</p>');
+                });
+                _count = _modelLength;
+                $('#currentNumber').text(_count);
+                $('#nextNoti').removeClass('active');
             }
         });
 
@@ -553,9 +583,30 @@
         //    }
         //});
     });
-   
+
 </script>
 <script type="text/javascript">
     //show menu logout or back main
     $('#header[right-show]').attr('right-show', 'back-main');
+</script>
+
+<script>
+    /**
+     * POPUP font
+     */
+    window.onclick = function (event) {
+        var popup = document.getElementsByClassName('popup');
+        if (event.target === document.getElementById('link_toggle')) {
+            document.getElementById('panel_font_size').classList.toggle('active');
+        } else if (event.target !== document.getElementById('popup_font') && indexInClass(popup, event.target) === -1) {
+            document.getElementById('panel_font_size').classList.remove('active');
+        }
+    };
+    function indexInClass(collection, node) {
+        for (var i = 0; i < collection.length; i++) {
+            if (collection[i] === node)
+                return i;
+        }
+        return -1;
+    }
 </script>
