@@ -399,12 +399,12 @@
             <p style="font-size:initial;">Font size adjustment</p>
             <div class="row">
                 <div class="col-sm-6">
-                    <a class="btn btn-font-size font-small btn-block" onclick="editFontSize(false);">
+                    <a class="btn btn-font-size font-small btn-block" onclick="editFontSize(false,'Profile');">
                         Aa <i class="ion-arrow-down-b"></i>
                     </a>
                 </div>
                 <div class="col-sm-6">
-                    <a class="btn btn-font-size font-large btn-block" onclick="editFontSize(true);">
+                    <a class="btn btn-font-size font-large btn-block" onclick="editFontSize(true,'Profile');">
                         Aa <i class="ion-arrow-up-b"></i>
                     </a>
                 </div>
@@ -1170,7 +1170,7 @@
 </div>-->
 
 <script type="text/javascript">
-
+    $('#content').css('font-size', font_size_page['Profile']);
     var jsonFormData = null;
     var _particularName, _nric, _dob, _nationality, _maritalStatus = "";
     api.ready(function (model) {

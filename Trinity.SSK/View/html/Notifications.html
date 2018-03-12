@@ -362,12 +362,12 @@
         <p style="font-size:initial;">Font size adjustment</p>
         <div class="row">
             <div class="col-sm-6">
-                <a class="btn btn-font-size font-small btn-block" onclick="editFontSize(false);">
+                <a class="btn btn-font-size font-small btn-block" onclick="editFontSize(false,'Notifications');">
                     Aa <i class="ion-arrow-down-b"></i>
                 </a>
             </div>
             <div class="col-sm-6">
-                <a class="btn btn-font-size font-large btn-block" onclick="editFontSize(true);">
+                <a class="btn btn-font-size font-large btn-block" onclick="editFontSize(true,'Notifications');">
                     Aa <i class="ion-arrow-up-b"></i>
                 </a>
             </div>
@@ -450,6 +450,7 @@
 <button type="button" class="btn btn-danger" style="position:fixed;bottom:10px;left:10px;" onclick="api.server.LoadPage('Supervisee.html');">Back</button>-->
 
 <script type="text/javascript">
+    $('#content').css('font-size', font_size_page['Notifications']);
     var _prev = 0;
     var _next = 1;
     var _count = 1;

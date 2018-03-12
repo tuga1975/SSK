@@ -73,23 +73,23 @@
         $('#rigth-top [title]').attr('title', timeshow);
         for (var i = 0; i < 5; i++) {
             if (arrNow.length >= i + 1) {
-                $('#left [item="' + (i + 1) + '"]').html(arrNow[i].QueuedNumber);
+                $('#left [item="' + (i + 1) + '"]').html(arrNow[i].QueuedNumber + "<span></span>").attr('type', arrNow[i].Type);
             } else {
-                $('#left [item="' + (i + 1) + '"]').html('&nbsp;');
+                $('#left [item="' + (i + 1) + '"]').html('&nbsp;').attr('type', '');
             }
         }
         for (var i = 0; i < 12; i++) {
             if (arrCurent.length >= i + 1) {
-                $('#rigth-top [item="' + (i + 1) + '"]').html(arrCurent[i].QueuedNumber);
+                $('#rigth-top [item="' + (i + 1) + '"]').html(arrCurent[i].QueuedNumber + "<span></span>").attr('type', arrCurent[i].Type);
             } else {
-                $('#rigth-top [item="' + (i + 1) + '"]').html('&nbsp;');
+                $('#rigth-top [item="' + (i + 1) + '"]').html('&nbsp;').attr('type', '');
             }
         }
         for (var i = 0; i < 8; i++) {
             if (arrOther.length >= i + 1) {
-                $('#rigth-bottom [item="' + (i + 1) + '"]').html(arrOther[i].QueuedNumber);
+                $('#rigth-bottom [item="' + (i + 1) + '"]').html(arrOther[i].QueuedNumber+"<span></span>").attr('type', arrOther[i].Type);
             } else {
-                $('#rigth-bottom [item="' + (i + 1) + '"]').html('&nbsp;');
+                $('#rigth-bottom [item="' + (i + 1) + '"]').html('&nbsp;').attr('type', '');
             }
         }
     }
@@ -126,7 +126,7 @@
                 color: #16ad59;
                 border-bottom: 1px solid #e7e7e7;
                 position: relative;
-                background-color:#FFF;
+                background-color: #FFF;
             }
 
                 #left table [item]::after {
@@ -291,6 +291,20 @@
                 position: absolute;
                 height: 100%;
             }
+
+    td[item] span {
+        font-size: 50%;
+        position: relative;
+        top: 7px;
+    }
+
+    td[item][type="blue"] {
+        color: #3498ff !important;
+    }
+
+        td[item][type="blue"] span::before {
+            content: "u";
+        }
 </style>
 
 <!--<div style="width:100%;display:block;padding:15px 25px">
