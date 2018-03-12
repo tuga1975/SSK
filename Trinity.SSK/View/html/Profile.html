@@ -391,21 +391,20 @@
     <div class="panel-font-size pull-right" id="panel_font_size">
         <div class="link">
             <div class="wrap">
-                <a href="#" class="font-size"
-                   onclick="document.getElementById('panel_font_size').classList.toggle('active')">Aa</a>
+                <a href="#" class="font-size" id="link_toggle">Aa</a>
             </div>
         </div>
-        <div class="panel">
-            <p style="font-size:initial;">Font size adjustment</p>
-            <div class="row">
-                <div class="col-sm-6">
-                    <a class="btn btn-font-size font-small btn-block" onclick="editFontSize(false,'Profile');">
-                        Aa <i class="ion-arrow-down-b"></i>
+        <div class="panel popup">
+            <p style="font-size:initial;" class="popup">Font size adjustment</p>
+            <div class="row popup">
+                <div class="col-sm-6 popup">
+                    <a class="popup btn btn-font-size font-small btn-block" onclick="editFontSize(false);">
+                        Aa <i class="popup ion-arrow-down-b"></i>
                     </a>
                 </div>
-                <div class="col-sm-6">
-                    <a class="btn btn-font-size font-large btn-block" onclick="editFontSize(true,'Profile');">
-                        Aa <i class="ion-arrow-up-b"></i>
+                <div class="col-sm-6 popup ">
+                    <a class="popup btn btn-font-size font-large btn-block" onclick="editFontSize(true);">
+                        Aa <i class="popup ion-arrow-up-b"></i>
                     </a>
                 </div>
             </div>
@@ -1169,8 +1168,9 @@
     </form>
 </div>-->
 
+
 <script type="text/javascript">
-    $('#content').css('font-size', font_size_page['Profile']);
+
     var jsonFormData = null;
     var _particularName, _nric, _dob, _nationality, _maritalStatus = "";
     api.ready(function (model) {
@@ -1420,4 +1420,31 @@
 <script type="text/javascript">
     //show menu logout or back main
     $('#header[right-show]').attr('right-show', 'back-main');
+</script>
+
+
+
+<script>
+    /**
+     * POPUP font
+     */
+    window.onclick = function (event) {
+        var popup = document.getElementsByClassName('popup');
+        if (event.target === document.getElementById('link_toggle')) {
+            if (document.getElementById('panel_font_size') && typeof document.getElementById('panel_font_size').classList !== 'undefined') {
+                document.getElementById('panel_font_size').classList.toggle('active');
+            }
+        } else if (event.target !== document.getElementById('popup_font') && indexInClass(popup, event.target) === -1) {
+            if (document.getElementById('panel_font_size') && typeof document.getElementById('panel_font_size').classList !== 'undefined') {
+                document.getElementById('panel_font_size').classList.remove('active');
+            }
+        }
+    };
+    function indexInClass(collection, node) {
+        for (var i = 0; i < collection.length; i++) {
+            if (collection[i] === node)
+                return i;
+        }
+        return -1;
+    }
 </script>

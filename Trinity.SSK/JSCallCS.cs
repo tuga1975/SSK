@@ -177,6 +177,22 @@ namespace SSK
             this._web.LoadPageHtml("BookAppointment.html", new object[] { appointmentBE, workingTimeshift });
         }
 
+        public string GetNextAppointmentDate()
+        {
+            Session session = Session.Instance;
+            Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+            if (user!=null)
+            {
+                var _appointment = new DAL_Appointments().GetNextAppointment(user.UserId);
+                if (_appointment!=null)
+                {
+                    return _appointment.Date.ToLongDateString();
+                }
+            }
+            return null;
+            
+        }
+
         public bool CheckBookingTime(string timeslotId)
         {
             return new DAL_Timeslots().CheckTimeslot(timeslotId);
@@ -482,7 +498,7 @@ namespace SSK
             {
                 supervisee = currentUser;
             }
-            if (supervisee.Status==EnumUserStatuses.Blocked)
+            if (supervisee.Status == EnumUserStatuses.Blocked)
             {
 
             }
@@ -639,13 +655,13 @@ namespace SSK
         }
 
         private string dataAbsenceReporting = string.Empty;
-        private void DocumentScannerCallback(string frontPath,string error)
+        private void DocumentScannerCallback(string frontPath, string error)
         {
             Trinity.Util.DocumentScannerUtil.Instance.StopScanning();
             Guid IDDocuemnt = new DAL_UploadedDocuments().Insert(Lib.ReadAllBytes(frontPath), ((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId);
             _SaveReasonForQueue(dataAbsenceReporting, IDDocuemnt);
         }
-        public void SaveReasonForQueue(string dataTxt,bool scandocument)
+        public void SaveReasonForQueue(string dataTxt, bool scandocument)
         {
             if (scandocument)
             {
@@ -655,11 +671,11 @@ namespace SSK
             }
             else
             {
-                
-                _SaveReasonForQueue(dataTxt,null);
+
+                _SaveReasonForQueue(dataTxt, null);
             }
         }
-        private void _SaveReasonForQueue(string dataTxt,Nullable<Guid> IdDocument)
+        private void _SaveReasonForQueue(string dataTxt, Nullable<Guid> IdDocument)
         {
             List<Dictionary<string, string>> data = JsonConvert.DeserializeObject<List<Dictionary<string, string>>>(dataTxt);
             new DAL_AbsenceReporting().InsertAbsentReason(data, IdDocument);
@@ -762,7 +778,7 @@ namespace SSK
             var user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
             if (user != null)
             {
-                Trinity.SignalR.Client.Instance.UserLoggedOut(((Trinity.BE.User)session[CommonConstants.USER_LOGIN]).UserId);   
+                Trinity.SignalR.Client.Instance.UserLoggedOut(((Trinity.BE.User)session[CommonConstants.USER_LOGIN]).UserId);
             }
             session.IsSmartCardAuthenticated = false;
             session.IsFingerprintAuthenticated = false;
