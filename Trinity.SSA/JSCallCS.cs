@@ -362,7 +362,8 @@ namespace SSA
                     return;
                 }
                 var dalQueue = new DAL_QueueNumber();
-                dalQueue.UpdateQueueStatusByUserId(currentUser.UserId, EnumStation.SSA, EnumQueueStatuses.Finished, EnumStation.UHP, EnumQueueStatuses.Processing, "", EnumQueueOutcomeText.Processing);
+                dalQueue.UpdateQueueStatusByUserId(currentUser.UserId, EnumStation.SSA, EnumQueueStatuses.Finished, EnumStation.UHP, EnumQueueStatuses.Waiting, "", EnumQueueOutcomeText.Processing);
+                //Trinity.SignalR.Client.Instance.QueueCompleted(currentUser.UserId);
 
                 //this._web.LoadPageHtml("PrintingMUBAndTTLabels.html");
                 //this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').show(); ; ");
@@ -372,7 +373,6 @@ namespace SSA
                 DeleteQRCodeImageFileTemp();
 
                 //new DAL_QueueDetails().RemoveQueueFromSSK(currentUser.UserId);
-                //Trinity.SignalR.Client.Instance.QueueCompleted(currentUser.UserId);
                 //LogOut();
             }
             else
@@ -429,8 +429,8 @@ namespace SSA
                 var labelInfo = JsonConvert.DeserializeObject<LabelInfo>(json);
                 _web.LoadPageHtml("PrintingTemplates/MUBLabelTemplate.html", new object[] { printingStatus, labelInfo });
 
-                //LEDStatusLightingUtil.Instance.MUBAbleToRemove += Instance_MUBReadyToRemove;
-                //LEDStatusLightingUtil.Instance.CheckMUBApplicatorFinishStatus();
+                LEDStatusLightingUtil.Instance.MUBReadyToRemove += Instance_MUBReadyToRemove;
+                LEDStatusLightingUtil.Instance.CheckMUBApplicatorFinishStatus();
                 ////btnConfirm.Enabled = false;
                 //this._web.RunScript("$('.ConfirmBtn').prop('disabled', true);");
                 ////btnConfirm.Text = "Check printing status";
