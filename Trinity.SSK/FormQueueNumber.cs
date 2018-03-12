@@ -175,9 +175,9 @@ namespace SSK
 
             wbQueueNumber.InvokeScript("ShowTimeSlot",
                 textTimeSlot,
-                JsonConvert.SerializeObject(queueNowServing.Select(d => new { d.QueuedNumber })),
-                JsonConvert.SerializeObject(queueCurrent.Select(d => new { d.QueuedNumber }).Take(12)),
-                JsonConvert.SerializeObject(queueOther.Select(d => new { d.QueuedNumber }).Take(8))
+                JsonConvert.SerializeObject(queueNowServing.Select(d => new { d.QueuedNumber,d.Type })),
+                JsonConvert.SerializeObject(queueCurrent.Select(d => new { d.QueuedNumber, d.Type }).Take(12)),
+                JsonConvert.SerializeObject(queueOther.Select(d => new { d.QueuedNumber, d.Type }).Take(8))
                 );
         }
 

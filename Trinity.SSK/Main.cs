@@ -15,6 +15,7 @@ using Trinity.Device;
 using Trinity.Device.Authentication;
 using Trinity.Device.Monitor;
 using Trinity.Device.Util;
+using Trinity.SignalR;
 
 namespace SSK
 {
@@ -29,6 +30,7 @@ namespace SSK
         private int _fingerprintFailed;
         private bool _displayLoginButtonStatus = false;
         private bool _isFirstTimeLoaded = true;
+        private Client _signalrClient = null;
 
         public Main()
         {
@@ -66,6 +68,7 @@ namespace SSK
             _eventCenter = EventCenter.Default;
 
             _eventCenter.OnNewEvent += EventCenter_OnNewEvent;
+
             #endregion
 
 
@@ -536,6 +539,10 @@ namespace SSK
             }
             else if (navigatorEnum == NavigatorEnums.Supervisee)
             {
+                // Handle income notifications
+                _signalrClient = Client.Instance;
+                _signalrClient.OnNewNotification += _signalrClient_OnNewNotification;
+
                 _suppervisee.Start();
             }
 
@@ -557,6 +564,15 @@ namespace SSK
             }
         }
         #endregion
+
+        #region Handle Incoming Notifications
+        private void _signalrClient_OnNewNotification(object sender, NotificationInfo e)
+        {
+            _jsCallCS.LoadNotications();
+        }
+
+        #endregion
+
 
         private void Main_Load(object sender, EventArgs e)
         {

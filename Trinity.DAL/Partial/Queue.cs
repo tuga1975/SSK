@@ -61,5 +61,16 @@ namespace Trinity.DAL.DBContext
                 return 1;
             }
         }
+        public string Type
+        {
+            get
+            {
+                if (!this.Appointment_ID.HasValue || (this.Appointment_ID.HasValue && this.Appointment.Timeslot_ID!=this.Timeslot_ID))
+                {
+                    return "blue";
+                }
+                return "blue";
+            }
+        }
     }
 }

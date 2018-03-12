@@ -1,4 +1,5 @@
-﻿function editFontSize(status) {
+﻿var font_size_page = [];
+function editFontSize(status,page) {
     var px = parseInt($('#content').css('font-size').replace('px', ''));
     if (status) {
         px++;
@@ -6,6 +7,7 @@
         px--;
     }
     $('#content').css('font-size', px);
+    font_size_page[page] = px;
 }
 function pushNoti(count) {
     api.countNoti = count;
