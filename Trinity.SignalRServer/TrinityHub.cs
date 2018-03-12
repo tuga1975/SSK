@@ -55,6 +55,9 @@ namespace Trinity.NotificationServer
                 string[] toUserIDs = notificationInfo.ToUserIds;
                 if (toUserIDs != null && toUserIDs.Length > 0)
                 {
+                    string fromUserId = notificationInfo.FromUserId;
+
+                    Program.MainForm.WriteToConsole("[" + Station + "] => User '" + fromUserId + "' send notification to:" + string.Join(",", toUserIDs));
                     for (int i = 0; i < toUserIDs.Length; i++)
                     {
                         Clients.Clients(Program.ProfileConnected.Where(d => d.isUser && d.UserID == toUserIDs[i]).Select(d => d.ConnectionId).ToList()).OnNewNotification(notificationInfo);
