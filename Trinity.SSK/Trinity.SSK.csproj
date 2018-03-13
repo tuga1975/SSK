@@ -340,7 +340,6 @@
     <Content Include="View\html\BookAppointment.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="View\html\DocumentOld.html" />
     <Content Include="View\html\Layout.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

@@ -52,10 +52,16 @@ namespace Trinity.NotificationServer
             }
             else if (notificationInfo.Name == NotificationNames.ALERT_MESSAGE)
             {
-                string[] dutyOfficers = notificationInfo.ToUserIds;
-                for (int i = 0; i < dutyOfficers.Length; i++)
+                string[] toUserIDs = notificationInfo.ToUserIds;
+                if (toUserIDs != null && toUserIDs.Length > 0)
                 {
-                    Clients.Clients(Program.ProfileConnected.Where(d => d.isUser && d.UserID == dutyOfficers[i]).Select(d => d.ConnectionId).ToList()).OnNewNotification(notificationInfo);
+                    string fromUserId = notificationInfo.FromUserId;
+
+                    Program.MainForm.WriteToConsole("[" + Station + "] => User '" + fromUserId + "' send notification to:" + string.Join(",", toUserIDs));
+                    for (int i = 0; i < toUserIDs.Length; i++)
+                    {
+                        Clients.Clients(Program.ProfileConnected.Where(d => d.isUser && d.UserID == toUserIDs[i]).Select(d => d.ConnectionId).ToList()).OnNewNotification(notificationInfo);
+                    }
                 }
             }
         }

@@ -12,7 +12,7 @@ namespace Trinity.DAL
         Local_UnitOfWork _localUnitOfWork = new Local_UnitOfWork();
         Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
 
-        public void InsertAbsentReason(List<Dictionary<string, string>> dataUpdate)
+        public void InsertAbsentReason(List<Dictionary<string, string>> dataUpdate, Nullable<Guid> IdDocument)
         {
             List<Guid> ArrayIDAppointments = dataUpdate.Select(d => new Guid(d["ID"])).ToList();
             var arrayUpdate = _localUnitOfWork.DataContext.Appointments.Where(d => ArrayIDAppointments.Contains(d.ID) && !d.AbsenceReporting_ID.HasValue).ToList();
@@ -26,7 +26,8 @@ namespace Trinity.DAL
                 {
                     AbsenceReason = short.Parse(data["ChoseNumber"]),
                     ID = Guid.NewGuid(),
-                    ReportingDate = DateTime.Now
+                    ReportingDate = DateTime.Now,
+                    Document_ID = IdDocument
                 };
                 item.AbsenceReporting_ID = dataAbsence.ID;
                 arrayInssert.Add(dataAbsence);

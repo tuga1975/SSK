@@ -23,12 +23,12 @@ public enum NavigatorEnums
     Queue = 13
 };
 
-public static class EnumSettingStatuses
-{
-    public const string Archived = "Archived";
-    public const string Active = "Active";
-    public const string Pending = "Pending";
-}
+//public static class EnumSettingStatuses
+//{
+//    public const string Archived = "Archived";
+//    public const string Active = "Active";
+//    public const string Pending = "Pending";
+//}
 
 public static class EnumUserRoles
 {
@@ -62,11 +62,11 @@ public enum EnumErrorCodes
 
 public static class EnumAppointmentStatuses
 {
-    public const string Deleted = "Deleted";
+    //public const string Deleted = "Deleted";
     public const string Pending = "Pending";
     public const string Booked = "Booked";
     public const string Reported = "Reported";
-    public const string Completed = "Completed";
+    //public const string Completed = "Completed";
     public const string Absent = "Absent";
 }
 

@@ -164,6 +164,7 @@ $(document).ready(function () {
         }
     });
     $('body').on('click', 'button', function (event) {
+        event.preventDefault();
         try {
             if ($(this).is('[valonclick]')) {
                 eval('(function() { ' + $(this).attr('valonclick') + ' })()');

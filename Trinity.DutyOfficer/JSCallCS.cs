@@ -117,7 +117,7 @@ namespace DutyOfficer
 
             // Update next station is ESP, message of ESP to 'Waiting for ESP'
             var dalQueue = new DAL_QueueNumber();
-            dalQueue.UpdateQueueStatusByUserId(UserId, EnumStation.HSA, EnumQueueStatuses.Finished, EnumStation.ESP, EnumQueueStatuses.Processing, "Waiting for ESP", EnumQueueOutcomeText.Processing);
+            dalQueue.UpdateQueueStatusByUserId(UserId, EnumStation.HSA, EnumQueueStatuses.Finished, EnumStation.ESP, EnumQueueStatuses.Waiting, "Waiting for ESP", EnumQueueOutcomeText.Processing);
 
             // Re-load queue
             this._web.InvokeScript("reloadDataQueues");

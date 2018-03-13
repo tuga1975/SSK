@@ -15,46 +15,28 @@
     Please position your face within the frame and click the camera
 </h5>
 <div class="my-5">
-    <button class="go-to btn btn-default" id="btnBack">Click to go back</button>
+    <button class="go-to btn btn-default" onclick="api.server.CancelUpdatePicture();">Click to go back</button>
 
 </div>
 
-
 <div style="width:100%; position:fixed; bottom: 10px;  margin: auto;">
-
     <div class="text-center">
         <div id="capture">
             <div>
-                <a href="#" id="btnCapture"><i class="fa fa-camera" style="font-size:50px;color:red"></i></a>
+                <button style="background-color:none;border:none;" onclick="api.server.CapturePicture();"><i class="fa fa-camera" style="font-size:50px;color:red"></i></button>
 
             </div>
         </div>
         <div id="confirm" style="display:none">
             <div>
-                <a href="#" id="btnConfirm" onclick="" class="btn btn-success">Confirm</a>
+                <button href="#" onclick="api.server.ConfirmCapturePicture();" class="btn btn-success">Confirm</button>
 
-                <a href="#" id="btnCancel" class="btn btn-default">Cancel</a>
+                <button href="#" onclick="api.server.CancelConfirmCapturePicture();" class="btn btn-default">Cancel</button>
             </div>
         </div>
     </div>
 
 </div>
-<script>
-   
-    $('#btnCapture').click(function () {
-        api.server.CapturePicture();
-    });
-    $('#btnConfirm').click(function () {
-        api.server.ConfirmCapturePicture();
-    });
-    $('#btnCancel').click(function () {
-        api.server.CancelConfirmCapturePicture();
-    });
-    $('#btnBack').click(function () {
-        api.server.CancelUpdatePicture();
-    });
-
-</script>
 <script>
     function confirmMode() {
         document.getElementById('capture').style.display = 'none';
