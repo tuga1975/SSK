@@ -101,7 +101,7 @@ namespace Trinity.Util
 
         public EnumDeviceStatus[] GetDeviceStatus()
         {
-            return new EnumDeviceStatus[] { EnumDeviceStatus.Disconnected };
+            return new EnumDeviceStatus[] { EnumDeviceStatus.Connected };
         }
 
         public bool Connect()
@@ -238,6 +238,12 @@ namespace Trinity.Util
         {
             try
             {
+                // If scanner is not initiated, run Connect() first
+                if (!scanner_connected)
+                {
+                    Connect();
+                }
+
                 if (scanner_connected)
                 {
                     _documentScannerCallback = documentScannerCallback;

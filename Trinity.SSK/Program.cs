@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Trinity.Device;
+using Trinity.Device.Util;
 
 namespace SSK
 {

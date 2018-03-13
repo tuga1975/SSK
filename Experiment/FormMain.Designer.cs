@@ -51,6 +51,8 @@
             this.button5 = new System.Windows.Forms.Button();
             this.button6 = new System.Windows.Forms.Button();
             this.btnTestSignalR = new System.Windows.Forms.Button();
+            this.button7 = new System.Windows.Forms.Button();
+            this.button8 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -223,7 +225,7 @@
             // 
             this.groupBox1.Controls.Add(this.btnSendBTCommand);
             this.groupBox1.Controls.Add(this.rtbBarTenderCommand);
-            this.groupBox1.Location = new System.Drawing.Point(517, 12);
+            this.groupBox1.Location = new System.Drawing.Point(517, 201);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(442, 209);
             this.groupBox1.TabIndex = 16;
@@ -296,11 +298,35 @@
             this.btnTestSignalR.UseVisualStyleBackColor = true;
             this.btnTestSignalR.Click += new System.EventHandler(this.btnTestSignalR_Click);
             // 
+            // button7
+            // 
+            this.button7.Location = new System.Drawing.Point(777, 11);
+            this.button7.Margin = new System.Windows.Forms.Padding(2);
+            this.button7.Name = "button7";
+            this.button7.Size = new System.Drawing.Size(183, 24);
+            this.button7.TabIndex = 21;
+            this.button7.Text = "Open FormLEDLightControl";
+            this.button7.UseVisualStyleBackColor = true;
+            this.button7.Click += new System.EventHandler(this.button7_Click);
+            // 
+            // button8
+            // 
+            this.button8.Location = new System.Drawing.Point(590, 11);
+            this.button8.Margin = new System.Windows.Forms.Padding(2);
+            this.button8.Name = "button8";
+            this.button8.Size = new System.Drawing.Size(183, 24);
+            this.button8.TabIndex = 22;
+            this.button8.Text = "Open FormTestSignalR";
+            this.button8.UseVisualStyleBackColor = true;
+            this.button8.Click += new System.EventHandler(this.button8_Click);
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(971, 581);
+            this.Controls.Add(this.button8);
+            this.Controls.Add(this.button7);
             this.Controls.Add(this.button6);
             this.Controls.Add(this.button5);
             this.Controls.Add(this.button4);
@@ -355,6 +381,8 @@
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.Button button6;
         private System.Windows.Forms.Button btnTestSignalR;
+        private System.Windows.Forms.Button button7;
+        private System.Windows.Forms.Button button8;
     }
 }
 
