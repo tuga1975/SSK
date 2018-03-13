@@ -57,7 +57,7 @@
             // btnPrintAppointmentDetails
             // 
             this.btnPrintAppointmentDetails.Location = new System.Drawing.Point(16, 15);
-            this.btnPrintAppointmentDetails.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnPrintAppointmentDetails.Margin = new System.Windows.Forms.Padding(4);
             this.btnPrintAppointmentDetails.Name = "btnPrintAppointmentDetails";
             this.btnPrintAppointmentDetails.Size = new System.Drawing.Size(244, 28);
             this.btnPrintAppointmentDetails.TabIndex = 0;
@@ -68,7 +68,7 @@
             // btnPrintSuperviseeCard
             // 
             this.btnPrintSuperviseeCard.Location = new System.Drawing.Point(16, 50);
-            this.btnPrintSuperviseeCard.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnPrintSuperviseeCard.Margin = new System.Windows.Forms.Padding(4);
             this.btnPrintSuperviseeCard.Name = "btnPrintSuperviseeCard";
             this.btnPrintSuperviseeCard.Size = new System.Drawing.Size(244, 28);
             this.btnPrintSuperviseeCard.TabIndex = 1;
@@ -79,7 +79,7 @@
             // btnReadSmartCardData
             // 
             this.btnReadSmartCardData.Location = new System.Drawing.Point(16, 86);
-            this.btnReadSmartCardData.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnReadSmartCardData.Margin = new System.Windows.Forms.Padding(4);
             this.btnReadSmartCardData.Name = "btnReadSmartCardData";
             this.btnReadSmartCardData.Size = new System.Drawing.Size(244, 28);
             this.btnReadSmartCardData.TabIndex = 2;
@@ -90,7 +90,7 @@
             // btnIdentifyFingerprint
             // 
             this.btnIdentifyFingerprint.Location = new System.Drawing.Point(16, 122);
-            this.btnIdentifyFingerprint.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnIdentifyFingerprint.Margin = new System.Windows.Forms.Padding(4);
             this.btnIdentifyFingerprint.Name = "btnIdentifyFingerprint";
             this.btnIdentifyFingerprint.Size = new System.Drawing.Size(244, 28);
             this.btnIdentifyFingerprint.TabIndex = 3;
@@ -101,7 +101,7 @@
             // btnStartHealthChecker
             // 
             this.btnStartHealthChecker.Location = new System.Drawing.Point(356, 15);
-            this.btnStartHealthChecker.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnStartHealthChecker.Margin = new System.Windows.Forms.Padding(4);
             this.btnStartHealthChecker.Name = "btnStartHealthChecker";
             this.btnStartHealthChecker.Size = new System.Drawing.Size(244, 28);
             this.btnStartHealthChecker.TabIndex = 4;
@@ -114,7 +114,7 @@
             this.btnTestSerialComm.Location = new System.Drawing.Point(356, 50);
             this.btnTestSerialComm.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnTestSerialComm.Name = "btnTestSerialComm";
-            this.btnTestSerialComm.Size = new System.Drawing.Size(183, 23);
+            this.btnTestSerialComm.Size = new System.Drawing.Size(244, 28);
             this.btnTestSerialComm.TabIndex = 5;
             this.btnTestSerialComm.Text = "Test Serial Communication";
             this.btnTestSerialComm.UseVisualStyleBackColor = true;
@@ -123,7 +123,7 @@
             // btnStartFlashing
             // 
             this.btnStartFlashing.Location = new System.Drawing.Point(16, 208);
-            this.btnStartFlashing.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnStartFlashing.Margin = new System.Windows.Forms.Padding(4);
             this.btnStartFlashing.Name = "btnStartFlashing";
             this.btnStartFlashing.Size = new System.Drawing.Size(244, 28);
             this.btnStartFlashing.TabIndex = 6;
@@ -134,7 +134,7 @@
             // bnStopFlashing
             // 
             this.bnStopFlashing.Location = new System.Drawing.Point(16, 244);
-            this.bnStopFlashing.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.bnStopFlashing.Margin = new System.Windows.Forms.Padding(4);
             this.bnStopFlashing.Name = "bnStopFlashing";
             this.bnStopFlashing.Size = new System.Drawing.Size(244, 28);
             this.bnStopFlashing.TabIndex = 7;
@@ -145,7 +145,7 @@
             // btnInitFlashing
             // 
             this.btnInitFlashing.Location = new System.Drawing.Point(16, 172);
-            this.btnInitFlashing.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnInitFlashing.Margin = new System.Windows.Forms.Padding(4);
             this.btnInitFlashing.Name = "btnInitFlashing";
             this.btnInitFlashing.Size = new System.Drawing.Size(244, 28);
             this.btnInitFlashing.TabIndex = 8;
@@ -177,7 +177,7 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(267, 227);
+            this.button1.Location = new System.Drawing.Point(356, 277);
             this.button1.Margin = new System.Windows.Forms.Padding(2);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(244, 28);
@@ -188,7 +188,7 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(267, 198);
+            this.button2.Location = new System.Drawing.Point(356, 248);
             this.button2.Margin = new System.Windows.Forms.Padding(2);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(244, 28);
@@ -199,7 +199,7 @@
             // 
             // btnConnectPDIScanner
             // 
-            this.btnConnectPDIScanner.Location = new System.Drawing.Point(12, 308);
+            this.btnConnectPDIScanner.Location = new System.Drawing.Point(16, 305);
             this.btnConnectPDIScanner.Margin = new System.Windows.Forms.Padding(2);
             this.btnConnectPDIScanner.Name = "btnConnectPDIScanner";
             this.btnConnectPDIScanner.Size = new System.Drawing.Size(244, 28);
@@ -210,7 +210,7 @@
             // 
             // btnStopDPIScanner
             // 
-            this.btnStopDPIScanner.Location = new System.Drawing.Point(12, 335);
+            this.btnStopDPIScanner.Location = new System.Drawing.Point(16, 337);
             this.btnStopDPIScanner.Margin = new System.Windows.Forms.Padding(2);
             this.btnStopDPIScanner.Name = "btnStopDPIScanner";
             this.btnStopDPIScanner.Size = new System.Drawing.Size(244, 28);
@@ -222,7 +222,7 @@
             // rtbBarTenderCommand
             // 
             this.rtbBarTenderCommand.Location = new System.Drawing.Point(8, 23);
-            this.rtbBarTenderCommand.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.rtbBarTenderCommand.Margin = new System.Windows.Forms.Padding(4);
             this.rtbBarTenderCommand.Name = "rtbBarTenderCommand";
             this.rtbBarTenderCommand.Size = new System.Drawing.Size(430, 155);
             this.rtbBarTenderCommand.TabIndex = 15;
@@ -233,9 +233,9 @@
             this.groupBox1.Controls.Add(this.btnSendBTCommand);
             this.groupBox1.Controls.Add(this.rtbBarTenderCommand);
             this.groupBox1.Location = new System.Drawing.Point(689, 15);
-            this.groupBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(4);
             this.groupBox1.Size = new System.Drawing.Size(589, 257);
             this.groupBox1.TabIndex = 16;
             this.groupBox1.TabStop = false;
@@ -253,10 +253,10 @@
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(267, 153);
+            this.button3.Location = new System.Drawing.Point(356, 208);
             this.button3.Margin = new System.Windows.Forms.Padding(2);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(183, 23);
+            this.button3.Size = new System.Drawing.Size(244, 28);
             this.button3.TabIndex = 17;
             this.button3.Text = "Reset TT Label Possiion";
             this.button3.UseVisualStyleBackColor = true;
@@ -264,10 +264,10 @@
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(267, 254);
+            this.button4.Location = new System.Drawing.Point(356, 310);
             this.button4.Margin = new System.Windows.Forms.Padding(2);
             this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(183, 23);
+            this.button4.Size = new System.Drawing.Size(244, 32);
             this.button4.TabIndex = 18;
             this.button4.Text = "Reset MUB Label Possiion";
             this.button4.UseVisualStyleBackColor = true;
@@ -275,10 +275,10 @@
             // 
             // button5
             // 
-            this.button5.Location = new System.Drawing.Point(12, 254);
+            this.button5.Location = new System.Drawing.Point(16, 369);
             this.button5.Margin = new System.Windows.Forms.Padding(2);
             this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(183, 23);
+            this.button5.Size = new System.Drawing.Size(244, 23);
             this.button5.TabIndex = 19;
             this.button5.Text = "Connect to PDI Scanner";
             this.button5.UseVisualStyleBackColor = true;
@@ -286,19 +286,18 @@
             // 
             // button6
             // 
-            this.button6.Location = new System.Drawing.Point(12, 281);
+            this.button6.Location = new System.Drawing.Point(16, 396);
             this.button6.Margin = new System.Windows.Forms.Padding(2);
             this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(183, 23);
+            this.button6.Size = new System.Drawing.Size(244, 23);
             this.button6.TabIndex = 20;
             this.button6.Text = "Disonnect to PDI Scanner";
             this.button6.UseVisualStyleBackColor = true;
             this.button6.Click += new System.EventHandler(this.button6_Click);
             // 
-            // Form1
             // btnTestSignalR
             // 
-            this.btnTestSignalR.Location = new System.Drawing.Point(356, 305);
+            this.btnTestSignalR.Location = new System.Drawing.Point(356, 86);
             this.btnTestSignalR.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnTestSignalR.Name = "btnTestSignalR";
             this.btnTestSignalR.Size = new System.Drawing.Size(244, 28);
@@ -311,12 +310,11 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(971, 581);
+            this.ClientSize = new System.Drawing.Size(1295, 715);
             this.Controls.Add(this.button6);
             this.Controls.Add(this.button5);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.button3);
-            this.ClientSize = new System.Drawing.Size(1295, 715);
             this.Controls.Add(this.btnTestSignalR);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.btnStopDPIScanner);
@@ -334,7 +332,7 @@
             this.Controls.Add(this.btnReadSmartCardData);
             this.Controls.Add(this.btnPrintSuperviseeCard);
             this.Controls.Add(this.btnPrintAppointmentDetails);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "FormMain";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
