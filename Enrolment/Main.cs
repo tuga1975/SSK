@@ -361,7 +361,17 @@ namespace Enrolment
             else if (e.Name == EventNames.GET_LIST_SUPERVISEE_SUCCEEDED)
             {
                 var model = (System.Collections.Generic.List<Trinity.BE.ProfileModel>)e.Data;
-                CSCallJS.LoadPageHtml(this.LayerWeb, e.Source.ToString(), model);
+                CSCallJS.LoadPageHtml(this.LayerWeb, "Supervisee.html", model);
+                if (e.Source!=null)
+                {
+                    LayerWeb.InvokeScript("setSearchText", e.Source);
+                }
+               
+                if (!string.IsNullOrEmpty(e.Message))
+                {
+                   
+                    LayerWeb.InvokeScript("failAlert", e.Message);
+                }
             }
             else if (e.Name == EventNames.GET_LIST_SUPERVISEE_FAILED)
             {
@@ -933,109 +943,109 @@ namespace Enrolment
             catch (Exception ex)
             {
 
-                LayerWeb.InvokeScript("failAlert","Something wrong with camera!");
+                LayerWeb.InvokeScript("failAlert", "Something wrong with camera!");
             }
         }
 
-            private void LoadEditSupervisee(ProfileModel currentEditUser, string photo1, string photo2)
-            {
-                LayerWeb.LoadPageHtml("Edit-Supervisee.html", currentEditUser);
-                LayerWeb.InvokeScript("setAvatar", photo1, photo2);
+        private void LoadEditSupervisee(ProfileModel currentEditUser, string photo1, string photo2)
+        {
+            LayerWeb.LoadPageHtml("Edit-Supervisee.html", currentEditUser);
+            LayerWeb.InvokeScript("setAvatar", photo1, photo2);
 
-                string fingerprintLeft = "../images/leftthumb.png";
-                string fingerprintRight = "../images/rightthumb.png";
-                if (currentEditUser.UserProfile.LeftThumbImage != null)
-                {
-                    fingerprintLeft = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(currentEditUser.UserProfile.LeftThumbImage));
-                }
-                if (currentEditUser.UserProfile.RightThumbImage != null)
-                {
-                    fingerprintRight = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(currentEditUser.UserProfile.RightThumbImage));
-                }
-                LayerWeb.InvokeScript("setFingerprintServerCall", fingerprintLeft, fingerprintRight);
+            string fingerprintLeft = "../images/leftthumb.png";
+            string fingerprintRight = "../images/rightthumb.png";
+            if (currentEditUser.UserProfile.LeftThumbImage != null)
+            {
+                fingerprintLeft = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(currentEditUser.UserProfile.LeftThumbImage));
             }
-
-            private void CaptureAttempt(string sessionAttemptName)
+            if (currentEditUser.UserProfile.RightThumbImage != null)
             {
-                Session session = Session.Instance;
-                var firstAttemp = 1;
-                if (session[sessionAttemptName] != null)
+                fingerprintRight = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(currentEditUser.UserProfile.RightThumbImage));
+            }
+            LayerWeb.InvokeScript("setFingerprintServerCall", fingerprintLeft, fingerprintRight);
+        }
+
+        private void CaptureAttempt(string sessionAttemptName)
+        {
+            Session session = Session.Instance;
+            var firstAttemp = 1;
+            if (session[sessionAttemptName] != null)
+            {
+                firstAttemp = (int)session[sessionAttemptName];
+                if (sessionAttemptName == CommonConstants.CAPTURE_PHOTO_ATTEMPT)
                 {
-                    firstAttemp = (int)session[sessionAttemptName];
-                    if (sessionAttemptName == CommonConstants.CAPTURE_PHOTO_ATTEMPT)
-                    {
-                        _jsCallCS.PreviewSuperviseePhoto(firstAttemp);
-                    }
-                    else
-                    {
-                        _jsCallCS.PreviewSuperviseeFingerprint(firstAttemp);
-                    }
+                    _jsCallCS.PreviewSuperviseePhoto(firstAttemp);
                 }
                 else
                 {
-                    session[sessionAttemptName] = firstAttemp;
-                    if (sessionAttemptName == CommonConstants.CAPTURE_PHOTO_ATTEMPT)
-                    {
-                        _jsCallCS.PreviewSuperviseePhoto(firstAttemp);
-                    }
-                    else
-                    {
-                        _jsCallCS.PreviewSuperviseeFingerprint(firstAttemp);
-                    }
-
+                    _jsCallCS.PreviewSuperviseeFingerprint(firstAttemp);
                 }
             }
-
-            #endregion
-
-            private void NavigateTo(NavigatorEnums navigatorEnum)
+            else
             {
-                // navigate
-                if (navigatorEnum == NavigatorEnums.Authentication_NRIC)
+                session[sessionAttemptName] = firstAttemp;
+                if (sessionAttemptName == CommonConstants.CAPTURE_PHOTO_ATTEMPT)
                 {
-                    _nric.Start();
+                    _jsCallCS.PreviewSuperviseePhoto(firstAttemp);
                 }
-                else if (navigatorEnum == NavigatorEnums.Supervisee)
+                else
                 {
-                    this.LayerWeb.LoadPageHtml("Supervisee.html");
-                    _suppervisee.Start();
-                }
-                else if (navigatorEnum == NavigatorEnums.Login)
-                {
-                    _login.Start();
-                }
-                else if (navigatorEnum == NavigatorEnums.WebcamCapture)
-                {
-                    _webcamCapture.Start();
+                    _jsCallCS.PreviewSuperviseeFingerprint(firstAttemp);
                 }
 
-                // set current page
-                _currentPage = navigatorEnum;
-
-                // display options in Authentication_SmartCard page
-                if (_displayLoginButtonStatus && _currentPage == NavigatorEnums.Authentication_SmartCard)
-                {
-                    _displayLoginButtonStatus = false;
-                    CSCallJS.DisplayLogoutButton(this.LayerWeb, _displayLoginButtonStatus);
-                }
-
-                // display options in the rest
-                if (!_displayLoginButtonStatus && _currentPage != NavigatorEnums.Authentication_SmartCard)
-                {
-                    _displayLoginButtonStatus = true;
-                    CSCallJS.DisplayLogoutButton(this.LayerWeb, _displayLoginButtonStatus);
-                }
-            }
-
-            private void Main_Load(object sender, EventArgs e)
-            {
-
-            }
-
-            private void Main_FormClosed(object sender, FormClosedEventArgs e)
-            {
-                Environment.Exit(0);
             }
         }
+
+        #endregion
+
+        private void NavigateTo(NavigatorEnums navigatorEnum)
+        {
+            // navigate
+            if (navigatorEnum == NavigatorEnums.Authentication_NRIC)
+            {
+                _nric.Start();
+            }
+            else if (navigatorEnum == NavigatorEnums.Supervisee)
+            {
+                this.LayerWeb.LoadPageHtml("Supervisee.html");
+                _suppervisee.Start();
+            }
+            else if (navigatorEnum == NavigatorEnums.Login)
+            {
+                _login.Start();
+            }
+            else if (navigatorEnum == NavigatorEnums.WebcamCapture)
+            {
+                _webcamCapture.Start();
+            }
+
+            // set current page
+            _currentPage = navigatorEnum;
+
+            // display options in Authentication_SmartCard page
+            if (_displayLoginButtonStatus && _currentPage == NavigatorEnums.Authentication_SmartCard)
+            {
+                _displayLoginButtonStatus = false;
+                CSCallJS.DisplayLogoutButton(this.LayerWeb, _displayLoginButtonStatus);
+            }
+
+            // display options in the rest
+            if (!_displayLoginButtonStatus && _currentPage != NavigatorEnums.Authentication_SmartCard)
+            {
+                _displayLoginButtonStatus = true;
+                CSCallJS.DisplayLogoutButton(this.LayerWeb, _displayLoginButtonStatus);
+            }
+        }
+
+        private void Main_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Main_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Environment.Exit(0);
+        }
     }
+}
 

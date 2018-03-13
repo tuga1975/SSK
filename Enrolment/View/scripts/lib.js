@@ -50,6 +50,9 @@ function refreshQueueNumbers(currentQueueNumber, nextQueueNumberList) {
 function failAlert(message) {
     alert(message);
 }
+function setSearchText(searchText) {
+    $('#nric').val(searchText);
+}
 
 function setAvatar(base64Str1, base64Str2) {
     if (base64Str1 != "") {

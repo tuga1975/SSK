@@ -68,7 +68,7 @@ namespace Enrolment
             var dalUserProfile = new DAL_UserProfile();
             var dbUsers = dalUser.SearchSuperviseeByNRIC(nric);
             var listSupervisee = new List<Trinity.BE.ProfileModel>();
-            if (dbUsers != null)
+            if (dbUsers != null && dbUsers.Count > 0)
             {
                 foreach (var item in dbUsers)
                 {
@@ -84,11 +84,11 @@ namespace Enrolment
                 //  session[CommonConstants.SUPERVISEE] = dbUser;
 
                 //  _web.LoadPageHtml("Supervisee.html", listSupervisee);
-                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = 0, Name = EventNames.GET_LIST_SUPERVISEE_SUCCEEDED, Data = listSupervisee, Source = "Supervisee.html" });
+                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = 0, Name = EventNames.GET_LIST_SUPERVISEE_SUCCEEDED, Data = listSupervisee, Source = nric });
             }
             else
             {
-                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.GET_LIST_SUPERVISEE_SUCCEEDED, Data = listSupervisee, Source = "Supervisee.html" });
+                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.GET_LIST_SUPERVISEE_SUCCEEDED, Data = listSupervisee, Source = nric, Message = "Cant find any record with your input's information." });
                 // LoadListSupervisee();
             }
         }
@@ -598,7 +598,7 @@ namespace Enrolment
                 session[CommonConstants.IS_PRIMARY_PHOTO] = false;
             }
 
-           // _web.LoadPageHtml("WebcamCapture.html");
+            // _web.LoadPageHtml("WebcamCapture.html");
             eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.OPEN_PICTURE_CAPTURE_FORM, Message = number, Data = from });
         }
 
@@ -761,7 +761,7 @@ namespace Enrolment
 
             EventCenter eventCenter = EventCenter.Default;
             //string from = "edit";
-            eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.LOAD_UPDATE_PHOTOS});
+            eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.LOAD_UPDATE_PHOTOS });
 
         }
 
