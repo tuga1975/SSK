@@ -1,6 +1,6 @@
 using System;
 
-namespace Trinity.CentralizedAPI.Areas.HelpPage.ModelDescriptions
+namespace Trinity.BackendAPI.Areas.HelpPage.ModelDescriptions
 {
     /// <summary>
     /// Describes a type model.

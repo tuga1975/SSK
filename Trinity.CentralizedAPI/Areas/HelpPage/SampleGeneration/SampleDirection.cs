@@ -1,4 +1,4 @@
-namespace Trinity.CentralizedAPI.Areas.HelpPage
+namespace Trinity.BackendAPI.Areas.HelpPage
 {
     /// <summary>
     /// Indicates whether the sample is used for request or response

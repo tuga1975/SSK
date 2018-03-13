@@ -5,7 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 
-namespace Trinity.CentralizedAPI.Controllers
+namespace Trinity.BackendAPI.Controllers
 {
     public class QueueNumberController : ApiController
     {

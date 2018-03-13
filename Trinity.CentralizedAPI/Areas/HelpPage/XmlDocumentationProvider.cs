@@ -5,9 +5,9 @@ using System.Reflection;
 using System.Web.Http.Controllers;
 using System.Web.Http.Description;
 using System.Xml.XPath;
-using Trinity.CentralizedAPI.Areas.HelpPage.ModelDescriptions;
+using Trinity.BackendAPI.Areas.HelpPage.ModelDescriptions;
 
-namespace Trinity.CentralizedAPI.Areas.HelpPage
+namespace Trinity.BackendAPI.Areas.HelpPage
 {
     /// <summary>
     /// A custom <see cref="IDocumentationProvider"/> that reads the API documentation from an XML documentation file.

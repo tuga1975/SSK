@@ -15,6 +15,10 @@ namespace Trinity.DAL
 
 
         #region 2018
+        public Trinity.DAL.DBContext.Membership_Users GetByNRIC(string NRIC)
+        {
+            return _localUnitOfWork.DataContext.Membership_Users.FirstOrDefault(d => d.NRIC == NRIC);
+        }
         public List<Trinity.DAL.DBContext.Membership_Users> GetSuperviseeBlockedAppointmentsAvailable(DateTime DateAppointment,Nullable<int> take = null)
         {
             DateAppointment = DateAppointment.Date;
