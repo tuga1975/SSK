@@ -19,6 +19,7 @@ namespace Trinity.BackendAPI.Controllers
         public string content { get; set; }
         public DateTime datetime { get; set; }
         public string notification_code { get; set; }
+        public string transaction_code { get; set; }
         public string NRIC { get; set; }
     }
 
@@ -28,7 +29,7 @@ namespace Trinity.BackendAPI.Controllers
         [HttpPost]
         public IHttpActionResult Notification([FromBody]SSPModel data)
         {
-            if (new DAL.DAL_Notification().SSPInsert(data.source, data.type, data.content, data.datetime, data.notification_code) > 0)
+            if (!string.IsNullOrEmpty(new DAL.DAL_Notification().SSPInsert(data.source, data.type, data.content, data.datetime, data.notification_code)))
                 return Ok(true);
             else
                 return Ok(false);
@@ -36,7 +37,10 @@ namespace Trinity.BackendAPI.Controllers
         [HttpPost]
         public IHttpActionResult Transaction([FromBody]SSPModel data)
         {
-            return Ok(true);
+            if (new DAL.DAL_Transactions().Insert(data.NRIC,data.source, data.type, data.content, data.datetime, data.transaction_code)!= Guid.Empty)
+                return Ok(true);
+            else
+                return Ok(false);
         }
 
         [HttpPost]
@@ -108,8 +112,9 @@ namespace Trinity.BackendAPI.Controllers
         }
 
         [HttpPost]
-        public IHttpActionResult Completion([FromBody]SSPModel data)
+        public async System.Threading.Tasks.Task<IHttpActionResult> Completion([FromBody]SSPModel data)
         {
+            await System.Threading.Tasks.Task.Run(() => Trinity.SignalR.Client.Instance.SSPCompleted(data.NRIC));
             return Ok(true);
         }
     }

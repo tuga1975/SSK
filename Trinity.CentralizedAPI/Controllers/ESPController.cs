@@ -21,6 +21,7 @@ namespace Trinity.BackendAPI.Controllers
         public string Content { get; set; }
         public Nullable<System.DateTime> Datetime { get; set; }
         public string notification_code { get; set; }
+        public Nullable<System.DateTime> requestDate { get; set; }
         public override string ToString()
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);
@@ -64,20 +65,26 @@ namespace Trinity.BackendAPI.Controllers
             }
         }
 
-        //[HttpPost]
-        //public IHttpActionResult InsertNotification([FromBody] ESPModel data)
-        //{
-        //    //string[] lines = { note.Source, note.Type, note.Content, note.Datetime.ToString(), note.notification_code, DateTime.Now.ToString(), "==================" };
-        //    //Utils.Logs.SaveLog(System.Web.Hosting.HostingEnvironment.MapPath("~/Logs") + @"\Notifications.log", lines);
-        //    //return db.USP_Notification_Insert(note.Source, note.Type, note.Content, note.Datetime, note.notification_code).AsEnumerable();
-        //}
+        [HttpPost]
+        public IHttpActionResult InsertNotification([FromBody] ESPModel data)
+        {
+            string IDNoti = new DAL.DAL_Notification().SSPInsert(data.Source, data.Type, data.Content, data.Datetime.Value, data.NotificationID);
+            return Ok(IDNoti);
+        }
 
-        //[HttpPost]
-        //[Route("api/uhp-sim/getNotices")]
-        //public IEnumerable<USP_Notification_Select_By_Date_Result> GetNotificationByDate([FromBody] ESPModel data)
-        //{
-        //    return db.USP_Notification_Select_By_Date(requestDate.requestDate).AsEnumerable();
-        //}
+        [HttpPost]
+        public IHttpActionResult GetNotificationByDate([FromBody] ESPModel data)
+        {
+            var result = new DAL.DAL_Notification().GetByDate(data.requestDate.Value).Select(d=>new {
+                d.NotificationID,
+                d.Source,
+                d.Type,
+                d.Content,
+                d.Datetime,
+                d.notification_code
+            });
+            return Ok(result);
+        }
 
     }
 }

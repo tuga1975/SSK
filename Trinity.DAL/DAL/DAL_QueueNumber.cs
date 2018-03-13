@@ -755,7 +755,7 @@ namespace Trinity.DAL
             {
                 if (EnumAppConfig.IsLocal)
                 {
-                    DBContext.Queue dbQueue = _localUnitOfWork.DataContext.Queues.Include("Appointment").FirstOrDefault(d => d.Appointment.UserId == userId);
+                    DBContext.Queue dbQueue = _localUnitOfWork.DataContext.Queues.Include("Appointment").FirstOrDefault(d => d.Appointment.UserId == userId && DbFunctions.TruncateTime(d.CreatedTime).Value == DateTime.Today);
 
                     if (dbQueue == null)
                         return 0;
@@ -806,7 +806,7 @@ namespace Trinity.DAL
                 }
                 else
                 {
-                    DBContext.Queue dbQueue = _centralizedUnitOfWork.DataContext.Queues.Include("Appointment").FirstOrDefault(d => d.Appointment.UserId == userId);
+                    DBContext.Queue dbQueue = _centralizedUnitOfWork.DataContext.Queues.Include("Appointment").FirstOrDefault(d => d.Appointment.UserId == userId && DbFunctions.TruncateTime(d.CreatedTime).Value == DateTime.Today);
 
                     if (dbQueue == null)
                         return 0;

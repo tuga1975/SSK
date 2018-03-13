@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Trinity.BE;
 using Trinity.DAL.Repository;
 using Trinity.Common;
+using System.Data.Entity;
 
 namespace Trinity.DAL
 {
@@ -15,18 +16,27 @@ namespace Trinity.DAL
         Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
 
         #region refactor 2018
-        public int SSPInsert(string source,string type, string content,DateTime datetime,string notification_code)
+        public List<DBContext.Notification> GetByDate(DateTime date)
         {
+            date = date.Date;
+            return _localUnitOfWork.DataContext.Notifications.Where(d => DbFunctions.TruncateTime(d.Datetime) == date).ToList();
+        }
+        public string SSPInsert(string source,string type, string content,DateTime datetime,string notification_code)
+        {
+            string IDInsert = Guid.NewGuid().ToString().Trim();
             _localUnitOfWork.GetRepository<DBContext.Notification>().Add(new DBContext.Notification()
             {
-                NotificationID = Guid.NewGuid().ToString().Trim(),
+                NotificationID = IDInsert,
                 Datetime = datetime,
                 Content = content,
                 Source = source,
                 Type = type,
                 notification_code=notification_code
             });
-            return _localUnitOfWork.Save();
+            if (_localUnitOfWork.Save() > 0)
+                return IDInsert;
+            else
+                return string.Empty;
         }
         public List<Notification> GetAllNotifications(string userId)
         {
