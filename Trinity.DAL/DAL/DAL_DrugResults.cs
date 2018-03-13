@@ -19,14 +19,7 @@ namespace Trinity.DAL
 
         public DBContext.DrugResult GetByMarkingNumber(string MarkingNumber)
         {
-            if (EnumAppConfig.IsLocal)
-            {
-                return _localUnitOfWork.DataContext.DrugResults.FirstOrDefault(d => d.markingnumber == MarkingNumber);
-            }
-            else
-            {
-                return _centralizedUnitOfWork.DataContext.DrugResults.FirstOrDefault(d => d.markingnumber == MarkingNumber);
-            }
+            return _localUnitOfWork.DataContext.DrugResults.FirstOrDefault(d => d.markingnumber.Equals(MarkingNumber));
         }
 
         public string GetDrugTypeByNRIC(string NRIC)

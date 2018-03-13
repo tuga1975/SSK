@@ -15,6 +15,11 @@ namespace Trinity.DAL
 
 
         #region 2018
+        public List<Trinity.DAL.DBContext.Membership_Users> GetFromAppointmentDate(DateTime dateAppointment)
+        {
+            dateAppointment = dateAppointment.Date;
+            return _localUnitOfWork.DataContext.Appointments.Where(d => d.Date == dateAppointment).Select(d => d.Membership_Users).ToList();
+        }
         public Trinity.DAL.DBContext.Membership_Users GetByNRIC(string NRIC)
         {
             return _localUnitOfWork.DataContext.Membership_Users.FirstOrDefault(d => d.NRIC == NRIC);
