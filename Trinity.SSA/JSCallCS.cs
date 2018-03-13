@@ -345,9 +345,17 @@ namespace SSA
                     this._web.RunScript("$('.status-text').css('color','#000').text('The current user is null');");
                     return;
                 }
+                Trinity.BE.User supervisee = null;
+                if (currentUser.Role == EnumUserRoles.DutyOfficer)
+                {
+                    supervisee = (Trinity.BE.User)session[CommonConstants.SUPERVISEE];
+                }
+                else
+                {
+                    supervisee = currentUser;
+                }
                 var dalQueue = new DAL_QueueNumber();
-                dalQueue.UpdateQueueStatusByUserId(currentUser.UserId, EnumStation.SSA, EnumQueueStatuses.Finished, EnumStation.UHP, EnumQueueStatuses.Processing, "", EnumQueueOutcomeText.Processing);
-
+                dalQueue.UpdateQueueStatusByUserId(supervisee.UserId, EnumStation.SSA, EnumQueueStatuses.Finished, EnumStation.UHP, EnumQueueStatuses.Processing, "", EnumQueueOutcomeText.Processing);
                 //this._web.LoadPageHtml("PrintingMUBAndTTLabels.html");
                 //this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').show(); ; ");
                 //this._web.RunScript("$('.status-text').css('color','#000').text('Please collect your labels');");
@@ -355,12 +363,10 @@ namespace SSA
 
                 DeleteQRCodeImageFileTemp();
 
-
                 CheckMUBPrintingLabellingProgress();
-                this._web.RunScript("$('.status-text').css('color','#000').text('Printing and labelling is in progres...');");
+                this._web.RunScript("$('.status-text').css('color','#000').text('Printing and labelling is in progress...');");
                 this._web.RunScript("$('#ConfirmBtn').html('Waiting...');");
                 this._web.RunScript("$('#lblNextAction').text('CheckIfMUBIsRemoved');");
-
             }
             else
             {
