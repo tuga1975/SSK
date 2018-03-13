@@ -152,6 +152,18 @@ namespace SSK
                 }
             }
 
+            //Nếu queueOther <8 lấy thêm những người bị block mà có lịch hôm nay
+            if (queueOther.Count < 8)
+            {
+                List<Trinity.DAL.DBContext.Membership_Users> arrayUserBlocked = new DAL_User().GetSuperviseeBlockedAppointmentsAvailable(DateTime.Today, 8 - queueOther.Count);
+                foreach (var item in arrayUserBlocked)
+                {
+                    queueOther.Add(new Queue()
+                    {
+                        QueuedNumber = Trinity.Common.CommonUtil.GetQueueNumber(item.NRIC)
+                    });
+                }
+            }
 
             if (queueNowServing.Count < 5 && queueCurrent.Count > 0)
             {
@@ -174,10 +186,10 @@ namespace SSK
             //}
 
             wbQueueNumber.InvokeScript("ShowTimeSlot",
-                textTimeSlot,
-                JsonConvert.SerializeObject(queueNowServing.Select(d => new { d.QueuedNumber })),
-                JsonConvert.SerializeObject(queueCurrent.Select(d => new { d.QueuedNumber }).Take(12)),
-                JsonConvert.SerializeObject(queueOther.Select(d => new { d.QueuedNumber }).Take(8))
+                string.IsNullOrEmpty(textTimeSlot) ? "BREAK TIME" : textTimeSlot,
+                JsonConvert.SerializeObject(queueNowServing.Select(d => new { d.QueuedNumber, d.Type })),
+                JsonConvert.SerializeObject(queueCurrent.Select(d => new { d.QueuedNumber, d.Type }).Take(12)),
+                JsonConvert.SerializeObject(queueOther.Select(d => new { d.QueuedNumber, d.Type }).Take(8))
                 );
         }
 

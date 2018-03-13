@@ -13,9 +13,9 @@ using Trinity.Util;
 
 namespace Experiment
 {
-    public partial class Form1 : Form
+    public partial class FormMain : Form
     {
-        public Form1()
+        public FormMain()
         {
             InitializeComponent();
         }
@@ -252,6 +252,12 @@ namespace Experiment
             {
                 Alert(ex.ToString());
             }
+        }
+
+        private void btnTestSignalR_Click(object sender, EventArgs e)
+        {
+            FormTestSignalR f = new FormTestSignalR();
+            f.Show();
         }
     }
 }

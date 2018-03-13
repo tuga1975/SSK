@@ -55,11 +55,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Form1.cs">
+    <Compile Include="FormMain.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="FormMain.Designer.cs">
+      <DependentUpon>FormMain.cs</DependentUpon>
     </Compile>
     <Compile Include="FormLEDLightControl.cs">
       <SubType>Form</SubType>
@@ -67,13 +67,22 @@
     <Compile Include="FormLEDLightControl.Designer.cs">
       <DependentUpon>FormLEDLightControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormTestSignalR.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormTestSignalR.Designer.cs">
+      <DependentUpon>FormTestSignalR.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <EmbeddedResource Include="FormMain.resx">
+      <DependentUpon>FormMain.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormLEDLightControl.resx">
       <DependentUpon>FormLEDLightControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormTestSignalR.resx">
+      <DependentUpon>FormTestSignalR.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -117,6 +126,10 @@
     <ProjectReference Include="..\Trinity.Device\Trinity.Device.csproj">
       <Project>{9c043308-e722-46ae-8d57-d0b409c0b729}</Project>
       <Name>Trinity.Device</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Trinity.Utils\Trinity.SignalR.csproj">
+      <Project>{c2ee0b7a-1cbf-4403-807e-8ac9f455c661}</Project>
+      <Name>Trinity.SignalR</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
