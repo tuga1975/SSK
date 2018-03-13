@@ -81,6 +81,11 @@ namespace Experiment
             Alert("IdentificationCompleted: " + result);
         }
 
+        private void Alert()
+        {
+            MessageBox.Show("OK", "Alert", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
         private void Alert(string mesage)
         {
             MessageBox.Show(mesage, "Alert", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -251,6 +256,40 @@ namespace Experiment
             catch (Exception ex)
             {
                 Alert(ex.ToString());
+            }
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            BarcodePrinterUtil.Instance.ResetPagePossition(EnumDeviceNames.TTLabelPrinter);
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            BarcodePrinterUtil.Instance.ResetPagePossition(EnumDeviceNames.MUBLabelPrinter);
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            if (DocumentScannerUtil.Instance.Connect())
+            {
+                Alert();
+            }
+            else
+            {
+                Alert("failed");
+            }
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            if (DocumentScannerUtil.Instance.Disconnect())
+            {
+                Alert();
+            }
+            else
+            {
+                Alert("Disconnect failed");
             }
         }
     }

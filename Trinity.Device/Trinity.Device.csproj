@@ -58,7 +58,7 @@
   <ItemGroup>
     <Compile Include="Authentication\Fingerprint.cs" />
     <Compile Include="Authentication\SmartCard.cs" />
-    <Compile Include="Monitor\ApplicationStatusMonitor.cs" />
+    <Compile Include="ApplicationStatusManager.cs" />
     <Compile Include="Monitor\BarcodePrinterMonitor.cs" />
     <Compile Include="Monitor\BarcodeScannerMonitor.cs" />
     <Compile Include="Monitor\ReceiptPrinterMonitor.cs" />

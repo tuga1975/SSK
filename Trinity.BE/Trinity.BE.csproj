@@ -90,7 +90,7 @@
     <Compile Include="CardInfo.cs" />
     <Compile Include="CheckWarningSaveSetting.cs" />
     <Compile Include="AbsenceReporting.cs" />
-    <Compile Include="DeviceStatus.cs" />
+    <Compile Include="ApplicationStatus.cs" />
     <Compile Include="Holiday.cs" />
     <Compile Include="IssueCard.cs" />
     <Compile Include="Label.cs" />

@@ -43,12 +43,10 @@ namespace Trinity.Device
             try
             {
                 // get statuses
-                var deviceStatuses = SmartCardReaderUtil.Instance.GetDeviceStatus();
+                var statuses = SmartCardReaderUtil.Instance.GetDeviceStatus();
 
-                // update local ApplicationDevice_Status
-                DAL_DeviceStatus dAL_DeviceStatus = new DAL_DeviceStatus();
-                dAL_DeviceStatus.Update((int)EnumDeviceId.SmartCardReader, deviceStatuses);
-                Trinity.SignalR.Client.Instance.DeviceStatusChanged((int)EnumDeviceId.SmartCardReader, deviceStatuses);
+                // report
+                ApplicationStatusManager.Instance.ReportDeviceStatus(EnumDeviceId.SmartCardReader, statuses);
             }
             catch (Exception)
             {
