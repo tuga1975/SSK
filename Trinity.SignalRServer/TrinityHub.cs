@@ -64,6 +64,10 @@ namespace Trinity.NotificationServer
                     }
                 }
             }
+            else if (notificationInfo.Name == NotificationNames.SSP_COMPLETED)
+            {
+                Clients.Clients(Program.ProfileConnected.Where(d => d.isApp && d.Station == EnumStation.DUTYOFFICER).Select(d => d.ConnectionId).ToList()).OnNewNotification(notificationInfo);
+            }
         }
 
         #region Connection functions

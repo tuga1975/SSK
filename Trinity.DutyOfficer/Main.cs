@@ -39,6 +39,7 @@ namespace DutyOfficer
             Trinity.SignalR.Client.Instance.OnNewNotification += OnNewNotification_Handler ;
             Trinity.SignalR.Client.Instance.OnAppDisconnected += OnAppDisconnected_Handler;
             Trinity.SignalR.Client.Instance.OnQueueCompleted += OnQueueCompleted_Handler;
+            Trinity.SignalR.Client.Instance.OnSSPCompleted += OnSSPCompleted_Handler;
 
             // setup variables
             _smartCardFailed = 0;
@@ -64,6 +65,11 @@ namespace DutyOfficer
             Lib.LayerWeb = LayerWeb;
             LayerWeb.Url = new Uri(String.Format("file:///{0}/View/html/Layout.html", CSCallJS.curDir));
             LayerWeb.ObjectForScripting = _jsCallCS;
+        }
+
+        private void OnSSPCompleted_Handler(object sender, NotificationInfo e)
+        {
+            string NRIC = e.NRIC;
         }
 
         private void OnAppDisconnected_Handler(object sender, EventInfo e)
