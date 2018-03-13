@@ -111,12 +111,6 @@ namespace SSA
 
                 var dalLabel = new DAL_Labels();
                 dalLabel.UpdateLabel(labelInfo);
-
-                //// Update queue status is finished
-                //var dalQueue = new DAL_QueueNumber();
-                //dalQueue.UpdateQueueStatusByUserId(labelInfo.UserId, EnumStation.SSA, EnumStation.UHP, EnumQueueStatuses.Finished, "Printer MUB/TT Label");
-
-                //DeleteQRCodeImageFileTemp();
             }
             catch (Exception ex)
             {
@@ -150,10 +144,7 @@ namespace SSA
                 var dalLabel = new DAL_Labels();
                 dalLabel.UpdateLabel(labelInfo);
 
-                Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(e.LabelInfo.UserId, "Cannot print MUB Label", "User '" + labelInfo.UserId + "' cannot print MUB label.", EnumNotificationTypes.Error);
-
-                //DeleteQRCodeImageFileTemp();
-                //LogOut();
+                Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(e.LabelInfo.UserId, "Cannot print MUB Label", "User '" + labelInfo.UserId + "' cannot print MUB label.", EnumNotificationTypes.Error);                
             }
             catch (Exception ex)
             {
@@ -182,26 +173,7 @@ namespace SSA
                 };
 
                 var dalLabel = new DAL_Labels();
-                var update = dalLabel.UpdateLabel(labelInfo);
-                if (update != null)
-                {
-                    var dalAppointment = new DAL_Appointments();
-                    var dalQueue = new DAL_QueueNumber();
-                    var appointment = dalAppointment.GetTodayAppointmentByUserId(labelInfo.UserId);
-                    //var appointment = result.Data;
-
-                    if (appointment != null)
-                    {
-                        var sskQueue = new DAL_QueueNumber().GetQueueDetailByAppointment(appointment, EnumStation.SSK);
-
-                        dalQueue.UpdateQueueStatus(sskQueue.Queue_ID, EnumQueueStatuses.Finished, EnumStation.SSK);
-                        dalQueue.UpdateQueueStatus(sskQueue.Queue_ID, EnumQueueStatuses.Processing, EnumStation.SSA);
-                    }
-                    //this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').show(); ; ");
-                    //this._web.RunScript("$('.status-text').css('color','#000').text('Please collect your labels');");
-
-                    //DeleteQRCodeImageFileTemp();
-                }
+                dalLabel.UpdateLabel(labelInfo);
             }
             catch (Exception ex)
             {
@@ -236,9 +208,6 @@ namespace SSA
                 dalLabel.UpdateLabel(labelInfo);
 
                 Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(e.LabelInfo.UserId, "Cannot print TT Label", "User '" + labelInfo.UserId + "' cannot print TT label.", EnumNotificationTypes.Error);
-
-                //DeleteQRCodeImageFileTemp();
-                //LogOut();
             }
             catch (Exception ex)
             {
@@ -253,10 +222,7 @@ namespace SSA
             //this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').hide(); ; ");
             //this._web.RunScript("$('.status-text').css('color','#000').text('Sent problem to Duty Officer. Please wait to check !');");
             //MessageBox.Show(e.ErrorMessage, "", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId, "MUB & TT", "Don't print MUB & TT, Please check !", EnumNotificationTypes.Error);
-
-            //DeleteQRCodeImageFileTemp();
-            //LogOut();
+            Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId, "MUB & TT", "Don't print MUB & TT, Please check !", EnumNotificationTypes.Error);            
         }
 
         public void ManualLogin(string username, string password)
