@@ -412,8 +412,10 @@ namespace SSA
             _currentMUBLabelInfo = JsonConvert.DeserializeObject<LabelInfo>(json);
             if (action == "InitializeMUBApplicator")
             {
-                // Initialize MUB Applicator
-                InitializeMUBApplicator();
+                // MUB Applicator is not ready
+                LEDStatusLightingUtil.Instance.MUBApplicatorStatusUpdated += InitializeMUBApplicator_Handler;
+                LEDStatusLightingUtil.Instance.InitializeMUBApplicator();
+                //this._web.RunScript("$('.ConfirmBtn').prop('disabled', true);");
             }
             else if (action == "CheckIfMUBIsPresent")
             {
@@ -435,43 +437,40 @@ namespace SSA
             else if (action == "CheckIfMUBIsRemoved")
             {
                 this._web.RunScript("$('.status-text').css('color','#000').text('Please remove MUB/TT');");
-                CheckIfMUBIsRemoved();
+                LEDStatusLightingUtil.Instance.MUBStatusUpdated += CheckIfMUBIsRemoved_Callback;
+                LEDStatusLightingUtil.Instance.VerifyMUBPresence();
             }
             else if (action == "OpenMUBDoor")
             {
-                OpenMUBDoor();
+                LEDStatusLightingUtil.Instance.MUBDoorStatusChanged += OpenMUBDoor_Callback;
+                LEDStatusLightingUtil.Instance.OpenMUBDoor();
             }
-        }
-
-        private void InitializeMUBApplicator()
-        {
-            LEDStatusLightingUtil.Instance.InitializeMUBApplicator_Async();
-            LEDStatusLightingUtil.Instance.CheckMUBStatus_Async(EnumMUBCommands.CheckIfApplicatorIsReady, CheckIfApplicatorIsReady_Callback);
         }
 
         private void CheckIfMUBIsPresent()
         {
             // Check if MUB is present or not
-            LEDStatusLightingUtil.Instance.CheckMUBStatus_Async(EnumMUBCommands.CheckIfMUBIsPresent, CheckIfMUBIsPresent_Callback);
+            LEDStatusLightingUtil.Instance.MUBStatusUpdated += CheckIfMUBIsPresent_Callback;
+            LEDStatusLightingUtil.Instance.VerifyMUBPresence();
         }
 
         private void CheckIfMUBIsRemoved()
         {
             // Check if MUB is present or not
-            LEDStatusLightingUtil.Instance.CheckMUBStatus_Async(EnumMUBCommands.CheckIfMUBIsRemoved, CheckIfMUBIsRemoved_Callback);
+            LEDStatusLightingUtil.Instance.MUBStatusUpdated += CheckIfMUBIsRemoved_Callback;
+            LEDStatusLightingUtil.Instance.VerifyMUBPresence();
         }
 
         private void StartMUBApplicator()
         {
             // Start MUB Applicator
-            LEDStatusLightingUtil.Instance.StartMUBApplicator_Async();
-            LEDStatusLightingUtil.Instance.CheckMUBStatus_Async(EnumMUBCommands.CheckIfApplicatorIsStarted, CheckIfApplicatorIsStarted_Callback);
+            LEDStatusLightingUtil.Instance.MUBApplicatorStatusUpdated += StartMUBApplicator_Callback;
+            LEDStatusLightingUtil.Instance.StartMUBApplicator();
         }
 
-        private void OpenMUBDoor()
+        private void CheckIfMUBDoorIsOpen()
         {
-            LEDStatusLightingUtil.Instance.OpenMUBDoor_Async();
-            LEDStatusLightingUtil.Instance.CheckMUBStatus_Async(EnumMUBCommands.CheckIfMUBDoorIsFullyOpen, CheckIfMUBDoorIsFullyOpen_Callback);
+
         }
         private void StartToPrintMUBLabel(LabelInfo labelInfo)
         {
@@ -483,12 +482,32 @@ namespace SSA
         {
             // We check MUB Printing and labelling progress by checking if the MUB Door is open or not.
             // If the Door is open, it means the printing and labelling is completed
-            LEDStatusLightingUtil.Instance.CheckMUBStatus_Async(EnumMUBCommands.CheckIfMUBDoorIsFullyOpen, CheckIfMUBDoorIsFullyOpen_Callback);
+            LEDStatusLightingUtil.Instance.MUBDoorStatusChanged += CheckMUBPrintingLabellingProgress_Callback;
+            LEDStatusLightingUtil.Instance.CheckDoorOpenStatus();
         }
 
-        private void CheckIfMUBDoorIsFullyOpen_Callback(bool isFullyOpen)
+        private void OpenMUBDoor_Callback(object sender, EnumMUBDoorStatus status)
         {
-            if (isFullyOpen)
+            LEDStatusLightingUtil.Instance.MUBDoorStatusChanged += OpenMUBDoor_Callback;
+            if (status == EnumMUBDoorStatus.FullyOpen)
+            {
+                this._web.RunScript("$('.status-text').css('color','#000').text('MUB Door is open. Please remove MUB.');");
+                this._web.RunScript("$('#ConfirmBtn').html('Confirm to remove the MUB');");
+                this._web.RunScript("$('#lblNextAction').text('CheckIfMUBIsRemoved');");
+                CheckIfMUBIsRemoved();
+            }
+            else
+            {
+                this._web.RunScript("$('.status-text').css('color','#000').text('Cannot complete printing and pasting MUB. Please report to Duty Officer');");
+                this._web.RunScript("$('#ConfirmBtn').html('Open MUB Door.');");
+                this._web.RunScript("$('#lblNextAction').text('OpenMUBDoor');");
+            }
+        }
+
+        private void CheckMUBPrintingLabellingProgress_Callback(object sender, EnumMUBDoorStatus status)
+        {
+            LEDStatusLightingUtil.Instance.MUBDoorStatusChanged -= CheckMUBPrintingLabellingProgress_Callback;
+            if (status == EnumMUBDoorStatus.FullyOpen)
             {
                 this._web.RunScript("$('.status-text').css('color','#000').text('MUB was processed successfully. Please remove MUB.');");
                 this._web.RunScript("$('#ConfirmBtn').html('Confirm to remove the MUB');");
@@ -503,9 +522,45 @@ namespace SSA
             }
         }
 
-        private void CheckIfApplicatorIsReady_Callback(bool isReady)
+
+        //private void CheckMUBApplicatorFinishStatus()
+        //{
+        //    LEDStatusLightingUtil.Instance.MUBApplicatorStatusUpdated += CheckMUBApplicatorFinishStatus_Callback;
+        //    LEDStatusLightingUtil.Instance.CheckMUBApplicatorFinishStatus();
+        //}
+
+        //private void CheckMUBApplicatorFinishStatus_Callback(object sender, EnumMUBApplicatorStatus status)
+        //{
+        //    LEDStatusLightingUtil.Instance.MUBApplicatorStatusUpdated += CheckMUBApplicatorFinishStatus_Callback;
+        //    if (status == EnumMUBApplicatorStatus.Finished)
+        //    {
+        //        _retryCount = 0;
+        //        this._web.RunScript("$('.status-text').css('color','#000').text('Ket thuc roi');");
+        //        this._web.RunScript("$('#ConfirmBtn').html('Confirm to remove the MUB');");
+        //        this._web.RunScript("$('#lblNextAction').text('CheckIfMUBIsRemoved');");
+        //    }
+        //    else
+        //    {
+        //        if (_retryCount == 100)
+        //        {
+        //            _retryCount = 0;
+        //            this._web.RunScript("$('.status-text').css('color','#000').text('Chua ket thuc :(');");
+        //            this._web.RunScript("$('#ConfirmBtn').html('Confirm to remove the MUB');");
+        //            this._web.RunScript("$('#lblNextAction').text('CheckIfMUBIsRemoved');");
+        //        }
+        //        else
+        //        {
+        //            _retryCount++;
+        //            Thread.Sleep(200);
+        //            CheckMUBApplicatorFinishStatus();
+        //        }
+        //    }
+        //}
+
+        private void InitializeMUBApplicator_Handler(object sender, EnumMUBApplicatorStatus status)
         {
-            if (isReady)
+            LEDStatusLightingUtil.Instance.MUBApplicatorStatusUpdated -= InitializeMUBApplicator_Handler;
+            if (status == EnumMUBApplicatorStatus.Ready)
             {
                 // MUB Applicator is ready
                 // Then verify presence of MUB
@@ -514,15 +569,16 @@ namespace SSA
                 this._web.RunScript("$('#lblNextAction').text('CheckIfMUBIsPresent');");
                 CheckIfMUBIsPresent();
             }
-            else
+            else if (status == EnumMUBApplicatorStatus.NotReady)
             {
                 this._web.RunScript("$('.status-text').css('color','#000').text('MUB Applicator is not ready.');");
             }
         }
 
-        private void CheckIfApplicatorIsStarted_Callback(bool isStarted)
+        private void StartMUBApplicator_Callback(object sender, EnumMUBApplicatorStatus status)
         {
-            if (isStarted)
+            LEDStatusLightingUtil.Instance.MUBApplicatorStatusUpdated -= StartMUBApplicator_Callback;
+            if (status == EnumMUBApplicatorStatus.Started)
             {
                 // MUB Applicator is started. Ready to print
                 this._web.RunScript("$('.status-text').css('color','#000').text('Ready to print.');");
@@ -534,15 +590,16 @@ namespace SSA
                     StartToPrintMUBLabel(_currentMUBLabelInfo);
                 }
             }
-            else
+            else if (status == EnumMUBApplicatorStatus.NotReady)
             {
                 this._web.RunScript("$('.status-text').css('color','#000').text('MUB Applicator is not ready.');");
             }
         }
 
-        private void CheckIfMUBIsPresent_Callback(bool isPresent)
+        private void CheckIfMUBIsPresent_Callback(object sender, EnumMUBStatus status)
         {
-            if (isPresent)
+            LEDStatusLightingUtil.Instance.MUBStatusUpdated -= CheckIfMUBIsPresent_Callback;
+            if (status == EnumMUBStatus.Placed)
             {
                 // MUB is placed on the holder
                 this._web.RunScript("$('.status-text').css('color','#000').text('The MUB has been placed on the holder.');");
@@ -558,19 +615,23 @@ namespace SSA
             }
         }
 
-        private void CheckIfMUBIsRemoved_Callback(bool isRemoved)
+
+        private void CheckIfMUBIsRemoved_Callback(object sender, EnumMUBStatus status)
         {
-            if (isRemoved)
+            LEDStatusLightingUtil.Instance.MUBStatusUpdated -= CheckIfMUBIsRemoved_Callback;
+            if (status == EnumMUBStatus.Removed)
             {
                 // If MUB is removed then close the MUB Door
-                LEDStatusLightingUtil.Instance.CloseMUBDoor_Async();
-                LEDStatusLightingUtil.Instance.CheckMUBStatus_Async(EnumMUBCommands.CheckIfMUBDoorIsFullyClosed, CheckIfMUBDoorIsFullyClosed_Callback);
+                LEDStatusLightingUtil.Instance.MUBDoorStatusChanged += CloseMUBDoor_Callback;
+                LEDStatusLightingUtil.Instance.CloseMUBDoor();
             }
         }
 
-        private void CheckIfMUBDoorIsFullyClosed_Callback(bool isFullyClosed)
+        private void CloseMUBDoor_Callback(object sender, EnumMUBDoorStatus status)
         {
-            if (isFullyClosed)
+            LEDStatusLightingUtil.Instance.MUBDoorStatusChanged -= CloseMUBDoor_Callback;
+
+            if (status == EnumMUBDoorStatus.FullyClosed)
             {
                 // Complete test. Remove queue number from Queue Monitor
                 Session session = Session.Instance;

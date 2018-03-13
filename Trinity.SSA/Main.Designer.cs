@@ -56,7 +56,6 @@
             this.btnConfirm.Text = "Initialize MUB Applicator";
             this.btnConfirm.UseVisualStyleBackColor = true;
             this.btnConfirm.Visible = false;
-            this.btnConfirm.Click += new System.EventHandler(this.btnConfirm_Click);
             // 
             // lblStatus
             // 

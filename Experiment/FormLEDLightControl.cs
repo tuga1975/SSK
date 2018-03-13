@@ -299,5 +299,125 @@ namespace Experiment
             LEDStatusLightingUtil ledStatusLightingUtil = LEDStatusLightingUtil.Instance;
             ledStatusLightingUtil.SwitchYELLOWLightOnOff(radYELLOWLight.Checked);
         }
+
+        private void btnInitializeMUBApplicator_Click(object sender, EventArgs e)
+        {
+            LEDStatusLightingUtil ledStatusLightingUtil = LEDStatusLightingUtil.Instance;
+            ledStatusLightingUtil.InitializeMUBApplicator_Async();
+        }
+
+        private void btnStartMUBApplicator_Click(object sender, EventArgs e)
+        {
+            LEDStatusLightingUtil ledStatusLightingUtil = LEDStatusLightingUtil.Instance;
+            ledStatusLightingUtil.StartMUBApplicator_Async();
+        }
+
+        private void btnCloseMUBDoor_Click(object sender, EventArgs e)
+        {
+            LEDStatusLightingUtil ledStatusLightingUtil = LEDStatusLightingUtil.Instance;
+            ledStatusLightingUtil.CloseMUBDoor_Async();
+        }
+
+        private void btnOpenMUBDoor_Click(object sender, EventArgs e)
+        {
+            LEDStatusLightingUtil ledStatusLightingUtil = LEDStatusLightingUtil.Instance;
+            ledStatusLightingUtil.OpenMUBDoor_Async();
+        }
+
+        private void SetButtonsStatus(bool enable)
+        {
+            btnCheckIfMUBApplicatorIsReady.Enabled = enable;
+            btnCheckIfMUBApplicatorIsStarted.Enabled = enable;
+            btnCheckIfMUBIsPresent.Enabled = enable;
+            btnCheckIfMUBIsRemoved.Enabled = enable;
+            btnCheckIfMUBDoorIsFullyOpen.Enabled = enable;
+            btnCheckIfMUBDoorIsFullyClosed.Enabled = enable;
+        }
+
+        private void btnCheckIfMUBApplicatorIsReady_Click(object sender, EventArgs e)
+        {
+            SetButtonsStatus(false);
+            LEDStatusLightingUtil ledStatusLightingUtil = LEDStatusLightingUtil.Instance;
+            ledStatusLightingUtil.CheckMUBStatus_Async(EnumMUBCommands.CheckIfApplicatorIsReady, CheckIfApplicatorIsReady_Callback);
+        }
+
+        private void CheckIfApplicatorIsReady_Callback(bool result)
+        {
+            SetButtonsStatus(true);
+            lblCheckIfMUBApplicatorIsReady.Text = result ? "True" : "False";
+        }
+
+        private void CheckIfMUBApplicatorIsStarted_Callback(bool result)
+        {
+            SetButtonsStatus(true);
+            lblCheckIfMUBApplicatorIsStarted.Text = result ? "True" : "False";
+        }
+
+        private void CheckIfMUBIsPresent_Callback(bool result)
+        {
+            SetButtonsStatus(true);
+
+            lblCheckIfMUBIsPresent.Text = result ? "True" : "False";
+        }
+
+        private void CheckIfMUBIsRemoved_Callback(bool result)
+        {
+            SetButtonsStatus(true);
+
+            lblCheckIfMUBIsRemoved.Text = result ? "True" : "False";
+        }
+
+        private void CheckIfMUBDoorIsFullyClosed_Callback(bool result)
+        {
+            SetButtonsStatus(true);
+
+            lblCheckIfMUBDoorIsFullyClosed.Text = result ? "True" : "False";
+        }
+
+        private void CheckIfMUBDoorIsFullyOpen_Callback(bool result)
+        {
+            SetButtonsStatus(true);
+
+            lblCheckIfMUBDoorIsFullyOpen.Text = result ? "True" : "False";
+        }
+
+        private void btnCheckIfMUBApplicatorIsStarted_Click(object sender, EventArgs e)
+        {
+            SetButtonsStatus(false);
+            LEDStatusLightingUtil ledStatusLightingUtil = LEDStatusLightingUtil.Instance;
+            ledStatusLightingUtil.CheckMUBStatus_Async(EnumMUBCommands.CheckIfApplicatorIsStarted, CheckIfMUBApplicatorIsStarted_Callback);
+        }
+
+        private void btnCheckIfMUBIsPresent_Click(object sender, EventArgs e)
+        {
+            SetButtonsStatus(false);
+
+            LEDStatusLightingUtil ledStatusLightingUtil = LEDStatusLightingUtil.Instance;
+            ledStatusLightingUtil.CheckMUBStatus_Async(EnumMUBCommands.CheckIfMUBIsPresent, CheckIfMUBIsPresent_Callback);
+        }
+
+        private void btnCheckIfMUBIsRemoved_Click(object sender, EventArgs e)
+        {
+            SetButtonsStatus(false);
+
+            LEDStatusLightingUtil ledStatusLightingUtil = LEDStatusLightingUtil.Instance;
+            ledStatusLightingUtil.CheckMUBStatus_Async(EnumMUBCommands.CheckIfMUBIsRemoved, CheckIfMUBIsRemoved_Callback);
+        }
+
+        private void btnCheckIfMUBDoorIsFullyClosed_Click(object sender, EventArgs e)
+        {
+            SetButtonsStatus(false);
+
+            LEDStatusLightingUtil ledStatusLightingUtil = LEDStatusLightingUtil.Instance;
+            ledStatusLightingUtil.CheckMUBStatus_Async(EnumMUBCommands.CheckIfMUBDoorIsFullyClosed, CheckIfMUBDoorIsFullyClosed_Callback);
+        }
+
+        private void btnCheckIfMUBDoorIsFullyOpen_Click(object sender, EventArgs e)
+        {
+            SetButtonsStatus(false);
+
+            LEDStatusLightingUtil ledStatusLightingUtil = LEDStatusLightingUtil.Instance;
+            ledStatusLightingUtil.CheckMUBStatus_Async(EnumMUBCommands.CheckIfMUBDoorIsFullyOpen, CheckIfMUBDoorIsFullyOpen_Callback);
+        }
     }
 }
