@@ -68,7 +68,7 @@
 
 <script type="text/javascript">
     api.ready(function (model) {
-        var printingStatus = model[0];
+        var action = model[0];
         $('#companyName').text(model[1].CompanyName);
         //$('#markingNo').text('Marking No: ' + model[1].MarkingNo);
         $('#date').text(model[1].Date);
@@ -84,7 +84,7 @@
 
                 //$("#img-out").append(canvas);
                 var json = JSON.stringify(model[1]);
-                api.server.CallPrintingMUBAndTT(printingStatus, json, canvas.toDataURL());
+                api.server.CallPrintingMUBAndTT(action, json, canvas.toDataURL());
                 // Clean up
                 //document.body.removeChild(canvas);
             }

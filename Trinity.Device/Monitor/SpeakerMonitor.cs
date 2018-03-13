@@ -34,10 +34,8 @@ namespace Trinity.Device
                 // get statuses
                 var statuses = SpeakerUtil.Instance.GetDeviceStatus();
 
-                // update local ApplicationDevice_Status
-                DAL_DeviceStatus dAL_DeviceStatus = new DAL_DeviceStatus();
-                dAL_DeviceStatus.Update((int)EnumDeviceId.Speaker, statuses);
-                Trinity.SignalR.Client.Instance.DeviceStatusChanged((int)EnumDeviceId.Speaker, statuses);
+                // report
+                ApplicationStatusManager.Instance.ReportDeviceStatus(EnumDeviceId.Speaker, statuses);
             }
             catch (Exception ex)
             {

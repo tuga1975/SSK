@@ -413,7 +413,11 @@ namespace DutyOfficer
                 FacialRecognition.Instance.OnFacialRecognitionFailed += Main_OnFacialRecognitionFailed;
                 FacialRecognition.Instance.OnFacialRecognitionSucceeded += Main_OnFacialRecognitionSucceeded;
                 FacialRecognition.Instance.OnFacialRecognitionProcessing += Main_OnFacialRecognitionProcessing;
-
+                if (user.User_Photo1 == null || user.User_Photo1.Length == 0)
+                {
+                    MessageBox.Show("User photo is null");
+                    return;
+                }
                 this.Invoke((MethodInvoker)(() =>
                 {
                     Point startLocation = new Point((Screen.PrimaryScreen.Bounds.Size.Width / 2) - 400 / 2, (Screen.PrimaryScreen.Bounds.Size.Height / 2) - 400 / 2);

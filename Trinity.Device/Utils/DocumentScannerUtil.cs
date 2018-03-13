@@ -104,16 +104,10 @@ namespace Trinity.Util
             return new EnumDeviceStatus[] { EnumDeviceStatus.Disconnected };
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="documentScannerCallback">DocumentScannerCallback(string frontPath, string error)</param>
-        public void StartScanning(Action<string, string> documentScannerCallback)
+        public bool Connect()
         {
             try
             {
-                _documentScannerCallback = documentScannerCallback;
-
                 pdiscan_errors pdiscan_error;
 
                 pdiscan_error = PdiScanWrap.PdConnectToScanner(scanning_handle, "", 1);
@@ -125,12 +119,17 @@ namespace Trinity.Util
                     }
                     else
                         display_pdiscan_error(pdiscan_error);
+
+                    return false;
                 }
 
                 int default_color;
                 pdiscan_error = PdiScanWrap.PdGetTagDefaultLong(scanning_handle, (int)pdiscan_tags.PDISCAN_TAG_COLOR_DEPTH, out default_color);
                 if (pdiscan_error != pdiscan_errors.PDISCAN_ERR_NONE)
+                {
                     display_pdiscan_error(pdiscan_error);
+                    return false;
+                }
                 //if (default_color == (int)pd_color_depths.PD_COLOR_DEPTH_BITONAL)
                 //    radioBitonal.Checked = true;
                 //else
@@ -172,7 +171,10 @@ namespace Trinity.Util
                 int default_duplex_on;
                 pdiscan_error = PdiScanWrap.PdGetTagDefaultLong(scanning_handle, (int)pdiscan_tags.PDISCAN_TAG_DUPLEX, out default_duplex_on);
                 if (pdiscan_error != pdiscan_errors.PDISCAN_ERR_NONE)
+                {
                     display_pdiscan_error(pdiscan_error);
+                    return false;
+                }
                 //if (default_duplex_on == 1)
                 //    radioDuplex.Checked = true;
                 //else
@@ -198,31 +200,86 @@ namespace Trinity.Util
                 //}
                 //cboBrightness.SelectedIndex = selected;
 
-                pdiscan_error = PdiScanWrap.PdEnableFeeder(scanning_handle);
-                if (pdiscan_error != pdiscan_errors.PDISCAN_ERR_NONE)
-                    display_pdiscan_error(pdiscan_error);
-
                 scanner_connected = true;
+                return true;
             }
             catch (Exception ex)
             {
-                MessageBox.Show("imprinter_string_callback exception: " + ex.ToString());
+                MessageBox.Show("Connect exception: " + ex.ToString());
+                return false;
             }
         }
 
-        public void StopScanning()
+        public bool Disconnect()
         {
-            pdiscan_errors pdiscan_error;
-
-            //pdiscan_error = PdiScanWrap.PdDisconnectFromScanner(scanning_handle); // this command will make document stuck
-            pdiscan_error = PdiScanWrap.PdDisableFeeder(scanning_handle);
-            if (pdiscan_error != pdiscan_errors.PDISCAN_ERR_NONE)
+            try
             {
-                display_pdiscan_error(pdiscan_error);
-            }
+                if (scanner_connected)
+                {
+                    pdiscan_errors pdiscan_error = PdiScanWrap.PdDisconnectFromScanner(scanning_handle); // this command will make document stuck
+                    scanner_connected = false;
+                    return true;
+                }
 
-            scanner_connected = false;
-            //update_enabled_states();
+                return false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Disconnect exception: " + ex.ToString());
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="documentScannerCallback">DocumentScannerCallback(string frontPath, string error)</param>
+        public bool StartScanning(Action<string, string> documentScannerCallback)
+        {
+            try
+            {
+                if (scanner_connected)
+                {
+                    _documentScannerCallback = documentScannerCallback;
+                    pdiscan_errors pdiscan_error = PdiScanWrap.PdEnableFeeder(scanning_handle);
+                    if (pdiscan_error != pdiscan_errors.PDISCAN_ERR_NONE)
+                    {
+                        display_pdiscan_error(pdiscan_error);
+                        return false;
+                    }
+
+                    return true;
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("StartScanning exception: " + ex.ToString());
+                return false;
+            }
+        }
+
+        public bool StopScanning()
+        {
+            try
+            {
+                //pdiscan_error = PdiScanWrap.PdDisconnectFromScanner(scanning_handle); // this command will make document stuck
+                pdiscan_errors pdiscan_error = PdiScanWrap.PdDisableFeeder(scanning_handle);
+                if (pdiscan_error != pdiscan_errors.PDISCAN_ERR_NONE)
+                {
+                    display_pdiscan_error(pdiscan_error);
+                    return false;
+                }
+
+                scanner_connected = false;
+                return false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("StopScanning exception: " + ex.ToString());
+                return false;
+            }
         }
 
         public void display_pdiscan_error(pdiscan_errors pdiscan_error)

@@ -65,7 +65,7 @@ public class FacialRecognition
     public event Action OnFacialRecognitionFailed;
     public event Action OnFacialRecognitionProcessing;
     private int _matchingScore = 2800;
-    private List<byte[]> FaceJpg = new List<byte[]>();
+    //private List<byte[]> FaceJpg = new List<byte[]>();
 
 
     void lib_FaceDetect(byte[] FaceJpg, int Face_QualityScore, int Matching_Score, int ISO_Quality_ERROR)
@@ -97,42 +97,51 @@ public class FacialRecognition
     }
 
 
-    public void StartFacialRecognition(Point formLocation, List<byte[]> FaceJpg)
+    public void StartFacialRecognition(Point formLocation, List<byte[]> faceJpg)
     {
-        _failedCount = 0;
-        _suceededCount = 0;
-        this.FaceJpg = (FaceJpg != null ? FaceJpg : new List<byte[]>()).Where(d => d != null).ToList();
-        if (libFace != null && !isStartTracking && this.FaceJpg.Count > 0)
+        try
         {
-            isStartTracking = true;
-            libFace.Init();
+            //this.FaceJpg = (FaceJpg != null ? FaceJpg : new List<byte[]>()).Where(d => d != null).ToList();
+            //this.FaceJpg = FaceJpg;
+            _failedCount = 0;
+            _suceededCount = 0;
+            
+            if (libFace != null && !isStartTracking && faceJpg.Count > 0)
+            {
+                isStartTracking = true;
+                libFace.Init();
 
-            libFace.Show_Window(formLocation, new Size(400, 400));
-            OnFacialRecognitionProcessing();
-            //Thread.Sleep(1000);
-            libFace.FaceDetect += new AT_Facial_API.Library.FaceDetected(lib_FaceDetect);
-            libFace.StartTracking();
-            
-            try
-            {
-                libFace.Photo_JPG = this.FaceJpg[0];
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-                if (this.FaceJpg.Count > 1)
+                libFace.Show_Window(formLocation, new Size(400, 400));
+                OnFacialRecognitionProcessing();
+                //Thread.Sleep(1000);
+                libFace.FaceDetect += new AT_Facial_API.Library.FaceDetected(lib_FaceDetect);
+                libFace.StartTracking();
+
+                try
                 {
-                    libFace.Photo_JPG = this.FaceJpg[1];
+                    libFace.Photo_JPG = faceJpg[0];
                 }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                    if (faceJpg.Count > 1)
+                    {
+                        libFace.Photo_JPG = faceJpg[1];
+                    }
+                }
+
+                faceJpg.RemoveAt(0);
             }
-            
-            this.FaceJpg.RemoveAt(0);
+            else if (!isStartTracking && faceJpg.Count == 0)
+            {
+                OnFacialRecognitionFailed();
+            }
         }
-        else if (!isStartTracking && this.FaceJpg.Count == 0)
+        catch (Exception ex)
         {
+            MessageBox.Show(ex.Message);
             OnFacialRecognitionFailed();
         }
-
     }
 
     private Bitmap CreateBitmapFromByte(byte[] FaceJpg)

@@ -27,7 +27,8 @@ namespace SSA
         private static bool _PrintMUBSucceed = false;
         private static bool _PrintTTSucceed = false;
         private Trinity.BE.PopupModel _popupModel;
-        private string _currentPrintingStatus = "3";
+        private string _currentAction = "PrintMUBLabel";
+        private LabelInfo _currentMUBLabelInfo = null;
 
         public JSCallCS(WebBrowser web)
         {
@@ -85,23 +86,6 @@ namespace SSA
         {
             var labelInfo = JsonConvert.DeserializeObject<LabelInfo>(json);
             _web.LoadPageHtml("PrintingTemplates/MUBLabelTemplate.html", labelInfo);
-        }
-
-        public void CallPrintingMUBAndTT(string printingStatus, string jsonModel, string base64String)
-        {
-            string base64StringCanvas = base64String.Split(',')[1];
-            byte[] bitmapBytes = Convert.FromBase64String(base64StringCanvas);
-
-            var labelInfo = JsonConvert.DeserializeObject<LabelInfo>(jsonModel);
-            labelInfo.BitmapLabel = bitmapBytes;
-            _printMUBAndTTLabel.Start(labelInfo);
-            //MessageBox.Show("Check printing status:" + printingStatus);
-            if (printingStatus == "3")
-            {
-                this._web.RunScript("$('.status-text').css('color','#000').text('Print completed. Please remove the MUB.');");
-                this._web.RunScript("$('#ConfirmBtn').html('Confirm to remove the MUB');");
-                this._web.RunScript("$('#lblPrintingStatus').text('4');");
-            }
         }
 
         private void PrintMUBLabels_OnPrintMUBLabelSucceeded(object sender, PrintMUBAndTTLabelsEventArgs e)
@@ -166,7 +150,7 @@ namespace SSA
                 var dalLabel = new DAL_Labels();
                 dalLabel.UpdateLabel(labelInfo);
 
-                Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(e.LabelInfo.UserId, "Print MUB Label", "Don't print MUB, Please check !", EnumNotificationTypes.Error);
+                Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(e.LabelInfo.UserId, "Cannot print MUB Label", "User '" + labelInfo.UserId + "' cannot print MUB label.", EnumNotificationTypes.Error);
 
                 //DeleteQRCodeImageFileTemp();
                 //LogOut();
@@ -251,7 +235,7 @@ namespace SSA
                 var dalLabel = new DAL_Labels();
                 dalLabel.UpdateLabel(labelInfo);
 
-                Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(e.LabelInfo.UserId, "Print TT Label", "Don't print TT, Please check !", EnumNotificationTypes.Error);
+                Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(e.LabelInfo.UserId, "Cannot print TT Label", "User '" + labelInfo.UserId + "' cannot print TT label.", EnumNotificationTypes.Error);
 
                 //DeleteQRCodeImageFileTemp();
                 //LogOut();
@@ -361,9 +345,17 @@ namespace SSA
                     this._web.RunScript("$('.status-text').css('color','#000').text('The current user is null');");
                     return;
                 }
+                Trinity.BE.User supervisee = null;
+                if (currentUser.Role == EnumUserRoles.DutyOfficer)
+                {
+                    supervisee = (Trinity.BE.User)session[CommonConstants.SUPERVISEE];
+                }
+                else
+                {
+                    supervisee = currentUser;
+                }
                 var dalQueue = new DAL_QueueNumber();
-                dalQueue.UpdateQueueStatusByUserId(currentUser.UserId, EnumStation.SSA, EnumQueueStatuses.Finished, EnumStation.UHP, EnumQueueStatuses.Processing, "", EnumQueueOutcomeText.Processing);
-
+                dalQueue.UpdateQueueStatusByUserId(supervisee.UserId, EnumStation.SSA, EnumQueueStatuses.Finished, EnumStation.UHP, EnumQueueStatuses.Processing, "", EnumQueueOutcomeText.Processing);
                 //this._web.LoadPageHtml("PrintingMUBAndTTLabels.html");
                 //this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').show(); ; ");
                 //this._web.RunScript("$('.status-text').css('color','#000').text('Please collect your labels');");
@@ -371,9 +363,10 @@ namespace SSA
 
                 DeleteQRCodeImageFileTemp();
 
-                //new DAL_QueueDetails().RemoveQueueFromSSK(currentUser.UserId);
-                //Trinity.SignalR.Client.Instance.QueueCompleted(currentUser.UserId);
-                //LogOut();
+                CheckMUBPrintingLabellingProgress();
+                this._web.RunScript("$('.status-text').css('color','#000').text('Printing and labelling is in progress...');");
+                this._web.RunScript("$('#ConfirmBtn').html('Waiting...');");
+                this._web.RunScript("$('#lblNextAction').text('CheckIfMUBIsRemoved');");
             }
             else
             {
@@ -396,162 +389,278 @@ namespace SSA
 
         #region MUB printing & labelling sample process
 
-        public void ConfirmAction(string printingStatus, string json)
+        public void CallPrintingMUBAndTT(string action, string jsonModel, string base64String)
         {
-            _currentPrintingStatus = printingStatus;
-            if (printingStatus == "0")
-            {
-                LEDStatusLightingUtil.Instance.MUBAutoFlagApplicatorReadyOK += Instance_MUBAutoFlagApplicatorReadyOK;
-                LEDStatusLightingUtil.Instance.InitializeMUBApplicator();
+            string base64StringCanvas = base64String.Split(',')[1];
+            byte[] bitmapBytes = Convert.FromBase64String(base64StringCanvas);
 
-                //btnConfirm.Enabled = false;
+            var labelInfo = JsonConvert.DeserializeObject<LabelInfo>(jsonModel);
+            labelInfo.BitmapLabel = bitmapBytes;
+            _printMUBAndTTLabel.Start(labelInfo);
+            //if (action == "PrintMUBLabel")
+            //{
+            //    CheckMUBApplicatorFinishStatus();
+            //    this._web.RunScript("$('.status-text').css('color','#000').text('Print completed. Please remove the MUB.');");
+            //    this._web.RunScript("$('#ConfirmBtn').html('Confirm to remove the MUB');");
+            //    this._web.RunScript("$('#lblNextAction').text('CheckIfMUBIsRemoved');");
+            //}
+        }
+
+        public void ConfirmAction(string action, string json)
+        {
+            _currentAction = action;
+            _currentMUBLabelInfo = JsonConvert.DeserializeObject<LabelInfo>(json);
+            if (action == "InitializeMUBApplicator")
+            {
+                // MUB Applicator is not ready
+                LEDStatusLightingUtil.Instance.MUBApplicatorStatusUpdated += InitializeMUBApplicator_Handler;
+                LEDStatusLightingUtil.Instance.InitializeMUBApplicator();
                 //this._web.RunScript("$('.ConfirmBtn').prop('disabled', true);");
             }
-            else if (printingStatus == "1")
+            else if (action == "CheckIfMUBIsPresent")
             {
-                LEDStatusLightingUtil.Instance.MUBStatusUpdated += Instance_MUBStatusUpdated;
-                LEDStatusLightingUtil.Instance.VerifyMUBPresence();
-
-                //btnConfirm.Enabled = false;
-                this._web.RunScript("$('.ConfirmBtn').prop('disabled', true);");
+                // MUB Applicator is ready
+                // Check if MUB is present or not
+                CheckIfMUBIsPresent();
             }
-            else if (printingStatus == "2")
+            else if (action == "StartMUBApplicator")
             {
-                LEDStatusLightingUtil.Instance.MUBReadyToPrint += Instance_MUBReadyToPrint;
-                LEDStatusLightingUtil.Instance.StartMUBApplicator();
-
-                //btnConfirm.Enabled = false;
-                this._web.RunScript("$('.ConfirmBtn').prop('disabled', true);");
+                // MUB is placed
+                // Start MUB Applicator
+                StartMUBApplicator();
             }
-            else if (printingStatus == "3")
+            else if (action == "PrintMUBLabel")
             {
                 // Start to print
-                var labelInfo = JsonConvert.DeserializeObject<LabelInfo>(json);
-                _web.LoadPageHtml("PrintingTemplates/MUBLabelTemplate.html", new object[] { printingStatus, labelInfo });
-
-                //LEDStatusLightingUtil.Instance.MUBAbleToRemove += Instance_MUBReadyToRemove;
-                //LEDStatusLightingUtil.Instance.CheckMUBApplicatorFinishStatus();
-                ////btnConfirm.Enabled = false;
-                //this._web.RunScript("$('.ConfirmBtn').prop('disabled', true);");
-                ////btnConfirm.Text = "Check printing status";
-                //this._web.RunScript("$('.ConfirmBtn').text('Check printing status.');");
+                StartToPrintMUBLabel(_currentMUBLabelInfo);
             }
-            else if (printingStatus == "4")
+            else if (action == "CheckIfMUBIsRemoved")
             {
-                // Verify Supervisee remove the MUB before close the door.
-                //lblStatus.Text = "You haven't removed the MUB. Please remove it";
                 this._web.RunScript("$('.status-text').css('color','#000').text('Please remove MUB/TT');");
-                LEDStatusLightingUtil.Instance.MUBDoorFullyClosed += Instance_MUBDoorFullyClosed;
-                LEDStatusLightingUtil.Instance.CheckIfMUBRemoved();
-
-                //btnConfirm.Enabled = false;
-                //this._web.RunScript("$('.ConfirmBtn').prop('disabled', true);");
+                LEDStatusLightingUtil.Instance.MUBStatusUpdated += CheckIfMUBIsRemoved_Callback;
+                LEDStatusLightingUtil.Instance.VerifyMUBPresence();
+            }
+            else if (action == "OpenMUBDoor")
+            {
+                LEDStatusLightingUtil.Instance.MUBDoorStatusChanged += OpenMUBDoor_Callback;
+                LEDStatusLightingUtil.Instance.OpenMUBDoor();
             }
         }
 
-        private void Instance_MUBAutoFlagApplicatorReadyOK(object sender, string e)
+        private void CheckIfMUBIsPresent()
         {
-            LEDStatusLightingUtil.Instance.MUBAutoFlagApplicatorReadyOK -= Instance_MUBAutoFlagApplicatorReadyOK;
-            this._web.RunScript("$('.status-text').css('color','#000').text('Please place the MUB on the holder.');");
-            //btnConfirm.Enabled = true;
-            //this._web.RunScript("$('.ConfirmBtn').prop('disabled', false);");
-            //btnConfirm.Text = "Verify presence of MUB";
-            this._web.RunScript("$('#ConfirmBtn').html('Verify presence of MUB.');");
-
-            this._web.RunScript("$('#lblPrintingStatus').text('1');");
-            //btnConfirm.Tag = "1";
+            // Check if MUB is present or not
+            LEDStatusLightingUtil.Instance.MUBStatusUpdated += CheckIfMUBIsPresent_Callback;
+            LEDStatusLightingUtil.Instance.VerifyMUBPresence();
         }
 
-        private void Instance_MUBStatusUpdated(object sender, string e)
+        private void CheckIfMUBIsRemoved()
         {
-            LEDStatusLightingUtil.Instance.MUBStatusUpdated -= Instance_MUBStatusUpdated;
-            if (e == "1")
+            // Check if MUB is present or not
+            LEDStatusLightingUtil.Instance.MUBStatusUpdated += CheckIfMUBIsRemoved_Callback;
+            LEDStatusLightingUtil.Instance.VerifyMUBPresence();
+        }
+
+        private void StartMUBApplicator()
+        {
+            // Start MUB Applicator
+            LEDStatusLightingUtil.Instance.MUBApplicatorStatusUpdated += StartMUBApplicator_Callback;
+            LEDStatusLightingUtil.Instance.StartMUBApplicator();
+        }
+
+        private void CheckIfMUBDoorIsOpen()
+        {
+
+        }
+        private void StartToPrintMUBLabel(LabelInfo labelInfo)
+        {
+            _web.LoadPageHtml("PrintingTemplates/MUBLabelTemplate.html", new object[] { "PrintMUBLabel", labelInfo });
+        }
+
+        //int _retryCount = 0;
+        private void CheckMUBPrintingLabellingProgress()
+        {
+            // We check MUB Printing and labelling progress by checking if the MUB Door is open or not.
+            // If the Door is open, it means the printing and labelling is completed
+            LEDStatusLightingUtil.Instance.MUBDoorStatusChanged += CheckMUBPrintingLabellingProgress_Callback;
+            LEDStatusLightingUtil.Instance.CheckDoorOpenStatus();
+        }
+
+        private void OpenMUBDoor_Callback(object sender, EnumMUBDoorStatus status)
+        {
+            LEDStatusLightingUtil.Instance.MUBDoorStatusChanged += OpenMUBDoor_Callback;
+            if (status == EnumMUBDoorStatus.FullyOpen)
+            {
+                this._web.RunScript("$('.status-text').css('color','#000').text('MUB Door is open. Please remove MUB.');");
+                this._web.RunScript("$('#ConfirmBtn').html('Confirm to remove the MUB');");
+                this._web.RunScript("$('#lblNextAction').text('CheckIfMUBIsRemoved');");
+                CheckIfMUBIsRemoved();
+            }
+            else
+            {
+                this._web.RunScript("$('.status-text').css('color','#000').text('Cannot complete printing and pasting MUB. Please report to Duty Officer');");
+                this._web.RunScript("$('#ConfirmBtn').html('Open MUB Door.');");
+                this._web.RunScript("$('#lblNextAction').text('OpenMUBDoor');");
+            }
+        }
+
+        private void CheckMUBPrintingLabellingProgress_Callback(object sender, EnumMUBDoorStatus status)
+        {
+            LEDStatusLightingUtil.Instance.MUBDoorStatusChanged -= CheckMUBPrintingLabellingProgress_Callback;
+            if (status == EnumMUBDoorStatus.FullyOpen)
+            {
+                this._web.RunScript("$('.status-text').css('color','#000').text('MUB was processed successfully. Please remove MUB.');");
+                this._web.RunScript("$('#ConfirmBtn').html('Confirm to remove the MUB');");
+                this._web.RunScript("$('#lblNextAction').text('CheckIfMUBIsRemoved');");
+                CheckIfMUBIsRemoved();
+            }
+            else
+            {
+                this._web.RunScript("$('.status-text').css('color','#000').text('Cannot complete printing and pasting MUB. Please report to Duty Officer');");
+                this._web.RunScript("$('#ConfirmBtn').html('Open MUB Door.');");
+                this._web.RunScript("$('#lblNextAction').text('OpenMUBDoor');");
+            }
+        }
+
+
+        //private void CheckMUBApplicatorFinishStatus()
+        //{
+        //    LEDStatusLightingUtil.Instance.MUBApplicatorStatusUpdated += CheckMUBApplicatorFinishStatus_Callback;
+        //    LEDStatusLightingUtil.Instance.CheckMUBApplicatorFinishStatus();
+        //}
+
+        //private void CheckMUBApplicatorFinishStatus_Callback(object sender, EnumMUBApplicatorStatus status)
+        //{
+        //    LEDStatusLightingUtil.Instance.MUBApplicatorStatusUpdated += CheckMUBApplicatorFinishStatus_Callback;
+        //    if (status == EnumMUBApplicatorStatus.Finished)
+        //    {
+        //        _retryCount = 0;
+        //        this._web.RunScript("$('.status-text').css('color','#000').text('Ket thuc roi');");
+        //        this._web.RunScript("$('#ConfirmBtn').html('Confirm to remove the MUB');");
+        //        this._web.RunScript("$('#lblNextAction').text('CheckIfMUBIsRemoved');");
+        //    }
+        //    else
+        //    {
+        //        if (_retryCount == 100)
+        //        {
+        //            _retryCount = 0;
+        //            this._web.RunScript("$('.status-text').css('color','#000').text('Chua ket thuc :(');");
+        //            this._web.RunScript("$('#ConfirmBtn').html('Confirm to remove the MUB');");
+        //            this._web.RunScript("$('#lblNextAction').text('CheckIfMUBIsRemoved');");
+        //        }
+        //        else
+        //        {
+        //            _retryCount++;
+        //            Thread.Sleep(200);
+        //            CheckMUBApplicatorFinishStatus();
+        //        }
+        //    }
+        //}
+
+        private void InitializeMUBApplicator_Handler(object sender, EnumMUBApplicatorStatus status)
+        {
+            LEDStatusLightingUtil.Instance.MUBApplicatorStatusUpdated -= InitializeMUBApplicator_Handler;
+            if (status == EnumMUBApplicatorStatus.Ready)
+            {
+                // MUB Applicator is ready
+                // Then verify presence of MUB
+                this._web.RunScript("$('#ConfirmBtn').html('Verify presence of MUB.');");
+                // Set next action to 'CheckIfMUBIsPresent'
+                this._web.RunScript("$('#lblNextAction').text('CheckIfMUBIsPresent');");
+                CheckIfMUBIsPresent();
+            }
+            else if (status == EnumMUBApplicatorStatus.NotReady)
+            {
+                this._web.RunScript("$('.status-text').css('color','#000').text('MUB Applicator is not ready.');");
+            }
+        }
+
+        private void StartMUBApplicator_Callback(object sender, EnumMUBApplicatorStatus status)
+        {
+            LEDStatusLightingUtil.Instance.MUBApplicatorStatusUpdated -= StartMUBApplicator_Callback;
+            if (status == EnumMUBApplicatorStatus.Started)
+            {
+                // MUB Applicator is started. Ready to print
+                this._web.RunScript("$('.status-text').css('color','#000').text('Ready to print.');");
+                this._web.RunScript("$('#ConfirmBtn').html('Start to print MUB/TT Label');");
+                // Set next action to 'PrintMUBLabel'
+                this._web.RunScript("$('#lblNextAction').text('PrintMUBLabel');");
+                if (_currentMUBLabelInfo != null)
+                {
+                    StartToPrintMUBLabel(_currentMUBLabelInfo);
+                }
+            }
+            else if (status == EnumMUBApplicatorStatus.NotReady)
+            {
+                this._web.RunScript("$('.status-text').css('color','#000').text('MUB Applicator is not ready.');");
+            }
+        }
+
+        private void CheckIfMUBIsPresent_Callback(object sender, EnumMUBStatus status)
+        {
+            LEDStatusLightingUtil.Instance.MUBStatusUpdated -= CheckIfMUBIsPresent_Callback;
+            if (status == EnumMUBStatus.Placed)
             {
                 // MUB is placed on the holder
-                //lblStatus.Text = "Supervisee has placed the MUB on the holder";
                 this._web.RunScript("$('.status-text').css('color','#000').text('The MUB has been placed on the holder.');");
-
-                //btnConfirm.Enabled = true;
-                //this._web.RunScript("$('#ConfirmBtn').prop('disabled', false);");
-
-                //btnConfirm.Text = "Start Applicator";
                 this._web.RunScript("$('#ConfirmBtn').html('Start Applicator.');");
-
-                this._web.RunScript("$('#lblPrintingStatus').text('2');");
-                //btnConfirm.Tag = "2";
+                // Set next action to "StartMUBApplicator"
+                this._web.RunScript("$('#lblNextAction').text('StartMUBApplicator');");
+                StartMUBApplicator();
             }
-            else if (e == "0")
+            else
             {
                 // MUB is not present
                 this._web.RunScript("$('.status-text').css('color','#000').text('The MUB is not present.');");
+            }
+        }
+
+
+        private void CheckIfMUBIsRemoved_Callback(object sender, EnumMUBStatus status)
+        {
+            LEDStatusLightingUtil.Instance.MUBStatusUpdated -= CheckIfMUBIsRemoved_Callback;
+            if (status == EnumMUBStatus.Removed)
+            {
+                // If MUB is removed then close the MUB Door
+                LEDStatusLightingUtil.Instance.MUBDoorStatusChanged += CloseMUBDoor_Callback;
+                LEDStatusLightingUtil.Instance.CloseMUBDoor();
+            }
+        }
+
+        private void CloseMUBDoor_Callback(object sender, EnumMUBDoorStatus status)
+        {
+            LEDStatusLightingUtil.Instance.MUBDoorStatusChanged -= CloseMUBDoor_Callback;
+
+            if (status == EnumMUBDoorStatus.FullyClosed)
+            {
+                // Complete test. Remove queue number from Queue Monitor
+                Session session = Session.Instance;
+                Trinity.BE.User currentUser = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+                if (currentUser == null)
+                {
+                    // Check why current user is null
+                    this._web.RunScript("$('.status-text').css('color','#000').text('The current user is null');");
+                    return;
+                }
+                // Remove queue number and inform others
+                //new DAL_QueueDetails().RemoveQueueFromSSK(currentUser.UserId);
+                Trinity.SignalR.Client.Instance.QueueCompleted(currentUser.UserId);
+
+                //lblStatus.Text = "The door is fully close";
+                this._web.RunScript("$('.status-text').css('color','#000').text('MUB and TT Labels Printing Completed. Logging out...');");
+
+                //btnConfirm.Text = "Initialize MUB Applicator";
+                this._web.RunScript("$('#ConfirmBtn').html('Logout');");
 
                 //btnConfirm.Enabled = true;
-                //this._web.RunScript("$('#ConfirmBtn').prop('disabled', false);");
+                //this._web.RunScript("$('.ConfirmBtn').prop('disabled', false);");
+
+                //btnConfirm.Tag = "0";
+                this._web.RunScript("$('#lblNextAction').text('');");
+
+                Thread.Sleep(2000);
+                LogOut();
             }
-        }
-
-        private void Instance_MUBReadyToPrint(object sender, string e)
-        {
-            LEDStatusLightingUtil.Instance.MUBReadyToPrint -= Instance_MUBReadyToPrint;
-            //lblStatus.Text = "Ready to print";
-            this._web.RunScript("$('.status-text').css('color','#000').text('Ready to print.');");
-
-            //btnConfirm.Enabled = true;
-            //this._web.RunScript("$('#ConfirmBtn').prop('disabled', false);");
-
-            //btnConfirm.Text = "Start to print MUB/TT Label";
-            this._web.RunScript("$('#ConfirmBtn').html('Start to print MUB/TT Label');");
-
-            this._web.RunScript("$('#lblPrintingStatus').text('3');");
-            //btnConfirm.Tag = "3";
-        }
-
-        private void Instance_MUBReadyToRemove(object sender, string e)
-        {
-            LEDStatusLightingUtil.Instance.MUBReadyToRemove -= Instance_MUBReadyToRemove;
-            //lblStatus.Text = "Print completed. Please remove the MUB";
-            this._web.RunScript("$('.status-text').css('color','#000').text('Print completed. Please remove the MUB.');");
-
-            //btnConfirm.Text = "Confirm to remove the MUB";
-            this._web.RunScript("$('#ConfirmBtn').html('Confirm to remove the MUB');");
-
-            //btnConfirm.Enabled = true;
-            //this._web.RunScript("$('#ConfirmBtn').prop('disabled', false);");
-
-            this._web.RunScript("$('#lblPrintingStatus').text('4');");
-            //btnConfirm.Tag = "4";
-        }
-
-        private void Instance_MUBDoorFullyClosed(object sender, string e)
-        {
-            // Complete test. Remove queue number from Queue Monitor
-            Session session = Session.Instance;
-            Trinity.BE.User currentUser = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-            if (currentUser == null)
-            {
-                // Check why current user is null
-                this._web.RunScript("$('.status-text').css('color','#000').text('The current user is null');");
-                return;
-            }
-            // Remove queue number and inform others
-            //new DAL_QueueDetails().RemoveQueueFromSSK(currentUser.UserId);
-            Trinity.SignalR.Client.Instance.QueueCompleted(currentUser.UserId);
-
-            LEDStatusLightingUtil.Instance.MUBDoorFullyClosed -= Instance_MUBDoorFullyClosed;
-            //lblStatus.Text = "The door is fully close";
-            this._web.RunScript("$('.status-text').css('color','#000').text('MUB and TT Labels Printing Completed.');");
-
-            //btnConfirm.Text = "Initialize MUB Applicator";
-            this._web.RunScript("$('#ConfirmBtn').html('Logout');");
-
-            //btnConfirm.Enabled = true;
-            //this._web.RunScript("$('.ConfirmBtn').prop('disabled', false);");
-
-            //btnConfirm.Tag = "0";
-            this._web.RunScript("$('#lblPrintingStatus').text('-1');");
-
-            Thread.Sleep(300);
-            LogOut();
         }
 
         #endregion

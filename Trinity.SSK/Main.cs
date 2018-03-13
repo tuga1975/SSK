@@ -13,7 +13,6 @@ using Trinity.Common.Common;
 using Trinity.DAL;
 using Trinity.Device;
 using Trinity.Device.Authentication;
-using Trinity.Device.Monitor;
 using Trinity.Device.Util;
 using Trinity.SignalR;
 
@@ -186,7 +185,7 @@ namespace SSK
 
         private void JSCallCS_OnLogOutCompleted()
         {
-            ApplicationStatusMonitor.Instance.UpdateApplicationStatus(EnumApplicationStatus.Busy);
+            ApplicationStatusManager.Instance.IsBusy = false;
 
             // Set machine status is busy
             //LEDStatusLightingUtil.Instance._isBusy = false;
@@ -241,8 +240,10 @@ namespace SSK
 
                 _isFirstTimeLoaded = false;
 
+
+                Thread.Sleep(5000);
                 // LayerWeb initiation is compeleted, update application status
-                ApplicationStatusMonitor.Instance.LayerWebInitilizationCompleted();
+                ApplicationStatusManager.Instance.LayerWebInitilizationCompleted();
             }
 
             // SSK is ready to use - all is well
@@ -265,7 +266,8 @@ namespace SSK
         #region Smart Card Authentication
         private void SmartCard_OnSmartCardSucceeded()
         {
-            ApplicationStatusMonitor.Instance.UpdateApplicationStatus(EnumApplicationStatus.Busy);
+            // Set application status is busy
+            ApplicationStatusManager.Instance.IsBusy = true;
 
             // Pause for 1 second and goto Fingerprint Login Screen
             Thread.Sleep(1000);
@@ -275,11 +277,6 @@ namespace SSK
 
             // Testing purpose
             //NavigateTo(NavigatorEnums.Authentication_Facial);
-
-            // Set machine status is busy
-            LEDStatusLightingUtil.Instance._isBusy = true;
-            // Display led light health status
-            LEDStatusLightingUtil.Instance.DisplayLedLight_DeviceStatus();
         }
 
         private void SmartCard_OnSmartCardFailed(string message)
@@ -527,10 +524,11 @@ namespace SSK
                 FacialRecognition.Instance.OnFacialRecognitionSucceeded += Main_OnFacialRecognitionSucceeded;
                 FacialRecognition.Instance.OnFacialRecognitionProcessing += Main_OnFacialRecognitionProcessing;
 
+                List<byte[]> FaceJpg = new System.Collections.Generic.List<byte[]>() { user.User_Photo1, user.User_Photo2 };
                 this.Invoke((MethodInvoker)(() =>
                 {
                     Point startLocation = new Point((Screen.PrimaryScreen.Bounds.Size.Width / 2) - 400 / 2, (Screen.PrimaryScreen.Bounds.Size.Height / 2) - 400 / 2);
-                    FacialRecognition.Instance.StartFacialRecognition(startLocation, new System.Collections.Generic.List<byte[]>() { user.User_Photo1, user.User_Photo2 });
+                    FacialRecognition.Instance.StartFacialRecognition(startLocation, FaceJpg);
                 }));
             }
             else if (navigatorEnum == NavigatorEnums.Authentication_NRIC)
