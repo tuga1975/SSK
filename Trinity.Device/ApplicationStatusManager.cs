@@ -100,13 +100,13 @@ namespace Trinity.Device
 
         private ApplicationStatusManager()
         {
+            // Initiate LEDs light and open port
+            LEDStatusLightingUtil.Instance.OpenPort();
+
             _station = System.Reflection.Assembly.GetEntryAssembly().GetName().Name;
 
             if (_station == EnumStation.SSK)
             {
-                // Initiate LEDs light and open port
-                LEDStatusLightingUtil.Instance.OpenPort();
-
                 // Define list devices which application use
                 _lstDevices = new List<DeviceStatus>();
                 _lstDevices.Add(new DeviceStatus() {
@@ -203,15 +203,16 @@ namespace Trinity.Device
 
                 if (_station.ToUpper() == EnumStation.SSK)
                 {
-                    // Always turn off all LEDs before select which LED(s) to turn on.
-                    ledLightUtil.TurnOffAllLEDs();
-
                     // Get latest application status
                     EnumApplicationStatus newApplicationStatus = GetApplicationStatus();
 
                     if (newApplicationStatus != _applicationStatus)
                     {
                         _applicationStatus = newApplicationStatus;
+
+                        // Always turn off all LEDs before select which LED(s) to turn on.
+                        ledLightUtil.TurnOffAllLEDs();
+
                         //MessageBox.Show(_applicationStatus.ToString());
                         switch (_applicationStatus)
                         {
