@@ -20,22 +20,42 @@ namespace Trinity.Device.Util
         CheckIfMUBApplicatorIsFinished = 3,
         CheckIfMUBIsRemoved = 4,
         CheckIfMUBDoorIsFullyClosed = 5,
-        CheckIfMUBDoorIsFullyOpen = 6,
-        CheckIfTTApplicatorIsReady = 7,
-        CheckIfTTIsPresent = 8,
-        CheckIfTTApplicatorIsStarted = 9,
-        CheckIfTTApplicatorIsFinished = 10,
-        CheckIfTTIsRemoved = 11,
-        CheckIfTTDoorIsFullyClosed = 12,
-        CheckIfTTDoorIsFullyOpen = 13
+        CheckIfMUBDoorIsFullyOpen = 6
+    }
+
+    public enum EnumMUBCommands
+    {
+        Unknown = -1,
+        CheckIfMUBApplicatorIsReady = 0,
+        CheckIfMUBIsPresent = 1,
+        CheckIfMUBApplicatorIsStarted = 2,
+        CheckIfMUBApplicatorIsFinished = 3,
+        CheckIfMUBIsRemoved = 4,
+        CheckIfMUBDoorIsFullyClosed = 5,
+        CheckIfMUBDoorIsFullyOpen = 6
+    }
+
+    public enum EnumTTCommands
+    {
+        Unknown = -1,
+        CheckIfTTApplicatorIsReady = 0,
+        CheckIfTTIsPresent = 1,
+        CheckIfTTApplicatorIsStarted = 2,
+        CheckIfTTApplicatorIsFinished = 3,
+        CheckIfTTIsRemoved = 4,
+        CheckIfTTDoorIsFullyClosed = 5,
+        CheckIfTTDoorIsFullyOpen = 6
     }
 
     public class LEDStatusLightingUtil
     {
         private Dictionary<EnumCommands, string> _rs232Commands = new Dictionary<EnumCommands, string>();
 
+        private int _mubRetryCount = 0;
+        private int _ttRetryCount = 0;
         private const int _maxRetryCount = 50;
         public event EventHandler<string> DataReceived;
+
         public bool _isBusy = false;
 
         private string _station = null;
@@ -94,26 +114,26 @@ namespace Trinity.Device.Util
                 _serialPort.DataBits = 8;
                 _serialPort.ReadTimeout = 1000;
                 _serialPort.WriteTimeout = 1000;
-                _serialPort.StopBits = System.IO.Ports.StopBits.One;
+                _serialPort.StopBits = System.IO.Ports.StopBits.One;                
             }
 
             // Init MUB Commands
-            _rs232Commands[EnumCommands.CheckIfMUBApplicatorIsReady] = "RD MR3";
-            _rs232Commands[EnumCommands.CheckIfMUBIsPresent] = "RD 14";
-            _rs232Commands[EnumCommands.CheckIfMUBApplicatorIsStarted] = "RD MR7";
-            _rs232Commands[EnumCommands.CheckIfMUBApplicatorIsFinished] = "RD MR15";
-            _rs232Commands[EnumCommands.CheckIfMUBIsRemoved] = "RD 14";
-            _rs232Commands[EnumCommands.CheckIfMUBDoorIsFullyClosed] = "RD 1";
-            _rs232Commands[EnumCommands.CheckIfMUBDoorIsFullyOpen] = "RD 0";
+            _rs232MUBCommands[EnumMUBCommands.CheckIfMUBApplicatorIsReady] = "RD MR3";
+            _rs232MUBCommands[EnumMUBCommands.CheckIfMUBIsPresent] = "RD 14";
+            _rs232MUBCommands[EnumMUBCommands.CheckIfMUBApplicatorIsStarted] = "RD MR7";
+            _rs232MUBCommands[EnumMUBCommands.CheckIfMUBApplicatorIsFinished] = "RD MR15";
+            _rs232MUBCommands[EnumMUBCommands.CheckIfMUBIsRemoved] = "RD 14";
+            _rs232MUBCommands[EnumMUBCommands.CheckIfMUBDoorIsFullyClosed] = "RD 1";
+            _rs232MUBCommands[EnumMUBCommands.CheckIfMUBDoorIsFullyOpen] = "RD 0";
 
             // Init TT Commands
-            _rs232Commands[EnumCommands.CheckIfTTApplicatorIsReady] = "RD MR103";
-            _rs232Commands[EnumCommands.CheckIfTTIsPresent] = "RD 15";
-            _rs232Commands[EnumCommands.CheckIfTTApplicatorIsStarted] = "RD MR106";
-            _rs232Commands[EnumCommands.CheckIfTTApplicatorIsFinished] = "RD MR115";
-            _rs232Commands[EnumCommands.CheckIfTTIsRemoved] = "RD 15";
-            _rs232Commands[EnumCommands.CheckIfTTDoorIsFullyClosed] = "RD 9";
-            _rs232Commands[EnumCommands.CheckIfTTDoorIsFullyOpen] = "RD 8";
+            _rs232TTCommands[EnumTTCommands.CheckIfTTApplicatorIsReady] = "RD MR103";
+            _rs232TTCommands[EnumTTCommands.CheckIfTTIsPresent] = "RD 15";
+            _rs232TTCommands[EnumTTCommands.CheckIfTTApplicatorIsStarted] = "RD MR106";
+            _rs232TTCommands[EnumTTCommands.CheckIfTTApplicatorIsFinished] = "RD MR115";
+            _rs232TTCommands[EnumTTCommands.CheckIfTTIsRemoved] = "RD 15";
+            _rs232TTCommands[EnumTTCommands.CheckIfTTDoorIsFullyClosed] = "RD 9";
+            _rs232TTCommands[EnumTTCommands.CheckIfTTDoorIsFullyOpen] = "RD 8";
         }
 
         #region Public functions
@@ -572,7 +592,7 @@ namespace Trinity.Device.Util
         }
         #endregion
 
-        #region MUB WRITE functions
+        #region MUB functions
         public void InitializeMUBApplicator_Async()
         {
             // Send command to initialize MUB Applicator
@@ -615,9 +635,196 @@ namespace Trinity.Device.Util
             SendASCIICommand(asciiCommand);
         }
 
+        public delegate void MUBWorkCompletedCallback(bool status);
+
+        private MUBWorkCompletedCallback _mubCallback = null;
+        private EnumMUBCommands _mubCommand;
+        private Dictionary<EnumMUBCommands, string> _rs232MUBCommands = new Dictionary<EnumMUBCommands, string>();
+        private Dictionary<EnumTTCommands, string> _rs232TTCommands = new Dictionary<EnumTTCommands, string>();
+
+        private List<EnumCommands> _waitingCommands = new List<EnumCommands>();
+        private EnumCommands _currentCommand = EnumCommands.Unknown;
+        private Dictionary<EnumCommands, int> _commandsRetryCount = new Dictionary<EnumCommands, int>();
+        private void CommandsHandler()
+        {
+            while (true)
+            {
+                if (_currentCommand ==  EnumCommands.Unknown)
+                {
+                    if (_waitingCommands.Count > 0)
+                    {
+                        _currentCommand = _waitingCommands[0];
+                        //_waitingCommands.RemoveAt(0);
+
+                        // Start to process new command
+                        this.DataReceived += SendCommand_Callback;
+                        string asciiCommand = _rs232Commands[_currentCommand];
+                        SendASCIICommand(asciiCommand);
+                        _commandsRetryCount[_currentCommand] = 0;
+                    }
+                }
+
+                Thread.Sleep(200);
+            }
+        }
+
+        private void SendCommand(EnumCommands command)
+        {
+            _waitingCommands.Add(command);
+        }
+        private void SendCommand_Callback(object sender, string response)
+        {
+            this.DataReceived -= SendCommand_Callback;
+
+            if (_currentCommand == EnumCommands.CheckIfMUBIsPresent)
+            {
+                if (response == "0")
+                {
+                    _currentCommand = EnumCommands.Unknown;
+                    _waitingCommands.RemoveAt(0);
+                    _mubCallback(false);
+                    return;
+                }
+                else
+                {
+                    _currentCommand = EnumCommands.Unknown;
+                    _waitingCommands.RemoveAt(0);
+                    _mubCallback(true);
+                    return;
+                }
+            }
+            else if (_currentCommand == EnumCommands.CheckIfMUBIsRemoved)
+            {
+                if (response == "0")
+                {
+                    _currentCommand = EnumCommands.Unknown;
+                    _waitingCommands.RemoveAt(0);
+                    _mubCallback(true);
+                    return;
+                }
+                else
+                {
+                    _currentCommand = EnumCommands.Unknown;
+                    _waitingCommands.RemoveAt(0);
+                    _mubCallback(false);
+                    return;
+                }
+            }
+            else
+            {
+                if (response == "1" || response.ToLower() == "ok" || response.ToLower() == "yes")
+                {
+                    _currentCommand = EnumCommands.Unknown;
+                    _waitingCommands.RemoveAt(0);
+                    _mubCallback(true);
+                    return;
+                }
+                else
+                {
+                    if (_commandsRetryCount[_currentCommand] == _maxRetryCount)
+                    {
+                        _mubRetryCount = 0;
+                        _currentCommand = EnumCommands.Unknown;
+                        _waitingCommands.RemoveAt(0);
+                        _mubCallback(false);
+                        return;
+                    }
+                    else
+                    {
+                        _commandsRetryCount[_currentCommand]++;
+                        Thread.Sleep(200);
+
+                        this.DataReceived += SendCommand_Callback;
+                        string asciiCommand = _rs232Commands[_currentCommand];
+                        SendASCIICommand(asciiCommand);
+                    }
+                }
+            }
+
+        }
+        ///////////////////////////
+
+        public void CheckMUBStatus_Async(EnumMUBCommands mubCommand, MUBWorkCompletedCallback callback)
+        {
+            _mubRetryCount = 0;
+            _mubCallback = callback;
+            _mubCommand = mubCommand;
+
+            // Check MUB Applicator Status
+            this.DataReceived += CheckMUBStatus_Async_Callback;
+            string asciiCommand = _rs232MUBCommands[_mubCommand];
+            SendASCIICommand(asciiCommand);
+        }
+
+        private void CheckMUBStatus_Async_Callback(object sender, string response)
+        {
+            this.DataReceived -= CheckMUBStatus_Async_Callback;
+
+            if (_mubCommand == EnumMUBCommands.CheckIfMUBIsPresent)
+            {
+                if (response == "0")
+                {
+                    _mubCommand = EnumMUBCommands.Unknown;
+                    _mubCallback(false);
+                    return;
+                }
+                else
+                {
+                    _mubCommand = EnumMUBCommands.Unknown;
+                    _mubCallback(true);
+                    return;
+                }
+            }
+            else if (_mubCommand == EnumMUBCommands.CheckIfMUBIsRemoved)
+            {
+                if (response == "0")
+                {
+                    _mubCommand = EnumMUBCommands.Unknown;
+                    _mubCallback(true);
+                    return;
+                }
+                else
+                {
+                    _mubCommand = EnumMUBCommands.Unknown;
+                    _mubCallback(false);
+                    return;
+                }
+            }
+            else
+            {
+                if (response == "1" || response.ToLower() == "ok" || response.ToLower() == "yes")
+                {
+                    _mubCommand = EnumMUBCommands.Unknown;
+                    _mubCallback(true);
+                    return;
+                }
+                else
+                {
+                    if (_mubRetryCount == _maxRetryCount)
+                    {
+                        _mubRetryCount = 0;
+                        _mubCommand = EnumMUBCommands.Unknown;
+
+                        _mubCallback(false);
+                        return;
+                    }
+                    else
+                    {
+                        _mubRetryCount++;
+                        Thread.Sleep(200);
+
+                        this.DataReceived += CheckMUBStatus_Async_Callback;
+                        string asciiCommand = _rs232MUBCommands[_mubCommand];
+                        SendASCIICommand(asciiCommand);
+                    }
+                }
+            }
+
+        }
+
         #endregion
 
-        #region TT WRITE functions
+        #region TT functions
         public void InitializeTTApplicator_Async()
         {
             // Send command to initialize TT Applicator
@@ -660,131 +867,88 @@ namespace Trinity.Device.Util
             SendASCIICommand(asciiCommand);
         }
 
-        #endregion
+        public delegate void TTWorkCompletedCallback(bool status);
 
-        #region MUB & TT READ functions
+        private TTWorkCompletedCallback _ttCallback = null;
+        private EnumTTCommands _ttCommand;
 
-        public delegate void WorkCompletedCallback(bool response);
-        private List<EnumCommands> _waitingCommands = new List<EnumCommands>();
-        private EnumCommands _currentCommand = EnumCommands.Unknown;
-        private Dictionary<EnumCommands, int> _commandsRetryCount = new Dictionary<EnumCommands, int>();
-        private Dictionary<EnumCommands, WorkCompletedCallback> _callbacks = new Dictionary<EnumCommands, WorkCompletedCallback>();
-        private int _currentCommandIndex = 0;
-
-        private void GetNextCommand()
+        public void CheckTTStatus_Async(EnumTTCommands ttCommand, TTWorkCompletedCallback callback)
         {
-            lock (syncRoot)
+            _ttRetryCount = 0;
+            _ttCallback = callback;
+            _ttCommand = ttCommand;
+
+            // Check TT Applicator Status
+            this.DataReceived += CheckTTStatus_Async_Callback;
+            string asciiCommand = _rs232TTCommands[_ttCommand];
+            SendASCIICommand(asciiCommand);
+        }
+
+        private void CheckTTStatus_Async_Callback(object sender, string response)
+        {
+            this.DataReceived -= CheckTTStatus_Async_Callback;
+
+            if (_ttCommand == EnumTTCommands.CheckIfTTIsPresent)
             {
-                _currentCommand = EnumCommands.Unknown;
-                if (_waitingCommands.Count > 0)
+                if (response == "0")
                 {
-                    if (_currentCommandIndex >= _waitingCommands.Count - 1)
-                    {
-                        _currentCommandIndex = 0;
-                    }
-                    else
-                    {
-                        _currentCommandIndex++;
-                    }
-                    _currentCommand = _waitingCommands[_currentCommandIndex];
-                }
-            }
-        }
-
-        private void CompleteCurrentCommand(bool result)
-        {
-            _waitingCommands.Remove(_currentCommand);
-            _commandsRetryCount.Remove(_currentCommand);
-            WorkCompletedCallback callback = _callbacks[_currentCommand];
-            _callbacks.Remove(_currentCommand);
-            _currentCommand = EnumCommands.Unknown;
-            callback(result);
-        }
-
-        private void CommandsHandler()
-        {
-            while (IsPortOpen)
-            {
-                if (_currentCommand == EnumCommands.Unknown)
-                {
-                    GetNextCommand();
-                    if (_currentCommand != EnumCommands.Unknown)
-                    {
-                        // Start to process new command
-                        this.DataReceived += SendCommand_Async_Callback;
-                        string asciiCommand = _rs232Commands[_currentCommand];
-                        SendASCIICommand(asciiCommand);
-                        _commandsRetryCount[_currentCommand]++;
-                    }
-                }
-
-                Thread.Sleep(200);
-            }
-        }
-
-        public void SendCommand_Async(EnumCommands command, WorkCompletedCallback callback)
-        {
-            _commandsRetryCount[command] = 0;
-            _waitingCommands.Add(command);
-            _callbacks[command] = callback;
-        }
-        private void SendCommand_Async_Callback(object sender, string response)
-        {
-            this.DataReceived -= SendCommand_Async_Callback;
-            WorkCompletedCallback callback = _callbacks[_currentCommand];
-
-            lock (syncRoot)
-            {
-                if (_currentCommand == EnumCommands.CheckIfMUBIsPresent || _currentCommand == EnumCommands.CheckIfTTIsPresent)
-                {
-                    if (response == "0")
-                    {
-                        CompleteCurrentCommand(false);
-                        return;
-                    }
-                    else
-                    {
-                        CompleteCurrentCommand(true);
-                        return;
-                    }
-                }
-                else if (_currentCommand == EnumCommands.CheckIfMUBIsRemoved || _currentCommand == EnumCommands.CheckIfTTIsRemoved)
-                {
-                    if (response == "0")
-                    {
-                        CompleteCurrentCommand(true);
-                        return;
-                    }
-                    else
-                    {
-                        CompleteCurrentCommand(false);
-                        return;
-                    }
+                    _ttCommand = EnumTTCommands.Unknown;
+                    _ttCallback(false);
+                    return;
                 }
                 else
                 {
-                    if (response == "1" || response.ToLower() == "ok" || response.ToLower() == "yes")
+                    _ttCommand = EnumTTCommands.Unknown;
+                    _ttCallback(true);
+                    return;
+                }
+            }
+            else if (_ttCommand == EnumTTCommands.CheckIfTTIsRemoved)
+            {
+                if (response == "0")
+                {
+                    _ttCommand = EnumTTCommands.Unknown;
+                    _ttCallback(true);
+                    return;
+                }
+                else
+                {
+                    _ttCommand = EnumTTCommands.Unknown;
+                    _ttCallback(false);
+                    return;
+                }
+            }
+            else
+            {
+                if (response == "1" || response.ToLower() == "ok" || response.ToLower() == "yes")
+                {
+                    _ttCommand = EnumTTCommands.Unknown;
+                    _ttCallback(true);
+                    return;
+                }
+                else
+                {
+                    if (_ttRetryCount == _maxRetryCount)
                     {
-                        CompleteCurrentCommand(true);
+                        _ttRetryCount = 0;
+                        _ttCommand = EnumTTCommands.Unknown;
+
+                        _ttCallback(false);
                         return;
                     }
                     else
                     {
-                        if (_commandsRetryCount[_currentCommand] == _maxRetryCount)
-                        {
-                            CompleteCurrentCommand(false);
-                            return;
-                        }
-                        else
-                        {
-                            // Retry
-                            _currentCommand = EnumCommands.Unknown;
-                        }
+                        _ttRetryCount++;
+                        Thread.Sleep(200);
+
+                        this.DataReceived += CheckTTStatus_Async_Callback;
+                        string asciiCommand = _rs232TTCommands[_ttCommand];
+                        SendASCIICommand(asciiCommand);
                     }
                 }
             }
+
         }
-        ///////////////////////////
 
         #endregion
 

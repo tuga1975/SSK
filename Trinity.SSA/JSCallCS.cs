@@ -449,7 +449,7 @@ namespace SSA
         {
             _mubApplicatorReady = false;
             LEDStatusLightingUtil.Instance.InitializeMUBApplicator_Async();
-            LEDStatusLightingUtil.Instance.CheckMUBStatus_Async(EnumMUBCommands.CheckIfMUBApplicatorIsReady, CheckIfMUBApplicatorIsReady_Callback);
+            LEDStatusLightingUtil.Instance.SendCommand_Async(EnumCommands.CheckIfMUBApplicatorIsReady, CheckIfMUBApplicatorIsReady_Callback);
         }
 
         private void CheckIfMUBIsPresent()
@@ -457,13 +457,13 @@ namespace SSA
             this._web.RunScript("$('#mubStatus').css('color','#000').text('Checking if the MUB Applicator is present...');");
 
             // Check if MUB is present or not
-            LEDStatusLightingUtil.Instance.CheckMUBStatus_Async(EnumMUBCommands.CheckIfMUBIsPresent, CheckIfMUBIsPresent_Callback);
+            LEDStatusLightingUtil.Instance.SendCommand_Async(EnumCommands.CheckIfMUBIsPresent, CheckIfMUBIsPresent_Callback);
         }
 
         private void CheckIfMUBIsRemoved()
         {
             // Check if MUB is present or not
-            LEDStatusLightingUtil.Instance.CheckMUBStatus_Async(EnumMUBCommands.CheckIfMUBIsRemoved, CheckIfMUBIsRemoved_Callback);
+            LEDStatusLightingUtil.Instance.SendCommand_Async(EnumCommands.CheckIfMUBIsRemoved, CheckIfMUBIsRemoved_Callback);
         }
 
         private void StartMUBApplicator()
@@ -473,26 +473,26 @@ namespace SSA
             this._web.RunScript("$('#ConfirmBtn').html('Starting Applicator...');");
             // Start MUB Applicator
             LEDStatusLightingUtil.Instance.StartMUBApplicator_Async();
-            LEDStatusLightingUtil.Instance.CheckMUBStatus_Async(EnumMUBCommands.CheckIfMUBApplicatorIsStarted, CheckIfMUBApplicatorIsStarted_Callback);
+            LEDStatusLightingUtil.Instance.SendCommand_Async(EnumCommands.CheckIfMUBApplicatorIsStarted, CheckIfMUBApplicatorIsStarted_Callback);
         }
 
         private void OpenMUBDoor()
         {
             LEDStatusLightingUtil.Instance.OpenMUBDoor_Async();
-            LEDStatusLightingUtil.Instance.CheckMUBStatus_Async(EnumMUBCommands.CheckIfMUBDoorIsFullyOpen, CheckIfMUBDoorIsFullyOpen_Callback);
+            LEDStatusLightingUtil.Instance.SendCommand_Async(EnumCommands.CheckIfMUBDoorIsFullyOpen, CheckIfMUBDoorIsFullyOpen_Callback);
         }
 
         private void CloseMUBDoor()
         {
             LEDStatusLightingUtil.Instance.CloseMUBDoor_Async();
-            LEDStatusLightingUtil.Instance.CheckMUBStatus_Async(EnumMUBCommands.CheckIfMUBDoorIsFullyClosed, CheckIfMUBDoorIsFullyClosed_Callback);
+            LEDStatusLightingUtil.Instance.SendCommand_Async(EnumCommands.CheckIfMUBDoorIsFullyClosed, CheckIfMUBDoorIsFullyClosed_Callback);
         }
 
         private void CheckMUBPrintingLabellingProgress()
         {
             // We check MUB Printing and labelling progress by checking if the MUB Door is open or not.
             // If the Door is open, it means the printing and labelling is completed
-            LEDStatusLightingUtil.Instance.CheckMUBStatus_Async(EnumMUBCommands.CheckIfMUBDoorIsFullyOpen, CheckIfMUBDoorIsFullyOpen_Callback);
+            LEDStatusLightingUtil.Instance.SendCommand_Async(EnumCommands.CheckIfMUBDoorIsFullyOpen, CheckIfMUBDoorIsFullyOpen_Callback);
         }
 
         private void CheckIfMUBDoorIsFullyOpen_Callback(bool isFullyOpen)
@@ -637,7 +637,7 @@ namespace SSA
         {
             _ttApplicatorReady = false;
             LEDStatusLightingUtil.Instance.InitializeTTApplicator_Async();
-            LEDStatusLightingUtil.Instance.CheckTTStatus_Async(EnumTTCommands.CheckIfTTApplicatorIsReady, CheckIfTTApplicatorIsReady_Callback);
+            LEDStatusLightingUtil.Instance.SendCommand_Async(EnumCommands.CheckIfTTApplicatorIsReady, CheckIfTTApplicatorIsReady_Callback);
         }
 
         private void CheckIfTTIsPresent()
@@ -645,13 +645,13 @@ namespace SSA
             this._web.RunScript("$('#ttStatus').css('color','#000').text('Checking if the TT is present...');");
 
             // Check if MUB is present or not
-            LEDStatusLightingUtil.Instance.CheckTTStatus_Async(EnumTTCommands.CheckIfTTIsPresent, CheckIfTTIsPresent_Callback);
+            LEDStatusLightingUtil.Instance.SendCommand_Async(EnumCommands.CheckIfTTIsPresent, CheckIfTTIsPresent_Callback);
         }
 
         private void CheckIfTTIsRemoved()
         {
             // Check if MUB is present or not
-            LEDStatusLightingUtil.Instance.CheckTTStatus_Async(EnumTTCommands.CheckIfTTIsRemoved, CheckIfTTIsRemoved_Callback);
+            LEDStatusLightingUtil.Instance.SendCommand_Async(EnumCommands.CheckIfTTIsRemoved, CheckIfTTIsRemoved_Callback);
         }
 
         private void StartTTApplicator()
@@ -661,19 +661,19 @@ namespace SSA
             this._web.RunScript("$('#ConfirmBtn').html('Starting Applicator...');");
             // Start MUB Applicator
             LEDStatusLightingUtil.Instance.StartTTApplicator_Async();
-            LEDStatusLightingUtil.Instance.CheckTTStatus_Async(EnumTTCommands.CheckIfTTApplicatorIsStarted, CheckIfTTApplicatorIsStarted_Callback);
+            LEDStatusLightingUtil.Instance.SendCommand_Async(EnumCommands.CheckIfTTApplicatorIsStarted, CheckIfTTApplicatorIsStarted_Callback);
         }
 
         private void OpenTTDoor()
         {
             LEDStatusLightingUtil.Instance.OpenTTDoor_Async();
-            LEDStatusLightingUtil.Instance.CheckTTStatus_Async(EnumTTCommands.CheckIfTTDoorIsFullyOpen, CheckIfTTDoorIsFullyOpen_Callback);
+            LEDStatusLightingUtil.Instance.SendCommand_Async(EnumCommands.CheckIfTTDoorIsFullyOpen, CheckIfTTDoorIsFullyOpen_Callback);
         }
 
         private void CloseTTDoor()
         {
             LEDStatusLightingUtil.Instance.CloseTTDoor_Async();
-            LEDStatusLightingUtil.Instance.CheckTTStatus_Async(EnumTTCommands.CheckIfTTDoorIsFullyClosed, CheckIfTTDoorIsFullyClosed_Callback);
+            LEDStatusLightingUtil.Instance.SendCommand_Async(EnumCommands.CheckIfTTDoorIsFullyClosed, CheckIfTTDoorIsFullyClosed_Callback);
         }
 
         //int _retryCount = 0;
@@ -681,7 +681,7 @@ namespace SSA
         {
             // We check MUB Printing and labelling progress by checking if the MUB Door is open or not.
             // If the Door is open, it means the printing and labelling is completed
-            LEDStatusLightingUtil.Instance.CheckTTStatus_Async(EnumTTCommands.CheckIfTTDoorIsFullyOpen, CheckIfTTDoorIsFullyOpen_Callback);
+            LEDStatusLightingUtil.Instance.SendCommand_Async(EnumCommands.CheckIfTTDoorIsFullyOpen, CheckIfTTDoorIsFullyOpen_Callback);
         }
 
         private void CheckIfTTDoorIsFullyOpen_Callback(bool isFullyOpen)
