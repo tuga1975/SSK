@@ -15,6 +15,19 @@ namespace Trinity.DAL
         Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
 
         #region refactor 2018
+        public int SSPInsert(string source,string type, string content,DateTime datetime,string notification_code)
+        {
+            _localUnitOfWork.GetRepository<DBContext.Notification>().Add(new DBContext.Notification()
+            {
+                NotificationID = Guid.NewGuid().ToString().Trim(),
+                Datetime = datetime,
+                Content = content,
+                Source = source,
+                Type = type,
+                notification_code=notification_code
+            });
+            return _localUnitOfWork.Save();
+        }
         public List<Notification> GetAllNotifications(string userId)
         {
             if (EnumAppConfig.IsLocal)

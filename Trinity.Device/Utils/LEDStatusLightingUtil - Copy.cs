@@ -54,7 +54,16 @@ namespace Trinity.Device.Util
     {
         private int _retryCount = 0;
         private const int _maxRetryCount = 50;
+        private EnumMUBApplicatorStatus _previousMUBApplicatorStatus = EnumMUBApplicatorStatus.NotReady;
         public event EventHandler<string> DataReceived;
+        //public event EventHandler<string> MUBAutoFlagApplicatorReadyOK;
+        public event EventHandler<EnumMUBApplicatorStatus> MUBApplicatorStatusUpdated;
+        //public event EventHandler<string> MUBIsPresent;
+        //public event EventHandler<string> MUBReadyToPrint;
+        //public event EventHandler<string> MUBReadyToRemove;
+        public event EventHandler<EnumMUBStatus> MUBStatusUpdated;
+        //public event EventHandler<string> MUBDoorFullyClosed;
+        public event EventHandler<EnumMUBDoorStatus> MUBDoorStatusChanged;
 
         public bool _isBusy = false;
 
@@ -693,6 +702,311 @@ namespace Trinity.Device.Util
             
         }
 
+        #endregion
+
+        #region MUB Labeller Control functions
+
+        public void InitializeMUBApplicator()
+        {
+            _retryCount = 0;
+            this.DataReceived += MUBApplicatorReadyStatus_Received;
+
+            // Send command to initialize MUB Applicator
+            string asciiCommand = "WR MR0 1";
+            SendASCIICommand(asciiCommand);
+        }
+
+        /// <summary>
+        /// Auto Flag applicator Ready Status
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="response"></param>
+        private void MUBApplicatorReadyStatus_Received(object sender, string response)
+        {
+            this.DataReceived -= MUBApplicatorReadyStatus_Received;
+
+            // Wait 1 second 
+            Thread.Sleep(1000);
+
+            // Then check MUB Applicator Status
+            this.DataReceived += MUBApplicatorReadyOKStatus_Received;
+            string asciiCommand = "RD MR3";
+            SendASCIICommand(asciiCommand);
+        }
+
+        /// <summary>
+        /// Auto Flag applicator Ready OK
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="response"></param>
+        private void MUBApplicatorReadyOKStatus_Received(object sender, string response)
+        {
+            this.DataReceived -= MUBApplicatorReadyOKStatus_Received;
+            if (response == "1" || response.ToLower() == "ok" || response.ToLower() == "yes")
+            {
+                _previousMUBApplicatorStatus = EnumMUBApplicatorStatus.Ready;
+                // MUB Applicator is ready
+                // Inform the Supervisee to place the MUB on the holder
+                MUBApplicatorStatusUpdated?.Invoke(this, EnumMUBApplicatorStatus.Ready);
+            }
+            else
+            {
+                if (_retryCount == _maxRetryCount)
+                {
+                    _retryCount = 0;
+                    _previousMUBApplicatorStatus = EnumMUBApplicatorStatus.NotReady;
+
+                    // MUB Applicator is not ready
+                    MUBApplicatorStatusUpdated?.Invoke(this, EnumMUBApplicatorStatus.NotReady);
+                }
+                else
+                {
+                    _retryCount++;
+                    Thread.Sleep(200);
+
+                    // Then check MUB Applicator Status
+                    this.DataReceived += MUBApplicatorReadyOKStatus_Received;
+                    string asciiCommand = "RD MR3";
+                    SendASCIICommand(asciiCommand);
+                }
+            }
+        }
+
+        public void VerifyMUBPresence()
+        {
+            this.DataReceived += BottleSensorStatus_Received;
+            string asciiCommand = "RD 14";
+            SendASCIICommand(asciiCommand);
+        }
+
+        private void BottleSensorStatus_Received(object sender, string response)
+        {
+            this.DataReceived -= BottleSensorStatus_Received;
+            if (response == "1" || response.ToLower() == "ok" || response.ToLower() == "yes")
+            {
+                // Inform Supervisee that the MUB is present and ask his/her confirmation for the next steps
+                MUBStatusUpdated?.Invoke(this, EnumMUBStatus.Placed);
+            }
+            else
+            {
+                MUBStatusUpdated?.Invoke(this, EnumMUBStatus.Removed);
+            }
+        }
+
+        /// <summary>
+        /// Start MUB Applicator
+        /// </summary>
+        public void StartMUBApplicator()
+        {
+            this.DataReceived += MUBApplicatorStartStatus_Received;
+
+            _retryCount = 0;
+
+            // Start MUB applicator
+            string asciiCommand = "WR MR4 1";
+            SendASCIICommand(asciiCommand);
+        }
+
+        private void MUBApplicatorStartStatus_Received(object sender, string response)
+        {
+            this.DataReceived -= MUBApplicatorStartStatus_Received;
+
+            // Wait 1 second
+            Thread.Sleep(1000);
+
+            // Next send command to check MUB Applicator Stand by status
+            this.DataReceived += MUBApplicatorStandByStatus_Received;
+            string asciiCommand = "RD MR7";
+            SendASCIICommand(asciiCommand);
+        }
+
+        private void MUBApplicatorStandByStatus_Received(object sender, string response)
+        {
+            this.DataReceived -= MUBApplicatorStandByStatus_Received;
+            if (response == "1" || response.ToLower() == "ok" || response.ToLower() == "yes")
+            {
+                _previousMUBApplicatorStatus = EnumMUBApplicatorStatus.Started;
+                // MUB Applicator is started. Ready to print
+                MUBApplicatorStatusUpdated?.Invoke(this, EnumMUBApplicatorStatus.Started);
+            }
+            else
+            {
+                if (_retryCount == _maxRetryCount)
+                {
+                    _retryCount = 0;
+
+                    // MUB Applicator is not started
+                    MUBApplicatorStatusUpdated?.Invoke(this, _previousMUBApplicatorStatus);
+                }
+                else
+                {
+                    _retryCount++;
+                    Thread.Sleep(200);
+
+                    // Check MUB Applicator Stand by status
+                    this.DataReceived += MUBApplicatorStandByStatus_Received;
+                    string asciiCommand = "RD MR7";
+                    SendASCIICommand(asciiCommand);
+                }
+            }
+        }
+
+        public void CheckMUBApplicatorFinishStatus()
+        {
+            this.DataReceived += MUBApplicatorFinishStatus_Received;
+
+            // Send command to check if MUB Applicator is finished
+            string asciiCommand = "RD MR15";
+            SendASCIICommand(asciiCommand);
+        }
+
+        private void MUBApplicatorFinishStatus_Received(object sender, string response)
+        {
+            this.DataReceived -= MUBApplicatorFinishStatus_Received;
+            if (response == "1" || response.ToLower() == "ok" || response.ToLower() == "yes")
+            {
+                _previousMUBApplicatorStatus = EnumMUBApplicatorStatus.Finished;
+
+                // MUB Applicator is finished
+                // Inform the Supervisee to remove the MUB from the holder
+                //MUBReadyToRemove?.Invoke(this, "");
+                MUBApplicatorStatusUpdated?.Invoke(this, EnumMUBApplicatorStatus.Finished);
+            }
+            else
+            {
+                // MUB Applicator is not finished
+                MUBApplicatorStatusUpdated?.Invoke(this, _previousMUBApplicatorStatus);
+            }
+        }
+
+        //public void CheckIfMUBRemoved()
+        //{
+        //    this.DataReceived += MUBRemoveStatus_Received;
+
+        //    // Verify Supervisee remove the MUB before close the door.
+        //    string asciiCommand = "RD 14";
+        //    SendASCIICommand(asciiCommand);
+        //}
+
+        //private void MUBRemoveStatus_Received(object sender, string response)
+        //{
+        //    this.DataReceived -= MUBRemoveStatus_Received;
+        //    //MessageBox.Show("MUBRemoveStatus_Received:" + response);
+        //    if (response == "0")
+        //    {
+        //        MUBStatusUpdated?.Invoke(this, "0");
+
+        //        this.DataReceived += MUBDoorClosedStatus_Received;
+        //        // Close MUB Door
+        //        string asciiCommand = "WR MR509 1";
+        //        SendASCIICommand(asciiCommand);
+
+        //    }
+        //    else if (response == "1")
+        //    {
+        //        MUBStatusUpdated?.Invoke(this, "1");
+        //    }
+        //    else
+        //    {
+
+        //        Thread.Sleep(200);
+        //        CheckIfMUBRemoved();
+        //    }
+        //}
+
+        public void CloseMUBDoor()
+        {
+            // Close MUB Door
+            string asciiCommand = "WR MR509 1";
+            SendASCIICommand(asciiCommand);
+
+            CheckMUBDoorCloseStatus();
+        }
+
+        public void CheckMUBDoorCloseStatus()
+        {
+            _retryCount = 0;
+
+            // Send command to verify if the MUB Door is fully closed or not
+            this.DataReceived += CheckMUBDoorCloseStatus_Received;
+            string asciiCommand = "RD 1";
+            SendASCIICommand(asciiCommand);
+        }
+
+        private void CheckMUBDoorCloseStatus_Received(object sender, string response)
+        {
+            this.DataReceived -= CheckMUBDoorCloseStatus_Received;
+            if (response == "1" || response.ToLower() == "ok" || response.ToLower() == "yes")
+            {
+                // The MUB Door is fully closed
+                MUBDoorStatusChanged?.Invoke(this, EnumMUBDoorStatus.FullyClosed);
+            }
+            else
+            {
+                if (_retryCount == 100)
+                {
+                    _retryCount = 0;
+                    // The MUB Door is not fully closed
+                    MUBDoorStatusChanged?.Invoke(this, EnumMUBDoorStatus.NotFullyClosed);
+                }
+                else
+                {
+                    _retryCount++;
+                    Thread.Sleep(200);
+
+                    this.DataReceived += CheckMUBDoorCloseStatus_Received;
+                    string asciiCommand = "RD 1";
+                    SendASCIICommand(asciiCommand);
+                }
+            }
+        }
+
+        public void OpenMUBDoor()
+        {
+            // Open MUB Door
+            string asciiCommand = "WR MR508 1";
+            SendASCIICommand(asciiCommand);
+
+            CheckDoorOpenStatus();
+        }
+
+        public void CheckDoorOpenStatus()
+        {
+            this.DataReceived += CheckDoorOpenStatus_Received;
+
+            // Check Door Open status
+            _retryCount = 0;
+            string asciiCommand = "RD 0";
+            SendASCIICommand(asciiCommand);
+        }
+
+        private void CheckDoorOpenStatus_Received(object sender, string response)
+        {
+            this.DataReceived -= CheckDoorOpenStatus_Received;
+            if (response == "1" || response.ToLower() == "ok" || response.ToLower() == "yes")
+            {
+                // The MUB Door is fully open
+                MUBDoorStatusChanged?.Invoke(this, EnumMUBDoorStatus.FullyOpen);
+            }
+            else
+            {
+                if (_retryCount == 100)
+                {
+                    _retryCount = 0;
+                    // The MUB Door is not fully open
+                    MUBDoorStatusChanged?.Invoke(this, EnumMUBDoorStatus.NotFullyOpen);
+                }
+                else
+                {
+                    _retryCount++;
+                    Thread.Sleep(200);
+
+                    this.DataReceived += CheckDoorOpenStatus_Received;
+                    string asciiCommand = "RD 0";
+                    SendASCIICommand(asciiCommand);
+                }
+            }
+        }
         #endregion
 
         #region Private functions

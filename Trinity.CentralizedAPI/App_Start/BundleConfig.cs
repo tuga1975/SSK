@@ -1,7 +1,7 @@
 ﻿using System.Web;
 using System.Web.Optimization;
 
-namespace Trinity.CentralizedAPI
+namespace Trinity.BackendAPI
 {
     public class BundleConfig
     {
