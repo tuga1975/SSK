@@ -5,8 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Trinity.Device;
-using Trinity.Device.Monitor;
-using Trinity.Device.Util;
 
 namespace SSK
 {
@@ -24,7 +22,7 @@ namespace SSK
             {
                 // Start application status monitor and update application status
                 //ApplicationStatusMonitor.Instance.StartInitialization();
-                ApplicationStatusMonitor.Instance.UpdateApplicationStatus(EnumApplicationStatus.Initiation);
+                ApplicationStatusManager.Instance.StartInitialization();
                 
                 Application.Run(new Main());
             }

@@ -9,9 +9,10 @@ namespace Trinity.BE
 {
     public class DeviceStatus
     {
-        public string Station { get; set; }
-        public int DeviceID { get; set; }
-        public EnumDeviceStatus[] StatusCode { get; set; }
+        public EnumDeviceId DeviceID { get; set; }
+        public string DeviceName { get; set; }
+        public EnumDeviceStatus[] Status { get; set; }
+        public EnumDeviceStatusSumary Summary { get; set; }
     }
 
     public class StationColorDevice

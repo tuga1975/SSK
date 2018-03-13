@@ -94,6 +94,8 @@ namespace SSK
         }
         public void RefreshQueueNumbers()
         {
+            try
+            {
             DAL_QueueNumber _DAL_QueueNumber = new DAL_QueueNumber();
 
             // Get list timeslot today
@@ -191,6 +193,12 @@ namespace SSK
                 JsonConvert.SerializeObject(queueCurrent.Select(d => new { d.QueuedNumber, d.Type }).Take(12)),
                 JsonConvert.SerializeObject(queueOther.Select(d => new { d.QueuedNumber, d.Type }).Take(8))
                 );
+
+            }
+            catch (Exception ex)
+            {
+
+            }
         }
 
 

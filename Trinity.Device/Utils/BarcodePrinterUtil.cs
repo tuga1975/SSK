@@ -114,6 +114,7 @@ namespace Trinity.Device.Util
                 else
                 {
                     TSCLIB_DLL.windowsfont(startX + 70, startY, fontHeight, 0, fontStyle, 0, fontName, " : " + ttLabelInfo.Name);
+                    startY += fontHeight;
                 }
 
                 // ID line

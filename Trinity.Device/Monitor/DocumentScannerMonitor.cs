@@ -33,10 +33,8 @@ namespace Trinity.Device
                 // get statuses
                 var statuses = DocumentScannerUtil.Instance.GetDeviceStatus();
 
-                // update local ApplicationDevice_Status
-                DAL_DeviceStatus dAL_DeviceStatus = new DAL_DeviceStatus();
-                dAL_DeviceStatus.Update((int)EnumDeviceId.DocumentScanner, statuses);
-                Trinity.SignalR.Client.Instance.DeviceStatusChanged((int)EnumDeviceId.DocumentScanner, statuses);
+                // report
+                ApplicationStatusManager.Instance.ReportDeviceStatus(EnumDeviceId.DocumentScanner, statuses);
             }
             catch (Exception ex)
             {
