@@ -293,10 +293,15 @@
     text-align: center;
     font-weight: bold;
 }
-.titles span {
+.underline {
+    display: inline-block;
+    padding-bottom: 7px;
+    border-bottom: 2px solid #ff005a;
+}
+/*.titles span {
     border-bottom: 2px solid pink;
     padding-bottom: 10px;
-}
+}*/
 
 
 /*Collect command paste labels*/

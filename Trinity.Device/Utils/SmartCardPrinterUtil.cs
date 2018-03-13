@@ -631,6 +631,8 @@ namespace Trinity.Device.Util
                     break;
                 }
 
+                //if (js.printingStatus.Contains("error") || js.printingStatus == "at_station" ||
+                //    js.contactStatus == "at_station" || js.contactlessStatus == "at_station")
                 if (js.printingStatus.Contains("error") || js.printingStatus == "at_station" ||
                     js.contactStatus == "at_station" || js.contactlessStatus == "at_station")
                 {

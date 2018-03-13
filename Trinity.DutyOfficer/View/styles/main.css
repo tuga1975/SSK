@@ -278,6 +278,8 @@ span[color] {
     background: #ffffff;
     border: none;
     border-radius: 0;
+    padding: 10px 40px;
+    border-radius: 4px;
 }
 
 .btn:hover,
@@ -367,12 +369,15 @@ table tr.active {
     background-color: #f6f6f6;
     border-color: #fff;
 }
+table th[checkbox] {
+    padding: 0 20px;
+}
 /*Search, Filter*/
 .fixed-table-toolbar .search {
     /*position: absolute;
-    top: -80px;
-    left: 230px;
-    background-color: #f6f6f6;*/
+top: -80px;
+left: 230px;
+background-color: #f6f6f6;*/
     font-size: 14px;
     position: fixed;
     z-index: 200;

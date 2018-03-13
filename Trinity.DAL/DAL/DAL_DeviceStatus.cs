@@ -111,7 +111,7 @@ namespace Trinity.DAL
         /// Get application's health status
         /// </summary>
         /// <returns></returns>
-        public EnumApplicationStatus GetApplicationStatus()
+        public EnumDeviceStatusSumary GetApplicationStatus()
         {
             try
             {
@@ -127,30 +127,30 @@ namespace Trinity.DAL
                 if (deviceStatuses == null || deviceStatuses.Count == 0)
                 {
                     // application is down (notification server will delete all device status rows ) or cannot update status, return error
-                    return EnumApplicationStatus.Error;
+                    return EnumDeviceStatusSumary.Error;
                 }
                 else
                 {
                     // if any device is disconnected, return error
                     if (deviceStatuses.Any(item => item.StatusCode == (int)EnumDeviceStatus.Disconnected))
                     {
-                        return EnumApplicationStatus.Error;
+                        return EnumDeviceStatusSumary.Error;
                     }
 
                     // if application have no device disconnected, and have any device status is diffirent connected, return caution
                     // Need to define caution statuses group
                     if (deviceStatuses.Any(item => item.StatusCode != (int)EnumDeviceStatus.Connected))
                     {
-                        return EnumApplicationStatus.Caution;
+                        return EnumDeviceStatusSumary.Caution;
                     }
 
                     // if all devices are connected and have no caution, return ready
-                    return EnumApplicationStatus.Ready;
+                    return EnumDeviceStatusSumary.Ready;
                 }
             }
             catch (Exception ex)
             {
-                return EnumApplicationStatus.Error;
+                return EnumDeviceStatusSumary.Error;
             }
         }
 
