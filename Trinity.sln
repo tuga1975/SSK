@@ -29,7 +29,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trinity.SPHSim", "Trinity.S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Experiment", "Experiment\Experiment.csproj", "{4E49489A-BB18-4206-B758-631386462B98}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trinity.CentralizedAPI", "Trinity.CentralizedAPI\Trinity.CentralizedAPI.csproj", "{3E0060ED-B34F-45E0-9895-14B48467C4D1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trinity.BackendAPI", "Trinity.CentralizedAPI\Trinity.BackendAPI.csproj", "{3E0060ED-B34F-45E0-9895-14B48467C4D1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trinity.SignalR", "Trinity.Utils\Trinity.SignalR.csproj", "{C2EE0B7A-1CBF-4403-807E-8AC9F455C661}"
 EndProject

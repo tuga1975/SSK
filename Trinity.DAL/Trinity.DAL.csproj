@@ -113,6 +113,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DAL\DAL_Transactions.cs" />
     <Compile Include="DAL\DAL_UploadedDocuments.cs" />
     <Compile Include="DAL\DAL_Address.cs" />
     <Compile Include="DAL\DAL_DeviceStatus.cs" />
@@ -234,6 +235,9 @@
       <DependentUpon>SSK.edmx</DependentUpon>
     </Compile>
     <Compile Include="DBContext\Timeslot.cs">
+      <DependentUpon>SSK.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBContext\Transaction.cs">
       <DependentUpon>SSK.tt</DependentUpon>
     </Compile>
     <Compile Include="DBContext\TrinityCentralizedDB.Context.cs">

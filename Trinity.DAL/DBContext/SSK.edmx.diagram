@@ -67,6 +67,7 @@
         <AssociationConnector Association="SSKModel.FK_Queues_Timeslots" ManuallyRouted="false" />
         <AssociationConnector Association="SSKModel.FK_SentMessages_User_Profiles" ManuallyRouted="false" />
         <AssociationConnector Association="SSKModel.FK_User_Profiles_UploadedDocuments" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="SSKModel.Transaction" Width="1.5" PointX="12.375" PointY="4.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

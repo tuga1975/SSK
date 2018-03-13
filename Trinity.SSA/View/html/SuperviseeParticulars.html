@@ -32,17 +32,18 @@
             <span class="input-group-addon">Marking Number:</span>
             <input id="MarkingNumber" type="text" class="form-control pri" name="MarkingNumber" readonly="readonly" />
         </div>-->
-        <div style="visibility:hidden;"><label id="lblPrintingStatus">0</label>
+        <div style="visibility:hidden;">
+            <label id="lblNextAction">InitializeMUBApplicator</label>
         </div>
         <div class="status-text">
-        
+
         </div>
         <div id="divSave">
             <button type="button" class="btn btn-dark" id="CancelBtn">CANCEL</button>
-            <button type="button" class="btn btn-primary" id="ConfirmBtn">Initialize MUB Applicator</button>
+            <button type="button" class="btn btn-primary" id="ConfirmBtn">CONFIRM</button>
 
         </div>
-    </div>
+
 </form>
 
 <script type="text/javascript">
@@ -55,10 +56,10 @@
         $("#imgQRCode").attr("src", srcQRCode);
 
         $("#ConfirmBtn").click(function (e) {
-            var printingStatus = $("#lblPrintingStatus").text();
+            var action = $("#lblNextAction").text();
             var json = JSON.stringify(model);
             //api.server.MappingTemplateMUBAndTTLabels(json);
-            api.server.ConfirmAction(printingStatus, json);
+            api.server.ConfirmAction(action, json);
             e.preventDefault(); // avoid to execute the actual submit of the form.
         });
 

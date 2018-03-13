@@ -1,7 +1,7 @@
 using System;
 using System.Reflection;
 
-namespace Trinity.CentralizedAPI.Areas.HelpPage.ModelDescriptions
+namespace Trinity.BackendAPI.Areas.HelpPage.ModelDescriptions
 {
     public interface IModelDocumentationProvider
     {

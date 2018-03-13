@@ -12,16 +12,14 @@ namespace Trinity.DAL
         Local_UnitOfWork _localUnitOfWork = new Local_UnitOfWork();
         Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
 
+        public DBContext.DrugResult GetByNRIC(string NRIC)
+        {
+            return _localUnitOfWork.DataContext.DrugResults.FirstOrDefault(d => d.NRIC.Equals(NRIC));
+        }
+
         public DBContext.DrugResult GetByMarkingNumber(string MarkingNumber)
         {
-            if (EnumAppConfig.IsLocal)
-            {
-                return _localUnitOfWork.DataContext.DrugResults.FirstOrDefault(d => d.markingnumber == MarkingNumber);
-            }
-            else
-            {
-                return _centralizedUnitOfWork.DataContext.DrugResults.FirstOrDefault(d => d.markingnumber == MarkingNumber);
-            }
+            return _localUnitOfWork.DataContext.DrugResults.FirstOrDefault(d => d.markingnumber.Equals(MarkingNumber));
         }
 
         public string GetDrugTypeByNRIC(string NRIC)

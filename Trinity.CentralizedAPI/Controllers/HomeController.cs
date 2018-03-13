@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-namespace Trinity.CentralizedAPI.Controllers
+namespace Trinity.BackendAPI.Controllers
 {
     public class HomeController : Controller
     {

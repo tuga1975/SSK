@@ -511,10 +511,11 @@ namespace SSK
                 FacialRecognition.Instance.OnFacialRecognitionSucceeded += Main_OnFacialRecognitionSucceeded;
                 FacialRecognition.Instance.OnFacialRecognitionProcessing += Main_OnFacialRecognitionProcessing;
 
+                List<byte[]> FaceJpg = new System.Collections.Generic.List<byte[]>() { user.User_Photo1, user.User_Photo2 };
                 this.Invoke((MethodInvoker)(() =>
                 {
                     Point startLocation = new Point((Screen.PrimaryScreen.Bounds.Size.Width / 2) - 400 / 2, (Screen.PrimaryScreen.Bounds.Size.Height / 2) - 400 / 2);
-                    FacialRecognition.Instance.StartFacialRecognition(startLocation, new System.Collections.Generic.List<byte[]>() { user.User_Photo1, user.User_Photo2 });
+                    FacialRecognition.Instance.StartFacialRecognition(startLocation, FaceJpg);
                 }));
             }
             else if (navigatorEnum == NavigatorEnums.Authentication_NRIC)

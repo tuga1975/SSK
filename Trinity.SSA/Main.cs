@@ -178,9 +178,9 @@ namespace SSA
 
                 //string startFrom = "Supervisee_Particulars";
                 //string superviseeId = "06a91b1b-99c3-428d-8a55-83892c2adf4c";
-                //string dutyOfficerId = "bd6089d4-ab74-4cbc-9c8e-6867afe37ce8";
+                //string dutyOfficerId = "f1748cb4-3bb5-4129-852d-2aba28bb8cec";
                 //Session session = Session.Instance;
-                
+
                 //if (startFrom == "Supervisee_Particulars")
                 //{
                 //    Trinity.BE.User user = new DAL_User().GetUserByUserId(superviseeId).Data;
@@ -362,8 +362,8 @@ namespace SSA
 
                 // Navigate to next page: Facial Authentication
                 // Facial SDK has a trouble. Bypass temporarily
-                // NavigateTo(NavigatorEnums.Authentication_Facial);
-                NavigateTo(NavigatorEnums.Authentication_SmartCard);
+                NavigateTo(NavigatorEnums.Authentication_Facial);
+                //NavigateTo(NavigatorEnums.Authentication_SmartCard);
                 return;
             }
 
@@ -611,100 +611,6 @@ namespace SSA
                 CSCallJS.DisplayLogoutButton(this.LayerWeb, _displayLoginButtonStatus);
             }
         }
-        #endregion
-
-        #region MUB printing & labelling sample process
-        private void btnConfirm_Click(object sender, EventArgs e)
-        {
-            if (btnConfirm.Tag.ToString() == "0")
-            {
-                LEDStatusLightingUtil.Instance.MUBAutoFlagApplicatorReadyOK += Instance_MUBAutoFlagApplicatorReadyOK;
-                LEDStatusLightingUtil.Instance.InitializeMUBApplicator();
-                btnConfirm.Enabled = false;
-            }
-            else if (btnConfirm.Tag.ToString() == "1")
-            {
-                LEDStatusLightingUtil.Instance.MUBStatusUpdated += Instance_MUBStatusUpdated;
-                LEDStatusLightingUtil.Instance.VerifyMUBPresence();
-                btnConfirm.Enabled = false;
-            }
-            else if (btnConfirm.Tag.ToString() == "2")
-            {
-                LEDStatusLightingUtil.Instance.MUBReadyToPrint += Instance_MUBReadyToPrint;
-                LEDStatusLightingUtil.Instance.StartMUBApplicator();
-                btnConfirm.Enabled = false;
-            }
-            else if (btnConfirm.Tag.ToString() == "3")
-            {
-                // Start to print
-                btnConfirm.Text = "Check printing status";
-                LEDStatusLightingUtil.Instance.MUBReadyToRemove += Instance_MUBReadyToRemove;
-                LEDStatusLightingUtil.Instance.CheckMUBApplicatorFinishStatus();
-                btnConfirm.Enabled = false;
-            }
-            else if (btnConfirm.Tag.ToString() == "4")
-            {
-                // Verify Supervisee remove the MUB before close the door.
-                lblStatus.Text = "You haven't removed the MUB. Please remove it";
-                LEDStatusLightingUtil.Instance.MUBDoorFullyClosed += Instance_MUBDoorFullyClosed;
-                LEDStatusLightingUtil.Instance.CheckIfMUBRemoved();
-                btnConfirm.Enabled = false;
-            }
-        }
-
-        private void Instance_MUBAutoFlagApplicatorReadyOK(object sender, string e)
-        {
-            LEDStatusLightingUtil.Instance.MUBAutoFlagApplicatorReadyOK -= Instance_MUBAutoFlagApplicatorReadyOK;
-            lblStatus.Text = "Please place the MUB on the holder";
-            btnConfirm.Enabled = true;
-            btnConfirm.Text = "Verify presence of MUB";
-            btnConfirm.Tag = "1";
-        }
-
-        private void Instance_MUBStatusUpdated(object sender, string e)
-        {
-            LEDStatusLightingUtil.Instance.MUBStatusUpdated -= Instance_MUBStatusUpdated;
-            if (e == "1")
-            {
-                lblStatus.Text = "Supervisee has placed the MUB on the holder";
-                btnConfirm.Enabled = true;
-                btnConfirm.Text = "Start Applicator";
-                btnConfirm.Tag = "2";
-            }
-            else if (e == "0")
-            {
-                lblStatus.Text = "MUB is not present";
-                btnConfirm.Enabled = true;
-            }
-        }
-
-        private void Instance_MUBReadyToPrint(object sender, string e)
-        {
-            LEDStatusLightingUtil.Instance.MUBReadyToPrint -= Instance_MUBReadyToPrint;
-            lblStatus.Text = "Ready to print";
-            btnConfirm.Enabled = true;
-            btnConfirm.Text = "Start to print MUB/TT Label";
-            btnConfirm.Tag = "3";
-        }
-
-        private void Instance_MUBReadyToRemove(object sender, string e)
-        {
-            LEDStatusLightingUtil.Instance.MUBReadyToRemove -= Instance_MUBReadyToRemove;
-            lblStatus.Text = "Print completed. Please remove the MUB";
-            btnConfirm.Text = "Confirm to remove the MUB";
-            btnConfirm.Enabled = true;
-            btnConfirm.Tag = "4";
-        }
-
-        private void Instance_MUBDoorFullyClosed(object sender, string e)
-        {
-            LEDStatusLightingUtil.Instance.MUBDoorFullyClosed -= Instance_MUBDoorFullyClosed;
-            lblStatus.Text = "The door is fully close";
-            btnConfirm.Text = "Initialize MUB Applicator";
-            btnConfirm.Enabled = true;
-            btnConfirm.Tag = "0";
-        }
-
         #endregion
     }
 }

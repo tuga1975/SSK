@@ -163,6 +163,7 @@ namespace Trinity.Common
         public const string DEVICE_STATUS_CHANGED = "DEVICE_STATUS_CHANGED";
         public const string APP_DISCONNECTED = "APP_DISCONNECTED";
         public const string ALERT_MESSAGE = "ALERT_MESSAGE";
+        public const string SSP_COMPLETED = "SSP_COMPLETED";
     }
 
     public class NotificationInfo
@@ -176,6 +177,7 @@ namespace Trinity.Common
         public string Code { get; set; }
         public object Data { get; set; }
         public object Source { get; set; }
+        public string NRIC { get; set; }
     }
 
     public class PrintMUBAndTTLabelsEventArgs

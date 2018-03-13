@@ -2,9 +2,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Net.Http.Headers;
 using System.Web.Http.Description;
-using Trinity.CentralizedAPI.Areas.HelpPage.ModelDescriptions;
+using Trinity.BackendAPI.Areas.HelpPage.ModelDescriptions;
 
-namespace Trinity.CentralizedAPI.Areas.HelpPage.Models
+namespace Trinity.BackendAPI.Areas.HelpPage.Models
 {
     /// <summary>
     /// The model that represents an API displayed on the help page.
