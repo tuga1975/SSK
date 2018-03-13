@@ -294,7 +294,7 @@ namespace Trinity.DAL
                                     IsSealed = d.IsSealed
                                 })
                     .Where(d => d.IsSealed == true);
-                    return lstModels.ToList();
+                    return lstModels.Distinct().ToList();
 
                     //if ((lstModels != null && lstModels.Count() > 0) || EnumAppConfig.ByPassCentralizedDB)
                     //{
@@ -313,17 +313,20 @@ namespace Trinity.DAL
                 }
                 else
                 {
-                    var lstModels = _centralizedUnitOfWork.DataContext.Labels.Include("Membership_Users")
-                    .Where(l => l.Label_Type.Equals(EnumLabelType.UB))
-                    .Select(d => new BE.Label()
-                    {
-                        NRIC = d.Membership_Users.NRIC,
-                        Name = d.Membership_Users.Name,
-                        LastStation = d.LastStation,
-                        UserId = d.UserId
-                    });
-
-                    return lstModels.ToList();
+                    var lstModels = _localUnitOfWork.DataContext.Labels.Include("Membership_Users")
+                        .Join(_localUnitOfWork.DataContext.DrugResults,
+                                l => l.Membership_Users.NRIC,
+                                d => d.NRIC,
+                                (l, d) => new BE.Label()
+                                {
+                                    NRIC = l.Membership_Users.NRIC,
+                                    Name = l.Membership_Users.Name,
+                                    LastStation = l.LastStation,
+                                    UserId = l.UserId,
+                                    IsSealed = d.IsSealed
+                                })
+                    .Where(d => d.IsSealed == true);
+                    return lstModels.Distinct().ToList();
                 }
             }
             catch (Exception e)

@@ -59,6 +59,22 @@
             this.radBLUELight = new System.Windows.Forms.RadioButton();
             this.radYELLOWLight = new System.Windows.Forms.RadioButton();
             this.serialPort1 = new System.IO.Ports.SerialPort(this.components);
+            this.btnInitializeMUBApplicator = new System.Windows.Forms.Button();
+            this.btnStartMUBApplicator = new System.Windows.Forms.Button();
+            this.btnCloseMUBDoor = new System.Windows.Forms.Button();
+            this.btnOpenMUBDoor = new System.Windows.Forms.Button();
+            this.lblCheckIfMUBApplicatorIsReady = new System.Windows.Forms.Label();
+            this.lblCheckIfMUBApplicatorIsStarted = new System.Windows.Forms.Label();
+            this.lblCheckIfMUBIsPresent = new System.Windows.Forms.Label();
+            this.lblCheckIfMUBIsRemoved = new System.Windows.Forms.Label();
+            this.lblCheckIfMUBDoorIsFullyClosed = new System.Windows.Forms.Label();
+            this.lblCheckIfMUBDoorIsFullyOpen = new System.Windows.Forms.Label();
+            this.btnCheckIfMUBApplicatorIsReady = new System.Windows.Forms.Button();
+            this.btnCheckIfMUBApplicatorIsStarted = new System.Windows.Forms.Button();
+            this.btnCheckIfMUBIsPresent = new System.Windows.Forms.Button();
+            this.btnCheckIfMUBIsRemoved = new System.Windows.Forms.Button();
+            this.btnCheckIfMUBDoorIsFullyClosed = new System.Windows.Forms.Button();
+            this.btnCheckIfMUBDoorIsFullyOpen = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -194,7 +210,7 @@
             // 
             // btnOpenPort
             // 
-            this.btnOpenPort.Location = new System.Drawing.Point(749, 146);
+            this.btnOpenPort.Location = new System.Drawing.Point(270, 73);
             this.btnOpenPort.Name = "btnOpenPort";
             this.btnOpenPort.Size = new System.Drawing.Size(96, 46);
             this.btnOpenPort.TabIndex = 1;
@@ -205,9 +221,9 @@
             // btnClosePort
             // 
             this.btnClosePort.Enabled = false;
-            this.btnClosePort.Location = new System.Drawing.Point(749, 233);
+            this.btnClosePort.Location = new System.Drawing.Point(377, 73);
             this.btnClosePort.Name = "btnClosePort";
-            this.btnClosePort.Size = new System.Drawing.Size(96, 45);
+            this.btnClosePort.Size = new System.Drawing.Size(96, 46);
             this.btnClosePort.TabIndex = 5;
             this.btnClosePort.Text = "Close Port";
             this.btnClosePort.UseVisualStyleBackColor = true;
@@ -376,11 +392,187 @@
             this.radYELLOWLight.UseVisualStyleBackColor = true;
             this.radYELLOWLight.CheckedChanged += new System.EventHandler(this.radYELLOWLight_CheckedChanged);
             // 
+            // btnInitializeMUBApplicator
+            // 
+            this.btnInitializeMUBApplicator.Location = new System.Drawing.Point(625, 129);
+            this.btnInitializeMUBApplicator.Name = "btnInitializeMUBApplicator";
+            this.btnInitializeMUBApplicator.Size = new System.Drawing.Size(138, 46);
+            this.btnInitializeMUBApplicator.TabIndex = 25;
+            this.btnInitializeMUBApplicator.Text = "Initialize MUB Applicator";
+            this.btnInitializeMUBApplicator.UseVisualStyleBackColor = true;
+            this.btnInitializeMUBApplicator.Click += new System.EventHandler(this.btnInitializeMUBApplicator_Click);
+            // 
+            // btnStartMUBApplicator
+            // 
+            this.btnStartMUBApplicator.Location = new System.Drawing.Point(625, 182);
+            this.btnStartMUBApplicator.Name = "btnStartMUBApplicator";
+            this.btnStartMUBApplicator.Size = new System.Drawing.Size(138, 46);
+            this.btnStartMUBApplicator.TabIndex = 26;
+            this.btnStartMUBApplicator.Text = "Start MUB Applicator";
+            this.btnStartMUBApplicator.UseVisualStyleBackColor = true;
+            this.btnStartMUBApplicator.Click += new System.EventHandler(this.btnStartMUBApplicator_Click);
+            // 
+            // btnCloseMUBDoor
+            // 
+            this.btnCloseMUBDoor.Location = new System.Drawing.Point(625, 234);
+            this.btnCloseMUBDoor.Name = "btnCloseMUBDoor";
+            this.btnCloseMUBDoor.Size = new System.Drawing.Size(138, 46);
+            this.btnCloseMUBDoor.TabIndex = 27;
+            this.btnCloseMUBDoor.Text = "Close MUB Door";
+            this.btnCloseMUBDoor.UseVisualStyleBackColor = true;
+            this.btnCloseMUBDoor.Click += new System.EventHandler(this.btnCloseMUBDoor_Click);
+            // 
+            // btnOpenMUBDoor
+            // 
+            this.btnOpenMUBDoor.Location = new System.Drawing.Point(625, 286);
+            this.btnOpenMUBDoor.Name = "btnOpenMUBDoor";
+            this.btnOpenMUBDoor.Size = new System.Drawing.Size(138, 46);
+            this.btnOpenMUBDoor.TabIndex = 28;
+            this.btnOpenMUBDoor.Text = "Open MUB Door";
+            this.btnOpenMUBDoor.UseVisualStyleBackColor = true;
+            this.btnOpenMUBDoor.Click += new System.EventHandler(this.btnOpenMUBDoor_Click);
+            // 
+            // lblCheckIfMUBApplicatorIsReady
+            // 
+            this.lblCheckIfMUBApplicatorIsReady.AutoSize = true;
+            this.lblCheckIfMUBApplicatorIsReady.ForeColor = System.Drawing.Color.Red;
+            this.lblCheckIfMUBApplicatorIsReady.Location = new System.Drawing.Point(1053, 141);
+            this.lblCheckIfMUBApplicatorIsReady.Name = "lblCheckIfMUBApplicatorIsReady";
+            this.lblCheckIfMUBApplicatorIsReady.Size = new System.Drawing.Size(46, 17);
+            this.lblCheckIfMUBApplicatorIsReady.TabIndex = 35;
+            this.lblCheckIfMUBApplicatorIsReady.Text = "label7";
+            // 
+            // lblCheckIfMUBApplicatorIsStarted
+            // 
+            this.lblCheckIfMUBApplicatorIsStarted.AutoSize = true;
+            this.lblCheckIfMUBApplicatorIsStarted.ForeColor = System.Drawing.Color.Red;
+            this.lblCheckIfMUBApplicatorIsStarted.Location = new System.Drawing.Point(1053, 187);
+            this.lblCheckIfMUBApplicatorIsStarted.Name = "lblCheckIfMUBApplicatorIsStarted";
+            this.lblCheckIfMUBApplicatorIsStarted.Size = new System.Drawing.Size(46, 17);
+            this.lblCheckIfMUBApplicatorIsStarted.TabIndex = 36;
+            this.lblCheckIfMUBApplicatorIsStarted.Text = "label7";
+            // 
+            // lblCheckIfMUBIsPresent
+            // 
+            this.lblCheckIfMUBIsPresent.AutoSize = true;
+            this.lblCheckIfMUBIsPresent.ForeColor = System.Drawing.Color.Red;
+            this.lblCheckIfMUBIsPresent.Location = new System.Drawing.Point(1053, 234);
+            this.lblCheckIfMUBIsPresent.Name = "lblCheckIfMUBIsPresent";
+            this.lblCheckIfMUBIsPresent.Size = new System.Drawing.Size(46, 17);
+            this.lblCheckIfMUBIsPresent.TabIndex = 37;
+            this.lblCheckIfMUBIsPresent.Text = "label7";
+            // 
+            // lblCheckIfMUBIsRemoved
+            // 
+            this.lblCheckIfMUBIsRemoved.AutoSize = true;
+            this.lblCheckIfMUBIsRemoved.ForeColor = System.Drawing.Color.Red;
+            this.lblCheckIfMUBIsRemoved.Location = new System.Drawing.Point(1053, 279);
+            this.lblCheckIfMUBIsRemoved.Name = "lblCheckIfMUBIsRemoved";
+            this.lblCheckIfMUBIsRemoved.Size = new System.Drawing.Size(46, 17);
+            this.lblCheckIfMUBIsRemoved.TabIndex = 38;
+            this.lblCheckIfMUBIsRemoved.Text = "label7";
+            // 
+            // lblCheckIfMUBDoorIsFullyClosed
+            // 
+            this.lblCheckIfMUBDoorIsFullyClosed.AutoSize = true;
+            this.lblCheckIfMUBDoorIsFullyClosed.ForeColor = System.Drawing.Color.Red;
+            this.lblCheckIfMUBDoorIsFullyClosed.Location = new System.Drawing.Point(1053, 324);
+            this.lblCheckIfMUBDoorIsFullyClosed.Name = "lblCheckIfMUBDoorIsFullyClosed";
+            this.lblCheckIfMUBDoorIsFullyClosed.Size = new System.Drawing.Size(46, 17);
+            this.lblCheckIfMUBDoorIsFullyClosed.TabIndex = 39;
+            this.lblCheckIfMUBDoorIsFullyClosed.Text = "label7";
+            // 
+            // lblCheckIfMUBDoorIsFullyOpen
+            // 
+            this.lblCheckIfMUBDoorIsFullyOpen.AutoSize = true;
+            this.lblCheckIfMUBDoorIsFullyOpen.ForeColor = System.Drawing.Color.Red;
+            this.lblCheckIfMUBDoorIsFullyOpen.Location = new System.Drawing.Point(1053, 371);
+            this.lblCheckIfMUBDoorIsFullyOpen.Name = "lblCheckIfMUBDoorIsFullyOpen";
+            this.lblCheckIfMUBDoorIsFullyOpen.Size = new System.Drawing.Size(46, 17);
+            this.lblCheckIfMUBDoorIsFullyOpen.TabIndex = 40;
+            this.lblCheckIfMUBDoorIsFullyOpen.Text = "label7";
+            // 
+            // btnCheckIfMUBApplicatorIsReady
+            // 
+            this.btnCheckIfMUBApplicatorIsReady.Location = new System.Drawing.Point(781, 129);
+            this.btnCheckIfMUBApplicatorIsReady.Name = "btnCheckIfMUBApplicatorIsReady";
+            this.btnCheckIfMUBApplicatorIsReady.Size = new System.Drawing.Size(266, 40);
+            this.btnCheckIfMUBApplicatorIsReady.TabIndex = 41;
+            this.btnCheckIfMUBApplicatorIsReady.Text = "Check if MUB Applicator is ready";
+            this.btnCheckIfMUBApplicatorIsReady.UseVisualStyleBackColor = true;
+            this.btnCheckIfMUBApplicatorIsReady.Click += new System.EventHandler(this.btnCheckIfMUBApplicatorIsReady_Click);
+            // 
+            // btnCheckIfMUBApplicatorIsStarted
+            // 
+            this.btnCheckIfMUBApplicatorIsStarted.Location = new System.Drawing.Point(781, 175);
+            this.btnCheckIfMUBApplicatorIsStarted.Name = "btnCheckIfMUBApplicatorIsStarted";
+            this.btnCheckIfMUBApplicatorIsStarted.Size = new System.Drawing.Size(266, 40);
+            this.btnCheckIfMUBApplicatorIsStarted.TabIndex = 42;
+            this.btnCheckIfMUBApplicatorIsStarted.Text = "Check if MUB Applicator is started";
+            this.btnCheckIfMUBApplicatorIsStarted.UseVisualStyleBackColor = true;
+            this.btnCheckIfMUBApplicatorIsStarted.Click += new System.EventHandler(this.btnCheckIfMUBApplicatorIsStarted_Click);
+            // 
+            // btnCheckIfMUBIsPresent
+            // 
+            this.btnCheckIfMUBIsPresent.Location = new System.Drawing.Point(781, 221);
+            this.btnCheckIfMUBIsPresent.Name = "btnCheckIfMUBIsPresent";
+            this.btnCheckIfMUBIsPresent.Size = new System.Drawing.Size(266, 40);
+            this.btnCheckIfMUBIsPresent.TabIndex = 43;
+            this.btnCheckIfMUBIsPresent.Text = "Check if MUB is present";
+            this.btnCheckIfMUBIsPresent.UseVisualStyleBackColor = true;
+            this.btnCheckIfMUBIsPresent.Click += new System.EventHandler(this.btnCheckIfMUBIsPresent_Click);
+            // 
+            // btnCheckIfMUBIsRemoved
+            // 
+            this.btnCheckIfMUBIsRemoved.Location = new System.Drawing.Point(781, 267);
+            this.btnCheckIfMUBIsRemoved.Name = "btnCheckIfMUBIsRemoved";
+            this.btnCheckIfMUBIsRemoved.Size = new System.Drawing.Size(266, 40);
+            this.btnCheckIfMUBIsRemoved.TabIndex = 44;
+            this.btnCheckIfMUBIsRemoved.Text = "Check if MUB is removed";
+            this.btnCheckIfMUBIsRemoved.UseVisualStyleBackColor = true;
+            this.btnCheckIfMUBIsRemoved.Click += new System.EventHandler(this.btnCheckIfMUBIsRemoved_Click);
+            // 
+            // btnCheckIfMUBDoorIsFullyClosed
+            // 
+            this.btnCheckIfMUBDoorIsFullyClosed.Location = new System.Drawing.Point(781, 313);
+            this.btnCheckIfMUBDoorIsFullyClosed.Name = "btnCheckIfMUBDoorIsFullyClosed";
+            this.btnCheckIfMUBDoorIsFullyClosed.Size = new System.Drawing.Size(266, 40);
+            this.btnCheckIfMUBDoorIsFullyClosed.TabIndex = 45;
+            this.btnCheckIfMUBDoorIsFullyClosed.Text = "Check if MUB Door is fully closed";
+            this.btnCheckIfMUBDoorIsFullyClosed.UseVisualStyleBackColor = true;
+            this.btnCheckIfMUBDoorIsFullyClosed.Click += new System.EventHandler(this.btnCheckIfMUBDoorIsFullyClosed_Click);
+            // 
+            // btnCheckIfMUBDoorIsFullyOpen
+            // 
+            this.btnCheckIfMUBDoorIsFullyOpen.Location = new System.Drawing.Point(781, 359);
+            this.btnCheckIfMUBDoorIsFullyOpen.Name = "btnCheckIfMUBDoorIsFullyOpen";
+            this.btnCheckIfMUBDoorIsFullyOpen.Size = new System.Drawing.Size(266, 40);
+            this.btnCheckIfMUBDoorIsFullyOpen.TabIndex = 46;
+            this.btnCheckIfMUBDoorIsFullyOpen.Text = "Check if MUB Door is fully open";
+            this.btnCheckIfMUBDoorIsFullyOpen.UseVisualStyleBackColor = true;
+            this.btnCheckIfMUBDoorIsFullyOpen.Click += new System.EventHandler(this.btnCheckIfMUBDoorIsFullyOpen_Click);
+            // 
             // FormLEDLightControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(857, 609);
+            this.ClientSize = new System.Drawing.Size(1299, 609);
+            this.Controls.Add(this.btnCheckIfMUBDoorIsFullyOpen);
+            this.Controls.Add(this.btnCheckIfMUBDoorIsFullyClosed);
+            this.Controls.Add(this.btnCheckIfMUBIsRemoved);
+            this.Controls.Add(this.btnCheckIfMUBIsPresent);
+            this.Controls.Add(this.btnCheckIfMUBApplicatorIsStarted);
+            this.Controls.Add(this.btnCheckIfMUBApplicatorIsReady);
+            this.Controls.Add(this.lblCheckIfMUBDoorIsFullyOpen);
+            this.Controls.Add(this.lblCheckIfMUBDoorIsFullyClosed);
+            this.Controls.Add(this.lblCheckIfMUBIsRemoved);
+            this.Controls.Add(this.lblCheckIfMUBIsPresent);
+            this.Controls.Add(this.lblCheckIfMUBApplicatorIsStarted);
+            this.Controls.Add(this.lblCheckIfMUBApplicatorIsReady);
+            this.Controls.Add(this.btnOpenMUBDoor);
+            this.Controls.Add(this.btnCloseMUBDoor);
+            this.Controls.Add(this.btnStartMUBApplicator);
+            this.Controls.Add(this.btnInitializeMUBApplicator);
             this.Controls.Add(this.radYELLOWLight);
             this.Controls.Add(this.radBLUELight);
             this.Controls.Add(this.radGREENLight);
@@ -446,5 +638,21 @@
         private System.Windows.Forms.RadioButton radBLUELight;
         private System.Windows.Forms.RadioButton radYELLOWLight;
         private System.IO.Ports.SerialPort serialPort1;
+        private System.Windows.Forms.Button btnInitializeMUBApplicator;
+        private System.Windows.Forms.Button btnStartMUBApplicator;
+        private System.Windows.Forms.Button btnCloseMUBDoor;
+        private System.Windows.Forms.Button btnOpenMUBDoor;
+        private System.Windows.Forms.Label lblCheckIfMUBApplicatorIsReady;
+        private System.Windows.Forms.Label lblCheckIfMUBApplicatorIsStarted;
+        private System.Windows.Forms.Label lblCheckIfMUBIsPresent;
+        private System.Windows.Forms.Label lblCheckIfMUBIsRemoved;
+        private System.Windows.Forms.Label lblCheckIfMUBDoorIsFullyClosed;
+        private System.Windows.Forms.Label lblCheckIfMUBDoorIsFullyOpen;
+        private System.Windows.Forms.Button btnCheckIfMUBApplicatorIsReady;
+        private System.Windows.Forms.Button btnCheckIfMUBApplicatorIsStarted;
+        private System.Windows.Forms.Button btnCheckIfMUBIsPresent;
+        private System.Windows.Forms.Button btnCheckIfMUBIsRemoved;
+        private System.Windows.Forms.Button btnCheckIfMUBDoorIsFullyClosed;
+        private System.Windows.Forms.Button btnCheckIfMUBDoorIsFullyOpen;
     }
 }
