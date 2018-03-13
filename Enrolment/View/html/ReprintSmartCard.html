@@ -261,13 +261,13 @@
 </style>
 <ul class="nav nav-tabs nav-tabs-custom" role="tablist" style="margin-top:50px;">
     <li class="nav-item">
-        <a class="nav-link active" data-toggle="tab" href="javascript:LoadSuperviseeDetails();" role="tab">
+        <a class="nav-link" data-toggle="tab" href="javascript:LoadSuperviseeDetails();" role="tab">
             <i class="ion-information-circled"></i> Supervisee Details
         </a>
     </li>
 
     <li class="nav-item">
-        <a class="nav-link" data-toggle="tab" role="tab" href="javascript:api.server.LoadPage('ReprintSmartCard.html');">
+        <a class="nav-link active" data-toggle="tab" role="tab" href="javascript:api.server.LoadPage('ReprintSmartCard.html');">
             <i class="fa fa-address-card"></i> Issued card
         </a>
     </li>
@@ -305,7 +305,7 @@
                         <div enterreprint style="display:none;margin-top:10px;">
                             <span style="height:35px;display:inline-block;vertical-align:middle;padding:0px 10px;line-height:30px;float:left;">Enter reason to reprint:</span>
                             <input type="text" name="reprint" style="height:35px;display:inline-block;vertical-align:middle;width:calc(100% - 300px);float:left;margin:0px 10px;" />
-                            <button type="button"  onclick="ReprintIssuedCard();">Reprint</button>
+                            <button type="button"  onclick="ReprintIssuedCard();" style="margin-top:-5px;">Reprint</button>
                             <div style="clear:both;"></div>
                         </div>
                     </div>

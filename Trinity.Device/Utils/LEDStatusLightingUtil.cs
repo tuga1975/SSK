@@ -528,10 +528,10 @@ namespace Trinity.Device.Util
                 TurnOffAllLEDs();
 
                 // get device status
-                EnumApplicationStatus applicationStatus = new DAL.DAL_DeviceStatus().GetApplicationStatus();
+                EnumDeviceStatusSumary applicationStatus = new DAL.DAL_DeviceStatus().GetApplicationStatus();
 
                 // ready to use
-                if (applicationStatus == EnumApplicationStatus.Ready)
+                if (applicationStatus == EnumDeviceStatusSumary.Ready)
                 {
                     if (_isBusy)
                     {
@@ -548,13 +548,13 @@ namespace Trinity.Device.Util
                 }
 
                 // caution
-                if (applicationStatus == EnumApplicationStatus.Caution)
+                if (applicationStatus == EnumDeviceStatusSumary.Caution)
                 {
                     //SwitchYELLOWLightFlashingOnOff(true);
                 }
 
                 // error
-                if (applicationStatus == EnumApplicationStatus.Error)
+                if (applicationStatus == EnumDeviceStatusSumary.Error)
                 {
                     SwitchREDLightOnOff(true);
                 }
@@ -950,7 +950,7 @@ namespace Trinity.Device.Util
         {
             try
             {
-                //SwitchBLUELightOnOff(_isOn_BlueLightFlashing);
+                SwitchBLUELightOnOff(_isOn_BlueLightFlashing);
                 System.Diagnostics.Debug.WriteLine("LEDStatusLightingUtil.OnBlueLightFlashingTimedEvent : " + _isOn_BlueLightFlashing.ToString());
                 _isOn_BlueLightFlashing = !_isOn_BlueLightFlashing;
             }

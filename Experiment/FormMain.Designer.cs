@@ -46,6 +46,10 @@
             this.rtbBarTenderCommand = new System.Windows.Forms.RichTextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.btnSendBTCommand = new System.Windows.Forms.Button();
+            this.button3 = new System.Windows.Forms.Button();
+            this.button4 = new System.Windows.Forms.Button();
+            this.button5 = new System.Windows.Forms.Button();
+            this.button6 = new System.Windows.Forms.Button();
             this.btnTestSignalR = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -110,7 +114,7 @@
             this.btnTestSerialComm.Location = new System.Drawing.Point(356, 50);
             this.btnTestSerialComm.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnTestSerialComm.Name = "btnTestSerialComm";
-            this.btnTestSerialComm.Size = new System.Drawing.Size(244, 23);
+            this.btnTestSerialComm.Size = new System.Drawing.Size(183, 23);
             this.btnTestSerialComm.TabIndex = 5;
             this.btnTestSerialComm.Text = "Test Serial Communication";
             this.btnTestSerialComm.UseVisualStyleBackColor = true;
@@ -173,8 +177,8 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(356, 244);
-            this.button1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.button1.Location = new System.Drawing.Point(267, 227);
+            this.button1.Margin = new System.Windows.Forms.Padding(2);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(244, 28);
             this.button1.TabIndex = 12;
@@ -184,8 +188,8 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(356, 208);
-            this.button2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.button2.Location = new System.Drawing.Point(267, 198);
+            this.button2.Margin = new System.Windows.Forms.Padding(2);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(244, 28);
             this.button2.TabIndex = 11;
@@ -195,8 +199,8 @@
             // 
             // btnConnectPDIScanner
             // 
-            this.btnConnectPDIScanner.Location = new System.Drawing.Point(16, 305);
-            this.btnConnectPDIScanner.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.btnConnectPDIScanner.Location = new System.Drawing.Point(12, 308);
+            this.btnConnectPDIScanner.Margin = new System.Windows.Forms.Padding(2);
             this.btnConnectPDIScanner.Name = "btnConnectPDIScanner";
             this.btnConnectPDIScanner.Size = new System.Drawing.Size(244, 28);
             this.btnConnectPDIScanner.TabIndex = 13;
@@ -206,8 +210,8 @@
             // 
             // btnStopDPIScanner
             // 
-            this.btnStopDPIScanner.Location = new System.Drawing.Point(16, 338);
-            this.btnStopDPIScanner.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.btnStopDPIScanner.Location = new System.Drawing.Point(12, 335);
+            this.btnStopDPIScanner.Margin = new System.Windows.Forms.Padding(2);
             this.btnStopDPIScanner.Name = "btnStopDPIScanner";
             this.btnStopDPIScanner.Size = new System.Drawing.Size(244, 28);
             this.btnStopDPIScanner.TabIndex = 14;
@@ -220,7 +224,7 @@
             this.rtbBarTenderCommand.Location = new System.Drawing.Point(8, 23);
             this.rtbBarTenderCommand.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.rtbBarTenderCommand.Name = "rtbBarTenderCommand";
-            this.rtbBarTenderCommand.Size = new System.Drawing.Size(572, 144);
+            this.rtbBarTenderCommand.Size = new System.Drawing.Size(430, 155);
             this.rtbBarTenderCommand.TabIndex = 15;
             this.rtbBarTenderCommand.Text = "";
             // 
@@ -239,15 +243,59 @@
             // 
             // btnSendBTCommand
             // 
-            this.btnSendBTCommand.Location = new System.Drawing.Point(8, 190);
-            this.btnSendBTCommand.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnSendBTCommand.Location = new System.Drawing.Point(6, 180);
             this.btnSendBTCommand.Name = "btnSendBTCommand";
-            this.btnSendBTCommand.Size = new System.Drawing.Size(244, 36);
+            this.btnSendBTCommand.Size = new System.Drawing.Size(183, 23);
             this.btnSendBTCommand.TabIndex = 17;
             this.btnSendBTCommand.Text = "Send Command";
             this.btnSendBTCommand.UseVisualStyleBackColor = true;
             this.btnSendBTCommand.Click += new System.EventHandler(this.btnSendBTCommand_Click);
             // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(267, 153);
+            this.button3.Margin = new System.Windows.Forms.Padding(2);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(183, 23);
+            this.button3.TabIndex = 17;
+            this.button3.Text = "Reset TT Label Possiion";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
+            // button4
+            // 
+            this.button4.Location = new System.Drawing.Point(267, 254);
+            this.button4.Margin = new System.Windows.Forms.Padding(2);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(183, 23);
+            this.button4.TabIndex = 18;
+            this.button4.Text = "Reset MUB Label Possiion";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
+            // 
+            // button5
+            // 
+            this.button5.Location = new System.Drawing.Point(12, 254);
+            this.button5.Margin = new System.Windows.Forms.Padding(2);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(183, 23);
+            this.button5.TabIndex = 19;
+            this.button5.Text = "Connect to PDI Scanner";
+            this.button5.UseVisualStyleBackColor = true;
+            this.button5.Click += new System.EventHandler(this.button5_Click);
+            // 
+            // button6
+            // 
+            this.button6.Location = new System.Drawing.Point(12, 281);
+            this.button6.Margin = new System.Windows.Forms.Padding(2);
+            this.button6.Name = "button6";
+            this.button6.Size = new System.Drawing.Size(183, 23);
+            this.button6.TabIndex = 20;
+            this.button6.Text = "Disonnect to PDI Scanner";
+            this.button6.UseVisualStyleBackColor = true;
+            this.button6.Click += new System.EventHandler(this.button6_Click);
+            // 
+            // Form1
             // btnTestSignalR
             // 
             this.btnTestSignalR.Location = new System.Drawing.Point(356, 305);
@@ -263,6 +311,11 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(971, 581);
+            this.Controls.Add(this.button6);
+            this.Controls.Add(this.button5);
+            this.Controls.Add(this.button4);
+            this.Controls.Add(this.button3);
             this.ClientSize = new System.Drawing.Size(1295, 715);
             this.Controls.Add(this.btnTestSignalR);
             this.Controls.Add(this.groupBox1);
@@ -310,6 +363,10 @@
         private System.Windows.Forms.RichTextBox rtbBarTenderCommand;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Button btnSendBTCommand;
+        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.Button button6;
         private System.Windows.Forms.Button btnTestSignalR;
     }
 }

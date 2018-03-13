@@ -278,6 +278,8 @@ span[color] {
     background: #ffffff;
     border: none;
     border-radius: 0;
+    padding: 10px 40px;
+    border-radius: 4px;
 }
 
 .btn:hover,
@@ -367,12 +369,15 @@ table tr.active {
     background-color: #f6f6f6;
     border-color: #fff;
 }
+table th[checkbox] {
+    padding: 0 20px;
+}
 /*Search, Filter*/
 .fixed-table-toolbar .search {
     /*position: absolute;
-    top: -80px;
-    left: 230px;
-    background-color: #f6f6f6;*/
+top: -80px;
+left: 230px;
+background-color: #f6f6f6;*/
     font-size: 14px;
     position: fixed;
     z-index: 200;
@@ -486,7 +491,7 @@ table tr.active {
     color: white;
     border-radius: 50%;
     position: absolute;
-    left: 75px;
+    right: -30px;
     top: -15px;
     padding: 3px 5px;
     font-size: 10px;
@@ -858,3 +863,38 @@ tr.selected input[type="checkbox"]:after {
     color: #1cacf6;
     font-family: FontAwesome;
 }*/
+[type="checkbox"] + span {
+    position: relative;
+    padding-left: 35px;
+    cursor: pointer;
+    display: inline-block;
+    height: 25px;
+    line-height: 25px;
+    font-size: 1rem;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+[type="checkbox"].filled-in:checked + span:before {
+    top: 0;
+    left: 1px;
+    width: 8px;
+    height: 13px;
+    border-top: 2px solid transparent;
+    border-left: 2px solid transparent;
+    border-right: 2px solid #fff;
+    border-bottom: 2px solid #fff;
+    -webkit-transform: rotateZ(37deg);
+    transform: rotateZ(37deg);
+    -webkit-transform-origin: 100% 100%;
+    transform-origin: 100% 100%;
+}
+[type="checkbox"].filled-in:checked + span:after {
+    top: 0;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #26a69a;
+    background-color: #26a69a;
+    z-index: 0;
+}

@@ -34,10 +34,8 @@ namespace Trinity.Device
                 // get statuses
                 var statuses = BarcodeScannerUtil.Instance.GetDeviceStatus();
 
-                // update local ApplicationDevice_Status
-                DAL_DeviceStatus dAL_DeviceStatus = new DAL_DeviceStatus();
-                dAL_DeviceStatus.Update((int)EnumDeviceId.BarcodeScanner, statuses);
-                Trinity.SignalR.Client.Instance.DeviceStatusChanged((int)EnumDeviceId.BarcodeScanner, statuses);
+                // report
+                ApplicationStatusManager.Instance.ReportDeviceStatus(EnumDeviceId.BarcodeScanner, statuses);
             }
             catch (Exception ex)
             {
