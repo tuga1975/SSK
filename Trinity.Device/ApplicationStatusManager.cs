@@ -212,7 +212,7 @@ namespace Trinity.Device
                     if (newApplicationStatus != _applicationStatus)
                     {
                         _applicationStatus = newApplicationStatus;
-                        MessageBox.Show(_applicationStatus.ToString());
+                        //MessageBox.Show(_applicationStatus.ToString());
                         switch (_applicationStatus)
                         {
                             case EnumApplicationStatus.Initialization:

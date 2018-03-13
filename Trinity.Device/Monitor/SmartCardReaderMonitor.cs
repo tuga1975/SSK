@@ -91,10 +91,8 @@ namespace Trinity.Device
                 deviceStatuses = new EnumDeviceStatus[] { EnumDeviceStatus.Disconnected };
             }
 
-            // update local ApplicationDevice_Status
-            DAL_DeviceStatus dAL_DeviceStatus = new DAL_DeviceStatus();
-            dAL_DeviceStatus.Update((int)EnumDeviceId.SmartCardReader, deviceStatuses);
-            Trinity.SignalR.Client.Instance.DeviceStatusChanged((int)EnumDeviceId.SmartCardReader, deviceStatuses);
+            // report status ApplicationDevice_Status
+            ApplicationStatusManager.Instance.ReportDeviceStatus(EnumDeviceId.SmartCardReader, deviceStatuses);
         }
     }
 }
