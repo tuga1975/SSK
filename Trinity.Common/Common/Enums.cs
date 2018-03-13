@@ -528,9 +528,16 @@ public enum EnumAbsentReasons
 
 public enum EnumApplicationStatus
 {
-    Initiation = 0,
+    Initialization = 0,
     Ready = 1,
     Caution = 2,
     Error = 3,
     Busy = 4
+}
+
+public enum EnumDeviceStatusSumary
+{
+    Ready = 1,
+    Caution = 2,
+    Error = 3,
 }

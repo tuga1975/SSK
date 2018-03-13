@@ -34,10 +34,8 @@ namespace Trinity.Device
                 // get statuses
                 var statuses = QueueMonitorUtil.Instance.GetDeviceStatus();
 
-                // update local ApplicationDevice_Status
-                DAL_DeviceStatus dAL_DeviceStatus = new DAL_DeviceStatus();
-                dAL_DeviceStatus.Update((int)EnumDeviceId.QueueScreenMonitor, statuses);
-                Trinity.SignalR.Client.Instance.DeviceStatusChanged((int)EnumDeviceId.QueueScreenMonitor, statuses);
+                // report
+                ApplicationStatusManager.Instance.ReportDeviceStatus(EnumDeviceId.QueueScreenMonitor, statuses);
             }
             catch (Exception ex)
             {

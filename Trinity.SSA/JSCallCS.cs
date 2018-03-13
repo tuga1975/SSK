@@ -198,26 +198,7 @@ namespace SSA
                 };
 
                 var dalLabel = new DAL_Labels();
-                var update = dalLabel.UpdateLabel(labelInfo);
-                if (update != null)
-                {
-                    var dalAppointment = new DAL_Appointments();
-                    var dalQueue = new DAL_QueueNumber();
-                    var appointment = dalAppointment.GetTodayAppointmentByUserId(labelInfo.UserId);
-                    //var appointment = result.Data;
-
-                    if (appointment != null)
-                    {
-                        var sskQueue = new DAL_QueueNumber().GetQueueDetailByAppointment(appointment, EnumStation.SSK);
-
-                        dalQueue.UpdateQueueStatus(sskQueue.Queue_ID, EnumQueueStatuses.Finished, EnumStation.SSK);
-                        dalQueue.UpdateQueueStatus(sskQueue.Queue_ID, EnumQueueStatuses.Processing, EnumStation.SSA);
-                    }
-                    //this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').show(); ; ");
-                    //this._web.RunScript("$('.status-text').css('color','#000').text('Please collect your labels');");
-
-                    //DeleteQRCodeImageFileTemp();
-                }
+                dalLabel.UpdateLabel(labelInfo);
             }
             catch (Exception ex)
             {
@@ -361,8 +342,18 @@ namespace SSA
                     this._web.RunScript("$('.status-text').css('color','#000').text('The current user is null');");
                     return;
                 }
+                Trinity.BE.User supervisee = null;
+                if (currentUser.Role == EnumUserRoles.DutyOfficer)
+                {
+                    supervisee = (Trinity.BE.User)session[CommonConstants.SUPERVISEE];
+                }
+                else
+                {
+                    supervisee = currentUser;
+                }
                 var dalQueue = new DAL_QueueNumber();
-                dalQueue.UpdateQueueStatusByUserId(currentUser.UserId, EnumStation.SSA, EnumQueueStatuses.Finished, EnumStation.UHP, EnumQueueStatuses.Processing, "", EnumQueueOutcomeText.Processing);
+                dalQueue.UpdateQueueStatusByUserId(supervisee.UserId, EnumStation.SSA, EnumQueueStatuses.Finished, EnumStation.UHP, EnumQueueStatuses.Waiting, "", EnumQueueOutcomeText.Processing);
+                //Trinity.SignalR.Client.Instance.QueueCompleted(currentUser.UserId);
 
                 //this._web.LoadPageHtml("PrintingMUBAndTTLabels.html");
                 //this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').show(); ; ");
@@ -370,9 +361,7 @@ namespace SSA
                 //this._web.InvokeScript("countdownLogout");
 
                 DeleteQRCodeImageFileTemp();
-
-                //new DAL_QueueDetails().RemoveQueueFromSSK(currentUser.UserId);
-                //Trinity.SignalR.Client.Instance.QueueCompleted(currentUser.UserId);
+                
                 //LogOut();
             }
             else
@@ -429,8 +418,8 @@ namespace SSA
                 var labelInfo = JsonConvert.DeserializeObject<LabelInfo>(json);
                 _web.LoadPageHtml("PrintingTemplates/MUBLabelTemplate.html", new object[] { printingStatus, labelInfo });
 
-                //LEDStatusLightingUtil.Instance.MUBAbleToRemove += Instance_MUBReadyToRemove;
-                //LEDStatusLightingUtil.Instance.CheckMUBApplicatorFinishStatus();
+                LEDStatusLightingUtil.Instance.MUBReadyToRemove += Instance_MUBReadyToRemove;
+                LEDStatusLightingUtil.Instance.CheckMUBApplicatorFinishStatus();
                 ////btnConfirm.Enabled = false;
                 //this._web.RunScript("$('.ConfirmBtn').prop('disabled', true);");
                 ////btnConfirm.Text = "Check printing status";

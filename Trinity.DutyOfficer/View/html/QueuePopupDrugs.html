@@ -122,7 +122,7 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Drug Tests <em class="currentDate">15 February 2018</em> </h4>
+                <h4 class="modal-title">Drug Tests <em class="currentDate" current-date>15 February 2018</em> </h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -154,11 +154,11 @@
                         </div>
                         <div class="sealFlowingtestContent">
                             <div class="item">
-                                <input type='checkbox' id='seal-COCA' name='drugseal' value='COCA' />
+                                <input type='checkbox' id='seal-COCA' class="filled-in" name='drugseal' value='COCA' />
                                 <span class="control-label">COCA</span>
                             </div>
                             <div class="item">
-                                <input type='checkbox' id='seal-BARB' name='drugseal' value='BARB' />
+                                <input type='checkbox' id='seal-BARB' class="filled-in" name='drugseal' value='BARB' />
                                 <span class="control-label">BARB</span>
                             </div>
                             <div class="item">
@@ -253,5 +253,16 @@
             });
             e.preventDefault(); // avoid to execute the actual submit of the form.
         });
+
+        var today = new Date();
+        var dd = today.getDate();
+        var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        var mm = monthNames[today.getMonth()];
+        var yyyy = today.getFullYear();
+        if (dd < 10) {
+            dd = '0' + dd;
+        }
+        var today = dd + ' ' + mm + ' ' + yyyy;
+        $('[current-date]').text(today);
     });
 </script>

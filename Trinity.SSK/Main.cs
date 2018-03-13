@@ -13,7 +13,6 @@ using Trinity.Common.Common;
 using Trinity.DAL;
 using Trinity.Device;
 using Trinity.Device.Authentication;
-using Trinity.Device.Monitor;
 using Trinity.Device.Util;
 using Trinity.SignalR;
 
@@ -154,7 +153,7 @@ namespace SSK
                 {
                     if (user.Status == EnumUserStatuses.Blocked)
                     {
-                        SmartCard_OnSmartCardFailed("You have been blocked.");
+                        SmartCard_OnSmartCardFailed("You have been blocked<br/>Contact Duty Officer for help");
                         return;
                     }
                     if (user.Status == EnumUserStatuses.New)
@@ -186,7 +185,7 @@ namespace SSK
 
         private void JSCallCS_OnLogOutCompleted()
         {
-            ApplicationStatusMonitor.Instance.UpdateApplicationStatus(EnumApplicationStatus.Busy);
+            ApplicationStatusManager.Instance.IsBusy = false;
 
             // Set machine status is busy
             //LEDStatusLightingUtil.Instance._isBusy = false;
@@ -241,8 +240,10 @@ namespace SSK
 
                 _isFirstTimeLoaded = false;
 
+
+                Thread.Sleep(5000);
                 // LayerWeb initiation is compeleted, update application status
-                ApplicationStatusMonitor.Instance.LayerWebInitilizationCompleted();
+                ApplicationStatusManager.Instance.LayerWebInitilizationCompleted();
             }
 
             // SSK is ready to use - all is well
@@ -265,7 +266,8 @@ namespace SSK
         #region Smart Card Authentication
         private void SmartCard_OnSmartCardSucceeded()
         {
-            ApplicationStatusMonitor.Instance.UpdateApplicationStatus(EnumApplicationStatus.Busy);
+            // Set application status is busy
+            ApplicationStatusManager.Instance.IsBusy = true;
 
             // Pause for 1 second and goto Fingerprint Login Screen
             Thread.Sleep(1000);
@@ -275,11 +277,6 @@ namespace SSK
 
             // Testing purpose
             //NavigateTo(NavigatorEnums.Authentication_Facial);
-
-            // Set machine status is busy
-            LEDStatusLightingUtil.Instance._isBusy = true;
-            // Display led light health status
-            LEDStatusLightingUtil.Instance.DisplayLedLight_DeviceStatus();
         }
 
         private void SmartCard_OnSmartCardFailed(string message)
