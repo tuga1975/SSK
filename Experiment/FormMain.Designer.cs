@@ -58,7 +58,8 @@
             // 
             // btnPrintAppointmentDetails
             // 
-            this.btnPrintAppointmentDetails.Location = new System.Drawing.Point(12, 12);
+            this.btnPrintAppointmentDetails.Location = new System.Drawing.Point(16, 15);
+            this.btnPrintAppointmentDetails.Margin = new System.Windows.Forms.Padding(4);
             this.btnPrintAppointmentDetails.Name = "btnPrintAppointmentDetails";
             this.btnPrintAppointmentDetails.Size = new System.Drawing.Size(183, 23);
             this.btnPrintAppointmentDetails.TabIndex = 0;
@@ -68,7 +69,8 @@
             // 
             // btnPrintSuperviseeCard
             // 
-            this.btnPrintSuperviseeCard.Location = new System.Drawing.Point(12, 41);
+            this.btnPrintSuperviseeCard.Location = new System.Drawing.Point(16, 50);
+            this.btnPrintSuperviseeCard.Margin = new System.Windows.Forms.Padding(4);
             this.btnPrintSuperviseeCard.Name = "btnPrintSuperviseeCard";
             this.btnPrintSuperviseeCard.Size = new System.Drawing.Size(183, 23);
             this.btnPrintSuperviseeCard.TabIndex = 1;
@@ -78,7 +80,8 @@
             // 
             // btnReadSmartCardData
             // 
-            this.btnReadSmartCardData.Location = new System.Drawing.Point(12, 70);
+            this.btnReadSmartCardData.Location = new System.Drawing.Point(16, 86);
+            this.btnReadSmartCardData.Margin = new System.Windows.Forms.Padding(4);
             this.btnReadSmartCardData.Name = "btnReadSmartCardData";
             this.btnReadSmartCardData.Size = new System.Drawing.Size(183, 23);
             this.btnReadSmartCardData.TabIndex = 2;
@@ -88,7 +91,8 @@
             // 
             // btnIdentifyFingerprint
             // 
-            this.btnIdentifyFingerprint.Location = new System.Drawing.Point(12, 99);
+            this.btnIdentifyFingerprint.Location = new System.Drawing.Point(16, 122);
+            this.btnIdentifyFingerprint.Margin = new System.Windows.Forms.Padding(4);
             this.btnIdentifyFingerprint.Name = "btnIdentifyFingerprint";
             this.btnIdentifyFingerprint.Size = new System.Drawing.Size(183, 23);
             this.btnIdentifyFingerprint.TabIndex = 3;
@@ -98,7 +102,8 @@
             // 
             // btnStartHealthChecker
             // 
-            this.btnStartHealthChecker.Location = new System.Drawing.Point(267, 12);
+            this.btnStartHealthChecker.Location = new System.Drawing.Point(356, 15);
+            this.btnStartHealthChecker.Margin = new System.Windows.Forms.Padding(4);
             this.btnStartHealthChecker.Name = "btnStartHealthChecker";
             this.btnStartHealthChecker.Size = new System.Drawing.Size(183, 23);
             this.btnStartHealthChecker.TabIndex = 4;
@@ -111,7 +116,7 @@
             this.btnTestSerialComm.Location = new System.Drawing.Point(267, 41);
             this.btnTestSerialComm.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnTestSerialComm.Name = "btnTestSerialComm";
-            this.btnTestSerialComm.Size = new System.Drawing.Size(183, 23);
+            this.btnTestSerialComm.Size = new System.Drawing.Size(244, 28);
             this.btnTestSerialComm.TabIndex = 5;
             this.btnTestSerialComm.Text = "Test Serial Communication";
             this.btnTestSerialComm.UseVisualStyleBackColor = true;
@@ -119,7 +124,8 @@
             // 
             // btnStartFlashing
             // 
-            this.btnStartFlashing.Location = new System.Drawing.Point(12, 169);
+            this.btnStartFlashing.Location = new System.Drawing.Point(16, 208);
+            this.btnStartFlashing.Margin = new System.Windows.Forms.Padding(4);
             this.btnStartFlashing.Name = "btnStartFlashing";
             this.btnStartFlashing.Size = new System.Drawing.Size(183, 23);
             this.btnStartFlashing.TabIndex = 6;
@@ -129,7 +135,8 @@
             // 
             // bnStopFlashing
             // 
-            this.bnStopFlashing.Location = new System.Drawing.Point(12, 198);
+            this.bnStopFlashing.Location = new System.Drawing.Point(16, 244);
+            this.bnStopFlashing.Margin = new System.Windows.Forms.Padding(4);
             this.bnStopFlashing.Name = "bnStopFlashing";
             this.bnStopFlashing.Size = new System.Drawing.Size(183, 23);
             this.bnStopFlashing.TabIndex = 7;
@@ -139,7 +146,8 @@
             // 
             // btnInitFlashing
             // 
-            this.btnInitFlashing.Location = new System.Drawing.Point(12, 140);
+            this.btnInitFlashing.Location = new System.Drawing.Point(16, 172);
+            this.btnInitFlashing.Margin = new System.Windows.Forms.Padding(4);
             this.btnInitFlashing.Name = "btnInitFlashing";
             this.btnInitFlashing.Size = new System.Drawing.Size(183, 23);
             this.btnInitFlashing.TabIndex = 8;
@@ -182,7 +190,7 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(267, 198);
+            this.button2.Location = new System.Drawing.Point(356, 248);
             this.button2.Margin = new System.Windows.Forms.Padding(2);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(183, 23);
@@ -245,10 +253,10 @@
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(267, 153);
+            this.button3.Location = new System.Drawing.Point(356, 208);
             this.button3.Margin = new System.Windows.Forms.Padding(2);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(183, 23);
+            this.button3.Size = new System.Drawing.Size(244, 28);
             this.button3.TabIndex = 17;
             this.button3.Text = "Reset TT Label Possiion";
             this.button3.UseVisualStyleBackColor = true;
@@ -292,7 +300,7 @@
             this.btnTestSignalR.Location = new System.Drawing.Point(12, 387);
             this.btnTestSignalR.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnTestSignalR.Name = "btnTestSignalR";
-            this.btnTestSignalR.Size = new System.Drawing.Size(183, 23);
+            this.btnTestSignalR.Size = new System.Drawing.Size(244, 28);
             this.btnTestSignalR.TabIndex = 17;
             this.btnTestSignalR.Text = "Test SignalR";
             this.btnTestSignalR.UseVisualStyleBackColor = true;

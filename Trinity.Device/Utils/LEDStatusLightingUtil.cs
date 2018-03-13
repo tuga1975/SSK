@@ -11,48 +11,34 @@ using System.Windows.Forms;
 
 namespace Trinity.Device.Util
 {
-    //public class SerialDataReceivedEventArgs2
-    //{
-    //    public SerialPort SourceObject { get; set; }
-    //    public SerialDataReceivedEventArgs Data { get; set; }
-    //}
-    public enum EnumMUBApplicatorStatus
-    {
-        NotReady = 0,
-        Ready = 1, // Supervisee can place MUB
-        Started = 2, // Ready to print
-        Finished = 3 // Applicator is finished
-    }
-
-    public enum EnumMUBStatus
-    {
-        Removed = 0, // The MUB has been removed from the holder
-        Placed = 1  // The MUB has been placed on the holder
-    }
-
-    public enum EnumMUBDoorStatus
-    {
-        FullyOpen = 0,
-        NotFullyOpen = 1,
-        FullyClosed = 2,
-        NotFullyClosed = 3
-    }
-
     public enum EnumMUBCommands
     {
         Unknown = -1,
-        CheckIfApplicatorIsReady = 0,
+        CheckIfMUBApplicatorIsReady = 0,
         CheckIfMUBIsPresent = 1,
-        CheckIfApplicatorIsStarted = 2,
-        CheckIfApplicatorIsFinished = 3,
+        CheckIfMUBApplicatorIsStarted = 2,
+        CheckIfMUBApplicatorIsFinished = 3,
         CheckIfMUBIsRemoved = 4,
         CheckIfMUBDoorIsFullyClosed = 5,
         CheckIfMUBDoorIsFullyOpen = 6
     }
 
+    public enum EnumTTCommands
+    {
+        Unknown = -1,
+        CheckIfTTApplicatorIsReady = 0,
+        CheckIfTTIsPresent = 1,
+        CheckIfTTApplicatorIsStarted = 2,
+        CheckIfTTApplicatorIsFinished = 3,
+        CheckIfTTIsRemoved = 4,
+        CheckIfTTDoorIsFullyClosed = 5,
+        CheckIfTTDoorIsFullyOpen = 6
+    }
+
     public class LEDStatusLightingUtil
     {
-        private int _retryCount = 0;
+        private int _mubRetryCount = 0;
+        private int _ttRetryCount = 0;
         private const int _maxRetryCount = 50;
         public event EventHandler<string> DataReceived;
 
@@ -117,13 +103,23 @@ namespace Trinity.Device.Util
                 _serialPort.StopBits = System.IO.Ports.StopBits.One;
             }
 
-            _rs232Commands[EnumMUBCommands.CheckIfApplicatorIsReady] = "RD MR3";
-            _rs232Commands[EnumMUBCommands.CheckIfMUBIsPresent] = "RD 14";
-            _rs232Commands[EnumMUBCommands.CheckIfApplicatorIsStarted] = "RD MR7";
-            _rs232Commands[EnumMUBCommands.CheckIfApplicatorIsFinished] = "RD MR15";
-            _rs232Commands[EnumMUBCommands.CheckIfMUBIsRemoved] = "RD 14";
-            _rs232Commands[EnumMUBCommands.CheckIfMUBDoorIsFullyClosed] = "RD 1";
-            _rs232Commands[EnumMUBCommands.CheckIfMUBDoorIsFullyOpen] = "RD 0";
+            // Init MUB Commands
+            _rs232MUBCommands[EnumMUBCommands.CheckIfMUBApplicatorIsReady] = "RD MR3";
+            _rs232MUBCommands[EnumMUBCommands.CheckIfMUBIsPresent] = "RD 14";
+            _rs232MUBCommands[EnumMUBCommands.CheckIfMUBApplicatorIsStarted] = "RD MR7";
+            _rs232MUBCommands[EnumMUBCommands.CheckIfMUBApplicatorIsFinished] = "RD MR15";
+            _rs232MUBCommands[EnumMUBCommands.CheckIfMUBIsRemoved] = "RD 14";
+            _rs232MUBCommands[EnumMUBCommands.CheckIfMUBDoorIsFullyClosed] = "RD 1";
+            _rs232MUBCommands[EnumMUBCommands.CheckIfMUBDoorIsFullyOpen] = "RD 0";
+
+            // Init TT Commands
+            _rs232TTCommands[EnumTTCommands.CheckIfTTApplicatorIsReady] = "RD MR103";
+            _rs232TTCommands[EnumTTCommands.CheckIfTTIsPresent] = "RD 15";
+            _rs232TTCommands[EnumTTCommands.CheckIfTTApplicatorIsStarted] = "RD MR106";
+            _rs232TTCommands[EnumTTCommands.CheckIfTTApplicatorIsFinished] = "RD MR115";
+            _rs232TTCommands[EnumTTCommands.CheckIfTTIsRemoved] = "RD 15";
+            _rs232TTCommands[EnumTTCommands.CheckIfTTDoorIsFullyClosed] = "RD 9";
+            _rs232TTCommands[EnumTTCommands.CheckIfTTDoorIsFullyOpen] = "RD 8";
         }
 
         #region Public functions
@@ -608,22 +604,36 @@ namespace Trinity.Device.Util
             SendASCIICommand(asciiCommand);
         }
 
-        public delegate void WorkCompletedCallback(bool status);
-
-        private WorkCompletedCallback _mubCallback = null;
-        private EnumMUBCommands _mubCommand;
-
-        private Dictionary<EnumMUBCommands, string> _rs232Commands = new Dictionary<EnumMUBCommands, string>();
-
-        public void CheckMUBStatus_Async(EnumMUBCommands mubCommand, WorkCompletedCallback callback)
+        public void MoveUpMUBRobot_Async()
         {
-            _retryCount = 0;
+            // Send command to open MUB Door
+            string asciiCommand = "WR MR500 1";
+            SendASCIICommand(asciiCommand);
+        }
+
+        public void MoveDownMUBRobot_Async()
+        {
+            // Send command to open MUB Door
+            string asciiCommand = "WR MR501 1";
+            SendASCIICommand(asciiCommand);
+        }
+
+        public delegate void MUBWorkCompletedCallback(bool status);
+
+        private MUBWorkCompletedCallback _mubCallback = null;
+        private EnumMUBCommands _mubCommand;
+        private Dictionary<EnumMUBCommands, string> _rs232MUBCommands = new Dictionary<EnumMUBCommands, string>();
+        private Dictionary<EnumTTCommands, string> _rs232TTCommands = new Dictionary<EnumTTCommands, string>();
+
+        public void CheckMUBStatus_Async(EnumMUBCommands mubCommand, MUBWorkCompletedCallback callback)
+        {
+            _mubRetryCount = 0;
             _mubCallback = callback;
             _mubCommand = mubCommand;
 
             // Check MUB Applicator Status
             this.DataReceived += CheckMUBStatus_Async_Callback;
-            string asciiCommand = _rs232Commands[_mubCommand];
+            string asciiCommand = _rs232MUBCommands[_mubCommand];
             SendASCIICommand(asciiCommand);
         }
 
@@ -631,9 +641,9 @@ namespace Trinity.Device.Util
         {
             this.DataReceived -= CheckMUBStatus_Async_Callback;
 
-            if (_mubCommand ==  EnumMUBCommands.CheckIfMUBIsPresent )
+            if (_mubCommand == EnumMUBCommands.CheckIfMUBIsPresent)
             {
-                if (response == "0" )
+                if (response == "0")
                 {
                     _mubCommand = EnumMUBCommands.Unknown;
                     _mubCallback(false);
@@ -663,7 +673,7 @@ namespace Trinity.Device.Util
             }
             else
             {
-                if (response== "1" || response.ToLower() =="ok" || response.ToLower() == "yes")
+                if (response == "1" || response.ToLower() == "ok" || response.ToLower() == "yes")
                 {
                     _mubCommand = EnumMUBCommands.Unknown;
                     _mubCallback(true);
@@ -671,9 +681,9 @@ namespace Trinity.Device.Util
                 }
                 else
                 {
-                    if (_retryCount == _maxRetryCount)
+                    if (_mubRetryCount == _maxRetryCount)
                     {
-                        _retryCount = 0;
+                        _mubRetryCount = 0;
                         _mubCommand = EnumMUBCommands.Unknown;
 
                         _mubCallback(false);
@@ -681,16 +691,144 @@ namespace Trinity.Device.Util
                     }
                     else
                     {
-                        _retryCount++;
+                        _mubRetryCount++;
                         Thread.Sleep(200);
 
                         this.DataReceived += CheckMUBStatus_Async_Callback;
-                        string asciiCommand = _rs232Commands[_mubCommand];
+                        string asciiCommand = _rs232MUBCommands[_mubCommand];
                         SendASCIICommand(asciiCommand);
                     }
                 }
             }
-            
+
+        }
+
+        #endregion
+
+        #region TT functions
+        public void InitializeTTApplicator_Async()
+        {
+            // Send command to initialize TT Applicator
+            string asciiCommand = "WR MR100 1";
+            SendASCIICommand(asciiCommand);
+        }
+
+        public void StartTTApplicator_Async()
+        {
+            // Send command to start TT Applicator
+            string asciiCommand = "WR MR104 1";
+            SendASCIICommand(asciiCommand);
+        }
+
+        public void CloseTTDoor_Async()
+        {
+            // Send command to close MUB Door
+            string asciiCommand = "WR MR511 1";
+            SendASCIICommand(asciiCommand);
+        }
+
+        public void OpenTTDoor_Async()
+        {
+            // Send command to open MUB Door
+            string asciiCommand = "WR MR510 1";
+            SendASCIICommand(asciiCommand);
+        }
+
+        public void MoveUpTTRobot_Async()
+        {
+            // Send command to open MUB Door
+            string asciiCommand = "WR MR502 1";
+            SendASCIICommand(asciiCommand);
+        }
+
+        public void MoveDownTTRobot_Async()
+        {
+            // Send command to open MUB Door
+            string asciiCommand = "WR MR503 1";
+            SendASCIICommand(asciiCommand);
+        }
+
+        public delegate void TTWorkCompletedCallback(bool status);
+
+        private TTWorkCompletedCallback _ttCallback = null;
+        private EnumTTCommands _ttCommand;
+
+        public void CheckTTStatus_Async(EnumTTCommands ttCommand, TTWorkCompletedCallback callback)
+        {
+            _ttRetryCount = 0;
+            _ttCallback = callback;
+            _ttCommand = ttCommand;
+
+            // Check TT Applicator Status
+            this.DataReceived += CheckTTStatus_Async_Callback;
+            string asciiCommand = _rs232TTCommands[_ttCommand];
+            SendASCIICommand(asciiCommand);
+        }
+
+        private void CheckTTStatus_Async_Callback(object sender, string response)
+        {
+            this.DataReceived -= CheckTTStatus_Async_Callback;
+
+            if (_ttCommand == EnumTTCommands.CheckIfTTIsPresent)
+            {
+                if (response == "0")
+                {
+                    _ttCommand = EnumTTCommands.Unknown;
+                    _ttCallback(false);
+                    return;
+                }
+                else
+                {
+                    _ttCommand = EnumTTCommands.Unknown;
+                    _ttCallback(true);
+                    return;
+                }
+            }
+            else if (_ttCommand == EnumTTCommands.CheckIfTTIsRemoved)
+            {
+                if (response == "0")
+                {
+                    _ttCommand = EnumTTCommands.Unknown;
+                    _ttCallback(true);
+                    return;
+                }
+                else
+                {
+                    _ttCommand = EnumTTCommands.Unknown;
+                    _ttCallback(false);
+                    return;
+                }
+            }
+            else
+            {
+                if (response == "1" || response.ToLower() == "ok" || response.ToLower() == "yes")
+                {
+                    _ttCommand = EnumTTCommands.Unknown;
+                    _ttCallback(true);
+                    return;
+                }
+                else
+                {
+                    if (_ttRetryCount == _maxRetryCount)
+                    {
+                        _ttRetryCount = 0;
+                        _ttCommand = EnumTTCommands.Unknown;
+
+                        _ttCallback(false);
+                        return;
+                    }
+                    else
+                    {
+                        _ttRetryCount++;
+                        Thread.Sleep(200);
+
+                        this.DataReceived += CheckTTStatus_Async_Callback;
+                        string asciiCommand = _rs232TTCommands[_ttCommand];
+                        SendASCIICommand(asciiCommand);
+                    }
+                }
+            }
+
         }
 
         #endregion
@@ -747,21 +885,24 @@ namespace Trinity.Device.Util
 
         public string SendCommand(string hexCommand)
         {
-            if (!IsPortOpen)
+            lock (_serialPort)
             {
-                return "The serial port is closed.";
-            }
+                if (!IsPortOpen)
+                {
+                    return "The serial port is closed.";
+                }
 
-            byte[] bytestosend = ToByteArray(hexCommand);
+                byte[] bytestosend = ToByteArray(hexCommand);
 
-            try
-            {
-                _serialPort.Write(bytestosend, 0, bytestosend.Length);
-                return string.Empty;
-            }
-            catch (Exception ex)
-            {
-                return ex.Message;
+                try
+                {
+                    _serialPort.Write(bytestosend, 0, bytestosend.Length);
+                    return string.Empty;
+                }
+                catch (Exception ex)
+                {
+                    return ex.Message;
+                }
             }
         }
         public string SendASCIICommand(string asciiCommand)
