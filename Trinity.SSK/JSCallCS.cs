@@ -276,10 +276,9 @@ namespace SSK
 
                 if (updateResult)
                 {
+                    Trinity.SignalR.Client.Instance.AppointmentBookedOrReported(appointment_ID, EnumAppointmentStatuses.Booked);
                     AppointmentDetails appointmentdetails = new DAL_Appointments().GetAppointmentDetails(appointment_ID);
                     ReceiptPrinterUtil.Instance.PrintAppointmentDetails(appointmentdetails);
-                    FormQueueNumber f = FormQueueNumber.GetInstance();
-                    f.RefreshQueueNumbers();
                     return true;
                 }
 
@@ -582,6 +581,8 @@ namespace SSK
                         queueNumber = _dalQueue.InsertQueueNumber(appointment.ID, appointment.UserId, EnumStation.SSK, currentUser.UserId);
                         if (queueNumber != null)
                         {
+                            Trinity.SignalR.Client.Instance.AppointmentBookedOrReported(appointment.ID.ToString().Trim(), EnumAppointmentStatuses.Reported);
+                            Trinity.SignalR.Client.Instance.QueueInserted(queueNumber.Queue_ID.ToString().Trim());
                             APIUtils.FormQueueNumber.RefreshQueueNumbers();
                             var eventCenter = Trinity.Common.Common.EventCenter.Default;
                             eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_MESSAGE, Message = "Your queue number is:" + queueNumber.QueuedNumber });
@@ -597,6 +598,7 @@ namespace SSK
                         queueNumber = _dalQueue.InsertQueueNumberFromDO(supervisee.UserId, EnumStation.SSK, currentUser.UserId);
                         if (queueNumber != null)
                         {
+                            Trinity.SignalR.Client.Instance.QueueInserted(queueNumber.Queue_ID.ToString().Trim());
                             APIUtils.FormQueueNumber.RefreshQueueNumbers();
                             var eventCenter = Trinity.Common.Common.EventCenter.Default;
                             eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_MESSAGE, Message = "Your queue number is:" + queueNumber.QueuedNumber });

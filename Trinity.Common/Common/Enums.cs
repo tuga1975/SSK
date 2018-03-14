@@ -82,7 +82,7 @@ public static class EnumQueueStatuses
     public const string Processing = "Processing";
     [Custom(EnumColors.Red, "")]
     public const string Errors = "Errors";
-    [Custom(EnumColors.Green, "")]
+    [Custom(EnumColors.Blue, "")]
     public const string Finished = "Finished";
     [Custom(EnumColors.Notrequired, "")]
     public const string NotRequired = "NotRequired";
