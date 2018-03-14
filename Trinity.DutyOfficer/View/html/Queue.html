@@ -63,7 +63,7 @@
                 }
             },
             onDblClickCell: function (field, value, row, $element) {
-                if (field == 'Message' && row.Queue_ID!=null) {
+                if (field == 'Message' && $.trim(value.content).length > 0 && row.Queue_ID != null) {
                     api.server.LoadPopupQueue(row.Queue_ID, function () {
                         $('#idQueue').modal();
                     });
@@ -177,7 +177,15 @@
             $('#idQueueOutcome').modal();
         });
     };
-    
+
+    $('#pageSize').change(function () {
+        pageSize = $("#pageSize option:selected").text();
+        $('#table-queue').bootstrapTable('refreshOptions', {
+            pagination: true,
+            //search: true,
+            pageSize: pageSize
+        });
+    });
 </script>
 <style>
     span[colorState] {
