@@ -19,7 +19,7 @@ namespace DutyOfficer
     public partial class Main : Form
     {
         private JSCallCS _jsCallCS;
-        
+
         private EventCenter _eventCenter;
         private NavigatorEnums _currentPage;
 
@@ -36,10 +36,13 @@ namespace DutyOfficer
             APIUtils.Start();
             //Notification
             Trinity.SignalR.Client.Instance.OnDeviceStatusChanged += OnDeviceStatusChanged_Handler;
-            Trinity.SignalR.Client.Instance.OnNewNotification += OnNewNotification_Handler ;
+            Trinity.SignalR.Client.Instance.OnNewNotification += OnNewNotification_Handler;
             Trinity.SignalR.Client.Instance.OnAppDisconnected += OnAppDisconnected_Handler;
             Trinity.SignalR.Client.Instance.OnQueueCompleted += OnQueueCompleted_Handler;
             Trinity.SignalR.Client.Instance.OnSSPCompleted += OnSSPCompleted_Handler;
+            Trinity.SignalR.Client.Instance.OnQueueInserted += OnQueueInserted_Handler;
+            Trinity.SignalR.Client.Instance.OnAppointmentBookedOrReported += OnAppointmentBookedOrReported_Handler;
+            
 
             // setup variables
             _smartCardFailed = 0;
@@ -66,7 +69,15 @@ namespace DutyOfficer
             LayerWeb.Url = new Uri(String.Format("file:///{0}/View/html/Layout.html", CSCallJS.curDir));
             LayerWeb.ObjectForScripting = _jsCallCS;
         }
-
+        private void OnAppointmentBookedOrReported_Handler(object sender, NotificationInfo e)
+        {
+            string AppointmentID = e.AppointmentID;
+            string Status = e.Status;
+        }
+        private void OnQueueInserted_Handler(object sender, NotificationInfo e)
+        {
+            string QueueID = e.QueueID;
+        }
         private void OnSSPCompleted_Handler(object sender, NotificationInfo e)
         {
             string NRIC = e.NRIC;
@@ -114,7 +125,7 @@ namespace DutyOfficer
                 }));
             }
         }
-        
+
         private void OnDeviceStatusChanged_Handler(object sender, EventInfo e)
         {
             string station = (string)e.Source;
@@ -136,7 +147,7 @@ namespace DutyOfficer
             {
                 JSCallCS._StationColorDevice.UHPColor = device.CheckStatusDevicesStation(station);
             }
-            
+
             _jsCallCS.LoadStationColorDevice();
         }
 
@@ -170,7 +181,7 @@ namespace DutyOfficer
                 // get local user info
                 DAL_User dAL_User = new DAL_User();
                 var user = dAL_User.GetUserBySmartCardId(cardUID);
-                
+
                 if (user != null)
                 {
                     if (user.Role == EnumUserRoles.DutyOfficer)
@@ -226,7 +237,7 @@ namespace DutyOfficer
                 session[CommonConstants.USER_LOGIN] = null;
                 session[CommonConstants.PROFILE_DATA] = null;
                 NavigateTo(NavigatorEnums.Authentication_SmartCard);
-            }           
+            }
 
         }
 

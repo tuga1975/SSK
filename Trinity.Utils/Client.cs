@@ -105,6 +105,9 @@ namespace Trinity.SignalR
         public event EventHandler<EventInfo> OnDeviceStatusChanged;
         public event EventHandler<EventInfo> OnAppDisconnected;
         public event EventHandler<NotificationInfo> OnSSPCompleted;
+        public event EventHandler<NotificationInfo> OnDOUnblockSupervisee;
+        public event EventHandler<NotificationInfo> OnAppointmentBookedOrReported;
+        public event EventHandler<NotificationInfo> OnQueueInserted;
         ///// <summary>
         ///// 
         ///// </summary>
@@ -152,6 +155,18 @@ namespace Trinity.SignalR
                 else if (notificationInfo.Name == NotificationNames.SSP_COMPLETED)
                 {
                     OnSSPCompleted?.Invoke(this, notificationInfo);
+                }
+                else if (notificationInfo.Name == NotificationNames.DO_UNBLOCK_SUPERVISEE)
+                {
+                    OnDOUnblockSupervisee?.Invoke(this, notificationInfo);
+                }
+                else if (notificationInfo.Name == NotificationNames.APPOINTMENT_BOOKED_OR_REPORTED)
+                {
+                    OnAppointmentBookedOrReported?.Invoke(this, notificationInfo);
+                }
+                else if (notificationInfo.Name == NotificationNames.QUEUE_INSERTED)
+                {
+                    OnQueueInserted?.Invoke(this, notificationInfo);
                 }
                 else
                 {
@@ -304,6 +319,19 @@ namespace Trinity.SignalR
         public void SSPCompleted(string NRIC)
         {
             PostNotification(notificationInfo: new NotificationInfo() { Name = NotificationNames.SSP_COMPLETED, NRIC = NRIC });
+        }
+
+        public void DOUnblockSupervisee(string UserId)
+        {
+            PostNotification(notificationInfo: new NotificationInfo() { Name = NotificationNames.DO_UNBLOCK_SUPERVISEE, UserID=UserId });
+        }
+        public void AppointmentBookedOrReported(string AppointmentID,string Status)
+        {
+            PostNotification(notificationInfo: new NotificationInfo() { Name = NotificationNames.APPOINTMENT_BOOKED_OR_REPORTED, AppointmentID = AppointmentID, Status = Status });
+        }
+        public void QueueInserted(string QueueID)
+        {
+            PostNotification(notificationInfo: new NotificationInfo() { Name = NotificationNames.QUEUE_INSERTED, QueueID = QueueID });
         }
         #endregion
     }

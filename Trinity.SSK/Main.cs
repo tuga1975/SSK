@@ -37,6 +37,7 @@ namespace SSK
             APIUtils.Start();
             //Notification
             Trinity.SignalR.Client.Instance.OnQueueCompleted += OnQueueCompleted_Handler;
+            Trinity.SignalR.Client.Instance.OnDOUnblockSupervisee += DOUnblockSupervisee_Handler;
             // setup variables
             _smartCardFailed = 0;
             _fingerprintFailed = 0;
@@ -88,6 +89,10 @@ namespace SSK
 
         }
 
+        private void DOUnblockSupervisee_Handler(object sender, NotificationInfo e)
+        {
+            APIUtils.FormQueueNumber.RefreshQueueNumbers();
+        }
         private void OnQueueCompleted_Handler(object sender, EventInfo e)
         {
             APIUtils.FormQueueNumber.RefreshQueueNumbers();
