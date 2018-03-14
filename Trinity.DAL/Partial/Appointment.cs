@@ -55,14 +55,14 @@ namespace Trinity.DAL.DBContext
                 if (this.Status == EnumAppointmentStatuses.Pending)
                     return EnumColors.White;
                 else
-                    return EnumColors.Blue;
+                    return EnumColors.Green;
             }
             else if (Station == EnumStation.SSK)
             {
                 if (this.Status != EnumAppointmentStatuses.Reported)
                     return EnumColors.White;
                 else
-                    return EnumColors.Blue;
+                    return EnumColors.Green;
             }
             else if (Queue != null)
             {
