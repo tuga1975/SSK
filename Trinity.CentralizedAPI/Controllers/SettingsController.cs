@@ -7,7 +7,7 @@ using System.Web.Http;
 using System.Web.Http.Description;
 using Newtonsoft.Json;
 
-namespace Trinity.CentralizedAPI.Controllers
+namespace Trinity.BackendAPI.Controllers
 {
     public class SettingsController : ApiController
     {

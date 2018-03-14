@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNet.SignalR.Client;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
 using Trinity.Common;
@@ -40,7 +41,11 @@ namespace Trinity.SignalR
         {
             get
             {
-                return System.Reflection.Assembly.GetEntryAssembly().GetName().Name;
+                string _Station = ConfigurationManager.AppSettings["Station"];
+                if (string.IsNullOrEmpty(_Station))
+                    _Station = System.Reflection.Assembly.GetEntryAssembly().GetName().Name;
+
+                return _Station;
             }
         }
         private bool IsConnected
@@ -99,6 +104,7 @@ namespace Trinity.SignalR
         public event EventHandler<EventInfo> OnQueueCompleted;
         public event EventHandler<EventInfo> OnDeviceStatusChanged;
         public event EventHandler<EventInfo> OnAppDisconnected;
+        public event EventHandler<NotificationInfo> OnSSPCompleted;
         ///// <summary>
         ///// 
         ///// </summary>
@@ -142,6 +148,10 @@ namespace Trinity.SignalR
                 else if (notificationInfo.Name == NotificationNames.APP_DISCONNECTED)
                 {
                     OnAppDisconnected?.Invoke(this, new EventInfo() { Name = EventNames.APP_DISCONNECTED, Source = notificationInfo.Source, Data = notificationInfo.Data });
+                }
+                else if (notificationInfo.Name == NotificationNames.SSP_COMPLETED)
+                {
+                    OnSSPCompleted?.Invoke(this, notificationInfo);
                 }
                 else
                 {
@@ -291,7 +301,10 @@ namespace Trinity.SignalR
             //await HubProxy.Invoke("QueueFinished", queue);
         }
 
-
+        public void SSPCompleted(string NRIC)
+        {
+            PostNotification(notificationInfo: new NotificationInfo() { Name = NotificationNames.SSP_COMPLETED, NRIC = NRIC });
+        }
         #endregion
     }
 }

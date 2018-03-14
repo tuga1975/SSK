@@ -151,11 +151,6 @@ namespace SSK
                 // Only enrolled supervisees are allowed to login
                 if (user.Role == EnumUserRoles.Supervisee || user.Role == EnumUserRoles.DutyOfficer)
                 {
-                    if (user.Status == EnumUserStatuses.Blocked)
-                    {
-                        SmartCard_OnSmartCardFailed("You have been blocked<br/>Contact Duty Officer for help");
-                        return;
-                    }
                     if (user.Status == EnumUserStatuses.New)
                     {
                         SmartCard_OnSmartCardFailed("You haven't enrolled yet.");
@@ -186,11 +181,6 @@ namespace SSK
         private void JSCallCS_OnLogOutCompleted()
         {
             ApplicationStatusManager.Instance.IsBusy = false;
-
-            // Set machine status is busy
-            //LEDStatusLightingUtil.Instance._isBusy = false;
-            // Display led light health status
-            //LEDStatusLightingUtil.Instance.DisplayLedLight_DeviceStatus();
 
             // navigate
             NavigateTo(NavigatorEnums.Authentication_SmartCard);
@@ -245,14 +235,6 @@ namespace SSK
                 // LayerWeb initiation is compeleted, update application status
                 ApplicationStatusManager.Instance.LayerWebInitilizationCompleted();
             }
-
-            // SSK is ready to use - all is well
-            // Turn on GREEN Light
-            if (LEDStatusLightingUtil.Instance.IsPortOpen)
-            {
-                LEDStatusLightingUtil.Instance.TurnOffAllLEDs();
-                LEDStatusLightingUtil.Instance.SwitchGREENLightOnOff(true);
-            }
         }
 
         private void NRIC_OnNRICSucceeded()
@@ -291,7 +273,7 @@ namespace SSK
                 Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(null, message, message, EnumNotificationTypes.Error);
                 // show message box to user
                 //MessageBox.Show(message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                LayerWeb.ShowMessage("Authentication failed", "message");
+                LayerWeb.ShowMessage("Authentication failed", message);
                 // reset counter
                 _smartCardFailed = 0;
                 // display failed on UI
@@ -468,7 +450,8 @@ namespace SSK
             // Turn off all LED(s)
             if (LEDStatusLightingUtil.Instance.IsPortOpen)
             {
-                LEDStatusLightingUtil.Instance.TurnOffAllLEDs();
+                //LEDStatusLightingUtil.Instance.TurnOffAllLEDs();
+                LEDStatusLightingUtil.Instance.ClosePort();
             }
             Application.ExitThread();
             APIUtils.Dispose();
@@ -519,15 +502,30 @@ namespace SSK
             {
                 Session session = Session.Instance;
                 Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+                if ((user.User_Photo1 == null || user.User_Photo1.Length == 0) && (user.User_Photo2 == null || user.User_Photo2.Length == 0))
+                {
+                    //Trinity.BE.PopupModel popupModel = new Trinity.BE.PopupModel();
+                    //popupModel.Title = "Authorization Failed";
+                    //popupModel.Message = "User '" + user.Name + "' doesn't have any photos";
+                    //popupModel.IsShowLoading = false;
+                    //popupModel.IsShowOK = true;
+
+                    //LayerWeb.InvokeScript("showPopupModal", JsonConvert.SerializeObject(popupModel));
+
+                    // Navigate to smartcard login page
+                    NavigateTo(NavigatorEnums.Authentication_SmartCard);
+                    return;
+                }
                 LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please wait while initializing camera...');");
                 FacialRecognition.Instance.OnFacialRecognitionFailed += Main_OnFacialRecognitionFailed;
                 FacialRecognition.Instance.OnFacialRecognitionSucceeded += Main_OnFacialRecognitionSucceeded;
                 FacialRecognition.Instance.OnFacialRecognitionProcessing += Main_OnFacialRecognitionProcessing;
 
+                List<byte[]> FaceJpg = new System.Collections.Generic.List<byte[]>() { user.User_Photo1, user.User_Photo2 };
                 this.Invoke((MethodInvoker)(() =>
                 {
                     Point startLocation = new Point((Screen.PrimaryScreen.Bounds.Size.Width / 2) - 400 / 2, (Screen.PrimaryScreen.Bounds.Size.Height / 2) - 400 / 2);
-                    FacialRecognition.Instance.StartFacialRecognition(startLocation, new System.Collections.Generic.List<byte[]>() { user.User_Photo1, user.User_Photo2 });
+                    FacialRecognition.Instance.StartFacialRecognition(startLocation, FaceJpg);
                 }));
             }
             else if (navigatorEnum == NavigatorEnums.Authentication_NRIC)
@@ -537,9 +535,16 @@ namespace SSK
             else if (navigatorEnum == NavigatorEnums.Supervisee)
             {
                 // Handle income notifications
+
+                Session session = Session.Instance;
+                Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+                if (user.Role == EnumUserRoles.Supervisee && user.Status == EnumUserStatuses.Blocked)
+                {
+                    LayerWeb.ShowMessage("You have been blocked<br/>Contact Duty Officer for help");
+                    return;
+                }
                 _signalrClient = Client.Instance;
                 _signalrClient.OnNewNotification += _signalrClient_OnNewNotification;
-
                 _suppervisee.Start();
             }
 

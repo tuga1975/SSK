@@ -261,13 +261,13 @@
 </style>
 <ul class="nav nav-tabs nav-tabs-custom" role="tablist" style="margin-top:50px;">
     <li class="nav-item">
-        <a class="nav-link active" data-toggle="tab" href="javascript:LoadSuperviseeDetails();" role="tab">
+        <a class="nav-link" data-toggle="tab" href="javascript:LoadSuperviseeDetails();" role="tab">
             <i class="ion-information-circled"></i> Supervisee Details
         </a>
     </li>
 
     <li class="nav-item">
-        <a class="nav-link" data-toggle="tab" role="tab" href="javascript:api.server.LoadPage('ReprintSmartCard.html');">
+        <a class="nav-link active" data-toggle="tab" role="tab" href="javascript:api.server.LoadPage('ReprintSmartCard.html');">
             <i class="fa fa-address-card"></i> Issued card
         </a>
     </li>
@@ -305,7 +305,7 @@
                         <div enterreprint style="display:none;margin-top:10px;">
                             <span style="height:35px;display:inline-block;vertical-align:middle;padding:0px 10px;line-height:30px;float:left;">Enter reason to reprint:</span>
                             <input type="text" name="reprint" style="height:35px;display:inline-block;vertical-align:middle;width:calc(100% - 300px);float:left;margin:0px 10px;" />
-                            <button type="button"  onclick="ReprintIssuedCard();">Reprint</button>
+                            <button type="button"  onclick="ReprintIssuedCard();" style="margin-top:-5px;">Reprint</button>
                             <div style="clear:both;"></div>
                         </div>
                     </div>
@@ -316,7 +316,7 @@
 
     <div style="opacity:1;position:fixed;z-index:-1;right:0px;top:0px;overflow:hidden;width:0px;height:0px;">
         <div style="width:300px;height:182px;float:right;position:relative;overflow:hidden;font-family:Arial;" id="frontCard">
-            <img src="../images/background-smart-card.png" style="position:absolute;z-index:0;left:0px;top:0px;height:100%;width:100%;" />
+            <img src="../images/viewlayer.png" style="position:absolute;z-index:0;left:0px;top:0px;height:100%;width:100%;" />
             <div style="z-index:1;color:#FFF;">
                 <div style="position:absolute;font-size: 15px;font-weight: bold;font-style: italic;top: 10px;left: 20px;">
                     CNB Supervisee Card
@@ -339,7 +339,7 @@
             </div>
         </div>
         <div style="width:300px;height:182px;float:right;position:relative;overflow:hidden;font-family:Arial;" id="backCard">
-            <img src="../images/background-smart-card.png" style="position:absolute;z-index:0;left:0px;top:0px;height:100%;width:100%;" />
+            <img src="../images/viewlayer.png" style="position:absolute;z-index:0;left:0px;top:0px;height:100%;width:100%;" />
 
             <div style="position:absolute;bottom:15px;left:15px;z-index:1;color:#FFF;">
                 <div style="font-size: 12px;font-weight: bold;">

@@ -1,7 +1,7 @@
 using System.Web.Http;
 using System.Web.Mvc;
 
-namespace Trinity.CentralizedAPI.Areas.HelpPage
+namespace Trinity.BackendAPI.Areas.HelpPage
 {
     public class HelpPageAreaRegistration : AreaRegistration
     {

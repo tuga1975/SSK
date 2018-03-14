@@ -11,7 +11,7 @@ using Trinity.BE;
 using Trinity.DAL;
 using Trinity.Common;
 
-namespace Trinity.CentralizedAPI.Controllers
+namespace Trinity.BackendAPI.Controllers
 {
     public class DeviceStatusController : ApiController
     {

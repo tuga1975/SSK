@@ -117,34 +117,52 @@ namespace DutyOfficer
 
             // Update next station is ESP, message of ESP to 'Waiting for ESP'
             var dalQueue = new DAL_QueueNumber();
-            dalQueue.UpdateQueueStatusByUserId(UserId, EnumStation.HSA, EnumQueueStatuses.Finished, EnumStation.ESP, EnumQueueStatuses.Waiting, "Waiting for ESP", EnumQueueOutcomeText.Processing);
+            dalQueue.UpdateQueueStatusByUserId(UserId, EnumStation.HSA, EnumQueueStatuses.Finished, EnumStation.ESP, EnumQueueStatuses.Processing, "Waiting for ESP", EnumQueueOutcomeText.Processing);
 
             // Re-load queue
             this._web.InvokeScript("reloadDataQueues");
         }
         public object getDataQueue()
         {
-            var data = new DAL_QueueNumber().GetAllQueueByDateIncludeDetail(DateTime.Now.Date)
-                .Select(queue => new
+            List<object> arrayDataa = new List<object>();
+            arrayDataa.AddRange(new DAL_Appointments().GetByDate(DateTime.Today).Select(app => new {
+                Queue_ID = app.Queue == null ? null : app.Queue.Queue_ID.ToString().Trim(),
+                Date = app.Date,
+                UserId = app.UserId,
+                NRIC = app.Membership_Users.NRIC,
+                Name = app.Membership_Users.Name,
+                APS = app.Color(EnumStation.APS),
+                SSK = app.Color(EnumStation.SSK),
+                SSA = app.Color(EnumStation.SSA),
+                UHP = app.Color(EnumStation.UHP),
+                HSA = app.Queue == null ? string.Empty : app.Queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStation.HSA).Status == EnumQueueStatuses.Finished ? GetResultUT(app.Membership_Users.NRIC) : string.Empty,
+                ESP = app.Color(EnumStation.ESP),
+                Outcome = app.Queue == null ? string.Empty : app.Queue.Outcome,
+                Message = new
                 {
-                    Queue_ID = queue.Queue_ID,
-                    Date = queue.Appointment.Date.Date,
-                    UserId = queue.Appointment.UserId,
-                    NRIC = queue.Appointment.Membership_Users.NRIC,
-                    Name = queue.Appointment.Membership_Users.Name,
-                    APS = queue.Color(EnumStation.APS),
-                    SSK = queue.Color(EnumStation.SSK),
-                    SSA = queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStation.SSA).Color,
-                    UHP = queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStation.UHP).Color,
-                    HSA = queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStation.HSA).Status == EnumQueueStatuses.Finished ? GetResultUT(queue.Appointment.Membership_Users.NRIC) : string.Empty,
-                    ESP = queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStation.ESP).Color,
-                    Outcome = queue.Outcome,
-                    Message = new
-                    {
-                        content = queue.QueueDetails.Where(c => c.Station == queue.CurrentStation).FirstOrDefault().Message == null ? "" : queue.QueueDetails.Where(c => c.Station == queue.CurrentStation).FirstOrDefault().Message
-                    }
-                });
-            return data;
+                    content = (app.Queue == null ? string.Empty : app.Queue.QueueDetails.Where(c => c.Station == app.Queue.CurrentStation).FirstOrDefault().Message) ?? string.Empty
+                }
+            }).ToList());
+            arrayDataa.AddRange(new DAL_QueueNumber().GetQueueWalkInByDate(DateTime.Today).Select(queue => new
+            {
+                Queue_ID = queue.Queue_ID,
+                Date = queue.Appointment.Date.Date,
+                UserId = queue.Appointment.UserId,
+                NRIC = queue.Appointment.Membership_Users.NRIC,
+                Name = queue.Appointment.Membership_Users.Name,
+                APS = queue.Color(EnumStation.APS),
+                SSK = queue.Color(EnumStation.SSK),
+                SSA = queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStation.SSA).Color,
+                UHP = queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStation.UHP).Color,
+                HSA = queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStation.HSA).Status == EnumQueueStatuses.Finished ? GetResultUT(queue.Appointment.Membership_Users.NRIC) : string.Empty,
+                ESP = queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStation.ESP).Color,
+                Outcome = queue.Outcome,
+                Message = new
+                {
+                    content = queue.QueueDetails.Where(c => c.Station == queue.CurrentStation).FirstOrDefault().Message == null ? "" : queue.QueueDetails.Where(c => c.Station == queue.CurrentStation).FirstOrDefault().Message
+                }
+            }).ToList());
+            return arrayDataa;
         }
         private string GetResultUT(string NRIC)
         {
@@ -250,7 +268,7 @@ namespace DutyOfficer
                     // update outcome to 'Unconditional Release'
                     //dalQueue.UpdateQueueOutcomeByQueueId(new Guid(queueId), EnumQueueOutcomeText.UnconditionalRelease);
 
-                    dalQueue.UpdateQueueStatusByUserId(queueDetail.UserId, EnumStation.ESP, EnumQueueStatuses.NotRequired, EnumStation.ESP, EnumQueueStatuses.NotRequired, "", EnumQueueOutcomeText.UnconditionalRelease);
+                    dalQueue.UpdateQueueStatusByUserId(queueDetail.UserId, EnumStation.ESP, EnumQueueStatuses.NotRequired, EnumStation.DUTYOFFICER, EnumQueueStatuses.NotRequired, "", EnumQueueOutcomeText.UnconditionalRelease);
 
                     // Re-load queue
                     this._web.InvokeScript("reloadDataQueues");
@@ -267,7 +285,7 @@ namespace DutyOfficer
             DAL_QueueNumber dalQueue = new DAL_QueueNumber();
             //dalQueue.UpdateQueueOutcomeByQueueId(new Guid(queueID), outcome);
             var queueDetail = dalQueue.GetQueueInfoByQueueID(new Guid(queueID));
-            dalQueue.UpdateQueueStatusByUserId(queueDetail.UserId, EnumStation.ESP, EnumQueueStatuses.Finished, EnumStation.ESP, EnumQueueStatuses.Finished, "", outcome);
+            dalQueue.UpdateQueueStatusByUserId(queueDetail.UserId, EnumStation.ESP, EnumQueueStatuses.Finished, EnumStation.DUTYOFFICER, EnumQueueStatuses.Finished, "", outcome);
 
             // Re-load queue
             this._web.InvokeScript("reloadDataQueues");
@@ -444,7 +462,7 @@ namespace DutyOfficer
         {
             var dalUser = new DAL_User();
             dalUser.UnblockSuperviseeById(userId, reason);
-            GetQueueForSupervisee(userId);
+            //GetQueueForSupervisee(userId);
         }
 
         private void GetQueueForSupervisee(string userId)

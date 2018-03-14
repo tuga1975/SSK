@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Net.Http.Headers;
 
-namespace Trinity.CentralizedAPI.Areas.HelpPage
+namespace Trinity.BackendAPI.Areas.HelpPage
 {
     /// <summary>
     /// This is used to identify the place where the sample should be applied.

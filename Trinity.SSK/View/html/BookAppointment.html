@@ -186,7 +186,7 @@
                 var startTime = _this.attr('start');
                 var endTime = _this.attr('end');
 
-                api.server.CheckBookingTime(timeslot_ID, function (isPast) {
+                api.server.CheckBookingTime(timeslot_ID, model[0].Date, function (isPast) {
                     if (isPast) {
                         alert('You can not choose the timeslot in the past.');
                     }

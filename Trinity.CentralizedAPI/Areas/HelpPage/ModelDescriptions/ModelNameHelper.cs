@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 
-namespace Trinity.CentralizedAPI.Areas.HelpPage.ModelDescriptions
+namespace Trinity.BackendAPI.Areas.HelpPage.ModelDescriptions
 {
     internal static class ModelNameHelper
     {

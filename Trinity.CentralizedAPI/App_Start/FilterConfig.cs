@@ -1,7 +1,7 @@
 ﻿using System.Web;
 using System.Web.Mvc;
 
-namespace Trinity.CentralizedAPI
+namespace Trinity.BackendAPI
 {
     public class FilterConfig
     {

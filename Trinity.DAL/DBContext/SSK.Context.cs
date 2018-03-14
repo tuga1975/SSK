@@ -57,5 +57,6 @@ namespace Trinity.DAL.DBContext
         public virtual DbSet<Timeslot> Timeslots { get; set; }
         public virtual DbSet<UploadedDocument> UploadedDocuments { get; set; }
         public virtual DbSet<User_Profiles> User_Profiles { get; set; }
+        public virtual DbSet<Transaction> Transactions { get; set; }
     }
 }

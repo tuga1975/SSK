@@ -11,10 +11,10 @@ using System.Net.Http.Headers;
 using System.Web.Http;
 using System.Web.Http.Controllers;
 using System.Web.Http.Description;
-using Trinity.CentralizedAPI.Areas.HelpPage.ModelDescriptions;
-using Trinity.CentralizedAPI.Areas.HelpPage.Models;
+using Trinity.BackendAPI.Areas.HelpPage.ModelDescriptions;
+using Trinity.BackendAPI.Areas.HelpPage.Models;
 
-namespace Trinity.CentralizedAPI.Areas.HelpPage
+namespace Trinity.BackendAPI.Areas.HelpPage
 {
     public static class HelpPageConfigurationExtensions
     {
