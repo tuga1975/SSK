@@ -190,22 +190,7 @@ namespace SSA
                 };
 
                 var dalLabel = new DAL_Labels();
-                var update = dalLabel.UpdateLabel(labelInfo);
-                if (update != null)
-                {
-                    var dalAppointment = new DAL_Appointments();
-                    var dalQueue = new DAL_QueueNumber();
-                    var appointment = dalAppointment.GetTodayAppointmentByUserId(labelInfo.UserId);
-                    //var appointment = result.Data;
-
-                    if (appointment != null)
-                    {
-                        var sskQueue = new DAL_QueueNumber().GetQueueDetailByAppointment(appointment, EnumStation.SSK);
-
-                        dalQueue.UpdateQueueStatus(sskQueue.Queue_ID, EnumQueueStatuses.Finished, EnumStation.SSK);
-                        dalQueue.UpdateQueueStatus(sskQueue.Queue_ID, EnumQueueStatuses.Processing, EnumStation.SSA);
-                    }
-                }
+                dalLabel.UpdateLabel(labelInfo);
             }
             catch (Exception ex)
             {
