@@ -17,27 +17,34 @@ namespace Trinity.DAL
 
         public DBContext.Label GetByDateAndUserId(DateTime Date, string UserId)
         {
-            if (EnumAppConfig.IsLocal)
+            try
             {
-                DBContext.Label label = _localUnitOfWork.DataContext.Labels.FirstOrDefault(d => DbFunctions.TruncateTime(d.Date).Value == Date && d.UserId == UserId);
-                if (label != null || EnumAppConfig.ByPassCentralizedDB)
+                if (EnumAppConfig.IsLocal)
                 {
-                    return label;
+                    DBContext.Label label = _localUnitOfWork.DataContext.Labels.FirstOrDefault(d => DbFunctions.TruncateTime(d.Date).Value == Date && d.UserId == UserId);
+                    if (label != null || EnumAppConfig.ByPassCentralizedDB)
+                    {
+                        return label;
+                    }
+                    else
+                    {
+                        bool centralizeStatus;
+                        var centralUpdate = CallCentralized.Get<Label>(EnumAPIParam.Label, "GetByDateAndUserId", out centralizeStatus, "date=" + Date.ToString(), "UserId=" + UserId);
+                        if (centralizeStatus)
+                        {
+                            return centralUpdate;
+                        }
+                        return null;
+                    }
                 }
                 else
                 {
-                    bool centralizeStatus;
-                    var centralUpdate = CallCentralized.Get<Label>(EnumAPIParam.Label, "GetByDateAndUserId", out centralizeStatus, "date=" + Date.ToString(), "UserId=" + UserId);
-                    if (centralizeStatus)
-                    {
-                        return centralUpdate;
-                    }
-                    return null;
+                    return _centralizedUnitOfWork.DataContext.Labels.FirstOrDefault(d => DbFunctions.TruncateTime(d.Date).Value == Date && d.UserId == UserId);
                 }
             }
-            else
+            catch(Exception e)
             {
-                return _centralizedUnitOfWork.DataContext.Labels.FirstOrDefault(d => DbFunctions.TruncateTime(d.Date).Value == Date && d.UserId == UserId);
+                return null;
             }
         }
 
@@ -336,6 +343,41 @@ namespace Trinity.DAL
             catch (Exception e)
             {
                 return null;
+            }
+        }
+
+        public string GetMarkingNoByUserId(string userId)
+        {
+            try
+            {
+                if (EnumAppConfig.IsLocal)
+                {
+                    DBContext.Label label = _localUnitOfWork.DataContext.Labels.FirstOrDefault(d => d.UserId == userId);
+                    if (label == null)
+                    {
+                        return string.Empty;
+                    }
+                    else
+                    {
+                        return label.MarkingNo;
+                    }
+                }
+                else
+                {
+                    DBContext.Label label = _centralizedUnitOfWork.DataContext.Labels.FirstOrDefault(d => d.UserId == userId);
+                    if (label == null)
+                    {
+                        return string.Empty;
+                    }
+                    else
+                    {
+                        return label.MarkingNo;
+                    }
+                }
+            }
+            catch(Exception e)
+            {
+                return string.Empty;
             }
         }
     }
