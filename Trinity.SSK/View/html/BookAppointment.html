@@ -174,7 +174,7 @@
 
         $('[btn-save-bookappointment]').click(function () {
             var timeslotNowId = $('[item-reason][active="true"]').length > 0 ? $('[item-reason][active="true"]').attr('timeslot_ID') : null;
-            if (timeslotNowId == null ) {
+            if (timeslotNowId == null) {
                 alert('Please choose the timeslot');
             }
             else if (timeslotNowId == timeslotOldId) {
@@ -185,8 +185,7 @@
                 var timeslot_ID = _this.attr('timeslot_ID');
                 var startTime = _this.attr('start');
                 var endTime = _this.attr('end');
-
-                api.server.CheckBookingTime(timeslot_ID, model[0].Date, function (isPast) {
+                api.server.CheckBookingTime(timeslot_ID, model[0].AppointmentDate, function (isPast) {
                     if (isPast) {
                         alert('You can not choose the timeslot in the past.');
                     }
@@ -195,7 +194,7 @@
                             alert('You have exceeded the number of times allowed for time slot change. Please keep to your timeslot ' + startTime + ' on ' + model[0].GetDateTxt + '. Otherwise, please contact your case officer.');
                             $('[item-reason]').attr('active', 'false');
                             $oldActive.attr('active', 'true');
-                           
+
                         } else {
                             var re = confirm('You have selected the time slot\n' + startTime + ' on ' + model[0].GetDateTxt + '\nConfirm time slot?', 'Warning');
                             if (re == true) {
@@ -211,7 +210,6 @@
                                 });
                             }
                         }
-                       // api.server.BookAppopintment();
                     }
                 });
             }

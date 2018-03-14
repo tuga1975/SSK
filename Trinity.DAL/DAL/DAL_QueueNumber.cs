@@ -149,7 +149,7 @@ namespace Trinity.DAL
                     Timeslot_ID = timeslotID,
                     Appointment_ID = appointmentID,
                     CurrentStation = station,
-                    Outcome = EnumOutcome.GetQueue,
+                    Outcome = EnumOutcome.Processing,
                     CreatedTime = DateTime.Now,
                     QueuedNumber = generateQNo,
                     Created_By = userCreateQueue

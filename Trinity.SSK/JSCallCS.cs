@@ -177,7 +177,7 @@ namespace SSK
                 Status = appointment.Status,
                 ReportTime = appointment.ReportTime,
                 StartTime = appointment.Timeslot != null ? appointment.Timeslot.StartTime : null,
-                EndTime = appointment.Timeslot != null ? appointment.Timeslot.EndTime : null,
+                EndTime = appointment.Timeslot != null ? appointment.Timeslot.EndTime : null
             };
 
             // redirect
@@ -200,9 +200,9 @@ namespace SSK
             
         }
 
-        public bool CheckBookingTime(string timeslotId,DateTime date)
+        public bool CheckBookingTime(string timeslotId,string date)
         {
-            return new DAL_Timeslots().CheckTimeslot(timeslotId,date);
+            return new DAL_Timeslots().CheckTimeslot(timeslotId,Convert.ToDateTime(date));
         }
 
         private List<WorkingShiftDetails> GetWorkingTimeshift(List<Timeslot> timeslots, string selected_Timeslot_ID, string timeshift)
