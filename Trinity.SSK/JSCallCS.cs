@@ -510,36 +510,28 @@ namespace SSK
             }
             if (absenceCount == 0)
             {
-                DAL_Notification noti = new DAL_Notification();
-                if (noti.CountGetMyNotifications(supervisee.UserId, true) > 0)
-                {
-                    LoadNotications();
-                }
-                else
-                {
-                    GetMyQueueNumber();
-                }
+                GetMyQueueNumber();
             }
-            else if (absenceCount >= 3 || supervisee.Status==EnumUserStatuses.Blocked)
-            {
-                var eventCenter = Trinity.Common.Common.EventCenter.Default;
-                //eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ABSENCE_MORE_THAN_3, Message = "You have been blocked for 3 or more absences \n Please report to the Duty Officer" });
-                this._web.ShowMessage("You have been blocked for 3 or more absences <br/> Please report to the Duty Officer");
-                //for testing purpose
-                //notify to officer
-                Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(supervisee.UserId, "Supervisee got blocked for 3 or more absences", "Please check the Supervisee's information!", EnumNotificationTypes.Caution);
-                //var dalUser = new DAL_User();
+            //else if (absenceCount >= 3 || supervisee.Status==EnumUserStatuses.Blocked)
+            //{
+            //    var eventCenter = Trinity.Common.Common.EventCenter.Default;
+            //    //eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ABSENCE_MORE_THAN_3, Message = "You have been blocked for 3 or more absences \n Please report to the Duty Officer" });
+            //    this._web.ShowMessage("You have been blocked for 3 or more absences <br/> Please report to the Duty Officer");
+            //    //for testing purpose
+            //    //notify to officer
+            //    Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(supervisee.UserId, "Supervisee got blocked for 3 or more absences", "Please check the Supervisee's information!", EnumNotificationTypes.Caution);
+            //    //var dalUser = new DAL_User();
 
-                //// Create absence reporting
-                //var listAppointment = new DAL_Appointments().GetAbsentAppointments(supervisee.UserId);
-                //session[CommonConstants.LIST_APPOINTMENT] = listAppointment;
-                //_web.LoadPageHtml("ReasonsForQueue.html", listAppointment.Select(d => new
-                //{
-                //    ID = d.ID,
-                //    GetDateTxt = d.GetDateTxt
-                //}));
-            }
-            else if (absenceCount > 0 && absenceCount < 3)
+            //    //// Create absence reporting
+            //    //var listAppointment = new DAL_Appointments().GetAbsentAppointments(supervisee.UserId);
+            //    //session[CommonConstants.LIST_APPOINTMENT] = listAppointment;
+            //    //_web.LoadPageHtml("ReasonsForQueue.html", listAppointment.Select(d => new
+            //    //{
+            //    //    ID = d.ID,
+            //    //    GetDateTxt = d.GetDateTxt
+            //    //}));
+            //}
+            else
             {
 
                 var listAppointment = new DAL_Appointments().GetAbsentAppointments(supervisee.UserId);

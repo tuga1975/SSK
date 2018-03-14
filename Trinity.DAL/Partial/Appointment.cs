@@ -41,11 +41,40 @@ namespace Trinity.DAL.DBContext
                 return string.Empty;
             }
         }
+        public Trinity.DAL.DBContext.Queue Queue
+        {
+            get
+            {
+                return this.Queues.FirstOrDefault();
+            }
+        }
+        public string Color(string Station)
+        {
+            if (Station == EnumStation.APS)
+            {
+                if (this.Status == EnumAppointmentStatuses.Pending)
+                    return EnumColors.White;
+                else
+                    return EnumColors.Blue;
+            }
+            else if (Station == EnumStation.SSK)
+            {
+                if (this.Status != EnumAppointmentStatuses.Reported)
+                    return EnumColors.White;
+                else
+                    return EnumColors.Blue;
+            }
+            else if (Queue != null)
+            {
+                return Queue.QueueDetails.FirstOrDefault(c => c.Station == Station).Color;
+            }
+            return EnumColors.White;
+        }
     }
 
     public partial class Timeslot
     {
-      
+
         public string FromTimeTxt
         {
             get

@@ -39,6 +39,7 @@ namespace DutyOfficer
             Trinity.SignalR.Client.Instance.OnNewNotification += OnNewNotification_Handler ;
             Trinity.SignalR.Client.Instance.OnAppDisconnected += OnAppDisconnected_Handler;
             Trinity.SignalR.Client.Instance.OnQueueCompleted += OnQueueCompleted_Handler;
+            Trinity.SignalR.Client.Instance.OnSSPCompleted += OnSSPCompleted_Handler;
 
             // setup variables
             _smartCardFailed = 0;
@@ -64,6 +65,17 @@ namespace DutyOfficer
             Lib.LayerWeb = LayerWeb;
             LayerWeb.Url = new Uri(String.Format("file:///{0}/View/html/Layout.html", CSCallJS.curDir));
             LayerWeb.ObjectForScripting = _jsCallCS;
+        }
+
+        private void OnSSPCompleted_Handler(object sender, NotificationInfo e)
+        {
+            string NRIC = e.NRIC;
+            var dalUser = new DAL_User();
+            var user = dalUser.GetByNRIC(NRIC);
+            var dalQueue = new DAL_QueueNumber();
+            dalQueue.UpdateQueueStatusByUserId(user.UserId, EnumStation.ESP, EnumQueueStatuses.Finished, EnumStation.DUTYOFFICER, EnumQueueStatuses.Processing, "Select outcome", EnumQueueOutcomeText.TapSmartCardToContinue);
+            // Refresh data queue
+            LayerWeb.InvokeScript("reloadDataQueues");
         }
 
         private void OnAppDisconnected_Handler(object sender, EventInfo e)
@@ -413,7 +425,11 @@ namespace DutyOfficer
                 FacialRecognition.Instance.OnFacialRecognitionFailed += Main_OnFacialRecognitionFailed;
                 FacialRecognition.Instance.OnFacialRecognitionSucceeded += Main_OnFacialRecognitionSucceeded;
                 FacialRecognition.Instance.OnFacialRecognitionProcessing += Main_OnFacialRecognitionProcessing;
-
+                if (user.User_Photo1 == null || user.User_Photo1.Length == 0)
+                {
+                    MessageBox.Show("User photo is null");
+                    return;
+                }
                 this.Invoke((MethodInvoker)(() =>
                 {
                     Point startLocation = new Point((Screen.PrimaryScreen.Bounds.Size.Width / 2) - 400 / 2, (Screen.PrimaryScreen.Bounds.Size.Height / 2) - 400 / 2);

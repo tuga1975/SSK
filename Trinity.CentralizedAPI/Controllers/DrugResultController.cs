@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
 
-namespace Trinity.CentralizedAPI.Controllers
+namespace Trinity.BackendAPI.Controllers
 {
     public class DrugResultController : ApiController
     {

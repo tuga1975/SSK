@@ -14,6 +14,11 @@ namespace Trinity.DAL
         Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
 
         #region refactor 2018
+        public List<Trinity.DAL.DBContext.Appointment> GetByDate(DateTime date)
+        {
+            date = date.Date;
+            return _localUnitOfWork.DataContext.Appointments.Where(d => d.Date == date).ToList();
+        }
         public Trinity.DAL.DBContext.Appointment GetNextAppointment(string userId)
         {
             try

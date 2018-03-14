@@ -6,7 +6,7 @@ using System.Web.Http;
 using System.Web.Http.Description;
 using Trinity.Common;
 
-namespace Trinity.CentralizedAPI.Controllers
+namespace Trinity.BackendAPI.Controllers
 {
     public class AddressController : ApiController
     {

@@ -587,7 +587,7 @@
     });
 
     api.server.GetNextAppointmentDate(function (_date) {
-        if (_date.trim() != "") {
+        if (_date!=null && _date.trim() != "") {
             $('#appointmentDate').text(_date);
             $('#divNextAppointment').show();
 

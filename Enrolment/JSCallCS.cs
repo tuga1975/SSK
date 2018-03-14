@@ -15,6 +15,8 @@ using Trinity.DAL.DBContext;
 using Trinity.Identity;
 using Trinity.Device;
 using Trinity.Device.Util;
+using System.IO;
+using System.Drawing;
 
 namespace Enrolment
 {
@@ -339,8 +341,12 @@ namespace Enrolment
             //
             data.UserProfile.Residential_Addess_ID = residential_Addess_ID;
             data.UserProfile.Other_Address_ID = other_Address_ID;
-            data.UserProfile.User_Photo1 = profileModel.UserProfile.User_Photo1;
-            data.UserProfile.User_Photo2 = profileModel.UserProfile.User_Photo2;
+
+            byte[] photo1 = VerifyImage(profileModel.UserProfile.User_Photo1);
+            byte[] photo2 = VerifyImage(profileModel.UserProfile.User_Photo1);
+
+            data.UserProfile.User_Photo1 = photo1;
+            data.UserProfile.User_Photo2 = photo2;
 
             data.User.LeftThumbFingerprint = profileModel.User.LeftThumbFingerprint;
             data.User.RightThumbFingerprint = profileModel.User.RightThumbFingerprint;
@@ -383,6 +389,36 @@ namespace Enrolment
             session["TEMP_USER"] = null;
             //load Supervisee page 
             LoadListSupervisee();
+        }
+
+        private byte[] VerifyImage(byte[] user_Photo)
+        {
+            try
+            {
+                // Get image from byte[]
+                MemoryStream ms = new MemoryStream(user_Photo);
+                Image image = Image.FromStream(ms);
+
+                int maxHeight = 1366;
+                int maxWidth = 768;
+                if (image.Height > maxHeight || image.Width > maxWidth)
+                {
+                    // Scale image
+                    Image newImage = CommonUtil.ScaleImage(image, maxHeight, maxWidth);
+
+                    // Convert image to byte[]
+                    MemoryStream newMS = new MemoryStream();
+                    newImage.Save(newMS, image.RawFormat);
+                    return newMS.ToArray();
+                }
+
+                return user_Photo;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return null;
+            }
         }
 
         public void saveNewDataToSession(string param)
@@ -507,22 +543,22 @@ namespace Enrolment
             if (!string.IsNullOrEmpty(frontBase64))
             {
                 System.IO.Directory.CreateDirectory(String.Format("{0}/Temp", CSCallJS.curDir));
-                ImgFront = String.Format("{0}/Temp/{1}", CSCallJS.curDir, "frontcard.png");
+                ImgFront = String.Format("{0}/Temp/{1}", CSCallJS.curDir, "frontcard.bmp");
                 if (System.IO.File.Exists(ImgFront))
                     System.IO.File.Delete(ImgFront);
 
                 //ImgFront = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".png";
-                new System.Drawing.Bitmap(new System.IO.MemoryStream(Convert.FromBase64String(frontBase64))).Save(ImgFront);
+                new System.Drawing.Bitmap(new System.IO.MemoryStream(Convert.FromBase64String(frontBase64))).Save(ImgFront, System.Drawing.Imaging.ImageFormat.Bmp);
             }
             if (!string.IsNullOrEmpty(backBase64))
             {
                 System.IO.Directory.CreateDirectory(String.Format("{0}/Temp", CSCallJS.curDir));
-                ImgBack = String.Format("{0}/Temp/{1}", CSCallJS.curDir, "backcard.png");
+                ImgBack = String.Format("{0}/Temp/{1}", CSCallJS.curDir, "backcard.bmp");
                 if (System.IO.File.Exists(ImgBack))
                     System.IO.File.Delete(ImgBack);
 
                 //ImgBack = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".png";
-                new System.Drawing.Bitmap(new System.IO.MemoryStream(Convert.FromBase64String(backBase64))).Save(ImgBack);
+                new System.Drawing.Bitmap(new System.IO.MemoryStream(Convert.FromBase64String(backBase64))).Save(ImgBack, System.Drawing.Imaging.ImageFormat.Bmp);
             }
 
             PrintAndWriteSmartCardInfo infoPrinter = new PrintAndWriteSmartCardInfo()
@@ -866,13 +902,15 @@ namespace Enrolment
             string ImgBack = null;
             if (!string.IsNullOrEmpty(frontBase64))
             {
-                ImgFront = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".png";
-                new System.Drawing.Bitmap(new System.IO.MemoryStream(Convert.FromBase64String(frontBase64))).Save(ImgFront);
+                System.IO.Directory.CreateDirectory(String.Format("{0}/Temp", CSCallJS.curDir));
+                ImgFront = String.Format("{0}/Temp/{1}", CSCallJS.curDir, "frontcard.bmp");
+                new System.Drawing.Bitmap(new System.IO.MemoryStream(Convert.FromBase64String(frontBase64))).Save(ImgFront, System.Drawing.Imaging.ImageFormat.Bmp);
             }
             if (!string.IsNullOrEmpty(backBase64))
             {
-                ImgBack = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".png";
-                new System.Drawing.Bitmap(new System.IO.MemoryStream(Convert.FromBase64String(backBase64))).Save(ImgBack);
+                System.IO.Directory.CreateDirectory(String.Format("{0}/Temp", CSCallJS.curDir));
+                ImgBack = String.Format("{0}/Temp/{1}", CSCallJS.curDir, "backcard.bmp");
+                new System.Drawing.Bitmap(new System.IO.MemoryStream(Convert.FromBase64String(backBase64))).Save(ImgBack, System.Drawing.Imaging.ImageFormat.Bmp);
             }
 
             reprintTxt = reprintReason;

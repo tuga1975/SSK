@@ -7,7 +7,7 @@ using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
 
-namespace Trinity.CentralizedAPI
+namespace Trinity.BackendAPI
 {
     public class WebApiApplication : System.Web.HttpApplication
     {
@@ -18,6 +18,7 @@ namespace Trinity.CentralizedAPI
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+            ScheduledTask.JobScheduler.Start();
         }
     }
 }

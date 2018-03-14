@@ -16,7 +16,11 @@ namespace Trinity.DAL
 
         #region refactor 2018
 
-
+        public List<DBContext.Queue> GetQueueWalkInByDate(DateTime date)
+        {
+            date = date.Date;
+            return _localUnitOfWork.DataContext.Queues.Where(d => DbFunctions.TruncateTime(d.CreatedTime) == date && !d.Appointment_ID.HasValue).ToList();
+        }
         public DBContext.Timeslot GetTimeSlotEmpty()
         {
             List<DBContext.Timeslot> arrayTimeslot = _localUnitOfWork.DataContext.Timeslots.Where(d => d.Date == DateTime.Today).ToList().OrderBy(d => d.SortCategory).ThenBy(d => d.StartTime).ToList();
@@ -755,7 +759,7 @@ namespace Trinity.DAL
             {
                 if (EnumAppConfig.IsLocal)
                 {
-                    DBContext.Queue dbQueue = _localUnitOfWork.DataContext.Queues.Include("Appointment").FirstOrDefault(d => d.Appointment.UserId == userId);
+                    DBContext.Queue dbQueue = _localUnitOfWork.DataContext.Queues.Include("Appointment").FirstOrDefault(d => d.Appointment.UserId == userId && DbFunctions.TruncateTime(d.CreatedTime).Value == DateTime.Today);
 
                     if (dbQueue == null)
                         return 0;
@@ -806,7 +810,7 @@ namespace Trinity.DAL
                 }
                 else
                 {
-                    DBContext.Queue dbQueue = _centralizedUnitOfWork.DataContext.Queues.Include("Appointment").FirstOrDefault(d => d.Appointment.UserId == userId);
+                    DBContext.Queue dbQueue = _centralizedUnitOfWork.DataContext.Queues.Include("Appointment").FirstOrDefault(d => d.Appointment.UserId == userId && DbFunctions.TruncateTime(d.CreatedTime).Value == DateTime.Today);
 
                     if (dbQueue == null)
                         return 0;

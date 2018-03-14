@@ -1,10 +1,10 @@
 using System;
 using System.Web.Http;
 using System.Web.Mvc;
-using Trinity.CentralizedAPI.Areas.HelpPage.ModelDescriptions;
-using Trinity.CentralizedAPI.Areas.HelpPage.Models;
+using Trinity.BackendAPI.Areas.HelpPage.ModelDescriptions;
+using Trinity.BackendAPI.Areas.HelpPage.Models;
 
-namespace Trinity.CentralizedAPI.Areas.HelpPage.Controllers
+namespace Trinity.BackendAPI.Areas.HelpPage.Controllers
 {
     /// <summary>
     /// The controller that will handle requests for the help page.

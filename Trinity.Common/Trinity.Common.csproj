@@ -90,6 +90,7 @@
       <HintPath>..\packages\System.Net.Http.Formatting.Extension.5.2.3.0\lib\System.Net.Http.Formatting.dll</HintPath>
     </Reference>
     <Reference Include="System.Printing" />
+    <Reference Include="System.Speech" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -131,6 +132,7 @@
     <Compile Include="Utils\CommonUtil.cs" />
     <Compile Include="Utils\Convertor1.cs" />
     <Compile Include="Utils\Convertor2.cs" />
+    <Compile Include="Utils\TextToSpeech.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Libs\Camera\DirectShowLib-2005.dll" />
