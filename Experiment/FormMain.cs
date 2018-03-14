@@ -298,5 +298,23 @@ namespace Experiment
             FormTestSignalR f = new FormTestSignalR();
             f.Show();
         }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            FormTestSignalR formTestSignalR = new FormTestSignalR();
+            formTestSignalR.ShowDialog();
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            FormLEDLightControl formLEDLightControl = new FormLEDLightControl();
+            formLEDLightControl.ShowDialog();
+        }
+
+        private void btnTestTextSpeech_Click(object sender, EventArgs e)
+        {
+            TextToSpeech textToSpeech = new TextToSpeech();
+            textToSpeech.Speak("US airline industry primed for springtime boost: trade group");
+        }
     }
 }

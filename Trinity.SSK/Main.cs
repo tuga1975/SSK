@@ -182,11 +182,6 @@ namespace SSK
         {
             ApplicationStatusManager.Instance.IsBusy = false;
 
-            // Set machine status is busy
-            //LEDStatusLightingUtil.Instance._isBusy = false;
-            // Display led light health status
-            //LEDStatusLightingUtil.Instance.DisplayLedLight_DeviceStatus();
-
             // navigate
             NavigateTo(NavigatorEnums.Authentication_SmartCard);
         }
@@ -239,14 +234,6 @@ namespace SSK
                 Thread.Sleep(5000);
                 // LayerWeb initiation is compeleted, update application status
                 ApplicationStatusManager.Instance.LayerWebInitilizationCompleted();
-            }
-
-            // SSK is ready to use - all is well
-            // Turn on GREEN Light
-            if (LEDStatusLightingUtil.Instance.IsPortOpen)
-            {
-                LEDStatusLightingUtil.Instance.TurnOffAllLEDs();
-                LEDStatusLightingUtil.Instance.SwitchGREENLightOnOff(true);
             }
         }
 
@@ -463,7 +450,8 @@ namespace SSK
             // Turn off all LED(s)
             if (LEDStatusLightingUtil.Instance.IsPortOpen)
             {
-                LEDStatusLightingUtil.Instance.TurnOffAllLEDs();
+                //LEDStatusLightingUtil.Instance.TurnOffAllLEDs();
+                LEDStatusLightingUtil.Instance.ClosePort();
             }
             Application.ExitThread();
             APIUtils.Dispose();

@@ -24,19 +24,22 @@
             </div>
         </div>
         <!--<div class="input-group">
-            <span class="input-group-addon">QR Code:</span>
-            <img id="imgQRCode" width="120" height="120" style="margin-left:12px;">
+        <span class="input-group-addon">QR Code:</span>
+        <img id="imgQRCode" width="120" height="120" style="margin-left:12px;">
+    </div>
+    <br />
+    <div class="input-group">
+        <span class="input-group-addon">Marking Number:</span>
+        <input id="MarkingNumber" type="text" class="form-control pri" name="MarkingNumber" readonly="readonly" />
+    </div>-->
+        <div style="visibility:hidden" >
+            <label id="lblNextAction">InitializeMUBAndTTApplicator</label>
         </div>
-        <br />
-        <div class="input-group">
-            <span class="input-group-addon">Marking Number:</span>
-            <input id="MarkingNumber" type="text" class="form-control pri" name="MarkingNumber" readonly="readonly" />
-        </div>-->
-        <div style="visibility:hidden;">
-            <label id="lblNextAction">InitializeMUBApplicator</label>
+        <div class="status-text" id="mubStatus">
+            
         </div>
-        <div class="status-text">
-
+        <div class="status-text" id="ttStatus">
+             
         </div>
         <div id="divSave">
             <button type="button" class="btn btn-dark" id="CancelBtn">CANCEL</button>

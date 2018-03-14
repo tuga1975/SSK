@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 class APIUtils
 {
     public static SSK.Utils.Printer Printer { get; set; }
-    public static SSK.Utils.TextToSpeech TextToSpeech { get; set; }
+    public static Trinity.Common.TextToSpeech TextToSpeech { get; set; }
 
     public static SSK.FormQueueNumber FormQueueNumber { get; set; }
 
     public static void Start()
     {
         Printer = new SSK.Utils.Printer();
-        TextToSpeech = new SSK.Utils.TextToSpeech();
+        TextToSpeech = new Trinity.Common.TextToSpeech();
     }
 
 

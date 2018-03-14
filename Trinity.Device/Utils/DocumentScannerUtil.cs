@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -101,7 +103,7 @@ namespace Trinity.Util
 
         public EnumDeviceStatus[] GetDeviceStatus()
         {
-            return new EnumDeviceStatus[] { EnumDeviceStatus.Disconnected };
+            return new EnumDeviceStatus[] { EnumDeviceStatus.Connected };
         }
 
         public bool Connect()
@@ -238,6 +240,12 @@ namespace Trinity.Util
         {
             try
             {
+                // If scanner is not initiated, run Connect() first
+                if (!scanner_connected)
+                {
+                    Connect();
+                }
+
                 if (scanner_connected)
                 {
                     _documentScannerCallback = documentScannerCallback;
@@ -360,24 +368,7 @@ namespace Trinity.Util
             try
             {
                 Debug.Assert(FrontSideDIB != IntPtr.Zero);
-
-                //if (pictureBox1.Image != null)
-                //{
-                //    pictureBox1.Image.Dispose();
-                //    pictureBox1.Image = null;
-                //}
-
-                //if (chkMicr.Checked)
-                //{
-                //    IntPtr micr_line = Marshal.AllocHGlobal(256);
-                //    int size = 256;
-                //    pdiscan_errors error = PdiScanWrap.PdGetTagString(scanning_handle, (int)pdiscan_tags.PDISCAN_TAG_MICR_RESULTS, micr_line, ref size);
-                //    display_pdiscan_error(error);
-                //    string results = "Micr Results: " + Marshal.PtrToStringAnsi(micr_line) + "\n\n";
-                //    debug(results);
-                //    Marshal.FreeHGlobal(micr_line);
-                //}
-
+                
                 string curDir = Directory.GetCurrentDirectory();
 
                 // create directory
@@ -396,6 +387,11 @@ namespace Trinity.Util
                     if (retval == pdiscan_errors.PDISCAN_ERR_NONE)
                     {
                         frontPath = curDir + "\\Temp\\document_front.bmp";
+
+                        // Scale image
+                        Image image = Image.FromFile(frontPath);
+                        Image newImage = ScaleImage(image, 768, 1024);
+                        newImage.Save(frontPath, ImageFormat.Jpeg);
                     }
                     else
                     {
@@ -415,6 +411,8 @@ namespace Trinity.Util
             catch (Exception ex)
             {
                 MessageBox.Show("page_end_callback exception: " + ex.ToString());
+                // callback
+                _documentScannerCallback(string.Empty, ex.Message);
             }
         }
 
@@ -455,5 +453,22 @@ namespace Trinity.Util
             }
         }
         #endregion
+
+        private Image ScaleImage(Image image, int maxWidth, int maxHeight)
+        {
+            var ratioX = (double)maxWidth / image.Width;
+            var ratioY = (double)maxHeight / image.Height;
+            var ratio = Math.Min(ratioX, ratioY);
+
+            var newWidth = (int)(image.Width * ratio);
+            var newHeight = (int)(image.Height * ratio);
+
+            var newImage = new Bitmap(newWidth, newHeight);
+
+            using (var graphics = Graphics.FromImage(newImage))
+                graphics.DrawImage(image, 0, 0, newWidth, newHeight);
+
+            return newImage;
+        }
     }
 }

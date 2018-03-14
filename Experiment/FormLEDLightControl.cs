@@ -32,6 +32,14 @@ namespace Experiment
             GetAvailablePorts();
             cboBaudRate.SelectedIndex = 0;
             cboParity.SelectedIndex = 0;
+
+            LEDStatusLightingUtil ledStatusLightingUtil = LEDStatusLightingUtil.Instance;
+            ledStatusLightingUtil.OnNewEvent += LedStatusLightingUtil_OnNewEvent;
+        }
+
+        private void LedStatusLightingUtil_OnNewEvent(object sender, string e)
+        {
+            txtLogs.Text = e + "\n" + txtLogs.Text;
         }
 
         public void GetAvailablePorts()
@@ -324,7 +332,7 @@ namespace Experiment
             ledStatusLightingUtil.OpenMUBDoor_Async();
         }
 
-        private void SetButtonsStatus(bool enable)
+        private void SetMUBButtonsStatus(bool enable)
         {
             btnCheckIfMUBApplicatorIsReady.Enabled = enable;
             btnCheckIfMUBApplicatorIsStarted.Enabled = enable;
@@ -334,90 +342,223 @@ namespace Experiment
             btnCheckIfMUBDoorIsFullyClosed.Enabled = enable;
         }
 
-        private void btnCheckIfMUBApplicatorIsReady_Click(object sender, EventArgs e)
+        private void SetTTButtonsStatus(bool enable)
         {
-            SetButtonsStatus(false);
-            LEDStatusLightingUtil ledStatusLightingUtil = LEDStatusLightingUtil.Instance;
-            ledStatusLightingUtil.CheckMUBStatus_Async(EnumMUBCommands.CheckIfApplicatorIsReady, CheckIfApplicatorIsReady_Callback);
+            btnCheckIfTTApplicatorIsReady.Enabled = enable;
+            btnCheckIfTTApplicatorIsStarted.Enabled = enable;
+            btnCheckIfTTIsPresent.Enabled = enable;
+            btnCheckIfTTIsRemoved.Enabled = enable;
+            btnCheckIfTTDoorIsFullyOpen.Enabled = enable;
+            btnCheckIfTTDoorIsFullyClosed.Enabled = enable;
         }
 
-        private void CheckIfApplicatorIsReady_Callback(bool result)
+        private void btnCheckIfMUBApplicatorIsReady_Click(object sender, EventArgs e)
         {
-            SetButtonsStatus(true);
+            SetMUBButtonsStatus(false);
+            LEDStatusLightingUtil ledStatusLightingUtil = LEDStatusLightingUtil.Instance;
+            ledStatusLightingUtil.SendCommand_Async(EnumCommands.CheckIfMUBApplicatorIsReady, CheckIfMUBApplicatorIsReady_Callback);
+        }
+
+        private void CheckIfMUBApplicatorIsReady_Callback(bool result)
+        {
+            SetMUBButtonsStatus(true);
             lblCheckIfMUBApplicatorIsReady.Text = result ? "True" : "False";
         }
 
         private void CheckIfMUBApplicatorIsStarted_Callback(bool result)
         {
-            SetButtonsStatus(true);
+            SetMUBButtonsStatus(true);
             lblCheckIfMUBApplicatorIsStarted.Text = result ? "True" : "False";
         }
 
         private void CheckIfMUBIsPresent_Callback(bool result)
         {
-            SetButtonsStatus(true);
+            SetMUBButtonsStatus(true);
 
             lblCheckIfMUBIsPresent.Text = result ? "True" : "False";
         }
 
         private void CheckIfMUBIsRemoved_Callback(bool result)
         {
-            SetButtonsStatus(true);
+            SetMUBButtonsStatus(true);
 
             lblCheckIfMUBIsRemoved.Text = result ? "True" : "False";
         }
 
         private void CheckIfMUBDoorIsFullyClosed_Callback(bool result)
         {
-            SetButtonsStatus(true);
+            SetMUBButtonsStatus(true);
 
             lblCheckIfMUBDoorIsFullyClosed.Text = result ? "True" : "False";
         }
 
         private void CheckIfMUBDoorIsFullyOpen_Callback(bool result)
         {
-            SetButtonsStatus(true);
+            SetMUBButtonsStatus(true);
 
             lblCheckIfMUBDoorIsFullyOpen.Text = result ? "True" : "False";
         }
 
         private void btnCheckIfMUBApplicatorIsStarted_Click(object sender, EventArgs e)
         {
-            SetButtonsStatus(false);
+            SetMUBButtonsStatus(false);
             LEDStatusLightingUtil ledStatusLightingUtil = LEDStatusLightingUtil.Instance;
-            ledStatusLightingUtil.CheckMUBStatus_Async(EnumMUBCommands.CheckIfApplicatorIsStarted, CheckIfMUBApplicatorIsStarted_Callback);
+            ledStatusLightingUtil.SendCommand_Async(EnumCommands.CheckIfMUBApplicatorIsStarted, CheckIfMUBApplicatorIsStarted_Callback);
         }
 
         private void btnCheckIfMUBIsPresent_Click(object sender, EventArgs e)
         {
-            SetButtonsStatus(false);
+            SetMUBButtonsStatus(false);
 
             LEDStatusLightingUtil ledStatusLightingUtil = LEDStatusLightingUtil.Instance;
-            ledStatusLightingUtil.CheckMUBStatus_Async(EnumMUBCommands.CheckIfMUBIsPresent, CheckIfMUBIsPresent_Callback);
+            ledStatusLightingUtil.SendCommand_Async(EnumCommands.CheckIfMUBIsPresent, CheckIfMUBIsPresent_Callback);
         }
 
         private void btnCheckIfMUBIsRemoved_Click(object sender, EventArgs e)
         {
-            SetButtonsStatus(false);
+            SetMUBButtonsStatus(false);
 
             LEDStatusLightingUtil ledStatusLightingUtil = LEDStatusLightingUtil.Instance;
-            ledStatusLightingUtil.CheckMUBStatus_Async(EnumMUBCommands.CheckIfMUBIsRemoved, CheckIfMUBIsRemoved_Callback);
+            ledStatusLightingUtil.SendCommand_Async(EnumCommands.CheckIfMUBIsRemoved, CheckIfMUBIsRemoved_Callback);
         }
 
         private void btnCheckIfMUBDoorIsFullyClosed_Click(object sender, EventArgs e)
         {
-            SetButtonsStatus(false);
+            SetMUBButtonsStatus(false);
 
             LEDStatusLightingUtil ledStatusLightingUtil = LEDStatusLightingUtil.Instance;
-            ledStatusLightingUtil.CheckMUBStatus_Async(EnumMUBCommands.CheckIfMUBDoorIsFullyClosed, CheckIfMUBDoorIsFullyClosed_Callback);
+            ledStatusLightingUtil.SendCommand_Async(EnumCommands.CheckIfMUBDoorIsFullyClosed, CheckIfMUBDoorIsFullyClosed_Callback);
         }
 
         private void btnCheckIfMUBDoorIsFullyOpen_Click(object sender, EventArgs e)
         {
-            SetButtonsStatus(false);
+            SetMUBButtonsStatus(false);
 
             LEDStatusLightingUtil ledStatusLightingUtil = LEDStatusLightingUtil.Instance;
-            ledStatusLightingUtil.CheckMUBStatus_Async(EnumMUBCommands.CheckIfMUBDoorIsFullyOpen, CheckIfMUBDoorIsFullyOpen_Callback);
+            ledStatusLightingUtil.SendCommand_Async(EnumCommands.CheckIfMUBDoorIsFullyOpen, CheckIfMUBDoorIsFullyOpen_Callback);
+        }
+
+        //////////////
+        private void CheckIfTTApplicatorIsReady_Callback(bool result)
+        {
+            SetTTButtonsStatus(true);
+            lblCheckIfTTApplicatorIsReady.Text = result ? "True" : "False";
+        }
+
+        private void CheckIfTTApplicatorIsStarted_Callback(bool result)
+        {
+            SetTTButtonsStatus(true);
+            lblCheckIfTTApplicatorIsStarted.Text = result ? "True" : "False";
+        }
+
+        private void CheckIfTTIsPresent_Callback(bool result)
+        {
+            SetTTButtonsStatus(true);
+
+            lblCheckIfTTIsPresent.Text = result ? "True" : "False";
+        }
+
+        private void CheckIfTTIsRemoved_Callback(bool result)
+        {
+            SetTTButtonsStatus(true);
+
+            lblCheckIfTTIsRemoved.Text = result ? "True" : "False";
+        }
+
+        private void CheckIfTTDoorIsFullyClosed_Callback(bool result)
+        {
+            SetTTButtonsStatus(true);
+
+            lblCheckIfTTDoorIsFullyClosed.Text = result ? "True" : "False";
+        }
+
+        private void CheckIfTTDoorIsFullyOpen_Callback(bool result)
+        {
+            SetTTButtonsStatus(true);
+
+            lblCheckIfTTDoorIsFullyOpen.Text = result ? "True" : "False";
+        }
+        //
+        private void btnCheckIfTTApplicatorIsReady_Click(object sender, EventArgs e)
+        {
+            SetTTButtonsStatus(false);
+            LEDStatusLightingUtil ledStatusLightingUtil = LEDStatusLightingUtil.Instance;
+            ledStatusLightingUtil.SendCommand_Async(EnumCommands.CheckIfTTApplicatorIsReady, CheckIfTTApplicatorIsReady_Callback);
+        }
+
+        private void btnCheckIfTTApplicatorIsStarted_Click(object sender, EventArgs e)
+        {
+            SetTTButtonsStatus(false);
+            LEDStatusLightingUtil ledStatusLightingUtil = LEDStatusLightingUtil.Instance;
+            ledStatusLightingUtil.SendCommand_Async(EnumCommands.CheckIfTTApplicatorIsStarted, CheckIfTTApplicatorIsStarted_Callback);
+        }
+
+        private void btnCheckIfTTIsPresent_Click(object sender, EventArgs e)
+        {
+            SetTTButtonsStatus(false);
+
+            LEDStatusLightingUtil ledStatusLightingUtil = LEDStatusLightingUtil.Instance;
+            ledStatusLightingUtil.SendCommand_Async(EnumCommands.CheckIfTTIsPresent, CheckIfTTIsPresent_Callback);
+        }
+
+        private void btnCheckIfTTIsRemoved_Click(object sender, EventArgs e)
+        {
+            SetTTButtonsStatus(false);
+
+            LEDStatusLightingUtil ledStatusLightingUtil = LEDStatusLightingUtil.Instance;
+            ledStatusLightingUtil.SendCommand_Async(EnumCommands.CheckIfTTIsRemoved, CheckIfTTIsRemoved_Callback);
+        }
+
+        private void btnCheckIfTTDoorIsFullyClosed_Click(object sender, EventArgs e)
+        {
+            SetTTButtonsStatus(false);
+
+            LEDStatusLightingUtil ledStatusLightingUtil = LEDStatusLightingUtil.Instance;
+            ledStatusLightingUtil.SendCommand_Async(EnumCommands.CheckIfTTDoorIsFullyClosed, CheckIfTTDoorIsFullyClosed_Callback);
+        }
+
+        private void btnCheckIfTTDoorIsFullyOpen_Click(object sender, EventArgs e)
+        {
+            SetTTButtonsStatus(false);
+
+            LEDStatusLightingUtil ledStatusLightingUtil = LEDStatusLightingUtil.Instance;
+            ledStatusLightingUtil.SendCommand_Async(EnumCommands.CheckIfTTDoorIsFullyOpen, CheckIfTTDoorIsFullyOpen_Callback);
+        }
+
+        private void btnInitializeTTApplicator_Click(object sender, EventArgs e)
+        {
+            LEDStatusLightingUtil ledStatusLightingUtil = LEDStatusLightingUtil.Instance;
+            ledStatusLightingUtil.InitializeTTApplicator_Async();
+        }
+
+        private void btnStartTTApplicator_Click(object sender, EventArgs e)
+        {
+            LEDStatusLightingUtil ledStatusLightingUtil = LEDStatusLightingUtil.Instance;
+            ledStatusLightingUtil.StartTTApplicator_Async();
+        }
+
+        private void btnCloseTTDoor_Click(object sender, EventArgs e)
+        {
+            LEDStatusLightingUtil ledStatusLightingUtil = LEDStatusLightingUtil.Instance;
+            ledStatusLightingUtil.CloseTTDoor_Async();
+        }
+
+        private void btnOpenTTDoor_Click(object sender, EventArgs e)
+        {
+            LEDStatusLightingUtil ledStatusLightingUtil = LEDStatusLightingUtil.Instance;
+            ledStatusLightingUtil.OpenTTDoor_Async();
+        }
+
+        private void btnTTRobotUp_Click(object sender, EventArgs e)
+        {
+            LEDStatusLightingUtil ledStatusLightingUtil = LEDStatusLightingUtil.Instance;
+            ledStatusLightingUtil.MoveUpTTRobot_Async();
+        }
+
+        private void btnTTRobotDown_Click(object sender, EventArgs e)
+        {
+            LEDStatusLightingUtil ledStatusLightingUtil = LEDStatusLightingUtil.Instance;
+            ledStatusLightingUtil.MoveDownTTRobot_Async();
         }
     }
 }

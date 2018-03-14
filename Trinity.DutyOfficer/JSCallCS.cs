@@ -117,7 +117,7 @@ namespace DutyOfficer
 
             // Update next station is ESP, message of ESP to 'Waiting for ESP'
             var dalQueue = new DAL_QueueNumber();
-            dalQueue.UpdateQueueStatusByUserId(UserId, EnumStation.HSA, EnumQueueStatuses.Finished, EnumStation.ESP, EnumQueueStatuses.Waiting, "Waiting for ESP", EnumQueueOutcomeText.Processing);
+            dalQueue.UpdateQueueStatusByUserId(UserId, EnumStation.HSA, EnumQueueStatuses.Finished, EnumStation.ESP, EnumQueueStatuses.Processing, "Waiting for ESP", EnumQueueOutcomeText.Processing);
 
             // Re-load queue
             this._web.InvokeScript("reloadDataQueues");
@@ -268,7 +268,7 @@ namespace DutyOfficer
                     // update outcome to 'Unconditional Release'
                     //dalQueue.UpdateQueueOutcomeByQueueId(new Guid(queueId), EnumQueueOutcomeText.UnconditionalRelease);
 
-                    dalQueue.UpdateQueueStatusByUserId(queueDetail.UserId, EnumStation.ESP, EnumQueueStatuses.NotRequired, EnumStation.ESP, EnumQueueStatuses.NotRequired, "", EnumQueueOutcomeText.UnconditionalRelease);
+                    dalQueue.UpdateQueueStatusByUserId(queueDetail.UserId, EnumStation.ESP, EnumQueueStatuses.NotRequired, EnumStation.DUTYOFFICER, EnumQueueStatuses.NotRequired, "", EnumQueueOutcomeText.UnconditionalRelease);
 
                     // Re-load queue
                     this._web.InvokeScript("reloadDataQueues");
@@ -285,7 +285,7 @@ namespace DutyOfficer
             DAL_QueueNumber dalQueue = new DAL_QueueNumber();
             //dalQueue.UpdateQueueOutcomeByQueueId(new Guid(queueID), outcome);
             var queueDetail = dalQueue.GetQueueInfoByQueueID(new Guid(queueID));
-            dalQueue.UpdateQueueStatusByUserId(queueDetail.UserId, EnumStation.ESP, EnumQueueStatuses.Finished, EnumStation.ESP, EnumQueueStatuses.Finished, "", outcome);
+            dalQueue.UpdateQueueStatusByUserId(queueDetail.UserId, EnumStation.ESP, EnumQueueStatuses.Finished, EnumStation.DUTYOFFICER, EnumQueueStatuses.Finished, "", outcome);
 
             // Re-load queue
             this._web.InvokeScript("reloadDataQueues");
