@@ -126,7 +126,7 @@ namespace Trinity.Device.Util
                                        ZMotifGraphics.RibbonTypeEnum.Color);
 
                         img = g.ImageFileToByteArray(frontImagePath);
-                        g.DrawImage(ref img, ZMotifGraphics.ImagePositionEnum.Centered, 1000, 700, 0);
+                        g.DrawImage(ref img, ZMotifGraphics.ImagePositionEnum.Centered, 1024, 648, 0);
 
                         int dataLen = 0;
                         bmpFront = g.CreateBitmap(out dataLen);
@@ -139,7 +139,7 @@ namespace Trinity.Device.Util
                                        ZMotifGraphics.RibbonTypeEnum.MonoK);
 
                         img = g.ImageFileToByteArray(backImagePath);
-                        g.DrawImage(ref img, ZMotifGraphics.ImagePositionEnum.Centered, 0, 0, 0);
+                        g.DrawImage(ref img, ZMotifGraphics.ImagePositionEnum.Centered, 1024, 648, 0);
 
                         bmpBack = g.CreateBitmap(out dataLen);
                         g.ClearGraphics();
@@ -633,8 +633,7 @@ namespace Trinity.Device.Util
 
                 //if (js.printingStatus.Contains("error") || js.printingStatus == "at_station" ||
                 //    js.contactStatus == "at_station" || js.contactlessStatus == "at_station")
-                if (js.printingStatus.Contains("error") || js.printingStatus == "at_station" ||
-                    js.contactStatus == "at_station" || js.contactlessStatus == "at_station")
+                if (js.contactlessStatus == "at_station")
                 {
                     timedOut = false;
                     break;

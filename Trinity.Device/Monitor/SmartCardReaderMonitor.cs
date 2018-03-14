@@ -48,10 +48,9 @@ namespace Trinity.Device
                 // report
                 ApplicationStatusManager.Instance.ReportDeviceStatus(EnumDeviceId.SmartCardReader, statuses);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                Debug.WriteLine(ex.ToString());
             }
         }
 
