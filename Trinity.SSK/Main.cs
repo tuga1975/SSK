@@ -191,11 +191,11 @@ namespace SSK
             LayerWeb.InvokeScript("createEvent", JsonConvert.SerializeObject(_jsCallCS.GetType().GetMethods().Where(d => d.IsPublic && !d.IsVirtual && !d.IsSecuritySafeCritical).ToArray().Select(d => d.Name)));
             if (_isFirstTimeLoaded)
             {
-                // Start page
-                NavigateTo(NavigatorEnums.Authentication_SmartCard);
+                //// Start page
+                 NavigateTo(NavigatorEnums.Authentication_SmartCard);
 
                 //string startFrom = "Supervisee";
-                //string superviseeId = "06a91b1b-99c3-428d-8a55-83892c2adf4c";
+                //string superviseeId = "37884D86-6B68-4579-8441-70F064ACA6A1";
                 //string dutyOfficerId = "bd6089d4-ab74-4cbc-9c8e-6867afe37ce8";
                 //Session session = Session.Instance;
 
