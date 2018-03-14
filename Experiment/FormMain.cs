@@ -316,5 +316,12 @@ namespace Experiment
             TextToSpeech textToSpeech = new TextToSpeech();
             textToSpeech.Speak("US airline industry primed for springtime boost: trade group");
         }
+
+        private void button9_Click(object sender, EventArgs e)
+        {
+            Guid IDDocuemnt = new DAL_UploadedDocuments().Insert(Lib.ReadAllBytes(@"E:\GitHub\2018\Trinity\Trinity.SSK\bin\Debug\Temp\document_front.bmp"), "9043d88e-94d1-4c01-982a-02d41965a621");
+            Alert(IDDocuemnt.ToString());
+            //_SaveReasonForQueue(dataAbsenceReporting, IDDocuemnt);
+        }
     }
 }

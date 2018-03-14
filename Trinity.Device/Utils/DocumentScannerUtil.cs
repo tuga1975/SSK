@@ -12,6 +12,7 @@ namespace Trinity.Util
     public class DocumentScannerUtil
     {
         private bool scanner_connected = false;
+        private bool enablefeeder = false;
         private IntPtr scanning_handle;
         private PdiScanWrap.PageEndCallback page_end_callback_object = null;
         private PdiScanWrap.PageEjectCallback page_eject_callback_object = null;
@@ -19,6 +20,14 @@ namespace Trinity.Util
         private PdiScanWrap.ImprinterStringCallback imprinter_callback_object = null;
 
         private Action<string, string> _documentScannerCallback;
+        
+        public bool EnableFeeder
+        {
+            get
+            {
+                return enablefeeder;
+            }
+        }
 
         #region Singleton Implementation
         // The variable is declared to be volatile to ensure that assignment to the instance variable completes before the instance variable can be accessed
@@ -79,8 +88,6 @@ namespace Trinity.Util
             GC.KeepAlive(scanning_error_callback_object);
             GC.KeepAlive(imprinter_callback_object);
             GC.KeepAlive(scanning_handle);
-
-            //update_enabled_states();
         }
 
         public static DocumentScannerUtil Instance
@@ -110,19 +117,23 @@ namespace Trinity.Util
         {
             try
             {
+                //MessageBox.Show("Connect");
                 pdiscan_errors pdiscan_error;
 
                 pdiscan_error = PdiScanWrap.PdConnectToScanner(scanning_handle, "", 1);
                 if (pdiscan_error != pdiscan_errors.PDISCAN_ERR_NONE)
                 {
+                    MessageBox.Show("Connect PDISCAN_ERR_NONE");
                     if (pdiscan_error == pdiscan_errors.PDISCAN_ERR_SCANNER_NOT_FOUND)
                     {
                         MessageBox.Show("The Document scanner (DPI) is not connected to the computer.");
+                        return false;
                     }
                     else
+                    {
                         display_pdiscan_error(pdiscan_error);
-
-                    return false;
+                        return false;
+                    }
                 }
 
                 int default_color;
@@ -130,6 +141,7 @@ namespace Trinity.Util
                 if (pdiscan_error != pdiscan_errors.PDISCAN_ERR_NONE)
                 {
                     display_pdiscan_error(pdiscan_error);
+                    MessageBox.Show("Connect PDISCAN_ERR_NONE 1");
                     return false;
                 }
                 //if (default_color == (int)pd_color_depths.PD_COLOR_DEPTH_BITONAL)
@@ -175,6 +187,7 @@ namespace Trinity.Util
                 if (pdiscan_error != pdiscan_errors.PDISCAN_ERR_NONE)
                 {
                     display_pdiscan_error(pdiscan_error);
+                    MessageBox.Show("Connect PDISCAN_ERR_NONE 2");
                     return false;
                 }
                 //if (default_duplex_on == 1)
@@ -203,6 +216,7 @@ namespace Trinity.Util
                 //cboBrightness.SelectedIndex = selected;
 
                 scanner_connected = true;
+                //MessageBox.Show("Connect OK");
                 return true;
             }
             catch (Exception ex)
@@ -243,19 +257,27 @@ namespace Trinity.Util
                 // If scanner is not initiated, run Connect() first
                 if (!scanner_connected)
                 {
-                    Connect();
+                    if(!Connect())
+                    {
+                        MessageBox.Show("StartScanning.PdEnableFeeder failed");
+                        return false;
+                    }
                 }
 
                 if (scanner_connected)
                 {
-                    _documentScannerCallback = documentScannerCallback;
+                    //MessageBox.Show("StartScanning");
+                    //_documentScannerCallback = documentScannerCallback;
                     pdiscan_errors pdiscan_error = PdiScanWrap.PdEnableFeeder(scanning_handle);
                     if (pdiscan_error != pdiscan_errors.PDISCAN_ERR_NONE)
                     {
                         display_pdiscan_error(pdiscan_error);
+                        //MessageBox.Show("StartScanning.PdEnableFeeder failed");
                         return false;
                     }
 
+                    //MessageBox.Show("StartScanning.PdEnableFeeder OK");
+                    enablefeeder = true;
                     return true;
                 }
 
@@ -276,11 +298,13 @@ namespace Trinity.Util
                 pdiscan_errors pdiscan_error = PdiScanWrap.PdDisableFeeder(scanning_handle);
                 if (pdiscan_error != pdiscan_errors.PDISCAN_ERR_NONE)
                 {
+                    //MessageBox.Show("StopScanning failed");
                     display_pdiscan_error(pdiscan_error);
                     return false;
                 }
 
-                scanner_connected = false;
+                enablefeeder = false;
+                //MessageBox.Show("StopScanning OK");
                 return false;
             }
             catch (Exception ex)
@@ -391,7 +415,9 @@ namespace Trinity.Util
                         // Scale image
                         Image image = Image.FromFile(frontPath);
                         Image newImage = Trinity.Common.CommonUtil.ScaleImage(image, 768, 1024);
+                        image.Dispose();
                         newImage.Save(frontPath, ImageFormat.Jpeg);
+                        newImage.Dispose();
                     }
                     else
                     {
@@ -421,7 +447,7 @@ namespace Trinity.Util
         {
             // Set EjectFront as default
             EjectDirection = pd_eject_directions.PD_EJECT_DIRECTION_FRONT;
-
+            //MessageBox.Show("eject");
             //if (radioEjectFront.Checked)
             //    EjectDirection = pd_eject_directions.PD_EJECT_DIRECTION_FRONT;
             //else if (radioEjectBack.Checked)
@@ -439,6 +465,7 @@ namespace Trinity.Util
         {
             try
             {
+                MessageBox.Show("imprinter_string_callback");
                 IntPtr impstr = Marshal.StringToHGlobalAnsi("imprinttest we do\n word wrap");
                 PD_IMPRINT_SETUP setup = new PD_IMPRINT_SETUP();
                 setup.eBase = pd_imprinter_horizontal_offset_bases.PD_IMPRINTER_HORIZONTAL_OFFSET_BASE_LEADING_EDGE;
