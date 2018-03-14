@@ -10,12 +10,22 @@
             padding: 5px 0;
         }
     .link-grey {
-        color: #dee2e6;
+        color: #808080;
     }
 
-        .link-grey:hover {
+        /*.link-grey:hover {
             color: #1CACF6;
-        }
+        }*/
+    .link-blue {
+        color: #0f71f8;
+    }
+    .max-height-200px {
+        height: 200px;
+        width: auto;
+        max-width: auto;
+        overflow: hidden;
+    } 
+
 </style>
 <div class="tab-content" style="margin-top:50px;">
     <div class="tab-pane active" id="superviseeDetails" role="tabpanel">
@@ -34,16 +44,16 @@
                             <div class="row">
                                 <div class="offset-sm-2 col-sm-8">
                                     <img src="../images/leftthumb.png" alt="avatar"
-                                         class="d-block mx-auto img-fluid"  capturefingerprint-img="0" soure="" data-fingerprint="" style="max-width:70%" />
+                                         class="d-block mx-auto img-fluid max-height-200px"  capturefingerprint-img="0" soure="" data-fingerprint=""  />
                                     <br />
                                     <div class="row">
                                         <div class="col-sm-6">
-                                            <a href="#" class="link-grey" onclick="disBtnFingerprint(true); api.server.CaptureFingerprint(0);" capturefingerprint-btn="0">
+                                            <a href="#" class="link-blue" onclick="disBtnFingerprint(true); api.server.CaptureFingerprint(0);" capturefingerprint-btn="0">
                                                 Scan
                                             </a>
                                         </div>
                                         <div class="col-sm-6">
-                                            <a href="#" class="link-grey pull-right" onclick="clearFingerprint(0)">
+                                            <a href="#" class="link-grey pull-right" onclick="clearFingerprint(0)" clearBtn>
                                                 Clear
                                             </a>
                                         </div>
@@ -61,16 +71,16 @@
                             <div class="row">
                                 <div class="offset-sm-2 col-sm-8">
                                     <img src="../images/rightthumb.png" alt="avatar"
-                                         class="d-block mx-auto img-fluid"  capturefingerprint-img="1" soure="" data-fingerprint="" style="max-width:70%"/>
+                                         class="d-block mx-auto img-fluid max-height-200px"  capturefingerprint-img="1" soure="" data-fingerprint="" />
                                     <br />
                                     <div class="row">
                                         <div class="col-sm-6">
-                                            <a href="#" class="link-grey" onclick="disBtnFingerprint(true); api.server.CaptureFingerprint(1);" capturefingerprint-btn="1">
+                                            <a href="#" class="link-blue" onclick="disBtnFingerprint(true); api.server.CaptureFingerprint(1);" capturefingerprint-btn="1">
                                                 Scan
                                             </a>
                                         </div>
                                         <div class="col-sm-6">
-                                            <a href="#" class="link-grey pull-right" onclick="clearFingerprint(1)">
+                                            <a href="#" class="link-grey pull-right" onclick="clearFingerprint(1)" clearBtn>
                                                 Clear
                                             </a>
                                         </div>
@@ -154,9 +164,15 @@
         } else {
             $('[capturefingerprint-btn]').removeAttr('disabled');
         }
+        $('[capturefingerprint-btn]').removeClass('link-blue')
+        $('[capturefingerprint-btn]').addClass('link-grey');
+        $('[clearBtn]').removeClass('link-grey');
+        $('[clearBtn]').addClass('link-blue');
     }
     function clearFingerprint(LeftOrRight) {
         $('[capturefingerprint-img="' + LeftOrRight + '"]').attr('src', modelFingerprinter[LeftOrRight] == null ? '../images/fingerprint.png' : 'data:image/png;base64,' + modelFingerprinter[LeftOrRight]).attr('soure', '').attr('data-fingerprint', '');
+        $('[capturefingerprint-btn]="' + LeftOrRight + '"]').removeClass('link-grey')
+        $('[capturefingerprint-btn]="' + LeftOrRight + '"]').addClass('link-blue');
     }
     function captureFingerprintMessage(LeftOrRight, Message, color) {
         $('[capturefingerprint-message="' + LeftOrRight + '"]').text(Message).css('color', color);
@@ -170,11 +186,17 @@
     function SubmitUpdateFingerprints() {
         var left = $('[capturefingerprint-img="0"]').attr('data-fingerprint');
         var right = $('[capturefingerprint-img="1"]').attr('data-fingerprint');
-        if (left.length > 0 || right.length > 0) {
-            api.server.SubmitUpdateFingerprints(left, $('[capturefingerprint-img="0"]').attr('soure'), right, $('[capturefingerprint-img="1"]').attr('soure'));
-        } else {
-            alert('No data updated');
+        if ($('[capturefingerprint-img="0"]').attr('src').indexOf('thumb') > 0 || $('[capturefingerprint-img="1"]').attr('src').indexOf('thumb') > 0) {
+            alert('You need to provide 2 fingerprint.');
         }
+        else {
+            if (left.length > 0 || right.length > 0) {
+                api.server.SubmitUpdateFingerprints(left, $('[capturefingerprint-img="0"]').attr('soure'), right, $('[capturefingerprint-img="1"]').attr('soure'));
+            } else {
+                alert('No data updated');
+            }
+        }
+       
     }
     function moreThan3Fingerprint() {
         alert('Supervisee has failed more than 3 times in finger prints!');

@@ -1,5 +1,4 @@
-﻿
-<!--<div style="display:block; padding:10px;">
+﻿<!--<div style="display:block; padding:10px;">
     <span style=" font-size:22px; float:left; text-align:left;"><b>Statistics</b></span>
     <br/>
     <div class="form-inline" style="right:10px; float:right; padding-bottom:10px;">
@@ -42,7 +41,7 @@
                 </div>
             </div>
 
-       </div>
+        </div>
         <div class="form-inline formEntries float-right">
             <div class="entries">Display </div>
             <select class="form-control" id="pageSize">
@@ -61,35 +60,47 @@
     $("#menu .menu-item").removeClass("active");
     $("#menu [item-menu].active").parent().addClass("active");
     var pageSize = $('#pageSize');
-        if (pageSize)
-            pageSize = 10;
+    if (pageSize)
+        pageSize = 10;
 
-        $(function () {
-            $('#datetimepicker').datepicker({ format: 'dd/mm/yyyy' });
-        });
+    $(function () {
+        $('#datetimepicker').datepicker({ format: 'dd/mm/yyyy' });
+    });
 
-        var today = new Date();
-        var dd = today.getDate();
-        var mm = today.getMonth() + 1; //January is 0!
-        var yyyy = today.getFullYear();
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth() + 1; //January is 0!
+    var yyyy = today.getFullYear();
 
-        if (dd < 10) {
-            dd = '0' + dd
-        }
+    if (dd < 10) {
+        dd = '0' + dd
+    }
 
-        if (mm < 10) {
-            mm = '0' + mm
-        }
+    if (mm < 10) {
+        mm = '0' + mm
+    }
 
-        today = dd + '/' + mm + '/' + yyyy;
-        $('#dateSearch').val(today);
+    today = dd + '/' + mm + '/' + yyyy;
+    $('#dateSearch').val(today);
 
-        var searchDateStatistic = $('#dateSearch').val();
+    var searchDateStatistic = $('#dateSearch').val();
 
-        api.server.GetStatistics(function (data) {
-            if (data) {
-                data.forEach(function (element, index) {
-                    dataSource.push({
+    api.server.GetStatistics(function (data) {
+        if (data) {
+            data.forEach(function (element, index) {
+                dataSource.push({
+                    StartTime: convert24hrTo12hr(element.StartTime),
+                    EndTime: convert24hrTo12hr(element.EndTime),
+                    Max: element.Max,
+                    Booked: element.Booked,
+                    Reported: element.Reported,
+                    Absent: element.Absent,
+                    Available: element.Available,
+                    Date: formatDate(element.Date)
+                });
+
+                if (Date.parse(formatDate(element.Date)) == Date.parse(today)) {
+                    searchSource.push({
                         StartTime: convert24hrTo12hr(element.StartTime),
                         EndTime: convert24hrTo12hr(element.EndTime),
                         Max: element.Max,
@@ -99,80 +110,74 @@
                         Available: element.Available,
                         Date: formatDate(element.Date)
                     });
-
-                    if (Date.parse(formatDate(element.Date)) == Date.parse(today)) {
-                        searchSource.push({
-                            StartTime: convert24hrTo12hr(element.StartTime),
-                            EndTime: convert24hrTo12hr(element.EndTime),
-                            Max: element.Max,
-                            Booked: element.Booked,
-                            Reported: element.Reported,
-                            Absent: element.Absent,
-                            Available: element.Available,
-                            Date: formatDate(element.Date)
-                        });
-                    }
-                });
-            }
-
-            $('#table').bootstrapTable({
-                pagination: true,
-                pageSize: 10,
-                pageList: [10, 25, 50, 100],
-                //search:true,
-                columns: [{
-                    field: 'StartTime',
-                    title: 'Start Time',
-                    sortable: true,
-                    width: '10%',
-                    align: 'center'
-                }, {
-                    field: 'EndTime',
-                    title: 'End Time',
-                    sortable: true,
-                    width: '10%',
-                    align: 'center'
-                }, {
-                    field: 'Max',
-                    title: 'Max',
-                    width: '10%',
-                    align: 'center'
-                }, {
-                    field: 'Booked',
-                    title: 'Booked',
-                    width: '10%',
-                    align: 'center'
-                }, {
-                    field: 'Reported',
-                    title: 'Reported',
-                    width: '10%',
-                    align: 'center'
-                }, {
-                    field: 'Absent',
-                    title: 'Absent',
-                    width: '10%',
-                    align: 'center'
-                }, {
-                    field: 'Available',
-                    title: 'Avaliable',
-                    width: '10%',
-                    align: 'center'
-                }, {
-                    field: '',
-                    title: 'Details',
-                    width: '30%',
-                    align: 'center',
-                    formatter: function (value, row, index, field) {
-                        return '<a style="text-decoration: underline;" href="javascript:;" onclick = "loadAppointmentPage(\'' + searchDateStatistic + '\', \'' + row.StartTime + '\', \'' + row.EndTime + '\');" >View Time Slot Information</a>';
-                    }
-                }],
-                data: searchSource
+                }
             });
+        }
+
+        $('#table').bootstrapTable({
+            pagination: true,
+            pageSize: 10,
+            pageList: [10, 25, 50, 100],
+            //search:true,
+            columns: [{
+                field: 'StartTime',
+                title: 'Start Time',
+                sortable: true,
+                width: '10%',
+                align: 'center'
+            }, {
+                field: 'EndTime',
+                title: 'End Time',
+                sortable: true,
+                width: '10%',
+                align: 'center'
+            }, {
+                field: 'Max',
+                title: 'Max',
+                width: '10%',
+                align: 'center'
+            }, {
+                field: 'Booked',
+                title: 'Booked',
+                width: '10%',
+                align: 'center'
+            }, {
+                field: 'Reported',
+                title: 'Reported',
+                width: '10%',
+                align: 'center'
+            }, {
+                field: 'Absent',
+                title: 'Absent',
+                width: '10%',
+                align: 'center'
+            }, {
+                field: 'Available',
+                title: 'Avaliable',
+                width: '10%',
+                align: 'center'
+            }, {
+                field: '',
+                title: 'Details',
+                width: '30%',
+                align: 'center',
+                formatter: function (value, row, index, field) {
+                    return '<a style="text-decoration: underline;" href="javascript:;" onclick = "loadAppointmentPage(\'' + searchDateStatistic + '\', \'' + row.StartTime + '\', \'' + row.EndTime + '\');" >View Time Slot Information</a>';
+                }
+            }],
+            data: searchSource
         });
+    });
+
+    function reloadDataStatistics() {
+        api.server.GetStatistics(function (data) {
+            $('#table').bootstrapTable('load', data);
+        });
+    };
 
     var dataSource = [];
     var searchSource = [];
-    
+
     $('#pageSize').change(function () {
         pageSize = $("#pageSize option:selected").text();
         $('#table').bootstrapTable('refreshOptions', {

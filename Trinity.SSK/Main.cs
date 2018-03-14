@@ -15,7 +15,6 @@ using Trinity.Device;
 using Trinity.Device.Authentication;
 using Trinity.Device.Util;
 using Trinity.SignalR;
-using Trinity.Util;
 
 namespace SSK
 {
@@ -38,6 +37,7 @@ namespace SSK
             APIUtils.Start();
             //Notification
             Trinity.SignalR.Client.Instance.OnQueueCompleted += OnQueueCompleted_Handler;
+            Trinity.SignalR.Client.Instance.OnDOUnblockSupervisee += DOUnblockSupervisee_Handler;
             // setup variables
             _smartCardFailed = 0;
             _fingerprintFailed = 0;
@@ -45,7 +45,7 @@ namespace SSK
 
             #region Initialize and register events
             // _jsCallCS
-            _jsCallCS = new JSCallCS(this.LayerWeb);
+            _jsCallCS = new JSCallCS(this.LayerWeb,this);
             _jsCallCS.OnNRICFailed += JSCallCS_OnNRICFailed;
             _jsCallCS.OnShowMessage += JSCallCS_ShowMessage;
             _jsCallCS.OnLogOutCompleted += JSCallCS_OnLogOutCompleted;
@@ -89,6 +89,10 @@ namespace SSK
 
         }
 
+        private void DOUnblockSupervisee_Handler(object sender, NotificationInfo e)
+        {
+            APIUtils.FormQueueNumber.RefreshQueueNumbers();
+        }
         private void OnQueueCompleted_Handler(object sender, EventInfo e)
         {
             APIUtils.FormQueueNumber.RefreshQueueNumbers();
@@ -193,45 +197,46 @@ namespace SSK
             if (_isFirstTimeLoaded)
             {
                 // Start page
-                //NavigateTo(NavigatorEnums.Authentication_SmartCard);
+                NavigateTo(NavigatorEnums.Authentication_SmartCard);
 
-                string startFrom = "Supervisee";
-                string superviseeId = "9043d88e-94d1-4c01-982a-02d41965a621";
-                string dutyOfficerId = "bd6089d4-ab74-4cbc-9c8e-6867afe37ce8";
-                Session session = Session.Instance;
+                //string startFrom = "Authentication_NRIC";
+                //string superviseeId = "06a91b1b-99c3-428d-8a55-83892c2adf4c";
+                //string dutyOfficerId = "9903e059-7209-45b6-a889-6c4cfdfaeea3";
+                //Session session = Session.Instance;
 
-                if (startFrom == "Supervisee")
-                {
-                    Trinity.BE.User user = new DAL_User().GetUserByUserId(superviseeId).Data;
-                    session[CommonConstants.USER_LOGIN] = user;
-                    session.IsSmartCardAuthenticated = true;
-                    session.IsFingerprintAuthenticated = true;
-                    NavigateTo(NavigatorEnums.Supervisee);
-                }
-                else if (startFrom == "Authentication_Fingerprint")
-                {
-                    Trinity.BE.User user = new DAL_User().GetUserByUserId(superviseeId).Data;
-                    session[CommonConstants.USER_LOGIN] = user;
-                    session.IsSmartCardAuthenticated = true;
-                    session.IsFingerprintAuthenticated = true;
-                    NavigateTo(NavigatorEnums.Authentication_Fingerprint);
-                }
-                else if (startFrom == "Authentication_NRIC")
-                {
-                    Trinity.BE.User user = new DAL_User().GetUserByUserId(dutyOfficerId).Data;
-                    session[CommonConstants.USER_LOGIN] = user;
-                    session.IsSmartCardAuthenticated = true;
-                    session.IsFingerprintAuthenticated = true;
-                    NavigateTo(NavigatorEnums.Authentication_NRIC);
-                }
-                else
-                {
-                    NavigateTo(NavigatorEnums.Authentication_SmartCard);
-                }
+                //if (startFrom == "Supervisee")
+                //{
+                //    Trinity.BE.User user = new DAL_User().GetUserByUserId(superviseeId).Data;
+                //    session[CommonConstants.USER_LOGIN] = user;
+                //    session.IsSmartCardAuthenticated = true;
+                //    session.IsFingerprintAuthenticated = true;
+                //    NavigateTo(NavigatorEnums.Supervisee);
+                //}
+                //else if (startFrom == "Authentication_Fingerprint")
+                //{
+                //    Trinity.BE.User user = new DAL_User().GetUserByUserId(superviseeId).Data;
+                //    session[CommonConstants.USER_LOGIN] = user;
+                //    session.IsSmartCardAuthenticated = true;
+                //    session.IsFingerprintAuthenticated = true;
+                //    NavigateTo(NavigatorEnums.Authentication_Fingerprint);
+                //}
+                //else if (startFrom == "Authentication_NRIC")
+                //{
+                //    Trinity.BE.User user = new DAL_User().GetUserByUserId(dutyOfficerId).Data;
+                //    session[CommonConstants.USER_LOGIN] = user;
+                //    session.IsSmartCardAuthenticated = true;
+                //    session.IsFingerprintAuthenticated = true;
+                //    NavigateTo(NavigatorEnums.Authentication_NRIC);
+                //}
+                //else
+                //{
+                //    NavigateTo(NavigatorEnums.Authentication_SmartCard);
+                //}
 
                 _isFirstTimeLoaded = false;
 
-                Thread.Sleep(2);
+
+                Thread.Sleep(5000);
                 // LayerWeb initiation is compeleted, update application status
                 ApplicationStatusManager.Instance.LayerWebInitilizationCompleted();
             }
@@ -240,8 +245,17 @@ namespace SSK
         private void NRIC_OnNRICSucceeded()
         {
             // navigate to Supervisee page
-            Trinity.SignalR.Client.Instance.UserLoggedIn(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId);
-            NavigateTo(NavigatorEnums.Supervisee);
+            Trinity.BE.User currentUser = (Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN];
+            Trinity.BE.User supervisee = currentUser;
+            if (currentUser.Role == EnumUserRoles.DutyOfficer)
+            {
+                supervisee = (Trinity.BE.User)Session.Instance[CommonConstants.SUPERVISEE];
+            }
+            if (supervisee != null)
+            {
+                Trinity.SignalR.Client.Instance.UserLoggedIn(supervisee.UserId);
+                NavigateTo(NavigatorEnums.Supervisee);
+            }
         }
 
 
@@ -453,12 +467,6 @@ namespace SSK
                 //LEDStatusLightingUtil.Instance.TurnOffAllLEDs();
                 LEDStatusLightingUtil.Instance.ClosePort();
             }
-
-            if (DocumentScannerUtil.Instance.EnableFeeder)
-            {
-                //DocumentScannerUtil.Instance.StopScanning();
-            }
-
             Application.ExitThread();
             APIUtils.Dispose();
         }
@@ -479,7 +487,7 @@ namespace SSK
             MessageBox.Show(e.Message, e.Caption, e.Button, e.Icon);
         }
 
-        private void NavigateTo(NavigatorEnums navigatorEnum)
+        public void NavigateTo(NavigatorEnums navigatorEnum)
         {
             // navigate
             if (navigatorEnum == NavigatorEnums.Authentication_SmartCard)

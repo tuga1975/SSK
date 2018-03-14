@@ -30,7 +30,7 @@
     </div>
 </div>
 <div id="footer" style="position:absolute;bottom:-5px;left:0px;width:calc(100%);height:50px;text-align:right;">
-    <input type="button" value="CANCEL" style="background-color:#FFF;color:#1cacf6;border:none;border-radius:5px;padding:8px 20px;border:1px solid #DDD;margin-right:20px;font-weight:bold;" onclick="api.server.LoadPage('Supervisee.html');" />
+    <input type="button" value="CANCEL" style="background-color:#FFF;color:#1cacf6;border:none;border-radius:5px;padding:8px 20px;border:1px solid #DDD;margin-right:20px;font-weight:bold;" onclick="api.server.LoadPageSupervisee();" />
     <input type="button" value="CONFIRM" style="background-color:#1cacf6;color:#FFF;border:none;border-radius:5px;padding:8px 20px;border:1px solid #1cacf6;font-weight:bold;" btn-save-bookappointment="" />
 </div>
 <style type="text/css">
@@ -186,7 +186,7 @@
                 var startTime = _this.attr('start');
                 var endTime = _this.attr('end');
 
-                api.server.CheckBookingTime(timeslot_ID, function (isPast) {
+                api.server.CheckBookingTime(timeslot_ID, model[0].Date, function (isPast) {
                     if (isPast) {
                         alert('You can not choose the timeslot in the past.');
                     }
