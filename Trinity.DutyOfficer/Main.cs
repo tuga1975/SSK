@@ -199,6 +199,7 @@ namespace DutyOfficer
 
         private void Fingerprint_OnFingerprintSucceeded()
         {
+            _fingerprintFailed = 0;
             //
             // Login successfully
             //
@@ -395,6 +396,8 @@ namespace DutyOfficer
             }
             else if (navigatorEnum == NavigatorEnums.Authentication_SmartCard)
             {
+                _fingerprintFailed = 0;
+                _smartCardFailed = 0;
                 _isSmartCardToLogin = true;
                 LayerWeb.LoadPageHtml("Authentication/SmartCard.html");
                 LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please place your smart card on the reader.');");

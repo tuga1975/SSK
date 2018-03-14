@@ -647,19 +647,24 @@ namespace SSK
         }
 
         private string dataAbsenceReporting = string.Empty;
+
         private void DocumentScannerCallback(string frontPath, string error)
         {
             Trinity.Util.DocumentScannerUtil.Instance.StopScanning();
             Guid IDDocuemnt = new DAL_UploadedDocuments().Insert(Lib.ReadAllBytes(frontPath), ((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId);
             _SaveReasonForQueue(dataAbsenceReporting, IDDocuemnt);
         }
+        public void CancelScanDocumentFromReportAbsence()
+        {
+            _SaveReasonForQueue(dataAbsenceReporting, null);
+        }
         public void SaveReasonForQueue(string dataTxt, bool scandocument)
         {
             if (scandocument)
             {
                 dataAbsenceReporting = dataTxt;
-                Trinity.Util.DocumentScannerUtil.Instance.StartScanning(DocumentScannerCallback);
                 LoadPage("Document.html");
+                Trinity.Util.DocumentScannerUtil.Instance.StartScanning(DocumentScannerCallback);
             }
             else
             {
