@@ -151,11 +151,6 @@ namespace SSK
                 // Only enrolled supervisees are allowed to login
                 if (user.Role == EnumUserRoles.Supervisee || user.Role == EnumUserRoles.DutyOfficer)
                 {
-                    if (user.Status == EnumUserStatuses.Blocked)
-                    {
-                        SmartCard_OnSmartCardFailed("You have been blocked<br/>Contact Duty Officer for help");
-                        return;
-                    }
                     if (user.Status == EnumUserStatuses.New)
                     {
                         SmartCard_OnSmartCardFailed("You haven't enrolled yet.");
@@ -291,7 +286,7 @@ namespace SSK
                 Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(null, message, message, EnumNotificationTypes.Error);
                 // show message box to user
                 //MessageBox.Show(message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                LayerWeb.ShowMessage("Authentication failed", "message");
+                LayerWeb.ShowMessage("Authentication failed", message);
                 // reset counter
                 _smartCardFailed = 0;
                 // display failed on UI
@@ -538,9 +533,16 @@ namespace SSK
             else if (navigatorEnum == NavigatorEnums.Supervisee)
             {
                 // Handle income notifications
+
+                Session session = Session.Instance;
+                Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+                if (user.Role == EnumUserRoles.Supervisee && user.Status == EnumUserStatuses.Blocked)
+                {
+                    LayerWeb.ShowMessage("You have been blocked<br/>Contact Duty Officer for help");
+                    return;
+                }
                 _signalrClient = Client.Instance;
                 _signalrClient.OnNewNotification += _signalrClient_OnNewNotification;
-
                 _suppervisee.Start();
             }
 

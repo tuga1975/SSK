@@ -25,6 +25,7 @@ namespace Trinity.BackendAPI.ScheduledTask
                             EnableSsl = true,
                             Host = "smtp.gmail.com",
                             Port = 587,
+                            UseDefaultCredentials = false,
                             Credentials = new NetworkCredential("cnb.trinity.2018@gmail.com", "P@ssw0rd@1234")
                         })
                         {
