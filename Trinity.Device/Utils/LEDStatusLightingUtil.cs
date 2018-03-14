@@ -89,32 +89,35 @@ namespace Trinity.Device.Util
 
         private void InitializeSerialPort()
         {
-            if (_serialPort == null)
+            lock (syncRoot)
             {
-                _serialPort = new System.IO.Ports.SerialPort();
-                _serialPort.DataBits = 8;
-                _serialPort.ReadTimeout = 1000;
-                _serialPort.WriteTimeout = 1000;
-                _serialPort.StopBits = System.IO.Ports.StopBits.One;
+                if (_serialPort == null)
+                {
+                    _serialPort = new System.IO.Ports.SerialPort();
+                    _serialPort.DataBits = 8;
+                    _serialPort.ReadTimeout = 1000;
+                    _serialPort.WriteTimeout = 1000;
+                    _serialPort.StopBits = System.IO.Ports.StopBits.One;
+                }
+
+                // Init MUB Commands
+                _rs232Commands[EnumCommands.CheckIfMUBApplicatorIsReady] = "RD MR3";
+                _rs232Commands[EnumCommands.CheckIfMUBIsPresent] = "RD 14";
+                _rs232Commands[EnumCommands.CheckIfMUBApplicatorIsStarted] = "RD MR7";
+                _rs232Commands[EnumCommands.CheckIfMUBApplicatorIsFinished] = "RD MR15";
+                _rs232Commands[EnumCommands.CheckIfMUBIsRemoved] = "RD 14";
+                _rs232Commands[EnumCommands.CheckIfMUBDoorIsFullyClosed] = "RD 1";
+                _rs232Commands[EnumCommands.CheckIfMUBDoorIsFullyOpen] = "RD 0";
+
+                // Init TT Commands
+                _rs232Commands[EnumCommands.CheckIfTTApplicatorIsReady] = "RD MR103";
+                _rs232Commands[EnumCommands.CheckIfTTIsPresent] = "RD 15";
+                _rs232Commands[EnumCommands.CheckIfTTApplicatorIsStarted] = "RD MR106";
+                _rs232Commands[EnumCommands.CheckIfTTApplicatorIsFinished] = "RD MR115";
+                _rs232Commands[EnumCommands.CheckIfTTIsRemoved] = "RD 15";
+                _rs232Commands[EnumCommands.CheckIfTTDoorIsFullyClosed] = "RD 9";
+                _rs232Commands[EnumCommands.CheckIfTTDoorIsFullyOpen] = "RD 8";
             }
-
-            // Init MUB Commands
-            _rs232Commands[EnumCommands.CheckIfMUBApplicatorIsReady] = "RD MR3";
-            _rs232Commands[EnumCommands.CheckIfMUBIsPresent] = "RD 14";
-            _rs232Commands[EnumCommands.CheckIfMUBApplicatorIsStarted] = "RD MR7";
-            _rs232Commands[EnumCommands.CheckIfMUBApplicatorIsFinished] = "RD MR15";
-            _rs232Commands[EnumCommands.CheckIfMUBIsRemoved] = "RD 14";
-            _rs232Commands[EnumCommands.CheckIfMUBDoorIsFullyClosed] = "RD 1";
-            _rs232Commands[EnumCommands.CheckIfMUBDoorIsFullyOpen] = "RD 0";
-
-            // Init TT Commands
-            _rs232Commands[EnumCommands.CheckIfTTApplicatorIsReady] = "RD MR103";
-            _rs232Commands[EnumCommands.CheckIfTTIsPresent] = "RD 15";
-            _rs232Commands[EnumCommands.CheckIfTTApplicatorIsStarted] = "RD MR106";
-            _rs232Commands[EnumCommands.CheckIfTTApplicatorIsFinished] = "RD MR115";
-            _rs232Commands[EnumCommands.CheckIfTTIsRemoved] = "RD 15";
-            _rs232Commands[EnumCommands.CheckIfTTDoorIsFullyClosed] = "RD 9";
-            _rs232Commands[EnumCommands.CheckIfTTDoorIsFullyOpen] = "RD 8";
         }
 
         #region Public functions
@@ -156,46 +159,49 @@ namespace Trinity.Device.Util
 
             try
             {
-                if (string.IsNullOrEmpty(station))
+                lock (syncRoot)
                 {
-                    return "Please select a station: SSK or SSA";
-                }
-                if (string.IsNullOrEmpty(portName) || string.IsNullOrEmpty(parity))
-                {
-                    return "Please select port settings";
-                }
-                else
-                {
-                    // Check if the port already open
-                    if (_serialPort.IsOpen)
+                    if (string.IsNullOrEmpty(station))
                     {
-                        return "The serial port already open";
+                        return "Please select a station: SSK or SSA";
                     }
-                    _station = station;
-                    _serialPort.PortName = portName;
-                    _serialPort.BaudRate = baudRate;
-                    if (parity.Equals("None", StringComparison.InvariantCultureIgnoreCase))
+                    if (string.IsNullOrEmpty(portName) || string.IsNullOrEmpty(parity))
                     {
-                        _serialPort.Parity = System.IO.Ports.Parity.None;
+                        return "Please select port settings";
                     }
-                    else if (parity.Equals("Even", StringComparison.InvariantCultureIgnoreCase))
+                    else
                     {
-                        _serialPort.Parity = System.IO.Ports.Parity.Even;
+                        // Check if the port already open
+                        if (_serialPort.IsOpen)
+                        {
+                            return "The serial port already open";
+                        }
+                        _station = station;
+                        _serialPort.PortName = portName;
+                        _serialPort.BaudRate = baudRate;
+                        if (parity.Equals("None", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            _serialPort.Parity = System.IO.Ports.Parity.None;
+                        }
+                        else if (parity.Equals("Even", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            _serialPort.Parity = System.IO.Ports.Parity.Even;
+                        }
+                        _serialPort.Open();
+
+                        _serialPort.DataReceived += _serialPort_DataReceived;
+
+                        // Start Communication
+                        StartCommunication();
+
+                        // Reset PLC
+                        ResetPLC();
+
+                        _commandThread = new Thread(new ThreadStart(CommandsHandler));
+                        _commandThread.Start();
+
+                        return string.Empty;
                     }
-                    _serialPort.Open();
-
-                    _serialPort.DataReceived += _serialPort_DataReceived;
-
-                    // Start Communication
-                    StartCommunication();
-
-                    // Reset PLC
-                    ResetPLC();
-
-                    _commandThread = new Thread(new ThreadStart(CommandsHandler));
-                    _commandThread.Start();
-
-                    return string.Empty;
                 }
             }
             catch (IOException ex)
