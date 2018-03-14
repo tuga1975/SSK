@@ -510,15 +510,7 @@ namespace SSK
             }
             if (absenceCount == 0)
             {
-                DAL_Notification noti = new DAL_Notification();
-                if (noti.CountGetMyNotifications(supervisee.UserId, true) > 0)
-                {
-                    LoadNotications();
-                }
-                else
-                {
-                    GetMyQueueNumber();
-                }
+                GetMyQueueNumber();
             }
             //else if (absenceCount >= 3 || supervisee.Status==EnumUserStatuses.Blocked)
             //{
