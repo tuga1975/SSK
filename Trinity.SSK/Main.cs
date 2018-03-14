@@ -502,6 +502,20 @@ namespace SSK
             {
                 Session session = Session.Instance;
                 Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+                if ((user.User_Photo1 == null || user.User_Photo1.Length == 0) && (user.User_Photo2 == null || user.User_Photo2.Length == 0))
+                {
+                    //Trinity.BE.PopupModel popupModel = new Trinity.BE.PopupModel();
+                    //popupModel.Title = "Authorization Failed";
+                    //popupModel.Message = "User '" + user.Name + "' doesn't have any photos";
+                    //popupModel.IsShowLoading = false;
+                    //popupModel.IsShowOK = true;
+
+                    //LayerWeb.InvokeScript("showPopupModal", JsonConvert.SerializeObject(popupModel));
+
+                    // Navigate to smartcard login page
+                    NavigateTo(NavigatorEnums.Authentication_SmartCard);
+                    return;
+                }
                 LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please wait while initializing camera...');");
                 FacialRecognition.Instance.OnFacialRecognitionFailed += Main_OnFacialRecognitionFailed;
                 FacialRecognition.Instance.OnFacialRecognitionSucceeded += Main_OnFacialRecognitionSucceeded;
