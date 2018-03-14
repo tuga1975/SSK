@@ -32,6 +32,7 @@ namespace Trinity.Device.Util
 
     public class LEDStatusLightingUtil
     {
+        public event EventHandler<string> OnNewEvent;
         private Dictionary<EnumCommands, string> _rs232Commands = new Dictionary<EnumCommands, string>();
 
         private const int _maxRetryCount = 50;
@@ -117,60 +118,26 @@ namespace Trinity.Device.Util
         }
 
         #region Public functions
+        private Thread _commandThread = null;
 
         public bool OpenPort()
         {
-            InitializeSerialPort();
-
-            try
+            if (string.IsNullOrEmpty(_station))
             {
-                if (string.IsNullOrEmpty(_station))
-                {
-                    _station = System.Reflection.Assembly.GetEntryAssembly().GetName().Name;
-                }
-
-                string comPort = ConfigurationManager.AppSettings["COMPort"];
-                int baudRate = int.Parse(ConfigurationManager.AppSettings["BaudRate"]);
-                string parity = ConfigurationManager.AppSettings["Parity"];
-
-                // Check if the port already open
-                if (_serialPort.IsOpen)
-                {
-                    // return "The serial port already open";
-                    return false;
-                }
-
-                _serialPort.PortName = comPort;
-                _serialPort.BaudRate = baudRate;
-
-                if (parity.Equals("None", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    _serialPort.Parity = System.IO.Ports.Parity.None;
-                }
-                else if (parity.Equals("Even", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    _serialPort.Parity = System.IO.Ports.Parity.Even;
-                }
-
-                _serialPort.Open();
-
-                _serialPort.DataReceived += _serialPort_DataReceived;
-
-                // Start Communication
-                StartCommunication();
-
-                // Reset PLC
-                ResetPLC();
-
-                Thread thread = new Thread(new ThreadStart(CommandsHandler));
-                thread.Start();
-
-                return true;
+                _station = System.Reflection.Assembly.GetEntryAssembly().GetName().Name;
             }
-            catch (IOException ex)
+            string comPort = ConfigurationManager.AppSettings["COMPort"];
+            int baudRate = int.Parse(ConfigurationManager.AppSettings["BaudRate"]);
+            string parity = ConfigurationManager.AppSettings["Parity"];
+
+            string retValue = OpenPort(_station, comPort, baudRate, parity);
+            if (retValue != string.Empty)
             {
-                MessageBox.Show(ex.Message);
                 return false;
+            }
+            else
+            {
+                return true;
             }
         }
 
@@ -225,6 +192,9 @@ namespace Trinity.Device.Util
                     // Reset PLC
                     ResetPLC();
 
+                    _commandThread = new Thread(new ThreadStart(CommandsHandler));
+                    _commandThread.Start();
+
                     return string.Empty;
                 }
             }
@@ -252,6 +222,7 @@ namespace Trinity.Device.Util
             }
             catch (IOException ioEx)
             {
+                MessageBox.Show("Error in ClosePort. Details:" + ioEx.Message);
                 return ioEx.Message;
             }
         }
@@ -268,42 +239,51 @@ namespace Trinity.Device.Util
         #region LED Control functions
         public void TurnOffAllLEDs()
         {
-            if (!IsPortOpen)
+            try
             {
-                return;
-            }
-            if (_station.Equals(EnumStation.SSK, StringComparison.InvariantCultureIgnoreCase))
-            {
-                // stop flashing
-                _timer_BlueLightFlashing.Enabled = false;
-                _timer_YellowLightFlashing.Enabled = false;
 
-                // turn off leds
-                string hexCommand = "00AAFF5501";
-                SendCommand(hexCommand);
+
+                if (!IsPortOpen)
+                {
+                    return;
+                }
+                if (_station.Equals(EnumStation.SSK, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    // stop flashing
+                    _timer_BlueLightFlashing.Enabled = false;
+                    _timer_YellowLightFlashing.Enabled = false;
+
+                    // turn off leds
+                    string hexCommand = "00AAFF5501";
+                    SendCommand(hexCommand);
+                }
+                else if (_station.Equals(EnumStation.SSA, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    string hexCommand = "";
+                    string asciiCommand = "";
+                    //
+                    // Turn of RED light
+                    //
+                    asciiCommand = "WR 605 0";
+                    hexCommand = ToHEX(asciiCommand);
+                    SendCommand(hexCommand);
+                    //
+                    // Turn of GREEN light
+                    //
+                    asciiCommand = "WR 606 0";
+                    hexCommand = ToHEX(asciiCommand);
+                    SendCommand(hexCommand);
+                    //
+                    // Turn of BLUE light
+                    //
+                    asciiCommand = "WR 604 0";
+                    hexCommand = ToHEX(asciiCommand);
+                    SendCommand(hexCommand);
+                }
             }
-            else if (_station.Equals(EnumStation.SSA, StringComparison.InvariantCultureIgnoreCase))
+            catch (Exception ex)
             {
-                string hexCommand = "";
-                string asciiCommand = "";
-                //
-                // Turn of RED light
-                //
-                asciiCommand = "WR 605 0";
-                hexCommand = ToHEX(asciiCommand);
-                SendCommand(hexCommand);
-                //
-                // Turn of GREEN light
-                //
-                asciiCommand = "WR 606 0";
-                hexCommand = ToHEX(asciiCommand);
-                SendCommand(hexCommand);
-                //
-                // Turn of BLUE light
-                //
-                asciiCommand = "WR 604 0";
-                hexCommand = ToHEX(asciiCommand);
-                SendCommand(hexCommand);
+                MessageBox.Show("Error in TurnOffAllLEDs. Details: " + ex.Message);
             }
         }
 
@@ -703,6 +683,8 @@ namespace Trinity.Device.Util
 
         private void CommandsHandler()
         {
+            OnNewEvent?.Invoke(this, "CommandsHandler is started.");
+
             while (IsPortOpen)
             {
                 if (_currentCommand == EnumCommands.Unknown)
@@ -713,25 +695,32 @@ namespace Trinity.Device.Util
                         // Start to process new command
                         this.DataReceived += SendCommand_Async_Callback;
                         string asciiCommand = _rs232Commands[_currentCommand];
-                        SendASCIICommand(asciiCommand);
                         _commandsRetryCount[_currentCommand]++;
+                        OnNewEvent?.Invoke(this, "SendCommand_Async_Callback, response:" + "About to send command:" + _currentCommand + ", retry:" + _commandsRetryCount[_currentCommand]);
+                        SendASCIICommand(asciiCommand);
                     }
                 }
 
                 Thread.Sleep(200);
             }
+            OnNewEvent?.Invoke(this, "CommandsHandler is stopped.");
+
         }
 
         public void SendCommand_Async(EnumCommands command, WorkCompletedCallback callback)
         {
+            OnNewEvent?.Invoke(this, "Add command:" + command + " to waiting commands");
+
             _commandsRetryCount[command] = 0;
             _waitingCommands.Add(command);
             _callbacks[command] = callback;
         }
+
         private void SendCommand_Async_Callback(object sender, string response)
         {
             this.DataReceived -= SendCommand_Async_Callback;
             WorkCompletedCallback callback = _callbacks[_currentCommand];
+            OnNewEvent?.Invoke(this, "SendCommand_Async_Callback, response:" + response);
 
             lock (syncRoot)
             {
@@ -778,6 +767,7 @@ namespace Trinity.Device.Util
                         else
                         {
                             // Retry
+                            OnNewEvent?.Invoke(this, "Continue retrying..");
                             _currentCommand = EnumCommands.Unknown;
                         }
                     }

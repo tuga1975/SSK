@@ -455,7 +455,8 @@ namespace SSK
             // Turn off all LED(s)
             if (LEDStatusLightingUtil.Instance.IsPortOpen)
             {
-                LEDStatusLightingUtil.Instance.TurnOffAllLEDs();
+                //LEDStatusLightingUtil.Instance.TurnOffAllLEDs();
+                LEDStatusLightingUtil.Instance.ClosePort();
             }
             Application.ExitThread();
             APIUtils.Dispose();
