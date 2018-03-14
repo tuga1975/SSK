@@ -236,7 +236,7 @@ namespace SSK
                 _isFirstTimeLoaded = false;
 
 
-                Thread.Sleep(5000);
+                // Thread.Sleep(5000);
                 // LayerWeb initiation is compeleted, update application status
                 ApplicationStatusManager.Instance.LayerWebInitilizationCompleted();
             }
