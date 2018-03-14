@@ -362,7 +362,7 @@ namespace Enrolment
             {
                 var model = (System.Collections.Generic.List<Trinity.BE.ProfileModel>)e.Data;
                 CSCallJS.LoadPageHtml(this.LayerWeb, "Supervisee.html", model);
-                if (e.Source!=null)
+                if (e.Source!=null&& e.Source.ToString()!= "Supervisee.html")
                 {
                     LayerWeb.InvokeScript("setSearchText", e.Source);
                 }
