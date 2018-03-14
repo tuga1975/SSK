@@ -310,5 +310,11 @@ namespace Experiment
             FormLEDLightControl formLEDLightControl = new FormLEDLightControl();
             formLEDLightControl.ShowDialog();
         }
+
+        private void btnTestTextSpeech_Click(object sender, EventArgs e)
+        {
+            TextToSpeech textToSpeech = new TextToSpeech();
+            textToSpeech.Speak("US airline industry primed for springtime boost: trade group");
+        }
     }
 }

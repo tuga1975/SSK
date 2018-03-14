@@ -32,6 +32,14 @@ namespace Experiment
             GetAvailablePorts();
             cboBaudRate.SelectedIndex = 0;
             cboParity.SelectedIndex = 0;
+
+            LEDStatusLightingUtil ledStatusLightingUtil = LEDStatusLightingUtil.Instance;
+            ledStatusLightingUtil.OnNewEvent += LedStatusLightingUtil_OnNewEvent;
+        }
+
+        private void LedStatusLightingUtil_OnNewEvent(object sender, string e)
+        {
+            txtLogs.Text = e + "\n" + txtLogs.Text;
         }
 
         public void GetAvailablePorts()

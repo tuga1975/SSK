@@ -93,6 +93,7 @@
             this.btnInitializeTTApplicator = new System.Windows.Forms.Button();
             this.btnTTRobotUp = new System.Windows.Forms.Button();
             this.btnTTRobotDown = new System.Windows.Forms.Button();
+            this.txtLogs = new System.Windows.Forms.RichTextBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -750,11 +751,23 @@
             this.btnTTRobotDown.UseVisualStyleBackColor = true;
             this.btnTTRobotDown.Click += new System.EventHandler(this.btnTTRobotDown_Click);
             // 
+            // txtLogs
+            // 
+            this.txtLogs.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtLogs.Location = new System.Drawing.Point(671, 634);
+            this.txtLogs.Name = "txtLogs";
+            this.txtLogs.Size = new System.Drawing.Size(602, 138);
+            this.txtLogs.TabIndex = 66;
+            this.txtLogs.Text = "";
+            // 
             // FormLEDLightControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1299, 692);
+            this.ClientSize = new System.Drawing.Size(1299, 784);
+            this.Controls.Add(this.txtLogs);
             this.Controls.Add(this.btnTTRobotDown);
             this.Controls.Add(this.btnTTRobotUp);
             this.Controls.Add(this.btnOpenTTDoor);
@@ -888,5 +901,6 @@
         private System.Windows.Forms.Button btnInitializeTTApplicator;
         private System.Windows.Forms.Button btnTTRobotUp;
         private System.Windows.Forms.Button btnTTRobotDown;
+        private System.Windows.Forms.RichTextBox txtLogs;
     }
 }

@@ -70,6 +70,12 @@ namespace DutyOfficer
         private void OnSSPCompleted_Handler(object sender, NotificationInfo e)
         {
             string NRIC = e.NRIC;
+            var dalUser = new DAL_User();
+            var user = dalUser.GetByNRIC(NRIC);
+            var dalQueue = new DAL_QueueNumber();
+            dalQueue.UpdateQueueStatusByUserId(user.UserId, EnumStation.ESP, EnumQueueStatuses.Finished, EnumStation.DUTYOFFICER, EnumQueueStatuses.Processing, "Select outcome", EnumQueueOutcomeText.TapSmartCardToContinue);
+            // Refresh data queue
+            LayerWeb.InvokeScript("reloadDataQueues");
         }
 
         private void OnAppDisconnected_Handler(object sender, EventInfo e)
