@@ -267,18 +267,14 @@ namespace SSK
         //    }
         //}
 
-        public bool UpdateTimeAppointment(string appointment_ID, string timeslot_ID)
+        public void UpdateTimeAppointment(string appointment_ID, string timeslot_ID)
         {
-            try
+            if(new DAL_QueueNumber().IsInQueue(appointment_ID, EnumStation.SSK))
             {
-                // if appointment is in queue, return false
-                bool inQueue = new DAL_QueueNumber().IsInQueue(appointment_ID, EnumStation.SSK);
-                if (inQueue)
-                {
-                    return false;
-                }
-
-                // if not, update Appointments.timeslotId
+                this._web.ShowMessage("You have already queued!<br/> The timeslot cannot be changed.");
+            }
+            else
+            {
                 bool updateResult = new DAL_Appointments().UpdateTimeslot_ID(appointment_ID, timeslot_ID);
 
                 if (updateResult)
@@ -286,44 +282,13 @@ namespace SSK
                     Trinity.SignalR.Client.Instance.AppointmentBookedOrReported(appointment_ID, EnumAppointmentStatuses.Booked);
                     AppointmentDetails appointmentdetails = new DAL_Appointments().GetAppointmentDetails(appointment_ID);
                     ReceiptPrinterUtil.Instance.PrintAppointmentDetails(appointmentdetails);
-                    return true;
+                    LoadPageSupervisee();
                 }
-
-                return false;
+                else
+                {
+                    this._web.ShowMessage("Booking Appointment failed<br/>Please try again");
+                }
             }
-            catch (Exception ex)
-            {
-                return false;
-            }
-
-
-            //var dbAppointment = new DAL_Appointments().GetAppointmentByID(Guid.Parse(IDAppointment));
-            ////check exist queue
-            //var dalQueue = new DAL_QueueNumber();
-            //if (dbAppointment != null)
-            //{
-            //if (!dalQueue.CheckQueueExistToday(dbAppointment.UserId, EnumStation.SSK))
-            //    {
-            //        //var data = JsonConvert.SerializeObject(new { IDAppointment, timeStart, timeEnd });
-            //        new DAL_Appointments().UpdateBookingTime(IDAppointment, timeStart, timeEnd);
-
-            //        // dalAppointments.UpdateBookTime(IDAppointment, timeStart, timeEnd);
-
-            //        Trinity.BE.Appointment appointment = new DAL_Appointments().GetAppmtDetails(Guid.Parse(IDAppointment)); 
-            //        //Trinity.BE.Appointment appointment = dalAppointments.GetAppointmentDetails(new Guid(IDAppointment));
-
-            //        APIUtils.Printer.PrintAppointmentDetails("AppointmentDetailsTemplate.html", appointment);
-            //        FormQueueNumber f = FormQueueNumber.GetInstance();
-            //        f.RefreshQueueNumbers();
-            //        return true;
-            //    }
-            //    else
-            //    {
-            //        return false;
-            //    }
-
-            //}
-            //return false;
         }
 
         public void PrintAppointmentDetails(string appointmentId)

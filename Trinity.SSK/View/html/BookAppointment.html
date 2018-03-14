@@ -198,16 +198,7 @@
                         } else {
                             var re = confirm('You have selected the time slot\n' + startTime + ' on ' + model[0].GetDateTxt + '\nConfirm time slot?', 'Warning');
                             if (re == true) {
-                                api.server.UpdateTimeAppointment(model[0].ID, timeslot_ID, function (isUpdated) {
-                                    if (isUpdated) {
-                                        model[0].ChangedCount += 1;
-                                        $('[app-time]').text(startTime);
-                                        $oldActive = $('[active="true"]');
-                                    }
-                                    else {
-                                        alert("You have already queued!\n The timeslot cannot be changed.");
-                                    }
-                                });
+                                api.server.UpdateTimeAppointment(model[0].ID, timeslot_ID);
                             }
                         }
                     }

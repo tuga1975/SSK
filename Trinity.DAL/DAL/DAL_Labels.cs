@@ -208,7 +208,7 @@ namespace Trinity.DAL
                     //        UserId = d.UserId
                     //    });
 
-                    var lstModels = from l in _localUnitOfWork.DataContext.Labels
+                    var lstModels = (from l in _localUnitOfWork.DataContext.Labels
                                     join u in _localUnitOfWork.DataContext.Membership_Users on l.UserId equals u.UserId
                                     join q in _localUnitOfWork.DataContext.Queues on l.Queue_ID equals q.Queue_ID
                                     join t in _localUnitOfWork.DataContext.Timeslots on q.Timeslot_ID equals t.Timeslot_ID
@@ -225,9 +225,9 @@ namespace Trinity.DAL
                                         //EndTime = t.EndTime,
                                         PrintCount = l.PrintCount,
                                         MarkingNo = l.MarkingNo
-                                    };
+                                    }).GroupBy(d=>d.UserId).Select(d=>d.FirstOrDefault()).ToList();
 
-                    return lstModels.Distinct().ToList();
+                    return lstModels;
 
                     //if ((lstModels != null && lstModels.Count() > 0) || EnumAppConfig.ByPassCentralizedDB)
                     //{
