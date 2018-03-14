@@ -213,10 +213,11 @@ namespace Trinity.DAL
                                         Name = u.Name,
                                         LastStation = l.LastStation,
                                         UserId = l.UserId,
-                                        TimeSlot_ID = q.Timeslot_ID,
-                                        StartTime = t.StartTime,
-                                        EndTime = t.EndTime,
-                                        PrintCount = l.PrintCount
+                                        //TimeSlot_ID = q.Timeslot_ID,
+                                        //StartTime = t.StartTime,
+                                        //EndTime = t.EndTime,
+                                        PrintCount = l.PrintCount,
+                                        MarkingNo = l.MarkingNo
                                     };
 
                     return lstModels.Distinct().ToList();
@@ -260,10 +261,11 @@ namespace Trinity.DAL
                                         Name = u.Name,
                                         LastStation = l.LastStation,
                                         UserId = l.UserId,
-                                        TimeSlot_ID = q.Timeslot_ID,
-                                        StartTime = t.StartTime,
-                                        EndTime = t.EndTime,
-                                        PrintCount = l.PrintCount
+                                        //TimeSlot_ID = q.Timeslot_ID,
+                                        //StartTime = t.StartTime,
+                                        //EndTime = t.EndTime,
+                                        PrintCount = l.PrintCount,
+                                        MarkingNo = l.MarkingNo
                                     };
 
                     return lstModels.Distinct().ToList();
@@ -291,7 +293,8 @@ namespace Trinity.DAL
                                     Name = l.Membership_Users.Name,
                                     LastStation = l.LastStation,
                                     UserId = l.UserId,
-                                    IsSealed = d.IsSealed
+                                    IsSealed = d.IsSealed,
+                                    MarkingNo = l.MarkingNo
                                 })
                     .Where(d => d.IsSealed == true);
                     return lstModels.Distinct().ToList();
@@ -323,7 +326,8 @@ namespace Trinity.DAL
                                     Name = l.Membership_Users.Name,
                                     LastStation = l.LastStation,
                                     UserId = l.UserId,
-                                    IsSealed = d.IsSealed
+                                    IsSealed = d.IsSealed,
+                                    MarkingNo = l.MarkingNo
                                 })
                     .Where(d => d.IsSealed == true);
                     return lstModels.Distinct().ToList();

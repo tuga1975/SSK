@@ -71,12 +71,15 @@ namespace DutyOfficer
         }
         private void OnAppointmentBookedOrReported_Handler(object sender, NotificationInfo e)
         {
-            string AppointmentID = e.AppointmentID;
-            string Status = e.Status;
+            //string AppointmentID = e.AppointmentID;
+            //string Status = e.Status;
+            RefreshAppointments();
+            RefreshStatistics();
         }
         private void OnQueueInserted_Handler(object sender, NotificationInfo e)
         {
-            string QueueID = e.QueueID;
+            //string QueueID = e.QueueID;
+            RefreshQueues();
         }
         private void OnSSPCompleted_Handler(object sender, NotificationInfo e)
         {
@@ -86,7 +89,7 @@ namespace DutyOfficer
             var dalQueue = new DAL_QueueNumber();
             dalQueue.UpdateQueueStatusByUserId(user.UserId, EnumStation.ESP, EnumQueueStatuses.Finished, EnumStation.DUTYOFFICER, EnumQueueStatuses.Processing, "Select outcome", EnumQueueOutcomeText.TapSmartCardToContinue);
             // Refresh data queue
-            LayerWeb.InvokeScript("reloadDataQueues");
+            RefreshQueues();
         }
 
         private void OnAppDisconnected_Handler(object sender, EventInfo e)
@@ -154,7 +157,7 @@ namespace DutyOfficer
         private void OnQueueCompleted_Handler(object sender, EventInfo e)
         {
             // Refresh data queue
-            LayerWeb.InvokeScript("reloadDataQueues");
+            RefreshQueues();
         }
 
         private void Fingerprint_OnDeviceDisconnected()
@@ -531,6 +534,19 @@ namespace DutyOfficer
         private void JSCallCS_OnLogOutCompleted()
         {
             NavigateTo(NavigatorEnums.Login);
+        }
+
+        private void RefreshQueues()
+        {
+            LayerWeb.InvokeScript("reloadDataQueues");
+        }
+        private void RefreshAppointments()
+        {
+            LayerWeb.InvokeScript("reloadDataAppts");
+        }
+        private void RefreshStatistics()
+        {
+            LayerWeb.InvokeScript("reloadDataStatistics");
         }
     }
 }
