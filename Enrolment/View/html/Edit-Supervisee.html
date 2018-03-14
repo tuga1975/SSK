@@ -4,7 +4,13 @@
         background: #fff;
     }
 
-    .collapsible {
+    .max-height-350px{
+        height: 200px;
+        width: auto;
+        max-width: auto;
+        overflow: hidden;
+    } 
+        .collapsible {
         list-style: none;
         padding: 0;
         margin: 1rem 0;
@@ -306,12 +312,12 @@
                                             <div class="row">
                                                 <div class="col-md-6 col-sm-12">
                                                     <img src="../images/avatar-demo.jpg" alt="avatar"
-                                                         class="img-fluid" id="userPhoto1" />
+                                                         class="img-fluid max-height-350px" id="userPhoto1" />
                                                     <input type="hidden" id="User_Photo1" name="User_Photo1" />
                                                 </div>
                                                 <div class="col-md-6 col-sm-12">
                                                     <img src="../images/avatar-demo.jpg" alt="avatar"
-                                                         class="img-fluid" id="userPhoto2" />
+                                                         class="img-fluid max-height-350px" id="userPhoto2" />
                                                     <input type="hidden" id="User_Photo2" name="User_Photo2" />
                                                 </div>
                                             </div>
@@ -321,12 +327,12 @@
                                             <div class="row">
                                                 <div class="col-md-6 col-sm-12">
                                                     <img src="../images/leftthumb.png" alt="avatar"
-                                                         class="img-fluid" id="LeftThumbFingerprint" name="LeftThumbFingerprint"  />
+                                                         class="img-fluid max-height-350px" id="LeftThumbFingerprint" name="LeftThumbFingerprint"  />
 
                                                 </div>
                                                 <div class="col-md-6 col-sm-12">
                                                     <img src="../images/rightthumb.png" alt="avatar"
-                                                         class="img-fluid" id="RightThumbFingerprint" name="RightThumbFingerprint"   />
+                                                         class="img-fluid max-height-350px" id="RightThumbFingerprint" name="RightThumbFingerprint"   />
                                                 </div>
                                             </div>
                                             <a href="#" onclick="api.server.UpdateFingerprints()">Update Fingerprints</a>

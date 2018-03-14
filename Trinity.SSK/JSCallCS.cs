@@ -11,6 +11,7 @@ using Trinity.DAL.DBContext;
 using Trinity.Device;
 using Trinity.BE;
 using Trinity.Device.Util;
+using Trinity.Util;
 
 namespace SSK
 {
@@ -621,9 +622,9 @@ namespace SSK
 
         private void DocumentScannerCallback(string frontPath, string error)
         {
-            Trinity.Util.DocumentScannerUtil.Instance.StopScanning();
             Guid IDDocuemnt = new DAL_UploadedDocuments().Insert(Lib.ReadAllBytes(frontPath), ((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId);
             _SaveReasonForQueue(dataAbsenceReporting, IDDocuemnt);
+            Trinity.Util.DocumentScannerUtil.Instance.StopScanning();
         }
         public void CancelScanDocumentFromReportAbsence()
         {
@@ -639,7 +640,6 @@ namespace SSK
             }
             else
             {
-
                 _SaveReasonForQueue(dataTxt, null);
             }
         }
