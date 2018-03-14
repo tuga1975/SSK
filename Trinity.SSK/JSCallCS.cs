@@ -193,9 +193,9 @@ namespace SSK
             
         }
 
-        public bool CheckBookingTime(string timeslotId)
+        public bool CheckBookingTime(string timeslotId,DateTime date)
         {
-            return new DAL_Timeslots().CheckTimeslot(timeslotId);
+            return new DAL_Timeslots().CheckTimeslot(timeslotId,date);
         }
 
         private List<WorkingShiftDetails> GetWorkingTimeshift(List<Timeslot> timeslots, string selected_Timeslot_ID, string timeshift)

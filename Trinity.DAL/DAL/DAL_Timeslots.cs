@@ -44,7 +44,7 @@ namespace Trinity.DAL
             }
         }
 
-        public bool CheckTimeslot(string timeslotId)
+        public bool CheckTimeslot(string timeslotId,DateTime date)
         {
             var today = DateTime.Now.TimeOfDay;
             try
@@ -53,6 +53,10 @@ namespace Trinity.DAL
                 if (EnumAppConfig.IsLocal)
                 {
                     Timeslot timeslot = _localUnitOfWork.DataContext.Timeslots.FirstOrDefault(item => item.Timeslot_ID == timeslotId);
+                    if (date>DateTime.Now.Date)
+                    {
+                        return false;
+                    }
                     if (timeslot.EndTime < today)
                     {
                         return true;//is past
