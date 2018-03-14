@@ -16,7 +16,11 @@ namespace Trinity.DAL
 
         #region refactor 2018
 
-
+        public List<DBContext.Queue> GetQueueWalkInByDate(DateTime date)
+        {
+            date = date.Date;
+            return _localUnitOfWork.DataContext.Queues.Where(d => DbFunctions.TruncateTime(d.CreatedTime) == date && !d.Appointment_ID.HasValue).ToList();
+        }
         public DBContext.Timeslot GetTimeSlotEmpty()
         {
             List<DBContext.Timeslot> arrayTimeslot = _localUnitOfWork.DataContext.Timeslots.Where(d => d.Date == DateTime.Today).ToList().OrderBy(d => d.SortCategory).ThenBy(d => d.StartTime).ToList();
