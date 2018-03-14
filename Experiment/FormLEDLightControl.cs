@@ -560,5 +560,24 @@ namespace Experiment
             LEDStatusLightingUtil ledStatusLightingUtil = LEDStatusLightingUtil.Instance;
             ledStatusLightingUtil.MoveDownTTRobot_Async();
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            LEDStatusLightingUtil ledStatusLightingUtil = LEDStatusLightingUtil.Instance;
+            for (int i = 0; i < 100; i++)
+            {
+                ledStatusLightingUtil.InitializeMUBApplicator_Async();
+                ledStatusLightingUtil.SendCommand_Async(EnumCommands.CheckIfMUBApplicatorIsReady, CheckIfMUBApplicatorIsReady_Callback);
+
+                ledStatusLightingUtil.StartMUBApplicator_Async();
+                ledStatusLightingUtil.SendCommand_Async(EnumCommands.CheckIfMUBApplicatorIsStarted, CheckIfMUBApplicatorIsStarted_Callback);
+
+                ledStatusLightingUtil.InitializeTTApplicator_Async();
+                ledStatusLightingUtil.SendCommand_Async(EnumCommands.CheckIfTTApplicatorIsReady, CheckIfTTApplicatorIsReady_Callback);
+
+                ledStatusLightingUtil.StartTTApplicator_Async();
+                ledStatusLightingUtil.SendCommand_Async(EnumCommands.CheckIfTTApplicatorIsStarted, CheckIfTTApplicatorIsStarted_Callback);
+            }
+        }
     }
 }

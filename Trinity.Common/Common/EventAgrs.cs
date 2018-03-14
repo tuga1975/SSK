@@ -164,6 +164,9 @@ namespace Trinity.Common
         public const string APP_DISCONNECTED = "APP_DISCONNECTED";
         public const string ALERT_MESSAGE = "ALERT_MESSAGE";
         public const string SSP_COMPLETED = "SSP_COMPLETED";
+        public const string DO_UNBLOCK_SUPERVISEE = "DO_UNBLOCK_SUPERVISEE";
+        public const string APPOINTMENT_BOOKED_OR_REPORTED = "APPOINTMENT_BOOKED_OR_REPORTED";
+        public const string QUEUE_INSERTED = "QUEUE_INSERTED";
     }
 
     public class NotificationInfo
@@ -178,6 +181,10 @@ namespace Trinity.Common
         public object Data { get; set; }
         public object Source { get; set; }
         public string NRIC { get; set; }
+        public string UserID { get; set; }
+        public string AppointmentID { get; set; }
+        public string QueueID { get; set; }
+        public string Status { get; set; }
     }
 
     public class PrintMUBAndTTLabelsEventArgs
