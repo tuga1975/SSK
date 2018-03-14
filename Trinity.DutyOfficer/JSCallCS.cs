@@ -146,15 +146,15 @@ namespace DutyOfficer
             arrayDataa.AddRange(new DAL_QueueNumber().GetQueueWalkInByDate(DateTime.Today).Select(queue => new
             {
                 Queue_ID = queue.Queue_ID,
-                Date = queue.Appointment.Date.Date,
-                UserId = queue.Appointment.UserId,
-                NRIC = queue.Appointment.Membership_Users.NRIC,
-                Name = queue.Appointment.Membership_Users.Name,
+                Date = queue.CreatedTime.Date,
+                UserId = queue.UserId,
+                NRIC = queue.Membership_Users.NRIC,
+                Name = queue.Membership_Users.Name,
                 APS = queue.Color(EnumStation.APS),
                 SSK = queue.Color(EnumStation.SSK),
                 SSA = queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStation.SSA).Color,
                 UHP = queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStation.UHP).Color,
-                HSA = queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStation.HSA).Status == EnumQueueStatuses.Finished ? GetResultUT(queue.Appointment.Membership_Users.NRIC) : string.Empty,
+                HSA = queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStation.HSA).Status == EnumQueueStatuses.Finished ? GetResultUT(queue.Membership_Users.NRIC) : string.Empty,
                 ESP = queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStation.ESP).Color,
                 Outcome = queue.Outcome,
                 Message = new

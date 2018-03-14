@@ -1,6 +1,11 @@
-﻿<div class="status-text">
-</div>
-<div class="box-shadow" style="position:absolute;width:100%;height:calc(100% - 45px);background-image:url('../img/DocumentScan.png');background-position:center center;background-repeat:no-repeat;background-size:contain;">
+﻿<div class="status-text">&nbsp;</div>
+<div class="box-shadow" style="position:absolute;width:80%;height:calc(100% - 100px);left:calc(50% - 40%);">
+    <video autoplay loop style="position:absolute;width:calc(100% - 10px);height:calc(100% - 10px);left:5px;top:5px;">
+        <source src="../img/ThumbDocumentScanner.mp4" type="video/mp4">
+    </video>
+    <div style="position:absolute;right:0px;bottom:-55px;">
+        <input type="button" value="CANCEL" style="background-color:#FFF;color:#1cacf6;border:none;border-radius:5px;padding:8px 20px;border:1px solid #DDD;font-weight:bold;" onclick="api.server.CancelScanDocumentFromReportAbsence();" />
+    </div>
 </div>
 
 <style type="text/css">
