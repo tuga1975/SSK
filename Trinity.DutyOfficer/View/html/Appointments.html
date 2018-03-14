@@ -208,6 +208,12 @@
         });
     });
 
+    function reloadDataAppts() {
+        api.server.GetAllAppoinments(function (data) {
+            $('#table').bootstrapTable('load', data);
+        });
+    };
+
     $('#pageSize').change(function () {
         pageSize = $("#pageSize option:selected").text();
         $('#table').bootstrapTable('refreshOptions', {
