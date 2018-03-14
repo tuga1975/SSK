@@ -20,7 +20,13 @@ namespace SSK
         public event EventHandler<NRICEventArgs> OnNRICFailed;
         public event EventHandler<ShowMessageEventArgs> OnShowMessage;
         public event Action OnLogOutCompleted;
-
+        private Main main;
+        public JSCallCS(WebBrowser web, Main main)
+        {
+            this._web = web;
+            this.main = main;
+            _thisType = this.GetType();
+        }
         public JSCallCS(WebBrowser web)
         {
             this._web = web;
@@ -357,11 +363,6 @@ namespace SSK
             }
         }
 
-        public void LoadSupervisee()
-        {
-            var _suppervisee = new CodeBehind.Suppervisee(_web);
-            _suppervisee.Start();
-        }
         public void SaveProfile(string param, bool primaryInfoChange)
         {
             try
@@ -395,7 +396,7 @@ namespace SSK
                 }
 
                 //load Supervisee page 
-                LoadPage("Supervisee.html");
+                LoadPageSupervisee();;
             }
             catch (Exception ex)
             {
@@ -559,7 +560,7 @@ namespace SSK
             DAL_Appointments _Appointment = new DAL_Appointments();
             Trinity.DAL.DBContext.Appointment appointment = new DAL_Appointments().GetAppointmentByDate(supervisee.UserId, DateTime.Today);
             //Trinity.DAL.DBContext.Appointment appointment = _Appointment.GetMyAppointmentByDate(user.UserId, DateTime.Today);
-            if (appointment == null && supervisee.Role == EnumUserRoles.Supervisee)
+            if (appointment == null && currentUser.Role == EnumUserRoles.Supervisee)
             {
                 var eventCenter = Trinity.Common.Common.EventCenter.Default;
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_MESSAGE, Message = "You have no appointment today" });
@@ -611,40 +612,8 @@ namespace SSK
                 }
                 else
                 {
-                    var eventCenter = Trinity.Common.Common.EventCenter.Default;
-                    eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_MESSAGE, Message = "You have already queued!\n Please wait for your turn." });
+                    this._web.ShowMessage("You have already queued!\n Please wait for your turn.");
                 }
-
-                ////check queue exist
-                //if (!_dalQueue.IsUserAlreadyQueue(userSupervise.UserId, DateTime.Today))
-                //{
-
-                //    if (appointment.Timeslot_ID != null)
-                //    {
-                //        queueNumber = _dalQueue.InsertQueueNumber(appointment.ID, appointment.UserId, EnumStation.SSK);
-
-                //        var eventCenter = Trinity.Common.Common.EventCenter.Default;
-                //        eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_MESSAGE, Message = "Your queue number is:" + queueNumber.QueuedNumber });
-                //    }
-                //    else
-                //    {
-                //        var eventCenter = Trinity.Common.Common.EventCenter.Default;
-                //        eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_MESSAGE, Message = "You have not selected the timeslot!\n Please go to Book Appointment page to select a timeslot." });
-                //        //BookAppointment();
-                //    }
-
-                //    //RaiseOnShowMessageEvent(new ShowMessageEventArgs("Your queue number is: " + queueNumber.QueuedNumber, "Queue Number", MessageBoxButtons.OK, MessageBoxIcon.Information));
-                //}
-                //else
-                //{
-                //    var eventCenter = Trinity.Common.Common.EventCenter.Default;
-                //    eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_MESSAGE, Message = "You have already queued!\n Please wait for your turn." });
-                //}
-                ////var model = _dalQueue.GetAllQueueNumberByDate(DateTime.Today).Select(d => new Trinity.BE.Queue()
-                ////{
-                ////    Status = d.Status,
-                ////    QueueNumber = d.QueuedNumber
-                ////}).ToArray();
             }
         }
 
@@ -666,7 +635,7 @@ namespace SSK
             {
                 dataAbsenceReporting = dataTxt;
                 LoadPage("Document.html");
-                Trinity.Util.DocumentScannerUtil.Instance.StartScanning(DocumentScannerCallback);
+                //Trinity.Util.DocumentScannerUtil.Instance.StartScanning(DocumentScannerCallback);
             }
             else
             {
@@ -678,7 +647,8 @@ namespace SSK
         {
             List<Dictionary<string, string>> data = JsonConvert.DeserializeObject<List<Dictionary<string, string>>>(dataTxt);
             new DAL_AbsenceReporting().InsertAbsentReason(data, IdDocument);
-            LoadPage("Supervisee.html");
+            LoadPageSupervisee();
+            //
         }
         //public void SaveReasonForQueue(/*string data,*/ string reason, string selectedID)
         //{
@@ -736,13 +706,13 @@ namespace SSK
         //    if (reasonModel.Value == (int)EnumAbsenceReasons.No_Valid_Reason)
         //    {
         //        APIUtils.SignalR.SendToAllDutyOfficers(user.UserId, user.Name + " has not provided any valid reason", " Please check the Supervisee's information!", NotificationType.Notification);
-        //        LoadPage("Supervisee.html");
+        //        LoadPageSupervisee();;
         //        return;
         //    }
 
         //    APIUtils.SignalR.SendToAllDutyOfficers(user.UserId, user.Name + " has provided absent reason", user.Name + " has provided absent reason.", NotificationType.Notification);
         //    ReportingForQueueNumber();
-        //    LoadPage("Supervisee.html");
+        //    LoadPageSupervisee();;
         //}
 
         public void UpdateAbsenceAfterScanDoc()
@@ -766,9 +736,12 @@ namespace SSK
                     // dalAppointment.UpdateReason(item.ID, absenceData.ID);
                 }
             }
+            LoadPageSupervisee();
 
-            LoadPage("Supervisee.html");
-
+        }
+        public void LoadPageSupervisee()
+        {
+            main.NavigateTo(NavigatorEnums.Supervisee);
         }
         public void LogOut()
         {
