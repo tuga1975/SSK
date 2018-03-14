@@ -37,7 +37,7 @@ namespace Trinity.Device.Util
 
         public EnumDeviceStatus[] GetDeviceStatus()
         {
-            return new EnumDeviceStatus[] { EnumDeviceStatus.Disconnected };
+            return new EnumDeviceStatus[] { EnumDeviceStatus.Connected };
         }
     }
 }

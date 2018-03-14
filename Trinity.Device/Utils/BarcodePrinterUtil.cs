@@ -183,7 +183,7 @@ namespace Trinity.Device.Util
                 TSCLIB_DLL.sendcommand("GAP 3mm, 0mm");
                 TSCLIB_DLL.sendcommand("DIRECTION 0");
                 TSCLIB_DLL.sendcommand("CLS");
-                TSCLIB_DLL.sendcommand("BOX 0,0,312,624,4");
+                //TSCLIB_DLL.sendcommand("BOX 0,0,312,624,4");
                 TSCLIB_DLL.sendcommand("TEXT 280,312,\"ROMAN.TTF\",90,12,12,2,\"CENTRAL NARCOTICS BUREAU\"");
                 //TSCLIB_DLL.windowsfont(startX, startY, fontHeight, rotation, fontStyle, 0, fontName, "Name");
                 // Title line
