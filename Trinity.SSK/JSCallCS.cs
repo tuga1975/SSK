@@ -587,7 +587,10 @@ namespace SSK
 
         private void DocumentScannerCallback(string frontPath, string error)
         {
-            _web.InvokeScript("showImageAffterScan", frontPath);
+            System.Drawing.Bitmap converPng = new System.Drawing.Bitmap(frontPath);
+            converPng.Save(frontPath+".png", System.Drawing.Imaging.ImageFormat.Png);
+            _web.InvokeScript("showImageAffterScan", frontPath + ".png");
+           
             Trinity.Util.DocumentScannerUtil.Instance.StopScanning();
         }
         public void PopupShowImageScan(string frontPath)
