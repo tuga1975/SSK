@@ -27,7 +27,9 @@
         api.server.PopupShowImageScan(img, function () {
             $('#PopupShowImageScan').modal();
             $('#PopupShowImageScan button').click(function () {
-                api.server.SaveScanDocumentAbsence(img);
+                api.server.SaveScanDocumentAbsence(img, function () {
+                    $('#PopupShowImageScan').modal('toggle');
+                });
             });
         });
     }
