@@ -201,7 +201,11 @@
                             if (re == true) {
                                 api.server.UpdateTimeAppointment(model[0].ID, timeslot_ID);
                             }
-                            $oldNotAvaiable.attr('availble', 'true');
+                            if ($oldNotAvaiable.length>0) {
+                                $oldNotAvaiable.attr('availble', 'true');
+                            }
+                              
+                           
                         }
                     }
                 });
