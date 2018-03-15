@@ -27,6 +27,7 @@ namespace Trinity.BackendAPI.Controllers
     public class SSPController : ApiController
     {
         [HttpPost]
+        [Custom(IgnoreParameter = "NRIC,transaction_code")]
         public IHttpActionResult Notification([FromBody]SSPModel data)
         {
             if (!string.IsNullOrEmpty(new DAL.DAL_Notification().SSPInsert(data.source, data.type, data.content, data.datetime, data.notification_code)))
@@ -35,6 +36,7 @@ namespace Trinity.BackendAPI.Controllers
                 return Ok(false);
         }
         [HttpPost]
+        [Custom(IgnoreParameter = "NRIC,notification_code,type")]
         public IHttpActionResult Transaction([FromBody]SSPModel data)
         {
             if (new DAL.DAL_Transactions().Insert(data.NRIC,data.source, data.type, data.content, data.datetime, data.transaction_code)!= Guid.Empty)
@@ -44,6 +46,7 @@ namespace Trinity.BackendAPI.Controllers
         }
 
         [HttpPost]
+        [Custom(AlowParameter = "NRIC,source")]
         public IHttpActionResult Authentication([FromBody]SSPModel data)
         {
             Trinity.DAL.DBContext.Membership_Users user = new DAL.DAL_User().GetByNRIC(data.NRIC);
@@ -65,6 +68,7 @@ namespace Trinity.BackendAPI.Controllers
             }
         }
         [HttpPost]
+        [Custom(AlowParameter = "NRIC")]
         public IHttpActionResult GetCaseOfficer([FromBody]SSPModel data)
         {
             Trinity.DAL.DBContext.Membership_Users user = new DAL.DAL_User().GetByNRIC(data.NRIC);
@@ -78,6 +82,7 @@ namespace Trinity.BackendAPI.Controllers
             }
         }
         [HttpPost]
+        [Custom(AlowParameter = "NRIC")]
         public IHttpActionResult DrugResult([FromBody]SSPModel data)
         {
             Trinity.DAL.DBContext.DrugResult result = new DAL.DAL_DrugResults().GetByNRIC(data.NRIC);
@@ -112,6 +117,7 @@ namespace Trinity.BackendAPI.Controllers
         }
 
         [HttpPost]
+        [Custom(AlowParameter = "NRIC")]
         public async System.Threading.Tasks.Task<IHttpActionResult> Completion([FromBody]SSPModel data)
         {
             await System.Threading.Tasks.Task.Run(() => Trinity.SignalR.Client.Instance.SSPCompleted(data.NRIC));
