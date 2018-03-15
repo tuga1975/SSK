@@ -15,6 +15,7 @@ using Trinity.Device;
 using Trinity.Device.Authentication;
 using Trinity.Device.Util;
 using Trinity.SignalR;
+using Trinity.Util;
 
 namespace SSK
 {
@@ -467,6 +468,18 @@ namespace SSK
                 //LEDStatusLightingUtil.Instance.TurnOffAllLEDs();
                 LEDStatusLightingUtil.Instance.ClosePort();
             }
+
+            //if (DocumentScannerUtil.Instance.EnableFeeder)
+            //{
+            //    DocumentScannerUtil.Instance.StopScanning();
+            //}
+
+            if (DocumentScannerUtil.Instance.Scanner_Connected)
+            {
+                DocumentScannerUtil.Instance.Disconnect();
+            }
+
+
             Application.ExitThread();
             APIUtils.Dispose();
         }
