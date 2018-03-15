@@ -17,27 +17,34 @@ namespace Trinity.DAL
 
         public DBContext.Label GetByDateAndUserId(DateTime Date, string UserId)
         {
-            if (EnumAppConfig.IsLocal)
+            try
             {
-                DBContext.Label label = _localUnitOfWork.DataContext.Labels.FirstOrDefault(d => DbFunctions.TruncateTime(d.Date).Value == Date && d.UserId == UserId);
-                if (label != null || EnumAppConfig.ByPassCentralizedDB)
+                if (EnumAppConfig.IsLocal)
                 {
-                    return label;
+                    DBContext.Label label = _localUnitOfWork.DataContext.Labels.FirstOrDefault(d => DbFunctions.TruncateTime(d.Date).Value == Date && d.UserId == UserId);
+                    if (label != null || EnumAppConfig.ByPassCentralizedDB)
+                    {
+                        return label;
+                    }
+                    else
+                    {
+                        bool centralizeStatus;
+                        var centralUpdate = CallCentralized.Get<Label>(EnumAPIParam.Label, "GetByDateAndUserId", out centralizeStatus, "date=" + Date.ToString(), "UserId=" + UserId);
+                        if (centralizeStatus)
+                        {
+                            return centralUpdate;
+                        }
+                        return null;
+                    }
                 }
                 else
                 {
-                    bool centralizeStatus;
-                    var centralUpdate = CallCentralized.Get<Label>(EnumAPIParam.Label, "GetByDateAndUserId", out centralizeStatus, "date=" + Date.ToString(), "UserId=" + UserId);
-                    if (centralizeStatus)
-                    {
-                        return centralUpdate;
-                    }
-                    return null;
+                    return _centralizedUnitOfWork.DataContext.Labels.FirstOrDefault(d => DbFunctions.TruncateTime(d.Date).Value == Date && d.UserId == UserId);
                 }
             }
-            else
+            catch(Exception e)
             {
-                return _centralizedUnitOfWork.DataContext.Labels.FirstOrDefault(d => DbFunctions.TruncateTime(d.Date).Value == Date && d.UserId == UserId);
+                return null;
             }
         }
 
@@ -201,7 +208,7 @@ namespace Trinity.DAL
                     //        UserId = d.UserId
                     //    });
 
-                    var lstModels = from l in _localUnitOfWork.DataContext.Labels
+                    var lstModels = (from l in _localUnitOfWork.DataContext.Labels
                                     join u in _localUnitOfWork.DataContext.Membership_Users on l.UserId equals u.UserId
                                     join q in _localUnitOfWork.DataContext.Queues on l.Queue_ID equals q.Queue_ID
                                     join t in _localUnitOfWork.DataContext.Timeslots on q.Timeslot_ID equals t.Timeslot_ID
@@ -213,13 +220,14 @@ namespace Trinity.DAL
                                         Name = u.Name,
                                         LastStation = l.LastStation,
                                         UserId = l.UserId,
-                                        TimeSlot_ID = q.Timeslot_ID,
-                                        StartTime = t.StartTime,
-                                        EndTime = t.EndTime,
-                                        PrintCount = l.PrintCount
-                                    };
+                                        //TimeSlot_ID = q.Timeslot_ID,
+                                        //StartTime = t.StartTime,
+                                        //EndTime = t.EndTime,
+                                        PrintCount = l.PrintCount,
+                                        MarkingNo = l.MarkingNo
+                                    }).GroupBy(d=>d.UserId).Select(d=>d.FirstOrDefault()).ToList();
 
-                    return lstModels.Distinct().ToList();
+                    return lstModels;
 
                     //if ((lstModels != null && lstModels.Count() > 0) || EnumAppConfig.ByPassCentralizedDB)
                     //{
@@ -260,10 +268,11 @@ namespace Trinity.DAL
                                         Name = u.Name,
                                         LastStation = l.LastStation,
                                         UserId = l.UserId,
-                                        TimeSlot_ID = q.Timeslot_ID,
-                                        StartTime = t.StartTime,
-                                        EndTime = t.EndTime,
-                                        PrintCount = l.PrintCount
+                                        //TimeSlot_ID = q.Timeslot_ID,
+                                        //StartTime = t.StartTime,
+                                        //EndTime = t.EndTime,
+                                        PrintCount = l.PrintCount,
+                                        MarkingNo = l.MarkingNo
                                     };
 
                     return lstModels.Distinct().ToList();
@@ -291,7 +300,8 @@ namespace Trinity.DAL
                                     Name = l.Membership_Users.Name,
                                     LastStation = l.LastStation,
                                     UserId = l.UserId,
-                                    IsSealed = d.IsSealed
+                                    IsSealed = d.IsSealed,
+                                    MarkingNo = l.MarkingNo
                                 })
                     .Where(d => d.IsSealed == true);
                     return lstModels.Distinct().ToList();
@@ -323,7 +333,8 @@ namespace Trinity.DAL
                                     Name = l.Membership_Users.Name,
                                     LastStation = l.LastStation,
                                     UserId = l.UserId,
-                                    IsSealed = d.IsSealed
+                                    IsSealed = d.IsSealed,
+                                    MarkingNo = l.MarkingNo
                                 })
                     .Where(d => d.IsSealed == true);
                     return lstModels.Distinct().ToList();
@@ -332,6 +343,41 @@ namespace Trinity.DAL
             catch (Exception e)
             {
                 return null;
+            }
+        }
+
+        public string GetMarkingNoByUserId(string userId)
+        {
+            try
+            {
+                if (EnumAppConfig.IsLocal)
+                {
+                    DBContext.Label label = _localUnitOfWork.DataContext.Labels.FirstOrDefault(d => d.UserId == userId);
+                    if (label == null)
+                    {
+                        return string.Empty;
+                    }
+                    else
+                    {
+                        return label.MarkingNo;
+                    }
+                }
+                else
+                {
+                    DBContext.Label label = _centralizedUnitOfWork.DataContext.Labels.FirstOrDefault(d => d.UserId == userId);
+                    if (label == null)
+                    {
+                        return string.Empty;
+                    }
+                    else
+                    {
+                        return label.MarkingNo;
+                    }
+                }
+            }
+            catch(Exception e)
+            {
+                return string.Empty;
             }
         }
     }

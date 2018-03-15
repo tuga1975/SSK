@@ -370,6 +370,7 @@
     <Content Include="View\img\Logo.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="View\img\logoCNB.svg" />
     <Content Include="View\img\Logout.png" />
     <Content Include="View\img\logoCNB.png" />
     <Content Include="View\img\ManualLogin.png" />

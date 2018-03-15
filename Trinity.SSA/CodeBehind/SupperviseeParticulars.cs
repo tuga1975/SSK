@@ -43,6 +43,12 @@ namespace SSA.CodeBehind
                     dalQueue.UpdateQueueStatusByUserId(supervisee.UserId, EnumStation.SSK, EnumQueueStatuses.Finished, EnumStation.SSA, EnumQueueStatuses.Processing, "Printing MUB/TT labels", EnumQueueOutcomeText.Processing);
                     Trinity.SignalR.Client.Instance.QueueCompleted(supervisee.UserId);
 
+                    string markingNo = new DAL_Labels().GetMarkingNoByUserId(supervisee.UserId);
+                    if(string.IsNullOrEmpty(markingNo))
+                    {
+                        markingNo = new DAL_SettingSystem().GenerateMarkingNumber();
+                    }
+
                     var labelInfo = new LabelInfo
                     {
                         UserId = supervisee.UserId,
@@ -52,7 +58,7 @@ namespace SSA.CodeBehind
                         Date = DateTime.Now.ToString("dd/MM/yyyy"),
                         CompanyName = CommonConstants.COMPANY_NAME,
                         LastStation = EnumStation.SSA,
-                        MarkingNo = new DAL_SettingSystem().GenerateMarkingNumber(),
+                        MarkingNo = markingNo,
                         DrugType = "NA"
                     };
 

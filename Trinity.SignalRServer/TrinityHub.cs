@@ -68,6 +68,18 @@ namespace Trinity.NotificationServer
             {
                 Clients.Clients(Program.ProfileConnected.Where(d => d.isApp && d.Station == EnumStation.DUTYOFFICER).Select(d => d.ConnectionId).ToList()).OnNewNotification(notificationInfo);
             }
+            else if (notificationInfo.Name == NotificationNames.DO_UNBLOCK_SUPERVISEE)
+            {
+                Clients.Clients(Program.ProfileConnected.Where(d => d.isApp && d.Station == EnumStation.SSK).Select(d => d.ConnectionId).ToList()).OnNewNotification(notificationInfo);
+            }
+            else if (notificationInfo.Name == NotificationNames.APPOINTMENT_BOOKED_OR_REPORTED)
+            {
+                Clients.Clients(Program.ProfileConnected.Where(d => d.isApp && d.Station == EnumStation.DUTYOFFICER).Select(d => d.ConnectionId).ToList()).OnNewNotification(notificationInfo);
+            }
+            else if (notificationInfo.Name == NotificationNames.QUEUE_INSERTED)
+            {
+                Clients.Clients(Program.ProfileConnected.Where(d => d.isApp && d.Station == EnumStation.DUTYOFFICER).Select(d => d.ConnectionId).ToList()).OnNewNotification(notificationInfo);
+            }
         }
 
         #region Connection functions

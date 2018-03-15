@@ -11,6 +11,7 @@ using Trinity.DAL.DBContext;
 using Trinity.Device;
 using Trinity.BE;
 using Trinity.Device.Util;
+using Trinity.Util;
 
 namespace SSK
 {
@@ -20,7 +21,13 @@ namespace SSK
         public event EventHandler<NRICEventArgs> OnNRICFailed;
         public event EventHandler<ShowMessageEventArgs> OnShowMessage;
         public event Action OnLogOutCompleted;
-
+        private Main main;
+        public JSCallCS(WebBrowser web, Main main)
+        {
+            this._web = web;
+            this.main = main;
+            _thisType = this.GetType();
+        }
         public JSCallCS(WebBrowser web)
         {
             this._web = web;
@@ -170,7 +177,7 @@ namespace SSK
                 Status = appointment.Status,
                 ReportTime = appointment.ReportTime,
                 StartTime = appointment.Timeslot != null ? appointment.Timeslot.StartTime : null,
-                EndTime = appointment.Timeslot != null ? appointment.Timeslot.EndTime : null,
+                EndTime = appointment.Timeslot != null ? appointment.Timeslot.EndTime : null
             };
 
             // redirect
@@ -193,9 +200,9 @@ namespace SSK
             
         }
 
-        public bool CheckBookingTime(string timeslotId,DateTime date)
+        public bool CheckBookingTime(string timeslotId,string date)
         {
-            return new DAL_Timeslots().CheckTimeslot(timeslotId,date);
+            return new DAL_Timeslots().CheckTimeslot(timeslotId,Convert.ToDateTime(date));
         }
 
         private List<WorkingShiftDetails> GetWorkingTimeshift(List<Timeslot> timeslots, string selected_Timeslot_ID, string timeshift)
@@ -260,64 +267,28 @@ namespace SSK
         //    }
         //}
 
-        public bool UpdateTimeAppointment(string appointment_ID, string timeslot_ID)
+        public void UpdateTimeAppointment(string appointment_ID, string timeslot_ID)
         {
-            try
+            if(new DAL_QueueNumber().IsInQueue(appointment_ID, EnumStation.SSK))
             {
-                // if appointment is in queue, return false
-                bool inQueue = new DAL_QueueNumber().IsInQueue(appointment_ID, EnumStation.SSK);
-                if (inQueue)
-                {
-                    return false;
-                }
-
-                // if not, update Appointments.timeslotId
+                this._web.ShowMessage("You have already queued!<br/> The timeslot cannot be changed.");
+            }
+            else
+            {
                 bool updateResult = new DAL_Appointments().UpdateTimeslot_ID(appointment_ID, timeslot_ID);
 
                 if (updateResult)
                 {
+                    Trinity.SignalR.Client.Instance.AppointmentBookedOrReported(appointment_ID, EnumAppointmentStatuses.Booked);
                     AppointmentDetails appointmentdetails = new DAL_Appointments().GetAppointmentDetails(appointment_ID);
                     ReceiptPrinterUtil.Instance.PrintAppointmentDetails(appointmentdetails);
-                    FormQueueNumber f = FormQueueNumber.GetInstance();
-                    f.RefreshQueueNumbers();
-                    return true;
+                    LoadPageSupervisee();
                 }
-
-                return false;
+                else
+                {
+                    this._web.ShowMessage("Booking Appointment failed<br/>Please try again");
+                }
             }
-            catch (Exception ex)
-            {
-                return false;
-            }
-
-
-            //var dbAppointment = new DAL_Appointments().GetAppointmentByID(Guid.Parse(IDAppointment));
-            ////check exist queue
-            //var dalQueue = new DAL_QueueNumber();
-            //if (dbAppointment != null)
-            //{
-            //if (!dalQueue.CheckQueueExistToday(dbAppointment.UserId, EnumStation.SSK))
-            //    {
-            //        //var data = JsonConvert.SerializeObject(new { IDAppointment, timeStart, timeEnd });
-            //        new DAL_Appointments().UpdateBookingTime(IDAppointment, timeStart, timeEnd);
-
-            //        // dalAppointments.UpdateBookTime(IDAppointment, timeStart, timeEnd);
-
-            //        Trinity.BE.Appointment appointment = new DAL_Appointments().GetAppmtDetails(Guid.Parse(IDAppointment)); 
-            //        //Trinity.BE.Appointment appointment = dalAppointments.GetAppointmentDetails(new Guid(IDAppointment));
-
-            //        APIUtils.Printer.PrintAppointmentDetails("AppointmentDetailsTemplate.html", appointment);
-            //        FormQueueNumber f = FormQueueNumber.GetInstance();
-            //        f.RefreshQueueNumbers();
-            //        return true;
-            //    }
-            //    else
-            //    {
-            //        return false;
-            //    }
-
-            //}
-            //return false;
         }
 
         public void PrintAppointmentDetails(string appointmentId)
@@ -358,11 +329,6 @@ namespace SSK
             }
         }
 
-        public void LoadSupervisee()
-        {
-            var _suppervisee = new CodeBehind.Suppervisee(_web);
-            _suppervisee.Start();
-        }
         public void SaveProfile(string param, bool primaryInfoChange)
         {
             try
@@ -396,7 +362,7 @@ namespace SSK
                 }
 
                 //load Supervisee page 
-                LoadPage("Supervisee.html");
+                LoadPageSupervisee();;
             }
             catch (Exception ex)
             {
@@ -560,7 +526,7 @@ namespace SSK
             DAL_Appointments _Appointment = new DAL_Appointments();
             Trinity.DAL.DBContext.Appointment appointment = new DAL_Appointments().GetAppointmentByDate(supervisee.UserId, DateTime.Today);
             //Trinity.DAL.DBContext.Appointment appointment = _Appointment.GetMyAppointmentByDate(user.UserId, DateTime.Today);
-            if (appointment == null && supervisee.Role == EnumUserRoles.Supervisee)
+            if (appointment == null && currentUser.Role == EnumUserRoles.Supervisee)
             {
                 var eventCenter = Trinity.Common.Common.EventCenter.Default;
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_MESSAGE, Message = "You have no appointment today" });
@@ -582,6 +548,8 @@ namespace SSK
                         queueNumber = _dalQueue.InsertQueueNumber(appointment.ID, appointment.UserId, EnumStation.SSK, currentUser.UserId);
                         if (queueNumber != null)
                         {
+                            Trinity.SignalR.Client.Instance.AppointmentBookedOrReported(appointment.ID.ToString().Trim(), EnumAppointmentStatuses.Reported);
+                            Trinity.SignalR.Client.Instance.QueueInserted(queueNumber.Queue_ID.ToString().Trim());
                             APIUtils.FormQueueNumber.RefreshQueueNumbers();
                             var eventCenter = Trinity.Common.Common.EventCenter.Default;
                             eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_MESSAGE, Message = "Your queue number is:" + queueNumber.QueuedNumber });
@@ -597,6 +565,7 @@ namespace SSK
                         queueNumber = _dalQueue.InsertQueueNumberFromDO(supervisee.UserId, EnumStation.SSK, currentUser.UserId);
                         if (queueNumber != null)
                         {
+                            Trinity.SignalR.Client.Instance.QueueInserted(queueNumber.Queue_ID.ToString().Trim());
                             APIUtils.FormQueueNumber.RefreshQueueNumbers();
                             var eventCenter = Trinity.Common.Common.EventCenter.Default;
                             eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_MESSAGE, Message = "Your queue number is:" + queueNumber.QueuedNumber });
@@ -609,40 +578,8 @@ namespace SSK
                 }
                 else
                 {
-                    var eventCenter = Trinity.Common.Common.EventCenter.Default;
-                    eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_MESSAGE, Message = "You have already queued!\n Please wait for your turn." });
+                    this._web.ShowMessage("You have already queued!\n Please wait for your turn.");
                 }
-
-                ////check queue exist
-                //if (!_dalQueue.IsUserAlreadyQueue(userSupervise.UserId, DateTime.Today))
-                //{
-
-                //    if (appointment.Timeslot_ID != null)
-                //    {
-                //        queueNumber = _dalQueue.InsertQueueNumber(appointment.ID, appointment.UserId, EnumStation.SSK);
-
-                //        var eventCenter = Trinity.Common.Common.EventCenter.Default;
-                //        eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_MESSAGE, Message = "Your queue number is:" + queueNumber.QueuedNumber });
-                //    }
-                //    else
-                //    {
-                //        var eventCenter = Trinity.Common.Common.EventCenter.Default;
-                //        eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_MESSAGE, Message = "You have not selected the timeslot!\n Please go to Book Appointment page to select a timeslot." });
-                //        //BookAppointment();
-                //    }
-
-                //    //RaiseOnShowMessageEvent(new ShowMessageEventArgs("Your queue number is: " + queueNumber.QueuedNumber, "Queue Number", MessageBoxButtons.OK, MessageBoxIcon.Information));
-                //}
-                //else
-                //{
-                //    var eventCenter = Trinity.Common.Common.EventCenter.Default;
-                //    eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_MESSAGE, Message = "You have already queued!\n Please wait for your turn." });
-                //}
-                ////var model = _dalQueue.GetAllQueueNumberByDate(DateTime.Today).Select(d => new Trinity.BE.Queue()
-                ////{
-                ////    Status = d.Status,
-                ////    QueueNumber = d.QueuedNumber
-                ////}).ToArray();
             }
         }
 
@@ -650,9 +587,9 @@ namespace SSK
 
         private void DocumentScannerCallback(string frontPath, string error)
         {
-            Trinity.Util.DocumentScannerUtil.Instance.StopScanning();
             Guid IDDocuemnt = new DAL_UploadedDocuments().Insert(Lib.ReadAllBytes(frontPath), ((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId);
             _SaveReasonForQueue(dataAbsenceReporting, IDDocuemnt);
+            Trinity.Util.DocumentScannerUtil.Instance.StopScanning();
         }
         public void CancelScanDocumentFromReportAbsence()
         {
@@ -664,11 +601,10 @@ namespace SSK
             {
                 dataAbsenceReporting = dataTxt;
                 LoadPage("Document.html");
-                Trinity.Util.DocumentScannerUtil.Instance.StartScanning(DocumentScannerCallback);
+                //Trinity.Util.DocumentScannerUtil.Instance.StartScanning(DocumentScannerCallback);
             }
             else
             {
-
                 _SaveReasonForQueue(dataTxt, null);
             }
         }
@@ -676,7 +612,8 @@ namespace SSK
         {
             List<Dictionary<string, string>> data = JsonConvert.DeserializeObject<List<Dictionary<string, string>>>(dataTxt);
             new DAL_AbsenceReporting().InsertAbsentReason(data, IdDocument);
-            LoadPage("Supervisee.html");
+            LoadPageSupervisee();
+            //
         }
         //public void SaveReasonForQueue(/*string data,*/ string reason, string selectedID)
         //{
@@ -734,13 +671,13 @@ namespace SSK
         //    if (reasonModel.Value == (int)EnumAbsenceReasons.No_Valid_Reason)
         //    {
         //        APIUtils.SignalR.SendToAllDutyOfficers(user.UserId, user.Name + " has not provided any valid reason", " Please check the Supervisee's information!", NotificationType.Notification);
-        //        LoadPage("Supervisee.html");
+        //        LoadPageSupervisee();;
         //        return;
         //    }
 
         //    APIUtils.SignalR.SendToAllDutyOfficers(user.UserId, user.Name + " has provided absent reason", user.Name + " has provided absent reason.", NotificationType.Notification);
         //    ReportingForQueueNumber();
-        //    LoadPage("Supervisee.html");
+        //    LoadPageSupervisee();;
         //}
 
         public void UpdateAbsenceAfterScanDoc()
@@ -764,9 +701,12 @@ namespace SSK
                     // dalAppointment.UpdateReason(item.ID, absenceData.ID);
                 }
             }
+            LoadPageSupervisee();
 
-            LoadPage("Supervisee.html");
-
+        }
+        public void LoadPageSupervisee()
+        {
+            main.NavigateTo(NavigatorEnums.Supervisee);
         }
         public void LogOut()
         {

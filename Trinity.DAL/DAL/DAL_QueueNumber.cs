@@ -149,7 +149,7 @@ namespace Trinity.DAL
                     Timeslot_ID = timeslotID,
                     Appointment_ID = appointmentID,
                     CurrentStation = station,
-                    Outcome = EnumOutcome.GetQueue,
+                    Outcome = EnumOutcome.Processing,
                     CreatedTime = DateTime.Now,
                     QueuedNumber = generateQNo,
                     Created_By = userCreateQueue
@@ -688,7 +688,7 @@ namespace Trinity.DAL
                 var queueDetails = new List<BE.QueueDetail>();
                 if (EnumAppConfig.IsLocal)
                 {
-                    var queueData = _localUnitOfWork.DataContext.Queues.Include("Appointment").Include("Appointment.Membership_Users").FirstOrDefault(q => q.Queue_ID == queue_ID);
+                    var queueData = _localUnitOfWork.DataContext.Queues.FirstOrDefault(q => q.Queue_ID == queue_ID);
                     var queueDataDetails = _localUnitOfWork.DataContext.QueueDetails.Where(qd => qd.Queue_ID == queue_ID).ToList().Select(d => d.Map<BE.QueueDetail>()).ToList();
 
                     if (queueData != null)
@@ -711,7 +711,7 @@ namespace Trinity.DAL
                 }
                 else
                 {
-                    var queueData = _centralizedUnitOfWork.DataContext.Queues.Include("Appointment").Include("Appointment.Membership_Users").FirstOrDefault(q => q.Queue_ID == queue_ID);
+                    var queueData = _centralizedUnitOfWork.DataContext.Queues.FirstOrDefault(q => q.Queue_ID == queue_ID);
                     var queueDataDetails = _centralizedUnitOfWork.DataContext.QueueDetails.Where(qd => qd.Queue_ID == queue_ID).ToList().Select(d => d.Map<BE.QueueDetail>()).ToList();
                     if (queueData != null)
                     {
@@ -742,8 +742,8 @@ namespace Trinity.DAL
             if (dbQueue != null)
             {
                 queueInfo.Queue_ID = dbQueue.Queue_ID;
-                queueInfo.NRIC = dbQueue.Appointment.Membership_Users.NRIC;
-                queueInfo.Name = dbQueue.Appointment.Membership_Users.Name;
+                queueInfo.NRIC = dbQueue.Membership_Users1.NRIC;
+                queueInfo.Name = dbQueue.Membership_Users1.Name;
                 queueInfo.CurrentStation = dbQueue.CurrentStation;
                 queueInfo.Status = queueDetails.FirstOrDefault(qd => qd.Station.Equals(dbQueue.CurrentStation)).Status;
                 queueInfo.QueueDetail = queueDetails.Where(qd => qd.Message != null && qd.Message != "").ToList();

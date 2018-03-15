@@ -30,7 +30,7 @@
     </div>
 </div>
 <div id="footer" style="position:absolute;bottom:-5px;left:0px;width:calc(100%);height:50px;text-align:right;">
-    <input type="button" value="CANCEL" style="background-color:#FFF;color:#1cacf6;border:none;border-radius:5px;padding:8px 20px;border:1px solid #DDD;margin-right:20px;font-weight:bold;" onclick="api.server.LoadPage('Supervisee.html');" />
+    <input type="button" value="CANCEL" style="background-color:#FFF;color:#1cacf6;border:none;border-radius:5px;padding:8px 20px;border:1px solid #DDD;margin-right:20px;font-weight:bold;" onclick="api.server.LoadPageSupervisee();" />
     <input type="button" value="CONFIRM" style="background-color:#1cacf6;color:#FFF;border:none;border-radius:5px;padding:8px 20px;border:1px solid #1cacf6;font-weight:bold;" btn-save-bookappointment="" />
 </div>
 <style type="text/css">
@@ -174,7 +174,7 @@
 
         $('[btn-save-bookappointment]').click(function () {
             var timeslotNowId = $('[item-reason][active="true"]').length > 0 ? $('[item-reason][active="true"]').attr('timeslot_ID') : null;
-            if (timeslotNowId == null ) {
+            if (timeslotNowId == null) {
                 alert('Please choose the timeslot');
             }
             else if (timeslotNowId == timeslotOldId) {
@@ -185,8 +185,7 @@
                 var timeslot_ID = _this.attr('timeslot_ID');
                 var startTime = _this.attr('start');
                 var endTime = _this.attr('end');
-
-                api.server.CheckBookingTime(timeslot_ID, model[0].Date, function (isPast) {
+                api.server.CheckBookingTime(timeslot_ID, model[0].AppointmentDate, function (isPast) {
                     if (isPast) {
                         alert('You can not choose the timeslot in the past.');
                     }
@@ -195,23 +194,13 @@
                             alert('You have exceeded the number of times allowed for time slot change. Please keep to your timeslot ' + startTime + ' on ' + model[0].GetDateTxt + '. Otherwise, please contact your case officer.');
                             $('[item-reason]').attr('active', 'false');
                             $oldActive.attr('active', 'true');
-                           
+
                         } else {
                             var re = confirm('You have selected the time slot\n' + startTime + ' on ' + model[0].GetDateTxt + '\nConfirm time slot?', 'Warning');
                             if (re == true) {
-                                api.server.UpdateTimeAppointment(model[0].ID, timeslot_ID, function (isUpdated) {
-                                    if (isUpdated) {
-                                        model[0].ChangedCount += 1;
-                                        $('[app-time]').text(startTime);
-                                        $oldActive = $('[active="true"]');
-                                    }
-                                    else {
-                                        alert("You have already queued!\n The timeslot cannot be changed.");
-                                    }
-                                });
+                                api.server.UpdateTimeAppointment(model[0].ID, timeslot_ID);
                             }
                         }
-                       // api.server.BookAppopintment();
                     }
                 });
             }

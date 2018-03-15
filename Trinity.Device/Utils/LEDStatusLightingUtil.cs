@@ -120,6 +120,12 @@ namespace Trinity.Device.Util
             }
         }
 
+        private void StartCommandHandler()
+        {
+            _commandThread = new Thread(new ThreadStart(CommandsHandler));
+            _commandThread.Start();
+        }
+
         #region Public functions
         private Thread _commandThread = null;
 
@@ -197,8 +203,7 @@ namespace Trinity.Device.Util
                         // Reset PLC
                         ResetPLC();
 
-                        _commandThread = new Thread(new ThreadStart(CommandsHandler));
-                        _commandThread.Start();
+                        StartCommandHandler();
 
                         return string.Empty;
                     }
@@ -659,125 +664,183 @@ namespace Trinity.Device.Util
 
         private void GetNextCommand()
         {
-            lock (syncRoot)
+            _currentCommand = EnumCommands.Unknown;
+            if (_waitingCommands.Count > 0)
             {
-                _currentCommand = EnumCommands.Unknown;
-                if (_waitingCommands.Count > 0)
+                if (_currentCommandIndex >= _waitingCommands.Count - 1)
                 {
-                    if (_currentCommandIndex >= _waitingCommands.Count - 1)
-                    {
-                        _currentCommandIndex = 0;
-                    }
-                    else
-                    {
-                        _currentCommandIndex++;
-                    }
-                    _currentCommand = _waitingCommands[_currentCommandIndex];
+                    _currentCommandIndex = 0;
                 }
+                else
+                {
+                    _currentCommandIndex++;
+                }
+                _currentCommand = _waitingCommands[_currentCommandIndex];
             }
         }
 
         private void CompleteCurrentCommand(bool result)
         {
-            _waitingCommands.Remove(_currentCommand);
-            _commandsRetryCount.Remove(_currentCommand);
-            WorkCompletedCallback callback = _callbacks[_currentCommand];
-            _callbacks.Remove(_currentCommand);
-            _currentCommand = EnumCommands.Unknown;
-            callback(result);
+            try
+            {
+                lock (syncRoot)
+                {
+                    _waitingCommands.Remove(_currentCommand);
+                    _commandsRetryCount.Remove(_currentCommand);
+                    WorkCompletedCallback callback = _callbacks[_currentCommand];
+                    _callbacks.Remove(_currentCommand);
+                    _currentCommand = EnumCommands.Unknown;
+                    callback(result);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error in CompleteCurrentCommand. Details:" + ex.Message);
+            }
         }
 
         private void CommandsHandler()
         {
-            OnNewEvent?.Invoke(this, "CommandsHandler is started.");
-
-            while (IsPortOpen)
+            try
             {
-                if (_currentCommand == EnumCommands.Unknown)
+                OnNewEvent?.Invoke(this, "CommandsHandler is started.");
+
+                while (IsPortOpen)
                 {
-                    GetNextCommand();
-                    if (_currentCommand != EnumCommands.Unknown)
+                    if (_currentCommand == EnumCommands.Unknown)
                     {
-                        // Start to process new command
-                        this.DataReceived += SendCommand_Async_Callback;
-                        string asciiCommand = _rs232Commands[_currentCommand];
-                        _commandsRetryCount[_currentCommand]++;
-                        OnNewEvent?.Invoke(this, "SendCommand_Async_Callback, response:" + "About to send command:" + _currentCommand + ", retry:" + _commandsRetryCount[_currentCommand]);
-                        SendASCIICommand(asciiCommand);
+                        lock (syncRoot)
+                        {
+                            if (_currentCommand == EnumCommands.Unknown)
+                            {
+                                try
+                                {
+                                    GetNextCommand();
+                                }
+                                catch (Exception ex)
+                                {
+                                    MessageBox.Show("Error in GetNextCommand. Details:" + ex.Message);
+                                }
+                                if (_currentCommand != EnumCommands.Unknown)
+                                {
+                                    // Start to process new command
+                                    this.DataReceived += SendCommand_Async_Callback;
+                                    string asciiCommand = "";
+
+                                    asciiCommand = _rs232Commands[_currentCommand];
+
+                                    try
+                                    {
+                                        _commandsRetryCount[_currentCommand]++;
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        _commandsRetryCount[_currentCommand] = _maxRetryCount;
+                                        //MessageBox.Show("Error in _commandsRetryCount[_currentCommand]++. Details:" + ex.Message + ", Command:" + _currentCommand);
+                                    }
+                                    OnNewEvent?.Invoke(this, "SendCommand_Async_Callback, response:" + "About to send command:" + _currentCommand + ", retry:" + _commandsRetryCount[_currentCommand]);
+
+                                    SendASCIICommand(asciiCommand);
+                                }
+                            }
+                        }
                     }
+
+                    Thread.Sleep(200);
                 }
-
-                Thread.Sleep(200);
+                OnNewEvent?.Invoke(this, "CommandsHandler is stopped.");
             }
-            OnNewEvent?.Invoke(this, "CommandsHandler is stopped.");
-
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error in CommandsHandler. Details:" + ex.Message);
+                StartCommandHandler();
+            }
         }
 
         public void SendCommand_Async(EnumCommands command, WorkCompletedCallback callback)
         {
-            OnNewEvent?.Invoke(this, "Add command:" + command + " to waiting commands");
-
-            _commandsRetryCount[command] = 0;
-            _waitingCommands.Add(command);
-            _callbacks[command] = callback;
+            try
+            {
+                OnNewEvent?.Invoke(this, "Add command:" + command + " to waiting commands");
+                lock (syncRoot)
+                {
+                    _commandsRetryCount[command] = 0;
+                    _waitingCommands.Add(command);
+                    _callbacks[command] = callback;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error in SendCommand_Async. Details:" + ex.Message);
+            }
         }
 
         private void SendCommand_Async_Callback(object sender, string response)
         {
-            this.DataReceived -= SendCommand_Async_Callback;
-            WorkCompletedCallback callback = _callbacks[_currentCommand];
-            OnNewEvent?.Invoke(this, "SendCommand_Async_Callback, response:" + response);
-
-            lock (syncRoot)
+            try
             {
-                if (_currentCommand == EnumCommands.CheckIfMUBIsPresent || _currentCommand == EnumCommands.CheckIfTTIsPresent)
+                lock (syncRoot)
                 {
-                    if (response == "0")
+                    this.DataReceived -= SendCommand_Async_Callback;
+                    WorkCompletedCallback callback = _callbacks[_currentCommand];
+                    OnNewEvent?.Invoke(this, "SendCommand_Async_Callback, response:" + response);
+
+
+                    if (_currentCommand == EnumCommands.CheckIfMUBIsPresent || _currentCommand == EnumCommands.CheckIfTTIsPresent)
                     {
-                        CompleteCurrentCommand(false);
-                        return;
-                    }
-                    else
-                    {
-                        CompleteCurrentCommand(true);
-                        return;
-                    }
-                }
-                else if (_currentCommand == EnumCommands.CheckIfMUBIsRemoved || _currentCommand == EnumCommands.CheckIfTTIsRemoved)
-                {
-                    if (response == "0")
-                    {
-                        CompleteCurrentCommand(true);
-                        return;
-                    }
-                    else
-                    {
-                        CompleteCurrentCommand(false);
-                        return;
-                    }
-                }
-                else
-                {
-                    if (response == "1" || response.ToLower() == "ok" || response.ToLower() == "yes")
-                    {
-                        CompleteCurrentCommand(true);
-                        return;
-                    }
-                    else
-                    {
-                        if (_commandsRetryCount[_currentCommand] == _maxRetryCount)
+                        if (response == "0")
                         {
                             CompleteCurrentCommand(false);
                             return;
                         }
                         else
                         {
-                            // Retry
-                            OnNewEvent?.Invoke(this, "Continue retrying..");
-                            _currentCommand = EnumCommands.Unknown;
+                            CompleteCurrentCommand(true);
+                            return;
+                        }
+                    }
+                    else if (_currentCommand == EnumCommands.CheckIfMUBIsRemoved || _currentCommand == EnumCommands.CheckIfTTIsRemoved)
+                    {
+                        if (response == "0")
+                        {
+                            CompleteCurrentCommand(true);
+                            return;
+                        }
+                        else
+                        {
+                            CompleteCurrentCommand(false);
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        if (response == "1" || response.ToLower() == "ok" || response.ToLower() == "yes")
+                        {
+                            CompleteCurrentCommand(true);
+                            return;
+                        }
+                        else
+                        {
+                            if (_commandsRetryCount[_currentCommand] == _maxRetryCount)
+                            {
+                                CompleteCurrentCommand(false);
+                                return;
+                            }
+                            else
+                            {
+                                // Retry
+                                OnNewEvent?.Invoke(this, "Continue retrying..");
+                                _currentCommand = EnumCommands.Unknown;
+                            }
                         }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                CompleteCurrentCommand(false);
+
+                MessageBox.Show("Error in SendCommand_Async_Callback. Details:" + ex.Message);
             }
         }
         ///////////////////////////
@@ -836,7 +899,7 @@ namespace Trinity.Device.Util
 
         public string SendCommand(string hexCommand)
         {
-            lock (_serialPort)
+            lock (syncRoot)
             {
                 if (!IsPortOpen)
                 {
