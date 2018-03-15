@@ -343,7 +343,7 @@ namespace Enrolment
             data.UserProfile.Other_Address_ID = other_Address_ID;
 
             byte[] photo1 = VerifyImage(profileModel.UserProfile.User_Photo1);
-            byte[] photo2 = VerifyImage(profileModel.UserProfile.User_Photo1);
+            byte[] photo2 = VerifyImage(profileModel.UserProfile.User_Photo2);
 
             data.UserProfile.User_Photo1 = photo1;
             data.UserProfile.User_Photo2 = photo2;

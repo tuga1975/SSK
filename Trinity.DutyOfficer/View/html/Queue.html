@@ -169,6 +169,10 @@
     function reloadDataQueues() {
         api.server.getDataQueue(function (data) {
             $('#table-queue').bootstrapTable('load', data);
+            $('#table-queue').bootstrapTable('refreshOptions', {
+                pagination: true,
+                data: data
+            });
         });
     };
 

@@ -60,6 +60,12 @@ namespace Trinity.DAL
                 {
                     var locallabelRepo = _localUnitOfWork.GetRepository<Label>();
                     dbLabel = _localUnitOfWork.DataContext.Labels.FirstOrDefault(d => d.UserId == model.UserId && d.Label_Type.Equals(model.Label_Type));
+                    string lastStation = model.LastStation;
+                    if(model.LastStation == EnumStation.DUTYOFFICER)
+                    {
+                        lastStation = "DO";
+                    }
+
                     if (dbLabel == null)
                     {
                         dbLabel = new Label();
@@ -73,7 +79,7 @@ namespace Trinity.DAL
                         dbLabel.Name = model.Name;
                         dbLabel.Date = model.Date.Value;
                         dbLabel.QRCode = model.QRCode;
-                        dbLabel.LastStation = model.LastStation;
+                        dbLabel.LastStation = lastStation;
                         dbLabel.ReprintReason = model.ReprintReason;
                         dbLabel.PrintCount = 1;
                         dbLabel.PrintStatus = model.PrintStatus;
@@ -96,7 +102,7 @@ namespace Trinity.DAL
                         dbLabel.Name = model.Name;
                         dbLabel.Date = model.Date.Value;
                         dbLabel.QRCode = model.QRCode;
-                        dbLabel.LastStation = model.LastStation;
+                        dbLabel.LastStation = lastStation;
                         dbLabel.PrintCount += 1;
                         dbLabel.ReprintReason = model.ReprintReason;
                         dbLabel.PrintStatus = model.PrintStatus;
@@ -111,29 +117,36 @@ namespace Trinity.DAL
 
                     _localUnitOfWork.Save();
 
-                    if (EnumAppConfig.ByPassCentralizedDB)
-                    {
-                        return dbLabel;
-                    }
-                    else
-                    {
+                    return dbLabel;
 
-                        bool centralizeStatus;
-                        var centralUpdate = CallCentralized.Post<Label>(EnumAPIParam.Label, EnumAPIParam.UpdateLabel, out centralizeStatus, model);
-                        if (centralizeStatus)
-                        {                            
-                            return centralUpdate;
-                        }
-                        else
-                        {
-                            throw new Exception(EnumMessage.NotConnectCentralized);
-                        }
-                    }
+                    //if (EnumAppConfig.ByPassCentralizedDB)
+                    //{
+                    //    return dbLabel;
+                    //}
+                    //else
+                    //{
+
+                    //    bool centralizeStatus;
+                    //    var centralUpdate = CallCentralized.Post<Label>(EnumAPIParam.Label, EnumAPIParam.UpdateLabel, out centralizeStatus, model);
+                    //    if (centralizeStatus)
+                    //    {                            
+                    //        return centralUpdate;
+                    //    }
+                    //    else
+                    //    {
+                    //        throw new Exception(EnumMessage.NotConnectCentralized);
+                    //    }
+                    //}
                 }
                 else
                 {
                     var centralizeLabelRepo = _centralizedUnitOfWork.GetRepository<Label>();
                     dbLabel = _centralizedUnitOfWork.DataContext.Labels.FirstOrDefault(d => d.UserId == model.UserId && d.Label_Type.Equals(model.Label_Type));
+                    string lastStation = model.LastStation;
+                    if (model.LastStation == EnumStation.DUTYOFFICER)
+                    {
+                        lastStation = "DO";
+                    }
                     if (dbLabel == null)
                     {
                         dbLabel = new Label();
@@ -147,7 +160,7 @@ namespace Trinity.DAL
                         dbLabel.Name = model.Name;
                         dbLabel.Date = model.Date.Value;
                         dbLabel.QRCode = model.QRCode;
-                        dbLabel.LastStation = model.LastStation;
+                        dbLabel.LastStation = lastStation;
                         dbLabel.ReprintReason = model.ReprintReason;
                         dbLabel.PrintCount = 1;
                         dbLabel.PrintStatus = model.PrintStatus;
@@ -170,7 +183,7 @@ namespace Trinity.DAL
                         dbLabel.Name = model.Name;
                         dbLabel.Date = model.Date.Value;
                         dbLabel.QRCode = model.QRCode;
-                        dbLabel.LastStation = model.LastStation;
+                        dbLabel.LastStation = lastStation;
                         dbLabel.PrintCount += 1;
                         dbLabel.ReprintReason = model.ReprintReason;
                         dbLabel.PrintStatus = model.PrintStatus;
@@ -256,7 +269,7 @@ namespace Trinity.DAL
                     //    UserId = d.UserId
                     //});
 
-                    var lstModels = from l in _centralizedUnitOfWork.DataContext.Labels
+                    var lstModels = (from l in _centralizedUnitOfWork.DataContext.Labels
                                     join u in _centralizedUnitOfWork.DataContext.Membership_Users on l.UserId equals u.UserId
                                     join q in _centralizedUnitOfWork.DataContext.Queues on l.Queue_ID equals q.Queue_ID
                                     join t in _centralizedUnitOfWork.DataContext.Timeslots on q.Timeslot_ID equals t.Timeslot_ID
@@ -273,9 +286,9 @@ namespace Trinity.DAL
                                         //EndTime = t.EndTime,
                                         PrintCount = l.PrintCount,
                                         MarkingNo = l.MarkingNo
-                                    };
+                                    }).GroupBy(d => d.UserId).Select(d => d.FirstOrDefault()).ToList();
 
-                    return lstModels.Distinct().ToList();
+                    return lstModels;
                 }
             }
             catch (Exception e)
@@ -301,10 +314,12 @@ namespace Trinity.DAL
                                     LastStation = l.LastStation,
                                     UserId = l.UserId,
                                     IsSealed = d.IsSealed,
-                                    MarkingNo = l.MarkingNo
+                                    MarkingNo = l.MarkingNo,
+                                    Date = l.Date
                                 })
-                    .Where(d => d.IsSealed == true);
-                    return lstModels.Distinct().ToList();
+                    .Where(d => d.IsSealed == true)
+                    .GroupBy(d => d.UserId).Select(d => d.OrderByDescending(t=> DbFunctions.TruncateTime(t.Date)).FirstOrDefault()).ToList();
+                    return lstModels;
 
                     //if ((lstModels != null && lstModels.Count() > 0) || EnumAppConfig.ByPassCentralizedDB)
                     //{
@@ -334,10 +349,12 @@ namespace Trinity.DAL
                                     LastStation = l.LastStation,
                                     UserId = l.UserId,
                                     IsSealed = d.IsSealed,
-                                    MarkingNo = l.MarkingNo
+                                    MarkingNo = l.MarkingNo,
+                                    Date = l.Date
                                 })
-                    .Where(d => d.IsSealed == true);
-                    return lstModels.Distinct().ToList();
+                    .Where(d => d.IsSealed == true)
+                    .GroupBy(d => d.UserId).Select(d => d.OrderByDescending(t => DbFunctions.TruncateTime(t.Date)).FirstOrDefault()).ToList();
+                    return lstModels;
                 }
             }
             catch (Exception e)

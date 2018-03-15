@@ -120,5 +120,10 @@ public static class CSCallJS
         web.InvokeScript("refreshQueueNumbers", servingQueueNumber, currentQueueNumber, nextQueue, holdList);
     }
 
+    public static void ScanDocumentCompleted(this WebBrowser web, string frontPath)
+    {
+        web.InvokeScript("scanDocumentCompleted", frontPath);
+    }
+
     #endregion
 }
