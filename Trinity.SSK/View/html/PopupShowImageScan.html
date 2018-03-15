@@ -7,7 +7,13 @@
                     <img src="" style="width:100%;height:auto;"/>
                 </div>
                 <div>
-                    <button type="button" class="btn btn-primary">OK</button>
+                    <div style="float:left;width:calc(50% - 25px);">
+                        <button type="button" class="btn btn-primary" btn-cancel>Cancel</button>
+                    </div>
+                    <div style="float:right;width:calc(50% - 25px);">
+                        <button type="button" class="btn btn-primary" btn-ok>OK</button>
+                    </div>
+                    <div style="clear:both;"></div>
                 </div>
             </div>
         </div>
@@ -67,5 +73,10 @@
         text-align: center;
         color: #fff;
         font-weight: bold;
+    }
+    [btn-cancel] {
+        background-color: #FFF !important;
+        color: #333 !important;
+        border: 1px solid #CCC !important;
     }
 </style>
