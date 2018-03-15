@@ -863,7 +863,7 @@ tr.selected input[type="checkbox"]:after {
     color: #1cacf6;
     font-family: FontAwesome;
 }*/
-[type="checkbox"] + label {
+/*[type="checkbox"] + label {
     position: relative;
     padding-left: 35px;
     cursor: pointer;
@@ -897,4 +897,21 @@ tr.selected input[type="checkbox"]:after {
     border: 2px solid #26a69a;
     background-color: #26a69a;
     z-index: 0;
+}*/
+table thead th .both {
+    background-image: url(../img/icon-sort.png) !important;
+    margin-right: 4px !important;
 }
+table thead th .asc {
+    background-image: url(../img/icon-sort-asc.png) !important;
+    margin-right: 4px !important;
+}
+table thead th .desc {
+    background-image: url(../img/icon-sort-desc.png) !important;
+    margin-right: 4px !important;
+}
+/*#idEditOperationalDate select {
+    cursor: pointer;
+    background: #fff url(../img/icon-arrow.png) no-repeat right center;
+    margin-right: 10px;
+}*/
