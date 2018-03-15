@@ -28,6 +28,13 @@ namespace Trinity.Util
                 return enablefeeder;
             }
         }
+        public bool Scanner_Connected
+        {
+            get
+            {
+                return scanner_connected;
+            }
+        }
 
         #region Singleton Implementation
         // The variable is declared to be volatile to ensure that assignment to the instance variable completes before the instance variable can be accessed
@@ -37,6 +44,34 @@ namespace Trinity.Util
         private static object syncRoot = new Object();
 
         private DocumentScannerUtil()
+        {
+            
+        }
+
+        public static DocumentScannerUtil Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    lock (syncRoot)
+                    {
+                        if (_instance == null)
+                            _instance = new DocumentScannerUtil();
+                    }
+                }
+
+                return _instance;
+            }
+        }
+        #endregion
+
+        public EnumDeviceStatus[] GetDeviceStatus()
+        {
+            return new EnumDeviceStatus[] { EnumDeviceStatus.Connected };
+        }
+
+        private void Init()
         {
             IntPtr extra_info;
             IntPtr scanner_name = Marshal.AllocHGlobal(256);
@@ -90,33 +125,11 @@ namespace Trinity.Util
             GC.KeepAlive(scanning_handle);
         }
 
-        public static DocumentScannerUtil Instance
-        {
-            get
-            {
-                if (_instance == null)
-                {
-                    lock (syncRoot)
-                    {
-                        if (_instance == null)
-                            _instance = new DocumentScannerUtil();
-                    }
-                }
-
-                return _instance;
-            }
-        }
-        #endregion
-
-        public EnumDeviceStatus[] GetDeviceStatus()
-        {
-            return new EnumDeviceStatus[] { EnumDeviceStatus.Connected };
-        }
-
         public bool Connect()
         {
             try
             {
+                Init();
                 //MessageBox.Show("Connect");
                 pdiscan_errors pdiscan_error;
 
@@ -264,10 +277,10 @@ namespace Trinity.Util
                     }
                 }
 
-                if (scanner_connected)
+                _documentScannerCallback = documentScannerCallback;
+                if (scanner_connected && !enablefeeder)
                 {
                     //MessageBox.Show("StartScanning");
-                    //_documentScannerCallback = documentScannerCallback;
                     pdiscan_errors pdiscan_error = PdiScanWrap.PdEnableFeeder(scanning_handle);
                     if (pdiscan_error != pdiscan_errors.PDISCAN_ERR_NONE)
                     {

@@ -588,11 +588,11 @@ namespace DutyOfficer
                         UserId = userID,
                         Name = item.Name,
                         NRIC = item.NRIC,
-                        Label_Type = EnumLabelType.MUB,
+                        Label_Type = EnumLabelType.UB,
                         Date = DateTime.Now.ToString("dd/MM/yyyy"),
                         CompanyName = CommonConstants.COMPANY_NAME,
                         LastStation = EnumStation.DUTYOFFICER,
-                        MarkingNo = item.MarkingNo,//new DAL_SettingSystem().GenerateMarkingNumber(),
+                        MarkingNo = item.MarkingNo,
                         DrugType = item.DrugType,
                         ReprintReason = reason,
                         IsMUB = false
@@ -700,6 +700,7 @@ namespace DutyOfficer
 
                     DAL_User dalUser = new DAL_User();
                     string userID = dalUser.GetSuperviseeByNRIC(item.NRIC).UserId;
+                    string markingNo = new DAL_Labels().GetMarkingNoByUserId(userID);
                     LabelInfo labelInfo = new LabelInfo
                     {
                         UserId = userID,
@@ -709,7 +710,7 @@ namespace DutyOfficer
                         Date = DateTime.Now.ToString("dd/MM/yyyy"),
                         CompanyName = CommonConstants.COMPANY_NAME,
                         LastStation = EnumStation.DUTYOFFICER,
-                        MarkingNo = item.MarkingNo,//new DAL_SettingSystem().GenerateMarkingNumber(),
+                        MarkingNo = markingNo,//new DAL_SettingSystem().GenerateMarkingNumber(),
                         //DrugType = "NA",
                         ReprintReason = reason,
                         IsMUB = item.IsMUB,
@@ -731,10 +732,7 @@ namespace DutyOfficer
                             string fileName = String.Format("{0}/Temp/{1}", CSCallJS.curDir, "QRCode.png");
                             if (System.IO.File.Exists(fileName))
                                 System.IO.File.Delete(fileName);
-
-                            if (System.IO.File.Exists(fileName))
-                                System.IO.File.Delete(fileName);
-
+                            
                             System.Drawing.Image bitmap = System.Drawing.Image.FromStream(ms);
                             bitmap.Save(fileName, System.Drawing.Imaging.ImageFormat.Png);
                         }
