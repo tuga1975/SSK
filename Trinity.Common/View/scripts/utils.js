@@ -75,8 +75,10 @@ function AddContentPage(html, model) {
         $(this).attr('valonclick', value);
 
         value = $(this).attr('href');
-        $(this).attr('valhref', value);
-        $(this).attr('href','javascript:;');
+        if (value.indexOf('#')!=0) {
+            $(this).attr('valhref', value);
+            $(this).attr('href', 'javascript:;');
+        }
     });
     api.callReady(api.model);
 }
@@ -94,6 +96,17 @@ function AddContentPopup(html, model, id) {
         var value = $(this).attr('onclick');
         $(this).removeAttr('onclick');
         $(this).attr('valonclick', value);
+    });
+    $('#panel-popup > [id="' + id + '"]').find('a').each(function () {
+        var value = $(this).attr('onclick');
+        $(this).removeAttr('onclick');
+        $(this).attr('valonclick', value);
+
+        value = $(this).attr('href');
+        if (value.indexOf('#') != 0) {
+            $(this).attr('valhref', value);
+            $(this).attr('href', 'javascript:;');
+        }
     });
     api.callReady(api.model);
 }
@@ -152,7 +165,7 @@ function setLoading(status) {
 function RunScript(script) {
     eval(script);
 }
-function ShowMessageBox(title, message,id) {
+function ShowMessageBox(title, message, id) {
     api.server.ShowPopupMessage(title, message, id, function () {
         $('#PopupMessage').modal({
             backdrop: 'static',
