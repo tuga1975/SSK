@@ -33,7 +33,7 @@
             <h5>Edit Supervisee</h5>
         </div>
         <div class="container">
-            <form class="form-material">
+            <!--<form class="form-material">-->
                 <div class="w-75 mx-auto">
                     <h5 class="py-4">Update fingerprint</h5>
                     <div class="row">
@@ -94,15 +94,15 @@
                     </div>
                     <div class="row mt-4">
                         <div class="offset-md-2 col-md-4 col-sm-12">
-                            <a href="#" class="btn btn-light btn-block" onclick="api.server.CancelUpdateFingerprints();">Cancel</a>
+                            <button href="#" class="btn btn-light btn-block" onclick="api.server.CancelUpdateFingerprints();">Cancel</button>
                         </div>
                         <div class="col-md-4 col-sm-12">
-                            <a href="#" class="btn btn-primary btn-block" onclick="SubmitUpdateFingerprints();">Update</a>
+                            <button href="#" class="btn btn-primary btn-block" onclick="SubmitUpdateFingerprints();">Update</button>
                            
                         </div>
                     </div>
                 </div>
-            </form>
+            <!--</form>-->
         </div>
     </div>
 </div>
@@ -171,8 +171,8 @@
     }
     function clearFingerprint(LeftOrRight) {
         $('[capturefingerprint-img="' + LeftOrRight + '"]').attr('src', modelFingerprinter[LeftOrRight] == null ? '../images/fingerprint.png' : 'data:image/png;base64,' + modelFingerprinter[LeftOrRight]).attr('soure', '').attr('data-fingerprint', '');
-        $('[capturefingerprint-btn]="' + LeftOrRight + '"]').removeClass('link-grey')
-        $('[capturefingerprint-btn]="' + LeftOrRight + '"]').addClass('link-blue');
+        $('[capturefingerprint-btn="' + LeftOrRight + '"]').removeClass('link-grey')
+        $('[capturefingerprint-btn="' + LeftOrRight + '"]').addClass('link-blue');
     }
     function captureFingerprintMessage(LeftOrRight, Message, color) {
         $('[capturefingerprint-message="' + LeftOrRight + '"]').text(Message).css('color', color);

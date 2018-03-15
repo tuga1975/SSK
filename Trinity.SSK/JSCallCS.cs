@@ -591,7 +591,7 @@ namespace SSK
             converPng.Save(frontPath+".png", System.Drawing.Imaging.ImageFormat.Png);
             _web.InvokeScript("showImageAffterScan", frontPath + ".png");
            
-            Trinity.Util.DocumentScannerUtil.Instance.StopScanning();
+            //Trinity.Util.DocumentScannerUtil.Instance.StopScanning();
         }
         public void PopupShowImageScan(string frontPath)
         {
@@ -627,7 +627,6 @@ namespace SSK
             List<Dictionary<string, string>> data = JsonConvert.DeserializeObject<List<Dictionary<string, string>>>(dataTxt);
             new DAL_AbsenceReporting().InsertAbsentReason(data, IdDocument);
             LoadPageSupervisee();
-            //
         }
         //public void SaveReasonForQueue(/*string data,*/ string reason, string selectedID)
         //{
