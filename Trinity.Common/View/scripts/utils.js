@@ -69,6 +69,17 @@ function AddContentPage(html, model) {
         $(this).removeAttr('onclick');
         $(this).attr('valonclick', value);
     });
+    $('#content a').each(function () {
+        var value = $(this).attr('onclick');
+        $(this).removeAttr('onclick');
+        $(this).attr('valonclick', value);
+
+        value = $(this).attr('href');
+        if (value.indexOf('#')!=0) {
+            $(this).attr('valhref', value);
+            $(this).attr('href', 'javascript:;');
+        }
+    });
     api.callReady(api.model);
 }
 function AddContentPopup(html, model, id) {
@@ -85,6 +96,17 @@ function AddContentPopup(html, model, id) {
         var value = $(this).attr('onclick');
         $(this).removeAttr('onclick');
         $(this).attr('valonclick', value);
+    });
+    $('#panel-popup > [id="' + id + '"]').find('a').each(function () {
+        var value = $(this).attr('onclick');
+        $(this).removeAttr('onclick');
+        $(this).attr('valonclick', value);
+
+        value = $(this).attr('href');
+        if (value.indexOf('#') != 0) {
+            $(this).attr('valhref', value);
+            $(this).attr('href', 'javascript:;');
+        }
     });
     api.callReady(api.model);
 }
@@ -143,7 +165,7 @@ function setLoading(status) {
 function RunScript(script) {
     eval(script);
 }
-function ShowMessageBox(title, message,id) {
+function ShowMessageBox(title, message, id) {
     api.server.ShowPopupMessage(title, message, id, function () {
         $('#PopupMessage').modal({
             backdrop: 'static',
@@ -152,15 +174,21 @@ function ShowMessageBox(title, message,id) {
     });
 }
 $(document).ready(function () {
-    $('body').on('click', 'a[href]', function (event) {
+    $('body').on('click', 'a', function (event) {
         event.preventDefault();
-        var href = $(this).attr('href');
+        var href = $(this).attr('valhref');
         if (typeof href != 'undefined' && $.trim(href).length > 0) {
             try {
-                eval(href);
+                eval('(function() { ' + href + ' })()');
             } catch (e) {
 
             }
+        }
+        try {
+            if ($(this).is('[valonclick]')) {
+                eval('(function() { ' + $(this).attr('valonclick') + ' })()');
+            }
+        } catch (e) {
         }
     });
     $('body').on('click', 'button', function (event) {
