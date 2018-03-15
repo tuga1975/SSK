@@ -759,7 +759,9 @@ namespace DutyOfficer
 
             var labelInfo = JsonConvert.DeserializeObject<LabelInfo>(jsonModel);
             labelInfo.BitmapLabel = bitmapBytes;
-            
+
+            // Set MarkingNo for demo purpose
+            //labelInfo.MarkingNo = "CSA18001991";
             if (labelInfo.IsMUB == true)
             {
                 _printMUBAndTTLabel.StartPrintMUB(labelInfo);
