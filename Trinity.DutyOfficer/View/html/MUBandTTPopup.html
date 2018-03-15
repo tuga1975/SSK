@@ -42,7 +42,9 @@
             //api.server.PrintingMUBAndTTLabels(api.model.UserId, $('#Reason').val());
 
             var json = JSON.stringify(model);
-            api.server.MappingTemplateMUBAndTTLabels(json, $('#ReasonMUB').val());
+            api.server.MappingTemplateMUBAndTTLabels(json, $('#ReasonMUB').val(), function () {
+                $('#popupMUBandTTLabel').modal('toggle');
+            });
 
             e.preventDefault(); // avoid to execute the actual submit of the form.
         });
