@@ -380,19 +380,11 @@
         }
     }
     
-    //$('#searchForm').submit(function myfunction(e) {
-    //    //var $form = $("#searchForm");
-    //    //var data = getFormData($form);
-    //    //var json = JSON.stringify(data);
-    //    if ($.trim($('#nric').val()) != "") {
-    //        api.server.SearchSuperviseeByNRIC($('#nric').val());
-    //    }
-    //    else {
-    //        api.server.LoadListSupervisee();
-    //    }
+    $('#searchForm').submit(function myfunction(e) {
+        searchSuperviseeNric();
 
-    //    e.preventDefault();
-    //});
+        e.preventDefault();
+    });
 
     function getFormData($form) {
         var unindexed_array = $form.serializeArray();
