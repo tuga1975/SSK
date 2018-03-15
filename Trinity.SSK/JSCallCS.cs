@@ -587,14 +587,24 @@ namespace SSK
 
         private void DocumentScannerCallback(string frontPath, string error)
         {
-            if (string.IsNullOrEmpty(error))
-            {
-                Guid IDDocuemnt = new DAL_UploadedDocuments().Insert(Lib.ReadAllBytes(frontPath), ((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId);
-                _SaveReasonForQueue(dataAbsenceReporting, IDDocuemnt);
-
-                //CSCallJS.ScanDocumentCompleted(this._web, frontPath);
-                //Trinity.Util.DocumentScannerUtil.Instance.StopScanning();
-            }
+            System.Drawing.Bitmap converPng = new System.Drawing.Bitmap(frontPath);
+            converPng.Save(frontPath+".png", System.Drawing.Imaging.ImageFormat.Png);
+            _web.InvokeScript("showImageAffterScan", frontPath + ".png");
+           
+            Trinity.Util.DocumentScannerUtil.Instance.StopScanning();
+        }
+        public void PopupShowImageScan(string frontPath)
+        {
+            _web.LoadPopupHtml("PopupShowImageScan.html", frontPath);
+        }
+        public void StartScanDocumentFromAbsence()
+        {
+            Trinity.Util.DocumentScannerUtil.Instance.StartScanning(DocumentScannerCallback);
+        }
+        public void SaveScanDocumentAbsence(string frontPath)
+        {
+            Guid IDDocuemnt = new DAL_UploadedDocuments().Insert(Lib.ReadAllBytes(frontPath), ((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId);
+            _SaveReasonForQueue(dataAbsenceReporting, IDDocuemnt);
         }
         public void CancelScanDocumentFromReportAbsence()
         {
@@ -606,7 +616,6 @@ namespace SSK
             {
                 dataAbsenceReporting = dataTxt;
                 LoadPage("Document.html");
-                Trinity.Util.DocumentScannerUtil.Instance.StartScanning(DocumentScannerCallback);
             }
             else
             {

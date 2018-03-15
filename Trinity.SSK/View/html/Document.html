@@ -4,7 +4,8 @@
         <source src="../img/ThumbDocumentScanner.mp4" type="video/mp4">
     </video>
     <div style="position:absolute;right:0px;bottom:-55px;">
-        <input type="button" value="CANCEL" style="background-color:#FFF;color:#1cacf6;border:none;border-radius:5px;padding:8px 20px;border:1px solid #DDD;font-weight:bold;" onclick="api.server.CancelScanDocumentFromReportAbsence();" />
+        <input type="button" value="CANCEL" style="background-color:#FFF;color:#1cacf6;border:none;border-radius:5px;padding:8px 20px;border:1px solid #DDD;margin-right:20px;font-weight:bold;" onclick="api.server.CancelScanDocumentFromReportAbsence();" />
+        <input type="button" value="SCAN" style="background-color:#1cacf6;color:#FFF;border:none;border-radius:5px;padding:8px 20px;border:1px solid #1cacf6;font-weight:bold;" onclick="api.server.StartScanDocumentFromAbsence();"/>
     </div>
 </div>
 
@@ -21,5 +22,13 @@
 
 <script type="text/javascript">
     $('#header[right-show]').attr('right-show', '');
-    $('#content').css('font-size', 'unset');
+    $('#content').removeAttr('style');
+    function showImageAffterScan(img) {
+        api.server.PopupShowImageScan(img, function () {
+            $('#PopupShowImageScan').modal();
+            $('#PopupShowImageScan button').click(function () {
+                api.server.SaveScanDocumentAbsence(img);
+            });
+        });
+    }
 </script>

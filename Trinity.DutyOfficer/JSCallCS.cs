@@ -579,7 +579,9 @@ namespace DutyOfficer
                 foreach (var item in lstLabel)
                 {
                     if (_isPrintFailUB)
+                    {
                         break;
+                    }
 
                     DAL_User dalUser = new DAL_User();
                     string userID = dalUser.GetSuperviseeByNRIC(item.NRIC).UserId;
@@ -626,6 +628,15 @@ namespace DutyOfficer
 
                     Thread.Sleep(1500);
                 }
+
+                if (_isPrintFailUB)
+                {
+                    MessageBox.Show("Unable to print UB labels", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else
+                {
+                    MessageBox.Show("Print all labels successfully", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
                 _isPrintFailUB = false;
             }
             catch (Exception e)
@@ -650,7 +661,7 @@ namespace DutyOfficer
             if (!_isPrintFailUB)
             {
                 _isPrintFailUB = true;
-                MessageBox.Show("Unable to print UB labels\nPlease report to the Duty Officer", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //MessageBox.Show("Unable to print UB labels\nPlease report to the Duty Officer", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
             DeleteQRCodeImageFileTemp();
@@ -696,7 +707,9 @@ namespace DutyOfficer
                 foreach (var item in lstLabel)
                 {
                     if (_isPrintFailMUB && _isPrintFailTT)
+                    {
                         break;
+                    }
 
                     DAL_User dalUser = new DAL_User();
                     string userID = dalUser.GetSuperviseeByNRIC(item.NRIC).UserId;
@@ -736,11 +749,32 @@ namespace DutyOfficer
                             System.Drawing.Image bitmap = System.Drawing.Image.FromStream(ms);
                             bitmap.Save(fileName, System.Drawing.Imaging.ImageFormat.Png);
                         }
+                        _web.LoadPageHtml("PrintingTemplates/MUBLabelTemplate.html", labelInfo);
+                        Thread.Sleep(1000);
+                    }
+                    if (item.IsTT)
+                    {
+                        _printMUBAndTTLabel.StartPrintTT(labelInfo);
+                        Thread.Sleep(500);
                     }
 
-                    _web.LoadPageHtml("PrintingTemplates/MUBLabelTemplate.html", labelInfo);
+                }
 
-                    Thread.Sleep(1500);
+                if(_isPrintFailMUB && _isPrintFailTT)
+                {
+                    MessageBox.Show("Unable to print MUB and TT labels", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else if (_isPrintFailMUB)
+                {
+                    MessageBox.Show("Unable to print MUB labels", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else if(_isPrintFailTT)
+                {
+                    MessageBox.Show("Unable to print TT labels", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else
+                {
+                    MessageBox.Show("Print all labels successfully", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 _isPrintFailMUB = false;
                 _isPrintFailTT = false;
@@ -765,10 +799,6 @@ namespace DutyOfficer
             if (labelInfo.IsMUB == true)
             {
                 _printMUBAndTTLabel.StartPrintMUB(labelInfo);
-            }
-            if (labelInfo.IsTT == true)
-            {
-                _printMUBAndTTLabel.StartPrintTT(labelInfo);
             }
             
         }
@@ -814,7 +844,7 @@ namespace DutyOfficer
             if (!_isPrintFailMUB)
             {
                 _isPrintFailMUB = true;
-                MessageBox.Show("Unable to print MUB labels\nPlease report to the Duty Officer", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //MessageBox.Show("Unable to print MUB labels\nPlease report to the Duty Officer", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
             DeleteQRCodeImageFileTemp();
@@ -840,8 +870,8 @@ namespace DutyOfficer
             var dalLabel = new DAL_Labels();
             if (dalLabel.UpdateLabel(labelInfo) != null)
             {
-                string message = "Print TT for " + e.LabelInfo.Name + " successful.";
-                MessageBox.Show(message, "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //string message = "Print TT for " + e.LabelInfo.Name + " successful.";
+                //MessageBox.Show(message, "", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
             DeleteQRCodeImageFileTemp();
@@ -852,7 +882,7 @@ namespace DutyOfficer
             if (!_isPrintFailTT)
             {
                 _isPrintFailTT = true;
-                MessageBox.Show("Unable to print TT labels\nPlease report to the Duty Officer", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //MessageBox.Show("Unable to print TT labels\nPlease report to the Duty Officer", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
             DeleteQRCodeImageFileTemp();

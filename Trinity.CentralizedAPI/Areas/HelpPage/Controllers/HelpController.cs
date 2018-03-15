@@ -36,6 +36,7 @@ namespace Trinity.BackendAPI.Areas.HelpPage.Controllers
             if (!String.IsNullOrEmpty(apiId))
             {
                 HelpPageApiModel apiModel = Configuration.GetHelpPageApiModel(apiId);
+                
                 if (apiModel != null)
                 {
                     return View(apiModel);

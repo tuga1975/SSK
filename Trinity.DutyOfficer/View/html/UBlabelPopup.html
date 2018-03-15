@@ -21,13 +21,13 @@
                     <br />
                     <div>
                         <label class="textarea" type="text">Reason:</label>
-                        <textarea type="text" class="form-control pri col-12" rows="5" id="Reason"></textarea>
+                        <textarea type="text" class="form-control pri col-12" rows="5" id="ReasonUB"></textarea>
                     </div>
                 </div>
             </div>
             <div class="modal-footer d-flex justify-content-center">
                 <button type="button" class="btn btn-default" data-dismiss="modal" aria-label="Close">CANCEL</button>
-                <button type="button" id="PrintBtn" class="btn btn-default">PRINT</button>
+                <button type="button" id="PrintBtnUB" class="btn btn-default">PRINT</button>
             </div>
         </div>
     </div>
@@ -36,13 +36,15 @@
     api.ready(function (model) {
         $('#OfficerNRICUB').val(model[0].OfficerNRIC);
         $('#OfficerNameUB').val(model[0].OfficerName);
-        $("#PrintBtn").click(function (e) {
+        $("#PrintBtnUB").click(function (e) {
             //var json = JSON.stringify(api.model);
 
             //api.server.PrintingMUBAndTTLabels(api.model.UserId, $('#Reason').val());
 
             var json = JSON.stringify(model);
-            api.server.MappingTemplateUBLabels(json, $('#Reason').val());
+            api.server.MappingTemplateUBLabels(json, $('#ReasonUB').val(), function () {
+                $('#UBLabelpopup').modal('toggle');
+            });
 
             e.preventDefault(); // avoid to execute the actual submit of the form.
         });
