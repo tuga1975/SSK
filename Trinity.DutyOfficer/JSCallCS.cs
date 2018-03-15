@@ -761,7 +761,7 @@ namespace DutyOfficer
             labelInfo.BitmapLabel = bitmapBytes;
 
             // Set MarkingNo for demo purpose
-            labelInfo.MarkingNo = "CSA18001991";
+            //labelInfo.MarkingNo = "CSA18001991";
             if (labelInfo.IsMUB == true)
             {
                 _printMUBAndTTLabel.StartPrintMUB(labelInfo);
