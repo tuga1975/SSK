@@ -115,7 +115,8 @@ namespace SSA
                     QRCode = e.LabelInfo.QRCode,
                     LastStation = e.LabelInfo.LastStation,
                     PrintCount = e.LabelInfo.PrintCount,
-                    ReprintReason = e.LabelInfo.ReprintReason
+                    ReprintReason = e.LabelInfo.ReprintReason,
+                    PrintStatus = EnumPrintStatus.Successful
                 };
 
                 var dalLabel = new DAL_Labels();
@@ -187,7 +188,8 @@ namespace SSA
                     Date = DateTime.Now,
                     LastStation = e.LabelInfo.LastStation,
                     PrintCount = e.LabelInfo.PrintCount,
-                    ReprintReason = e.LabelInfo.ReprintReason
+                    ReprintReason = e.LabelInfo.ReprintReason,
+                    PrintStatus = EnumPrintStatus.Successful
                 };
 
                 var dalLabel = new DAL_Labels();

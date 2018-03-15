@@ -60,6 +60,12 @@ namespace Trinity.DAL
                 {
                     var locallabelRepo = _localUnitOfWork.GetRepository<Label>();
                     dbLabel = _localUnitOfWork.DataContext.Labels.FirstOrDefault(d => d.UserId == model.UserId && d.Label_Type.Equals(model.Label_Type));
+                    string lastStation = model.LastStation;
+                    if(model.LastStation == EnumStation.DUTYOFFICER)
+                    {
+                        lastStation = "DO";
+                    }
+
                     if (dbLabel == null)
                     {
                         dbLabel = new Label();
@@ -73,7 +79,7 @@ namespace Trinity.DAL
                         dbLabel.Name = model.Name;
                         dbLabel.Date = model.Date.Value;
                         dbLabel.QRCode = model.QRCode;
-                        dbLabel.LastStation = model.LastStation;
+                        dbLabel.LastStation = lastStation;
                         dbLabel.ReprintReason = model.ReprintReason;
                         dbLabel.PrintCount = 1;
                         dbLabel.PrintStatus = model.PrintStatus;
@@ -96,7 +102,7 @@ namespace Trinity.DAL
                         dbLabel.Name = model.Name;
                         dbLabel.Date = model.Date.Value;
                         dbLabel.QRCode = model.QRCode;
-                        dbLabel.LastStation = model.LastStation;
+                        dbLabel.LastStation = lastStation;
                         dbLabel.PrintCount += 1;
                         dbLabel.ReprintReason = model.ReprintReason;
                         dbLabel.PrintStatus = model.PrintStatus;
@@ -134,6 +140,11 @@ namespace Trinity.DAL
                 {
                     var centralizeLabelRepo = _centralizedUnitOfWork.GetRepository<Label>();
                     dbLabel = _centralizedUnitOfWork.DataContext.Labels.FirstOrDefault(d => d.UserId == model.UserId && d.Label_Type.Equals(model.Label_Type));
+                    string lastStation = model.LastStation;
+                    if (model.LastStation == EnumStation.DUTYOFFICER)
+                    {
+                        lastStation = "DO";
+                    }
                     if (dbLabel == null)
                     {
                         dbLabel = new Label();
@@ -147,7 +158,7 @@ namespace Trinity.DAL
                         dbLabel.Name = model.Name;
                         dbLabel.Date = model.Date.Value;
                         dbLabel.QRCode = model.QRCode;
-                        dbLabel.LastStation = model.LastStation;
+                        dbLabel.LastStation = lastStation;
                         dbLabel.ReprintReason = model.ReprintReason;
                         dbLabel.PrintCount = 1;
                         dbLabel.PrintStatus = model.PrintStatus;
@@ -170,7 +181,7 @@ namespace Trinity.DAL
                         dbLabel.Name = model.Name;
                         dbLabel.Date = model.Date.Value;
                         dbLabel.QRCode = model.QRCode;
-                        dbLabel.LastStation = model.LastStation;
+                        dbLabel.LastStation = lastStation;
                         dbLabel.PrintCount += 1;
                         dbLabel.ReprintReason = model.ReprintReason;
                         dbLabel.PrintStatus = model.PrintStatus;

@@ -784,7 +784,8 @@ namespace DutyOfficer
                 QRCode = e.LabelInfo.QRCode,
                 LastStation = EnumStation.DUTYOFFICER,
                 PrintCount = e.LabelInfo.PrintCount,
-                ReprintReason = e.LabelInfo.ReprintReason
+                ReprintReason = e.LabelInfo.ReprintReason,
+                PrintStatus = EnumPrintStatus.Successful
             };
 
             // IsMUB = false: Print UB
