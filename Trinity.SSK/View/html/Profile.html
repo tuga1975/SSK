@@ -1311,7 +1311,7 @@
         if ($('#ParticularsName').val() != _particularName || $('#NRIC').val() != _nric || $('#DOB').val() != _dob || $('#Nationality').val() != _nationality || $('#MaritalStatus').val() != _maritalStatus) {
             //$('#divSave').hide();
             //$('#divError').show();
-            $('#divSupportDocument').fadeIn(1000);
+           // $('#divSupportDocument').fadeIn(1000);
             $("input[class='form-control pri']").each(function () {
                 if ($(this).val() == "") {
                     $(this).addClass("highlight");
@@ -1331,7 +1331,7 @@
             }
         }
         else {
-            $('#divSupportDocument').hide();
+         //   $('#divSupportDocument').hide();
             var activeTab = $('#activeTab').val();
             var empty = $('#' + activeTab).find("input[class='form-control pri']").filter(function () {
                 return this.value.trim() === "";
@@ -1380,10 +1380,10 @@
     $('input[class="form-control pri"]').keyup(function () {
         $('#divSave').show();
         if ($('#ParticularsName').val() != _particularName || $('#NRIC').val() != _nric || $('#DOB').val() != _dob || $('#Nationality').val() != _nationality || $('#MaritalStatus').val() != _maritalStatus) {
-            $('#divSupportDocument').fadeIn(1000);
+          //  $('#divSupportDocument').fadeIn(1000);
         }
         else {
-            $('#divSupportDocument').fadeOut(500);
+         //   $('#divSupportDocument').fadeOut(500);
         }
 
         if ($(this).val() != "") {
