@@ -676,21 +676,33 @@ namespace Trinity.Device.Util
                     _currentCommandIndex++;
                 }
                 _currentCommand = _waitingCommands[_currentCommandIndex];
+                OnNewEvent?.Invoke(this, "Next command:" + _currentCommand);
             }
         }
 
-        private void CompleteCurrentCommand(bool result)
+        private void CompleteCurrentCommand(bool? result)
         {
             try
             {
                 lock (syncRoot)
                 {
                     _waitingCommands.Remove(_currentCommand);
-                    _commandsRetryCount.Remove(_currentCommand);
-                    WorkCompletedCallback callback = _callbacks[_currentCommand];
-                    _callbacks.Remove(_currentCommand);
+                    if (_commandsRetryCount.ContainsKey(_currentCommand))
+                    {
+                        _commandsRetryCount.Remove(_currentCommand);
+                    }
+                    WorkCompletedCallback callback = null;
+                    if (_callbacks.ContainsKey(_currentCommand))
+                    {
+                        callback = _callbacks[_currentCommand];
+                        _callbacks.Remove(_currentCommand);
+                    }
                     _currentCommand = EnumCommands.Unknown;
-                    callback(result);
+                    if (callback != null && result != null)
+                    {
+                        callback(result.Value);
+                        OnNewEvent?.Invoke(this, "Execute command " + _currentCommand + " successfully!");
+                    }
                 }
             }
             catch (Exception ex)
@@ -713,30 +725,23 @@ namespace Trinity.Device.Util
                         {
                             if (_currentCommand == EnumCommands.Unknown)
                             {
-                                try
-                                {
-                                    GetNextCommand();
-                                }
-                                catch (Exception ex)
-                                {
-                                    MessageBox.Show("Error in GetNextCommand. Details:" + ex.Message);
-                                }
+                                GetNextCommand();
                                 if (_currentCommand != EnumCommands.Unknown)
                                 {
+                                    OnNewEvent?.Invoke(this, "Start to proceed next command:" + _currentCommand);
+
                                     // Start to process new command
                                     this.DataReceived += SendCommand_Async_Callback;
                                     string asciiCommand = "";
 
                                     asciiCommand = _rs232Commands[_currentCommand];
-
-                                    try
+                                    if (_commandsRetryCount.ContainsKey(_currentCommand))
                                     {
                                         _commandsRetryCount[_currentCommand]++;
                                     }
-                                    catch (Exception ex)
+                                    else
                                     {
-                                        _commandsRetryCount[_currentCommand] = _maxRetryCount;
-                                        //MessageBox.Show("Error in _commandsRetryCount[_currentCommand]++. Details:" + ex.Message + ", Command:" + _currentCommand);
+                                        _commandsRetryCount[_currentCommand] = 1;
                                     }
                                     OnNewEvent?.Invoke(this, "SendCommand_Async_Callback, response:" + "About to send command:" + _currentCommand + ", retry:" + _commandsRetryCount[_currentCommand]);
 
@@ -745,7 +750,10 @@ namespace Trinity.Device.Util
                             }
                         }
                     }
-
+                    //else
+                    //{
+                    //    OnNewEvent?.Invoke(this, "Current Command is not null");
+                    //}
                     Thread.Sleep(200);
                 }
                 OnNewEvent?.Invoke(this, "CommandsHandler is stopped.");
@@ -764,9 +772,12 @@ namespace Trinity.Device.Util
                 OnNewEvent?.Invoke(this, "Add command:" + command + " to waiting commands");
                 lock (syncRoot)
                 {
-                    _commandsRetryCount[command] = 0;
-                    _waitingCommands.Add(command);
-                    _callbacks[command] = callback;
+                    if (!_waitingCommands.Contains(command))
+                    {
+                        _commandsRetryCount[command] = 0;
+                        _waitingCommands.Add(command);
+                        _callbacks[command] = callback;
+                    }
                 }
             }
             catch (Exception ex)
@@ -781,8 +792,26 @@ namespace Trinity.Device.Util
             {
                 lock (syncRoot)
                 {
+                    OnNewEvent?.Invoke(this, "Checking resposne from SendCommand_Async_Callback...");
                     this.DataReceived -= SendCommand_Async_Callback;
-                    WorkCompletedCallback callback = _callbacks[_currentCommand];
+                    if (_currentCommand == EnumCommands.Unknown)
+                    {
+                        MessageBox.Show("Tai sao lai xay ra truong hop nay");
+                        return;
+                    }
+                    WorkCompletedCallback callback = null;
+                    if (_callbacks.ContainsKey(_currentCommand))
+                    {
+                        callback = _callbacks[_currentCommand];
+                    }
+                    else
+                    {
+                        OnNewEvent?.Invoke(this, "Found no callback for command " + _currentCommand);
+
+                        CompleteCurrentCommand(null);
+                        //MessageBox.Show("Tai sao lai xay ra truong hop nay chu");
+                        return;
+                    }
                     OnNewEvent?.Invoke(this, "SendCommand_Async_Callback, response:" + response);
 
 
@@ -839,8 +868,8 @@ namespace Trinity.Device.Util
             catch (Exception ex)
             {
                 CompleteCurrentCommand(false);
-
-                MessageBox.Show("Error in SendCommand_Async_Callback. Details:" + ex.Message);
+                Thread currentThread = Thread.CurrentThread;
+                MessageBox.Show("Error in SendCommand_Async_Callback. Current thread:" + currentThread.Name + ". Details:" + ex.Message);
             }
         }
         ///////////////////////////
@@ -860,11 +889,6 @@ namespace Trinity.Device.Util
             //For the example assume the data we are received is ASCII data. 
             string response = Encoding.ASCII.GetString(buffer, 0, bytesRead);
 
-            //SerialDataReceivedEventArgs2 eventArgs = new SerialDataReceivedEventArgs2()
-            //{
-            //    SourceObject = _serialPort,
-            //    Data = e
-            //};
             DataReceived?.Invoke(this, response.Trim());
         }
 

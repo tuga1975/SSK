@@ -74,7 +74,7 @@
             </select>
             <div class="entries"> entries per page</div>
         </div>
-        <table id="table"></table>
+        <table id="tableAppointment"></table>
     </div>
 </div>
 <script type="text/javascript">
@@ -148,7 +148,7 @@
                     });
                 }
 
-                $('#table').bootstrapTable({
+                $('#tableAppointment').bootstrapTable({
                     pagination: true,
                     pageSize: 10,
                     pageList: [10, 25, 50, 100],
@@ -210,13 +210,18 @@
 
     function reloadDataAppts() {
         api.server.GetAllAppoinments(function (data) {
-            $('#table').bootstrapTable('load', data);
+            //$('#tableAppointment').bootstrapTable('load', data);
+
+            $('#tableAppointment').bootstrapTable('refreshOptions', {
+                pagination: true,
+                data: data
+            });
         });
     };
 
     $('#pageSize').change(function () {
         pageSize = $("#pageSize option:selected").text();
-        $('#table').bootstrapTable('refreshOptions', {
+        $('#tableAppointment').bootstrapTable('refreshOptions', {
             pagination: true,
             //search: true,
             pageSize: pageSize
@@ -259,7 +264,7 @@
             }
         }
         
-        $('#table').bootstrapTable('refreshOptions', {
+        $('#tableAppointment').bootstrapTable('refreshOptions', {
             pagination: true,
             data: searchSource
         });
@@ -283,7 +288,7 @@
             }
         }
 
-        $('#table').bootstrapTable('refreshOptions', {
+        $('#tableAppointment').bootstrapTable('refreshOptions', {
             pagination: true,
             data: searchSource
         });
