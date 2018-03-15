@@ -6,6 +6,60 @@
 
 @{
     ApiDescription description = Model.ApiDescription;
+
+    List<ParameterDescription> arrayShow = null;
+    if (Model.RequestModelDescription != null)
+    {
+        arrayShow = new List<ParameterDescription>();
+        if (Model.RequestBodyParameters!=null)
+        {
+            arrayShow.AddRange(Model.RequestBodyParameters);
+        }
+        List<ParameterDescription> removeNotAlowParam = new List<ParameterDescription>();
+        var CustomAttribute = Model.ApiDescription.ActionDescriptor.GetCustomAttributes<CustomAttribute>();
+        var AlowParameter = CustomAttribute.Where(d => !string.IsNullOrEmpty(d.AlowParameter)).Select(d => d.AlowParameter.Split(',')).SelectMany(d => d).Select(d => d.Trim()).Where(d => !string.IsNullOrEmpty(d)).ToList();
+        var IgnoreParameter = CustomAttribute.Where(d => !string.IsNullOrEmpty(d.IgnoreParameter)).Select(d => d.IgnoreParameter.Split(',')).SelectMany(d => d).Select(d => d.Trim()).Where(d => !string.IsNullOrEmpty(d)).ToList();
+        if (AlowParameter.Count > 0)
+        {
+            foreach (var param in arrayShow)
+            {
+                if (!AlowParameter.Contains(param.Name))
+                {
+                    removeNotAlowParam.Add(param);
+                }
+            }
+            foreach (var param in removeNotAlowParam)
+            {
+                arrayShow.Remove(param);
+            }
+        }
+        else if (IgnoreParameter.Count > 0)
+        {
+            foreach (var param in IgnoreParameter)
+            {
+                var paramDes = arrayShow.FirstOrDefault(d => d.Name.Equals(param));
+                if (paramDes != null)
+                {
+                    arrayShow.Remove(paramDes);
+                }
+            }
+        }
+    }
+    //
+    Dictionary<System.Net.Http.Headers.MediaTypeHeaderValue, object> SampleRequests = new Dictionary<System.Net.Http.Headers.MediaTypeHeaderValue, object>();
+    if (Model.SampleRequests.Count>0 && Model.SampleRequests.ContainsKey(new System.Net.Http.Headers.MediaTypeHeaderValue("application/json")))
+    {
+        Dictionary<string, string> dataSample = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(Model.SampleRequests[new System.Net.Http.Headers.MediaTypeHeaderValue("application/json")].ToString());
+        var key = dataSample.Select(d => d.Key).ToList();
+        foreach (var item in key)
+        {
+            if (!arrayShow.Any(d=>d.Name.Equals(item)))
+            {
+                dataSample.Remove(item);
+            }
+        }
+        SampleRequests.Add(new System.Net.Http.Headers.MediaTypeHeaderValue("application/json"), Newtonsoft.Json.JsonConvert.SerializeObject(dataSample).Replace("\",\"", "\",\n\""));
+    }
 }
 <h1>@description.HttpMethod.Method @description.RelativePath</h1>
 <div>
@@ -23,9 +77,9 @@
     @if (Model.RequestModelDescription != null)
     {
         @Html.DisplayFor(m => m.RequestModelDescription.ModelType, "ModelDescriptionLink", new { modelDescription = Model.RequestModelDescription })
-        if (Model.RequestBodyParameters != null)
+        if (arrayShow != null && arrayShow.Count>0)
         {
-            @Html.DisplayFor(m => m.RequestBodyParameters, "Parameters")
+            @Html.DisplayFor(m => arrayShow, "Parameters")
         }
     }
     else
@@ -33,10 +87,10 @@
         <p>None.</p>
     }
 
-    @if (Model.SampleRequests.Count > 0)
+    @if (SampleRequests.Count > 0)
     {
         <h3>Request Formats</h3>
-        @Html.DisplayFor(m => m.SampleRequests, "Samples")
+        @Html.DisplayFor(m => SampleRequests, "Samples")
     }
 
     <h2>Response Information</h2>

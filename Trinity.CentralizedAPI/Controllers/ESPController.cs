@@ -32,6 +32,7 @@ namespace Trinity.BackendAPI.Controllers
     public class ESPController : ApiController
     {
         [HttpPost]
+        [Custom(AlowParameter = "markingnumber")]
         public IHttpActionResult GetDrugResults([FromBody]ESPModel data)
         {
             Trinity.DAL.DBContext.DrugResult result = new DAL.DAL_DrugResults().GetByMarkingNumber(data.markingnumber);
@@ -66,6 +67,7 @@ namespace Trinity.BackendAPI.Controllers
         }
 
         [HttpPost]
+        [Custom(IgnoreParameter = "markingnumber,requestDate")]
         public IHttpActionResult InsertNotification([FromBody] ESPModel data)
         {
             string IDNoti = new DAL.DAL_Notification().SSPInsert(data.Source, data.Type, data.Content, data.Datetime.Value, data.NotificationID);
@@ -73,6 +75,7 @@ namespace Trinity.BackendAPI.Controllers
         }
 
         [HttpPost]
+        [Custom(AlowParameter = "requestDate")]
         public IHttpActionResult GetNotificationByDate([FromBody] ESPModel data)
         {
             var result = new DAL.DAL_Notification().GetByDate(data.requestDate.Value).Select(d=>new {

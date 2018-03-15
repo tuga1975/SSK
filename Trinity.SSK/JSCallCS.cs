@@ -587,9 +587,21 @@ namespace SSK
 
         private void DocumentScannerCallback(string frontPath, string error)
         {
+            _web.InvokeScript("showImageAffterScan", frontPath);
+            Trinity.Util.DocumentScannerUtil.Instance.StopScanning();
+        }
+        public void PopupShowImageScan(string frontPath)
+        {
+            _web.LoadPopupHtml("PopupShowImageScan.html", frontPath);
+        }
+        public void StartScanDocumentFromAbsence()
+        {
+            Trinity.Util.DocumentScannerUtil.Instance.StartScanning(DocumentScannerCallback);
+        }
+        public void SaveScanDocumentAbsence(string frontPath)
+        {
             Guid IDDocuemnt = new DAL_UploadedDocuments().Insert(Lib.ReadAllBytes(frontPath), ((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId);
             _SaveReasonForQueue(dataAbsenceReporting, IDDocuemnt);
-            Trinity.Util.DocumentScannerUtil.Instance.StopScanning();
         }
         public void CancelScanDocumentFromReportAbsence()
         {
@@ -601,7 +613,6 @@ namespace SSK
             {
                 dataAbsenceReporting = dataTxt;
                 LoadPage("Document.html");
-                //Trinity.Util.DocumentScannerUtil.Instance.StartScanning(DocumentScannerCallback);
             }
             else
             {
