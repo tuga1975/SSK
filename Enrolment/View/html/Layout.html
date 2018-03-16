@@ -28,17 +28,20 @@
 </head>
 
 <body>
-    <div id="header">
-        <div class="header-landingPage">
-            <img class="logo" src="../images/logoCNB.svg"  style="height:60px;width:auto;"/>
-            <div class="clear"></div>
+    <div id="header" style="margin-bottom: 30px;">
+        <div style="position: relative">
+            <div class="header-landingPage">
+                <img class="logo" src="../images/logoCNB.svg" style="position:relative;height:65px; width:auto;" />
+                <div class="clear"></div>
+            </div>
+
+            <div class="header-landingPage" style="position:relative;height: 40px; background-color:#5D5D5D;margin-top: 10px;margin-bottom: 20px;">
+                <a href="#" style="position:relative;z-index:9999;float:right;color:white;margin-right:20px;padding: 5px;" onclick="api.server.LogOut()">Logout</a>
+                <h3 style="color:white;"><i class="fa fa-home" style="position:relative;z-index:1;color:#0094ff;margin-left:15px;"></i> Enrolment</h3>
+                <div class="clear"></div>
+            </div>
         </div>
 
-        <div class="header-landingPage" style="background-color:#5D5D5D;margin-top:75px">
-            <h3 style="color:white"><i class="fa fa-home" style="color:#0094ff;margin-left:15px;"></i> Enrolment</h3>
-            <a href="#" onclick="api.server.LogOut()" style="float:right;color:white;margin-right:20px;">Logout</a>
-            <div class="clear"></div>
-        </div>
     </div>
     <div id="parent-content">
         <div id="content">

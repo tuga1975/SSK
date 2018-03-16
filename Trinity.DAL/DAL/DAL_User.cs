@@ -724,7 +724,7 @@ namespace Trinity.DAL
 
         public List<Trinity.BE.User> GetAllSuperviseeBlocked()
         {
-            if (EnumAppConfig.ByPassCentralizedDB)
+            if (EnumAppConfig.IsLocal)
             {
                 var user = (from mu in _localUnitOfWork.DataContext.Membership_Users
                             join mur in _localUnitOfWork.DataContext.Membership_UserRoles on mu.UserId equals mur.UserId
