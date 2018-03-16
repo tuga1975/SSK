@@ -122,7 +122,7 @@ span[color] {
 /*Menu*/
 #menu {
     position: fixed;
-    top: 148px;
+    top: 150px;
     width: 100%;
     z-index: 10;
     background: #334352;
@@ -130,21 +130,18 @@ span[color] {
     display: flex;
     align-items: flex-start;
     flex-wrap: nowrap;
-    /*font-size: 18px;*/
-}
-
-#menu .fa{
-    margin-right: 10px;
-    margin-top: 5px;
+    font-size: 18px;
 }
 
 #menu span {
     width: auto;
     float: left;
+    margin-right: 5px;
 }
 
+
 #menu .menu-item {
-    padding: 15px 10px;
+    padding: 15px 0px;
     cursor: pointer;
 }
 
@@ -173,8 +170,21 @@ span[color] {
 #menu [item-menu].active {
     background-color: #fff;
 }
+#menu .menu-item .icon-active {
+    display: none;
+}
+#menu .menu-item.active .icon-active,
+#menu .menu-item:hover .icon-active,
+#menu .menu-item:focus .icon-active {
+    display: block;
+}
+#menu .menu-item.active .icon,
+#menu .menu-item:hover .icon,
+#menu .menu-item:focus.icon {
+    display: none;
+}
+    
 /*End MENU*/
-
 [itemview] {
     position: relative;
     margin-bottom: 10px;
@@ -900,15 +910,15 @@ tr.selected input[type="checkbox"]:after {
 }*/
 table thead th .both {
     background-image: url(../img/icon-sort.png) !important;
-    margin-right: 4px !important;
+    margin-right: 10px !important;
 }
 table thead th .asc {
     background-image: url(../img/icon-sort-asc.png) !important;
-    margin-right: 4px !important;
+    margin-right: 10px !important;
 }
 table thead th .desc {
     background-image: url(../img/icon-sort-desc.png) !important;
-    margin-right: 4px !important;
+    margin-right: 10px !important;
 }
 /*#idEditOperationalDate select {
     cursor: pointer;
