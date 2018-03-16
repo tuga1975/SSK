@@ -16,7 +16,13 @@ namespace Trinity.DAL
         Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
 
         #region 2018
-
+        public void UploadDocumentScan(Guid IDDocument,string UserID)
+        {
+            var use = _localUnitOfWork.DataContext.User_Profiles.FirstOrDefault(d => d.UserId == UserID);
+            use.Document_ID = IDDocument;
+            _localUnitOfWork.GetRepository<DBContext.User_Profiles>().Update(use);
+            _localUnitOfWork.Save();
+        }
         public void UpdateCardInfo(string UserId, string CardNumber, DateTime Date_of_Issue, DateTime Expired_Date)
         {
             if (EnumAppConfig.IsLocal)
@@ -419,6 +425,7 @@ namespace Trinity.DAL
             dbUserProfile.Gender = model.Gender;
             dbUserProfile.Race = model.Race;
             dbUserProfile.Serial_Number = model.SerialNumber;
+            
 
             var dalUser = new Trinity.DAL.DAL_User();
             var result = dalUser.GetUserByUserId(model.UserId);

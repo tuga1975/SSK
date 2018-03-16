@@ -130,7 +130,7 @@ span[color] {
     display: flex;
     align-items: flex-start;
     flex-wrap: nowrap;
-    font-size: 18px;
+    font-size: 17px;
 }
 
 #menu span {
@@ -312,7 +312,7 @@ span[color] {
     width: 100%;
     overflow: hidden;
     margin-bottom: 50px;
-    top: 170px;    
+    top: 180px;    
 }
 
 #content {
@@ -340,7 +340,7 @@ span[color] {
     padding: 40px 0 9px 40px;
     position: fixed;
     z-index: 100;
-    top: 180px;
+    top: 190px;
     left: 0;
     width: 100%;
     background: #fff;
@@ -356,7 +356,7 @@ span[color] {
 .tab-content {
     padding: 20px 40px;
     margin-top: 70px;
-    max-height: calc(100vh - 290px);
+    max-height: calc(100vh - 300px);
     overflow: auto;    
 }
 

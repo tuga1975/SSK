@@ -271,13 +271,15 @@ namespace SSA
         {
             EventCenter eventCenter = EventCenter.Default;
 
-            UserManager<ApplicationUser> userManager = ApplicationIdentityManager.GetUserManager();
-            ApplicationUser appUser = userManager.Find(username, password);
+            //UserManager<ApplicationUser> userManager = ApplicationIdentityManager.GetUserManager();
+            //ApplicationUser appUser = userManager.Find(username, password);
+            var dalUser = new DAL_User();
+            ApplicationUser appUser = dalUser.Login(username, password);
             if (appUser != null)
             {
                 // Authenticated successfully
                 // Check if the current user is an Duty Officer or not
-                if (userManager.IsInRole(appUser.Id, EnumUserRoles.DutyOfficer))
+                if (dalUser.IsInRole(appUser.Id, EnumUserRoles.DutyOfficer))
                 {
                     // Authorized successfully
                     Trinity.BE.User user = new Trinity.BE.User()

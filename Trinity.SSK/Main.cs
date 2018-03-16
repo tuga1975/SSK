@@ -201,7 +201,7 @@ namespace SSK
                 NavigateTo(NavigatorEnums.Authentication_SmartCard);
 
                 //string startFrom = "Supervisee";
-                //string superviseeId = "c69d1d14-a54a-4146-aebb-a7dc9ce75262";
+                //string superviseeId = "2FFD1A82-E5EC-4884-A5C6-1A68F661DAED";
                 //string dutyOfficerId = "9903e059-7209-45b6-a889-6c4cfdfaeea3";
                 //Session session = Session.Instance;
 
@@ -574,7 +574,8 @@ namespace SSK
                 Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
                 if (user.Role == EnumUserRoles.Supervisee && user.Status == EnumUserStatuses.Blocked)
                 {
-                    LayerWeb.ShowMessage("You have been blocked<br/>Contact Duty Officer for help");
+                    LayerWeb.ShowMessageAsync("You have been blocked<br/>Contact Duty Officer for help");
+                    _jsCallCS.LogOut();
                     return;
                 }
                 _signalrClient = Client.Instance;
