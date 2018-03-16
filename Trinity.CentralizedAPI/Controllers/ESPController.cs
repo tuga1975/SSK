@@ -31,11 +31,10 @@ namespace Trinity.BackendAPI.Controllers
     [Route("api/ESP/{Action}")]
     public class ESPController : ApiController
     {
-        [HttpPost]
-        [Custom(AlowParameter = "markingnumber")]
-        public IHttpActionResult GetDrugResults([FromBody]ESPModel data)
+        [HttpGet]
+        public IHttpActionResult GetDrugResults(string markingnumber)
         {
-            Trinity.DAL.DBContext.DrugResult result = new DAL.DAL_DrugResults().GetByMarkingNumber(data.markingnumber);
+            Trinity.DAL.DBContext.DrugResult result = new DAL.DAL_DrugResults().GetByMarkingNumber(markingnumber);
             if (result == null)
             {
                 return Ok();
@@ -67,18 +66,17 @@ namespace Trinity.BackendAPI.Controllers
         }
 
         [HttpPost]
-        [Custom(IgnoreParameter = "markingnumber,requestDate")]
+        [Custom(IgnoreParameter = "markingnumber,requestDate,NotificationID")]
         public IHttpActionResult InsertNotification([FromBody] ESPModel data)
         {
-            string IDNoti = new DAL.DAL_Notification().SSPInsert(data.Source, data.Type, data.Content, data.Datetime.Value, data.NotificationID);
+            string IDNoti = new DAL.DAL_Notification().SSPInsert(data.Source, data.Type, data.Content, data.Datetime.Value, data.notification_code);
             return Ok(IDNoti);
         }
 
-        [HttpPost]
-        [Custom(AlowParameter = "requestDate")]
-        public IHttpActionResult GetNotificationByDate([FromBody] ESPModel data)
+        [HttpGet]
+        public IHttpActionResult GetNotificationByDate(DateTime requestDate)
         {
-            var result = new DAL.DAL_Notification().GetByDate(data.requestDate.Value).Select(d=>new {
+            var result = new DAL.DAL_Notification().GetByDate(requestDate).Select(d=>new {
                 d.NotificationID,
                 d.Source,
                 d.Type,

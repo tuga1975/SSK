@@ -73,6 +73,7 @@ function AddContentPage(html, model) {
         $(this).attr('valonclick', value);
 
         value = $(this).attr('href');
+        value = typeof value == 'undefined' ? '' : value;
         if (value.indexOf('#')!=0) {
             $(this).attr('valhref', value);
             $(this).attr('href', 'javascript:;');
@@ -101,6 +102,7 @@ function AddContentPopup(html, model, id) {
         $(this).attr('valonclick', value);
 
         value = $(this).attr('href');
+        value = typeof value == 'undefined' ? '' : value;
         if (value.indexOf('#') != 0) {
             $(this).attr('valhref', value);
             $(this).attr('href', 'javascript:;');
