@@ -13,11 +13,19 @@
     .caution{
         color: yellow;
     }
-    .row_unread{
-        background-color: #e0e0eb;
+    .row_unread {
+        font-size: 15px;
+        font-weight: bold;
     }
-    .row_readed{
+    .row_readed {
+        font-size: 14px;
+        font-weight: normal;
+    }
+    .row_even {
         background-color: white;
+    }
+    .row_odd {
+        background-color: #e0e0eb;
     }
     .table-hover tbody tr:hover > td {
         cursor: pointer;
@@ -116,16 +124,35 @@
             var type = row.type;
             switch (type) {
                 case Type.error:
-                    return {
-                        classes: index % 2 == 0 ? "error row_readed" : "error row_unread"
+                    if (index % 2 == 0) {
+                        return {
+                            classes: row.isReaded ? "error row_even row_readed" : "error row_even row_unread"
+                        };
+                    } else {
+                        return {
+                            classes: row.isReaded ? "error row_odd row_readed" : "error row_odd row_unread"
+                        };
                     };
+                    
                 case Type.notification:
-                    return {
-                        classes: index % 2 == 0 ? "notification row_readed" : "notification row_unread"
+                    if (index % 2 == 0) {
+                        return {
+                            classes: row.isReaded ? "notification row_even row_readed" : "notification row_even row_unread"
+                        };
+                    } else {
+                        return {
+                            classes: row.isReaded ? "notification row_odd row_readed" : "notification row_odd row_unread"
+                        };
                     };
                 case Type.caution:
-                    return {
-                        classes: index % 2 == 0 ? "caution row_readed" : "caution row_unread"
+                    if (index % 2 == 0) {
+                        return {
+                            classes: row.isReaded ? "caution row_even row_readed" : "caution row_even row_unread"
+                        };
+                    } else {
+                        return {
+                            classes: row.isReaded ? "caution row_odd row_readed" : "caution row_odd row_unread"
+                        };
                     };
             }
             return {};

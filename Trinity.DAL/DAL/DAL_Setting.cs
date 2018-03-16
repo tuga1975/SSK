@@ -570,7 +570,7 @@ namespace Trinity.DAL
 
         private int GetMaxIDChangeHist()
         {
-            if (EnumAppConfig.ByPassCentralizedDB)
+            if (EnumAppConfig.IsLocal)
             {
                 return _localUnitOfWork.DataContext.OperationSettings_ChangeHist.Any() ? _localUnitOfWork.DataContext.OperationSettings_ChangeHist.Max(t => t.ID) : 0;
             }
