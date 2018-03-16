@@ -83,11 +83,11 @@ namespace SSA
             Session session = Session.Instance;
             session.IsSmartCardAuthenticated = false;
             session.IsFingerprintAuthenticated = false;
+            session.IsFacialAuthenticated = false;
             session[CommonConstants.USER_LOGIN] = null;
             session[CommonConstants.PROFILE_DATA] = null;
-
-            //
-            // RaiseLogOutCompletedEvent
+            session[CommonConstants.SUPERVISEE] = null;
+            
             RaiseLogOutCompletedEvent();
         }
 

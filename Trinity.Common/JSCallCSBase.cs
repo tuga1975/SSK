@@ -81,4 +81,12 @@ public class JSCallCSBase
     {
         this._web.LoadPopupHtml("PopupMessage.html", new object[] { title, content,id });
     }
+    public void LoadPopupHtml(string file,string model)
+    {
+        this._web.LoadPopupHtml(file, model);
+    }
+    public void ShowMessage(string title, string content)
+    {
+        this._web.ShowMessage(title, content);
+    }
 }
