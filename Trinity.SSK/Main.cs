@@ -200,8 +200,8 @@ namespace SSK
                 // Start page
                 NavigateTo(NavigatorEnums.Authentication_SmartCard);
 
-                //string startFrom = "Authentication_NRIC";
-                //string superviseeId = "06a91b1b-99c3-428d-8a55-83892c2adf4c";
+                //string startFrom = "Supervisee";
+                //string superviseeId = "c69d1d14-a54a-4146-aebb-a7dc9ce75262";
                 //string dutyOfficerId = "9903e059-7209-45b6-a889-6c4cfdfaeea3";
                 //Session session = Session.Instance;
 
@@ -254,8 +254,15 @@ namespace SSK
             }
             if (supervisee != null)
             {
-                Trinity.SignalR.Client.Instance.UserLoggedIn(supervisee.UserId);
-                NavigateTo(NavigatorEnums.Supervisee);
+                if (supervisee.Status==EnumUserStatuses.Blocked)
+                {
+                    LayerWeb.ShowMessage("This supervisee is being blocked");
+                }
+                else
+                {
+                    Trinity.SignalR.Client.Instance.UserLoggedIn(supervisee.UserId);
+                    NavigateTo(NavigatorEnums.Supervisee);
+                }
             }
         }
 

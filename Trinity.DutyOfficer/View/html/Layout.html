@@ -8,11 +8,13 @@
     <link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet" />
     <link href="../bootstrap/css/font-awesome.min.css" rel="stylesheet" />
     <link href="../bootstrap/css/ionicons.min.css" rel="stylesheet" />
+    <link href="../materialize/css/materialize.min.css" rel="stylesheet" />
     <link href="../styles/main.css" rel="stylesheet" />
     <link href="../table/bootstrap-table.css" rel="stylesheet">
     <script src="../scripts/jquery-1.10.2.min.js"></script>
     <script src="../scripts/popper.min.js"></script>
     <script src="../bootstrap/js/bootstrap.min.js"></script>
+    <script src="../materialize/js/materialize.min.js"></script>
     <script src="../table/bootstrap-table.js"></script>
     <script src="../scripts/utils.js"></script>
     <script src="../scripts/lib.js"></script>
@@ -53,35 +55,43 @@
 
     <div id="menu">
         <div class="col menu-item d-flex justify-content-center" onclick="api.server.LoadPage('Queue.html')">
-            <span class="fa fa-calendar"></span>
+            <span class="icon"><img src="../img/icon-Q.png" /></span>
+            <span class="icon-active"><img src="../img/icon-Q-active.png" /></span>
             <span id="Queue" item-menu="Queue"></span>
         </div>
         <div class="col menu-item d-flex justify-content-center" onclick="api.server.LoadPage('Alerts.html')">
-            <span class="fa fa-calendar"></span>
+            <span class="icon"><img src="../img/icon-alerts.png" /></span>
+            <span class="icon-active"><img src="../img/icon-alerts-active.png" /></span>
             <span id="Alerts" item-menu="Alerts"><span class="notifyCount">10+</span></span>
         </div>
         <div class="col menu-item d-flex justify-content-center" onclick="api.server.LoadPage('Appointments.html')">
-            <span class="fa fa-calendar"></span>
+            <span class="icon"><img src="../img/icon-Appt.png" /></span>
+            <span class="icon-active"><img src="../img/icon-Appt-active.png" /></span>
             <span id="Appointments" item-menu="Appointments"></span>
         </div>
         <div class="col menu-item d-flex justify-content-center" onclick="api.server.LoadPage('Blocked.html')">
-            <span class="fa fa-calendar"></span>
+            <span class="icon"><img src="../img/icon-block.png" /></span>
+            <span class="icon-active"><img src="../img/icon-block-active.png" /></span>
             <span id="Blocked" item-menu="Blocked"></span>
         </div>
         <div class="col menu-item d-flex justify-content-center" onclick="api.server.LoadPage('Statistics.html')">
-            <span class="fa fa-calendar"></span>
+            <span class="icon"><img src="../img/icon-stats.png" /></span>
+            <span class="icon-active"><img src="../img/icon-stats-active.png" /></span>
             <span id="Statistics" item-menu="Statistics"></span>
         </div>
         <div class="col menu-item d-flex justify-content-center" onclick="api.server.LoadPage('MUBAndTTlabel.html')">
-            <span class="fa fa-calendar"></span>
-            <span id="MUB" item-menu="MUB/TT Labels"></span>
+            <span class="icon"><img src="../img/icon-MUBTT.png" /></span>
+            <span class="icon-active"><img src="../img/icon-MUBTT-active.png" /></span>
+            <span id="MUB" item-menu="MUB/TT Lablels"></span>
         </div>
         <div class="col menu-item d-flex justify-content-center" onclick="api.server.LoadPage('UBlabel.html')">
-            <span class="fa fa-calendar"></span>
-            <span id="UB" item-menu="UB Labels"></span>
+            <span class="icon"><img src="../img/icon-UB.png" /></span>
+            <span class="icon-active"><img src="../img/icon-UB-active.png" /></span>
+            <span id="UB" item-menu="UB Lablels"></span>
         </div>
         <div class="col menu-item d-flex justify-content-center" onclick="api.server.LoadPage('Settings.html')">
-            <span class="fa fa-calendar"></span>
+            <span class="icon"><img src="../img/icon-settings.png" /></span>
+            <span class="icon-active"><img src="../img/icon-settings-active.png" /></span>
             <span id="Settings" item-menu="Settings"></span>
         </div>
     </div>
@@ -125,6 +135,6 @@
                 $('#colorStatus_UHP').css("background-color", data.UHPColor);
                 $('#colorStatus_ESP').css("background-color", data.ESPColor);
             });
-        }; 
+        };        
     });
 </script>
