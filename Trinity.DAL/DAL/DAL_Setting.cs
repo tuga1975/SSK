@@ -725,23 +725,23 @@ namespace Trinity.DAL
             {
                 if (EnumAppConfig.IsLocal)
                 {
-                    UpdateSettingAndTimeslotForLocal(settingUpdateModel.CheckWarningSaveSetting, settingUpdateModel.SettingDetails);
+                    return UpdateSettingAndTimeslotForLocal(settingUpdateModel.CheckWarningSaveSetting, settingUpdateModel.SettingDetails);
 
-                    if(!EnumAppConfig.ByPassCentralizedDB)
-                    {
-                        bool centralizeStatus;
-                        var centralUpdate = CallCentralized.Post<bool>(EnumAPIParam.Setting, "UpdateSettingAndTimeSlot", out centralizeStatus, settingUpdateModel);
+                    //if(!EnumAppConfig.ByPassCentralizedDB)
+                    //{
+                    //    bool centralizeStatus;
+                    //    var centralUpdate = CallCentralized.Post<bool>(EnumAPIParam.Setting, "UpdateSettingAndTimeSlot", out centralizeStatus, settingUpdateModel);
 
-                        if (centralizeStatus)
-                        {
-                            return centralUpdate;
-                        }
-                        else
-                        {
-                            throw new Exception(EnumMessage.NotConnectCentralized);
-                        }
-                    }
-                    return true;
+                    //    if (centralizeStatus)
+                    //    {
+                    //        return centralUpdate;
+                    //    }
+                    //    else
+                    //    {
+                    //        throw new Exception(EnumMessage.NotConnectCentralized);
+                    //    }
+                    //}
+                    //return true;
                 }
                 else
                 {
