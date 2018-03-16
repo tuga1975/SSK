@@ -404,54 +404,62 @@ namespace Trinity.Util
         {
             try
             {
-                Debug.Assert(FrontSideDIB != IntPtr.Zero);
-                
-                string curDir = Directory.GetCurrentDirectory();
-
-                // create directory
-                if (!Directory.Exists(curDir + "\\Temp"))
+                if (_documentScannerCallback != null)
                 {
-                    Directory.CreateDirectory(curDir + "\\Temp");
-                }
+                    Debug.Assert(FrontSideDIB != IntPtr.Zero);
 
-                // set file path
-                string frontPath = string.Empty;
-                string error = string.Empty;
-                //Front
-                if (FrontSideDIB != IntPtr.Zero)
-                {
-                    pdiscan_errors retval = PdiScanWrap.PdSaveImageToDisk(FrontSideDIB, curDir + "\\Temp\\document_front.bmp");
-                    if (retval == pdiscan_errors.PDISCAN_ERR_NONE)
+                    string curDir = Directory.GetCurrentDirectory();
+
+                    // create directory
+                    if (!Directory.Exists(curDir + "\\Temp"))
                     {
-                        frontPath = curDir + "\\Temp\\document_front.bmp";
-
-                        // Scale image
-                        Image image = Image.FromFile(frontPath);
-                        Image newImage = Trinity.Common.CommonUtil.ScaleImage(image, 768, 1024);
-                        image.Dispose();
-                        newImage.Save(frontPath, ImageFormat.Jpeg);
-                        newImage.Dispose();
+                        Directory.CreateDirectory(curDir + "\\Temp");
                     }
-                    else
+
+                    // set file path
+                    string frontPath = string.Empty;
+                    string error = string.Empty;
+                    //Front
+                    if (FrontSideDIB != IntPtr.Zero)
                     {
-                        error = Get_PDIScan_Error_Details(retval);
+                        pdiscan_errors retval = PdiScanWrap.PdSaveImageToDisk(FrontSideDIB, curDir + "\\Temp\\document_front.jpg");
+                        if (retval == pdiscan_errors.PDISCAN_ERR_NONE)
+                        {
+                            frontPath = curDir + "\\Temp\\document_front.jpg";
+
+                            // Scale image
+                            Image image = Image.FromFile(frontPath);
+                            Image newImage = Trinity.Common.CommonUtil.ScaleImage(image, 768, 1024);
+
+                            image.Dispose();
+
+                            newImage.Save(frontPath, ImageFormat.Jpeg);
+                            newImage.Dispose();
+                        }
+                        else
+                        {
+                            error = Get_PDIScan_Error_Details(retval);
+                        }
                     }
+
+                    //Back
+                    //if (BackSideDIB != IntPtr.Zero)
+                    //{
+                    //    PdiScanWrap.PdSaveImageToDisk(BackSideDIB, temp_path + "testback.bmp");
+                    //}
+
+                    // callback
+                    _documentScannerCallback(frontPath, error);
+
+                    _documentScannerCallback = null;
                 }
-
-                //Back
-                //if (BackSideDIB != IntPtr.Zero)
-                //{
-                //    PdiScanWrap.PdSaveImageToDisk(BackSideDIB, temp_path + "testback.bmp");
-                //}
-
-                // callback
-                _documentScannerCallback(frontPath, error);
             }
             catch (Exception ex)
             {
                 MessageBox.Show("page_end_callback exception: " + ex.ToString());
                 // callback
                 _documentScannerCallback(string.Empty, ex.Message);
+                _documentScannerCallback = null;
             }
         }
 
