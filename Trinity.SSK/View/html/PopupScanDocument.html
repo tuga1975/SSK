@@ -23,8 +23,38 @@
     </div>
 </div>
 <script type="text/javascript">
-    api.ready(function (model) {
+    var functioncallsuccess = null;
+    function showImgScanDocument(img) {
+        $('#PopupScanDocument').modal('toggle');
+
+        api.server.LoadPopupHtml("PopupShowImageScan.html", img, function () {
+            $('#PopupShowImageScan').modal({
+                backdrop: 'static',
+                keyboard: false
+            });
+            $('#PopupShowImageScan button[btn-ok]').click(function () {
+                $('#PopupShowImageScan').modal('toggle');
+                eval(functioncallsuccess)(img);
+            });
+            $('#PopupShowImageScan button[btn-cancel]').click(function () {
+                $('#PopupShowImageScan').modal('toggle');
+            });
+        });
         
+    }
+    api.ready(function (_functioncallsuccess) {
+        functioncallsuccess = _functioncallsuccess;
+        $('#PopupScanDocument').modal({
+            backdrop: 'static',
+            keyboard: false
+        });
+        $('#PopupScanDocument [btn-cancel]').click(function () {
+            $('#PopupScanDocument').modal('toggle');
+        });
+        $('#PopupScanDocument [btn-scan]').click(function () {
+            $('#PopupScanDocument [btn-cancel],#PopupScanDocument [btn-scan]').css('display', 'none');
+            api.server.StartScanDocument();
+        });
     });
 </script>
 <style type="text/css">

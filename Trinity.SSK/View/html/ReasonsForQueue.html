@@ -14,6 +14,7 @@
     <input type="button" value="SUBMIT" style="background-color:#1cacf6;color:#FFF;border:none;border-radius:5px;padding:8px 20px;border:1px solid #1cacf6;font-weight:bold;" btn-save-absence="" />
 </div>
 <script>
+    var arrrayAbsence = null;
     api.ready(function (model) {
         $('[count-absence]').text(model.length);
         $.each(model, function (index, item) {
@@ -41,7 +42,7 @@
         });
         $('[btn-save-absence]').click(function () {
             var scandocument = false;
-            var arrrayAbsence = [];
+            arrrayAbsence = [];
             // Quet toan bo absence neu absence nao da chon thi them vao arrrayAbsence
             $('[parent-tab] [content-tab] [item]').each(function () {
                 var id = $(this).attr('item');
@@ -58,12 +59,22 @@
             });
             if (arrrayAbsence.length == 0) {
                 alert("You must provide a reason!");
+            } else if (arrrayAbsence.length > 0 && scandocument) {
+                api.server.LoadPopupHtml("PopupScanDocument.html", 'scanDocumentAbsenceCallbackImg', function () {
+                    $('#PopupScanDocument button[btn-cancel]').unbind('click');
+                    $('#PopupScanDocument button[btn-cancel]').click(function () {
+                        $('#PopupScanDocument').modal('toggle');
+                        api.server.SaveReasonForQueue(JSON.stringify(arrrayAbsence), '');
+                    });
+                });
             } else {
-                api.server.SaveReasonForQueue(JSON.stringify(arrrayAbsence), scandocument);
+                api.server.SaveReasonForQueue(JSON.stringify(arrrayAbsence), '');
             }
-
         });
     });
+    function scanDocumentAbsenceCallbackImg(img) {
+        api.server.SaveReasonForQueue(JSON.stringify(arrrayAbsence), img);
+    }
 </script>
 <script type="text/javascript">
     //show menu logout or back main

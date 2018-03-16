@@ -329,11 +329,10 @@ namespace SSK
             }
         }
 
-        public void SaveProfile(string param, bool primaryInfoChange)
+        public void SaveProfile(string param,string documentScan, bool primaryInfoChange)
         {
             try
             {
-
                 var rawData = JsonConvert.DeserializeObject<Trinity.BE.ProfileRawMData>(param);
                 var data = new Trinity.BE.ProfileRawMData().ToProfileModel(rawData);
                 Session session = Session.Instance;
@@ -346,6 +345,11 @@ namespace SSK
                     var updateUProfileResult = new DAL_UserProfile().UpdateProfile(userProfileModel);
                     // dalUserprofile.UpdateUserProfile(data.UserProfile,data.User.UserId , true);
                     //send notifiy to duty officer
+                    if (!string.IsNullOrEmpty(documentScan))
+                    {
+                        Guid IDDocuemnt = new DAL_UploadedDocuments().Insert(Lib.ReadAllBytes(documentScan), ((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId);
+                        new DAL_UserProfile().UploadDocumentScan(IDDocuemnt, data.User.UserId);
+                    }
                     Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(data.User.UserId, "A supervisee has updated profile.", "Please check Supervisee's information!", EnumNotificationTypes.Notification);
 
                     session[CommonConstants.USER_LOGIN] = data.User;
@@ -417,7 +421,7 @@ namespace SSK
             Session session = Session.Instance;
             var jsonData = session[CommonConstants.PROFILE_DATA];
 
-            SaveProfile(jsonData.ToString(), true);
+            //SaveProfile(jsonData.ToString(), true);
         }
 
         public void SubmitNRIC(string strNRIC)
@@ -609,44 +613,20 @@ namespace SSK
             }
         }
 
-        private string dataAbsenceReporting = string.Empty;
-
-        private void DocumentScannerCallback(string frontPath, string error)
+        
+        
+        public void SaveReasonForQueue(string dataTxt, string filescandocument)
         {
-            System.Drawing.Bitmap converPng = new System.Drawing.Bitmap(frontPath);
-            converPng.Save(frontPath + ".png", System.Drawing.Imaging.ImageFormat.Png);
-            _web.InvokeScript("showImageAffterScan", frontPath + ".png");
-
-            //Trinity.Util.DocumentScannerUtil.Instance.StopScanning();
-        }
-        public void PopupShowImageScan(string frontPath)
-        {
-            _web.LoadPopupHtml("PopupShowImageScan.html", frontPath);
-        }
-        public void StartScanDocumentFromAbsence()
-        {
-            Trinity.Util.DocumentScannerUtil.Instance.StartScanning(DocumentScannerCallback);
-        }
-        public void SaveScanDocumentAbsence(string frontPath)
-        {
-            Guid IDDocuemnt = new DAL_UploadedDocuments().Insert(Lib.ReadAllBytes(frontPath), ((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId);
-            _SaveReasonForQueue(dataAbsenceReporting, IDDocuemnt);
-        }
-        public void CancelScanDocumentFromReportAbsence()
-        {
-            _SaveReasonForQueue(dataAbsenceReporting, null);
-        }
-        public void SaveReasonForQueue(string dataTxt, bool scandocument)
-        {
-            if (scandocument)
-            {
-                dataAbsenceReporting = dataTxt;
-                LoadPage("Document.html");
-            }
-            else
+            if (string.IsNullOrEmpty(filescandocument))
             {
                 _SaveReasonForQueue(dataTxt, null);
             }
+            else
+            {
+                Guid IDDocuemnt = new DAL_UploadedDocuments().Insert(Lib.ReadAllBytes(filescandocument), ((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId);
+                _SaveReasonForQueue(dataTxt, IDDocuemnt);
+            }
+            
         }
         private void _SaveReasonForQueue(string dataTxt, Nullable<Guid> IdDocument)
         {
@@ -747,6 +727,18 @@ namespace SSK
         {
             main.NavigateTo(NavigatorEnums.Supervisee);
         }
+        #region Scan Document
+        private void ScanDocumentCallBack(string frontPath, string error)
+        {
+            _web.InvokeScript("showImgScanDocument", frontPath);
+        }
+        public void StartScanDocument()
+        {
+            //System.Threading.Thread.Sleep(5000);
+            //ScanDocumentCallBack(@"C:\Users\thangnv1\Desktop\imgpsh_fullsize.jpg", "");
+            Trinity.Util.DocumentScannerUtil.Instance.StartScanning(ScanDocumentCallBack);
+        }
+        #endregion
         public void LogOut()
         {
             // reset session value
