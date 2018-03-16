@@ -17,9 +17,9 @@ namespace Trinity.DAL.DBContext
             QueueDetail detail = this.QueueDetails.FirstOrDefault(c => c.Station == EnumStation.SSK);
             if (detail != null)
             {
-                if (Station==EnumStation.SSK)
+                if (Station == EnumStation.SSK)
                 {
-                    if(detail.Status == EnumQueueStatuses.Errors)
+                    if (detail.Status == EnumQueueStatuses.Errors)
                     {
                         return EnumColors.Red;
                     }
@@ -27,13 +27,15 @@ namespace Trinity.DAL.DBContext
                     {
                         return EnumColors.Green;
                     }
-                }else if (Station == EnumStation.APS)
+                }
+                else if (Station == EnumStation.APS)
                 {
                     if (this.Appointment_ID.HasValue)
                     {
                         return EnumColors.Green;
                     }
-                    else {
+                    else
+                    {
                         return EnumColors.Notrequired;
                     }
                 }
@@ -69,7 +71,7 @@ namespace Trinity.DAL.DBContext
                 {
                     return "red";
                 }
-                else if (!this.Appointment_ID.HasValue || (this.Appointment_ID.HasValue && this.Appointment.Timeslot_ID!=this.Timeslot_ID))
+                else if (!this.Appointment_ID.HasValue || (this.Appointment_ID.HasValue && this.Appointment.Timeslot_ID != this.Timeslot_ID) || (this.CreatedTime <= DateTime.Now.Date.Add(this.Timeslot.StartTime.Value)) || (this.Appointment_ID.HasValue && this.Created_By != this.Appointment.UserId))
                 {
                     return "blue";
                 }

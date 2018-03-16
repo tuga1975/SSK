@@ -802,48 +802,66 @@ namespace Trinity.DAL
             {
                 operationSetting = new OperationSetting();
                 operationSetting.DayOfWeek = model.DayOfWeek;
-                operationSetting.Morning_Open_Time = model.Morning_Open_Time;
-                operationSetting.Morning_Close_Time = model.Morning_Close_Time;
-                operationSetting.Morning_Spare_Slots = model.Morning_Spare_Slots;
-                operationSetting.Morning_Interval = model.Morning_Interval;
-                operationSetting.Morning_MaximumSupervisee = model.Morning_MaximumSupervisee;
                 operationSetting.Morning_Is_Closed = model.Morning_Is_Closed;
-                operationSetting.Afternoon_Open_Time = model.Afternoon_Open_Time;
-                operationSetting.Afternoon_Close_Time = model.Afternoon_Close_Time;
-                operationSetting.Afternoon_Spare_Slots = model.Afternoon_Spare_Slots;
-                operationSetting.Afternoon_Interval = model.Afternoon_Interval;
-                operationSetting.Afternoon_MaximumSupervisee = model.Afternoon_MaximumSupervisee;
+                if (model.Morning_Is_Closed == false)
+                {
+                    operationSetting.Morning_Open_Time = model.Morning_Open_Time;
+                    operationSetting.Morning_Close_Time = model.Morning_Close_Time;
+                    operationSetting.Morning_Spare_Slots = model.Morning_Spare_Slots;
+                    operationSetting.Morning_Interval = model.Morning_Interval;
+                    operationSetting.Morning_MaximumSupervisee = model.Morning_MaximumSupervisee;
+                }
                 operationSetting.Afternoon_Is_Closed = model.Afternoon_Is_Closed;
-                operationSetting.Evening_Open_Time = model.Evening_Open_Time;
-                operationSetting.Evening_Close_Time = model.Evening_Close_Time;
-                operationSetting.Evening_Spare_Slots = model.Evening_Spare_Slots;
-                operationSetting.Evening_Interval = model.Evening_Interval;
-                operationSetting.Evening_MaximumSupervisee = model.Evening_MaximumSupervisee;
+                if (model.Afternoon_Is_Closed == false)
+                {
+                    operationSetting.Afternoon_Open_Time = model.Afternoon_Open_Time;
+                    operationSetting.Afternoon_Close_Time = model.Afternoon_Close_Time;
+                    operationSetting.Afternoon_Spare_Slots = model.Afternoon_Spare_Slots;
+                    operationSetting.Afternoon_Interval = model.Afternoon_Interval;
+                    operationSetting.Afternoon_MaximumSupervisee = model.Afternoon_MaximumSupervisee;
+                }
                 operationSetting.Evening_Is_Closed = model.Evening_Is_Closed;
+                if (model.Evening_Is_Closed == false)
+                {
+                    operationSetting.Evening_Open_Time = model.Evening_Open_Time;
+                    operationSetting.Evening_Close_Time = model.Evening_Close_Time;
+                    operationSetting.Evening_Spare_Slots = model.Evening_Spare_Slots;
+                    operationSetting.Evening_Interval = model.Evening_Interval;
+                    operationSetting.Evening_MaximumSupervisee = model.Evening_MaximumSupervisee;
+                }
                 operationSetting.Last_Updated_By = model.Last_Updated_By;
                 operationSetting.Last_Updated_Date = DateTime.Now;
                 _localUnitOfWork.GetRepository<OperationSetting>().Add(operationSetting);
             }
             else
             {
-                operationSetting.Morning_Open_Time = model.Morning_Open_Time;
-                operationSetting.Morning_Close_Time = model.Morning_Close_Time;
-                operationSetting.Morning_Spare_Slots = model.Morning_Spare_Slots;
-                operationSetting.Morning_Interval = model.Morning_Interval;
-                operationSetting.Morning_MaximumSupervisee = model.Morning_MaximumSupervisee;
                 operationSetting.Morning_Is_Closed = model.Morning_Is_Closed;
-                operationSetting.Afternoon_Open_Time = model.Afternoon_Open_Time;
-                operationSetting.Afternoon_Close_Time = model.Afternoon_Close_Time;
-                operationSetting.Afternoon_Spare_Slots = model.Afternoon_Spare_Slots;
-                operationSetting.Afternoon_Interval = model.Afternoon_Interval;
-                operationSetting.Afternoon_MaximumSupervisee = model.Afternoon_MaximumSupervisee;
+                if (model.Morning_Is_Closed == false)
+                {
+                    operationSetting.Morning_Open_Time = model.Morning_Open_Time;
+                    operationSetting.Morning_Close_Time = model.Morning_Close_Time;
+                    operationSetting.Morning_Spare_Slots = model.Morning_Spare_Slots;
+                    operationSetting.Morning_Interval = model.Morning_Interval;
+                    operationSetting.Morning_MaximumSupervisee = model.Morning_MaximumSupervisee;
+                }
                 operationSetting.Afternoon_Is_Closed = model.Afternoon_Is_Closed;
-                operationSetting.Evening_Open_Time = model.Evening_Open_Time;
-                operationSetting.Evening_Close_Time = model.Evening_Close_Time;
-                operationSetting.Evening_Spare_Slots = model.Evening_Spare_Slots;
-                operationSetting.Evening_Interval = model.Evening_Interval;
-                operationSetting.Evening_MaximumSupervisee = model.Evening_MaximumSupervisee;
+                if (model.Afternoon_Is_Closed == false)
+                {
+                    operationSetting.Afternoon_Open_Time = model.Afternoon_Open_Time;
+                    operationSetting.Afternoon_Close_Time = model.Afternoon_Close_Time;
+                    operationSetting.Afternoon_Spare_Slots = model.Afternoon_Spare_Slots;
+                    operationSetting.Afternoon_Interval = model.Afternoon_Interval;
+                    operationSetting.Afternoon_MaximumSupervisee = model.Afternoon_MaximumSupervisee;
+                }
                 operationSetting.Evening_Is_Closed = model.Evening_Is_Closed;
+                if (model.Evening_Is_Closed == false)
+                {
+                    operationSetting.Evening_Open_Time = model.Evening_Open_Time;
+                    operationSetting.Evening_Close_Time = model.Evening_Close_Time;
+                    operationSetting.Evening_Spare_Slots = model.Evening_Spare_Slots;
+                    operationSetting.Evening_Interval = model.Evening_Interval;
+                    operationSetting.Evening_MaximumSupervisee = model.Evening_MaximumSupervisee;
+                }
                 operationSetting.Last_Updated_By = model.Last_Updated_By;
                 operationSetting.Last_Updated_Date = DateTime.Now;
 
@@ -974,48 +992,66 @@ namespace Trinity.DAL
             {
                 operationSetting = new OperationSetting();
                 operationSetting.DayOfWeek = model.DayOfWeek;
-                operationSetting.Morning_Open_Time = model.Morning_Open_Time;
-                operationSetting.Morning_Close_Time = model.Morning_Close_Time;
-                operationSetting.Morning_Spare_Slots = model.Morning_Spare_Slots;
-                operationSetting.Morning_Interval = model.Morning_Interval;
-                operationSetting.Morning_MaximumSupervisee = model.Morning_MaximumSupervisee;
                 operationSetting.Morning_Is_Closed = model.Morning_Is_Closed;
-                operationSetting.Afternoon_Open_Time = model.Afternoon_Open_Time;
-                operationSetting.Afternoon_Close_Time = model.Afternoon_Close_Time;
-                operationSetting.Afternoon_Spare_Slots = model.Afternoon_Spare_Slots;
-                operationSetting.Afternoon_Interval = model.Afternoon_Interval;
-                operationSetting.Afternoon_MaximumSupervisee = model.Afternoon_MaximumSupervisee;
+                if (model.Morning_Is_Closed == false)
+                {
+                    operationSetting.Morning_Open_Time = model.Morning_Open_Time;
+                    operationSetting.Morning_Close_Time = model.Morning_Close_Time;
+                    operationSetting.Morning_Spare_Slots = model.Morning_Spare_Slots;
+                    operationSetting.Morning_Interval = model.Morning_Interval;
+                    operationSetting.Morning_MaximumSupervisee = model.Morning_MaximumSupervisee;
+                }
                 operationSetting.Afternoon_Is_Closed = model.Afternoon_Is_Closed;
-                operationSetting.Evening_Open_Time = model.Evening_Open_Time;
-                operationSetting.Evening_Close_Time = model.Evening_Close_Time;
-                operationSetting.Evening_Spare_Slots = model.Evening_Spare_Slots;
-                operationSetting.Evening_Interval = model.Evening_Interval;
-                operationSetting.Evening_MaximumSupervisee = model.Evening_MaximumSupervisee;
+                if (model.Afternoon_Is_Closed == false)
+                {
+                    operationSetting.Afternoon_Open_Time = model.Afternoon_Open_Time;
+                    operationSetting.Afternoon_Close_Time = model.Afternoon_Close_Time;
+                    operationSetting.Afternoon_Spare_Slots = model.Afternoon_Spare_Slots;
+                    operationSetting.Afternoon_Interval = model.Afternoon_Interval;
+                    operationSetting.Afternoon_MaximumSupervisee = model.Afternoon_MaximumSupervisee;
+                }
                 operationSetting.Evening_Is_Closed = model.Evening_Is_Closed;
+                if (model.Evening_Is_Closed == false)
+                {
+                    operationSetting.Evening_Open_Time = model.Evening_Open_Time;
+                    operationSetting.Evening_Close_Time = model.Evening_Close_Time;
+                    operationSetting.Evening_Spare_Slots = model.Evening_Spare_Slots;
+                    operationSetting.Evening_Interval = model.Evening_Interval;
+                    operationSetting.Evening_MaximumSupervisee = model.Evening_MaximumSupervisee;
+                }
                 operationSetting.Last_Updated_By = model.Last_Updated_By;
                 operationSetting.Last_Updated_Date = DateTime.Now;
                 _centralizedUnitOfWork.GetRepository<OperationSetting>().Add(operationSetting);
             }
             else
             {
-                operationSetting.Morning_Open_Time = model.Morning_Open_Time;
-                operationSetting.Morning_Close_Time = model.Morning_Close_Time;
-                operationSetting.Morning_Spare_Slots = model.Morning_Spare_Slots;
-                operationSetting.Morning_Interval = model.Morning_Interval;
-                operationSetting.Morning_MaximumSupervisee = model.Morning_MaximumSupervisee;
                 operationSetting.Morning_Is_Closed = model.Morning_Is_Closed;
-                operationSetting.Afternoon_Open_Time = model.Afternoon_Open_Time;
-                operationSetting.Afternoon_Close_Time = model.Afternoon_Close_Time;
-                operationSetting.Afternoon_Spare_Slots = model.Afternoon_Spare_Slots;
-                operationSetting.Afternoon_Interval = model.Afternoon_Interval;
-                operationSetting.Afternoon_MaximumSupervisee = model.Afternoon_MaximumSupervisee;
+                if (model.Morning_Is_Closed == false)
+                {
+                    operationSetting.Morning_Open_Time = model.Morning_Open_Time;
+                    operationSetting.Morning_Close_Time = model.Morning_Close_Time;
+                    operationSetting.Morning_Spare_Slots = model.Morning_Spare_Slots;
+                    operationSetting.Morning_Interval = model.Morning_Interval;
+                    operationSetting.Morning_MaximumSupervisee = model.Morning_MaximumSupervisee;
+                }
                 operationSetting.Afternoon_Is_Closed = model.Afternoon_Is_Closed;
-                operationSetting.Evening_Open_Time = model.Evening_Open_Time;
-                operationSetting.Evening_Close_Time = model.Evening_Close_Time;
-                operationSetting.Evening_Spare_Slots = model.Evening_Spare_Slots;
-                operationSetting.Evening_Interval = model.Evening_Interval;
-                operationSetting.Evening_MaximumSupervisee = model.Evening_MaximumSupervisee;
+                if (model.Afternoon_Is_Closed == false)
+                {
+                    operationSetting.Afternoon_Open_Time = model.Afternoon_Open_Time;
+                    operationSetting.Afternoon_Close_Time = model.Afternoon_Close_Time;
+                    operationSetting.Afternoon_Spare_Slots = model.Afternoon_Spare_Slots;
+                    operationSetting.Afternoon_Interval = model.Afternoon_Interval;
+                    operationSetting.Afternoon_MaximumSupervisee = model.Afternoon_MaximumSupervisee;
+                }
                 operationSetting.Evening_Is_Closed = model.Evening_Is_Closed;
+                if (model.Evening_Is_Closed == false)
+                {
+                    operationSetting.Evening_Open_Time = model.Evening_Open_Time;
+                    operationSetting.Evening_Close_Time = model.Evening_Close_Time;
+                    operationSetting.Evening_Spare_Slots = model.Evening_Spare_Slots;
+                    operationSetting.Evening_Interval = model.Evening_Interval;
+                    operationSetting.Evening_MaximumSupervisee = model.Evening_MaximumSupervisee;
+                }
                 operationSetting.Last_Updated_By = model.Last_Updated_By;
                 operationSetting.Last_Updated_Date = DateTime.Now;
 

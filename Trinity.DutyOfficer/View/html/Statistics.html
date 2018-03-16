@@ -1,29 +1,4 @@
-﻿<!--<div style="display:block; padding:10px;">
-    <span style=" font-size:22px; float:left; text-align:left;"><b>Statistics</b></span>
-    <br/>
-    <div class="form-inline" style="right:10px; float:right; padding-bottom:10px;">
-        <select class="form-control" id="pageSize" style="width:70px; display:inline-block;">
-            <option>10</option>
-            <option>2</option>
-            <option>3</option>
-        </select>
-        <div style="display:inline-block;">Entries</div>
-
-        <div style="display:inline-block;">
-            <div class="input-group date" id="datetimepicker1" style="width:180px;">
-                <input type='text' class="form-control" id="dateSearch" />
-                <span class="input-group-addon">
-                    <span class="glyphicon glyphicon-calendar"></span>
-                </span>
-            </div>
-        </div>
-        <div style="display:inline-block;">Date</div>
-    </div>
-</div>
-<br />
-<table id="table"></table>-->
-
-<div class="table-wrapper formWrapper">
+﻿<div class="table-wrapper formWrapper">
     <div class="tab-header">
         <span class="formHeader"><b>Statistics</b></span>
     </div>
@@ -52,7 +27,7 @@
             </select>
             <div class="entries"> entries per page</div>
         </div>
-        <table id="table"></table>
+        <table id="tableStatistics"></table>
     </div>
 </div>
 <script type="text/javascript">
@@ -89,8 +64,8 @@
         if (data) {
             data.forEach(function (element, index) {
                 dataSource.push({
-                    StartTime: convert24hrTo12hr(element.StartTime),
-                    EndTime: convert24hrTo12hr(element.EndTime),
+                    StartTime: FormatTime(element.StartTime),
+                    EndTime: FormatTime(element.EndTime),
                     Max: element.Max,
                     Booked: element.Booked,
                     Reported: element.Reported,
@@ -101,8 +76,8 @@
 
                 if (Date.parse(formatDate(element.Date)) == Date.parse(today)) {
                     searchSource.push({
-                        StartTime: convert24hrTo12hr(element.StartTime),
-                        EndTime: convert24hrTo12hr(element.EndTime),
+                        StartTime: FormatTime(element.StartTime),
+                        EndTime: FormatTime(element.EndTime),
                         Max: element.Max,
                         Booked: element.Booked,
                         Reported: element.Reported,
@@ -114,7 +89,7 @@
             });
         }
 
-        $('#table').bootstrapTable({
+        $('#tableStatistics').bootstrapTable({
             pagination: true,
             pageSize: 10,
             pageList: [10, 25, 50, 100],
@@ -171,7 +146,11 @@
 
     function reloadDataStatistics() {
         api.server.GetStatistics(function (data) {
-            $('#table').bootstrapTable('load', data);
+            $('#tableStatistics').bootstrapTable('load', data);
+            $('#tableStatistics').bootstrapTable('refreshOptions', {
+                pagination: true,
+                data: data
+            });
         });
     };
 
@@ -180,7 +159,7 @@
 
     $('#pageSize').change(function () {
         pageSize = $("#pageSize option:selected").text();
-        $('#table').bootstrapTable('refreshOptions', {
+        $('#tableStatistics').bootstrapTable('refreshOptions', {
             pagination: true,
             //search: true,
             pageSize: pageSize
@@ -208,7 +187,7 @@
         if (!dateSearch) {
             source = dataSource;
         }
-        $('#table').bootstrapTable('refreshOptions', {
+        $('#tableStatistics').bootstrapTable('refreshOptions', {
             pagination: true,
             data: source
         });
@@ -242,6 +221,13 @@
             var ampm = (H < 12 || H === 24) ? " AM" : " PM";
             time = h + time.substr(hourEnd, 3) + ampm;
         }
+        return time; // return adjusted time or original string
+    };
+
+    function FormatTime(time) {
+        var hourEnd = time.indexOf(":");
+        var H = +time.substr(0, hourEnd);
+        time = H + time.substr(hourEnd, 3);
         return time; // return adjusted time or original string
     };
 </script>

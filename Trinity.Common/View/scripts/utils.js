@@ -43,18 +43,16 @@ function Api() {
         for (var item in model) {
             var data = model[item];
             if (data != null && (item == 'Morning_Open_Time' || item == 'Morning_Close_Time' || item == 'Afternoon_Open_Time' || item == 'Afternoon_Close_Time' || item == 'Evening_Open_Time' || item == 'Evening_Close_Time')) {
-                data = tConvert24hrTo12hr(data);
+                data = FormatTime(data);
             }
             content = content.replace(new RegExp('{' + item + '}', "g"), data == null ? '' : data);
         }
         return content;
     };
-    function tConvert24hrTo12hr(time) {
+    function FormatTime(time) {
         var hourEnd = time.indexOf(":");
         var H = +time.substr(0, hourEnd);
-        var h = H % 12 || 12;
-        var ampm = (H < 12 || H === 24) ? " AM" : " PM";
-        time = h + time.substr(hourEnd, 3) + ampm;
+        time = H + time.substr(hourEnd, 3);
         return time; // return adjusted time or original string
     };
 }
@@ -68,6 +66,18 @@ function AddContentPage(html, model) {
         var value = $(this).attr('onclick');
         $(this).removeAttr('onclick');
         $(this).attr('valonclick', value);
+    });
+    $('#content a').each(function () {
+        var value = $(this).attr('onclick');
+        $(this).removeAttr('onclick');
+        $(this).attr('valonclick', value);
+
+        value = $(this).attr('href');
+        value = typeof value == 'undefined' ? '' : value;
+        if (value.indexOf('#')!=0) {
+            $(this).attr('valhref', value);
+            $(this).attr('href', 'javascript:;');
+        }
     });
     api.callReady(api.model);
 }
@@ -85,6 +95,18 @@ function AddContentPopup(html, model, id) {
         var value = $(this).attr('onclick');
         $(this).removeAttr('onclick');
         $(this).attr('valonclick', value);
+    });
+    $('#panel-popup > [id="' + id + '"]').find('a').each(function () {
+        var value = $(this).attr('onclick');
+        $(this).removeAttr('onclick');
+        $(this).attr('valonclick', value);
+
+        value = $(this).attr('href');
+        value = typeof value == 'undefined' ? '' : value;
+        if (value.indexOf('#') != 0) {
+            $(this).attr('valhref', value);
+            $(this).attr('href', 'javascript:;');
+        }
     });
     api.callReady(api.model);
 }
@@ -143,7 +165,7 @@ function setLoading(status) {
 function RunScript(script) {
     eval(script);
 }
-function ShowMessageBox(title, message,id) {
+function ShowMessageBox(title, message, id) {
     api.server.ShowPopupMessage(title, message, id, function () {
         $('#PopupMessage').modal({
             backdrop: 'static',
@@ -152,15 +174,21 @@ function ShowMessageBox(title, message,id) {
     });
 }
 $(document).ready(function () {
-    $('body').on('click', 'a[href]', function (event) {
+    $('body').on('click', 'a', function (event) {
         event.preventDefault();
-        var href = $(this).attr('href');
+        var href = $(this).attr('valhref');
         if (typeof href != 'undefined' && $.trim(href).length > 0) {
             try {
-                eval(href);
+                eval('(function() { ' + href + ' })()');
             } catch (e) {
 
             }
+        }
+        try {
+            if ($(this).is('[valonclick]')) {
+                eval('(function() { ' + $(this).attr('valonclick') + ' })()');
+            }
+        } catch (e) {
         }
     });
     $('body').on('click', 'button', function (event) {

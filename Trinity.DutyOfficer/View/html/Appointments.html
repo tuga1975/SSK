@@ -74,7 +74,7 @@
             </select>
             <div class="entries"> entries per page</div>
         </div>
-        <table id="table"></table>
+        <table id="tableAppointment"></table>
     </div>
 </div>
 <script type="text/javascript">
@@ -115,7 +115,7 @@
                 if (data) {
                     data.forEach(function (element, index) {
                         dataSource.push({
-                            TimeSlot: convert24hrTo12hr(element.StartTime) + ' - ' + convert24hrTo12hr(element.EndTime),
+                            TimeSlot: FormatTime(element.StartTime) + ' - ' + FormatTime(element.EndTime),
                             NRIC: element.NRIC,
                             Name: element.Name,
                             ReportTime: element.ReportTime,
@@ -129,7 +129,7 @@
 
                         if (Date.parse(formatDate(element.AppointmentDate)) == Date.parse(today)) {
                             searchSource.push({
-                                TimeSlot: convert24hrTo12hr(element.StartTime) + ' - ' + convert24hrTo12hr(element.EndTime),
+                                TimeSlot: FormatTime(element.StartTime) + ' - ' + FormatTime(element.EndTime),
                                 NRIC: element.NRIC,
                                 Name: element.Name,
                                 ReportTime: element.ReportTime,
@@ -148,7 +148,7 @@
                     });
                 }
 
-                $('#table').bootstrapTable({
+                $('#tableAppointment').bootstrapTable({
                     pagination: true,
                     pageSize: 10,
                     pageList: [10, 25, 50, 100],
@@ -178,7 +178,7 @@
                         align: 'center',
                         formatter: function (value, row, index, field) {
                             if (value) {
-                                return convert24hrTo12hr(value);
+                                return FormatTime(value);
                             }
                             return "";
                         }
@@ -210,13 +210,18 @@
 
     function reloadDataAppts() {
         api.server.GetAllAppoinments(function (data) {
-            $('#table').bootstrapTable('load', data);
+            //$('#tableAppointment').bootstrapTable('load', data);
+
+            $('#tableAppointment').bootstrapTable('refreshOptions', {
+                pagination: true,
+                data: data
+            });
         });
     };
 
     $('#pageSize').change(function () {
         pageSize = $("#pageSize option:selected").text();
-        $('#table').bootstrapTable('refreshOptions', {
+        $('#tableAppointment').bootstrapTable('refreshOptions', {
             pagination: true,
             //search: true,
             pageSize: pageSize
@@ -259,7 +264,7 @@
             }
         }
         
-        $('#table').bootstrapTable('refreshOptions', {
+        $('#tableAppointment').bootstrapTable('refreshOptions', {
             pagination: true,
             data: searchSource
         });
@@ -283,7 +288,7 @@
             }
         }
 
-        $('#table').bootstrapTable('refreshOptions', {
+        $('#tableAppointment').bootstrapTable('refreshOptions', {
             pagination: true,
             data: searchSource
         });
@@ -324,5 +329,11 @@
         }
         return time; // return adjusted time or original string
     };
-    
+
+    function FormatTime(time) {
+        var hourEnd = time.indexOf(":");
+        var H = +time.substr(0, hourEnd);
+        time = H + time.substr(hourEnd, 3);
+        return time; // return adjusted time or original string
+    };
 </script>

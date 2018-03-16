@@ -1,4 +1,4 @@
-﻿<div class="modal fade" role="dialog" id="popupMUBandTTLabel">
+﻿<div class="modal" role="dialog" id="popupMUBandTTLabel">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -21,13 +21,13 @@
                     <br />
                     <div>
                         <label class="textarea" type="text">Reason:</label>
-                        <textarea type="text" class="form-control pri col-12" rows="5" id="Reason"></textarea>
+                        <textarea type="text" class="form-control pri col-12" rows="5" id="ReasonMUB"></textarea>
                     </div>
                 </div>
             </div>
             <div class="modal-footer d-flex justify-content-center">
                 <button type="button" class="btn btn-default" data-dismiss="modal" aria-label="Close">CANCEL</button>
-                <button type="button"  id="PrintBtn" class="btn btn-default">PRINT</button>
+                <button type="button"  id="PrintBtnMUBAndTT" class="btn btn-default">PRINT</button>
             </div>
         </div>
     </div>
@@ -36,13 +36,15 @@
     api.ready(function (model) {
         $('#OfficerNRICMUB').val(model[0].OfficerNRIC);
         $('#OfficerNameMUB').val(model[0].OfficerName);
-        $("#PrintBtn").click(function (e) {
+        $("#PrintBtnMUBAndTT").click(function (e) {
             //var json = JSON.stringify(api.model);
 
             //api.server.PrintingMUBAndTTLabels(api.model.UserId, $('#Reason').val());
 
             var json = JSON.stringify(model);
-            api.server.MappingTemplateMUBAndTTLabels(json, $('#Reason').val());
+            api.server.MappingTemplateMUBAndTTLabels(json, $('#ReasonMUB').val(), function () {
+                $('#popupMUBandTTLabel').modal('toggle');
+            });
 
             e.preventDefault(); // avoid to execute the actual submit of the form.
         });

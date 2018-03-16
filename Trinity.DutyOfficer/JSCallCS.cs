@@ -125,7 +125,8 @@ namespace DutyOfficer
         public object getDataQueue()
         {
             List<object> arrayDataa = new List<object>();
-            arrayDataa.AddRange(new DAL_Appointments().GetByDate(DateTime.Today).Select(app => new {
+            arrayDataa.AddRange(new DAL_Appointments().GetByDate(DateTime.Today).Select(app => new
+            {
                 Queue_ID = app.Queue == null ? null : app.Queue.Queue_ID.ToString().Trim(),
                 Date = app.Date,
                 UserId = app.UserId,
@@ -259,7 +260,7 @@ namespace DutyOfficer
         {
             DAL_QueueNumber dalQueue = new DAL_QueueNumber();
             var queueDetail = dalQueue.GetQueueInfoByQueueID(new Guid(queueId));
-            if (queueDetail !=null)
+            if (queueDetail != null)
             {
                 string resultUT = GetResultUT(queueDetail.NRIC);
 
@@ -296,12 +297,12 @@ namespace DutyOfficer
 
         public List<Notification> getAlertsSendToDutyOfficer()
         {
-            if(_isFocusQueue)
+            if (_isFocusQueue)
             {
                 SmartCardReaderUtil.Instance.StopSmartCardMonitor();
                 _isFocusQueue = false;
             }
-            
+
             var dalNotify = new DAL_Notification();
             string userID = ((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId;
             if (userID != null || userID != "")
@@ -319,7 +320,7 @@ namespace DutyOfficer
             string userID = ((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId;
             if (userID != null || userID != "")
             {
-                Response<bool> response =  dalNotify.updateReadStatus(NotificationID, true);
+                Response<bool> response = dalNotify.updateReadStatus(NotificationID, true);
                 return response.ResponseCode == (int)EnumResponseStatuses.Success;
             }
             return false;
@@ -476,7 +477,7 @@ namespace DutyOfficer
                 //var responseResult= _Appointment.GetTimeslotNearestAppointment();
                 DAL_QueueNumber dalQueue = new DAL_QueueNumber();
                 Trinity.DAL.DBContext.Timeslot timeslot = dalQueue.GetTimeSlotEmpty();
-                var response= dalAppointment.UpdateTimeslotForApptmt(appointment.ID, timeslot.Timeslot_ID);
+                var response = dalAppointment.UpdateTimeslotForApptmt(appointment.ID, timeslot.Timeslot_ID);
                 appointment = response;
                 Trinity.DAL.DBContext.Queue queueNumber = dalQueue.InsertQueueNumber(appointment.ID, appointment.UserId, EnumStation.SSK, dutyOfficer.UserId);
             }
@@ -493,15 +494,15 @@ namespace DutyOfficer
             }
 
             var dalAppointment = new DAL_Appointments();
-            var result= dalAppointment.GetAllApptmts();
-            foreach(var item in result)
+            var result = dalAppointment.GetAllApptmts();
+            foreach (var item in result)
             {
                 if (item.ReportTime.HasValue)
                 {
                     item.ReportTimeSpan = item.ReportTime.Value.TimeOfDay;
                 }
             }
-            return result;            
+            return result;
         }
 
         #endregion
@@ -516,18 +517,18 @@ namespace DutyOfficer
             }
 
             var dalAppointment = new DAL_Appointments();
-            var result= dalAppointment.GetAllStats();
+            var result = dalAppointment.GetAllStats();
             List<Statistics> data = result;
 
             foreach (var item in data)
             {
                 var maxResult = dalAppointment.GetMaxNumberOfTimeslot(item.Timeslot_ID);
                 item.Max = maxResult;
-                var bookedResult= dalAppointment.CountApptmtBookedByTimeslot(item.Timeslot_ID);
+                var bookedResult = dalAppointment.CountApptmtBookedByTimeslot(item.Timeslot_ID);
                 item.Booked = bookedResult;
                 var reportedResult = dalAppointment.CountApptmtReportedByTimeslot(item.Timeslot_ID);
                 item.Reported = reportedResult;
-                var absentResult= dalAppointment.CountApptmtAbsentByTimeslot(item.Timeslot_ID);
+                var absentResult = dalAppointment.CountApptmtAbsentByTimeslot(item.Timeslot_ID);
                 item.Absent = absentResult;
                 item.Available = item.Max - item.Booked - item.Reported - item.Absent;
             }
@@ -578,7 +579,9 @@ namespace DutyOfficer
                 foreach (var item in lstLabel)
                 {
                     if (_isPrintFailUB)
+                    {
                         break;
+                    }
 
                     DAL_User dalUser = new DAL_User();
                     string userID = dalUser.GetSuperviseeByNRIC(item.NRIC).UserId;
@@ -587,11 +590,11 @@ namespace DutyOfficer
                         UserId = userID,
                         Name = item.Name,
                         NRIC = item.NRIC,
-                        Label_Type = EnumLabelType.MUB,
+                        Label_Type = EnumLabelType.UB,
                         Date = DateTime.Now.ToString("dd/MM/yyyy"),
                         CompanyName = CommonConstants.COMPANY_NAME,
                         LastStation = EnumStation.DUTYOFFICER,
-                        MarkingNo = item.MarkingNo,//new DAL_SettingSystem().GenerateMarkingNumber(),
+                        MarkingNo = item.MarkingNo,
                         DrugType = item.DrugType,
                         ReprintReason = reason,
                         IsMUB = false
@@ -625,6 +628,15 @@ namespace DutyOfficer
 
                     Thread.Sleep(1500);
                 }
+
+                if (_isPrintFailUB)
+                {
+                    MessageBox.Show("Unable to print UB labels", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else
+                {
+                    MessageBox.Show("Print all labels successfully", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
                 _isPrintFailUB = false;
             }
             catch (Exception e)
@@ -649,7 +661,7 @@ namespace DutyOfficer
             if (!_isPrintFailUB)
             {
                 _isPrintFailUB = true;
-                MessageBox.Show("Unable to print UB labels\nPlease report to the Duty Officer", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //MessageBox.Show("Unable to print UB labels\nPlease report to the Duty Officer", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
             DeleteQRCodeImageFileTemp();
@@ -695,10 +707,13 @@ namespace DutyOfficer
                 foreach (var item in lstLabel)
                 {
                     if (_isPrintFailMUB && _isPrintFailTT)
+                    {
                         break;
+                    }
 
                     DAL_User dalUser = new DAL_User();
                     string userID = dalUser.GetSuperviseeByNRIC(item.NRIC).UserId;
+                    string markingNo = new DAL_Labels().GetMarkingNoByUserId(userID);
                     LabelInfo labelInfo = new LabelInfo
                     {
                         UserId = userID,
@@ -708,7 +723,7 @@ namespace DutyOfficer
                         Date = DateTime.Now.ToString("dd/MM/yyyy"),
                         CompanyName = CommonConstants.COMPANY_NAME,
                         LastStation = EnumStation.DUTYOFFICER,
-                        MarkingNo = item.MarkingNo,//new DAL_SettingSystem().GenerateMarkingNumber(),
+                        MarkingNo = markingNo,//new DAL_SettingSystem().GenerateMarkingNumber(),
                         //DrugType = "NA",
                         ReprintReason = reason,
                         IsMUB = item.IsMUB,
@@ -730,18 +745,36 @@ namespace DutyOfficer
                             string fileName = String.Format("{0}/Temp/{1}", CSCallJS.curDir, "QRCode.png");
                             if (System.IO.File.Exists(fileName))
                                 System.IO.File.Delete(fileName);
-
-                            if (System.IO.File.Exists(fileName))
-                                System.IO.File.Delete(fileName);
-
+                            
                             System.Drawing.Image bitmap = System.Drawing.Image.FromStream(ms);
                             bitmap.Save(fileName, System.Drawing.Imaging.ImageFormat.Png);
                         }
+                        _web.LoadPageHtml("PrintingTemplates/MUBLabelTemplate.html", labelInfo);
+                        Thread.Sleep(1000);
+                    }
+                    if (item.IsTT)
+                    {
+                        _printMUBAndTTLabel.StartPrintTT(labelInfo);
+                        Thread.Sleep(500);
                     }
 
-                    _web.LoadPageHtml("PrintingTemplates/MUBLabelTemplate.html", labelInfo);
+                }
 
-                    Thread.Sleep(1500);
+                if(_isPrintFailMUB && _isPrintFailTT)
+                {
+                    MessageBox.Show("Unable to print MUB and TT labels", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else if (_isPrintFailMUB)
+                {
+                    MessageBox.Show("Unable to print MUB labels", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else if(_isPrintFailTT)
+                {
+                    MessageBox.Show("Unable to print TT labels", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else
+                {
+                    MessageBox.Show("Print all labels successfully", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 _isPrintFailMUB = false;
                 _isPrintFailTT = false;
@@ -761,14 +794,13 @@ namespace DutyOfficer
             var labelInfo = JsonConvert.DeserializeObject<LabelInfo>(jsonModel);
             labelInfo.BitmapLabel = bitmapBytes;
 
+            // Set MarkingNo for demo purpose
+            //labelInfo.MarkingNo = "CSA18001991";
             if (labelInfo.IsMUB == true)
             {
                 _printMUBAndTTLabel.StartPrintMUB(labelInfo);
             }
-            if (labelInfo.IsTT == true)
-            {
-                _printMUBAndTTLabel.StartPrintTT(labelInfo);
-            }
+            
         }
 
         private void PrintMUBLabels_OnPrintMUBLabelSucceeded(object sender, PrintMUBAndTTLabelsEventArgs e)
@@ -786,14 +818,15 @@ namespace DutyOfficer
                 QRCode = e.LabelInfo.QRCode,
                 LastStation = EnumStation.DUTYOFFICER,
                 PrintCount = e.LabelInfo.PrintCount,
-                ReprintReason = e.LabelInfo.ReprintReason
+                ReprintReason = e.LabelInfo.ReprintReason,
+                PrintStatus = EnumPrintStatus.Successful
             };
 
             // IsMUB = false: Print UB
             if (!e.LabelInfo.IsMUB)
             {
                 labelInfo.Label_Type = EnumLabelType.UB;
-                labelInfo.DrugType = e.LabelInfo.DrugType; 
+                labelInfo.DrugType = e.LabelInfo.DrugType;
             }
 
             DAL_Labels dalLabel = new DAL_Labels();
@@ -811,7 +844,7 @@ namespace DutyOfficer
             if (!_isPrintFailMUB)
             {
                 _isPrintFailMUB = true;
-                MessageBox.Show("Unable to print MUB labels\nPlease report to the Duty Officer", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //MessageBox.Show("Unable to print MUB labels\nPlease report to the Duty Officer", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
             DeleteQRCodeImageFileTemp();
@@ -837,8 +870,8 @@ namespace DutyOfficer
             var dalLabel = new DAL_Labels();
             if (dalLabel.UpdateLabel(labelInfo) != null)
             {
-                string message = "Print TT for " + e.LabelInfo.Name + " successful.";
-                MessageBox.Show(message, "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //string message = "Print TT for " + e.LabelInfo.Name + " successful.";
+                //MessageBox.Show(message, "", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
             DeleteQRCodeImageFileTemp();
@@ -849,7 +882,7 @@ namespace DutyOfficer
             if (!_isPrintFailTT)
             {
                 _isPrintFailTT = true;
-                MessageBox.Show("Unable to print TT labels\nPlease report to the Duty Officer", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //MessageBox.Show("Unable to print TT labels\nPlease report to the Duty Officer", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
             DeleteQRCodeImageFileTemp();
@@ -931,7 +964,7 @@ namespace DutyOfficer
             }
         }
 
-        public void Login(string username,string password)
+        public void Login(string username, string password)
         {
             var dalUser = new DAL_User();
             ApplicationUser appUser = dalUser.Login(username, password);
@@ -939,17 +972,17 @@ namespace DutyOfficer
             {
                 if (dalUser.IsInRole(appUser.Id, EnumUserRoles.DutyOfficer))
                 {
-                    
+
                     Trinity.BE.User user = new Trinity.BE.User()
                     {
                         UserId = appUser.Id,
-                            Status = appUser.Status,
-                            SmartCardId = appUser.SmartCardId,
-                            RightThumbFingerprint = appUser.RightThumbFingerprint,
-                            LeftThumbFingerprint = appUser.LeftThumbFingerprint,
-                            Name = appUser.Name,
-                            NRIC = appUser.NRIC,
-                            IsFirstAttempt = appUser.IsFirstAttempt
+                        Status = appUser.Status,
+                        SmartCardId = appUser.SmartCardId,
+                        RightThumbFingerprint = appUser.RightThumbFingerprint,
+                        LeftThumbFingerprint = appUser.LeftThumbFingerprint,
+                        Name = appUser.Name,
+                        NRIC = appUser.NRIC,
+                        IsFirstAttempt = appUser.IsFirstAttempt
                     };
                     user.Role = EnumUserRoles.DutyOfficer;
                     Session session = Session.Instance;

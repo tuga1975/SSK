@@ -328,6 +328,8 @@
     </Content>
     <Content Include="View\html\Document.html" />
     <Content Include="View\html\Layout_QueueNumber.html" />
+    <Content Include="View\html\PopupScanDocument.html" />
+    <Content Include="View\html\PopupShowImageScan.html" />
     <Content Include="View\html\PrintingTemplates\AppointmentDetailsTemplate.html" />
     <Content Include="View\html\ReasonsForQueue.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

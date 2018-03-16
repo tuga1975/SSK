@@ -335,7 +335,7 @@
                                                          class="img-fluid max-height-350px" id="RightThumbFingerprint" name="RightThumbFingerprint"   />
                                                 </div>
                                             </div>
-                                            <a href="#" onclick="api.server.UpdateFingerprints()">Update Fingerprints</a>
+                                            <a href="#"  id="updateFinger" >Update Fingerprints</a>
                                         </div>
                                     </div>
                                 </div>
@@ -1094,6 +1094,9 @@
 <script>
     $('#btnCancel').click(function () {
         api.server.CancelEditSupervisee();
+    });
+    $('#updateFinger').click(function () {
+        api.server.UpdateFingerprints();
     });
     $('#SaveBtn').click(function () {
        

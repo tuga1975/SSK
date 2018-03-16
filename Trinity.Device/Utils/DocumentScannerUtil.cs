@@ -28,6 +28,13 @@ namespace Trinity.Util
                 return enablefeeder;
             }
         }
+        public bool Scanner_Connected
+        {
+            get
+            {
+                return scanner_connected;
+            }
+        }
 
         #region Singleton Implementation
         // The variable is declared to be volatile to ensure that assignment to the instance variable completes before the instance variable can be accessed
@@ -37,6 +44,34 @@ namespace Trinity.Util
         private static object syncRoot = new Object();
 
         private DocumentScannerUtil()
+        {
+            
+        }
+
+        public static DocumentScannerUtil Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    lock (syncRoot)
+                    {
+                        if (_instance == null)
+                            _instance = new DocumentScannerUtil();
+                    }
+                }
+
+                return _instance;
+            }
+        }
+        #endregion
+
+        public EnumDeviceStatus[] GetDeviceStatus()
+        {
+            return new EnumDeviceStatus[] { EnumDeviceStatus.Connected };
+        }
+
+        private void Init()
         {
             IntPtr extra_info;
             IntPtr scanner_name = Marshal.AllocHGlobal(256);
@@ -90,33 +125,11 @@ namespace Trinity.Util
             GC.KeepAlive(scanning_handle);
         }
 
-        public static DocumentScannerUtil Instance
-        {
-            get
-            {
-                if (_instance == null)
-                {
-                    lock (syncRoot)
-                    {
-                        if (_instance == null)
-                            _instance = new DocumentScannerUtil();
-                    }
-                }
-
-                return _instance;
-            }
-        }
-        #endregion
-
-        public EnumDeviceStatus[] GetDeviceStatus()
-        {
-            return new EnumDeviceStatus[] { EnumDeviceStatus.Connected };
-        }
-
         public bool Connect()
         {
             try
             {
+                Init();
                 //MessageBox.Show("Connect");
                 pdiscan_errors pdiscan_error;
 
@@ -264,10 +277,10 @@ namespace Trinity.Util
                     }
                 }
 
-                if (scanner_connected)
+                _documentScannerCallback = documentScannerCallback;
+                if (scanner_connected && !enablefeeder)
                 {
                     //MessageBox.Show("StartScanning");
-                    //_documentScannerCallback = documentScannerCallback;
                     pdiscan_errors pdiscan_error = PdiScanWrap.PdEnableFeeder(scanning_handle);
                     if (pdiscan_error != pdiscan_errors.PDISCAN_ERR_NONE)
                     {
@@ -391,54 +404,62 @@ namespace Trinity.Util
         {
             try
             {
-                Debug.Assert(FrontSideDIB != IntPtr.Zero);
-                
-                string curDir = Directory.GetCurrentDirectory();
-
-                // create directory
-                if (!Directory.Exists(curDir + "\\Temp"))
+                if (_documentScannerCallback != null)
                 {
-                    Directory.CreateDirectory(curDir + "\\Temp");
-                }
+                    Debug.Assert(FrontSideDIB != IntPtr.Zero);
 
-                // set file path
-                string frontPath = string.Empty;
-                string error = string.Empty;
-                //Front
-                if (FrontSideDIB != IntPtr.Zero)
-                {
-                    pdiscan_errors retval = PdiScanWrap.PdSaveImageToDisk(FrontSideDIB, curDir + "\\Temp\\document_front.bmp");
-                    if (retval == pdiscan_errors.PDISCAN_ERR_NONE)
+                    string curDir = Directory.GetCurrentDirectory();
+
+                    // create directory
+                    if (!Directory.Exists(curDir + "\\Temp"))
                     {
-                        frontPath = curDir + "\\Temp\\document_front.bmp";
-
-                        // Scale image
-                        Image image = Image.FromFile(frontPath);
-                        Image newImage = Trinity.Common.CommonUtil.ScaleImage(image, 768, 1024);
-                        image.Dispose();
-                        newImage.Save(frontPath, ImageFormat.Jpeg);
-                        newImage.Dispose();
+                        Directory.CreateDirectory(curDir + "\\Temp");
                     }
-                    else
+
+                    // set file path
+                    string frontPath = string.Empty;
+                    string error = string.Empty;
+                    //Front
+                    if (FrontSideDIB != IntPtr.Zero)
                     {
-                        error = Get_PDIScan_Error_Details(retval);
+                        pdiscan_errors retval = PdiScanWrap.PdSaveImageToDisk(FrontSideDIB, curDir + "\\Temp\\document_front.jpg");
+                        if (retval == pdiscan_errors.PDISCAN_ERR_NONE)
+                        {
+                            frontPath = curDir + "\\Temp\\document_front.jpg";
+
+                            // Scale image
+                            Image image = Image.FromFile(frontPath);
+                            Image newImage = Trinity.Common.CommonUtil.ScaleImage(image, 768, 1024);
+
+                            image.Dispose();
+
+                            newImage.Save(frontPath, ImageFormat.Jpeg);
+                            newImage.Dispose();
+                        }
+                        else
+                        {
+                            error = Get_PDIScan_Error_Details(retval);
+                        }
                     }
+
+                    //Back
+                    //if (BackSideDIB != IntPtr.Zero)
+                    //{
+                    //    PdiScanWrap.PdSaveImageToDisk(BackSideDIB, temp_path + "testback.bmp");
+                    //}
+
+                    // callback
+                    _documentScannerCallback(frontPath, error);
+
+                    _documentScannerCallback = null;
                 }
-
-                //Back
-                //if (BackSideDIB != IntPtr.Zero)
-                //{
-                //    PdiScanWrap.PdSaveImageToDisk(BackSideDIB, temp_path + "testback.bmp");
-                //}
-
-                // callback
-                _documentScannerCallback(frontPath, error);
             }
             catch (Exception ex)
             {
                 MessageBox.Show("page_end_callback exception: " + ex.ToString());
                 // callback
                 _documentScannerCallback(string.Empty, ex.Message);
+                _documentScannerCallback = null;
             }
         }
 

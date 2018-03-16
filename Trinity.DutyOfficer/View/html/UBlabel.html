@@ -42,7 +42,8 @@
             search: true,
             pageSize: 10,
             pageList: [10, 25, 50, 100],
-            singleSelect: true,
+            //singleSelect: true,
+            checkboxHeader: false,
             data: dataSource
         });
     });
@@ -56,7 +57,8 @@
                     NRIC: element.NRIC,
                     Name: element.Name,
                     LastStation: element.LastStation,
-                    UserId: element.UserId
+                    UserId: element.UserId,
+                    MarkingNo: element.MarkingNo
                 });
             });
         }
@@ -65,7 +67,8 @@
             //pagination: true,
             search: true,
             pageSize: 10,
-            singleSelect: true,
+            //singleSelect: true,
+            checkboxHeader: false,
             data: dataSource
         });
     }
@@ -82,7 +85,7 @@
         var checkedRows = [];
 
         $('#UBlabel').on('check.bs.table', function (e, row) {
-            checkedRows.push({ NRIC: row.NRIC, Name: row.Name, LastStation: row.LastStation, UserId: row.UserId });
+            checkedRows.push({ NRIC: row.NRIC, Name: row.Name, LastStation: row.LastStation, UserId: row.UserId, MarkingNo: row.MarkingNo });
         });
 
         $('#UBlabel').on('uncheck.bs.table', function (e, row) {
@@ -110,7 +113,7 @@
             }
 
         })
-        activemenu('UB Lablels');
+        activemenu('UB Labels');
         $("#menu .menu-item").removeClass("active");
         $("#menu [item-menu].active").parent().addClass("active");
     })

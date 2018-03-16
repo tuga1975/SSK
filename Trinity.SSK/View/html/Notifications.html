@@ -361,12 +361,12 @@
         <p style="font-size:initial;" class="popup">Font size adjustment</p>
         <div class="row popup">
             <div class="col-sm-6 popup">
-                <a class="popup btn btn-font-size font-small btn-block" onclick="editFontSize(false);">
+                <a class="popup btn btn-font-size font-small btn-block" onclick="editFontSize(false,'Notifications');">
                     Aa <i class="popup ion-arrow-down-b"></i>
                 </a>
             </div>
             <div class="col-sm-6 popup">
-                <a class="popup btn btn-font-size font-large btn-block" onclick="editFontSize(true);">
+                <a class="popup btn btn-font-size font-large btn-block" onclick="editFontSize(true,'Notifications');">
                     Aa <i class="popup ion-arrow-up-b"></i>
                 </a>
             </div>
@@ -476,7 +476,7 @@
         if (model != null && model.length > 0) {
 
 
-            if (model.length > 1) {
+            if (model.length >= 1) {
                 $('#notificationsCount').text(model.length);
 
             }
@@ -587,7 +587,7 @@
     });
 
     api.server.GetNextAppointmentDate(function (_date) {
-        if (_date!=null && _date.trim() != "") {
+        if (_date != null && _date.trim() != "") {
             $('#appointmentDate').text(_date);
             $('#divNextAppointment').show();
 
@@ -599,6 +599,9 @@
 <script type="text/javascript">
     //show menu logout or back main
     $('#header[right-show]').attr('right-show', 'back-main');
+    if (typeof font_size_page['Notifications'] != 'undefined') {
+        $('#content').css('font-size', font_size_page['Notifications']);
+    }
 </script>
 
 <script>

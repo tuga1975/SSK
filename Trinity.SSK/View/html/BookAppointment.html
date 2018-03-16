@@ -136,7 +136,7 @@
 </style>
 <script type="text/javascript">
     //show menu logout or back main
-    $('#content').css('font-size', 'unset');
+    $('#content').removeAttr('style');
 
     $('#header[right-show]').attr('right-show', 'back-main');
 
@@ -167,6 +167,7 @@
         }).eq(0).click();
 
         var $oldActive = $('[active="true"]');
+        var $oldNotAvaiable = $('[active="true"][availble="false"]');
         $('[item-reason]').click(function () {
             $('[item-reason]').attr('active', 'false');
             $(this).attr('active', 'true');
@@ -200,6 +201,11 @@
                             if (re == true) {
                                 api.server.UpdateTimeAppointment(model[0].ID, timeslot_ID);
                             }
+                            if ($oldNotAvaiable.length>0) {
+                                $oldNotAvaiable.attr('availble', 'true');
+                            }
+                              
+                           
                         }
                     }
                 });
