@@ -117,15 +117,15 @@
             switch (type) {
                 case Type.error:
                     return {
-                        classes: row.isReaded ? "error row_readed" : "error row_unread"
+                        classes: index % 2 == 0 ? "error row_readed" : "error row_unread"
                     };
                 case Type.notification:
                     return {
-                        classes: row.isReaded ? "notification row_readed" : "notification row_unread"
+                        classes: index % 2 == 0 ? "notification row_readed" : "notification row_unread"
                     };
                 case Type.caution:
                     return {
-                        classes: row.isReaded ? "caution row_readed" : "caution row_unread"
+                        classes: index % 2 == 0 ? "caution row_readed" : "caution row_unread"
                     };
             }
             return {};
