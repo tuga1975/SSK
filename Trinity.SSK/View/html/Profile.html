@@ -940,7 +940,7 @@
 
         </div>-->
 
-        <div style="display:none;float:right;" id="divSupportDocument">
+        <div style="float:right;" id="divSupportDocument">
             <button type="button" class="btn btn-danger" style="position:fixed;bottom:10px;right:170px;" id="btnScan">Scan documents</button>
         </div>
         <div style="display:none;float:right;" id="divConfirm">
@@ -1259,12 +1259,22 @@
     }
 
     $('#btnScan').click(function () {
-        $("#profileFrm").trigger('submit');
-        if (jsonFormData.length > 0) {
-            api.server.LoadScanDocument(jsonFormData);
-            jsonFormData = null;
-        }
-
+        //$("#profileFrm").trigger('submit');
+        //if (jsonFormData.length > 0) {
+        //    api.server.LoadScanDocument(jsonFormData);
+        //    jsonFormData = null;
+        //}
+        api.server.LoadPopupHtml("PopupScanDocument.html",'', function () {
+            $('#PopupScanDocument').modal({
+                backdrop: 'static',
+                keyboard: false
+            });
+            $('#PopupScanDocument [btn-scan]').click(function () {
+                api.server.ShowMessage("a", "Test", function () {
+                    alert(1);
+                });
+            });
+        });
     });
 
     $('#btnOK').click(function () {

@@ -71,7 +71,7 @@ namespace Trinity.DAL.DBContext
                 {
                     return "red";
                 }
-                else if (!this.Appointment_ID.HasValue || (this.Appointment_ID.HasValue && this.Appointment.Timeslot_ID != this.Timeslot_ID) || this.CreatedTime <= DateTime.Now.Date.Add(this.Timeslot.StartTime.Value))
+                else if (!this.Appointment_ID.HasValue || (this.Appointment_ID.HasValue && this.Appointment.Timeslot_ID != this.Timeslot_ID) || (this.CreatedTime <= DateTime.Now.Date.Add(this.Timeslot.StartTime.Value)) || (this.Appointment_ID.HasValue && this.Created_By != this.Appointment.UserId))
                 {
                     return "blue";
                 }
