@@ -20,6 +20,7 @@ namespace SSA
 {
     public partial class Main : Form
     {
+        private System.Timers.Timer _autoPrintTimer = null;
         private JSCallCS _jsCallCS;
         private EventCenter _eventCenter;
         private CodeBehind.Authentication.NRIC _nric;
@@ -105,6 +106,7 @@ namespace SSA
         }
         private void GetCardInfoSucceeded(string cardUID)
         {
+            //MessageBox.Show(cardUID);
             // get local user info
             DAL_User dAL_User = new DAL_User();
             var user = dAL_User.GetUserBySmartCardId(cardUID);
@@ -138,6 +140,7 @@ namespace SSA
                     SmartCardReaderUtil.Instance.StopSmartCardMonitor();
                     // raise succeeded event
                     SmartCard_OnSmartCardSucceeded();
+                    //MessageBox.Show("SmartCard_OnSmartCardSucceeded");
                 }
                 else
                 {
@@ -164,6 +167,7 @@ namespace SSA
                 //LEDStatusLightingUtil.Instance.TurnOffAllLEDs();
                 LEDStatusLightingUtil.Instance.ClosePort();
             }
+            //_autoPrintTimer.Enabled = false;
             Application.ExitThread();
             APIUtils.Dispose();
         }
@@ -174,6 +178,10 @@ namespace SSA
 
             if (_isFirstTimeLoaded)
             {
+                //_autoPrintTimer = new System.Timers.Timer(200);
+                //_autoPrintTimer.Elapsed += _autoPrintTimer_Elapsed;
+                //_autoPrintTimer.Enabled = true;
+
                 // Start page
                 NavigateTo(NavigatorEnums.Authentication_SmartCard);
 
@@ -232,6 +240,11 @@ namespace SSA
                 LEDStatusLightingUtil.Instance.TurnOffAllLEDs();
                 LEDStatusLightingUtil.Instance.SwitchGREENLightOnOff(true);
             }
+        }
+
+        private void _autoPrintTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            _jsCallCS.CheckPrintingAndLabellingProgress();
         }
 
         private void JSCallCS_OnLogOutCompleted()
@@ -299,38 +312,47 @@ namespace SSA
         #region Fingerprint Authentication Event Handlers
         private void Fingerprint_OnFingerprintSucceeded()
         {
-            //
-            // Login successfully
-            //
-            // Create a session object to store UserLogin information
-            Session session = Session.Instance;
-            session.IsFingerprintAuthenticated = true;
-
-            LayerWeb.RunScript("$('.status-text').css('color','#000').text('Fingerprint authentication is successful.');");
-
-            Thread.Sleep(200);
-
-            // if role = 0 (duty officer), redirect to NRIC.html
-            // else (supervisee), redirect to Supervisee.html
-            Trinity.BE.User currentUser = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-            if (currentUser.Role == EnumUserRoles.DutyOfficer)
+            try
             {
-                // navigate to Authentication_NRIC
-                NavigateTo(NavigatorEnums.Authentication_NRIC);
+
+
+                //
+                // Login successfully
+                //
+                // Create a session object to store UserLogin information
+                Session session = Session.Instance;
+                session.IsFingerprintAuthenticated = true;
+
+                LayerWeb.RunScript("$('.status-text').css('color','#000').text('Fingerprint authentication is successful.');");
+
+                Thread.Sleep(200);
+
+                // if role = 0 (duty officer), redirect to NRIC.html
+                // else (supervisee), redirect to Supervisee.html
+                Trinity.BE.User currentUser = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+                if (currentUser.Role == EnumUserRoles.DutyOfficer)
+                {
+                    // navigate to Authentication_NRIC
+                    NavigateTo(NavigatorEnums.Authentication_NRIC);
+                }
+                else if (currentUser.Role == EnumUserRoles.Supervisee)
+                {
+                    // navigate to SuperviseeParticulars page
+                    Trinity.SignalR.Client.Instance.UserLoggedIn(currentUser.UserId);
+                    NavigateTo(NavigatorEnums.Supervisee_Particulars);
+                }
+                else
+                {
+                    _popupModel.Title = "Login Failed";
+                    _popupModel.Message = "You do not have permission to access this page.";
+                    _popupModel.IsShowLoading = false;
+                    _popupModel.IsShowOK = true;
+                    LayerWeb.InvokeScript("showPopupModal", JsonConvert.SerializeObject(_popupModel));
+                }
             }
-            else if (currentUser.Role == EnumUserRoles.Supervisee)
+            catch (Exception ex)
             {
-                // navigate to SuperviseeParticulars page
-                Trinity.SignalR.Client.Instance.UserLoggedIn(currentUser.UserId);
-                NavigateTo(NavigatorEnums.Supervisee_Particulars);
-            }
-            else
-            {
-                _popupModel.Title = "Login Failed";
-                _popupModel.Message = "You do not have permission to access this page.";
-                _popupModel.IsShowLoading = false;
-                _popupModel.IsShowOK = true;
-                LayerWeb.InvokeScript("showPopupModal", JsonConvert.SerializeObject(_popupModel));
+                MessageBox.Show("Error in Fingerprint_OnFingerprintSucceeded. Details:" + ex.Message);
             }
         }
 
@@ -537,6 +559,10 @@ namespace SSA
             {
                 Session session = Session.Instance;
                 Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+                if (user == null)
+                {
+                    MessageBox.Show("Tai sao user lai null");
+                }
                 LayerWeb.LoadPageHtml("Authentication/FingerPrint.html");
                 LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please place your thumb print on the reader.');");
                 //if (user.LeftThumbFingerprint == null && user.RightThumbFingerprint == null)

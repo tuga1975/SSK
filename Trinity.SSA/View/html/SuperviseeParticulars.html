@@ -2,6 +2,7 @@
     <div class="container" particulars>
         <div class="titles"><span class="underline">Information to be Printed</span></div>
         <br />
+
         <div class="contentWrapper">
             <div class="contentForm">
                 <div class="container contentPrinting text-center center-block ">
@@ -32,21 +33,26 @@
         <span class="input-group-addon">Marking Number:</span>
         <input id="MarkingNumber" type="text" class="form-control pri" name="MarkingNumber" readonly="readonly" />
     </div>-->
-        <div style="visibility:hidden" >
+        <div style="visibility:hidden">
             <label id="lblNextAction">InitializeMUBAndTTApplicator</label>
         </div>
         <div class="status-text" id="mubStatus">
-            
+
         </div>
         <div class="status-text" id="ttStatus">
-             
+
         </div>
+        <!--<div style="width:100%;">
+            <textarea id="printLogs" style="width:600px;height:400px;"></textarea>
+        </div>-->
+
+
         <div id="divSave">
             <button type="button" class="btn btn-dark" id="CancelBtn">CANCEL</button>
             <button type="button" class="btn btn-primary" id="ConfirmBtn">CONFIRM</button>
 
         </div>
-
+    </div>
 </form>
 
 <script type="text/javascript">

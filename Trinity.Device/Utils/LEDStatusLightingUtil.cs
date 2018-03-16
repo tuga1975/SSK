@@ -27,13 +27,26 @@ namespace Trinity.Device.Util
         CheckIfTTApplicatorIsFinished = 10,
         CheckIfTTIsRemoved = 11,
         CheckIfTTDoorIsFullyClosed = 12,
-        CheckIfTTDoorIsFullyOpen = 13
+        CheckIfTTDoorIsFullyOpen = 13,
+        InitializeMUBApplicator = 14,
+        StartMUBApplicator = 15,
+        CloseMUBDoor = 16,
+        OpenMUBDoor = 17,
+        MoveUpMUBRobot = 18,
+        MoveDownMUBRobot = 19,
+        InitializeTTApplicator = 20,
+        StartTTApplicator = 21,
+        CloseTTDoor = 22,
+        OpenTTDoor = 23,
+        MoveUpTTRobot = 24,
+        MoveDownTTRobot = 25
     }
 
     public class LEDStatusLightingUtil
     {
         public event EventHandler<string> OnNewEvent;
         private Dictionary<EnumCommands, string> _rs232Commands = new Dictionary<EnumCommands, string>();
+        private Dictionary<EnumCommands, int> _rs232CommandsMaxRetryCount = new Dictionary<EnumCommands, int>();
 
         private const int _maxRetryCount = 50;
         public event EventHandler<string> DataReceived;
@@ -100,23 +113,64 @@ namespace Trinity.Device.Util
                     _serialPort.StopBits = System.IO.Ports.StopBits.One;
                 }
 
-                // Init MUB Commands
+                // Init MUB READ Commands
                 _rs232Commands[EnumCommands.CheckIfMUBApplicatorIsReady] = "RD MR3";
+                _rs232CommandsMaxRetryCount[EnumCommands.CheckIfMUBApplicatorIsReady] = 10;
+
                 _rs232Commands[EnumCommands.CheckIfMUBIsPresent] = "RD 14";
+                _rs232CommandsMaxRetryCount[EnumCommands.CheckIfMUBIsPresent] = 5;
+
                 _rs232Commands[EnumCommands.CheckIfMUBApplicatorIsStarted] = "RD MR7";
+                _rs232CommandsMaxRetryCount[EnumCommands.CheckIfMUBApplicatorIsStarted] = 10;
+
                 _rs232Commands[EnumCommands.CheckIfMUBApplicatorIsFinished] = "RD MR15";
+                _rs232CommandsMaxRetryCount[EnumCommands.CheckIfMUBApplicatorIsFinished] = 50;
+
                 _rs232Commands[EnumCommands.CheckIfMUBIsRemoved] = "RD 14";
+                _rs232CommandsMaxRetryCount[EnumCommands.CheckIfMUBIsRemoved] = 5;
+
                 _rs232Commands[EnumCommands.CheckIfMUBDoorIsFullyClosed] = "RD 1";
+                _rs232CommandsMaxRetryCount[EnumCommands.CheckIfMUBDoorIsFullyClosed] = 50;
+
                 _rs232Commands[EnumCommands.CheckIfMUBDoorIsFullyOpen] = "RD 0";
+                _rs232CommandsMaxRetryCount[EnumCommands.CheckIfMUBDoorIsFullyOpen] = 50;
 
                 // Init TT Commands
                 _rs232Commands[EnumCommands.CheckIfTTApplicatorIsReady] = "RD MR103";
+                _rs232CommandsMaxRetryCount[EnumCommands.CheckIfTTApplicatorIsReady] = 10;
+
                 _rs232Commands[EnumCommands.CheckIfTTIsPresent] = "RD 15";
+                _rs232CommandsMaxRetryCount[EnumCommands.CheckIfTTIsPresent] = 5;
+
                 _rs232Commands[EnumCommands.CheckIfTTApplicatorIsStarted] = "RD MR106";
+                _rs232CommandsMaxRetryCount[EnumCommands.CheckIfTTApplicatorIsStarted] = 10;
+
                 _rs232Commands[EnumCommands.CheckIfTTApplicatorIsFinished] = "RD MR115";
+                _rs232CommandsMaxRetryCount[EnumCommands.CheckIfTTApplicatorIsFinished] = 50;
+
                 _rs232Commands[EnumCommands.CheckIfTTIsRemoved] = "RD 15";
+                _rs232CommandsMaxRetryCount[EnumCommands.CheckIfTTIsRemoved] = 5;
+
                 _rs232Commands[EnumCommands.CheckIfTTDoorIsFullyClosed] = "RD 9";
+                _rs232CommandsMaxRetryCount[EnumCommands.CheckIfTTDoorIsFullyClosed] = 50;
+
                 _rs232Commands[EnumCommands.CheckIfTTDoorIsFullyOpen] = "RD 8";
+                _rs232CommandsMaxRetryCount[EnumCommands.CheckIfTTDoorIsFullyOpen] = 50;
+
+                // Init MUB and TT WRITE commands
+                _rs232Commands[EnumCommands.InitializeMUBApplicator] = "WR MR0 1";
+                _rs232Commands[EnumCommands.InitializeTTApplicator] = "WR MR100 1";
+                _rs232Commands[EnumCommands.StartMUBApplicator] = "WR MR4 1";
+                _rs232Commands[EnumCommands.StartTTApplicator] = "WR MR104 1";
+                _rs232Commands[EnumCommands.OpenMUBDoor] = "WR MR508 1";
+                _rs232Commands[EnumCommands.OpenTTDoor] = "WR MR510 1";
+                _rs232Commands[EnumCommands.CloseMUBDoor] = "WR MR509 1";
+                _rs232Commands[EnumCommands.CloseTTDoor] = "WR MR511 1";
+                _rs232Commands[EnumCommands.MoveDownMUBRobot] = "WR MR501 1";
+                _rs232Commands[EnumCommands.MoveDownTTRobot] = "WR MR503 1";
+                _rs232Commands[EnumCommands.MoveUpMUBRobot] = "WR MR500 1";
+                _rs232Commands[EnumCommands.MoveUpTTRobot] = "WR MR502 1";
+
             }
         }
 
@@ -566,44 +620,53 @@ namespace Trinity.Device.Util
         #region MUB WRITE functions
         public void InitializeMUBApplicator_Async()
         {
-            // Send command to initialize MUB Applicator
-            string asciiCommand = "WR MR0 1";
-            SendASCIICommand(asciiCommand);
+            SendCommand_Async(EnumCommands.InitializeMUBApplicator, null);
+            //// Send command to initialize MUB Applicator
+            //string asciiCommand = "WR MR0 1";
+            //SendASCIICommand(asciiCommand);
         }
 
         public void StartMUBApplicator_Async()
         {
-            // Send command to start MUB Applicator
-            string asciiCommand = "WR MR4 1";
-            SendASCIICommand(asciiCommand);
+            //// Send command to start MUB Applicator
+            //string asciiCommand = "WR MR4 1";
+            //SendASCIICommand(asciiCommand);
+            SendCommand_Async(EnumCommands.StartMUBApplicator, null);
         }
 
         public void CloseMUBDoor_Async()
         {
-            // Send command to close MUB Door
-            string asciiCommand = "WR MR509 1";
-            SendASCIICommand(asciiCommand);
+            //// Send command to close MUB Door
+            //string asciiCommand = "WR MR509 1";
+            //SendASCIICommand(asciiCommand);
+            SendCommand_Async(EnumCommands.CloseMUBDoor, null);
         }
 
         public void OpenMUBDoor_Async()
         {
-            // Send command to open MUB Door
-            string asciiCommand = "WR MR508 1";
-            SendASCIICommand(asciiCommand);
+            //// Send command to open MUB Door
+            //string asciiCommand = "WR MR508 1";
+            //SendASCIICommand(asciiCommand);
+            SendCommand_Async(EnumCommands.OpenMUBDoor, null);
+
         }
 
         public void MoveUpMUBRobot_Async()
         {
-            // Send command to open MUB Door
-            string asciiCommand = "WR MR500 1";
-            SendASCIICommand(asciiCommand);
+            //// Send command to open MUB Door
+            //string asciiCommand = "WR MR500 1";
+            //SendASCIICommand(asciiCommand);
+            SendCommand_Async(EnumCommands.MoveUpMUBRobot, null);
+
         }
 
         public void MoveDownMUBRobot_Async()
         {
-            // Send command to open MUB Door
-            string asciiCommand = "WR MR501 1";
-            SendASCIICommand(asciiCommand);
+            //// Send command to open MUB Door
+            //string asciiCommand = "WR MR501 1";
+            //SendASCIICommand(asciiCommand);
+            SendCommand_Async(EnumCommands.MoveDownMUBRobot, null);
+
         }
 
         #endregion
@@ -611,44 +674,56 @@ namespace Trinity.Device.Util
         #region TT WRITE functions
         public void InitializeTTApplicator_Async()
         {
-            // Send command to initialize TT Applicator
-            string asciiCommand = "WR MR100 1";
-            SendASCIICommand(asciiCommand);
+            //// Send command to initialize TT Applicator
+            //string asciiCommand = "WR MR100 1";
+            //SendASCIICommand(asciiCommand);
+            SendCommand_Async(EnumCommands.InitializeTTApplicator, null);
+
         }
 
         public void StartTTApplicator_Async()
         {
-            // Send command to start TT Applicator
-            string asciiCommand = "WR MR104 1";
-            SendASCIICommand(asciiCommand);
+            //// Send command to start TT Applicator
+            //string asciiCommand = "WR MR104 1";
+            //SendASCIICommand(asciiCommand);
+            SendCommand_Async(EnumCommands.StartTTApplicator, null);
+
         }
 
         public void CloseTTDoor_Async()
         {
-            // Send command to close MUB Door
-            string asciiCommand = "WR MR511 1";
-            SendASCIICommand(asciiCommand);
+            //// Send command to close MUB Door
+            //string asciiCommand = "WR MR511 1";
+            //SendASCIICommand(asciiCommand);
+            SendCommand_Async(EnumCommands.CloseTTDoor, null);
+
         }
 
         public void OpenTTDoor_Async()
         {
-            // Send command to open MUB Door
-            string asciiCommand = "WR MR510 1";
-            SendASCIICommand(asciiCommand);
+            //// Send command to open MUB Door
+            //string asciiCommand = "WR MR510 1";
+            //SendASCIICommand(asciiCommand);
+            SendCommand_Async(EnumCommands.OpenTTDoor, null);
+
         }
 
         public void MoveUpTTRobot_Async()
         {
-            // Send command to open MUB Door
-            string asciiCommand = "WR MR502 1";
-            SendASCIICommand(asciiCommand);
+            //// Send command to open MUB Door
+            //string asciiCommand = "WR MR502 1";
+            //SendASCIICommand(asciiCommand);
+            SendCommand_Async(EnumCommands.MoveUpTTRobot, null);
+
         }
 
         public void MoveDownTTRobot_Async()
         {
-            // Send command to open MUB Door
-            string asciiCommand = "WR MR503 1";
-            SendASCIICommand(asciiCommand);
+            //// Send command to open MUB Door
+            //string asciiCommand = "WR MR503 1";
+            //SendASCIICommand(asciiCommand);
+            SendCommand_Async(EnumCommands.MoveDownTTRobot, null);
+
         }
 
         #endregion
@@ -697,12 +772,12 @@ namespace Trinity.Device.Util
                         callback = _callbacks[_currentCommand];
                         _callbacks.Remove(_currentCommand);
                     }
-                    _currentCommand = EnumCommands.Unknown;
                     if (callback != null && result != null)
                     {
                         callback(result.Value);
-                        OnNewEvent?.Invoke(this, "Execute command " + _currentCommand + " successfully!");
+                        OnNewEvent?.Invoke(this, "Execute command " + _currentCommand + " successfully. Result:" + result);
                     }
+                    _currentCommand = EnumCommands.Unknown;
                 }
             }
             catch (Exception ex)
@@ -743,7 +818,7 @@ namespace Trinity.Device.Util
                                     {
                                         _commandsRetryCount[_currentCommand] = 1;
                                     }
-                                    OnNewEvent?.Invoke(this, "SendCommand_Async_Callback, response:" + "About to send command:" + _currentCommand + ", retry:" + _commandsRetryCount[_currentCommand]);
+                                    OnNewEvent?.Invoke(this, "Start to send command:" + _currentCommand + ", retry:" + _commandsRetryCount[_currentCommand]);
 
                                     SendASCIICommand(asciiCommand);
                                 }
@@ -776,7 +851,10 @@ namespace Trinity.Device.Util
                     {
                         _commandsRetryCount[command] = 0;
                         _waitingCommands.Add(command);
-                        _callbacks[command] = callback;
+                        if (callback != null)
+                        {
+                            _callbacks[command] = callback;
+                        }
                     }
                 }
             }
@@ -792,7 +870,7 @@ namespace Trinity.Device.Util
             {
                 lock (syncRoot)
                 {
-                    OnNewEvent?.Invoke(this, "Checking resposne from SendCommand_Async_Callback...");
+                    OnNewEvent?.Invoke(this, "SendCommand_Async_Callback, response:" + response + ", command:" + _currentCommand);
                     this.DataReceived -= SendCommand_Async_Callback;
                     if (_currentCommand == EnumCommands.Unknown)
                     {
@@ -812,7 +890,7 @@ namespace Trinity.Device.Util
                         //MessageBox.Show("Tai sao lai xay ra truong hop nay chu");
                         return;
                     }
-                    OnNewEvent?.Invoke(this, "SendCommand_Async_Callback, response:" + response);
+                    //OnNewEvent?.Invoke(this, "SendCommand_Async_Callback, response:" + response);
 
 
                     if (_currentCommand == EnumCommands.CheckIfMUBIsPresent || _currentCommand == EnumCommands.CheckIfTTIsPresent)
@@ -858,7 +936,7 @@ namespace Trinity.Device.Util
                             else
                             {
                                 // Retry
-                                OnNewEvent?.Invoke(this, "Continue retrying..");
+                                OnNewEvent?.Invoke(this, "Continue retrying command " + _currentCommand + ", count:" + _commandsRetryCount[_currentCommand]);
                                 _currentCommand = EnumCommands.Unknown;
                             }
                         }
