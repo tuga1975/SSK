@@ -69,7 +69,7 @@ namespace Trinity.BackendAPI.Controllers
         [Custom(IgnoreParameter = "markingnumber,requestDate")]
         public IHttpActionResult InsertNotification([FromBody] ESPModel data)
         {
-            string IDNoti = new DAL.DAL_Notification().SSPInsert(data.Source, data.Type, data.Content, data.Datetime.Value, data.NotificationID);
+            string IDNoti = new DAL.DAL_Notification().SSPInsert(data.Source, data.Type, data.Content, data.Datetime.Value, data.notification_code);
             return Ok(IDNoti);
         }
 
