@@ -551,32 +551,18 @@ namespace SSK
                         else
                         {
                             queueNumber = _dalQueue.InsertQueueNumber(appointment.ID, appointment.UserId, EnumStation.SSK, currentUser.UserId);
-                            if (queueNumber != null)
-                            {
-                                Trinity.SignalR.Client.Instance.AppointmentBookedOrReported(appointment.ID.ToString().Trim(), EnumAppointmentStatuses.Reported);
-                                Trinity.SignalR.Client.Instance.QueueInserted(queueNumber.Queue_ID.ToString().Trim());
-                                APIUtils.FormQueueNumber.RefreshQueueNumbers();
-                                this._web.ShowMessage("Your queue number is:" + queueNumber.QueuedNumber);
-                            }
-                            else
-                            {
-                                this._web.ShowMessage("Sorry all timeslots are fully booked!");
-                            }
+                            Trinity.SignalR.Client.Instance.AppointmentBookedOrReported(appointment.ID.ToString().Trim(), EnumAppointmentStatuses.Reported);
+                            Trinity.SignalR.Client.Instance.QueueInserted(queueNumber.Queue_ID.ToString().Trim());
+                            APIUtils.FormQueueNumber.RefreshQueueNumbers();
+                            this._web.ShowMessage("Your queue number is:" + queueNumber.QueuedNumber);
                         }
                     }
                     else
                     {
                         queueNumber = _dalQueue.InsertQueueNumberFromDO(supervisee.UserId, EnumStation.SSK, currentUser.UserId);
-                        if (queueNumber != null)
-                        {
-                            Trinity.SignalR.Client.Instance.QueueInserted(queueNumber.Queue_ID.ToString().Trim());
-                            APIUtils.FormQueueNumber.RefreshQueueNumbers();
-                            this._web.ShowMessage("Your queue number is:" + queueNumber.QueuedNumber);
-                        }
-                        else
-                        {
-                            this._web.ShowMessage("Sorry all timeslots are fully booked!");
-                        }
+                        Trinity.SignalR.Client.Instance.QueueInserted(queueNumber.Queue_ID.ToString().Trim());
+                        APIUtils.FormQueueNumber.RefreshQueueNumbers();
+                        this._web.ShowMessage("Your queue number is:" + queueNumber.QueuedNumber);
                     }
 
                     //if (appointment != null && string.IsNullOrEmpty(appointment.Timeslot_ID))
