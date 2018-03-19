@@ -770,15 +770,15 @@ namespace Trinity.DAL
                 UpdateStatusAndReasonSuperviseeUnblock(userId, reason, localUserRepo);
                 _localUnitOfWork.Save();
 
-                if (!EnumAppConfig.ByPassCentralizedDB)
-                {
-                    bool centralizeStatus = false;
-                    var centralUpdate = CallCentralized.Post<Setting>(EnumAPIParam.User, "UnblockSuperviseeById", out centralizeStatus, "userId=" + userId, "reason=" + reason);
-                    if (!centralizeStatus)
-                    {
-                        throw new Exception(EnumMessage.NotConnectCentralized);
-                    }
-                }
+                //if (!EnumAppConfig.ByPassCentralizedDB)
+                //{
+                //    bool centralizeStatus = false;
+                //    var centralUpdate = CallCentralized.Post<Setting>(EnumAPIParam.User, "UnblockSuperviseeById", out centralizeStatus, "userId=" + userId, "reason=" + reason);
+                //    if (!centralizeStatus)
+                //    {
+                //        throw new Exception(EnumMessage.NotConnectCentralized);
+                //    }
+                //}
             }
             else
             {
