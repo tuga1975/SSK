@@ -1,38 +1,4 @@
-﻿<!--<div style="display:block; padding:10px;">
-    <span style=" font-size:22px; float:left; text-align:left;"><b>Appointments</b></span>
-    <br/>
-    <div class="form-inline" style="right:10px; float:right; padding-bottom:10px;">
-        <select class="form-control" id="pageSize" style="width:70px; display:inline-block;">
-            <option>10</option>
-            <option>2</option>
-            <option>3</option>
-        </select>
-        <div style="display:inline-block;">Entries</div>
-        <select class="form-control" id="period" style="width:170px; display:inline-block; margin-left:20px;">
-            <option>All Day</option>
-            <option>Morning</option>
-            <option>Afternoon</option>
-            <option>Evening</option>
-        </select>
-        <div style="display:inline-block;">Period</div>
-        <select class="form-control" id="timeslot" style="width:220px; display:inline-block; margin-left:20px;">
-            <option>All</option>
-        </select>
-        <div style="display:inline-block;">Timeslot</div>
-        <div style="display:inline-block; margin-left:20px;">
-            <div class="input-group date" id="datetimepicker" style="width:180px;">
-                <input type='text' class="form-control" id="dateSearch" />
-                <span class="input-group-addon">
-                    <span class="glyphicon glyphicon-calendar"></span>
-                </span>
-            </div>
-        </div>
-        <div style="display:inline-block;">Date</div>
-    </div>
-</div>
-<br />
-<table id="table"></table>-->
-<div class="table-wrapper formWrapper">
+﻿<div class="table-wrapper formWrapper">
     <div class="tab-header">
         <span class="formHeader"><b>Appointments</b></span>
     </div>
@@ -210,8 +176,7 @@
 
     function reloadDataAppts() {
         api.server.GetAllAppoinments(function (data) {
-            //$('#tableAppointment').bootstrapTable('load', data);
-
+            $('#tableAppointment').bootstrapTable('load', data);
             $('#tableAppointment').bootstrapTable('refreshOptions', {
                 pagination: true,
                 data: data

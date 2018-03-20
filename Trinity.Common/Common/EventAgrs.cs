@@ -167,6 +167,7 @@ namespace Trinity.Common
         public const string DO_UNBLOCK_SUPERVISEE = "DO_UNBLOCK_SUPERVISEE";
         public const string APPOINTMENT_BOOKED_OR_REPORTED = "APPOINTMENT_BOOKED_OR_REPORTED";
         public const string QUEUE_INSERTED = "QUEUE_INSERTED";
+        public const string SSA_COMPLETED = "SSA_COMPLETED";
     }
 
     public class NotificationInfo

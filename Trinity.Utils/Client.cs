@@ -108,6 +108,7 @@ namespace Trinity.SignalR
         public event EventHandler<NotificationInfo> OnDOUnblockSupervisee;
         public event EventHandler<NotificationInfo> OnAppointmentBookedOrReported;
         public event EventHandler<NotificationInfo> OnQueueInserted;
+        public event EventHandler<NotificationInfo> OnSSACompleted;
         ///// <summary>
         ///// 
         ///// </summary>
@@ -167,6 +168,10 @@ namespace Trinity.SignalR
                 else if (notificationInfo.Name == NotificationNames.QUEUE_INSERTED)
                 {
                     OnQueueInserted?.Invoke(this, notificationInfo);
+                }
+                else if (notificationInfo.Name == NotificationNames.SSA_COMPLETED)
+                {
+                    OnSSACompleted?.Invoke(this, notificationInfo);
                 }
                 else
                 {
@@ -332,6 +337,10 @@ namespace Trinity.SignalR
         public void QueueInserted(string QueueID)
         {
             PostNotification(notificationInfo: new NotificationInfo() { Name = NotificationNames.QUEUE_INSERTED, QueueID = QueueID });
+        }
+        public void SSACompleted(string UserId)
+        {
+            PostNotification(notificationInfo: new NotificationInfo() { Name = NotificationNames.SSA_COMPLETED, UserID = UserId });
         }
         #endregion
     }

@@ -91,7 +91,7 @@ namespace Trinity.DAL
                     UserId = UserID,
                     Timeslot_ID = timeslot.Timeslot_ID,
                     CurrentStation = station,
-                    Outcome = EnumOutcome.GetQueue,
+                    Outcome = EnumQueueOutcomeText.GetQueue,
                     CreatedTime = DateTime.Now,
                     QueuedNumber = generateQNo,
                     Created_By = userCreateQueue
@@ -155,7 +155,7 @@ namespace Trinity.DAL
                 Timeslot_ID = timeslotID,
                 Appointment_ID = appointmentID,
                 CurrentStation = station,
-                Outcome = EnumOutcome.Processing,
+                Outcome = EnumQueueOutcomeText.Processing,
                 CreatedTime = DateTime.Now,
                 QueuedNumber = generateQNo,
                 Created_By = userCreateQueue
@@ -748,7 +748,7 @@ namespace Trinity.DAL
             return queueInfo;
         }
 
-        public int UpdateQueueStatusByUserId(string userId, string currentStation, string statusCurrentStattion, string nextStation, string statusNextStation, string messageNextStation, string outcome)
+        public DBContext.Queue UpdateQueueStatusByUserId(string userId, string currentStation, string statusCurrentStattion, string nextStation, string statusNextStation, string messageNextStation, string outcome)
         {
             try
             {
@@ -757,7 +757,7 @@ namespace Trinity.DAL
                     DBContext.Queue dbQueue = _localUnitOfWork.DataContext.Queues.Include("Appointment").FirstOrDefault(d => d.Appointment.UserId == userId && DbFunctions.TruncateTime(d.CreatedTime).Value == DateTime.Today);
 
                     if (dbQueue == null)
-                        return 0;
+                        return null;
 
                     dbQueue.CurrentStation = nextStation;
                     if (!string.IsNullOrEmpty(outcome))
@@ -782,9 +782,9 @@ namespace Trinity.DAL
 
                     _localUnitOfWork.GetRepository<DBContext.Queue>().Update(dbQueue);
 
-                    var result = _localUnitOfWork.Save();
+                    _localUnitOfWork.Save();
 
-                    return result;
+                    return dbQueue;
                     //if (EnumAppConfig.ByPassCentralizedDB)
                     //{
                     //    return result;
@@ -808,7 +808,7 @@ namespace Trinity.DAL
                     DBContext.Queue dbQueue = _centralizedUnitOfWork.DataContext.Queues.Include("Appointment").FirstOrDefault(d => d.Appointment.UserId == userId && DbFunctions.TruncateTime(d.CreatedTime).Value == DateTime.Today);
 
                     if (dbQueue == null)
-                        return 0;
+                        return null;
 
                     dbQueue.CurrentStation = nextStation;
                     if (!string.IsNullOrEmpty(outcome))
@@ -833,16 +833,16 @@ namespace Trinity.DAL
 
                     _centralizedUnitOfWork.GetRepository<DBContext.Queue>().Update(dbQueue);
 
-                    var result = _centralizedUnitOfWork.Save();
+                    _centralizedUnitOfWork.Save();
 
-                    return result;
+                    return dbQueue;
                 }
 
             }
             catch (Exception)
             {
 
-                return 0;
+                return null;
             }
 
         }
