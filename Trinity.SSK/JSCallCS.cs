@@ -714,7 +714,7 @@ namespace SSK
             main.NavigateTo(NavigatorEnums.Supervisee);
         }
         #region Scan Document
-        private void ScanDocumentCallBack(string frontPath, string error)
+        private void ScanDocumentCallBack(string[] frontPath, string error)
         {
             _web.InvokeScript("showImgScanDocument", frontPath);
         }
