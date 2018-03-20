@@ -486,6 +486,7 @@ namespace SSK
                 DocumentScannerUtil.Instance.Disconnect();
             }
 
+            FacialRecognition.Instance.Dispose();
 
             Application.ExitThread();
             APIUtils.Dispose();
