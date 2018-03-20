@@ -23,7 +23,12 @@ namespace Trinity.DAL.DBContext
         public Nullable<bool> IsRead { get; set; }
         public Nullable<bool> IsFromSupervisee { get; set; }
         public string Source { get; set; }
+        public byte[] RecID { get; set; }
         public string Type { get; set; }
         public string notification_code { get; set; }
+        public Nullable<int> Priority { get; set; }
+    
+        public virtual Membership_Users Membership_Users { get; set; }
+        public virtual Membership_Users Membership_Users1 { get; set; }
     }
 }

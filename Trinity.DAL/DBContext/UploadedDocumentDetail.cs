@@ -12,16 +12,12 @@ namespace Trinity.DAL.DBContext
     using System;
     using System.Collections.Generic;
     
-    public partial class MsgRecipient
+    public partial class UploadedDocumentDetail
     {
-        public int RecID { get; set; }
-        public Nullable<int> MsgID { get; set; }
-        public string UserId { get; set; }
-        public Nullable<bool> Email { get; set; }
-        public Nullable<bool> SMS { get; set; }
-        public Nullable<int> DeliveryStatus { get; set; }
+        public System.Guid DocumentDetail_ID { get; set; }
+        public System.Guid Document_ID { get; set; }
+        public byte[] DocumentContent { get; set; }
     
-        public virtual SentMessage SentMessage { get; set; }
-        public virtual User_Profiles User_Profiles { get; set; }
+        public virtual UploadedDocument UploadedDocument { get; set; }
     }
 }

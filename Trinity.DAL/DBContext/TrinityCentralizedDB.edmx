@@ -161,7 +161,7 @@
           <Property Name="Name" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="Date" Type="datetime" Nullable="false" />
           <Property Name="QRCode" Type="varbinary(max)" />
-          <Property Name="LastStation" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="LastStation" Type="varchar" MaxLength="20" Nullable="false" />
           <Property Name="PrintCount" Type="int" Nullable="false" />
           <Property Name="ReprintReason" Type="nvarchar" MaxLength="255" />
           <Property Name="PrintStatus" Type="varchar" MaxLength="20" />
@@ -251,16 +251,18 @@
           <Property Name="IsFirstAttempt" Type="bit" />
           <Property Name="Note" Type="nvarchar" MaxLength="100" />
         </EntityType>
-        <EntityType Name="MsgRecipients">
+        <EntityType Name="Messages">
           <Key>
-            <PropertyRef Name="RecID" />
+            <PropertyRef Name="MsgID" />
           </Key>
-          <Property Name="RecID" Type="int" Nullable="false" />
-          <Property Name="MsgID" Type="int" />
-          <Property Name="UserId" Type="nvarchar" MaxLength="128" />
-          <Property Name="Email" Type="bit" />
+          <Property Name="MsgID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Subject" Type="nvarchar" MaxLength="50" />
+          <Property Name="MsgContent" Type="text" />
+          <Property Name="DelileryStatus" Type="int" />
+          <Property Name="DeliveryDateTime" Type="datetime" />
           <Property Name="SMS" Type="bit" />
-          <Property Name="DeliveryStatus" Type="int" />
+          <Property Name="Email" Type="bit" />
+          <Property Name="UserId" Type="nvarchar" MaxLength="128" />
         </EntityType>
         <EntityType Name="Notifications">
           <Key>
@@ -275,8 +277,10 @@
           <Property Name="IsRead" Type="bit" />
           <Property Name="IsFromSupervisee" Type="bit" />
           <Property Name="Source" Type="nvarchar" MaxLength="50" />
+          <Property Name="RecID" Type="varbinary" MaxLength="50" />
           <Property Name="Type" Type="nvarchar" MaxLength="50" />
           <Property Name="notification_code" Type="varchar" MaxLength="50" />
+          <Property Name="Priority" Type="int" />
         </EntityType>
         <EntityType Name="OperationSettings">
           <Key>
@@ -342,6 +346,17 @@
           <Property Name="Note" Type="nvarchar" MaxLength="255" />
           <Property Name="LastUpdatedDate" Type="datetime" />
         </EntityType>
+        <EntityType Name="Recipients">
+          <Key>
+            <PropertyRef Name="RecID" />
+          </Key>
+          <Property Name="RecID" Type="int" Nullable="false" />
+          <Property Name="MsgID" Type="int" />
+          <Property Name="UserId" Type="nvarchar" MaxLength="128" />
+          <Property Name="Email" Type="bit" />
+          <Property Name="SMS" Type="bit" />
+          <Property Name="DeliveryStatus" Type="int" />
+        </EntityType>
         <EntityType Name="Security_QA">
           <Key>
             <PropertyRef Name="UserId" />
@@ -354,19 +369,6 @@
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="LastUpdatedBy" Type="nvarchar" MaxLength="128" Nullable="false" />
           <Property Name="LastUpdatedDate" Type="datetime" Nullable="false" />
-        </EntityType>
-        <EntityType Name="SentMessages">
-          <Key>
-            <PropertyRef Name="MsgID" />
-          </Key>
-          <Property Name="MsgID" Type="int" Nullable="false" />
-          <Property Name="Subject" Type="nvarchar" MaxLength="50" />
-          <Property Name="MsgContent" Type="text" />
-          <Property Name="DelileryStatus" Type="int" />
-          <Property Name="DeliveryDateTime" Type="datetime" />
-          <Property Name="SMS" Type="bit" />
-          <Property Name="Email" Type="bit" />
-          <Property Name="UserId" Type="nvarchar" MaxLength="128" />
         </EntityType>
         <EntityType Name="Settings">
           <Key>
@@ -409,6 +411,25 @@
           <Property Name="LastUpdatedDate" Type="datetime" />
           <Property Name="Description" Type="nvarchar" MaxLength="255" />
         </EntityType>
+        <EntityType Name="Transactions">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="NRIC" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="TransactionCode" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Source" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="datetime" Type="datetime" Nullable="false" />
+          <Property Name="Content" Type="nvarchar" MaxLength="100" Nullable="false" />
+        </EntityType>
+        <EntityType Name="UploadedDocumentDetails">
+          <Key>
+            <PropertyRef Name="DocumentDetail_ID" />
+          </Key>
+          <Property Name="DocumentDetail_ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Document_ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="DocumentContent" Type="varbinary(max)" Nullable="false" />
+        </EntityType>
         <EntityType Name="UploadedDocuments">
           <Key>
             <PropertyRef Name="Document_ID" />
@@ -418,8 +439,8 @@
           <Property Name="UploadedBy" Type="nvarchar" MaxLength="128" />
           <Property Name="UploadedDate" Type="datetime" />
           <Property Name="Extension" Type="varchar" MaxLength="10" />
-          <Property Name="DocumentContent" Type="varbinary(max)" />
           <Property Name="Note" Type="nchar" MaxLength="10" Nullable="false" />
+          <Property Name="DocStatus" Type="nvarchar" MaxLength="20" />
         </EntityType>
         <EntityType Name="User_Profiles">
           <Key>
@@ -435,7 +456,9 @@
           <Property Name="Maritial_Status" Type="nvarchar" MaxLength="50" />
           <Property Name="Residential_Addess_ID" Type="nvarchar" MaxLength="128" />
           <Property Name="Other_Address_ID" Type="nvarchar" MaxLength="128" />
+          <Property Name="NextOfKin_Nricno" Type="nvarchar" MaxLength="50" />
           <Property Name="NextOfKin_Name" Type="nvarchar" MaxLength="255" />
+          <Property Name="NextOfKin_DOB" Type="date" />
           <Property Name="NextOfKin_Contact_Number" Type="varchar" MaxLength="50" />
           <Property Name="NextOfKin_Relationship" Type="nvarchar" MaxLength="255" />
           <Property Name="NextOfKin_BlkHouse_Number" Type="varchar" MaxLength="50" />
@@ -460,6 +483,12 @@
           <Property Name="RightThumb_Photo" Type="varbinary(max)" />
           <Property Name="LeftThumb_Photo" Type="varbinary(max)" />
           <Property Name="Document_ID" Type="uniqueidentifier" />
+          <Property Name="Venue" Type="nvarchar" MaxLength="100" />
+          <Property Name="VistingFrequency" Type="int" />
+          <Property Name="PrbStratingDate" Type="date" />
+          <Property Name="PrbEndingDate" Type="date" />
+          <Property Name="ForgetPass_FailAttempt" Type="int" />
+          <Property Name="DOB_FailAttempt" Type="int" />
         </EntityType>
         <Association Name="FK__Restauran__UserI__1CFC3D38">
           <End Role="Membership_Users" Type="Self.Membership_Users" Multiplicity="0..1" />
@@ -661,27 +690,51 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_MsgRecipients_SentMessages">
-          <End Role="SentMessages" Type="Self.SentMessages" Multiplicity="0..1" />
-          <End Role="MsgRecipients" Type="Self.MsgRecipients" Multiplicity="*" />
+        <Association Name="FK_Messages_User_Profiles">
+          <End Role="Membership_Users" Type="Self.Membership_Users" Multiplicity="0..1" />
+          <End Role="Messages" Type="Self.Messages" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="SentMessages">
+            <Principal Role="Membership_Users">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="Messages">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MsgRecipients_SentMessages">
+          <End Role="Messages" Type="Self.Messages" Multiplicity="0..1" />
+          <End Role="Recipients" Type="Self.Recipients" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Messages">
               <PropertyRef Name="MsgID" />
             </Principal>
-            <Dependent Role="MsgRecipients">
+            <Dependent Role="Recipients">
               <PropertyRef Name="MsgID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_MsgRecipients_User_Profiles">
-          <End Role="User_Profiles" Type="Self.User_Profiles" Multiplicity="0..1" />
-          <End Role="MsgRecipients" Type="Self.MsgRecipients" Multiplicity="*" />
+        <Association Name="FK_Notifications_Membership_Users">
+          <End Role="Membership_Users" Type="Self.Membership_Users" Multiplicity="0..1" />
+          <End Role="Notifications" Type="Self.Notifications" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="User_Profiles">
+            <Principal Role="Membership_Users">
               <PropertyRef Name="UserId" />
             </Principal>
-            <Dependent Role="MsgRecipients">
+            <Dependent Role="Notifications">
+              <PropertyRef Name="FromUserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Notifications_Membership_Users1">
+          <End Role="Membership_Users" Type="Self.Membership_Users" Multiplicity="0..1" />
+          <End Role="Notifications" Type="Self.Notifications" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Membership_Users">
               <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="Notifications">
+              <PropertyRef Name="ToUserId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -769,15 +822,27 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_SentMessages_User_Profiles">
-          <End Role="User_Profiles" Type="Self.User_Profiles" Multiplicity="0..1" />
-          <End Role="SentMessages" Type="Self.SentMessages" Multiplicity="*" />
+        <Association Name="FK_Recipients_User_Profiles">
+          <End Role="Membership_Users" Type="Self.Membership_Users" Multiplicity="0..1" />
+          <End Role="Recipients" Type="Self.Recipients" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="User_Profiles">
+            <Principal Role="Membership_Users">
               <PropertyRef Name="UserId" />
             </Principal>
-            <Dependent Role="SentMessages">
+            <Dependent Role="Recipients">
               <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UploadedDocumentDetails_UploadedDocuments">
+          <End Role="UploadedDocuments" Type="Self.UploadedDocuments" Multiplicity="1" />
+          <End Role="UploadedDocumentDetails" Type="Self.UploadedDocumentDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UploadedDocuments">
+              <PropertyRef Name="Document_ID" />
+            </Principal>
+            <Dependent Role="UploadedDocumentDetails">
+              <PropertyRef Name="Document_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -849,17 +914,19 @@
           <EntitySet Name="Membership_UserLogins" EntityType="Self.Membership_UserLogins" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Membership_UserRoles" EntityType="Self.Membership_UserRoles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Membership_Users" EntityType="Self.Membership_Users" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="MsgRecipients" EntityType="Self.MsgRecipients" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Messages" EntityType="Self.Messages" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Notifications" EntityType="Self.Notifications" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OperationSettings" EntityType="Self.OperationSettings" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OperationSettings_ChangeHist" EntityType="Self.OperationSettings_ChangeHist" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="QueueDetails" EntityType="Self.QueueDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Queues" EntityType="Self.Queues" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Recipients" EntityType="Self.Recipients" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Security_QA" EntityType="Self.Security_QA" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="SentMessages" EntityType="Self.SentMessages" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Settings" EntityType="Self.Settings" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SMS_LOG" EntityType="Self.SMS_LOG" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Timeslots" EntityType="Self.Timeslots" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Transactions" EntityType="Self.Transactions" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UploadedDocumentDetails" EntityType="Self.UploadedDocumentDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UploadedDocuments" EntityType="Self.UploadedDocuments" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User_Profiles" EntityType="Self.User_Profiles" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK__Restauran__UserI__1CFC3D38" Association="Self.FK__Restauran__UserI__1CFC3D38">
@@ -926,13 +993,21 @@
             <End Role="Membership_Roles" EntitySet="Membership_Roles" />
             <End Role="Membership_RoleClaims" EntitySet="Membership_RoleClaims" />
           </AssociationSet>
-          <AssociationSet Name="FK_MsgRecipients_SentMessages" Association="Self.FK_MsgRecipients_SentMessages">
-            <End Role="SentMessages" EntitySet="SentMessages" />
-            <End Role="MsgRecipients" EntitySet="MsgRecipients" />
+          <AssociationSet Name="FK_Messages_User_Profiles" Association="Self.FK_Messages_User_Profiles">
+            <End Role="Membership_Users" EntitySet="Membership_Users" />
+            <End Role="Messages" EntitySet="Messages" />
           </AssociationSet>
-          <AssociationSet Name="FK_MsgRecipients_User_Profiles" Association="Self.FK_MsgRecipients_User_Profiles">
-            <End Role="User_Profiles" EntitySet="User_Profiles" />
-            <End Role="MsgRecipients" EntitySet="MsgRecipients" />
+          <AssociationSet Name="FK_MsgRecipients_SentMessages" Association="Self.FK_MsgRecipients_SentMessages">
+            <End Role="Messages" EntitySet="Messages" />
+            <End Role="Recipients" EntitySet="Recipients" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Notifications_Membership_Users" Association="Self.FK_Notifications_Membership_Users">
+            <End Role="Membership_Users" EntitySet="Membership_Users" />
+            <End Role="Notifications" EntitySet="Notifications" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Notifications_Membership_Users1" Association="Self.FK_Notifications_Membership_Users1">
+            <End Role="Membership_Users" EntitySet="Membership_Users" />
+            <End Role="Notifications" EntitySet="Notifications" />
           </AssociationSet>
           <AssociationSet Name="FK_OperationSettings_ChangeHist_OperationSettings" Association="Self.FK_OperationSettings_ChangeHist_OperationSettings">
             <End Role="OperationSettings" EntitySet="OperationSettings" />
@@ -962,9 +1037,13 @@
             <End Role="Timeslots" EntitySet="Timeslots" />
             <End Role="Queues" EntitySet="Queues" />
           </AssociationSet>
-          <AssociationSet Name="FK_SentMessages_User_Profiles" Association="Self.FK_SentMessages_User_Profiles">
-            <End Role="User_Profiles" EntitySet="User_Profiles" />
-            <End Role="SentMessages" EntitySet="SentMessages" />
+          <AssociationSet Name="FK_Recipients_User_Profiles" Association="Self.FK_Recipients_User_Profiles">
+            <End Role="Membership_Users" EntitySet="Membership_Users" />
+            <End Role="Recipients" EntitySet="Recipients" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UploadedDocumentDetails_UploadedDocuments" Association="Self.FK_UploadedDocumentDetails_UploadedDocuments">
+            <End Role="UploadedDocuments" EntitySet="UploadedDocuments" />
+            <End Role="UploadedDocumentDetails" EntitySet="UploadedDocumentDetails" />
           </AssociationSet>
           <AssociationSet Name="FK_User_Profiles_Addresses2" Association="Self.FK_User_Profiles_Addresses2">
             <End Role="Addresses" EntitySet="Addresses" />
@@ -1007,17 +1086,19 @@
           <EntitySet Name="Membership_UserLogins" EntityType="TrinityCentralizedDBModel.Membership_UserLogins" />
           <EntitySet Name="Membership_UserRoles" EntityType="TrinityCentralizedDBModel.Membership_UserRoles" />
           <EntitySet Name="Membership_Users" EntityType="TrinityCentralizedDBModel.Membership_Users" />
-          <EntitySet Name="MsgRecipients" EntityType="TrinityCentralizedDBModel.MsgRecipient" />
+          <EntitySet Name="Messages" EntityType="TrinityCentralizedDBModel.Message" />
           <EntitySet Name="Notifications" EntityType="TrinityCentralizedDBModel.Notification" />
           <EntitySet Name="OperationSettings" EntityType="TrinityCentralizedDBModel.OperationSetting" />
           <EntitySet Name="OperationSettings_ChangeHist" EntityType="TrinityCentralizedDBModel.OperationSettings_ChangeHist" />
           <EntitySet Name="QueueDetails" EntityType="TrinityCentralizedDBModel.QueueDetail" />
           <EntitySet Name="Queues" EntityType="TrinityCentralizedDBModel.Queue" />
+          <EntitySet Name="Recipients" EntityType="TrinityCentralizedDBModel.Recipient" />
           <EntitySet Name="Security_QA" EntityType="TrinityCentralizedDBModel.Security_QA" />
-          <EntitySet Name="SentMessages" EntityType="TrinityCentralizedDBModel.SentMessage" />
           <EntitySet Name="Settings" EntityType="TrinityCentralizedDBModel.Setting" />
           <EntitySet Name="SMS_LOG" EntityType="TrinityCentralizedDBModel.SMS_LOG" />
           <EntitySet Name="Timeslots" EntityType="TrinityCentralizedDBModel.Timeslot" />
+          <EntitySet Name="Transactions" EntityType="TrinityCentralizedDBModel.Transaction" />
+          <EntitySet Name="UploadedDocumentDetails" EntityType="TrinityCentralizedDBModel.UploadedDocumentDetail" />
           <EntitySet Name="UploadedDocuments" EntityType="TrinityCentralizedDBModel.UploadedDocument" />
           <EntitySet Name="User_Profiles" EntityType="TrinityCentralizedDBModel.User_Profiles" />
           <AssociationSet Name="FK_AbsenceReporting_UploadedDocuments" Association="TrinityCentralizedDBModel.FK_AbsenceReporting_UploadedDocuments">
@@ -1096,6 +1177,18 @@
             <End Role="Membership_Users" EntitySet="Membership_Users" />
             <End Role="Membership_UserRoles" EntitySet="Membership_UserRoles" />
           </AssociationSet>
+          <AssociationSet Name="FK_Messages_User_Profiles" Association="TrinityCentralizedDBModel.FK_Messages_User_Profiles">
+            <End Role="Membership_Users" EntitySet="Membership_Users" />
+            <End Role="Message" EntitySet="Messages" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Notifications_Membership_Users" Association="TrinityCentralizedDBModel.FK_Notifications_Membership_Users">
+            <End Role="Membership_Users" EntitySet="Membership_Users" />
+            <End Role="Notification" EntitySet="Notifications" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Notifications_Membership_Users1" Association="TrinityCentralizedDBModel.FK_Notifications_Membership_Users1">
+            <End Role="Membership_Users" EntitySet="Membership_Users" />
+            <End Role="Notification" EntitySet="Notifications" />
+          </AssociationSet>
           <AssociationSet Name="FK_PWD_QA_Membership_Users" Association="TrinityCentralizedDBModel.FK_PWD_QA_Membership_Users">
             <End Role="Membership_Users" EntitySet="Membership_Users" />
             <End Role="Security_QA" EntitySet="Security_QA" />
@@ -1108,17 +1201,17 @@
             <End Role="Membership_Users" EntitySet="Membership_Users" />
             <End Role="Queue" EntitySet="Queues" />
           </AssociationSet>
+          <AssociationSet Name="FK_Recipients_User_Profiles" Association="TrinityCentralizedDBModel.FK_Recipients_User_Profiles">
+            <End Role="Membership_Users" EntitySet="Membership_Users" />
+            <End Role="Recipient" EntitySet="Recipients" />
+          </AssociationSet>
           <AssociationSet Name="FK_User_Profiles_Membership_Users" Association="TrinityCentralizedDBModel.FK_User_Profiles_Membership_Users">
             <End Role="Membership_Users" EntitySet="Membership_Users" />
             <End Role="User_Profiles" EntitySet="User_Profiles" />
           </AssociationSet>
           <AssociationSet Name="FK_MsgRecipients_SentMessages" Association="TrinityCentralizedDBModel.FK_MsgRecipients_SentMessages">
-            <End Role="SentMessage" EntitySet="SentMessages" />
-            <End Role="MsgRecipient" EntitySet="MsgRecipients" />
-          </AssociationSet>
-          <AssociationSet Name="FK_MsgRecipients_User_Profiles" Association="TrinityCentralizedDBModel.FK_MsgRecipients_User_Profiles">
-            <End Role="User_Profiles" EntitySet="User_Profiles" />
-            <End Role="MsgRecipient" EntitySet="MsgRecipients" />
+            <End Role="Message" EntitySet="Messages" />
+            <End Role="Recipient" EntitySet="Recipients" />
           </AssociationSet>
           <AssociationSet Name="FK_OperationSettings_ChangeHist_OperationSettings" Association="TrinityCentralizedDBModel.FK_OperationSettings_ChangeHist_OperationSettings">
             <End Role="OperationSetting" EntitySet="OperationSettings" />
@@ -1132,9 +1225,9 @@
             <End Role="Timeslot" EntitySet="Timeslots" />
             <End Role="Queue" EntitySet="Queues" />
           </AssociationSet>
-          <AssociationSet Name="FK_SentMessages_User_Profiles" Association="TrinityCentralizedDBModel.FK_SentMessages_User_Profiles">
-            <End Role="User_Profiles" EntitySet="User_Profiles" />
-            <End Role="SentMessage" EntitySet="SentMessages" />
+          <AssociationSet Name="FK_UploadedDocumentDetails_UploadedDocuments" Association="TrinityCentralizedDBModel.FK_UploadedDocumentDetails_UploadedDocuments">
+            <End Role="UploadedDocument" EntitySet="UploadedDocuments" />
+            <End Role="UploadedDocumentDetail" EntitySet="UploadedDocumentDetails" />
           </AssociationSet>
           <AssociationSet Name="FK_User_Profiles_UploadedDocuments" Association="TrinityCentralizedDBModel.FK_User_Profiles_UploadedDocuments">
             <End Role="UploadedDocument" EntitySet="UploadedDocuments" />
@@ -1311,7 +1404,7 @@
           <Property Name="Name" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Date" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="QRCode" Type="Binary" MaxLength="Max" FixedLength="false" />
-          <Property Name="LastStation" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="LastStation" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="PrintCount" Type="Int32" Nullable="false" />
           <Property Name="ReprintReason" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="PrintStatus" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
@@ -1418,23 +1511,29 @@
           <NavigationProperty Name="Membership_UserDevices" Relationship="TrinityCentralizedDBModel.FK__Restauran__UserI__1CFC3D38" FromRole="Membership_Users" ToRole="Membership_UserDevices" />
           <NavigationProperty Name="Membership_UserLogins" Relationship="TrinityCentralizedDBModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" FromRole="Membership_Users" ToRole="Membership_UserLogins" />
           <NavigationProperty Name="Membership_UserRoles" Relationship="TrinityCentralizedDBModel.FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId" FromRole="Membership_Users" ToRole="Membership_UserRoles" />
+          <NavigationProperty Name="Messages" Relationship="TrinityCentralizedDBModel.FK_Messages_User_Profiles" FromRole="Membership_Users" ToRole="Message" />
+          <NavigationProperty Name="Notifications" Relationship="TrinityCentralizedDBModel.FK_Notifications_Membership_Users" FromRole="Membership_Users" ToRole="Notification" />
+          <NavigationProperty Name="Notifications1" Relationship="TrinityCentralizedDBModel.FK_Notifications_Membership_Users1" FromRole="Membership_Users" ToRole="Notification" />
           <NavigationProperty Name="Security_QA" Relationship="TrinityCentralizedDBModel.FK_PWD_QA_Membership_Users" FromRole="Membership_Users" ToRole="Security_QA" />
           <NavigationProperty Name="Queues" Relationship="TrinityCentralizedDBModel.FK_Queues_Membership_Users" FromRole="Membership_Users" ToRole="Queue" />
           <NavigationProperty Name="Queues1" Relationship="TrinityCentralizedDBModel.FK_Queues_Membership_Users1" FromRole="Membership_Users" ToRole="Queue" />
+          <NavigationProperty Name="Recipients" Relationship="TrinityCentralizedDBModel.FK_Recipients_User_Profiles" FromRole="Membership_Users" ToRole="Recipient" />
           <NavigationProperty Name="User_Profiles" Relationship="TrinityCentralizedDBModel.FK_User_Profiles_Membership_Users" FromRole="Membership_Users" ToRole="User_Profiles" />
         </EntityType>
-        <EntityType Name="MsgRecipient">
+        <EntityType Name="Message">
           <Key>
-            <PropertyRef Name="RecID" />
+            <PropertyRef Name="MsgID" />
           </Key>
-          <Property Name="RecID" Type="Int32" Nullable="false" />
-          <Property Name="MsgID" Type="Int32" />
-          <Property Name="UserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="Email" Type="Boolean" />
+          <Property Name="MsgID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Subject" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MsgContent" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="DelileryStatus" Type="Int32" />
+          <Property Name="DeliveryDateTime" Type="DateTime" Precision="3" />
           <Property Name="SMS" Type="Boolean" />
-          <Property Name="DeliveryStatus" Type="Int32" />
-          <NavigationProperty Name="SentMessage" Relationship="TrinityCentralizedDBModel.FK_MsgRecipients_SentMessages" FromRole="MsgRecipient" ToRole="SentMessage" />
-          <NavigationProperty Name="User_Profiles" Relationship="TrinityCentralizedDBModel.FK_MsgRecipients_User_Profiles" FromRole="MsgRecipient" ToRole="User_Profiles" />
+          <Property Name="Email" Type="Boolean" />
+          <Property Name="UserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Membership_Users" Relationship="TrinityCentralizedDBModel.FK_Messages_User_Profiles" FromRole="Message" ToRole="Membership_Users" />
+          <NavigationProperty Name="Recipients" Relationship="TrinityCentralizedDBModel.FK_MsgRecipients_SentMessages" FromRole="Message" ToRole="Recipient" />
         </EntityType>
         <EntityType Name="Notification">
           <Key>
@@ -1449,8 +1548,12 @@
           <Property Name="IsRead" Type="Boolean" />
           <Property Name="IsFromSupervisee" Type="Boolean" />
           <Property Name="Source" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="RecID" Type="Binary" MaxLength="50" FixedLength="false" />
           <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="notification_code" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Priority" Type="Int32" />
+          <NavigationProperty Name="Membership_Users" Relationship="TrinityCentralizedDBModel.FK_Notifications_Membership_Users" FromRole="Notification" ToRole="Membership_Users" />
+          <NavigationProperty Name="Membership_Users1" Relationship="TrinityCentralizedDBModel.FK_Notifications_Membership_Users1" FromRole="Notification" ToRole="Membership_Users" />
         </EntityType>
         <EntityType Name="OperationSetting">
           <Key>
@@ -1524,6 +1627,19 @@
           <NavigationProperty Name="QueueDetails" Relationship="TrinityCentralizedDBModel.FK_QueueDetails_Queues" FromRole="Queue" ToRole="QueueDetail" />
           <NavigationProperty Name="Timeslot" Relationship="TrinityCentralizedDBModel.FK_Queues_Timeslots" FromRole="Queue" ToRole="Timeslot" />
         </EntityType>
+        <EntityType Name="Recipient">
+          <Key>
+            <PropertyRef Name="RecID" />
+          </Key>
+          <Property Name="RecID" Type="Int32" Nullable="false" />
+          <Property Name="MsgID" Type="Int32" />
+          <Property Name="UserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="Boolean" />
+          <Property Name="SMS" Type="Boolean" />
+          <Property Name="DeliveryStatus" Type="Int32" />
+          <NavigationProperty Name="Membership_Users" Relationship="TrinityCentralizedDBModel.FK_Recipients_User_Profiles" FromRole="Recipient" ToRole="Membership_Users" />
+          <NavigationProperty Name="Message" Relationship="TrinityCentralizedDBModel.FK_MsgRecipients_SentMessages" FromRole="Recipient" ToRole="Message" />
+        </EntityType>
         <EntityType Name="Security_QA">
           <Key>
             <PropertyRef Name="UserId" />
@@ -1537,21 +1653,6 @@
           <Property Name="LastUpdatedBy" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="LastUpdatedDate" Type="DateTime" Nullable="false" Precision="3" />
           <NavigationProperty Name="Membership_Users" Relationship="TrinityCentralizedDBModel.FK_PWD_QA_Membership_Users" FromRole="Security_QA" ToRole="Membership_Users" />
-        </EntityType>
-        <EntityType Name="SentMessage">
-          <Key>
-            <PropertyRef Name="MsgID" />
-          </Key>
-          <Property Name="MsgID" Type="Int32" Nullable="false" />
-          <Property Name="Subject" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="MsgContent" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="DelileryStatus" Type="Int32" />
-          <Property Name="DeliveryDateTime" Type="DateTime" Precision="3" />
-          <Property Name="SMS" Type="Boolean" />
-          <Property Name="Email" Type="Boolean" />
-          <Property Name="UserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="MsgRecipients" Relationship="TrinityCentralizedDBModel.FK_MsgRecipients_SentMessages" FromRole="SentMessage" ToRole="MsgRecipient" />
-          <NavigationProperty Name="User_Profiles" Relationship="TrinityCentralizedDBModel.FK_SentMessages_User_Profiles" FromRole="SentMessage" ToRole="User_Profiles" />
         </EntityType>
         <EntityType Name="Setting">
           <Key>
@@ -1596,6 +1697,26 @@
           <NavigationProperty Name="Appointments" Relationship="TrinityCentralizedDBModel.FK_Appointments_Timeslots" FromRole="Timeslot" ToRole="Appointment" />
           <NavigationProperty Name="Queues" Relationship="TrinityCentralizedDBModel.FK_Queues_Timeslots" FromRole="Timeslot" ToRole="Queue" />
         </EntityType>
+        <EntityType Name="Transaction">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="NRIC" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="TransactionCode" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Source" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="datetime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Content" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="UploadedDocumentDetail">
+          <Key>
+            <PropertyRef Name="DocumentDetail_ID" />
+          </Key>
+          <Property Name="DocumentDetail_ID" Type="Guid" Nullable="false" />
+          <Property Name="Document_ID" Type="Guid" Nullable="false" />
+          <Property Name="DocumentContent" Type="Binary" Nullable="false" MaxLength="Max" FixedLength="false" />
+          <NavigationProperty Name="UploadedDocument" Relationship="TrinityCentralizedDBModel.FK_UploadedDocumentDetails_UploadedDocuments" FromRole="UploadedDocumentDetail" ToRole="UploadedDocument" />
+        </EntityType>
         <EntityType Name="UploadedDocument">
           <Key>
             <PropertyRef Name="Document_ID" />
@@ -1605,9 +1726,10 @@
           <Property Name="UploadedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="UploadedDate" Type="DateTime" Precision="3" />
           <Property Name="Extension" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="DocumentContent" Type="Binary" MaxLength="Max" FixedLength="false" />
           <Property Name="Note" Type="String" Nullable="false" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="DocStatus" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="AbsenceReportings" Relationship="TrinityCentralizedDBModel.FK_AbsenceReporting_UploadedDocuments" FromRole="UploadedDocument" ToRole="AbsenceReporting" />
+          <NavigationProperty Name="UploadedDocumentDetails" Relationship="TrinityCentralizedDBModel.FK_UploadedDocumentDetails_UploadedDocuments" FromRole="UploadedDocument" ToRole="UploadedDocumentDetail" />
           <NavigationProperty Name="User_Profiles" Relationship="TrinityCentralizedDBModel.FK_User_Profiles_UploadedDocuments" FromRole="UploadedDocument" ToRole="User_Profiles" />
         </EntityType>
         <EntityType Name="User_Profiles">
@@ -1624,7 +1746,9 @@
           <Property Name="Maritial_Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Residential_Addess_ID" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="Other_Address_ID" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="NextOfKin_Nricno" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="NextOfKin_Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="NextOfKin_DOB" Type="DateTime" Precision="0" />
           <Property Name="NextOfKin_Contact_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="NextOfKin_Relationship" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="NextOfKin_BlkHouse_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
@@ -1649,12 +1773,16 @@
           <Property Name="RightThumb_Photo" Type="Binary" MaxLength="Max" FixedLength="false" />
           <Property Name="LeftThumb_Photo" Type="Binary" MaxLength="Max" FixedLength="false" />
           <Property Name="Document_ID" Type="Guid" />
+          <Property Name="Venue" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="VistingFrequency" Type="Int32" />
+          <Property Name="PrbStratingDate" Type="DateTime" Precision="0" />
+          <Property Name="PrbEndingDate" Type="DateTime" Precision="0" />
+          <Property Name="ForgetPass_FailAttempt" Type="Int32" />
+          <Property Name="DOB_FailAttempt" Type="Int32" />
           <NavigationProperty Name="Address" Relationship="TrinityCentralizedDBModel.FK_User_Profiles_Addresses2" FromRole="User_Profiles" ToRole="Address" />
           <NavigationProperty Name="Address1" Relationship="TrinityCentralizedDBModel.FK_User_Profiles_Addresses3" FromRole="User_Profiles" ToRole="Address" />
           <NavigationProperty Name="APS_USER_ACT_LOG" Relationship="TrinityCentralizedDBModel.FK_APS_USER_ACT_LOG_User_Profiles" FromRole="User_Profiles" ToRole="APS_USER_ACT_LOG" />
           <NavigationProperty Name="Membership_Users" Relationship="TrinityCentralizedDBModel.FK_User_Profiles_Membership_Users" FromRole="User_Profiles" ToRole="Membership_Users" />
-          <NavigationProperty Name="MsgRecipients" Relationship="TrinityCentralizedDBModel.FK_MsgRecipients_User_Profiles" FromRole="User_Profiles" ToRole="MsgRecipient" />
-          <NavigationProperty Name="SentMessages" Relationship="TrinityCentralizedDBModel.FK_SentMessages_User_Profiles" FromRole="User_Profiles" ToRole="SentMessage" />
           <NavigationProperty Name="UploadedDocument" Relationship="TrinityCentralizedDBModel.FK_User_Profiles_UploadedDocuments" FromRole="User_Profiles" ToRole="UploadedDocument" />
         </EntityType>
         <Association Name="FK_AbsenceReporting_UploadedDocuments">
@@ -1893,6 +2021,42 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Messages_User_Profiles">
+          <End Type="TrinityCentralizedDBModel.Membership_Users" Role="Membership_Users" Multiplicity="0..1" />
+          <End Type="TrinityCentralizedDBModel.Message" Role="Message" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Membership_Users">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="Message">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Notifications_Membership_Users">
+          <End Type="TrinityCentralizedDBModel.Membership_Users" Role="Membership_Users" Multiplicity="0..1" />
+          <End Type="TrinityCentralizedDBModel.Notification" Role="Notification" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Membership_Users">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="Notification">
+              <PropertyRef Name="FromUserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Notifications_Membership_Users1">
+          <End Type="TrinityCentralizedDBModel.Membership_Users" Role="Membership_Users" Multiplicity="0..1" />
+          <End Type="TrinityCentralizedDBModel.Notification" Role="Notification" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Membership_Users">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="Notification">
+              <PropertyRef Name="ToUserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_PWD_QA_Membership_Users">
           <End Type="TrinityCentralizedDBModel.Membership_Users" Role="Membership_Users" Multiplicity="1" />
           <End Type="TrinityCentralizedDBModel.Security_QA" Role="Security_QA" Multiplicity="*" />
@@ -1929,6 +2093,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Recipients_User_Profiles">
+          <End Type="TrinityCentralizedDBModel.Membership_Users" Role="Membership_Users" Multiplicity="0..1" />
+          <End Type="TrinityCentralizedDBModel.Recipient" Role="Recipient" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Membership_Users">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="Recipient">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_User_Profiles_Membership_Users">
           <End Type="TrinityCentralizedDBModel.Membership_Users" Role="Membership_Users" Multiplicity="1" />
           <End Type="TrinityCentralizedDBModel.User_Profiles" Role="User_Profiles" Multiplicity="0..1" />
@@ -1942,26 +2118,14 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_MsgRecipients_SentMessages">
-          <End Type="TrinityCentralizedDBModel.SentMessage" Role="SentMessage" Multiplicity="0..1" />
-          <End Type="TrinityCentralizedDBModel.MsgRecipient" Role="MsgRecipient" Multiplicity="*" />
+          <End Type="TrinityCentralizedDBModel.Message" Role="Message" Multiplicity="0..1" />
+          <End Type="TrinityCentralizedDBModel.Recipient" Role="Recipient" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="SentMessage">
+            <Principal Role="Message">
               <PropertyRef Name="MsgID" />
             </Principal>
-            <Dependent Role="MsgRecipient">
+            <Dependent Role="Recipient">
               <PropertyRef Name="MsgID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_MsgRecipients_User_Profiles">
-          <End Type="TrinityCentralizedDBModel.User_Profiles" Role="User_Profiles" Multiplicity="0..1" />
-          <End Type="TrinityCentralizedDBModel.MsgRecipient" Role="MsgRecipient" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="User_Profiles">
-              <PropertyRef Name="UserId" />
-            </Principal>
-            <Dependent Role="MsgRecipient">
-              <PropertyRef Name="UserId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2001,15 +2165,15 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_SentMessages_User_Profiles">
-          <End Type="TrinityCentralizedDBModel.User_Profiles" Role="User_Profiles" Multiplicity="0..1" />
-          <End Type="TrinityCentralizedDBModel.SentMessage" Role="SentMessage" Multiplicity="*" />
+        <Association Name="FK_UploadedDocumentDetails_UploadedDocuments">
+          <End Type="TrinityCentralizedDBModel.UploadedDocument" Role="UploadedDocument" Multiplicity="1" />
+          <End Type="TrinityCentralizedDBModel.UploadedDocumentDetail" Role="UploadedDocumentDetail" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="User_Profiles">
-              <PropertyRef Name="UserId" />
+            <Principal Role="UploadedDocument">
+              <PropertyRef Name="Document_ID" />
             </Principal>
-            <Dependent Role="SentMessage">
-              <PropertyRef Name="UserId" />
+            <Dependent Role="UploadedDocumentDetail">
+              <PropertyRef Name="Document_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2292,23 +2456,27 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="MsgRecipients">
-            <EntityTypeMapping TypeName="TrinityCentralizedDBModel.MsgRecipient">
-              <MappingFragment StoreEntitySet="MsgRecipients">
-                <ScalarProperty Name="DeliveryStatus" ColumnName="DeliveryStatus" />
-                <ScalarProperty Name="SMS" ColumnName="SMS" />
-                <ScalarProperty Name="Email" ColumnName="Email" />
+          <EntitySetMapping Name="Messages">
+            <EntityTypeMapping TypeName="TrinityCentralizedDBModel.Message">
+              <MappingFragment StoreEntitySet="Messages">
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="SMS" ColumnName="SMS" />
+                <ScalarProperty Name="DeliveryDateTime" ColumnName="DeliveryDateTime" />
+                <ScalarProperty Name="DelileryStatus" ColumnName="DelileryStatus" />
+                <ScalarProperty Name="MsgContent" ColumnName="MsgContent" />
+                <ScalarProperty Name="Subject" ColumnName="Subject" />
                 <ScalarProperty Name="MsgID" ColumnName="MsgID" />
-                <ScalarProperty Name="RecID" ColumnName="RecID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Notifications">
             <EntityTypeMapping TypeName="TrinityCentralizedDBModel.Notification">
               <MappingFragment StoreEntitySet="Notifications">
+                <ScalarProperty Name="Priority" ColumnName="Priority" />
                 <ScalarProperty Name="notification_code" ColumnName="notification_code" />
                 <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="RecID" ColumnName="RecID" />
                 <ScalarProperty Name="Source" ColumnName="Source" />
                 <ScalarProperty Name="IsFromSupervisee" ColumnName="IsFromSupervisee" />
                 <ScalarProperty Name="IsRead" ColumnName="IsRead" />
@@ -2388,6 +2556,18 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Recipients">
+            <EntityTypeMapping TypeName="TrinityCentralizedDBModel.Recipient">
+              <MappingFragment StoreEntitySet="Recipients">
+                <ScalarProperty Name="DeliveryStatus" ColumnName="DeliveryStatus" />
+                <ScalarProperty Name="SMS" ColumnName="SMS" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="MsgID" ColumnName="MsgID" />
+                <ScalarProperty Name="RecID" ColumnName="RecID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Security_QA">
             <EntityTypeMapping TypeName="TrinityCentralizedDBModel.Security_QA">
               <MappingFragment StoreEntitySet="Security_QA">
@@ -2398,20 +2578,6 @@
                 <ScalarProperty Name="Answer" ColumnName="Answer" />
                 <ScalarProperty Name="Question" ColumnName="Question" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="SentMessages">
-            <EntityTypeMapping TypeName="TrinityCentralizedDBModel.SentMessage">
-              <MappingFragment StoreEntitySet="SentMessages">
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
-                <ScalarProperty Name="Email" ColumnName="Email" />
-                <ScalarProperty Name="SMS" ColumnName="SMS" />
-                <ScalarProperty Name="DeliveryDateTime" ColumnName="DeliveryDateTime" />
-                <ScalarProperty Name="DelileryStatus" ColumnName="DelileryStatus" />
-                <ScalarProperty Name="MsgContent" ColumnName="MsgContent" />
-                <ScalarProperty Name="Subject" ColumnName="Subject" />
-                <ScalarProperty Name="MsgID" ColumnName="MsgID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -2459,11 +2625,32 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Transactions">
+            <EntityTypeMapping TypeName="TrinityCentralizedDBModel.Transaction">
+              <MappingFragment StoreEntitySet="Transactions">
+                <ScalarProperty Name="Content" ColumnName="Content" />
+                <ScalarProperty Name="datetime" ColumnName="datetime" />
+                <ScalarProperty Name="Source" ColumnName="Source" />
+                <ScalarProperty Name="TransactionCode" ColumnName="TransactionCode" />
+                <ScalarProperty Name="NRIC" ColumnName="NRIC" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UploadedDocumentDetails">
+            <EntityTypeMapping TypeName="TrinityCentralizedDBModel.UploadedDocumentDetail">
+              <MappingFragment StoreEntitySet="UploadedDocumentDetails">
+                <ScalarProperty Name="DocumentContent" ColumnName="DocumentContent" />
+                <ScalarProperty Name="Document_ID" ColumnName="Document_ID" />
+                <ScalarProperty Name="DocumentDetail_ID" ColumnName="DocumentDetail_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="UploadedDocuments">
             <EntityTypeMapping TypeName="TrinityCentralizedDBModel.UploadedDocument">
               <MappingFragment StoreEntitySet="UploadedDocuments">
+                <ScalarProperty Name="DocStatus" ColumnName="DocStatus" />
                 <ScalarProperty Name="Note" ColumnName="Note" />
-                <ScalarProperty Name="DocumentContent" ColumnName="DocumentContent" />
                 <ScalarProperty Name="Extension" ColumnName="Extension" />
                 <ScalarProperty Name="UploadedDate" ColumnName="UploadedDate" />
                 <ScalarProperty Name="UploadedBy" ColumnName="UploadedBy" />
@@ -2475,6 +2662,12 @@
           <EntitySetMapping Name="User_Profiles">
             <EntityTypeMapping TypeName="TrinityCentralizedDBModel.User_Profiles">
               <MappingFragment StoreEntitySet="User_Profiles">
+                <ScalarProperty Name="DOB_FailAttempt" ColumnName="DOB_FailAttempt" />
+                <ScalarProperty Name="ForgetPass_FailAttempt" ColumnName="ForgetPass_FailAttempt" />
+                <ScalarProperty Name="PrbEndingDate" ColumnName="PrbEndingDate" />
+                <ScalarProperty Name="PrbStratingDate" ColumnName="PrbStratingDate" />
+                <ScalarProperty Name="VistingFrequency" ColumnName="VistingFrequency" />
+                <ScalarProperty Name="Venue" ColumnName="Venue" />
                 <ScalarProperty Name="Document_ID" ColumnName="Document_ID" />
                 <ScalarProperty Name="LeftThumb_Photo" ColumnName="LeftThumb_Photo" />
                 <ScalarProperty Name="RightThumb_Photo" ColumnName="RightThumb_Photo" />
@@ -2499,7 +2692,9 @@
                 <ScalarProperty Name="NextOfKin_BlkHouse_Number" ColumnName="NextOfKin_BlkHouse_Number" />
                 <ScalarProperty Name="NextOfKin_Relationship" ColumnName="NextOfKin_Relationship" />
                 <ScalarProperty Name="NextOfKin_Contact_Number" ColumnName="NextOfKin_Contact_Number" />
+                <ScalarProperty Name="NextOfKin_DOB" ColumnName="NextOfKin_DOB" />
                 <ScalarProperty Name="NextOfKin_Name" ColumnName="NextOfKin_Name" />
+                <ScalarProperty Name="NextOfKin_Nricno" ColumnName="NextOfKin_Nricno" />
                 <ScalarProperty Name="Other_Address_ID" ColumnName="Other_Address_ID" />
                 <ScalarProperty Name="Residential_Addess_ID" ColumnName="Residential_Addess_ID" />
                 <ScalarProperty Name="Maritial_Status" ColumnName="Maritial_Status" />
