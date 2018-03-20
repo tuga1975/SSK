@@ -751,7 +751,7 @@ namespace Trinity.Device.Util
                     _currentCommandIndex++;
                 }
                 _currentCommand = _waitingCommands[_currentCommandIndex];
-                OnNewEvent?.Invoke(this, "Next command:" + _currentCommand);
+                OnNewEvent?.Invoke(this, "Get next command:" + _currentCommand);
             }
         }
 
@@ -775,7 +775,7 @@ namespace Trinity.Device.Util
                     if (callback != null && result != null)
                     {
                         callback(result.Value);
-                        OnNewEvent?.Invoke(this, "Execute command " + _currentCommand + " successfully. Result:" + result);
+                        OnNewEvent?.Invoke(this, "Complete current command " + _currentCommand + " successfully. Result:" + result);
                     }
                     _currentCommand = EnumCommands.Unknown;
                 }
@@ -790,8 +790,10 @@ namespace Trinity.Device.Util
         {
             try
             {
-                OnNewEvent?.Invoke(this, "CommandsHandler is started.");
+                // Start to process new command
+                this.DataReceived += SendCommand_Async_Callback;
 
+                OnNewEvent?.Invoke(this, "CommandsHandler is started.");
                 while (IsPortOpen)
                 {
                     if (_currentCommand == EnumCommands.Unknown)
@@ -805,8 +807,7 @@ namespace Trinity.Device.Util
                                 {
                                     OnNewEvent?.Invoke(this, "Start to proceed next command:" + _currentCommand);
 
-                                    // Start to process new command
-                                    this.DataReceived += SendCommand_Async_Callback;
+
                                     string asciiCommand = "";
 
                                     asciiCommand = _rs232Commands[_currentCommand];
@@ -825,12 +826,9 @@ namespace Trinity.Device.Util
                             }
                         }
                     }
-                    //else
-                    //{
-                    //    OnNewEvent?.Invoke(this, "Current Command is not null");
-                    //}
                     Thread.Sleep(200);
                 }
+                this.DataReceived -= SendCommand_Async_Callback;
                 OnNewEvent?.Invoke(this, "CommandsHandler is stopped.");
             }
             catch (Exception ex)
@@ -844,17 +842,22 @@ namespace Trinity.Device.Util
         {
             try
             {
-                OnNewEvent?.Invoke(this, "Add command:" + command + " to waiting commands");
                 lock (syncRoot)
                 {
                     if (!_waitingCommands.Contains(command))
                     {
+                        OnNewEvent?.Invoke(this, "Add command:" + command + " to waiting list");
+
                         _commandsRetryCount[command] = 0;
                         _waitingCommands.Add(command);
                         if (callback != null)
                         {
                             _callbacks[command] = callback;
                         }
+                    }
+                    else
+                    {
+                        OnNewEvent?.Invoke(this, "Command:" + command + " already exist and will be ignored.");
                     }
                 }
             }
@@ -871,10 +874,10 @@ namespace Trinity.Device.Util
                 lock (syncRoot)
                 {
                     OnNewEvent?.Invoke(this, "SendCommand_Async_Callback, response:" + response + ", command:" + _currentCommand);
-                    this.DataReceived -= SendCommand_Async_Callback;
+
                     if (_currentCommand == EnumCommands.Unknown)
                     {
-                        MessageBox.Show("Tai sao lai xay ra truong hop nay");
+                        //MessageBox.Show("Tai sao lai xay ra truong hop nay");
                         return;
                     }
                     WorkCompletedCallback callback = null;
