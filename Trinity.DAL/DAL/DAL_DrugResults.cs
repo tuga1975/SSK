@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using Trinity.DAL.DBContext;
 using Trinity.DAL.Repository;
@@ -12,9 +13,10 @@ namespace Trinity.DAL
         Local_UnitOfWork _localUnitOfWork = new Local_UnitOfWork();
         Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
 
-        public DBContext.DrugResult GetByNRIC(string NRIC)
+        public DBContext.DrugResult GetByNRICAndDate(string NRIC,DateTime DateCreate)
         {
-            return _localUnitOfWork.DataContext.DrugResults.FirstOrDefault(d => d.NRIC.Equals(NRIC));
+            DateCreate = DateCreate.Date;
+            return _localUnitOfWork.DataContext.DrugResults.FirstOrDefault(d => d.NRIC.Equals(NRIC) && DbFunctions.TruncateTime(d.UploadedDate)== DateCreate);
         }
 
         public DBContext.DrugResult GetByMarkingNumber(string MarkingNumber)
@@ -265,45 +267,51 @@ namespace Trinity.DAL
             }
         }
 
-        public string GetResultUTByNRIC(string NRIC)
+        public string GetResultUTByNRIC(string NRIC,DateTime date)
         {
-            if (EnumAppConfig.IsLocal)
-            {
-                DrugResult drug = _localUnitOfWork.DataContext.DrugResults.FirstOrDefault(d => d.NRIC.Equals(NRIC));
-                if (drug == null)
-                    return EnumUTResult.NEG;
-                else
-                {
-                    if ((drug.AMPH.HasValue && drug.AMPH.Value) || (drug.BARB.HasValue && drug.BARB.Value) || (drug.BENZ.HasValue && drug.BENZ.Value) || (drug.BUPRE.HasValue && drug.BUPRE.Value) || (drug.CAT.HasValue && drug.CAT.Value) 
-                        || (drug.COCA.HasValue && drug.COCA.Value) || (drug.KET.HasValue && drug.KET.Value) || (drug.LSD.HasValue && drug.LSD.Value) || (drug.METH.HasValue && drug.METH.Value) || (drug.MTQL.HasValue && drug.MTQL.Value) 
-                        || (drug.NPS.HasValue && drug.NPS.Value) || (drug.OPI.HasValue) && drug.OPI.Value || (drug.PCP.HasValue && drug.PCP.Value) || (drug.PPZ.HasValue && drug.PPZ.Value) || (drug.THC.HasValue && drug.THC.Value))
-                    {
-                        return EnumUTResult.POS;
-                    }
-                    else
-                    {
-                        return EnumUTResult.NEG;
-                    }
-                }
-            }
+            date = date.Date;
+            DrugResult drug = _localUnitOfWork.DataContext.DrugResults.FirstOrDefault(d => d.NRIC.Equals(NRIC) && DbFunctions.TruncateTime(d.UploadedDate) == date);
+            if (drug == null)
+                return EnumUTResult.NEG;
             else
             {
-                DrugResult drug = _centralizedUnitOfWork.DataContext.DrugResults.FirstOrDefault(d => d.NRIC.Equals(NRIC));
-                if (drug == null)
-                    return EnumUTResult.NEG;
+                if (
+                        (drug.AMPH.HasValue && drug.AMPH.Value) ||
+                        (drug.BENZ.HasValue && drug.BENZ.Value) ||
+                        (drug.OPI.HasValue && drug.OPI.Value) ||
+                        (drug.THC.HasValue && drug.THC.Value)
+                   )
+                {
+                    return EnumUTResult.POS;
+                }
                 else
                 {
-                    if (drug.AMPH.Value || drug.BARB.Value || drug.BENZ.Value || drug.BUPRE.Value || drug.CAT.Value || drug.COCA.Value || drug.KET.Value || drug.LSD.Value
-                        || drug.METH.Value || drug.MTQL.Value || drug.NPS.Value || drug.OPI.Value || drug.PCP.Value || drug.PPZ.Value || drug.THC.Value)
-                    {
-                        return EnumUTResult.POS;
-                    }
-                    else
-                    {
-                        return EnumUTResult.NEG;
-                    }
+                    return EnumUTResult.NEG;
                 }
             }
+
+            //if (EnumAppConfig.IsLocal)
+            //{
+
+            //}
+            //else
+            //{
+            //    DrugResult drug = _centralizedUnitOfWork.DataContext.DrugResults.FirstOrDefault(d => d.NRIC.Equals(NRIC));
+            //    if (drug == null)
+            //        return EnumUTResult.NEG;
+            //    else
+            //    {
+            //        if (drug.AMPH.Value || drug.BARB.Value || drug.BENZ.Value || drug.BUPRE.Value || drug.CAT.Value || drug.COCA.Value || drug.KET.Value || drug.LSD.Value
+            //            || drug.METH.Value || drug.MTQL.Value || drug.NPS.Value || drug.OPI.Value || drug.PCP.Value || drug.PPZ.Value || drug.THC.Value)
+            //        {
+            //            return EnumUTResult.POS;
+            //        }
+            //        else
+            //        {
+            //            return EnumUTResult.NEG;
+            //        }
+            //    }
+            //}
         }
         public DrugResult UpdateSealForUser(string userId, bool seal, string uploadedBy, string sealedOrDiscardedBy)
         {

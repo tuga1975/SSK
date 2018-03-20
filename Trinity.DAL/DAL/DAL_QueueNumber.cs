@@ -744,6 +744,7 @@ namespace Trinity.DAL
                 queueInfo.Status = queueDetails.FirstOrDefault(qd => qd.Station.Equals(dbQueue.CurrentStation)).Status;
                 queueInfo.QueueDetail = queueDetails.Where(qd => qd.Message != null && qd.Message != "").ToList();
                 queueInfo.UserId = dbQueue.UserId;
+                queueInfo.Date = dbQueue.CreatedTime;
             }
 
             return queueInfo;
