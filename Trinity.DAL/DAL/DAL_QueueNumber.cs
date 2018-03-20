@@ -753,8 +753,8 @@ namespace Trinity.DAL
         {
             DBContext.Queue dbQueue = _localUnitOfWork.DataContext.Queues.Include("Appointment").FirstOrDefault(d => d.Appointment.UserId == userId && DbFunctions.TruncateTime(d.CreatedTime).Value == DateTime.Today);
 
-                    if (dbQueue == null)
-                        return null;
+            if (dbQueue == null)
+                return null;
 
             dbQueue.CurrentStation = nextStation;
             if (!string.IsNullOrEmpty(outcome))
@@ -779,7 +779,7 @@ namespace Trinity.DAL
 
             _localUnitOfWork.GetRepository<DBContext.Queue>().Update(dbQueue);
 
-                    _localUnitOfWork.Save();
+            _localUnitOfWork.Save();
 
             return dbQueue;
         }
