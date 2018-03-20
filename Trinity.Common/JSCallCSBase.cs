@@ -61,12 +61,24 @@ public class JSCallCSBase
             {
                 this._web.InvokeScript("callEventCallBack", data[1], JsonConvert.SerializeObject(dataReturn, Formatting.Indented, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore }));
             }
+            this._web.SetLoading(false);
         }
         catch (Exception ex)
         {
-            this._web.InvokeScript("ShowMessageBox", ex.InnerException!=null? ex.InnerException.Message:ex.Message);
+            this._web.SetLoading(false);
+
+            ex = ex.InnerException != null ? ex.InnerException : ex;
+
+            if (ex.Source.Equals("EntityFramework") && ex.Message.Equals("The underlying provider failed on Open."))
+            {
+                this._web.ShowMessage("The connection to the database failed");
+            }
+            else
+            {
+                this._web.ShowMessage(ex.Message);
+            }
+            
         }
-        this._web.SetLoading(false);
     }
 
     public void ClientCallServer(string method, string guidEvent, params object[] pram)

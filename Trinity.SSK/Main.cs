@@ -433,7 +433,7 @@ namespace SSK
                 Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(user.UserId, "Fingerprint Authentication failed", errorMessage, EnumNotificationTypes.Error);
 
                 //NavigateTo(NavigatorEnums.Authentication_SmartCard);
-                LayerWeb.ShowMessage("Authentication failed", "Fingerprint's Authenication failed!<br /> Please contact your officer.");
+                //LayerWeb.ShowMessage("Authentication failed", "Fingerprint's Authenication failed!<br /> Please contact your officer.");
 
                 //for testing purpose
                 // Pause for 1 second and goto Facial Login Screen

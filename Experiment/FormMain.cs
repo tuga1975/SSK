@@ -208,13 +208,13 @@ namespace Experiment
             MessageBox.Show("Start OK");
         }
 
-        private void DocumentScannerCallback(string frontPath, string error)
+        private void DocumentScannerCallback(string[] frontPath, string error)
         {
             try
             {
                 if (string.IsNullOrEmpty(error))
                 {
-                    MessageBox.Show(frontPath);
+                    MessageBox.Show(string.Join(", ",frontPath));
                 }
                 else
                 {

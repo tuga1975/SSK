@@ -40,8 +40,11 @@ namespace SSA.CodeBehind
 
                     // Update Queue finish at SSK and start for SSA
                     var dalQueue = new DAL_QueueNumber();
-                    dalQueue.UpdateQueueStatusByUserId(supervisee.UserId, EnumStation.SSK, EnumQueueStatuses.Finished, EnumStation.SSA, EnumQueueStatuses.Processing, "Printing MUB/TT labels", EnumQueueOutcomeText.Processing);
-                    Trinity.SignalR.Client.Instance.QueueCompleted(supervisee.UserId);
+                    Trinity.DAL.DBContext.Queue dbQueue = dalQueue.UpdateQueueStatusByUserId(supervisee.UserId, EnumStation.SSK, EnumQueueStatuses.Finished, EnumStation.SSA, EnumQueueStatuses.Processing, "Printing MUB/TT labels", EnumQueueOutcomeText.Processing);
+                    if (dbQueue != null)
+                    {
+                        Trinity.SignalR.Client.Instance.QueueInserted(dbQueue.Queue_ID.ToString());
+                    }
 
                     string markingNo = new DAL_Labels().GetMarkingNoByUserId(supervisee.UserId);
                     if(string.IsNullOrEmpty(markingNo))

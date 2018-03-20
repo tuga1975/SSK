@@ -161,7 +161,7 @@
           <Property Name="Name" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="Date" Type="datetime" Nullable="false" />
           <Property Name="QRCode" Type="varbinary(max)" />
-          <Property Name="LastStation" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="LastStation" Type="varchar" MaxLength="20" Nullable="false" />
           <Property Name="PrintCount" Type="int" Nullable="false" />
           <Property Name="ReprintReason" Type="nvarchar" MaxLength="255" />
           <Property Name="PrintStatus" Type="varchar" MaxLength="20" />
@@ -251,16 +251,18 @@
           <Property Name="IsFirstAttempt" Type="bit" />
           <Property Name="Note" Type="nvarchar" MaxLength="100" />
         </EntityType>
-        <EntityType Name="MsgRecipients">
+        <EntityType Name="Messages">
           <Key>
-            <PropertyRef Name="RecID" />
+            <PropertyRef Name="MsgID" />
           </Key>
-          <Property Name="RecID" Type="int" Nullable="false" />
-          <Property Name="MsgID" Type="int" />
-          <Property Name="UserId" Type="nvarchar" MaxLength="128" />
-          <Property Name="Email" Type="bit" />
+          <Property Name="MsgID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Subject" Type="nvarchar" MaxLength="50" />
+          <Property Name="MsgContent" Type="text" />
+          <Property Name="DelileryStatus" Type="int" />
+          <Property Name="DeliveryDateTime" Type="datetime" />
           <Property Name="SMS" Type="bit" />
-          <Property Name="DeliveryStatus" Type="int" />
+          <Property Name="Email" Type="bit" />
+          <Property Name="UserId" Type="nvarchar" MaxLength="128" />
         </EntityType>
         <EntityType Name="Notifications">
           <Key>
@@ -275,8 +277,10 @@
           <Property Name="IsRead" Type="bit" />
           <Property Name="IsFromSupervisee" Type="bit" />
           <Property Name="Source" Type="nvarchar" MaxLength="50" />
+          <Property Name="RecID" Type="varbinary" MaxLength="50" />
           <Property Name="Type" Type="nvarchar" MaxLength="50" />
           <Property Name="notification_code" Type="varchar" MaxLength="50" />
+          <Property Name="Priority" Type="int" />
         </EntityType>
         <EntityType Name="OperationSettings">
           <Key>
@@ -342,6 +346,17 @@
           <Property Name="Note" Type="nvarchar" MaxLength="255" />
           <Property Name="LastUpdatedDate" Type="datetime" />
         </EntityType>
+        <EntityType Name="Recipients">
+          <Key>
+            <PropertyRef Name="RecID" />
+          </Key>
+          <Property Name="RecID" Type="int" Nullable="false" />
+          <Property Name="MsgID" Type="int" />
+          <Property Name="UserId" Type="nvarchar" MaxLength="128" />
+          <Property Name="Email" Type="bit" />
+          <Property Name="SMS" Type="bit" />
+          <Property Name="DeliveryStatus" Type="int" />
+        </EntityType>
         <EntityType Name="Security_QA">
           <Key>
             <PropertyRef Name="UserId" />
@@ -354,19 +369,6 @@
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="LastUpdatedBy" Type="nvarchar" MaxLength="128" Nullable="false" />
           <Property Name="LastUpdatedDate" Type="datetime" Nullable="false" />
-        </EntityType>
-        <EntityType Name="SentMessages">
-          <Key>
-            <PropertyRef Name="MsgID" />
-          </Key>
-          <Property Name="MsgID" Type="int" Nullable="false" />
-          <Property Name="Subject" Type="nvarchar" MaxLength="50" />
-          <Property Name="MsgContent" Type="text" />
-          <Property Name="DelileryStatus" Type="int" />
-          <Property Name="DeliveryDateTime" Type="datetime" />
-          <Property Name="SMS" Type="bit" />
-          <Property Name="Email" Type="bit" />
-          <Property Name="UserId" Type="nvarchar" MaxLength="128" />
         </EntityType>
         <EntityType Name="Settings">
           <Key>
@@ -420,6 +422,14 @@
           <Property Name="datetime" Type="datetime" Nullable="false" />
           <Property Name="Content" Type="nvarchar" MaxLength="100" Nullable="false" />
         </EntityType>
+        <EntityType Name="UploadedDocumentDetails">
+          <Key>
+            <PropertyRef Name="DocumentDetail_ID" />
+          </Key>
+          <Property Name="DocumentDetail_ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Document_ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="DocumentContent" Type="varbinary(max)" Nullable="false" />
+        </EntityType>
         <EntityType Name="UploadedDocuments">
           <Key>
             <PropertyRef Name="Document_ID" />
@@ -429,8 +439,8 @@
           <Property Name="UploadedBy" Type="nvarchar" MaxLength="128" />
           <Property Name="UploadedDate" Type="datetime" />
           <Property Name="Extension" Type="varchar" MaxLength="10" />
-          <Property Name="DocumentContent" Type="varbinary(max)" />
           <Property Name="Note" Type="nchar" MaxLength="10" Nullable="false" />
+          <Property Name="DocStatus" Type="nvarchar" MaxLength="20" />
         </EntityType>
         <EntityType Name="User_Profiles">
           <Key>
@@ -446,7 +456,9 @@
           <Property Name="Maritial_Status" Type="nvarchar" MaxLength="50" />
           <Property Name="Residential_Addess_ID" Type="nvarchar" MaxLength="128" />
           <Property Name="Other_Address_ID" Type="nvarchar" MaxLength="128" />
+          <Property Name="NextOfKin_Nricno" Type="nvarchar" MaxLength="50" />
           <Property Name="NextOfKin_Name" Type="nvarchar" MaxLength="255" />
+          <Property Name="NextOfKin_DOB" Type="date" />
           <Property Name="NextOfKin_Contact_Number" Type="varchar" MaxLength="50" />
           <Property Name="NextOfKin_Relationship" Type="nvarchar" MaxLength="255" />
           <Property Name="NextOfKin_BlkHouse_Number" Type="varchar" MaxLength="50" />
@@ -471,6 +483,12 @@
           <Property Name="RightThumb_Photo" Type="varbinary(max)" />
           <Property Name="LeftThumb_Photo" Type="varbinary(max)" />
           <Property Name="Document_ID" Type="uniqueidentifier" />
+          <Property Name="Venue" Type="nvarchar" MaxLength="100" />
+          <Property Name="VistingFrequency" Type="int" />
+          <Property Name="PrbStratingDate" Type="date" />
+          <Property Name="PrbEndingDate" Type="date" />
+          <Property Name="ForgetPass_FailAttempt" Type="int" />
+          <Property Name="DOB_FailAttempt" Type="int" />
         </EntityType>
         <Association Name="FK__Restauran__UserI__1CFC3D38">
           <End Role="Membership_Users" Type="Self.Membership_Users" Multiplicity="0..1" />
@@ -672,27 +690,51 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_MsgRecipients_SentMessages">
-          <End Role="SentMessages" Type="Self.SentMessages" Multiplicity="0..1" />
-          <End Role="MsgRecipients" Type="Self.MsgRecipients" Multiplicity="*" />
+        <Association Name="FK_Messages_User_Profiles">
+          <End Role="Membership_Users" Type="Self.Membership_Users" Multiplicity="0..1" />
+          <End Role="Messages" Type="Self.Messages" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="SentMessages">
+            <Principal Role="Membership_Users">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="Messages">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MsgRecipients_SentMessages">
+          <End Role="Messages" Type="Self.Messages" Multiplicity="0..1" />
+          <End Role="Recipients" Type="Self.Recipients" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Messages">
               <PropertyRef Name="MsgID" />
             </Principal>
-            <Dependent Role="MsgRecipients">
+            <Dependent Role="Recipients">
               <PropertyRef Name="MsgID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_MsgRecipients_User_Profiles">
-          <End Role="User_Profiles" Type="Self.User_Profiles" Multiplicity="0..1" />
-          <End Role="MsgRecipients" Type="Self.MsgRecipients" Multiplicity="*" />
+        <Association Name="FK_Notifications_Membership_Users">
+          <End Role="Membership_Users" Type="Self.Membership_Users" Multiplicity="0..1" />
+          <End Role="Notifications" Type="Self.Notifications" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="User_Profiles">
+            <Principal Role="Membership_Users">
               <PropertyRef Name="UserId" />
             </Principal>
-            <Dependent Role="MsgRecipients">
+            <Dependent Role="Notifications">
+              <PropertyRef Name="FromUserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Notifications_Membership_Users1">
+          <End Role="Membership_Users" Type="Self.Membership_Users" Multiplicity="0..1" />
+          <End Role="Notifications" Type="Self.Notifications" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Membership_Users">
               <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="Notifications">
+              <PropertyRef Name="ToUserId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -780,15 +822,27 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_SentMessages_User_Profiles">
-          <End Role="User_Profiles" Type="Self.User_Profiles" Multiplicity="0..1" />
-          <End Role="SentMessages" Type="Self.SentMessages" Multiplicity="*" />
+        <Association Name="FK_Recipients_User_Profiles">
+          <End Role="Membership_Users" Type="Self.Membership_Users" Multiplicity="0..1" />
+          <End Role="Recipients" Type="Self.Recipients" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="User_Profiles">
+            <Principal Role="Membership_Users">
               <PropertyRef Name="UserId" />
             </Principal>
-            <Dependent Role="SentMessages">
+            <Dependent Role="Recipients">
               <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UploadedDocumentDetails_UploadedDocuments">
+          <End Role="UploadedDocuments" Type="Self.UploadedDocuments" Multiplicity="1" />
+          <End Role="UploadedDocumentDetails" Type="Self.UploadedDocumentDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UploadedDocuments">
+              <PropertyRef Name="Document_ID" />
+            </Principal>
+            <Dependent Role="UploadedDocumentDetails">
+              <PropertyRef Name="Document_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -860,18 +914,19 @@
           <EntitySet Name="Membership_UserLogins" EntityType="Self.Membership_UserLogins" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Membership_UserRoles" EntityType="Self.Membership_UserRoles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Membership_Users" EntityType="Self.Membership_Users" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="MsgRecipients" EntityType="Self.MsgRecipients" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Messages" EntityType="Self.Messages" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Notifications" EntityType="Self.Notifications" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OperationSettings" EntityType="Self.OperationSettings" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OperationSettings_ChangeHist" EntityType="Self.OperationSettings_ChangeHist" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="QueueDetails" EntityType="Self.QueueDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Queues" EntityType="Self.Queues" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Recipients" EntityType="Self.Recipients" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Security_QA" EntityType="Self.Security_QA" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="SentMessages" EntityType="Self.SentMessages" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Settings" EntityType="Self.Settings" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SMS_LOG" EntityType="Self.SMS_LOG" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Timeslots" EntityType="Self.Timeslots" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Transactions" EntityType="Self.Transactions" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UploadedDocumentDetails" EntityType="Self.UploadedDocumentDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UploadedDocuments" EntityType="Self.UploadedDocuments" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User_Profiles" EntityType="Self.User_Profiles" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK__Restauran__UserI__1CFC3D38" Association="Self.FK__Restauran__UserI__1CFC3D38">
@@ -938,13 +993,21 @@
             <End Role="Membership_Roles" EntitySet="Membership_Roles" />
             <End Role="Membership_RoleClaims" EntitySet="Membership_RoleClaims" />
           </AssociationSet>
-          <AssociationSet Name="FK_MsgRecipients_SentMessages" Association="Self.FK_MsgRecipients_SentMessages">
-            <End Role="SentMessages" EntitySet="SentMessages" />
-            <End Role="MsgRecipients" EntitySet="MsgRecipients" />
+          <AssociationSet Name="FK_Messages_User_Profiles" Association="Self.FK_Messages_User_Profiles">
+            <End Role="Membership_Users" EntitySet="Membership_Users" />
+            <End Role="Messages" EntitySet="Messages" />
           </AssociationSet>
-          <AssociationSet Name="FK_MsgRecipients_User_Profiles" Association="Self.FK_MsgRecipients_User_Profiles">
-            <End Role="User_Profiles" EntitySet="User_Profiles" />
-            <End Role="MsgRecipients" EntitySet="MsgRecipients" />
+          <AssociationSet Name="FK_MsgRecipients_SentMessages" Association="Self.FK_MsgRecipients_SentMessages">
+            <End Role="Messages" EntitySet="Messages" />
+            <End Role="Recipients" EntitySet="Recipients" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Notifications_Membership_Users" Association="Self.FK_Notifications_Membership_Users">
+            <End Role="Membership_Users" EntitySet="Membership_Users" />
+            <End Role="Notifications" EntitySet="Notifications" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Notifications_Membership_Users1" Association="Self.FK_Notifications_Membership_Users1">
+            <End Role="Membership_Users" EntitySet="Membership_Users" />
+            <End Role="Notifications" EntitySet="Notifications" />
           </AssociationSet>
           <AssociationSet Name="FK_OperationSettings_ChangeHist_OperationSettings" Association="Self.FK_OperationSettings_ChangeHist_OperationSettings">
             <End Role="OperationSettings" EntitySet="OperationSettings" />
@@ -974,9 +1037,13 @@
             <End Role="Timeslots" EntitySet="Timeslots" />
             <End Role="Queues" EntitySet="Queues" />
           </AssociationSet>
-          <AssociationSet Name="FK_SentMessages_User_Profiles" Association="Self.FK_SentMessages_User_Profiles">
-            <End Role="User_Profiles" EntitySet="User_Profiles" />
-            <End Role="SentMessages" EntitySet="SentMessages" />
+          <AssociationSet Name="FK_Recipients_User_Profiles" Association="Self.FK_Recipients_User_Profiles">
+            <End Role="Membership_Users" EntitySet="Membership_Users" />
+            <End Role="Recipients" EntitySet="Recipients" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UploadedDocumentDetails_UploadedDocuments" Association="Self.FK_UploadedDocumentDetails_UploadedDocuments">
+            <End Role="UploadedDocuments" EntitySet="UploadedDocuments" />
+            <End Role="UploadedDocumentDetails" EntitySet="UploadedDocumentDetails" />
           </AssociationSet>
           <AssociationSet Name="FK_User_Profiles_Addresses2" Association="Self.FK_User_Profiles_Addresses2">
             <End Role="Addresses" EntitySet="Addresses" />
@@ -999,6 +1066,174 @@
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="SSKModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="SSKEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="AbsenceReportings" EntityType="SSKModel.AbsenceReporting" />
+          <EntitySet Name="ActionLogs" EntityType="SSKModel.ActionLog" />
+          <EntitySet Name="Addresses" EntityType="SSKModel.Address" />
+          <EntitySet Name="ApplicationDevice_Status" EntityType="SSKModel.ApplicationDevice_Status" />
+          <EntitySet Name="Appointments" EntityType="SSKModel.Appointment" />
+          <EntitySet Name="APS_USER_ACT_LOG" EntityType="SSKModel.APS_USER_ACT_LOG" />
+          <EntitySet Name="Devices" EntityType="SSKModel.Device" />
+          <EntitySet Name="DrugResults" EntityType="SSKModel.DrugResult" />
+          <EntitySet Name="EMAIL_LOG" EntityType="SSKModel.EMAIL_LOG" />
+          <EntitySet Name="Holidays" EntityType="SSKModel.Holiday" />
+          <EntitySet Name="IssuedCards" EntityType="SSKModel.IssuedCard" />
+          <EntitySet Name="Labels" EntityType="SSKModel.Label" />
+          <EntitySet Name="Membership_RoleClaims" EntityType="SSKModel.Membership_RoleClaims" />
+          <EntitySet Name="Membership_Roles" EntityType="SSKModel.Membership_Roles" />
+          <EntitySet Name="Membership_UserClaims" EntityType="SSKModel.Membership_UserClaims" />
+          <EntitySet Name="Membership_UserDevices" EntityType="SSKModel.Membership_UserDevices" />
+          <EntitySet Name="Membership_UserLogins" EntityType="SSKModel.Membership_UserLogins" />
+          <EntitySet Name="Membership_UserRoles" EntityType="SSKModel.Membership_UserRoles" />
+          <EntitySet Name="Membership_Users" EntityType="SSKModel.Membership_Users" />
+          <EntitySet Name="Messages" EntityType="SSKModel.Message" />
+          <EntitySet Name="Notifications" EntityType="SSKModel.Notification" />
+          <EntitySet Name="OperationSettings" EntityType="SSKModel.OperationSetting" />
+          <EntitySet Name="OperationSettings_ChangeHist" EntityType="SSKModel.OperationSettings_ChangeHist" />
+          <EntitySet Name="QueueDetails" EntityType="SSKModel.QueueDetail" />
+          <EntitySet Name="Queues" EntityType="SSKModel.Queue" />
+          <EntitySet Name="Recipients" EntityType="SSKModel.Recipient" />
+          <EntitySet Name="Security_QA" EntityType="SSKModel.Security_QA" />
+          <EntitySet Name="Settings" EntityType="SSKModel.Setting" />
+          <EntitySet Name="SMS_LOG" EntityType="SSKModel.SMS_LOG" />
+          <EntitySet Name="Timeslots" EntityType="SSKModel.Timeslot" />
+          <EntitySet Name="Transactions" EntityType="SSKModel.Transaction" />
+          <EntitySet Name="UploadedDocumentDetails" EntityType="SSKModel.UploadedDocumentDetail" />
+          <EntitySet Name="UploadedDocuments" EntityType="SSKModel.UploadedDocument" />
+          <EntitySet Name="User_Profiles" EntityType="SSKModel.User_Profiles" />
+          <AssociationSet Name="FK_AbsenceReporting_UploadedDocuments" Association="SSKModel.FK_AbsenceReporting_UploadedDocuments">
+            <End Role="UploadedDocument" EntitySet="UploadedDocuments" />
+            <End Role="AbsenceReporting" EntitySet="AbsenceReportings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Appointments_AbsenceReporting" Association="SSKModel.FK_Appointments_AbsenceReporting">
+            <End Role="AbsenceReporting" EntitySet="AbsenceReportings" />
+            <End Role="Appointment" EntitySet="Appointments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ActionLog_Membership_Users" Association="SSKModel.FK_ActionLog_Membership_Users">
+            <End Role="Membership_Users" EntitySet="Membership_Users" />
+            <End Role="ActionLog" EntitySet="ActionLogs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ActionLog_Membership_Users1" Association="SSKModel.FK_ActionLog_Membership_Users1">
+            <End Role="Membership_Users" EntitySet="Membership_Users" />
+            <End Role="ActionLog" EntitySet="ActionLogs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_User_Profiles_Addresses2" Association="SSKModel.FK_User_Profiles_Addresses2">
+            <End Role="Address" EntitySet="Addresses" />
+            <End Role="User_Profiles" EntitySet="User_Profiles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_User_Profiles_Addresses3" Association="SSKModel.FK_User_Profiles_Addresses3">
+            <End Role="Address" EntitySet="Addresses" />
+            <End Role="User_Profiles" EntitySet="User_Profiles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ApplicationDevice_Status_Devices" Association="SSKModel.FK_ApplicationDevice_Status_Devices">
+            <End Role="Device" EntitySet="Devices" />
+            <End Role="ApplicationDevice_Status" EntitySet="ApplicationDevice_Status" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Appointments_Membership_Users" Association="SSKModel.FK_Appointments_Membership_Users">
+            <End Role="Membership_Users" EntitySet="Membership_Users" />
+            <End Role="Appointment" EntitySet="Appointments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Appointments_Timeslots" Association="SSKModel.FK_Appointments_Timeslots">
+            <End Role="Timeslot" EntitySet="Timeslots" />
+            <End Role="Appointment" EntitySet="Appointments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Queues_Appointments" Association="SSKModel.FK_Queues_Appointments">
+            <End Role="Appointment" EntitySet="Appointments" />
+            <End Role="Queue" EntitySet="Queues" />
+          </AssociationSet>
+          <AssociationSet Name="FK_APS_USER_ACT_LOG_User_Profiles" Association="SSKModel.FK_APS_USER_ACT_LOG_User_Profiles">
+            <End Role="User_Profiles" EntitySet="User_Profiles" />
+            <End Role="APS_USER_ACT_LOG" EntitySet="APS_USER_ACT_LOG" />
+          </AssociationSet>
+          <AssociationSet Name="FK_IssuedCards_Membership_Users" Association="SSKModel.FK_IssuedCards_Membership_Users">
+            <End Role="Membership_Users" EntitySet="Membership_Users" />
+            <End Role="IssuedCard" EntitySet="IssuedCards" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Labels_Membership_Users" Association="SSKModel.FK_Labels_Membership_Users">
+            <End Role="Membership_Users" EntitySet="Membership_Users" />
+            <End Role="Label" EntitySet="Labels" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Membership_RoleClaims_Membership_Roles" Association="SSKModel.FK_Membership_RoleClaims_Membership_Roles">
+            <End Role="Membership_Roles" EntitySet="Membership_Roles" />
+            <End Role="Membership_RoleClaims" EntitySet="Membership_RoleClaims" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId" Association="SSKModel.FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId">
+            <End Role="Membership_Roles" EntitySet="Membership_Roles" />
+            <End Role="Membership_UserRoles" EntitySet="Membership_UserRoles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" Association="SSKModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
+            <End Role="Membership_Users" EntitySet="Membership_Users" />
+            <End Role="Membership_UserClaims" EntitySet="Membership_UserClaims" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Restauran__UserI__1CFC3D38" Association="SSKModel.FK__Restauran__UserI__1CFC3D38">
+            <End Role="Membership_Users" EntitySet="Membership_Users" />
+            <End Role="Membership_UserDevices" EntitySet="Membership_UserDevices" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" Association="SSKModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId">
+            <End Role="Membership_Users" EntitySet="Membership_Users" />
+            <End Role="Membership_UserLogins" EntitySet="Membership_UserLogins" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId" Association="SSKModel.FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId">
+            <End Role="Membership_Users" EntitySet="Membership_Users" />
+            <End Role="Membership_UserRoles" EntitySet="Membership_UserRoles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Messages_User_Profiles" Association="SSKModel.FK_Messages_User_Profiles">
+            <End Role="Membership_Users" EntitySet="Membership_Users" />
+            <End Role="Message" EntitySet="Messages" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Notifications_Membership_Users" Association="SSKModel.FK_Notifications_Membership_Users">
+            <End Role="Membership_Users" EntitySet="Membership_Users" />
+            <End Role="Notification" EntitySet="Notifications" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Notifications_Membership_Users1" Association="SSKModel.FK_Notifications_Membership_Users1">
+            <End Role="Membership_Users" EntitySet="Membership_Users" />
+            <End Role="Notification" EntitySet="Notifications" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PWD_QA_Membership_Users" Association="SSKModel.FK_PWD_QA_Membership_Users">
+            <End Role="Membership_Users" EntitySet="Membership_Users" />
+            <End Role="Security_QA" EntitySet="Security_QA" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Queues_Membership_Users" Association="SSKModel.FK_Queues_Membership_Users">
+            <End Role="Membership_Users" EntitySet="Membership_Users" />
+            <End Role="Queue" EntitySet="Queues" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Queues_Membership_Users1" Association="SSKModel.FK_Queues_Membership_Users1">
+            <End Role="Membership_Users" EntitySet="Membership_Users" />
+            <End Role="Queue" EntitySet="Queues" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Recipients_User_Profiles" Association="SSKModel.FK_Recipients_User_Profiles">
+            <End Role="Membership_Users" EntitySet="Membership_Users" />
+            <End Role="Recipient" EntitySet="Recipients" />
+          </AssociationSet>
+          <AssociationSet Name="FK_User_Profiles_Membership_Users" Association="SSKModel.FK_User_Profiles_Membership_Users">
+            <End Role="Membership_Users" EntitySet="Membership_Users" />
+            <End Role="User_Profiles" EntitySet="User_Profiles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MsgRecipients_SentMessages" Association="SSKModel.FK_MsgRecipients_SentMessages">
+            <End Role="Message" EntitySet="Messages" />
+            <End Role="Recipient" EntitySet="Recipients" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OperationSettings_ChangeHist_OperationSettings" Association="SSKModel.FK_OperationSettings_ChangeHist_OperationSettings">
+            <End Role="OperationSetting" EntitySet="OperationSettings" />
+            <End Role="OperationSettings_ChangeHist" EntitySet="OperationSettings_ChangeHist" />
+          </AssociationSet>
+          <AssociationSet Name="FK_QueueDetails_Queues" Association="SSKModel.FK_QueueDetails_Queues">
+            <End Role="Queue" EntitySet="Queues" />
+            <End Role="QueueDetail" EntitySet="QueueDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Queues_Timeslots" Association="SSKModel.FK_Queues_Timeslots">
+            <End Role="Timeslot" EntitySet="Timeslots" />
+            <End Role="Queue" EntitySet="Queues" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UploadedDocumentDetails_UploadedDocuments" Association="SSKModel.FK_UploadedDocumentDetails_UploadedDocuments">
+            <End Role="UploadedDocument" EntitySet="UploadedDocuments" />
+            <End Role="UploadedDocumentDetail" EntitySet="UploadedDocumentDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_User_Profiles_UploadedDocuments" Association="SSKModel.FK_User_Profiles_UploadedDocuments">
+            <End Role="UploadedDocument" EntitySet="UploadedDocuments" />
+            <End Role="User_Profiles" EntitySet="User_Profiles" />
+          </AssociationSet>
+        </EntityContainer>
         <EntityType Name="AbsenceReporting">
           <Key>
             <PropertyRef Name="ID" />
@@ -1008,8 +1243,8 @@
           <Property Name="AbsenceReason" Type="Int16" Nullable="false" />
           <Property Name="ReasonDetails" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="Document_ID" Type="Guid" />
-          <NavigationProperty Name="UploadedDocument" Relationship="Self.FK_AbsenceReporting_UploadedDocuments" FromRole="AbsenceReporting" ToRole="UploadedDocuments" />
-          <NavigationProperty Name="Appointments" Relationship="Self.FK_Appointments_AbsenceReporting" FromRole="AbsenceReporting" ToRole="Appointments" />
+          <NavigationProperty Name="UploadedDocument" Relationship="SSKModel.FK_AbsenceReporting_UploadedDocuments" FromRole="AbsenceReporting" ToRole="UploadedDocument" />
+          <NavigationProperty Name="Appointments" Relationship="SSKModel.FK_Appointments_AbsenceReporting" FromRole="AbsenceReporting" ToRole="Appointment" />
         </EntityType>
         <EntityType Name="ActionLog">
           <Key>
@@ -1020,22 +1255,22 @@
           <Property Name="PerformedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="PerformedDate" Type="DateTime" Precision="3" />
           <Property Name="Note" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Membership_Users" Relationship="Self.FK_ActionLog_Membership_Users" FromRole="ActionLog" ToRole="Membership_Users" />
-          <NavigationProperty Name="Membership_Users1" Relationship="Self.FK_ActionLog_Membership_Users1" FromRole="ActionLog" ToRole="Membership_Users" />
+          <NavigationProperty Name="Membership_Users" Relationship="SSKModel.FK_ActionLog_Membership_Users" FromRole="ActionLog" ToRole="Membership_Users" />
+          <NavigationProperty Name="Membership_Users1" Relationship="SSKModel.FK_ActionLog_Membership_Users1" FromRole="ActionLog" ToRole="Membership_Users" />
         </EntityType>
         <EntityType Name="Address">
           <Key>
             <PropertyRef Name="Address_ID" />
           </Key>
-          <Property Name="Address_ID" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Address_ID" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="BlkHouse_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="FlrUnit_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Street_Name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="Country" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Postal_Code" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="User_Profiles" Relationship="Self.FK_User_Profiles_Addresses2" FromRole="Addresses" ToRole="User_Profiles" />
-          <NavigationProperty Name="User_Profiles1" Relationship="Self.FK_User_Profiles_Addresses3" FromRole="Addresses" ToRole="User_Profiles" />
+          <NavigationProperty Name="User_Profiles" Relationship="SSKModel.FK_User_Profiles_Addresses2" FromRole="Address" ToRole="User_Profiles" />
+          <NavigationProperty Name="User_Profiles1" Relationship="SSKModel.FK_User_Profiles_Addresses3" FromRole="Address" ToRole="User_Profiles" />
         </EntityType>
         <EntityType Name="ApplicationDevice_Status">
           <Key>
@@ -1045,8 +1280,8 @@
           <Property Name="Station" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="DeviceID" Type="Int32" />
           <Property Name="StatusCode" Type="Int32" Nullable="false" />
-          <Property Name="StatusMessage" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="Device" Relationship="Self.FK_ApplicationDevice_Status_Devices" FromRole="ApplicationDevice_Status" ToRole="Devices" />
+          <Property Name="StatusMessage" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Device" Relationship="SSKModel.FK_ApplicationDevice_Status_Devices" FromRole="ApplicationDevice_Status" ToRole="Device" />
         </EntityType>
         <EntityType Name="Appointment">
           <Key>
@@ -1055,15 +1290,15 @@
           <Property Name="ID" Type="Guid" Nullable="false" />
           <Property Name="Timeslot_ID" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="AbsenceReporting_ID" Type="Guid" />
-          <Property Name="UserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="Date" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="ChangedCount" Type="Int16" Nullable="false" />
-          <Property Name="Status" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Status" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="ReportTime" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="AbsenceReporting" Relationship="Self.FK_Appointments_AbsenceReporting" FromRole="Appointments" ToRole="AbsenceReporting" />
-          <NavigationProperty Name="Membership_Users" Relationship="Self.FK_Appointments_Membership_Users" FromRole="Appointments" ToRole="Membership_Users" />
-          <NavigationProperty Name="Timeslot" Relationship="Self.FK_Appointments_Timeslots" FromRole="Appointments" ToRole="Timeslots" />
-          <NavigationProperty Name="Queues" Relationship="Self.FK_Queues_Appointments" FromRole="Appointments" ToRole="Queues" />
+          <NavigationProperty Name="AbsenceReporting" Relationship="SSKModel.FK_Appointments_AbsenceReporting" FromRole="Appointment" ToRole="AbsenceReporting" />
+          <NavigationProperty Name="Membership_Users" Relationship="SSKModel.FK_Appointments_Membership_Users" FromRole="Appointment" ToRole="Membership_Users" />
+          <NavigationProperty Name="Timeslot" Relationship="SSKModel.FK_Appointments_Timeslots" FromRole="Appointment" ToRole="Timeslot" />
+          <NavigationProperty Name="Queues" Relationship="SSKModel.FK_Queues_Appointments" FromRole="Appointment" ToRole="Queue" />
         </EntityType>
         <EntityType Name="APS_USER_ACT_LOG">
           <Key>
@@ -1071,11 +1306,11 @@
           </Key>
           <Property Name="USER_ACT_LOG_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="UserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="USER_ACT_LOG" Type="String" MaxLength="500" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="USER_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="CREATED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="USER_ACT_LOG" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="USER_NAME" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="CREATED_TIME" Type="DateTime" Nullable="false" Precision="3" />
-          <NavigationProperty Name="User_Profiles" Relationship="Self.FK_APS_USER_ACT_LOG_User_Profiles" FromRole="APS_USER_ACT_LOG" ToRole="User_Profiles" />
+          <NavigationProperty Name="User_Profiles" Relationship="SSKModel.FK_APS_USER_ACT_LOG_User_Profiles" FromRole="APS_USER_ACT_LOG" ToRole="User_Profiles" />
         </EntityType>
         <EntityType Name="Device">
           <Key>
@@ -1084,13 +1319,13 @@
           <Property Name="DeviceID" Type="Int32" Nullable="false" />
           <Property Name="DeviceName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Details" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="ApplicationDevice_Status" Relationship="Self.FK_ApplicationDevice_Status_Devices" FromRole="Devices" ToRole="ApplicationDevice_Status" />
+          <NavigationProperty Name="ApplicationDevice_Status" Relationship="SSKModel.FK_ApplicationDevice_Status_Devices" FromRole="Device" ToRole="ApplicationDevice_Status" />
         </EntityType>
         <EntityType Name="DrugResult">
           <Key>
             <PropertyRef Name="DrugResultsID" />
           </Key>
-          <Property Name="DrugResultsID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="DrugResultsID" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="NRIC" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="timestamp" Type="DateTime" Precision="3" />
           <Property Name="markingnumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -1120,12 +1355,12 @@
             <PropertyRef Name="EMAIL_LOG_ID" />
           </Key>
           <Property Name="EMAIL_LOG_ID" Type="Int64" Nullable="false" />
-          <Property Name="EMAIL_MSG" Type="String" MaxLength="500" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="EMAIL_FROM_ADDR" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="EMAIL_TO_ADDR" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="CREATED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="EMAIL_MSG" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="EMAIL_FROM_ADDR" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="EMAIL_TO_ADDR" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="CREATED_TIME" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="LAST_UPDATED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="LAST_UPDATED_BY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="LAST_UPDATED_ON" Type="DateTime" Nullable="false" Precision="3" />
         </EntityType>
         <EntityType Name="Holiday">
@@ -1141,8 +1376,8 @@
             <PropertyRef Name="UserId" />
             <PropertyRef Name="SmartCardId" />
           </Key>
-          <Property Name="UserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="SmartCardId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="SmartCardId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="NRIC" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="Serial_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
@@ -1152,7 +1387,7 @@
           <Property Name="CreatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="CreatedDate" Type="DateTime" Precision="3" />
           <Property Name="Reprint_Reason" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Membership_Users" Relationship="Self.FK_IssuedCards_Membership_Users" FromRole="IssuedCards" ToRole="Membership_Users" />
+          <NavigationProperty Name="Membership_Users" Relationship="SSKModel.FK_IssuedCards_Membership_Users" FromRole="IssuedCard" ToRole="Membership_Users" />
         </EntityType>
         <EntityType Name="Label">
           <Key>
@@ -1160,21 +1395,21 @@
           </Key>
           <Property Name="Label_ID" Type="Guid" Nullable="false" />
           <Property Name="Queue_ID" Type="Guid" />
-          <Property Name="Label_Type" Type="String" MaxLength="5" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="CompanyName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="MarkingNo" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Label_Type" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="CompanyName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="MarkingNo" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
           <Property Name="DrugType" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="UserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="NRIC" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="NRIC" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Date" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="QRCode" Type="Binary" MaxLength="Max" FixedLength="false" />
-          <Property Name="LastStation" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="LastStation" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="PrintCount" Type="Int32" Nullable="false" />
           <Property Name="ReprintReason" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="PrintStatus" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="Message" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Membership_Users" Relationship="Self.FK_Labels_Membership_Users" FromRole="Labels" ToRole="Membership_Users" />
+          <NavigationProperty Name="Membership_Users" Relationship="SSKModel.FK_Labels_Membership_Users" FromRole="Label" ToRole="Membership_Users" />
         </EntityType>
         <EntityType Name="Membership_RoleClaims">
           <Key>
@@ -1183,28 +1418,28 @@
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ClaimType" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="ClaimValue" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="RoleId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="Membership_Roles" Relationship="Self.FK_Membership_RoleClaims_Membership_Roles" FromRole="Membership_RoleClaims" ToRole="Membership_Roles" />
+          <Property Name="RoleId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Membership_Roles" Relationship="SSKModel.FK_Membership_RoleClaims_Membership_Roles" FromRole="Membership_RoleClaims" ToRole="Membership_Roles" />
         </EntityType>
         <EntityType Name="Membership_Roles">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Name" Type="String" MaxLength="256" FixedLength="false" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="Membership_RoleClaims" Relationship="Self.FK_Membership_RoleClaims_Membership_Roles" FromRole="Membership_Roles" ToRole="Membership_RoleClaims" />
-          <NavigationProperty Name="Membership_UserRoles" Relationship="Self.FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId" FromRole="Membership_Roles" ToRole="Membership_UserRoles" />
+          <Property Name="Id" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Membership_RoleClaims" Relationship="SSKModel.FK_Membership_RoleClaims_Membership_Roles" FromRole="Membership_Roles" ToRole="Membership_RoleClaims" />
+          <NavigationProperty Name="Membership_UserRoles" Relationship="SSKModel.FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId" FromRole="Membership_Roles" ToRole="Membership_UserRoles" />
         </EntityType>
         <EntityType Name="Membership_UserClaims">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="UserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="ClaimType" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="ClaimValue" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="IdentityUser_Id" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Membership_Users" Relationship="Self.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" FromRole="Membership_UserClaims" ToRole="Membership_Users" />
+          <NavigationProperty Name="Membership_Users" Relationship="SSKModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" FromRole="Membership_UserClaims" ToRole="Membership_Users" />
         </EntityType>
         <EntityType Name="Membership_UserDevices">
           <Key>
@@ -1212,11 +1447,11 @@
           </Key>
           <Property Name="Device_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="UserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="User_Device_ID" Type="String" MaxLength="192" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="User_Device_ID" Type="String" Nullable="false" MaxLength="192" FixedLength="false" Unicode="true" />
           <Property Name="Terminal" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Active" Type="Boolean" Nullable="false" />
           <Property Name="Access_token" Type="String" MaxLength="700" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Membership_Users" Relationship="Self.FK__Restauran__UserI__1CFC3D38" FromRole="Membership_UserDevices" ToRole="Membership_Users" />
+          <NavigationProperty Name="Membership_Users" Relationship="SSKModel.FK__Restauran__UserI__1CFC3D38" FromRole="Membership_UserDevices" ToRole="Membership_Users" />
         </EntityType>
         <EntityType Name="Membership_UserLogins">
           <Key>
@@ -1224,28 +1459,28 @@
             <PropertyRef Name="ProviderKey" />
             <PropertyRef Name="UserId" />
           </Key>
-          <Property Name="LoginProvider" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="ProviderKey" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="UserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="LoginProvider" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="ProviderKey" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="IdentityUser_Id" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Membership_Users" Relationship="Self.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" FromRole="Membership_UserLogins" ToRole="Membership_Users" />
+          <NavigationProperty Name="Membership_Users" Relationship="SSKModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" FromRole="Membership_UserLogins" ToRole="Membership_Users" />
         </EntityType>
         <EntityType Name="Membership_UserRoles">
           <Key>
             <PropertyRef Name="UserId" />
             <PropertyRef Name="RoleId" />
           </Key>
-          <Property Name="UserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="RoleId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="RoleId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="IdentityUser_Id" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Membership_Roles" Relationship="Self.FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId" FromRole="Membership_UserRoles" ToRole="Membership_Roles" />
-          <NavigationProperty Name="Membership_Users" Relationship="Self.FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId" FromRole="Membership_UserRoles" ToRole="Membership_Users" />
+          <NavigationProperty Name="Membership_Roles" Relationship="SSKModel.FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId" FromRole="Membership_UserRoles" ToRole="Membership_Roles" />
+          <NavigationProperty Name="Membership_Users" Relationship="SSKModel.FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId" FromRole="Membership_UserRoles" ToRole="Membership_Users" />
         </EntityType>
         <EntityType Name="Membership_Users">
           <Key>
             <PropertyRef Name="UserId" />
           </Key>
-          <Property Name="UserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="OfficerId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="Email" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
           <Property Name="EmailConfirmed" Type="Boolean" Nullable="false" />
@@ -1257,58 +1492,68 @@
           <Property Name="LockoutEndDateUtc" Type="DateTime" Precision="3" />
           <Property Name="LockoutEnabled" Type="Boolean" />
           <Property Name="AccessFailedCount" Type="Int32" Nullable="false" />
-          <Property Name="UserName" Type="String" MaxLength="256" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="UserName" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
           <Property Name="Discriminator" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="NRIC" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="SmartCardId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="RightThumbFingerprint" Type="Binary" MaxLength="Max" FixedLength="false" />
           <Property Name="LeftThumbFingerprint" Type="Binary" MaxLength="Max" FixedLength="false" />
-          <Property Name="Status" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Status" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="IsFirstAttempt" Type="Boolean" />
           <Property Name="Note" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="ActionLogs" Relationship="Self.FK_ActionLog_Membership_Users" FromRole="Membership_Users" ToRole="ActionLog" />
-          <NavigationProperty Name="ActionLogs1" Relationship="Self.FK_ActionLog_Membership_Users1" FromRole="Membership_Users" ToRole="ActionLog" />
-          <NavigationProperty Name="Appointments" Relationship="Self.FK_Appointments_Membership_Users" FromRole="Membership_Users" ToRole="Appointments" />
-          <NavigationProperty Name="IssuedCards" Relationship="Self.FK_IssuedCards_Membership_Users" FromRole="Membership_Users" ToRole="IssuedCards" />
-          <NavigationProperty Name="Labels" Relationship="Self.FK_Labels_Membership_Users" FromRole="Membership_Users" ToRole="Labels" />
-          <NavigationProperty Name="Membership_UserClaims" Relationship="Self.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" FromRole="Membership_Users" ToRole="Membership_UserClaims" />
-          <NavigationProperty Name="Membership_UserDevices" Relationship="Self.FK__Restauran__UserI__1CFC3D38" FromRole="Membership_Users" ToRole="Membership_UserDevices" />
-          <NavigationProperty Name="Membership_UserLogins" Relationship="Self.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" FromRole="Membership_Users" ToRole="Membership_UserLogins" />
-          <NavigationProperty Name="Membership_UserRoles" Relationship="Self.FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId" FromRole="Membership_Users" ToRole="Membership_UserRoles" />
-          <NavigationProperty Name="Security_QA" Relationship="Self.FK_PWD_QA_Membership_Users" FromRole="Membership_Users" ToRole="Security_QA" />
-          <NavigationProperty Name="Queues" Relationship="Self.FK_Queues_Membership_Users" FromRole="Membership_Users" ToRole="Queues" />
-          <NavigationProperty Name="Queues1" Relationship="Self.FK_Queues_Membership_Users1" FromRole="Membership_Users" ToRole="Queues" />
-          <NavigationProperty Name="User_Profiles" Relationship="Self.FK_User_Profiles_Membership_Users" FromRole="Membership_Users" ToRole="User_Profiles" />
+          <NavigationProperty Name="ActionLogs" Relationship="SSKModel.FK_ActionLog_Membership_Users" FromRole="Membership_Users" ToRole="ActionLog" />
+          <NavigationProperty Name="ActionLogs1" Relationship="SSKModel.FK_ActionLog_Membership_Users1" FromRole="Membership_Users" ToRole="ActionLog" />
+          <NavigationProperty Name="Appointments" Relationship="SSKModel.FK_Appointments_Membership_Users" FromRole="Membership_Users" ToRole="Appointment" />
+          <NavigationProperty Name="IssuedCards" Relationship="SSKModel.FK_IssuedCards_Membership_Users" FromRole="Membership_Users" ToRole="IssuedCard" />
+          <NavigationProperty Name="Labels" Relationship="SSKModel.FK_Labels_Membership_Users" FromRole="Membership_Users" ToRole="Label" />
+          <NavigationProperty Name="Membership_UserClaims" Relationship="SSKModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" FromRole="Membership_Users" ToRole="Membership_UserClaims" />
+          <NavigationProperty Name="Membership_UserDevices" Relationship="SSKModel.FK__Restauran__UserI__1CFC3D38" FromRole="Membership_Users" ToRole="Membership_UserDevices" />
+          <NavigationProperty Name="Membership_UserLogins" Relationship="SSKModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" FromRole="Membership_Users" ToRole="Membership_UserLogins" />
+          <NavigationProperty Name="Membership_UserRoles" Relationship="SSKModel.FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId" FromRole="Membership_Users" ToRole="Membership_UserRoles" />
+          <NavigationProperty Name="Messages" Relationship="SSKModel.FK_Messages_User_Profiles" FromRole="Membership_Users" ToRole="Message" />
+          <NavigationProperty Name="Notifications" Relationship="SSKModel.FK_Notifications_Membership_Users" FromRole="Membership_Users" ToRole="Notification" />
+          <NavigationProperty Name="Notifications1" Relationship="SSKModel.FK_Notifications_Membership_Users1" FromRole="Membership_Users" ToRole="Notification" />
+          <NavigationProperty Name="Security_QA" Relationship="SSKModel.FK_PWD_QA_Membership_Users" FromRole="Membership_Users" ToRole="Security_QA" />
+          <NavigationProperty Name="Queues" Relationship="SSKModel.FK_Queues_Membership_Users" FromRole="Membership_Users" ToRole="Queue" />
+          <NavigationProperty Name="Queues1" Relationship="SSKModel.FK_Queues_Membership_Users1" FromRole="Membership_Users" ToRole="Queue" />
+          <NavigationProperty Name="Recipients" Relationship="SSKModel.FK_Recipients_User_Profiles" FromRole="Membership_Users" ToRole="Recipient" />
+          <NavigationProperty Name="User_Profiles" Relationship="SSKModel.FK_User_Profiles_Membership_Users" FromRole="Membership_Users" ToRole="User_Profiles" />
         </EntityType>
-        <EntityType Name="MsgRecipient">
+        <EntityType Name="Message">
           <Key>
-            <PropertyRef Name="RecID" />
+            <PropertyRef Name="MsgID" />
           </Key>
-          <Property Name="RecID" Type="Int32" Nullable="false" />
-          <Property Name="MsgID" Type="Int32" />
-          <Property Name="UserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="Email" Type="Boolean" />
+          <Property Name="MsgID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Subject" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MsgContent" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="DelileryStatus" Type="Int32" />
+          <Property Name="DeliveryDateTime" Type="DateTime" Precision="3" />
           <Property Name="SMS" Type="Boolean" />
-          <Property Name="DeliveryStatus" Type="Int32" />
-          <NavigationProperty Name="SentMessage" Relationship="Self.FK_MsgRecipients_SentMessages" FromRole="MsgRecipients" ToRole="SentMessages" />
-          <NavigationProperty Name="User_Profiles" Relationship="Self.FK_MsgRecipients_User_Profiles" FromRole="MsgRecipients" ToRole="User_Profiles" />
+          <Property Name="Email" Type="Boolean" />
+          <Property Name="UserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Membership_Users" Relationship="SSKModel.FK_Messages_User_Profiles" FromRole="Message" ToRole="Membership_Users" />
+          <NavigationProperty Name="Recipients" Relationship="SSKModel.FK_MsgRecipients_SentMessages" FromRole="Message" ToRole="Recipient" />
         </EntityType>
         <EntityType Name="Notification">
           <Key>
             <PropertyRef Name="NotificationID" />
           </Key>
-          <Property Name="NotificationID" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="NotificationID" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="Datetime" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="FromUserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="ToUserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="Subject" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="Content" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Content" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="IsRead" Type="Boolean" />
           <Property Name="IsFromSupervisee" Type="Boolean" />
           <Property Name="Source" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="RecID" Type="Binary" MaxLength="50" FixedLength="false" />
           <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="notification_code" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Priority" Type="Int32" />
+          <NavigationProperty Name="Membership_Users" Relationship="SSKModel.FK_Notifications_Membership_Users" FromRole="Notification" ToRole="Membership_Users" />
+          <NavigationProperty Name="Membership_Users1" Relationship="SSKModel.FK_Notifications_Membership_Users1" FromRole="Notification" ToRole="Membership_Users" />
         </EntityType>
         <EntityType Name="OperationSetting">
           <Key>
@@ -1333,10 +1578,10 @@
           <Property Name="Evening_Interval" Type="Int32" />
           <Property Name="Evening_MaximumSupervisee" Type="Int32" />
           <Property Name="Evening_Is_Closed" Type="Boolean" Nullable="false" />
-          <Property Name="Last_Updated_By" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Last_Updated_By" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="Last_Updated_Date" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="OperationSettings_ChangeHist" Relationship="Self.FK_OperationSettings_ChangeHist_OperationSettings" FromRole="OperationSettings" ToRole="OperationSettings_ChangeHist" />
+          <NavigationProperty Name="OperationSettings_ChangeHist" Relationship="SSKModel.FK_OperationSettings_ChangeHist_OperationSettings" FromRole="OperationSetting" ToRole="OperationSettings_ChangeHist" />
         </EntityType>
         <EntityType Name="OperationSettings_ChangeHist">
           <Key>
@@ -1345,9 +1590,9 @@
           <Property Name="ID" Type="Int32" Nullable="false" />
           <Property Name="DayOfWeek" Type="Int32" Nullable="false" />
           <Property Name="LastUpdatedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="LastUpdatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="ChangeDetails" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="OperationSetting" Relationship="Self.FK_OperationSettings_ChangeHist_OperationSettings" FromRole="OperationSettings_ChangeHist" ToRole="OperationSettings" />
+          <Property Name="LastUpdatedBy" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="ChangeDetails" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="OperationSetting" Relationship="SSKModel.FK_OperationSettings_ChangeHist_OperationSettings" FromRole="OperationSettings_ChangeHist" ToRole="OperationSetting" />
         </EntityType>
         <EntityType Name="QueueDetail">
           <Key>
@@ -1355,61 +1600,59 @@
             <PropertyRef Name="Station" />
           </Key>
           <Property Name="Queue_ID" Type="Guid" Nullable="false" />
-          <Property Name="Station" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Station" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="Status" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="Message" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="LastUpdatedDate" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="Queue" Relationship="Self.FK_QueueDetails_Queues" FromRole="QueueDetails" ToRole="Queues" />
+          <NavigationProperty Name="Queue" Relationship="SSKModel.FK_QueueDetails_Queues" FromRole="QueueDetail" ToRole="Queue" />
         </EntityType>
         <EntityType Name="Queue">
           <Key>
             <PropertyRef Name="Queue_ID" />
           </Key>
           <Property Name="Queue_ID" Type="Guid" Nullable="false" />
-          <Property Name="UserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Timeslot_ID" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Timeslot_ID" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="Appointment_ID" Type="Guid" />
-          <Property Name="CurrentStation" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="Outcome" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CurrentStation" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Outcome" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CreatedTime" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="QueuedNumber" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="Created_By" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="QueuedNumber" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="Created_By" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="Note" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="LastUpdatedDate" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="Appointment" Relationship="Self.FK_Queues_Appointments" FromRole="Queues" ToRole="Appointments" />
-          <NavigationProperty Name="Membership_Users" Relationship="Self.FK_Queues_Membership_Users" FromRole="Queues" ToRole="Membership_Users" />
-          <NavigationProperty Name="Membership_Users1" Relationship="Self.FK_Queues_Membership_Users1" FromRole="Queues" ToRole="Membership_Users" />
-          <NavigationProperty Name="QueueDetails" Relationship="Self.FK_QueueDetails_Queues" FromRole="Queues" ToRole="QueueDetails" />
-          <NavigationProperty Name="Timeslot" Relationship="Self.FK_Queues_Timeslots" FromRole="Queues" ToRole="Timeslots" />
+          <NavigationProperty Name="Appointment" Relationship="SSKModel.FK_Queues_Appointments" FromRole="Queue" ToRole="Appointment" />
+          <NavigationProperty Name="Membership_Users" Relationship="SSKModel.FK_Queues_Membership_Users" FromRole="Queue" ToRole="Membership_Users" />
+          <NavigationProperty Name="Membership_Users1" Relationship="SSKModel.FK_Queues_Membership_Users1" FromRole="Queue" ToRole="Membership_Users" />
+          <NavigationProperty Name="QueueDetails" Relationship="SSKModel.FK_QueueDetails_Queues" FromRole="Queue" ToRole="QueueDetail" />
+          <NavigationProperty Name="Timeslot" Relationship="SSKModel.FK_Queues_Timeslots" FromRole="Queue" ToRole="Timeslot" />
+        </EntityType>
+        <EntityType Name="Recipient">
+          <Key>
+            <PropertyRef Name="RecID" />
+          </Key>
+          <Property Name="RecID" Type="Int32" Nullable="false" />
+          <Property Name="MsgID" Type="Int32" />
+          <Property Name="UserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="Boolean" />
+          <Property Name="SMS" Type="Boolean" />
+          <Property Name="DeliveryStatus" Type="Int32" />
+          <NavigationProperty Name="Membership_Users" Relationship="SSKModel.FK_Recipients_User_Profiles" FromRole="Recipient" ToRole="Membership_Users" />
+          <NavigationProperty Name="Message" Relationship="SSKModel.FK_MsgRecipients_SentMessages" FromRole="Recipient" ToRole="Message" />
         </EntityType>
         <EntityType Name="Security_QA">
           <Key>
             <PropertyRef Name="UserId" />
             <PropertyRef Name="Question" />
           </Key>
-          <Property Name="UserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Question" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Answer" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="CreatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Question" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Answer" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="LastUpdatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="LastUpdatedBy" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="LastUpdatedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <NavigationProperty Name="Membership_Users" Relationship="Self.FK_PWD_QA_Membership_Users" FromRole="Security_QA" ToRole="Membership_Users" />
-        </EntityType>
-        <EntityType Name="SentMessage">
-          <Key>
-            <PropertyRef Name="MsgID" />
-          </Key>
-          <Property Name="MsgID" Type="Int32" Nullable="false" />
-          <Property Name="Subject" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="MsgContent" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="DelileryStatus" Type="Int32" />
-          <Property Name="DeliveryDateTime" Type="DateTime" Precision="3" />
-          <Property Name="SMS" Type="Boolean" />
-          <Property Name="Email" Type="Boolean" />
-          <Property Name="UserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="MsgRecipients" Relationship="Self.FK_MsgRecipients_SentMessages" FromRole="SentMessages" ToRole="MsgRecipients" />
-          <NavigationProperty Name="User_Profiles" Relationship="Self.FK_SentMessages_User_Profiles" FromRole="SentMessages" ToRole="User_Profiles" />
+          <NavigationProperty Name="Membership_Users" Relationship="SSKModel.FK_PWD_QA_Membership_Users" FromRole="Security_QA" ToRole="Membership_Users" />
         </EntityType>
         <EntityType Name="Setting">
           <Key>
@@ -1428,20 +1671,20 @@
             <PropertyRef Name="SMS_LOG_ID" />
           </Key>
           <Property Name="SMS_LOG_ID" Type="Int64" Nullable="false" />
-          <Property Name="SMS_MSG" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="SMS_FROM_ADDR" Type="String" MaxLength="10" FixedLength="true" Unicode="true" Nullable="false" />
-          <Property Name="SMS_TO_ADDR" Type="String" MaxLength="10" FixedLength="true" Unicode="true" Nullable="false" />
-          <Property Name="CREATED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="SMS_MSG" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SMS_FROM_ADDR" Type="String" Nullable="false" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="SMS_TO_ADDR" Type="String" Nullable="false" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="CREATED_TIME" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="LAST_UPDATED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="LAST_UPDATED_BY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="LAST_UPDATED_TIME" Type="DateTime" Nullable="false" Precision="3" />
         </EntityType>
         <EntityType Name="Timeslot">
           <Key>
             <PropertyRef Name="Timeslot_ID" />
           </Key>
-          <Property Name="Timeslot_ID" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Category" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Timeslot_ID" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Category" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="Date" Type="DateTime" Precision="0" />
           <Property Name="StartTime" Type="Time" Precision="4" />
           <Property Name="EndTime" Type="Time" Precision="4" />
@@ -1451,8 +1694,28 @@
           <Property Name="LastUpdatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="LastUpdatedDate" Type="DateTime" Precision="3" />
           <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Appointments" Relationship="Self.FK_Appointments_Timeslots" FromRole="Timeslots" ToRole="Appointments" />
-          <NavigationProperty Name="Queues" Relationship="Self.FK_Queues_Timeslots" FromRole="Timeslots" ToRole="Queues" />
+          <NavigationProperty Name="Appointments" Relationship="SSKModel.FK_Appointments_Timeslots" FromRole="Timeslot" ToRole="Appointment" />
+          <NavigationProperty Name="Queues" Relationship="SSKModel.FK_Queues_Timeslots" FromRole="Timeslot" ToRole="Queue" />
+        </EntityType>
+        <EntityType Name="Transaction">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="NRIC" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="TransactionCode" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Source" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="datetime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Content" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="UploadedDocumentDetail">
+          <Key>
+            <PropertyRef Name="DocumentDetail_ID" />
+          </Key>
+          <Property Name="DocumentDetail_ID" Type="Guid" Nullable="false" />
+          <Property Name="Document_ID" Type="Guid" Nullable="false" />
+          <Property Name="DocumentContent" Type="Binary" Nullable="false" MaxLength="Max" FixedLength="false" />
+          <NavigationProperty Name="UploadedDocument" Relationship="SSKModel.FK_UploadedDocumentDetails_UploadedDocuments" FromRole="UploadedDocumentDetail" ToRole="UploadedDocument" />
         </EntityType>
         <EntityType Name="UploadedDocument">
           <Key>
@@ -1463,16 +1726,17 @@
           <Property Name="UploadedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="UploadedDate" Type="DateTime" Precision="3" />
           <Property Name="Extension" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="DocumentContent" Type="Binary" MaxLength="Max" FixedLength="false" />
-          <Property Name="Note" Type="String" MaxLength="10" FixedLength="true" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="AbsenceReportings" Relationship="Self.FK_AbsenceReporting_UploadedDocuments" FromRole="UploadedDocuments" ToRole="AbsenceReporting" />
-          <NavigationProperty Name="User_Profiles" Relationship="Self.FK_User_Profiles_UploadedDocuments" FromRole="UploadedDocuments" ToRole="User_Profiles" />
+          <Property Name="Note" Type="String" Nullable="false" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="DocStatus" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AbsenceReportings" Relationship="SSKModel.FK_AbsenceReporting_UploadedDocuments" FromRole="UploadedDocument" ToRole="AbsenceReporting" />
+          <NavigationProperty Name="UploadedDocumentDetails" Relationship="SSKModel.FK_UploadedDocumentDetails_UploadedDocuments" FromRole="UploadedDocument" ToRole="UploadedDocumentDetail" />
+          <NavigationProperty Name="User_Profiles" Relationship="SSKModel.FK_User_Profiles_UploadedDocuments" FromRole="UploadedDocument" ToRole="User_Profiles" />
         </EntityType>
         <EntityType Name="User_Profiles">
           <Key>
             <PropertyRef Name="UserId" />
           </Key>
-          <Property Name="UserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="Primary_Phone" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Secondary_Phone" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Primary_Email" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
@@ -1482,7 +1746,9 @@
           <Property Name="Maritial_Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Residential_Addess_ID" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="Other_Address_ID" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="NextOfKin_Nricno" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="NextOfKin_Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="NextOfKin_DOB" Type="DateTime" Precision="0" />
           <Property Name="NextOfKin_Contact_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="NextOfKin_Relationship" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="NextOfKin_BlkHouse_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
@@ -1507,19 +1773,23 @@
           <Property Name="RightThumb_Photo" Type="Binary" MaxLength="Max" FixedLength="false" />
           <Property Name="LeftThumb_Photo" Type="Binary" MaxLength="Max" FixedLength="false" />
           <Property Name="Document_ID" Type="Guid" />
-          <NavigationProperty Name="Address" Relationship="Self.FK_User_Profiles_Addresses2" FromRole="User_Profiles" ToRole="Addresses" />
-          <NavigationProperty Name="Address1" Relationship="Self.FK_User_Profiles_Addresses3" FromRole="User_Profiles" ToRole="Addresses" />
-          <NavigationProperty Name="APS_USER_ACT_LOG" Relationship="Self.FK_APS_USER_ACT_LOG_User_Profiles" FromRole="User_Profiles" ToRole="APS_USER_ACT_LOG" />
-          <NavigationProperty Name="Membership_Users" Relationship="Self.FK_User_Profiles_Membership_Users" FromRole="User_Profiles" ToRole="Membership_Users" />
-          <NavigationProperty Name="MsgRecipients" Relationship="Self.FK_MsgRecipients_User_Profiles" FromRole="User_Profiles" ToRole="MsgRecipients" />
-          <NavigationProperty Name="SentMessages" Relationship="Self.FK_SentMessages_User_Profiles" FromRole="User_Profiles" ToRole="SentMessages" />
-          <NavigationProperty Name="UploadedDocument" Relationship="Self.FK_User_Profiles_UploadedDocuments" FromRole="User_Profiles" ToRole="UploadedDocuments" />
+          <Property Name="Venue" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="VistingFrequency" Type="Int32" />
+          <Property Name="PrbStratingDate" Type="DateTime" Precision="0" />
+          <Property Name="PrbEndingDate" Type="DateTime" Precision="0" />
+          <Property Name="ForgetPass_FailAttempt" Type="Int32" />
+          <Property Name="DOB_FailAttempt" Type="Int32" />
+          <NavigationProperty Name="Address" Relationship="SSKModel.FK_User_Profiles_Addresses2" FromRole="User_Profiles" ToRole="Address" />
+          <NavigationProperty Name="Address1" Relationship="SSKModel.FK_User_Profiles_Addresses3" FromRole="User_Profiles" ToRole="Address" />
+          <NavigationProperty Name="APS_USER_ACT_LOG" Relationship="SSKModel.FK_APS_USER_ACT_LOG_User_Profiles" FromRole="User_Profiles" ToRole="APS_USER_ACT_LOG" />
+          <NavigationProperty Name="Membership_Users" Relationship="SSKModel.FK_User_Profiles_Membership_Users" FromRole="User_Profiles" ToRole="Membership_Users" />
+          <NavigationProperty Name="UploadedDocument" Relationship="SSKModel.FK_User_Profiles_UploadedDocuments" FromRole="User_Profiles" ToRole="UploadedDocument" />
         </EntityType>
         <Association Name="FK_AbsenceReporting_UploadedDocuments">
-          <End Role="UploadedDocuments" Type="Self.UploadedDocument" Multiplicity="0..1" />
-          <End Role="AbsenceReporting" Type="Self.AbsenceReporting" Multiplicity="*" />
+          <End Type="SSKModel.UploadedDocument" Role="UploadedDocument" Multiplicity="0..1" />
+          <End Type="SSKModel.AbsenceReporting" Role="AbsenceReporting" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="UploadedDocuments">
+            <Principal Role="UploadedDocument">
               <PropertyRef Name="Document_ID" />
             </Principal>
             <Dependent Role="AbsenceReporting">
@@ -1528,20 +1798,20 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Appointments_AbsenceReporting">
-          <End Role="AbsenceReporting" Type="Self.AbsenceReporting" Multiplicity="0..1" />
-          <End Role="Appointments" Type="Self.Appointment" Multiplicity="*" />
+          <End Type="SSKModel.AbsenceReporting" Role="AbsenceReporting" Multiplicity="0..1" />
+          <End Type="SSKModel.Appointment" Role="Appointment" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="AbsenceReporting">
               <PropertyRef Name="ID" />
             </Principal>
-            <Dependent Role="Appointments">
+            <Dependent Role="Appointment">
               <PropertyRef Name="AbsenceReporting_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ActionLog_Membership_Users">
-          <End Role="Membership_Users" Type="Self.Membership_Users" Multiplicity="0..1" />
-          <End Role="ActionLog" Type="Self.ActionLog" Multiplicity="*" />
+          <End Type="SSKModel.Membership_Users" Role="Membership_Users" Multiplicity="0..1" />
+          <End Type="SSKModel.ActionLog" Role="ActionLog" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Membership_Users">
               <PropertyRef Name="UserId" />
@@ -1552,8 +1822,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ActionLog_Membership_Users1">
-          <End Role="Membership_Users" Type="Self.Membership_Users" Multiplicity="0..1" />
-          <End Role="ActionLog" Type="Self.ActionLog" Multiplicity="*" />
+          <End Type="SSKModel.Membership_Users" Role="Membership_Users" Multiplicity="0..1" />
+          <End Type="SSKModel.ActionLog" Role="ActionLog" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Membership_Users">
               <PropertyRef Name="UserId" />
@@ -1564,10 +1834,10 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_User_Profiles_Addresses2">
-          <End Role="Addresses" Type="Self.Address" Multiplicity="0..1" />
-          <End Role="User_Profiles" Type="Self.User_Profiles" Multiplicity="*" />
+          <End Type="SSKModel.Address" Role="Address" Multiplicity="0..1" />
+          <End Type="SSKModel.User_Profiles" Role="User_Profiles" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Addresses">
+            <Principal Role="Address">
               <PropertyRef Name="Address_ID" />
             </Principal>
             <Dependent Role="User_Profiles">
@@ -1576,10 +1846,10 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_User_Profiles_Addresses3">
-          <End Role="Addresses" Type="Self.Address" Multiplicity="0..1" />
-          <End Role="User_Profiles" Type="Self.User_Profiles" Multiplicity="*" />
+          <End Type="SSKModel.Address" Role="Address" Multiplicity="0..1" />
+          <End Type="SSKModel.User_Profiles" Role="User_Profiles" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Addresses">
+            <Principal Role="Address">
               <PropertyRef Name="Address_ID" />
             </Principal>
             <Dependent Role="User_Profiles">
@@ -1588,10 +1858,10 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ApplicationDevice_Status_Devices">
-          <End Role="Devices" Type="Self.Device" Multiplicity="0..1" />
-          <End Role="ApplicationDevice_Status" Type="Self.ApplicationDevice_Status" Multiplicity="*" />
+          <End Type="SSKModel.Device" Role="Device" Multiplicity="0..1" />
+          <End Type="SSKModel.ApplicationDevice_Status" Role="ApplicationDevice_Status" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Devices">
+            <Principal Role="Device">
               <PropertyRef Name="DeviceID" />
             </Principal>
             <Dependent Role="ApplicationDevice_Status">
@@ -1600,44 +1870,44 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Appointments_Membership_Users">
-          <End Role="Membership_Users" Type="Self.Membership_Users" Multiplicity="1" />
-          <End Role="Appointments" Type="Self.Appointment" Multiplicity="*" />
+          <End Type="SSKModel.Membership_Users" Role="Membership_Users" Multiplicity="1" />
+          <End Type="SSKModel.Appointment" Role="Appointment" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Membership_Users">
               <PropertyRef Name="UserId" />
             </Principal>
-            <Dependent Role="Appointments">
+            <Dependent Role="Appointment">
               <PropertyRef Name="UserId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Appointments_Timeslots">
-          <End Role="Timeslots" Type="Self.Timeslot" Multiplicity="0..1" />
-          <End Role="Appointments" Type="Self.Appointment" Multiplicity="*" />
+          <End Type="SSKModel.Timeslot" Role="Timeslot" Multiplicity="0..1" />
+          <End Type="SSKModel.Appointment" Role="Appointment" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Timeslots">
+            <Principal Role="Timeslot">
               <PropertyRef Name="Timeslot_ID" />
             </Principal>
-            <Dependent Role="Appointments">
+            <Dependent Role="Appointment">
               <PropertyRef Name="Timeslot_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Queues_Appointments">
-          <End Role="Appointments" Type="Self.Appointment" Multiplicity="0..1" />
-          <End Role="Queues" Type="Self.Queue" Multiplicity="*" />
+          <End Type="SSKModel.Appointment" Role="Appointment" Multiplicity="0..1" />
+          <End Type="SSKModel.Queue" Role="Queue" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Appointments">
+            <Principal Role="Appointment">
               <PropertyRef Name="ID" />
             </Principal>
-            <Dependent Role="Queues">
+            <Dependent Role="Queue">
               <PropertyRef Name="Appointment_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_APS_USER_ACT_LOG_User_Profiles">
-          <End Role="User_Profiles" Type="Self.User_Profiles" Multiplicity="0..1" />
-          <End Role="APS_USER_ACT_LOG" Type="Self.APS_USER_ACT_LOG" Multiplicity="*" />
+          <End Type="SSKModel.User_Profiles" Role="User_Profiles" Multiplicity="0..1" />
+          <End Type="SSKModel.APS_USER_ACT_LOG" Role="APS_USER_ACT_LOG" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="User_Profiles">
               <PropertyRef Name="UserId" />
@@ -1648,32 +1918,32 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_IssuedCards_Membership_Users">
-          <End Role="Membership_Users" Type="Self.Membership_Users" Multiplicity="1" />
-          <End Role="IssuedCards" Type="Self.IssuedCard" Multiplicity="*" />
+          <End Type="SSKModel.Membership_Users" Role="Membership_Users" Multiplicity="1" />
+          <End Type="SSKModel.IssuedCard" Role="IssuedCard" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Membership_Users">
               <PropertyRef Name="UserId" />
             </Principal>
-            <Dependent Role="IssuedCards">
+            <Dependent Role="IssuedCard">
               <PropertyRef Name="UserId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Labels_Membership_Users">
-          <End Role="Membership_Users" Type="Self.Membership_Users" Multiplicity="1" />
-          <End Role="Labels" Type="Self.Label" Multiplicity="*" />
+          <End Type="SSKModel.Membership_Users" Role="Membership_Users" Multiplicity="1" />
+          <End Type="SSKModel.Label" Role="Label" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Membership_Users">
               <PropertyRef Name="UserId" />
             </Principal>
-            <Dependent Role="Labels">
+            <Dependent Role="Label">
               <PropertyRef Name="UserId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Membership_RoleClaims_Membership_Roles">
-          <End Role="Membership_Roles" Type="Self.Membership_Roles" Multiplicity="1" />
-          <End Role="Membership_RoleClaims" Type="Self.Membership_RoleClaims" Multiplicity="*" />
+          <End Type="SSKModel.Membership_Roles" Role="Membership_Roles" Multiplicity="1" />
+          <End Type="SSKModel.Membership_RoleClaims" Role="Membership_RoleClaims" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Membership_Roles">
               <PropertyRef Name="Id" />
@@ -1684,10 +1954,10 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId">
-          <End Role="Membership_Roles" Type="Self.Membership_Roles" Multiplicity="1">
+          <End Type="SSKModel.Membership_Roles" Role="Membership_Roles" Multiplicity="1">
             <OnDelete Action="Cascade" />
           </End>
-          <End Role="Membership_UserRoles" Type="Self.Membership_UserRoles" Multiplicity="*" />
+          <End Type="SSKModel.Membership_UserRoles" Role="Membership_UserRoles" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Membership_Roles">
               <PropertyRef Name="Id" />
@@ -1698,10 +1968,10 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
-          <End Role="Membership_Users" Type="Self.Membership_Users" Multiplicity="1">
+          <End Type="SSKModel.Membership_Users" Role="Membership_Users" Multiplicity="1">
             <OnDelete Action="Cascade" />
           </End>
-          <End Role="Membership_UserClaims" Type="Self.Membership_UserClaims" Multiplicity="*" />
+          <End Type="SSKModel.Membership_UserClaims" Role="Membership_UserClaims" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Membership_Users">
               <PropertyRef Name="UserId" />
@@ -1712,8 +1982,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK__Restauran__UserI__1CFC3D38">
-          <End Role="Membership_Users" Type="Self.Membership_Users" Multiplicity="0..1" />
-          <End Role="Membership_UserDevices" Type="Self.Membership_UserDevices" Multiplicity="*" />
+          <End Type="SSKModel.Membership_Users" Role="Membership_Users" Multiplicity="0..1" />
+          <End Type="SSKModel.Membership_UserDevices" Role="Membership_UserDevices" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Membership_Users">
               <PropertyRef Name="UserId" />
@@ -1724,10 +1994,10 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId">
-          <End Role="Membership_Users" Type="Self.Membership_Users" Multiplicity="1">
+          <End Type="SSKModel.Membership_Users" Role="Membership_Users" Multiplicity="1">
             <OnDelete Action="Cascade" />
           </End>
-          <End Role="Membership_UserLogins" Type="Self.Membership_UserLogins" Multiplicity="*" />
+          <End Type="SSKModel.Membership_UserLogins" Role="Membership_UserLogins" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Membership_Users">
               <PropertyRef Name="UserId" />
@@ -1738,10 +2008,10 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId">
-          <End Role="Membership_Users" Type="Self.Membership_Users" Multiplicity="1">
+          <End Type="SSKModel.Membership_Users" Role="Membership_Users" Multiplicity="1">
             <OnDelete Action="Cascade" />
           </End>
-          <End Role="Membership_UserRoles" Type="Self.Membership_UserRoles" Multiplicity="*" />
+          <End Type="SSKModel.Membership_UserRoles" Role="Membership_UserRoles" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Membership_Users">
               <PropertyRef Name="UserId" />
@@ -1751,9 +2021,45 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Messages_User_Profiles">
+          <End Type="SSKModel.Membership_Users" Role="Membership_Users" Multiplicity="0..1" />
+          <End Type="SSKModel.Message" Role="Message" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Membership_Users">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="Message">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Notifications_Membership_Users">
+          <End Type="SSKModel.Membership_Users" Role="Membership_Users" Multiplicity="0..1" />
+          <End Type="SSKModel.Notification" Role="Notification" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Membership_Users">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="Notification">
+              <PropertyRef Name="FromUserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Notifications_Membership_Users1">
+          <End Type="SSKModel.Membership_Users" Role="Membership_Users" Multiplicity="0..1" />
+          <End Type="SSKModel.Notification" Role="Notification" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Membership_Users">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="Notification">
+              <PropertyRef Name="ToUserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_PWD_QA_Membership_Users">
-          <End Role="Membership_Users" Type="Self.Membership_Users" Multiplicity="1" />
-          <End Role="Security_QA" Type="Self.Security_QA" Multiplicity="*" />
+          <End Type="SSKModel.Membership_Users" Role="Membership_Users" Multiplicity="1" />
+          <End Type="SSKModel.Security_QA" Role="Security_QA" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Membership_Users">
               <PropertyRef Name="UserId" />
@@ -1764,32 +2070,44 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Queues_Membership_Users">
-          <End Role="Membership_Users" Type="Self.Membership_Users" Multiplicity="1" />
-          <End Role="Queues" Type="Self.Queue" Multiplicity="*" />
+          <End Type="SSKModel.Membership_Users" Role="Membership_Users" Multiplicity="1" />
+          <End Type="SSKModel.Queue" Role="Queue" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Membership_Users">
               <PropertyRef Name="UserId" />
             </Principal>
-            <Dependent Role="Queues">
+            <Dependent Role="Queue">
               <PropertyRef Name="Created_By" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Queues_Membership_Users1">
-          <End Role="Membership_Users" Type="Self.Membership_Users" Multiplicity="1" />
-          <End Role="Queues" Type="Self.Queue" Multiplicity="*" />
+          <End Type="SSKModel.Membership_Users" Role="Membership_Users" Multiplicity="1" />
+          <End Type="SSKModel.Queue" Role="Queue" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Membership_Users">
               <PropertyRef Name="UserId" />
             </Principal>
-            <Dependent Role="Queues">
+            <Dependent Role="Queue">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Recipients_User_Profiles">
+          <End Type="SSKModel.Membership_Users" Role="Membership_Users" Multiplicity="0..1" />
+          <End Type="SSKModel.Recipient" Role="Recipient" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Membership_Users">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="Recipient">
               <PropertyRef Name="UserId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_User_Profiles_Membership_Users">
-          <End Role="Membership_Users" Type="Self.Membership_Users" Multiplicity="1" />
-          <End Role="User_Profiles" Type="Self.User_Profiles" Multiplicity="0..1" />
+          <End Type="SSKModel.Membership_Users" Role="Membership_Users" Multiplicity="1" />
+          <End Type="SSKModel.User_Profiles" Role="User_Profiles" Multiplicity="0..1" />
           <ReferentialConstraint>
             <Principal Role="Membership_Users">
               <PropertyRef Name="UserId" />
@@ -1800,34 +2118,22 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_MsgRecipients_SentMessages">
-          <End Role="SentMessages" Type="Self.SentMessage" Multiplicity="0..1" />
-          <End Role="MsgRecipients" Type="Self.MsgRecipient" Multiplicity="*" />
+          <End Type="SSKModel.Message" Role="Message" Multiplicity="0..1" />
+          <End Type="SSKModel.Recipient" Role="Recipient" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="SentMessages">
+            <Principal Role="Message">
               <PropertyRef Name="MsgID" />
             </Principal>
-            <Dependent Role="MsgRecipients">
+            <Dependent Role="Recipient">
               <PropertyRef Name="MsgID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_MsgRecipients_User_Profiles">
-          <End Role="User_Profiles" Type="Self.User_Profiles" Multiplicity="0..1" />
-          <End Role="MsgRecipients" Type="Self.MsgRecipient" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="User_Profiles">
-              <PropertyRef Name="UserId" />
-            </Principal>
-            <Dependent Role="MsgRecipients">
-              <PropertyRef Name="UserId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_OperationSettings_ChangeHist_OperationSettings">
-          <End Role="OperationSettings" Type="Self.OperationSetting" Multiplicity="1" />
-          <End Role="OperationSettings_ChangeHist" Type="Self.OperationSettings_ChangeHist" Multiplicity="*" />
+          <End Type="SSKModel.OperationSetting" Role="OperationSetting" Multiplicity="1" />
+          <End Type="SSKModel.OperationSettings_ChangeHist" Role="OperationSettings_ChangeHist" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="OperationSettings">
+            <Principal Role="OperationSetting">
               <PropertyRef Name="DayOfWeek" />
             </Principal>
             <Dependent Role="OperationSettings_ChangeHist">
@@ -1836,46 +2142,46 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_QueueDetails_Queues">
-          <End Role="Queues" Type="Self.Queue" Multiplicity="1" />
-          <End Role="QueueDetails" Type="Self.QueueDetail" Multiplicity="*" />
+          <End Type="SSKModel.Queue" Role="Queue" Multiplicity="1" />
+          <End Type="SSKModel.QueueDetail" Role="QueueDetail" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Queues">
+            <Principal Role="Queue">
               <PropertyRef Name="Queue_ID" />
             </Principal>
-            <Dependent Role="QueueDetails">
+            <Dependent Role="QueueDetail">
               <PropertyRef Name="Queue_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Queues_Timeslots">
-          <End Role="Timeslots" Type="Self.Timeslot" Multiplicity="1" />
-          <End Role="Queues" Type="Self.Queue" Multiplicity="*" />
+          <End Type="SSKModel.Timeslot" Role="Timeslot" Multiplicity="1" />
+          <End Type="SSKModel.Queue" Role="Queue" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Timeslots">
+            <Principal Role="Timeslot">
               <PropertyRef Name="Timeslot_ID" />
             </Principal>
-            <Dependent Role="Queues">
+            <Dependent Role="Queue">
               <PropertyRef Name="Timeslot_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_SentMessages_User_Profiles">
-          <End Role="User_Profiles" Type="Self.User_Profiles" Multiplicity="0..1" />
-          <End Role="SentMessages" Type="Self.SentMessage" Multiplicity="*" />
+        <Association Name="FK_UploadedDocumentDetails_UploadedDocuments">
+          <End Type="SSKModel.UploadedDocument" Role="UploadedDocument" Multiplicity="1" />
+          <End Type="SSKModel.UploadedDocumentDetail" Role="UploadedDocumentDetail" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="User_Profiles">
-              <PropertyRef Name="UserId" />
+            <Principal Role="UploadedDocument">
+              <PropertyRef Name="Document_ID" />
             </Principal>
-            <Dependent Role="SentMessages">
-              <PropertyRef Name="UserId" />
+            <Dependent Role="UploadedDocumentDetail">
+              <PropertyRef Name="Document_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_User_Profiles_UploadedDocuments">
-          <End Role="UploadedDocuments" Type="Self.UploadedDocument" Multiplicity="0..1" />
-          <End Role="User_Profiles" Type="Self.User_Profiles" Multiplicity="*" />
+          <End Type="SSKModel.UploadedDocument" Role="UploadedDocument" Multiplicity="0..1" />
+          <End Type="SSKModel.User_Profiles" Role="User_Profiles" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="UploadedDocuments">
+            <Principal Role="UploadedDocument">
               <PropertyRef Name="Document_ID" />
             </Principal>
             <Dependent Role="User_Profiles">
@@ -1883,172 +2189,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="SSKEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="AbsenceReportings" EntityType="Self.AbsenceReporting" />
-          <EntitySet Name="ActionLogs" EntityType="Self.ActionLog" />
-          <EntitySet Name="Addresses" EntityType="Self.Address" />
-          <EntitySet Name="ApplicationDevice_Status" EntityType="Self.ApplicationDevice_Status" />
-          <EntitySet Name="Appointments" EntityType="Self.Appointment" />
-          <EntitySet Name="APS_USER_ACT_LOG" EntityType="Self.APS_USER_ACT_LOG" />
-          <EntitySet Name="Devices" EntityType="Self.Device" />
-          <EntitySet Name="DrugResults" EntityType="Self.DrugResult" />
-          <EntitySet Name="EMAIL_LOG" EntityType="Self.EMAIL_LOG" />
-          <EntitySet Name="Holidays" EntityType="Self.Holiday" />
-          <EntitySet Name="IssuedCards" EntityType="Self.IssuedCard" />
-          <EntitySet Name="Labels" EntityType="Self.Label" />
-          <EntitySet Name="Membership_RoleClaims" EntityType="Self.Membership_RoleClaims" />
-          <EntitySet Name="Membership_Roles" EntityType="Self.Membership_Roles" />
-          <EntitySet Name="Membership_UserClaims" EntityType="Self.Membership_UserClaims" />
-          <EntitySet Name="Membership_UserDevices" EntityType="Self.Membership_UserDevices" />
-          <EntitySet Name="Membership_UserLogins" EntityType="Self.Membership_UserLogins" />
-          <EntitySet Name="Membership_UserRoles" EntityType="Self.Membership_UserRoles" />
-          <EntitySet Name="Membership_Users" EntityType="Self.Membership_Users" />
-          <EntitySet Name="MsgRecipients" EntityType="Self.MsgRecipient" />
-          <EntitySet Name="Notifications" EntityType="Self.Notification" />
-          <EntitySet Name="OperationSettings" EntityType="Self.OperationSetting" />
-          <EntitySet Name="OperationSettings_ChangeHist" EntityType="Self.OperationSettings_ChangeHist" />
-          <EntitySet Name="QueueDetails" EntityType="Self.QueueDetail" />
-          <EntitySet Name="Queues" EntityType="Self.Queue" />
-          <EntitySet Name="Security_QA" EntityType="Self.Security_QA" />
-          <EntitySet Name="SentMessages" EntityType="Self.SentMessage" />
-          <EntitySet Name="Settings" EntityType="Self.Setting" />
-          <EntitySet Name="SMS_LOG" EntityType="Self.SMS_LOG" />
-          <EntitySet Name="Timeslots" EntityType="Self.Timeslot" />
-          <EntitySet Name="UploadedDocuments" EntityType="Self.UploadedDocument" />
-          <EntitySet Name="User_Profiles" EntityType="Self.User_Profiles" />
-          <AssociationSet Name="FK_AbsenceReporting_UploadedDocuments" Association="Self.FK_AbsenceReporting_UploadedDocuments">
-            <End Role="UploadedDocuments" EntitySet="UploadedDocuments" />
-            <End Role="AbsenceReporting" EntitySet="AbsenceReportings" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Appointments_AbsenceReporting" Association="Self.FK_Appointments_AbsenceReporting">
-            <End Role="AbsenceReporting" EntitySet="AbsenceReportings" />
-            <End Role="Appointments" EntitySet="Appointments" />
-          </AssociationSet>
-          <AssociationSet Name="FK_ActionLog_Membership_Users" Association="Self.FK_ActionLog_Membership_Users">
-            <End Role="Membership_Users" EntitySet="Membership_Users" />
-            <End Role="ActionLog" EntitySet="ActionLogs" />
-          </AssociationSet>
-          <AssociationSet Name="FK_ActionLog_Membership_Users1" Association="Self.FK_ActionLog_Membership_Users1">
-            <End Role="Membership_Users" EntitySet="Membership_Users" />
-            <End Role="ActionLog" EntitySet="ActionLogs" />
-          </AssociationSet>
-          <AssociationSet Name="FK_User_Profiles_Addresses2" Association="Self.FK_User_Profiles_Addresses2">
-            <End Role="Addresses" EntitySet="Addresses" />
-            <End Role="User_Profiles" EntitySet="User_Profiles" />
-          </AssociationSet>
-          <AssociationSet Name="FK_User_Profiles_Addresses3" Association="Self.FK_User_Profiles_Addresses3">
-            <End Role="Addresses" EntitySet="Addresses" />
-            <End Role="User_Profiles" EntitySet="User_Profiles" />
-          </AssociationSet>
-          <AssociationSet Name="FK_ApplicationDevice_Status_Devices" Association="Self.FK_ApplicationDevice_Status_Devices">
-            <End Role="Devices" EntitySet="Devices" />
-            <End Role="ApplicationDevice_Status" EntitySet="ApplicationDevice_Status" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Appointments_Membership_Users" Association="Self.FK_Appointments_Membership_Users">
-            <End Role="Membership_Users" EntitySet="Membership_Users" />
-            <End Role="Appointments" EntitySet="Appointments" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Appointments_Timeslots" Association="Self.FK_Appointments_Timeslots">
-            <End Role="Timeslots" EntitySet="Timeslots" />
-            <End Role="Appointments" EntitySet="Appointments" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Queues_Appointments" Association="Self.FK_Queues_Appointments">
-            <End Role="Appointments" EntitySet="Appointments" />
-            <End Role="Queues" EntitySet="Queues" />
-          </AssociationSet>
-          <AssociationSet Name="FK_APS_USER_ACT_LOG_User_Profiles" Association="Self.FK_APS_USER_ACT_LOG_User_Profiles">
-            <End Role="User_Profiles" EntitySet="User_Profiles" />
-            <End Role="APS_USER_ACT_LOG" EntitySet="APS_USER_ACT_LOG" />
-          </AssociationSet>
-          <AssociationSet Name="FK_IssuedCards_Membership_Users" Association="Self.FK_IssuedCards_Membership_Users">
-            <End Role="Membership_Users" EntitySet="Membership_Users" />
-            <End Role="IssuedCards" EntitySet="IssuedCards" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Labels_Membership_Users" Association="Self.FK_Labels_Membership_Users">
-            <End Role="Membership_Users" EntitySet="Membership_Users" />
-            <End Role="Labels" EntitySet="Labels" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Membership_RoleClaims_Membership_Roles" Association="Self.FK_Membership_RoleClaims_Membership_Roles">
-            <End Role="Membership_Roles" EntitySet="Membership_Roles" />
-            <End Role="Membership_RoleClaims" EntitySet="Membership_RoleClaims" />
-          </AssociationSet>
-          <AssociationSet Name="FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId" Association="Self.FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId">
-            <End Role="Membership_Roles" EntitySet="Membership_Roles" />
-            <End Role="Membership_UserRoles" EntitySet="Membership_UserRoles" />
-          </AssociationSet>
-          <AssociationSet Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
-            <End Role="Membership_Users" EntitySet="Membership_Users" />
-            <End Role="Membership_UserClaims" EntitySet="Membership_UserClaims" />
-          </AssociationSet>
-          <AssociationSet Name="FK__Restauran__UserI__1CFC3D38" Association="Self.FK__Restauran__UserI__1CFC3D38">
-            <End Role="Membership_Users" EntitySet="Membership_Users" />
-            <End Role="Membership_UserDevices" EntitySet="Membership_UserDevices" />
-          </AssociationSet>
-          <AssociationSet Name="FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId">
-            <End Role="Membership_Users" EntitySet="Membership_Users" />
-            <End Role="Membership_UserLogins" EntitySet="Membership_UserLogins" />
-          </AssociationSet>
-          <AssociationSet Name="FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId">
-            <End Role="Membership_Users" EntitySet="Membership_Users" />
-            <End Role="Membership_UserRoles" EntitySet="Membership_UserRoles" />
-          </AssociationSet>
-          <AssociationSet Name="FK_PWD_QA_Membership_Users" Association="Self.FK_PWD_QA_Membership_Users">
-            <End Role="Membership_Users" EntitySet="Membership_Users" />
-            <End Role="Security_QA" EntitySet="Security_QA" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Queues_Membership_Users" Association="Self.FK_Queues_Membership_Users">
-            <End Role="Membership_Users" EntitySet="Membership_Users" />
-            <End Role="Queues" EntitySet="Queues" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Queues_Membership_Users1" Association="Self.FK_Queues_Membership_Users1">
-            <End Role="Membership_Users" EntitySet="Membership_Users" />
-            <End Role="Queues" EntitySet="Queues" />
-          </AssociationSet>
-          <AssociationSet Name="FK_User_Profiles_Membership_Users" Association="Self.FK_User_Profiles_Membership_Users">
-            <End Role="Membership_Users" EntitySet="Membership_Users" />
-            <End Role="User_Profiles" EntitySet="User_Profiles" />
-          </AssociationSet>
-          <AssociationSet Name="FK_MsgRecipients_SentMessages" Association="Self.FK_MsgRecipients_SentMessages">
-            <End Role="SentMessages" EntitySet="SentMessages" />
-            <End Role="MsgRecipients" EntitySet="MsgRecipients" />
-          </AssociationSet>
-          <AssociationSet Name="FK_MsgRecipients_User_Profiles" Association="Self.FK_MsgRecipients_User_Profiles">
-            <End Role="User_Profiles" EntitySet="User_Profiles" />
-            <End Role="MsgRecipients" EntitySet="MsgRecipients" />
-          </AssociationSet>
-          <AssociationSet Name="FK_OperationSettings_ChangeHist_OperationSettings" Association="Self.FK_OperationSettings_ChangeHist_OperationSettings">
-            <End Role="OperationSettings" EntitySet="OperationSettings" />
-            <End Role="OperationSettings_ChangeHist" EntitySet="OperationSettings_ChangeHist" />
-          </AssociationSet>
-          <AssociationSet Name="FK_QueueDetails_Queues" Association="Self.FK_QueueDetails_Queues">
-            <End Role="Queues" EntitySet="Queues" />
-            <End Role="QueueDetails" EntitySet="QueueDetails" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Queues_Timeslots" Association="Self.FK_Queues_Timeslots">
-            <End Role="Timeslots" EntitySet="Timeslots" />
-            <End Role="Queues" EntitySet="Queues" />
-          </AssociationSet>
-          <AssociationSet Name="FK_SentMessages_User_Profiles" Association="Self.FK_SentMessages_User_Profiles">
-            <End Role="User_Profiles" EntitySet="User_Profiles" />
-            <End Role="SentMessages" EntitySet="SentMessages" />
-          </AssociationSet>
-          <AssociationSet Name="FK_User_Profiles_UploadedDocuments" Association="Self.FK_User_Profiles_UploadedDocuments">
-            <End Role="UploadedDocuments" EntitySet="UploadedDocuments" />
-            <End Role="User_Profiles" EntitySet="User_Profiles" />
-          </AssociationSet>
-          <EntitySet Name="Transactions" EntityType="SSKModel.Transaction" />
-        </EntityContainer>
-        <EntityType Name="Transaction">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Guid" Nullable="false" />
-          <Property Name="NRIC" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="TransactionCode" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Source" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="datetime" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="Content" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
-        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -2058,383 +2198,385 @@
           <EntitySetMapping Name="AbsenceReportings">
             <EntityTypeMapping TypeName="SSKModel.AbsenceReporting">
               <MappingFragment StoreEntitySet="AbsenceReporting">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="ReportingDate" ColumnName="ReportingDate" />
-                <ScalarProperty Name="AbsenceReason" ColumnName="AbsenceReason" />
-                <ScalarProperty Name="ReasonDetails" ColumnName="ReasonDetails" />
                 <ScalarProperty Name="Document_ID" ColumnName="Document_ID" />
+                <ScalarProperty Name="ReasonDetails" ColumnName="ReasonDetails" />
+                <ScalarProperty Name="AbsenceReason" ColumnName="AbsenceReason" />
+                <ScalarProperty Name="ReportingDate" ColumnName="ReportingDate" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="ActionLogs">
             <EntityTypeMapping TypeName="SSKModel.ActionLog">
               <MappingFragment StoreEntitySet="ActionLog">
-                <ScalarProperty Name="Action_ID" ColumnName="Action_ID" />
-                <ScalarProperty Name="ActionName" ColumnName="ActionName" />
-                <ScalarProperty Name="PerformedBy" ColumnName="PerformedBy" />
-                <ScalarProperty Name="PerformedDate" ColumnName="PerformedDate" />
                 <ScalarProperty Name="Note" ColumnName="Note" />
+                <ScalarProperty Name="PerformedDate" ColumnName="PerformedDate" />
+                <ScalarProperty Name="PerformedBy" ColumnName="PerformedBy" />
+                <ScalarProperty Name="ActionName" ColumnName="ActionName" />
+                <ScalarProperty Name="Action_ID" ColumnName="Action_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Addresses">
             <EntityTypeMapping TypeName="SSKModel.Address">
               <MappingFragment StoreEntitySet="Addresses">
-                <ScalarProperty Name="Address_ID" ColumnName="Address_ID" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="BlkHouse_Number" ColumnName="BlkHouse_Number" />
-                <ScalarProperty Name="FlrUnit_Number" ColumnName="FlrUnit_Number" />
-                <ScalarProperty Name="Street_Name" ColumnName="Street_Name" />
-                <ScalarProperty Name="Country" ColumnName="Country" />
                 <ScalarProperty Name="Postal_Code" ColumnName="Postal_Code" />
+                <ScalarProperty Name="Country" ColumnName="Country" />
+                <ScalarProperty Name="Street_Name" ColumnName="Street_Name" />
+                <ScalarProperty Name="FlrUnit_Number" ColumnName="FlrUnit_Number" />
+                <ScalarProperty Name="BlkHouse_Number" ColumnName="BlkHouse_Number" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Address_ID" ColumnName="Address_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="ApplicationDevice_Status">
             <EntityTypeMapping TypeName="SSKModel.ApplicationDevice_Status">
               <MappingFragment StoreEntitySet="ApplicationDevice_Status">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="Station" ColumnName="Station" />
-                <ScalarProperty Name="DeviceID" ColumnName="DeviceID" />
-                <ScalarProperty Name="StatusCode" ColumnName="StatusCode" />
                 <ScalarProperty Name="StatusMessage" ColumnName="StatusMessage" />
+                <ScalarProperty Name="StatusCode" ColumnName="StatusCode" />
+                <ScalarProperty Name="DeviceID" ColumnName="DeviceID" />
+                <ScalarProperty Name="Station" ColumnName="Station" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Appointments">
             <EntityTypeMapping TypeName="SSKModel.Appointment">
               <MappingFragment StoreEntitySet="Appointments">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="Timeslot_ID" ColumnName="Timeslot_ID" />
-                <ScalarProperty Name="AbsenceReporting_ID" ColumnName="AbsenceReporting_ID" />
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
-                <ScalarProperty Name="Date" ColumnName="Date" />
-                <ScalarProperty Name="ChangedCount" ColumnName="ChangedCount" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="ReportTime" ColumnName="ReportTime" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="ChangedCount" ColumnName="ChangedCount" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="AbsenceReporting_ID" ColumnName="AbsenceReporting_ID" />
+                <ScalarProperty Name="Timeslot_ID" ColumnName="Timeslot_ID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="APS_USER_ACT_LOG">
             <EntityTypeMapping TypeName="SSKModel.APS_USER_ACT_LOG">
               <MappingFragment StoreEntitySet="APS_USER_ACT_LOG">
-                <ScalarProperty Name="USER_ACT_LOG_ID" ColumnName="USER_ACT_LOG_ID" />
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
-                <ScalarProperty Name="USER_ACT_LOG" ColumnName="USER_ACT_LOG" />
-                <ScalarProperty Name="USER_NAME" ColumnName="USER_NAME" />
-                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
                 <ScalarProperty Name="CREATED_TIME" ColumnName="CREATED_TIME" />
+                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+                <ScalarProperty Name="USER_NAME" ColumnName="USER_NAME" />
+                <ScalarProperty Name="USER_ACT_LOG" ColumnName="USER_ACT_LOG" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="USER_ACT_LOG_ID" ColumnName="USER_ACT_LOG_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Devices">
             <EntityTypeMapping TypeName="SSKModel.Device">
               <MappingFragment StoreEntitySet="Devices">
-                <ScalarProperty Name="DeviceID" ColumnName="DeviceID" />
-                <ScalarProperty Name="DeviceName" ColumnName="DeviceName" />
                 <ScalarProperty Name="Details" ColumnName="Details" />
+                <ScalarProperty Name="DeviceName" ColumnName="DeviceName" />
+                <ScalarProperty Name="DeviceID" ColumnName="DeviceID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="DrugResults">
             <EntityTypeMapping TypeName="SSKModel.DrugResult">
               <MappingFragment StoreEntitySet="DrugResults">
-                <ScalarProperty Name="DrugResultsID" ColumnName="DrugResultsID" />
-                <ScalarProperty Name="NRIC" ColumnName="NRIC" />
-                <ScalarProperty Name="timestamp" ColumnName="timestamp" />
-                <ScalarProperty Name="markingnumber" ColumnName="markingnumber" />
-                <ScalarProperty Name="AMPH" ColumnName="AMPH" />
-                <ScalarProperty Name="BENZ" ColumnName="BENZ" />
-                <ScalarProperty Name="OPI" ColumnName="OPI" />
-                <ScalarProperty Name="THC" ColumnName="THC" />
-                <ScalarProperty Name="COCA" ColumnName="COCA" />
-                <ScalarProperty Name="BARB" ColumnName="BARB" />
-                <ScalarProperty Name="LSD" ColumnName="LSD" />
-                <ScalarProperty Name="METH" ColumnName="METH" />
-                <ScalarProperty Name="MTQL" ColumnName="MTQL" />
-                <ScalarProperty Name="PCP" ColumnName="PCP" />
-                <ScalarProperty Name="KET" ColumnName="KET" />
-                <ScalarProperty Name="BUPRE" ColumnName="BUPRE" />
-                <ScalarProperty Name="CAT" ColumnName="CAT" />
-                <ScalarProperty Name="PPZ" ColumnName="PPZ" />
-                <ScalarProperty Name="NPS" ColumnName="NPS" />
-                <ScalarProperty Name="IsSealed" ColumnName="IsSealed" />
-                <ScalarProperty Name="UploadedDate" ColumnName="UploadedDate" />
-                <ScalarProperty Name="UploadedBy" ColumnName="UploadedBy" />
-                <ScalarProperty Name="SealedOrDiscardedDate" ColumnName="SealedOrDiscardedDate" />
                 <ScalarProperty Name="SealedOrDiscardedBy" ColumnName="SealedOrDiscardedBy" />
+                <ScalarProperty Name="SealedOrDiscardedDate" ColumnName="SealedOrDiscardedDate" />
+                <ScalarProperty Name="UploadedBy" ColumnName="UploadedBy" />
+                <ScalarProperty Name="UploadedDate" ColumnName="UploadedDate" />
+                <ScalarProperty Name="IsSealed" ColumnName="IsSealed" />
+                <ScalarProperty Name="NPS" ColumnName="NPS" />
+                <ScalarProperty Name="PPZ" ColumnName="PPZ" />
+                <ScalarProperty Name="CAT" ColumnName="CAT" />
+                <ScalarProperty Name="BUPRE" ColumnName="BUPRE" />
+                <ScalarProperty Name="KET" ColumnName="KET" />
+                <ScalarProperty Name="PCP" ColumnName="PCP" />
+                <ScalarProperty Name="MTQL" ColumnName="MTQL" />
+                <ScalarProperty Name="METH" ColumnName="METH" />
+                <ScalarProperty Name="LSD" ColumnName="LSD" />
+                <ScalarProperty Name="BARB" ColumnName="BARB" />
+                <ScalarProperty Name="COCA" ColumnName="COCA" />
+                <ScalarProperty Name="THC" ColumnName="THC" />
+                <ScalarProperty Name="OPI" ColumnName="OPI" />
+                <ScalarProperty Name="BENZ" ColumnName="BENZ" />
+                <ScalarProperty Name="AMPH" ColumnName="AMPH" />
+                <ScalarProperty Name="markingnumber" ColumnName="markingnumber" />
+                <ScalarProperty Name="timestamp" ColumnName="timestamp" />
+                <ScalarProperty Name="NRIC" ColumnName="NRIC" />
+                <ScalarProperty Name="DrugResultsID" ColumnName="DrugResultsID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="EMAIL_LOG">
             <EntityTypeMapping TypeName="SSKModel.EMAIL_LOG">
               <MappingFragment StoreEntitySet="EMAIL_LOG">
-                <ScalarProperty Name="EMAIL_LOG_ID" ColumnName="EMAIL_LOG_ID" />
-                <ScalarProperty Name="EMAIL_MSG" ColumnName="EMAIL_MSG" />
-                <ScalarProperty Name="EMAIL_FROM_ADDR" ColumnName="EMAIL_FROM_ADDR" />
-                <ScalarProperty Name="EMAIL_TO_ADDR" ColumnName="EMAIL_TO_ADDR" />
-                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
-                <ScalarProperty Name="CREATED_TIME" ColumnName="CREATED_TIME" />
-                <ScalarProperty Name="LAST_UPDATED_BY" ColumnName="LAST_UPDATED_BY" />
                 <ScalarProperty Name="LAST_UPDATED_ON" ColumnName="LAST_UPDATED_ON" />
+                <ScalarProperty Name="LAST_UPDATED_BY" ColumnName="LAST_UPDATED_BY" />
+                <ScalarProperty Name="CREATED_TIME" ColumnName="CREATED_TIME" />
+                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+                <ScalarProperty Name="EMAIL_TO_ADDR" ColumnName="EMAIL_TO_ADDR" />
+                <ScalarProperty Name="EMAIL_FROM_ADDR" ColumnName="EMAIL_FROM_ADDR" />
+                <ScalarProperty Name="EMAIL_MSG" ColumnName="EMAIL_MSG" />
+                <ScalarProperty Name="EMAIL_LOG_ID" ColumnName="EMAIL_LOG_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Holidays">
             <EntityTypeMapping TypeName="SSKModel.Holiday">
               <MappingFragment StoreEntitySet="Holidays">
-                <ScalarProperty Name="Holiday1" ColumnName="Holiday" />
-                <ScalarProperty Name="ShortDesc" ColumnName="ShortDesc" />
                 <ScalarProperty Name="Notes" ColumnName="Notes" />
+                <ScalarProperty Name="ShortDesc" ColumnName="ShortDesc" />
+                <ScalarProperty Name="Holiday1" ColumnName="Holiday" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="IssuedCards">
             <EntityTypeMapping TypeName="SSKModel.IssuedCard">
               <MappingFragment StoreEntitySet="IssuedCards">
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
-                <ScalarProperty Name="SmartCardId" ColumnName="SmartCardId" />
-                <ScalarProperty Name="NRIC" ColumnName="NRIC" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Serial_Number" ColumnName="Serial_Number" />
-                <ScalarProperty Name="Date_Of_Issue" ColumnName="Date_Of_Issue" />
-                <ScalarProperty Name="Expired_Date" ColumnName="Expired_Date" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
                 <ScalarProperty Name="Reprint_Reason" ColumnName="Reprint_Reason" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Expired_Date" ColumnName="Expired_Date" />
+                <ScalarProperty Name="Date_Of_Issue" ColumnName="Date_Of_Issue" />
+                <ScalarProperty Name="Serial_Number" ColumnName="Serial_Number" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="NRIC" ColumnName="NRIC" />
+                <ScalarProperty Name="SmartCardId" ColumnName="SmartCardId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Labels">
             <EntityTypeMapping TypeName="SSKModel.Label">
               <MappingFragment StoreEntitySet="Labels">
-                <ScalarProperty Name="Label_ID" ColumnName="Label_ID" />
-                <ScalarProperty Name="Queue_ID" ColumnName="Queue_ID" />
-                <ScalarProperty Name="Label_Type" ColumnName="Label_Type" />
-                <ScalarProperty Name="CompanyName" ColumnName="CompanyName" />
-                <ScalarProperty Name="MarkingNo" ColumnName="MarkingNo" />
-                <ScalarProperty Name="DrugType" ColumnName="DrugType" />
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
-                <ScalarProperty Name="NRIC" ColumnName="NRIC" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Date" ColumnName="Date" />
-                <ScalarProperty Name="QRCode" ColumnName="QRCode" />
-                <ScalarProperty Name="LastStation" ColumnName="LastStation" />
-                <ScalarProperty Name="PrintCount" ColumnName="PrintCount" />
-                <ScalarProperty Name="ReprintReason" ColumnName="ReprintReason" />
-                <ScalarProperty Name="PrintStatus" ColumnName="PrintStatus" />
                 <ScalarProperty Name="Message" ColumnName="Message" />
+                <ScalarProperty Name="PrintStatus" ColumnName="PrintStatus" />
+                <ScalarProperty Name="ReprintReason" ColumnName="ReprintReason" />
+                <ScalarProperty Name="PrintCount" ColumnName="PrintCount" />
+                <ScalarProperty Name="LastStation" ColumnName="LastStation" />
+                <ScalarProperty Name="QRCode" ColumnName="QRCode" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="NRIC" ColumnName="NRIC" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="DrugType" ColumnName="DrugType" />
+                <ScalarProperty Name="MarkingNo" ColumnName="MarkingNo" />
+                <ScalarProperty Name="CompanyName" ColumnName="CompanyName" />
+                <ScalarProperty Name="Label_Type" ColumnName="Label_Type" />
+                <ScalarProperty Name="Queue_ID" ColumnName="Queue_ID" />
+                <ScalarProperty Name="Label_ID" ColumnName="Label_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Membership_RoleClaims">
             <EntityTypeMapping TypeName="SSKModel.Membership_RoleClaims">
               <MappingFragment StoreEntitySet="Membership_RoleClaims">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="ClaimType" ColumnName="ClaimType" />
-                <ScalarProperty Name="ClaimValue" ColumnName="ClaimValue" />
                 <ScalarProperty Name="RoleId" ColumnName="RoleId" />
+                <ScalarProperty Name="ClaimValue" ColumnName="ClaimValue" />
+                <ScalarProperty Name="ClaimType" ColumnName="ClaimType" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Membership_Roles">
             <EntityTypeMapping TypeName="SSKModel.Membership_Roles">
               <MappingFragment StoreEntitySet="Membership_Roles">
-                <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Membership_UserClaims">
             <EntityTypeMapping TypeName="SSKModel.Membership_UserClaims">
               <MappingFragment StoreEntitySet="Membership_UserClaims">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
-                <ScalarProperty Name="ClaimType" ColumnName="ClaimType" />
-                <ScalarProperty Name="ClaimValue" ColumnName="ClaimValue" />
                 <ScalarProperty Name="IdentityUser_Id" ColumnName="IdentityUser_Id" />
+                <ScalarProperty Name="ClaimValue" ColumnName="ClaimValue" />
+                <ScalarProperty Name="ClaimType" ColumnName="ClaimType" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Membership_UserDevices">
             <EntityTypeMapping TypeName="SSKModel.Membership_UserDevices">
               <MappingFragment StoreEntitySet="Membership_UserDevices">
-                <ScalarProperty Name="Device_ID" ColumnName="Device_ID" />
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
-                <ScalarProperty Name="User_Device_ID" ColumnName="User_Device_ID" />
-                <ScalarProperty Name="Terminal" ColumnName="Terminal" />
-                <ScalarProperty Name="Active" ColumnName="Active" />
                 <ScalarProperty Name="Access_token" ColumnName="Access_token" />
+                <ScalarProperty Name="Active" ColumnName="Active" />
+                <ScalarProperty Name="Terminal" ColumnName="Terminal" />
+                <ScalarProperty Name="User_Device_ID" ColumnName="User_Device_ID" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="Device_ID" ColumnName="Device_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Membership_UserLogins">
             <EntityTypeMapping TypeName="SSKModel.Membership_UserLogins">
               <MappingFragment StoreEntitySet="Membership_UserLogins">
-                <ScalarProperty Name="LoginProvider" ColumnName="LoginProvider" />
-                <ScalarProperty Name="ProviderKey" ColumnName="ProviderKey" />
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
                 <ScalarProperty Name="IdentityUser_Id" ColumnName="IdentityUser_Id" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="ProviderKey" ColumnName="ProviderKey" />
+                <ScalarProperty Name="LoginProvider" ColumnName="LoginProvider" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Membership_UserRoles">
             <EntityTypeMapping TypeName="SSKModel.Membership_UserRoles">
               <MappingFragment StoreEntitySet="Membership_UserRoles">
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
-                <ScalarProperty Name="RoleId" ColumnName="RoleId" />
                 <ScalarProperty Name="IdentityUser_Id" ColumnName="IdentityUser_Id" />
+                <ScalarProperty Name="RoleId" ColumnName="RoleId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Membership_Users">
             <EntityTypeMapping TypeName="SSKModel.Membership_Users">
               <MappingFragment StoreEntitySet="Membership_Users">
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
-                <ScalarProperty Name="OfficerId" ColumnName="OfficerId" />
-                <ScalarProperty Name="Email" ColumnName="Email" />
-                <ScalarProperty Name="EmailConfirmed" ColumnName="EmailConfirmed" />
-                <ScalarProperty Name="PasswordHash" ColumnName="PasswordHash" />
-                <ScalarProperty Name="SecurityStamp" ColumnName="SecurityStamp" />
-                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
-                <ScalarProperty Name="PhoneNumberConfirmed" ColumnName="PhoneNumberConfirmed" />
-                <ScalarProperty Name="TwoFactorEnabled" ColumnName="TwoFactorEnabled" />
-                <ScalarProperty Name="LockoutEndDateUtc" ColumnName="LockoutEndDateUtc" />
-                <ScalarProperty Name="LockoutEnabled" ColumnName="LockoutEnabled" />
-                <ScalarProperty Name="AccessFailedCount" ColumnName="AccessFailedCount" />
-                <ScalarProperty Name="UserName" ColumnName="UserName" />
-                <ScalarProperty Name="Discriminator" ColumnName="Discriminator" />
-                <ScalarProperty Name="NRIC" ColumnName="NRIC" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="SmartCardId" ColumnName="SmartCardId" />
-                <ScalarProperty Name="RightThumbFingerprint" ColumnName="RightThumbFingerprint" />
-                <ScalarProperty Name="LeftThumbFingerprint" ColumnName="LeftThumbFingerprint" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="IsFirstAttempt" ColumnName="IsFirstAttempt" />
                 <ScalarProperty Name="Note" ColumnName="Note" />
+                <ScalarProperty Name="IsFirstAttempt" ColumnName="IsFirstAttempt" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="LeftThumbFingerprint" ColumnName="LeftThumbFingerprint" />
+                <ScalarProperty Name="RightThumbFingerprint" ColumnName="RightThumbFingerprint" />
+                <ScalarProperty Name="SmartCardId" ColumnName="SmartCardId" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="NRIC" ColumnName="NRIC" />
+                <ScalarProperty Name="Discriminator" ColumnName="Discriminator" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="AccessFailedCount" ColumnName="AccessFailedCount" />
+                <ScalarProperty Name="LockoutEnabled" ColumnName="LockoutEnabled" />
+                <ScalarProperty Name="LockoutEndDateUtc" ColumnName="LockoutEndDateUtc" />
+                <ScalarProperty Name="TwoFactorEnabled" ColumnName="TwoFactorEnabled" />
+                <ScalarProperty Name="PhoneNumberConfirmed" ColumnName="PhoneNumberConfirmed" />
+                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
+                <ScalarProperty Name="SecurityStamp" ColumnName="SecurityStamp" />
+                <ScalarProperty Name="PasswordHash" ColumnName="PasswordHash" />
+                <ScalarProperty Name="EmailConfirmed" ColumnName="EmailConfirmed" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="OfficerId" ColumnName="OfficerId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="MsgRecipients">
-            <EntityTypeMapping TypeName="SSKModel.MsgRecipient">
-              <MappingFragment StoreEntitySet="MsgRecipients">
-                <ScalarProperty Name="RecID" ColumnName="RecID" />
-                <ScalarProperty Name="MsgID" ColumnName="MsgID" />
+          <EntitySetMapping Name="Messages">
+            <EntityTypeMapping TypeName="SSKModel.Message">
+              <MappingFragment StoreEntitySet="Messages">
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
                 <ScalarProperty Name="Email" ColumnName="Email" />
                 <ScalarProperty Name="SMS" ColumnName="SMS" />
-                <ScalarProperty Name="DeliveryStatus" ColumnName="DeliveryStatus" />
+                <ScalarProperty Name="DeliveryDateTime" ColumnName="DeliveryDateTime" />
+                <ScalarProperty Name="DelileryStatus" ColumnName="DelileryStatus" />
+                <ScalarProperty Name="MsgContent" ColumnName="MsgContent" />
+                <ScalarProperty Name="Subject" ColumnName="Subject" />
+                <ScalarProperty Name="MsgID" ColumnName="MsgID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Notifications">
             <EntityTypeMapping TypeName="SSKModel.Notification">
               <MappingFragment StoreEntitySet="Notifications">
-                <ScalarProperty Name="NotificationID" ColumnName="NotificationID" />
-                <ScalarProperty Name="Datetime" ColumnName="Datetime" />
-                <ScalarProperty Name="FromUserId" ColumnName="FromUserId" />
-                <ScalarProperty Name="ToUserId" ColumnName="ToUserId" />
-                <ScalarProperty Name="Subject" ColumnName="Subject" />
-                <ScalarProperty Name="Content" ColumnName="Content" />
-                <ScalarProperty Name="IsRead" ColumnName="IsRead" />
-                <ScalarProperty Name="IsFromSupervisee" ColumnName="IsFromSupervisee" />
-                <ScalarProperty Name="Source" ColumnName="Source" />
-                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="Priority" ColumnName="Priority" />
                 <ScalarProperty Name="notification_code" ColumnName="notification_code" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="RecID" ColumnName="RecID" />
+                <ScalarProperty Name="Source" ColumnName="Source" />
+                <ScalarProperty Name="IsFromSupervisee" ColumnName="IsFromSupervisee" />
+                <ScalarProperty Name="IsRead" ColumnName="IsRead" />
+                <ScalarProperty Name="Content" ColumnName="Content" />
+                <ScalarProperty Name="Subject" ColumnName="Subject" />
+                <ScalarProperty Name="ToUserId" ColumnName="ToUserId" />
+                <ScalarProperty Name="FromUserId" ColumnName="FromUserId" />
+                <ScalarProperty Name="Datetime" ColumnName="Datetime" />
+                <ScalarProperty Name="NotificationID" ColumnName="NotificationID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="OperationSettings">
             <EntityTypeMapping TypeName="SSKModel.OperationSetting">
               <MappingFragment StoreEntitySet="OperationSettings">
-                <ScalarProperty Name="DayOfWeek" ColumnName="DayOfWeek" />
-                <ScalarProperty Name="Morning_Open_Time" ColumnName="Morning_Open_Time" />
-                <ScalarProperty Name="Morning_Close_Time" ColumnName="Morning_Close_Time" />
-                <ScalarProperty Name="Morning_Spare_Slots" ColumnName="Morning_Spare_Slots" />
-                <ScalarProperty Name="Morning_Interval" ColumnName="Morning_Interval" />
-                <ScalarProperty Name="Morning_MaximumSupervisee" ColumnName="Morning_MaximumSupervisee" />
-                <ScalarProperty Name="Morning_Is_Closed" ColumnName="Morning_Is_Closed" />
-                <ScalarProperty Name="Afternoon_Open_Time" ColumnName="Afternoon_Open_Time" />
-                <ScalarProperty Name="Afternoon_Close_Time" ColumnName="Afternoon_Close_Time" />
-                <ScalarProperty Name="Afternoon_Spare_Slots" ColumnName="Afternoon_Spare_Slots" />
-                <ScalarProperty Name="Afternoon_Interval" ColumnName="Afternoon_Interval" />
-                <ScalarProperty Name="Afternoon_MaximumSupervisee" ColumnName="Afternoon_MaximumSupervisee" />
-                <ScalarProperty Name="Afternoon_Is_Closed" ColumnName="Afternoon_Is_Closed" />
-                <ScalarProperty Name="Evening_Open_Time" ColumnName="Evening_Open_Time" />
-                <ScalarProperty Name="Evening_Close_Time" ColumnName="Evening_Close_Time" />
-                <ScalarProperty Name="Evening_Spare_Slots" ColumnName="Evening_Spare_Slots" />
-                <ScalarProperty Name="Evening_Interval" ColumnName="Evening_Interval" />
-                <ScalarProperty Name="Evening_MaximumSupervisee" ColumnName="Evening_MaximumSupervisee" />
-                <ScalarProperty Name="Evening_Is_Closed" ColumnName="Evening_Is_Closed" />
-                <ScalarProperty Name="Last_Updated_By" ColumnName="Last_Updated_By" />
-                <ScalarProperty Name="Last_Updated_Date" ColumnName="Last_Updated_Date" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Last_Updated_Date" ColumnName="Last_Updated_Date" />
+                <ScalarProperty Name="Last_Updated_By" ColumnName="Last_Updated_By" />
+                <ScalarProperty Name="Evening_Is_Closed" ColumnName="Evening_Is_Closed" />
+                <ScalarProperty Name="Evening_MaximumSupervisee" ColumnName="Evening_MaximumSupervisee" />
+                <ScalarProperty Name="Evening_Interval" ColumnName="Evening_Interval" />
+                <ScalarProperty Name="Evening_Spare_Slots" ColumnName="Evening_Spare_Slots" />
+                <ScalarProperty Name="Evening_Close_Time" ColumnName="Evening_Close_Time" />
+                <ScalarProperty Name="Evening_Open_Time" ColumnName="Evening_Open_Time" />
+                <ScalarProperty Name="Afternoon_Is_Closed" ColumnName="Afternoon_Is_Closed" />
+                <ScalarProperty Name="Afternoon_MaximumSupervisee" ColumnName="Afternoon_MaximumSupervisee" />
+                <ScalarProperty Name="Afternoon_Interval" ColumnName="Afternoon_Interval" />
+                <ScalarProperty Name="Afternoon_Spare_Slots" ColumnName="Afternoon_Spare_Slots" />
+                <ScalarProperty Name="Afternoon_Close_Time" ColumnName="Afternoon_Close_Time" />
+                <ScalarProperty Name="Afternoon_Open_Time" ColumnName="Afternoon_Open_Time" />
+                <ScalarProperty Name="Morning_Is_Closed" ColumnName="Morning_Is_Closed" />
+                <ScalarProperty Name="Morning_MaximumSupervisee" ColumnName="Morning_MaximumSupervisee" />
+                <ScalarProperty Name="Morning_Interval" ColumnName="Morning_Interval" />
+                <ScalarProperty Name="Morning_Spare_Slots" ColumnName="Morning_Spare_Slots" />
+                <ScalarProperty Name="Morning_Close_Time" ColumnName="Morning_Close_Time" />
+                <ScalarProperty Name="Morning_Open_Time" ColumnName="Morning_Open_Time" />
+                <ScalarProperty Name="DayOfWeek" ColumnName="DayOfWeek" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="OperationSettings_ChangeHist">
             <EntityTypeMapping TypeName="SSKModel.OperationSettings_ChangeHist">
               <MappingFragment StoreEntitySet="OperationSettings_ChangeHist">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="DayOfWeek" ColumnName="DayOfWeek" />
-                <ScalarProperty Name="LastUpdatedDate" ColumnName="LastUpdatedDate" />
-                <ScalarProperty Name="LastUpdatedBy" ColumnName="LastUpdatedBy" />
                 <ScalarProperty Name="ChangeDetails" ColumnName="ChangeDetails" />
+                <ScalarProperty Name="LastUpdatedBy" ColumnName="LastUpdatedBy" />
+                <ScalarProperty Name="LastUpdatedDate" ColumnName="LastUpdatedDate" />
+                <ScalarProperty Name="DayOfWeek" ColumnName="DayOfWeek" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="QueueDetails">
             <EntityTypeMapping TypeName="SSKModel.QueueDetail">
               <MappingFragment StoreEntitySet="QueueDetails">
-                <ScalarProperty Name="Queue_ID" ColumnName="Queue_ID" />
-                <ScalarProperty Name="Station" ColumnName="Station" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="Message" ColumnName="Message" />
                 <ScalarProperty Name="LastUpdatedDate" ColumnName="LastUpdatedDate" />
+                <ScalarProperty Name="Message" ColumnName="Message" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Station" ColumnName="Station" />
+                <ScalarProperty Name="Queue_ID" ColumnName="Queue_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Queues">
             <EntityTypeMapping TypeName="SSKModel.Queue">
               <MappingFragment StoreEntitySet="Queues">
-                <ScalarProperty Name="Queue_ID" ColumnName="Queue_ID" />
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
-                <ScalarProperty Name="Timeslot_ID" ColumnName="Timeslot_ID" />
-                <ScalarProperty Name="Appointment_ID" ColumnName="Appointment_ID" />
-                <ScalarProperty Name="CurrentStation" ColumnName="CurrentStation" />
-                <ScalarProperty Name="Outcome" ColumnName="Outcome" />
-                <ScalarProperty Name="CreatedTime" ColumnName="CreatedTime" />
-                <ScalarProperty Name="QueuedNumber" ColumnName="QueuedNumber" />
-                <ScalarProperty Name="Created_By" ColumnName="Created_By" />
-                <ScalarProperty Name="Note" ColumnName="Note" />
                 <ScalarProperty Name="LastUpdatedDate" ColumnName="LastUpdatedDate" />
+                <ScalarProperty Name="Note" ColumnName="Note" />
+                <ScalarProperty Name="Created_By" ColumnName="Created_By" />
+                <ScalarProperty Name="QueuedNumber" ColumnName="QueuedNumber" />
+                <ScalarProperty Name="CreatedTime" ColumnName="CreatedTime" />
+                <ScalarProperty Name="Outcome" ColumnName="Outcome" />
+                <ScalarProperty Name="CurrentStation" ColumnName="CurrentStation" />
+                <ScalarProperty Name="Appointment_ID" ColumnName="Appointment_ID" />
+                <ScalarProperty Name="Timeslot_ID" ColumnName="Timeslot_ID" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="Queue_ID" ColumnName="Queue_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Recipients">
+            <EntityTypeMapping TypeName="SSKModel.Recipient">
+              <MappingFragment StoreEntitySet="Recipients">
+                <ScalarProperty Name="DeliveryStatus" ColumnName="DeliveryStatus" />
+                <ScalarProperty Name="SMS" ColumnName="SMS" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="MsgID" ColumnName="MsgID" />
+                <ScalarProperty Name="RecID" ColumnName="RecID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Security_QA">
             <EntityTypeMapping TypeName="SSKModel.Security_QA">
               <MappingFragment StoreEntitySet="Security_QA">
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
-                <ScalarProperty Name="Question" ColumnName="Question" />
-                <ScalarProperty Name="Answer" ColumnName="Answer" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="LastUpdatedBy" ColumnName="LastUpdatedBy" />
                 <ScalarProperty Name="LastUpdatedDate" ColumnName="LastUpdatedDate" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="SentMessages">
-            <EntityTypeMapping TypeName="SSKModel.SentMessage">
-              <MappingFragment StoreEntitySet="SentMessages">
-                <ScalarProperty Name="MsgID" ColumnName="MsgID" />
-                <ScalarProperty Name="Subject" ColumnName="Subject" />
-                <ScalarProperty Name="MsgContent" ColumnName="MsgContent" />
-                <ScalarProperty Name="DelileryStatus" ColumnName="DelileryStatus" />
-                <ScalarProperty Name="DeliveryDateTime" ColumnName="DeliveryDateTime" />
-                <ScalarProperty Name="SMS" ColumnName="SMS" />
-                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="LastUpdatedBy" ColumnName="LastUpdatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Answer" ColumnName="Answer" />
+                <ScalarProperty Name="Question" ColumnName="Question" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -2442,98 +2584,44 @@
           <EntitySetMapping Name="Settings">
             <EntityTypeMapping TypeName="SSKModel.Setting">
               <MappingFragment StoreEntitySet="Settings">
-                <ScalarProperty Name="Year" ColumnName="Year" />
-                <ScalarProperty Name="CompanyName" ColumnName="CompanyName" />
-                <ScalarProperty Name="VenueName" ColumnName="VenueName" />
-                <ScalarProperty Name="MaxCardNumber" ColumnName="MaxCardNumber" />
-                <ScalarProperty Name="MaxMarkingNo" ColumnName="MaxMarkingNo" />
-                <ScalarProperty Name="Address" ColumnName="Address" />
                 <ScalarProperty Name="ContactNumber" ColumnName="ContactNumber" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="MaxMarkingNo" ColumnName="MaxMarkingNo" />
+                <ScalarProperty Name="MaxCardNumber" ColumnName="MaxCardNumber" />
+                <ScalarProperty Name="VenueName" ColumnName="VenueName" />
+                <ScalarProperty Name="CompanyName" ColumnName="CompanyName" />
+                <ScalarProperty Name="Year" ColumnName="Year" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="SMS_LOG">
             <EntityTypeMapping TypeName="SSKModel.SMS_LOG">
               <MappingFragment StoreEntitySet="SMS_LOG">
-                <ScalarProperty Name="SMS_LOG_ID" ColumnName="SMS_LOG_ID" />
-                <ScalarProperty Name="SMS_MSG" ColumnName="SMS_MSG" />
-                <ScalarProperty Name="SMS_FROM_ADDR" ColumnName="SMS_FROM_ADDR" />
-                <ScalarProperty Name="SMS_TO_ADDR" ColumnName="SMS_TO_ADDR" />
-                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
-                <ScalarProperty Name="CREATED_TIME" ColumnName="CREATED_TIME" />
-                <ScalarProperty Name="LAST_UPDATED_BY" ColumnName="LAST_UPDATED_BY" />
                 <ScalarProperty Name="LAST_UPDATED_TIME" ColumnName="LAST_UPDATED_TIME" />
+                <ScalarProperty Name="LAST_UPDATED_BY" ColumnName="LAST_UPDATED_BY" />
+                <ScalarProperty Name="CREATED_TIME" ColumnName="CREATED_TIME" />
+                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+                <ScalarProperty Name="SMS_TO_ADDR" ColumnName="SMS_TO_ADDR" />
+                <ScalarProperty Name="SMS_FROM_ADDR" ColumnName="SMS_FROM_ADDR" />
+                <ScalarProperty Name="SMS_MSG" ColumnName="SMS_MSG" />
+                <ScalarProperty Name="SMS_LOG_ID" ColumnName="SMS_LOG_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Timeslots">
             <EntityTypeMapping TypeName="SSKModel.Timeslot">
               <MappingFragment StoreEntitySet="Timeslots">
-                <ScalarProperty Name="Timeslot_ID" ColumnName="Timeslot_ID" />
-                <ScalarProperty Name="Category" ColumnName="Category" />
-                <ScalarProperty Name="Date" ColumnName="Date" />
-                <ScalarProperty Name="StartTime" ColumnName="StartTime" />
-                <ScalarProperty Name="EndTime" ColumnName="EndTime" />
-                <ScalarProperty Name="MaximumSupervisee" ColumnName="MaximumSupervisee" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="LastUpdatedBy" ColumnName="LastUpdatedBy" />
-                <ScalarProperty Name="LastUpdatedDate" ColumnName="LastUpdatedDate" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="UploadedDocuments">
-            <EntityTypeMapping TypeName="SSKModel.UploadedDocument">
-              <MappingFragment StoreEntitySet="UploadedDocuments">
-                <ScalarProperty Name="Document_ID" ColumnName="Document_ID" />
-                <ScalarProperty Name="DocumentName" ColumnName="DocumentName" />
-                <ScalarProperty Name="UploadedBy" ColumnName="UploadedBy" />
-                <ScalarProperty Name="UploadedDate" ColumnName="UploadedDate" />
-                <ScalarProperty Name="Extension" ColumnName="Extension" />
-                <ScalarProperty Name="DocumentContent" ColumnName="DocumentContent" />
-                <ScalarProperty Name="Note" ColumnName="Note" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="User_Profiles">
-            <EntityTypeMapping TypeName="SSKModel.User_Profiles">
-              <MappingFragment StoreEntitySet="User_Profiles">
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
-                <ScalarProperty Name="Primary_Phone" ColumnName="Primary_Phone" />
-                <ScalarProperty Name="Secondary_Phone" ColumnName="Secondary_Phone" />
-                <ScalarProperty Name="Primary_Email" ColumnName="Primary_Email" />
-                <ScalarProperty Name="Secondary_Email" ColumnName="Secondary_Email" />
-                <ScalarProperty Name="DOB" ColumnName="DOB" />
-                <ScalarProperty Name="Nationality" ColumnName="Nationality" />
-                <ScalarProperty Name="Maritial_Status" ColumnName="Maritial_Status" />
-                <ScalarProperty Name="Residential_Addess_ID" ColumnName="Residential_Addess_ID" />
-                <ScalarProperty Name="Other_Address_ID" ColumnName="Other_Address_ID" />
-                <ScalarProperty Name="NextOfKin_Name" ColumnName="NextOfKin_Name" />
-                <ScalarProperty Name="NextOfKin_Contact_Number" ColumnName="NextOfKin_Contact_Number" />
-                <ScalarProperty Name="NextOfKin_Relationship" ColumnName="NextOfKin_Relationship" />
-                <ScalarProperty Name="NextOfKin_BlkHouse_Number" ColumnName="NextOfKin_BlkHouse_Number" />
-                <ScalarProperty Name="NextOfKin_FlrUnit_Number" ColumnName="NextOfKin_FlrUnit_Number" />
-                <ScalarProperty Name="NextOfKin_Street_Name" ColumnName="NextOfKin_Street_Name" />
-                <ScalarProperty Name="NextOfKin_Country" ColumnName="NextOfKin_Country" />
-                <ScalarProperty Name="NextOfKin_PostalCode" ColumnName="NextOfKin_PostalCode" />
-                <ScalarProperty Name="Employment_Name" ColumnName="Employment_Name" />
-                <ScalarProperty Name="Employment_Contact_Number" ColumnName="Employment_Contact_Number" />
-                <ScalarProperty Name="Employment_Company_Name" ColumnName="Employment_Company_Name" />
-                <ScalarProperty Name="Employment_Job_Title" ColumnName="Employment_Job_Title" />
-                <ScalarProperty Name="Employment_Start_Date" ColumnName="Employment_Start_Date" />
-                <ScalarProperty Name="Employment_End_Date" ColumnName="Employment_End_Date" />
-                <ScalarProperty Name="Employment_Remarks" ColumnName="Employment_Remarks" />
-                <ScalarProperty Name="User_Photo1" ColumnName="User_Photo1" />
-                <ScalarProperty Name="User_Photo2" ColumnName="User_Photo2" />
-                <ScalarProperty Name="Serial_Number" ColumnName="Serial_Number" />
-                <ScalarProperty Name="Date_of_Issue" ColumnName="Date_of_Issue" />
-                <ScalarProperty Name="Expired_Date" ColumnName="Expired_Date" />
-                <ScalarProperty Name="Gender" ColumnName="Gender" />
-                <ScalarProperty Name="Race" ColumnName="Race" />
-                <ScalarProperty Name="RightThumb_Photo" ColumnName="RightThumb_Photo" />
-                <ScalarProperty Name="LeftThumb_Photo" ColumnName="LeftThumb_Photo" />
-                <ScalarProperty Name="Document_ID" ColumnName="Document_ID" />
+                <ScalarProperty Name="LastUpdatedDate" ColumnName="LastUpdatedDate" />
+                <ScalarProperty Name="LastUpdatedBy" ColumnName="LastUpdatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="MaximumSupervisee" ColumnName="MaximumSupervisee" />
+                <ScalarProperty Name="EndTime" ColumnName="EndTime" />
+                <ScalarProperty Name="StartTime" ColumnName="StartTime" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="Category" ColumnName="Category" />
+                <ScalarProperty Name="Timeslot_ID" ColumnName="Timeslot_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -2546,6 +2634,77 @@
                 <ScalarProperty Name="TransactionCode" ColumnName="TransactionCode" />
                 <ScalarProperty Name="NRIC" ColumnName="NRIC" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UploadedDocumentDetails">
+            <EntityTypeMapping TypeName="SSKModel.UploadedDocumentDetail">
+              <MappingFragment StoreEntitySet="UploadedDocumentDetails">
+                <ScalarProperty Name="DocumentContent" ColumnName="DocumentContent" />
+                <ScalarProperty Name="Document_ID" ColumnName="Document_ID" />
+                <ScalarProperty Name="DocumentDetail_ID" ColumnName="DocumentDetail_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UploadedDocuments">
+            <EntityTypeMapping TypeName="SSKModel.UploadedDocument">
+              <MappingFragment StoreEntitySet="UploadedDocuments">
+                <ScalarProperty Name="DocStatus" ColumnName="DocStatus" />
+                <ScalarProperty Name="Note" ColumnName="Note" />
+                <ScalarProperty Name="Extension" ColumnName="Extension" />
+                <ScalarProperty Name="UploadedDate" ColumnName="UploadedDate" />
+                <ScalarProperty Name="UploadedBy" ColumnName="UploadedBy" />
+                <ScalarProperty Name="DocumentName" ColumnName="DocumentName" />
+                <ScalarProperty Name="Document_ID" ColumnName="Document_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="User_Profiles">
+            <EntityTypeMapping TypeName="SSKModel.User_Profiles">
+              <MappingFragment StoreEntitySet="User_Profiles">
+                <ScalarProperty Name="DOB_FailAttempt" ColumnName="DOB_FailAttempt" />
+                <ScalarProperty Name="ForgetPass_FailAttempt" ColumnName="ForgetPass_FailAttempt" />
+                <ScalarProperty Name="PrbEndingDate" ColumnName="PrbEndingDate" />
+                <ScalarProperty Name="PrbStratingDate" ColumnName="PrbStratingDate" />
+                <ScalarProperty Name="VistingFrequency" ColumnName="VistingFrequency" />
+                <ScalarProperty Name="Venue" ColumnName="Venue" />
+                <ScalarProperty Name="Document_ID" ColumnName="Document_ID" />
+                <ScalarProperty Name="LeftThumb_Photo" ColumnName="LeftThumb_Photo" />
+                <ScalarProperty Name="RightThumb_Photo" ColumnName="RightThumb_Photo" />
+                <ScalarProperty Name="Race" ColumnName="Race" />
+                <ScalarProperty Name="Gender" ColumnName="Gender" />
+                <ScalarProperty Name="Expired_Date" ColumnName="Expired_Date" />
+                <ScalarProperty Name="Date_of_Issue" ColumnName="Date_of_Issue" />
+                <ScalarProperty Name="Serial_Number" ColumnName="Serial_Number" />
+                <ScalarProperty Name="User_Photo2" ColumnName="User_Photo2" />
+                <ScalarProperty Name="User_Photo1" ColumnName="User_Photo1" />
+                <ScalarProperty Name="Employment_Remarks" ColumnName="Employment_Remarks" />
+                <ScalarProperty Name="Employment_End_Date" ColumnName="Employment_End_Date" />
+                <ScalarProperty Name="Employment_Start_Date" ColumnName="Employment_Start_Date" />
+                <ScalarProperty Name="Employment_Job_Title" ColumnName="Employment_Job_Title" />
+                <ScalarProperty Name="Employment_Company_Name" ColumnName="Employment_Company_Name" />
+                <ScalarProperty Name="Employment_Contact_Number" ColumnName="Employment_Contact_Number" />
+                <ScalarProperty Name="Employment_Name" ColumnName="Employment_Name" />
+                <ScalarProperty Name="NextOfKin_PostalCode" ColumnName="NextOfKin_PostalCode" />
+                <ScalarProperty Name="NextOfKin_Country" ColumnName="NextOfKin_Country" />
+                <ScalarProperty Name="NextOfKin_Street_Name" ColumnName="NextOfKin_Street_Name" />
+                <ScalarProperty Name="NextOfKin_FlrUnit_Number" ColumnName="NextOfKin_FlrUnit_Number" />
+                <ScalarProperty Name="NextOfKin_BlkHouse_Number" ColumnName="NextOfKin_BlkHouse_Number" />
+                <ScalarProperty Name="NextOfKin_Relationship" ColumnName="NextOfKin_Relationship" />
+                <ScalarProperty Name="NextOfKin_Contact_Number" ColumnName="NextOfKin_Contact_Number" />
+                <ScalarProperty Name="NextOfKin_DOB" ColumnName="NextOfKin_DOB" />
+                <ScalarProperty Name="NextOfKin_Name" ColumnName="NextOfKin_Name" />
+                <ScalarProperty Name="NextOfKin_Nricno" ColumnName="NextOfKin_Nricno" />
+                <ScalarProperty Name="Other_Address_ID" ColumnName="Other_Address_ID" />
+                <ScalarProperty Name="Residential_Addess_ID" ColumnName="Residential_Addess_ID" />
+                <ScalarProperty Name="Maritial_Status" ColumnName="Maritial_Status" />
+                <ScalarProperty Name="Nationality" ColumnName="Nationality" />
+                <ScalarProperty Name="DOB" ColumnName="DOB" />
+                <ScalarProperty Name="Secondary_Email" ColumnName="Secondary_Email" />
+                <ScalarProperty Name="Primary_Email" ColumnName="Primary_Email" />
+                <ScalarProperty Name="Secondary_Phone" ColumnName="Secondary_Phone" />
+                <ScalarProperty Name="Primary_Phone" ColumnName="Primary_Phone" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

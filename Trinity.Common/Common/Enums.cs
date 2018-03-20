@@ -412,13 +412,6 @@ public static class EnumIssuedCards
     public const string Inactive = "Inactive";
 };
 
-public static class EnumOutcome
-{
-    public const string Processing = "Processing...";
-    public const string GetQueue = "Get Queue Number";
-
-};
-
 public enum EnumResponseStatuses
 {
     /// <summary>
@@ -508,6 +501,7 @@ public static class EnumQueueOutcomeText
     public const string Processing = "Processing...";
     public const string UnconditionalRelease = "Unconditional Release";
     public const string TapSmartCardToContinue = "Tap smart card to continue";
+    public const string GetQueue = "Get Queue Number";
 }
 
 public static class EnumUTResult
@@ -540,4 +534,16 @@ public enum EnumDeviceStatusSumary
     Ready = 1,
     Caution = 2,
     Error = 3,
+}
+
+public static class EnumDOTabName
+{
+    public const string Queue = "Queue";
+    public const string Alerts = "Alerts";
+    public const string Appointments = "Appointments";
+    public const string Blocked = "Blocked";
+    public const string Statistics = "Statistics";
+    public const string MUBLabel = "MUBLabel";
+    public const string UBLabel = "UBLabel";
+    public const string Settings = "Settings";
 }

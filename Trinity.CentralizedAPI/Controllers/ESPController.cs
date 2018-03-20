@@ -67,9 +67,10 @@ namespace Trinity.BackendAPI.Controllers
 
         [HttpPost]
         [Custom(IgnoreParameter = "markingnumber,requestDate,NotificationID")]
-        public IHttpActionResult InsertNotification([FromBody] ESPModel data)
+        public async System.Threading.Tasks.Task<IHttpActionResult> InsertNotification([FromBody] ESPModel data)
         {
             string IDNoti = new DAL.DAL_Notification().SSPInsert(data.Source, data.Type, data.Content, data.Datetime.Value, data.notification_code);
+            await System.Threading.Tasks.Task.Run(() => Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(null, "ESP Insert Noti", data.Content, data.Type));
             return Ok(IDNoti);
         }
 

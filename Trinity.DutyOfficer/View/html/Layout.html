@@ -57,42 +57,42 @@
         <div class="col menu-item d-flex justify-content-center" onclick="api.server.LoadPage('Queue.html')">
             <span class="icon"><img src="../img/icon-Q.png" /></span>
             <span class="icon-active"><img src="../img/icon-Q-active.png" /></span>
-            <span id="Queue" item-menu="Queue"></span>
+            <span id="Queue" item-menu="Queue" text-menu="Queue"></span>
         </div>
         <div class="col menu-item d-flex justify-content-center" onclick="api.server.LoadPage('Alerts.html')">
             <span class="icon"><img src="../img/icon-alerts.png" /></span>
             <span class="icon-active"><img src="../img/icon-alerts-active.png" /></span>
-            <span id="Alerts" item-menu="Alerts"><span class="notifyCount">10+</span></span>
+            <span id="Alerts" item-menu="Alerts" text-menu="Alerts"><span class="notifyCount">10+</span></span>
         </div>
         <div class="col menu-item d-flex justify-content-center" onclick="api.server.LoadPage('Appointments.html')">
             <span class="icon"><img src="../img/icon-Appt.png" /></span>
             <span class="icon-active"><img src="../img/icon-Appt-active.png" /></span>
-            <span id="Appointments" item-menu="Appointments"></span>
+            <span id="Appointments" item-menu="Appointments" text-menu="Appointments"></span>
         </div>
         <div class="col menu-item d-flex justify-content-center" onclick="api.server.LoadPage('Blocked.html')">
             <span class="icon"><img src="../img/icon-block.png" /></span>
             <span class="icon-active"><img src="../img/icon-block-active.png" /></span>
-            <span id="Blocked" item-menu="Blocked"></span>
+            <span id="Blocked" item-menu="Blocked" text-menu="Blocked"></span>
         </div>
         <div class="col menu-item d-flex justify-content-center" onclick="api.server.LoadPage('Statistics.html')">
             <span class="icon"><img src="../img/icon-stats.png" /></span>
             <span class="icon-active"><img src="../img/icon-stats-active.png" /></span>
-            <span id="Statistics" item-menu="Statistics"></span>
+            <span id="Statistics" item-menu="Statistics" text-menu="Statistics"></span>
         </div>
         <div class="col menu-item d-flex justify-content-center" onclick="api.server.LoadPage('MUBAndTTlabel.html')">
             <span class="icon"><img src="../img/icon-MUBTT.png" /></span>
             <span class="icon-active"><img src="../img/icon-MUBTT-active.png" /></span>
-            <span id="MUB" item-menu="MUB/TT Lablels"></span>
+            <span id="MUBLabel" item-menu="MUBLabel" text-menu="MUB/TT Labels"></span>
         </div>
         <div class="col menu-item d-flex justify-content-center" onclick="api.server.LoadPage('UBlabel.html')">
             <span class="icon"><img src="../img/icon-UB.png" /></span>
             <span class="icon-active"><img src="../img/icon-UB-active.png" /></span>
-            <span id="UB" item-menu="UB Lablels"></span>
+            <span id="UBLabel" item-menu="UBLabel" text-menu="UB Labels"></span>
         </div>
         <div class="col menu-item d-flex justify-content-center" onclick="api.server.LoadPage('Settings.html')">
             <span class="icon"><img src="../img/icon-settings.png" /></span>
             <span class="icon-active"><img src="../img/icon-settings-active.png" /></span>
-            <span id="Settings" item-menu="Settings"></span>
+            <span id="Settings" item-menu="Settings" text-menu="Settings"></span>
         </div>
     </div>
 
@@ -110,31 +110,18 @@
 </html>
 <script type="text/javascript">
     api.ready(function () {
+        LoadStationColorDevice();
+        $(".notifyCount").hide();
+        window.setInterval(function () {
+            LoadStationColorDevice();
+        }, 900000); // Auto call this to update color station every 15 mins
+    });
+    function LoadStationColorDevice() {
         api.server.GetStationClolorDevice(function (data) {
             $('#colorStatus_SSK').css("background-color", data.SSKColor);
             $('#colorStatus_SSA').css("background-color", data.SSAColor);
             $('#colorStatus_UHP').css("background-color", data.UHPColor);
             $('#colorStatus_ESP').css("background-color", data.ESPColor);
         });
-
-        $(".notifyCount").hide();
-
-        window.setInterval(function () {
-            api.server.GetStationClolorDevice(function (data) {
-                $('#colorStatus_SSK').css("background-color", data.SSKColor);
-                $('#colorStatus_SSA').css("background-color", data.SSAColor);
-                $('#colorStatus_UHP').css("background-color", data.UHPColor);
-                $('#colorStatus_ESP').css("background-color", data.ESPColor);
-            });  
-        }, 900000); // Auto call this to update color station every 15 mins
-
-        function LoadStationColorDevice() {
-            api.server.GetStationClolorDevice(function (data) {
-                $('#colorStatus_SSK').css("background-color", data.SSKColor);
-                $('#colorStatus_SSA').css("background-color", data.SSAColor);
-                $('#colorStatus_UHP').css("background-color", data.UHPColor);
-                $('#colorStatus_ESP').css("background-color", data.ESPColor);
-            });
-        };        
-    });
+    };   
 </script>

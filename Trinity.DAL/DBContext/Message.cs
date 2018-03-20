@@ -12,12 +12,12 @@ namespace Trinity.DAL.DBContext
     using System;
     using System.Collections.Generic;
     
-    public partial class SentMessage
+    public partial class Message
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public SentMessage()
+        public Message()
         {
-            this.MsgRecipients = new HashSet<MsgRecipient>();
+            this.Recipients = new HashSet<Recipient>();
         }
     
         public int MsgID { get; set; }
@@ -29,8 +29,8 @@ namespace Trinity.DAL.DBContext
         public Nullable<bool> Email { get; set; }
         public string UserId { get; set; }
     
+        public virtual Membership_Users Membership_Users { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<MsgRecipient> MsgRecipients { get; set; }
-        public virtual User_Profiles User_Profiles { get; set; }
+        public virtual ICollection<Recipient> Recipients { get; set; }
     }
 }
