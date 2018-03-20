@@ -751,101 +751,37 @@ namespace Trinity.DAL
 
         public int UpdateQueueStatusByUserId(string userId, string currentStation, string statusCurrentStattion, string nextStation, string statusNextStation, string messageNextStation, string outcome)
         {
-            try
-            {
-                if (EnumAppConfig.IsLocal)
-                {
-                    DBContext.Queue dbQueue = _localUnitOfWork.DataContext.Queues.Include("Appointment").FirstOrDefault(d => d.Appointment.UserId == userId && DbFunctions.TruncateTime(d.CreatedTime).Value == DateTime.Today);
+            DBContext.Queue dbQueue = _localUnitOfWork.DataContext.Queues.Include("Appointment").FirstOrDefault(d => d.Appointment.UserId == userId && DbFunctions.TruncateTime(d.CreatedTime).Value == DateTime.Today);
 
-                    if (dbQueue == null)
-                        return 0;
-
-                    dbQueue.CurrentStation = nextStation;
-                    if (!string.IsNullOrEmpty(outcome))
-                    {
-                        dbQueue.Outcome = outcome;
-                    }
-                    DBContext.QueueDetail dbQueueDetailCurrent = _localUnitOfWork.DataContext.QueueDetails.FirstOrDefault(d => d.Queue_ID == dbQueue.Queue_ID && d.Station == currentStation);
-                    if (dbQueueDetailCurrent != null)
-                    {
-                        dbQueueDetailCurrent.Status = statusCurrentStattion;
-                        _localUnitOfWork.GetRepository<DBContext.QueueDetail>().Update(dbQueueDetailCurrent);
-                    }
-
-                    DBContext.QueueDetail dbQueueDetailNextStation = _localUnitOfWork.DataContext.QueueDetails.FirstOrDefault(d => d.Queue_ID == dbQueue.Queue_ID && d.Station == nextStation);
-                    if (dbQueueDetailNextStation != null)
-                    {
-                        dbQueueDetailNextStation.Status = statusNextStation;
-                        dbQueueDetailNextStation.Message = messageNextStation;
-
-                        _localUnitOfWork.GetRepository<DBContext.QueueDetail>().Update(dbQueueDetailNextStation);
-                    }
-
-                    _localUnitOfWork.GetRepository<DBContext.Queue>().Update(dbQueue);
-
-                    var result = _localUnitOfWork.Save();
-
-                    return result;
-                    //if (EnumAppConfig.ByPassCentralizedDB)
-                    //{
-                    //    return result;
-                    //}
-                    //else
-                    //{
-                    //    bool centralizeStatus;
-                    //    var centralData = CallCentralized.Post<int>(EnumAPIParam.QueueNumber, "UpdateQueueStatusByUserId", out centralizeStatus, "userId=" + userId, "currentStation=" + currentStation, "nextStation=" + nextStation, "status=" + status, "outcome=" + outcome);
-                    //    if (centralizeStatus)
-                    //    {
-                    //        return centralData;
-                    //    }
-                    //    else
-                    //    {
-                    //        throw new Exception(EnumMessage.NotConnectCentralized);
-                    //    }
-                    //}
-                }
-                else
-                {
-                    DBContext.Queue dbQueue = _centralizedUnitOfWork.DataContext.Queues.Include("Appointment").FirstOrDefault(d => d.Appointment.UserId == userId && DbFunctions.TruncateTime(d.CreatedTime).Value == DateTime.Today);
-
-                    if (dbQueue == null)
-                        return 0;
-
-                    dbQueue.CurrentStation = nextStation;
-                    if (!string.IsNullOrEmpty(outcome))
-                    {
-                        dbQueue.Outcome = outcome;
-                    }
-                    DBContext.QueueDetail dbQueueDetailCurrent = _centralizedUnitOfWork.DataContext.QueueDetails.FirstOrDefault(d => d.Queue_ID == dbQueue.Queue_ID && d.Station == currentStation);
-                    if (dbQueueDetailCurrent != null)
-                    {
-                        dbQueueDetailCurrent.Status = statusCurrentStattion;
-                        _centralizedUnitOfWork.GetRepository<DBContext.QueueDetail>().Update(dbQueueDetailCurrent);
-                    }
-
-                    DBContext.QueueDetail dbQueueDetailNextStation = _centralizedUnitOfWork.DataContext.QueueDetails.FirstOrDefault(d => d.Queue_ID == dbQueue.Queue_ID && d.Station == nextStation);
-                    if (dbQueueDetailNextStation != null)
-                    {
-                        dbQueueDetailNextStation.Status = statusNextStation;
-                        dbQueueDetailNextStation.Message = messageNextStation;
-
-                        _centralizedUnitOfWork.GetRepository<DBContext.QueueDetail>().Update(dbQueueDetailNextStation);
-                    }
-
-                    _centralizedUnitOfWork.GetRepository<DBContext.Queue>().Update(dbQueue);
-
-                    var result = _centralizedUnitOfWork.Save();
-
-                    return result;
-                }
-
-            }
-            catch (Exception)
-            {
-
+            if (dbQueue == null)
                 return 0;
+
+            dbQueue.CurrentStation = nextStation;
+            if (!string.IsNullOrEmpty(outcome))
+            {
+                dbQueue.Outcome = outcome;
+            }
+            DBContext.QueueDetail dbQueueDetailCurrent = _localUnitOfWork.DataContext.QueueDetails.FirstOrDefault(d => d.Queue_ID == dbQueue.Queue_ID && d.Station == currentStation);
+            if (dbQueueDetailCurrent != null)
+            {
+                dbQueueDetailCurrent.Status = statusCurrentStattion;
+                _localUnitOfWork.GetRepository<DBContext.QueueDetail>().Update(dbQueueDetailCurrent);
             }
 
+            DBContext.QueueDetail dbQueueDetailNextStation = _localUnitOfWork.DataContext.QueueDetails.FirstOrDefault(d => d.Queue_ID == dbQueue.Queue_ID && d.Station == nextStation);
+            if (dbQueueDetailNextStation != null)
+            {
+                dbQueueDetailNextStation.Status = statusNextStation;
+                dbQueueDetailNextStation.Message = messageNextStation;
+
+                _localUnitOfWork.GetRepository<DBContext.QueueDetail>().Update(dbQueueDetailNextStation);
+            }
+
+            _localUnitOfWork.GetRepository<DBContext.Queue>().Update(dbQueue);
+
+            var result = _localUnitOfWork.Save();
+
+            return result;
         }
 
         public int UpdateQueueOutcomeByQueueId(Guid queueId, string outcome)
