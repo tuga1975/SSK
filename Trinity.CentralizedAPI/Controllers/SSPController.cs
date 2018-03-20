@@ -28,10 +28,13 @@ namespace Trinity.BackendAPI.Controllers
     {
         [HttpPost]
         [Custom(IgnoreParameter = "NRIC,transaction_code")]
-        public IHttpActionResult Notification([FromBody]SSPModel data)
+        public async System.Threading.Tasks.Task<IHttpActionResult> Notification([FromBody]SSPModel data)
         {
             if (!string.IsNullOrEmpty(new DAL.DAL_Notification().SSPInsert(data.source, data.type, data.content, data.datetime, data.notification_code)))
+            {
+                await System.Threading.Tasks.Task.Run(() => Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(null,"SSP Insert Noti", data.content, data.type));
                 return Ok(true);
+            }
             else
                 return Ok(false);
         }
@@ -116,6 +119,8 @@ namespace Trinity.BackendAPI.Controllers
         [HttpGet]
         public async System.Threading.Tasks.Task<IHttpActionResult> Completion(string NRIC)
         {
+            var user = new DAL.DAL_User().GetByNRIC(NRIC);
+            new DAL.DAL_QueueNumber().UpdateQueueStatusByUserId(user.UserId, EnumStation.ESP, EnumQueueStatuses.Finished, EnumStation.DUTYOFFICER, EnumQueueStatuses.Processing, "Select outcome", EnumQueueOutcomeText.TapSmartCardToContinue);
             await System.Threading.Tasks.Task.Run(() => Trinity.SignalR.Client.Instance.SSPCompleted(NRIC));
             return Ok(true);
         }

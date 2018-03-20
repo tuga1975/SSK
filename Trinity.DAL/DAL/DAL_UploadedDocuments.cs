@@ -18,7 +18,7 @@ namespace Trinity.DAL
                 UploadedDate = DateTime.Now,
                 UploadedBy = UserID,
                 Document_ID = Guid.NewGuid(),
-                DocumentContent = content,
+                //DocumentContent = content,
                 Note = "--"
             };
             _localUnitOfWork.GetRepository<Trinity.DAL.DBContext.UploadedDocument>().Add(document);

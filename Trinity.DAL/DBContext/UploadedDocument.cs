@@ -18,6 +18,7 @@ namespace Trinity.DAL.DBContext
         public UploadedDocument()
         {
             this.AbsenceReportings = new HashSet<AbsenceReporting>();
+            this.UploadedDocumentDetails = new HashSet<UploadedDocumentDetail>();
             this.User_Profiles = new HashSet<User_Profiles>();
         }
     
@@ -26,11 +27,13 @@ namespace Trinity.DAL.DBContext
         public string UploadedBy { get; set; }
         public Nullable<System.DateTime> UploadedDate { get; set; }
         public string Extension { get; set; }
-        public byte[] DocumentContent { get; set; }
         public string Note { get; set; }
+        public string DocStatus { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AbsenceReporting> AbsenceReportings { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<UploadedDocumentDetail> UploadedDocumentDetails { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<User_Profiles> User_Profiles { get; set; }
     }

@@ -110,31 +110,18 @@
 </html>
 <script type="text/javascript">
     api.ready(function () {
+        LoadStationColorDevice();
+        $(".notifyCount").hide();
+        window.setInterval(function () {
+            LoadStationColorDevice();
+        }, 900000); // Auto call this to update color station every 15 mins
+    });
+    function LoadStationColorDevice() {
         api.server.GetStationClolorDevice(function (data) {
             $('#colorStatus_SSK').css("background-color", data.SSKColor);
             $('#colorStatus_SSA').css("background-color", data.SSAColor);
             $('#colorStatus_UHP').css("background-color", data.UHPColor);
             $('#colorStatus_ESP').css("background-color", data.ESPColor);
         });
-
-        $(".notifyCount").hide();
-
-        window.setInterval(function () {
-            api.server.GetStationClolorDevice(function (data) {
-                $('#colorStatus_SSK').css("background-color", data.SSKColor);
-                $('#colorStatus_SSA').css("background-color", data.SSAColor);
-                $('#colorStatus_UHP').css("background-color", data.UHPColor);
-                $('#colorStatus_ESP').css("background-color", data.ESPColor);
-            });  
-        }, 900000); // Auto call this to update color station every 15 mins
-
-        function LoadStationColorDevice() {
-            api.server.GetStationClolorDevice(function (data) {
-                $('#colorStatus_SSK').css("background-color", data.SSKColor);
-                $('#colorStatus_SSA').css("background-color", data.SSAColor);
-                $('#colorStatus_UHP').css("background-color", data.UHPColor);
-                $('#colorStatus_ESP').css("background-color", data.ESPColor);
-            });
-        };        
-    });
+    };   
 </script>
