@@ -780,7 +780,7 @@ namespace SSA
             }
             // Remove queue number and inform others
             //new DAL_QueueDetails().RemoveQueueFromSSK(currentUser.UserId);
-            Trinity.SignalR.Client.Instance.QueueCompleted(currentUser.UserId);
+            Trinity.SignalR.Client.Instance.SSACompleted(currentUser.UserId);
 
             //lblStatus.Text = "The door is fully close";
             this._web.RunScript("$('#mubStatus').css('color','#000').text('MUB and TT Labels Printing Completed. Logging out...');");

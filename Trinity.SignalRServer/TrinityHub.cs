@@ -80,6 +80,10 @@ namespace Trinity.NotificationServer
             {
                 Clients.Clients(Program.ProfileConnected.Where(d => d.isApp && d.Station == EnumStation.DUTYOFFICER).Select(d => d.ConnectionId).ToList()).OnNewNotification(notificationInfo);
             }
+            else if (notificationInfo.Name == NotificationNames.SSA_COMPLETED)
+            {
+                Clients.Clients(Program.ProfileConnected.Where(d => d.isApp && d.Station == EnumStation.DUTYOFFICER).Select(d => d.ConnectionId).ToList()).OnNewNotification(notificationInfo);
+            }
         }
 
         #region Connection functions

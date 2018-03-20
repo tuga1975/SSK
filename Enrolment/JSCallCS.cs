@@ -579,40 +579,50 @@ namespace Enrolment
         {
             if (result.Success)
             {
-                Session session = Session.Instance;
-                var userLogin = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-                var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
-                DAL_IssueCard dalIssueCard = new Trinity.DAL.DAL_IssueCard();
-                string SmartID = result.CardUID;
-                Trinity.BE.IssueCard IssueCard = new Trinity.BE.IssueCard()
+                try
                 {
-                    CreatedBy = userLogin.UserId,
-                    CreatedDate = DateTime.Now,
-                    Date_Of_Issue = _CardInfo.Date_Of_Issue,
-                    Name = currentEditUser.Membership_Users.Name,
-                    NRIC = currentEditUser.Membership_Users.NRIC,
-                    Reprint_Reason = string.Empty,
-                    Serial_Number = _CardInfo.CardNumberFull,
-                    Expired_Date = _CardInfo.Expired_Date,
-                    Status = EnumIssuedCards.Active,
-                    SmartCardId = SmartID,
-                    UserId = currentEditUser.User.UserId
-                };
-                dalIssueCard.Insert(IssueCard);
-                new DAL_Membership_Users().UpdateSmartCardId(currentEditUser.User.UserId, SmartID);
-                new DAL_User().ChangeUserStatus(currentEditUser.User.UserId, EnumUserStatuses.Enrolled);
-                new DAL_UserProfile().UpdateCardInfo(currentEditUser.User.UserId, _CardInfo.CardNumberFull, _CardInfo.Date_Of_Issue, _CardInfo.Expired_Date);
-                currentEditUser.UserProfile.Expired_Date = _CardInfo.Expired_Date;
-                currentEditUser.UserProfile.DateOfIssue = _CardInfo.Date_Of_Issue;
-                currentEditUser.UserProfile.SerialNumber = _CardInfo.CardNumberFull;
-                currentEditUser.Membership_Users.SmartCardId = SmartID;
-                this._web.InvokeScript("showPrintMessage", true, "Smart Card was printed successfully! Please collect the smart card from printer and place on the reader to verify.");
-                this._web.InvokeScript("showCardImages");
+                    Session session = Session.Instance;
+                    var userLogin = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+                    var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
+                    DAL_IssueCard dalIssueCard = new Trinity.DAL.DAL_IssueCard();
+                    string SmartID = result.CardUID;
+                    Trinity.BE.IssueCard IssueCard = new Trinity.BE.IssueCard()
+                    {
+                        CreatedBy = userLogin.UserId,
+                        CreatedDate = DateTime.Now,
+                        Date_Of_Issue = _CardInfo.Date_Of_Issue,
+                        Name = currentEditUser.Membership_Users.Name,
+                        NRIC = currentEditUser.Membership_Users.NRIC,
+                        Reprint_Reason = string.Empty,
+                        Serial_Number = _CardInfo.CardNumberFull,
+                        Expired_Date = _CardInfo.Expired_Date,
+                        Status = EnumIssuedCards.Active,
+                        SmartCardId = SmartID,
+                        UserId = currentEditUser.User.UserId
+                    };
+                    dalIssueCard.Insert(IssueCard);
+                    new DAL_Membership_Users().UpdateSmartCardId(currentEditUser.User.UserId, SmartID);
+                    new DAL_User().ChangeUserStatus(currentEditUser.User.UserId, EnumUserStatuses.Enrolled);
+                    new DAL_UserProfile().UpdateCardInfo(currentEditUser.User.UserId, _CardInfo.CardNumberFull, _CardInfo.Date_Of_Issue, _CardInfo.Expired_Date);
+                    currentEditUser.UserProfile.Expired_Date = _CardInfo.Expired_Date;
+                    currentEditUser.UserProfile.DateOfIssue = _CardInfo.Date_Of_Issue;
+                    currentEditUser.UserProfile.SerialNumber = _CardInfo.CardNumberFull;
+                    currentEditUser.Membership_Users.SmartCardId = SmartID;
+                    this._web.InvokeScript("showPrintMessage", true, "Smart Card was printed successfully! Please collect the smart card from printer and place on the reader to verify.");
+                    this._web.InvokeScript("showCardImages");
+                }
+                catch (Exception ex)
+                {
+                    var failMessage = EnumMessage.SmartCardIsAlreadyInUse;
+                    this._web.InvokeScript("showPrintMessage", false, failMessage);
+                }
+                
             }
             else
             {
                 var failMessage = "Cannot print smart card!";
                 this._web.InvokeScript("showPrintMessage", false, failMessage);
+
             }
         }
         public void AddNewSupervisee()

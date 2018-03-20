@@ -42,7 +42,8 @@ namespace DutyOfficer
             Trinity.SignalR.Client.Instance.OnSSPCompleted += OnSSPCompleted_Handler;
             Trinity.SignalR.Client.Instance.OnQueueInserted += OnQueueInserted_Handler;
             Trinity.SignalR.Client.Instance.OnAppointmentBookedOrReported += OnAppointmentBookedOrReported_Handler;
-            
+            Trinity.SignalR.Client.Instance.OnSSACompleted += OnSSACompleted_Handler;
+
 
             // setup variables
             _smartCardFailed = 0;
@@ -69,22 +70,29 @@ namespace DutyOfficer
             LayerWeb.Url = new Uri(String.Format("file:///{0}/View/html/Layout.html", CSCallJS.curDir));
             LayerWeb.ObjectForScripting = _jsCallCS;
         }
+        private void OnSSACompleted_Handler(object sender, NotificationInfo e)
+        {
+            //string userId = e.UserID;
+            // Refresh data queue or MUB/TT Labels
+            RefreshCurrentTab(EnumDOTabName.Queue);
+            RefreshCurrentTab(EnumDOTabName.MUBLabel);
+        }
         private void OnAppointmentBookedOrReported_Handler(object sender, NotificationInfo e)
         {
             //string AppointmentID = e.AppointmentID;
             //string Status = e.Status;
-            RefreshAppointments();
-            RefreshStatistics();
+            RefreshCurrentTab(EnumDOTabName.Appointments);
+            RefreshCurrentTab(EnumDOTabName.Statistics);
         }
         private void OnQueueInserted_Handler(object sender, NotificationInfo e)
         {
             //string QueueID = e.QueueID;
-            RefreshQueues();
+            RefreshCurrentTab(EnumDOTabName.Queue);
         }
         private void OnSSPCompleted_Handler(object sender, NotificationInfo e)
         {
             // Refresh data queue
-            RefreshQueues();
+            RefreshCurrentTab(EnumDOTabName.Queue); 
         }
 
         private void OnAppDisconnected_Handler(object sender, EventInfo e)
@@ -112,7 +120,7 @@ namespace DutyOfficer
                 Lib.LayerWeb.Invoke((MethodInvoker)(() =>
                 {
                     string activeTab = Lib.LayerWeb.Document.InvokeScript("getActiveTab").ToString();
-                    if (activeTab != "Alerts")
+                    if (activeTab != EnumDOTabName.Alerts)
                     {
                         Lib.LayerWeb.InvokeScript("getRealtimeNotificationServer", result);
                     }
@@ -152,7 +160,7 @@ namespace DutyOfficer
         private void OnQueueCompleted_Handler(object sender, EventInfo e)
         {
             // Refresh data queue
-            RefreshQueues();
+            RefreshCurrentTab(EnumDOTabName.Queue);
         }
 
         private void Fingerprint_OnDeviceDisconnected()
@@ -530,18 +538,37 @@ namespace DutyOfficer
         {
             NavigateTo(NavigatorEnums.Login);
         }
-
-        private void RefreshQueues()
+        
+        private void RefreshCurrentTab(string tabName)
         {
-            LayerWeb.InvokeScript("reloadDataQueues");
+            Lib.LayerWeb.Invoke((MethodInvoker)(() =>
+            {
+                if (GetCurrentTab() == tabName)
+                {
+                    switch (tabName)
+                    {
+                        case EnumDOTabName.Queue:
+                            Lib.LayerWeb.InvokeScript("reloadDataQueues");
+                            break;
+                        case EnumDOTabName.Appointments:
+                            Lib.LayerWeb.InvokeScript("reloadDataAppts");
+                            break;
+                        case EnumDOTabName.Statistics:
+                            Lib.LayerWeb.InvokeScript("reloadDataStatistics");
+                            break;
+                        case EnumDOTabName.Blocked:
+                            Lib.LayerWeb.InvokeScript("reloadDataBlocked");
+                            break;
+                        case EnumDOTabName.MUBLabel:
+                            Lib.LayerWeb.InvokeScript("reloadDataMUBAndTT");
+                            break;
+                    }
+                }
+            }));
         }
-        private void RefreshAppointments()
+        private string GetCurrentTab()
         {
-            LayerWeb.InvokeScript("reloadDataAppts");
-        }
-        private void RefreshStatistics()
-        {
-            LayerWeb.InvokeScript("reloadDataStatistics");
+            return Lib.LayerWeb.Document.InvokeScript("getActiveTab").ToString();
         }
     }
 }

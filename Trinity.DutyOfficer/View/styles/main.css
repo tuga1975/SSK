@@ -160,7 +160,7 @@ span[color] {
 }
 
 #menu [item-menu]::before {
-    content: attr(item-menu);
+    content: attr(text-menu);
 }
 
 #menu [item-menu]:hover {
