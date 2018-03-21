@@ -109,6 +109,7 @@ namespace Trinity.SignalR
         public event EventHandler<NotificationInfo> OnAppointmentBookedOrReported;
         public event EventHandler<NotificationInfo> OnQueueInserted;
         public event EventHandler<NotificationInfo> OnSSACompleted;
+        public event EventHandler<NotificationInfo> OnSSAInsertedLabel;
         ///// <summary>
         ///// 
         ///// </summary>
@@ -172,6 +173,10 @@ namespace Trinity.SignalR
                 else if (notificationInfo.Name == NotificationNames.SSA_COMPLETED)
                 {
                     OnSSACompleted?.Invoke(this, notificationInfo);
+                }
+                else if (notificationInfo.Name == NotificationNames.SSA_INSERTED_LABEL)
+                {
+                    OnSSAInsertedLabel?.Invoke(this, notificationInfo);
                 }
                 else
                 {
@@ -341,6 +346,10 @@ namespace Trinity.SignalR
         public void SSACompleted(string UserId)
         {
             PostNotification(notificationInfo: new NotificationInfo() { Name = NotificationNames.SSA_COMPLETED, UserID = UserId });
+        }
+        public void SSAInsertedLabel(string UserId)
+        {
+            PostNotification(notificationInfo: new NotificationInfo() { Name = NotificationNames.SSA_INSERTED_LABEL, UserID = UserId });
         }
         #endregion
     }
