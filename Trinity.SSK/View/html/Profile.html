@@ -1175,7 +1175,7 @@
     var modelProfile = null;
     var _particularName, _nric, _dob, _nationality, _maritalStatus = "";
 
-    function scanDocumentProfileCallbackImg(img) {
+    function scanDocumentProfileCallbackImg(arrayImg) {
         var $form = $("#profileFrm");
         var dataJson = getFormData($form);
         if (dataJson.DOB.length > 0) {
@@ -1190,7 +1190,7 @@
             var txt = dataJson.Employment_End_Date.split('/');
             dataJson.Employment_End_Date = txt[2] + '-' + txt[1] + '-' + txt[0];
         }
-        api.server.SaveProfile(JSON.stringify(dataJson), img, true);
+        api.server.SaveProfile(JSON.stringify(dataJson), JSON.stringify(arrayImg), true);
         
     }
     function checkComfirmUpdateProfile() {
@@ -1198,15 +1198,9 @@
         if (status) {
             // check upload document
             if (modelProfile.UserProfile.Nationality != $('#Nationality').val() || modelProfile.UserProfile.Maritial_Status != $('#MaritalStatus').val()) {
-                api.server.LoadPopupHtml("PopupScanDocument.html", 'scanDocumentProfileCallbackImg', function () {
-                    $('#PopupScanDocument button[btn-cancel]').unbind('click');
-                    $('#PopupScanDocument button[btn-cancel]').click(function () {
-                        $('#PopupScanDocument').modal('toggle');
-                        scanDocumentProfileCallbackImg('');
-                    });
-                });
+                api.server.LoadPopupHtml("PopupScanDocument.html", 'scanDocumentProfileCallbackImg');
             } else {
-                scanDocumentProfileCallbackImg('');
+                scanDocumentProfileCallbackImg([]);
             }
         }
     }

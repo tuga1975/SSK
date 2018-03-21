@@ -62,23 +62,6 @@ function AddContentPage(html, model) {
     else
         api.model = null;
     $('#content').html('<div class="chi-content">' + html + '</div>');
-    $('#content button[onclick]').each(function () {
-        var value = $(this).attr('onclick');
-        $(this).removeAttr('onclick');
-        $(this).attr('valonclick', value);
-    });
-    $('#content a').each(function () {
-        var value = $(this).attr('onclick');
-        $(this).removeAttr('onclick');
-        $(this).attr('valonclick', value);
-
-        value = $(this).attr('href');
-        value = typeof value == 'undefined' ? '' : value;
-        if (value.indexOf('#')!=0) {
-            $(this).attr('valhref', value);
-            $(this).attr('href', 'javascript:;');
-        }
-    });
     api.callReady(api.model);
 }
 function AddContentPopup(html, model, id) {
@@ -90,24 +73,6 @@ function AddContentPopup(html, model, id) {
         $('#panel-popup > [id="' + id + '"]').replaceWith(html);
     else
         $('#panel-popup').append(html);
-
-    $('#panel-popup > [id="' + id + '"]').find('button[onclick]').each(function () {
-        var value = $(this).attr('onclick');
-        $(this).removeAttr('onclick');
-        $(this).attr('valonclick', value);
-    });
-    $('#panel-popup > [id="' + id + '"]').find('a').each(function () {
-        var value = $(this).attr('onclick');
-        $(this).removeAttr('onclick');
-        $(this).attr('valonclick', value);
-
-        value = $(this).attr('href');
-        value = typeof value == 'undefined' ? '' : value;
-        if (value.indexOf('#') != 0) {
-            $(this).attr('valhref', value);
-            $(this).attr('href', 'javascript:;');
-        }
-    });
     api.callReady(api.model);
 }
 function createEvent(arrayFun) {
@@ -166,6 +131,7 @@ function RunScript(script) {
     eval(script);
 }
 function ShowMessageBox(title, message, id) {
+    id = id == null ? '' : id;
     api.server.ShowPopupMessage(title, message, id, function () {
         $('#PopupMessage').modal({
             backdrop: 'static',
@@ -174,6 +140,24 @@ function ShowMessageBox(title, message, id) {
     });
 }
 $(document).ready(function () {
+    $('body').on('DOMNodeInserted', 'a', function () {
+        var value = $(this).attr('onclick');
+        $(this).removeAttr('onclick');
+        $(this).attr('valonclick', value);
+
+        value = $(this).attr('href');
+        value = typeof value == 'undefined' ? '' : value;
+        if (value.indexOf('#') != 0) {
+            $(this).attr('valhref', value);
+            $(this).attr('href', 'javascript:;');
+        }
+    });
+    $('body').on('DOMNodeInserted', 'button[onclick]', function () {
+        var value = $(this).attr('onclick');
+        $(this).removeAttr('onclick');
+        $(this).attr('valonclick', value);
+    });
+
     $('body').on('click', 'a', function (event) {
         event.preventDefault();
         var href = $(this).attr('valhref');
