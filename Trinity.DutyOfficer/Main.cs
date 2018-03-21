@@ -43,7 +43,7 @@ namespace DutyOfficer
             Trinity.SignalR.Client.Instance.OnQueueInserted += OnQueueInserted_Handler;
             Trinity.SignalR.Client.Instance.OnAppointmentBookedOrReported += OnAppointmentBookedOrReported_Handler;
             Trinity.SignalR.Client.Instance.OnSSACompleted += OnSSACompleted_Handler;
-
+            Trinity.SignalR.Client.Instance.OnSSAInsertedLabel += OnSSAInsertedLabel_Handler;
 
             // setup variables
             _smartCardFailed = 0;
@@ -75,6 +75,10 @@ namespace DutyOfficer
             //string userId = e.UserID;
             // Refresh data queue or MUB/TT Labels
             RefreshCurrentTab(EnumDOTabName.Queue);
+            RefreshCurrentTab(EnumDOTabName.MUBLabel);
+        }
+        private void OnSSAInsertedLabel_Handler(object sender, NotificationInfo e)
+        {
             RefreshCurrentTab(EnumDOTabName.MUBLabel);
         }
         private void OnAppointmentBookedOrReported_Handler(object sender, NotificationInfo e)
@@ -135,26 +139,29 @@ namespace DutyOfficer
         private void OnDeviceStatusChanged_Handler(object sender, EventInfo e)
         {
             string station = (string)e.Source;
-            DAL_DeviceStatus device = new DAL_DeviceStatus();
+            if (!string.IsNullOrEmpty(station))
+            {
+                DAL_DeviceStatus device = new DAL_DeviceStatus();
 
-            if (station == EnumStation.SSA)
-            {
-                JSCallCS._StationColorDevice.SSAColor = device.CheckStatusDevicesStation(station);
-            }
-            if (station == EnumStation.SSK)
-            {
-                JSCallCS._StationColorDevice.SSKColor = device.CheckStatusDevicesStation(station);
-            }
-            if (station == EnumStation.ESP)
-            {
-                JSCallCS._StationColorDevice.ESPColor = device.CheckStatusDevicesStation(station);
-            }
-            if (station == EnumStation.UHP)
-            {
-                JSCallCS._StationColorDevice.UHPColor = device.CheckStatusDevicesStation(station);
-            }
+                if (station == EnumStation.SSA)
+                {
+                    JSCallCS._StationColorDevice.SSAColor = device.CheckStatusDevicesStation(station);
+                }
+                if (station == EnumStation.SSK)
+                {
+                    JSCallCS._StationColorDevice.SSKColor = device.CheckStatusDevicesStation(station);
+                }
+                if (station == EnumStation.ESP)
+                {
+                    JSCallCS._StationColorDevice.ESPColor = device.CheckStatusDevicesStation(station);
+                }
+                if (station == EnumStation.UHP)
+                {
+                    JSCallCS._StationColorDevice.UHPColor = device.CheckStatusDevicesStation(station);
+                }
 
-            _jsCallCS.LoadStationColorDevice();
+                _jsCallCS.LoadStationColorDevice();
+            }
         }
 
         private void OnQueueCompleted_Handler(object sender, EventInfo e)
