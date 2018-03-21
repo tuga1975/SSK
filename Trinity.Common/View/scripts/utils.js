@@ -130,13 +130,40 @@ function setLoading(status) {
 function RunScript(script) {
     eval(script);
 }
-function ShowMessageBox(title, message, id) {
+function ShowMessage(title, message, id) {
     id = id == null ? '' : id;
-    api.server.ShowPopupMessage(title, message, id, function () {
+    var struc = {
+        title: title,
+        message: message,
+        id: id
+    };
+    api.server.LoadPopupHtml('PopupMessage.html',JSON.stringify(struc), function () {
         $('#PopupMessage').modal({
             backdrop: 'static',
             keyboard: false
         });
+    });
+}
+function ShowMessageConfirm(title, message,callback, id) {
+    id = id == null ? '' : id;
+    var struc = {
+        title: title,
+        message: message,
+        id: id
+    };
+    api.server.LoadPopupHtml('PopupMessageConfirm.html', JSON.stringify(struc), function () {
+        $('#PopupMessageConfirm').modal({
+            backdrop: 'static',
+            keyboard: false
+        });
+        if (typeof callback == 'function') {
+            $('#PopupMessageConfirm button').unbind('click');
+            $('#PopupMessageConfirm button').click(function () {
+                var status = $(this).attr('btn-confirm');
+                $('#PopupMessageConfirm').modal('toggle');
+                callback((status == 'false' ? false : true));
+            });
+        }
     });
 }
 $(document).ready(function () {

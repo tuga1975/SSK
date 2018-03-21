@@ -85,20 +85,19 @@ public class JSCallCSBase
     {
         ThreadPool.QueueUserWorkItem(new WaitCallback(actionThread), new object[] { method, guidEvent, pram });
     }
-    public void ExitWaitPopupMessage(string ID)
+    public void ExitWaitPopupMessage(string ID,bool status)
     {
-        Lib.ArrayIDWaitMessage.Remove(ID);
-    }
-    public void ShowPopupMessage(string title, string content,string id)
-    {
-        this._web.LoadPopupHtml("PopupMessage.html", new object[] { title, content,id });
+        if(Lib.ArrayIDWaitMessage.ContainsKey(ID))
+            Lib.ArrayIDWaitMessage[ID] = status;
     }
     public void LoadPopupHtml(string file,string model)
     {
         this._web.LoadPopupHtml(file, model);
     }
-    public void ShowMessage(string title, string content)
+    public void test()
     {
-        this._web.ShowMessage(title, content);
+        bool status = this._web.ShowMessageConfirm("Alo");
+
+        Console.WriteLine("a");
     }
 }

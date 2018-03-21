@@ -1194,15 +1194,15 @@
         
     }
     function checkComfirmUpdateProfile() {
-        var status = confirm("You are sure you want to update");
-        if (status) {
-            // check upload document
-            if (modelProfile.UserProfile.Nationality != $('#Nationality').val() || modelProfile.UserProfile.Maritial_Status != $('#MaritalStatus').val()) {
-                api.server.LoadPopupHtml("PopupScanDocument.html", 'scanDocumentProfileCallbackImg');
-            } else {
-                scanDocumentProfileCallbackImg([]);
+        ShowMessageConfirm("", "You are sure you want to update", function (status) {
+            if (status) {
+                if (modelProfile.UserProfile.Nationality != $('#Nationality').val() || modelProfile.UserProfile.Maritial_Status != $('#MaritalStatus').val()) {
+                    api.server.LoadPopupHtml("PopupScanDocument.html", 'scanDocumentProfileCallbackImg');
+                } else {
+                    scanDocumentProfileCallbackImg([]);
+                }
             }
-        }
+        });
     }
     api.ready(function (model) {
         modelProfile = model;
