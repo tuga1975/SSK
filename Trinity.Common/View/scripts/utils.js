@@ -141,21 +141,26 @@ function ShowMessageBox(title, message, id) {
 }
 $(document).ready(function () {
     $('body').on('DOMNodeInserted', 'a', function () {
-        var value = $(this).attr('onclick');
-        $(this).removeAttr('onclick');
-        $(this).attr('valonclick', value);
-
-        value = $(this).attr('href');
-        value = typeof value == 'undefined' ? '' : value;
-        if (value.indexOf('#') != 0) {
-            $(this).attr('valhref', value);
-            $(this).attr('href', 'javascript:;');
+        if (typeof $(this).attr('isRegistration') == 'undefined') {
+            $(this).attr('isRegistration', true);
+            var value = $(this).attr('onclick');
+            $(this).removeAttr('onclick');
+            $(this).attr('valonclick', value);
+            value = $(this).attr('href');
+            value = typeof value == 'undefined' ? '' : value;
+            if (value.indexOf('#') != 0) {
+                $(this).attr('valhref', value);
+                $(this).attr('href', 'javascript:;');
+            }
         }
     });
     $('body').on('DOMNodeInserted', 'button[onclick]', function () {
-        var value = $(this).attr('onclick');
-        $(this).removeAttr('onclick');
-        $(this).attr('valonclick', value);
+        if (typeof $(this).attr('isRegistration') == 'undefined') {
+            $(this).attr('isRegistration', true);
+            var value = $(this).attr('onclick');
+            $(this).removeAttr('onclick');
+            $(this).attr('valonclick', value);
+        }
     });
 
     $('body').on('click', 'a', function (event) {
