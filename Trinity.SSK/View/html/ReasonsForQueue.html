@@ -19,7 +19,7 @@
         $('[count-absence]').text(model.length);
         $.each(model, function (index, item) {
             $('[parent-tab] [header-tab]').append('<span item="' + item.GetDateTxt + '"  value= "' + item.ID + '"></span>');
-            $('[parent-tab] [content-tab]').append('<div item="' + item.ID + '">\
+            $('[parent-tab] [content-tab]').append('<div item="' + item.ID + '" valdate="' + item.GetDateTxt + '">\
                                                             <div style= "font-size:20px;color:#5c5c5c;text-align:left;" > Please select reason for absence for '+ item.GetDateTxt + '</div>\
                                                                 <div style="margin-top:10px;">\
                                                                     <div item-reason="0">Medical Certificate (MC)</div>\
@@ -28,6 +28,7 @@
                                                                     <div item-reason="3">Other Reasons</div>\
                                                                     <div item-reason="4">No Valid Reason</div>\
                                                                 </div>\
+                                                                <textarea placeholder="Please input reason here"></textarea>\
                                                     </div>');
         });
         $('[parent-tab] [header-tab] [item]').click(function () {
@@ -38,6 +39,11 @@
         $('[item-reason]').click(function () {
             $(this).parent('div').children('[item-reason]').removeAttr('active');
             $(this).attr('active', '');
+            if ($(this).attr('item-reason') == '3') {
+                $(this).parent('div').next('textarea').css('display', 'block');
+            } else {
+                $(this).parent('div').next('textarea').css('display', 'none');
+            }
         });
         $('[btn-save-absence]').click(function () {
             var scandocument = false;
@@ -47,28 +53,34 @@
                 var id = $(this).attr('item');
                 var chose = $(this).find('[item-reason][active]');
                 if (chose.length > 0) {
-                    arrrayAbsence.push({
+                    var dataPush = {
                         ID: id,
-                        ChoseNumber: parseInt(chose.attr('item-reason'))
-                    });
-                    if (parseInt(chose.attr('item-reason')) != 5) {
-                        scandocument = true;
+                        ChoseNumber: parseInt(chose.attr('item-reason')),
+                        Reason: '',
+                        Date: chose.parents('[item="' + id + '"]').attr('valdate')
+                    };
+                    if (dataPush.ChoseNumber == 3) {
+                        dataPush.Reason = chose.parent('div').next('textarea').val();
                     }
+                    arrrayAbsence.push(dataPush);
                 }
             });
             if (arrrayAbsence.length == 0) {
                 alert("You must provide a reason!");
-            } else if (arrrayAbsence.length > 0 && scandocument) {
-                api.server.LoadPopupHtml("PopupScanDocument.html", 'scanDocumentAbsenceCallbackImg', function () {
-                    $('#PopupScanDocument button[btn-cancel]').unbind('click');
-                    $('#PopupScanDocument button[btn-cancel]').click(function () {
-                        $('#PopupScanDocument').modal('toggle');
-                        api.server.SaveReasonForQueue(JSON.stringify(arrrayAbsence), JSON.stringify([]));
-                    });
-                });
             } else {
-                api.server.SaveReasonForQueue(JSON.stringify(arrrayAbsence), JSON.stringify([]));
+                ShowMessageConfirm('Supporting Documents', 'Do you have sopporting documents for you absence on ' + arrrayAbsence.map(function (item) { return '(' + item.Date + ')' }).join(", "), function (status) {
+                    if (status) {
+                        api.server.LoadPopupHtml("PopupScanDocument.html", 'scanDocumentAbsenceCallbackImg');
+                    } else {
+                        api.server.SaveReasonForQueue(JSON.stringify(arrrayAbsence), JSON.stringify([]));
+                    }
+                });
             }
+            //else if (arrrayAbsence.length > 0 && scandocument) {
+
+            //} else {
+            //    api.server.SaveReasonForQueue(JSON.stringify(arrrayAbsence), JSON.stringify([]));
+            //}
         });
     });
     function scanDocumentAbsenceCallbackImg(arrImg) {
@@ -172,4 +184,23 @@
             background-color: #334352;
             color: #FFF;
         }
+
+    [content-tab] [item] textarea {
+        position: absolute;
+        margin-top: 10px;
+        margin-left: 15px;
+        width: calc(100% - 126px);
+        border: 1px solid #CCC;
+        border-radius: 5px;
+        padding: 10px;
+        outline: none;
+        resize: none;
+        height: calc(100% - 310px);
+        display: none;
+        color: #555;
+    }
+
+    :-ms-input-placeholder {
+        font-style: italic;
+    }
 </style>

@@ -94,10 +94,4 @@ public class JSCallCSBase
     {
         this._web.LoadPopupHtml(file, model);
     }
-    public void test()
-    {
-        bool status = this._web.ShowMessageConfirm("Alo");
-
-        Console.WriteLine("a");
-    }
 }
