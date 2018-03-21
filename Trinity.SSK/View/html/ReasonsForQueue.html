@@ -64,16 +64,16 @@
                     $('#PopupScanDocument button[btn-cancel]').unbind('click');
                     $('#PopupScanDocument button[btn-cancel]').click(function () {
                         $('#PopupScanDocument').modal('toggle');
-                        api.server.SaveReasonForQueue(JSON.stringify(arrrayAbsence), '');
+                        api.server.SaveReasonForQueue(JSON.stringify(arrrayAbsence), JSON.stringify([]));
                     });
                 });
             } else {
-                api.server.SaveReasonForQueue(JSON.stringify(arrrayAbsence), '');
+                api.server.SaveReasonForQueue(JSON.stringify(arrrayAbsence), JSON.stringify([]));
             }
         });
     });
-    function scanDocumentAbsenceCallbackImg(img) {
-        api.server.SaveReasonForQueue(JSON.stringify(arrrayAbsence), img);
+    function scanDocumentAbsenceCallbackImg(arrImg) {
+        api.server.SaveReasonForQueue(JSON.stringify(arrrayAbsence), JSON.stringify(arrImg));
     }
 </script>
 <script type="text/javascript">

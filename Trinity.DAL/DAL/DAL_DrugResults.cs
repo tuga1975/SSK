@@ -272,7 +272,7 @@ namespace Trinity.DAL
             date = date.Date;
             DrugResult drug = _localUnitOfWork.DataContext.DrugResults.FirstOrDefault(d => d.NRIC.Equals(NRIC) && DbFunctions.TruncateTime(d.UploadedDate) == date);
             if (drug == null)
-                return EnumUTResult.NEG;
+                return string.Empty;
             else
             {
                 if (

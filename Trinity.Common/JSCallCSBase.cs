@@ -71,7 +71,7 @@ public class JSCallCSBase
 
             if (ex.Source.Equals(".Net SqlClient Data Provider") || (ex.Source.Equals("EntityFramework") && ex.Message.Equals("The underlying provider failed on Open.")))
             {
-                this._web.ShowMessage("The connection to the database failed");
+                this._web.ShowMessage("Can not connect to the database.<br/>Please check the connection.");
             }
             else
             {
