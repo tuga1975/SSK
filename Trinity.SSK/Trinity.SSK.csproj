@@ -368,6 +368,7 @@
     <Content Include="View\img\central_narco_logo.png" />
     <Content Include="View\img\DocumentScan.png" />
     <Content Include="View\img\FingerPrint.png" />
+    <Content Include="View\img\iconTick.png" />
     <Content Include="View\img\loading.gif" />
     <Content Include="View\img\Logo.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

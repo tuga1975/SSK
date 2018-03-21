@@ -15,18 +15,8 @@
     $('#content').removeAttr('style');
 </script>
 <script type="text/javascript">
-    //function scanDocumentAbsenceCallbackImg(img) {
-
-    //}
     api.ready(function () {
-
-        //api.server.LoadPopupHtml("PopupScanDocument.html", 'scanDocumentAbsenceCallbackImg', function () {
-            
-        //});
-
-
         //$('[notinumber]').text(api.countNoti == 0 ? '' : api.countNoti);
-
         api.server.GetMyAbsencesCount(function (count) {
             if (count == 0) {
                 $('[title-queue]').attr('item', 'Queue Number');
