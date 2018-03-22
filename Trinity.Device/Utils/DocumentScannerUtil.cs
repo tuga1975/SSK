@@ -219,6 +219,8 @@ namespace Trinity.Util
                 PdiScanWrap.PdGetTagChoiceLong(scanning_handle, (int)pdiscan_tags.PDISCAN_TAG_BRIGHTNESS_FRONT, -1, out step);
                 //Get the current brightness
                 PdiScanWrap.PdGetTagLong(scanning_handle, (int)pdiscan_tags.PDISCAN_TAG_BRIGHTNESS_FRONT, out current);
+                // set double side scanning
+                PdiScanWrap.PdSetTagLong(scanning_handle, (int)pdiscan_tags.PDISCAN_TAG_DUPLEX, 1);
                 //cboBrightness.Items.Clear();
                 //for (int value = minimum, j = 0; value < maximum; j++, value += step)
                 //{
@@ -307,21 +309,31 @@ namespace Trinity.Util
         {
             try
             {
-                //pdiscan_error = PdiScanWrap.PdDisconnectFromScanner(scanning_handle); // this command will make document stuck
-                pdiscan_errors pdiscan_error = PdiScanWrap.PdDisableFeeder(scanning_handle);
-                if (pdiscan_error != pdiscan_errors.PDISCAN_ERR_NONE)
+                if (_documentScannerCallback != null)
                 {
-                    //MessageBox.Show("StopScanning failed");
-                    display_pdiscan_error(pdiscan_error);
-                    return false;
+                    _documentScannerCallback = null;
                 }
 
-                enablefeeder = false;
+                //pdiscan_error = PdiScanWrap.PdDisconnectFromScanner(scanning_handle); // this command will make document stuck
+                //pdiscan_errors pdiscan_error = PdiScanWrap.PdDisableFeeder(scanning_handle);
+                //if (pdiscan_error != pdiscan_errors.PDISCAN_ERR_NONE)
+                //{
+                //    //MessageBox.Show("StopScanning failed");
+                //    display_pdiscan_error(pdiscan_error);
+                //    return false;
+                //}
+
+                //enablefeeder = false;
                 //MessageBox.Show("StopScanning OK");
-                return false;
+                return true;
             }
             catch (Exception ex)
             {
+                if (_documentScannerCallback != null)
+                {
+                    _documentScannerCallback = null;
+                }
+
                 MessageBox.Show("StopScanning exception: " + ex.ToString());
                 return false;
             }
@@ -418,15 +430,15 @@ namespace Trinity.Util
 
                     // set file path
                     string frontPath = string.Empty;
+                    string backPath = string.Empty;
                     string error = string.Empty;
                     //Front
                     if (FrontSideDIB != IntPtr.Zero)
                     {
-                        pdiscan_errors retval = PdiScanWrap.PdSaveImageToDisk(FrontSideDIB, curDir + "\\Temp\\document_front.jpg");
+                        frontPath = curDir + "\\Temp\\document_front" + DateTime.Now.ToString("yyyyMMddHHmmssFFF") + ".jpg";
+                        pdiscan_errors retval = PdiScanWrap.PdSaveImageToDisk(FrontSideDIB, frontPath);
                         if (retval == pdiscan_errors.PDISCAN_ERR_NONE)
                         {
-                            frontPath = curDir + "\\Temp\\document_front.jpg";
-
                             // Scale image
                             Image image = Image.FromFile(frontPath);
                             Image newImage = Trinity.Common.CommonUtil.ScaleImage(image, 768, 1024);
@@ -442,16 +454,31 @@ namespace Trinity.Util
                         }
                     }
 
-                    //Back
-                    //if (BackSideDIB != IntPtr.Zero)
-                    //{
-                    //    PdiScanWrap.PdSaveImageToDisk(BackSideDIB, temp_path + "testback.bmp");
-                    //}
+                    if (BackSideDIB != IntPtr.Zero)
+                    {
+                        //PdiScanWrap.PdSaveImageToDisk(BackSideDIB, curDir + "\\Temp\\document_back" + DateTime.Now.ToString("yyyyMMddHHmmssFFF") + ".jpg");
+
+                        backPath = curDir + "\\Temp\\document_back" + DateTime.Now.ToString("yyyyMMddHHmmssFFF") + ".jpg";
+                        pdiscan_errors retval = PdiScanWrap.PdSaveImageToDisk(BackSideDIB, backPath);
+                        if (retval == pdiscan_errors.PDISCAN_ERR_NONE)
+                        {
+                            // Scale image
+                            Image image = Image.FromFile(backPath);
+                            Image newImage = Trinity.Common.CommonUtil.ScaleImage(image, 768, 1024);
+
+                            image.Dispose();
+
+                            newImage.Save(backPath, ImageFormat.Jpeg);
+                            newImage.Dispose();
+                        }
+                        else
+                        {
+                            error = Get_PDIScan_Error_Details(retval);
+                        }
+                    }
 
                     // callback
-                    _documentScannerCallback(new string[] { frontPath }, error);
-
-                    _documentScannerCallback = null;
+                    _documentScannerCallback(new string[] { frontPath, backPath }, error);
                 }
             }
             catch (Exception ex)
