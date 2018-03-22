@@ -225,15 +225,8 @@ namespace Trinity.DAL
 
         public List<Appointment> GetAbsentAppointments(string UserID)
         {
-            try
-            {
-                var data = _localUnitOfWork.DataContext.Appointments.Where(d => d.UserId == UserID && d.Status == EnumAppointmentStatuses.Absent && d.AbsenceReporting_ID == null).OrderBy(d=>d.Date).ToList();
-                return data;
-            }
-            catch (Exception)
-            {
-                return null;
-            }
+            var data = _localUnitOfWork.DataContext.Appointments.Where(d => d.UserId == UserID && d.Status == EnumAppointmentStatuses.Absent && d.AbsenceReporting_ID == null).OrderBy(d => d.Date).ToList();
+            return data;
         }
 
         public Appointment UpdateAbsenceReason(Guid appointmentId, Guid absenceId)

@@ -11,19 +11,19 @@
                 <div class="form-group">
                     <div class="queueOutcome">
                         <div class="item">
-                            <input type='checkbox' id='outcome1' name='typeOutcome' value='Released on bail' class="check" />
+                            <input type='radio' id='outcome1' name='typeOutcome' value='Released on bail' class="check" />
                             <span class="control-label">Released on bail</span>
                         </div>
                         <div class="item">
-                            <input type='checkbox' id='outcome2' name='typeOutcome' value='Referred to DRC' class="check" />
+                            <input type='radio' id='outcome2' name='typeOutcome' value='Referred to DRC' class="check" />
                             <span class="control-label">Referred to DRC</span>
                         </div>
                         <div class="item">
-                            <input type='checkbox' id='outcome3' name='typeOutcome' value='Referred to Investigation Division' class="check" />
+                            <input type='radio' id='outcome3' name='typeOutcome' value='Referred to Investigation Division' class="check" />
                             <span class="control-label">Referred to Investigation Division</span>
                         </div>
                         <div class="item">
-                            <input type='checkbox' id='outcome4' name='typeOutcome' value='Referred to External Agencies' class="check" />
+                            <input type='radio' id='outcome4' name='typeOutcome' value='Referred to External Agencies' class="check" />
                             <span class="control-label">Referred to External Agencies</span>
                         </div>
                     </div>
@@ -37,26 +37,31 @@
     </div>
 </div>
 <script type="text/javascript">
-    api.ready(function (queueID) {
-        $("#btnOutcome").click(function (e) {
-            var outcomeChoose = $("input:radio[name ='typeOutcome']:checked").val();
+    api.ready(function (userID) {
+
+        $('#idQueueOutcome').modal();
+
+        //$("#idQueueOutcome .check").change(function () {
+        //    if ($(this).is(":checked")) {
+        //        $("#idQueueOutcome .check").not($(this)).each(function () {
+        //            $(this).removeAttr("checked");
+        //        })
+        //    }
+        //});
+
+        $("#idQueueOutcome #btnOutcome").click(function (e) {
+            var outcomeChoose = $("input:radio[name='typeOutcome']:checked").val();
             if (outcomeChoose != null) {
-                api.server.SaveOutcome(queueID, outcomeChoose, function () {
+                api.server.SaveOutcome(userID, outcomeChoose, function () {
                     $('#idQueueOutcome').modal('toggle');
                 });
-            };
+            } else {
+                ShowMessage('', 'Please select the outcome');
+            }
             e.preventDefault(); // avoid to execute the actual submit of the form.
         });
     });
-    $(function () {
-        $(".check").change(function () {
-            if ($(this).is(":checked")) {
-                $(".check").not($(this)).each(function () {
-                    $(this).removeAttr("checked");
-                })
-            }
-        })
-    })  
+    
 </script>
 <style>
     /* The container */

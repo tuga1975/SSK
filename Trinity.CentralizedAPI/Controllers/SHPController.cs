@@ -67,11 +67,12 @@ namespace Trinity.BackendAPI.Controllers
             }
             else
             {
-                await System.Threading.Tasks.Task.Run(() => Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(EnumStation.ESP, data.Type, data.Content, data.notification_code));
+                await System.Threading.Tasks.Task.Run(() => Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(EnumStation.UHP, data.Type, data.Content, data.notification_code));
                 return Ok(IDNoti);
             }
         }
 
+        [HttpGet]
         public async System.Threading.Tasks.Task<IHttpActionResult> SHPComplete(string NRIC)
         {
             var user = new DAL.DAL_User().GetByNRIC(NRIC);

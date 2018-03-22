@@ -172,7 +172,6 @@ namespace Trinity.Common
 
         public const string SHP_COMPLETED = "SHP_COMPLETED";
         public const string SSP_COMPLETED = "SSP_COMPLETED";
-        public const string SSP_TABSMARTCARD = "SSP_TABSMARTCARD";
     }
 
     public class NotificationInfo

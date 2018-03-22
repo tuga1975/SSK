@@ -12,6 +12,7 @@ using Trinity.Device;
 using Trinity.BE;
 using Trinity.Device.Util;
 using Trinity.Util;
+using Trinity.Common.Common;
 
 namespace SSK
 {
@@ -425,6 +426,51 @@ namespace SSK
             //SaveProfile(jsonData.ToString(), true);
         }
 
+        public void ManualLogin(string username, string password)
+        {
+            EventCenter eventCenter = EventCenter.Default;
+
+            //UserManager<ApplicationUser> userManager = ApplicationIdentityManager.GetUserManager();
+            //ApplicationUser appUser = userManager.Find(username, password);
+            var dalUser = new DAL_User();
+            ApplicationUser appUser = dalUser.Login(username, password);
+            if (appUser != null)
+            {
+                // Authenticated successfully
+                // Check if the current user is an Duty Officer or not
+                if (dalUser.IsInRole(appUser.Id, EnumUserRoles.DutyOfficer))
+                {
+                    // Authorized successfully
+                    Trinity.BE.User user = new Trinity.BE.User()
+                    {
+                        RightThumbFingerprint = appUser.RightThumbFingerprint,
+                        LeftThumbFingerprint = appUser.LeftThumbFingerprint,
+                        IsFirstAttempt = appUser.IsFirstAttempt,
+                        Name = appUser.Name,
+                        NRIC = appUser.NRIC,
+                        Role = EnumUserRoles.DutyOfficer,
+                        SmartCardId = appUser.SmartCardId,
+                        Status = appUser.Status,
+                        UserId = appUser.Id
+                    };
+                    Session session = Session.Instance;
+                    session.IsUserNamePasswordAuthenticated = true;
+                    session.Role = EnumUserRoles.DutyOfficer;
+                    session[CommonConstants.USER_LOGIN] = user;
+
+                    eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = 0, Name = EventNames.LOGIN_SUCCEEDED });
+                }
+                else
+                {
+                    eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -2, Name = EventNames.LOGIN_FAILED, Message = "You do not have permission to access this page." });
+                }
+            }
+            else
+            {
+                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.LOGIN_FAILED, Message = "Your username or password is incorrect." });
+            }
+        }
+
         public void SubmitNRIC(string strNRIC)
         {
             NRIC nric = NRIC.GetInstance(_web);
@@ -459,7 +505,6 @@ namespace SSK
             Session session = Session.Instance;
             Trinity.BE.User currentUser = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
             Trinity.BE.User supervisee = currentUser;
-
             // Check if the current user is a duty officcer 
             if (currentUser.Role == EnumUserRoles.DutyOfficer)
             {
@@ -479,6 +524,7 @@ namespace SSK
             {
                 absenceCount = new DAL_Appointments().CountAbsenceReport(supervisee.UserId);
             }
+            MessageBox.Show(absenceCount.ToString());
             if (absenceCount == 0)
             {
                 GetMyQueueNumber();
@@ -505,7 +551,10 @@ namespace SSK
             else
             {
 
+                MessageBox.Show("GetAbsentAppointments");
                 var listAppointment = new DAL_Appointments().GetAbsentAppointments(supervisee.UserId);
+
+                MessageBox.Show((listAppointment == null).ToString());
                 this._web.ShowMessage("You have been absent for " + absenceCount + " times.<br/>Please provide reasons and the supporting documents.");
                 _web.LoadPageHtml("ReasonsForQueue.html", listAppointment.Select(d => new
                 {

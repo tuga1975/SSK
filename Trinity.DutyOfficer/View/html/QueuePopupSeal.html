@@ -13,7 +13,7 @@
                     <span class="control-label" id="UTResult"></span>
                 </div>
                 <div>
-                    <span class="text-center">Do you want to seal the specimen and send to HSA for testing?</span>
+                    <span class="text-center">Do you want to seal the specimen and send to UT for testing?</span>
                 </div>
             </div>
             <div class="modal-footer d-flex justify-content-center">
@@ -36,35 +36,30 @@
             }
         }
         $("#btnSeal").click(function (e) {
-            api.server.UpdateSealForUser(model.UserId, model.Queue_ID, true, model.UTResult, function () {
-                api.server.LoadDrugsTest(model.Date, model.UserId, function () {
-                    $('#idQueueSeal').modal('toggle');
-                    $('#idQueueDrugs').modal();
-                });
+            e.preventDefault();
+            api.server.LoadDrugsTest(model.UserId, function () {
+                $('#idQueueSeal').modal('toggle');
+                $('#idQueueDrugs').modal();
             });
-            
-            e.preventDefault(); // avoid to execute the actual submit of the form.
         });
         $("#btnDiscard").click(function (e) {
+            e.preventDefault();
             if (model.UTResult == 'POS') {
-                //show confirm message to discard a POS specimen
-                var result = confirm("Do you want to discard a POS specimen?");
-                if (result) {
-                    api.server.UpdateSealForUser(model.UserId, model.Queue_ID, false, model.UTResult, function () {
-                        $('#idQueueSeal').modal('toggle');
-                    });
-                }
-                //else {
-                //    $('#idQueueSeal').modal('toggle');
-                //}
+                ShowMessageConfirm('', 'Do you want to discard a POS specimen?', function (status) {
+                    if (status) {
+                        api.server.UpdateDisCard(model.UserId, model.UTResult, function () {
+                            $('#idQueueSeal').modal('toggle');
+                            reloadDataQueues();
+                        });
+                    }
+                });
             }
             else {
-                api.server.UpdateSealForUser(model.UserId, model.Queue_ID, false, model.UTResult, function () {
+                api.server.UpdateDisCard(model.UserId, model.UTResult, function () {
                     $('#idQueueSeal').modal('toggle');
+                    reloadDataQueues();
                 });
             }          
-
-            e.preventDefault(); // avoid to execute the actual submit of the form.
         });
     });
 </script>
