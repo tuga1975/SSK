@@ -40,6 +40,7 @@ namespace Trinity.BackendAPI.Controllers
                 {
                     var user = new DAL.DAL_User().GetByNRIC(data.NRIC);
                     new DAL.DAL_QueueNumber().UpdateQueueStatusByUserId(user.UserId, EnumStation.ESP, EnumQueueStatuses.Errors, EnumStation.DUTYOFFICER, EnumQueueStatuses.Finished, EnumMessage.LeakageDeletected, EnumQueueOutcomeText.Processing);
+                    await System.Threading.Tasks.Task.Run(() => Trinity.SignalR.Client.Instance.BackendAPICompleted(NotificationNames.SSP_COMPLETED, data.NRIC));
                 }
                 await System.Threading.Tasks.Task.Run(() => Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(EnumStation.ESP, data.type, data.content, data.notification_code));
                 return Ok(true);
@@ -129,7 +130,7 @@ namespace Trinity.BackendAPI.Controllers
         {
             var user = new DAL.DAL_User().GetByNRIC(NRIC);
             new DAL.DAL_QueueNumber().UpdateQueueStatusByUserId(user.UserId, EnumStation.ESP, EnumQueueStatuses.Finished, EnumStation.DUTYOFFICER, EnumQueueStatuses.TabSmartCard, EnumMessage.SelectOutCome, EnumQueueOutcomeText.TapSmartCardToContinue);
-            await System.Threading.Tasks.Task.Run(() => Trinity.SignalR.Client.Instance.BackendAPICompleted(NotificationNames.SHP_COMPLETED, NRIC));
+            await System.Threading.Tasks.Task.Run(() => Trinity.SignalR.Client.Instance.BackendAPICompleted(NotificationNames.SSP_COMPLETED, NRIC));
             return Ok(true);
         }
     }

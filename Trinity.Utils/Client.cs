@@ -108,13 +108,13 @@ namespace Trinity.SignalR
         public event EventHandler<EventInfo> OnQueueCompleted;
         public event EventHandler<EventInfo> OnDeviceStatusChanged;
         public event EventHandler<EventInfo> OnAppDisconnected;
-        public event EventHandler<NotificationInfo> OnSSPCompleted;
         public event EventHandler<NotificationInfo> OnDOUnblockSupervisee;
         public event EventHandler<NotificationInfo> OnAppointmentBookedOrReported;
         public event EventHandler<NotificationInfo> OnQueueInserted;
         public event EventHandler<NotificationInfo> OnSSACompleted;
         public event EventHandler<NotificationInfo> OnSSAInsertedLabel;
-        public event EventHandler<NotificationInfo> ONBackendApiSendDO;
+        public event EventHandler<NotificationInfo> OnBackendApiSendDO;
+        public event EventHandler<NotificationInfo> OnBackendAPICompleted;
         ///// <summary>
         ///// 
         ///// </summary>
@@ -159,10 +159,6 @@ namespace Trinity.SignalR
                 {
                     OnAppDisconnected?.Invoke(this, new EventInfo() { Name = EventNames.APP_DISCONNECTED, Source = notificationInfo.Source, Data = notificationInfo.Data });
                 }
-                else if (notificationInfo.Name == NotificationNames.SSP_COMPLETED)
-                {
-                    OnSSPCompleted?.Invoke(this, notificationInfo);
-                }
                 else if (notificationInfo.Name == NotificationNames.DO_UNBLOCK_SUPERVISEE)
                 {
                     OnDOUnblockSupervisee?.Invoke(this, notificationInfo);
@@ -185,7 +181,11 @@ namespace Trinity.SignalR
                 }
                 else if (notificationInfo.Name == NotificationNames.BACKEND_API_SEND_DO)
                 {
-                    ONBackendApiSendDO?.Invoke(this, notificationInfo);
+                    OnBackendApiSendDO?.Invoke(this, notificationInfo);
+                }
+                else if (notificationInfo.Name == NotificationNames.SHP_COMPLETED || notificationInfo.Name == NotificationNames.SSP_COMPLETED)
+                {
+                    OnBackendAPICompleted?.Invoke(this, notificationInfo);
                 }
                 else
                 {
