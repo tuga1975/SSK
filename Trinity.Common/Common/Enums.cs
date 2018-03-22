@@ -78,7 +78,7 @@ public static class EnumQueueStatuses
     public static string Missed = "Missed";
     [Custom(EnumColors.White, "")]
     public const string Waiting = "Waiting";
-    [Custom(EnumColors.White, "")]
+    [Custom(EnumColors.Green, "")]
     public const string Processing = "Processing";
     [Custom(EnumColors.Red, "")]
     public const string Errors = "Errors";
@@ -86,6 +86,11 @@ public static class EnumQueueStatuses
     public const string Finished = "Finished";
     [Custom(EnumColors.Notrequired, "")]
     public const string NotRequired = "NotRequired";
+
+    [Custom(EnumColors.Green, "")]
+    public const string TabSmartCard = "TabSmartCard";
+
+    public const string SelectSealOrDiscard = "SelectSealOrDiscard";
 
 }
 
@@ -364,12 +369,12 @@ public static class EnumNotificationTypes
 
 public static class EnumStation
 {
-    public const string SSK = "SSK";
-    public const string SSA = "SSA";
-    public const string UHP = "UHP";
     public const string APS = "APS";
-    public const string HSA = "HSA";
-    public const string ESP = "ESP";
+    public const string SSK = "ARK";
+    public const string SSA = "ALK";
+    public const string UHP = "SHP";
+    public const string HSA = "UT";
+    public const string ESP = "SSP";
 
     public const string ENROLMENT = "Enrolment";
     public const string DUTYOFFICER = "DutyOfficer";
@@ -494,6 +499,9 @@ public static class EnumMessage
 {
     public const string NotConnectCentralized = "Can not connect to Centralized";
     public const string SmartCardIsAlreadyInUse = "This smart card is already in use";
+    public const string SelectOutCome = "Select outcome";
+    public const string SelectSealtOrDiscard = "Results Negative. Select to Sealt or Discard";
+    public const string LeakageDeletected = "Leakage Deletected";
 }
 
 public static class EnumQueueOutcomeText

@@ -6,33 +6,25 @@ using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
 using Newtonsoft.Json;
-
-
-
+using Trinity.Common;
 
 namespace Trinity.BackendAPI.Controllers
 {
-    public class ESPModel
+   
+    public class SHPNotificationModel
     {
-        public string markingnumber { get; set; }
-        public string NotificationID { get; set; }
-        public string Source { get; set; }
         public string Type { get; set; }
         public string Content { get; set; }
         public Nullable<System.DateTime> Datetime { get; set; }
         public string notification_code { get; set; }
-        public Nullable<System.DateTime> requestDate { get; set; }
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this, Formatting.Indented);
-        }
     }
 
-    [Route("api/ESP/{Action}")]
-    public class ESPController : ApiController
+
+    [Route("api/SHP/{Action}")]
+    public class SHPController : ApiController
     {
         [HttpGet]
-        public IHttpActionResult GetDrugResults(string markingnumber)
+        public IHttpActionResult SHPGetDrugResults(string markingnumber)
         {
             Trinity.DAL.DBContext.DrugResult result = new DAL.DAL_DrugResults().GetByMarkingNumber(markingnumber);
             if (result == null)
@@ -66,26 +58,26 @@ namespace Trinity.BackendAPI.Controllers
         }
 
         [HttpPost]
-        [Custom(IgnoreParameter = "markingnumber,requestDate,NotificationID")]
-        public async System.Threading.Tasks.Task<IHttpActionResult> InsertNotification([FromBody] ESPModel data)
+        public async System.Threading.Tasks.Task<IHttpActionResult> SHPPostNotification([FromBody] SHPNotificationModel data)
         {
-            string IDNoti = new DAL.DAL_Notification().SSPInsert(data.Source, data.Type, data.Content, data.Datetime.Value, data.notification_code);
-            await System.Threading.Tasks.Task.Run(() => Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(null, "ESP Insert Noti", data.Content, data.Type));
-            return Ok(IDNoti);
+            string IDNoti = new DAL.DAL_Notification().InsertNotification(null, null, null, data.Content, false, data.Datetime.Value, data.notification_code, data.Type, EnumStation.UHP);
+            if (string.IsNullOrEmpty(IDNoti))
+            {
+                return Ok(string.Empty);
+            }
+            else
+            {
+                await System.Threading.Tasks.Task.Run(() => Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(EnumStation.ESP, data.Type, data.Content, data.notification_code));
+                return Ok(IDNoti);
+            }
         }
 
-        [HttpGet]
-        public IHttpActionResult GetNotificationByDate(DateTime requestDate)
+        public async System.Threading.Tasks.Task<IHttpActionResult> SHPComplete(string NRIC)
         {
-            var result = new DAL.DAL_Notification().GetByDate(requestDate).Select(d=>new {
-                d.NotificationID,
-                d.Source,
-                d.Type,
-                d.Content,
-                d.Datetime,
-                d.notification_code
-            });
-            return Ok(result);
+            var user = new DAL.DAL_User().GetByNRIC(NRIC);
+            new DAL.DAL_QueueNumber().UpdateQueueStatusByUserId(user.UserId, EnumStation.UHP, EnumQueueStatuses.Finished, EnumStation.HSA, EnumQueueStatuses.Processing, "", EnumQueueOutcomeText.Processing);
+            await System.Threading.Tasks.Task.Run(() => Trinity.SignalR.Client.Instance.BackendAPICompleted(NotificationNames.SHP_COMPLETED, NRIC));
+            return Ok(true);
         }
 
     }
