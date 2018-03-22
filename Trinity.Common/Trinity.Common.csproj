@@ -211,6 +211,9 @@
     <Content Include="View\html2canvas\jquery.plugin.html2canvas.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="View\html\PopupMessageConfirm.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="View\html\PopupMessage.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
