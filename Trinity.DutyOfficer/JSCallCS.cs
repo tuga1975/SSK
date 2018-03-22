@@ -47,7 +47,7 @@ namespace DutyOfficer
             _printMUBAndTTLabel.OnPrintUBLabelsFailed += PrintUBLabels_OnPrintUBLabelFailed;
             _StationColorDevice = new StationColorDevice();
 
-            SmartCard.Instance.GetCardInfoSucceeded += GetCardInfoSucceeded;
+            
         }
 
         public StationColorDevice GetStationClolorDevice()
@@ -210,38 +210,10 @@ namespace DutyOfficer
         public void startInstanceSmartcard()
         {
             _isFocusQueue = true;
-            SmartCard.Instance.Start();
+            //SmartCard.Instance.Start();
         }
 
-        private void GetCardInfoSucceeded(string cardUID)
-        {
-            // Only at the Queue allow get card info
-            if (_isFocusQueue)
-            {
-                DAL_User dAL_User = new DAL_User();
-                var user = dAL_User.GetUserBySmartCardId(cardUID);
-
-                if (user != null)
-                {
-                    var lstQueueToday = new DAL_QueueNumber().GetAllQueueByDateIncludeDetail(DateTime.Now.Date)
-                    .Select(queue => new
-                    {
-                        UserId = queue.Appointment.UserId,
-                        Queue_ID = queue.Queue_ID,
-                        Outcome = queue.Outcome
-                    });
-
-                    foreach (var queue in lstQueueToday)
-                    {
-                        if (queue.UserId == user.UserId && queue.Outcome.Equals(EnumQueueOutcomeText.TapSmartCardToContinue))
-                        {
-                            TapSmartCardOnQueueSucceed(queue.Queue_ID.ToString());
-                            break;
-                        }
-                    }
-                }
-            }
-        }
+        
 
         public void TapSmartCardOnQueueSucceed(string queueId)
         {

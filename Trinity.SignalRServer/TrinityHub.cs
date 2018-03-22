@@ -64,13 +64,7 @@ namespace Trinity.NotificationServer
                     }
                 }
             }
-            else if (notificationInfo.Name == NotificationNames.SHP_COMPLETED)
-            {
-
-
-                //Clients.Clients(Program.ProfileConnected.Where(d => d.isApp && d.Station == EnumStation.DUTYOFFICER).Select(d => d.ConnectionId).ToList()).OnNewNotification(notificationInfo);
-            }
-            else if (notificationInfo.Name == NotificationNames.SSP_COMPLETED)
+            else if (notificationInfo.Name == NotificationNames.SSP_COMPLETED || notificationInfo.Name == NotificationNames.SHP_COMPLETED)
             {
                 Clients.Clients(Program.ProfileConnected.Where(d => d.isApp && d.Station == EnumStation.DUTYOFFICER).Select(d => d.ConnectionId).ToList()).OnNewNotification(notificationInfo);
             }

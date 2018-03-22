@@ -39,12 +39,13 @@ namespace DutyOfficer
             Trinity.SignalR.Client.Instance.OnNewNotification += OnNewNotification_Handler;
             Trinity.SignalR.Client.Instance.OnAppDisconnected += OnAppDisconnected_Handler;
             Trinity.SignalR.Client.Instance.OnQueueCompleted += OnQueueCompleted_Handler;
-            Trinity.SignalR.Client.Instance.OnSSPCompleted += OnSSPCompleted_Handler;
             Trinity.SignalR.Client.Instance.OnQueueInserted += OnQueueInserted_Handler;
             Trinity.SignalR.Client.Instance.OnAppointmentBookedOrReported += OnAppointmentBookedOrReported_Handler;
             Trinity.SignalR.Client.Instance.OnSSACompleted += OnSSACompleted_Handler;
             Trinity.SignalR.Client.Instance.OnSSAInsertedLabel += OnSSAInsertedLabel_Handler;
-            Trinity.SignalR.Client.Instance.ONBackendApiSendDO += ONBackendApiSendDO_Handler;
+            Trinity.SignalR.Client.Instance.OnBackendApiSendDO += OnBackendApiSendDO_Handler;
+            Trinity.SignalR.Client.Instance.OnBackendAPICompleted += OnBackendAPICompleted_Handler;
+
 
 
 
@@ -58,8 +59,8 @@ namespace DutyOfficer
             _jsCallCS = new JSCallCS(this.LayerWeb);
             _jsCallCS.OnLogOutCompleted += JSCallCS_OnLogOutCompleted;
 
-
             SmartCard.Instance.GetCardInfoSucceeded += GetCardInfoSucceeded;
+            SmartCard.Instance.Start();
 
             // SmartCard
             //SmartCard.Instance.GetCardInfoSucceeded += GetCardInfoSucceeded;
@@ -90,7 +91,7 @@ namespace DutyOfficer
                         var queue = new DAL_QueueNumber().GetMyQueueToday(user.UserId);
                         if (queue != null && queue.QueueDetails.Any(d => d.Station == EnumStation.DUTYOFFICER && d.Status == EnumQueueStatuses.TabSmartCard))
                         {
-                            if(_jsCallCS.GetResultUT(user.NRIC, DateTime.Now.Date)== EnumUTResult.NEG && queue.QueueDetails.Any(d=>d.Station==EnumStation.ESP && d.Status==EnumQueueStatuses.NotRequired))
+                            if (_jsCallCS.GetResultUT(user.NRIC, DateTime.Now.Date) == EnumUTResult.NEG && queue.QueueDetails.Any(d => d.Station == EnumStation.ESP && d.Status == EnumQueueStatuses.NotRequired))
                             {
                                 new DAL_QueueNumber().UpdateQueueStatusByUserId(user.UserId, EnumStation.DUTYOFFICER, EnumQueueStatuses.Finished, EnumStation.DUTYOFFICER, EnumQueueStatuses.Finished, string.Empty, EnumQueueOutcomeText.UnconditionalRelease);
                                 this.LayerWeb.InvokeScript("reloadDataQueues");
@@ -103,12 +104,18 @@ namespace DutyOfficer
                     }
                 }
             }));
-            
+
         }
-        private void ONBackendApiSendDO_Handler(object sender, NotificationInfo e)
+
+        private void OnBackendAPICompleted_Handler(object sender, NotificationInfo e)
+        {
+            // khi ở tab Queue nhận đc cái này sẽ tải lại
+            RefreshCurrentTab(EnumDOTabName.Queue);
+        }
+        private void OnBackendApiSendDO_Handler(object sender, NotificationInfo e)
         {
             // khi ở tab Alter nhận đc cái này sẽ tải lại
-
+            RefreshCurrentTab(EnumDOTabName.Alerts);
         }
 
         private void OnSSACompleted_Handler(object sender, NotificationInfo e)
@@ -134,11 +141,7 @@ namespace DutyOfficer
             //string QueueID = e.QueueID;
             RefreshCurrentTab(EnumDOTabName.Queue);
         }
-        private void OnSSPCompleted_Handler(object sender, NotificationInfo e)
-        {
-            // Refresh data queue
-            RefreshCurrentTab(EnumDOTabName.Queue);
-        }
+        
 
         private void OnAppDisconnected_Handler(object sender, EventInfo e)
         {
