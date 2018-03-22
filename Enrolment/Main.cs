@@ -371,6 +371,7 @@ namespace Enrolment
                 {
                    
                     LayerWeb.InvokeScript("failAlert", e.Message);
+                    LayerWeb.InvokeScript("focusToSearchBox");
                 }
             }
             else if (e.Name == EventNames.GET_LIST_SUPERVISEE_FAILED)
