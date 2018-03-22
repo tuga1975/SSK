@@ -222,10 +222,6 @@ namespace Trinity.Device.Util
                 //TSCLIB_DLL.barcode(startX.ToString(), (startY += fontHeight + 8).ToString(), "39", "72", "0", "0", "1", "3", mubLabelInfo.QRCodeString);
                 TSCLIB_DLL.sendcommand("DMATRIX 200,16,400,400,x3,r90, \"" + mubLabelInfo.QRCodeString + "\"");
 
-                //Download PCX file into printer
-                //TSCLIB_DLL.downloadpcx("UL.PCX", "UL.PCX");
-                //Drawing PCX graphic
-                //TSCLIB_DLL.sendcommand("PUTPCX 100,400,\"UL.PCX\"");
                 //Print labels
                 TSCLIB_DLL.printlabel("1", "1");
                 TSCLIB_DLL.closeport();
