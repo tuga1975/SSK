@@ -85,15 +85,7 @@ namespace SSK.CodeBehind.Authentication
         {
             DAL_User dal_User = new DAL_User();
             var supervisee = dal_User.GetSuperviseeByNRIC(nric);
-
-            // if local user is null, get user from centralized, and sync db
-            if (supervisee == null)
-            {
-                supervisee = dal_User.GetSuperviseeByNRIC(nric);
-            }
-
-            // if centralized user is null
-            // raise failsed event and return false
+            
             if (supervisee == null)
             {
                 // raise show message event, then return
@@ -103,6 +95,8 @@ namespace SSK.CodeBehind.Authentication
 
             // Create a session object to store Suppervisee information
             Session session = Session.Instance;
+            session.IsSmartCardAuthenticated = true;
+            session.IsFingerprintAuthenticated = true;
             session[CommonConstants.SUPERVISEE] = supervisee;
             // raise succeeded event
             RaiseNRICSucceededEvent();
