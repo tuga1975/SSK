@@ -45,10 +45,7 @@ namespace DutyOfficer
             Trinity.SignalR.Client.Instance.OnSSAInsertedLabel += OnSSAInsertedLabel_Handler;
             Trinity.SignalR.Client.Instance.OnBackendApiSendDO += OnBackendApiSendDO_Handler;
             Trinity.SignalR.Client.Instance.OnBackendAPICompleted += OnBackendAPICompleted_Handler;
-
-
-
-
+            
             // setup variables
             _smartCardFailed = 0;
             _fingerprintFailed = 0;
@@ -79,7 +76,6 @@ namespace DutyOfficer
         }
         private void GetCardInfoSucceeded(string cardUID)
         {
-
             Lib.LayerWeb.Invoke((MethodInvoker)(() =>
             {
                 if (GetCurrentTab() == EnumDOTabName.Queue)
@@ -104,7 +100,6 @@ namespace DutyOfficer
                     }
                 }
             }));
-
         }
 
         private void OnBackendAPICompleted_Handler(object sender, NotificationInfo e)
@@ -165,18 +160,7 @@ namespace DutyOfficer
                 notification.Datetime = DateTime.Now;
                 object result = JsonConvert.SerializeObject(notification, Formatting.Indented,
                 new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
-                Lib.LayerWeb.Invoke((MethodInvoker)(() =>
-                {
-                    string activeTab = Lib.LayerWeb.Document.InvokeScript("getActiveTab").ToString();
-                    if (activeTab != EnumDOTabName.Alerts)
-                    {
-                        Lib.LayerWeb.InvokeScript("getRealtimeNotificationServer", result);
-                    }
-                    else
-                    {
-                        Lib.LayerWeb.InvokeScript("getNotificationInCurrentTab", result);
-                    }
-                }));
+                RefreshCurrentTab(EnumDOTabName.Alerts, result);
             }
         }
 
@@ -590,7 +574,7 @@ namespace DutyOfficer
             NavigateTo(NavigatorEnums.Login);
         }
 
-        private void RefreshCurrentTab(string tabName)
+        private void RefreshCurrentTab(string tabName, object dataForAlert = null)
         {
             Lib.LayerWeb.Invoke((MethodInvoker)(() =>
             {
@@ -613,7 +597,14 @@ namespace DutyOfficer
                         case EnumDOTabName.MUBLabel:
                             Lib.LayerWeb.InvokeScript("reloadDataMUBAndTT");
                             break;
+                        case EnumDOTabName.Alerts:
+                            Lib.LayerWeb.InvokeScript("getNotificationInCurrentTab", dataForAlert);
+                            break;
                     }
+                }
+                else if (tabName == EnumDOTabName.Alerts)
+                {
+                    Lib.LayerWeb.InvokeScript("getRealtimeNotificationServer", dataForAlert);
                 }
             }));
         }
