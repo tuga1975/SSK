@@ -267,13 +267,18 @@ namespace DutyOfficer
 
                 if (resultUT == EnumUTResult.NEG)
                 {
-                    // update outcome to 'Unconditional Release'
-                    //dalQueue.UpdateQueueOutcomeByQueueId(new Guid(queueId), EnumQueueOutcomeText.UnconditionalRelease);
+                    var drugResult = new DAL_DrugResults().GetByNRICAndDate(queueDetail.NRIC, queueDetail.Date);
+                    if (drugResult != null && drugResult.IsSealed.Value)
+                    {
+                        this._web.InvokeScript("openPopupOutcome", queueId);
+                    }
+                    else
+                    {
+                        dalQueue.UpdateQueueStatusByUserId(queueDetail.UserId, EnumStation.DUTYOFFICER, EnumQueueStatuses.Finished, EnumStation.DUTYOFFICER, EnumQueueStatuses.Finished, "", EnumQueueOutcomeText.UnconditionalRelease);
 
-                    dalQueue.UpdateQueueStatusByUserId(queueDetail.UserId, EnumStation.ESP, EnumQueueStatuses.NotRequired, EnumStation.DUTYOFFICER, EnumQueueStatuses.NotRequired, "", EnumQueueOutcomeText.UnconditionalRelease);
-
-                    // Re-load queue
-                    this._web.InvokeScript("reloadDataQueues");
+                        // Re-load queue
+                        this._web.InvokeScript("reloadDataQueues");
+                    }
                 }
                 else
                 {
