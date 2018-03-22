@@ -1,18 +1,4 @@
-﻿<!--<div style="display:block; padding:10px;">
-    <span style=" font-size:22px; float:left; text-align:left;"><b><ion-icon name="notifications"></ion-icon>Queue</b></span>
-    <span style=" font-size:20px; float:left; text-align:left; margin-left:12px;" current-date></span>
-    <div class="form-inline" style="position: absolute; right: 200px; top: 30px">
-        <select class="form-control" id="pageSize" style="width:70px; display:inline-block;">
-            <option>10</option>
-            <option>2</option>
-            <option>3</option>
-        </select>
-        <div style="display:inline-block;">Entries</div>
-    </div>
-</div>
-
-<table id="table-queue"></table>-->
-<div class="table-wrapper formWrapper">
+﻿<div class="table-wrapper formWrapper">
     <div class="tab-header">
         <span class="formHeader"><b>Queue</b></span>
     </div>
@@ -56,8 +42,8 @@
             pageSize:10,
             pageList: [10, 25, 50, 100],
             onClickCell: function (field, value, row, $element) {
-                if (field == "HSA" && $.trim(value).length > 0 && row.Queue_ID != null) {                    
-                    api.server.LoadPopupSeal(row.Date, row.UserId, row.Queue_ID, value, function () {
+                if (field == "HSA" && $.trim(value.Text).length > 0 && row.Queue_ID != null && value.Status !='Finished') {                    
+                    api.server.LoadPopupSeal(row.Date, row.UserId, row.Queue_ID, value.Text, function () {
                         $('#idQueueSeal').modal();
                     });
                 }
@@ -100,7 +86,7 @@
                 },
                 {
                     field: 'SSK',
-                    title: 'SSK',
+                    title: 'ARK',
                     align: 'center',
                     formatter: function (value, row, index, field) {
                         return '<span colorState style="background-color:' + value + ';"></span>';
@@ -108,7 +94,7 @@
                 },
                 {
                     field: 'SSA',
-                    title: 'SSA',
+                    title: 'ALK',
                     align: 'center',
                     formatter: function (value, row, index, field) {
                         return '<span colorState style="background-color:' + value + ';"></span>';
@@ -116,7 +102,7 @@
                 },
                 {
                     field: 'UHP',
-                    title: 'UHP',
+                    title: 'SHP',
                     align: 'center',
                     formatter: function (value, row, index, field) {
                         return '<span colorState style="background-color:' + value + ';"></span>';
@@ -127,11 +113,11 @@
                     title: 'UT',
                     align: 'center',
                     formatter: function (value, row, index, field) {
-                        if (value == 'NEG') {
-                            return '<span style="color:green;display:inline-block;padding:2px 5px;border:1px solid #CCC;">' + value + '</span>';
+                        if (value.Text == 'NEG') {
+                            return '<span style="color:green;display:inline-block;padding:2px 5px;border:1px solid #CCC;">' + value.Text + '</span>';
                         }
-                        else if (value == 'POS') {
-                            return '<span style="color:red;display:inline-block;padding:2px 5px;border:1px solid #CCC;">' + value + '</span>';
+                        else if (value.Text == 'POS') {
+                            return '<span style="color:red;display:inline-block;padding:2px 5px;border:1px solid #CCC;">' + value.Text + '</span>';
                         }
                         else {
                             return '';
@@ -140,7 +126,7 @@
                 },
                 {
                     field: 'ESP',
-                    title: 'ESP',
+                    title: 'SSP',
                     align: 'center',
                     formatter: function (value, row, index, field) {
                         return '<span colorState="' + value + '" style="background-color:' + value + ';"></span>';

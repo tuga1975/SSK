@@ -724,7 +724,7 @@ namespace Trinity.DAL
 
         public List<Trinity.BE.User> GetAllSuperviseeBlocked()
         {
-            if (EnumAppConfig.ByPassCentralizedDB)
+            if (EnumAppConfig.IsLocal)
             {
                 var user = (from mu in _localUnitOfWork.DataContext.Membership_Users
                             join mur in _localUnitOfWork.DataContext.Membership_UserRoles on mu.UserId equals mur.UserId
@@ -770,15 +770,15 @@ namespace Trinity.DAL
                 UpdateStatusAndReasonSuperviseeUnblock(userId, reason, localUserRepo);
                 _localUnitOfWork.Save();
 
-                if (!EnumAppConfig.ByPassCentralizedDB)
-                {
-                    bool centralizeStatus = false;
-                    var centralUpdate = CallCentralized.Post<Setting>(EnumAPIParam.User, "UnblockSuperviseeById", out centralizeStatus, "userId=" + userId, "reason=" + reason);
-                    if (!centralizeStatus)
-                    {
-                        throw new Exception(EnumMessage.NotConnectCentralized);
-                    }
-                }
+                //if (!EnumAppConfig.ByPassCentralizedDB)
+                //{
+                //    bool centralizeStatus = false;
+                //    var centralUpdate = CallCentralized.Post<Setting>(EnumAPIParam.User, "UnblockSuperviseeById", out centralizeStatus, "userId=" + userId, "reason=" + reason);
+                //    if (!centralizeStatus)
+                //    {
+                //        throw new Exception(EnumMessage.NotConnectCentralized);
+                //    }
+                //}
             }
             else
             {

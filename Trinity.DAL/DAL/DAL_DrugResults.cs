@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using Trinity.DAL.DBContext;
 using Trinity.DAL.Repository;
@@ -12,9 +13,37 @@ namespace Trinity.DAL
         Local_UnitOfWork _localUnitOfWork = new Local_UnitOfWork();
         Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
 
-        public DBContext.DrugResult GetByNRIC(string NRIC)
+        public void UpdateDiscardDrugResult(string UserID,string UserDoID)
         {
-            return _localUnitOfWork.DataContext.DrugResults.FirstOrDefault(d => d.NRIC.Equals(NRIC));
+            string NRIC = new DAL_User().GetUserByUserId(UserID).Data.NRIC;
+            DateTime today = DateTime.Today;
+            var drugResult = _localUnitOfWork.DataContext.DrugResults.FirstOrDefault(d => d.NRIC == NRIC && DbFunctions.TruncateTime(d.UploadedDate) == today);
+            drugResult.IsSealed = false;
+            drugResult.SealedOrDiscardedBy = UserDoID;
+            drugResult.SealedOrDiscardedDate = DateTime.Now;
+            _localUnitOfWork.GetRepository<Trinity.DAL.DBContext.DrugResult>().Update(drugResult);
+            _localUnitOfWork.Save();
+        }
+        public List<Guid> CheckDrugResult()
+        {
+            DateTime today = DateTime.Today;
+            var query = (from queue in _localUnitOfWork.DataContext.Queues.Where(d => DbFunctions.TruncateTime(d.CreatedTime) == today && d.QueueDetails.Any(c => c.Station == EnumStation.HSA && c.Status == EnumQueueStatuses.Processing))
+                         join drugresult in _localUnitOfWork.DataContext.DrugResults.Where(d => DbFunctions.TruncateTime(d.UploadedDate) == today) on queue.Membership_Users1.NRIC equals drugresult.NRIC
+                         select new { queue, drugresult }).Where(d => d.drugresult != null).ToList();
+            List<Guid> arrayQueueUpdateed = new List<Guid>();
+            DAL_QueueNumber DAL_Queue = new DAL.DAL_QueueNumber();
+            foreach (var item in query)
+            {
+                arrayQueueUpdateed.Add(item.queue.Queue_ID);
+                DAL_Queue.UpdateQueueStatusByUserId(item.queue.UserId, EnumStation.HSA, EnumQueueStatuses.SelectSealOrDiscard, EnumStation.HSA, EnumQueueStatuses.SelectSealOrDiscard, EnumMessage.SelectSealtOrDiscard, EnumQueueOutcomeText.Processing);
+            }
+            return arrayQueueUpdateed;
+        }
+
+        public DBContext.DrugResult GetByNRICAndDate(string NRIC, DateTime DateCreate)
+        {
+            DateCreate = DateCreate.Date;
+            return _localUnitOfWork.DataContext.DrugResults.FirstOrDefault(d => d.NRIC.Equals(NRIC) && DbFunctions.TruncateTime(d.UploadedDate) == DateCreate);
         }
 
         public DBContext.DrugResult GetByMarkingNumber(string MarkingNumber)
@@ -182,226 +211,176 @@ namespace Trinity.DAL
             }
         }
 
-        public DrugResult UpdateDrugSeal(string userId,bool COCA, bool BARB, bool LSD, bool METH, bool MTQL, bool PCP, bool KET, bool BUPRE, bool CAT, bool PPZ, bool NPS, string updatedBy)
+        public void UpdateDrugSeal(string userId, bool COCA, bool BARB, bool LSD, bool METH, bool MTQL, bool PCP, bool KET, bool BUPRE, bool CAT, bool PPZ, bool NPS, string updatedBy)
         {
-            try
+            string NRIC = new DAL_User().GetUserByUserId(userId).Data.NRIC;
+            var localRepo = _localUnitOfWork.GetRepository<DrugResult>();
+            DateTime today = DateTime.Today;
+            DrugResult drug = _localUnitOfWork.DataContext.DrugResults.FirstOrDefault(d => d.NRIC.Equals(NRIC) && DbFunctions.TruncateTime(d.UploadedDate)== today);
+            if (drug != null)
             {
-                string NRIC = new DAL_User().GetUserByUserId(userId).Data.NRIC;
-
-                if (EnumAppConfig.IsLocal)
-                {
-                    var localRepo = _localUnitOfWork.GetRepository<DrugResult>();
-                    DrugResult drug = _localUnitOfWork.DataContext.DrugResults.FirstOrDefault(d => d.NRIC.Equals(NRIC));
-                    
-                    if(drug != null)
-                    {
-                        drug.COCA = COCA;
-                        drug.BARB = BARB;
-                        drug.LSD = LSD;
-                        drug.METH = METH;
-                        drug.MTQL = MTQL;
-                        drug.PCP = PCP;
-                        drug.KET = KET;
-                        drug.BUPRE = BUPRE;
-                        drug.CAT = CAT;
-                        drug.PPZ = PPZ;
-                        drug.NPS = NPS;
-                        drug.UploadedBy = updatedBy;
-
-                        localRepo.Update(drug);
-                        _localUnitOfWork.Save();                                               
-                    }
-
-                    if(EnumAppConfig.ByPassCentralizedDB)
-                    {
-                        return drug;
-                    }
-                    else 
-                    {
-                        bool centralizeStatus;
-                        var centralData = CallCentralized.Post<DrugResult>(EnumAPIParam.DrugResult, "UpdateDrugSeal", out centralizeStatus, "userId=" + userId, "COCA=" + COCA.ToString(),
-                                            "BARB=" + BARB.ToString(), "LSD=" + LSD.ToString(), "METH=" + METH.ToString(), "MTQL=" + MTQL.ToString(), "PCP=" + PCP.ToString(), "KET=" + KET.ToString(),
-                                            "BUPRE=" + BUPRE.ToString(), "CAT=" + CAT.ToString(), "PPZ=" + PPZ.ToString(), "NPS=" + NPS.ToString(), "updatedBy=" + updatedBy);
-                        if (centralizeStatus)
-                        {
-                            return centralData;
-                        }
-                        else
-                        {
-                            throw new Exception(EnumMessage.NotConnectCentralized);
-                        }
-                    }                    
-                }
-                else
-                {
-                    var centralRepo = _centralizedUnitOfWork.GetRepository<DrugResult>();
-                    DrugResult drug = _centralizedUnitOfWork.DataContext.DrugResults.FirstOrDefault(d => d.NRIC.Equals(NRIC));
-
-                    if (drug != null)
-                    {
-                        drug.COCA = COCA;
-                        drug.BARB = BARB;
-                        drug.LSD = LSD;
-                        drug.METH = METH;
-                        drug.MTQL = MTQL;
-                        drug.PCP = PCP;
-                        drug.KET = KET;
-                        drug.BUPRE = BUPRE;
-                        drug.CAT = CAT;
-                        drug.PPZ = PPZ;
-                        drug.NPS = NPS;
-                        drug.UploadedBy = updatedBy;
-
-                        centralRepo.Update(drug);
-                        _centralizedUnitOfWork.Save();
-                    }
-
-                    return drug;
-                }
-            }
-            catch (Exception e)
-            {
-                return null;
+                drug.COCA = COCA;
+                drug.BARB = BARB;
+                drug.LSD = LSD;
+                drug.METH = METH;
+                drug.MTQL = MTQL;
+                drug.PCP = PCP;
+                drug.KET = KET;
+                drug.BUPRE = BUPRE;
+                drug.CAT = CAT;
+                drug.PPZ = PPZ;
+                drug.NPS = NPS;
+                drug.IsSealed = true;
+                drug.SealedOrDiscardedBy = updatedBy;
+                drug.SealedOrDiscardedDate = DateTime.Now;
+                localRepo.Update(drug);
+                _localUnitOfWork.Save();
             }
         }
 
-        public string GetResultUTByNRIC(string NRIC)
+        public string GetResultUTByNRIC(string NRIC, DateTime date)
         {
-            if (EnumAppConfig.IsLocal)
-            {
-                DrugResult drug = _localUnitOfWork.DataContext.DrugResults.FirstOrDefault(d => d.NRIC.Equals(NRIC));
-                if (drug == null)
-                    return EnumUTResult.NEG;
-                else
-                {
-                    if ((drug.AMPH.HasValue && drug.AMPH.Value) || (drug.BARB.HasValue && drug.BARB.Value) || (drug.BENZ.HasValue && drug.BENZ.Value) || (drug.BUPRE.HasValue && drug.BUPRE.Value) || (drug.CAT.HasValue && drug.CAT.Value) 
-                        || (drug.COCA.HasValue && drug.COCA.Value) || (drug.KET.HasValue && drug.KET.Value) || (drug.LSD.HasValue && drug.LSD.Value) || (drug.METH.HasValue && drug.METH.Value) || (drug.MTQL.HasValue && drug.MTQL.Value) 
-                        || (drug.NPS.HasValue && drug.NPS.Value) || (drug.OPI.HasValue) && drug.OPI.Value || (drug.PCP.HasValue && drug.PCP.Value) || (drug.PPZ.HasValue && drug.PPZ.Value) || (drug.THC.HasValue && drug.THC.Value))
-                    {
-                        return EnumUTResult.POS;
-                    }
-                    else
-                    {
-                        return EnumUTResult.NEG;
-                    }
-                }
-            }
+            date = date.Date;
+            DrugResult drug = _localUnitOfWork.DataContext.DrugResults.FirstOrDefault(d => d.NRIC.Equals(NRIC) && DbFunctions.TruncateTime(d.UploadedDate) == date);
+            if (drug == null)
+                return string.Empty;
             else
             {
-                DrugResult drug = _centralizedUnitOfWork.DataContext.DrugResults.FirstOrDefault(d => d.NRIC.Equals(NRIC));
-                if (drug == null)
+                if (
+                        (drug.AMPH.HasValue && drug.AMPH.Value) ||
+                        (drug.BENZ.HasValue && drug.BENZ.Value) ||
+                        (drug.OPI.HasValue && drug.OPI.Value) ||
+                        (drug.THC.HasValue && drug.THC.Value)
+                   )
+                {
+                    return EnumUTResult.POS;
+                }
+                else
+                {
                     return EnumUTResult.NEG;
-                else
-                {
-                    if (drug.AMPH.Value || drug.BARB.Value || drug.BENZ.Value || drug.BUPRE.Value || drug.CAT.Value || drug.COCA.Value || drug.KET.Value || drug.LSD.Value
-                        || drug.METH.Value || drug.MTQL.Value || drug.NPS.Value || drug.OPI.Value || drug.PCP.Value || drug.PPZ.Value || drug.THC.Value)
-                    {
-                        return EnumUTResult.POS;
-                    }
-                    else
-                    {
-                        return EnumUTResult.NEG;
-                    }
                 }
             }
+
+            //if (EnumAppConfig.IsLocal)
+            //{
+
+            //}
+            //else
+            //{
+            //    DrugResult drug = _centralizedUnitOfWork.DataContext.DrugResults.FirstOrDefault(d => d.NRIC.Equals(NRIC));
+            //    if (drug == null)
+            //        return EnumUTResult.NEG;
+            //    else
+            //    {
+            //        if (drug.AMPH.Value || drug.BARB.Value || drug.BENZ.Value || drug.BUPRE.Value || drug.CAT.Value || drug.COCA.Value || drug.KET.Value || drug.LSD.Value
+            //            || drug.METH.Value || drug.MTQL.Value || drug.NPS.Value || drug.OPI.Value || drug.PCP.Value || drug.PPZ.Value || drug.THC.Value)
+            //        {
+            //            return EnumUTResult.POS;
+            //        }
+            //        else
+            //        {
+            //            return EnumUTResult.NEG;
+            //        }
+            //    }
+            //}
         }
-        public DrugResult UpdateSealForUser(string userId, bool seal, string uploadedBy, string sealedOrDiscardedBy)
-        {
-            try
-            {
-                string NRIC = new DAL_User().GetUserByUserId(userId).Data.NRIC;
+        //public DrugResult UpdateSealForUser(string userId, bool seal, string uploadedBy, string sealedOrDiscardedBy)
+        //{
+        //    try
+        //    {
+        //        string NRIC = new DAL_User().GetUserByUserId(userId).Data.NRIC;
 
-                if (EnumAppConfig.IsLocal)
-                {
-                    var localRepo = _localUnitOfWork.GetRepository<DrugResult>();
-                    DrugResult drug = _localUnitOfWork.DataContext.DrugResults.FirstOrDefault(d => d.NRIC.Equals(NRIC));
+        //        if (EnumAppConfig.IsLocal)
+        //        {
+        //            var localRepo = _localUnitOfWork.GetRepository<DrugResult>();
+        //            DrugResult drug = _localUnitOfWork.DataContext.DrugResults.FirstOrDefault(d => d.NRIC.Equals(NRIC));
 
-                    if (drug == null)
-                    {
-                        Trinity.DAL.DBContext.Label dbLabel = new Trinity.DAL.DAL_Labels().GetByDateAndUserId(DateTime.Now.Date, userId);
-                        drug = new DrugResult();
-                        drug.DrugResultsID = NRIC;
-                        drug.NRIC = NRIC;
-                        drug.IsSealed = seal;
-                        drug.UploadedBy = uploadedBy;
-                        drug.UploadedDate = DateTime.Now;
-                        drug.SealedOrDiscardedBy = sealedOrDiscardedBy;
-                        drug.SealedOrDiscardedDate = DateTime.Now;
-                        if (dbLabel != null)
-                        {
-                            drug.markingnumber = dbLabel.MarkingNo;
-                        }
-                        localRepo.Add(drug);
-                    }
-                    else
-                    {
-                        drug.NRIC = NRIC;
-                        drug.IsSealed = seal;
-                        drug.UploadedBy = uploadedBy;
-                        drug.UploadedDate = DateTime.Now;
-                        drug.SealedOrDiscardedBy = sealedOrDiscardedBy;
-                        drug.SealedOrDiscardedDate = DateTime.Now;
+        //            if (drug == null)
+        //            {
+        //                Trinity.DAL.DBContext.Label dbLabel = new Trinity.DAL.DAL_Labels().GetByDateAndUserId(DateTime.Now.Date, userId);
+        //                drug = new DrugResult();
+        //                drug.DrugResultsID = NRIC;
+        //                drug.NRIC = NRIC;
+        //                drug.IsSealed = seal;
+        //                drug.UploadedBy = uploadedBy;
+        //                drug.UploadedDate = DateTime.Now;
+        //                drug.SealedOrDiscardedBy = sealedOrDiscardedBy;
+        //                drug.SealedOrDiscardedDate = DateTime.Now;
+        //                if (dbLabel != null)
+        //                {
+        //                    drug.markingnumber = dbLabel.MarkingNo;
+        //                }
+        //                localRepo.Add(drug);
+        //            }
+        //            else
+        //            {
+        //                drug.NRIC = NRIC;
+        //                drug.IsSealed = seal;
+        //                drug.UploadedBy = uploadedBy;
+        //                drug.UploadedDate = DateTime.Now;
+        //                drug.SealedOrDiscardedBy = sealedOrDiscardedBy;
+        //                drug.SealedOrDiscardedDate = DateTime.Now;
 
-                        localRepo.Update(drug);
-                    }
+        //                localRepo.Update(drug);
+        //            }
 
-                    _localUnitOfWork.Save();
+        //            _localUnitOfWork.Save();
 
-                    if (EnumAppConfig.ByPassCentralizedDB)
-                    {
-                        return drug;
-                    }
-                    else
-                    {
-                        bool centralizeStatus;
-                        var centralData = CallCentralized.Post<DrugResult>(EnumAPIParam.DrugResult, "UpdateSealForUser", out centralizeStatus, "userId=" + userId, "seal=" + seal.ToString(), "uploadedBy=" + uploadedBy, "sealedOrDiscardedBy=" + sealedOrDiscardedBy);
-                        if (centralizeStatus)
-                        {
-                            return centralData;
-                        }
-                        else
-                        {
-                            throw new Exception(EnumMessage.NotConnectCentralized);
-                        }
-                    }
-                }
-                else
-                {
-                    var centralRepo = _centralizedUnitOfWork.GetRepository<DrugResult>();
-                    DrugResult drug = _centralizedUnitOfWork.DataContext.DrugResults.FirstOrDefault(d => d.NRIC.Equals(NRIC));
+        //            if (EnumAppConfig.ByPassCentralizedDB)
+        //            {
+        //                return drug;
+        //            }
+        //            else
+        //            {
+        //                bool centralizeStatus;
+        //                var centralData = CallCentralized.Post<DrugResult>(EnumAPIParam.DrugResult, "UpdateSealForUser", out centralizeStatus, "userId=" + userId, "seal=" + seal.ToString(), "uploadedBy=" + uploadedBy, "sealedOrDiscardedBy=" + sealedOrDiscardedBy);
+        //                if (centralizeStatus)
+        //                {
+        //                    return centralData;
+        //                }
+        //                else
+        //                {
+        //                    throw new Exception(EnumMessage.NotConnectCentralized);
+        //                }
+        //            }
+        //        }
+        //        else
+        //        {
+        //            var centralRepo = _centralizedUnitOfWork.GetRepository<DrugResult>();
+        //            DrugResult drug = _centralizedUnitOfWork.DataContext.DrugResults.FirstOrDefault(d => d.NRIC.Equals(NRIC));
 
-                    if (drug == null)
-                    {
-                        drug = new DrugResult();
-                        drug.NRIC = NRIC;
-                        drug.IsSealed = seal;
-                        drug.UploadedBy = uploadedBy;
-                        drug.UploadedDate = DateTime.Now;
-                        drug.SealedOrDiscardedBy = sealedOrDiscardedBy;
-                        drug.SealedOrDiscardedDate = DateTime.Now;
+        //            if (drug == null)
+        //            {
+        //                drug = new DrugResult();
+        //                drug.NRIC = NRIC;
+        //                drug.IsSealed = seal;
+        //                drug.UploadedBy = uploadedBy;
+        //                drug.UploadedDate = DateTime.Now;
+        //                drug.SealedOrDiscardedBy = sealedOrDiscardedBy;
+        //                drug.SealedOrDiscardedDate = DateTime.Now;
 
-                        centralRepo.Add(drug);
-                    }
-                    else
-                    {
-                        drug.NRIC = NRIC;
-                        drug.IsSealed = seal;
-                        drug.UploadedBy = uploadedBy;
-                        drug.UploadedDate = DateTime.Now;
-                        drug.SealedOrDiscardedBy = sealedOrDiscardedBy;
-                        drug.SealedOrDiscardedDate = DateTime.Now;
+        //                centralRepo.Add(drug);
+        //            }
+        //            else
+        //            {
+        //                drug.NRIC = NRIC;
+        //                drug.IsSealed = seal;
+        //                drug.UploadedBy = uploadedBy;
+        //                drug.UploadedDate = DateTime.Now;
+        //                drug.SealedOrDiscardedBy = sealedOrDiscardedBy;
+        //                drug.SealedOrDiscardedDate = DateTime.Now;
 
-                        centralRepo.Update(drug);
-                    }
-                    _centralizedUnitOfWork.Save();
+        //                centralRepo.Update(drug);
+        //            }
+        //            _centralizedUnitOfWork.Save();
 
-                    return drug;
-                }
-            }
-            catch (Exception e)
-            {
-                return null;
-            }
-        }
+        //            return drug;
+        //        }
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        return null;
+        //    }
+        //}
     }
 }

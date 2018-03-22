@@ -6,19 +6,23 @@ using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
 using Newtonsoft.Json;
-
-
-
+using Trinity.Common;
 
 namespace Trinity.BackendAPI.Controllers
 {
-    public class SSPModel
+    public class SSPNotificationModel
     {
-        public string source { get; set; }
         public string type { get; set; }
         public string content { get; set; }
         public DateTime datetime { get; set; }
         public string notification_code { get; set; }
+        public string NRIC { get; set; }
+    }
+    public class SSPTransactionModel
+    {
+        public string type { get; set; }
+        public string content { get; set; }
+        public DateTime datetime { get; set; }
         public string transaction_code { get; set; }
         public string NRIC { get; set; }
     }
@@ -26,27 +30,34 @@ namespace Trinity.BackendAPI.Controllers
     [Route("api/SSP/{Action}")]
     public class SSPController : ApiController
     {
+
         [HttpPost]
-        [Custom(IgnoreParameter = "NRIC,transaction_code")]
-        public IHttpActionResult Notification([FromBody]SSPModel data)
+        public async System.Threading.Tasks.Task<IHttpActionResult> SSPPostNotification([FromBody]SSPNotificationModel data)
         {
-            if (!string.IsNullOrEmpty(new DAL.DAL_Notification().SSPInsert(data.source, data.type, data.content, data.datetime, data.notification_code)))
+            if (!string.IsNullOrEmpty(new DAL.DAL_Notification().InsertNotification(null, null, null, data.content, false, data.datetime, data.notification_code, data.type, EnumStation.ESP)))
+            {
+                if (data.type== EnumNotificationTypes.Error && !string.IsNullOrEmpty(data.NRIC))
+                {
+                    var user = new DAL.DAL_User().GetByNRIC(data.NRIC);
+                    new DAL.DAL_QueueNumber().UpdateQueueStatusByUserId(user.UserId, EnumStation.ESP, EnumQueueStatuses.Errors, EnumStation.DUTYOFFICER, EnumQueueStatuses.Finished, EnumMessage.LeakageDeletected, EnumQueueOutcomeText.Processing);
+                }
+                await System.Threading.Tasks.Task.Run(() => Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(EnumStation.ESP, data.type, data.content, data.notification_code));
                 return Ok(true);
+            }
             else
                 return Ok(false);
         }
         [HttpPost]
-        [Custom(IgnoreParameter = "NRIC,notification_code,type")]
-        public IHttpActionResult Transaction([FromBody]SSPModel data)
+        public IHttpActionResult SSPPostTransaction([FromBody]SSPTransactionModel data)
         {
-            if (new DAL.DAL_Transactions().Insert(data.NRIC,data.source, data.type, data.content, data.datetime, data.transaction_code)!= Guid.Empty)
+            if (new DAL.DAL_Transactions().Insert(data.NRIC,EnumStation.ESP, data.type, data.content, data.datetime, data.transaction_code)!= Guid.Empty)
                 return Ok(true);
             else
                 return Ok(false);
         }
 
         [HttpGet]
-        public IHttpActionResult Authentication(string source,string NRIC)
+        public IHttpActionResult SSPAuthenticate(string NRIC)
         {
             Trinity.DAL.DBContext.Membership_Users user = new DAL.DAL_User().GetByNRIC(NRIC);
             if (user == null)
@@ -67,7 +78,7 @@ namespace Trinity.BackendAPI.Controllers
             }
         }
         [HttpGet]
-        public IHttpActionResult GetCaseOfficer(string NRIC)
+        public IHttpActionResult SSPGetCaseOfficer(string NRIC)
         {
             Trinity.DAL.DBContext.Membership_Users user = new DAL.DAL_User().GetByNRIC(NRIC);
             if (user == null)
@@ -80,9 +91,9 @@ namespace Trinity.BackendAPI.Controllers
             }
         }
         [HttpGet]
-        public IHttpActionResult DrugResult(string NRIC)
+        public IHttpActionResult SSPGetDrugResults(string NRIC,DateTime DateCreate)
         {
-            Trinity.DAL.DBContext.DrugResult result = new DAL.DAL_DrugResults().GetByNRIC(NRIC);
+            Trinity.DAL.DBContext.DrugResult result = new DAL.DAL_DrugResults().GetByNRICAndDate(NRIC, DateCreate);
             if (result == null)
             {
                 return Ok();
@@ -114,9 +125,11 @@ namespace Trinity.BackendAPI.Controllers
         }
 
         [HttpGet]
-        public async System.Threading.Tasks.Task<IHttpActionResult> Completion(string NRIC)
+        public async System.Threading.Tasks.Task<IHttpActionResult> SSPComplete(string NRIC)
         {
-            await System.Threading.Tasks.Task.Run(() => Trinity.SignalR.Client.Instance.SSPCompleted(NRIC));
+            var user = new DAL.DAL_User().GetByNRIC(NRIC);
+            new DAL.DAL_QueueNumber().UpdateQueueStatusByUserId(user.UserId, EnumStation.ESP, EnumQueueStatuses.Finished, EnumStation.DUTYOFFICER, EnumQueueStatuses.TabSmartCard, EnumMessage.SelectOutCome, EnumQueueOutcomeText.TapSmartCardToContinue);
+            await System.Threading.Tasks.Task.Run(() => Trinity.SignalR.Client.Instance.BackendAPICompleted(NotificationNames.SHP_COMPLETED, NRIC));
             return Ok(true);
         }
     }

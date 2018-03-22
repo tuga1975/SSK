@@ -323,11 +323,13 @@
     <Content Include="View\bootstrap\js\bootstrap.min.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="View\html\Authentication\ManualLogin.html" />
     <Content Include="View\html\Authentication\NRIC.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="View\html\Document.html" />
     <Content Include="View\html\Layout_QueueNumber.html" />
+    <Content Include="View\html\PopupScanDocument.html" />
     <Content Include="View\html\PopupShowImageScan.html" />
     <Content Include="View\html\PrintingTemplates\AppointmentDetailsTemplate.html" />
     <Content Include="View\html\ReasonsForQueue.html">
@@ -367,6 +369,7 @@
     <Content Include="View\img\central_narco_logo.png" />
     <Content Include="View\img\DocumentScan.png" />
     <Content Include="View\img\FingerPrint.png" />
+    <Content Include="View\img\iconTick.png" />
     <Content Include="View\img\loading.gif" />
     <Content Include="View\img\Logo.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

@@ -209,13 +209,13 @@ namespace Experiment
             MessageBox.Show("Start OK");
         }
 
-        private void DocumentScannerCallback(string frontPath, string error)
+        private void DocumentScannerCallback(string[] frontPath, string error)
         {
             try
             {
                 if (string.IsNullOrEmpty(error))
                 {
-                    MessageBox.Show(frontPath);
+                    MessageBox.Show(string.Join(", ",frontPath));
                 }
                 else
                 {
@@ -320,7 +320,7 @@ namespace Experiment
 
         private void button9_Click(object sender, EventArgs e)
         {
-            Guid IDDocuemnt = new DAL_UploadedDocuments().Insert(Lib.ReadAllBytes(@"E:\GitHub\2018\Trinity\Trinity.SSK\bin\Debug\Temp\document_front.bmp"), "9043d88e-94d1-4c01-982a-02d41965a621");
+            Guid IDDocuemnt = new DAL_UploadedDocuments().Insert(new List<string>() { @"E:\GitHub\2018\Trinity\Trinity.SSK\bin\Debug\Temp\document_front.bmp" }, "9043d88e-94d1-4c01-982a-02d41965a621");
             Alert(IDDocuemnt.ToString());
             //_SaveReasonForQueue(dataAbsenceReporting, IDDocuemnt);
         }

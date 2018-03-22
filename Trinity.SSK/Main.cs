@@ -112,6 +112,14 @@ namespace SSK
             {
                 LayerWeb.InvokeScript("alertBookAppointment", e.Message);
             }
+            else if (e.Name == EventNames.LOGIN_SUCCEEDED)
+            {
+                NavigateTo(NavigatorEnums.Authentication_NRIC);
+            }
+            else if (e.Name.Equals(EventNames.LOGIN_FAILED))
+            {
+                LayerWeb.ShowMessage("Login Failed", e.Message);
+            }
         }
 
         /// <summary>
@@ -202,8 +210,8 @@ namespace SSK
                 // Start page
                 NavigateTo(NavigatorEnums.Authentication_SmartCard);
 
-                //string startFrom = "Authentication_NRIC";
-                //string superviseeId = "06a91b1b-99c3-428d-8a55-83892c2adf4c";
+                //string startFrom = "Supervisee";
+                //string superviseeId = "2FFD1A82-E5EC-4884-A5C6-1A68F661DAED";
                 //string dutyOfficerId = "9903e059-7209-45b6-a889-6c4cfdfaeea3";
                 //Session session = Session.Instance;
 
@@ -256,8 +264,15 @@ namespace SSK
             }
             if (supervisee != null)
             {
-                Trinity.SignalR.Client.Instance.UserLoggedIn(supervisee.UserId);
-                NavigateTo(NavigatorEnums.Supervisee);
+                if (supervisee.Status==EnumUserStatuses.Blocked)
+                {
+                    LayerWeb.ShowMessage("This supervisee is being blocked");
+                }
+                else
+                {
+                    Trinity.SignalR.Client.Instance.UserLoggedIn(supervisee.UserId);
+                    NavigateTo(NavigatorEnums.Supervisee);
+                }
             }
         }
 
@@ -428,7 +443,7 @@ namespace SSK
                 Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(user.UserId, "Fingerprint Authentication failed", errorMessage, EnumNotificationTypes.Error);
 
                 //NavigateTo(NavigatorEnums.Authentication_SmartCard);
-                LayerWeb.ShowMessage("Authentication failed", "Fingerprint's Authenication failed!<br /> Please contact your officer.");
+                //LayerWeb.ShowMessage("Authentication failed", "Fingerprint's Authenication failed!<br /> Please contact your officer.");
 
                 //for testing purpose
                 // Pause for 1 second and goto Facial Login Screen
@@ -482,6 +497,7 @@ namespace SSK
             }
 
             BarcodeScannerUtil.Instance.Disconnect();
+            FacialRecognition.Instance.Dispose();
 
             Application.ExitThread();
             APIUtils.Dispose();
@@ -490,7 +506,8 @@ namespace SSK
         #region events
         private void JSCallCS_OnNRICFailed(object sender, NRICEventArgs e)
         {
-            MessageBox.Show(e.Message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //MessageBox.Show(e.Message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            LayerWeb.ShowMessage("Authentication failed", e.Message);
         }
 
         private void JSCallCS_ShowMessage(object sender, ShowMessageEventArgs e)
@@ -500,8 +517,7 @@ namespace SSK
 
         private void OnShowMessage(object sender, ShowMessageEventArgs e)
         {
-            CSCallJS.ShowMessage(LayerWeb, e.Caption, e.Message);
-            //MessageBox.Show(e.Message, e.Caption, e.Button, e.Icon);
+            MessageBox.Show(e.Message, e.Caption, e.Button, e.Icon);
         }
 
         public void NavigateTo(NavigatorEnums navigatorEnum)
@@ -571,7 +587,8 @@ namespace SSK
                 Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
                 if (user.Role == EnumUserRoles.Supervisee && user.Status == EnumUserStatuses.Blocked)
                 {
-                    LayerWeb.ShowMessage("You have been blocked<br/>Contact Duty Officer for help");
+                    LayerWeb.ShowMessageAsync("You have been blocked<br/>Contact Duty Officer for help");
+                    _jsCallCS.LogOut();
                     return;
                 }
                 _signalrClient = Client.Instance;

@@ -940,7 +940,7 @@
 
         </div>-->
 
-        <div style="display:none;float:right;" id="divSupportDocument">
+        <div style="float:right;display:none;" id="divSupportDocument">
             <button type="button" class="btn btn-danger" style="position:fixed;bottom:10px;right:170px;" id="btnScan">Scan documents</button>
         </div>
         <div style="display:none;float:right;" id="divConfirm">
@@ -954,8 +954,8 @@
         </div>
         <div style="display:block;float:right;" id="divSave">
             <!--<button type="button" class="btn btn-dark" onclick="api.server.LoadPageSupervisee();">Back</button>-->
-            <button type="button" class="btn btn-dark" style="position:fixed;bottom:10px;right:90px; float:right;" onclick="api.server.LoadPageSupervisee();">Cancel</button>
-            <button type="button" class="btn btn-success" style="position:fixed;bottom:10px;right:10px; float:right;" id="SaveBtn">Update</button>
+            <button type="button" class="btn btn-dark" style="position:fixed;bottom:10px;right:140px; float:right;" onclick="api.server.LoadPageSupervisee();">Cancel</button>
+            <button type="button" class="btn btn-success" style="position:fixed;bottom:10px;right:40px; float:right;" id="SaveBtn">Update</button>
         </div>
     </div>
 </div>
@@ -1172,8 +1172,40 @@
 <script type="text/javascript">
 
     var jsonFormData = null;
+    var modelProfile = null;
     var _particularName, _nric, _dob, _nationality, _maritalStatus = "";
+
+    function scanDocumentProfileCallbackImg(arrayImg) {
+        var $form = $("#profileFrm");
+        var dataJson = getFormData($form);
+        if (dataJson.DOB.length > 0) {
+            var dobtxt = dataJson.DOB.split('/');
+            dataJson.DOB = dobtxt[2] + '-' + dobtxt[1] + '-' + dobtxt[0];
+        }
+        if (dataJson.Employment_Start_Date.length > 0) {
+            var txt = dataJson.Employment_Start_Date.split('/');
+            dataJson.Employment_Start_Date = txt[2] + '-' + txt[1] + '-' + txt[0];
+        }
+        if (dataJson.Employment_End_Date.length > 0) {
+            var txt = dataJson.Employment_End_Date.split('/');
+            dataJson.Employment_End_Date = txt[2] + '-' + txt[1] + '-' + txt[0];
+        }
+        api.server.SaveProfile(JSON.stringify(dataJson), JSON.stringify(arrayImg), true);
+        
+    }
+    function checkComfirmUpdateProfile() {
+        ShowMessageConfirm("", "You are sure you want to update", function (status) {
+            if (status) {
+                if (modelProfile.UserProfile.Nationality != $('#Nationality').val() || modelProfile.UserProfile.Maritial_Status != $('#MaritalStatus').val()) {
+                    api.server.LoadPopupHtml("PopupScanDocument.html", 'scanDocumentProfileCallbackImg');
+                } else {
+                    scanDocumentProfileCallbackImg([]);
+                }
+            }
+        });
+    }
     api.ready(function (model) {
+        modelProfile = model;
         _particularName = model.User.Name;
         _nric = model.User.NRIC;
 
@@ -1259,12 +1291,12 @@
     }
 
     $('#btnScan').click(function () {
-        $("#profileFrm").trigger('submit');
-        if (jsonFormData.length > 0) {
-            api.server.LoadScanDocument(jsonFormData);
-            jsonFormData = null;
-        }
-
+        //$("#profileFrm").trigger('submit');
+        //if (jsonFormData.length > 0) {
+        //    api.server.LoadScanDocument(jsonFormData);
+        //    jsonFormData = null;
+        //}
+        api.server.LoadPopupHtml("PopupScanDocument.html",'scanDocumentProfileCallbackImg');
     });
 
     $('#btnOK').click(function () {
@@ -1326,8 +1358,9 @@
             } else {
 
                 $('#divError').hide();
-                $('#divConfirm').show();
-                $('#divSave').hide();
+                //$('#divConfirm').show();
+                //$('#divSave').hide();
+                checkComfirmUpdateProfile();
             }
         }
         else {
@@ -1351,8 +1384,9 @@
             }
             else {
                 $('#divError').hide();
-                $('#divConfirm').show();
-                $('#divSave').hide();
+                //$('#divConfirm').show();
+                //$('#divSave').hide();
+                checkComfirmUpdateProfile();
             }
         }
     });

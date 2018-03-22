@@ -64,6 +64,12 @@ namespace Trinity.NotificationServer
                     }
                 }
             }
+            else if (notificationInfo.Name == NotificationNames.SHP_COMPLETED)
+            {
+
+
+                //Clients.Clients(Program.ProfileConnected.Where(d => d.isApp && d.Station == EnumStation.DUTYOFFICER).Select(d => d.ConnectionId).ToList()).OnNewNotification(notificationInfo);
+            }
             else if (notificationInfo.Name == NotificationNames.SSP_COMPLETED)
             {
                 Clients.Clients(Program.ProfileConnected.Where(d => d.isApp && d.Station == EnumStation.DUTYOFFICER).Select(d => d.ConnectionId).ToList()).OnNewNotification(notificationInfo);
@@ -77,6 +83,18 @@ namespace Trinity.NotificationServer
                 Clients.Clients(Program.ProfileConnected.Where(d => d.isApp && d.Station == EnumStation.DUTYOFFICER).Select(d => d.ConnectionId).ToList()).OnNewNotification(notificationInfo);
             }
             else if (notificationInfo.Name == NotificationNames.QUEUE_INSERTED)
+            {
+                Clients.Clients(Program.ProfileConnected.Where(d => d.isApp && d.Station == EnumStation.DUTYOFFICER).Select(d => d.ConnectionId).ToList()).OnNewNotification(notificationInfo);
+            }
+            else if (notificationInfo.Name == NotificationNames.SSA_COMPLETED)
+            {
+                Clients.Clients(Program.ProfileConnected.Where(d => d.isApp && d.Station == EnumStation.DUTYOFFICER).Select(d => d.ConnectionId).ToList()).OnNewNotification(notificationInfo);
+            }
+            else if (notificationInfo.Name == NotificationNames.SSA_INSERTED_LABEL)
+            {
+                Clients.Clients(Program.ProfileConnected.Where(d => d.isApp && d.Station == EnumStation.DUTYOFFICER).Select(d => d.ConnectionId).ToList()).OnNewNotification(notificationInfo);
+            }
+            else if (notificationInfo.Name == NotificationNames.BACKEND_API_SEND_DO)
             {
                 Clients.Clients(Program.ProfileConnected.Where(d => d.isApp && d.Station == EnumStation.DUTYOFFICER).Select(d => d.ConnectionId).ToList()).OnNewNotification(notificationInfo);
             }

@@ -41,13 +41,6 @@
                 api.server.LoadPage('Blocked.html');
                 $('#idBlock').modal('toggle');
             });
-
-            //api.server.UnblockSuperviseeByUserId(model.UserId, $('#Reason').val());
-            //// Waiting 1 second to update DB then refresh
-            //setTimeout(function () {
-            //    api.server.LoadPage('Blocked.html')
-            //    $('#idBlock').modal('toggle');
-            //}, 1000);
             e.preventDefault(); // avoid to execute the actual submit of the form.
         });
     });  

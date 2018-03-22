@@ -20,13 +20,15 @@
 }
 .logo {
     position: relative;
-    width: calc(100% - 100px);
-    height: auto;
+    width: 293px;
+    height: 80px;
     float: left;
+    background: url('../img/logoCNB.svg') no-repeat;
+    background-size: contain;
 }
-.logo img {
-    width: 235px;
-}
+/*.logo img {
+    width: 100%;
+}*/
 .logoutWrapper {
     position: relative;
     width: 100px;

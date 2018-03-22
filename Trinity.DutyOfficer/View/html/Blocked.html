@@ -1,34 +1,4 @@
-﻿
-<!--<div style="display:block; padding:10px;">
-    <span style=" font-size:22px; float:left; text-align:left;"><b>Blocked</b></span>
-    <div class="d-inline" style="right:10px; float:right; display:inline;">
-        <select class="form-control" id="pageSize" style="width:70px; display:inline;">
-            <option>10</option>
-            <option>2</option>
-            <option>3</option>
-        </select>
-        <span style="display:inline;">entries</span>
-
-        <input type="text" class="form-control" style="width:180px; display:inline;" id="textSearch" />
-        <button type="button" class="btn btn-primary">Search</button>
-    </div>
-</div>
-<br />-->
-
-<!--<div style="display:block; padding:10px;">
-    <span style=" font-size:22px; float:left; text-align:left;"><b>Blocked</b></span>
-    <div class="form-inline" style="position: absolute; right: 200px; top: 30px">
-        <select class="form-control" id="pageSize" style="width:70px; display:inline-block;">
-            <option>10</option>
-            <option>2</option>
-            <option>3</option>
-        </select>
-        <div style="display:inline-block;">Entries</div>
-    </div>
-</div>
-
-<table id="table"></table>-->
-<div class="table-wrapper formWrapper">
+﻿<div class="table-wrapper formWrapper">
     <div class="tab-header">
         <span class="formHeader"><b>Blocked</b></span>
     </div>
@@ -43,7 +13,7 @@
             </select>
             <div class="entries"> entries per page</div>
         </div>
-        <table id="table"></table>
+        <table id="tableBlocked"></table>
     </div>
 </div>
 <script type="text/javascript">
@@ -55,7 +25,7 @@
 
     api.server.GetAllSuperviseesBlocked(function (data) {
         dataSource = data;
-        $('#table').bootstrapTable({
+        $('#tableBlocked').bootstrapTable({
             pagination: true,
             pageSize: 10,
             pageList: [10, 25, 50, 100],
@@ -90,9 +60,19 @@
         });
     });
 
+    function reloadDataBlocked() {
+        api.server.GetAllSuperviseesBlocked(function (data) {
+            $('#tableBlocked').bootstrapTable('load', data);
+            $('#tableBlocked').bootstrapTable('refreshOptions', {
+                pagination: true,
+                data: data
+            });
+        });
+    };
+
     $('#pageSize').change(function () {
         pageSize = $("#pageSize option:selected").text();
-        $('#table').bootstrapTable('refreshOptions', {
+        $('#tableBlocked').bootstrapTable('refreshOptions', {
             pagination: true,
             search: true,
             pageSize: pageSize

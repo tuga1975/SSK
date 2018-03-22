@@ -19,7 +19,7 @@ namespace Trinity.Util
         private PdiScanWrap.ScanningErrorCallback scanning_error_callback_object = null;
         private PdiScanWrap.ImprinterStringCallback imprinter_callback_object = null;
 
-        private Action<string, string> _documentScannerCallback;
+        private Action<string[], string> _documentScannerCallback;
         
         public bool EnableFeeder
         {
@@ -263,7 +263,7 @@ namespace Trinity.Util
         /// 
         /// </summary>
         /// <param name="documentScannerCallback">DocumentScannerCallback(string frontPath, string error)</param>
-        public bool StartScanning(Action<string, string> documentScannerCallback)
+        public bool StartScanning(Action<string[], string> documentScannerCallback)
         {
             try
             {
@@ -449,7 +449,7 @@ namespace Trinity.Util
                     //}
 
                     // callback
-                    _documentScannerCallback(frontPath, error);
+                    _documentScannerCallback(new string[] { frontPath }, error);
 
                     _documentScannerCallback = null;
                 }
@@ -458,7 +458,7 @@ namespace Trinity.Util
             {
                 MessageBox.Show("page_end_callback exception: " + ex.ToString());
                 // callback
-                _documentScannerCallback(string.Empty, ex.Message);
+                _documentScannerCallback(new string[] {}, ex.Message);
                 _documentScannerCallback = null;
             }
         }

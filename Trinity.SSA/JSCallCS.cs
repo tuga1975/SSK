@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using SSA.CodeBehind.Authentication;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Text;
@@ -18,7 +19,6 @@ namespace SSA
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public class JSCallCS : JSCallCSBase
     {
-
         private CodeBehind.PrintMUBAndTTLabels _printMUBAndTTLabel;
 
         public event EventHandler<NRICEventArgs> OnNRICFailed;
@@ -39,6 +39,7 @@ namespace SSA
         private bool _ttIsRemoved = false;
         private bool _mubDoorIsFullyClosed = false;
         private bool _ttDoorIsFullyClosed = false;
+        private List<string> _errorLogs = new List<string>();
         public JSCallCS(WebBrowser web)
         {
             this._web = web;
@@ -50,6 +51,24 @@ namespace SSA
             _printMUBAndTTLabel.OnPrintTTLabelsFailed += PrintTTLabels_OnPrintTTLabelFailed;
             _printMUBAndTTLabel.OnPrintMUBAndTTLabelsException += PrintMUBAndTTLabels_OnPrintTTLabelException;
             _popupModel = new Trinity.BE.PopupModel();
+
+            LEDStatusLightingUtil.Instance.OnNewEvent += Instance_OnNewEvent;
+        }
+
+        /// <summary>
+        /// Write printing logs
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Instance_OnNewEvent(object sender, string e)
+        {
+            _errorLogs.Insert(0, e);
+            while (_errorLogs.Count > 10)
+            {
+                _errorLogs.RemoveAt(10);
+            }
+            string errorLogs = string.Join("<br/>", _errorLogs.ToArray());
+            this._web.RunScript("$('#printLogs').val('" + errorLogs + "');");
         }
 
         #region virtual events
@@ -83,11 +102,11 @@ namespace SSA
             Session session = Session.Instance;
             session.IsSmartCardAuthenticated = false;
             session.IsFingerprintAuthenticated = false;
+            session.IsFacialAuthenticated = false;
             session[CommonConstants.USER_LOGIN] = null;
             session[CommonConstants.PROFILE_DATA] = null;
-
-            //
-            // RaiseLogOutCompletedEvent
+            session[CommonConstants.SUPERVISEE] = null;
+            
             RaiseLogOutCompletedEvent();
         }
 
@@ -159,11 +178,8 @@ namespace SSA
 
                 var dalLabel = new DAL_Labels();
                 dalLabel.UpdateLabel(labelInfo);
-
-                Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(e.LabelInfo.UserId, "Cannot print MUB Label", "User '" + labelInfo.UserId + "' cannot print MUB label.", EnumNotificationTypes.Error);
-
-                //DeleteQRCodeImageFileTemp();
-                //LogOut();
+                Trinity.SignalR.Client.Instance.SSAInsertedLabel(e.LabelInfo.UserId);
+                Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(e.LabelInfo.UserId, "Cannot print MUB Label", "User '" + labelInfo.UserId + "' cannot print MUB label.", EnumNotificationTypes.Error);                
             }
             catch (Exception ex)
             {
@@ -226,7 +242,7 @@ namespace SSA
 
                 var dalLabel = new DAL_Labels();
                 dalLabel.UpdateLabel(labelInfo);
-
+                Trinity.SignalR.Client.Instance.SSAInsertedLabel(e.LabelInfo.UserId);
                 Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(e.LabelInfo.UserId, "Cannot print TT Label", "User '" + labelInfo.UserId + "' cannot print TT label.", EnumNotificationTypes.Error);
             }
             catch (Exception ex)
@@ -252,13 +268,15 @@ namespace SSA
         {
             EventCenter eventCenter = EventCenter.Default;
 
-            UserManager<ApplicationUser> userManager = ApplicationIdentityManager.GetUserManager();
-            ApplicationUser appUser = userManager.Find(username, password);
+            //UserManager<ApplicationUser> userManager = ApplicationIdentityManager.GetUserManager();
+            //ApplicationUser appUser = userManager.Find(username, password);
+            var dalUser = new DAL_User();
+            ApplicationUser appUser = dalUser.Login(username, password);
             if (appUser != null)
             {
                 // Authenticated successfully
                 // Check if the current user is an Duty Officer or not
-                if (userManager.IsInRole(appUser.Id, EnumUserRoles.DutyOfficer))
+                if (dalUser.IsInRole(appUser.Id, EnumUserRoles.DutyOfficer))
                 {
                     // Authorized successfully
                     Trinity.BE.User user = new Trinity.BE.User()
@@ -344,7 +362,7 @@ namespace SSA
                     supervisee = currentUser;
                 }
                 var dalQueue = new DAL_QueueNumber();
-                dalQueue.UpdateQueueStatusByUserId(supervisee.UserId, EnumStation.SSA, EnumQueueStatuses.Finished, EnumStation.UHP, EnumQueueStatuses.Processing, "", EnumQueueOutcomeText.Processing);
+                dalQueue.UpdateQueueStatusByUserId(supervisee.UserId, EnumStation.SSA, EnumQueueStatuses.Finished, EnumStation.UHP, EnumQueueStatuses.Processing, "Waiting for UHP", EnumQueueOutcomeText.Processing);
 
                 DeleteQRCodeImageFileTemp();
 
@@ -391,6 +409,7 @@ namespace SSA
             if (action == "InitializeMUBAndTTApplicator")
             {
                 // Initialize MUB Applicator
+                //InitializeMUBAndTTApplicator();
                 InitializeMUBApplicator();
                 InitializeTTApplicator();
             }
@@ -400,16 +419,20 @@ namespace SSA
                 // Check if MUB is present or not
                 CheckIfMUBIsPresent();
                 CheckIfTTIsPresent();
+                //CheckIfMUBAndTTArePresent();
             }
             else if (action == "StartMUBAndTTApplicator")
             {
-                if (_ttIsPresent && _mubIsPresent)
-                {
-                    // Check if MUB and TT are placed
-                    // Then start MUB and TT Applicators
-                    StartMUBApplicator();
-                    StartTTApplicator();
-                }
+                //if (_ttIsPresent && _mubIsPresent)
+                //{
+                //    // Check if MUB and TT are placed
+                //    // Then start MUB and TT Applicators
+                //    StartMUBApplicator();
+                //    StartTTApplicator();
+                //}
+                CheckIfMUBIsPresent();
+                CheckIfTTIsPresent();
+                //CheckIfMUBAndTTArePresent();
             }
             else if (action == "PrintMUBAndTTLabel")
             {
@@ -433,6 +456,53 @@ namespace SSA
             }
         }
 
+        /// <summary>
+        /// This function will be called every 1 second
+        /// </summary>
+        public void CheckPrintingAndLabellingProgress()
+        {
+            Session session = Session.Instance;
+            Trinity.BE.User currentUser = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+            if (currentUser != null)
+            {
+                if (_mubApplicatorReady && _ttApplicatorReady)
+                {
+                    if (_mubIsPresent && _ttIsPresent)
+                    {
+                        if (_mubApplicatorStarted && _ttApplicatorStarted)
+                        {
+                            if (_mubIsRemoved && _ttIsRemoved)
+                            {
+                                if (_mubDoorIsFullyClosed && _ttDoorIsFullyClosed)
+                                {
+                                    // Do nothing
+                                }
+                                else if (_mubDoorIsFullyClosed)
+                                {
+                                    // Close TT Door
+                                    CloseTTDoor();
+                                }
+                                else if (_ttDoorIsFullyClosed)
+                                {
+                                    // Close MUB Door
+                                    CloseMUBDoor();
+                                }
+                                else
+                                {
+                                    // Close MUB & TT Door
+                                    CloseMUBDoor();
+                                    CloseTTDoor();
+                                }
+                            }
+                            else if (_mubIsRemoved)
+                            {
+
+                            }
+                        }
+                    }
+                }
+            }
+        }
         private void StartToPrintMUBAndTTLabel(LabelInfo labelInfo)
         {
             _web.LoadPageHtml("PrintingTemplates/MUBLabelTemplate.html", new object[] { "PrintMUBAndTTLabel", labelInfo });
@@ -440,6 +510,17 @@ namespace SSA
 
         #region MUB printing & labelling sample process
 
+        //private void InitializeMUBAndTTApplicator()
+        //{
+        //    _mubApplicatorReady = false;
+        //    _ttApplicatorReady = false;
+
+        //    LEDStatusLightingUtil.Instance.InitializeMUBApplicator_Async();
+        //    LEDStatusLightingUtil.Instance.InitializeTTApplicator_Async();
+
+        //    LEDStatusLightingUtil.Instance.SendCommand_Async(EnumCommands.CheckIfMUBApplicatorIsReady, CheckIfMUBApplicatorIsReady_Callback);
+        //    LEDStatusLightingUtil.Instance.SendCommand_Async(EnumCommands.CheckIfTTApplicatorIsReady, CheckIfTTApplicatorIsReady_Callback);
+        //}
         private void InitializeMUBApplicator()
         {
             _mubApplicatorReady = false;
@@ -454,8 +535,22 @@ namespace SSA
             LEDStatusLightingUtil.Instance.SendCommand_Async(EnumCommands.CheckIfTTApplicatorIsReady, CheckIfTTApplicatorIsReady_Callback);
         }
 
+        //private void CheckIfMUBAndTTArePresent()
+        //{
+        //    _mubIsPresent = false;
+        //    _ttIsPresent = false;
+
+        //    this._web.RunScript("$('#mubStatus').css('color','#000').text('Checking if the MUB Applicator is present...');");
+        //    this._web.RunScript("$('#ttStatus').css('color','#000').text('Checking if the TT is present...');");
+
+        //    // Check if MUB is present or not
+        //    LEDStatusLightingUtil.Instance.SendCommand_Async(EnumCommands.CheckIfMUBIsPresent, CheckIfMUBIsPresent_Callback);
+        //    // Check if TT is present or not
+        //    LEDStatusLightingUtil.Instance.SendCommand_Async(EnumCommands.CheckIfTTIsPresent, CheckIfTTIsPresent_Callback);
+        //}
         private void CheckIfMUBIsPresent()
         {
+            _mubIsPresent = false;
             this._web.RunScript("$('#mubStatus').css('color','#000').text('Checking if the MUB Applicator is present...');");
 
             // Check if MUB is present or not
@@ -464,6 +559,7 @@ namespace SSA
 
         private void CheckIfTTIsPresent()
         {
+            _ttIsPresent = false;
             this._web.RunScript("$('#ttStatus').css('color','#000').text('Checking if the TT is present...');");
 
             // Check if MUB is present or not
@@ -552,6 +648,7 @@ namespace SSA
 
                     CheckIfMUBIsPresent();
                     CheckIfTTIsPresent();
+                    //CheckIfMUBAndTTArePresent();
                 }
             }
             else
@@ -679,8 +776,8 @@ namespace SSA
                 return;
             }
             // Remove queue number and inform others
-            //new DAL_QueueDetails().RemoveQueueFromSSK(currentUser.UserId);
             Trinity.SignalR.Client.Instance.QueueCompleted(currentUser.UserId);
+            Trinity.SignalR.Client.Instance.SSACompleted(currentUser.UserId);
 
             //lblStatus.Text = "The door is fully close";
             this._web.RunScript("$('#mubStatus').css('color','#000').text('MUB and TT Labels Printing Completed. Logging out...');");
@@ -777,6 +874,7 @@ namespace SSA
 
                     CheckIfMUBIsPresent();
                     CheckIfTTIsPresent();
+                    //CheckIfMUBAndTTArePresent();
                 }
             }
             else

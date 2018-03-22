@@ -14,17 +14,32 @@ public static class CSCallJS
     
     private async static Task<bool> _WaitPopupMessage(string ID)
     {
-        Lib.ArrayIDWaitMessage.Add(ID);
-        while (Lib.ArrayIDWaitMessage.Contains(ID))
+        Lib.ArrayIDWaitMessage.Add(ID,null);
+        
+        while (!Lib.ArrayIDWaitMessage[ID].HasValue)
         {
             await Task.Delay(1000);
         }
-        return true;
+        bool value = Lib.ArrayIDWaitMessage[ID].Value;
+        Lib.ArrayIDWaitMessage.Remove(ID);
+        return value;
     }
+
+    public static bool ShowMessageConfirm(this WebBrowser web, string title, string content)
+    {
+        string ID = Guid.NewGuid().ToString().Trim();
+        web.InvokeScript("ShowMessageConfirm", title, content,"", ID);
+        return Task.Run(async () => await _WaitPopupMessage(ID)).Result;
+    }
+    public static bool ShowMessageConfirm(this WebBrowser web, string content)
+    {
+        return ShowMessageConfirm(web, string.Empty, content);
+    }
+
     public static void ShowMessage(this WebBrowser web, string title, string content)
     {
         string ID = Guid.NewGuid().ToString().Trim();
-        web.InvokeScript("ShowMessageBox", title, content, ID);
+        web.InvokeScript("ShowMessage", title, content, ID);
         bool status = Task.Run(async () => await _WaitPopupMessage(ID)).Result;
     }
     public static void ShowMessage(this WebBrowser web, string content)
@@ -33,7 +48,7 @@ public static class CSCallJS
     }
     public static void ShowMessageAsync(this WebBrowser web, string title, string content)
     {
-        web.InvokeScript("ShowMessageBox", title, content, string.Empty);
+        web.InvokeScript("ShowMessage", title, content, string.Empty);
     }
     public static void ShowMessageAsync(this WebBrowser web, string content)
     {

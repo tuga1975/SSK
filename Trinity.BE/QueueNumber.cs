@@ -31,6 +31,7 @@ namespace Trinity.BE
         public string CurrentStation { get; set; }
         public string Status { get; set; }
         public List<QueueDetail> QueueDetail { get; set; }
+        public DateTime Date { get; set; }
     }
 
     public class QueueDetail

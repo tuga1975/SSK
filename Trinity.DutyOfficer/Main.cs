@@ -42,7 +42,11 @@ namespace DutyOfficer
             Trinity.SignalR.Client.Instance.OnSSPCompleted += OnSSPCompleted_Handler;
             Trinity.SignalR.Client.Instance.OnQueueInserted += OnQueueInserted_Handler;
             Trinity.SignalR.Client.Instance.OnAppointmentBookedOrReported += OnAppointmentBookedOrReported_Handler;
-            
+            Trinity.SignalR.Client.Instance.OnSSACompleted += OnSSACompleted_Handler;
+            Trinity.SignalR.Client.Instance.OnSSAInsertedLabel += OnSSAInsertedLabel_Handler;
+            Trinity.SignalR.Client.Instance.ONBackendApiSendDO += ONBackendApiSendDO_Handler;
+
+
 
             // setup variables
             _smartCardFailed = 0;
@@ -53,6 +57,9 @@ namespace DutyOfficer
             // _jsCallCS
             _jsCallCS = new JSCallCS(this.LayerWeb);
             _jsCallCS.OnLogOutCompleted += JSCallCS_OnLogOutCompleted;
+
+
+            SmartCard.Instance.GetCardInfoSucceeded += GetCardInfoSucceeded;
 
             // SmartCard
             //SmartCard.Instance.GetCardInfoSucceeded += GetCardInfoSucceeded;
@@ -69,27 +76,68 @@ namespace DutyOfficer
             LayerWeb.Url = new Uri(String.Format("file:///{0}/View/html/Layout.html", CSCallJS.curDir));
             LayerWeb.ObjectForScripting = _jsCallCS;
         }
+        private void GetCardInfoSucceeded(string cardUID)
+        {
+
+            Lib.LayerWeb.Invoke((MethodInvoker)(() =>
+            {
+                if (GetCurrentTab() == EnumDOTabName.Queue)
+                {
+                    DAL_User dAL_User = new DAL_User();
+                    Trinity.BE.User user = dAL_User.GetUserBySmartCardId(cardUID);
+                    if (user != null)
+                    {
+                        var queue = new DAL_QueueNumber().GetMyQueueToday(user.UserId);
+                        if (queue != null && queue.QueueDetails.Any(d => d.Station == EnumStation.DUTYOFFICER && d.Status == EnumQueueStatuses.TabSmartCard))
+                        {
+                            if(_jsCallCS.GetResultUT(user.NRIC, DateTime.Now.Date)== EnumUTResult.NEG && queue.QueueDetails.Any(d=>d.Station==EnumStation.ESP && d.Status==EnumQueueStatuses.NotRequired))
+                            {
+                                new DAL_QueueNumber().UpdateQueueStatusByUserId(user.UserId, EnumStation.DUTYOFFICER, EnumQueueStatuses.Finished, EnumStation.DUTYOFFICER, EnumQueueStatuses.Finished, string.Empty, EnumQueueOutcomeText.UnconditionalRelease);
+                                this.LayerWeb.InvokeScript("reloadDataQueues");
+                            }
+                            else
+                            {
+                                this.LayerWeb.LoadPopupHtml("QueuePopupOutcome.html", user.UserId);
+                            }
+                        }
+                    }
+                }
+            }));
+            
+        }
+        private void ONBackendApiSendDO_Handler(object sender, NotificationInfo e)
+        {
+            // khi ở tab Alter nhận đc cái này sẽ tải lại
+
+        }
+
+        private void OnSSACompleted_Handler(object sender, NotificationInfo e)
+        {
+            //string userId = e.UserID;
+            // Refresh data queue or MUB/TT Labels
+            RefreshCurrentTab(EnumDOTabName.Queue);
+            RefreshCurrentTab(EnumDOTabName.MUBLabel);
+        }
+        private void OnSSAInsertedLabel_Handler(object sender, NotificationInfo e)
+        {
+            RefreshCurrentTab(EnumDOTabName.MUBLabel);
+        }
         private void OnAppointmentBookedOrReported_Handler(object sender, NotificationInfo e)
         {
             //string AppointmentID = e.AppointmentID;
             //string Status = e.Status;
-            RefreshAppointments();
-            RefreshStatistics();
+            RefreshCurrentTab(EnumDOTabName.Appointments);
+            RefreshCurrentTab(EnumDOTabName.Statistics);
         }
         private void OnQueueInserted_Handler(object sender, NotificationInfo e)
         {
             //string QueueID = e.QueueID;
-            RefreshQueues();
+            RefreshCurrentTab(EnumDOTabName.Queue);
         }
         private void OnSSPCompleted_Handler(object sender, NotificationInfo e)
         {
-            string NRIC = e.NRIC;
-            var dalUser = new DAL_User();
-            var user = dalUser.GetByNRIC(NRIC);
-            var dalQueue = new DAL_QueueNumber();
-            dalQueue.UpdateQueueStatusByUserId(user.UserId, EnumStation.ESP, EnumQueueStatuses.Finished, EnumStation.DUTYOFFICER, EnumQueueStatuses.Processing, "Select outcome", EnumQueueOutcomeText.TapSmartCardToContinue);
             // Refresh data queue
-            RefreshQueues();
+            RefreshCurrentTab(EnumDOTabName.Queue);
         }
 
         private void OnAppDisconnected_Handler(object sender, EventInfo e)
@@ -117,7 +165,7 @@ namespace DutyOfficer
                 Lib.LayerWeb.Invoke((MethodInvoker)(() =>
                 {
                     string activeTab = Lib.LayerWeb.Document.InvokeScript("getActiveTab").ToString();
-                    if (activeTab != "Alerts")
+                    if (activeTab != EnumDOTabName.Alerts)
                     {
                         Lib.LayerWeb.InvokeScript("getRealtimeNotificationServer", result);
                     }
@@ -132,32 +180,35 @@ namespace DutyOfficer
         private void OnDeviceStatusChanged_Handler(object sender, EventInfo e)
         {
             string station = (string)e.Source;
-            DAL_DeviceStatus device = new DAL_DeviceStatus();
+            if (!string.IsNullOrEmpty(station))
+            {
+                DAL_DeviceStatus device = new DAL_DeviceStatus();
 
-            if (station == EnumStation.SSA)
-            {
-                JSCallCS._StationColorDevice.SSAColor = device.CheckStatusDevicesStation(station);
-            }
-            if (station == EnumStation.SSK)
-            {
-                JSCallCS._StationColorDevice.SSKColor = device.CheckStatusDevicesStation(station);
-            }
-            if (station == EnumStation.ESP)
-            {
-                JSCallCS._StationColorDevice.ESPColor = device.CheckStatusDevicesStation(station);
-            }
-            if (station == EnumStation.UHP)
-            {
-                JSCallCS._StationColorDevice.UHPColor = device.CheckStatusDevicesStation(station);
-            }
+                if (station == EnumStation.SSA)
+                {
+                    JSCallCS._StationColorDevice.SSAColor = device.CheckStatusDevicesStation(station);
+                }
+                if (station == EnumStation.SSK)
+                {
+                    JSCallCS._StationColorDevice.SSKColor = device.CheckStatusDevicesStation(station);
+                }
+                if (station == EnumStation.ESP)
+                {
+                    JSCallCS._StationColorDevice.ESPColor = device.CheckStatusDevicesStation(station);
+                }
+                if (station == EnumStation.UHP)
+                {
+                    JSCallCS._StationColorDevice.UHPColor = device.CheckStatusDevicesStation(station);
+                }
 
-            _jsCallCS.LoadStationColorDevice();
+                _jsCallCS.LoadStationColorDevice();
+            }
         }
 
         private void OnQueueCompleted_Handler(object sender, EventInfo e)
         {
             // Refresh data queue
-            RefreshQueues();
+            RefreshCurrentTab(EnumDOTabName.Queue);
         }
 
         private void Fingerprint_OnDeviceDisconnected()
@@ -177,39 +228,39 @@ namespace DutyOfficer
             }
         }
 
-        private void GetCardInfoSucceeded(string cardUID)
-        {
-            if (_isSmartCardToLogin)
-            {
-                // get local user info
-                DAL_User dAL_User = new DAL_User();
-                var user = dAL_User.GetUserBySmartCardId(cardUID);
+        //private void GetCardInfoSucceeded(string cardUID)
+        //{
+        //    if (_isSmartCardToLogin)
+        //    {
+        //        // get local user info
+        //        DAL_User dAL_User = new DAL_User();
+        //        var user = dAL_User.GetUserBySmartCardId(cardUID);
 
-                if (user != null)
-                {
-                    if (user.Role == EnumUserRoles.DutyOfficer)
-                    {
-                        Session session = Session.Instance;
-                        session.IsSmartCardAuthenticated = true;
-                        Session.Instance[CommonConstants.USER_LOGIN] = user;
-                        this.LayerWeb.RunScript("$('.status-text').css('color','#000').text('Your smart card is authenticated.');");
-                        // Stop SCardMonitor
-                        SmartCardReaderUtil.Instance.StopSmartCardMonitor();
-                        // raise succeeded event
-                        SmartCard_OnSmartCardSucceeded();
-                    }
-                    else
-                    {
-                        SmartCard_OnSmartCardFailed("You do not have permission to access this page");
-                    }
-                }
-                else
-                {
-                    // raise failed event
-                    SmartCard_OnSmartCardFailed("Unable to read your smart card. Please report to the Duty Officer");
-                }
-            }
-        }
+        //        if (user != null)
+        //        {
+        //            if (user.Role == EnumUserRoles.DutyOfficer)
+        //            {
+        //                Session session = Session.Instance;
+        //                session.IsSmartCardAuthenticated = true;
+        //                Session.Instance[CommonConstants.USER_LOGIN] = user;
+        //                this.LayerWeb.RunScript("$('.status-text').css('color','#000').text('Your smart card is authenticated.');");
+        //                // Stop SCardMonitor
+        //                SmartCardReaderUtil.Instance.StopSmartCardMonitor();
+        //                // raise succeeded event
+        //                SmartCard_OnSmartCardSucceeded();
+        //            }
+        //            else
+        //            {
+        //                SmartCard_OnSmartCardFailed("You do not have permission to access this page");
+        //            }
+        //        }
+        //        else
+        //        {
+        //            // raise failed event
+        //            SmartCard_OnSmartCardFailed("Unable to read your smart card. Please report to the Duty Officer");
+        //        }
+        //    }
+        //}
 
         private void Fingerprint_OnFingerprintSucceeded()
         {
@@ -536,17 +587,36 @@ namespace DutyOfficer
             NavigateTo(NavigatorEnums.Login);
         }
 
-        private void RefreshQueues()
+        private void RefreshCurrentTab(string tabName)
         {
-            LayerWeb.InvokeScript("reloadDataQueues");
+            Lib.LayerWeb.Invoke((MethodInvoker)(() =>
+            {
+                if (GetCurrentTab() == tabName)
+                {
+                    switch (tabName)
+                    {
+                        case EnumDOTabName.Queue:
+                            Lib.LayerWeb.InvokeScript("reloadDataQueues");
+                            break;
+                        case EnumDOTabName.Appointments:
+                            Lib.LayerWeb.InvokeScript("reloadDataAppts");
+                            break;
+                        case EnumDOTabName.Statistics:
+                            Lib.LayerWeb.InvokeScript("reloadDataStatistics");
+                            break;
+                        case EnumDOTabName.Blocked:
+                            Lib.LayerWeb.InvokeScript("reloadDataBlocked");
+                            break;
+                        case EnumDOTabName.MUBLabel:
+                            Lib.LayerWeb.InvokeScript("reloadDataMUBAndTT");
+                            break;
+                    }
+                }
+            }));
         }
-        private void RefreshAppointments()
+        private string GetCurrentTab()
         {
-            LayerWeb.InvokeScript("reloadDataAppts");
-        }
-        private void RefreshStatistics()
-        {
-            LayerWeb.InvokeScript("reloadDataStatistics");
+            return Lib.LayerWeb.Document.InvokeScript("getActiveTab").ToString();
         }
     }
 }

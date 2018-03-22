@@ -123,6 +123,8 @@ namespace SSK.CodeBehind.Authentication
 
             // Create a session object to store Suppervisee information
             Session session = Session.Instance;
+            session.IsSmartCardAuthenticated = true;
+            session.IsFingerprintAuthenticated = true;
             session[CommonConstants.SUPERVISEE] = supervisee;
 
             BarcodeScannerUtil.Instance.Disconnect();

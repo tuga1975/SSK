@@ -1,0 +1,349 @@
+﻿<div class="modal" role="dialog" id="PopupScanDocument">
+    <div class="modal-dialog" style="height:calc(100% - 60px);width:100%; max-width:calc(100% - 60px);">
+        <div class="modal-content" style="height:100%;">
+            <div class="modal-body">
+                <div class="contentMesg" content-scan="video">
+                    <div show-img="false">
+                        <video autoplay loop>
+                            <source src="../img/ThumbDocumentScanner.mp4" type="video/mp4">
+                        </video>
+                        <div></div>
+                    </div>
+                    <div lis-img="">
+                    </div>
+                </div>
+                <div style="position:absolute;bottom:0px;width:100%;left:0px;" btn-step="0">
+                    <button type="button" class="btn btn-primary" btn-scan-continue="" style="display:none;float:left;width:auto;">Scan</button>
+                    <button type="button" class="btn btn-primary" btn-scan="" style="float:right;width:auto;"></button>
+                    <button type="button" class="btn btn-primary" btn-cancel="" style="float:right;margin-right:20px;width:auto;"></button>
+                    <div style="clear:both;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    var functioncallsuccess = null;
+    var arrayScanDocument = [];
+    function showImgScanDocument(arrImg) {
+        arrImg = JSON.parse(arrImg);
+        $.each(arrImg, function (index, img) {
+            arrayScanDocument.push(img);
+            var _img = ('file:///' + img.replace(/\\/g, '/'));
+            $('#PopupScanDocument [lis-img]').prepend('<span item-scan="" style="background-image:url(\'' + _img + '\')"><span btn-show-img="' + _img + '" onclick="showImgScan(this);"></span><span valid="' + img + '" item-remove="" onclick="selectCheckDelete(this);"></span></span>');
+        });
+        $('#PopupScanDocument [content-scan]').attr('content-scan', 'list-img');
+        //$('#PopupScanDocument').modal('toggle');
+
+        //api.server.LoadPopupHtml("PopupShowImageScan.html", img, function () {
+        //    $('#PopupShowImageScan').modal({
+        //        backdrop: 'static',
+        //        keyboard: false
+        //    });
+        //    $('#PopupShowImageScan button[btn-ok]').click(function () {
+        //        $('#PopupShowImageScan').modal('toggle');
+        //        eval(functioncallsuccess)(img);
+        //    });
+        //    $('#PopupShowImageScan button[btn-cancel]').click(function () {
+        //        $('#PopupShowImageScan').modal('toggle');
+        //    });
+        //});
+
+    }
+    function showImgScan(_this) {
+        _this = $(_this);
+        var isSelect = _this.parent('[item-scan]').attr('item-scan') == 'selected';
+        if (isSelect) {
+            _this.parent('[item-scan]').attr('item-scan', '');
+        } else {
+            $('#PopupScanDocument [item-scan="selected"]').attr('item-scan', '');
+            _this.parent('[item-scan]').attr('item-scan', 'selected');
+        }
+        var imgSelect = $('#PopupScanDocument [item-scan="selected"]');
+        if (imgSelect.length == 0) {
+            $('#PopupScanDocument [show-img]').attr('show-img', false);
+        } else {
+            $('#PopupScanDocument [show-img]').attr('show-img', true).children('div').css('background-image', "url('" + (imgSelect.children('[btn-show-img]').attr('btn-show-img')) + "')");
+        }
+        //show-img
+    }
+    function selectCheckDelete(_this) {
+        _this = $(_this);
+        if (_this.attr('item-remove') == 'selected') {
+            _this.attr('item-remove', '');
+        } else {
+            _this.attr('item-remove', 'selected');
+        }
+    }
+    api.ready(function (_functioncallsuccess) {
+        arrayScanDocument = [];
+        functioncallsuccess = _functioncallsuccess;
+        $('#PopupScanDocument').modal({
+            backdrop: 'static',
+            keyboard: false
+        });
+        $('#PopupScanDocument [btn-cancel]').click(function () {
+            var _this = $(this);
+            var _step = parseInt(_this.parent('[btn-step]').attr('btn-step'));
+            if (_step == 0) {
+                $('#PopupScanDocument').modal('toggle');
+                eval(functioncallsuccess)(arrayScanDocument);
+            } else if (_step == 2) {
+                var fileDelete = $('#PopupScanDocument [item-remove="selected"]');
+                if (fileDelete.length == 0) {
+                    ShowMessageBox('', 'Select file to delete.');
+                } else {
+                    fileDelete.each(function () {
+                        var img = $(this).attr('valid');
+                        arrayScanDocument.splice(arrayScanDocument.indexOf(img), 1);
+                        $(this).parent('[item-scan]').remove();
+                    });
+                    if ($('#PopupScanDocument [item-remove]').length == 0) {
+                        $('#PopupScanDocument [content-scan]').attr('content-scan', 'video');
+                    }
+                }
+            }
+        });
+        $('#PopupScanDocument [btn-scan]').click(function () {
+            var _this = $(this);
+            var _step = parseInt(_this.parent('[btn-step]').attr('btn-step'));
+            if (_step == 0) {
+                api.server.StartScanDocument(function () {
+                    _this.parent('[btn-step]').attr('btn-step', _step + 1);
+                });
+            } else if (_step == 1) {
+                api.server.StopScanDocument(function () {
+                    _this.parent('[btn-step]').attr('btn-step', _step + 1);
+                });
+            } else if (_step == 2) {
+                $('#PopupScanDocument').modal('toggle');
+                eval(functioncallsuccess)(arrayScanDocument);
+            }
+        });
+        $('#PopupScanDocument [btn-scan-continue]').click(function () {
+            var _this = $(this);
+            api.server.StartScanDocument(function () {
+                _this.parent('[btn-step]').attr('btn-step', 1);
+            });
+        });
+        //
+    });
+</script>
+<style type="text/css">
+    /*Modal Layout*/
+
+    .modal-content {
+        border-radius: 0px !important;
+    }
+
+    .modal {
+        text-align: center;
+        padding: 0 !important;
+    }
+
+        .modal:before {
+            content: '';
+            display: inline-block;
+            height: 100%;
+            vertical-align: middle;
+            margin-right: -4px;
+        }
+
+    .modal-dialog {
+        display: inline-block;
+        text-align: left;
+        vertical-align: middle;
+        min-width: 350px;
+    }
+
+    .modal-content {
+        padding: 20px;
+    }
+
+    .modal-body .title {
+        text-align: center;
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .modal-body .contentMesg {
+        text-align: center;
+        padding: 10px 0 20px 0;
+    }
+
+    .modal-body button {
+        width: 100%;
+        background-color: #1CACF6;
+        text-align: center;
+        color: #fff;
+        font-weight: bold;
+        border-radius: 3px;
+    }
+
+    [btn-cancel] {
+        background-color: #FFF !important;
+        color: #333 !important;
+        border: 1px solid #CCC !important;
+    }
+
+    [item-scan] {
+        height: 200px;
+        border: 1px solid #DDD;
+        box-sizing: border-box;
+        background-color: #FFF;
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-size: contain;
+        position: relative;
+        width: 141px;
+        display: block;
+        top: 0px;
+        float: right;
+        margin-bottom: 10px;
+        margin-right: 5px;
+    }
+
+    [item-scan="selected"] {
+        border-color: #1cacf6;
+        box-shadow: 0px 0px 5px #1cacf6;
+    }
+
+    [item-scan] [btn-show-img] {
+        position: absolute;
+        left: 0px;
+        top: 0px;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        z-index: 1;
+    }
+
+    [item-scan] [item-remove] {
+        width: 40px;
+        height: 40px;
+        border: 1px solid #DDD;
+        border-radius: 5px;
+        position: absolute;
+        left: -60px;
+        top: calc(50% - 20px);
+    }
+
+    [item-scan] [item-remove="selected"] {
+        background-color: #1cacf6;
+        background-image: url('../img/iconTick.png');
+        border-color: #1cacf6;
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-size: 23px;
+    }
+    /*[item-scan] [item-remove]{
+                    position:absolute;
+                    z-index:2;
+                    width:50px;
+                    height:50px;
+                    border-radius:50%;
+                    border:1px solid #CCC;
+                    left:-20px;
+                    top:-20px;
+                    background-color:#FFF;
+                }
+                [item-scan] [item-remove]::after{
+
+                }*/
+    [content-scan] [show-img] {
+        position: absolute;
+        width: 100%;
+        height: calc(100% - 60px);
+        left: 0px;
+        top: 0px;
+    }
+
+    [content-scan="list-img"] [show-img] {
+        position: absolute;
+        width: calc(100% - 250px);
+        height: calc(100% - 60px);
+        left: 0px;
+        top: 0px;
+    }
+
+    [content-scan] [lis-img] {
+        position: absolute;
+        width: 230px;
+        height: calc(100% - 60px);
+        top: 0px;
+        right: 0px;
+        overflow-y: auto;
+        overflow-x: visible;
+        display: none;
+    }
+
+    [content-scan="list-img"] [lis-img] {
+        display: block;
+    }
+
+    [show-img] video {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        left: 0px;
+        top: 0px;
+    }
+
+    [show-img] div {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        left: 0px;
+        top: 0px;
+        border: 1px solid #DDD;
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-size: contain;
+    }
+
+    [show-img="false"] div {
+        display: none;
+    }
+
+    [show-img="true"] video {
+        display: none;
+    }
+
+    [btn-step] .btn {
+        border: 1px solid #1CACF6;
+        padding-left: 30px !important;
+        padding-right: 30px !important;
+        min-width: 100px;
+    }
+
+    [btn-step="0"] [btn-cancel]::before {
+        content: "CANCEL";
+    }
+
+    [btn-step="0"] [btn-scan]::before {
+        content: "START SCAN";
+    }
+
+    [btn-step="1"] [btn-scan-continue], [btn-step="1"] [btn-cancel] {
+        display: none;
+    }
+
+
+
+    [btn-step="2"] [btn-scan-continue] {
+        display: block !important;
+    }
+
+
+    [btn-step="1"] [btn-scan]::before {
+        content: "Stop Scan";
+    }
+
+    [btn-step="2"] [btn-cancel]::before {
+        content: "DELETE SELECTED SCANS";
+    }
+
+    [btn-step="2"] [btn-scan]::before {
+        content: "SUBMIT";
+    }
+</style>

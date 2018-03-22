@@ -202,10 +202,16 @@
     <Content Include="View\bootstrap\js\bootstrap.min.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="View\bootstrap\js\popper.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="View\html2canvas\html2canvas.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="View\html2canvas\jquery.plugin.html2canvas.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="View\html\PopupMessageConfirm.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="View\html\PopupMessage.html">
@@ -217,6 +223,10 @@
     <Content Include="View\keyboard\jquery.ml-keyboard.min.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="View\materialize\css\materialize.css" />
+    <Content Include="View\materialize\css\materialize.min.css" />
+    <Content Include="View\materialize\js\materialize.js" />
+    <Content Include="View\materialize\js\materialize.min.js" />
     <Content Include="View\scripts\jquery-1.10.2.min.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -293,9 +303,12 @@
     <None Include="View\bootstrap\js\bootstrap.bundle.min.js.map" />
     <None Include="View\bootstrap\js\bootstrap.js.map" />
     <None Include="View\bootstrap\js\bootstrap.min.js.map" />
+    <None Include="View\materialize\LICENSE" />
+    <None Include="View\materialize\README.md" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DeviceMonitor\" />
+    <Folder Include="View\materialize\fonts\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -43,18 +43,16 @@ function Api() {
         for (var item in model) {
             var data = model[item];
             if (data != null && (item == 'Morning_Open_Time' || item == 'Morning_Close_Time' || item == 'Afternoon_Open_Time' || item == 'Afternoon_Close_Time' || item == 'Evening_Open_Time' || item == 'Evening_Close_Time')) {
-                data = tConvert24hrTo12hr(data);
+                data = FormatTime(data);
             }
             content = content.replace(new RegExp('{' + item + '}', "g"), data == null ? '' : data);
         }
         return content;
     };
-    function tConvert24hrTo12hr(time) {
+    function FormatTime(time) {
         var hourEnd = time.indexOf(":");
         var H = +time.substr(0, hourEnd);
-        var h = H % 12 || 12;
-        var ampm = (H < 12 || H === 24) ? " AM" : " PM";
-        time = h + time.substr(hourEnd, 3) + ampm;
+        time = H + time.substr(hourEnd, 3);
         return time; // return adjusted time or original string
     };
 }
@@ -64,23 +62,6 @@ function AddContentPage(html, model) {
     else
         api.model = null;
     $('#content').html('<div class="chi-content">' + html + '</div>');
-    $('#content button[onclick]').each(function () {
-        var value = $(this).attr('onclick');
-        $(this).removeAttr('onclick');
-        $(this).attr('valonclick', value);
-    });
-    $('#content a').each(function () {
-        var value = $(this).attr('onclick');
-        $(this).removeAttr('onclick');
-        $(this).attr('valonclick', value);
-
-        value = $(this).attr('href');
-        value = typeof value == 'undefined' ? '' : value;
-        if (value.indexOf('#')!=0) {
-            $(this).attr('valhref', value);
-            $(this).attr('href', 'javascript:;');
-        }
-    });
     api.callReady(api.model);
 }
 function AddContentPopup(html, model, id) {
@@ -92,24 +73,6 @@ function AddContentPopup(html, model, id) {
         $('#panel-popup > [id="' + id + '"]').replaceWith(html);
     else
         $('#panel-popup').append(html);
-
-    $('#panel-popup > [id="' + id + '"]').find('button[onclick]').each(function () {
-        var value = $(this).attr('onclick');
-        $(this).removeAttr('onclick');
-        $(this).attr('valonclick', value);
-    });
-    $('#panel-popup > [id="' + id + '"]').find('a').each(function () {
-        var value = $(this).attr('onclick');
-        $(this).removeAttr('onclick');
-        $(this).attr('valonclick', value);
-
-        value = $(this).attr('href');
-        value = typeof value == 'undefined' ? '' : value;
-        if (value.indexOf('#') != 0) {
-            $(this).attr('valhref', value);
-            $(this).attr('href', 'javascript:;');
-        }
-    });
     api.callReady(api.model);
 }
 function createEvent(arrayFun) {
@@ -165,17 +128,72 @@ function setLoading(status) {
     api.loading(status);
 }
 function RunScript(script) {
-    eval(script);
+    try {
+        eval(script);
+    } catch (e) {
+
+    }
 }
-function ShowMessageBox(title, message, id) {
-    api.server.ShowPopupMessage(title, message, id, function () {
+function ShowMessage(title, message, id) {
+    id = id == null ? '' : id;
+    var struc = {
+        title: title,
+        message: message,
+        id: id
+    };
+    api.server.LoadPopupHtml('PopupMessage.html',JSON.stringify(struc), function () {
         $('#PopupMessage').modal({
             backdrop: 'static',
             keyboard: false
         });
     });
 }
+function ShowMessageConfirm(title, message,callback, id) {
+    id = id == null ? '' : id;
+    var struc = {
+        title: title,
+        message: message,
+        id: id
+    };
+    api.server.LoadPopupHtml('PopupMessageConfirm.html', JSON.stringify(struc), function () {
+        $('#PopupMessageConfirm').modal({
+            backdrop: 'static',
+            keyboard: false
+        });
+        if (typeof callback == 'function') {
+            $('#PopupMessageConfirm button').unbind('click');
+            $('#PopupMessageConfirm button').click(function () {
+                var status = $(this).attr('btn-confirm');
+                $('#PopupMessageConfirm').modal('toggle');
+                callback((status == 'false' ? false : true));
+            });
+        }
+    });
+}
 $(document).ready(function () {
+    $('body').on('DOMNodeInserted', 'a', function () {
+        if (typeof $(this).attr('isRegistration') == 'undefined') {
+            $(this).attr('isRegistration', true);
+            var value = $(this).attr('onclick');
+            $(this).removeAttr('onclick');
+            $(this).attr('valonclick', value);
+            value = $(this).attr('href');
+            value = typeof value == 'undefined' ? '' : value;
+            if (value.indexOf('#') != 0) {
+                $(this).attr('valhref', value);
+                $(this).attr('href', 'javascript:;');
+            }
+        }
+    });
+    $('body').on('DOMNodeInserted', 'button[onclick]', function () {
+        if (typeof $(this).attr('isRegistration') == 'undefined') {
+            $(this).attr('isRegistration', true);
+            var value = $(this).attr('onclick');
+            $(this).removeAttr('onclick');
+            $(this).attr('valonclick', value);
+        }
+    });
+
     $('body').on('click', 'a', function (event) {
         event.preventDefault();
         var href = $(this).attr('valhref');

@@ -61,24 +61,37 @@ public class JSCallCSBase
             {
                 this._web.InvokeScript("callEventCallBack", data[1], JsonConvert.SerializeObject(dataReturn, Formatting.Indented, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore }));
             }
+            this._web.SetLoading(false);
         }
         catch (Exception ex)
         {
-            this._web.InvokeScript("ShowMessageBox", ex.InnerException!=null? ex.InnerException.Message:ex.Message);
+            this._web.SetLoading(false);
+
+            ex = ex.InnerException != null ? ex.InnerException : ex;
+
+            if (ex.Source.Equals(".Net SqlClient Data Provider") || (ex.Source.Equals("EntityFramework") && ex.Message.Equals("The underlying provider failed on Open.")))
+            {
+                this._web.ShowMessage("Can not connect to the database.<br/>Please check the connection.");
+            }
+            else
+            {
+                this._web.ShowMessage(ex.Message);
+            }
+            
         }
-        this._web.SetLoading(false);
     }
 
     public void ClientCallServer(string method, string guidEvent, params object[] pram)
     {
         ThreadPool.QueueUserWorkItem(new WaitCallback(actionThread), new object[] { method, guidEvent, pram });
     }
-    public void ExitWaitPopupMessage(string ID)
+    public void ExitWaitPopupMessage(string ID,bool status)
     {
-        Lib.ArrayIDWaitMessage.Remove(ID);
+        if(Lib.ArrayIDWaitMessage.ContainsKey(ID))
+            Lib.ArrayIDWaitMessage[ID] = status;
     }
-    public void ShowPopupMessage(string title, string content,string id)
+    public void LoadPopupHtml(string file,string model)
     {
-        this._web.LoadPopupHtml("PopupMessage.html", new object[] { title, content,id });
+        this._web.LoadPopupHtml(file, model);
     }
 }

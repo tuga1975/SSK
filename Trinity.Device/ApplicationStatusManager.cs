@@ -336,7 +336,7 @@ namespace Trinity.Device
                 // If application initialization is not finished
                 // and weblayer and all devices are finished
                 // update _isInitializing = false
-                if (_isInitializing && !_lstDevices.Any(item => item.Status == null))
+                if (_isInitializing && (_lstDevices==null || (_lstDevices!=null && !_lstDevices.Any(item => item.Status == null))))
                 {
                     _isInitializing = false;
                 }
