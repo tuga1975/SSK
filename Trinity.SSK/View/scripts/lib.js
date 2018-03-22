@@ -18,7 +18,7 @@ var otherFunc = function () {
 }
 
 function updateNRICTextValue(value) {
-    $('#txtNRIC').text(value);
+    $('#txtNRIC').val(value);
 }
 
 //function displayNRICLogin() {

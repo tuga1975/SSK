@@ -186,6 +186,8 @@ namespace SSK
 
         private void JSCallCS_OnLogOutCompleted()
         {
+            BarcodeScannerUtil.Instance.Disconnect();
+
             ApplicationStatusManager.Instance.IsBusy = false;
 
             // navigate
@@ -479,6 +481,7 @@ namespace SSK
                 DocumentScannerUtil.Instance.Disconnect();
             }
 
+            BarcodeScannerUtil.Instance.Disconnect();
 
             Application.ExitThread();
             APIUtils.Dispose();
@@ -497,7 +500,8 @@ namespace SSK
 
         private void OnShowMessage(object sender, ShowMessageEventArgs e)
         {
-            MessageBox.Show(e.Message, e.Caption, e.Button, e.Icon);
+            CSCallJS.ShowMessage(LayerWeb, e.Caption, e.Message);
+            //MessageBox.Show(e.Message, e.Caption, e.Button, e.Icon);
         }
 
         public void NavigateTo(NavigatorEnums navigatorEnum)

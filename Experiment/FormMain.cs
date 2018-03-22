@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 using Trinity.BE;
 using Trinity.Common;
@@ -322,6 +323,30 @@ namespace Experiment
             Guid IDDocuemnt = new DAL_UploadedDocuments().Insert(Lib.ReadAllBytes(@"E:\GitHub\2018\Trinity\Trinity.SSK\bin\Debug\Temp\document_front.bmp"), "9043d88e-94d1-4c01-982a-02d41965a621");
             Alert(IDDocuemnt.ToString());
             //_SaveReasonForQueue(dataAbsenceReporting, IDDocuemnt);
+        }
+
+        private void button10_Click(object sender, EventArgs e)
+        {
+            System.Threading.Tasks.Task.Factory.StartNew(() => BarcodeScannerUtil.Instance.StartScanning(BarcodeScannerCallback));
+        }
+
+        public void BarcodeScannerCallback(string value, string error)
+        {
+            Thread.Sleep(5000);
+            if (string.IsNullOrEmpty(error))
+            {
+                Alert(value.ToString());
+            }
+            else
+            {
+                Alert(error.ToString());
+            }
+        }
+
+        private void button11_Click(object sender, EventArgs e)
+        {
+            BarcodeScannerUtil.Instance.StopScanning();
+            BarcodeScannerUtil.Instance.Disconnect();
         }
     }
 }

@@ -179,6 +179,9 @@ namespace Trinity.Device.Util
                 int maxChar = 17;   // max char of name at first name line
                 int rotation = 270;
 
+                // send FEED command
+                TSCLIB_DLL.sendcommand("FEED 80");
+
                 TSCLIB_DLL.sendcommand("SIZE 40mm, 82mm");
                 TSCLIB_DLL.sendcommand("GAP 3mm, 0mm");
                 TSCLIB_DLL.sendcommand("DIRECTION 0");
@@ -228,6 +231,9 @@ namespace Trinity.Device.Util
                 //TSCLIB_DLL.sendcommand("PUTPCX 100,400,\"UL.PCX\"");
                 //Print labels
                 TSCLIB_DLL.printlabel("1", "1");
+
+                // send FEED command
+                TSCLIB_DLL.sendcommand("BACKFEED 80");
                 TSCLIB_DLL.closeport();
                 #endregion
 
