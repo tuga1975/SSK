@@ -69,9 +69,9 @@ public class JSCallCSBase
 
             ex = ex.InnerException != null ? ex.InnerException : ex;
 
-            if (ex.Source.Equals("EntityFramework") && ex.Message.Equals("The underlying provider failed on Open."))
+            if (ex.Source.Equals(".Net SqlClient Data Provider") || (ex.Source.Equals("EntityFramework") && ex.Message.Equals("The underlying provider failed on Open.")))
             {
-                this._web.ShowMessage("The connection to the database failed");
+                this._web.ShowMessage("Can not connect to the database.<br/>Please check the connection.");
             }
             else
             {
@@ -85,20 +85,13 @@ public class JSCallCSBase
     {
         ThreadPool.QueueUserWorkItem(new WaitCallback(actionThread), new object[] { method, guidEvent, pram });
     }
-    public void ExitWaitPopupMessage(string ID)
+    public void ExitWaitPopupMessage(string ID,bool status)
     {
-        Lib.ArrayIDWaitMessage.Remove(ID);
-    }
-    public void ShowPopupMessage(string title, string content,string id)
-    {
-        this._web.LoadPopupHtml("PopupMessage.html", new object[] { title, content,id });
+        if(Lib.ArrayIDWaitMessage.ContainsKey(ID))
+            Lib.ArrayIDWaitMessage[ID] = status;
     }
     public void LoadPopupHtml(string file,string model)
     {
         this._web.LoadPopupHtml(file, model);
-    }
-    public void ShowMessage(string title, string content)
-    {
-        this._web.ShowMessage(title, content);
     }
 }

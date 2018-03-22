@@ -114,7 +114,6 @@ namespace Trinity.DAL
 
         public Trinity.DAL.DBContext.Queue InsertQueueNumber(Guid appointmentID, string userId, string station, string userCreateQueue)
         {
-            throw new Exception("Sorry all timeslots are fully booked!");
             var generateQNo = Trinity.Common.CommonUtil.GetQueueNumber(_localUnitOfWork.DataContext.Membership_Users.Find(userId).NRIC);
             var listStation = EnumStation.GetListStation();
             var today = DateTime.Now;
@@ -744,6 +743,7 @@ namespace Trinity.DAL
                 queueInfo.Status = queueDetails.FirstOrDefault(qd => qd.Station.Equals(dbQueue.CurrentStation)).Status;
                 queueInfo.QueueDetail = queueDetails.Where(qd => qd.Message != null && qd.Message != "").ToList();
                 queueInfo.UserId = dbQueue.UserId;
+                queueInfo.Date = dbQueue.CreatedTime;
             }
 
             return queueInfo;

@@ -83,9 +83,9 @@ namespace Trinity.BackendAPI.Controllers
             }
         }
         [HttpGet]
-        public IHttpActionResult DrugResult(string NRIC)
+        public IHttpActionResult DrugResult(string NRIC,DateTime DateCreate)
         {
-            Trinity.DAL.DBContext.DrugResult result = new DAL.DAL_DrugResults().GetByNRIC(NRIC);
+            Trinity.DAL.DBContext.DrugResult result = new DAL.DAL_DrugResults().GetByNRICAndDate(NRIC, DateCreate);
             if (result == null)
             {
                 return Ok();
@@ -120,7 +120,8 @@ namespace Trinity.BackendAPI.Controllers
         public async System.Threading.Tasks.Task<IHttpActionResult> Completion(string NRIC)
         {
             var user = new DAL.DAL_User().GetByNRIC(NRIC);
-            new DAL.DAL_QueueNumber().UpdateQueueStatusByUserId(user.UserId, EnumStation.ESP, EnumQueueStatuses.Finished, EnumStation.DUTYOFFICER, EnumQueueStatuses.Processing, "Select outcome", EnumQueueOutcomeText.TapSmartCardToContinue);
+            new DAL.DAL_QueueNumber().UpdateQueueStatusByUserId(user.UserId, EnumStation.UHP, EnumQueueStatuses.Finished, EnumStation.DUTYOFFICER, EnumQueueStatuses.Processing, "Select outcome", EnumQueueOutcomeText.TapSmartCardToContinue);
+            new DAL.DAL_QueueNumber().UpdateQueueStatusByUserId(user.UserId, EnumStation.HSA, EnumQueueStatuses.Finished, EnumStation.DUTYOFFICER, EnumQueueStatuses.Processing, "Select outcome", EnumQueueOutcomeText.TapSmartCardToContinue);
             await System.Threading.Tasks.Task.Run(() => Trinity.SignalR.Client.Instance.SSPCompleted(NRIC));
             return Ok(true);
         }

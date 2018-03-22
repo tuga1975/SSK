@@ -168,6 +168,7 @@ namespace Trinity.Common
         public const string APPOINTMENT_BOOKED_OR_REPORTED = "APPOINTMENT_BOOKED_OR_REPORTED";
         public const string QUEUE_INSERTED = "QUEUE_INSERTED";
         public const string SSA_COMPLETED = "SSA_COMPLETED";
+        public const string SSA_INSERTED_LABEL = "SSA_INSERTED_LABEL";
     }
 
     public class NotificationInfo

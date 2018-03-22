@@ -62,23 +62,6 @@ function AddContentPage(html, model) {
     else
         api.model = null;
     $('#content').html('<div class="chi-content">' + html + '</div>');
-    $('#content button[onclick]').each(function () {
-        var value = $(this).attr('onclick');
-        $(this).removeAttr('onclick');
-        $(this).attr('valonclick', value);
-    });
-    $('#content a').each(function () {
-        var value = $(this).attr('onclick');
-        $(this).removeAttr('onclick');
-        $(this).attr('valonclick', value);
-
-        value = $(this).attr('href');
-        value = typeof value == 'undefined' ? '' : value;
-        if (value.indexOf('#')!=0) {
-            $(this).attr('valhref', value);
-            $(this).attr('href', 'javascript:;');
-        }
-    });
     api.callReady(api.model);
 }
 function AddContentPopup(html, model, id) {
@@ -90,24 +73,6 @@ function AddContentPopup(html, model, id) {
         $('#panel-popup > [id="' + id + '"]').replaceWith(html);
     else
         $('#panel-popup').append(html);
-
-    $('#panel-popup > [id="' + id + '"]').find('button[onclick]').each(function () {
-        var value = $(this).attr('onclick');
-        $(this).removeAttr('onclick');
-        $(this).attr('valonclick', value);
-    });
-    $('#panel-popup > [id="' + id + '"]').find('a').each(function () {
-        var value = $(this).attr('onclick');
-        $(this).removeAttr('onclick');
-        $(this).attr('valonclick', value);
-
-        value = $(this).attr('href');
-        value = typeof value == 'undefined' ? '' : value;
-        if (value.indexOf('#') != 0) {
-            $(this).attr('valhref', value);
-            $(this).attr('href', 'javascript:;');
-        }
-    });
     api.callReady(api.model);
 }
 function createEvent(arrayFun) {
@@ -165,15 +130,66 @@ function setLoading(status) {
 function RunScript(script) {
     eval(script);
 }
-function ShowMessageBox(title, message, id) {
-    api.server.ShowPopupMessage(title, message, id, function () {
+function ShowMessage(title, message, id) {
+    id = id == null ? '' : id;
+    var struc = {
+        title: title,
+        message: message,
+        id: id
+    };
+    api.server.LoadPopupHtml('PopupMessage.html',JSON.stringify(struc), function () {
         $('#PopupMessage').modal({
             backdrop: 'static',
             keyboard: false
         });
     });
 }
+function ShowMessageConfirm(title, message,callback, id) {
+    id = id == null ? '' : id;
+    var struc = {
+        title: title,
+        message: message,
+        id: id
+    };
+    api.server.LoadPopupHtml('PopupMessageConfirm.html', JSON.stringify(struc), function () {
+        $('#PopupMessageConfirm').modal({
+            backdrop: 'static',
+            keyboard: false
+        });
+        if (typeof callback == 'function') {
+            $('#PopupMessageConfirm button').unbind('click');
+            $('#PopupMessageConfirm button').click(function () {
+                var status = $(this).attr('btn-confirm');
+                $('#PopupMessageConfirm').modal('toggle');
+                callback((status == 'false' ? false : true));
+            });
+        }
+    });
+}
 $(document).ready(function () {
+    $('body').on('DOMNodeInserted', 'a', function () {
+        if (typeof $(this).attr('isRegistration') == 'undefined') {
+            $(this).attr('isRegistration', true);
+            var value = $(this).attr('onclick');
+            $(this).removeAttr('onclick');
+            $(this).attr('valonclick', value);
+            value = $(this).attr('href');
+            value = typeof value == 'undefined' ? '' : value;
+            if (value.indexOf('#') != 0) {
+                $(this).attr('valhref', value);
+                $(this).attr('href', 'javascript:;');
+            }
+        }
+    });
+    $('body').on('DOMNodeInserted', 'button[onclick]', function () {
+        if (typeof $(this).attr('isRegistration') == 'undefined') {
+            $(this).attr('isRegistration', true);
+            var value = $(this).attr('onclick');
+            $(this).removeAttr('onclick');
+            $(this).attr('valonclick', value);
+        }
+    });
+
     $('body').on('click', 'a', function (event) {
         event.preventDefault();
         var href = $(this).attr('valhref');

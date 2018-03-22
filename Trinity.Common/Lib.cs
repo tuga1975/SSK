@@ -10,7 +10,7 @@ public static class Lib
     //public static ISignalR SignalR { get; set; }
     public static System.Windows.Forms.WebBrowser LayerWeb { get; set; }
 
-    public static System.Collections.Generic.List<string> ArrayIDWaitMessage = new System.Collections.Generic.List<string>();
+    public static System.Collections.Generic.Dictionary<string, Nullable<bool>> ArrayIDWaitMessage = new System.Collections.Generic.Dictionary<string, Nullable<bool>>();
     public static int DayOfWeek(this DateTime date)
     {
         return (int)date.DayOfWeek == 0 ? 8 : ((int)date.DayOfWeek) + 1;

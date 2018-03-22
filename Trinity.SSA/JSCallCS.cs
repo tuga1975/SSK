@@ -178,11 +178,8 @@ namespace SSA
 
                 var dalLabel = new DAL_Labels();
                 dalLabel.UpdateLabel(labelInfo);
-
-                Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(e.LabelInfo.UserId, "Cannot print MUB Label", "User '" + labelInfo.UserId + "' cannot print MUB label.", EnumNotificationTypes.Error);
-
-                //DeleteQRCodeImageFileTemp();
-                //LogOut();
+                Trinity.SignalR.Client.Instance.SSAInsertedLabel(e.LabelInfo.UserId);
+                Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(e.LabelInfo.UserId, "Cannot print MUB Label", "User '" + labelInfo.UserId + "' cannot print MUB label.", EnumNotificationTypes.Error);                
             }
             catch (Exception ex)
             {
@@ -245,7 +242,7 @@ namespace SSA
 
                 var dalLabel = new DAL_Labels();
                 dalLabel.UpdateLabel(labelInfo);
-
+                Trinity.SignalR.Client.Instance.SSAInsertedLabel(e.LabelInfo.UserId);
                 Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(e.LabelInfo.UserId, "Cannot print TT Label", "User '" + labelInfo.UserId + "' cannot print TT label.", EnumNotificationTypes.Error);
             }
             catch (Exception ex)
@@ -365,7 +362,7 @@ namespace SSA
                     supervisee = currentUser;
                 }
                 var dalQueue = new DAL_QueueNumber();
-                dalQueue.UpdateQueueStatusByUserId(supervisee.UserId, EnumStation.SSA, EnumQueueStatuses.Finished, EnumStation.UHP, EnumQueueStatuses.Processing, "", EnumQueueOutcomeText.Processing);
+                dalQueue.UpdateQueueStatusByUserId(supervisee.UserId, EnumStation.SSA, EnumQueueStatuses.Finished, EnumStation.UHP, EnumQueueStatuses.Processing, "Waiting for UHP", EnumQueueOutcomeText.Processing);
 
                 DeleteQRCodeImageFileTemp();
 
@@ -779,7 +776,7 @@ namespace SSA
                 return;
             }
             // Remove queue number and inform others
-            //new DAL_QueueDetails().RemoveQueueFromSSK(currentUser.UserId);
+            Trinity.SignalR.Client.Instance.QueueCompleted(currentUser.UserId);
             Trinity.SignalR.Client.Instance.SSACompleted(currentUser.UserId);
 
             //lblStatus.Text = "The door is fully close";

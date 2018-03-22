@@ -27,7 +27,8 @@ namespace Trinity.DAL
                     AbsenceReason = short.Parse(data["ChoseNumber"]),
                     ID = Guid.NewGuid(),
                     ReportingDate = DateTime.Now,
-                    Document_ID = IdDocument
+                    Document_ID = IdDocument,
+                    ReasonDetails = data["Reason"]
                 };
                 item.AbsenceReporting_ID = dataAbsence.ID;
                 arrayInssert.Add(dataAbsence);

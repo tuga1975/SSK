@@ -1,0 +1,92 @@
+﻿<div class="modal" role="dialog" id="PopupMessageConfirm">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="title"></div>
+                <div class="contentMesg">
+                </div>
+                <div>
+                    <button type="button" class="btn btn-primary" btn-confirm="false" style="float:left;width:calc(50% - 10px);background-color:#FFF;color:#1cacf6;border-color:#CCC;">NO</button>
+                    <button type="button" class="btn btn-primary" btn-confirm="true" style="float:right;width:calc(50% - 10px);">YES</button>
+                    <div style="clear:both;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    api.ready(function (response) {
+        response = JSON.parse(response);
+        if (response.title == 0) {
+            $('#PopupMessageConfirm .title').css('display', 'none');
+        } else {
+            $('#PopupMessageConfirm .title').html(response.title);
+        }
+        $('#PopupMessageConfirm .contentMesg').html(response.message);
+        $('#PopupMessageConfirm button').click(function () {
+            var status = $(this).attr('btn-confirm');
+            if (response.id.length > 0) {
+                api.server.ExitWaitPopupMessage(response.id, (status == 'false' ? false : true), function () {
+                    $('#PopupMessageConfirm').modal('toggle');
+                });
+            } else {
+                $('#PopupMessageConfirm').modal('toggle');
+            }
+        });
+
+    });
+</script>
+<style type="text/css">
+    /*Modal Layout*/
+    #PopupMessageConfirm {
+        z-index: 99999;
+    }
+    .modal-content {
+        border-radius: 0px !important;
+    }
+
+    .modal {
+        text-align: center;
+        padding: 0 !important;
+    }
+
+        .modal:before {
+            content: '';
+            display: inline-block;
+            height: 100%;
+            vertical-align: middle;
+            margin-right: -4px;
+        }
+
+    .modal-dialog {
+        display: inline-block;
+        text-align: left;
+        vertical-align: middle;
+        min-width: 350px;
+    }
+
+    .modal-content {
+        padding: 20px;
+    }
+
+    .modal-body .title {
+        text-align: center;
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .modal-body .contentMesg {
+        text-align: center;
+        padding: 10px 0 20px 0;
+    }
+
+    .modal-body button {
+        width: 100%;
+        background-color: #1CACF6;
+        text-align: center;
+        color: #fff;
+        font-weight: bold;
+        border-radius: 3px;
+        border: 1px solid #1CACF6;
+    }
+</style>

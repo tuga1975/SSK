@@ -167,6 +167,7 @@ namespace SSA
                 //LEDStatusLightingUtil.Instance.TurnOffAllLEDs();
                 LEDStatusLightingUtil.Instance.ClosePort();
             }
+            FacialRecognition.Instance.Dispose();
             //_autoPrintTimer.Enabled = false;
             Application.ExitThread();
             APIUtils.Dispose();

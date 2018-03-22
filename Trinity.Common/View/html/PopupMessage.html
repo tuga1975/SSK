@@ -14,15 +14,16 @@
 </div>
 <script type="text/javascript">
     api.ready(function (response) {
-        if (response[0].length == 0) {
+        response = JSON.parse(response);
+        if (response.title == 0) {
             $('#PopupMessage .title').css('display', 'none');
         } else {
-            $('#PopupMessage .title').html(response[0]);
+            $('#PopupMessage .title').html(response.title);
         }
-        $('#PopupMessage .contentMesg').html(response[1]);
+        $('#PopupMessage .contentMesg').html(response.message);
         $('#PopupMessage button').click(function () {
-            if (response[2].length > 0) {
-                api.server.ExitWaitPopupMessage(response[2], function () {
+            if (response.id.length > 0) {
+                api.server.ExitWaitPopupMessage(response.id,true, function () {
                     $('#PopupMessage').modal('toggle');
                 });
             } else {
@@ -81,5 +82,7 @@
         text-align: center;
         color: #fff;
         font-weight: bold;
+        border-radius: 3px;
+        border: 1px solid #1CACF6;
     }
 </style>

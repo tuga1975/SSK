@@ -329,7 +329,7 @@ namespace SSK
             }
         }
 
-        public void SaveProfile(string param,string documentScan, bool primaryInfoChange)
+        public void SaveProfile(string param,string arrayDocumentScan, bool primaryInfoChange)
         {
             try
             {
@@ -345,9 +345,10 @@ namespace SSK
                     var updateUProfileResult = new DAL_UserProfile().UpdateProfile(userProfileModel);
                     // dalUserprofile.UpdateUserProfile(data.UserProfile,data.User.UserId , true);
                     //send notifiy to duty officer
-                    if (!string.IsNullOrEmpty(documentScan))
+                    List<string> arrayScan = JsonConvert.DeserializeObject<List<string>>(arrayDocumentScan);
+                    if (arrayScan.Count>0)
                     {
-                        Guid IDDocuemnt = new DAL_UploadedDocuments().Insert(Lib.ReadAllBytes(documentScan), ((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId);
+                        Guid IDDocuemnt = new DAL_UploadedDocuments().Insert(arrayScan, ((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId);
                         new DAL_UserProfile().UploadDocumentScan(IDDocuemnt, data.User.UserId);
                     }
                     Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(data.User.UserId, "A supervisee has updated profile.", "Please check Supervisee's information!", EnumNotificationTypes.Notification);
@@ -601,15 +602,16 @@ namespace SSK
 
         
         
-        public void SaveReasonForQueue(string dataTxt, string filescandocument)
+        public void SaveReasonForQueue(string dataTxt, string arrayDocumentScan)
         {
-            if (string.IsNullOrEmpty(filescandocument))
+            List<string> arrayScan = JsonConvert.DeserializeObject<List<string>>(arrayDocumentScan);
+            if (arrayScan.Count==0)
             {
                 _SaveReasonForQueue(dataTxt, null);
             }
             else
             {
-                Guid IDDocuemnt = new DAL_UploadedDocuments().Insert(Lib.ReadAllBytes(filescandocument), ((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId);
+                Guid IDDocuemnt = new DAL_UploadedDocuments().Insert(arrayScan, ((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId);
                 _SaveReasonForQueue(dataTxt, IDDocuemnt);
             }
             
@@ -716,15 +718,17 @@ namespace SSK
         #region Scan Document
         private void ScanDocumentCallBack(string[] frontPath, string error)
         {
-            _web.InvokeScript("showImgScanDocument", frontPath);
+            _web.InvokeScript("showImgScanDocument", JsonConvert.SerializeObject(frontPath));
         }
         public void StartScanDocument()
         {
-            //System.Threading.Thread.Sleep(5000);
-            //ScanDocumentCallBack(@"C:\Users\thangnv1\Desktop\imgpsh_fullsize.jpg", "");
             Trinity.Util.DocumentScannerUtil.Instance.StartScanning(ScanDocumentCallBack);
         }
-        #endregion
+        public void StopScanDocument()
+        {
+            Trinity.Util.DocumentScannerUtil.Instance.StopScanning();
+        }
+        #endregion Scan Document
         public void LogOut()
         {
             // reset session value
