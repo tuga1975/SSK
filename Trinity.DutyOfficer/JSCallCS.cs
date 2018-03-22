@@ -197,13 +197,14 @@ namespace DutyOfficer
                 string message = string.Empty;
                 if (UTResult.Equals(EnumUTResult.NEG))
                 {
-                    message = "Tap smard card to Unconditional Release";
+                    message = "Tap smart card to Unconditional Release";
                 }
                 else if (UTResult.Equals(EnumUTResult.POS))
                 {
                     message = "Select outcome";
                 }
-                dalQueue.UpdateQueueStatusByUserId(UserId, EnumStation.HSA, EnumQueueStatuses.Finished, EnumStation.ESP, EnumQueueStatuses.Processing, message, EnumQueueOutcomeText.TapSmartCardToContinue);
+                dalQueue.UpdateQueueStatusByUserId(UserId, EnumStation.HSA, EnumQueueStatuses.Finished, EnumStation.ESP, EnumQueueStatuses.NotRequired, "", "");
+                dalQueue.UpdateQueueStatusByUserId(UserId, EnumStation.ESP, EnumQueueStatuses.NotRequired, EnumStation.DUTYOFFICER, EnumQueueStatuses.Processing, message, EnumQueueOutcomeText.TapSmartCardToContinue);
 
                 // Re-load queue
                 this._web.InvokeScript("reloadDataQueues");
@@ -267,13 +268,18 @@ namespace DutyOfficer
 
                 if (resultUT == EnumUTResult.NEG)
                 {
-                    // update outcome to 'Unconditional Release'
-                    //dalQueue.UpdateQueueOutcomeByQueueId(new Guid(queueId), EnumQueueOutcomeText.UnconditionalRelease);
+                    var drugResult = new DAL_DrugResults().GetByNRICAndDate(queueDetail.NRIC, queueDetail.Date);
+                    if (drugResult != null && drugResult.IsSealed.Value)
+                    {
+                        this._web.InvokeScript("openPopupOutcome", queueId);
+                    }
+                    else
+                    {
+                        dalQueue.UpdateQueueStatusByUserId(queueDetail.UserId, EnumStation.DUTYOFFICER, EnumQueueStatuses.Finished, EnumStation.DUTYOFFICER, EnumQueueStatuses.Finished, "", EnumQueueOutcomeText.UnconditionalRelease);
 
-                    dalQueue.UpdateQueueStatusByUserId(queueDetail.UserId, EnumStation.ESP, EnumQueueStatuses.NotRequired, EnumStation.DUTYOFFICER, EnumQueueStatuses.NotRequired, "", EnumQueueOutcomeText.UnconditionalRelease);
-
-                    // Re-load queue
-                    this._web.InvokeScript("reloadDataQueues");
+                        // Re-load queue
+                        this._web.InvokeScript("reloadDataQueues");
+                    }
                 }
                 else
                 {
@@ -287,7 +293,7 @@ namespace DutyOfficer
             DAL_QueueNumber dalQueue = new DAL_QueueNumber();
             //dalQueue.UpdateQueueOutcomeByQueueId(new Guid(queueID), outcome);
             var queueDetail = dalQueue.GetQueueInfoByQueueID(new Guid(queueID));
-            dalQueue.UpdateQueueStatusByUserId(queueDetail.UserId, EnumStation.ESP, EnumQueueStatuses.Finished, EnumStation.DUTYOFFICER, EnumQueueStatuses.Finished, "", outcome);
+            dalQueue.UpdateQueueStatusByUserId(queueDetail.UserId, EnumStation.DUTYOFFICER, EnumQueueStatuses.Finished, EnumStation.DUTYOFFICER, EnumQueueStatuses.Finished, "", outcome);
 
             // Re-load queue
             this._web.InvokeScript("reloadDataQueues");
