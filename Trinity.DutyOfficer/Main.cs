@@ -44,6 +44,9 @@ namespace DutyOfficer
             Trinity.SignalR.Client.Instance.OnAppointmentBookedOrReported += OnAppointmentBookedOrReported_Handler;
             Trinity.SignalR.Client.Instance.OnSSACompleted += OnSSACompleted_Handler;
             Trinity.SignalR.Client.Instance.OnSSAInsertedLabel += OnSSAInsertedLabel_Handler;
+            Trinity.SignalR.Client.Instance.ONBackendApiSendDO += ONBackendApiSendDO_Handler;
+
+            
 
             // setup variables
             _smartCardFailed = 0;
@@ -70,6 +73,13 @@ namespace DutyOfficer
             LayerWeb.Url = new Uri(String.Format("file:///{0}/View/html/Layout.html", CSCallJS.curDir));
             LayerWeb.ObjectForScripting = _jsCallCS;
         }
+
+        private void ONBackendApiSendDO_Handler(object sender, NotificationInfo e)
+        {
+            // khi ở tab Alter nhận đc cái này sẽ tải lại
+
+        }
+
         private void OnSSACompleted_Handler(object sender, NotificationInfo e)
         {
             //string userId = e.UserID;

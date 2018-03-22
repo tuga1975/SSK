@@ -13,10 +13,27 @@ namespace Trinity.DAL
         Local_UnitOfWork _localUnitOfWork = new Local_UnitOfWork();
         Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
 
-        public DBContext.DrugResult GetByNRICAndDate(string NRIC,DateTime DateCreate)
+
+        public List<Guid> CheckDrugResult()
+        {
+            DateTime today = DateTime.Today;
+            var query = (from queue in _localUnitOfWork.DataContext.Queues.Where(d => DbFunctions.TruncateTime(d.CreatedTime) == today && d.QueueDetails.Any(c => c.Station == EnumStation.HSA && c.Status == EnumQueueStatuses.Processing))
+                         join drugresult in _localUnitOfWork.DataContext.DrugResults.Where(d => DbFunctions.TruncateTime(d.UploadedDate) == today) on queue.Membership_Users1.NRIC equals drugresult.NRIC
+                         select new { queue, drugresult }).Where(d => d.drugresult != null).ToList();
+            List<Guid> arrayQueueUpdateed = new List<Guid>();
+            DAL_QueueNumber DAL_Queue = new DAL.DAL_QueueNumber();
+            foreach (var item in query)
+            {
+                arrayQueueUpdateed.Add(item.queue.Queue_ID);
+                DAL_Queue.UpdateQueueStatusByUserId(item.queue.UserId, EnumStation.HSA, EnumQueueStatuses.SelectSealOrDiscard, EnumStation.HSA, EnumQueueStatuses.SelectSealOrDiscard, EnumMessage.SelectSealtOrDiscard, EnumQueueOutcomeText.Processing);
+            }
+            return arrayQueueUpdateed;
+        }
+
+        public DBContext.DrugResult GetByNRICAndDate(string NRIC, DateTime DateCreate)
         {
             DateCreate = DateCreate.Date;
-            return _localUnitOfWork.DataContext.DrugResults.FirstOrDefault(d => d.NRIC.Equals(NRIC) && DbFunctions.TruncateTime(d.UploadedDate)== DateCreate);
+            return _localUnitOfWork.DataContext.DrugResults.FirstOrDefault(d => d.NRIC.Equals(NRIC) && DbFunctions.TruncateTime(d.UploadedDate) == DateCreate);
         }
 
         public DBContext.DrugResult GetByMarkingNumber(string MarkingNumber)
@@ -184,7 +201,7 @@ namespace Trinity.DAL
             }
         }
 
-        public DrugResult UpdateDrugSeal(string userId,bool COCA, bool BARB, bool LSD, bool METH, bool MTQL, bool PCP, bool KET, bool BUPRE, bool CAT, bool PPZ, bool NPS, string updatedBy)
+        public DrugResult UpdateDrugSeal(string userId, bool COCA, bool BARB, bool LSD, bool METH, bool MTQL, bool PCP, bool KET, bool BUPRE, bool CAT, bool PPZ, bool NPS, string updatedBy)
         {
             try
             {
@@ -194,8 +211,8 @@ namespace Trinity.DAL
                 {
                     var localRepo = _localUnitOfWork.GetRepository<DrugResult>();
                     DrugResult drug = _localUnitOfWork.DataContext.DrugResults.FirstOrDefault(d => d.NRIC.Equals(NRIC));
-                    
-                    if(drug != null)
+
+                    if (drug != null)
                     {
                         drug.COCA = COCA;
                         drug.BARB = BARB;
@@ -211,14 +228,14 @@ namespace Trinity.DAL
                         drug.UploadedBy = updatedBy;
 
                         localRepo.Update(drug);
-                        _localUnitOfWork.Save();                                               
+                        _localUnitOfWork.Save();
                     }
 
-                    if(EnumAppConfig.ByPassCentralizedDB)
+                    if (EnumAppConfig.ByPassCentralizedDB)
                     {
                         return drug;
                     }
-                    else 
+                    else
                     {
                         bool centralizeStatus;
                         var centralData = CallCentralized.Post<DrugResult>(EnumAPIParam.DrugResult, "UpdateDrugSeal", out centralizeStatus, "userId=" + userId, "COCA=" + COCA.ToString(),
@@ -232,7 +249,7 @@ namespace Trinity.DAL
                         {
                             throw new Exception(EnumMessage.NotConnectCentralized);
                         }
-                    }                    
+                    }
                 }
                 else
                 {
@@ -267,7 +284,7 @@ namespace Trinity.DAL
             }
         }
 
-        public string GetResultUTByNRIC(string NRIC,DateTime date)
+        public string GetResultUTByNRIC(string NRIC, DateTime date)
         {
             date = date.Date;
             DrugResult drug = _localUnitOfWork.DataContext.DrugResults.FirstOrDefault(d => d.NRIC.Equals(NRIC) && DbFunctions.TruncateTime(d.UploadedDate) == date);

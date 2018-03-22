@@ -16,28 +16,12 @@ namespace Trinity.DAL
         Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
 
         #region refactor 2018
-        public List<DBContext.Notification> GetByDate(DateTime date)
+        public List<DBContext.Notification> GetByDate(string Source,DateTime date)
         {
             date = date.Date;
-            return _localUnitOfWork.DataContext.Notifications.Where(d => DbFunctions.TruncateTime(d.Datetime) == date).ToList();
+            return _localUnitOfWork.DataContext.Notifications.Where(d => DbFunctions.TruncateTime(d.Datetime) == date && d.Source.ToLower().Equals(Source.ToLower())).ToList();
         }
-        public string SSPInsert(string source,string type, string content,DateTime datetime,string notification_code)
-        {
-            string IDInsert = Guid.NewGuid().ToString().Trim();
-            _localUnitOfWork.GetRepository<DBContext.Notification>().Add(new DBContext.Notification()
-            {
-                NotificationID = IDInsert,
-                Datetime = datetime,
-                Content = content,
-                Source = source,
-                Type = type,
-                notification_code=notification_code
-            });
-            if (_localUnitOfWork.Save() > 0)
-                return IDInsert;
-            else
-                return string.Empty;
-        }
+        
         public List<Notification> GetAllNotifications(string userId)
         {
             if (EnumAppConfig.IsLocal)
@@ -140,50 +124,37 @@ namespace Trinity.DAL
         #endregion
 
         /// <summary>
-        /// Send notification to supervisee
+        /// 
         /// </summary>
         /// <param name="fromUserId"></param>
         /// <param name="toUserId"></param>
         /// <param name="subject"></param>
         /// <param name="content"></param>
+        /// <param name="datetime"></param>
+        /// <param name="notification_code"></param>
         /// <param name="notificationType"></param>
         /// <param name="station"></param>
-        public int SendToSupervisee(string fromUserId, string toUserId, string subject, string content, string notificationType, string station)
+        /// <returns></returns>
+        public string InsertNotification(string fromUserId, string toUserId, string subject, string content,bool IsFromSupervisee, DateTime datetime, string notification_code, string notificationType, string station)
         {
-            if (EnumAppConfig.IsLocal)
+            string IDNoti = Guid.NewGuid().ToString().Trim();
+            _localUnitOfWork.GetRepository<DBContext.Notification>().Add(new DBContext.Notification()
             {
-                _localUnitOfWork.GetRepository<DBContext.Notification>().Add(new DBContext.Notification()
-                {
-                    Content = content,
-                    Datetime = DateTime.Now,
-                    FromUserId = fromUserId,
-                    IsFromSupervisee = false,
-                    NotificationID = Guid.NewGuid().ToString().Trim(),
-                    Source = station,
-                    IsRead = false,
-                    Subject = subject,
-                    ToUserId = toUserId,
-                    Type = notificationType
-                });
-                return _localUnitOfWork.Save();
-            }
+                Content = content,
+                Datetime = datetime,
+                FromUserId = fromUserId,
+                IsFromSupervisee = IsFromSupervisee,
+                NotificationID = IDNoti,
+                Source = station,
+                IsRead = false,
+                Subject = subject,
+                ToUserId = toUserId,
+                Type = notificationType
+            });
+            if (_localUnitOfWork.Save() > 0)
+                return IDNoti;
             else
-            {
-                _centralizedUnitOfWork.GetRepository<DBContext.Notification>().Add(new DBContext.Notification()
-                {
-                    Content = content,
-                    Datetime = DateTime.Now,
-                    FromUserId = fromUserId,
-                    IsFromSupervisee = false,
-                    NotificationID = Guid.NewGuid().ToString().Trim(),
-                    Source = station,
-                    IsRead = false,
-                    Subject = subject,
-                    ToUserId = toUserId,
-                    Type = notificationType
-                });
-                return _centralizedUnitOfWork.Save();
-            }
+            return string.Empty;
         }
 
         /// <summary>
@@ -467,38 +438,7 @@ namespace Trinity.DAL
             }
         }
 
-        public void InsertNotification(string NotificationID, string subject, string content, string fromUserId,
-            string toUserId, bool isFromSupervisee, bool isLocal, string notifyType,
-            string source)
-        {
-            Trinity.DAL.DBContext.Notification notifcation = new DBContext.Notification()
-            {
-                Content = content,
-                Datetime = DateTime.Now,
-                FromUserId = fromUserId,
-                IsFromSupervisee = isFromSupervisee,
-                IsRead = false,
-                Subject = subject,
-                ToUserId = toUserId,
-                Type = notifyType,
-                Source = source,
-                NotificationID = NotificationID
-            };
-            IRepository<Trinity.DAL.DBContext.Notification> notificationRepo = null;
-            if (isLocal)
-            {
-                notificationRepo = _localUnitOfWork.GetRepository<Trinity.DAL.DBContext.Notification>();
-                notificationRepo.Add(notifcation);
-                _localUnitOfWork.Save();
-            }
-            else
-            {
-                notificationRepo = _centralizedUnitOfWork.GetRepository<Trinity.DAL.DBContext.Notification>();
-                notificationRepo.Add(notifcation);
-                _centralizedUnitOfWork.Save();
-            }
-        }
-
+        
 
         public Response<bool> updateReadStatus(string NotificationID, bool isReaded)
         {
@@ -552,48 +492,7 @@ namespace Trinity.DAL
         }
 
 
-        /// <summary>
-        /// Add notification
-        /// </summary>
-        /// <param name="subject"></param>
-        /// <param name="content"></param>
-        /// <param name="fromUserId"></param>
-        /// <param name="toUserId"></param>
-        /// <param name="isFromSupervisee"></param>
-        /// <param name="isLocal"></param>
-        /// <param name="notifyType">NotificationType : {Error : 'E', Notification : 'N', Caution : 'C'}</param>
-        /// <param name="source">EnumStation : {SSA, SSK, UHP, ASP, HSA, ASP}</param>
-        public void InsertNotification(string subject, string content, string fromUserId,
-            string toUserId, bool isFromSupervisee, bool isLocal, string notifyType,
-            string source)
-        {
-            Trinity.DAL.DBContext.Notification notifcation = new DBContext.Notification()
-            {
-                Content = content,
-                Datetime = DateTime.Now,
-                FromUserId = fromUserId,
-                IsFromSupervisee = isFromSupervisee,
-                IsRead = false,
-                Subject = subject,
-                ToUserId = toUserId,
-                Type = notifyType,
-                Source = source,
-                NotificationID = Guid.NewGuid().ToString().Trim()
-            };
-            IRepository<Trinity.DAL.DBContext.Notification> notificationRepo = null;
-            if (isLocal)
-            {
-                notificationRepo = _localUnitOfWork.GetRepository<Trinity.DAL.DBContext.Notification>();
-                notificationRepo.Add(notifcation);
-                _localUnitOfWork.Save();
-            }
-            else
-            {
-                notificationRepo = _centralizedUnitOfWork.GetRepository<Trinity.DAL.DBContext.Notification>();
-                notificationRepo.Add(notifcation);
-                _centralizedUnitOfWork.Save();
-            }
-        }
+       
 
         public Trinity.DAL.DBContext.Notification GetNotification(Guid notificationId, bool isLocal)
         {

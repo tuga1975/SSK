@@ -15,7 +15,6 @@ namespace Trinity.DAL
         Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
 
         #region refactor 2018
-
         public List<DBContext.Queue> GetQueueWalkInByDate(DateTime date)
         {
             date = date.Date;

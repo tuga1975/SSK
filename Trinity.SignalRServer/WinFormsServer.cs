@@ -13,6 +13,7 @@ namespace Trinity.NotificationServer
     {
         private IDisposable NotificationServer { get; set; }
         private string ServerURI = EnumAppConfig.NotificationServerUrl;
+        
 
         internal WinFormsServer()
         {

@@ -128,7 +128,11 @@ function setLoading(status) {
     api.loading(status);
 }
 function RunScript(script) {
-    eval(script);
+    try {
+        eval(script);
+    } catch (e) {
+
+    }
 }
 function ShowMessage(title, message, id) {
     id = id == null ? '' : id;

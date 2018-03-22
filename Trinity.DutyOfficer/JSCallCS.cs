@@ -125,6 +125,7 @@ namespace DutyOfficer
         public object getDataQueue()
         {
             List<object> arrayDataa = new List<object>();
+            new DAL_DrugResults().CheckDrugResult();
             arrayDataa.AddRange(new DAL_Appointments().GetByDate(DateTime.Today).Select(app => new
             {
                 Queue_ID = app.Queue == null ? null : app.Queue.Queue_ID.ToString().Trim(),
@@ -136,7 +137,7 @@ namespace DutyOfficer
                 SSK = app.Color(EnumStation.SSK),
                 SSA = app.Color(EnumStation.SSA),
                 UHP = app.Color(EnumStation.UHP),
-                HSA = app.Queue == null ? string.Empty : app.Queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStation.HSA).Status == EnumQueueStatuses.Finished ? GetResultUT(app.Membership_Users.NRIC,app.Date) : string.Empty,
+                HSA = app.Queue == null ? string.Empty : app.Queue.QueueDetails.Any(c => c.Station == EnumStation.HSA && (c.Status == EnumQueueStatuses.SelectSealOrDiscard || c.Status == EnumQueueStatuses.Finished)) ? GetResultUT(app.Membership_Users.NRIC, app.Date) : string.Empty,
                 ESP = app.Color(EnumStation.ESP),
                 Outcome = app.Queue == null ? string.Empty : app.Queue.Outcome,
                 Message = new
@@ -155,7 +156,7 @@ namespace DutyOfficer
                 SSK = queue.Color(EnumStation.SSK),
                 SSA = queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStation.SSA).Color,
                 UHP = queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStation.UHP).Color,
-                HSA = queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStation.HSA).Status == EnumQueueStatuses.Finished ? GetResultUT(queue.Membership_Users1.NRIC,queue.CreatedTime.Date) : string.Empty,
+                HSA = queue.QueueDetails.Any(c => c.Station == EnumStation.HSA && (c.Status == EnumQueueStatuses.SelectSealOrDiscard || c.Status == EnumQueueStatuses.Finished)) ? GetResultUT(queue.Membership_Users1.NRIC, queue.CreatedTime.Date) : string.Empty,
                 ESP = queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStation.ESP).Color,
                 Outcome = queue.Outcome,
                 Message = new
@@ -165,7 +166,7 @@ namespace DutyOfficer
             }).ToList());
             return arrayDataa;
         }
-        private string GetResultUT(string NRIC,DateTime date)
+        private string GetResultUT(string NRIC, DateTime date)
         {
             DAL_DrugResults dalDrug = new DAL_DrugResults();
             return dalDrug.GetResultUTByNRIC(NRIC, date);
@@ -745,7 +746,7 @@ namespace DutyOfficer
                             string fileName = String.Format("{0}/Temp/{1}", CSCallJS.curDir, "QRCode.png");
                             if (System.IO.File.Exists(fileName))
                                 System.IO.File.Delete(fileName);
-                            
+
                             System.Drawing.Image bitmap = System.Drawing.Image.FromStream(ms);
                             bitmap.Save(fileName, System.Drawing.Imaging.ImageFormat.Png);
                         }
@@ -760,7 +761,7 @@ namespace DutyOfficer
 
                 }
 
-                if(_isPrintFailMUB && _isPrintFailTT)
+                if (_isPrintFailMUB && _isPrintFailTT)
                 {
                     MessageBox.Show("Unable to print MUB and TT labels", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
@@ -768,7 +769,7 @@ namespace DutyOfficer
                 {
                     MessageBox.Show("Unable to print MUB labels", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-                else if(_isPrintFailTT)
+                else if (_isPrintFailTT)
                 {
                     MessageBox.Show("Unable to print TT labels", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
@@ -800,7 +801,7 @@ namespace DutyOfficer
             {
                 _printMUBAndTTLabel.StartPrintMUB(labelInfo);
             }
-            
+
         }
 
         private void PrintMUBLabels_OnPrintMUBLabelSucceeded(object sender, PrintMUBAndTTLabelsEventArgs e)
