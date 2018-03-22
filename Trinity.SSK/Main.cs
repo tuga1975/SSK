@@ -112,6 +112,14 @@ namespace SSK
             {
                 LayerWeb.InvokeScript("alertBookAppointment", e.Message);
             }
+            else if (e.Name == EventNames.LOGIN_SUCCEEDED)
+            {
+                NavigateTo(NavigatorEnums.Authentication_NRIC);
+            }
+            else if (e.Name.Equals(EventNames.LOGIN_FAILED))
+            {
+                LayerWeb.ShowMessage("Login Failed", e.Message);
+            }
         }
 
         /// <summary>
@@ -495,7 +503,8 @@ namespace SSK
         #region events
         private void JSCallCS_OnNRICFailed(object sender, NRICEventArgs e)
         {
-            MessageBox.Show(e.Message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //MessageBox.Show(e.Message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            LayerWeb.ShowMessage("Authentication failed", e.Message);
         }
 
         private void JSCallCS_ShowMessage(object sender, ShowMessageEventArgs e)
@@ -505,7 +514,8 @@ namespace SSK
 
         private void OnShowMessage(object sender, ShowMessageEventArgs e)
         {
-            MessageBox.Show(e.Message, e.Caption, e.Button, e.Icon);
+            //MessageBox.Show(e.Message, e.Caption, e.Button, e.Icon);
+            LayerWeb.ShowMessage(e.Caption, e.Message);
         }
 
         public void NavigateTo(NavigatorEnums navigatorEnum)
