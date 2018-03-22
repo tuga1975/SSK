@@ -346,19 +346,22 @@
 </div>-->
 
 <script>
-
-    var timeout;
+    var timeout = null;
     $(document).ready(function () {
+
         $('input[name="nric"]').keyup(function (e) {
             if (e.keyCode != 13) {
-                if (timeout) {
-                    clearTimeout(timeout);
-                    timeout = null;
-                }
-                timeout = setTimeout(searchSuperviseeNric, 1000);
+                clearTimeout(timeout);
+                timeout = setTimeout(searchSuperviseeNric, 500);
             }
         });
+        $('input[name="nric"]').mouseup(function () {
+            clearTimeout(timeout);
+            timeout = setTimeout(searchSuperviseeNric, 500);
+        });
+
     });
+
     function focusToSearchBox() {
         $('#nric').focus();
     }
@@ -387,13 +390,14 @@
     });
 
     function searchSuperviseeNric() {
-        if ($.trim($('#nric').val()) != "") {
-            api.server.SearchSuperviseeByNRIC($('#nric').val());
+        if ($.trim($('#nric').val()) != searchOld) {
+            searchOld = $.trim($('#nric').val());
+            if (searchOld.length == 0) {
+                api.server.LoadListSupervisee();
+            } else {
+                api.server.SearchSuperviseeByNRIC(searchOld);
+            }
         }
-        else {
-            api.server.LoadListSupervisee();
-        }
-        clearTimeout(timeout);
     }
 
     $('#searchForm').submit(function myfunction(e) {
