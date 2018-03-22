@@ -47,7 +47,7 @@ namespace DutyOfficer
             _printMUBAndTTLabel.OnPrintUBLabelsFailed += PrintUBLabels_OnPrintUBLabelFailed;
             _StationColorDevice = new StationColorDevice();
 
-            SmartCard.Instance.GetCardInfoSucceeded += GetCardInfoSucceeded;
+            
         }
 
         public StationColorDevice GetStationClolorDevice()
@@ -66,65 +66,53 @@ namespace DutyOfficer
         }
 
         #region Queue
-        public void LoadDrugsTest(string Date, string userId)
+        public void LoadDrugsTest(string userId)
         {
-            Trinity.DAL.DBContext.Label dbLabel = new Trinity.DAL.DAL_Labels().GetByDateAndUserId(Convert.ToDateTime(Date).Date, userId);
-            if (dbLabel != null)
+            var user = new Trinity.DAL.DAL_User().GetUserById(userId);
+            Trinity.DAL.DBContext.DrugResult dbDrugResult = new Trinity.DAL.DAL_DrugResults().GetByNRICAndDate(user.NRIC,DateTime.Today);
+            if (dbDrugResult != null)
             {
-                Trinity.DAL.DBContext.DrugResult dbDrugResult = new Trinity.DAL.DAL_DrugResults().GetByMarkingNumber(dbLabel.MarkingNo);
-                if (dbDrugResult != null)
+                this._web.LoadPopupHtml("QueuePopupDrugs.html", new
                 {
-                    this._web.LoadPopupHtml("QueuePopupDrugs.html", new
+                    Date = DateTime.Today.ToString("dd MMM yyyy"),
+                    TestResults = new
                     {
-                        Date = dbLabel.Date.ToString("dd MMM yyyy"),
-                        TestResults = new
-                        {
-                            AMPH = dbDrugResult.AMPH,
-                            BENZ = dbDrugResult.BENZ,
-                            OPI = dbDrugResult.OPI,
-                            THC = dbDrugResult.THC
-                        },
-                        Seal = new
-                        {
-                            BARB = dbDrugResult.BARB,
-                            BUPRE = dbDrugResult.BUPRE,
-                            CAT = dbDrugResult.CAT,
-                            COCA = dbDrugResult.COCA,
-                            KET = dbDrugResult.KET,
-                            LSD = dbDrugResult.LSD,
-                            METH = dbDrugResult.METH,
-                            MTQL = dbDrugResult.MTQL,
-                            NPS = dbDrugResult.NPS,
-                            PCP = dbDrugResult.PCP,
-                            PPZ = dbDrugResult.PPZ
-                        },
-                        UserId = userId
-                    });
-                }
-            }
-            else
-            {
-                this._web.LoadPopupHtml("QueuePopupDrugs.html", null);
+                        AMPH = dbDrugResult.AMPH,
+                        BENZ = dbDrugResult.BENZ,
+                        OPI = dbDrugResult.OPI,
+                        THC = dbDrugResult.THC
+                    },
+                    Seal = new
+                    {
+                        BARB = dbDrugResult.BARB,
+                        BUPRE = dbDrugResult.BUPRE,
+                        CAT = dbDrugResult.CAT,
+                        COCA = dbDrugResult.COCA,
+                        KET = dbDrugResult.KET,
+                        LSD = dbDrugResult.LSD,
+                        METH = dbDrugResult.METH,
+                        MTQL = dbDrugResult.MTQL,
+                        NPS = dbDrugResult.NPS,
+                        PCP = dbDrugResult.PCP,
+                        PPZ = dbDrugResult.PPZ
+                    },
+                    UserId = userId
+                });
             }
         }
         public void SaveDrugTest(string UserId, bool COCA, bool BARB, bool LSD, bool METH, bool MTQL, bool PCP, bool KET, bool BUPRE, bool CAT, bool PPZ, bool NPS)
         {
             Session session = Session.Instance;
             Trinity.BE.User dutyOfficer = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-
             DAL_DrugResults dalDrug = new DAL_DrugResults();
             dalDrug.UpdateDrugSeal(UserId, COCA, BARB, LSD, METH, MTQL, PCP, KET, BUPRE, CAT, PPZ, NPS, dutyOfficer.UserId);
-
-            // Update next station is ESP, message of ESP to 'Waiting for ESP'
             var dalQueue = new DAL_QueueNumber();
             dalQueue.UpdateQueueStatusByUserId(UserId, EnumStation.HSA, EnumQueueStatuses.Finished, EnumStation.ESP, EnumQueueStatuses.Processing, "Waiting for ESP", EnumQueueOutcomeText.Processing);
-
-            // Re-load queue
-            this._web.InvokeScript("reloadDataQueues");
         }
         public object getDataQueue()
         {
             List<object> arrayDataa = new List<object>();
+            new DAL_DrugResults().CheckDrugResult();
             arrayDataa.AddRange(new DAL_Appointments().GetByDate(DateTime.Today).Select(app => new
             {
                 Queue_ID = app.Queue == null ? null : app.Queue.Queue_ID.ToString().Trim(),
@@ -136,7 +124,10 @@ namespace DutyOfficer
                 SSK = app.Color(EnumStation.SSK),
                 SSA = app.Color(EnumStation.SSA),
                 UHP = app.Color(EnumStation.UHP),
-                HSA = app.Queue == null ? string.Empty : app.Queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStation.HSA).Status == EnumQueueStatuses.Finished ? GetResultUT(app.Membership_Users.NRIC,app.Date) : string.Empty,
+                HSA = new {
+                    Status = app.Queue == null ? string.Empty : app.Queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStation.HSA).Status,
+                    Text = app.Queue == null ? string.Empty : app.Queue.QueueDetails.Any(c => c.Station == EnumStation.HSA && (c.Status == EnumQueueStatuses.SelectSealOrDiscard || c.Status == EnumQueueStatuses.Finished)) ? GetResultUT(app.Membership_Users.NRIC, app.Date) : string.Empty
+                },
                 ESP = app.Color(EnumStation.ESP),
                 Outcome = app.Queue == null ? string.Empty : app.Queue.Outcome,
                 Message = new
@@ -155,7 +146,11 @@ namespace DutyOfficer
                 SSK = queue.Color(EnumStation.SSK),
                 SSA = queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStation.SSA).Color,
                 UHP = queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStation.UHP).Color,
-                HSA = queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStation.HSA).Status == EnumQueueStatuses.Finished ? GetResultUT(queue.Membership_Users1.NRIC,queue.CreatedTime.Date) : string.Empty,
+                HSA = new
+                {
+                    Status = queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStation.HSA).Status,
+                    Text = queue.QueueDetails.Any(c => c.Station == EnumStation.HSA && (c.Status == EnumQueueStatuses.SelectSealOrDiscard || c.Status == EnumQueueStatuses.Finished)) ? GetResultUT(queue.Membership_Users1.NRIC, queue.CreatedTime.Date) : string.Empty
+                },
                 ESP = queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStation.ESP).Color,
                 Outcome = queue.Outcome,
                 Message = new
@@ -165,7 +160,7 @@ namespace DutyOfficer
             }).ToList());
             return arrayDataa;
         }
-        private string GetResultUT(string NRIC,DateTime date)
+        public string GetResultUT(string NRIC, DateTime date)
         {
             DAL_DrugResults dalDrug = new DAL_DrugResults();
             return dalDrug.GetResultUTByNRIC(NRIC, date);
@@ -180,32 +175,24 @@ namespace DutyOfficer
                 UTResult = resultUT // NEG or POS
             });
         }
-        public void UpdateSealForUser(string UserId, string queueID, bool seal, string UTResult)
+        public void UpdateDisCard(string UserId, string UTResult)
         {
             Session session = Session.Instance;
             Trinity.BE.User dutyOfficer = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
             DAL_DrugResults dalDrug = new DAL_DrugResults();
-            dalDrug.UpdateSealForUser(UserId, seal, dutyOfficer.UserId, dutyOfficer.UserId);
 
-            // If Discard, will update Outcome queue to 'Tap smart card to continue'
-            if (!seal)
+
+            if (UTResult.Equals(EnumUTResult.NEG))
             {
-                DAL_QueueNumber dalQueue = new DAL_QueueNumber();
-                //dalQueue.UpdateQueueOutcomeByQueueId(new Guid(queueID), EnumQueueOutcomeText.TapSmartCardToContinue);   
-
-                string message = string.Empty;
-                if (UTResult.Equals(EnumUTResult.NEG))
-                {
-                    message = "Tap smard card to Unconditional Release";
-                }
-                else if (UTResult.Equals(EnumUTResult.POS))
-                {
-                    message = "Select outcome";
-                }
-                dalQueue.UpdateQueueStatusByUserId(UserId, EnumStation.HSA, EnumQueueStatuses.Finished, EnumStation.ESP, EnumQueueStatuses.Processing, message, EnumQueueOutcomeText.TapSmartCardToContinue);
-
-                // Re-load queue
-                this._web.InvokeScript("reloadDataQueues");
+                dalDrug.UpdateDiscardDrugResult(UserId, dutyOfficer.UserId);
+                new Trinity.DAL.DAL_QueueNumber().UpdateQueueStatusByUserId(UserId, EnumStation.HSA, EnumQueueStatuses.Finished, EnumStation.ESP, EnumQueueStatuses.NotRequired, string.Empty, EnumQueueOutcomeText.Processing);
+                new Trinity.DAL.DAL_QueueNumber().UpdateQueueStatusByUserId(UserId, EnumStation.ESP, EnumQueueStatuses.NotRequired, EnumStation.DUTYOFFICER, EnumQueueStatuses.TabSmartCard, string.Empty, EnumQueueOutcomeText.TapSmartCardToContinue);
+            }
+            else
+            {
+                dalDrug.UpdateDiscardDrugResult(UserId, dutyOfficer.UserId);
+                new Trinity.DAL.DAL_QueueNumber().UpdateQueueStatusByUserId(UserId, EnumStation.HSA, EnumQueueStatuses.Finished, EnumStation.ESP, EnumQueueStatuses.NotRequired, string.Empty, EnumQueueOutcomeText.Processing);
+                new Trinity.DAL.DAL_QueueNumber().UpdateQueueStatusByUserId(UserId, EnumStation.ESP, EnumQueueStatuses.NotRequired, EnumStation.DUTYOFFICER, EnumQueueStatuses.TabSmartCard, EnumMessage.SelectOutCome, EnumQueueOutcomeText.TapSmartCardToContinue);
             }
         }
         public void LoadPopupQueue(string queue_ID)
@@ -223,38 +210,10 @@ namespace DutyOfficer
         public void startInstanceSmartcard()
         {
             _isFocusQueue = true;
-            SmartCard.Instance.Start();
+            //SmartCard.Instance.Start();
         }
 
-        private void GetCardInfoSucceeded(string cardUID)
-        {
-            // Only at the Queue allow get card info
-            if (_isFocusQueue)
-            {
-                DAL_User dAL_User = new DAL_User();
-                var user = dAL_User.GetUserBySmartCardId(cardUID);
-
-                if (user != null)
-                {
-                    var lstQueueToday = new DAL_QueueNumber().GetAllQueueByDateIncludeDetail(DateTime.Now.Date)
-                    .Select(queue => new
-                    {
-                        UserId = queue.Appointment.UserId,
-                        Queue_ID = queue.Queue_ID,
-                        Outcome = queue.Outcome
-                    });
-
-                    foreach (var queue in lstQueueToday)
-                    {
-                        if (queue.UserId == user.UserId && queue.Outcome.Equals(EnumQueueOutcomeText.TapSmartCardToContinue))
-                        {
-                            TapSmartCardOnQueueSucceed(queue.Queue_ID.ToString());
-                            break;
-                        }
-                    }
-                }
-            }
-        }
+        
 
         public void TapSmartCardOnQueueSucceed(string queueId)
         {
@@ -266,13 +225,18 @@ namespace DutyOfficer
 
                 if (resultUT == EnumUTResult.NEG)
                 {
-                    // update outcome to 'Unconditional Release'
-                    //dalQueue.UpdateQueueOutcomeByQueueId(new Guid(queueId), EnumQueueOutcomeText.UnconditionalRelease);
+                    var drugResult = new DAL_DrugResults().GetByNRICAndDate(queueDetail.NRIC, queueDetail.Date);
+                    if (drugResult != null && drugResult.IsSealed.Value)
+                    {
+                        this._web.InvokeScript("openPopupOutcome", queueId);
+                    }
+                    else
+                    {
+                        dalQueue.UpdateQueueStatusByUserId(queueDetail.UserId, EnumStation.DUTYOFFICER, EnumQueueStatuses.Finished, EnumStation.DUTYOFFICER, EnumQueueStatuses.Finished, "", EnumQueueOutcomeText.UnconditionalRelease);
 
-                    dalQueue.UpdateQueueStatusByUserId(queueDetail.UserId, EnumStation.ESP, EnumQueueStatuses.NotRequired, EnumStation.DUTYOFFICER, EnumQueueStatuses.NotRequired, "", EnumQueueOutcomeText.UnconditionalRelease);
-
-                    // Re-load queue
-                    this._web.InvokeScript("reloadDataQueues");
+                        // Re-load queue
+                        this._web.InvokeScript("reloadDataQueues");
+                    }
                 }
                 else
                 {
@@ -281,12 +245,11 @@ namespace DutyOfficer
             }
         }
 
-        public void SaveOutcome(string queueID, string outcome)
+        public void SaveOutcome(string UserID, string outcome)
         {
             DAL_QueueNumber dalQueue = new DAL_QueueNumber();
-            //dalQueue.UpdateQueueOutcomeByQueueId(new Guid(queueID), outcome);
-            var queueDetail = dalQueue.GetQueueInfoByQueueID(new Guid(queueID));
-            dalQueue.UpdateQueueStatusByUserId(queueDetail.UserId, EnumStation.ESP, EnumQueueStatuses.Finished, EnumStation.DUTYOFFICER, EnumQueueStatuses.Finished, "", outcome);
+            
+            dalQueue.UpdateQueueStatusByUserId(UserID, EnumStation.DUTYOFFICER, EnumQueueStatuses.Finished, EnumStation.DUTYOFFICER, EnumQueueStatuses.Finished, "", outcome);
 
             // Re-load queue
             this._web.InvokeScript("reloadDataQueues");
@@ -745,7 +708,7 @@ namespace DutyOfficer
                             string fileName = String.Format("{0}/Temp/{1}", CSCallJS.curDir, "QRCode.png");
                             if (System.IO.File.Exists(fileName))
                                 System.IO.File.Delete(fileName);
-                            
+
                             System.Drawing.Image bitmap = System.Drawing.Image.FromStream(ms);
                             bitmap.Save(fileName, System.Drawing.Imaging.ImageFormat.Png);
                         }
@@ -760,7 +723,7 @@ namespace DutyOfficer
 
                 }
 
-                if(_isPrintFailMUB && _isPrintFailTT)
+                if (_isPrintFailMUB && _isPrintFailTT)
                 {
                     MessageBox.Show("Unable to print MUB and TT labels", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
@@ -768,7 +731,7 @@ namespace DutyOfficer
                 {
                     MessageBox.Show("Unable to print MUB labels", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-                else if(_isPrintFailTT)
+                else if (_isPrintFailTT)
                 {
                     MessageBox.Show("Unable to print TT labels", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
@@ -800,7 +763,7 @@ namespace DutyOfficer
             {
                 _printMUBAndTTLabel.StartPrintMUB(labelInfo);
             }
-            
+
         }
 
         private void PrintMUBLabels_OnPrintMUBLabelSucceeded(object sender, PrintMUBAndTTLabelsEventArgs e)

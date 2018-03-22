@@ -20,6 +20,22 @@
             display: block;
         }
     }
+    .manualLogin {
+        display: block;
+        /*float: right;*/
+        padding-top: 20px;
+        width: 800px;
+        margin: 0 auto;
+        text-align: right;
+    }
+    .manualLogin a {
+        color: #1CACF6;
+        font-weight: bold;
+        font-size: 14px;
+    }
+    .manualLogin img {
+        width: 25px;
+    }
 </style>
 
 <!--
@@ -42,15 +58,18 @@
     <!--<h4 class="text-center my-5 font-weight-bold">
         Please place your smart card on the reader
     </h4>-->
-    <div align="center" class="w-75 mx-auto embed-responsive embed-responsive-16by9">
+    <div align="center" style="width:800px;" class="w-75 mx-auto embed-responsive embed-responsive-16by9">
         <video autoplay loop class=" embed-responsive-item">
             <source src="../img/SmartCard.mp4" type="video/mp4">
         </video>
     </div>
 
-    <div class="my-5">
-        <a href="#" class="pull-right">
-            <i class="fa fa-user"></i> D.O
+    <div class="manualLogin">
+        <!--<a href="#" class="pull-right">
+        <i class="fa fa-user"></i> D.O
+        </a>-->
+        <a href="javascript:;" class="pull-right" onclick="window.external.LoadPage('Authentication/ManualLogin.html');">
+            <img src="../img/ManualLogin.png" /> D.O.
         </a>
     </div>
 </div>

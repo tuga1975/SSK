@@ -163,12 +163,15 @@ namespace Trinity.Common
         public const string DEVICE_STATUS_CHANGED = "DEVICE_STATUS_CHANGED";
         public const string APP_DISCONNECTED = "APP_DISCONNECTED";
         public const string ALERT_MESSAGE = "ALERT_MESSAGE";
-        public const string SSP_COMPLETED = "SSP_COMPLETED";
         public const string DO_UNBLOCK_SUPERVISEE = "DO_UNBLOCK_SUPERVISEE";
         public const string APPOINTMENT_BOOKED_OR_REPORTED = "APPOINTMENT_BOOKED_OR_REPORTED";
         public const string QUEUE_INSERTED = "QUEUE_INSERTED";
         public const string SSA_COMPLETED = "SSA_COMPLETED";
         public const string SSA_INSERTED_LABEL = "SSA_INSERTED_LABEL";
+        public const string BACKEND_API_SEND_DO = "BACKEND_API_SEND_DO";
+
+        public const string SHP_COMPLETED = "SHP_COMPLETED";
+        public const string SSP_COMPLETED = "SSP_COMPLETED";
     }
 
     public class NotificationInfo
@@ -187,6 +190,7 @@ namespace Trinity.Common
         public string AppointmentID { get; set; }
         public string QueueID { get; set; }
         public string Status { get; set; }
+        public string notification_code { get; set; }
     }
 
     public class PrintMUBAndTTLabelsEventArgs

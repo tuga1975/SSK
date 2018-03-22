@@ -112,6 +112,14 @@ namespace SSK
             {
                 LayerWeb.InvokeScript("alertBookAppointment", e.Message);
             }
+            else if (e.Name == EventNames.LOGIN_SUCCEEDED)
+            {
+                NavigateTo(NavigatorEnums.Authentication_NRIC);
+            }
+            else if (e.Name.Equals(EventNames.LOGIN_FAILED))
+            {
+                LayerWeb.ShowMessage("Login Failed", e.Message);
+            }
         }
 
         /// <summary>
@@ -186,6 +194,8 @@ namespace SSK
 
         private void JSCallCS_OnLogOutCompleted()
         {
+            BarcodeScannerUtil.Instance.Disconnect();
+
             ApplicationStatusManager.Instance.IsBusy = false;
 
             // navigate
@@ -487,6 +497,7 @@ namespace SSK
                 DocumentScannerUtil.Instance.Disconnect();
             }
 
+            BarcodeScannerUtil.Instance.Disconnect();
             FacialRecognition.Instance.Dispose();
 
             Application.ExitThread();
@@ -496,7 +507,8 @@ namespace SSK
         #region events
         private void JSCallCS_OnNRICFailed(object sender, NRICEventArgs e)
         {
-            MessageBox.Show(e.Message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //MessageBox.Show(e.Message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            LayerWeb.ShowMessage("Authentication failed", e.Message);
         }
 
         private void JSCallCS_ShowMessage(object sender, ShowMessageEventArgs e)

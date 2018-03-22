@@ -22,7 +22,7 @@ namespace SSK
             try
             {
                 // Start application status monitor and update application status
-                ApplicationStatusManager.Instance.StartInitialization();
+                Task.Factory.StartNew(ApplicationStatusManager.Instance.StartInitialization);
                 
                 Application.Run(new Main());
             }

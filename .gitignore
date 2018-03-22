@@ -297,4 +297,4 @@ __pycache__/
 /DocumentScannerTest/Libs
 /Design
 /Trinity.SSK/View/img/logoCNB_old.png
-Trinity.Common/ConnectionStrings.config
+ConnectionStrings.config

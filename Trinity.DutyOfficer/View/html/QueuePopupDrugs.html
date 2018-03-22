@@ -130,6 +130,7 @@
             var NPS = $('#seal-NPS').is(":checked");
             api.server.SaveDrugTest(model.UserId, COCA, BARB, LSD, METH, MTQL, PCP, KET, BUPRE, CAT, PPZ, NPS, function () {
                 $('#idQueueDrugs').modal('toggle');
+                reloadDataQueues();
             });
             e.preventDefault(); // avoid to execute the actual submit of the form.
         });

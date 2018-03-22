@@ -73,7 +73,7 @@ function refreshQueueNumbers(currentQueueNumber, nextQueueNumberList) {
 
 function getActiveTab(){
     var activeTabNameNode = $("#menu span.active");
-    if(activeTabNameNode){
+    if(activeTabNameNode.length>0){
         return activeTabNameNode[0].id;
     }
     return "";

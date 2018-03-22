@@ -12,6 +12,7 @@ using Trinity.Device;
 using Trinity.BE;
 using Trinity.Device.Util;
 using Trinity.Util;
+using Trinity.Common.Common;
 
 namespace SSK
 {
@@ -423,6 +424,51 @@ namespace SSK
             var jsonData = session[CommonConstants.PROFILE_DATA];
 
             //SaveProfile(jsonData.ToString(), true);
+        }
+
+        public void ManualLogin(string username, string password)
+        {
+            EventCenter eventCenter = EventCenter.Default;
+
+            //UserManager<ApplicationUser> userManager = ApplicationIdentityManager.GetUserManager();
+            //ApplicationUser appUser = userManager.Find(username, password);
+            var dalUser = new DAL_User();
+            ApplicationUser appUser = dalUser.Login(username, password);
+            if (appUser != null)
+            {
+                // Authenticated successfully
+                // Check if the current user is an Duty Officer or not
+                if (dalUser.IsInRole(appUser.Id, EnumUserRoles.DutyOfficer))
+                {
+                    // Authorized successfully
+                    Trinity.BE.User user = new Trinity.BE.User()
+                    {
+                        RightThumbFingerprint = appUser.RightThumbFingerprint,
+                        LeftThumbFingerprint = appUser.LeftThumbFingerprint,
+                        IsFirstAttempt = appUser.IsFirstAttempt,
+                        Name = appUser.Name,
+                        NRIC = appUser.NRIC,
+                        Role = EnumUserRoles.DutyOfficer,
+                        SmartCardId = appUser.SmartCardId,
+                        Status = appUser.Status,
+                        UserId = appUser.Id
+                    };
+                    Session session = Session.Instance;
+                    session.IsUserNamePasswordAuthenticated = true;
+                    session.Role = EnumUserRoles.DutyOfficer;
+                    session[CommonConstants.USER_LOGIN] = user;
+
+                    eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = 0, Name = EventNames.LOGIN_SUCCEEDED });
+                }
+                else
+                {
+                    eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -2, Name = EventNames.LOGIN_FAILED, Message = "You do not have permission to access this page." });
+                }
+            }
+            else
+            {
+                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.LOGIN_FAILED, Message = "Your username or password is incorrect." });
+            }
         }
 
         public void SubmitNRIC(string strNRIC)

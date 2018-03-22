@@ -4,8 +4,11 @@ using Microsoft.Owin.Hosting;
 using Owin;
 using System;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Trinity.Common;
+using System.Linq;
 
 namespace Trinity.NotificationServer
 {
@@ -14,9 +17,12 @@ namespace Trinity.NotificationServer
         private IDisposable NotificationServer { get; set; }
         private string ServerURI = EnumAppConfig.NotificationServerUrl;
 
+        private Thread _threadCheck = null;
+
         internal WinFormsServer()
         {
             InitializeComponent();
+            
         }
 
         private void ButtonStart_Click(object sender, EventArgs e)
@@ -24,12 +30,35 @@ namespace Trinity.NotificationServer
             WriteToConsole("Starting server...");
             ButtonStart.Enabled = false;
             Task.Run(() => StartServer());
+            //var context = GlobalHost.ConnectionManager.GetHubContext<TrinityHub>();
+            //context.Clients.All.addNewMessageToPage(message);
         }
+        private bool isStopThread = true;
+        private void CheckInDrugNew()
+        {
 
+            while (!isStopThread)
+            {
+                try
+                {
+                    var lisChekck = new DAL.DAL_DrugResults().CheckDrugResult();
+                    if (lisChekck.Count>0)
+                    {
+                        GlobalHost.ConnectionManager.GetHubContext<TrinityHub>().Clients.Clients(Program.ProfileConnected.Where(d => d.isApp && d.Station == EnumStation.DUTYOFFICER).Select(d => d.ConnectionId).ToList()).OnNewNotification(new NotificationInfo() { Name = NotificationNames.SHP_COMPLETED, NRIC = string.Empty });
+                    }
+                }
+                catch
+                {
+                    
+                }
+                Thread.Sleep(60000);
+            }
+        }
         private void ButtonStop_Click(object sender, EventArgs e)
         {
             //SignalR will be disposed in the FormClosing event
             //Close();
+            isStopThread = true;
             NotificationServer.Dispose();
             ButtonStop.Enabled = false;
             ButtonStart.Enabled = true;
@@ -40,6 +69,10 @@ namespace Trinity.NotificationServer
             try
             {
                 NotificationServer = WebApp.Start(ServerURI);
+                isStopThread = false;
+                _threadCheck = new Thread(CheckInDrugNew);
+                _threadCheck.IsBackground = true;
+                _threadCheck.Start();
             }
             catch (Exception ex)
             {
@@ -71,6 +104,7 @@ namespace Trinity.NotificationServer
             {
                 NotificationServer.Dispose();
             }
+            Application.ExitThread();
         }
     }
 }

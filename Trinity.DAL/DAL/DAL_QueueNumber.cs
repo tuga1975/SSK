@@ -15,7 +15,6 @@ namespace Trinity.DAL
         Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
 
         #region refactor 2018
-
         public List<DBContext.Queue> GetQueueWalkInByDate(DateTime date)
         {
             date = date.Date;
@@ -47,10 +46,10 @@ namespace Trinity.DAL
             return _localUnitOfWork.DataContext.Queues.Where(item => DbFunctions.TruncateTime(item.CreatedTime).Value == DateTime.Today).ToList();
         }
 
-        public Queue GetMyQueueToday(string UserId)
+        public Trinity.DAL.DBContext.Queue GetMyQueueToday(string UserId)
         {
             DateTime today = DateTime.Today;
-            return _localUnitOfWork.DataContext.Queues.Include("Appointment").FirstOrDefault(d => d.Appointment.UserId == UserId && DbFunctions.TruncateTime(d.Appointment.Date).Value == today).Map<Queue>();
+            return _localUnitOfWork.DataContext.Queues.FirstOrDefault(d => d.UserId == UserId && DbFunctions.TruncateTime(d.CreatedTime).Value == today);
         }
         public bool IsInQueue(string appointment_ID, string station)
         {
