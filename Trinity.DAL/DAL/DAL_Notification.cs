@@ -58,14 +58,14 @@ namespace Trinity.DAL
             }
         }
 
-        public List<Notification> GetAllNotifications(string userId, List<string> modules)
+        public List<Notification> GetAllNotifications(string userId, List<string> modules,bool isDOApp = false)
         {
             // local request
             if (EnumAppConfig.IsLocal)
             {
                 // select from localdb
                 List<Notification> notifications = _localUnitOfWork.DataContext.Notifications
-                    .Where(d => (!string.IsNullOrEmpty(d.FromUserId) && d.FromUserId == userId) || (!string.IsNullOrEmpty(d.ToUserId) && d.ToUserId == userId))
+                    .Where(d => (!string.IsNullOrEmpty(d.FromUserId) && d.FromUserId == userId) || (!string.IsNullOrEmpty(d.ToUserId) && d.ToUserId == userId) || (isDOApp && string.IsNullOrEmpty(d.ToUserId)))
                     .Select(item => new Notification()
                     {
                         Content = item.Content,
