@@ -197,13 +197,12 @@ namespace SSK
         {
             try
             {
-            BarcodeScannerUtil.Instance.Disconnect();
+                BarcodeScannerUtil.Instance.Disconnect();
 
-            ApplicationStatusManager.Instance.IsBusy = false;
+                ApplicationStatusManager.Instance.IsBusy = false;
 
-            // navigate
-            NavigateTo(NavigatorEnums.Authentication_SmartCard);
-
+                // navigate
+                NavigateTo(NavigatorEnums.Authentication_SmartCard);
             }
             catch (Exception ex)
             {

@@ -161,16 +161,27 @@ namespace SSA
 
         private void Main_FormClosing(object sender, FormClosingEventArgs e)
         {
-            // Turn off all LED(s)
-            if (LEDStatusLightingUtil.Instance.IsPortOpen)
+            try
             {
-                //LEDStatusLightingUtil.Instance.TurnOffAllLEDs();
-                LEDStatusLightingUtil.Instance.ClosePort();
+                // Turn off all LED(s)
+                if (LEDStatusLightingUtil.Instance.IsPortOpen)
+                {
+                    //LEDStatusLightingUtil.Instance.TurnOffAllLEDs();
+                    LEDStatusLightingUtil.Instance.ClosePort();
+                }
+
+                FacialRecognition.Instance.Dispose();
+
+                BarcodeScannerUtil.Instance.Disconnect();
+
+                //_autoPrintTimer.Enabled = false;
+                Application.ExitThread();
+                APIUtils.Dispose();
             }
-            FacialRecognition.Instance.Dispose();
-            //_autoPrintTimer.Enabled = false;
-            Application.ExitThread();
-            APIUtils.Dispose();
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
         }
 
         private void LayerWeb_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
@@ -179,58 +190,46 @@ namespace SSA
 
             if (_isFirstTimeLoaded)
             {
-                //_autoPrintTimer = new System.Timers.Timer(200);
-                //_autoPrintTimer.Elapsed += _autoPrintTimer_Elapsed;
-                //_autoPrintTimer.Enabled = true;
-
                 // Start page
-                NavigateTo(NavigatorEnums.Authentication_SmartCard);
+                //NavigateTo(NavigatorEnums.Authentication_SmartCard);
 
-                //string startFrom = "Supervisee_Particulars";
+                string startFrom = "Authentication_NRIC";
+                // 50.132
                 //string superviseeId = "06a91b1b-99c3-428d-8a55-83892c2adf4c";
                 //string dutyOfficerId = "f1748cb4-3bb5-4129-852d-2aba28bb8cec";
-                //Session session = Session.Instance;
+                // 1.120
+                string superviseeId = "9043d88e-94d1-4c01-982a-02d41965a621";
+                string dutyOfficerId = "f1748cb4-3bb5-4129-852d-2aba28bb8cec";
+                Session session = Session.Instance;
 
-                //if (startFrom == "Supervisee_Particulars")
-                //{
-                //    Trinity.BE.User user = new DAL_User().GetUserByUserId(superviseeId).Data;
-                //    session[CommonConstants.USER_LOGIN] = user;
-                //    session.IsSmartCardAuthenticated = true;
-                //    session.IsFingerprintAuthenticated = true;
-                //    NavigateTo(NavigatorEnums.Supervisee_Particulars);
-                //}
-                //else if (startFrom == "Authentication_Fingerprint")
-                //{
-                //    Trinity.BE.User user = new DAL_User().GetUserByUserId(superviseeId).Data;
-                //    session[CommonConstants.USER_LOGIN] = user;
-                //    session.IsSmartCardAuthenticated = true;
-                //    session.IsFingerprintAuthenticated = true;
-                //    NavigateTo(NavigatorEnums.Authentication_Fingerprint);
-                //}
-                //else if (startFrom == "Authentication_NRIC")
-                //{
-                //    Trinity.BE.User user = new DAL_User().GetUserByUserId(dutyOfficerId).Data;
-                //    session[CommonConstants.USER_LOGIN] = user;
-                //    session.IsSmartCardAuthenticated = true;
-                //    session.IsFingerprintAuthenticated = true;
-                //    NavigateTo(NavigatorEnums.Authentication_NRIC);
-                //}
-                //else
-                //{
-                //    NavigateTo(NavigatorEnums.Authentication_SmartCard);
-                //}
-                ////// For testing purpose
-                //Session session = Session.Instance;
-                //// Supervisee
-                //Trinity.BE.User user = new DAL_User().GetUserByUserId("06a91b1b-99c3-428d-8a55-83892c2adf4c").Data;
-                //session[CommonConstants.USER_LOGIN] = user;
-                ////// Duty Officer
-                //////Trinity.BE.User user = new DAL_User().GetUserByUserId("dfbb2a6a-9e45-4a76-9f75-af1a7824a947", true);
-                //////session[CommonConstants.USER_LOGIN] = user;
-                //session.IsSmartCardAuthenticated = true;
-                //session.IsFingerprintAuthenticated = true;
-                //NavigateTo(NavigatorEnums.Supervisee_Particulars);
-                //////NavigateTo(NavigatorEnums.Authentication_NRIC);
+                if (startFrom == "Supervisee_Particulars")
+                {
+                    Trinity.BE.User user = new DAL_User().GetUserByUserId(superviseeId).Data;
+                    session[CommonConstants.USER_LOGIN] = user;
+                    session.IsSmartCardAuthenticated = true;
+                    session.IsFingerprintAuthenticated = true;
+                    NavigateTo(NavigatorEnums.Supervisee_Particulars);
+                }
+                else if (startFrom == "Authentication_Fingerprint")
+                {
+                    Trinity.BE.User user = new DAL_User().GetUserByUserId(superviseeId).Data;
+                    session[CommonConstants.USER_LOGIN] = user;
+                    session.IsSmartCardAuthenticated = true;
+                    session.IsFingerprintAuthenticated = true;
+                    NavigateTo(NavigatorEnums.Authentication_Fingerprint);
+                }
+                else if (startFrom == "Authentication_NRIC")
+                {
+                    Trinity.BE.User user = new DAL_User().GetUserByUserId(dutyOfficerId).Data;
+                    session[CommonConstants.USER_LOGIN] = user;
+                    session.IsSmartCardAuthenticated = true;
+                    session.IsFingerprintAuthenticated = true;
+                    NavigateTo(NavigatorEnums.Authentication_NRIC);
+                }
+                else
+                {
+                    NavigateTo(NavigatorEnums.Authentication_SmartCard);
+                }
 
                 _isFirstTimeLoaded = false;
             }
