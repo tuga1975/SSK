@@ -58,8 +58,9 @@
             columns: [
                 {
                     field: 'SN',
-                    title: 'S/N',
+                    title: 'No.',
                     align: 'center',
+                    width: '5%',
                     formatter: function (value, row, index) {
                         return index + 1;
                     }
@@ -68,56 +69,63 @@
                     field: 'NRIC',
                     title: 'NRIC',
                     align: 'center',
+                    width: '12%',
                     sortable: true
                 },
                 {
                     field: 'Name',
                     title: 'Name',
                     align: 'center',
+                    width: '15%',
                     sortable: true
                 },
                 {
                     field: 'APS',
                     title: 'APS',
                     align: 'center',
+                    width: '5%',
                     formatter: function (value, row, index, field) {
-                        return '<span colorState="' + value.toLowerCase()+'" style="background-color:' + value + ';"></span>';
+                        return '<span color="' + value.toLowerCase()+'" style="background-color:' + value + ';"></span>';
                     }
                 },
                 {
                     field: 'SSK',
                     title: 'ARK',
                     align: 'center',
+                    width: '5%',
                     formatter: function (value, row, index, field) {
-                        return '<span colorState style="background-color:' + value + ';"></span>';
+                        return '<span color style="background-color:' + value + ';"></span>';
                     }
                 },
                 {
                     field: 'SSA',
                     title: 'ALK',
                     align: 'center',
+                    width: '5%',
                     formatter: function (value, row, index, field) {
-                        return '<span colorState style="background-color:' + value + ';"></span>';
+                        return '<span color style="background-color:' + value + ';"></span>';
                     }
                 },
                 {
                     field: 'UHP',
                     title: 'SHP',
                     align: 'center',
+                    width: '5%',
                     formatter: function (value, row, index, field) {
-                        return '<span colorState style="background-color:' + value + ';"></span>';
+                        return '<span color style="background-color:' + value + ';"></span>';
                     }
                 },
                 {
                     field: 'HSA',
                     title: 'UT',
                     align: 'center',
+                    width: '5%',
                     formatter: function (value, row, index, field) {
                         if (value.Text == 'NEG') {
-                            return '<span style="color:green;display:inline-block;padding:2px 5px;border:1px solid #CCC;">' + value.Text + '</span>';
+                            return '<span style="color:#33CC33;display:inline-block;padding:2px 5px;font-weight:bold;">' + value.Text + '</span>';
                         }
                         else if (value.Text == 'POS') {
-                            return '<span style="color:red;display:inline-block;padding:2px 5px;border:1px solid #CCC;">' + value.Text + '</span>';
+                            return '<span style="color:red;display:inline-block;padding:2px 5px;font-weight:bold;">' + value.Text + '</span>';
                         }
                         else {
                             return '';
@@ -128,21 +136,24 @@
                     field: 'ESP',
                     title: 'SSP',
                     align: 'center',
+                    width: '5%',
                     formatter: function (value, row, index, field) {
-                        return '<span colorState="' + value + '" style="background-color:' + value + ';"></span>';
+                        return '<span color="' + value + '" style="background-color:' + value + ';"></span>';
                     }
                 },
                 {
                     field: 'Outcome',
                     title: 'Outcome',
-                    align: 'center'
+                    align: 'center',
+                    width: '15%',
                 },
                 {
                     field: 'Message',
                     title: 'Message',
                     align: 'center',
+                    width: '23%',
                     formatter: function (value, row, index, field) {
-                        return '<span>' + value.content + '</span>';
+                        return '<span style="text-decoration:underline; color:dodgerblue">' + value.content + '</span>';
                     }
                 }
             ],
@@ -187,15 +198,16 @@
         box-sizing: border-box;
     }
 
-    span[colorState="notrequired"] {
-        background-color: white;
+    span[color="notrequired"] {
+        /*background-color: white;*/
     }
 
-        span[colorState="notrequired"]::after {
+        span[color="notrequired"]::after {
             content: "X";
+            color:grey;
             line-height: 0px;
             text-align: center;
-            font-size: 20px;
+            font-size: 14px;
             font-weight: normal;
         }
 </style>

@@ -76,7 +76,7 @@ public static class EnumQueueStatuses
 
     [Custom(EnumColors.Red,"")]
     public static string Missed = "Missed";
-    [Custom(EnumColors.White, "")]
+    [Custom(EnumColors.Grey, "")]
     public const string Waiting = "Waiting";
     [Custom(EnumColors.Green, "")]
     public const string Processing = "Processing";
@@ -144,8 +144,9 @@ public static class EnumColors
     public const string Blue = "#0026ff";
     public const string White = "#ffffff";
     public const string Black = "#000000";
-    public const string Green = "#00ff21";
+    public const string Green = "#33CC33";
     public const string Notrequired = "notrequired";
+    public const string Grey = "#d3d3d3";
 }
 
 public enum EnumDeviceStatus

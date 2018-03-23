@@ -40,7 +40,7 @@ namespace Trinity.DAL.DBContext
                     }
                 }
             }
-            return EnumColors.White;
+            return EnumColors.Grey;
         }
         public int Priority
         {
