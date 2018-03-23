@@ -25,7 +25,7 @@
         background-color: white;
     }
     .row_odd {
-        background-color: #e0e0eb;
+        background-color: #F5F5F5;
     }
     .table-hover tbody tr:hover > td {
         cursor: pointer;
@@ -108,39 +108,15 @@
 
         var rowStyle = function (row, index) {
             var type = row.type;
-            switch (type) {
-                case Type.error:
-                    if (index % 2 == 0) {
-                        return {
-                            classes: row.isReaded ? "error row_even row_readed" : "error row_even row_unread"
-                        };
-                    } else {
-                        return {
-                            classes: row.isReaded ? "error row_odd row_readed" : "error row_odd row_unread"
-                        };
-                    };
-                    
-                case Type.notification:
-                    if (index % 2 == 0) {
-                        return {
-                            classes: row.isReaded ? "notification row_even row_readed" : "notification row_even row_unread"
-                        };
-                    } else {
-                        return {
-                            classes: row.isReaded ? "notification row_odd row_readed" : "notification row_odd row_unread"
-                        };
-                    };
-                case Type.caution:
-                    if (index % 2 == 0) {
-                        return {
-                            classes: row.isReaded ? "caution row_even row_readed" : "caution row_even row_unread"
-                        };
-                    } else {
-                        return {
-                            classes: row.isReaded ? "caution row_odd row_readed" : "caution row_odd row_unread"
-                        };
-                    };
-            }
+            if (index % 2 == 0) {
+                return {
+                    classes: row.isReaded ? "row_even row_readed" : "row_even row_unread"
+                };
+            } else {
+                return {
+                    classes: row.isReaded ? "row_odd row_readed" : "row_odd row_unread"
+                };
+            };
             return {};
         }
 
@@ -172,11 +148,11 @@
                 formatter: function (value, row, index, field) {
                     switch (value) {
                         case Type.error:
-                            return Type.error;
+                            return '<span style="color:red;display:inline-block;">' + value + '</span>';
                         case Type.notification:
-                            return Type.notification;
+                            return '<span style="color:black;display:inline-block;">' + value + '</span>';
                         case Type.caution:
-                            return Type.caution;
+                            return '<span style="color:#FFCC00;display:inline-block;">' + value + '</span>';
                         default:
                             return "";
                     }
@@ -196,9 +172,11 @@
             }, {
                 field: 'message',
                 sortable: true,
-                searchable: true,
                 title: 'Message',
-                halign: "center"
+                halign: "center",
+                formatter: function (value, row, index, field) {
+                    return '<span style="text-decoration:underline; color:dodgerblue">' + value + '</span>';
+                }
             }],
             data: dataSource,
             rowStyle: rowStyle,
@@ -244,7 +222,7 @@
                 formatedMinute = (minute.length === 1) ? ("0" + minute) : minute,
                 second = date.getSeconds().toString(),
                 formatedSecond = (second.length === 1) ? ("0" + second) : second;
-            return formatedMonth + "/" + formatedDay + "/" + year + " " + formatedHour + ':' + formatedMinute;
+            return formatedDay + "/" + formatedMonth + "/" + year + " " + formatedHour + ':' + formatedMinute;
         }
     });
 
