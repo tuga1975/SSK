@@ -554,7 +554,6 @@ namespace SSK
                 MessageBox.Show("GetAbsentAppointments");
                 var listAppointment = new DAL_Appointments().GetAbsentAppointments(supervisee.UserId);
 
-                MessageBox.Show((listAppointment == null).ToString());
                 this._web.ShowMessage("You have been absent for " + absenceCount + " times.<br/>Please provide reasons and the supporting documents.");
                 _web.LoadPageHtml("ReasonsForQueue.html", listAppointment.Select(d => new
                 {

@@ -136,7 +136,8 @@ namespace SSK
 
 
             // show message box to user
-            MessageBox.Show(message, "Authentication failed!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            CSCallJS.ShowMessage(LayerWeb, "Authentication failed!", message);
+            //MessageBox.Show(message, "Authentication failed!", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
             // navigate to smartcard login page
             //NavigateTo(NavigatorEnums.Authentication_SmartCard);
@@ -390,7 +391,8 @@ namespace SSK
             Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(user.UserId, "Facial authentication failed", errorMessage, EnumNotificationTypes.Error);
 
             // show message box to user
-            MessageBox.Show("Facial authentication failed", "Facial Authentication", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            CSCallJS.ShowMessage(LayerWeb, "Facial Authentication", "Facial authentication failed");
+            //MessageBox.Show("Facial authentication failed", "Facial Authentication", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
             // navigate to smartcard login page
             NavigateTo(NavigatorEnums.Authentication_SmartCard);
