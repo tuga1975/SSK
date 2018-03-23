@@ -76,7 +76,7 @@ namespace DutyOfficer
         }
         private void GetCardInfoSucceeded(string cardUID)
         {
-            if (Lib.LayerWeb != null)
+            if (!_isFirstTimeLoaded)
             {
                 Lib.LayerWeb.Invoke((MethodInvoker)(() =>
                 {
