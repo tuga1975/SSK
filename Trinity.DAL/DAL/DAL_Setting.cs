@@ -1192,24 +1192,30 @@ namespace Trinity.DAL
                     List<CheckWarningSaveSetting> arrayListUser = new List<CheckWarningSaveSetting>();
                     if ((int)DayOfWeek == DateTime.Now.DayOfWeek())
                     {
-                        //Nếu là thứ hiện tại cập nhật và chưa đã có queue đc chạy
-                        bool isQueueStarted = arrayBookAppoint.Any(d => d.Date.Date == DateTime.Now.Date && d.Timeslot.StartTime.Value <= DateTime.Now.TimeOfDay);
-                        if (!isQueueStarted)
-                        {
-                            modelReturn.arrayDetail = arrayBookAppoint.Select(d => new CheckWarningSaveSettingDetail()
-                            {
-                                Date = d.Date,
-                                Email = d.Membership_Users.Email,
-                                StartTime = d.Timeslot.StartTime.Value,
-                                EndTime = d.Timeslot.EndTime.Value,
-                                Timeslot_ID = d.Timeslot_ID,
-                                UserId = d.UserId,
-                                UserName = d.Membership_Users.UserName,
-                                Queue_ID = d.Queues.Select(c => c.Queue_ID).FirstOrDefault(),
-                                AppointmentID = d.ID
-                            }).ToList();
-                            modelReturn.isDeleteTimeSlot = true;
-                        }
+                        //Nếu là thứ hiện tại cập nhật và chưa có queue đc chạy
+                        //bool isQueueStarted = arrayBookAppoint.Any(d => d.Queue!=null);
+                        //if (isQueueStarted)
+                        //{
+                        //    isQueueStarted = _localUnitOfWork.DataContext.Queues.Any(d => DbFunctions.TruncateTime(d.CreatedTime) == DateNow);
+                        //}
+                        //if (!isQueueStarted)
+                        //{
+                        //    modelReturn.arrayDetail = arrayBookAppoint.Select(d => new CheckWarningSaveSettingDetail()
+                        //    {
+                        //        Date = d.Date,
+                        //        Email = d.Membership_Users.Email,
+                        //        StartTime = d.Timeslot.StartTime.Value,
+                        //        EndTime = d.Timeslot.EndTime.Value,
+                        //        Timeslot_ID = d.Timeslot_ID,
+                        //        UserId = d.UserId,
+                        //        UserName = d.Membership_Users.UserName,
+                        //        Queue_ID = d.Queues.Select(c => c.Queue_ID).FirstOrDefault(),
+                        //        AppointmentID = d.ID
+                        //    }).ToList();
+                        //    modelReturn.isDeleteTimeSlot = true;
+                        //}
+                        modelReturn.arrayDetail = new List<CheckWarningSaveSettingDetail>();
+                        modelReturn.isDeleteTimeSlot = false;
                     }
                     else
                     {

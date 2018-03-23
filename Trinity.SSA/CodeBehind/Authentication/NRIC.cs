@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using Trinity.Common;
 using Trinity.DAL;
+using Trinity.Device.Util;
 
 namespace SSA.CodeBehind.Authentication
 {
@@ -44,13 +45,29 @@ namespace SSA.CodeBehind.Authentication
         {
             _web.LoadPageHtml("Authentication/NRIC.html");
 
-            #region Start Barcode Scanner here to scan NRIC
-            // Start Barcode Scanner to scan NRIC
-            //var barcodeScanner = BarcodeSannerMonitor.Instance;
-            // if succeeded, auto get NRIC info to textbox NIRC on screen
-            // else -- scan failed, show message failed
-            //    RaiseShowMessage(new ShowMessageEventArgs(" Unable to scan  NRIC. \n Please enter manually.", "", MessageBoxButtons.OK, MessageBoxIcon.Error));
-            #endregion
+            System.Threading.Tasks.Task.Factory.StartNew(() => BarcodeScannerUtil.Instance.StartScanning(BarcodeScannerCallback));
+        }
+
+        private void BarcodeScannerCallback(string value, string error)
+        {
+            if (string.IsNullOrEmpty(error) && !string.IsNullOrEmpty(value))
+            {
+                //if (value.Length < 1)
+                //{
+                //    System.Threading.Tasks.Task.Factory.StartNew(() => BarcodeScannerUtil.Instance.StartScanning(BarcodeScannerCallback));
+                //}
+
+                // Fill value to the textbox
+                CSCallJS.InvokeScript(_web, "updateNRICTextValue", value.Trim());
+
+                // Execute authentication
+                NRICAuthentication(value.Trim());
+            }
+            else
+            {
+                CSCallJS.ShowMessageAsync(_web, "ERROR", error);
+                System.Threading.Tasks.Task.Factory.StartNew(() => BarcodeScannerUtil.Instance.StartScanning(BarcodeScannerCallback));
+            }
         }
 
         // Wrap event invocations inside a protected virtual method

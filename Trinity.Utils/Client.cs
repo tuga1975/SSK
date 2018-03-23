@@ -113,8 +113,7 @@ namespace Trinity.SignalR
         public event EventHandler<NotificationInfo> OnQueueInserted;
         public event EventHandler<NotificationInfo> OnSSACompleted;
         public event EventHandler<NotificationInfo> OnSSAInsertedLabel;
-        public event EventHandler<NotificationInfo> OnBackendApiSendDO;
-        public event EventHandler<NotificationInfo> OnBackendAPICompleted;
+        public event EventHandler<NotificationInfo> OnBackendAPISend;
         ///// <summary>
         ///// 
         ///// </summary>
@@ -179,13 +178,9 @@ namespace Trinity.SignalR
                 {
                     OnSSAInsertedLabel?.Invoke(this, notificationInfo);
                 }
-                else if (notificationInfo.Name == NotificationNames.BACKEND_API_SEND_DO)
+                else if (notificationInfo.Name == NotificationNames.SHP_COMPLETED || notificationInfo.Name == NotificationNames.SSP_COMPLETED || notificationInfo.Name == NotificationNames.SSP_ERROR)
                 {
-                    OnBackendApiSendDO?.Invoke(this, notificationInfo);
-                }
-                else if (notificationInfo.Name == NotificationNames.SHP_COMPLETED || notificationInfo.Name == NotificationNames.SSP_COMPLETED)
-                {
-                    OnBackendAPICompleted?.Invoke(this, notificationInfo);
+                    OnBackendAPISend?.Invoke(this, notificationInfo);
                 }
                 else
                 {
@@ -278,41 +273,47 @@ namespace Trinity.SignalR
             //    bool status = await HubProxy.Invoke<bool>("SendToDutyOfficer", IDMessage, fromUserId, dutyOfficerID, subject, content, notificationType);
             //}
         }
-        public void SendToAllDutyOfficers(string fromUserId, string subject, string content, string notificationType)
+        //public void SendToAllDutyOfficers(string fromUserId, string subject, string content, string notificationType)
+        //{
+        //    List<BE.Notification> notificationList = new DAL.DAL_Notification().SendToAllDutyOfficers(fromUserId, subject, content, notificationType, Station);
+        //    if (notificationList != null && notificationList.Count > 0)
+        //    {
+        //        string[] dutyOfficers = notificationList.Select(n => n.ToUserId).ToArray();
+        //        NotificationInfo notificationInfo = new NotificationInfo()
+        //        {
+        //            Name = NotificationNames.ALERT_MESSAGE,
+        //            FromUserId = fromUserId,
+        //            ToUserIds = dutyOfficers,
+        //            Content = content,
+        //            Subject = subject,
+        //            Type = notificationType,
+        //            Source = Station
+        //        };
+        //        PostNotification(notificationInfo);
+        //    }
+
+        //    //await WaitConnectFalse();
+        //    //Dictionary<string, string> arrraySend = new DAL.DAL_Notification().SendToAllDutyOfficers(fromUserId, subject, content, notificationType, Station).ToDictionary(f => f.ToUserId, f => f.NotificationID);
+        //    //bool status = await HubProxy.Invoke<bool>("SendToAllDutyOfficers", arrraySend, fromUserId, subject, content, notificationType);
+        //}
+
+        public void SendToAppDutyOfficers(string fromUserId, string subject, string content, string notificationType,string station = null, bool isInsertDB = true)
         {
-            List<BE.Notification> notificationList = new DAL.DAL_Notification().SendToAllDutyOfficers(fromUserId, subject, content, notificationType, Station);
-            if (notificationList != null && notificationList.Count > 0)
+            if (!isInsertDB || !string.IsNullOrEmpty(new DAL.DAL_Notification().InsertNotification(fromUserId, null, subject, content, !string.IsNullOrEmpty(fromUserId), DateTime.Now, null, notificationType, Station)))
             {
-                string[] dutyOfficers = notificationList.Select(n => n.ToUserId).ToArray();
                 NotificationInfo notificationInfo = new NotificationInfo()
                 {
                     Name = NotificationNames.ALERT_MESSAGE,
                     FromUserId = fromUserId,
-                    ToUserIds = dutyOfficers,
                     Content = content,
                     Subject = subject,
                     Type = notificationType,
-                    Source = Station
+                    Source = station == null ? Station : station
                 };
                 PostNotification(notificationInfo);
             }
+        }
 
-            //await WaitConnectFalse();
-            //Dictionary<string, string> arrraySend = new DAL.DAL_Notification().SendToAllDutyOfficers(fromUserId, subject, content, notificationType, Station).ToDictionary(f => f.ToUserId, f => f.NotificationID);
-            //bool status = await HubProxy.Invoke<bool>("SendToAllDutyOfficers", arrraySend, fromUserId, subject, content, notificationType);
-        }
-        public void SendToAppDutyOfficers(string Source,string Type,string Content,string notification_code)
-        {
-            NotificationInfo notificationInfo = new NotificationInfo()
-            {
-                Name = NotificationNames.BACKEND_API_SEND_DO,
-                Source = Source,
-                Type = Type,
-                Content = Content,
-                notification_code = notification_code
-            };
-            PostNotification(notificationInfo);
-        }
         /// <summary>
         /// Case Officer use this API to send notifications to supervisee
         /// </summary>
@@ -348,9 +349,9 @@ namespace Trinity.SignalR
         }
 
         
-        public void BackendAPICompleted(string NotificationNames,string NRIC)
+        public void BackendAPISend(string NotificationNames,object Data)
         {
-            PostNotification(notificationInfo: new NotificationInfo() { Name = NotificationNames, NRIC = NRIC });
+            PostNotification(notificationInfo: new NotificationInfo() { Name = NotificationNames, Data = Data });
         }
         
         public void DOUnblockSupervisee(string UserId)
