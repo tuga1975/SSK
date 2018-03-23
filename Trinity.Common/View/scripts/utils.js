@@ -129,9 +129,9 @@ function setLoading(status) {
 }
 function RunScript(script) {
     try {
-        eval(script);
+        eval(script)
     } catch (e) {
-
+        api.server.LogErrScript(script);
     }
 }
 function ShowMessage(title, message, id) {

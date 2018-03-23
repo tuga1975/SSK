@@ -94,4 +94,14 @@ public class JSCallCSBase
     {
         this._web.LoadPopupHtml(file, model);
     }
+    public void LogErrScript(string message)
+    {
+        string file = String.Format("{0}/LogErr/Log.txt",CSCallJS.curDir);
+        string directoryName = new System.IO.FileInfo(file).DirectoryName;
+        if (!System.IO.Directory.Exists(directoryName))
+        {
+            System.IO.DirectoryInfo di = System.IO.Directory.CreateDirectory(directoryName);
+        }
+        System.IO.File.AppendAllLines(file, new string[] { message });
+    }
 }
