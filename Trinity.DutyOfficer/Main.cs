@@ -76,30 +76,33 @@ namespace DutyOfficer
         }
         private void GetCardInfoSucceeded(string cardUID)
         {
-            Lib.LayerWeb.Invoke((MethodInvoker)(() =>
+            if (Lib.LayerWeb != null)
             {
-                if (GetCurrentTab() == EnumDOTabName.Queue)
+                Lib.LayerWeb.Invoke((MethodInvoker)(() =>
                 {
-                    DAL_User dAL_User = new DAL_User();
-                    Trinity.BE.User user = dAL_User.GetUserBySmartCardId(cardUID);
-                    if (user != null)
+                    if (GetCurrentTab() == EnumDOTabName.Queue)
                     {
-                        var queue = new DAL_QueueNumber().GetMyQueueToday(user.UserId);
-                        if (queue != null && queue.QueueDetails.Any(d => d.Station == EnumStation.DUTYOFFICER && d.Status == EnumQueueStatuses.TabSmartCard))
+                        DAL_User dAL_User = new DAL_User();
+                        Trinity.BE.User user = dAL_User.GetUserBySmartCardId(cardUID);
+                        if (user != null)
                         {
-                            if (_jsCallCS.GetResultUT(user.NRIC, DateTime.Now.Date) == EnumUTResult.NEG && queue.QueueDetails.Any(d => d.Station == EnumStation.ESP && d.Status == EnumQueueStatuses.NotRequired))
+                            var queue = new DAL_QueueNumber().GetMyQueueToday(user.UserId);
+                            if (queue != null && queue.QueueDetails.Any(d => d.Station == EnumStation.DUTYOFFICER && d.Status == EnumQueueStatuses.TabSmartCard))
                             {
-                                new DAL_QueueNumber().UpdateQueueStatusByUserId(user.UserId, EnumStation.DUTYOFFICER, EnumQueueStatuses.Finished, EnumStation.DUTYOFFICER, EnumQueueStatuses.Finished, string.Empty, EnumQueueOutcomeText.UnconditionalRelease);
-                                this.LayerWeb.InvokeScript("reloadDataQueues");
-                            }
-                            else
-                            {
-                                this.LayerWeb.LoadPopupHtml("QueuePopupOutcome.html", user.UserId);
+                                if (_jsCallCS.GetResultUT(user.NRIC, DateTime.Now.Date) == EnumUTResult.NEG && queue.QueueDetails.Any(d => d.Station == EnumStation.ESP && d.Status == EnumQueueStatuses.NotRequired))
+                                {
+                                    new DAL_QueueNumber().UpdateQueueStatusByUserId(user.UserId, EnumStation.DUTYOFFICER, EnumQueueStatuses.Finished, EnumStation.DUTYOFFICER, EnumQueueStatuses.Finished, string.Empty, EnumQueueOutcomeText.UnconditionalRelease);
+                                    this.LayerWeb.InvokeScript("reloadDataQueues");
+                                }
+                                else
+                                {
+                                    this.LayerWeb.LoadPopupHtml("QueuePopupOutcome.html", user.UserId);
+                                }
                             }
                         }
                     }
-                }
-            }));
+                }));
+            }
         }
 
         private void OnBackendAPICompleted_Handler(object sender, NotificationInfo e)
