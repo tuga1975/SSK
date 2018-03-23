@@ -53,14 +53,14 @@ namespace Trinity.DAL.DBContext
             if (Station == EnumStation.APS)
             {
                 if (this.Status == EnumAppointmentStatuses.Pending)
-                    return EnumColors.White;
+                    return EnumColors.Grey;
                 else
                     return EnumColors.Green;
             }
             else if (Station == EnumStation.SSK)
             {
                 if (this.Status != EnumAppointmentStatuses.Reported)
-                    return EnumColors.White;
+                    return EnumColors.Grey;
                 else
                     return EnumColors.Green;
             }
@@ -68,7 +68,7 @@ namespace Trinity.DAL.DBContext
             {
                 return Queue.QueueDetails.FirstOrDefault(c => c.Station == Station).Color;
             }
-            return EnumColors.White;
+            return EnumColors.Grey;
         }
     }
 

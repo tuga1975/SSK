@@ -43,8 +43,7 @@ namespace DutyOfficer
             Trinity.SignalR.Client.Instance.OnAppointmentBookedOrReported += OnAppointmentBookedOrReported_Handler;
             Trinity.SignalR.Client.Instance.OnSSACompleted += OnSSACompleted_Handler;
             Trinity.SignalR.Client.Instance.OnSSAInsertedLabel += OnSSAInsertedLabel_Handler;
-            Trinity.SignalR.Client.Instance.OnBackendApiSendDO += OnBackendApiSendDO_Handler;
-            Trinity.SignalR.Client.Instance.OnBackendAPICompleted += OnBackendAPICompleted_Handler;
+            Trinity.SignalR.Client.Instance.OnBackendAPISend += OnBackendAPISend_Handler;
             
             // setup variables
             _smartCardFailed = 0;
@@ -76,33 +75,36 @@ namespace DutyOfficer
         }
         private void GetCardInfoSucceeded(string cardUID)
         {
-            Lib.LayerWeb.Invoke((MethodInvoker)(() =>
+            if (!_isFirstTimeLoaded)
             {
-                if (GetCurrentTab() == EnumDOTabName.Queue)
+                Lib.LayerWeb.Invoke((MethodInvoker)(() =>
                 {
-                    DAL_User dAL_User = new DAL_User();
-                    Trinity.BE.User user = dAL_User.GetUserBySmartCardId(cardUID);
-                    if (user != null)
+                    if (GetCurrentTab() == EnumDOTabName.Queue)
                     {
-                        var queue = new DAL_QueueNumber().GetMyQueueToday(user.UserId);
-                        if (queue != null && queue.QueueDetails.Any(d => d.Station == EnumStation.DUTYOFFICER && d.Status == EnumQueueStatuses.TabSmartCard))
+                        DAL_User dAL_User = new DAL_User();
+                        Trinity.BE.User user = dAL_User.GetUserBySmartCardId(cardUID);
+                        if (user != null)
                         {
-                            if (_jsCallCS.GetResultUT(user.NRIC, DateTime.Now.Date) == EnumUTResult.NEG && queue.QueueDetails.Any(d => d.Station == EnumStation.ESP && d.Status == EnumQueueStatuses.NotRequired))
+                            var queue = new DAL_QueueNumber().GetMyQueueToday(user.UserId);
+                            if (queue != null && queue.QueueDetails.Any(d => d.Station == EnumStation.DUTYOFFICER && d.Status == EnumQueueStatuses.TabSmartCard))
                             {
-                                new DAL_QueueNumber().UpdateQueueStatusByUserId(user.UserId, EnumStation.DUTYOFFICER, EnumQueueStatuses.Finished, EnumStation.DUTYOFFICER, EnumQueueStatuses.Finished, string.Empty, EnumQueueOutcomeText.UnconditionalRelease);
-                                this.LayerWeb.InvokeScript("reloadDataQueues");
-                            }
-                            else
-                            {
-                                this.LayerWeb.LoadPopupHtml("QueuePopupOutcome.html", user.UserId);
+                                if (_jsCallCS.GetResultUT(user.NRIC, DateTime.Now.Date) == EnumUTResult.NEG && queue.QueueDetails.Any(d => d.Station == EnumStation.ESP && d.Status == EnumQueueStatuses.NotRequired))
+                                {
+                                    new DAL_QueueNumber().UpdateQueueStatusByUserId(user.UserId, EnumStation.DUTYOFFICER, EnumQueueStatuses.Finished, EnumStation.DUTYOFFICER, EnumQueueStatuses.Finished, string.Empty, EnumQueueOutcomeText.UnconditionalRelease);
+                                    this.LayerWeb.InvokeScript("reloadDataQueues");
+                                }
+                                else
+                                {
+                                    this.LayerWeb.LoadPopupHtml("QueuePopupOutcome.html", user.UserId);
+                                }
                             }
                         }
                     }
-                }
-            }));
+                }));
+            }
         }
 
-        private void OnBackendAPICompleted_Handler(object sender, NotificationInfo e)
+        private void OnBackendAPISend_Handler(object sender, NotificationInfo e)
         {
             // khi ở tab Queue nhận đc cái này sẽ tải lại
             RefreshCurrentTab(EnumDOTabName.Queue);
@@ -147,21 +149,26 @@ namespace DutyOfficer
 
         private void OnNewNotification_Handler(object sender, NotificationInfo e)
         {
-            string dutyOfficerId = ((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId;
-            string toDutyOfficerId = e.ToUserIds != null ? e.ToUserIds[0] : null;
-            if (dutyOfficerId != null && dutyOfficerId != "" && e.Name == NotificationNames.ALERT_MESSAGE)
+            var user = ((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]);
+            if (user != null)
             {
-                Trinity.BE.Notification notification = new Trinity.BE.Notification();
-                notification.Subject = e.Subject;
-                notification.ToUserId = e.ToUserIds != null ? e.ToUserIds[0] : null;
-                notification.Content = e.Content;
-                notification.Source = (string)e.Source;
-                notification.Type = e.Type;
-                notification.Datetime = DateTime.Now;
-                object result = JsonConvert.SerializeObject(notification, Formatting.Indented,
-                new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
-                RefreshCurrentTab(EnumDOTabName.Alerts, result);
+                string dutyOfficerId = user.UserId;
+                string toDutyOfficerId = e.ToUserIds != null ? e.ToUserIds[0] : dutyOfficerId;
+                if (!string.IsNullOrEmpty(dutyOfficerId) && e.Name == NotificationNames.ALERT_MESSAGE)
+                {
+                    Trinity.BE.Notification notification = new Trinity.BE.Notification();
+                    notification.Subject = e.Subject;
+                    notification.ToUserId = toDutyOfficerId;
+                    notification.Content = e.Content;
+                    notification.Source = (string)e.Source;
+                    notification.Type = e.Type;
+                    notification.Datetime = DateTime.Now;
+                    object result = JsonConvert.SerializeObject(notification, Formatting.Indented,
+                    new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
+                    RefreshCurrentTab(EnumDOTabName.Alerts, result);
+                }
             }
+            
         }
 
         private void OnDeviceStatusChanged_Handler(object sender, EventInfo e)
@@ -424,7 +431,7 @@ namespace DutyOfficer
             Session session = Session.Instance;
             Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
             string errorMessage = "User '" + user.Name + "' cannot complete facial authentication";
-            Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(user.UserId, "Facial authentication failed", errorMessage, EnumNotificationTypes.Error);
+            Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(user.UserId, "Facial authentication failed", errorMessage, EnumNotificationTypes.Error);
 
             // show message box to user            
             MessageBox.Show("Facial Recognition failed.\nPlease report to the Duty Officer", "Authentication Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);

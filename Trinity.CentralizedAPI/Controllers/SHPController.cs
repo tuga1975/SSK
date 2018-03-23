@@ -70,7 +70,7 @@ namespace Trinity.BackendAPI.Controllers
             }
             else
             {
-                await System.Threading.Tasks.Task.Run(() => Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(EnumStation.UHP, data.Type, data.Content, data.notification_code));
+                await System.Threading.Tasks.Task.Run(() => Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(null, null, data.Content, data.Type, EnumStation.UHP, false));
                 return Ok(IDNoti);
             }
         }
@@ -78,10 +78,17 @@ namespace Trinity.BackendAPI.Controllers
         [HttpGet]
         public async System.Threading.Tasks.Task<IHttpActionResult> SHPComplete(string NRIC)
         {
-            var user = new DAL.DAL_User().GetByNRIC(NRIC);
-            new DAL.DAL_QueueNumber().UpdateQueueStatusByUserId(user.UserId, EnumStation.UHP, EnumQueueStatuses.Finished, EnumStation.HSA, EnumQueueStatuses.Processing, "", EnumQueueOutcomeText.Processing);
-            await System.Threading.Tasks.Task.Run(() => Trinity.SignalR.Client.Instance.BackendAPICompleted(NotificationNames.SHP_COMPLETED, NRIC));
-            return Ok(true);
+            try
+            {
+                var user = new DAL.DAL_User().GetByNRIC(NRIC);
+                new DAL.DAL_QueueNumber().UpdateQueueStatusByUserId(user.UserId, EnumStation.UHP, EnumQueueStatuses.Finished, EnumStation.HSA, EnumQueueStatuses.Processing, "", EnumQueueOutcomeText.Processing);
+                await System.Threading.Tasks.Task.Run(() => Trinity.SignalR.Client.Instance.BackendAPISend(NotificationNames.SHP_COMPLETED, NRIC));
+                return Ok(true);
+            }
+            catch (Exception)
+            {
+                return Ok(false);
+            }
         }
 
     }

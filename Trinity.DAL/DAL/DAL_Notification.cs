@@ -149,7 +149,8 @@ namespace Trinity.DAL
                 IsRead = false,
                 Subject = subject,
                 ToUserId = toUserId,
-                Type = notificationType
+                Type = notificationType,
+                notification_code = notification_code
             });
             if (_localUnitOfWork.Save() > 0)
                 return IDNoti;
