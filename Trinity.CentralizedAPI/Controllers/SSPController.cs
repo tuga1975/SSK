@@ -120,7 +120,10 @@ namespace Trinity.BackendAPI.Controllers
                     METH = result.METH.GetValueOrDefault(false),
                     PCP = result.PCP.GetValueOrDefault(false),
                     BUPRE = result.BUPRE.GetValueOrDefault(false),
-                    PPZ = result.PPZ.GetValueOrDefault(false)
+                    PPZ = result.PPZ.GetValueOrDefault(false),
+                    IsSealed = result.IsSealed,
+                    SealedOrDiscardedBy = result.SealedOrDiscardedBy,
+                    SealedOrDiscardedDate = result.SealedOrDiscardedDate
                 });
             }
         }

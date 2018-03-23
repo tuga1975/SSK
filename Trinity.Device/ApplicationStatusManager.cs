@@ -100,14 +100,14 @@ namespace Trinity.Device
 
         private ApplicationStatusManager()
         {
-            // Initiate LEDs light and open port
-            _station = System.Reflection.Assembly.GetEntryAssembly().GetName().Name;
+            _lstDevices = new List<DeviceStatus>();
 
-            if (_station == EnumStation.SSK)
+            if (Lib.Station == EnumStation.SSK)
             {
+                // Initiate LEDs light and open port
                 LEDStatusLightingUtil.Instance.OpenPort();
+
                 // Define list devices which application use
-                _lstDevices = new List<DeviceStatus>();
                 _lstDevices.Add(new DeviceStatus()
                 {
                     DeviceID = EnumDeviceId.Camera,
@@ -259,6 +259,11 @@ namespace Trinity.Device
             }
             else
             {
+                if (_lstDevices == null)
+                {
+                    return EnumApplicationStatus.Error;
+                }
+
                 // Get list device summary
                 List<EnumDeviceStatusSumary> deviceStatusSumaries = _lstDevices.Select(item => item.Summary).ToList();
 
