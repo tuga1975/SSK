@@ -70,7 +70,7 @@ namespace Trinity.BackendAPI.Controllers
             }
             else
             {
-                await System.Threading.Tasks.Task.Run(() => Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(null, data.Type, data.Content, data.notification_code, EnumStation.UHP, false));
+                await System.Threading.Tasks.Task.Run(() => Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(null, null, data.Content, data.Type, EnumStation.UHP, false));
                 return Ok(IDNoti);
             }
         }
