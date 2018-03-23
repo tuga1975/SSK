@@ -103,7 +103,7 @@ namespace Enrolment
             if (attempt > 3)
             {
                 session[CommonConstants.CAPTURE_PHOTO_ATTEMPT] = null;
-                Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(null, "Supervisee failed to capture photo!", "Supervisee failed to capture photo!\n Please check the status", EnumNotificationTypes.Error);
+                Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(null, "Supervisee failed to capture photo!", "Supervisee failed to capture photo!\n Please check the status", EnumNotificationTypes.Error);
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.PHOTO_CAPTURE_FAILED, Message = "Unable to capture photo", Source = "FailToCapture.html" });
             }
             else
@@ -122,7 +122,7 @@ namespace Enrolment
             if (attempt > 3)
             {
                 session[CommonConstants.CAPTURE_FINGERPRINT_ATTEMPT] = null;
-                Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(null, "Supervisee failed to capture photo!", "Supervisee failed to capture fingerprint!\n Please check the status", EnumNotificationTypes.Error);
+                Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(null, "Supervisee failed to capture photo!", "Supervisee failed to capture fingerprint!\n Please check the status", EnumNotificationTypes.Error);
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.PHOTO_CAPTURE_FAILED, Message = "Unable to capture fingerprint", Source = "FailToCapture.html" });
             }
             else
@@ -141,7 +141,7 @@ namespace Enrolment
             if (attempt > 3)
             {
                 session[CommonConstants.PRINT_SMARTCARD_ATTEMPT] = null;
-                Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(null, "Supervisee failed to capture photo!", "Supervisee failed to print smart card!\n Please check the status", EnumNotificationTypes.Error);
+                Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(null, "Supervisee failed to capture photo!", "Supervisee failed to print smart card!\n Please check the status", EnumNotificationTypes.Error);
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.ABLE_TO_PRINT_FAILED, Message = "Unable to print smart card", Source = "FailToCapture.html" });
             }
             else
@@ -207,7 +207,7 @@ namespace Enrolment
             }
             else
             {
-                Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(null, "Unable to scan supervisee's NRIC", "Unable to scan supervisee's NRIC! Please check the manually input information!", EnumNotificationTypes.Caution);
+                Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(null, "Unable to scan supervisee's NRIC", "Unable to scan supervisee's NRIC! Please check the manually input information!", EnumNotificationTypes.Caution);
                 LoadListSupervisee();
 
             }
@@ -381,7 +381,7 @@ namespace Enrolment
             var updateUProfileResult = dalUserprofile.UpdateProfile(userProfileModel);
 
             ////send notifiy to case officer
-            Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId, "A supervisee has updated profile.", "Please check Supervisee's information!", EnumNotificationTypes.Notification);
+            Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId, "A supervisee has updated profile.", "Please check Supervisee's information!", EnumNotificationTypes.Notification);
 
 
             //session[CommonConstants.CURRENT_EDIT_USER] = data;

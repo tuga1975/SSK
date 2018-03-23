@@ -83,7 +83,7 @@ namespace SSA
             string message = "The fingerprint reader is not connected, please report to the Duty Officer!";
 
             // Send Notification to duty officer
-            Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(null, "The fingerprinter is not connected", "The fingerprinter is not connected.", EnumNotificationTypes.Error);
+            Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(null, "The fingerprinter is not connected", "The fingerprinter is not connected.", EnumNotificationTypes.Error);
 
             // show message box to user
             MessageBox.Show(message, "Authentication failed!", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -284,7 +284,7 @@ namespace SSA
             if (_smartCardFailed > 3)
             {
                 // Send Notification to duty officer
-                Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(null, message, message, EnumNotificationTypes.Error);
+                Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(null, message, message, EnumNotificationTypes.Error);
 
                 // show message box to user
                 //MessageBox.Show(message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -371,7 +371,7 @@ namespace SSA
                 string errorMessage = "Unable to read " + user.Name + "'s fingerprint.";
 
                 // Send Notification to duty officer
-                Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(user.UserId, "Fingerprint Authentication failed", errorMessage, EnumNotificationTypes.Error);
+                Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(user.UserId, "Fingerprint Authentication failed", errorMessage, EnumNotificationTypes.Error);
 
                 //Trinity.BE.PopupModel popupModel = new Trinity.BE.PopupModel();
                 //popupModel.Title = "Authorization Failed";
@@ -475,7 +475,7 @@ namespace SSA
             Session session = Session.Instance;
             Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
             string errorMessage = "User '" + user.Name + "' cannot complete facial authentication";
-            Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(user.UserId, "Facial authentication failed", errorMessage, EnumNotificationTypes.Error);
+            Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(user.UserId, "Facial authentication failed", errorMessage, EnumNotificationTypes.Error);
 
             // show message box to user
             //MessageBox.Show("Facial authentication failed", "Facial Authentication", MessageBoxButtons.OK, MessageBoxIcon.Error);

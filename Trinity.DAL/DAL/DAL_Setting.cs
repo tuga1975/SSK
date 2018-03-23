@@ -1192,8 +1192,12 @@ namespace Trinity.DAL
                     List<CheckWarningSaveSetting> arrayListUser = new List<CheckWarningSaveSetting>();
                     if ((int)DayOfWeek == DateTime.Now.DayOfWeek())
                     {
-                        //Nếu là thứ hiện tại cập nhật và chưa đã có queue đc chạy
-                        bool isQueueStarted = arrayBookAppoint.Any(d => d.Date.Date == DateTime.Now.Date && d.Timeslot.StartTime.Value <= DateTime.Now.TimeOfDay);
+                        //Nếu là thứ hiện tại cập nhật và chưa có queue đc chạy
+                        bool isQueueStarted = arrayBookAppoint.Any(d => d.Queue!=null);
+                        if (isQueueStarted)
+                        {
+                            isQueueStarted = _localUnitOfWork.DataContext.Queues.Any(d => DbFunctions.TruncateTime(d.CreatedTime) == DateNow);
+                        }
                         if (!isQueueStarted)
                         {
                             modelReturn.arrayDetail = arrayBookAppoint.Select(d => new CheckWarningSaveSettingDetail()
