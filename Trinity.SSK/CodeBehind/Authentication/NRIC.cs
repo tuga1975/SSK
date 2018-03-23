@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Trinity.Common;
 using Trinity.DAL;
+using Trinity.Device.Util;
 
 namespace SSK.CodeBehind.Authentication
 {
@@ -47,6 +48,32 @@ namespace SSK.CodeBehind.Authentication
         internal void Start()
         {
             _web.LoadPageHtml("Authentication/NRIC.html");
+            System.Threading.Tasks.Task.Factory.StartNew(() => BarcodeScannerUtil.Instance.StartScanning(BarcodeScannerCallback));
+        }
+
+        private void BarcodeScannerCallback(string value, string error)
+        {
+            if (string.IsNullOrEmpty(error))
+            {
+                if (value.Length < 1)
+                {
+                    System.Threading.Tasks.Task.Factory.StartNew(() => BarcodeScannerUtil.Instance.StartScanning(BarcodeScannerCallback));
+                }
+                value = value.Substring(0, value.Length - 1);
+                MessageBox.Show(value.Length.ToString());
+                MessageBox.Show("'" + value.Trim() + "'");
+
+                // Fill value to the textbox
+                CSCallJS.InvokeScript(_web, "updateNRICTextValue", value);
+
+                // Execute authentication
+                //NRICAuthentication(value.Trim()); // value nhận về util đã tự fill dữ liệu trống vào những byte không có giá trị, tạm thời bỏ
+            }
+            else
+            {
+                CSCallJS.ShowMessageAsync(_web, "ERROR", error);
+                System.Threading.Tasks.Task.Factory.StartNew(() => BarcodeScannerUtil.Instance.StartScanning(BarcodeScannerCallback));
+            }
         }
 
         // Wrap event invocations inside a protected virtual method
@@ -85,11 +112,12 @@ namespace SSK.CodeBehind.Authentication
         {
             DAL_User dal_User = new DAL_User();
             var supervisee = dal_User.GetSuperviseeByNRIC(nric);
-            
+
             if (supervisee == null)
             {
                 // raise show message event, then return
                 RaiseShowMessage(new ShowMessageEventArgs("NRIC " + nric + ": not found. Please check NRIC again.", "Not found", MessageBoxButtons.OK, MessageBoxIcon.Warning));
+                System.Threading.Tasks.Task.Factory.StartNew(() => BarcodeScannerUtil.Instance.StartScanning(BarcodeScannerCallback));
                 return;
             }
 
@@ -98,6 +126,9 @@ namespace SSK.CodeBehind.Authentication
             session.IsSmartCardAuthenticated = true;
             session.IsFingerprintAuthenticated = true;
             session[CommonConstants.SUPERVISEE] = supervisee;
+
+            BarcodeScannerUtil.Instance.Disconnect();
+
             // raise succeeded event
             RaiseNRICSucceededEvent();
         }

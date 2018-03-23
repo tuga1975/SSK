@@ -55,13 +55,15 @@
             this.button8 = new System.Windows.Forms.Button();
             this.btnTestTextSpeech = new System.Windows.Forms.Button();
             this.button9 = new System.Windows.Forms.Button();
+            this.button10 = new System.Windows.Forms.Button();
+            this.button11 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnPrintAppointmentDetails
             // 
             this.btnPrintAppointmentDetails.Location = new System.Drawing.Point(16, 15);
-            this.btnPrintAppointmentDetails.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnPrintAppointmentDetails.Margin = new System.Windows.Forms.Padding(4);
             this.btnPrintAppointmentDetails.Name = "btnPrintAppointmentDetails";
             this.btnPrintAppointmentDetails.Size = new System.Drawing.Size(183, 23);
             this.btnPrintAppointmentDetails.TabIndex = 0;
@@ -72,7 +74,7 @@
             // btnPrintSuperviseeCard
             // 
             this.btnPrintSuperviseeCard.Location = new System.Drawing.Point(16, 50);
-            this.btnPrintSuperviseeCard.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnPrintSuperviseeCard.Margin = new System.Windows.Forms.Padding(4);
             this.btnPrintSuperviseeCard.Name = "btnPrintSuperviseeCard";
             this.btnPrintSuperviseeCard.Size = new System.Drawing.Size(183, 23);
             this.btnPrintSuperviseeCard.TabIndex = 1;
@@ -83,7 +85,7 @@
             // btnReadSmartCardData
             // 
             this.btnReadSmartCardData.Location = new System.Drawing.Point(16, 86);
-            this.btnReadSmartCardData.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnReadSmartCardData.Margin = new System.Windows.Forms.Padding(4);
             this.btnReadSmartCardData.Name = "btnReadSmartCardData";
             this.btnReadSmartCardData.Size = new System.Drawing.Size(183, 23);
             this.btnReadSmartCardData.TabIndex = 2;
@@ -94,7 +96,7 @@
             // btnIdentifyFingerprint
             // 
             this.btnIdentifyFingerprint.Location = new System.Drawing.Point(16, 122);
-            this.btnIdentifyFingerprint.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnIdentifyFingerprint.Margin = new System.Windows.Forms.Padding(4);
             this.btnIdentifyFingerprint.Name = "btnIdentifyFingerprint";
             this.btnIdentifyFingerprint.Size = new System.Drawing.Size(183, 23);
             this.btnIdentifyFingerprint.TabIndex = 3;
@@ -105,7 +107,7 @@
             // btnStartHealthChecker
             // 
             this.btnStartHealthChecker.Location = new System.Drawing.Point(267, 15);
-            this.btnStartHealthChecker.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnStartHealthChecker.Margin = new System.Windows.Forms.Padding(4);
             this.btnStartHealthChecker.Name = "btnStartHealthChecker";
             this.btnStartHealthChecker.Size = new System.Drawing.Size(183, 23);
             this.btnStartHealthChecker.TabIndex = 4;
@@ -116,7 +118,7 @@
             // btnTestSerialComm
             // 
             this.btnTestSerialComm.Location = new System.Drawing.Point(267, 43);
-            this.btnTestSerialComm.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnTestSerialComm.Margin = new System.Windows.Forms.Padding(2);
             this.btnTestSerialComm.Name = "btnTestSerialComm";
             this.btnTestSerialComm.Size = new System.Drawing.Size(183, 28);
             this.btnTestSerialComm.TabIndex = 5;
@@ -127,7 +129,7 @@
             // btnStartFlashing
             // 
             this.btnStartFlashing.Location = new System.Drawing.Point(16, 208);
-            this.btnStartFlashing.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnStartFlashing.Margin = new System.Windows.Forms.Padding(4);
             this.btnStartFlashing.Name = "btnStartFlashing";
             this.btnStartFlashing.Size = new System.Drawing.Size(183, 23);
             this.btnStartFlashing.TabIndex = 6;
@@ -138,7 +140,7 @@
             // bnStopFlashing
             // 
             this.bnStopFlashing.Location = new System.Drawing.Point(16, 244);
-            this.bnStopFlashing.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.bnStopFlashing.Margin = new System.Windows.Forms.Padding(4);
             this.bnStopFlashing.Name = "bnStopFlashing";
             this.bnStopFlashing.Size = new System.Drawing.Size(183, 23);
             this.bnStopFlashing.TabIndex = 7;
@@ -149,7 +151,7 @@
             // btnInitFlashing
             // 
             this.btnInitFlashing.Location = new System.Drawing.Point(16, 172);
-            this.btnInitFlashing.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnInitFlashing.Margin = new System.Windows.Forms.Padding(4);
             this.btnInitFlashing.Name = "btnInitFlashing";
             this.btnInitFlashing.Size = new System.Drawing.Size(183, 23);
             this.btnInitFlashing.TabIndex = 8;
@@ -160,7 +162,7 @@
             // btnPrintTTLabel
             // 
             this.btnPrintTTLabel.Location = new System.Drawing.Point(267, 74);
-            this.btnPrintTTLabel.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnPrintTTLabel.Margin = new System.Windows.Forms.Padding(2);
             this.btnPrintTTLabel.Name = "btnPrintTTLabel";
             this.btnPrintTTLabel.Size = new System.Drawing.Size(183, 23);
             this.btnPrintTTLabel.TabIndex = 9;
@@ -171,7 +173,7 @@
             // btnPrintTTLabel_2
             // 
             this.btnPrintTTLabel_2.Location = new System.Drawing.Point(267, 100);
-            this.btnPrintTTLabel_2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnPrintTTLabel_2.Margin = new System.Windows.Forms.Padding(2);
             this.btnPrintTTLabel_2.Name = "btnPrintTTLabel_2";
             this.btnPrintTTLabel_2.Size = new System.Drawing.Size(183, 23);
             this.btnPrintTTLabel_2.TabIndex = 10;
@@ -182,7 +184,7 @@
             // button1
             // 
             this.button1.Location = new System.Drawing.Point(267, 183);
-            this.button1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.button1.Margin = new System.Windows.Forms.Padding(2);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(183, 23);
             this.button1.TabIndex = 12;
@@ -193,7 +195,7 @@
             // button2
             // 
             this.button2.Location = new System.Drawing.Point(267, 157);
-            this.button2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.button2.Margin = new System.Windows.Forms.Padding(2);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(183, 23);
             this.button2.TabIndex = 11;
@@ -204,7 +206,7 @@
             // btnConnectPDIScanner
             // 
             this.btnConnectPDIScanner.Location = new System.Drawing.Point(16, 325);
-            this.btnConnectPDIScanner.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnConnectPDIScanner.Margin = new System.Windows.Forms.Padding(2);
             this.btnConnectPDIScanner.Name = "btnConnectPDIScanner";
             this.btnConnectPDIScanner.Size = new System.Drawing.Size(183, 23);
             this.btnConnectPDIScanner.TabIndex = 13;
@@ -215,7 +217,7 @@
             // btnStopDPIScanner
             // 
             this.btnStopDPIScanner.Location = new System.Drawing.Point(16, 353);
-            this.btnStopDPIScanner.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnStopDPIScanner.Margin = new System.Windows.Forms.Padding(2);
             this.btnStopDPIScanner.Name = "btnStopDPIScanner";
             this.btnStopDPIScanner.Size = new System.Drawing.Size(183, 23);
             this.btnStopDPIScanner.TabIndex = 14;
@@ -245,7 +247,7 @@
             // btnSendBTCommand
             // 
             this.btnSendBTCommand.Location = new System.Drawing.Point(4, 181);
-            this.btnSendBTCommand.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnSendBTCommand.Margin = new System.Windows.Forms.Padding(2);
             this.btnSendBTCommand.Name = "btnSendBTCommand";
             this.btnSendBTCommand.Size = new System.Drawing.Size(137, 23);
             this.btnSendBTCommand.TabIndex = 17;
@@ -256,7 +258,7 @@
             // button3
             // 
             this.button3.Location = new System.Drawing.Point(267, 126);
-            this.button3.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.button3.Margin = new System.Windows.Forms.Padding(2);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(183, 28);
             this.button3.TabIndex = 17;
@@ -267,7 +269,7 @@
             // button4
             // 
             this.button4.Location = new System.Drawing.Point(267, 209);
-            this.button4.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.button4.Margin = new System.Windows.Forms.Padding(2);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(183, 24);
             this.button4.TabIndex = 18;
@@ -278,7 +280,7 @@
             // button5
             // 
             this.button5.Location = new System.Drawing.Point(16, 272);
-            this.button5.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.button5.Margin = new System.Windows.Forms.Padding(2);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(184, 23);
             this.button5.TabIndex = 19;
@@ -289,7 +291,7 @@
             // button6
             // 
             this.button6.Location = new System.Drawing.Point(16, 299);
-            this.button6.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.button6.Margin = new System.Windows.Forms.Padding(2);
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(184, 23);
             this.button6.TabIndex = 20;
@@ -300,7 +302,7 @@
             // btnTestSignalR
             // 
             this.btnTestSignalR.Location = new System.Drawing.Point(16, 382);
-            this.btnTestSignalR.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnTestSignalR.Margin = new System.Windows.Forms.Padding(2);
             this.btnTestSignalR.Name = "btnTestSignalR";
             this.btnTestSignalR.Size = new System.Drawing.Size(184, 28);
             this.btnTestSignalR.TabIndex = 17;
@@ -311,7 +313,7 @@
             // button7
             // 
             this.button7.Location = new System.Drawing.Point(777, 11);
-            this.button7.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.button7.Margin = new System.Windows.Forms.Padding(2);
             this.button7.Name = "button7";
             this.button7.Size = new System.Drawing.Size(183, 24);
             this.button7.TabIndex = 21;
@@ -322,7 +324,7 @@
             // button8
             // 
             this.button8.Location = new System.Drawing.Point(590, 11);
-            this.button8.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.button8.Margin = new System.Windows.Forms.Padding(2);
             this.button8.Name = "button8";
             this.button8.Size = new System.Drawing.Size(183, 24);
             this.button8.TabIndex = 22;
@@ -333,7 +335,7 @@
             // btnTestTextSpeech
             // 
             this.btnTestTextSpeech.Location = new System.Drawing.Point(267, 244);
-            this.btnTestTextSpeech.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnTestTextSpeech.Margin = new System.Windows.Forms.Padding(2);
             this.btnTestTextSpeech.Name = "btnTestTextSpeech";
             this.btnTestTextSpeech.Size = new System.Drawing.Size(184, 28);
             this.btnTestTextSpeech.TabIndex = 23;
@@ -352,11 +354,35 @@
             this.button9.UseVisualStyleBackColor = true;
             this.button9.Click += new System.EventHandler(this.button9_Click);
             // 
+            // button10
+            // 
+            this.button10.Location = new System.Drawing.Point(268, 353);
+            this.button10.Margin = new System.Windows.Forms.Padding(2);
+            this.button10.Name = "button10";
+            this.button10.Size = new System.Drawing.Size(183, 23);
+            this.button10.TabIndex = 25;
+            this.button10.Text = "Start Barcode scanner";
+            this.button10.UseVisualStyleBackColor = true;
+            this.button10.Click += new System.EventHandler(this.button10_Click);
+            // 
+            // button11
+            // 
+            this.button11.Location = new System.Drawing.Point(267, 382);
+            this.button11.Margin = new System.Windows.Forms.Padding(2);
+            this.button11.Name = "button11";
+            this.button11.Size = new System.Drawing.Size(183, 28);
+            this.button11.TabIndex = 26;
+            this.button11.Text = "Stop Barcode scanner";
+            this.button11.UseVisualStyleBackColor = true;
+            this.button11.Click += new System.EventHandler(this.button11_Click);
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(971, 581);
+            this.Controls.Add(this.button11);
+            this.Controls.Add(this.button10);
             this.Controls.Add(this.button9);
             this.Controls.Add(this.btnTestTextSpeech);
             this.Controls.Add(this.button8);
@@ -419,6 +445,8 @@
         private System.Windows.Forms.Button button8;
         private System.Windows.Forms.Button btnTestTextSpeech;
         private System.Windows.Forms.Button button9;
+        private System.Windows.Forms.Button button10;
+        private System.Windows.Forms.Button button11;
     }
 }
 
