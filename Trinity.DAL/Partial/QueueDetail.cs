@@ -28,7 +28,7 @@ namespace Trinity.DAL.DBContext
                     if (cusAttr != null)
                         return cusAttr.Color;
                 }
-                return "white";
+                return "grey";
             }
         }
     }

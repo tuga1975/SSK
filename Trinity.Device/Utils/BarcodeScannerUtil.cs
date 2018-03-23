@@ -157,7 +157,6 @@ namespace Trinity.Device.Util
                     {
                         value = ReceiveData();
                     }
-
                     System.Threading.Tasks.Task.Factory.StartNew(() => barcodeScannerCallback(value, string.Empty));
                 }
                 catch (IOException ex)
@@ -260,13 +259,20 @@ namespace Trinity.Device.Util
                         //
                         recvBytes[recvSize] = 0;
                         //MessageBox.Show(serialPortInstance[i].PortName + "\r\n" + Encoding.GetEncoding("Shift_JIS").GetString(recvBytes));
-                        returnValue = Encoding.GetEncoding("Shift_JIS").GetString(recvBytes);
+                        //MessageBox.Show(PrintByteArray(recvBytes));
                         //returnValue = Encoding.UTF8.GetString(recvBytes);
                         break;
                     }
                 }
             }
 
+            // Remove trailing zeros
+            int lastIndex = Array.FindLastIndex(recvBytes, b => b != 0);
+            //Array.Resize(ref recvBytes, lastIndex + 1);
+            Array.Resize(ref recvBytes, lastIndex);
+
+            returnValue = Encoding.GetEncoding("Shift_JIS").GetString(recvBytes);
+            //MessageBox.Show("'" + returnValue + "'");
             return returnValue;
         }
 
@@ -357,6 +363,25 @@ namespace Trinity.Device.Util
             }
 
             return (dataSize + 1 == recvSize);
+        }
+
+        private static byte[] UnsignedBytesFromSignedBytes(sbyte[] signed)
+        {
+            var unsigned = new byte[signed.Length];
+            Buffer.BlockCopy(signed, 0, unsigned, 0, signed.Length);
+            return unsigned;
+        }
+
+        private string PrintByteArray(byte[] bytes)
+        {
+            var sb = new StringBuilder("new byte[] { ");
+            foreach (var b in bytes)
+            {
+                sb.Append(b + ", ");
+            }
+            sb.Append("}");
+            return sb.ToString();
+            //Console.WriteLine(sb.ToString());
         }
     }
 }

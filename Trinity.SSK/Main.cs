@@ -194,12 +194,20 @@ namespace SSK
 
         private void JSCallCS_OnLogOutCompleted()
         {
+            try
+            {
             BarcodeScannerUtil.Instance.Disconnect();
 
             ApplicationStatusManager.Instance.IsBusy = false;
 
             // navigate
             NavigateTo(NavigatorEnums.Authentication_SmartCard);
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
         }
 
         private void LayerWeb_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
@@ -210,10 +218,13 @@ namespace SSK
                 // Start page
                 //NavigateTo(NavigatorEnums.Authentication_SmartCard);
 
-                string startFrom = "Supervisee";
+                string startFrom = "";
+                // 50.132
                 //string superviseeId = "2FFD1A82-E5EC-4884-A5C6-1A68F661DAED";
+                //string dutyOfficerId = "9903e059-7209-45b6-a889-6c4cfdfaeea3";
+                // 1.120
                 string superviseeId = "9043d88e-94d1-4c01-982a-02d41965a621";
-                string dutyOfficerId = "9903e059-7209-45b6-a889-6c4cfdfaeea3";
+                string dutyOfficerId = "f1748cb4-3bb5-4129-852d-2aba28bb8cec";
                 Session session = Session.Instance;
 
                 if (startFrom == "Supervisee")

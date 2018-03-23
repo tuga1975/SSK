@@ -16,6 +16,22 @@ public static class Lib
         return (int)date.DayOfWeek == 0 ? 8 : ((int)date.DayOfWeek) + 1;
     }
 
+
+    public static string Station
+    {
+        get
+        {
+            string station = System.Configuration.ConfigurationManager.AppSettings["Station"];
+            if (string.IsNullOrEmpty(station))
+                station = System.Reflection.Assembly.GetEntryAssembly().GetName().Name;
+            System.Reflection.MemberInfo member = typeof(EnumStation).GetMembers().Where(d => d.Name.ToLower() == station.ToLower()).FirstOrDefault();
+            if (member != null)
+            {
+                station = ((System.Reflection.FieldInfo)member).GetValue(member).ToString();
+            }
+            return station;
+        }
+    }
     public static byte[] ReadAllBytes(string fileName)
     {
         byte[] buffer = null;
