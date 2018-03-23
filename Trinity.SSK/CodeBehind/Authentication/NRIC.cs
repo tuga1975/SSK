@@ -53,21 +53,18 @@ namespace SSK.CodeBehind.Authentication
 
         private void BarcodeScannerCallback(string value, string error)
         {
-            if (string.IsNullOrEmpty(error))
+            if (string.IsNullOrEmpty(error) && !string.IsNullOrEmpty(value))
             {
-                if (value.Length < 1)
-                {
-                    System.Threading.Tasks.Task.Factory.StartNew(() => BarcodeScannerUtil.Instance.StartScanning(BarcodeScannerCallback));
-                }
-                value = value.Substring(0, value.Length - 1);
-                MessageBox.Show(value.Length.ToString());
-                MessageBox.Show("'" + value.Trim() + "'");
+                //if (value.Length < 1)
+                //{
+                //    System.Threading.Tasks.Task.Factory.StartNew(() => BarcodeScannerUtil.Instance.StartScanning(BarcodeScannerCallback));
+                //}
 
                 // Fill value to the textbox
-                CSCallJS.InvokeScript(_web, "updateNRICTextValue", value);
+                CSCallJS.InvokeScript(_web, "updateNRICTextValue", value.Trim());
 
                 // Execute authentication
-                //NRICAuthentication(value.Trim()); // value nhận về util đã tự fill dữ liệu trống vào những byte không có giá trị, tạm thời bỏ
+                NRICAuthentication(value.Trim());
             }
             else
             {
