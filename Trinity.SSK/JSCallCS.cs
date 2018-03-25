@@ -352,7 +352,7 @@ namespace SSK
                         Guid IDDocuemnt = new DAL_UploadedDocuments().Insert(arrayScan, ((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId);
                         new DAL_UserProfile().UploadDocumentScan(IDDocuemnt, data.User.UserId);
                     }
-                    Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(data.User.UserId, "A supervisee has updated profile.", "Please check Supervisee's information!", EnumNotificationTypes.Notification);
+                    Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(data.User.UserId, "A supervisee has updated profile.", "Please check Supervisee's information!", EnumNotificationTypes.Notification);
 
                     session[CommonConstants.USER_LOGIN] = data.User;
 
@@ -364,7 +364,7 @@ namespace SSK
                     var updateUProfileResult = new DAL_UserProfile().UpdateProfile(userProfileModel);
                     // dalUserprofile.UpdateUserProfile(data.UserProfile, data.User.UserId, true);
                     //send notifiy to case officer
-                    Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(data.User.UserId, "A supervisee has updated profile.", "Please check Supervisee's information!", EnumNotificationTypes.Notification);
+                    Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(data.User.UserId, "A supervisee has updated profile.", "Please check Supervisee's information!", EnumNotificationTypes.Notification);
                 }
 
                 //load Supervisee page 
@@ -384,7 +384,7 @@ namespace SSK
             {
                 Session session = Session.Instance;
                 session[CommonConstants.PROFILE_DATA] = jsonData;
-                Trinity.SignalR.Client.Instance.SendToAllDutyOfficers(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId, "Supervisee's information changed!", "Please check the Supervisee's information!", EnumNotificationTypes.Notification);
+                Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId, "Supervisee's information changed!", "Please check the Supervisee's information!", EnumNotificationTypes.Notification);
                 LoadPage("Document.html");
 
             }
@@ -524,7 +524,7 @@ namespace SSK
             {
                 absenceCount = new DAL_Appointments().CountAbsenceReport(supervisee.UserId);
             }
-            MessageBox.Show(absenceCount.ToString());
+
             if (absenceCount == 0)
             {
                 GetMyQueueNumber();
@@ -551,10 +551,8 @@ namespace SSK
             else
             {
 
-                MessageBox.Show("GetAbsentAppointments");
                 var listAppointment = new DAL_Appointments().GetAbsentAppointments(supervisee.UserId);
 
-                MessageBox.Show((listAppointment == null).ToString());
                 this._web.ShowMessage("You have been absent for " + absenceCount + " times.<br/>Please provide reasons and the supporting documents.");
                 _web.LoadPageHtml("ReasonsForQueue.html", listAppointment.Select(d => new
                 {
