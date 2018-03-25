@@ -179,7 +179,7 @@ namespace SSA
                 var dalLabel = new DAL_Labels();
                 dalLabel.UpdateLabel(labelInfo);
                 Trinity.SignalR.Client.Instance.SSAInsertedLabel(e.LabelInfo.UserId);
-                Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(e.LabelInfo.UserId, "Cannot print MUB Label", "User '" + labelInfo.UserId + "' cannot print MUB label.", EnumNotificationTypes.Error);                
+                Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(e.LabelInfo.UserId, "Cannot print MUB Label", "User '" + labelInfo.UserId + "' cannot print MUB label.", EnumNotificationTypes.Error);
             }
             catch (Exception ex)
             {
@@ -634,34 +634,27 @@ namespace SSA
 
         private void CheckIfMUBApplicatorIsStarted_Callback(bool isStarted)
         {
-            try
+            _mubApplicatorStarted = isStarted;
+            if (isStarted)
             {
-                _mubApplicatorStarted = isStarted;
-                if (isStarted)
+                // MUB Applicator is started. Ready to print
+                this._web.RunScript("$('#mubStatus').css('color','#000').text('MUB label is ready to print.');");
+                // Set next action to 'PrintMUBAndTTLabel'
+                if (_currentLabelInfo != null & _ttApplicatorStarted)
                 {
-                    // MUB Applicator is started. Ready to print
-                    this._web.RunScript("$('#mubStatus').css('color','#000').text('MUB label is ready to print.');");
-                    // Set next action to 'PrintMUBAndTTLabel'
-                    if (_currentLabelInfo != null & _ttApplicatorStarted)
-                    {
-                        this._web.RunScript("$('#ConfirmBtn').html('Start to print MUB/TT Label');");
-                        this._web.RunScript("$('#lblNextAction').text('PrintMUBAndTTLabel');");
-                        StartToPrintMUBAndTTLabel(_currentLabelInfo);
-                    }
-                }
-                else
-                {
-                    this._web.RunScript("$('#mubStatus').css('color','#000').text('MUB Applicator is not started.');");
-                    // InitializeMUBApplicator();
-
-                    // Follow suggestion from supplier
-                    // Check if MUB Door is fully closed
-                    LEDStatusLightingUtil.Instance.SendCommand_Async(EnumCommands.CheckIfMUBDoorIsFullyClosed, CheckIfMUBDoorIsFullyClosed_Callback2);
+                    this._web.RunScript("$('#ConfirmBtn').html('Start to print MUB/TT Label');");
+                    this._web.RunScript("$('#lblNextAction').text('PrintMUBAndTTLabel');");
+                    StartToPrintMUBAndTTLabel(_currentLabelInfo);
                 }
             }
-            catch (Exception ex)
+            else
             {
-                MessageBox.Show("Error in CheckIfMUBApplicatorIsStarted_Callback. Details:" + ex.Message);
+                this._web.RunScript("$('#mubStatus').css('color','#000').text('MUB Applicator cannot be started. Checking if the MUB Door is closed or not');");
+                // InitializeMUBApplicator();
+
+                // Follow suggestion from supplier
+                // Check if MUB Door is fully closed
+                LEDStatusLightingUtil.Instance.SendCommand_Async(EnumCommands.CheckIfMUBDoorIsFullyClosed, CheckIfMUBDoorIsFullyClosed_Callback2);
             }
         }
 
@@ -727,7 +720,7 @@ namespace SSA
                 // If the TT Door is not fully closed
                 // Then send command to close TT Door
                 LEDStatusLightingUtil.Instance.CloseTTDoor_Async();
-                
+
                 // Wait for 200  milliseconds
                 Thread.Sleep(200);
 
