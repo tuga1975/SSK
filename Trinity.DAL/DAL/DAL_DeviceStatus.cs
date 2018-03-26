@@ -89,17 +89,35 @@ namespace Trinity.DAL
         {
             try
             {
-                if (!_localUnitOfWork.DataContext.ApplicationDevice_Status.Any(a => a.Station.ToUpper() == station.ToUpper()))
+                var deviceStatuses = _localUnitOfWork.DataContext.ApplicationDevice_Status.Where(item => item.Station.ToUpper() == station.ToUpper())
+                    .Select(item => new {
+                        DeviceId = item.DeviceID,
+                        StatusCode = item.StatusCode
+                    }).ToList();
+
+                if (deviceStatuses == null || deviceStatuses.Count == 0)
                 {
+                    // application is down (notification server will delete all device status rows ) or cannot update status, return error
                     return EnumColors.Red;
                 }
-
-                if (_localUnitOfWork.DataContext.ApplicationDevice_Status.Any(d => d.Station.ToUpper() == station.ToUpper() && d.StatusCode == (int)EnumDeviceStatus.Disconnected))
+                else
                 {
-                    return EnumColors.Red;
-                }
+                    // if any device is disconnected, return error
+                    if (deviceStatuses.Any(item => item.StatusCode == (int)EnumDeviceStatus.Disconnected))
+                    {
+                        return EnumColors.Red;
+                    }
 
-                return EnumColors.Green;
+                    // if application have no device disconnected, and have any device status is diffirent connected, return caution
+                    // Need to define caution statuses group
+                    if (deviceStatuses.Any(item => item.StatusCode != (int)EnumDeviceStatus.Connected))
+                    {
+                        return EnumColors.Yellow;
+                    }
+
+                    // if all devices are connected and have no caution, return ready
+                    return EnumColors.Green;
+                }
             }
             catch(Exception e)
             {
