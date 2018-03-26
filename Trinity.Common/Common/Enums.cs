@@ -78,7 +78,7 @@ public static class EnumQueueStatuses
     public static string Missed = "Missed";
     [Custom(EnumColors.Grey, "")]
     public const string Waiting = "Waiting";
-    [Custom(EnumColors.White, "")]
+    [Custom(EnumColors.Grey, "")]
     public const string Processing = "Processing";
     [Custom(EnumColors.Red, "")]
     public const string Errors = "Errors";
