@@ -48,7 +48,11 @@ namespace SSK.CodeBehind.Authentication
         internal void Start()
         {
             _web.LoadPageHtml("Authentication/NRIC.html");
-            System.Threading.Tasks.Task.Factory.StartNew(() => BarcodeScannerUtil.Instance.StartScanning(BarcodeScannerCallback));
+
+            if (BarcodeScannerUtil.Instance.GetDeviceStatus().Contains(EnumDeviceStatus.Connected))
+            {
+                System.Threading.Tasks.Task.Factory.StartNew(() => BarcodeScannerUtil.Instance.StartScanning(BarcodeScannerCallback));
+            }
         }
 
         private void BarcodeScannerCallback(string value, string error)

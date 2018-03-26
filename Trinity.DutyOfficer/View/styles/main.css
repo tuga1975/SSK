@@ -370,7 +370,7 @@ table {
     width: 100%;
     /*overflow: hidden;*/
     text-align: center;
-    border: none;
+    border: none !important;
     position: relative;
     height: 100%;
 }
@@ -383,19 +383,50 @@ table th[checkbox] {
     padding: 0 20px;
 }
 /*Search, Filter*/
-.fixed-table-toolbar .search {
-    /*position: absolute;
-top: -80px;
-left: 230px;
-background-color: #f6f6f6;*/
+/*.fixed-table-toolbar .search {
     font-size: 14px;
     position: fixed;
     z-index: 200;
-    top: -80px;
+    top: -50px;
     left: 230px;
-    /*width: 50%;*/
     background: #f6f6f6;
-    display: inline-block;
+}*/
+table thead th .both {
+    background-image: url(../img/icon-sort.png) !important;
+    margin-right: 10px !important;
+}
+
+table thead th .asc {
+    background-image: url(../img/icon-sort-asc.png) !important;
+    margin-right: 10px !important;
+}
+
+table thead th .desc {
+    background-image: url(../img/icon-sort-desc.png) !important;
+    margin-right: 10px !important;
+}
+
+table th, table td {
+    border-left: 0px !important;
+    border-radius: 0 !important;
+}
+
+table td {
+    padding: 15px 10px !important;
+    text-align: center !important;
+}
+
+table th {
+    padding: 10px !important;
+}
+
+table tr:last-child td {
+    border-bottom: 1px solid #dedede !important;
+}
+
+.fixed-table-container,
+table th {
+    border: 0px !important;
 }
 
 .formFilter {
@@ -586,6 +617,10 @@ background-color: #f6f6f6;*/
     font-size: 12px;
     display: table-cell;
     vertical-align: middle;
+}
+#operationTable tr th {
+    border-bottom: 1px solid #dedede !important;
+    border-top: 1px solid #dedede !important;
 }
 #panel-holidays .tabactive button {
     padding: 5px 20px;
@@ -908,20 +943,18 @@ tr.selected input[type="checkbox"]:after {
     background-color: #26a69a;
     z-index: 0;
 }*/
-table thead th .both {
-    background-image: url(../img/icon-sort.png) !important;
-    margin-right: 10px !important;
-}
-table thead th .asc {
-    background-image: url(../img/icon-sort-asc.png) !important;
-    margin-right: 10px !important;
-}
-table thead th .desc {
-    background-image: url(../img/icon-sort-desc.png) !important;
-    margin-right: 10px !important;
-}
+
 /*#idEditOperationalDate select {
     cursor: pointer;
     background: #fff url(../img/icon-arrow.png) no-repeat right center;
     margin-right: 10px;
 }*/
+.fixed-table-pagination li.active a {
+    background: gray;
+    color: white;
+    border-radius: 5px;
+}
+.pagination a:hover:not(.active) {
+    background-color: #F5F5F5;
+    border-radius: 5px;
+}
