@@ -107,7 +107,7 @@ namespace DutyOfficer
             DAL_DrugResults dalDrug = new DAL_DrugResults();
             dalDrug.UpdateDrugSeal(UserId, COCA, BARB, LSD, METH, MTQL, PCP, KET, BUPRE, CAT, PPZ, NPS, dutyOfficer.UserId);
             var dalQueue = new DAL_QueueNumber();
-            dalQueue.UpdateQueueStatusByUserId(UserId, EnumStation.HSA, EnumQueueStatuses.Finished, EnumStation.ESP, EnumQueueStatuses.Processing, "Waiting for ESP", EnumQueueOutcomeText.Processing);
+            dalQueue.UpdateQueueStatusByUserId(UserId, EnumStation.HSA, EnumQueueStatuses.Finished, EnumStation.ESP, EnumQueueStatuses.Processing, "Waiting for SSP", EnumQueueOutcomeText.Processing);
         }
         public object getDataQueue()
         {
@@ -271,8 +271,8 @@ namespace DutyOfficer
             if (userID != null || userID != "")
             {
                 //Receive alerts and notifications from APS, SSK, SSA, UHP and ESP 
-                List<string> modules = new List<string>() { "APS", "SSK", "SSA", "UHP", "ESP" };
-                return dalNotify.GetAllNotifications(userID, modules);
+                List<string> modules = new List<string>() { EnumStation.APS, EnumStation.SSK, EnumStation.SSA, EnumStation.UHP, EnumStation.ESP };
+                return dalNotify.GetAllNotifications(userID, modules,true);
             }
             return null;
         }
