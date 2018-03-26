@@ -134,7 +134,7 @@ namespace Trinity.BackendAPI.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpPost]
         public async System.Threading.Tasks.Task<IHttpActionResult> SSPComplete(string NRIC)
         {
             try

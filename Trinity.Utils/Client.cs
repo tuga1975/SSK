@@ -109,11 +109,12 @@ namespace Trinity.SignalR
         public event EventHandler<EventInfo> OnDeviceStatusChanged;
         public event EventHandler<EventInfo> OnAppDisconnected;
         public event EventHandler<NotificationInfo> OnDOUnblockSupervisee;
-        public event EventHandler<NotificationInfo> OnAppointmentBookedOrReported;
         public event EventHandler<NotificationInfo> OnQueueInserted;
         public event EventHandler<NotificationInfo> OnSSACompleted;
         public event EventHandler<NotificationInfo> OnSSAInsertedLabel;
         public event EventHandler<NotificationInfo> OnBackendAPISend;
+        public event EventHandler<NotificationInfo> OnAppointmentBooked;
+        public event EventHandler<NotificationInfo> OnAppointmentReported;
         ///// <summary>
         ///// 
         ///// </summary>
@@ -162,9 +163,13 @@ namespace Trinity.SignalR
                 {
                     OnDOUnblockSupervisee?.Invoke(this, notificationInfo);
                 }
-                else if (notificationInfo.Name == NotificationNames.APPOINTMENT_BOOKED_OR_REPORTED)
+                else if (notificationInfo.Name == NotificationNames.APPOINTMENT_BOOKED)
                 {
-                    OnAppointmentBookedOrReported?.Invoke(this, notificationInfo);
+                    OnAppointmentBooked?.Invoke(this, notificationInfo);
+                }
+                else if (notificationInfo.Name == NotificationNames.APPOINTMENT_REPORTED)
+                {
+                    OnAppointmentReported?.Invoke(this, notificationInfo);
                 }
                 else if (notificationInfo.Name == NotificationNames.QUEUE_INSERTED)
                 {
@@ -217,6 +222,8 @@ namespace Trinity.SignalR
         public async void PostNotification(NotificationInfo notificationInfo)
         {
             await WaitConnectFalse();
+            if (notificationInfo != null)
+                notificationInfo.Source = notificationInfo.Source == null ? Station : notificationInfo.Source;
             await HubProxy.Invoke("OnNewNotification", notificationInfo);
         }
 
@@ -297,7 +304,7 @@ namespace Trinity.SignalR
         //    //bool status = await HubProxy.Invoke<bool>("SendToAllDutyOfficers", arrraySend, fromUserId, subject, content, notificationType);
         //}
 
-        public void SendToAppDutyOfficers(string fromUserId, string subject, string content, string notificationType,string station = null, bool isInsertDB = true)
+        public void SendToAppDutyOfficers(string fromUserId, string subject, string content, string notificationType, string station = null, bool isInsertDB = true)
         {
             if (!isInsertDB || !string.IsNullOrEmpty(new DAL.DAL_Notification().InsertNotification(fromUserId, null, subject, content, !string.IsNullOrEmpty(fromUserId), DateTime.Now, null, notificationType, Station)))
             {
@@ -323,7 +330,7 @@ namespace Trinity.SignalR
         /// <param name="notificationType"></param>
         public void SendToSupervisee(string fromUserId, string toUserId, string subject, string content, string notificationType)
         {
-            string result = new DAL.DAL_Notification().InsertNotification(fromUserId, toUserId, subject, content,true,DateTime.Now,null, notificationType, Station);
+            string result = new DAL.DAL_Notification().InsertNotification(fromUserId, toUserId, subject, content, true, DateTime.Now, null, notificationType, Station);
             if (!string.IsNullOrEmpty(result))
             {
                 NotificationInfo notificationInfo = new NotificationInfo()
@@ -348,20 +355,26 @@ namespace Trinity.SignalR
             //await HubProxy.Invoke("QueueFinished", queue);
         }
 
-        
-        public void BackendAPISend(string NotificationNames,object Data)
+
+        public void BackendAPISend(string NotificationNames, object Data)
         {
             PostNotification(notificationInfo: new NotificationInfo() { Name = NotificationNames, Data = Data });
         }
-        
+
         public void DOUnblockSupervisee(string UserId)
         {
             PostNotification(notificationInfo: new NotificationInfo() { Name = NotificationNames.DO_UNBLOCK_SUPERVISEE, UserID = UserId });
         }
-        public void AppointmentBookedOrReported(string AppointmentID, string Status)
+        public void AppointmentBooked(string UserID, string AppointmentID, string TimeSlotID, string _Station = null)
         {
-            PostNotification(notificationInfo: new NotificationInfo() { Name = NotificationNames.APPOINTMENT_BOOKED_OR_REPORTED, AppointmentID = AppointmentID, Status = Status });
+            PostNotification(notificationInfo: new NotificationInfo() { Name = NotificationNames.APPOINTMENT_BOOKED, AppointmentID = AppointmentID, UserID = UserID, TimeSlotID = TimeSlotID, Source = string.IsNullOrEmpty(_Station) ? Station : _Station });
         }
+
+        public void AppointmentReported(string QueueID, string AppointmentID)
+        {
+            PostNotification(notificationInfo: new NotificationInfo() { Name = NotificationNames.APPOINTMENT_REPORTED, AppointmentID = AppointmentID, QueueID = QueueID });
+        }
+
         public void QueueInserted(string QueueID)
         {
             PostNotification(notificationInfo: new NotificationInfo() { Name = NotificationNames.QUEUE_INSERTED, QueueID = QueueID });

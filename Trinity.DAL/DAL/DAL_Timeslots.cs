@@ -15,6 +15,12 @@ namespace Trinity.DAL
         Local_UnitOfWork _localUnitOfWork = new Local_UnitOfWork();
         Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
 
+
+        public Timeslot GetByID(string Timeslot_ID)
+        {
+            return _localUnitOfWork.DataContext.Timeslots.FirstOrDefault(d => d.Timeslot_ID == Timeslot_ID);
+        }
+
         public List<Timeslot> GetTimeSlots(DateTime date)
         {
             date = date.Date;

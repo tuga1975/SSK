@@ -208,10 +208,7 @@ namespace SSK
 
         private List<WorkingShiftDetails> GetWorkingTimeshift(List<Timeslot> timeslots, string selected_Timeslot_ID, string timeshift)
         {
-            try
-            {
-
-                List<WorkingShiftDetails> returnValue = timeslots.Where(item => item.Category == timeshift)
+            List<WorkingShiftDetails> returnValue = timeslots.Where(item => item.Category == timeshift)
                     .Select(item => new WorkingShiftDetails()
                     {
                         Timeslot_ID = item.Timeslot_ID,
@@ -222,12 +219,7 @@ namespace SSK
                         Category = item.Category
                     }).OrderBy(item => item.StartTime).ToList();
 
-                return returnValue;
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
+            return returnValue;
         }
 
         //private Trinity.BE.WorkingTimeshift SetSelectedTimes( Appointment appointment)
@@ -276,11 +268,12 @@ namespace SSK
             }
             else
             {
+                Trinity.BE.User user = (Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN];
                 bool updateResult = new DAL_Appointments().UpdateTimeslot_ID(appointment_ID, timeslot_ID);
 
                 if (updateResult)
                 {
-                    Trinity.SignalR.Client.Instance.AppointmentBookedOrReported(appointment_ID, EnumAppointmentStatuses.Booked);
+                    Trinity.SignalR.Client.Instance.AppointmentBooked(user.UserId,appointment_ID, timeslot_ID);
                     AppointmentDetails appointmentdetails = new DAL_Appointments().GetAppointmentDetails(appointment_ID);
                     ReceiptPrinterUtil.Instance.PrintAppointmentDetails(appointmentdetails);
                     LoadPageSupervisee();
@@ -599,7 +592,7 @@ namespace SSK
                         else
                         {
                             queueNumber = _dalQueue.InsertQueueNumber(appointment.ID, appointment.UserId, EnumStation.SSK, currentUser.UserId);
-                            Trinity.SignalR.Client.Instance.AppointmentBookedOrReported(appointment.ID.ToString().Trim(), EnumAppointmentStatuses.Reported);
+                            Trinity.SignalR.Client.Instance.AppointmentReported(queueNumber.Queue_ID.ToString().Trim(), queueNumber.Appointment_ID.ToString().Trim());
                             Trinity.SignalR.Client.Instance.QueueInserted(queueNumber.Queue_ID.ToString().Trim());
                             APIUtils.FormQueueNumber.RefreshQueueNumbers();
                             this._web.ShowMessage("Your queue number is:" + queueNumber.QueuedNumber);

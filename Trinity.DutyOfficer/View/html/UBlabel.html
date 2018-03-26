@@ -82,16 +82,17 @@
             });
         });
 
-        var checkedRows = [];
+        var checkedRowsUB = [];
 
         $('#UBlabel').on('check.bs.table', function (e, row) {
-            checkedRows.push({ NRIC: row.NRIC, Name: row.Name, LastStation: row.LastStation, UserId: row.UserId, MarkingNo: row.MarkingNo });
+            checkedRowsUB.push({ NRIC: row.NRIC, Name: row.Name, LastStation: row.LastStation, UserId: row.UserId, MarkingNo: row.MarkingNo });
         });
 
         $('#UBlabel').on('uncheck.bs.table', function (e, row) {
-            $.each(checkedRows, function (index, value) {
-                if (value.id === row.id) {
-                    checkedRows.splice(index, 1);
+            $.each(checkedRowsUB, function (index, value) {
+                if (value.UserId === row.UserId) {
+                    checkedRowsUB.splice(index, 1);
+                    return false;
                 }
             });
         });
@@ -99,11 +100,11 @@
         var model;
 
         $('#PrintUBbutton').click(function () {
-            $.each(checkedRows, function (index, value) {
+            $.each(checkedRowsUB, function (index, value) {
                 model = value;
             })
-            if (checkedRows.length > 0) {
-                var data = JSON.stringify(checkedRows);
+            if (checkedRowsUB.length > 0) {
+                var data = JSON.stringify(checkedRowsUB);
                 api.server.LoadPopupUBLabel(data, function () {
                     $('#UBLabelpopup').modal();
                 })

@@ -1000,4 +1000,5 @@ tr.selected input[type="checkbox"]:after {
 .pagination a:hover:not(.active) {
     background-color: #F5F5F5;
     border-radius: 5px;
+    color: dodgerblue;
 }
