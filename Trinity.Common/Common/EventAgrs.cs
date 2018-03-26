@@ -164,7 +164,8 @@ namespace Trinity.Common
         public const string APP_DISCONNECTED = "APP_DISCONNECTED";
         public const string ALERT_MESSAGE = "ALERT_MESSAGE";
         public const string DO_UNBLOCK_SUPERVISEE = "DO_UNBLOCK_SUPERVISEE";
-        public const string APPOINTMENT_BOOKED_OR_REPORTED = "APPOINTMENT_BOOKED_OR_REPORTED";
+        public const string APPOINTMENT_BOOKED = "APPOINTMENT_BOOKED";
+        public const string APPOINTMENT_REPORTED = "APPOINTMENT_REPORTED";
         public const string QUEUE_INSERTED = "QUEUE_INSERTED";
         public const string SSA_COMPLETED = "SSA_COMPLETED";
         public const string SSA_INSERTED_LABEL = "SSA_INSERTED_LABEL";
@@ -189,6 +190,7 @@ namespace Trinity.Common
         public string NRIC { get; set; }
         public string UserID { get; set; }
         public string AppointmentID { get; set; }
+        public string TimeSlotID { get; set; }
         public string QueueID { get; set; }
         public string Status { get; set; }
         public string notification_code { get; set; }

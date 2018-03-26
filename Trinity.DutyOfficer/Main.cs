@@ -40,7 +40,8 @@ namespace DutyOfficer
             Trinity.SignalR.Client.Instance.OnAppDisconnected += OnAppDisconnected_Handler;
             Trinity.SignalR.Client.Instance.OnQueueCompleted += OnQueueCompleted_Handler;
             Trinity.SignalR.Client.Instance.OnQueueInserted += OnQueueInserted_Handler;
-            Trinity.SignalR.Client.Instance.OnAppointmentBookedOrReported += OnAppointmentBookedOrReported_Handler;
+            Trinity.SignalR.Client.Instance.OnAppointmentBooked += OnAppointmentBooked_Handler;
+            Trinity.SignalR.Client.Instance.OnAppointmentReported += OnAppointmentReported_Handler;
             Trinity.SignalR.Client.Instance.OnSSACompleted += OnSSACompleted_Handler;
             Trinity.SignalR.Client.Instance.OnSSAInsertedLabel += OnSSAInsertedLabel_Handler;
             Trinity.SignalR.Client.Instance.OnBackendAPISend += OnBackendAPISend_Handler;
@@ -126,7 +127,14 @@ namespace DutyOfficer
         {
             RefreshCurrentTab(EnumDOTabName.MUBLabel);
         }
-        private void OnAppointmentBookedOrReported_Handler(object sender, NotificationInfo e)
+        private void OnAppointmentBooked_Handler(object sender, NotificationInfo e)
+        {
+            //string AppointmentID = e.AppointmentID;
+            //string Status = e.Status;
+            RefreshCurrentTab(EnumDOTabName.Appointments);
+            RefreshCurrentTab(EnumDOTabName.Statistics);
+        }
+        private void OnAppointmentReported_Handler(object sender, NotificationInfo e)
         {
             //string AppointmentID = e.AppointmentID;
             //string Status = e.Status;

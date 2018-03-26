@@ -75,7 +75,7 @@ namespace Trinity.BackendAPI.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpPost]
         public async System.Threading.Tasks.Task<IHttpActionResult> SHPComplete(string NRIC)
         {
             try
