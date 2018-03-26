@@ -39,6 +39,7 @@ namespace SSK
             //Notification
             Trinity.SignalR.Client.Instance.OnQueueCompleted += OnQueueCompleted_Handler;
             Trinity.SignalR.Client.Instance.OnDOUnblockSupervisee += DOUnblockSupervisee_Handler;
+            Trinity.SignalR.Client.Instance.OnAppointmentBooked += OnAppointmentBooked_Handler;
             // setup variables
             _smartCardFailed = 0;
             _fingerprintFailed = 0;
@@ -89,7 +90,10 @@ namespace SSK
             //Trinity.SignalR.Client.SignalR.Instance.SendNotificationToDutyOfficer("Hello Mr. Duty Officer!", "Hello Mr. Duty Officer! I'm a Supervisee");
 
         }
-
+        private void OnAppointmentBooked_Handler(object sender, NotificationInfo e)
+        {
+            
+        }
         private void DOUnblockSupervisee_Handler(object sender, NotificationInfo e)
         {
             APIUtils.FormQueueNumber.RefreshQueueNumbers();

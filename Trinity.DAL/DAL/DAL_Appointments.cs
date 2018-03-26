@@ -90,15 +90,8 @@ namespace Trinity.DAL
 
         public Appointment GetAppointmentByID(Guid ID)
         {
-            try
-            {
-                var data = _localUnitOfWork.DataContext.Appointments.FirstOrDefault(d => d.ID == ID);
-                return data;
-            }
-            catch (Exception)
-            {
-                return null;
-            }
+            var data = _localUnitOfWork.DataContext.Appointments.FirstOrDefault(d => d.ID == ID);
+            return data;
         }
 
         public BE.Appointment GetAppmtDetails(Guid ID)

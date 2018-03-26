@@ -76,7 +76,11 @@ namespace Trinity.NotificationServer
             {
                 Clients.Clients(Program.ProfileConnected.Where(d => d.isApp && d.Station == EnumStation.SSK).Select(d => d.ConnectionId).ToList()).OnNewNotification(notificationInfo);
             }
-            else if (notificationInfo.Name == NotificationNames.APPOINTMENT_BOOKED_OR_REPORTED)
+            else if (notificationInfo.Name == NotificationNames.APPOINTMENT_BOOKED)
+            {
+                Clients.Clients(Program.ProfileConnected.Where(d => d.isApp && (d.Station == EnumStation.DUTYOFFICER || d.Station == EnumStation.SSK)).Select(d => d.ConnectionId).ToList()).OnNewNotification(notificationInfo);
+            }
+            else if (notificationInfo.Name == NotificationNames.APPOINTMENT_REPORTED)
             {
                 Clients.Clients(Program.ProfileConnected.Where(d => d.isApp && d.Station == EnumStation.DUTYOFFICER).Select(d => d.ConnectionId).ToList()).OnNewNotification(notificationInfo);
             }
