@@ -113,6 +113,7 @@ namespace SSK
                 Trinity.DAL.DBContext.Timeslot minTimeSlot = arrQueue.Count > 0 ? arrQueue[0].Timeslot : null;
                 Trinity.DAL.DBContext.Timeslot nextTimeSlot = null;
                 string textTimeSlot = string.Empty;
+                string textBreakTime = string.Empty;
 
                 //Nếu ko có currentTimeslot  hoặc time slot nhỏ hơn currentTimeslot vẫn còn queue chưa xong
                 List<Trinity.DAL.DBContext.Queue> queueCurrent = new List<Queue>();
@@ -147,11 +148,23 @@ namespace SSK
                 }
                 else
                 {
+                    // get nextTimeSlot
                     nextTimeSlot = timeslots.FirstOrDefault(d => d.StartTime.Value >= DateTime.Now.TimeOfDay);
                     if (nextTimeSlot != null)
                     {
                         getQueueOther(queueOther, arrQueue, timeslots, nextTimeSlot);
+                        textBreakTime = "BREAK TIME (Next operation time: " + (DateTime.Today + nextTimeSlot.StartTime.Value).ToString("hh:mm tt") + ")";
                     }
+                    else
+                    {
+                        // if nextTimeSlot == null, get first timeslot of next day
+                        Timeslot nextDayTimeSlot = new DAL_Timeslots().GetNextTimeSlotFromDB();
+                        if (nextDayTimeSlot != null)
+                        {
+                            textBreakTime = "BREAK TIME (Next operation time: " + (DateTime.Today + nextDayTimeSlot.StartTime.Value).ToString("hh:mm tt") + ")";
+                        }
+                    }
+
                 }
 
                 //Nếu queueOther <8 lấy thêm những người bị block mà có lịch hôm nay
@@ -188,7 +201,7 @@ namespace SSK
                 //}
 
                 wbQueueNumber.InvokeScript("ShowTimeSlot",
-                    string.IsNullOrEmpty(textTimeSlot) ? "BREAK TIME" : textTimeSlot,
+                    string.IsNullOrEmpty(textTimeSlot) ? textBreakTime : textTimeSlot,
                     JsonConvert.SerializeObject(queueNowServing.Select(d => new { d.QueuedNumber, d.Type })),
                     JsonConvert.SerializeObject(queueCurrent.Select(d => new { d.QueuedNumber, d.Type }).Take(12)),
                     JsonConvert.SerializeObject(queueOther.Select(d => new { d.QueuedNumber, d.Type }).Take(8))
@@ -197,7 +210,7 @@ namespace SSK
             }
             catch (Exception ex)
             {
-
+                CSCallJS.ShowMessage(wbQueueNumber, "RefreshQueueNumbers", ex.Message);
             }
         }
 
