@@ -19,11 +19,37 @@ namespace Trinity.BackendAPI.Controllers
         public string notification_code { get; set; }
     }
 
+    public class SHPDrugResultsModel
+    {
+        public string NRIC { get; set; }
+        public DateTime? Datetime { get; set; }
+        public string MarkingNumber { get; set; }
+        public bool AMPH { get; set; }
+        public bool OPI { get; set; }
+        public bool COCA { get; set; }
+        public bool LSD { get; set; }
+        public bool MTQL { get; set; }
+        public bool KET { get; set; }
+        public bool CAT { get; set; }
+        public bool NPS { get; set; }
+        public bool BENZ { get; set; }
+        public bool THC { get; set; }
+        public bool BARB { get; set; }
+        public bool METH { get; set; }
+        public bool PCP { get; set; }
+        public bool BUPRE { get; set; }
+        public bool PPZ { get; set; }
+        public bool? IsSealed { get; set; }
+        public string SealedOrDiscardedBy { get; set; }
+        public DateTime? SealedOrDiscardedDate { get; set; }
+    }
+
 
     [Route("api/SHP/{Action}")]
     public class SHPController : ApiController
     {
         [HttpGet]
+        [ResponseType(typeof(SHPDrugResultsModel))]
         public IHttpActionResult SHPGetDrugResults(string markingnumber)
         {
             Trinity.DAL.DBContext.DrugResult result = new DAL.DAL_DrugResults().GetByMarkingNumber(markingnumber);
@@ -33,11 +59,11 @@ namespace Trinity.BackendAPI.Controllers
             }
             else
             {
-                return Ok(new
+                return Ok(new SHPDrugResultsModel()
                 {
-                    result.NRIC,
-                    result.timestamp,
-                    result.markingnumber,
+                    NRIC = result.NRIC,
+                    Datetime = result.timestamp,
+                    MarkingNumber = result.markingnumber,
                     AMPH = result.AMPH.GetValueOrDefault(false),
                     OPI = result.OPI.GetValueOrDefault(false),
                     COCA = result.COCA.GetValueOrDefault(false),

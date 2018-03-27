@@ -18,6 +18,7 @@ namespace Trinity.BackendAPI.Controllers
         public string notification_code { get; set; }
         public string NRIC { get; set; }
     }
+
     public class SSPTransactionModel
     {
         public string Type { get; set; }
@@ -27,10 +28,47 @@ namespace Trinity.BackendAPI.Controllers
         public string NRIC { get; set; }
     }
 
-    [Route("api/SSP/{Action}")]
+    public class SSPDrugResultsModel
+    {
+        public string NRIC { get; set; }
+        public DateTime? Datetime { get; set; }
+        public string MarkingNumber { get; set; }
+        public bool AMPH { get; set; }
+        public bool OPI { get; set; }
+        public bool COCA { get; set; }
+        public bool LSD { get; set; }
+        public bool MTQL { get; set; }
+        public bool KET { get; set; }
+        public bool CAT { get; set; }
+        public bool NPS { get; set; }
+        public bool BENZ { get; set; }
+        public bool THC { get; set; }
+        public bool BARB { get; set; }
+        public bool METH { get; set; }
+        public bool PCP { get; set; }
+        public bool BUPRE { get; set; }
+        public bool PPZ { get; set; }
+        public bool? IsSealed { get; set; }
+        public string SealedOrDiscardedBy { get; set; }
+        public DateTime? SealedOrDiscardedDate { get; set; }
+    }
+
+    public class SSPCaseOfficerModel
+    {
+        public string Name { get; set; }
+
+    }
+    public class SSPAuthenticateModel
+    {
+        public bool Found { get; set; }
+        public byte[] Right { get; set; }
+        public byte[] Left { get; set; }
+    }
+
+
+        [Route("api/SSP/{Action}")]
     public class SSPController : ApiController
     {
-
         [HttpPost]
         public async System.Threading.Tasks.Task<IHttpActionResult> SSPPostNotification([FromBody]SSPNotificationModel data)
         {
@@ -54,6 +92,7 @@ namespace Trinity.BackendAPI.Controllers
             else
                 return Ok(string.Empty);
         }
+
         [HttpPost]
         public IHttpActionResult SSPPostTransaction([FromBody]SSPTransactionModel data)
         {
@@ -64,19 +103,20 @@ namespace Trinity.BackendAPI.Controllers
         }
 
         [HttpGet]
+        [ResponseType(typeof(SSPAuthenticateModel))]
         public IHttpActionResult SSPAuthenticate(string NRIC)
         {
             Trinity.DAL.DBContext.Membership_Users user = new DAL.DAL_User().GetByNRIC(NRIC);
             if (user == null)
             {
-                return Ok(new
+                return Ok(new SSPAuthenticateModel()
                 {
                     Found = false
                 });
             }
             else
             {
-                return Ok(new
+                return Ok(new SSPAuthenticateModel()
                 {
                     Found = true,
                     Right = user.RightThumbFingerprint,
@@ -84,20 +124,18 @@ namespace Trinity.BackendAPI.Controllers
                 });
             }
         }
+
         [HttpGet]
+        [ResponseType(typeof(SSPCaseOfficerModel))]
         public IHttpActionResult SSPGetCaseOfficer(string NRIC)
         {
             Trinity.DAL.DBContext.Membership_Users user = new DAL.DAL_User().GetByNRIC(NRIC);
-            if (user == null)
-            {
-                return Ok(string.Empty);
-            }
-            else
-            {
-                return Ok(user.Name);
-            }
+
+            return Ok(new SSPCaseOfficerModel() { Name = user == null ? string.Empty : user.Name });
         }
+
         [HttpGet]
+        [ResponseType(typeof(SSPDrugResultsModel))]
         public IHttpActionResult SSPGetDrugResults(string NRIC, DateTime DateCreate)
         {
             Trinity.DAL.DBContext.DrugResult result = new DAL.DAL_DrugResults().GetByNRICAndDate(NRIC, DateCreate);
@@ -107,11 +145,11 @@ namespace Trinity.BackendAPI.Controllers
             }
             else
             {
-                return Ok(new
+                return Ok(new SSPDrugResultsModel()
                 {
-                    result.NRIC,
-                    result.timestamp,
-                    result.markingnumber,
+                    NRIC = result.NRIC,
+                    Datetime = result.timestamp,
+                    MarkingNumber = result.markingnumber,
                     AMPH = result.AMPH.GetValueOrDefault(false),
                     OPI = result.OPI.GetValueOrDefault(false),
                     COCA = result.COCA.GetValueOrDefault(false),

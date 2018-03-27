@@ -760,6 +760,7 @@ namespace SSK
         {
             _web.InvokeScript("showImgScanDocument", JsonConvert.SerializeObject(frontPath));
         }
+
         public void StartScanDocument()
         {
             Trinity.Util.DocumentScannerUtil.Instance.StartScanning(ScanDocumentCallBack);
