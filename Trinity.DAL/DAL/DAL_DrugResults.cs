@@ -40,10 +40,16 @@ namespace Trinity.DAL
             return arrayQueueUpdateed;
         }
 
-        public DBContext.DrugResult GetByNRICAndDate(string NRIC, DateTime DateCreate)
+        public DBContext.DrugResult GetByNRICAndUploadedDate(string NRIC, DateTime UploadedDate)
         {
-            DateCreate = DateCreate.Date;
-            return _localUnitOfWork.DataContext.DrugResults.FirstOrDefault(d => d.NRIC.Equals(NRIC) && DbFunctions.TruncateTime(d.UploadedDate) == DateCreate);
+            UploadedDate = UploadedDate.Date;
+            return _localUnitOfWork.DataContext.DrugResults.FirstOrDefault(d => d.NRIC.Equals(NRIC) && DbFunctions.TruncateTime(d.UploadedDate) == UploadedDate);
+        }
+
+        public DBContext.DrugResult GetByNRICAndTimestamp(string NRIC, DateTime Timestamp)
+        {
+            Timestamp = Timestamp.Date;
+            return _localUnitOfWork.DataContext.DrugResults.FirstOrDefault(d => d.NRIC.Equals(NRIC) && DbFunctions.TruncateTime(d.timestamp) == Timestamp);
         }
 
         public DBContext.DrugResult GetByMarkingNumber(string MarkingNumber)

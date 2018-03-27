@@ -58,6 +58,7 @@ namespace Trinity.BackendAPI.Controllers
         public string Name { get; set; }
 
     }
+
     public class SSPAuthenticateModel
     {
         public bool Found { get; set; }
@@ -66,7 +67,7 @@ namespace Trinity.BackendAPI.Controllers
     }
 
 
-        [Route("api/SSP/{Action}")]
+    [Route("api/SSP/{Action}")]
     public class SSPController : ApiController
     {
         [HttpPost]
@@ -136,9 +137,49 @@ namespace Trinity.BackendAPI.Controllers
 
         [HttpGet]
         [ResponseType(typeof(SSPDrugResultsModel))]
-        public IHttpActionResult SSPGetDrugResults(string NRIC, DateTime DateCreate)
+        [Route("api/SSP/SSPGetDrugResults")]
+        public IHttpActionResult SSPGetDrugResults_UploadedDate(string NRIC, DateTime UploadedDate)
         {
-            Trinity.DAL.DBContext.DrugResult result = new DAL.DAL_DrugResults().GetByNRICAndDate(NRIC, DateCreate);
+            Trinity.DAL.DBContext.DrugResult result = new DAL.DAL_DrugResults().GetByNRICAndUploadedDate(NRIC, UploadedDate);
+            if (result == null)
+            {
+                return Ok();
+            }
+            else
+            {
+                return Ok(new SSPDrugResultsModel()
+                {
+                    NRIC = result.NRIC,
+                    Datetime = result.timestamp,
+                    MarkingNumber = result.markingnumber,
+                    AMPH = result.AMPH.GetValueOrDefault(false),
+                    OPI = result.OPI.GetValueOrDefault(false),
+                    COCA = result.COCA.GetValueOrDefault(false),
+                    LSD = result.LSD.GetValueOrDefault(false),
+                    MTQL = result.MTQL.GetValueOrDefault(false),
+                    KET = result.KET.GetValueOrDefault(false),
+                    CAT = result.CAT.GetValueOrDefault(false),
+                    NPS = result.NPS.GetValueOrDefault(false),
+                    BENZ = result.BENZ.GetValueOrDefault(false),
+                    THC = result.THC.GetValueOrDefault(false),
+                    BARB = result.BARB.GetValueOrDefault(false),
+                    METH = result.METH.GetValueOrDefault(false),
+                    PCP = result.PCP.GetValueOrDefault(false),
+                    BUPRE = result.BUPRE.GetValueOrDefault(false),
+                    PPZ = result.PPZ.GetValueOrDefault(false),
+                    IsSealed = result.IsSealed,
+                    SealedOrDiscardedBy = result.SealedOrDiscardedBy,
+                    SealedOrDiscardedDate = result.SealedOrDiscardedDate
+                });
+            }
+        }
+
+        [HttpGet]
+        [ResponseType(typeof(SSPDrugResultsModel))]
+        [Route("api/SSP/SSPGetDrugResults")]
+        public IHttpActionResult SSPGetDrugResults_ByTimestamp(string NRIC, DateTime Timestamp)
+        {
+            Trinity.DAL.DBContext.DrugResult result = new DAL.DAL_DrugResults().GetByNRICAndTimestamp(NRIC, Timestamp);
             if (result == null)
             {
                 return Ok();
