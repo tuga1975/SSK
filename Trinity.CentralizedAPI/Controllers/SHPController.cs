@@ -43,7 +43,10 @@ namespace Trinity.BackendAPI.Controllers
         public string SealedOrDiscardedBy { get; set; }
         public DateTime? SealedOrDiscardedDate { get; set; }
     }
-
+    public class SHPCompleteModel
+    {
+        public string NRIC { get; set; }
+    }
 
     [Route("api/SHP/{Action}")]
     public class SHPController : ApiController

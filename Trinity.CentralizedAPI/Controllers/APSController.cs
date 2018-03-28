@@ -22,6 +22,7 @@ namespace Trinity.BackendAPI.Controllers
     public class APSController : ApiController
     {
         [HttpPost]
+        [ResponseType(typeof(APSBookAppointmentResponses))]
         public async System.Threading.Tasks.Task<IHttpActionResult> APSBookAppointment(string UserID, string AppointmentID, string TimeSlotID)
         {
             try
