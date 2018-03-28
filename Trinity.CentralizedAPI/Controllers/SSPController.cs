@@ -92,19 +92,27 @@ namespace Trinity.BackendAPI.Controllers
                     await System.Threading.Tasks.Task.Run(() => Trinity.SignalR.Client.Instance.BackendAPISend(NotificationNames.SSP_ERROR, data.NRIC));
                 }
                 await System.Threading.Tasks.Task.Run(() => Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(user != null ? user.UserId : null, null, data.Content, data.Type, EnumStation.ESP, false));
-                return Ok(IDNoti);
+                //return Ok(IDNoti);
+                return Ok(true);
             }
             else
-                return Ok(string.Empty);
+            {
+                //return Ok(string.Empty);
+                return Ok(false);
+            }
         }
 
         [HttpPost]
         public IHttpActionResult SSPPostTransaction([FromBody]SSPTransactionModel data)
         {
             if (new DAL.DAL_Transactions().Insert(data.NRIC, EnumStation.ESP, data.Type, data.Content, data.Datetime, data.transaction_code) != Guid.Empty)
+            {
                 return Ok(true);
+            }
             else
+            {
                 return Ok(false);
+            }
         }
 
         [HttpGet]
@@ -142,9 +150,9 @@ namespace Trinity.BackendAPI.Controllers
         [HttpGet]
         [ResponseType(typeof(SSPDrugResultsModel))]
         [Route("api/SSP/SSPGetDrugResults")]
-        public IHttpActionResult SSPGetDrugResults_UploadedDate(string NRIC, DateTime UploadedDate)
+        public IHttpActionResult SSPGetDrugResultsByUploadedDate(string NRIC, DateTime uploadedDate)
         {
-            Trinity.DAL.DBContext.DrugResult result = new DAL.DAL_DrugResults().GetByNRICAndUploadedDate(NRIC, UploadedDate);
+            Trinity.DAL.DBContext.DrugResult result = new DAL.DAL_DrugResults().GetByNRICAndUploadedDate(NRIC, uploadedDate);
             if (result == null)
             {
                 return Ok();
@@ -181,9 +189,9 @@ namespace Trinity.BackendAPI.Controllers
         [HttpGet]
         [ResponseType(typeof(SSPDrugResultsModel))]
         [Route("api/SSP/SSPGetDrugResults")]
-        public IHttpActionResult SSPGetDrugResults_ByTimestamp(string NRIC, DateTime Timestamp)
+        public IHttpActionResult SSPGetDrugResultsByTimestamp(string NRIC, DateTime timestamp)
         {
-            Trinity.DAL.DBContext.DrugResult result = new DAL.DAL_DrugResults().GetByNRICAndTimestamp(NRIC, Timestamp);
+            Trinity.DAL.DBContext.DrugResult result = new DAL.DAL_DrugResults().GetByNRICAndTimestamp(NRIC, timestamp);
             if (result == null)
             {
                 return Ok();
