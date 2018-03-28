@@ -90,21 +90,23 @@ namespace Trinity.BackendAPI.Controllers
         }
 
         [HttpPost]
+        [ResponseType(typeof(bool))]
         public async System.Threading.Tasks.Task<IHttpActionResult> SHPPostNotification([FromBody] SHPNotificationModel data)
         {
             string IDNoti = new DAL.DAL_Notification().InsertNotification(null, null, null, data.Content, false, data.Datetime.Value, data.notification_code, data.Type, EnumStation.UHP);
             if (string.IsNullOrEmpty(IDNoti))
             {
-                return Ok(string.Empty);
+                return Ok(false);
             }
             else
             {
                 await System.Threading.Tasks.Task.Run(() => Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(null, null, data.Content, data.Type, EnumStation.UHP, false));
-                return Ok(IDNoti);
+                return Ok(true);
             }
         }
 
         [HttpPost]
+        [ResponseType(typeof(bool))]
         public async System.Threading.Tasks.Task<IHttpActionResult> SHPComplete([FromBody]SHPCompleteModel model)
         {
             try

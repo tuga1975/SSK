@@ -84,18 +84,20 @@ namespace Trinity.Device.Util
                 //Setup the media size and sensor type info
                 // page size 55mm x 30mm
                 // template size 45mm x 30mm (actually 55mm x 32.5mm)
-                TSCLIB_DLL.setup("55", "32.5", "4", "8", "0", "0", "0");
-                TSCLIB_DLL.sendcommand("GAP 3mm, 0mm");
+                //TSCLIB_DLL.setup("55", "32.5", "4", "8", "0", "0", "0");
+                //TSCLIB_DLL.sendcommand("GAP 3mm, 0mm");
+                TSCLIB_DLL.setup("52.5", "30", "4", "8", "0", "0", "0");
+                TSCLIB_DLL.sendcommand("GAP 1.3mm, 0mm");
                 TSCLIB_DLL.sendcommand("DIRECTION 0");
                 TSCLIB_DLL.sendcommand("CLS");
 
                 //Clear image buffer
-                TSCLIB_DLL.clearbuffer();
+                //TSCLIB_DLL.clearbuffer();
 
                 // DPI = 203 => 8px = 1 mm
                 //Draw windows font
-                int startX = 54;
-                int startY = 28;
+                int startX = 40;
+                int startY = 0;
                 string fontName = "ARIAL";
                 int fontStyle = 2; // Bold
                 int fontHeight = 30;
@@ -159,18 +161,19 @@ namespace Trinity.Device.Util
                 // page size 55mm x 30mm
                 // template size 45mm x 30mm (actually 55mm x 32.5mm)
                 //TSCLIB_DLL.setup("55", "32.5", "4", "8", "0", "0", "0");
-                TSCLIB_DLL.setup("50", "30", "4", "8", "0", "0", "0");
-                TSCLIB_DLL.sendcommand("GAP 3mm, 0mm");
+                //TSCLIB_DLL.sendcommand("GAP 3mm, 0mm");
+                TSCLIB_DLL.setup("52.5", "30", "4", "8", "0", "0", "0");
+                TSCLIB_DLL.sendcommand("GAP 1.3mm, 0mm");
                 TSCLIB_DLL.sendcommand("DIRECTION 1");
                 TSCLIB_DLL.sendcommand("CLS");
 
                 //Clear image buffer
-                TSCLIB_DLL.clearbuffer();
+                //TSCLIB_DLL.clearbuffer();
 
                 // DPI = 203 => 8px = 1 mm
                 //Draw windows font
-                int startX = 54;
-                int startY = 28;
+                int startX = 40;
+                int startY = 0;
                 string fontName = "ARIAL";
                 int fontStyle = 2; // Bold
                 int fontHeight = 30;
@@ -252,8 +255,10 @@ namespace Trinity.Device.Util
                 // send FEED command
                 //TSCLIB_DLL.sendcommand("FEED 80");
 
-                TSCLIB_DLL.sendcommand("SIZE 40mm, 82mm");
-                TSCLIB_DLL.sendcommand("GAP 3mm, 0mm");
+                //TSCLIB_DLL.sendcommand("SIZE 40mm, 82mm");
+                //TSCLIB_DLL.sendcommand("GAP 3mm, 0mm");
+                TSCLIB_DLL.sendcommand("SIZE 42.5mm, 80mm");
+                TSCLIB_DLL.sendcommand("GAP 1.3mm, 0mm");
                 TSCLIB_DLL.sendcommand("DIRECTION 0");
                 TSCLIB_DLL.sendcommand("CLS");
                 //TSCLIB_DLL.sendcommand("BOX 0,0,312,624,4");
