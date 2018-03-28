@@ -10,7 +10,7 @@ using Trinity.Common;
 
 namespace Trinity.BackendAPI.Controllers
 {
-   
+
     public class SHPNotificationModel
     {
         public string Type { get; set; }
@@ -96,11 +96,13 @@ namespace Trinity.BackendAPI.Controllers
             string IDNoti = new DAL.DAL_Notification().InsertNotification(null, null, null, data.Content, false, data.Datetime.Value, data.notification_code, data.Type, EnumStation.UHP);
             if (string.IsNullOrEmpty(IDNoti))
             {
+                //return Ok(string.Empty);
                 return Ok(false);
             }
             else
             {
                 await System.Threading.Tasks.Task.Run(() => Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(null, null, data.Content, data.Type, EnumStation.UHP, false));
+                //return Ok(IDNoti);
                 return Ok(true);
             }
         }
@@ -121,6 +123,5 @@ namespace Trinity.BackendAPI.Controllers
                 return Ok(false);
             }
         }
-
     }
 }
