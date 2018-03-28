@@ -155,7 +155,7 @@ namespace Experiment
 
         private void btnPrintTTLabel_Click(object sender, EventArgs e)
         {
-            BarcodePrinterUtil.Instance.PrintTTLabel(new TTLabelInfo()
+            BarcodePrinterUtil.Instance.PrintTTLabel_Direction_0(new TTLabelInfo()
             {
                 ID = "S9872509D",
                 Name = "Do Duc Tu",
@@ -165,7 +165,7 @@ namespace Experiment
 
         private void btnPrintTTLabel_2_Click(object sender, EventArgs e)
         {
-            BarcodePrinterUtil.Instance.PrintTTLabel(new TTLabelInfo()
+            BarcodePrinterUtil.Instance.PrintTTLabel_Direction_0(new TTLabelInfo()
             {
                 ID = "S9872509D",
                 Name = "Do Duc Tu TVO Long Name",
@@ -347,6 +347,31 @@ namespace Experiment
         {
             BarcodeScannerUtil.Instance.StopScanning();
             BarcodeScannerUtil.Instance.Disconnect();
+        }
+
+        private void button12_Click(object sender, EventArgs e)
+        {
+            bool result = BarcodePrinterUtil.Instance.PrintTTLabel_Direction_0(new TTLabelInfo()
+            {
+                ID = "S9872509D",
+                Name = "Do Duc Tu TVO Long Name",
+                MarkingNumber = "CSA18001901"
+            });
+
+            AlertResult(result);
+        }
+
+        private void button13_Click(object sender, EventArgs e)
+        {
+
+            bool result = BarcodePrinterUtil.Instance.PrintTTLabel_Direction_1(new TTLabelInfo()
+            {
+                ID = "S9872509D",
+                Name = "Do Duc Tu TVO Long Name",
+                MarkingNumber = "CSA18001901"
+            });
+
+            AlertResult(result);
         }
     }
 }

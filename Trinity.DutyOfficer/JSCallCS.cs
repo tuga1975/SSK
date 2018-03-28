@@ -69,7 +69,7 @@ namespace DutyOfficer
         public void LoadDrugsTest(string userId)
         {
             var user = new Trinity.DAL.DAL_User().GetUserById(userId);
-            Trinity.DAL.DBContext.DrugResult dbDrugResult = new Trinity.DAL.DAL_DrugResults().GetByNRICAndDate(user.NRIC,DateTime.Today);
+            Trinity.DAL.DBContext.DrugResult dbDrugResult = new Trinity.DAL.DAL_DrugResults().GetByNRICAndUploadedDate(user.NRIC,DateTime.Today);
             if (dbDrugResult != null)
             {
                 this._web.LoadPopupHtml("QueuePopupDrugs.html", new
@@ -225,7 +225,7 @@ namespace DutyOfficer
 
                 if (resultUT == EnumUTResult.NEG)
                 {
-                    var drugResult = new DAL_DrugResults().GetByNRICAndDate(queueDetail.NRIC, queueDetail.Date);
+                    var drugResult = new DAL_DrugResults().GetByNRICAndUploadedDate(queueDetail.NRIC, queueDetail.Date);
                     if (drugResult != null && drugResult.IsSealed.Value)
                     {
                         this._web.InvokeScript("openPopupOutcome", queueId);

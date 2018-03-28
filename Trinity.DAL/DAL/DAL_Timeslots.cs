@@ -23,26 +23,29 @@ namespace Trinity.DAL
 
         public List<Timeslot> GetTimeSlots(DateTime date)
         {
-            date = date.Date;
             try
             {
-                List<Timeslot> timeslots = _localUnitOfWork.DataContext.Timeslots.Where(item => DbFunctions.TruncateTime(item.Date) == date).OrderBy(item => item.StartTime).ToList();
-
-                // if local have no data, get data from centralizedapi, then update local
-                if (timeslots == null && !EnumAppConfig.ByPassCentralizedDB)
-                {
-                    bool centralizeStatus;
-                    var centralData = CallCentralized.Get<List<Timeslot>>(EnumAPIParam.Setting, "GetTimeslots", out centralizeStatus, date.ToString());
-                    if (centralizeStatus)
-                    {
-                        //update local
-                        new DAL_Setting().InsertTimeslots(centralData);
-                        //return data
-                        return centralData;
-                    }
-                }
+                List<Timeslot> timeslots = _localUnitOfWork.DataContext.Timeslots.Where(item => DbFunctions.TruncateTime(item.Date) == date.Date).OrderBy(item => item.StartTime).ToList();
 
                 return timeslots;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public Timeslot GetNextTimeSlotFromDB()
+        {
+            try
+            {
+                var date = DateTime.Now.Date;
+                Timeslot timeslot = _localUnitOfWork.DataContext.Timeslots
+                    .Where(item => DbFunctions.TruncateTime(item.Date) > date)
+                    .OrderBy(item => item.StartTime)
+                    .FirstOrDefault();
+
+                return timeslot;
             }
             catch (Exception ex)
             {

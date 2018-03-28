@@ -10,20 +10,9 @@ input {
     border: 1px solid #CCC;
 }
 
-#parent-content {
-    position: fixed;
-    z-index: 1;
-    width: 100%;
-    height: calc(100% - 110px);
-    top: 110px;
-    left: 0px;
-    overflow-x: hidden;
-    overflow-y: auto;
-}
-
 #content {
     /*margin: 10px 10px 10px 10px;*/
-    position: relative;
+    /*position: relative;*/
 }
 
 .loading {
@@ -70,9 +59,9 @@ input {
     padding: 15px 30px;
 }
 
-#header .logoGoverment {
-    margin-top: 10px;
-}
+    #header .logoGoverment {
+        margin-top: 10px;
+    }
 
 .CheckerDeviceStatus {
     margin-top: 15px;
@@ -124,7 +113,7 @@ span[color] {
     position: fixed;
     top: 150px;
     width: 100%;
-    z-index: 10;
+    z-index: 100;
     background: #334352;
     color: #1cacf6;
     display: flex;
@@ -133,57 +122,60 @@ span[color] {
     font-size: 17px;
 }
 
-#menu span {
-    width: auto;
-    float: left;
-    margin-right: 5px;
-}
+    #menu span {
+        width: auto;
+        float: left;
+        margin-right: 5px;
+    }
 
 
-#menu .menu-item {
-    padding: 15px 0px;
-    cursor: pointer;
-}
+    #menu .menu-item {
+        padding: 15px 0px;
+        cursor: pointer;
+    }
 
-#menu .menu-item:hover,
-#menu .menu-item.active,
-#menu .menu-item:focus {
-    background: #fff;
-    color: #334352;
-}
+        #menu .menu-item:hover,
+        #menu .menu-item.active,
+        #menu .menu-item:focus {
+            background: #fff;
+            color: #334352;
+        }
 
-#menu [item-menu] {
-    display: table-cell;
-    /*padding: 5px 10px;*/
-    position: relative;
-    /*cursor: pointer;*/
-}
+    #menu [item-menu] {
+        display: table-cell;
+        /*padding: 5px 10px;*/
+        position: relative;
+        /*cursor: pointer;*/
+    }
 
-#menu [item-menu]::before {
-    content: attr(text-menu);
-}
+        #menu [item-menu]::before {
+            content: attr(text-menu);
+        }
 
-#menu [item-menu]:hover {
-    background-color: #fff;
-}
+        #menu [item-menu]:hover {
+            background-color: #fff;
+        }
 
-#menu [item-menu].active {
-    background-color: #fff;
-}
-#menu .menu-item .icon-active {
-    display: none;
-}
-#menu .menu-item.active .icon-active,
-#menu .menu-item:hover .icon-active,
-#menu .menu-item:focus .icon-active {
-    display: block;
-}
-#menu .menu-item.active .icon,
-#menu .menu-item:hover .icon,
-#menu .menu-item:focus.icon {
-    display: none;
-}
-    
+        #menu [item-menu].active {
+            background-color: #fff;
+        }
+
+    #menu .menu-item .icon-active {
+        display: none;
+    }
+
+    #menu .menu-item.active .icon-active,
+    #menu .menu-item:hover .icon-active,
+    #menu .menu-item:focus .icon-active {
+        display: block;
+    }
+
+    #menu .menu-item.active .icon,
+    #menu .menu-item:hover .icon,
+    #menu .menu-item:focus.icon {
+        display: none;
+    }
+
 /*End MENU*/
 [itemview] {
     position: relative;
@@ -191,39 +183,39 @@ span[color] {
     min-height: 40px;
 }
 
-[itemview] [itemview-title] {
-    width: 150px;
-    height: 100%;
-    border: 1px solid #333;
-    vertical-align: middle;
-    text-align: left;
-    box-sizing: border-box;
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    padding: 0px 5px;
-}
+    [itemview] [itemview-title] {
+        width: 150px;
+        height: 100%;
+        border: 1px solid #333;
+        vertical-align: middle;
+        text-align: left;
+        box-sizing: border-box;
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        padding: 0px 5px;
+    }
 
-[itemview] [itemview-title]:before {
-    content: attr(title);
-    position: absolute;
-    top: 50%;
-    -webkit-transform: translate(0px, -50%);
-    -moz-transform: translate(0px, -50%);
-    -ms-transform: translate(0px, -50%);
-    -o-transform: translate(0px, -50%);
-    transform: translate(0px, -50%);
-}
+        [itemview] [itemview-title]:before {
+            content: attr(title);
+            position: absolute;
+            top: 50%;
+            -webkit-transform: translate(0px, -50%);
+            -moz-transform: translate(0px, -50%);
+            -ms-transform: translate(0px, -50%);
+            -o-transform: translate(0px, -50%);
+            transform: translate(0px, -50%);
+        }
 
-[itemview] [itemview-content] {
-    display: block;
-    width: calc(100% - 170px);
-    margin-left: 170px;
-    padding: 10px;
-    text-align: center;
-    border: 1px solid #333;
-    min-height: 40px;
-}
+    [itemview] [itemview-content] {
+        display: block;
+        width: calc(100% - 170px);
+        margin-left: 170px;
+        padding: 10px;
+        text-align: center;
+        border: 1px solid #333;
+        min-height: 40px;
+    }
 
 .contentWrapper {
     position: relative;
@@ -250,10 +242,10 @@ span[color] {
     margin: 10px 0;
 }
 
-.contentWrapper .input-group:hover,
-.contentWrapper .input-group:focus {
-    border-bottom: 1px solid #1CACF6;
-}
+    .contentWrapper .input-group:hover,
+    .contentWrapper .input-group:focus {
+        border-bottom: 1px solid #1CACF6;
+    }
 
 .contentWrapper .input-group-addon {
     color: #1CACF6;
@@ -271,17 +263,17 @@ span[color] {
     width: calc(100% - 100px);
 }
 
-.contentWrapper input[readonly='readonly'] {
-    background: none;
-}
+    .contentWrapper input[readonly='readonly'] {
+        background: none;
+    }
 
-.contentWrapper input:hover,
-.contentWrapper input:focus,
-.contentWrapper input:active {
-    border: none;
-    box-shadow: none;
-    background: none;
-}
+    .contentWrapper input:hover,
+    .contentWrapper input:focus,
+    .contentWrapper input:active {
+        border: none;
+        box-shadow: none;
+        background: none;
+    }
 
 .btn {
     color: #1CACF6;
@@ -292,11 +284,11 @@ span[color] {
     border-radius: 4px;
 }
 
-.btn:hover,
-.btn:focus {
-    color: #ffffff;
-    background: #1CACF6;
-}
+    .btn:hover,
+    .btn:focus {
+        color: #ffffff;
+        background: #1CACF6;
+    }
 
 #divSave {
     display: block;
@@ -307,12 +299,22 @@ span[color] {
 }
 
 /*Content layout*/
-#parent-content {
+/*#parent-content {
     position: relative;
     width: 100%;
     overflow: hidden;
     margin-bottom: 50px;
-    top: 180px;    
+    top: 220px;    
+}*/
+#parent-content {
+    position: fixed;
+    z-index: 10;
+    width: 100%;
+    height: calc(100vh - 290px);
+    top: 270px;
+    left: 0px;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 #content {
@@ -329,22 +331,16 @@ span[color] {
 }
 
 /*table content*/
-.table-wrapper {
-    margin-top: 20px;
-    width: 100%;
-    overflow: hidden;
-}
 
 .tab-header {
     border-bottom: 1px solid #d2d2d2;
     padding: 40px 0 9px 40px;
     position: fixed;
-    z-index: 100;
+    z-index: 10;
     top: 190px;
     left: 0;
     width: 100%;
     background: #fff;
-
 }
 
 .tab-header span {
@@ -353,18 +349,16 @@ span[color] {
     padding-bottom: 10px;
     font-size: 18px;
 }
+
 .tab-content {
     padding: 20px 40px;
-    margin-top: 70px;
-    max-height: calc(100vh - 300px);
-    overflow: auto;    
+    overflow: auto;
 }
 
 .tab-content .tabtitle span {
     color: #1cacf6;
     font-weight: 500;
 }
-
 table {
     font-size: 14px;
     width: 100%;
@@ -373,24 +367,32 @@ table {
     border: none !important;
     position: relative;
     height: 100%;
+    margin-top: 20px;
 }
+
 table th,
 table tr.active {
     background-color: #f6f6f6;
     border-color: #fff;
 }
+
 table th[checkbox] {
     padding: 0 20px;
 }
 /*Search, Filter*/
-/*.fixed-table-toolbar .search {
+.fixed-table-toolbar .search {
     font-size: 14px;
-    position: fixed;
-    z-index: 200;
-    top: -50px;
-    left: 230px;
-    background: #f6f6f6;
-}*/
+    position: fixed !important;
+    z-index: 10;
+    top: 210px;
+    right: 40px;
+    
+}
+.fixed-table-toolbar .search .form-control {
+    background-color: #f6f6f6;
+    border: 0;
+    padding: 10px 12px;
+}
 table thead th .both {
     background-image: url(../img/icon-sort.png) !important;
     margin-right: 10px !important;
@@ -433,15 +435,15 @@ table th {
     padding-bottom: 20px;
 }
 
-.formEntries .entries,
-.formFilter .filters {
-    font-size: 14px;
-    margin: 0 5px;
-    color: #848484;
-    /*display: inline-block;*/
-    width: auto;
-    float: left;
-}
+    .formEntries .entries,
+    .formFilter .filters {
+        font-size: 14px;
+        margin: 0 5px;
+        color: #848484;
+        /*display: inline-block;*/
+        width: auto;
+        float: left;
+    }
 
 .formEntries select#pageSize {
     font-size: 14px;
@@ -481,10 +483,10 @@ table th {
     background-size: contain;
 }
 
-.scanSmartCart img {
-    width: auto;
-    height: 100%;
-}
+    .scanSmartCart img {
+        width: auto;
+        height: 100%;
+    }
 
 .manualLogin {
     display: block;
@@ -492,15 +494,15 @@ table th {
     padding-right: 3%;
 }
 
-.manualLogin a {
-    color: #1CACF6;
-    font-weight: bold;
-    font-size: 14px;
-}
+    .manualLogin a {
+        color: #1CACF6;
+        font-weight: bold;
+        font-size: 14px;
+    }
 
-.manualLogin img {
-    width: 25px;
-}
+    .manualLogin img {
+        width: 25px;
+    }
 
 .titles {
     overflow: hidden;
@@ -511,10 +513,10 @@ table th {
     font-weight: bold;
 }
 
-.titles span {
-    border-bottom: 2px solid pink;
-    padding-bottom: 10px;
-}
+    .titles span {
+        border-bottom: 2px solid pink;
+        padding-bottom: 10px;
+    }
 
 /*FingerPrint*/
 .fingerPrint {
@@ -527,6 +529,7 @@ table th {
     background-repeat: no-repeat;
     background-size: contain;
 }
+
 .notifyCount {
     background: red;
     color: white;
@@ -555,61 +558,72 @@ table th {
 .modal-content {
     padding: 30px 40px 20px 40px;
 }
+
 .modal-header,
 .modal-body,
 .modal-footer {
     border: none;
 }
-.modal-header h4 {
-    color: #334352;
-    font-weight: bold;
-}
-.modal-header span {
-    font-size: 50px;
-    font-weight: 300;
-    position: absolute;
-    right: 20px;
-    top: 30px;
-    color: #999;
-}
-.modal-body .input-group {
-    width: 100%;
-    float: left;
-    overflow: hidden;
-    padding: 15px 0;
-    border-bottom: 1px solid #e7e7e7;
-}
-.modal-body label {
-    color: #1cacf6;
-    width: 30%;
-    float: left;
-}
-.modal-body textarea {
-    border: 1px solid #e7e7e7;
-    box-shadow: none;
-    color: #334352;
-    padding: 15px;
-}
-.modal-body .textarea {
-    padding: 15px 0;
-}
-.modal-body span {
-    color: #334352;
-    width: 70%;
-    float: left;
-}
-.modal-body input {
-    background: none;
-    border: none;
-} 
-.modal-body input[readonly] {
-    background: none;
-}
-.modal-footer button {
-    width: auto;
-    padding: 10px 40px;
-    border-radius: 5px;
-}
+
+    .modal-header h4 {
+        color: #334352;
+        font-weight: bold;
+    }
+
+    .modal-header span {
+        font-size: 50px;
+        font-weight: 300;
+        position: absolute;
+        right: 20px;
+        top: 30px;
+        color: #999;
+    }
+
+    .modal-body .input-group {
+        width: 100%;
+        float: left;
+        overflow: hidden;
+        padding: 15px 0;
+        border-bottom: 1px solid #e7e7e7;
+    }
+
+    .modal-body label {
+        color: #1cacf6;
+        width: 30%;
+        float: left;
+    }
+
+    .modal-body textarea {
+        border: 1px solid #e7e7e7;
+        box-shadow: none;
+        color: #334352;
+        padding: 15px;
+    }
+
+    .modal-body .textarea {
+        padding: 15px 0;
+    }
+
+    .modal-body span {
+        color: #334352;
+        width: 70%;
+        float: left;
+    }
+
+    .modal-body input {
+        background: none;
+        border: none;
+    }
+
+        .modal-body input[readonly] {
+            background: none;
+        }
+
+    .modal-footer button {
+        width: auto;
+        padding: 10px 40px;
+        border-radius: 5px;
+    }
 
 /*SETTING*/
 #operationTable td,
@@ -618,26 +632,31 @@ table th {
     display: table-cell;
     vertical-align: middle;
 }
+
 #operationTable tr th {
     border-bottom: 1px solid #dedede !important;
     border-top: 1px solid #dedede !important;
 }
+
 #panel-holidays .tabactive button {
     padding: 5px 20px;
     border-radius: 4px;
     border: 1px solid #1cacf6;
     font-size: 12px;
 }
+
 #panel-holidays {
     width: 65%;
     float: left;
     margin-top: 30px;
 }
+
 #panel-changeHistory {
     width: 80%;
     float: left;
     margin-top: 30px;
 }
+
 #holidayTable .fixed-table-container input[type="checkbox"] {
     background: #1cacf6;
     color: #fff;
@@ -648,6 +667,7 @@ table th {
     float: left;
     border: none;
 }
+
 #editSlot .heading {
     overflow: hidden;
     border-bottom: 1px solid #dedede;
@@ -656,6 +676,7 @@ table th {
     margin-bottom: 15px;
     cursor: pointer;
 }
+
 #editSlot select {
     width: auto;
     float: left;
@@ -664,34 +685,40 @@ table th {
     border-radius: 0;
     color: #848484;
 }
+
 .heading span,
 .datetime label {
     color: #1cacf6;
 }
+
 .margin-top {
     position: relative;
     top: 7px;
 }
+
 .editSlotContent {
     margin-bottom: 15px;
 }
-.datetime label,
-.datetime select,
-.editSlotContent span,
-.editSlotContent select,
-.editSlotContent input,
-.headingWrapper span {
-    float: left;
-    width: auto;
-    margin: 0;
-}
-.editSlotContent input[type="text"] {
-    border-bottom: 1px solid #dedede;
-    border-radius: 0;
-}
-.editSlotContent .margin {
-    margin: 0 5px;
-}
+
+    .datetime label,
+    .datetime select,
+    .editSlotContent span,
+    .editSlotContent select,
+    .editSlotContent input,
+    .headingWrapper span {
+        float: left;
+        width: auto;
+        margin: 0;
+    }
+
+        .editSlotContent input[type="text"] {
+            border-bottom: 1px solid #dedede;
+            border-radius: 0;
+        }
+
+    .editSlotContent .margin {
+        margin: 0 5px;
+    }
 
 .firstIcon i {
     border: 1px solid #1cacf6;
@@ -703,25 +730,30 @@ table th {
     margin-right: 20px;
     text-align: center
 }
-.secIcon {  
+
+.secIcon {
     width: auto;
     float: right;
     position: absolute;
     right: 0;
 }
-.secIcon i {
-    font-size: 30px;
-}
+
+    .secIcon i {
+        font-size: 30px;
+    }
+
 .headingWrapper {
     width: 100%;
     float: left;
     position: relative;
     padding: 20px 0;
 }
-.headingWrapper[aria-expanded="true"] .firstIcon i {
-    color: #fff;
-    border-color: #848484;
-}
+
+    .headingWrapper[aria-expanded="true"] .firstIcon i {
+        color: #fff;
+        border-color: #848484;
+    }
+
 .close-slots {
     color: #848484;
     position: relative;
@@ -729,6 +761,7 @@ table th {
     left: 0;
     font-style: italic;
 }
+
 tr.selected input[type="checkbox"]:after {
     content: "\f14a";
     position: fixed;
@@ -739,7 +772,7 @@ tr.selected input[type="checkbox"]:after {
     background: #1cacf6;
     color: #fff;
     font-family: FontAwesome;
-    z-index:999;
+    z-index: 999;
 }
 /*Popup address Holiday*/
 #idAddHoliday .date select {
@@ -750,17 +783,21 @@ tr.selected input[type="checkbox"]:after {
     border-radius: 0;
     margin-right: 15px;
 }
+
 #idAddHoliday .date {
     border: none;
     display: block;
 }
+
 #idAddHoliday .description {
     border: none;
     border-radius: 0;
 }
-#idAddHoliday .description input {
-    border: 1px solid #dedede;
-}
+
+    #idAddHoliday .description input {
+        border: 1px solid #dedede;
+    }
+
 #idAddHoliday .date label {
     width: auto;
     float: left;
@@ -791,13 +828,13 @@ tr.selected input[type="checkbox"]:after {
     margin-bottom: 40px;
 }
 
-#idQueueDrugs .panel-data div {
-    float: left;
-    width: 106px;
-    margin-right: 30px;
-}
+    #idQueueDrugs .panel-data div {
+        float: left;
+        width: 106px;
+        margin-right: 30px;
+    }
 
-#idQueueDrugs [drugstatus], 
+#idQueueDrugs [drugstatus],
 #idQueueDrugs [drugchecked] {
     position: relative;
     height: 20px;
@@ -805,23 +842,23 @@ tr.selected input[type="checkbox"]:after {
     border: none;
 }
 
-#idQueueDrugs [drugstatus]::before, 
-#idQueueDrugs [drugchecked]::before {
-    content: " ";
-    position: absolute;
-    top: 3px;
-    left: 0px;
-    width: 14px;
-    height: 14px;
-    box-sizing: border-box;
-    /*border: 2px solid #555;*/
-    border-radius: 50%;
-}
+    #idQueueDrugs [drugstatus]::before,
+    #idQueueDrugs [drugchecked]::before {
+        content: " ";
+        position: absolute;
+        top: 3px;
+        left: 0px;
+        width: 14px;
+        height: 14px;
+        box-sizing: border-box;
+        /*border: 2px solid #555;*/
+        border-radius: 50%;
+    }
 
-#idQueueDrugs [drugchecked]::before {
-    border-radius: 0px;
-    box-shadow: inset 0 0 0 2px #FFF;
-}
+    #idQueueDrugs [drugchecked]::before {
+        border-radius: 0px;
+        box-shadow: inset 0 0 0 2px #FFF;
+    }
 
 #idQueueDrugs [drugstatus="true"]::before {
     background-color: #33CC33;
@@ -836,7 +873,7 @@ tr.selected input[type="checkbox"]:after {
     background-color: red;
 }
 
-#idQueueDrugs [drugstatus]::after, 
+#idQueueDrugs [drugstatus]::after,
 #idQueueDrugs [drugchecked]::after {
     line-height: 20px;
     /*border: 2px solid #555;*/
@@ -847,29 +884,32 @@ tr.selected input[type="checkbox"]:after {
     color: #848484;
     font-size: 16px;
 }
+
 #idQueueDrugs .sealFlowingtestContent .item {
     width: 20%;
     float: left;
     margin: 10px 0;
 }
-#idQueueDrugs .sealFlowingtestContent .item input[type=checkbox] {
-    width: auto;
-    float: left;
-    margin-right: 5px;
-    margin-top: 5px;
-    
-}
-#idQueueDrugs .sealFlowingtestContent .item .control-label {
-    float: left;
-    width: auto;
-    font-size: 16px;
-    color: #848484;
-}
+
+    #idQueueDrugs .sealFlowingtestContent .item input[type=checkbox] {
+        width: auto;
+        float: left;
+        margin-right: 5px;
+        margin-top: 5px;
+    }
+
+    #idQueueDrugs .sealFlowingtestContent .item .control-label {
+        float: left;
+        width: auto;
+        font-size: 16px;
+        color: #848484;
+    }
 
 /*Queue popup seal*/
 #idQueueSeal .modal-body {
     padding-bottom: 40px;
 }
+
 #idQueueSeal .testResult {
     border: none;
 }
@@ -881,21 +921,23 @@ tr.selected input[type="checkbox"]:after {
     float: left;
     position: relative
 }
-#idQueueOutcome .item input[type=checkbox] {
-    float: left;
-    width: auto;
-    margin-right: 10px;
-    margin-top: 7px;
-    /*position: absolute;
+
+    #idQueueOutcome .item input[type=checkbox] {
+        float: left;
+        width: auto;
+        margin-right: 10px;
+        margin-top: 7px;
+        /*position: absolute;
     z-index: 2;*/
-}
-#idQueueOutcome .item .control-label {
-    width: auto;
-    float: left;
-    font-size: 18px;
-    color: #848484;
-    font-weight: normal;
-}
+    }
+
+    #idQueueOutcome .item .control-label {
+        width: auto;
+        float: left;
+        font-size: 18px;
+        color: #848484;
+        font-weight: normal;
+    }
 /*#idQueueOutcome .item input[type=checkbox]:checked ~ span:before {
     content: "\f14a";
     position: absolute;
@@ -954,6 +996,7 @@ tr.selected input[type="checkbox"]:after {
     color: white;
     border-radius: 5px;
 }
+
 .pagination a:hover:not(.active) {
     background-color: #F5F5F5;
     border-radius: 5px;

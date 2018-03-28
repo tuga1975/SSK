@@ -66,7 +66,7 @@ namespace Trinity.Device.Util
         /// </summary>
         /// <param name="ttLabelInfo">Id, Name, MarkingNumber must not be null</param>
         /// <returns>successful</returns>
-        public bool PrintTTLabel(TTLabelInfo ttLabelInfo)
+        public bool PrintTTLabel_Direction_0(TTLabelInfo ttLabelInfo)
         {
             try
             {
@@ -79,17 +79,15 @@ namespace Trinity.Device.Util
                 }
 
                 //Open specified printer driver
-
-                // Wait for 200 miliseconds
-                Thread.Sleep(200);
-                //MessageBox.Show(EnumDeviceNames.TTLabelPrinter);
                 TSCLIB_DLL.openport(EnumDeviceNames.TTLabelPrinter);
 
                 //Setup the media size and sensor type info
                 // page size 55mm x 30mm
                 // template size 45mm x 30mm (actually 55mm x 32.5mm)
                 TSCLIB_DLL.setup("55", "32.5", "4", "8", "0", "0", "0");
-                //MessageBox.Show("Setup compeleted");
+                TSCLIB_DLL.sendcommand("GAP 3mm, 0mm");
+                TSCLIB_DLL.sendcommand("DIRECTION 0");
+                TSCLIB_DLL.sendcommand("CLS");
 
                 //Clear image buffer
                 TSCLIB_DLL.clearbuffer();
@@ -97,7 +95,7 @@ namespace Trinity.Device.Util
                 // DPI = 203 => 8px = 1 mm
                 //Draw windows font
                 int startX = 54;
-                int startY = 8;
+                int startY = 28;
                 string fontName = "ARIAL";
                 int fontStyle = 2; // Bold
                 int fontHeight = 30;
@@ -127,10 +125,82 @@ namespace Trinity.Device.Util
                 // Drawing barcode buildin function do not let us set text size of readable line, so we need to draw a line to display MarkingNumber
                 TSCLIB_DLL.windowsfont(startX, startY += 80, fontHeight, 0, fontStyle, 0, fontName, ttLabelInfo.MarkingNumber);
 
-                //Download PCX file into printer
-                //TSCLIB_DLL.downloadpcx("UL.PCX", "UL.PCX");
-                //Drawing PCX graphic
-                //TSCLIB_DLL.sendcommand("PUTPCX 100,400,\"UL.PCX\"");
+                //Print labels
+                TSCLIB_DLL.printlabel("1", "1");
+                TSCLIB_DLL.closeport();
+
+                //MessageBox.Show("Print OK");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                //Debug.WriteLine("Print exception: " + ex.ToString());
+                MessageBox.Show("Print exception: " + ex.ToString());
+                return false;
+            }
+        }
+
+        public bool PrintTTLabel_Direction_1(TTLabelInfo ttLabelInfo)
+        {
+            try
+            {
+                //MessageBox.Show("PrintTTLabel ");
+                // validate
+                if (!ttLabelInfo.IsValid())
+                {
+                    MessageBox.Show("!ttLabelInfo.IsValid");
+                    return false;
+                }
+
+                //Open specified printer driver
+                TSCLIB_DLL.openport(EnumDeviceNames.TTLabelPrinter);
+
+                //Setup the media size and sensor type info
+                // page size 55mm x 30mm
+                // template size 45mm x 30mm (actually 55mm x 32.5mm)
+                //TSCLIB_DLL.setup("55", "32.5", "4", "8", "0", "0", "0");
+                TSCLIB_DLL.setup("50", "30", "4", "8", "0", "0", "0");
+                TSCLIB_DLL.sendcommand("GAP 3mm, 0mm");
+                TSCLIB_DLL.sendcommand("DIRECTION 1");
+                TSCLIB_DLL.sendcommand("CLS");
+
+                //Clear image buffer
+                TSCLIB_DLL.clearbuffer();
+
+                // DPI = 203 => 8px = 1 mm
+                //Draw windows font
+                int startX = 54;
+                int startY = 28;
+                string fontName = "ARIAL";
+                int fontStyle = 2; // Bold
+                int fontHeight = 30;
+                int maxChar = 17;   // max char of name at first name line
+                int rotation = 180;
+
+                // Name line
+                TSCLIB_DLL.windowsfont(startX, startY, fontHeight, 0, fontStyle, 0, fontName, "Name");
+                if (ttLabelInfo.Name.Length > maxChar)
+                {
+                    TSCLIB_DLL.windowsfont(startX + 70, startY, fontHeight, 0, fontStyle, 0, fontName, " : " + ttLabelInfo.Name.Substring(0, maxChar));
+                    // Add name line if name is too long. Need to improve (split name by space char)
+                    TSCLIB_DLL.windowsfont(startX + 100, startY += fontHeight, fontHeight, 0, fontStyle, 0, fontName, "-" + ttLabelInfo.Name.Substring(maxChar, ttLabelInfo.Name.Length - maxChar));
+                }
+                else
+                {
+                    TSCLIB_DLL.windowsfont(startX + 70, startY, fontHeight, 0, fontStyle, 0, fontName, " : " + ttLabelInfo.Name);
+                    startY += fontHeight;
+                }
+
+                // ID line
+                TSCLIB_DLL.windowsfont(startX, startY += fontHeight, fontHeight, 0, fontStyle, 0, fontName, "ID");
+                TSCLIB_DLL.windowsfont(startX + 70, startY, fontHeight, 0, fontStyle, 0, fontName, " : " + ttLabelInfo.ID);
+
+                //Drawing barcode
+                TSCLIB_DLL.barcode(startX.ToString(), (startY += fontHeight + 8).ToString(), "39", "72", "0", "0", "1", "3", ttLabelInfo.MarkingNumber);
+
+                // Drawing barcode buildin function do not let us set text size of readable line, so we need to draw a line to display MarkingNumber
+                TSCLIB_DLL.windowsfont(startX, startY += 80, fontHeight, 0, fontStyle, 0, fontName, ttLabelInfo.MarkingNumber);
+
                 //Print labels
                 TSCLIB_DLL.printlabel("1", "1");
                 TSCLIB_DLL.closeport();
@@ -180,7 +250,7 @@ namespace Trinity.Device.Util
                 int rotation = 270;
 
                 // send FEED command
-                TSCLIB_DLL.sendcommand("FEED 80");
+                //TSCLIB_DLL.sendcommand("FEED 80");
 
                 TSCLIB_DLL.sendcommand("SIZE 40mm, 82mm");
                 TSCLIB_DLL.sendcommand("GAP 3mm, 0mm");
@@ -229,7 +299,7 @@ namespace Trinity.Device.Util
                 TSCLIB_DLL.printlabel("1", "1");
 
                 // send FEED command
-                TSCLIB_DLL.sendcommand("BACKFEED 80");
+                //TSCLIB_DLL.sendcommand("BACKFEED 80");
                 TSCLIB_DLL.closeport();
                 #endregion
 

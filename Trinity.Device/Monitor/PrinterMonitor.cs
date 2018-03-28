@@ -102,7 +102,7 @@ namespace Trinity.Device
                 MarkingNumber = labelInfo.MarkingNo
             };
             //MessageBox.Show("Call PrintTTLabel");
-            if (printerUtils.PrintTTLabel(infoTTLabel))
+            if (printerUtils.PrintTTLabel_Direction_0(infoTTLabel))
             {
                 // raise succeeded event
                 RaisePrintTTLabelSucceededEvent(new PrintMUBAndTTLabelsEventArgs(labelInfo));
