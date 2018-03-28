@@ -70,7 +70,6 @@ namespace Trinity.BackendAPI.Controllers
         public byte[] Left { get; set; }
     }
 
-
     [Route("api/SSP/{Action}")]
     public class SSPController : ApiController
     {
