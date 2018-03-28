@@ -33,6 +33,7 @@
             this.btnGetUserFingerprint = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.txtURL = new System.Windows.Forms.TextBox();
+            this.btnSaveToFile = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // txtNRIC
@@ -41,6 +42,7 @@
             this.txtNRIC.Name = "txtNRIC";
             this.txtNRIC.Size = new System.Drawing.Size(195, 22);
             this.txtNRIC.TabIndex = 0;
+            this.txtNRIC.Text = "S3456789A";
             // 
             // label1
             // 
@@ -76,12 +78,25 @@
             this.txtURL.Name = "txtURL";
             this.txtURL.Size = new System.Drawing.Size(606, 22);
             this.txtURL.TabIndex = 3;
+            this.txtURL.Text = "http://192.168.50.132:1122/api/SSP/SSPAuthenticate?NRIC=S3456789A";
+            // 
+            // btnSaveToFile
+            // 
+            this.btnSaveToFile.Enabled = false;
+            this.btnSaveToFile.Location = new System.Drawing.Point(277, 69);
+            this.btnSaveToFile.Name = "btnSaveToFile";
+            this.btnSaveToFile.Size = new System.Drawing.Size(195, 36);
+            this.btnSaveToFile.TabIndex = 5;
+            this.btnSaveToFile.Text = "Save to file";
+            this.btnSaveToFile.UseVisualStyleBackColor = true;
+            this.btnSaveToFile.Click += new System.EventHandler(this.btnSaveToFile_Click);
             // 
             // FormTestBackendAPI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(694, 367);
+            this.Controls.Add(this.btnSaveToFile);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.txtURL);
             this.Controls.Add(this.btnGetUserFingerprint);
@@ -101,5 +116,6 @@
         private System.Windows.Forms.Button btnGetUserFingerprint;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox txtURL;
+        private System.Windows.Forms.Button btnSaveToFile;
     }
 }
