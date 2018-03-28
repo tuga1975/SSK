@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -15,8 +16,9 @@ namespace Experiment
 {
     public partial class FormTestBackendAPI : Form
     {
-        private HttpClient client = null;
-
+        private HttpClient _client = null;
+        private byte[] _leftFingerprint = null;
+        private byte[] _rightFingerprint = null;
         public FormTestBackendAPI()
         {
             InitializeComponent();
@@ -25,10 +27,10 @@ namespace Experiment
 
         private void InitClient()
         {
-            client = new HttpClient();
-            client.BaseAddress = new Uri("http://localhost:64775/");
-            client.DefaultRequestHeaders.Accept.Clear();
-            client.DefaultRequestHeaders.Accept.Add(
+            _client = new HttpClient();
+            _client.BaseAddress = new Uri("http://localhost:64775/");
+            _client.DefaultRequestHeaders.Accept.Clear();
+            _client.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));
         }
         private async void btnGetUserFingerprint_ClickAsync(object sender, EventArgs e)
@@ -42,6 +44,9 @@ namespace Experiment
                 UserModel userModel = await GetUserAsync(txtURL.Text);
                 if (userModel != null)
                 {
+                    _leftFingerprint = user.LeftThumbFingerprint;
+                    _rightFingerprint = user.RightThumbFingerprint;
+
                     byte[] leftFingerprint = user.LeftThumbFingerprint;
                     byte[] leftFingerprint2 = userModel.Left;
                     byte[] rightFingerprint = user.RightThumbFingerprint;
@@ -67,18 +72,38 @@ namespace Experiment
                 {
                     MessageBox.Show("Not verified");
                 }
+                btnSaveToFile.Enabled = true;
             }
         }
 
         private async Task<UserModel> GetUserAsync(string path)
         {
             UserModel user = null;
-            HttpResponseMessage response = await client.GetAsync(path);
+            HttpResponseMessage response = await _client.GetAsync(path);
             if (response.IsSuccessStatusCode)
             {
                 user = await response.Content.ReadAsAsync<UserModel>();
             }
             return user;
+        }
+
+        private void btnSaveToFile_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.ShowDialog();
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine(txtNRIC.Text).AppendLine("------------------");
+            if (_leftFingerprint != null)
+            {
+                string leftFingerprintAsString = Convert.ToBase64String(_leftFingerprint);
+                sb.AppendLine("LEFT FINGERPRINT:").AppendLine(leftFingerprintAsString).AppendLine("------------------"); 
+            }
+            if (_rightFingerprint != null)
+            {
+                string rightFingerprintAsString = Convert.ToBase64String(_rightFingerprint);
+                sb.AppendLine("RIGHT FINGERPRINT:").AppendLine(rightFingerprintAsString).AppendLine("------------------");
+            }
+            File.WriteAllText(saveFileDialog.FileName, sb.ToString());
         }
     }
 
