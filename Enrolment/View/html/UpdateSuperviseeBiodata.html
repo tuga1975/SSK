@@ -266,12 +266,12 @@
         color: #1cacf6 !important;
     }
 
-    .carousel-control-next:focus,
-    .carousel-control-next:hover,
-    .carousel-control-prev:focus,
-    .carousel-control-prev:hover {
-        color: #1CACF6 !important;
-    }
+        .carousel-control-next:focus,
+        .carousel-control-next:hover,
+        .carousel-control-prev:focus,
+        .carousel-control-prev:hover {
+            color: #1CACF6 !important;
+        }
 
     .nav-tabs-custom {
         height: 50px;
@@ -436,7 +436,7 @@
                                         <div class="col-6">
 
                                             <img id="image1" src="../images/avatar-demo.jpg" class="img-fluid"><br />
-                                            <a href="#" id="btnTakePic1" >Take Picture 1</a>
+                                            <a href="#" id="btnTakePic1">Take Picture 1</a>
                                         </div>
                                         <div class="col-6">
 
@@ -451,16 +451,25 @@
                                             <div><strong id="leftProcessMessage">Place left thumb onto scanner.</strong></div>
                                             <div class="row col-10 offset-1">
                                                 <div class="col-12"><img src='../images/leftthumb.png' id="leftFingerprint" style="max-width:35%;"></div>
-                                                <div class="scan col-6 ml-auto"><a href="" data-target="#fingerPrint" data-toggle="modal" id="leftThumbScanBtn" >Scan</a></div>
-                                                <div class="clear col-6 mr-auto"><a href="#" id="leftThumbClearBtn">Clear</a></div>
-                                            </div><br />
-                                            <div>Left Thumb-Fingerprint Preview</div>
+                                            </div>
+                                            <!--<div>Left Thumb-Fingerprint Preview</div>-->
                                         </div>
                                         <div class="col-6">
                                             <div><strong id="rightProcessMessage">Place right thumb onto scanner.</strong></div>
                                             <div class="row col-10 offset-1">
                                                 <div class="col-12"><img src='../images/rightthumb.png' id="rightFingerprint" style="max-width:35%;"></div><br />
-                                                <div class="scan col-6 ml-auto"><a href="" data-target="#fingerPrint" data-toggle="modal" id="rightThumbScanBtn" >Scan</a></div>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="row col-10 offset-1">
+                                                <div class="scan col-6 ml-auto"><a href="" data-target="#fingerPrint" data-toggle="modal" id="leftThumbScanBtn">Scan</a></div>
+                                                <div class="clear col-6 mr-auto"><a href="#" id="leftThumbClearBtn">Clear</a></div>
+                                            </div><br />
+                                            <div>Left Thumb-Fingerprint Preview</div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="row col-10 offset-1">
+                                                <div class="scan col-6 ml-auto"><a href="" data-target="#fingerPrint" data-toggle="modal" id="rightThumbScanBtn">Scan</a></div>
                                                 <div class="clear col-6 mr-auto"><a href="#" id="rightThumbClearBtn">Clear</a></div>
                                             </div><br />
                                             <div>Right Thumb-Fingerprint Preview</div>
@@ -517,7 +526,7 @@
                                                 </p>
                                             </div><br /><br />
                                         </div>
-                                    </div>                                    
+                                    </div>
                                 </div>
                                 <div class="carousel-item col-8 offset-2">
                                     <div class="newSuperviseeContentWrapper row">
@@ -525,7 +534,7 @@
                                         <div class="printingCard col-12" style="display:none" id="printSuccessMessage">
                                         </div>
                                         <div>
-                                            <input class="btn" type="button" value="Reprint" id="rePrinter" style="display:none;"  />
+                                            <input class="btn" type="button" value="Reprint" id="rePrinter" style="display:none;" />
                                         </div>
                                         <!--<div>
                                             <input class="btn" type="button" value="Done" onclick="api.server.LoadListSupervisee();" />
@@ -940,7 +949,7 @@
                                                         </label>
                                                     </div>
                                                     <div class="select-wrap">
-                                                        <select id="month" title="month" >
+                                                        <select id="month" title="month">
                                                             <option>MM</option>
 
                                                         </select>
@@ -977,7 +986,7 @@
                                                         </label>
                                                     </div>
                                                     <div class="select-wrap">
-                                                        <select id="month_end" title="month" >
+                                                        <select id="month_end" title="month">
                                                             <option>MM</option>
                                                         </select>
                                                         <label for="month_end">
@@ -985,7 +994,7 @@
                                                         </label>
                                                     </div>
                                                     <div class="select-wrap">
-                                                        <select id="year_end" title="year" >
+                                                        <select id="year_end" title="year">
                                                             <option>YYYY</option>
 
                                                         </select>
@@ -1012,7 +1021,7 @@
                                 </ul>
 
                                 <div class="pull-right">
-                                   <!-- <button class="btn btn-light" id="btnCancelEdit" onclick="api.server.LoadListSupervisee();">Cancel</button>-->
+                                    <!-- <button class="btn btn-light" id="btnCancelEdit" onclick="api.server.LoadListSupervisee();">Cancel</button>-->
                                     <button class="btn btn-light" onclick="api.server.LoadListSupervisee();">Cancel</button>
 
                                     <a href="#" class="btn btn-primary" id="SaveBtn">Save</a>
@@ -1179,10 +1188,10 @@
     });
 
     $('#btnTakePic1').click(function () {
-        api.server.OpenPictureCaptureForm('1','new');
+        api.server.OpenPictureCaptureForm('1', 'new');
     });
     $('#btnTakePic2').click(function () {
-        api.server.OpenPictureCaptureForm('2','new');
+        api.server.OpenPictureCaptureForm('2', 'new');
     });
     $('#rightThumbScanBtn').click(function () {
         ActionScanFingerPrint(true);
@@ -1195,7 +1204,7 @@
     });
 
     $('#month').change(function () {
-        setCalendar('day','month','year');
+        setCalendar('day', 'month', 'year');
     });
     $('#year').change(function () {
         setCalendar('day', 'month', 'year');
@@ -1242,7 +1251,7 @@
     var myCarousel = $('#createNewSupervisee');
 
     //$('#createNewSupervisee').on('slid.bs.carousel', function (data) {
-        
+
     //});
 
     $('#createNewSupervisee').on('slide.bs.carousel', function (data) {
@@ -1251,13 +1260,13 @@
         //        alert('You need to provide 2 fingerprint.');
         //        //var carouselNavElements = myCarousel.find("a[href=#createNewSupervisee], li[data-target=#createNewSupervisee]");
         //        //carouselNavElements.prop('disabled', true);
-                
+
         //    }
-            
-            
+
+
         //}
         //else
-            if (data.to == 2) {
+        if (data.to == 2) {
             api.server.loadDataVerify(function (dataRe) {
 
                 var model = dataRe[0];
@@ -1330,7 +1339,7 @@
         });
     });
 
-  
+
     jQuery(function ($) {
 
         // Carousel not allow for cycle
@@ -1683,10 +1692,10 @@
 
         }
 
-     
-       
-        
-     
+
+
+
+
     });
 
     function setDate(day_Id, month_Id, year_Id) {
@@ -1795,5 +1804,5 @@
             modal_lv--
         });
     });
-   
+
 </script>
