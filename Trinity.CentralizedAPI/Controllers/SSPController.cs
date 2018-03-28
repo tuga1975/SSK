@@ -75,6 +75,7 @@ namespace Trinity.BackendAPI.Controllers
     public class SSPController : ApiController
     {
         [HttpPost]
+        [ResponseType(typeof(bool))]
         public async System.Threading.Tasks.Task<IHttpActionResult> SSPPostNotification([FromBody]SSPNotificationModel data)
         {
             Trinity.DAL.DBContext.Membership_Users user = null;
@@ -103,6 +104,7 @@ namespace Trinity.BackendAPI.Controllers
         }
 
         [HttpPost]
+        [ResponseType(typeof(bool))]
         public IHttpActionResult SSPPostTransaction([FromBody]SSPTransactionModel data)
         {
             if (new DAL.DAL_Transactions().Insert(data.NRIC, EnumStation.ESP, data.Type, data.Content, data.Datetime, data.transaction_code) != Guid.Empty)
@@ -226,6 +228,7 @@ namespace Trinity.BackendAPI.Controllers
         }
 
         [HttpPost]
+        [ResponseType(typeof(bool))]
         public async System.Threading.Tasks.Task<IHttpActionResult> SSPComplete([FromBody] SSPCompleteModel model)
         {
             try

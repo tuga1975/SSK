@@ -1,6 +1,6 @@
 ﻿<div class="modal" role="dialog" id="PopupScanDocument">
-    <div class="modal-dialog" style="height:calc(100% - 60px);width:100%; max-width:calc(100% - 60px);">
-        <div class="modal-content" style="height:100%;">
+    <div class="modal-dialog" style="width:100%; max-width:calc(100% - 60px);">
+        <div class="modal-content" style="padding:0px;">
             <div class="modal-body">
                 <div class="contentMesg" content-scan="video">
                     <div show-img="false">
@@ -10,9 +10,11 @@
                         <div></div>
                     </div>
                     <div lis-img="">
+                        <div content-img="">
+                        </div>
                     </div>
                 </div>
-                <div style="position:absolute;bottom:0px;width:100%;left:0px;" btn-step="0">
+                <div style="position:absolute;bottom: 15px;width: calc(100% - 30px);left: 15px;" btn-step="0">
                     <button type="button" class="btn btn-primary" btn-scan-continue="" style="display:none;float:left;width:auto;">Scan</button>
                     <button type="button" class="btn btn-primary" btn-scan="" style="float:right;width:auto;"></button>
                     <button type="button" class="btn btn-primary" btn-cancel="" style="float:right;margin-right:20px;width:auto;"></button>
@@ -25,14 +27,20 @@
 <script type="text/javascript">
     var functioncallsuccess = null;
     var arrayScanDocument = [];
+    function resetListSizeImg() {
+        var size = $('#PopupScanDocument [lis-img] [content-img] > span').length;
+        $('#PopupScanDocument [lis-img] [content-img]').css('width', (size * 146) + 'px');
+    }
     function showImgScanDocument(arrImg) {
         arrImg = JSON.parse(arrImg);
         $.each(arrImg, function (index, img) {
             arrayScanDocument.push(img);
             var _img = ('file:///' + img.replace(/\\/g, '/'));
-            $('#PopupScanDocument [lis-img]').prepend('<span item-scan="" style="background-image:url(\'' + _img + '\')"><span btn-show-img="' + _img + '" onclick="showImgScan(this);"></span><span valid="' + img + '" item-remove="" onclick="selectCheckDelete(this);"></span></span>');
+            $('#PopupScanDocument [lis-img] [content-img]').prepend('<span item-scan="" style="background-image:url(\'' + _img + '\')"><span btn-show-img="' + _img + '" onclick="showImgScan(this);"></span><span valid="' + img + '" item-remove="" onclick="selectCheckDelete(this);"></span></span>');
         });
+
         $('#PopupScanDocument [content-scan]').attr('content-scan', 'list-img');
+        resetListSizeImg();
         //$('#PopupScanDocument').modal('toggle');
 
         //api.server.LoadPopupHtml("PopupShowImageScan.html", img, function () {
@@ -63,7 +71,7 @@
         if (imgSelect.length == 0) {
             $('#PopupScanDocument [show-img]').attr('show-img', false);
         } else {
-            $('#PopupScanDocument [show-img]').attr('show-img', true).children('div').css('background-image', "url('" + (imgSelect.children('[btn-show-img]').attr('btn-show-img')) + "')");
+            $('#PopupScanDocument [show-img]').attr('show-img', true).children('div').html('<img src="' + (imgSelect.children('[btn-show-img]').attr('btn-show-img')) + '"/>');
         }
         //show-img
     }
@@ -77,6 +85,7 @@
     }
     api.ready(function (_functioncallsuccess) {
         arrayScanDocument = [];
+
         functioncallsuccess = _functioncallsuccess;
         $('#PopupScanDocument').modal({
             backdrop: 'static',
@@ -100,7 +109,9 @@
                     });
                     if ($('#PopupScanDocument [item-remove]').length == 0) {
                         $('#PopupScanDocument [content-scan]').attr('content-scan', 'video');
+                        $('#PopupScanDocument [show-img]').attr('show-img', false);
                     }
+                    resetListSizeImg();
                 }
             }
         });
@@ -168,7 +179,7 @@
 
     .modal-body .contentMesg {
         text-align: center;
-        padding: 10px 0 20px 0;
+        padding: 0px;
     }
 
     .modal-body button {
@@ -198,9 +209,9 @@
         width: 141px;
         display: block;
         top: 0px;
-        float: right;
         margin-bottom: 10px;
         margin-right: 5px;
+        float: left;
     }
 
     [item-scan="selected"] {
@@ -224,8 +235,8 @@
         border: 1px solid #DDD;
         border-radius: 5px;
         position: absolute;
-        left: -60px;
-        top: calc(50% - 20px);
+        left: calc(50% - 20px);
+        bottom: -50px;
     }
 
     [item-scan] [item-remove="selected"] {
@@ -237,44 +248,50 @@
         background-size: 23px;
     }
     /*[item-scan] [item-remove]{
-                    position:absolute;
-                    z-index:2;
-                    width:50px;
-                    height:50px;
-                    border-radius:50%;
-                    border:1px solid #CCC;
-                    left:-20px;
-                    top:-20px;
-                    background-color:#FFF;
-                }
-                [item-scan] [item-remove]::after{
+                            position:absolute;
+                            z-index:2;
+                            width:50px;
+                            height:50px;
+                            border-radius:50%;
+                            border:1px solid #CCC;
+                            left:-20px;
+                            top:-20px;
+                            background-color:#FFF;
+                        }
+                        [item-scan] [item-remove]::after{
 
-                }*/
-    [content-scan] [show-img] {
-        position: absolute;
-        width: 100%;
-        height: calc(100% - 60px);
-        left: 0px;
-        top: 0px;
+                        }*/
+    [content-scan] {
+        padding-bottom: 50px !important;
     }
 
+        [content-scan] [show-img] {
+            width: 100%;
+        }
+
     [content-scan="list-img"] [show-img] {
-        position: absolute;
-        width: calc(100% - 250px);
-        height: calc(100% - 60px);
-        left: 0px;
-        top: 0px;
+        /*position: absolute;
+                width: calc(100% - 250px);
+                height: calc(100% - 60px);
+                left: 0px;
+                top: 0px;*/
     }
 
     [content-scan] [lis-img] {
-        position: absolute;
-        width: 230px;
-        height: calc(100% - 60px);
-        top: 0px;
-        right: 0px;
-        overflow-y: auto;
-        overflow-x: visible;
+        width: 100%;
         display: none;
+        overflow-y: visible;
+        overflow-x: auto;
+        height: 280px;
+        margin-top: 20px;
+        /*position: absolute;
+                width: 230px;
+                height: calc(100% - 60px);
+                top: 0px;
+                right: 0px;
+                overflow-y: auto;
+                overflow-x: visible;
+                display: none;*/
     }
 
     [content-scan="list-img"] [lis-img] {
@@ -282,24 +299,27 @@
     }
 
     [show-img] video {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        left: 0px;
-        top: 0px;
+        width: 100% !important;
+        height: auto !important;
     }
 
     [show-img] div {
-        position: absolute;
+        /*position: absolute;*/
         width: 100%;
-        height: 100%;
+        /*height: 100%;*/
         left: 0px;
         top: 0px;
         border: 1px solid #DDD;
-        background-position: center center;
-        background-repeat: no-repeat;
-        background-size: contain;
+        /*background-position: center center;
+                    background-repeat: no-repeat;
+                    background-size: contain;*/
     }
+
+        [show-img] div img {
+            max-width: 100%;
+            height: auto;
+            max-height: 400px;
+        }
 
     [show-img="false"] div {
         display: none;

@@ -90,6 +90,7 @@ namespace Trinity.BackendAPI.Controllers
         }
 
         [HttpPost]
+        [ResponseType(typeof(bool))]
         public async System.Threading.Tasks.Task<IHttpActionResult> SHPPostNotification([FromBody] SHPNotificationModel data)
         {
             string IDNoti = new DAL.DAL_Notification().InsertNotification(null, null, null, data.Content, false, data.Datetime.Value, data.notification_code, data.Type, EnumStation.UHP);
@@ -107,6 +108,7 @@ namespace Trinity.BackendAPI.Controllers
         }
 
         [HttpPost]
+        [ResponseType(typeof(bool))]
         public async System.Threading.Tasks.Task<IHttpActionResult> SHPComplete([FromBody]SHPCompleteModel model)
         {
             try
