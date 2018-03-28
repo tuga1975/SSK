@@ -416,7 +416,6 @@ namespace Enrolment
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
                 return null;
             }
         }
