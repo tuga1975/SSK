@@ -18,7 +18,7 @@ namespace Trinity.BackendAPI
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
-            //ScheduledTask.JobScheduler.Start();
+            ScheduledTask.JobScheduler.Start();
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using Quartz;
 using Quartz.Impl;
@@ -17,10 +18,7 @@ namespace Trinity.BackendAPI.ScheduledTask
                 {
                     { "quartz.serializer.type", "binary" }
                 };
-            StdSchedulerFactory factory = new StdSchedulerFactory(props);
-            IScheduler scheduler = await factory.GetScheduler();
-            // and start it off
-            await scheduler.Start();
+            
             // define the job and tie it to our HelloJob class
             IJobDetail job = JobBuilder.Create<EmailJob>()
                 .WithIdentity("jobSendMail", "JobScheduler")
@@ -32,8 +30,10 @@ namespace Trinity.BackendAPI.ScheduledTask
              (s =>
                 s.WithIntervalInHours(24)
                .OnEveryDay()
-               .StartingDailyAt(TimeOfDay.HourAndMinuteOfDay(21, 0))
+               .StartingDailyAt(TimeOfDay.HourAndMinuteOfDay(13, 32))
              )
+           .ForJob(job)
+           .WithIdentity("EmailTrigger")
            .Build();
 
             //// Trigger the job to run now, and then repeat every 10 seconds
@@ -46,7 +46,12 @@ namespace Trinity.BackendAPI.ScheduledTask
             //    .Build();
 
             // Tell quartz to schedule the job using our trigger
+
+            StdSchedulerFactory factory = new StdSchedulerFactory(props);
+            IScheduler scheduler = await factory.GetScheduler();
             await scheduler.ScheduleJob(job, trigger);
+            
+            await scheduler.Start();
         }
     }
 }
