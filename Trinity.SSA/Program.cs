@@ -19,7 +19,19 @@ namespace SSA
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-
+            try
+            {
+                Task.Factory.StartNew(StartHealthChecker);
+                Application.Run(new Main());
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                Environment.Exit(1);
+            }
+        }
+        private static void StartHealthChecker()
+        {
             // Health checker
             CameraMonitor.Start();
             DocumentScannerMonitor.Start();
@@ -33,11 +45,10 @@ namespace SSA
             string comPort = ConfigurationManager.AppSettings["COMPort"];
             int baudRate = int.Parse(ConfigurationManager.AppSettings["BaudRate"]);
             string parity = ConfigurationManager.AppSettings["Parity"];
+            Task.Factory.StartNew(ApplicationStatusManager.Instance.StartInitialization);
             LEDStatusLightingUtil.Instance.OpenPort("SSA", comPort, baudRate, parity);
             LEDStatusLightingUtil.Instance.TurnOffAllLEDs();
             LEDStatusLightingUtil.Instance.SwitchBLUELightOnOff(true);
-
-            Application.Run(new Main());
         }
     }
 }
