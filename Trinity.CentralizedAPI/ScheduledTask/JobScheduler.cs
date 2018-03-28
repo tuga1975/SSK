@@ -30,7 +30,7 @@ namespace Trinity.BackendAPI.ScheduledTask
              (s =>
                 s.WithIntervalInHours(24)
                .OnEveryDay()
-               .StartingDailyAt(TimeOfDay.HourAndMinuteOfDay(13, 32))
+               .StartingDailyAt(TimeOfDay.HourAndMinuteOfDay(21, 00))
              )
            .ForJob(job)
            .WithIdentity("EmailTrigger")

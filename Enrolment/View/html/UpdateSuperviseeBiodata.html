@@ -491,16 +491,18 @@
 
                                         <div class="printingCard col-12" style="display:none" id="printSuccessMessage">
                                         </div>
+                                        <div class="printingCard col-12" style="display:none" id="printSuccessMessage">
+                                        </div>
                                         <div>
                                             <input class="btn" type="button" value="Reprint" id="rePrinter" style="display:none;" />
                                         </div>
                                         <!--<div>
-                                            <input class="btn" type="button" value="Done" onclick="api.server.LoadListSupervisee();" />
-                                        </div>-->
-                                        <div style="margin:10px auto;display:none;text-align:center;" id="reCheckSCard">
-                                            <img src="" style="margin-left:10px;" name="frontCardImg" />
-                                            <img src="" style="margin-left:10px;" name="backCardImg" />
-                                        </div>
+        <input class="btn" type="button" value="Done" onclick="api.server.LoadListSupervisee();" />
+    </div>-->
+                                        <!--<div style="margin:10px auto;display:none;text-align:center;" id="reCheckSCard">
+        <img src="" style="margin-left:10px;" name="frontCardImg" />
+        <img src="" style="margin-left:10px;" name="backCardImg" />
+    </div>-->
                                     </div>
                                 </div>
 
@@ -1571,12 +1573,10 @@
         if (status != null) {
             if (status) {
                 $('#rePrinter').css('display', 'none');
-                $('#reCheckSCard').css('display', 'block');
                 //$('.actions > ul > li:first-child').attr('style', 'display:none');
 
             } else {
                 $('#rePrinter').css('display', 'block');
-                $('#reCheckSCard').css('display', 'none');
                 countPrinterSmartCard++;
                 if (countPrinterSmartCard >= 3) {
                     alert('Unable to print Smart Card');
