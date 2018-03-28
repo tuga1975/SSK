@@ -159,12 +159,15 @@
     <Content Include="View\html\UpdateSuperviseePhoto.html" />
     <Content Include="View\html\WebcamCapture.html" />
     <Content Include="View\images\avatar-demo.jpg" />
+    <Content Include="View\images\backend-logo.png" />
     <Content Include="View\images\background-smart-card.png" />
     <Content Include="View\images\background-takephoto.png" />
     <Content Include="View\images\Background.png" />
     <Content Include="View\images\Calendar-Clock-Icon.jpeg" />
     <Content Include="View\images\central_narco_logo.png" />
     <Content Include="View\images\fingerprint.png" />
+    <Content Include="View\images\front-avarta.png" />
+    <Content Include="View\images\front-smartcard.png" />
     <Content Include="View\images\leftthumb.png" />
     <Content Include="View\images\loading.gif" />
     <Content Include="View\images\log-out.png" />

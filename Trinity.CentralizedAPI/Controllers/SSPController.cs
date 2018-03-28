@@ -77,27 +77,34 @@ namespace Trinity.BackendAPI.Controllers
         [ResponseType(typeof(bool))]
         public async System.Threading.Tasks.Task<IHttpActionResult> SSPPostNotification([FromBody]SSPNotificationModel data)
         {
-            Trinity.DAL.DBContext.Membership_Users user = null;
-            if (!string.IsNullOrEmpty(data.NRIC))
+            try
             {
-                user = new DAL.DAL_User().GetByNRIC(data.NRIC);
-            }
-            string IDNoti = new DAL.DAL_Notification().InsertNotification(user != null ? user.UserId : null, null, null, data.Content, false, data.Datetime, data.notification_code, data.Type, EnumStation.ESP);
-            if (!string.IsNullOrEmpty(IDNoti))
-            {
-                if (data.Type == EnumNotificationTypes.Error && user != null)
+                Trinity.DAL.DBContext.Membership_Users user = null;
+                if (!string.IsNullOrEmpty(data.NRIC))
                 {
-                    new DAL.DAL_QueueNumber().UpdateQueueStatusByUserId(user.UserId, EnumStation.ESP, EnumQueueStatuses.Errors, EnumStation.DUTYOFFICER, EnumQueueStatuses.Finished, EnumMessage.LeakageDeletected, EnumQueueOutcomeText.Processing);
-
-                    await System.Threading.Tasks.Task.Run(() => Trinity.SignalR.Client.Instance.BackendAPISend(NotificationNames.SSP_ERROR, data.NRIC));
+                    user = new DAL.DAL_User().GetByNRIC(data.NRIC);
                 }
-                await System.Threading.Tasks.Task.Run(() => Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(user != null ? user.UserId : null, null, data.Content, data.Type, EnumStation.ESP, false));
-                //return Ok(IDNoti);
-                return Ok(true);
+                string IDNoti = new DAL.DAL_Notification().InsertNotification(user != null ? user.UserId : null, null, null, data.Content, false, data.Datetime, data.notification_code, data.Type, EnumStation.ESP);
+                if (!string.IsNullOrEmpty(IDNoti))
+                {
+                    if (data.Type == EnumNotificationTypes.Error && user != null)
+                    {
+                        new DAL.DAL_QueueNumber().UpdateQueueStatusByUserId(user.UserId, EnumStation.ESP, EnumQueueStatuses.Errors, EnumStation.DUTYOFFICER, EnumQueueStatuses.Finished, EnumMessage.LeakageDeletected, EnumQueueOutcomeText.Processing);
+
+                        await System.Threading.Tasks.Task.Run(() => Trinity.SignalR.Client.Instance.BackendAPISend(NotificationNames.SSP_ERROR, data.NRIC));
+                    }
+                    await System.Threading.Tasks.Task.Run(() => Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(user != null ? user.UserId : null, null, data.Content, data.Type, EnumStation.ESP, false));
+                    //return Ok(IDNoti);
+                    return Ok(true);
+                }
+                else
+                {
+                    //return Ok(string.Empty);
+                    return Ok(false);
+                }
             }
-            else
+            catch (Exception)
             {
-                //return Ok(string.Empty);
                 return Ok(false);
             }
         }
@@ -106,11 +113,18 @@ namespace Trinity.BackendAPI.Controllers
         [ResponseType(typeof(bool))]
         public IHttpActionResult SSPPostTransaction([FromBody]SSPTransactionModel data)
         {
-            if (new DAL.DAL_Transactions().Insert(data.NRIC, EnumStation.ESP, data.Type, data.Content, data.Datetime, data.transaction_code) != Guid.Empty)
+            try
             {
-                return Ok(true);
+                if (new DAL.DAL_Transactions().Insert(data.NRIC, EnumStation.ESP, data.Type, data.Content, data.Datetime, data.transaction_code) != Guid.Empty)
+                {
+                    return Ok(true);
+                }
+                else
+                {
+                    return Ok(false);
+                }
             }
-            else
+            catch (Exception)
             {
                 return Ok(false);
             }
