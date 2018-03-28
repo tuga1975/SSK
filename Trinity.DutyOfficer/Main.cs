@@ -32,8 +32,6 @@ namespace DutyOfficer
         public Main()
         {
             InitializeComponent();
-
-            APIUtils.Start();
             //Notification
             Trinity.SignalR.Client.Instance.OnDeviceStatusChanged += OnDeviceStatusChanged_Handler;
             Trinity.SignalR.Client.Instance.OnNewNotification += OnNewNotification_Handler;
@@ -546,7 +544,6 @@ namespace DutyOfficer
         private void Main_FormClosing(object sender, FormClosingEventArgs e)
         {
             Application.ExitThread();
-            APIUtils.Dispose();
         }
 
         private void LayerWeb_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)

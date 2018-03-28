@@ -43,7 +43,10 @@ namespace Trinity.BackendAPI.Controllers
         public string SealedOrDiscardedBy { get; set; }
         public DateTime? SealedOrDiscardedDate { get; set; }
     }
-
+    public class SHPCompleteModel
+    {
+        public string NRIC { get; set; }
+    }
 
     [Route("api/SHP/{Action}")]
     public class SHPController : ApiController
@@ -102,13 +105,13 @@ namespace Trinity.BackendAPI.Controllers
         }
 
         [HttpPost]
-        public async System.Threading.Tasks.Task<IHttpActionResult> SHPComplete(string NRIC)
+        public async System.Threading.Tasks.Task<IHttpActionResult> SHPComplete([FromBody]SHPCompleteModel model)
         {
             try
             {
-                var user = new DAL.DAL_User().GetByNRIC(NRIC);
+                var user = new DAL.DAL_User().GetByNRIC(model.NRIC);
                 new DAL.DAL_QueueNumber().UpdateQueueStatusByUserId(user.UserId, EnumStation.UHP, EnumQueueStatuses.Finished, EnumStation.HSA, EnumQueueStatuses.Processing, "", EnumQueueOutcomeText.Processing);
-                await System.Threading.Tasks.Task.Run(() => Trinity.SignalR.Client.Instance.BackendAPISend(NotificationNames.SHP_COMPLETED, NRIC));
+                await System.Threading.Tasks.Task.Run(() => Trinity.SignalR.Client.Instance.BackendAPISend(NotificationNames.SHP_COMPLETED, model.NRIC));
                 return Ok(true);
             }
             catch (Exception)

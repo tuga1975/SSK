@@ -750,7 +750,7 @@ namespace Trinity.DAL
 
         public DBContext.Queue UpdateQueueStatusByUserId(string userId, string currentStation, string statusCurrentStattion, string nextStation, string statusNextStation, string messageNextStation, string outcome)
         {
-            DBContext.Queue dbQueue = _localUnitOfWork.DataContext.Queues.Include("Appointment").FirstOrDefault(d => d.Appointment.UserId == userId && DbFunctions.TruncateTime(d.CreatedTime).Value == DateTime.Today);
+            DBContext.Queue dbQueue = _localUnitOfWork.DataContext.Queues.Include("Appointment").FirstOrDefault(d => d.UserId == userId && DbFunctions.TruncateTime(d.CreatedTime).Value == DateTime.Today);
 
             if (dbQueue == null)
                 return null;

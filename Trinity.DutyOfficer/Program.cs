@@ -19,14 +19,26 @@ namespace DutyOfficer
             Application.SetCompatibleTextRenderingDefault(false);
 
             // Health checker
+            try
+            {
+                Task.Factory.StartNew(StartHealthChecker);
+                Application.Run(new Main());
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                Environment.Exit(1);
+            }
+        }
+        private static void StartHealthChecker()
+        {
             SmartCardReaderMonitor.Start();
             FingerprintReaderMonitor.Start();
             MUBLabelPrinterMonitor.Start();
             UBLabelPrinterMonitor.Start();
             TTLabelPrinterMonitor.Start();
+            SmartCardReaderMonitor.Start();
             BarcodeScannerMonitor.Start();
-
-            Application.Run(new Main());
         }
     }
 }
