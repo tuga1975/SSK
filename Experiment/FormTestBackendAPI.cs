@@ -27,52 +27,60 @@ namespace Experiment
 
         private void InitClient()
         {
+            string baseAddress = System.Configuration.ConfigurationManager.AppSettings["BaseAddress"];
             _client = new HttpClient();
-            _client.BaseAddress = new Uri("http://192.168.1.120:64775/");
+            _client.BaseAddress = new Uri(baseAddress);
             _client.DefaultRequestHeaders.Accept.Clear();
             _client.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));
         }
         private async void btnGetUserFingerprint_ClickAsync(object sender, EventArgs e)
         {
-            // Get user from local db
-            DAL_User dalUser = new DAL_User();
-            Trinity.DAL.DBContext.Membership_Users user = dalUser.GetByNRIC(txtNRIC.Text);
-            if (user != null)
+            try
             {
-                // Get user from Backend API
-                UserModel userModel = await GetUserAsync(txtURL.Text);
-                if (userModel != null)
+                // Get user from local db
+                DAL_User dalUser = new DAL_User();
+                Trinity.DAL.DBContext.Membership_Users user = dalUser.GetByNRIC(txtNRIC.Text);
+                if (user != null)
                 {
-                    _leftFingerprint = user.LeftThumbFingerprint;
-                    _rightFingerprint = user.RightThumbFingerprint;
-
-                    byte[] leftFingerprint = user.LeftThumbFingerprint;
-                    byte[] leftFingerprint2 = userModel.Left;
-                    byte[] rightFingerprint = user.RightThumbFingerprint;
-                    byte[] rightFingerprint2 = userModel.Right;
-
-                    // Now compare leftFingerprint and leftFingerprint2, rightFingerprint and rightFingerprint2
-                    for (int i = 0; i < leftFingerprint.Length; i++)
+                    // Get user from Backend API
+                    UserModel userModel = await GetUserAsync(txtURL.Text);
+                    if (userModel != null)
                     {
-                        if (leftFingerprint[i] != leftFingerprint2[i])
+                        _leftFingerprint = user.LeftThumbFingerprint;
+                        _rightFingerprint = user.RightThumbFingerprint;
+
+                        byte[] leftFingerprint = user.LeftThumbFingerprint;
+                        byte[] leftFingerprint2 = userModel.Left;
+                        byte[] rightFingerprint = user.RightThumbFingerprint;
+                        byte[] rightFingerprint2 = userModel.Right;
+
+                        // Now compare leftFingerprint and leftFingerprint2, rightFingerprint and rightFingerprint2
+                        for (int i = 0; i < leftFingerprint.Length; i++)
                         {
-                            MessageBox.Show("Lef Fingerprint is different");
-                            return;
+                            if (leftFingerprint[i] != leftFingerprint2[i])
+                            {
+                                MessageBox.Show("Lef Fingerprint is different");
+                                return;
+                            }
+                            if (rightFingerprint[i] != rightFingerprint2[i])
+                            {
+                                MessageBox.Show("Right Fingerprint is different");
+                                return;
+                            }
                         }
-                        if (rightFingerprint[i] != rightFingerprint2[i])
-                        {
-                            MessageBox.Show("Right Fingerprint is different");
-                            return;
-                        }
+                        MessageBox.Show("Verified");
                     }
-                    MessageBox.Show("Verified");
+                    else
+                    {
+                        MessageBox.Show("Not verified");
+                    }
+                    btnSaveToFile.Enabled = true;
                 }
-                else
-                {
-                    MessageBox.Show("Not verified");
-                }
-                btnSaveToFile.Enabled = true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -89,21 +97,28 @@ namespace Experiment
 
         private void btnSaveToFile_Click(object sender, EventArgs e)
         {
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.ShowDialog();
-            StringBuilder sb = new StringBuilder();
-            sb.AppendLine(txtNRIC.Text).AppendLine("------------------");
-            if (_leftFingerprint != null)
+            try
             {
-                string leftFingerprintAsString = Convert.ToBase64String(_leftFingerprint);
-                sb.AppendLine("LEFT FINGERPRINT:").AppendLine(leftFingerprintAsString).AppendLine("------------------"); 
+                SaveFileDialog saveFileDialog = new SaveFileDialog();
+                saveFileDialog.ShowDialog();
+                StringBuilder sb = new StringBuilder();
+                sb.AppendLine(txtNRIC.Text).AppendLine("------------------");
+                if (_leftFingerprint != null)
+                {
+                    string leftFingerprintAsString = Convert.ToBase64String(_leftFingerprint);
+                    sb.AppendLine("LEFT FINGERPRINT:").AppendLine(leftFingerprintAsString).AppendLine("------------------");
+                }
+                if (_rightFingerprint != null)
+                {
+                    string rightFingerprintAsString = Convert.ToBase64String(_rightFingerprint);
+                    sb.AppendLine("RIGHT FINGERPRINT:").AppendLine(rightFingerprintAsString).AppendLine("------------------");
+                }
+                File.WriteAllText(saveFileDialog.FileName, sb.ToString());
             }
-            if (_rightFingerprint != null)
+            catch (Exception ex)
             {
-                string rightFingerprintAsString = Convert.ToBase64String(_rightFingerprint);
-                sb.AppendLine("RIGHT FINGERPRINT:").AppendLine(rightFingerprintAsString).AppendLine("------------------");
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            File.WriteAllText(saveFileDialog.FileName, sb.ToString());
         }
     }
 
