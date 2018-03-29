@@ -233,6 +233,10 @@ namespace Trinity.Device.Util
                     }
                     #endregion
                 }
+                else
+                {
+                    returnValue.Description = "Smart card printer is not connected!";
+                }
 
 
                 if (!string.IsNullOrEmpty(returnValue.CardUID))

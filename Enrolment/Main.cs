@@ -241,7 +241,7 @@ namespace Enrolment
             {
                 if (bSuccess)
                 {
-                    LayerWeb.InvokeScript("changeMessageServerCall", isRight, "Please use only one finger for one scan.", EnumColors.Red);
+                    LayerWeb.InvokeScript("changeMessageServerCall", isRight, "Please use the same thumb for verification.", EnumColors.Red);
                 }
                 else
                 {
