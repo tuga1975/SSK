@@ -58,85 +58,85 @@ namespace Trinity.Device.Util
         // for enrolment
         FutronicEnrollment _futronicEnrollment;
 
-        public FingerprintScannerStartResult StartVerification(OnVerificationCompleteHandler onVerificationComplete, byte[] fingerprint_Template)
-        {
-            // Create returnValue
-            FingerprintScannerStartResult returnValue = new FingerprintScannerStartResult()
-            {
-                Success = false,
-                FailedInfo = null
-            };
+        //public FingerprintScannerStartResult StartVerification(OnVerificationCompleteHandler onVerificationComplete, byte[] fingerprint_Template)
+        //{
+        //    // Create returnValue
+        //    FingerprintScannerStartResult returnValue = new FingerprintScannerStartResult()
+        //    {
+        //        Success = false,
+        //        FailedInfo = null
+        //    };
 
-            try
-            {
-                if (fingerprint_Template == null)
-                {
-                    returnValue.FailedInfo = new FailedInfo()
-                    {
-                        ErrorCode = (int)EnumErrorCodes.FingerprintNull,
-                        ErrorMessage = new ErrorInfo().GetErrorMessage(EnumErrorCodes.FingerprintNull)
-                    };
-                    return returnValue;
-                }
-                Debug.WriteLine("Verification is starting, please wait ...");
-                _onVerificationComplete = onVerificationComplete;
+        //    try
+        //    {
+        //        if (fingerprint_Template == null)
+        //        {
+        //            returnValue.FailedInfo = new FailedInfo()
+        //            {
+        //                ErrorCode = (int)EnumErrorCodes.FingerprintNull,
+        //                ErrorMessage = new ErrorInfo().GetErrorMessage(EnumErrorCodes.FingerprintNull)
+        //            };
+        //            return returnValue;
+        //        }
+        //        Debug.WriteLine("Verification is starting, please wait ...");
+        //        _onVerificationComplete = onVerificationComplete;
 
-                _futronicVerification = new FutronicVerification(fingerprint_Template);
+        //        _futronicVerification = new FutronicVerification(fingerprint_Template);
 
-                // Set control properties
-                _futronicVerification.FakeDetection = true;
-                _futronicVerification.FFDControl = true;
-                _futronicVerification.FARN = 200;
-                _futronicVerification.Version = VersionCompatible.ftr_version_compatible;
-                _futronicVerification.FastMode = true;
-                _futronicVerification.MinMinuitaeLevel = 3;
-                _futronicVerification.MinOverlappedLevel = 3;
+        //        // Set control properties
+        //        _futronicVerification.FakeDetection = true;
+        //        _futronicVerification.FFDControl = true;
+        //        _futronicVerification.FARN = 200;
+        //        _futronicVerification.Version = VersionCompatible.ftr_version_compatible;
+        //        _futronicVerification.FastMode = true;
+        //        _futronicVerification.MinMinuitaeLevel = 3;
+        //        _futronicVerification.MinOverlappedLevel = 3;
 
-                // register events
-                _futronicVerification.OnPutOn += OnPutOn;
-                _futronicVerification.OnTakeOff += OnTakeOff;
-                //futronicVerification.UpdateScreenImage += new UpdateScreenImageHandler(this.UpdateScreenImage);
-                _futronicVerification.OnFakeSource += OnFakeSource;
-                _futronicVerification.OnVerificationComplete += _onVerificationComplete;
+        //        // register events
+        //        _futronicVerification.OnPutOn += OnPutOn;
+        //        _futronicVerification.OnTakeOff += OnTakeOff;
+        //        //futronicVerification.UpdateScreenImage += new UpdateScreenImageHandler(this.UpdateScreenImage);
+        //        _futronicVerification.OnFakeSource += OnFakeSource;
+        //        _futronicVerification.OnVerificationComplete += _onVerificationComplete;
 
-                // start verification process
-                _futronicVerification.Verification();
+        //        // start verification process
+        //        _futronicVerification.Verification();
 
-                // return value
-                returnValue.Success = true;
+        //        // return value
+        //        returnValue.Success = true;
 
-                return returnValue;
-            }
-            catch (Exception ex)
-            {
+        //        return returnValue;
+        //    }
+        //    catch (Exception ex)
+        //    {
 
-                Debug.WriteLine("StartStartVerification Exception: ");
-                Debug.WriteLine(ex.Message);
+        //        Debug.WriteLine("StartStartVerification Exception: ");
+        //        Debug.WriteLine(ex.Message);
 
-                returnValue.FailedInfo = new FailedInfo()
-                {
-                    ErrorCode = (int)EnumErrorCodes.UnknownError,
-                    ErrorMessage = new ErrorInfo().GetErrorMessage(EnumErrorCodes.UnknownError)
-                };
+        //        returnValue.FailedInfo = new FailedInfo()
+        //        {
+        //            ErrorCode = (int)EnumErrorCodes.UnknownError,
+        //            ErrorMessage = new ErrorInfo().GetErrorMessage(EnumErrorCodes.UnknownError)
+        //        };
 
-                return returnValue;
-            }
-        }
+        //        return returnValue;
+        //    }
+        //}
 
-        internal void StopVerification()
-        {
-            // unregister events
-            if (_futronicVerification != null)
-            {
-                _futronicVerification.OnPutOn -= OnPutOn;
-                _futronicVerification.OnTakeOff -= OnTakeOff;
-                //_futronicVerification.UpdateScreenImage -= UpdateScreenImage;
-                _futronicVerification.OnFakeSource -= OnFakeSource;
-                _futronicVerification.OnVerificationComplete -= _onVerificationComplete;
+        //internal void StopVerification()
+        //{
+        //    // unregister events
+        //    if (_futronicVerification != null)
+        //    {
+        //        _futronicVerification.OnPutOn -= OnPutOn;
+        //        _futronicVerification.OnTakeOff -= OnTakeOff;
+        //        //_futronicVerification.UpdateScreenImage -= UpdateScreenImage;
+        //        _futronicVerification.OnFakeSource -= OnFakeSource;
+        //        _futronicVerification.OnVerificationComplete -= _onVerificationComplete;
 
-                _futronicVerification = null;
-            }
-        }
+        //        _futronicVerification = null;
+        //    }
+        //}
 
         private bool OnFakeSource(FTR_PROGRESS Progress)
         {

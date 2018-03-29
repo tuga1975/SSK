@@ -25,7 +25,7 @@ namespace Enrolment
         private CodeBehind.WebcamCapture _webcamCapture;
         private CodeBehind.Suppervisee _suppervisee;
         private NavigatorEnums _currentPage;
-        private CodeBehind.Authentication.Fingerprint _fingerprint;
+        //private CodeBehind.Authentication.Fingerprint _fingerprint;
         private int _smartCardFailed;
         private int _fingerprintFailed;
         private Webcam webcam;
