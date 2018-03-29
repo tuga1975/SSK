@@ -1,4 +1,66 @@
 ﻿<style>
+    .form-group {
+        margin-bottom: 1rem;
+        position: relative;
+        min-height: 50px;
+    }
+
+    .form-select {
+        width: 100%;
+        float: left;
+        border-bottom: 1px solid #ccc;
+        margin: 10px 0;
+        display: flex;
+        flex-direction: row;
+    }
+
+        .form-select .input-group-select {
+            min-width: 35%;
+        }
+
+        .form-select .form-label {
+            border: 0;
+            border-radius: 0;
+            background-color: transparent;
+            color: #209CDD;
+            padding: .375rem .75rem;
+            margin-bottom: 0;
+            font-size: 1rem;
+            font-weight: 400;
+            line-height: 1.5;
+            position: absolute;
+        }
+
+        .form-select select {
+            padding: .375rem .75rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #495057;
+            -moz-appearance: none; /* Firefox */
+            -webkit-appearance: none; /* Safari and Chrome */
+            text-indent: 1px;
+            text-overflow: '';
+            border: 0;
+            position: relative;
+        }
+
+            .form-select select + label {
+                float: right;
+                margin-top: 7px;
+                margin-right: 5px;
+                pointer-events: none;
+                background-color: #fff;
+                padding-right: 5px;
+                color: #209CDD;
+            }
+
+            .form-select select::-ms-expand {
+                display: none;
+            }
+
+        .form-select .select-wrap {
+            position: relative;
+        }
 
     body {
         background: #fff;
@@ -477,7 +539,7 @@
                                     </div>
                                 </div>
                                 <div class="carousel-item col-8 offset-2">
-                                    <div class="newSuperviseeContentWrapper row"  style="background-color:transparent;">
+                                    <div class="newSuperviseeContentWrapper row" style="background-color:transparent;">
                                         <div class="col-6" style="background-color:transparent;">
                                             <img src="" style="max-width:100%;border-radius:10px;border:2px solid #CCC;background-color:transparent;" name="frontCardImg" />
                                         </div>
@@ -488,21 +550,83 @@
                                 </div>
                                 <div class="carousel-item col-8 offset-2">
                                     <div class="newSuperviseeContentWrapper row">
+                                        <div class="printingCard col-12" style="display:none" id="printSuccessMessage">
+                                        </div>
+                                        <div style="max-width:350px;margin:0px auto;display:none;" name="panel-succss-print">
+                                            <div style="margin-top:50px;">
+                                                <div group-input="Name">
+                                                    <span name="vertify-name">
+                                                    </span>
+                                                </div>
+                                                <div group-input="NRIC">
+                                                    <span name="vertify-nric">
+                                                    </span>
+                                                </div>
+                                                <div group-input="Date of Birth">
+                                                    <span name="vertify-dateofbirth">
+                                                    </span>
+                                                </div>
+                                                <style type="text/css">
+                                                    [group-input] {
+                                                        position: relative;
+                                                        margin-bottom: 10px;
+                                                    }
 
-                                        <div class="printingCard col-12" style="display:none" id="printSuccessMessage">
+                                                        [group-input]::before {
+                                                            content: attr(group-input);
+                                                            color: #209CDD;
+                                                            font-size: 16px;
+                                                            position: absolute;
+                                                            z-index: 0;
+                                                            top: 6px;
+                                                            left: 0px;
+                                                            width: 90px;
+                                                            text-align: right;
+                                                        }
+
+                                                        [group-input] > input, [group-input] > select, [group-input] > span {
+                                                            border: none;
+                                                            min-height: 36px;
+                                                            font-size: 16px;
+                                                            width: 100%;
+                                                            padding-left: 110px;
+                                                            position: relative;
+                                                            z-index: 1;
+                                                            background-color: transparent;
+                                                            outline: none;
+                                                        }
+
+                                                        [group-input] > span {
+                                                            display: block;
+                                                            position: relative;
+                                                            top: 6px;
+                                                        }
+
+                                                        [group-input] > input, [group-input] > select {
+                                                            border-bottom: 1px solid #ccc;
+                                                        }
+
+                                                            [group-input] > input:focus, [group-input] > input:hover, [group-input] > select:focus, [group-input] > select:hover {
+                                                                border-bottom: 1px solid #1CACF6;
+                                                            }
+
+                                                    :-ms-input-placeholder {
+                                                        font-style: italic;
+                                                    }
+                                                </style>
+                                            </div>
                                         </div>
-                                        <div class="printingCard col-12" style="display:none" id="printSuccessMessage">
-                                        </div>
+                                        <div style="clear:both;"></div>
                                         <div>
                                             <input class="btn" type="button" value="Reprint" id="rePrinter" style="display:none;" />
                                         </div>
                                         <!--<div>
-        <input class="btn" type="button" value="Done" onclick="api.server.LoadListSupervisee();" />
-    </div>-->
+                                            <input class="btn" type="button" value="Done" onclick="api.server.LoadListSupervisee();" />
+                                        </div>-->
                                         <!--<div style="margin:10px auto;display:none;text-align:center;" id="reCheckSCard">
-        <img src="" style="margin-left:10px;" name="frontCardImg" />
-        <img src="" style="margin-left:10px;" name="backCardImg" />
-    </div>-->
+                                            <img src="" style="margin-left:10px;" name="frontCardImg" />
+                                            <img src="" style="margin-left:10px;" name="backCardImg" />
+                                        </div>-->
                                     </div>
                                 </div>
 
@@ -1285,12 +1409,12 @@
                 $('[name="verifyAddress"]').text(CardInfo.Address);
                 $('[name="verifyContactNumber"]').text(CardInfo.ContactNumber);
 
-                $('[name="verifyName"]').text(model.User.Name);
+                $('[name="verifyName"],[name="vertify-name"]').text(model.User.Name);
                 if (model.UserProfile.DOB != null) {
-                    $('[name="verifyDOB"]').text(model.UserProfile.DOBTxt);
+                    $('[name="verifyDOB"],[name="vertify-dateofbirth"]').text(model.UserProfile.DOBTxt);
                 }
 
-                $('[name="verifyNRIC"]').text(model.User.NRIC);
+                $('[name="verifyNRIC"],[name="vertify-nric"]').text(model.User.NRIC);
                 $('[name="verifyGender"]').text(model.UserProfile.Gender == null ? '' : model.UserProfile.Gender);
                 $('[name="verifyNation"]').text(model.UserProfile.Nationality);
                 //if (model.UserProfile.DateOfIssue != null) {
@@ -1312,7 +1436,8 @@
 
                                 frontCardImg = froncanvas.toDataURL("image/png");
                                 backCardImg = backcanvas.toDataURL("image/png");
-                                showCardImages();
+                                $('[name="frontCardImg"]').attr('src', frontCardImg).css('display', 'inline-block');
+                                $('[name="backCardImg"]').attr('src', backCardImg).css('display', 'inline-block');
                                 //api.server.UpdateSuperviseeBiodata(frontCardImg, backCardImg, JSON.stringify(CardInfo));
                                 //$('.actions > ul > li > a[href="#next"]').click();
                             }
@@ -1327,11 +1452,11 @@
             //}
 
             //if (frontCardImg == null || backCardImg == null) {
-                
+
 
             //} else {
             //    //api.loading(false);
-                
+
             //}
             if (frontCardImg == null) {
                 frontCardImg = '';
@@ -1589,8 +1714,7 @@
     }
 
     function showCardImages() {
-        $('[name="frontCardImg"]').attr('src', frontCardImg).css('display','inline-block');
-        $('[name="backCardImg"]').attr('src', backCardImg).css('display', 'inline-block');;
+        $('[name="panel-succss-print"]').css('display', 'block');
     }
     function showMessageFingerprintFalse3() {
         alert('Unable to print Fingerprint');

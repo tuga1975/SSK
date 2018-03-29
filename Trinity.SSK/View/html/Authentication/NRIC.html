@@ -1,18 +1,12 @@
-﻿<div class="subcontent">
-    <!--<span>Please scan supervisee NRIC:</span>-->
-    <div name-page="Verification"></div><br />
-    <div class="contentWrapper" style="margin-top:40px;">
-        <div class="contentForm">
-            <div class="input-group" data-tip="Enter your Supervisee NRIC No">
-                <span class="input-group-addon">Supervisee NRIC No</span>
-                <input type="text" id="txtNRIC" class="txtNRIC" placeholder="Supervisee NRIC No" autofocus />
-            </div>
-        </div>
+﻿<div name-page="Verification"></div>
+<div style="box-shadow:0px 0px 10px rgba(0,0,0,0.5);padding:40px;background-color:#FFF;margin-top:40px;">
+    <div group-input="Supervisee NRIC NO.">
+        <input type="text" placeholder="Scan Supervisee NRIC" id="txtNRIC" />
     </div>
-    <div id="divSave">
-        <button type="button" class="btn btn-dark" onclick="api.server.LogOut()">Cancel</button>
-        <button type="button" class="btn btn-dark" onclick="api.server.SubmitNRIC($('#txtNRIC').val()); return false;">Submit</button>
-    </div>
+</div>
+<div id="footer" style="position:relative;text-align:right;margin-top:40px;">
+    <input type="button" value="CANCEL" style="background-color:#FFF;color:#1cacf6;border:none;border-radius:5px;padding:8px 20px;border:1px solid #DDD;margin-right:20px;" onclick="api.server.LogOut();" />
+    <input type="button" value="SUBMIT" style="background-color:#1cacf6;color:#FFF;border:none;border-radius:5px;padding:8px 20px;border:1px solid #1cacf6;" onclick="api.server.SubmitNRIC($('#txtNRIC').val())" />
 </div>
 <script type="text/javascript">
     function enterManually() {
@@ -22,6 +16,46 @@
 </script>
 <script type="text/javascript">
     //show menu logout or back main
-    $('#header[right-show]').attr('right-show', 'logout');
+    $('#header[right-show]').attr('right-show', '');
     $('#content').removeAttr('style');
 </script>
+<style type="text/css">
+    [group-input] {
+        position: relative;
+        margin-bottom: 20px;
+    }
+
+        [group-input]::before {
+            content: attr(group-input);
+            color: #209CDD;
+            font-size: 16px;
+            position: absolute;
+            z-index: 0;
+            top: 6px;
+            left: 0px;
+        }
+
+        [group-input] > input, [group-input] > select {
+            border: none;
+            height: 36px;
+            font-size: 16px;
+            width: 100%;
+            padding-left: 200px;
+            position: relative;
+            z-index: 1;
+            background-color: transparent;
+            outline: none;
+        }
+
+        [group-input] > input, [group-input] > select {
+            border-bottom: 1px solid #ccc;
+        }
+
+            [group-input] > input:focus, [group-input] > input:hover, [group-input] > select:focus, [group-input] > select:hover {
+                border-bottom: 1px solid #1CACF6;
+            }
+
+    :-ms-input-placeholder {
+        font-style: italic;
+    }
+</style>
