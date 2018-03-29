@@ -212,7 +212,11 @@
     <Content Include="View\img\logoCNB.svg" />
     <Content Include="View\img\Logout.png" />
     <Content Include="View\img\ManualLogin.png" />
+    <Content Include="View\img\PlaceMUB.mp4" />
+    <Content Include="View\img\PlaceTT.mp4" />
     <Content Include="View\img\QRCode.png" />
+    <Content Include="View\img\RemoveMUB.mp4" />
+    <Content Include="View\img\RemoveTT.mp4" />
     <Content Include="View\img\ScanSmartCard.png" />
     <Content Include="View\img\SmartCard.mp4" />
     <Content Include="View\img\Thumbprint.mp4" />

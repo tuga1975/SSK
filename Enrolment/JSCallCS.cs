@@ -870,7 +870,7 @@ namespace Enrolment
             {
                 if (bSuccess)
                 {
-                    _web.InvokeScript("captureFingerprintMessage", FingerprintLeftRight, "Please use only one finger for one scan.", EnumColors.Red);
+                    _web.InvokeScript("captureFingerprintMessage", FingerprintLeftRight, "Please use the same thumb for verification.", EnumColors.Red);
                 }
                 else
                 {

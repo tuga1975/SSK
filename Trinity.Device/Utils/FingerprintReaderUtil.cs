@@ -140,18 +140,21 @@ namespace Trinity.Device.Util
 
         private bool OnFakeSource(FTR_PROGRESS Progress)
         {
-            Console.WriteLine("Fake source detected. Continue ...");
+            //Console.WriteLine("Fake source detected. Continue ...");
+            Console.WriteLine("No thumb detected");
             return false;
         }
 
         private void OnTakeOff(FTR_PROGRESS Progress)
         {
-            Console.WriteLine("Take off finger from device, please ...");
+            //Console.WriteLine("Take off finger from device, please ...");
+            Console.WriteLine("Remove thumb from fingerprint scanner.");
         }
 
         private void OnPutOn(FTR_PROGRESS Progress)
         {
-            Console.WriteLine("Put finger into device, please ...");
+            //Console.WriteLine("Put finger into device, please ...");
+            Console.WriteLine("Place thumb on the fingerprint reader.");
         }
 
         /// <summary>

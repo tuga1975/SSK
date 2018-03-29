@@ -155,22 +155,24 @@ namespace Experiment
 
         private void btnPrintTTLabel_Click(object sender, EventArgs e)
         {
-            BarcodePrinterUtil.Instance.PrintTTLabel_Direction_0(new TTLabelInfo()
+            bool result = BarcodePrinterUtil.Instance.PrintTTLabel_Direction_0(new TTLabelInfo()
             {
                 ID = "S9872509D",
                 Name = "Do Duc Tu",
                 MarkingNumber = "CSA18001991"
             });
+            AlertResult(result);
         }
 
         private void btnPrintTTLabel_2_Click(object sender, EventArgs e)
         {
-            BarcodePrinterUtil.Instance.PrintTTLabel_Direction_0(new TTLabelInfo()
+            bool result = BarcodePrinterUtil.Instance.PrintTTLabel_Direction_0(new TTLabelInfo()
             {
                 ID = "S9872509D",
                 Name = "Do Duc Tu TVO Long Name",
                 MarkingNumber = "CSA18001901"
             });
+            AlertResult(result);
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -185,7 +187,8 @@ namespace Experiment
             string qrCodeString = string.Format("{0}*{1}*{2}", mubLabelInfo.MarkingNumber, mubLabelInfo.ID, mubLabelInfo.Name).PadRight(91, '*');
             mubLabelInfo.QRCodeString = qrCodeString;
 
-            BarcodePrinterUtil.Instance.PrintMUBLabel(mubLabelInfo);
+            bool result = BarcodePrinterUtil.Instance.PrintMUBLabel(mubLabelInfo);
+            AlertResult(result);
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -200,7 +203,8 @@ namespace Experiment
             string qrCodeString = string.Format("{0}*{1}*{2}", mubLabelInfo.MarkingNumber, mubLabelInfo.ID, mubLabelInfo.Name).PadRight(91, '*');
             mubLabelInfo.QRCodeString = qrCodeString;
 
-            BarcodePrinterUtil.Instance.PrintMUBLabel(mubLabelInfo);
+            bool result = BarcodePrinterUtil.Instance.PrintMUBLabel(mubLabelInfo);
+            AlertResult(result);
         }
 
         private void btnConnectPDIScanner_Click(object sender, EventArgs e)
