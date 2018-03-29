@@ -446,6 +446,26 @@ namespace SSA
             }
         }
 
+        private void ShowTutorialVideos(bool placeOrRemove)
+        {
+            if (placeOrRemove)
+            {
+                this._web.RunScript("$('#placeMUBAndTT').show();");
+                this._web.RunScript("$('#removeMUBAndTT').hide();");
+            }
+            else
+            {
+                this._web.RunScript("$('#placeMUBAndTT').hide();");
+                this._web.RunScript("$('#removeMUBAndTT').show();");
+            }
+        }
+
+        private void HideTutorialVideos()
+        {
+            this._web.RunScript("$('#placeMUBAndTT').hide();");
+            this._web.RunScript("$('#removeMUBAndTT').hide();");
+        }
+
         /// <summary>
         /// This function will be called every 1 second
         /// </summary>
@@ -593,6 +613,9 @@ namespace SSA
         {
             if (isFullyOpen)
             {
+                // Show tutorial videos to guide user how to remove MUB
+                ShowTutorialVideos(false);
+
                 this._web.RunScript("$('#mubStatus').css('color','#000').text('MUB was processed successfully. Please remove MUB.');");
                 this._web.RunScript("$('#ConfirmBtn').html('Confirm to remove the MUB and TT');");
                 this._web.RunScript("$('#lblNextAction').text('CheckIfMUBAndTTIsRemoved');");
@@ -615,6 +638,9 @@ namespace SSA
 
                 if (_ttApplicatorReady)
                 {
+                    // Show tutorial videos to guide user how to place MUB and TT
+                    ShowTutorialVideos(true);
+
                     // MUB Applicator is ready
                     // Then verify presence of MUB
                     this._web.RunScript("$('#ConfirmBtn').html('Verify presence of MUB and TT.');");
@@ -746,6 +772,10 @@ namespace SSA
                 // Set next action to "StartMUBApplicator"
                 if (_ttIsPresent)
                 {
+                    // MUB and TT are present on the hold
+                    // Hide tutorial videos
+                    HideTutorialVideos();
+
                     this._web.RunScript("$('#ConfirmBtn').html('Starting Applicator...');");
                     this._web.RunScript("$('#lblNextAction').text('StartMUBAndTTApplicator');");
                     StartMUBApplicator();
@@ -788,6 +818,9 @@ namespace SSA
 
         private void CompletePrinting()
         {
+            // Hide all tutorial videos
+            HideTutorialVideos();
+
             // Complete test. Remove queue number from Queue Monitor
             Session session = Session.Instance;
             Trinity.BE.User currentUser = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
@@ -873,6 +906,9 @@ namespace SSA
         {
             if (isFullyOpen)
             {
+                // Show tutorial videos to guide user how to remove TT
+                ShowTutorialVideos(false);
+
                 this._web.RunScript("$('#ttStatus').css('color','#000').text('TT was processed successfully. Please remove TT.');");
                 this._web.RunScript("$('#ConfirmBtn').html('Confirm to remove the MUB and TT');");
                 this._web.RunScript("$('#lblNextAction').text('CheckIfMUBAndTTIsRemoved');");

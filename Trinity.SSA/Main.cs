@@ -1,18 +1,15 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using Trinity.Common;
 using Trinity.Common.Common;
 using Trinity.DAL;
-using Trinity.Device;
 using Trinity.Device.Authentication;
 using Trinity.Device.Util;
 
@@ -20,7 +17,6 @@ namespace SSA
 {
     public partial class Main : Form
     {
-        private System.Timers.Timer _autoPrintTimer = null;
         private JSCallCS _jsCallCS;
         private EventCenter _eventCenter;
         private CodeBehind.Authentication.NRIC _nric;
@@ -193,7 +189,7 @@ namespace SSA
                 // Start page
                 //NavigateTo(NavigatorEnums.Authentication_SmartCard);
 
-                string startFrom = "";
+                string startFrom = "Supervisee_Particulars";
                 // 50.132
                 //string superviseeId = "06a91b1b-99c3-428d-8a55-83892c2adf4c";
                 //string dutyOfficerId = "f1748cb4-3bb5-4129-852d-2aba28bb8cec";

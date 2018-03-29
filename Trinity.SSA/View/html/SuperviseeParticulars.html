@@ -25,14 +25,15 @@
             </div>
         </div>
         <!--<div class="input-group">
-        <span class="input-group-addon">QR Code:</span>
-        <img id="imgQRCode" width="120" height="120" style="margin-left:12px;">
-    </div>
-    <br />
-    <div class="input-group">
-        <span class="input-group-addon">Marking Number:</span>
-        <input id="MarkingNumber" type="text" class="form-control pri" name="MarkingNumber" readonly="readonly" />
-    </div>-->
+            <span class="input-group-addon">QR Code:</span>
+            <img id="imgQRCode" width="120" height="120" style="margin-left:12px;">
+        </div>
+        <br />
+        <div class="input-group">
+            <span class="input-group-addon">Marking Number:</span>
+            <input id="MarkingNumber" type="text" class="form-control pri" name="MarkingNumber" readonly="readonly" />
+        </div>-->
+
         <div style="visibility:hidden">
             <label id="lblNextAction">InitializeMUBAndTTApplicator</label>
         </div>
@@ -45,12 +46,26 @@
         <!--<div style="width:100%;">
             <textarea id="printLogs" style="width:600px;height:400px;"></textarea>
         </div>-->
-
-
         <div id="divSave">
             <button type="button" class="btn btn-dark" id="CancelBtn">CANCEL</button>
             <button type="button" class="btn btn-primary" id="ConfirmBtn">CONFIRM</button>
 
+        </div>
+        <div align="center" id="placeMUBAndTT" style="display:none" class="SSA-embed-responsive-16by9">
+            <video autoplay loop class="SSA-embed-responsive-item">
+                <source src="../img/PlaceMUB.mp4" type="video/mp4">
+            </video>
+            <video autoplay loop class="SSA-embed-responsive-item">
+                <source src="../img/PlaceTT.mp4" type="video/mp4">
+            </video>
+        </div>
+        <div align="center" id="removeMUBAndTT" style="display:none" class="SSA-embed-responsive-16by9">
+            <video autoplay loop class="SSA-embed-responsive-item">
+                <source src="../img/RemoveMUB.mp4" type="video/mp4">
+            </video>
+            <video autoplay loop class="SSA-embed-responsive-item">
+                <source src="../img/RemoveTT.mp4" type="video/mp4">
+            </video>
         </div>
     </div>
 </form>
