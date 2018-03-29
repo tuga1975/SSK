@@ -325,6 +325,7 @@
     <Content Include="View\img\icon-MUBTT.png" />
     <Content Include="View\img\icon-Q-active.png" />
     <Content Include="View\img\icon-Q.png" />
+    <Content Include="View\img\icon-search.png" />
     <Content Include="View\img\icon-settings-active.png" />
     <Content Include="View\img\icon-settings.png" />
     <Content Include="View\img\icon-sort-asc.png" />

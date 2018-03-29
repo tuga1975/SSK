@@ -1,5 +1,4 @@
-﻿  <!--Viết nội dung trong này -->
-<style>
+﻿<style>
 
     body {
         background: #fff;
@@ -331,6 +330,7 @@
         api.server.SearchSuperviseeByNRIC(searchOld, function (model) {
             $('#listSupervisee').html('');
             if (model.length == 0) {
+                $('input[name="nric"]').val(txtSearch).focusout();
                 ShowMessage('Cant find any record with your input\'s information.');
             } else {
                 for (var i = 0; i < model.length; i++) {

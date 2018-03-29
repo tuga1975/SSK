@@ -334,10 +334,10 @@ span[color] {
 
 .tab-header {
     border-bottom: 1px solid #d2d2d2;
-    padding: 40px 0 9px 40px;
+    padding: 0px 0 8px 40px;
     position: fixed;
     z-index: 10;
-    top: 190px;
+    top: 240px;
     left: 0;
     width: 100%;
     background: #fff;
@@ -388,11 +388,19 @@ table th[checkbox] {
     right: 40px;
     
 }
-.fixed-table-toolbar .search .form-control {
-    background-color: #f6f6f6;
-    border: 0;
-    padding: 10px 12px;
-}
+    .fixed-table-toolbar .search .form-control {
+        background-color: #f6f6f6;
+        padding: 10px 12px;
+        min-width: 300px;
+        outline: none !important;
+        border: none !important;
+        box-shadow: none !important;
+        background-image: url(../img/icon-search.png);
+        background-position: calc(100% - 20px) center;
+        background-repeat: no-repeat;
+        background-size: 20px;
+        padding-right: 50px;
+    }
 table thead th .both {
     background-image: url(../img/icon-sort.png) !important;
     margin-right: 10px !important;
@@ -574,8 +582,8 @@ table th {
         font-size: 50px;
         font-weight: 300;
         position: absolute;
-        right: 20px;
-        top: 30px;
+        right: 35px;
+        top: 16px;
         color: #999;
     }
 
@@ -1001,4 +1009,7 @@ tr.selected input[type="checkbox"]:after {
     background-color: #F5F5F5;
     border-radius: 5px;
     color: dodgerblue;
+}
+.modal-header .close{
+    outline:none !important;
 }
