@@ -183,22 +183,26 @@
                 }
             }],
             onClickCell: function (field, value, row, $element) {
-                if (field == "message" && !row.isReaded) {
+                if (field == "message") {
                     $element.removeClass("row_unread");
                     $element.addClass("row_readed");
                     var index = $element.closest('tr').data('index');
-                    $table.bootstrapTable('updateRow', {
-                        index: index,
-                        row: {
-                            isReaded: true
-                        }
-                    });
                     api.server.LoadPopupAlert(JSON.stringify(row), function () {
                         var notificationId = row.notificationId;
                         if (notificationId) {
-                            api.server.updateReadedStatus(notificationId, function (isUpdateSuccessed) {
+                            if (!row.isReaded) {
+                                api.server.updateReadedStatus(notificationId, function (isUpdateSuccessed) {
+                                    $('#alertPopup').modal();
+                                    $table.bootstrapTable('updateRow', {
+                                        index: index,
+                                        row: {
+                                            isReaded: true
+                                        }
+                                    });
+                                });
+                            } else {
                                 $('#alertPopup').modal();
-                            });
+                            }
                         }
                     });
                 }

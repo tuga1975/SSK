@@ -167,12 +167,14 @@
     <Content Include="View\images\fingerprint.png" />
     <Content Include="View\images\front-avarta.png" />
     <Content Include="View\images\front-smartcard.png" />
+    <Content Include="View\images\icon-search.png" />
     <Content Include="View\images\leftthumb.png" />
     <Content Include="View\images\loading.gif" />
     <Content Include="View\images\log-out.png" />
     <Content Include="View\images\logo.png" />
     <Content Include="View\images\logoCNB.png" />
     <Content Include="View\images\logoCNB.svg" />
+    <Content Include="View\images\logoSingov.png" />
     <Content Include="View\images\Logout.png" />
     <Content Include="View\images\ManualLogin.png" />
     <Content Include="View\images\Notification-512.png" />
@@ -200,6 +202,8 @@
     <Content Include="View\scripts\scripts.js" />
     <Content Include="View\scripts\styles.css" />
     <Content Include="View\styles\main.css" />
+    <Content Include="View\table\bootstrap-table.css" />
+    <Content Include="View\table\bootstrap-table.js" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Business\" />

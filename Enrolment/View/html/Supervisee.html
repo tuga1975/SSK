@@ -1,152 +1,35 @@
 ﻿<style>
-
-    body {
-        background: #fff;
+    /*table css*/
+    .fixed-table-container, .bootstrap-table .table thead > tr > th {
+        border: none !important;
     }
 
-
-    .form-material .input-group-prepend {
-        min-width: 35%;
+    .bootstrap-table .table {
+        background-color: #f6f6f6;
     }
 
-    .form-material .input-group .input-group-text {
-        border: 0;
-        border-radius: 0;
-        background-color: transparent;
-        color: #209CDD;
-    }
-
-    .form-material .btn {
-        background: #1CACF6;
-        color: #fff;
-        text-transform: uppercase;
-    }
-
-        .form-material .btn.btn-light {
-            background-color: transparent;
-            color: #1CACF6;
+        .bootstrap-table .table thead > tr > th {
+            color: #334352;
         }
 
-    .form-group {
-        margin-bottom: 1rem;
-        position: relative;
-        min-height: 50px;
+    .fixed-table-body table tbody tr:nth-child(odd) {
+        background-color: #FFF;
     }
 
-    .form-select {
-        width: 100%;
-        float: left;
-        border-bottom: 1px solid #ccc;
-        margin: 10px 0;
-        display: flex;
-        flex-direction: row;
+    .fixed-table-body table tbody tr:nth-child(even) {
+        background: #f6f6f6;
     }
 
-        .form-select .input-group-select {
-            min-width: 35%;
-        }
-
-        .form-select .form-label {
-            border: 0;
-            border-radius: 0;
-            background-color: transparent;
-            color: #209CDD;
-            padding: .375rem .75rem;
-            margin-bottom: 0;
-            font-size: 1rem;
-            font-weight: 400;
-            line-height: 1.5;
-            position: absolute;
-        }
-
-        .form-select select {
-            padding: .375rem .75rem;
-            font-size: 1rem;
-            line-height: 1.5;
-            color: #495057;
-            -moz-appearance: none; /* Firefox */
-            -webkit-appearance: none; /* Safari and Chrome */
-            text-indent: 1px;
-            text-overflow: '';
-            border: 0;
-            position: relative;
-        }
-
-            .form-select select + label {
-                float: right;
-                margin-top: 7px;
-                margin-right: 5px;
-                pointer-events: none;
-                background-color: #fff;
-                padding-right: 5px;
-                color: #209CDD;
-            }
-
-            .form-select select::-ms-expand {
-                display: none;
-            }
-
-        .form-select .select-wrap {
-            position: relative;
-        }
-
-    .tab-fix {
-        position: relative;
-        max-width: 100%;
-        max-height: calc(100% - 80px);
-        overflow-x: hidden;
-        overflow-y: auto;
+    .fixed-table-container tbody td {
+        border-left: none !important;
+        color: #334352;
     }
-
-    .form-material input::-webkit-input-placeholder {
-        font-style: italic;
-        color: #ccc;
-    }
-
-    .form-material input:-moz-placeholder {
-        font-style: italic;
-        color: #ccc;
-    }
-
-    .form-material input::-moz-placeholder {
-        font-style: italic;
-        color: #ccc;
-    }
-
-    .form-material input:-ms-input-placeholder {
-        font-style: italic;
-        color: #ccc;
-    }
-
-    .nav-tabs-custom {
-        height: 50px;
-        background: #F6F6F6;
-        border: 0;
-    }
-
-        .nav-tabs-custom a {
-            height: 50px;
-            font-size: 1.1rem;
-            border: 0;
-            font-weight: bold;
-        }
-
-            .nav-tabs-custom a i {
-                padding-right: 10px;
-            }
-
-        .nav-tabs-custom .nav-link {
-            padding: 1rem;
-            line-height: 1rem;
-        }
-
-            .nav-tabs-custom .nav-link.active {
-                border: 0;
-                border-radius: 0;
-            }
-
+    /*end table css*/
     .title-border-red {
-        margin-top: 30px;
+        margin-top: 40px;
+        padding: 0px !important;
+        color: #334352;
+        padding-left: 40px !important;
     }
 
         .title-border-red > h5 {
@@ -236,64 +119,91 @@
             height: 50px;
             margin: 0;
         }
-</style>
-<!-- Tab panes -->
 
+    [name="nric"] {
+        height: 50px;
+        width: 300px;
+        box-sizing: border-box;
+        font-size: 16px;
+        color: #5c5c5c;
+        border: none;
+        box-shadow: none;
+        border: none;
+        background-color: #f6f6f6;
+        outline: none;
+        padding: 0px 55px 0px 20px;
+        background-image: url('../images/icon-search.png');
+        background-position: calc(100% - 20px) center;
+        background-repeat: no-repeat;
+        border-radius: 5px;
+    }
+</style>
 <div class="title-border-red border-bottom px-3">
     <h5>Issued Cards List</h5>
 </div>
-<br />
-<div class="row">
-    <div class="col-sm-12 col-md-7">
-        <div class="mx-3">
-            <h6 class="title-italic">Please scan Supervisee's NRIC or key in Supervisee's NRIC number</h6>
-        </div>
+<div style="position:relative;height:80px;margin-left:40px;width:calc(100% - 80px);">
+    <div style="position:absolute;color:#5c5c5c;font-style:italic;left:0px;top: 50%;-ms-transform: translateY(-50%);-webkit-transform: translateY(-50%);transform: translateY(-50%);width: calc(100% - 400px);font-size: 15px;">
+        Please scan Supervisee's NRIC or key in Supervisee's NRIC number
     </div>
-    <div class="col-sm-12 col-md-5">
-        <form method="get" action="#" class="pull-right mb-4" id="searchForm">
-            <div class="input-group input-group-search">
-                <input type="text" name="nric" class="form-control" placeholder="Please input keyword" />
-                <div class="input-group-prepend">
-
-                    <a href="javascript:;" onclick="searchSuperviseeNric();" id="btnSearch" class="btn">
-                        <i class="fa fa-search"></i>
-                    </a>
-
-                </div>
-            </div>
-        </form>
-    </div>
-    <div class="col-sm-12">
-        <div class="hidden-scrollbar">
-            <div class="scrollbar">
-                <table class="table mx-3" id="listCardList">
-                    <thead class="thead-light">
-                        <tr>
-                            <th scope="col">No.</th>
-                            <th scope="col">Supervisee Name</th>
-                            <th scope="col">Supervisee NRIC</th>
-                            <th scope="col">Date of birth</th>
-                            <th scope="col">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody id="listSupervisee"></tbody>
-                </table>
-            </div>
-        </div>
-
+    <div style="position:absolute;color:#5c5c5c;right:0px;top: calc(50% - 25px);">
+        <input type="text" placeholder="Please input keyword" name="nric" />
     </div>
 </div>
-
-
-<!--- HTML ở đây -->
-<!--POPUP Reset-->
-
+<div style="position:absolute;left: 40px;width: calc(100% - 80px);height: calc(100% - 170px);" panel-listview="">
+    <table id="table-list-supervisee"></table>
+</div>
 
 <script>
     var timeout = null;
-
     api.ready(function () {
         timeout = null;
+        $('#table-list-supervisee').bootstrapTable({
+            search: false,
+            pagination: false,
+            columns: [
+                {
+                    field: 'No',
+                    title: 'No.',
+                    align: 'center',
+                    width: '5%',
+                    sortable:true,
+                    formatter: function (value, row, index) {
+                        return index + 1;
+                    }
+                },
+                {
+                    field: 'Name',
+                    title: 'Supervisee Name',
+                    align: 'center',
+                    sortable: true,
+                },
+                {
+                    field: 'NRIC',
+                    title: 'Supervisee NRIC',
+                    align: 'center',
+                    sortable: true,
+                },
+                {
+                    field: 'DOB',
+                    title: 'Date of Birth',
+                    align: 'center',
+                    sortable: true,
+                },
+                {
+                    field: 'Status',
+                    title: 'Status',
+                    align: 'center',
+                    sortable: true,
+                    formatter: function (value, row, index, field) {
+                        return '<a style="color:#1cacf6;text-decoration: underline;" href="javascript:;" onclick="api.server.EditSupervisee(\'' + row.UserId + '\');">' + row.Status + '</a>';
+                    }
+                }
+            ]
+        });
+        $(window).resize(function () {
+            resetHeigtTable();
+        }).resize();
+
         $('input[name="nric"]').keyup(function (e) {
             var _value = $.trim($(this).val());
             clearTimeout(timeout);
@@ -311,40 +221,26 @@
                         searchSuperviseeNric(_value);
                     }, 500);
                 }
-            },10);
-        });
-
-
-
-        
-        $('#searchForm').submit(function myfunction(e) {
-            //searchSuperviseeNric();
-
-            e.preventDefault();
+            }, 10);
         });
         searchSuperviseeNric(searchOld);
     });
+    function resetHeigtTable() {
+        if ($('#table-list-supervisee').length > 0) {
+            $('#table-list-supervisee').bootstrapTable('refreshOptions', {
+                height: $('[panel-listview]').outerHeight(true)
+            });
+        }
+    }
     function searchSuperviseeNric(txtSearch) {
         searchOld = txtSearch;
         $('input[name="nric"]').val(txtSearch).focusout();
         api.server.SearchSuperviseeByNRIC(searchOld, function (model) {
-            $('#listSupervisee').html('');
             if (model.length == 0) {
-                $('input[name="nric"]').val(txtSearch).focusout();
-                ShowMessage('Cant find any record with your input\'s information.');
+                $('input[name="nric"]').focusout();
+                $('#table-list-supervisee').bootstrapTable('load', []);
             } else {
-                for (var i = 0; i < model.length; i++) {
-                    //alert(model[i].User.Name);
-                    var uId = '"' + model[i].User.UserId + '"';
-                    var dob = model[i].UserProfile != null ? model[i].UserProfile.DOBAsString : "";
-                    var content = "<tr><th scope='row'>" + (i + 1) + "</th><td>" + model[i].User.Name + "</td><td>" + model[i].User.NRIC + "</td><td>" + dob + "</td><td><a href='javascript:void();' id=" + uId + " edit-supervisee >" + model[i].User.Status + "</a></td></tr>";
-                    //$('#listSupervisee').append("<tr><th scope='row'>" + (i + 1) + "</th><td>" + model[i].User.Name + "</td><td>" + model[i].User.NRIC + "</td><td>" + model[i].UserProfile != null ? model[i].UserProfile.DOBAsString : null + "</td><td><a href='javascript:void();' onclick='api.server.EditSupervisee(" + uId + ");'>" + model[i].User.Status + "</a></td></tr>");
-                    $('#listSupervisee').append(content);
-                }
-                $('#listSupervisee [edit-supervisee]').click(function () {
-                    var id = this.id;
-                    api.server.EditSupervisee(id);
-                });
+                $('#table-list-supervisee').bootstrapTable('load', model);
                 $('input[name="nric"]').focusin();
             }
         });

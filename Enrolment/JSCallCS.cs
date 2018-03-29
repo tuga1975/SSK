@@ -42,29 +42,12 @@ namespace Enrolment
         public void LoadListSupervisee()
         {
             EventCenter eventCenter = EventCenter.Default;
-
-            //var dbUsers = CallCentralized.Get<List<Trinity.BE.User>>("User", "GetAllSupervisees");
-            //var dbUsers = new DAL_User().GetListAllSupervisees();
-            //var listSupervisee = new List<Trinity.BE.ProfileModel>();
-            //foreach (var item in dbUsers)
-            //{
-            //    var model = new Trinity.BE.ProfileModel()
-            //    {
-            //        User = item,
-            //        //UserProfile = CallCentralized.Get<Trinity.BE.UserProfile>("User", "GetUserProfileByUserId", "userId=" + item.UserId),
-            //        UserProfile = new DAL_UserProfile().GetProfile(item.UserId),
-            //        Addresses = null
-            //    };
-            //    listSupervisee.Add(model);
-            //}
-
-            eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = 0, Name = EventNames.GET_LIST_SUPERVISEE_SUCCEEDED, Source = "Supervisee.html" });
-            // this._web.LoadPageHtml("Supervisee.html", listSupervisee);
+            
+            eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = 0, Name = EventNames.GET_LIST_SUPERVISEE_SUCCEEDED});
         }
 
-        public List<Trinity.BE.ProfileModel> SearchSuperviseeByNRIC(string nric)
+        public object SearchSuperviseeByNRIC(string nric)
         {
-            EventCenter eventCenter = EventCenter.Default;
             Session session = Session.Instance;
             var dalUser = new DAL_User();
             var dalUserProfile = new DAL_UserProfile();
@@ -95,7 +78,13 @@ namespace Enrolment
                     listSupervisee.Add(model);
                 }
             }
-            return listSupervisee;
+            return listSupervisee.Select(d => new {
+                d.User.Name,
+                d.User.NRIC,
+                DOB = d.UserProfile==null?string.Empty:d.UserProfile.DOBAsString,
+                d.User.Status,
+                d.User.UserId
+            });
             //var dbUsers = dalUser.SearchSuperviseeByNRIC(nric);
             //var listSupervisee = new List<Trinity.BE.ProfileModel>();
             //if (dbUsers != null && dbUsers.Count > 0)
@@ -599,7 +588,6 @@ namespace Enrolment
                     UserId = profileModel.User.UserId,
                 }
             };
-
             SmartCardPrinterUtil.Instance.PrintAndWriteSmartCard(infoPrinter, OnNewCardPrinted);
         }
         private void OnNewCardPrinted(PrintAndWriteCardResult result)
@@ -643,12 +631,12 @@ namespace Enrolment
                     var failMessage = EnumMessage.SmartCardIsAlreadyInUse;
                     this._web.InvokeScript("showPrintMessage", false, failMessage);
                 }
-                
+
             }
             else
             {
-                var failMessage = "Cannot print smart card!";
-                this._web.InvokeScript("showPrintMessage", false, failMessage);
+
+                this._web.InvokeScript("showPrintMessage", false, result.Description);
 
             }
         }

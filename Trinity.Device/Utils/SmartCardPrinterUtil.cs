@@ -63,6 +63,7 @@ namespace Trinity.Device.Util
         {
             try
             {
+
                 // validate
                 if (cardInfo == null)
                 {

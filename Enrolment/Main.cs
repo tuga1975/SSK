@@ -360,19 +360,7 @@ namespace Enrolment
             }
             else if (e.Name == EventNames.GET_LIST_SUPERVISEE_SUCCEEDED)
             {
-                var model = (System.Collections.Generic.List<Trinity.BE.ProfileModel>)e.Data;
-                CSCallJS.LoadPageHtml(this.LayerWeb, "Supervisee.html", model);
-                if (e.Source!=null&& e.Source.ToString()!= "Supervisee.html")
-                {
-                    LayerWeb.InvokeScript("setSearchText", e.Source);
-                }
-               
-                if (!string.IsNullOrEmpty(e.Message))
-                {
-                   
-                    LayerWeb.InvokeScript("failAlert", e.Message);
-                    LayerWeb.InvokeScript("focusToSearchBox");
-                }
+                CSCallJS.LoadPageHtml(this.LayerWeb, "Supervisee.html");
             }
             else if (e.Name == EventNames.GET_LIST_SUPERVISEE_FAILED)
             {
@@ -1009,7 +997,6 @@ namespace Enrolment
             else if (navigatorEnum == NavigatorEnums.Supervisee)
             {
                 this.LayerWeb.LoadPageHtml("Supervisee.html");
-                _suppervisee.Start();
             }
             else if (navigatorEnum == NavigatorEnums.Login)
             {
