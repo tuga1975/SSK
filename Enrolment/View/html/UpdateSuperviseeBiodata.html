@@ -1259,7 +1259,7 @@
         </div>
     </div>
 </div>-->
-<div style="opacity:0;position:fixed;z-index:-1;right:0px;top:0px;">
+<div style="opacity:0;position:fixed;z-index:-1;left:0px;bottom:0px;">
     <div style="width:600px;height:376px;position:relative;overflow:hidden;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;background-color:#FFF;border-radius:20px;overflow:hidden;" id="frontCard">
         <img src="../images/front-smartcard.png" style="position:absolute;z-index:0;left:0px;top:0px;height:100%;width:100%;" />
 
@@ -1288,6 +1288,8 @@
             </div>
         </div>
     </div>
+</div>
+<div style="opacity:0;position:fixed;z-index:-1;right:0px;top:0px;">
     <div style="width:600px;height:376px;position:relative;overflow:hidden;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;background-color:#FFF;border-radius:20px;overflow:hidden;" id="backCard">
         <img src="../images/front-smartcard.png" style="position:absolute;z-index:0;left:0px;top:0px;height:100%;width:100%;" />
         <div style="bottom:39px;left:30px;position:absolute;">
@@ -1446,7 +1448,7 @@
                             });
                         }
                     });
-                }, 1000);
+                }, 500);
             });
         } else if (data.to == 3) {
             //if (frontCardImg == null && backCardImg == null) {

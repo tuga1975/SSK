@@ -44,35 +44,34 @@ namespace Enrolment
             EventCenter eventCenter = EventCenter.Default;
 
             //var dbUsers = CallCentralized.Get<List<Trinity.BE.User>>("User", "GetAllSupervisees");
-            var dbUsers = new DAL_User().GetListAllSupervisees();
-            var listSupervisee = new List<Trinity.BE.ProfileModel>();
-            foreach (var item in dbUsers)
-            {
-                var model = new Trinity.BE.ProfileModel()
-                {
-                    User = item,
-                    //UserProfile = CallCentralized.Get<Trinity.BE.UserProfile>("User", "GetUserProfileByUserId", "userId=" + item.UserId),
-                    UserProfile = new DAL_UserProfile().GetProfile(item.UserId),
-                    Addresses = null
-                };
-                listSupervisee.Add(model);
-            }
+            //var dbUsers = new DAL_User().GetListAllSupervisees();
+            //var listSupervisee = new List<Trinity.BE.ProfileModel>();
+            //foreach (var item in dbUsers)
+            //{
+            //    var model = new Trinity.BE.ProfileModel()
+            //    {
+            //        User = item,
+            //        //UserProfile = CallCentralized.Get<Trinity.BE.UserProfile>("User", "GetUserProfileByUserId", "userId=" + item.UserId),
+            //        UserProfile = new DAL_UserProfile().GetProfile(item.UserId),
+            //        Addresses = null
+            //    };
+            //    listSupervisee.Add(model);
+            //}
 
-            eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = 0, Name = EventNames.GET_LIST_SUPERVISEE_SUCCEEDED, Data = listSupervisee, Source = "Supervisee.html" });
+            eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = 0, Name = EventNames.GET_LIST_SUPERVISEE_SUCCEEDED, Source = "Supervisee.html" });
             // this._web.LoadPageHtml("Supervisee.html", listSupervisee);
         }
 
-        public void SearchSuperviseeByNRIC(string nric)
+        public List<Trinity.BE.ProfileModel> SearchSuperviseeByNRIC(string nric)
         {
             EventCenter eventCenter = EventCenter.Default;
             Session session = Session.Instance;
             var dalUser = new DAL_User();
             var dalUserProfile = new DAL_UserProfile();
-            var dbUsers = dalUser.SearchSuperviseeByNRIC(nric);
             var listSupervisee = new List<Trinity.BE.ProfileModel>();
-            if (dbUsers != null && dbUsers.Count > 0)
+            if (string.IsNullOrEmpty(nric))
             {
-                foreach (var item in dbUsers)
+                foreach (var item in new DAL_User().GetListAllSupervisees())
                 {
                     var model = new Trinity.BE.ProfileModel()
                     {
@@ -82,17 +81,46 @@ namespace Enrolment
                     };
                     listSupervisee.Add(model);
                 }
-
-                //  session[CommonConstants.SUPERVISEE] = dbUser;
-
-                //  _web.LoadPageHtml("Supervisee.html", listSupervisee);
-                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = 0, Name = EventNames.GET_LIST_SUPERVISEE_SUCCEEDED, Data = listSupervisee, Source = nric });
             }
             else
             {
-                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.GET_LIST_SUPERVISEE_SUCCEEDED, Data = listSupervisee, Source = nric, Message = "Cant find any record with your input's information." });
-                // LoadListSupervisee();
+                foreach (var item in dalUser.SearchSuperviseeByNRIC(nric))
+                {
+                    var model = new Trinity.BE.ProfileModel()
+                    {
+                        User = item,
+                        UserProfile = dalUserProfile.GetProfile(item.UserId),
+                        Addresses = null
+                    };
+                    listSupervisee.Add(model);
+                }
             }
+            return listSupervisee;
+            //var dbUsers = dalUser.SearchSuperviseeByNRIC(nric);
+            //var listSupervisee = new List<Trinity.BE.ProfileModel>();
+            //if (dbUsers != null && dbUsers.Count > 0)
+            //{
+            //    foreach (var item in dbUsers)
+            //    {
+            //        var model = new Trinity.BE.ProfileModel()
+            //        {
+            //            User = item,
+            //            UserProfile = dalUserProfile.GetProfile(item.UserId),
+            //            Addresses = null
+            //        };
+            //        listSupervisee.Add(model);
+            //    }
+
+            //    //  session[CommonConstants.SUPERVISEE] = dbUser;
+
+            //    //  _web.LoadPageHtml("Supervisee.html", listSupervisee);
+            //    eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = 0, Name = EventNames.GET_LIST_SUPERVISEE_SUCCEEDED, Data = listSupervisee, Source = nric });
+            //}
+            //else
+            //{
+            //    eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.GET_LIST_SUPERVISEE_SUCCEEDED, Data = listSupervisee, Source = nric, Message = "Cant find any record with your input's information." });
+            //    // LoadListSupervisee();
+            //}
         }
 
         public void PreviewSuperviseePhoto(int attempt)
