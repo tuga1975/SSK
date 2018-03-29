@@ -1428,22 +1428,25 @@
                 $('[name="verifyRace"]').text(model.UserProfile.Race == null ? '' : model.UserProfile.Race);
                 frontCardImg = null;
                 backCardImg = null;
+                api.loading(true);
                 JsBarcode('[name="verifyBarcode"]', model.User.NRIC, { background: "transparent", displayValue: false, height: 50, fontSize: 8, width: 2, margin: 0, font: "Arial" });
-                html2canvas($('#frontCard'), {
-                    onrendered: function (froncanvas) {
-                        html2canvas($('#backCard'), {
-                            onrendered: function (backcanvas) {
+                setTimeout(function () {
+                    html2canvas($('#frontCard'), {
+                        onrendered: function (froncanvas) {
+                            html2canvas($('#backCard'), {
+                                onrendered: function (backcanvas) {
 
-                                frontCardImg = froncanvas.toDataURL("image/png");
-                                backCardImg = backcanvas.toDataURL("image/png");
-                                $('[name="frontCardImg"]').attr('src', frontCardImg).css('display', 'inline-block');
-                                $('[name="backCardImg"]').attr('src', backCardImg).css('display', 'inline-block');
-                                //api.server.UpdateSuperviseeBiodata(frontCardImg, backCardImg, JSON.stringify(CardInfo));
-                                //$('.actions > ul > li > a[href="#next"]').click();
-                            }
-                        });
-                    }
-                });
+                                    frontCardImg = froncanvas.toDataURL("image/png");
+                                    backCardImg = backcanvas.toDataURL("image/png");
+
+                                    $('[name="frontCardImg"]').attr('src', frontCardImg).css('display', 'inline-block');
+                                    $('[name="backCardImg"]').attr('src', backCardImg).css('display', 'inline-block');
+                                    api.loading(false);
+                                }
+                            });
+                        }
+                    });
+                }, 1000);
             });
         } else if (data.to == 3) {
             //if (frontCardImg == null && backCardImg == null) {

@@ -66,7 +66,10 @@ namespace Enrolment
         {
             //Cast the frame as Bitmap object and don't forget to use ".Clone()" otherwise
             //you'll probably get access violation exceptions
-            pictureBox.Image = (Bitmap)eventArgs.Frame.Clone();
+            pictureBox.Invoke((MethodInvoker)(() =>
+            {
+                pictureBox.Image = (Bitmap)eventArgs.Frame.Clone();
+            }));
         }
 
         public void stopWebcam()
