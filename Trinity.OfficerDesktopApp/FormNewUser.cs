@@ -215,7 +215,7 @@ namespace OfficerDesktopApp
 
         private bool OnFakeSource(FTR_PROGRESS Progress)
         {
-            UpdateNote("Fake source detected. Continue ...", Color.Red);
+            UpdateNote("No thumb detected.", Color.Red);
             return false;
         }
 

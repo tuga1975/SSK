@@ -904,16 +904,16 @@ namespace Enrolment
         }
         private bool OnFakeSource(Futronic.SDKHelper.FTR_PROGRESS Progress)
         {
-            _web.InvokeScript("captureFingerprintMessage", FingerprintLeftRight, "Fake source detected. Continue ...", EnumColors.Red);
+            _web.InvokeScript("captureFingerprintMessage", FingerprintLeftRight, "No thumb detected.", EnumColors.Red);
             return false;
         }
         private void OnTakeOff(Futronic.SDKHelper.FTR_PROGRESS Progress)
         {
-            _web.InvokeScript("captureFingerprintMessage", FingerprintLeftRight, "Take off finger from device, please ...", EnumColors.Yellow);
+            _web.InvokeScript("captureFingerprintMessage", FingerprintLeftRight, "Remove thumb from fingerprint scanner.", EnumColors.Yellow);
         }
         private void OnPutOn(Futronic.SDKHelper.FTR_PROGRESS Progress)
         {
-            _web.InvokeScript("captureFingerprintMessage", FingerprintLeftRight, "Put finger into device, please ...", EnumColors.Yellow);
+            _web.InvokeScript("captureFingerprintMessage", FingerprintLeftRight, "Place thumb on the fingerprint reader.", EnumColors.Yellow);
         }
         #endregion
 
