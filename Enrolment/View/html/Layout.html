@@ -12,11 +12,13 @@
     <link href="../bootstrap/css/ionicons.min.css" rel="stylesheet" />
     <link href="../bootstrap/css/font-awesome.min.css" rel="stylesheet" />
     <link href="../keyboard/jquery.ml-keyboard.css" rel="stylesheet" />
+    <link href="../table/bootstrap-table.css" rel="stylesheet">
     <script type="text/javascript" src="../scripts/jquery-1.10.2.min.js"></script>
     <script type="text/javascript" src="../scripts/jquery-ui.min.js"></script>
     <script type="text/javascript" src="../bootstrap/js/popper.min.js"></script>
     <script type="text/javascript" src="../bootstrap/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../scripts/JsBarcode.all.min.js"></script>
+    <script src="../table/bootstrap-table.js"></script>
     <script src="../scripts/utils.js"></script>
     <script type="text/javascript" src="../scripts/lib.js"></script>
 
@@ -26,24 +28,24 @@
     <script type="text/javascript" src="../html2canvas/jquery.plugin.html2canvas.js"></script>
     <script type="text/javascript">
         var searchOld = '';
+        function confirmLogout() {
+            ShowMessageConfirm('', 'Are you sure you want to sign out?', function (status) {
+                if (status) {
+                    api.server.LogOut();
+                }
+            });
+        }
     </script>
 </head>
 
 <body>
-    <div id="header" style="margin-bottom: 30px;">
-        <div style="position: relative">
-            <div class="header-landingPage">
-                <img class="logo" src="../images/logoCNB.svg" style="position:relative;height:65px; width:auto;" />
-                <div class="clear"></div>
-            </div>
-
-            <div class="header-landingPage" style="position:relative;height: 40px; background-color:#5D5D5D;margin-top: 10px;margin-bottom: 20px;">
-                <a href="#" style="position:relative;z-index:9999;float:right;color:white;margin-right:20px;padding: 5px;" onclick="api.server.LogOut()">Logout</a>
-                <h3 style="color:white;"><i class="fa fa-home" style="position:relative;z-index:1;color:#0094ff;margin-left:15px;"></i> Enrolment</h3>
-                <div class="clear"></div>
-            </div>
+    <div id="header">
+        <img class="logo" src="../images/logoCNB.svg" style="position:absolute;height:65px;width:auto;top: 17px;left: 40px;" />
+        <img src="../images/logoSingov.png" style="position:absolute;height: auto;width: 220px;top: 40px;right: 40px;" />
+        <div style="position:absolute;height: 60px; background-color:#334352;bottom:0px;width:100%;">
+            <h3 style="color:white;font-size: 25px;position: absolute;left: 40px;top: 15px;"><i class="fa fa-home" style="position:relative;z-index:1;color:#1da9f1;margin-right:35px;"></i> Enrolment</h3>
+            <a href="javascript:;" style="position: absolute;right: 40px;top: 17px;color:#FFF;" onclick="confirmLogout();">Logout</a>
         </div>
-
     </div>
     <div id="parent-content">
         <div id="content">

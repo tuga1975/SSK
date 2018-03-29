@@ -63,6 +63,7 @@ namespace Trinity.Device.Util
         {
             try
             {
+
                 // validate
                 if (cardInfo == null)
                 {
@@ -232,6 +233,10 @@ namespace Trinity.Device.Util
                         returnValue.CardUID = SmartCardReaderUtil.Instance.GetCardUID(EnumDeviceNames.SmartCardContactlessReader);
                     }
                     #endregion
+                }
+                else
+                {
+                    returnValue.Description = "Smart card printer is not connected!";
                 }
 
 
