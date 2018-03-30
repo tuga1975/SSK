@@ -413,3 +413,48 @@ highlight {
     [data-tip]:focus:after {
         display: block;
     }
+
+
+.title-border-red {
+    margin-top: 40px;
+    padding: 0px !important;
+    color: #334352;
+    padding-left: 40px !important;
+}
+
+    .title-border-red > h5 {
+        border-bottom: 2px solid red;
+        margin-bottom: -1px;
+        display: inline-block;
+        padding: 5px 0;
+    }
+
+/*table css*/
+.fixed-table-container, .bootstrap-table .table thead > tr > th {
+    border: none !important;
+}
+
+.bootstrap-table .table {
+    background-color: #f6f6f6;
+}
+
+    .bootstrap-table .table thead > tr > th {
+        color: #334352;
+    }
+
+.fixed-table-body table tbody tr:nth-child(odd) {
+    background-color: #FFF;
+}
+
+.fixed-table-body table tbody tr:nth-child(even) {
+    background: #f6f6f6;
+}
+
+.fixed-table-container tbody td {
+    border-left: none !important;
+    color: #334352;
+}
+.fixed-table-container thead th .sortable {
+    padding-right: 15px !important;
+}
+/*end table css*/

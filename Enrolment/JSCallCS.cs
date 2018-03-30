@@ -986,11 +986,11 @@ namespace Enrolment
                 currentEditUser.UserProfile.DateOfIssue = _CardInfo.Date_Of_Issue;
                 currentEditUser.UserProfile.SerialNumber = _CardInfo.CardNumberFull;
                 currentEditUser.Membership_Users.SmartCardId = SmartID;
-                _web.InvokeScript("OnIssuedCardReprinted", true, IssueCard.JsonString());
+                _web.InvokeScript("OnIssuedCardReprinted", true, string.Empty);
             }
             else
             {
-                _web.InvokeScript("OnIssuedCardReprinted", false, null);
+                _web.InvokeScript("OnIssuedCardReprinted", false, result.Description);
             }
         }
         #endregion

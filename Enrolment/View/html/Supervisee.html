@@ -1,44 +1,6 @@
 ﻿<style>
-    /*table css*/
-    .fixed-table-container, .bootstrap-table .table thead > tr > th {
-        border: none !important;
-    }
-
-    .bootstrap-table .table {
-        background-color: #f6f6f6;
-    }
-
-        .bootstrap-table .table thead > tr > th {
-            color: #334352;
-        }
-
-    .fixed-table-body table tbody tr:nth-child(odd) {
-        background-color: #FFF;
-    }
-
-    .fixed-table-body table tbody tr:nth-child(even) {
-        background: #f6f6f6;
-    }
-
-    .fixed-table-container tbody td {
-        border-left: none !important;
-        color: #334352;
-    }
-    /*end table css*/
-    .title-border-red {
-        margin-top: 40px;
-        padding: 0px !important;
-        color: #334352;
-        padding-left: 40px !important;
-    }
-
-        .title-border-red > h5 {
-            border-bottom: 2px solid red;
-            margin-bottom: -1px;
-            display: inline-block;
-            padding: 5px 0;
-        }
-
+    
+    
     .hidden-scrollbar {
         position: relative;
         height: 450px;
@@ -138,7 +100,7 @@
         border-radius: 5px;
     }
 </style>
-<div class="title-border-red border-bottom px-3">
+<div class="title-border-red border-bottom">
     <h5>Issued Cards List</h5>
 </div>
 <div style="position:relative;height:80px;margin-left:40px;width:calc(100% - 80px);">
@@ -149,7 +111,7 @@
         <input type="text" placeholder="Please input keyword" name="nric" />
     </div>
 </div>
-<div style="position:absolute;left: 40px;width: calc(100% - 80px);height: calc(100% - 170px);" panel-listview="">
+<div style="position:absolute;left: 40px;width: calc(100% - 80px);height: calc(100% - 170px);" parent-table-view="">
     <table id="table-list-supervisee"></table>
 </div>
 
@@ -201,9 +163,12 @@
             ]
         });
         $(window).resize(function () {
-            resetHeigtTable();
+            if ($('#table-list-supervisee').length > 0) {
+                $('#table-list-supervisee').bootstrapTable('refreshOptions', {
+                    height: $('[parent-table-view]').outerHeight(true)
+                });
+            }
         }).resize();
-
         $('input[name="nric"]').keyup(function (e) {
             var _value = $.trim($(this).val());
             clearTimeout(timeout);
@@ -225,13 +190,6 @@
         });
         searchSuperviseeNric(searchOld);
     });
-    function resetHeigtTable() {
-        if ($('#table-list-supervisee').length > 0) {
-            $('#table-list-supervisee').bootstrapTable('refreshOptions', {
-                height: $('[panel-listview]').outerHeight(true)
-            });
-        }
-    }
     function searchSuperviseeNric(txtSearch) {
         searchOld = txtSearch;
         $('input[name="nric"]').val(txtSearch).focusout();
