@@ -359,6 +359,22 @@ public static class EnumDeviceNames
     {
         get { return ConfigurationManager.AppSettings["SmartCardPrinterName"]; }
     }
+
+    public static bool EnableBarcodeScanner
+    {
+        get
+        {
+           if (ConfigurationManager.AppSettings["EnableBarcodeScanner"]?.ToLower() == "true")
+                return true;
+            else
+                return false;
+        }
+    }
+
+    public static string BarcodeScannerPortName
+    {
+        get { return ConfigurationManager.AppSettings["BarcodeScannerPortName"] ?? string.Empty; }
+    }
 }
 
 public static class EnumNotificationTypes
