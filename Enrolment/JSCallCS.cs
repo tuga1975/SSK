@@ -42,8 +42,8 @@ namespace Enrolment
         public void LoadListSupervisee()
         {
             EventCenter eventCenter = EventCenter.Default;
-            
-            eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = 0, Name = EventNames.GET_LIST_SUPERVISEE_SUCCEEDED});
+
+            eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = 0, Name = EventNames.GET_LIST_SUPERVISEE_SUCCEEDED });
         }
 
         public object SearchSuperviseeByNRIC(string nric)
@@ -78,10 +78,11 @@ namespace Enrolment
                     listSupervisee.Add(model);
                 }
             }
-            return listSupervisee.Select(d => new {
+            return listSupervisee.Select(d => new
+            {
                 d.User.Name,
                 d.User.NRIC,
-                DOB = d.UserProfile==null?string.Empty:d.UserProfile.DOBAsString,
+                DOB = d.UserProfile == null ? string.Empty : d.UserProfile.DOBAsString,
                 d.User.Status,
                 d.User.UserId
             });
@@ -623,21 +624,38 @@ namespace Enrolment
                     currentEditUser.UserProfile.DateOfIssue = _CardInfo.Date_Of_Issue;
                     currentEditUser.UserProfile.SerialNumber = _CardInfo.CardNumberFull;
                     currentEditUser.Membership_Users.SmartCardId = SmartID;
-                    this._web.InvokeScript("showPrintMessage", true, "Smart Card was printed successfully! Please collect the smart card from printer and place on the reader to verify.");
-                    this._web.InvokeScript("showCardImages");
+                    CheckVerfyCard();
                 }
                 catch (Exception ex)
                 {
-                    var failMessage = EnumMessage.SmartCardIsAlreadyInUse;
-                    this._web.InvokeScript("showPrintMessage", false, failMessage);
+                    this._web.InvokeScript("showPrintMessage", false, EnumMessage.SmartCardIsAlreadyInUse);
                 }
 
             }
             else
             {
-
                 this._web.InvokeScript("showPrintMessage", false, result.Description);
 
+            }
+        }
+        public void CheckVerfyCard()
+        {
+            this._web.InvokeScript("showPrintMessage", true, "Smart Card was printed successfully! Please collect the smart card from printer and place on the reader to verify.");
+            SmartCardReaderUtil smartCardReaderUtil = SmartCardReaderUtil.Instance;
+            SmartCardData_Original smartCardData_Original = null;
+            bool readDataResult = smartCardReaderUtil.ReadAllData_MifareClassic(ref smartCardData_Original);
+            if (!readDataResult)
+            {
+                this._web.InvokeScript("showCheckVerfyCard", false, "Can not read information smart card.");
+            }
+            else
+            {
+                this._web.InvokeScript("showCheckVerfyCard", true, new
+                {
+                    smartCardData_Original.SuperviseeBiodata.Name,
+                    smartCardData_Original.SuperviseeBiodata.NRIC,
+                    smartCardData_Original.SuperviseeBiodata.DOB
+                });
             }
         }
         public void AddNewSupervisee()
