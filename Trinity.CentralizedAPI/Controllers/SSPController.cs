@@ -65,6 +65,7 @@ namespace Trinity.BackendAPI.Controllers
 
     public class SSPAuthenticateModel
     {
+        public string Name { get; set; }
         public bool Found { get; set; }
         public byte[] Right { get; set; }
         public byte[] Left { get; set; }
@@ -146,6 +147,7 @@ namespace Trinity.BackendAPI.Controllers
             {
                 return Ok(new SSPAuthenticateModel()
                 {
+                    Name = user.Name,
                     Found = true,
                     Right = user.RightThumbFingerprint,
                     Left = user.LeftThumbFingerprint
