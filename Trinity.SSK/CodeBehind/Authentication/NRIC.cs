@@ -73,7 +73,7 @@ namespace SSK.CodeBehind.Authentication
             else
             {
                 CSCallJS.ShowMessageAsync(_web, "ERROR", error);
-                System.Threading.Tasks.Task.Factory.StartNew(() => BarcodeScannerUtil.Instance.StartScanning(BarcodeScannerCallback));
+                //System.Threading.Tasks.Task.Factory.StartNew(() => BarcodeScannerUtil.Instance.StartScanning(BarcodeScannerCallback));
             }
         }
 
