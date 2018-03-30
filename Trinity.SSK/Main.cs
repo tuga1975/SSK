@@ -524,17 +524,20 @@ namespace SSK
         private void JSCallCS_OnNRICFailed(object sender, NRICEventArgs e)
         {
             //MessageBox.Show(e.Message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            LayerWeb.ShowMessage("Authentication failed", e.Message);
+            //LayerWeb.ShowMessage("Authentication failed", e.Message);
+            CSCallJS.ShowMessage(LayerWeb, "Authentication failed", e.Message);
         }
 
         private void JSCallCS_ShowMessage(object sender, ShowMessageEventArgs e)
         {
-            MessageBox.Show(e.Message, e.Caption, e.Button, e.Icon);
+            //MessageBox.Show(e.Message, e.Caption, e.Button, e.Icon);
+            CSCallJS.ShowMessage(LayerWeb, e.Caption, e.Message);
         }
 
         private void OnShowMessage(object sender, ShowMessageEventArgs e)
         {
-            MessageBox.Show(e.Message, e.Caption, e.Button, e.Icon);
+            //MessageBox.Show(e.Message, e.Caption, e.Button, e.Icon);
+            CSCallJS.ShowMessage(LayerWeb, e.Caption, e.Message);
         }
 
         public void NavigateTo(NavigatorEnums navigatorEnum)

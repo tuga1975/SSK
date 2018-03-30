@@ -515,11 +515,13 @@ namespace SSA
         private void JSCallCS_OnNRICFailed(object sender, NRICEventArgs e)
         {
             //MessageBox.Show(e.Message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            _popupModel.Title = "Authentication Failed";
-            _popupModel.Message = e.Message;
-            _popupModel.IsShowLoading = false;
-            _popupModel.IsShowOK = true;
-            LayerWeb.InvokeScript("showPopupModal", JsonConvert.SerializeObject(_popupModel));
+            //_popupModel.Title = "Authentication Failed";
+            //_popupModel.Message = e.Message;
+            //_popupModel.IsShowLoading = false;
+            //_popupModel.IsShowOK = true;
+            //LayerWeb.InvokeScript("showPopupModal", JsonConvert.SerializeObject(_popupModel));
+
+            CSCallJS.ShowMessage(LayerWeb, "Authentication Failed", e.Message);
         }
 
         private void JSCallCS_ShowMessage(object sender, ShowMessageEventArgs e)
