@@ -650,12 +650,12 @@ namespace Enrolment
             }
             else
             {
-                this._web.InvokeScript("showCheckVerfyCard", true, new
+                this._web.InvokeScript("showCheckVerfyCard", true,JsonConvert.SerializeObject( new
                 {
-                    smartCardData_Original.SuperviseeBiodata.Name,
-                    smartCardData_Original.SuperviseeBiodata.NRIC,
-                    smartCardData_Original.SuperviseeBiodata.DOB
-                });
+                    Name="Nguyễn Văn Thắng",
+                    NRIC = "S12312312",
+                    DOB="14/05/1991"
+                }));
             }
         }
         public void AddNewSupervisee()
