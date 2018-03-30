@@ -775,8 +775,8 @@ namespace Trinity.Device.Util
                     if (callback != null && result != null)
                     {
                         callback(result.Value);
-                        OnNewEvent?.Invoke(this, "Complete current command " + _currentCommand + " successfully. Result:" + result);
                     }
+                    OnNewEvent?.Invoke(this, "Complete current command " + _currentCommand + " successfully. Result:" + (result != null ? result.Value.ToString() : "null"));
                     _currentCommand = EnumCommands.Unknown;
                 }
             }

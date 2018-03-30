@@ -273,7 +273,7 @@ namespace Enrolment
         {
             Session session = Session.Instance;
             var isRight = session[CommonConstants.IS_RIGHT_THUMB] != null ? (bool)session[CommonConstants.IS_RIGHT_THUMB] : (bool)session[CommonConstants.IS_RIGHT_THUMB];
-            LayerWeb.InvokeScript("changeMessageServerCall", isRight, "Fake source detected. Continue ...", EnumColors.Red);
+            LayerWeb.InvokeScript("changeMessageServerCall", isRight, "No thumb detected.", EnumColors.Red);
             return false;
         }
 
@@ -281,13 +281,13 @@ namespace Enrolment
         {
             Session session = Session.Instance;
             var isRight = session[CommonConstants.IS_RIGHT_THUMB] != null ? (bool)session[CommonConstants.IS_RIGHT_THUMB] : (bool)session[CommonConstants.IS_RIGHT_THUMB];
-            LayerWeb.InvokeScript("changeMessageServerCall", isRight, "Take off finger from device, please ...", EnumColors.Yellow);
+            LayerWeb.InvokeScript("changeMessageServerCall", isRight, "Remove thumb from fingerprint scanner.", EnumColors.Yellow);
         }
         private void OnPutOn(FTR_PROGRESS Progress)
         {
             Session session = Session.Instance;
             var isRight = session[CommonConstants.IS_RIGHT_THUMB] != null ? (bool)session[CommonConstants.IS_RIGHT_THUMB] : (bool)session[CommonConstants.IS_RIGHT_THUMB];
-            LayerWeb.InvokeScript("changeMessageServerCall", isRight, "Put finger into device, please ...", EnumColors.Yellow);
+            LayerWeb.InvokeScript("changeMessageServerCall", isRight, "Place thumb on the fingerprint reader.", EnumColors.Yellow);
         }
 
         #endregion
