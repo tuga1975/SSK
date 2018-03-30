@@ -189,7 +189,7 @@ namespace SSA
                 // Start page
                 //NavigateTo(NavigatorEnums.Authentication_SmartCard);
 
-                string startFrom = "Supervisee_Particulars";
+                string startFrom = "";
                 // 50.132
                 //string superviseeId = "06a91b1b-99c3-428d-8a55-83892c2adf4c";
                 //string dutyOfficerId = "f1748cb4-3bb5-4129-852d-2aba28bb8cec";
@@ -525,21 +525,24 @@ namespace SSA
         private void JSCallCS_ShowMessage(object sender, ShowMessageEventArgs e)
         {
             //MessageBox.Show(e.Message, e.Caption, e.Button, e.Icon);
-            _popupModel.Title = e.Caption;
-            _popupModel.Message = e.Message;
-            _popupModel.IsShowLoading = false;
-            _popupModel.IsShowOK = true;
-            LayerWeb.InvokeScript("showPopupModal", JsonConvert.SerializeObject(_popupModel));
+            //_popupModel.Title = e.Caption;
+            //_popupModel.Message = e.Message;
+            //_popupModel.IsShowLoading = false;
+            //_popupModel.IsShowOK = true;
+            //LayerWeb.InvokeScript("showPopupModal", JsonConvert.SerializeObject(_popupModel));
+            CSCallJS.ShowMessage(LayerWeb, e.Caption, e.Message);
         }
 
         private void OnShowMessage(object sender, ShowMessageEventArgs e)
         {
             //MessageBox.Show(e.Message, e.Caption, e.Button, e.Icon);
-            _popupModel.Title = e.Caption;
-            _popupModel.Message = e.Message;
-            _popupModel.IsShowLoading = false;
-            _popupModel.IsShowOK = true;
-            LayerWeb.InvokeScript("showPopupModal", JsonConvert.SerializeObject(_popupModel));
+            //_popupModel.Title = e.Caption;
+            //_popupModel.Message = e.Message;
+            //_popupModel.IsShowLoading = false;
+            //_popupModel.IsShowOK = true;
+            //LayerWeb.InvokeScript("showPopupModal", JsonConvert.SerializeObject(_popupModel));
+
+            CSCallJS.ShowMessage(LayerWeb, e.Caption, e.Message);
         }
 
         private void NavigateTo(NavigatorEnums navigatorEnum)

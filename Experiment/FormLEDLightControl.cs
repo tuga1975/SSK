@@ -6,6 +6,7 @@ using System.Drawing;
 using System.IO.Ports;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Trinity.Device.Util;
@@ -122,10 +123,6 @@ namespace Experiment
             txtReceivedData.Text = response;
         }
 
-        private void SerialPort1_DataReceived(object sender, SerialDataReceivedEventArgs e)
-        {
-
-        }
 
         private void btnClosePort_Click(object sender, EventArgs e)
         {
@@ -564,20 +561,30 @@ namespace Experiment
         private void button1_Click(object sender, EventArgs e)
         {
             LEDStatusLightingUtil ledStatusLightingUtil = LEDStatusLightingUtil.Instance;
-            for (int i = 0; i < 100; i++)
+            string ascii = txtASCIIStringToSend.Text;
+            for (int i = 0; i < 10; i++)
             {
-                ledStatusLightingUtil.InitializeMUBApplicator_Async();
-                ledStatusLightingUtil.SendCommand_Async(EnumCommands.CheckIfMUBApplicatorIsReady, CheckIfMUBApplicatorIsReady_Callback);
-
-                ledStatusLightingUtil.StartMUBApplicator_Async();
-                ledStatusLightingUtil.SendCommand_Async(EnumCommands.CheckIfMUBApplicatorIsStarted, CheckIfMUBApplicatorIsStarted_Callback);
-
-                ledStatusLightingUtil.InitializeTTApplicator_Async();
-                ledStatusLightingUtil.SendCommand_Async(EnumCommands.CheckIfTTApplicatorIsReady, CheckIfTTApplicatorIsReady_Callback);
-
-                ledStatusLightingUtil.StartTTApplicator_Async();
-                ledStatusLightingUtil.SendCommand_Async(EnumCommands.CheckIfTTApplicatorIsStarted, CheckIfTTApplicatorIsStarted_Callback);
+                ledStatusLightingUtil.SendASCIICommand(ascii);
+                Thread.Sleep(200);
             }
+            ledStatusLightingUtil.InitializeTTApplicator_Async();
+            Thread.Sleep(200);
+            ledStatusLightingUtil.SendASCIICommand(ascii);
+            //LEDStatusLightingUtil ledStatusLightingUtil = LEDStatusLightingUtil.Instance;
+            //for (int i = 0; i < 100; i++)
+            //{
+            //    ledStatusLightingUtil.InitializeMUBApplicator_Async();
+            //    ledStatusLightingUtil.SendCommand_Async(EnumCommands.CheckIfMUBApplicatorIsReady, CheckIfMUBApplicatorIsReady_Callback);
+
+            //    ledStatusLightingUtil.StartMUBApplicator_Async();
+            //    ledStatusLightingUtil.SendCommand_Async(EnumCommands.CheckIfMUBApplicatorIsStarted, CheckIfMUBApplicatorIsStarted_Callback);
+
+            //    ledStatusLightingUtil.InitializeTTApplicator_Async();
+            //    ledStatusLightingUtil.SendCommand_Async(EnumCommands.CheckIfTTApplicatorIsReady, CheckIfTTApplicatorIsReady_Callback);
+
+            //    ledStatusLightingUtil.StartTTApplicator_Async();
+            //    ledStatusLightingUtil.SendCommand_Async(EnumCommands.CheckIfTTApplicatorIsStarted, CheckIfTTApplicatorIsStarted_Callback);
+            //}
         }
     }
 }

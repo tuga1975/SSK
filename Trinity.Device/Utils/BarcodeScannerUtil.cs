@@ -20,7 +20,7 @@ namespace Trinity.Device.Util
 
         private const int RECV_DATA_MAX = 10240;
         private const bool binaryDataMode = false;  // Whether using binary data mode
-        private SerialPort[] serialPortInstance;    // Array to store instances of COM ports used
+        //private SerialPort[] serialPortInstance;    // Array to store instances of COM ports used
 
         #region Singleton Implementation
         // The variable is declared to be volatile to ensure that assignment to the instance variable completes before the instance variable can be accessed
@@ -38,17 +38,20 @@ namespace Trinity.Device.Util
             //
             // Set RS-232C parameters.
             //
-            this.serialPort1 = new System.IO.Ports.SerialPort();
-            this.serialPort1.BaudRate = 115200;         // 9600, 19200, 38400, 57600 or 115200
-            this.serialPort1.DataBits = 8;              // 7 or 8
-            this.serialPort1.Parity = Parity.Even;    // Even or Odd
-            this.serialPort1.StopBits = StopBits.One;   // One or Two
-            this.serialPort1.PortName = "COM2";
+            if (!string.IsNullOrEmpty(EnumDeviceNames.BarcodeScannerPortName))
+            {
+                this.serialPort1 = new System.IO.Ports.SerialPort();
+                this.serialPort1.BaudRate = 115200;         // 9600, 19200, 38400, 57600 or 115200
+                this.serialPort1.DataBits = 8;              // 7 or 8
+                this.serialPort1.Parity = Parity.Even;    // Even or Odd
+                this.serialPort1.StopBits = StopBits.One;   // One or Two
+                this.serialPort1.PortName = EnumDeviceNames.BarcodeScannerPortName;
 
-            //
-            // Store COM ports instances in the array.
-            //
-            serialPortInstance = new SerialPort[1] { this.serialPort1 };
+                //
+                // Store COM ports instances in the array.
+                //
+                //serialPortInstance = new SerialPort[1] { this.serialPort1 };
+            }
         }
 
         public static BarcodeScannerUtil Instance
@@ -71,7 +74,14 @@ namespace Trinity.Device.Util
 
         public EnumDeviceStatus[] GetDeviceStatus()
         {
-            return new EnumDeviceStatus[] { EnumDeviceStatus.Disconnected };
+            if (EnumDeviceNames.EnableBarcodeScanner)
+            {
+                return new EnumDeviceStatus[] { EnumDeviceStatus.Connected };
+            }
+            else
+            {
+                return new EnumDeviceStatus[] { EnumDeviceStatus.Disconnected };
+            }
         }
 
         private bool Connect()
@@ -80,27 +90,34 @@ namespace Trinity.Device.Util
             {//
              // Close the COM port if opened.
              //
-                if (serialPortInstance[0].IsOpen)
+                if (this.serialPort1 != null )
                 {
-                    this.serialPortInstance[0].Close();
+                    if (serialPort1.IsOpen)
+                    {
+                        this.serialPort1.Close();
+                    }
+
+                    //
+                    // Open the COM port.
+                    //
+                    this.serialPort1.Open();
+
+                    //
+                    // Set 100 milliseconds to receive timeout.
+                    //
+                    this.serialPort1.ReadTimeout = 100;
+
+                    //MessageBox.Show("Open port OK: " + this.serialPort1.PortName);
+                    return true;
                 }
-
-                //
-                // Open the COM port.
-                //
-                this.serialPortInstance[0].Open();
-
-                //
-                // Set 100 milliseconds to receive timeout.
-                //
-                this.serialPortInstance[0].ReadTimeout = 100;
-
-                //MessageBox.Show("Open port OK: " + serialPortInstance[i].PortName);
-                return true;
+                else
+                {
+                    return false;
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show(serialPortInstance[0].PortName + "\r\n" + ex.Message);  // non-existent or disappeared
+                //MessageBox.Show(this.serialPort1.PortName + "\r\n" + ex.Message);  // non-existent or disappeared
                 return false;
             }
         }
@@ -113,14 +130,21 @@ namespace Trinity.Device.Util
         {
             try
             {
-                if (this.serialPortInstance[0].IsOpen)
+                if (this.serialPort1 != null)
                 {
-                    StopScanning();
-                    this.serialPortInstance[0].Close();
-                    //MessageBox.Show("Close port OK: " + serialPortInstance[i].PortName);
-                }
+                    if (this.serialPort1.IsOpen)
+                    {
+                        StopScanning();
+                        this.serialPort1.Close();
+                        //MessageBox.Show("Close port OK: " + this.serialPort1.PortName);
+                    }
 
-                return true;
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
             catch (IOException ex)
             {
@@ -135,7 +159,11 @@ namespace Trinity.Device.Util
         public void StartScanning(Action<string, string> barcodeScannerCallback)
         {
             // Open port
-            Connect();
+            if (!Connect())
+            {
+                barcodeScannerCallback(string.Empty, "Port " + EnumDeviceNames.BarcodeScannerPortName + " is disconnected.");
+                return;
+            }
 
             //
             // Send "LON" command.
@@ -145,12 +173,12 @@ namespace Trinity.Device.Util
             string lon = "\x02LON\x03";   // <STX>LON<ETX>
             Byte[] sendBytes = ASCIIEncoding.ASCII.GetBytes(lon);
 
-            if (this.serialPortInstance[0].IsOpen)
+            if (this.serialPort1.IsOpen)
             {
                 try
                 {
-                    this.serialPortInstance[0].Write(sendBytes, 0, sendBytes.Length);
-                    //MessageBox.Show(serialPortInstance[i].PortName + "\r\n Write OK");
+                    this.serialPort1.Write(sendBytes, 0, sendBytes.Length);
+                    //MessageBox.Show(this.serialPort1.PortName + "\r\n Write OK");
 
                     string value = string.Empty;
                     while (value == string.Empty)
@@ -161,14 +189,14 @@ namespace Trinity.Device.Util
                 }
                 catch (IOException ex)
                 {
-                    //MessageBox.Show(serialPortInstance[0].PortName + "\r\n" + ex.Message);    // disappeared
-                    barcodeScannerCallback(string.Empty, serialPortInstance[0].PortName + "\r\n" + ex.Message);
+                    //MessageBox.Show(this.serialPort1.PortName + "\r\n" + ex.Message);    // disappeared
+                    barcodeScannerCallback(string.Empty, "Port " + EnumDeviceNames.BarcodeScannerPortName + "\r\n" + ex.Message);
                 }
             }
             else
             {
-                //MessageBox.Show(serialPortInstance[0].PortName + " is disconnected.");
-                barcodeScannerCallback(string.Empty, serialPortInstance[0].PortName + " is disconnected.");
+                //MessageBox.Show(this.serialPort1.PortName + " is disconnected.");
+                barcodeScannerCallback(string.Empty, "Port " + EnumDeviceNames.BarcodeScannerPortName + " is disconnected (can not connect).");
             }
         }
 
@@ -185,23 +213,23 @@ namespace Trinity.Device.Util
             string loff = "\x02LOFF\x03";   // <STX>LOFF<ETX>
             Byte[] sendBytes = ASCIIEncoding.ASCII.GetBytes(loff);
 
-            if (this.serialPortInstance[0].IsOpen)
+            if (this.serialPort1.IsOpen)
             {
                 try
                 {
-                    this.serialPortInstance[0].Write(sendBytes, 0, sendBytes.Length);
-                    //MessageBox.Show(serialPortInstance[i].PortName + "\r\n Write OK");
+                    this.serialPort1.Write(sendBytes, 0, sendBytes.Length);
+                    //MessageBox.Show(this.serialPort1.PortName + "\r\n Write OK");
                     return true;
                 }
                 catch (IOException ex)
                 {
-                    //MessageBox.Show(serialPortInstance[0].PortName + "\r\n" + ex.Message);    // disappeared
+                    //MessageBox.Show(this.serialPort1.PortName + "\r\n" + ex.Message);    // disappeared
                     return false;
                 }
             }
             else
             {
-                //MessageBox.Show(serialPortInstance[0].PortName + " is disconnected.");
+                //MessageBox.Show(this.serialPort1.PortName + " is disconnected.");
                 return false;
             }
         }
@@ -216,53 +244,50 @@ namespace Trinity.Device.Util
             int recvSize;
             string returnValue = string.Empty;
 
-            for (int i = 0; i < this.serialPortInstance.Length; i++)
+            if (this.serialPort1.IsOpen == false)
             {
-                if (this.serialPortInstance[i].IsOpen == false)
+                //MessageBox.Show(this.serialPort1.PortName + " is disconnected.");
+                return string.Empty;
+            }
+
+            for (; ; )
+            {
+                try
                 {
-                    //MessageBox.Show(serialPortInstance[i].PortName + " is disconnected.");
-                    continue;
+                    recvSize = readDataSub(recvBytes, this.serialPort1);
+                }
+                catch (IOException ex)
+                {
+                    //MessageBox.Show(this.serialPort1.PortName + "\r\n" + ex.Message);    // disappeared
+                    returnValue = string.Empty;
+                    break;
                 }
 
-                for (; ; )
+                if (recvSize == 0)
                 {
-                    try
-                    {
-                        recvSize = readDataSub(recvBytes, this.serialPortInstance[i]);
-                    }
-                    catch (IOException ex)
-                    {
-                        //MessageBox.Show(serialPortInstance[i].PortName + "\r\n" + ex.Message);    // disappeared
-                        returnValue = string.Empty;
-                        break;
-                    }
+                    //MessageBox.Show(this.serialPort1.PortName + " has no data.");
+                    returnValue = string.Empty;
+                    break;
+                }
 
-                    if (recvSize == 0)
-                    {
-                        //MessageBox.Show(serialPortInstance[i].PortName + " has no data.");
-                        returnValue = string.Empty;
-                        break;
-                    }
-
-                    if (recvBytes[0] == STX)
-                    {
-                        //
-                        // Skip if command response.
-                        //
-                        continue;
-                    }
-                    else
-                    {
-                        //
-                        // Show the receive data after converting the receive data to Shift-JIS.
-                        // Terminating null to handle as string.
-                        //
-                        recvBytes[recvSize] = 0;
-                        //MessageBox.Show(serialPortInstance[i].PortName + "\r\n" + Encoding.GetEncoding("Shift_JIS").GetString(recvBytes));
-                        //MessageBox.Show(PrintByteArray(recvBytes));
-                        //returnValue = Encoding.UTF8.GetString(recvBytes);
-                        break;
-                    }
+                if (recvBytes[0] == STX)
+                {
+                    //
+                    // Skip if command response.
+                    //
+                    continue;
+                }
+                else
+                {
+                    //
+                    // Show the receive data after converting the receive data to Shift-JIS.
+                    // Terminating null to handle as string.
+                    //
+                    recvBytes[recvSize] = 0;
+                    //MessageBox.Show(this.serialPort1.PortName + "\r\n" + Encoding.GetEncoding("Shift_JIS").GetString(recvBytes));
+                    //MessageBox.Show(PrintByteArray(recvBytes));
+                    //returnValue = Encoding.UTF8.GetString(recvBytes);
+                    break;
                 }
             }
 

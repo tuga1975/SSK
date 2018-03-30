@@ -70,7 +70,7 @@ namespace SSA.CodeBehind.Authentication
             else
             {
                 CSCallJS.ShowMessageAsync(_web, "ERROR", error);
-                System.Threading.Tasks.Task.Factory.StartNew(() => BarcodeScannerUtil.Instance.StartScanning(BarcodeScannerCallback));
+                //System.Threading.Tasks.Task.Factory.StartNew(() => BarcodeScannerUtil.Instance.StartScanning(BarcodeScannerCallback));
             }
         }
 
@@ -115,6 +115,7 @@ namespace SSA.CodeBehind.Authentication
             {
                 // raise show message event, then return
                 RaiseShowMessage(new ShowMessageEventArgs("NRIC '" + nric + "' not found. Please check again.", "Not found", MessageBoxButtons.OK, MessageBoxIcon.Error));
+                System.Threading.Tasks.Task.Factory.StartNew(() => BarcodeScannerUtil.Instance.StartScanning(BarcodeScannerCallback));
                 return;
             }
 
