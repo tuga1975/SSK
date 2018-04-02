@@ -241,6 +241,7 @@ namespace Trinity.Device.Util
         public string DrugProfile { get; set; }
         public string SupervisionOfficer { get; set; }
         public string SupervisionContactNo { get; set; }
+        public string DOB { get; set; }
     }
 
     public class HistoricalRecord
