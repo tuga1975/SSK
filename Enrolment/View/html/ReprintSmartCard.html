@@ -107,7 +107,7 @@
                 ShowMessage('Printing Successful', 'Please collect the new card from the smart card printer');
             });
         } else {
-            ShowMessage('Unable to Reprint Smart Card', 'Please collect the new card from the smart card printer');
+            ShowMessage('Unable to Reprint Smart Card', 'Please try again');
         }
     }
     function ReprintIssuedCard() {
@@ -131,6 +131,7 @@
                 $('#PopupRePrintCardReason').modal('toggle');
             });
             $('#PopupRePrintCardReason [btn-confirm="true"]').click(function () {
+                $('#PopupRePrintCardReason').modal('toggle');
                 api.server.loadDataVerify(function (dataRe) {
                     var model = dataRe[0];
                     CardInfo = dataRe[1];
