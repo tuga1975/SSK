@@ -822,10 +822,16 @@ namespace Enrolment
 
                 if (profileModel.UserProfile.LeftThumbImage != null || profileModel.UserProfile.RightThumbImage != null)
                 {
-                    var leftFingerprint = profileModel.UserProfile.LeftThumbImage;
-                    var rightFingerprint = profileModel.UserProfile.RightThumbImage;
 
-                    LayerWeb.InvokeScript("setBase64FingerprintOnloadServerCall", Convert.ToBase64String(leftFingerprint), Convert.ToBase64String(rightFingerprint));
+                    string leftFingerprint = string.Empty;
+                    if (profileModel.UserProfile.LeftThumbImage != null)
+                        leftFingerprint = Convert.ToBase64String(profileModel.UserProfile.LeftThumbImage);
+
+                    string rightFingerprint = string.Empty;
+                    if (profileModel.UserProfile.RightThumbImage != null)
+                        rightFingerprint = Convert.ToBase64String(profileModel.UserProfile.RightThumbImage);
+
+                    LayerWeb.InvokeScript("setBase64FingerprintOnloadServerCall", leftFingerprint, rightFingerprint);
 
                 }
                 string photo1 = string.Empty;
