@@ -820,7 +820,7 @@ namespace Enrolment
                 CSCallJS.LoadPageHtml(this.LayerWeb, "UpdateSuperviseeBiodata.html", profileModel);
 
 
-                if (profileModel.UserProfile.LeftThumbImage != null && profileModel.UserProfile.RightThumbImage != null)
+                if (profileModel.UserProfile.LeftThumbImage != null || profileModel.UserProfile.RightThumbImage != null)
                 {
                     var leftFingerprint = profileModel.UserProfile.LeftThumbImage;
                     var rightFingerprint = profileModel.UserProfile.RightThumbImage;
