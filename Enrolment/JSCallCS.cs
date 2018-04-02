@@ -616,6 +616,8 @@ namespace Enrolment
                     currentEditUser.UserProfile.DateOfIssue = _CardInfo.Date_Of_Issue;
                     currentEditUser.UserProfile.SerialNumber = _CardInfo.CardNumberFull;
                     currentEditUser.Membership_Users.SmartCardId = SmartID;
+                    this._web.InvokeScript("showPrintMessage", true, "Smart Card was printed successfully! Please collect the smart card from printer and place on the reader to verify.");
+                    Thread.Sleep(10000);
                     CheckVerfyCard();
                 }
                 catch (Exception ex)
@@ -632,7 +634,6 @@ namespace Enrolment
         }
         public void CheckVerfyCard()
         {
-            this._web.InvokeScript("showPrintMessage", true, "Smart Card was printed successfully! Please collect the smart card from printer and place on the reader to verify.");
             SmartCardReaderUtil smartCardReaderUtil = SmartCardReaderUtil.Instance;
             SmartCardData_Original smartCardData_Original = null;
             bool readDataResult = smartCardReaderUtil.ReadAllData_MifareClassic(ref smartCardData_Original);
