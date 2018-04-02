@@ -43,7 +43,6 @@ namespace Enrolment
                                 highestSolution = videoSource.VideoCapabilities[i].FrameSize.Width.ToString() + ";" + i.ToString();
                         }
                         //Set the highest resolution as active
-                        videoSource.DesiredFrameRate = 10;
                         videoSource.VideoResolution = videoSource.VideoCapabilities[Convert.ToInt32(highestSolution.Split(';')[1])];
                     }
                 }
@@ -57,7 +56,7 @@ namespace Enrolment
             //(This one triggers every time a new frame/image is captured
             if (videoSource != null)
             {
-                System.IO.Directory.CreateDirectory(String.Format("{0}/Temp", CSCallJS.curDir));
+                //System.IO.Directory.CreateDirectory(String.Format("{0}/Temp", CSCallJS.curDir));
 
                 videoSource.NewFrame += new AForge.Video.NewFrameEventHandler(videoSource_NewFrame);
                 //Start recording
@@ -72,12 +71,12 @@ namespace Enrolment
             //{
             //    pictureBox.Image = (Bitmap)eventArgs.Frame.Clone();
             //}));
-            var imgSave = String.Format("{0}/Temp/{1}", CSCallJS.curDir, "webcam.png");
+            //var imgSave = String.Format("{0}/Temp/{1}", CSCallJS.curDir, "webcam.png");
             var Img = (Bitmap)eventArgs.Frame.Clone();
-            Img.Save(imgSave, System.Drawing.Imaging.ImageFormat.Png);
+            //Img.Save(imgSave, System.Drawing.Imaging.ImageFormat.Png);
 
-            Lib.LayerWeb.InvokeScript("showCamera",DateTime.Now.Ticks.ToString());
-            //Lib.LayerWeb.InvokeScript("showCamera", Convert.ToBase64String(ImageToByte2(Img)));
+            //Lib.LayerWeb.InvokeScript("showCamera",DateTime.Now.Ticks.ToString());
+            Lib.LayerWeb.InvokeScript("showCamera", Convert.ToBase64String(ImageToByte2(Img)));
 
             //Lib.LayerWeb.BeginInvoke(new System.Threading.ThreadStart(delegate
             //{

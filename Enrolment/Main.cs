@@ -470,13 +470,13 @@ namespace Enrolment
                     //}));
                     if (_imgBox == "1")
                     {
-                        //image1 = Convert.FromBase64String(e.Data.ToString());
-                        image1 = Lib.ReadAllBytes(String.Format("{0}/Temp/{1}", CSCallJS.curDir, "webcam.png"));
+                        image1 = Convert.FromBase64String(e.Data.ToString());
+                        //image1 = Lib.ReadAllBytes(String.Format("{0}/Temp/{1}", CSCallJS.curDir, "webcam.png"));
                     }
                     if (_imgBox == "2")
                     {
-                        //image2 = Convert.FromBase64String(e.Data.ToString());
-                        image2 = Lib.ReadAllBytes(String.Format("{0}/Temp/{1}", CSCallJS.curDir, "webcam.png"));
+                        image2 = Convert.FromBase64String(e.Data.ToString());
+                        //image2 = Lib.ReadAllBytes(String.Format("{0}/Temp/{1}", CSCallJS.curDir, "webcam.png"));
                     }
 
                     var currentPage = session[CommonConstants.CURRENT_PAGE];
