@@ -1,43 +1,34 @@
-﻿<style>
-    .go-to {
-        text-transform: uppercase;
-    }
-
-    button {
-        /*border:none;
-        cursor:pointer;
-        background-color:none;
-        color:#0094ff;*/
-    }
-</style>
-
-<h5 class="text-center" style="margin-top:30px;">
-    Please position your face within the frame and click the camera
-</h5>
-<div class="my-5">
-    <button class="go-to btn btn-default" onclick="api.server.CancelUpdatePicture();">Click to go back</button>
-
-</div>
-
-<div style="width:100%; position:fixed; bottom: 10px;  margin: auto;">
-    <div class="text-center">
-        <div id="capture">
-            <div>
-                <button style="background-color:none;border:none;" onclick="api.server.CapturePicture();"><i class="fa fa-camera" style="font-size:50px;color:red"></i></button>
-
-            </div>
+﻿<div style="position:fixed;z-index:100;width:100%;height: calc(100% - 160px);top: 100px;left:0px;background-color:#FFF;">
+    <div style="margin-left:40px;">
+        <a href="javascript:;" style="text-transform:uppercase;" onclick="api.server.CancelUpdatePicture();">Click to go back</a>
+    </div>
+    <div style="text-align:center;">
+        <h6>
+            Please position your face within the frame and click the camera button to take the photo.
+        </h6>
+    </div>
+    <div style="width:auto;margin:auto;text-align:center;position:relative;">
+        <div style="position:relative;z-index:1;margin:auto;">
+            <!--<img name="img-webcam" src="" style="max-height:450px;height:100%;width:auto;cursor:default;" />-->
+            <canvas id="imgShow"></canvas>
         </div>
-        <div id="confirm" style="display:none">
-            <div>
-                <button href="#" onclick="api.server.ConfirmCapturePicture();" class="btn btn-success">Confirm</button>
-
-                <button href="#" onclick="api.server.CancelConfirmCapturePicture();" class="btn btn-default">Cancel</button>
-            </div>
+        <div style="position:absolute;z-index:2;left:0px;top:0px;width:100%;height:100%;background-position:center center;background-repeat:no-repeat;background-size:contain;background-image:url('../images/transparentHead.png');">
+            <a href="javascript:;" style="position: absolute;bottom: -40px;left: calc(50% - 40px);" id="capture" onclick="api.server.CapturePicture();">
+                <i class="fa fa-camera" style="font-size: 50px;color:red;background-color: #FFF;width: 80px;height: 80px;border-radius: 50%;line-height: 80px;"></i>
+            </a>
         </div>
     </div>
-
+</div>
+<div style="position:fixed;width: 100%;height: 50px;bottom: 10px;border-top: 1px solid #CCC;display:none;" id="confirm">
+    <div style="width: calc(100% - 80px);margin-left: 40px;text-align: center;margin-top: 11px;">
+        <a href="#" class="btn btn-light" id="btnCancel" style="margin-right:20px;min-width:150px;" onclick="api.server.CancelConfirmCapturePicture();">Cancel</a>
+        <a href="#" class="btn btn-primary" id="SaveBtn" style="min-width:150px;" onclick="api.server.ConfirmCapturePicture(base64ImgLast);">Confirm</a>
+    </div>
 </div>
 <script>
+    var base64ImgLast = '';
+    var imgShow = document.querySelector('#imgShow');
+    var imgShow2D = imgShow.getContext('2d');
     function confirmMode() {
         document.getElementById('capture').style.display = 'none';
         document.getElementById('confirm').style.display = 'block';
@@ -45,5 +36,22 @@
     function captureMode() {
         document.getElementById('capture').style.display = 'block';
         document.getElementById('confirm').style.display = 'none';
+    }
+    function showCamera(data) {
+        var img1 = new Image();
+        img1.onload = function () {
+            var width = this.width;
+            var height = this.height;
+            var ratio = height / width;
+            if (height > 450) {
+                height = 450;
+                width = height / ratio;
+            }
+            imgShow.height = height;
+            imgShow.width = width;
+            imgShow2D.drawImage(img1, 0, 0);
+        }
+        img1.src = 'data:image/png;base64,' + data;
+        base64ImgLast = data;
     }
 </script>

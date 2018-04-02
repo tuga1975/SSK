@@ -578,6 +578,7 @@ namespace Enrolment
                     Name = profileModel.User.Name,
                     NRIC = profileModel.User.NRIC,
                     UserId = profileModel.User.UserId,
+                    DOB = profileModel.UserProfile == null ? string.Empty : profileModel.UserProfile.DOBAsString
                 }
             };
             SmartCardPrinterUtil.Instance.PrintAndWriteSmartCard(infoPrinter, OnNewCardPrinted);
@@ -697,10 +698,10 @@ namespace Enrolment
             EventCenter eventCenter = EventCenter.Default;
             eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.CAPTURE_PICTURE });
         }
-        public void ConfirmCapturePicture()
+        public void ConfirmCapturePicture(string base64Img)
         {
             EventCenter eventCenter = EventCenter.Default;
-            eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.CONFIRM_CAPTURE_PICTURE });
+            eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.CONFIRM_CAPTURE_PICTURE,Data = base64Img });
         }
         public void CancelConfirmCapturePicture()
         {
@@ -828,11 +829,22 @@ namespace Enrolment
         }
         public void UpdatePhotos()
         {
+            string photo1 = string.Empty;
+            string photo2 = string.Empty;
+            Session session = Session.Instance;
+            var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
+            if (currentEditUser.UserProfile.User_Photo1 != null)
+            {
+                photo1 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo1);
 
-            EventCenter eventCenter = EventCenter.Default;
-            //string from = "edit";
-            eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.LOAD_UPDATE_PHOTOS });
-
+            }
+            if (currentEditUser.UserProfile.User_Photo2 != null)
+            {
+                photo2 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo2);
+            }
+            session[CommonConstants.CURRENT_PAGE] = "UpdateSuperviseePhoto";
+            this._web.LoadPageHtml("UpdateSuperviseePhoto.html", currentEditUser);
+            this._web.InvokeScript("setAvatar", photo1, photo2);
         }
 
 
@@ -962,6 +974,7 @@ namespace Enrolment
                     Name = currentEditUser.User.Name,
                     NRIC = currentEditUser.User.NRIC,
                     UserId = currentEditUser.User.UserId,
+                    DOB = currentEditUser.UserProfile == null?string.Empty:currentEditUser.UserProfile.DOBAsString
                 }
             }, OnIssuedCardReprinted);
         }

@@ -43,6 +43,7 @@ namespace Enrolment
                                 highestSolution = videoSource.VideoCapabilities[i].FrameSize.Width.ToString() + ";" + i.ToString();
                         }
                         //Set the highest resolution as active
+                        videoSource.DesiredFrameRate = 10;
                         videoSource.VideoResolution = videoSource.VideoCapabilities[Convert.ToInt32(highestSolution.Split(';')[1])];
                     }
                 }
@@ -61,17 +62,35 @@ namespace Enrolment
                 videoSource.Start();
             }
         }
-
         void videoSource_NewFrame(object sender, AForge.Video.NewFrameEventArgs eventArgs)
         {
             //Cast the frame as Bitmap object and don't forget to use ".Clone()" otherwise
             //you'll probably get access violation exceptions
-            pictureBox.Invoke((MethodInvoker)(() =>
-            {
-                pictureBox.Image = (Bitmap)eventArgs.Frame.Clone();
-            }));
-        }
+            //pictureBox.Invoke((MethodInvoker)(() =>
+            //{
+            //    pictureBox.Image = (Bitmap)eventArgs.Frame.Clone();
+            //}));
+            //var imgSave = String.Format("{0}/Temp/{1}", CSCallJS.curDir, "webcam.png");
+            var Img = (Bitmap)eventArgs.Frame.Clone();
+            //Img.Save(imgSave, System.Drawing.Imaging.ImageFormat.Png);
 
+            //Lib.LayerWeb.InvokeScript("showCamera",DateTime.Now.Ticks.ToString());
+            Lib.LayerWeb.InvokeScript("showCamera", Convert.ToBase64String(ImageToByte2(Img)));
+
+            //Lib.LayerWeb.BeginInvoke(new System.Threading.ThreadStart(delegate
+            //{
+            //    Lib.LayerWeb.InvokeScript("showCamera", Convert.ToBase64String(ImageToByte2(Img)));
+            //}));
+
+        }
+        private byte[] ImageToByte2(Image img)
+        {
+            using (var stream = new MemoryStream())
+            {
+                img.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
+                return stream.ToArray();
+            }
+        }
         public void stopWebcam()
         {
             if (videoSource != null && videoSource.IsRunning)

@@ -1,145 +1,71 @@
-﻿<style>
-    .link-grey {
-        color: #808080;
-    }
-
-        /*.link-grey:hover {
-            color: #1CACF6;
-        }*/
-    .link-blue {
-        color: #0f71f8;
-    }
-    .max-height-200px {
-        height: 200px;
-        width: auto;
-        max-width: auto;
-        overflow: hidden;
-    } 
-
-</style>
-<div class="title-border-red border-bottom">
+﻿<div class="title-border-red border-bottom">
     <h5>Update fingerprint</h5>
 </div>
-<div class="tab-content" style="margin-top:50px;">
-    <div class="tab-pane active" id="superviseeDetails" role="tabpanel">
-        <div class="container">
-            <!--<form class="form-material">-->
+<div style="position:absolute;left: 0px;width: 100%;height: calc(100% - 135px);margin-top: 0px;overflow-x:hidden;overflow-y:auto;padding: 20px;">
+    <div class="tab-content">
+        <div class="tab-pane active" id="superviseeDetails" role="tabpanel">
+            <div class="container">
                 <div class="w-75 mx-auto">
                     <div class="row">
-                        <div class="col-md-6 col-sm-12 px-5">
-                            <p class="font-weight-bold" id="leftProcessMessage" capturefingerprint-message="0">
-                                Place left thumb onto scanner
-                            </p>
-                            <div class="row">
-                                <div class="offset-sm-2 col-sm-8">
-                                    <img src="../images/leftthumb.png" alt="avatar"
-                                         class="d-block mx-auto img-fluid max-height-200px"  capturefingerprint-img="0" soure="" data-fingerprint=""  />
-                                    <br />
-                                    <div class="row">
-                                        <div class="col-sm-6">
-                                            <a href="#" class="link-blue" onclick="disBtnFingerprint(true); api.server.CaptureFingerprint(0);" capturefingerprint-btn="0">
-                                                Scan
-                                            </a>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <a href="#" class="link-grey pull-right" onclick="clearFingerprint(0)" clearBtn>
-                                                Clear
-                                            </a>
-                                        </div>
-                                    </div>
+                        <div class="col-6">
+                            <div style="margin-bottom:10px;text-align:center;"><strong id="leftProcessMessage" capturefingerprint-message="0">Place left thumb onto scanner.</strong></div>
+                            <div class="row col-7 offset-1" style="margin:auto;">
+                                <div class="col-12" style="padding:20px;background-color:#f1f1f1;margin:auto;text-align:center;">
+                                    <img src='../images/leftthumb.png' capturefingerprint-img="0" soure="" data-fingerprint="" style="max-width:100%;">
                                 </div>
                             </div>
-                            <p>
-                                Left thumb-fingerprint Preview
-                            </p>
                         </div>
-                        <div class="col-md-6 col-sm-12 px-5">
-                            <p class="font-weight-bold" id="rightProcessMessage" capturefingerprint-message="1">
-                                Place right thumb onto scanner
-                            </p>
-                            <div class="row">
-                                <div class="offset-sm-2 col-sm-8">
-                                    <img src="../images/rightthumb.png" alt="avatar"
-                                         class="d-block mx-auto img-fluid max-height-200px"  capturefingerprint-img="1" soure="" data-fingerprint="" />
-                                    <br />
-                                    <div class="row">
-                                        <div class="col-sm-6">
-                                            <a href="#" class="link-blue" onclick="disBtnFingerprint(true); api.server.CaptureFingerprint(1);" capturefingerprint-btn="1">
-                                                Scan
-                                            </a>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <a href="#" class="link-grey pull-right" onclick="clearFingerprint(1)" clearBtn>
-                                                Clear
-                                            </a>
-                                        </div>
-                                    </div>
+                        <div class="col-6">
+                            <div style="margin-bottom:10px;text-align:center;"><strong id="rightProcessMessage" capturefingerprint-message="1">Place right thumb onto scanner.</strong></div>
+                            <div class="row col-7 offset-1" style="margin:auto;">
+                                <div class="col-12" style="padding:20px;background-color:#f1f1f1;margin:auto;text-align:center;">
+                                    <img src='../images/rightthumb.png' capturefingerprint-img="1" soure="" data-fingerprint="" style="max-width:100%;">
                                 </div>
                             </div>
-                            <p>
-                                Right thumb-fingerprint Preview
-                            </p>
                         </div>
-                    </div>
-                    <div class="row mt-4">
-                        <div class="offset-md-2 col-md-4 col-sm-12">
-                            <button href="#" class="btn btn-light btn-block" onclick="api.server.CancelUpdateFingerprints();">Cancel</button>
+
+                        <div class="col-6">
+                            <div class="row col-7 offset-1" style="margin:auto;">
+                                <div class="scan col-6 ml-auto" style="text-align:left;">
+                                    <a href="#" class="link-blue" onclick="disBtnFingerprint(true); api.server.CaptureFingerprint(0);" capturefingerprint-btn="0">
+                                        Scan
+                                    </a>
+                                </div>
+                                <div class="clear col-6 mr-auto" style="text-align:right;">
+                                    <a href="#" class="link-grey pull-right" onclick="clearFingerprint(0)" clearBtn>
+                                        Clear
+                                    </a>
+                                </div>
+                            </div>
+                            <div style="margin-top:10px;text-align:center;">Left Thumb-Fingerprint Preview</div>
                         </div>
-                        <div class="col-md-4 col-sm-12">
-                            <button href="#" class="btn btn-primary btn-block" onclick="SubmitUpdateFingerprints();">Update</button>
-                           
+                        <div class="col-6">
+                            <div class="row col-7 offset-1" style="margin:auto;">
+                                <div class="scan col-6 ml-auto" style="text-align:left;">
+                                    <a href="#" class="link-blue" onclick="disBtnFingerprint(true); api.server.CaptureFingerprint(1);" capturefingerprint-btn="1">
+                                        Scan
+                                    </a>
+                                </div>
+                                <div class="clear col-6 mr-auto" style="text-align:right;">
+                                    <a href="#" class="link-grey pull-right" onclick="clearFingerprint(1)" clearBtn>
+                                        Clear
+                                    </a>
+                                </div>
+                            </div>
+                            <div style="margin-top:10px;text-align:center;">Right Thumb-Fingerprint Preview</div>
                         </div>
                     </div>
                 </div>
-            <!--</form>-->
+            </div>
         </div>
     </div>
 </div>
-
-<!--<div>
-    <div class="header">
-        <img class="logo" src="../images/logo.png" />
-        <h3>Edit Supervisee</h3>
-        <div class="clear"></div>
+<div style="position:absolute;width: 100%;height: 50px;bottom: 10px;border-top: 1px solid #CCC;">
+    <div style="width: calc(100% - 80px);margin-left: 40px;text-align: center;margin-top: 11px;">
+        <a href="#" class="btn btn-light" style="margin-right:20px;min-width:150px;" onclick="api.server.CancelUpdateFingerprints();">Cancel</a>
+        <a href="#" class="btn btn-primary" style="min-width:150px;" onclick="SubmitUpdateFingerprints();">Save</a>
     </div>
-    <div class="form-supervisee" style="overflow:hidden;position:relative;margin-top:0px;">
-        <input class="name-supervisee" type="text" value="Update Fingerprint" disabled="disabled" />
-        <div class="row" style="position: fixed;left: 10px;top: 120px;height: calc(100% - 170px);width: calc(100% - -10px);">
-            <div id="leftThumbDiv" style="position:absolute;width:calc(50% - 20px);height:100%;left:15px;top:0px;">
-                <div style="border:1px solid #000000;color:#000;margin-bottom:5px" id="leftProcessMessage" capturefingerprint-message="0">Place left thumb onto scanner</div>
-                <div>
-                    <button style="float:left" class="btn-form" onclick="disBtnFingerprint(true); api.server.CaptureFingerprint(0);" capturefingerprint-btn="0">Scan</button>
-                    <button style="float:right;" class="btn-form" onclick="clearFingerprint(0)">Clear</button>
-                </div>
-                <br />
-                <div style="text-align:center;position:absolute;height: calc(100% - 95px);width:100%;left:0px;top: 65px;overflow: hidden;">
-                    <img class="avatar" style="max-height:100%;width: auto !important;max-width:100%;" src="../images/fingerprint.png" capturefingerprint-img="0" soure="" data-fingerprint="" />
-                </div>
-                <br />
-                
-                <div style="border:1px solid #000000;text-align:center;position: absolute;bottom: 0px;width: 100%;">Left Fingerprint Preview</div>
-            </div>
-            <div id="rightThumbDiv" style="position:absolute;width:calc(50% - 20px);height:100%;right:15px;top:0px;">
-                <div style="border:1px solid #000000;color:#000;margin-bottom:5px" id="rightProcessMessage" capturefingerprint-message="1">Place right thumb onto scanner</div>
-                <div>
-                    <button style="float:left" class="btn-form" onclick="disBtnFingerprint(true); api.server.CaptureFingerprint(1);" capturefingerprint-btn="1">Scan</button>
-                    <button style="float:right;" class="btn-form" onclick="clearFingerprint(1)">Clear</button>
-                </div>
-                <br />
-                <div style="text-align:center;position:absolute;height: calc(100% - 95px);width:100%;left:0px;top: 65px;overflow: hidden;">
-                    <img class="avatar" style="max-height:100%;width: auto !important;max-width:100%;" src="../images/fingerprint.png" capturefingerprint-img="1" soure="" data-fingerprint="" />
-                </div>
-                <br />
-                
-                <div style="border:1px solid #000000;text-align:center;position: absolute;bottom: 0px;width: 100%;">Right Fingerprint Preview</div>
-            </div>
-        </div>
-        <div class="btn-group" style="position: fixed;bottom: 10px;right: 10px;">
-            <button type="button" class="btn-form" onclick="SubmitUpdateFingerprints();">Update</button>
-            <button type="button" class="btn-form" onclick="api.server.CancelUpdateFingerprints();">Cancel</button>
-        </div>
-    </div>
-</div>-->
+</div>
 <script type="text/javascript">
     var modelFingerprinter = null;
     api.ready(function (model) {
@@ -185,7 +111,7 @@
                 alert('No data updated');
             }
         }
-       
+
     }
     function moreThan3Fingerprint() {
         alert('Supervisee has failed more than 3 times in finger prints!');
