@@ -167,6 +167,7 @@ namespace Trinity.Device.Util
             }
 
             //MessageBox.Show("StartScanning OK");
+            _stopReceiveData = false;
 
             // Timing ON
             //

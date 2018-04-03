@@ -102,6 +102,11 @@ public static class CSCallJS
         web.InvokeScript("updateNRICTextValue", value);
     }
 
+    public static void UpdateLoginNRICTextValue(WebBrowser web, string value)
+    {
+        web.InvokeScript("updateLoginNRICTextValue", value);
+    }
+
     public static void DisplayNRICLogin(WebBrowser web)
     {
         web.InvokeScript("displayNRICLogin");
