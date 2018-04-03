@@ -117,7 +117,7 @@
 
 <script>
     var timeout = null;
-    api.ready(function () {
+    $(document).ready(function () {
         timeout = null;
         $('#table-list-supervisee').bootstrapTable({
             search: false,
@@ -128,7 +128,7 @@
                     title: 'No.',
                     align: 'center',
                     width: '5%',
-                    sortable:true,
+                    sortable: true,
                     formatter: function (value, row, index) {
                         return index + 1;
                     }
@@ -174,7 +174,7 @@
             clearTimeout(timeout);
             timeout = setTimeout(function () {
                 searchSuperviseeNric(_value);
-            }, 500);
+            }, 1000);
         }).focusin();
         $('input[name="nric"]').mouseup(function () {
             var _this = $(this);
@@ -184,7 +184,7 @@
                     clearTimeout(timeout);
                     timeout = setTimeout(function () {
                         searchSuperviseeNric(_value);
-                    }, 500);
+                    }, 1000);
                 }
             }, 10);
         });
@@ -192,10 +192,11 @@
     });
     function searchSuperviseeNric(txtSearch) {
         searchOld = txtSearch;
-        $('input[name="nric"]').val(txtSearch).focusout();
+        $('input[name="nric"]').val(txtSearch);
+        isSearching = true;
         api.server.SearchSuperviseeByNRIC(searchOld, function (model) {
+            isSearching = false;
             if (model.length == 0) {
-                $('input[name="nric"]').focusout();
                 $('#table-list-supervisee').bootstrapTable('load', []);
             } else {
                 $('#table-list-supervisee').bootstrapTable('load', model);

@@ -107,7 +107,7 @@
                 ShowMessage('Printing Successful', 'Please collect the new card from the smart card printer');
             });
         } else {
-            ShowMessage('Unable to Reprint Smart Card', 'Please collect the new card from the smart card printer');
+            ShowMessage('Unable to Reprint Smart Card', 'Please try again');
         }
     }
     function ReprintIssuedCard() {
@@ -131,6 +131,7 @@
                 $('#PopupRePrintCardReason').modal('toggle');
             });
             $('#PopupRePrintCardReason [btn-confirm="true"]').click(function () {
+                $('#PopupRePrintCardReason').modal('toggle');
                 api.server.loadDataVerify(function (dataRe) {
                     var model = dataRe[0];
                     CardInfo = dataRe[1];
@@ -185,7 +186,7 @@
                 </div>
                 <img src="../images/front-avarta.png" style="position:absolute;z-index:1;left:0px;top:0px;height:328px;width:252px;" />
             </div>
-            <div style="position:absolute;font-size: 23px;font-weight: 700;top: 20px;left: 90px;color:#000;z-index:1;">
+            <div style="position:absolute;font-size: 23px;font-weight: 700;top: 20px;left: 90px;color:#000;z-index:1;text-transform:uppercase;">
                 Supervision Card
             </div>
             <div style="position:absolute;top: 85px;left: 325px;width:calc(100% - 325px - 30px);height:calc(100% - 70px);z-index:1;">
@@ -216,7 +217,7 @@
                 <span name="verifyCompanyName" style="font-weight:bold;font-size:14px;">34534534</span><br />
                 <span name="verifyVenueName" style="font-weight:bold;font-size:14px;">34534534</span><br />
                 <span name="verifyAddress" style="font-weight:bold;font-size:14px;">54654</span><br />
-                Contact Number: <span name="verifyContactNumber" style="font-weight:bold;font-size:14px;">54654654654</span><br />
+                <b style="font-size:14px;">Contact Number: </b><span name="verifyContactNumber" style="font-weight:bold;font-size:14px;">54654654654</span>
             </div>
         </div>
         <img src="../images/backend-logo.png" style="position:absolute;z-index:0;right:30px;bottom:45px;" />

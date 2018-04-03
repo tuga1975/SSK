@@ -1,5 +1,6 @@
 ﻿var api = new Api();
 function Api() {
+    this.Soure = null;
     this.countNoti = 0;
     this.model = null;
     this.server = {};
@@ -56,11 +57,12 @@ function Api() {
         return time; // return adjusted time or original string
     };
 }
-function AddContentPage(html, model) {
+function AddContentPage(html, model, file) {
     if (model != null)
         api.model = JSON.parse(model);
     else
         api.model = null;
+    api.Soure = file;
     $('#content').html('<div class="chi-content">' + html + '</div>');
     api.callReady(api.model);
 }
@@ -222,3 +224,19 @@ $(document).ready(function () {
 
     });
 });
+
+window.onerror = function (msg, url, line, col, error) {
+    // Note that col & error are new to the HTML 5 spec and may not be 
+    // supported in every browser.  It worked for me in Chrome.
+    var extra = !col ? '' : '\ncolumn: ' + col;
+    extra += !error ? '' : '\nerror: ' + error;
+    // You can view the information in an alert to see things working like this:
+    api.server.LogErrScript("Soure: " + api.Soure + "\nError: " + msg + "\nUrl: " + url + "\nLine: " + (line + extra));
+    // TODO: Report this error via ajax so you can keep track
+    //       of what pages have JS issues
+
+    var suppressErrorAlert = true;
+    // If you return true, then error alerts (like in older versions of 
+    // Internet Explorer) will be suppressed.
+    return suppressErrorAlert;
+};

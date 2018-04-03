@@ -9,6 +9,8 @@ using System.IO;
 using System.Windows.Forms;
 using Trinity.Common.Common;
 using Trinity.Common;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 
 namespace Enrolment
 {
@@ -56,22 +58,88 @@ namespace Enrolment
             //(This one triggers every time a new frame/image is captured
             if (videoSource != null)
             {
+                System.IO.Directory.CreateDirectory(String.Format("{0}/Temp", CSCallJS.curDir));
+
                 videoSource.NewFrame += new AForge.Video.NewFrameEventHandler(videoSource_NewFrame);
                 //Start recording
                 videoSource.Start();
+                Lib.LayerWeb.InvokeScript("StartCamera");
             }
         }
-
+        int count = 0;
         void videoSource_NewFrame(object sender, AForge.Video.NewFrameEventArgs eventArgs)
         {
-            //Cast the frame as Bitmap object and don't forget to use ".Clone()" otherwise
-            //you'll probably get access violation exceptions
-            pictureBox.Invoke((MethodInvoker)(() =>
+            if (count == 0)
             {
-                pictureBox.Image = (Bitmap)eventArgs.Frame.Clone();
-            }));
-        }
+                //Cast the frame as Bitmap object and don't forget to use ".Clone()" otherwise
+                //you'll probably get access violation exceptions
+                //pictureBox.Invoke((MethodInvoker)(() =>
+                //{
+                //    pictureBox.Image = (Bitmap)eventArgs.Frame.Clone();
+                //}));
+                //var imgSave = String.Format("{0}/Temp/{1}", CSCallJS.curDir, "webcam.jpg");
+                var Img = (Bitmap)eventArgs.Frame.Clone();
 
+                int width = Img.Width;
+                int height = Img.Height;
+                float ratio = (float)height / (float)width;
+
+                if (height > 450)
+                {
+                    height = 450;
+                    width = Convert.ToInt32(height / ratio);
+                }
+
+                //ResizeImage(Img, width, height).Save(imgSave, System.Drawing.Imaging.ImageFormat.Jpeg);
+
+                //Lib.LayerWeb.InvokeScript("showCamera",DateTime.Now.Ticks.ToString());
+                Lib.LayerWeb.InvokeScript("showCamera", Convert.ToBase64String(ImageToByte2(ResizeImage(Img, width, height))));
+
+                //Lib.LayerWeb.BeginInvoke(new System.Threading.ThreadStart(delegate
+                //{
+                //    Lib.LayerWeb.InvokeScript("showCamera", Convert.ToBase64String(ImageToByte2(Img)));
+                //}));
+            }
+            else
+            {
+                count++;
+                if (count == 10)
+                    count = 0;
+            }
+            
+
+        }
+        private Bitmap ResizeImage(Image image, int width, int height)
+        {
+            var destRect = new Rectangle(0, 0, width, height);
+            var destImage = new Bitmap(width, height);
+
+            destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
+
+            using (var graphics = Graphics.FromImage(destImage))
+            {
+                graphics.CompositingMode = CompositingMode.SourceCopy;
+                graphics.CompositingQuality = CompositingQuality.HighSpeed;
+                graphics.InterpolationMode = InterpolationMode.Low;
+                graphics.SmoothingMode = SmoothingMode.HighSpeed;
+                graphics.PixelOffsetMode = PixelOffsetMode.HighSpeed;
+                using (var wrapMode = new ImageAttributes())
+                {
+                    wrapMode.SetWrapMode(WrapMode.TileFlipXY);
+                    graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
+                }
+            }
+
+            return destImage;
+        }
+        private byte[] ImageToByte2(Image img)
+        {
+            using (var stream = new MemoryStream())
+            {
+                img.Save(stream, System.Drawing.Imaging.ImageFormat.Jpeg);
+                return stream.ToArray();
+            }
+        }
         public void stopWebcam()
         {
             if (videoSource != null && videoSource.IsRunning)

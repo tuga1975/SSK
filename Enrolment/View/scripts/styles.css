@@ -172,9 +172,10 @@
 
     .nav-tabs-custom a {
         height: 50px;
-        font-size: 1.1rem;
+        font-size: 1.0rem;
         border: 0;
         font-weight: bold;
+        letter-spacing: 0.5px;
     }
 
 

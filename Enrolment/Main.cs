@@ -380,13 +380,13 @@ namespace Enrolment
                             webcam.startWebcam();
                             _imgBox = e.Message;
 
-                            pictureBox1.Show();
+                            //pictureBox1.Show();
 
                             //pictureBoxHead.BackColor = Color.Transparent;
                             // pictureBoxHead.Image = SetImageOpacity(Resources.background_takephoto, 0.25F);
                             //btnHead.BackgroundImage = bmp;
-                            pictureBoxHead.BringToFront();
-                            pictureBoxHead.Show();
+                            //pictureBoxHead.BringToFront();
+                            //pictureBoxHead.Show();
                         }));
                         LayerWeb.LoadPageHtml("WebcamCapture.html");
                     }
@@ -458,17 +458,27 @@ namespace Enrolment
                 if (InvokeRequired)
                 {
 
-                    Invoke(new Action(() =>
+                    //Invoke(new Action(() =>
+                    //{
+                    //    //pictureBox1.Hide();
+                    //    webcam.stopWebcam();
+                    //    using (MemoryStream mStream = new MemoryStream())
+                    //    {
+                    //        pictureBox1.Image.Save(mStream, System.Drawing.Imaging.ImageFormat.Jpeg);
+
+                    //    }
+                    //}));
+                    if (_imgBox == "1")
                     {
-                        pictureBox1.Hide();
-                        webcam.stopWebcam();
-                        using (MemoryStream mStream = new MemoryStream())
-                        {
-                            pictureBox1.Image.Save(mStream, System.Drawing.Imaging.ImageFormat.Jpeg);
-                            if (_imgBox == "1") { image1 = mStream.ToArray(); }
-                            if (_imgBox == "2") { image2 = mStream.ToArray(); }
-                        }
-                    }));
+                        image1 = Convert.FromBase64String(e.Data.ToString());
+                        //image1 = Lib.ReadAllBytes(String.Format("{0}/Temp/{1}", CSCallJS.curDir, "webcam.png"));
+                    }
+                    if (_imgBox == "2")
+                    {
+                        image2 = Convert.FromBase64String(e.Data.ToString());
+                        //image2 = Lib.ReadAllBytes(String.Format("{0}/Temp/{1}", CSCallJS.curDir, "webcam.png"));
+                    }
+
                     var currentPage = session[CommonConstants.CURRENT_PAGE];
                     var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
                     var isPrimaryPhoto = session[CommonConstants.IS_PRIMARY_PHOTO];
@@ -589,25 +599,6 @@ namespace Enrolment
                 image2 = null;
                 _imgBox = "";
             }
-            else if (e.Name.Equals(EventNames.LOAD_UPDATE_PHOTOS))
-            {
-                string photo1 = string.Empty;
-                string photo2 = string.Empty;
-                Session session = Session.Instance;
-                var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
-                if (currentEditUser.UserProfile.User_Photo1 != null)
-                {
-                    photo1 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo1);
-
-                }
-                if (currentEditUser.UserProfile.User_Photo2 != null)
-                {
-                    photo2 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo2);
-                }
-                session[CommonConstants.CURRENT_PAGE] = "UpdateSuperviseePhoto";
-                LayerWeb.LoadPageHtml("UpdateSuperviseePhoto.html", currentEditUser);
-                LayerWeb.InvokeScript("setAvatar", photo1, photo2);
-            }
             else if (e.Name.Equals(EventNames.CANCEL_UPDATE_PICTURE))
             {
                 Session session = Session.Instance;
@@ -671,7 +662,7 @@ namespace Enrolment
                         else if (currentPage.ToString() == "UpdateSuperviseePhoto")
                         {
                             photo1 = currentEditUser.UserProfile.User_Photo1 != null ? Convert.ToBase64String(currentEditUser.UserProfile.User_Photo1) : string.Empty;
-                            photo2 = currentEditUser.UserProfile.User_Photo1 != null ? Convert.ToBase64String(currentEditUser.UserProfile.User_Photo2) : string.Empty;
+                            photo2 = currentEditUser.UserProfile.User_Photo2 != null ? Convert.ToBase64String(currentEditUser.UserProfile.User_Photo2) : string.Empty;
                             LoadEditSupervisee(currentEditUser, photo1, photo2);
                         }
                     }
@@ -686,7 +677,7 @@ namespace Enrolment
                     Invoke(new Action(() =>
                     {
                         webcam.stopWebcam();
-                        pictureBox1.Hide();
+                        //pictureBox1.Hide();
                     }));
                     // LayerWeb.LoadPageHtml("New-Supervisee.html");
                     if (session[CommonConstants.CURRENT_EDIT_USER] != null && currentPage != null)
@@ -820,12 +811,18 @@ namespace Enrolment
                 CSCallJS.LoadPageHtml(this.LayerWeb, "UpdateSuperviseeBiodata.html", profileModel);
 
 
-                if (profileModel.UserProfile.LeftThumbImage != null && profileModel.UserProfile.RightThumbImage != null)
+                if (profileModel.UserProfile.LeftThumbImage != null || profileModel.UserProfile.RightThumbImage != null)
                 {
-                    var leftFingerprint = profileModel.UserProfile.LeftThumbImage;
-                    var rightFingerprint = profileModel.UserProfile.RightThumbImage;
 
-                    LayerWeb.InvokeScript("setBase64FingerprintOnloadServerCall", Convert.ToBase64String(leftFingerprint), Convert.ToBase64String(rightFingerprint));
+                    string leftFingerprint = string.Empty;
+                    if (profileModel.UserProfile.LeftThumbImage != null)
+                        leftFingerprint = Convert.ToBase64String(profileModel.UserProfile.LeftThumbImage);
+
+                    string rightFingerprint = string.Empty;
+                    if (profileModel.UserProfile.RightThumbImage != null)
+                        rightFingerprint = Convert.ToBase64String(profileModel.UserProfile.RightThumbImage);
+
+                    LayerWeb.InvokeScript("setBase64FingerprintOnloadServerCall", leftFingerprint, rightFingerprint);
 
                 }
                 string photo1 = string.Empty;

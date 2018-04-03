@@ -465,10 +465,10 @@
                                         <div class="carousel-item col-8 offset-2 active">
                                             <div class="newSuperviseeContentWrapper row">
                                                 <div class="col-6">
-                                                    <img id="image1" src="../images/avatar-demo.jpg" class="img-fluid"><br />
+                                                    <img id="image1" src="../images/avatar-demo.jpg" class="img-fluid" style="width:80%;"><br />
                                                 </div>
                                                 <div class="col-6">
-                                                    <img id="image2" src="../images/avatar-demo.jpg" class="img-fluid"><br />
+                                                    <img id="image2" src="../images/avatar-demo.jpg" class="img-fluid" style="width:80%;"><br />
                                                 </div>
                                                 <div class="col-6">
                                                     <a href="#" id="btnTakePic1" style="color:#1CACF6;">Take Picture 1</a>
@@ -481,19 +481,19 @@
                                         <div class="carousel-item col-8 offset-2">
                                             <div class="newSuperviseeContentWrapper row">
                                                 <div class="col-6">
-                                                    <div style="margin-bottom:10px;"><strong id="leftProcessMessage">Place left thumb onto scanner.</strong></div>
+                                                    <div style="margin-bottom:10px;text-align:center;"><strong id="leftProcessMessage">Place left thumb onto scanner.</strong></div>
                                                     <div class="row col-7 offset-1" style="margin:auto;">
-                                                        <div class="col-12" style="padding:20px;background-color:#f1f1f1;margin:auto;">
-                                                            <img src='../images/leftthumb.png' id="leftFingerprint" style="max-width:100%;">
+                                                        <div class="col-12" style="padding:20px;background-color:#f1f1f1;margin:auto;text-align:center;">
+                                                            <img src='../images/leftthumb.png' id="leftFingerprint" style="max-width:75%;">
                                                         </div>
                                                     </div>
                                                     <!--<div>Left Thumb-Fingerprint Preview</div>-->
                                                 </div>
                                                 <div class="col-6">
-                                                    <div style="margin-bottom:10px;"><strong id="rightProcessMessage">Place right thumb onto scanner.</strong></div>
+                                                    <div style="margin-bottom:10px;text-align:center;"><strong id="rightProcessMessage">Place right thumb onto scanner.</strong></div>
                                                     <div class="row col-7 offset-1" style="margin:auto;">
-                                                        <div class="col-12" style="padding:20px;background-color:#f1f1f1;margin:auto;">
-                                                            <img src='../images/rightthumb.png' id="rightFingerprint" style="max-width:100%;">
+                                                        <div class="col-12" style="padding:20px;background-color:#f1f1f1;margin:auto;text-align:center;">
+                                                            <img src='../images/rightthumb.png' id="rightFingerprint" style="max-width:75%;">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -502,12 +502,12 @@
                                                         <div class="scan col-6 ml-auto" style="text-align:left;"><a href="javascript:;" data-target="#fingerPrint" data-toggle="modal" id="leftThumbScanBtn">Scan</a></div>
                                                         <div class="clear col-6 mr-auto" style="text-align:right;"><a href="javascript:;" id="leftThumbClearBtn">Clear</a></div>
                                                     </div>
-                                                    <div style="margin-top:10px;" class="row col-12 offset-1" >Left Thumb-Fingerprint Preview</div>
+                                                    <div style="margin-top:10px;" class="row col-12 offset-1">Left Thumb-Fingerprint Preview</div>
                                                 </div>
                                                 <div class="col-6">
                                                     <div class="row col-7 offset-1" style="margin:auto;">
-                                                        <div class="scan col-6 ml-auto"  style="text-align:left;"><a href="javascript:;" data-target="#fingerPrint" data-toggle="modal" id="rightThumbScanBtn">Scan</a></div>
-                                                        <div class="clear col-6 mr-auto"  style="text-align:right;"><a href="javascript:;" id="rightThumbClearBtn">Clear</a></div>
+                                                        <div class="scan col-6 ml-auto" style="text-align:left;"><a href="javascript:;" data-target="#fingerPrint" data-toggle="modal" id="rightThumbScanBtn">Scan</a></div>
+                                                        <div class="clear col-6 mr-auto" style="text-align:right;"><a href="javascript:;" id="rightThumbClearBtn">Clear</a></div>
                                                     </div>
                                                     <div style="margin-top:10px;">Right Thumb-Fingerprint Preview</div>
                                                 </div>
@@ -1111,7 +1111,7 @@
                     </div>
                     <img src="../images/front-avarta.png" style="position:absolute;z-index:1;left:0px;top:0px;height:328px;width:252px;" />
                 </div>
-                <div style="position:absolute;font-size: 23px;font-weight: 700;top: 20px;left: 90px;color:#000;z-index:1;">
+                <div style="position:absolute;font-size: 23px;font-weight: 700;top: 20px;left: 90px;color:#000;z-index:1;text-transform:uppercase;">
                     Supervision Card
                 </div>
                 <div style="position:absolute;top: 85px;left: 325px;width:calc(100% - 325px - 30px);height:calc(100% - 70px);z-index:1;">
@@ -1142,7 +1142,7 @@
                     <span name="verifyCompanyName" style="font-weight:bold;font-size:14px;">34534534</span><br />
                     <span name="verifyVenueName" style="font-weight:bold;font-size:14px;">34534534</span><br />
                     <span name="verifyAddress" style="font-weight:bold;font-size:14px;">54654</span><br />
-                    Contact Number: <span name="verifyContactNumber" style="font-weight:bold;font-size:14px;">54654654654</span><br />
+                    <b style="font-size:14px;">Contact Number: </b><span name="verifyContactNumber" style="font-weight:bold;font-size:14px;">54654654654</span>
                 </div>
             </div>
             <img src="../images/backend-logo.png" style="position:absolute;z-index:0;right:30px;bottom:45px;" />
@@ -1479,42 +1479,54 @@
 
 
 
+            
+
             if (api.model != null) {
                 $('#userId').val(api.model.User.UserId);
                 // NextOfKin
-                $('#NextOfKin_Name').val(api.model.UserProfile.NextOfKin_Name);
-                $('#NextOfKin_Contact_Number').val(api.model.UserProfile.NextOfKin_Contact_Number);
-                $('#NextOfKin_Relationship').val(api.model.UserProfile.NextOfKin_Relationship);
-                $('#NextOfKin_BlkHouse_Number').val(api.model.UserProfile.NextOfKin_BlkHouse_Number);
-                $('#NextOfKin_FlrUnit_Number').val(api.model.UserProfile.NextOfKin_FlrUnit_Number);
-                $('#NextOfKin_Street_Name').val(api.model.UserProfile.NextOfKin_Street_Name);
-                $('#NextOfKin_Country').val(api.model.UserProfile.NextOfKin_Country);
-                $('#NextOfKin_PostalCode').val(api.model.UserProfile.NextOfKin_PostalCode);
-                // Employment
-                $('#Employment_Name').val(api.model.UserProfile.Employment_Name);
-                $('#Employment_Contact_Number').val(api.model.UserProfile.Employment_Contact_Number);
-                $('#Employment_Company_Name').val(api.model.UserProfile.Employment_Company_Name);
-                $('#Employment_Job_Title').val(api.model.UserProfile.Employment_Job_Title);
-                $('#Employment_Start_Date').val(api.model.UserProfile.Employment_Start_Date);
-                $('#Employment_End_Date').val(api.model.UserProfile.Employment_End_Date);
-                $('#Employment_Remarks').val(api.model.UserProfile.Employment_Remarks);
+                if (api.model.UserProfile == null) {
+                    $('#NextOfKin_Name').val(api.model.UserProfile.NextOfKin_Name);
+                    $('#NextOfKin_Contact_Number').val(api.model.UserProfile.NextOfKin_Contact_Number);
+                    $('#NextOfKin_Relationship').val(api.model.UserProfile.NextOfKin_Relationship);
+                    $('#NextOfKin_BlkHouse_Number').val(api.model.UserProfile.NextOfKin_BlkHouse_Number);
+                    $('#NextOfKin_FlrUnit_Number').val(api.model.UserProfile.NextOfKin_FlrUnit_Number);
+                    $('#NextOfKin_Street_Name').val(api.model.UserProfile.NextOfKin_Street_Name);
+                    $('#NextOfKin_Country').val(api.model.UserProfile.NextOfKin_Country);
+                    $('#NextOfKin_PostalCode').val(api.model.UserProfile.NextOfKin_PostalCode);
+                    // Employment
+                    $('#Employment_Name').val(api.model.UserProfile.Employment_Name);
+                    $('#Employment_Contact_Number').val(api.model.UserProfile.Employment_Contact_Number);
+                    $('#Employment_Company_Name').val(api.model.UserProfile.Employment_Company_Name);
+                    $('#Employment_Job_Title').val(api.model.UserProfile.Employment_Job_Title);
+                    $('#Employment_Start_Date').val(api.model.UserProfile.Employment_Start_Date);
+                    $('#Employment_End_Date').val(api.model.UserProfile.Employment_End_Date);
+                    $('#Employment_Remarks').val(api.model.UserProfile.Employment_Remarks);
+                    $('#address_ID').val(api.model.UserProfile.Residential_Addess_ID);
+                    $('#Other_Address_ID').val(api.model.UserProfile.Other_Address_ID);
+                    // photo
+                    $('#User_Photo1').val(api.model.UserProfile.User_Photo1);
+                    $('#User_Photo2').val(api.model.UserProfile.User_Photo2);
+                }
+                
+
                 // Residential Address
-                $('#address_ID').val(api.model.UserProfile.Residential_Addess_ID);
-                $('#Street_Name').val(api.model.Addresses.Street_Name);
-                $('#BlkHouse_Number').val(api.model.Addresses.BlkHouse_Number);
-                $('#FlrUnit_Number').val(api.model.Addresses.FlrUnit_Number);
-                $('#Country').val(api.model.Addresses.Country);
-                $('#Postal_Code').val(api.model.Addresses.Postal_Code);
+                if (api.model.Addresses != null) {
+                    $('#Street_Name').val(api.model.Addresses.Street_Name);
+                    $('#BlkHouse_Number').val(api.model.Addresses.BlkHouse_Number);
+                    $('#FlrUnit_Number').val(api.model.Addresses.FlrUnit_Number);
+                    $('#Country').val(api.model.Addresses.Country);
+                    $('#Postal_Code').val(api.model.Addresses.Postal_Code);
+                }
                 // Other Address
-                $('#Other_Address_ID').val(api.model.UserProfile.Other_Address_ID);
-                $('#OStreet_Name').val(api.model.OtherAddress.Street_Name);
-                $('#OBlkHouse_Number').val(api.model.OtherAddress.BlkHouse_Number);
-                $('#OFlrUnit_Number').val(api.model.OtherAddress.FlrUnit_Number);
-                $('#OCountry').val(api.model.OtherAddress.Country);
-                $('#OPostal_Code').val(api.model.OtherAddress.Postal_Code);
-                // photo
-                $('#User_Photo1').val(api.model.UserProfile.User_Photo1);
-                $('#User_Photo2').val(api.model.UserProfile.User_Photo2);
+                if (api.model.OtherAddress != null) {
+                    $('#OStreet_Name').val(api.model.OtherAddress.Street_Name);
+                    $('#OBlkHouse_Number').val(api.model.OtherAddress.BlkHouse_Number);
+                    $('#OFlrUnit_Number').val(api.model.OtherAddress.FlrUnit_Number);
+                    $('#OCountry').val(api.model.OtherAddress.Country);
+                    $('#OPostal_Code').val(api.model.OtherAddress.Postal_Code);
+                }
+
+                
 
                 var startYear = $('#Employment_Start_Date').val().trim() != "" ? new Date($('#Employment_Start_Date').val()) : null;
                 var endYear = $('#Employment_End_Date').val().trim() != "" ? new Date($('#Employment_End_Date').val()) : null;

@@ -243,6 +243,9 @@ namespace Trinity.Device.Util
                 if (!string.IsNullOrEmpty(returnValue.CardUID))
                 {
                     returnValue.Success = true;
+                }else if (string.IsNullOrEmpty(returnValue.CardUID) && string.IsNullOrEmpty(returnValue.Description))
+                {
+                    returnValue.Description = "Please put the smart card on the printer!";
                 }
 
                 OnCompleted(returnValue);

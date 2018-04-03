@@ -143,6 +143,8 @@
     <Content Include="Libs\pcsc-sharp.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="View\datetimepicker\jquery.datetimepicker.css" />
+    <Content Include="View\datetimepicker\jquery.datetimepicker.full.min.js" />
     <Content Include="View\html\PopupRePrintCardReason.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

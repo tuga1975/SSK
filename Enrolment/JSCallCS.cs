@@ -322,7 +322,7 @@ namespace Enrolment
             var rawData = JsonConvert.DeserializeObject<Trinity.BE.ProfileRawMData>(param);
             var rawDataAddress = JsonConvert.DeserializeObject<Trinity.BE.Address>(param);
             var rawDataOtherAddress = JsonConvert.DeserializeObject<Trinity.BE.OtherAddress>(param);
-
+            
             var data = new Trinity.BE.ProfileRawMData().ToProfileModel(rawData);
             var dalUser = new Trinity.DAL.DAL_User();
 
@@ -390,7 +390,7 @@ namespace Enrolment
             //////
             data.User.Name = tempUser.User.Name;
             data.User.Status = tempUser.User.Status;
-
+            data.User.UserId = profileModel.User.UserId;
 
             var updateUserResult = dalUser.Update(data.User);
             // dalUser.UpdateUser(data.User, data.User.UserId, true);
@@ -440,63 +440,54 @@ namespace Enrolment
 
         public void saveNewDataToSession(string param)
         {
-            try
-            {
+            var rawData = JsonConvert.DeserializeObject<Trinity.BE.ProfileRawMData>(param);
 
-                var rawData = JsonConvert.DeserializeObject<Trinity.BE.ProfileRawMData>(param);
-
-                var rawDataAddress = JsonConvert.DeserializeObject<Trinity.BE.Address>(param);
-                var rawDataOtherAddress = JsonConvert.DeserializeObject<Trinity.BE.OtherAddress>(param);
+            var rawDataAddress = JsonConvert.DeserializeObject<Trinity.BE.Address>(param);
+            var rawDataOtherAddress = JsonConvert.DeserializeObject<Trinity.BE.OtherAddress>(param);
 
 
-                Session session = Session.Instance;
-                var profileModel = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
-                profileModel.Addresses = rawDataAddress;
-                profileModel.OtherAddress.Address_ID = rawDataOtherAddress.OAddress_ID;
-                profileModel.OtherAddress.BlkHouse_Number = rawDataOtherAddress.OBlkHouse_Number;
-                profileModel.OtherAddress.FlrUnit_Number = rawDataOtherAddress.OFlrUnit_Number;
-                profileModel.OtherAddress.Street_Name = rawDataOtherAddress.OStreet_Name;
-                profileModel.OtherAddress.Country = rawDataOtherAddress.OCountry;
-                profileModel.OtherAddress.Postal_Code = rawDataOtherAddress.OPostal_Code;
+            Session session = Session.Instance;
+            var profileModel = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
+            profileModel.Addresses = rawDataAddress;
+            profileModel.OtherAddress.Address_ID = rawDataOtherAddress.OAddress_ID;
+            profileModel.OtherAddress.BlkHouse_Number = rawDataOtherAddress.OBlkHouse_Number;
+            profileModel.OtherAddress.FlrUnit_Number = rawDataOtherAddress.OFlrUnit_Number;
+            profileModel.OtherAddress.Street_Name = rawDataOtherAddress.OStreet_Name;
+            profileModel.OtherAddress.Country = rawDataOtherAddress.OCountry;
+            profileModel.OtherAddress.Postal_Code = rawDataOtherAddress.OPostal_Code;
 
 
 
 
-                //var data = new Trinity.BE.ProfileRawMData().ToProfileModel(rawData);
-                //data.Addresses = rawDataAddress;
-                //data.OtherAddress.Address_ID = rawDataOtherAddress.OAddress_ID;
-                //data.OtherAddress.BlkHouse_Number = rawDataOtherAddress.OBlkHouse_Number;
-                //data.OtherAddress.FlrUnit_Number = rawDataOtherAddress.OFlrUnit_Number;
-                //data.OtherAddress.Street_Name = rawDataOtherAddress.OStreet_Name;
-                //data.OtherAddress.Country = rawDataOtherAddress.OCountry;
-                //data.OtherAddress.Postal_Code = rawDataOtherAddress.OPostal_Code;
+            //var data = new Trinity.BE.ProfileRawMData().ToProfileModel(rawData);
+            //data.Addresses = rawDataAddress;
+            //data.OtherAddress.Address_ID = rawDataOtherAddress.OAddress_ID;
+            //data.OtherAddress.BlkHouse_Number = rawDataOtherAddress.OBlkHouse_Number;
+            //data.OtherAddress.FlrUnit_Number = rawDataOtherAddress.OFlrUnit_Number;
+            //data.OtherAddress.Street_Name = rawDataOtherAddress.OStreet_Name;
+            //data.OtherAddress.Country = rawDataOtherAddress.OCountry;
+            //data.OtherAddress.Postal_Code = rawDataOtherAddress.OPostal_Code;
 
 
 
-                //var profileModel = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
+            //var profileModel = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
 
-                var tempProfileModel = (Trinity.BE.ProfileModel)session["TEMP_USER"];
+            var tempProfileModel = (Trinity.BE.ProfileModel)session["TEMP_USER"];
 
-                //data.UserProfile.LeftThumbImage = profileModel.UserProfile.LeftThumbImage;
-                //data.UserProfile.RightThumbImage = profileModel.UserProfile.RightThumbImage;
+            //data.UserProfile.LeftThumbImage = profileModel.UserProfile.LeftThumbImage;
+            //data.UserProfile.RightThumbImage = profileModel.UserProfile.RightThumbImage;
 
 
-                var photo1 = tempProfileModel.UserProfile.User_Photo1 != null ? Convert.ToBase64String(tempProfileModel.UserProfile.User_Photo1) : null;
-                var photo2 = tempProfileModel.UserProfile.User_Photo2 != null ? Convert.ToBase64String(tempProfileModel.UserProfile.User_Photo2) : null;
-                ////////
-                session["TempPhotos"] = new Tuple<string, string>(photo1, photo2);
-                ////////
-                //data.UserProfile.User_Photo1 = profileModel.UserProfile.User_Photo1;
-                //data.UserProfile.User_Photo2 = profileModel.UserProfile.User_Photo2;
-                //data.UserProfile.Residential_Addess_ID = profileModel.UserProfile.Residential_Addess_ID;
-                //data.UserProfile.Other_Address_ID = profileModel.UserProfile.Other_Address_ID;
-                //session[CommonConstants.CURRENT_EDIT_USER] = data;
-
-            }
-            catch
-            {
-
-            }
+            var photo1 = tempProfileModel.UserProfile.User_Photo1 != null ? Convert.ToBase64String(tempProfileModel.UserProfile.User_Photo1) : null;
+            var photo2 = tempProfileModel.UserProfile.User_Photo2 != null ? Convert.ToBase64String(tempProfileModel.UserProfile.User_Photo2) : null;
+            ////////
+            session["TempPhotos"] = new Tuple<string, string>(photo1, photo2);
+            ////////
+            //data.UserProfile.User_Photo1 = profileModel.UserProfile.User_Photo1;
+            //data.UserProfile.User_Photo2 = profileModel.UserProfile.User_Photo2;
+            //data.UserProfile.Residential_Addess_ID = profileModel.UserProfile.Residential_Addess_ID;
+            //data.UserProfile.Other_Address_ID = profileModel.UserProfile.Other_Address_ID;
+            //session[CommonConstants.CURRENT_EDIT_USER] = data;
         }
 
         public void ReplaceOldPhotos()
@@ -587,6 +578,7 @@ namespace Enrolment
                     Name = profileModel.User.Name,
                     NRIC = profileModel.User.NRIC,
                     UserId = profileModel.User.UserId,
+                    DOB = profileModel.UserProfile == null ? string.Empty : profileModel.UserProfile.DOBAsString
                 }
             };
             SmartCardPrinterUtil.Instance.PrintAndWriteSmartCard(infoPrinter, OnNewCardPrinted);
@@ -624,6 +616,8 @@ namespace Enrolment
                     currentEditUser.UserProfile.DateOfIssue = _CardInfo.Date_Of_Issue;
                     currentEditUser.UserProfile.SerialNumber = _CardInfo.CardNumberFull;
                     currentEditUser.Membership_Users.SmartCardId = SmartID;
+                    this._web.InvokeScript("showPrintMessage", true, "Smart Card was printed successfully! Please collect the smart card from printer and place on the reader to verify.");
+                    Thread.Sleep(10000);
                     CheckVerfyCard();
                 }
                 catch (Exception ex)
@@ -640,7 +634,6 @@ namespace Enrolment
         }
         public void CheckVerfyCard()
         {
-            this._web.InvokeScript("showPrintMessage", true, "Smart Card was printed successfully! Please collect the smart card from printer and place on the reader to verify.");
             SmartCardReaderUtil smartCardReaderUtil = SmartCardReaderUtil.Instance;
             SmartCardData_Original smartCardData_Original = null;
             bool readDataResult = smartCardReaderUtil.ReadAllData_MifareClassic(ref smartCardData_Original);
@@ -652,9 +645,9 @@ namespace Enrolment
             {
                 this._web.InvokeScript("showCheckVerfyCard", true,JsonConvert.SerializeObject( new
                 {
-                    Name="Nguyễn Văn Thắng",
-                    NRIC = "S12312312",
-                    DOB="14/05/1991"
+                    Name= smartCardData_Original.SuperviseeBiodata.Name,
+                    NRIC = smartCardData_Original.SuperviseeBiodata.NRIC,
+                    DOB= smartCardData_Original.SuperviseeBiodata.DOB
                 }));
             }
         }
@@ -706,10 +699,10 @@ namespace Enrolment
             EventCenter eventCenter = EventCenter.Default;
             eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.CAPTURE_PICTURE });
         }
-        public void ConfirmCapturePicture()
+        public void ConfirmCapturePicture(string base64Img)
         {
             EventCenter eventCenter = EventCenter.Default;
-            eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.CONFIRM_CAPTURE_PICTURE });
+            eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.CONFIRM_CAPTURE_PICTURE,Data = base64Img });
         }
         public void CancelConfirmCapturePicture()
         {
@@ -837,11 +830,22 @@ namespace Enrolment
         }
         public void UpdatePhotos()
         {
+            string photo1 = string.Empty;
+            string photo2 = string.Empty;
+            Session session = Session.Instance;
+            var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
+            if (currentEditUser.UserProfile.User_Photo1 != null)
+            {
+                photo1 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo1);
 
-            EventCenter eventCenter = EventCenter.Default;
-            //string from = "edit";
-            eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.LOAD_UPDATE_PHOTOS });
-
+            }
+            if (currentEditUser.UserProfile.User_Photo2 != null)
+            {
+                photo2 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo2);
+            }
+            session[CommonConstants.CURRENT_PAGE] = "UpdateSuperviseePhoto";
+            this._web.LoadPageHtml("UpdateSuperviseePhoto.html", currentEditUser);
+            this._web.InvokeScript("setAvatar", photo1, photo2);
         }
 
 
@@ -971,6 +975,7 @@ namespace Enrolment
                     Name = currentEditUser.User.Name,
                     NRIC = currentEditUser.User.NRIC,
                     UserId = currentEditUser.User.UserId,
+                    DOB = currentEditUser.UserProfile == null?string.Empty:currentEditUser.UserProfile.DOBAsString
                 }
             }, OnIssuedCardReprinted);
         }
