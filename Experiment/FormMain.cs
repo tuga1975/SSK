@@ -383,5 +383,11 @@ namespace Experiment
             FormTestBackendAPI f = new FormTestBackendAPI();
             f.Show();
         }
+
+        private void button15_Click(object sender, EventArgs e)
+        {
+            FormBarcodeScanner f = new FormBarcodeScanner();
+            f.Show();
+        }
     }
 }

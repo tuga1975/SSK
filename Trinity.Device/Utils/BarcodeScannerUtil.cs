@@ -13,6 +13,7 @@ namespace Trinity.Device.Util
     public class BarcodeScannerUtil
     {
         private System.IO.Ports.SerialPort serialPort1;
+        private bool _stopReceiveData = false;
 
         private const Byte STX = 0x02;
         private const Byte ETX = 0x03;
@@ -165,6 +166,9 @@ namespace Trinity.Device.Util
                 return;
             }
 
+            //MessageBox.Show("StartScanning OK");
+
+            // Timing ON
             //
             // Send "LON" command.
             // Set STX to command header and ETX to the terminator to distinguish between command respons
@@ -180,12 +184,39 @@ namespace Trinity.Device.Util
                     this.serialPort1.Write(sendBytes, 0, sendBytes.Length);
                     //MessageBox.Show(this.serialPort1.PortName + "\r\n Write OK");
 
-                    string value = string.Empty;
-                    while (value == string.Empty)
+                    // get data
+                    //MessageBox.Show("Receiving DataOK");
+                    System.Threading.Tasks.Task.Factory.StartNew(() =>
                     {
-                        value = ReceiveData();
-                    }
-                    System.Threading.Tasks.Task.Factory.StartNew(() => barcodeScannerCallback(value, string.Empty));
+                        string data = string.Empty;
+                        string description = string.Empty;
+                        _stopReceiveData = false;
+                        for (; ; )
+                        {
+                            Thread.Sleep(100);
+                            data = ReceiveData_Auto(this.serialPort1, ref description);
+
+                            // Stop manually
+                            if (_stopReceiveData)
+                            {
+                                break;
+                            }
+
+                            // Get data success
+                            if (!string.IsNullOrEmpty(data))
+                            {
+                                System.Threading.Tasks.Task.Factory.StartNew(() => barcodeScannerCallback(data, string.Empty));
+                                break;
+                            }
+
+                            // Get data unsuccess
+                            if (!string.IsNullOrEmpty(description) && !description.Contains("no data"))
+                            {
+                                System.Threading.Tasks.Task.Factory.StartNew(() => barcodeScannerCallback(data, description));
+                                break;
+                            }
+                        }
+                    });
                 }
                 catch (IOException ex)
                 {
@@ -200,11 +231,73 @@ namespace Trinity.Device.Util
             }
         }
 
+        private string ReceiveData_Auto(SerialPort serialPort, ref string description)
+        {
+            Byte[] recvBytes = new Byte[RECV_DATA_MAX];
+            int recvSize;
+            string returnValue = string.Empty;
+
+            if (serialPort.IsOpen == false)
+            {
+                //MessageBox.Show(serialPort.PortName + " is disconnected.");
+                description = serialPort.PortName + " is disconnected.";
+                return returnValue;
+            }
+
+            for (; ; )
+            {
+                try
+                {
+                    recvSize = readDataSub(recvBytes, serialPort);
+                }
+                catch (IOException ex)
+                {
+                    //MessageBox.Show(serialPort.PortName + "\r\n" + ex.Message);    // disappeared
+                    description = "IOException";
+                    break;
+                }
+                if (recvSize == 0)
+                {
+                    //MessageBox.Show(serialPort.PortName + " has no data.");
+                    description = serialPort.PortName + " has no data.";
+                    break;
+                }
+                if (recvBytes[0] == STX)
+                {
+                    //
+                    // Skip if command response.
+                    //
+                    continue;
+                }
+                else
+                {
+                    //
+                    // Show the receive data after converting the receive data to Shift-JIS.
+                    // Terminating null to handle as string.
+                    //
+                    recvBytes[recvSize] = 0;
+                    //MessageBox.Show(serialPort.PortName + "\r\n" + Encoding.GetEncoding("Shift_JIS").GetString(recvBytes));
+
+                    // Remove trailing zeros
+                    int lastIndex = Array.FindLastIndex(recvBytes, b => b != 0);
+                    //Array.Resize(ref recvBytes, lastIndex + 1);
+                    Array.Resize(ref recvBytes, lastIndex);
+
+                    returnValue = Encoding.GetEncoding("Shift_JIS").GetString(recvBytes);
+                    break;
+                }
+            }
+
+            return returnValue;
+        }
+
         /// <summary>
         /// handler for "Timing OFF
         /// </summary>
         public bool StopScanning()
         {
+            _stopReceiveData = true;
+
             //
             // Send "LOFF" command.
             // Set STX to command header and ETX to the terminator to distinguish between command respons
