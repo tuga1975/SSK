@@ -100,7 +100,7 @@
         $('[clearBtn]').addClass('link-blue');
     }
     function clearFingerprint(LeftOrRight) {
-        $('[capturefingerprint-img="' + LeftOrRight + '"]').attr('src', modelFingerprinter[LeftOrRight] == null ? '../images/fingerprint.png' : 'data:image/png;base64,' + modelFingerprinter[LeftOrRight]).attr('soure', '').attr('data-fingerprint', '');
+        $('[capturefingerprint-img="' + LeftOrRight + '"]').attr('src', modelFingerprinter[LeftOrRight] == null ? '../images/rightthumb.png' : 'data:image/png;base64,' + modelFingerprinter[LeftOrRight]).attr('soure', '').attr('data-fingerprint', '');
         $('[capturefingerprint-btn="' + LeftOrRight + '"]').removeClass('link-grey')
         $('[capturefingerprint-btn="' + LeftOrRight + '"]').addClass('link-blue');
     }
