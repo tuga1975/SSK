@@ -1,6 +1,6 @@
-﻿<div style="position:fixed;z-index:100;width:100%;height: calc(100% - 160px);top: 100px;left:0px;background-color:#FFF;">
+﻿<div style="position:fixed;z-index:100;width:100%;height: calc(100% - 160px);top: 100px;left:0px;background-color:#FFF;" panel-camera="">
     <div style="margin-left:40px;">
-        <a href="javascript:;" style="text-transform:uppercase;" onclick="api.server.CancelUpdatePicture();">Click to go back</a>
+        <a href="javascript:;" style="text-transform:uppercase;" onclick="outWebCamCamera();">Click to go back</a>
     </div>
     <div style="text-align:center;">
         <h6>
@@ -26,33 +26,52 @@
     </div>
 </div>
 <script>
+    var isCheckBeforeLoadWebcam = false;
     var base64ImgLast = '';
     var imgShow = document.querySelector('#imgShow');
     var imgShow2D = imgShow.getContext('2d');
+    var timeShowWebCam = null;
+    api.ready(function () {
+        StartCamera();
+        api.loading(true);
+    });
+    function outWebCamCamera() {
+        clearInterval(timeShowWebCam);
+        api.server.CancelUpdatePicture();
+    }
     function confirmMode() {
-        document.getElementById('capture').style.display = 'none';
-        document.getElementById('confirm').style.display = 'block';
+        $('#capture').css('display', 'none');
+        $('#confirm').css('display', 'block');
+        clearInterval(timeShowWebCam);
     }
     function captureMode() {
-        document.getElementById('capture').style.display = 'block';
-        document.getElementById('confirm').style.display = 'none';
+        $('#capture').css('display', 'block');
+        $('#confirm').css('display', 'none');
+        StartCamera();
     }
     function showCamera(data) {
-        var img1 = new Image();
-        img1.onload = function () {
-            var width = this.width;
-            var height = this.height;
-            var ratio = height / width;
-            if (height > 450) {
-                height = 450;
-                width = height / ratio;
-            }
-            imgShow.height = height;
-            imgShow.width = width;
-            imgShow2D.drawImage(img1, 0, 0, width, height);
-        }
-        img1.src = 'data:image/png;base64,' + data;
-        //img1.src = '../../Temp/webcam.png?time=' + data;
         base64ImgLast = data;
+    }
+    function StartCamera() {
+        timeShowWebCam = setInterval(function () {
+            var img1 = new Image();
+            img1.onload = function () {
+                var width = this.width;
+                var height = this.height;
+                var ratio = height / width;
+                if (height > 450) {
+                    height = 450;
+                    width = height / ratio;
+                }
+                imgShow.height = height;
+                imgShow.width = width;
+                imgShow2D.drawImage(img1, 0, 0, width, height);
+                if (!isCheckBeforeLoadWebcam && base64ImgLast.length>0) {
+                    isCheckBeforeLoadWebcam = true;
+                    api.loading(false);
+                }
+            }
+            img1.src = 'data:image/png;base64,' + base64ImgLast;
+        }, 41);
     }
 </script>
