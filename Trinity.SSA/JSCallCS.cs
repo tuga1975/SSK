@@ -339,7 +339,7 @@ namespace SSA
             this._web.LoadPopupHtml("LoadingPopup.html", content);
         }
 
-        public void OnEventPrintFinished()
+        public void OnPrintingAndLabellingCompleted()
         {
             if (_PrintMUBSucceed && _PrintTTSucceed)
             {

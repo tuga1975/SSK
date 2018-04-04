@@ -68,79 +68,82 @@ namespace Trinity.Device.Util
         /// <returns>successful</returns>
         public bool PrintTTLabel_Direction_0(TTLabelInfo ttLabelInfo)
         {
-            try
+            lock (syncRoot)
             {
-                //MessageBox.Show("PrintTTLabel ");
-                // validate
-                if (!ttLabelInfo.IsValid())
+                try
                 {
-                    MessageBox.Show("!ttLabelInfo.IsValid");
+                    //MessageBox.Show("PrintTTLabel ");
+                    // validate
+                    if (!ttLabelInfo.IsValid())
+                    {
+                        MessageBox.Show("!ttLabelInfo.IsValid");
+                        return false;
+                    }
+
+                    //Open specified printer driver
+                    TSCLIB_DLL.openport(EnumDeviceNames.TTLabelPrinter);
+
+                    //Setup the media size and sensor type info
+                    // page size 55mm x 30mm
+                    // template size 45mm x 30mm (actually 55mm x 32.5mm)
+                    TSCLIB_DLL.setup("55", "32.5", "4", "8", "0", "0", "0");
+                    TSCLIB_DLL.sendcommand("GAP 3mm, 0mm");
+                    //TSCLIB_DLL.setup("52.5", "30", "4", "8", "0", "0", "0");
+                    //TSCLIB_DLL.sendcommand("GAP 1.3mm, 0mm");
+                    TSCLIB_DLL.sendcommand("DIRECTION 0");
+                    TSCLIB_DLL.sendcommand("CLS");
+
+                    //Clear image buffer
+                    //TSCLIB_DLL.clearbuffer();
+
+                    // DPI = 203 => 8px = 1 mm
+                    //Draw windows font
+                    int startX = 54;
+                    int startY = 32;
+                    //int startX = 40;
+                    //int startY = 0;
+                    string fontName = "ARIAL";
+                    int fontStyle = 2; // Bold
+                    int fontHeight = 30;
+                    int maxChar = 17;   // max char of name at first name line
+
+                    // Name line
+                    TSCLIB_DLL.windowsfont(startX, startY, fontHeight, 0, fontStyle, 0, fontName, "Name");
+                    if (ttLabelInfo.Name.Length > maxChar)
+                    {
+                        TSCLIB_DLL.windowsfont(startX + 70, startY, fontHeight, 0, fontStyle, 0, fontName, " : " + ttLabelInfo.Name.Substring(0, maxChar));
+                        // Add name line if name is too long. Need to improve (split name by space char)
+                        TSCLIB_DLL.windowsfont(startX + 100, startY += fontHeight, fontHeight, 0, fontStyle, 0, fontName, "-" + ttLabelInfo.Name.Substring(maxChar, ttLabelInfo.Name.Length - maxChar));
+                    }
+                    else
+                    {
+                        TSCLIB_DLL.windowsfont(startX + 70, startY, fontHeight, 0, fontStyle, 0, fontName, " : " + ttLabelInfo.Name);
+                        startY += fontHeight;
+                    }
+
+                    // ID line
+                    TSCLIB_DLL.windowsfont(startX, startY += fontHeight, fontHeight, 0, fontStyle, 0, fontName, "ID");
+                    TSCLIB_DLL.windowsfont(startX + 70, startY, fontHeight, 0, fontStyle, 0, fontName, " : " + ttLabelInfo.ID);
+
+                    //Drawing barcode
+                    TSCLIB_DLL.barcode(startX.ToString(), (startY += fontHeight + 8).ToString(), "39", "72", "0", "0", "1", "3", ttLabelInfo.MarkingNumber);
+
+                    // Drawing barcode buildin function do not let us set text size of readable line, so we need to draw a line to display MarkingNumber
+                    TSCLIB_DLL.windowsfont(startX, startY += 80, fontHeight, 0, fontStyle, 0, fontName, ttLabelInfo.MarkingNumber);
+
+                    //Print labels
+                    TSCLIB_DLL.printlabel("1", "1");
+                    TSCLIB_DLL.closeport();
+
+                    //MessageBox.Show("Print OK");
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    //Debug.WriteLine("Print exception: " + ex.ToString());
+                    MessageBox.Show("Print exception: " + ex.ToString());
                     return false;
                 }
-
-                //Open specified printer driver
-                TSCLIB_DLL.openport(EnumDeviceNames.TTLabelPrinter);
-
-                //Setup the media size and sensor type info
-                // page size 55mm x 30mm
-                // template size 45mm x 30mm (actually 55mm x 32.5mm)
-                TSCLIB_DLL.setup("55", "32.5", "4", "8", "0", "0", "0");
-                TSCLIB_DLL.sendcommand("GAP 3mm, 0mm");
-                //TSCLIB_DLL.setup("52.5", "30", "4", "8", "0", "0", "0");
-                //TSCLIB_DLL.sendcommand("GAP 1.3mm, 0mm");
-                TSCLIB_DLL.sendcommand("DIRECTION 0");
-                TSCLIB_DLL.sendcommand("CLS");
-
-                //Clear image buffer
-                //TSCLIB_DLL.clearbuffer();
-
-                // DPI = 203 => 8px = 1 mm
-                //Draw windows font
-                int startX = 54;
-                int startY = 32;
-                //int startX = 40;
-                //int startY = 0;
-                string fontName = "ARIAL";
-                int fontStyle = 2; // Bold
-                int fontHeight = 30;
-                int maxChar = 17;   // max char of name at first name line
-
-                // Name line
-                TSCLIB_DLL.windowsfont(startX, startY, fontHeight, 0, fontStyle, 0, fontName, "Name");
-                if (ttLabelInfo.Name.Length > maxChar)
-                {
-                    TSCLIB_DLL.windowsfont(startX + 70, startY, fontHeight, 0, fontStyle, 0, fontName, " : " + ttLabelInfo.Name.Substring(0, maxChar));
-                    // Add name line if name is too long. Need to improve (split name by space char)
-                    TSCLIB_DLL.windowsfont(startX + 100, startY += fontHeight, fontHeight, 0, fontStyle, 0, fontName, "-" + ttLabelInfo.Name.Substring(maxChar, ttLabelInfo.Name.Length - maxChar));
-                }
-                else
-                {
-                    TSCLIB_DLL.windowsfont(startX + 70, startY, fontHeight, 0, fontStyle, 0, fontName, " : " + ttLabelInfo.Name);
-                    startY += fontHeight;
-                }
-
-                // ID line
-                TSCLIB_DLL.windowsfont(startX, startY += fontHeight, fontHeight, 0, fontStyle, 0, fontName, "ID");
-                TSCLIB_DLL.windowsfont(startX + 70, startY, fontHeight, 0, fontStyle, 0, fontName, " : " + ttLabelInfo.ID);
-
-                //Drawing barcode
-                TSCLIB_DLL.barcode(startX.ToString(), (startY += fontHeight + 8).ToString(), "39", "72", "0", "0", "1", "3", ttLabelInfo.MarkingNumber);
-
-                // Drawing barcode buildin function do not let us set text size of readable line, so we need to draw a line to display MarkingNumber
-                TSCLIB_DLL.windowsfont(startX, startY += 80, fontHeight, 0, fontStyle, 0, fontName, ttLabelInfo.MarkingNumber);
-
-                //Print labels
-                TSCLIB_DLL.printlabel("1", "1");
-                TSCLIB_DLL.closeport();
-
-                //MessageBox.Show("Print OK");
-                return true;
-            }
-            catch (Exception ex)
-            {
-                //Debug.WriteLine("Print exception: " + ex.ToString());
-                MessageBox.Show("Print exception: " + ex.ToString());
-                return false;
             }
         }
 
@@ -307,165 +310,168 @@ namespace Trinity.Device.Util
         /// <returns></returns>
         public bool PrintMUBLabel(MUBLabelInfo mubLabelInfo)
         {
-            try
+            lock (syncRoot)
             {
-                // validate
-                if (!mubLabelInfo.IsValid())
+                try
                 {
-                    //MessageBox.Show("Model is not valid.");
+                    // validate
+                    if (!mubLabelInfo.IsValid())
+                    {
+                        //MessageBox.Show("Model is not valid.");
+                        return false;
+                    }
+
+                    //Open specified printer driver
+                    TSCLIB_DLL.openport(EnumDeviceNames.MUBLabelPrinter);
+
+                    #region rotation 90 degrees
+                    //Setup the media size and sensor type info
+                    // page size 55mm x 100mm
+                    // template size 55mm x 100mm (actually 56mm x 82mm)
+                    //TSCLIB_DLL.setup("55", "82.5", "4", "8", "0", "0", "0");
+                    //Clear image buffer
+                    //TSCLIB_DLL.clearbuffer();
+                    // DPI = 203 => 8px = 1 mm
+                    //Draw windows font
+                    int startX = 280;
+                    int startY = 142;
+                    int startY_Value = startY + 160;
+                    string fontName = "ARIAL";
+                    int fontStyle = 0; // Normal
+                    int fontHeight = 30;
+                    int lineSpacing = 10;
+                    int maxChar = 17;   // max char of name at first name line
+                    int rotation = 270;
+
+                    // send FEED command
+                    //TSCLIB_DLL.sendcommand("FEED 80");
+
+                    TSCLIB_DLL.sendcommand("SIZE 40mm, 82mm");
+                    TSCLIB_DLL.sendcommand("GAP 3mm, 0mm");
+                    //TSCLIB_DLL.sendcommand("SIZE 42.5mm, 80mm");
+                    //TSCLIB_DLL.sendcommand("GAP 1.3mm, 0mm");
+                    TSCLIB_DLL.sendcommand("DIRECTION 0");
+                    TSCLIB_DLL.sendcommand("CLS");
+                    //TSCLIB_DLL.sendcommand("BOX 0,0,312,624,4");
+                    TSCLIB_DLL.sendcommand("TEXT 280,312,\"ROMAN.TTF\",90,12,12,2,\"CENTRAL NARCOTICS BUREAU\"");
+                    //TSCLIB_DLL.windowsfont(startX, startY, fontHeight, rotation, fontStyle, 0, fontName, "Name");
+                    // Title line
+                    //TSCLIB_DLL.windowsfont(startX, 48, fontHeight + 8, rotation, 2, 0, fontName, "CENTRAL NARCOTICS BUREAU");
+                    //TSCLIB_DLL.windowsfont(startX-54, 0, fontHeight + 8, rotation, fontStyle, 0, fontName, "| Start");
+                    //TSCLIB_DLL.windowsfont(startX-54, 600, fontHeight + 6, rotation, fontStyle, 0, fontName, "| End");
+
+
+                    // Name line
+                    TSCLIB_DLL.windowsfont(startX -= 64, startY, fontHeight, rotation, fontStyle, 0, fontName, "Name");
+                    if (mubLabelInfo.Name.Length > maxChar)
+                    {
+                        TSCLIB_DLL.windowsfont(startX, startY_Value, fontHeight, rotation, fontStyle, 0, fontName, " : " + mubLabelInfo.Name.Substring(0, maxChar));
+                        // Addition line if name is too long. Need to improve (detech addition row by space char)
+                        TSCLIB_DLL.windowsfont(startX -= (fontHeight + lineSpacing), startY_Value + 32, fontHeight, rotation, fontStyle, 0, fontName, "-" + mubLabelInfo.Name.Substring(maxChar, mubLabelInfo.Name.Length - maxChar));
+                    }
+                    else
+                    {
+                        TSCLIB_DLL.windowsfont(startX, startY_Value, fontHeight, rotation, fontStyle, 0, fontName, " : " + mubLabelInfo.Name);
+                        startX -= (fontHeight + lineSpacing);
+                    }
+
+                    // ID line
+                    TSCLIB_DLL.windowsfont(startX -= (fontHeight + lineSpacing), startY, fontHeight, rotation, fontStyle, 0, fontName, "ID No.");
+                    TSCLIB_DLL.windowsfont(startX, startY_Value, fontHeight, rotation, fontStyle, 0, fontName, " : " + mubLabelInfo.ID);
+
+                    // Date line
+                    TSCLIB_DLL.windowsfont(startX -= (fontHeight + lineSpacing), startY, fontHeight, rotation, fontStyle, 0, fontName, "Date");
+                    TSCLIB_DLL.windowsfont(startX, startY_Value, fontHeight, rotation, fontStyle, 0, fontName, " : " + DateTime.Now.ToString("dd/MM/yyyy"));
+
+                    // Marking no
+                    TSCLIB_DLL.windowsfont(startX -= (fontHeight + lineSpacing), startY, fontHeight, rotation, fontStyle, 0, fontName, "Marking No.");
+                    TSCLIB_DLL.windowsfont(startX, startY_Value, fontHeight, rotation, fontStyle, 0, fontName, " : " + mubLabelInfo.MarkingNumber);
+
+                    //Drawing barcode
+                    //TSCLIB_DLL.barcode(startX.ToString(), (startY += fontHeight + 8).ToString(), "39", "72", "0", "0", "1", "3", mubLabelInfo.QRCodeString);
+                    TSCLIB_DLL.sendcommand("DMATRIX 200,16,400,400,x3,r90, \"" + mubLabelInfo.QRCodeString + "\"");
+
+                    //Print labels
+                    TSCLIB_DLL.printlabel("1", "1");
+
+                    // send FEED command
+                    //TSCLIB_DLL.sendcommand("BACKFEED 80");
+                    TSCLIB_DLL.closeport();
+                    #endregion
+
+                    #region rotation 270 degrees
+                    //// Setup the media size and sensor type info
+                    //// page size 55mm x 100mm
+                    //// template size 55mm x 100mm (actually 56mm x 82mm)
+                    //TSCLIB_DLL.setup("55", "82.5", "4", "8", "0", "0", "0");
+
+                    ////Clear image buffer
+                    //TSCLIB_DLL.clearbuffer();
+                    //// DPI = 203 => 8px = 1 mm
+                    ////Draw windows font
+                    //int startX = 348;
+                    //int startY = 134;
+                    //int startY_Value = startY + 160;
+                    //string fontName = "ARIAL";
+                    //int fontStyle = 0; // Normal
+                    //int fontHeight = 30;
+                    //int lineSpacing = 10;
+                    //int maxChar = 17;   // max char of name at first name line
+                    //int rotation = 270;
+
+                    //// Title line
+                    //TSCLIB_DLL.windowsfont(startX, 48, fontHeight + 8, rotation, 2, 0, fontName, "CENTRAL NARCOTICS BUREAU");
+                    ////TSCLIB_DLL.windowsfont(startX-54, 0, fontHeight + 8, rotation, fontStyle, 0, fontName, "| Start");
+                    ////TSCLIB_DLL.windowsfont(startX-54, 600, fontHeight + 6, rotation, fontStyle, 0, fontName, "| End");
+
+
+                    //// Name line
+                    //TSCLIB_DLL.windowsfont(startX -= 64, startY, fontHeight, rotation, fontStyle, 0, fontName, "Name");
+                    //if (mubLabelInfo.Name.Length > maxChar)
+                    //{
+                    //    TSCLIB_DLL.windowsfont(startX, startY_Value, fontHeight, rotation, fontStyle, 0, fontName, " : " + mubLabelInfo.Name.Substring(0, maxChar));
+                    //    // Addition line if name is too long. Need to improve (detech addition row by space char)
+                    //    TSCLIB_DLL.windowsfont(startX -= (fontHeight + lineSpacing), startY_Value + 32, fontHeight, rotation, fontStyle, 0, fontName, "-" + mubLabelInfo.Name.Substring(maxChar, mubLabelInfo.Name.Length - maxChar));
+                    //}
+                    //else
+                    //{
+                    //    TSCLIB_DLL.windowsfont(startX, startY_Value, fontHeight, rotation, fontStyle, 0, fontName, " : " + mubLabelInfo.Name);
+                    //    startX -= (fontHeight + lineSpacing);
+                    //}
+
+                    //// ID line
+                    //TSCLIB_DLL.windowsfont(startX -= (fontHeight + lineSpacing), startY, fontHeight, rotation, fontStyle, 0, fontName, "ID No.");
+                    //TSCLIB_DLL.windowsfont(startX, startY_Value, fontHeight, rotation, fontStyle, 0, fontName, " : " + mubLabelInfo.ID);
+
+                    //// Date line
+                    //TSCLIB_DLL.windowsfont(startX -= (fontHeight + lineSpacing), startY, fontHeight, rotation, fontStyle, 0, fontName, "Date");
+                    //TSCLIB_DLL.windowsfont(startX, startY_Value, fontHeight, rotation, fontStyle, 0, fontName, " : " + DateTime.Now.ToString("dd/MM/yyyy"));
+
+                    //// Marking no
+                    //TSCLIB_DLL.windowsfont(startX -= (fontHeight + lineSpacing), startY, fontHeight, rotation, fontStyle, 0, fontName, "Marking No.");
+                    //TSCLIB_DLL.windowsfont(startX, startY_Value, fontHeight, rotation, fontStyle, 0, fontName, " : " + mubLabelInfo.MarkingNumber);
+
+                    ////Drawing barcode
+                    ////TSCLIB_DLL.barcode(startX.ToString(), (startY += fontHeight + 8).ToString(), "39", "72", "0", "0", "1", "3", mubLabelInfo.QRCodeString);
+                    //TSCLIB_DLL.sendcommand("DMATRIX 144,8,400,400,x3, \"" + mubLabelInfo.QRCodeString + "\"");
+
+                    ////Download PCX file into printer
+                    ////TSCLIB_DLL.downloadpcx("UL.PCX", "UL.PCX");
+                    ////Drawing PCX graphic
+                    ////TSCLIB_DLL.sendcommand("PUTPCX 100,400,\"UL.PCX\"");
+                    ////Print labels
+                    //TSCLIB_DLL.printlabel("1", "1");
+                    //TSCLIB_DLL.closeport();
+                    #endregion
+
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    //Debug.WriteLine("Print exception: " + ex.ToString());
+                    MessageBox.Show("Print exception: " + ex.ToString());
                     return false;
                 }
-
-                //Open specified printer driver
-                TSCLIB_DLL.openport(EnumDeviceNames.MUBLabelPrinter);
-
-                #region rotation 90 degrees
-                //Setup the media size and sensor type info
-                // page size 55mm x 100mm
-                // template size 55mm x 100mm (actually 56mm x 82mm)
-                //TSCLIB_DLL.setup("55", "82.5", "4", "8", "0", "0", "0");
-                //Clear image buffer
-                //TSCLIB_DLL.clearbuffer();
-                // DPI = 203 => 8px = 1 mm
-                //Draw windows font
-                int startX = 280;
-                int startY = 142;
-                int startY_Value = startY + 160;
-                string fontName = "ARIAL";
-                int fontStyle = 0; // Normal
-                int fontHeight = 30;
-                int lineSpacing = 10;
-                int maxChar = 17;   // max char of name at first name line
-                int rotation = 270;
-
-                // send FEED command
-                //TSCLIB_DLL.sendcommand("FEED 80");
-
-                TSCLIB_DLL.sendcommand("SIZE 40mm, 82mm");
-                TSCLIB_DLL.sendcommand("GAP 3mm, 0mm");
-                //TSCLIB_DLL.sendcommand("SIZE 42.5mm, 80mm");
-                //TSCLIB_DLL.sendcommand("GAP 1.3mm, 0mm");
-                TSCLIB_DLL.sendcommand("DIRECTION 0");
-                TSCLIB_DLL.sendcommand("CLS");
-                //TSCLIB_DLL.sendcommand("BOX 0,0,312,624,4");
-                TSCLIB_DLL.sendcommand("TEXT 280,312,\"ROMAN.TTF\",90,12,12,2,\"CENTRAL NARCOTICS BUREAU\"");
-                //TSCLIB_DLL.windowsfont(startX, startY, fontHeight, rotation, fontStyle, 0, fontName, "Name");
-                // Title line
-                //TSCLIB_DLL.windowsfont(startX, 48, fontHeight + 8, rotation, 2, 0, fontName, "CENTRAL NARCOTICS BUREAU");
-                //TSCLIB_DLL.windowsfont(startX-54, 0, fontHeight + 8, rotation, fontStyle, 0, fontName, "| Start");
-                //TSCLIB_DLL.windowsfont(startX-54, 600, fontHeight + 6, rotation, fontStyle, 0, fontName, "| End");
-
-
-                // Name line
-                TSCLIB_DLL.windowsfont(startX -= 64, startY, fontHeight, rotation, fontStyle, 0, fontName, "Name");
-                if (mubLabelInfo.Name.Length > maxChar)
-                {
-                    TSCLIB_DLL.windowsfont(startX, startY_Value, fontHeight, rotation, fontStyle, 0, fontName, " : " + mubLabelInfo.Name.Substring(0, maxChar));
-                    // Addition line if name is too long. Need to improve (detech addition row by space char)
-                    TSCLIB_DLL.windowsfont(startX -= (fontHeight + lineSpacing), startY_Value + 32, fontHeight, rotation, fontStyle, 0, fontName, "-" + mubLabelInfo.Name.Substring(maxChar, mubLabelInfo.Name.Length - maxChar));
-                }
-                else
-                {
-                    TSCLIB_DLL.windowsfont(startX, startY_Value, fontHeight, rotation, fontStyle, 0, fontName, " : " + mubLabelInfo.Name);
-                    startX -= (fontHeight + lineSpacing);
-                }
-
-                // ID line
-                TSCLIB_DLL.windowsfont(startX -= (fontHeight + lineSpacing), startY, fontHeight, rotation, fontStyle, 0, fontName, "ID No.");
-                TSCLIB_DLL.windowsfont(startX, startY_Value, fontHeight, rotation, fontStyle, 0, fontName, " : " + mubLabelInfo.ID);
-
-                // Date line
-                TSCLIB_DLL.windowsfont(startX -= (fontHeight + lineSpacing), startY, fontHeight, rotation, fontStyle, 0, fontName, "Date");
-                TSCLIB_DLL.windowsfont(startX, startY_Value, fontHeight, rotation, fontStyle, 0, fontName, " : " + DateTime.Now.ToString("dd/MM/yyyy"));
-
-                // Marking no
-                TSCLIB_DLL.windowsfont(startX -= (fontHeight + lineSpacing), startY, fontHeight, rotation, fontStyle, 0, fontName, "Marking No.");
-                TSCLIB_DLL.windowsfont(startX, startY_Value, fontHeight, rotation, fontStyle, 0, fontName, " : " + mubLabelInfo.MarkingNumber);
-
-                //Drawing barcode
-                //TSCLIB_DLL.barcode(startX.ToString(), (startY += fontHeight + 8).ToString(), "39", "72", "0", "0", "1", "3", mubLabelInfo.QRCodeString);
-                TSCLIB_DLL.sendcommand("DMATRIX 200,16,400,400,x3,r90, \"" + mubLabelInfo.QRCodeString + "\"");
-
-                //Print labels
-                TSCLIB_DLL.printlabel("1", "1");
-
-                // send FEED command
-                //TSCLIB_DLL.sendcommand("BACKFEED 80");
-                TSCLIB_DLL.closeport();
-                #endregion
-
-                #region rotation 270 degrees
-                //// Setup the media size and sensor type info
-                //// page size 55mm x 100mm
-                //// template size 55mm x 100mm (actually 56mm x 82mm)
-                //TSCLIB_DLL.setup("55", "82.5", "4", "8", "0", "0", "0");
-
-                ////Clear image buffer
-                //TSCLIB_DLL.clearbuffer();
-                //// DPI = 203 => 8px = 1 mm
-                ////Draw windows font
-                //int startX = 348;
-                //int startY = 134;
-                //int startY_Value = startY + 160;
-                //string fontName = "ARIAL";
-                //int fontStyle = 0; // Normal
-                //int fontHeight = 30;
-                //int lineSpacing = 10;
-                //int maxChar = 17;   // max char of name at first name line
-                //int rotation = 270;
-
-                //// Title line
-                //TSCLIB_DLL.windowsfont(startX, 48, fontHeight + 8, rotation, 2, 0, fontName, "CENTRAL NARCOTICS BUREAU");
-                ////TSCLIB_DLL.windowsfont(startX-54, 0, fontHeight + 8, rotation, fontStyle, 0, fontName, "| Start");
-                ////TSCLIB_DLL.windowsfont(startX-54, 600, fontHeight + 6, rotation, fontStyle, 0, fontName, "| End");
-
-
-                //// Name line
-                //TSCLIB_DLL.windowsfont(startX -= 64, startY, fontHeight, rotation, fontStyle, 0, fontName, "Name");
-                //if (mubLabelInfo.Name.Length > maxChar)
-                //{
-                //    TSCLIB_DLL.windowsfont(startX, startY_Value, fontHeight, rotation, fontStyle, 0, fontName, " : " + mubLabelInfo.Name.Substring(0, maxChar));
-                //    // Addition line if name is too long. Need to improve (detech addition row by space char)
-                //    TSCLIB_DLL.windowsfont(startX -= (fontHeight + lineSpacing), startY_Value + 32, fontHeight, rotation, fontStyle, 0, fontName, "-" + mubLabelInfo.Name.Substring(maxChar, mubLabelInfo.Name.Length - maxChar));
-                //}
-                //else
-                //{
-                //    TSCLIB_DLL.windowsfont(startX, startY_Value, fontHeight, rotation, fontStyle, 0, fontName, " : " + mubLabelInfo.Name);
-                //    startX -= (fontHeight + lineSpacing);
-                //}
-
-                //// ID line
-                //TSCLIB_DLL.windowsfont(startX -= (fontHeight + lineSpacing), startY, fontHeight, rotation, fontStyle, 0, fontName, "ID No.");
-                //TSCLIB_DLL.windowsfont(startX, startY_Value, fontHeight, rotation, fontStyle, 0, fontName, " : " + mubLabelInfo.ID);
-
-                //// Date line
-                //TSCLIB_DLL.windowsfont(startX -= (fontHeight + lineSpacing), startY, fontHeight, rotation, fontStyle, 0, fontName, "Date");
-                //TSCLIB_DLL.windowsfont(startX, startY_Value, fontHeight, rotation, fontStyle, 0, fontName, " : " + DateTime.Now.ToString("dd/MM/yyyy"));
-
-                //// Marking no
-                //TSCLIB_DLL.windowsfont(startX -= (fontHeight + lineSpacing), startY, fontHeight, rotation, fontStyle, 0, fontName, "Marking No.");
-                //TSCLIB_DLL.windowsfont(startX, startY_Value, fontHeight, rotation, fontStyle, 0, fontName, " : " + mubLabelInfo.MarkingNumber);
-
-                ////Drawing barcode
-                ////TSCLIB_DLL.barcode(startX.ToString(), (startY += fontHeight + 8).ToString(), "39", "72", "0", "0", "1", "3", mubLabelInfo.QRCodeString);
-                //TSCLIB_DLL.sendcommand("DMATRIX 144,8,400,400,x3, \"" + mubLabelInfo.QRCodeString + "\"");
-
-                ////Download PCX file into printer
-                ////TSCLIB_DLL.downloadpcx("UL.PCX", "UL.PCX");
-                ////Drawing PCX graphic
-                ////TSCLIB_DLL.sendcommand("PUTPCX 100,400,\"UL.PCX\"");
-                ////Print labels
-                //TSCLIB_DLL.printlabel("1", "1");
-                //TSCLIB_DLL.closeport();
-                #endregion
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                //Debug.WriteLine("Print exception: " + ex.ToString());
-                MessageBox.Show("Print exception: " + ex.ToString());
-                return false;
             }
         }
 

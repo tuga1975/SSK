@@ -117,10 +117,14 @@ namespace Experiment
             //    txtReceivedData.Text = ex.Message;
             //}
         }
+        private static object syncRoot = new Object();
 
         private void LedStatusLightingUtil_DataReceived(object sender, string response)
         {
-            txtReceivedData.Text = response;
+            lock (syncRoot)
+            {
+                txtReceivedData.Text = response;
+            }
         }
 
 
@@ -564,12 +568,13 @@ namespace Experiment
             string ascii = txtASCIIStringToSend.Text;
             for (int i = 0; i < 10; i++)
             {
-                ledStatusLightingUtil.SendASCIICommand(ascii);
-                Thread.Sleep(200);
+                ledStatusLightingUtil.SendCommand_Async( EnumCommands.CheckIfTTApplicatorIsReady, null);
+                Thread.Sleep(1000);
             }
             ledStatusLightingUtil.InitializeTTApplicator_Async();
-            Thread.Sleep(200);
-            ledStatusLightingUtil.SendASCIICommand(ascii);
+            Thread.Sleep(1000);
+            ledStatusLightingUtil.SendCommand_Async(EnumCommands.CheckIfTTApplicatorIsReady, null);
+            //ledStatusLightingUtil.SendASCIICommand(ascii);
             //LEDStatusLightingUtil ledStatusLightingUtil = LEDStatusLightingUtil.Instance;
             //for (int i = 0; i < 100; i++)
             //{

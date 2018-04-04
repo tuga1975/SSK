@@ -66,7 +66,7 @@ namespace Trinity.Device
             OnPrintTTLabelSucceeded?.Invoke(this, e);
         }
 
-        public void PrintBarcodeLabel(LabelInfo labelInfo)
+        public void PrintTTLabel(LabelInfo labelInfo)
         {
             // validation
             if (string.IsNullOrEmpty(labelInfo.Name))
