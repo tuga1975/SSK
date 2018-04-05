@@ -189,7 +189,7 @@ namespace SSA
                 // Start page
                 //NavigateTo(NavigatorEnums.Authentication_SmartCard);
 
-                string startFrom = "Supervisee_Particulars";
+                string startFrom = "";
                 // 50.132
                 //string superviseeId = "06a91b1b-99c3-428d-8a55-83892c2adf4c";
                 //string dutyOfficerId = "f1748cb4-3bb5-4129-852d-2aba28bb8cec";
