@@ -27,7 +27,8 @@ namespace SSA
         private static bool _PrintMUBSucceed = false;
         private static bool _PrintTTSucceed = false;
         private Trinity.BE.PopupModel _popupModel;
-        private string _currentAction = "PrintMUBAndTTLabel";
+        //private string _currentAction = "PrintMUBAndTTLabel";
+        //private string _nextAction = string.Empty;
         private LabelInfo _currentLabelInfo = null;
         private bool _mubApplicatorReady = false;
         private bool _ttApplicatorReady = false;
@@ -404,7 +405,7 @@ namespace SSA
 
         public void ConfirmAction(string action, string json)
         {
-            _currentAction = action;
+            //_currentAction = action;
             _currentLabelInfo = JsonConvert.DeserializeObject<LabelInfo>(json);
             if (action == "InitializeMUBAndTTApplicator")
             {
@@ -466,53 +467,6 @@ namespace SSA
             this._web.RunScript("$('#removeMUBAndTT').hide();");
         }
 
-        /// <summary>
-        /// This function will be called every 1 second
-        /// </summary>
-        public void CheckPrintingAndLabellingProgress()
-        {
-            Session session = Session.Instance;
-            Trinity.BE.User currentUser = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-            if (currentUser != null)
-            {
-                if (_mubApplicatorReady && _ttApplicatorReady)
-                {
-                    if (_mubIsPresent && _ttIsPresent)
-                    {
-                        if (_mubApplicatorStarted && _ttApplicatorStarted)
-                        {
-                            if (_mubIsRemoved && _ttIsRemoved)
-                            {
-                                if (_mubDoorIsFullyClosed && _ttDoorIsFullyClosed)
-                                {
-                                    // Do nothing
-                                }
-                                else if (_mubDoorIsFullyClosed)
-                                {
-                                    // Close TT Door
-                                    CloseTTDoor();
-                                }
-                                else if (_ttDoorIsFullyClosed)
-                                {
-                                    // Close MUB Door
-                                    CloseMUBDoor();
-                                }
-                                else
-                                {
-                                    // Close MUB & TT Door
-                                    CloseMUBDoor();
-                                    CloseTTDoor();
-                                }
-                            }
-                            else if (_mubIsRemoved)
-                            {
-
-                            }
-                        }
-                    }
-                }
-            }
-        }
         private void StartToPrintMUBAndTTLabel(LabelInfo labelInfo)
         {
             _web.LoadPageHtml("PrintingTemplates/MUBLabelTemplate.html", new object[] { "PrintMUBAndTTLabel", labelInfo });
@@ -537,7 +491,8 @@ namespace SSA
         private void CheckIfMUBIsPresent()
         {
             _mubIsPresent = false;
-            this._web.RunScript("$('#mubStatus').css('color','#000').text('Checking if the MUB Applicator is present...');");
+            //this._web.RunScript("$('#mubStatus').css('color','#000').text('Checking if the MUB Applicator is present...');");
+            this._web.RunScript("$('#mubStatus').css('color','#000').text('Please place the MUB on the holder');");
 
             // Check if MUB is present or not
             LEDStatusLightingUtil.Instance.SendCommand_Async(EnumCommands.CheckIfMUBIsPresent, CheckIfMUBIsPresent_Callback);
@@ -586,7 +541,10 @@ namespace SSA
 
         private void OpenMUBDoor()
         {
+            // Open MUB Door
             LEDStatusLightingUtil.Instance.OpenMUBDoor_Async();
+            // Also open MUB holder
+            LEDStatusLightingUtil.Instance.OpenMUBHolder_Async();
             // Wait for 200 miliseconds and then check if MUB Door is fully open
             Thread.Sleep(200);
             LEDStatusLightingUtil.Instance.SendCommand_Async(EnumCommands.CheckIfMUBDoorIsFullyOpen, CheckIfMUBDoorIsFullyOpen_Callback);
@@ -646,7 +604,6 @@ namespace SSA
                     this._web.RunScript("$('#ConfirmBtn').html('Verify presence of MUB and TT.');");
                     // Set next action to 'CheckIfMUBIsPresent'
                     this._web.RunScript("$('#lblNextAction').text('CheckIfMUBAndTTIsPresent');");
-
                     CheckIfMUBIsPresent();
                     CheckIfTTIsPresent();
                     //CheckIfMUBAndTTArePresent();
@@ -670,6 +627,7 @@ namespace SSA
                 {
                     this._web.RunScript("$('#ConfirmBtn').html('Start to print MUB/TT Label');");
                     this._web.RunScript("$('#lblNextAction').text('PrintMUBAndTTLabel');");
+                    //_nextAction = "PrintMUBAndTTLabel";
                     StartToPrintMUBAndTTLabel(_currentLabelInfo);
                 }
             }
@@ -784,15 +742,20 @@ namespace SSA
             }
             else
             {
+                // Update on April 5th 2018, 15:28
+                Thread.Sleep(500);
                 // MUB is not present
                 this._web.RunScript("$('#mubStatus').css('color','#000').text('The MUB is not present.');");
+                // Sleep 500 miliseconds and then check MUB presence again
+                Thread.Sleep(500);
+                CheckIfMUBIsPresent();
             }
         }
 
         private void CheckIfMUBIsRemoved_Callback(bool isRemoved)
         {
             _mubIsRemoved = isRemoved;
-            if (isRemoved)
+            if (_mubIsRemoved)
             {
                 this._web.RunScript("$('#mubStatus').css('color','#000').text('The MUB has been removed.');");
 
@@ -801,6 +764,12 @@ namespace SSA
                     CloseMUBDoor();
                     CloseTTDoor();
                 }
+            }
+            else
+            {
+                // Update on April 5th 2018, 15:28
+                Thread.Sleep(500);
+                CheckIfMUBIsRemoved();
             }
         }
 
@@ -954,7 +923,7 @@ namespace SSA
             _ttIsPresent = isPresent;
             if (_ttIsPresent)
             {
-                // MUB is placed on the holder
+                // TT is placed on the holder
                 this._web.RunScript("$('#ttStatus').css('color','#000').text('The TT has been placed on the holder.');");
 
                 // Set next action to "StartTTApplicator"
@@ -968,8 +937,13 @@ namespace SSA
             }
             else
             {
-                // MUB is not present
+                // Update on April 5th 2018, 15:28
+                Thread.Sleep(500);
+                // TT is not present
                 this._web.RunScript("$('#ttStatus').css('color','#000').text('The TT is not present.');");
+                // Sleep 500 miliseconds and then check MUB presence again
+                Thread.Sleep(500);
+                CheckIfTTIsPresent();
             }
         }
 
@@ -985,6 +959,12 @@ namespace SSA
                     CloseMUBDoor();
                     CloseTTDoor();
                 }
+            }
+            else
+            {
+                // Update on April 5th 2018, 15:28
+                Thread.Sleep(500);
+                CheckIfTTIsRemoved();
             }
         }
 
