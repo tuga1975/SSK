@@ -353,18 +353,15 @@ namespace SSA
                     this._web.RunScript("$('#mubStatus').css('color','#000').text('The current user is null');");
                     return;
                 }
-                Trinity.BE.User supervisee = null;
-                if (currentUser.Role == EnumUserRoles.DutyOfficer)
-                {
-                    supervisee = (Trinity.BE.User)session[CommonConstants.SUPERVISEE];
-                }
-                else
-                {
-                    supervisee = currentUser;
-                }
-
-                var dalQueue = new DAL_QueueNumber();
-                dalQueue.UpdateQueueStatusByUserId(supervisee.UserId, EnumStation.SSA, EnumQueueStatuses.Finished, EnumStation.UHP, EnumQueueStatuses.Processing, "Waiting for SHP", EnumQueueOutcomeText.Processing);
+                //Trinity.BE.User supervisee = null;
+                //if (currentUser.Role == EnumUserRoles.DutyOfficer)
+                //{
+                //    supervisee = (Trinity.BE.User)session[CommonConstants.SUPERVISEE];
+                //}
+                //else
+                //{
+                //    supervisee = currentUser;
+                //}
 
                 DeleteQRCodeImageFileTemp();
 
@@ -801,9 +798,24 @@ namespace SSA
                 this._web.RunScript("$('#ttStatus').css('color','#000').text('');");
                 return;
             }
+            Trinity.BE.User supervisee = null;
+            if (currentUser.Role == EnumUserRoles.DutyOfficer)
+            {
+                supervisee = (Trinity.BE.User)session[CommonConstants.SUPERVISEE];
+            }
+            else
+            {
+                supervisee = currentUser;
+            }
+
             // Remove queue number and inform others
-            Trinity.SignalR.Client.Instance.QueueCompleted(currentUser.UserId);
-            Trinity.SignalR.Client.Instance.SSACompleted(currentUser.UserId);
+            var dalQueue = new DAL_QueueNumber();
+
+            dalQueue.UpdateQueueStatusByUserId(supervisee.UserId, EnumStation.SSK, EnumQueueStatuses.Finished, EnumStation.SSA, EnumQueueStatuses.Processing, "Printing MUB/TT labels", EnumQueueOutcomeText.Processing);
+            dalQueue.UpdateQueueStatusByUserId(supervisee.UserId, EnumStation.SSA, EnumQueueStatuses.Finished, EnumStation.UHP, EnumQueueStatuses.Processing, "Waiting for SHP", EnumQueueOutcomeText.Processing);
+
+            Trinity.SignalR.Client.Instance.QueueCompleted(supervisee.UserId);
+            Trinity.SignalR.Client.Instance.SSACompleted(supervisee.UserId);
 
             //lblStatus.Text = "The door is fully close";
             this._web.RunScript("$('#mubStatus').css('color','#000').text('MUB and TT Labels Printing Completed. Logging out...');");
