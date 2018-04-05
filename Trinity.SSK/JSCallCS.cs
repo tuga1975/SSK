@@ -85,12 +85,14 @@ namespace SSK
                 return;
             }
         }
+
         public void SpeakNotification(string notificationId)
         {
             DAL_Notification dalNotify = new DAL_Notification();
             string content = dalNotify.GetNotification(notificationId);
             APIUtils.TextToSpeech.Speak(content);
         }
+
         public void StopSpeakNotification()
         {
             APIUtils.TextToSpeech.Stop();
@@ -388,6 +390,7 @@ namespace SSK
                 LoadProfile();
             }
         }
+
         public void LoadScanDocumentForAbsence(string jsonData, string reason)
         {
 
@@ -411,6 +414,7 @@ namespace SSK
                 LoadProfile();
             }
         }
+
         public void UpdateProfileAfterScanDoc()
         {
             Session session = Session.Instance;
@@ -419,48 +423,88 @@ namespace SSK
             //SaveProfile(jsonData.ToString(), true);
         }
 
-        public void ManualLogin(string username, string password)
+        public void ManualLogin()
         {
-            EventCenter eventCenter = EventCenter.Default;
+            _web.LoadPageHtml("Authentication/ManualLogin.html");
 
-            //UserManager<ApplicationUser> userManager = ApplicationIdentityManager.GetUserManager();
-            //ApplicationUser appUser = userManager.Find(username, password);
-            var dalUser = new DAL_User();
-            ApplicationUser appUser = dalUser.Login(username, password);
-            if (appUser != null)
+            // Enable scanner
+            if (BarcodeScannerUtil.Instance.GetDeviceStatus().Contains(EnumDeviceStatus.Connected))
             {
-                // Authenticated successfully
-                // Check if the current user is an Duty Officer or not
-                if (dalUser.IsInRole(appUser.Id, EnumUserRoles.DutyOfficer))
-                {
-                    // Authorized successfully
-                    Trinity.BE.User user = new Trinity.BE.User()
-                    {
-                        RightThumbFingerprint = appUser.RightThumbFingerprint,
-                        LeftThumbFingerprint = appUser.LeftThumbFingerprint,
-                        IsFirstAttempt = appUser.IsFirstAttempt,
-                        Name = appUser.Name,
-                        NRIC = appUser.NRIC,
-                        Role = EnumUserRoles.DutyOfficer,
-                        SmartCardId = appUser.SmartCardId,
-                        Status = appUser.Status,
-                        UserId = appUser.Id
-                    };
-                    Session session = Session.Instance;
-                    session.IsUserNamePasswordAuthenticated = true;
-                    session.Role = EnumUserRoles.DutyOfficer;
-                    session[CommonConstants.USER_LOGIN] = user;
+                System.Threading.Tasks.Task.Factory.StartNew(() => BarcodeScannerUtil.Instance.StartScanning(BarcodeScannerCallback));
+            }
+        }
 
-                    eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = 0, Name = EventNames.LOGIN_SUCCEEDED });
+        private void BarcodeScannerCallback(string value, string error)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(error))
+                {
+                    // Fill value to the textbox
+                    //CSCallJS.ShowMessage(_web, value);
+                    CSCallJS.InvokeScript(_web, "updateLoginNRICTextValue", value.Trim());
+                    //CSCallJS.UpdateLoginNRICTextValue(_web, value);
                 }
                 else
                 {
-                    eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -2, Name = EventNames.LOGIN_FAILED, Message = "You do not have permission to access this page." });
+                    CSCallJS.ShowMessageAsync(_web, "ERROR", error);
                 }
             }
-            else
+            finally
             {
-                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.LOGIN_FAILED, Message = "Your username or password is incorrect." });
+                BarcodeScannerUtil.Instance.Disconnect();
+            }
+        }
+
+        public void ProcessManualLogin(string username, string password)
+        {
+            try
+            {
+                EventCenter eventCenter = EventCenter.Default;
+
+                //UserManager<ApplicationUser> userManager = ApplicationIdentityManager.GetUserManager();
+                //ApplicationUser appUser = userManager.Find(username, password);
+                var dalUser = new DAL_User();
+                ApplicationUser appUser = dalUser.Login(username, password);
+                if (appUser != null)
+                {
+                    // Authenticated successfully
+                    // Check if the current user is an Duty Officer or not
+                    if (dalUser.IsInRole(appUser.Id, EnumUserRoles.DutyOfficer))
+                    {
+                        // Authorized successfully
+                        Trinity.BE.User user = new Trinity.BE.User()
+                        {
+                            RightThumbFingerprint = appUser.RightThumbFingerprint,
+                            LeftThumbFingerprint = appUser.LeftThumbFingerprint,
+                            IsFirstAttempt = appUser.IsFirstAttempt,
+                            Name = appUser.Name,
+                            NRIC = appUser.NRIC,
+                            Role = EnumUserRoles.DutyOfficer,
+                            SmartCardId = appUser.SmartCardId,
+                            Status = appUser.Status,
+                            UserId = appUser.Id
+                        };
+                        Session session = Session.Instance;
+                        session.IsUserNamePasswordAuthenticated = true;
+                        session.Role = EnumUserRoles.DutyOfficer;
+                        session[CommonConstants.USER_LOGIN] = user;
+
+                        eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = 0, Name = EventNames.LOGIN_SUCCEEDED });
+                    }
+                    else
+                    {
+                        eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -2, Name = EventNames.LOGIN_FAILED, Message = "You do not have permission to access this page." });
+                    }
+                }
+                else
+                {
+                    eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.LOGIN_FAILED, Message = "Your username or password is incorrect." });
+                }
+            }
+            finally
+            {
+                BarcodeScannerUtil.Instance.Disconnect();
             }
         }
 
@@ -638,8 +682,6 @@ namespace SSK
                 }
             }
         }
-
-        
         
         public void SaveReasonForQueue(string dataTxt, string arrayDocumentScan)
         {
@@ -655,12 +697,14 @@ namespace SSK
             }
             
         }
+
         private void _SaveReasonForQueue(string dataTxt, Nullable<Guid> IdDocument)
         {
             List<Dictionary<string, string>> data = JsonConvert.DeserializeObject<List<Dictionary<string, string>>>(dataTxt);
             new DAL_AbsenceReporting().InsertAbsentReason(data, IdDocument);
             LoadPageSupervisee();
         }
+
         //public void SaveReasonForQueue(/*string data,*/ string reason, string selectedID)
         //{
         //    Session currentSession = Session.Instance;
@@ -750,10 +794,18 @@ namespace SSK
             LoadPageSupervisee();
 
         }
+
         public void LoadPageSupervisee()
         {
             main.NavigateTo(NavigatorEnums.Supervisee);
         }
+
+        public void LoadAuthentication_SmartCard()
+        {
+            BarcodeScannerUtil.Instance.Disconnect();
+            main.NavigateTo(NavigatorEnums.Authentication_SmartCard);
+        }
+
         #region Scan Document
         private void ScanDocumentCallBack(string[] frontPath, string error)
         {
@@ -764,11 +816,14 @@ namespace SSK
         {
             Trinity.Util.DocumentScannerUtil.Instance.StartScanning(ScanDocumentCallBack);
         }
+
         public void StopScanDocument()
         {
             Trinity.Util.DocumentScannerUtil.Instance.StopScanning();
         }
+
         #endregion Scan Document
+
         public void LogOut()
         {
             // reset session value

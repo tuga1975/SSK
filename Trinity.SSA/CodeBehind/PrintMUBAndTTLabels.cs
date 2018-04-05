@@ -56,12 +56,13 @@ namespace SSA.CodeBehind
                 {
                     List<Task> tasks = new List<Task>();
                     tasks.Add(Task.Run(() => { PrintMUBLabel(printerMonitor, labelInfo); }));
+                    //System.Threading.Thread.Sleep(1000);
                     tasks.Add(Task.Run(() => { PrintTTLabel(printerMonitor, labelInfo); }));
                     Task.WaitAll(tasks.ToArray());
 
                     Lib.LayerWeb.InvokeScript("closePopup");
 
-                    _jsCallCs.OnEventPrintFinished();
+                    _jsCallCs.OnPrintingAndLabellingCompleted();
                 }
             }
             catch (Exception ex)
@@ -83,7 +84,7 @@ namespace SSA.CodeBehind
 
             if (ttLabelPrinterStatus.Contains(EnumDeviceStatus.Connected))
             {
-                printerMonitor.PrintBarcodeLabel(labelInfo);
+                printerMonitor.PrintTTLabel(labelInfo);
             }
             else
             {

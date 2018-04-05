@@ -19,6 +19,10 @@ var otherFunc = function () {
 
 function updateNRICTextValue(value) {
     $('#txtNRIC').val(value);
+} 
+
+function updateLoginNRICTextValue(value) {
+    $('#loginNRIC').val(value);
 }
 
 //function displayNRICLogin() {

@@ -18,7 +18,8 @@
         </div>
     </div>
     <div id="divSave">
-        <button type="button" class="btn btn-dark" id="CancelBtn" onclick="window.external.LoadPage('Authentication/SmartCard.html');">CANCEL</button>
+        <!--<button type="button" class="btn btn-dark" id="CancelBtn" onclick="window.external.LoadPage('Authentication/SmartCard.html');">CANCEL</button>-->
+        <button type="button" class="btn btn-dark" id="CancelBtn" onclick="api.server.LoadAuthentication_SmartCard(); return;">CANCEL</button>
         <button type="button" class="btn btn-dark" id="LoginBtn">SUBMIT</button>
     </div>
 </form>
@@ -35,7 +36,7 @@
             alert('Please type your password');
         }
         else {
-            api.server.ManualLogin($('#loginNRIC').val(), $('#loginPassword').val());
+            api.server.ProcessManualLogin($('#loginNRIC').val(), $('#loginPassword').val());
             return true;
         }
         return false;

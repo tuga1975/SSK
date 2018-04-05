@@ -57,13 +57,8 @@ namespace SSK.CodeBehind.Authentication
 
         private void BarcodeScannerCallback(string value, string error)
         {
-            if (string.IsNullOrEmpty(error) && !string.IsNullOrEmpty(value))
+            if (string.IsNullOrEmpty(error))
             {
-                //if (value.Length < 1)
-                //{
-                //    System.Threading.Tasks.Task.Factory.StartNew(() => BarcodeScannerUtil.Instance.StartScanning(BarcodeScannerCallback));
-                //}
-
                 // Fill value to the textbox
                 CSCallJS.InvokeScript(_web, "updateNRICTextValue", value.Trim());
 
@@ -73,7 +68,6 @@ namespace SSK.CodeBehind.Authentication
             else
             {
                 CSCallJS.ShowMessageAsync(_web, "ERROR", error);
-                //System.Threading.Tasks.Task.Factory.StartNew(() => BarcodeScannerUtil.Instance.StartScanning(BarcodeScannerCallback));
             }
         }
 
@@ -116,11 +110,18 @@ namespace SSK.CodeBehind.Authentication
 
             if (supervisee == null)
             {
-                // raise show message event, then return
-                RaiseShowMessage(new ShowMessageEventArgs("NRIC " + nric + ": not found. Please check NRIC again.", "Not found", MessageBoxButtons.OK, MessageBoxIcon.Warning));
+                CSCallJS.ShowMessage(_web, "NRIC '" + nric + "': not found. Please check NRIC again.");
                 System.Threading.Tasks.Task.Factory.StartNew(() => BarcodeScannerUtil.Instance.StartScanning(BarcodeScannerCallback));
                 return;
             }
+
+            if (supervisee.Status == EnumUserStatuses.Blocked)
+            {
+                CSCallJS.ShowMessage(_web, "This supervisee is being blocked");
+                System.Threading.Tasks.Task.Factory.StartNew(() => BarcodeScannerUtil.Instance.StartScanning(BarcodeScannerCallback));
+                return;
+            }
+
 
             // Create a session object to store Suppervisee information
             Session session = Session.Instance;
