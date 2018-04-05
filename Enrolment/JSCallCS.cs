@@ -516,9 +516,10 @@ namespace Enrolment
             session[CommonConstants.CURRENT_PAGE] = "UpdateSuperviseeFinger";
             _web.LoadPageHtml("UpdateSuperviseeFingerprint.html");
         }
-
+        private int UpdateSuperviseeBio_CountPriterSmartCard = 0;
         public void UpdateSuperviseeBiodata(string frontBase64, string backBase64, string cardInfo)
         {
+            UpdateSuperviseeBio_CountPriterSmartCard = 0;
             Session session = Session.Instance;
             var dalUser = new Trinity.DAL.DAL_User();
             var dalUserprofile = new Trinity.DAL.DAL_UserProfile();
@@ -585,13 +586,14 @@ namespace Enrolment
         }
         private void OnNewCardPrinted(PrintAndWriteCardResult result)
         {
+            UpdateSuperviseeBio_CountPriterSmartCard++;
+            Session session = Session.Instance;
+            var userLogin = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+            var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
             if (result.Success)
             {
                 try
                 {
-                    Session session = Session.Instance;
-                    var userLogin = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-                    var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
                     DAL_IssueCard dalIssueCard = new Trinity.DAL.DAL_IssueCard();
                     string SmartID = result.CardUID;
                     Trinity.BE.IssueCard IssueCard = new Trinity.BE.IssueCard()
@@ -623,15 +625,25 @@ namespace Enrolment
                 catch (Exception ex)
                 {
                     this._web.InvokeScript("showPrintMessage", false, EnumMessage.SmartCardIsAlreadyInUse);
+                    if (UpdateSuperviseeBio_CountPriterSmartCard > 3)
+                    {
+                        Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(userLogin.UserId, "Smart card printing too 3 times unsuccessful", "Smart card printing too 3 times unsuccessful", EnumNotificationTypes.Error);
+                        UpdateSuperviseeBio_CountPriterSmartCard = 0;
+                    }
                 }
 
             }
             else
             {
+                if (UpdateSuperviseeBio_CountPriterSmartCard > 3)
+                {
+                    Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(userLogin.UserId, "Smart card printing too 3 times unsuccessful", "Smart card printing too 3 times unsuccessful", EnumNotificationTypes.Error);
+                    UpdateSuperviseeBio_CountPriterSmartCard = 0;
+                }
                 this._web.InvokeScript("showPrintMessage", false, result.Description);
-
             }
         }
+
         public void CheckVerfyCard()
         {
             SmartCardReaderUtil smartCardReaderUtil = SmartCardReaderUtil.Instance;
@@ -701,6 +713,20 @@ namespace Enrolment
         }
         public void ConfirmCapturePicture(string base64Img)
         {
+
+            Bitmap Img;
+            using (var ms = new MemoryStream(Convert.FromBase64String(base64Img)))
+            {
+                Img = new Bitmap(ms);
+            }
+
+            int height = Img.Height;
+            if (height > ImageAttr.Height)
+            {
+                height = ImageAttr.Height;
+            }
+            int width = Convert.ToInt32(height / ImageAttr.Ratio);
+            base64Img = Convert.ToBase64String(Img.ResizeImage(width,height).ImageToByte());
             EventCenter eventCenter = EventCenter.Default;
             eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.CONFIRM_CAPTURE_PICTURE,Data = base64Img });
         }

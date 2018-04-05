@@ -50,6 +50,19 @@ function Api() {
         }
         return content;
     };
+    this.ToDateCSharp = function (txtDate) {
+        if (txtDate == null)
+            return null;
+        var _dateSplit = txtDate.split("/");
+        if (_dateSplit.length != 3)
+            return null;
+
+        var _dateConvert = new Date(parseInt(_dateSplit[2]), parseInt(_dateSplit[1]) - 1, parseInt(_dateSplit[0]));
+        if (_dateConvert == null || isNaN(_dateConvert.getTime())) {
+            return null;
+        }
+        return _dateConvert.getFullYear() + '-' + (_dateConvert.getMonth() + 1) + '-' + _dateConvert.getDate();
+    };
     function FormatTime(time) {
         var hourEnd = time.indexOf(":");
         var H = +time.substr(0, hourEnd);

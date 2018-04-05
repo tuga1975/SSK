@@ -6,7 +6,6 @@
     .max-height-350px {
         height: 200px;
         width: auto;
-        max-width: auto;
         overflow: hidden;
     }
 
@@ -514,14 +513,9 @@
         e.preventDefault();
         var $form = $("#superviseeFrm");
         var data = getFormData($form);
-        if (data['Employment_End_Date'] != null && data['Employment_End_Date'].length > 0) {
-            var txtDate = data['Employment_End_Date'].split("/");
-            data['Employment_End_Date'] = txtDate[2] + '-' + txtDate[1] + '-' + txtDate[0];
-        }
-        if (data['Employment_Start_Date'] != null && data['Employment_Start_Date'].length > 0) {
-            var txtDate = data['Employment_Start_Date'].split("/");
-            data['Employment_Start_Date'] = txtDate[2] + '-' + txtDate[1] + '-' + txtDate[0];
-        }
+        data['Employment_End_Date'] = api.ToDateCSharp(data['Employment_End_Date']);
+        data['Employment_Start_Date'] = api.ToDateCSharp(data['Employment_Start_Date']);
+
         var json = JSON.stringify(data);
         api.server.SaveSupervisee(json);
     });
@@ -642,14 +636,9 @@
     function saveNewDataToSession() {
         var $form = $("#superviseeFrm");
         var data = getFormData($form);
-        if (data['Employment_End_Date'] != null && data['Employment_End_Date'].length > 0) {
-            var txtDate = data['Employment_End_Date'].split("/");
-            data['Employment_End_Date'] = txtDate[2] + '-' + txtDate[1] + '-' + txtDate[0];
-        }
-        if (data['Employment_Start_Date'] != null && data['Employment_Start_Date'].length > 0) {
-            var txtDate = data['Employment_Start_Date'].split("/");
-            data['Employment_Start_Date'] = txtDate[2] + '-' + txtDate[1] + '-' + txtDate[0];
-        }
+        data['Employment_End_Date'] = api.ToDateCSharp(data['Employment_End_Date']);
+        data['Employment_Start_Date'] = api.ToDateCSharp(data['Employment_Start_Date']);
+
         var json = JSON.stringify(data);
         api.server.saveNewDataToSession(json);
     }

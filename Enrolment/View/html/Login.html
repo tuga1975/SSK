@@ -1,5 +1,21 @@
 ﻿
 <style>
+    #parent-content {
+        top: 0px;
+        height: 100%;
+    }
+
+    [panel-login] {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        -webkit-transform: translate(-50%, -50%);
+        -moz-transform: translate(-50%, -50%);
+        -ms-transform: translate(-50%, -50%);
+        -o-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+    }
+
     #header {
         visibility: hidden;
     }
@@ -79,12 +95,12 @@
             }
 </style>
 
-<div class="container">
+<div class="container" panel-login>
     <div class="login-form">
         <div class="card-group z-depth-2 row">
             <div class="card col-md-4 col-xs-12">
                 <div class="card-body">
-                    <div class="container" >
+                    <div class="container">
                         <img src="../images/logoCNB.svg" alt="Logo" style="height:auto;width:100%;max-height:80px !important;" />
                         <h1 class="my-5 text-muted">
                             Enrolment
@@ -129,7 +145,7 @@
                         </div>
                         <!--<a href="#">Forget password ?</a>-->
 
-                        <button type="button" class="btn btn-lg btn-block my-5" data-toggle="modal" data-target="#reset_password"  onclick="api.server.Login($('#inputUsername').val(), $('#inputPassword').val()); return false;">
+                        <button type="button" class="btn btn-lg btn-block my-5" data-toggle="modal" data-target="#reset_password" onclick="api.server.Login($('#inputUsername').val(), $('#inputPassword').val()); return false;">
                             Login
                         </button>
                         <!--<button type="button" class="btn btn-lg btn-block my-5" data-toggle="modal" data-target="#reset_password" onclick="alert('a');">

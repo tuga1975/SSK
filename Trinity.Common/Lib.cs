@@ -1,5 +1,8 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -11,6 +14,7 @@ public static class Lib
     public static System.Windows.Forms.WebBrowser LayerWeb { get; set; }
 
     public static System.Collections.Generic.Dictionary<string, Nullable<bool>> ArrayIDWaitMessage = new System.Collections.Generic.Dictionary<string, Nullable<bool>>();
+    
     public static int DayOfWeek(this DateTime date)
     {
         return (int)date.DayOfWeek == 0 ? 8 : ((int)date.DayOfWeek) + 1;
@@ -32,6 +36,98 @@ public static class Lib
             return station;
         }
     }
+    public static byte[] ImageToByte(this Image img)
+    {
+        using (var stream = new MemoryStream())
+        {
+            img.Save(stream, System.Drawing.Imaging.ImageFormat.Jpeg);
+            return stream.ToArray();
+        }
+    }
+    public static Image ResizeImage(this Image imgToResize, int width, int height)
+    {
+        var originalWidth = imgToResize.Width;
+        var originalHeight = imgToResize.Height;
+
+        //how many units are there to make the original length
+        var hRatio = (float)originalHeight / height;
+        var wRatio = (float)originalWidth / width;
+
+        //get the shorter side
+        var ratio = Math.Min(hRatio, wRatio);
+
+        var hScale = Convert.ToInt32(height * ratio);
+        var wScale = Convert.ToInt32(width * ratio);
+
+        //start cropping from the center
+        var startX = (originalWidth - wScale) / 2;
+        var startY = (originalHeight - hScale) / 2;
+
+        //crop the image from the specified location and size
+        var sourceRectangle = new Rectangle(startX, startY, wScale, hScale);
+
+        //the future size of the image
+        var bitmap = new Bitmap(width, height);
+
+        //fill-in the whole bitmap
+        var destinationRectangle = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
+
+        //generate the new image
+        using (var g = Graphics.FromImage(bitmap))
+        {
+            g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+            g.DrawImage(imgToResize, destinationRectangle, sourceRectangle, GraphicsUnit.Pixel);
+        }
+
+        return bitmap;
+
+    }
+    //public static Image ScaleImage(this Image image, int maxWidth, int maxHeight)
+    //{
+    //    var ratioX = (double)maxWidth / image.Width;
+    //    var ratioY = (double)maxHeight / image.Height;
+    //    var ratio = Math.Min(ratioX, ratioY);
+
+    //    var newWidth = (int)(image.Width * ratio);
+    //    var newHeight = (int)(image.Height * ratio);
+
+    //    var newImage = new Bitmap(maxWidth, maxWidth);
+    //    using (var graphics = Graphics.FromImage(newImage))
+    //    {
+    //        // Calculate x and y which center the image
+    //        int y = (maxHeight / 2) - newHeight / 2;
+    //        int x = (maxWidth / 2) - newWidth / 2;
+
+    //        // Draw image on x and y with newWidth and newHeight
+    //        graphics.DrawImage(image, x, y, newWidth, newHeight);
+    //    }
+
+    //    return newImage;
+    //}
+    //public static Bitmap ResizeImage(this Image image, int width, int height)
+    //{
+    //    var destRect = new Rectangle(0, 0, width, height);
+    //    var destImage = new Bitmap(width, height);
+
+    //    destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
+
+    //    using (var graphics = Graphics.FromImage(destImage))
+    //    {
+    //        graphics.CompositingMode = CompositingMode.SourceCopy;
+    //        graphics.CompositingQuality = CompositingQuality.HighSpeed;
+    //        graphics.InterpolationMode = InterpolationMode.Low;
+    //        graphics.SmoothingMode = SmoothingMode.HighSpeed;
+    //        graphics.PixelOffsetMode = PixelOffsetMode.HighSpeed;
+    //        using (var wrapMode = new ImageAttributes())
+    //        {
+    //            wrapMode.SetWrapMode(WrapMode.TileFlipXY);
+    //            graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
+    //        }
+    //    }
+
+    //    return destImage;
+    //}
+
     public static byte[] ReadAllBytes(string fileName)
     {
         byte[] buffer = null;

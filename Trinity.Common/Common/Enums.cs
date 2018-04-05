@@ -572,3 +572,11 @@ public static class EnumDOTabName
     public const string UBLabel = "UBLabel";
     public const string Settings = "Settings";
 }
+
+public static class ImageAttr
+{
+    public const int Width = 350;
+    public const int Height = 450;
+    public const float Ratio = (float)Height/ (float)Width;
+    
+}
