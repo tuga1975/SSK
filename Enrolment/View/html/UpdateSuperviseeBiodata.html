@@ -1,5 +1,60 @@
 ﻿<div>
     <style>
+        .container {
+            padding: 0px;
+        }
+
+        #superviseeDetails:not(.active), #printCard:not(.active) {
+            display: none;
+        }
+
+        .xdsoft_datetimepicker {
+            margin-left: 200px;
+        }
+
+        [item-tab-content] {
+            margin: 20px 0px;
+        }
+
+            [item-tab-content] [item-tab-title] {
+                border-bottom: 1px solid #DDD;
+                position: relative;
+                cursor: pointer;
+                font-size: 18px;
+            }
+
+                [item-tab-content] [item-tab-title]::after {
+                    content: "\f077";
+                    font-family: "FontAwesome";
+                    color: #1cacf6;
+                    position: absolute;
+                    right: 0px;
+                    bottom: 0px;
+                }
+
+        [item-tab-content="true"] [item-tab-title]::after {
+            content: "\f077" !important;
+        }
+
+        [item-tab-content] [item-tab-title]::after {
+            content: "\f078";
+            font-family: "FontAwesome";
+            color: #1cacf6;
+            position: absolute;
+            right: 0px;
+            bottom: 0px;
+            font-size: 13px;
+        }
+
+        [item-tab-content] [item-tab-body] {
+            display: none;
+        }
+
+        [item-tab-content="true"] [item-tab-body] {
+            display: block;
+            margin: 1rem 0px;
+        }
+
         .form-group {
             margin-bottom: 1rem;
             position: relative;
@@ -427,667 +482,321 @@
     <div class="title-border-red border-bottom">
         <h5>Create New Supervisee</h5>
     </div>
-    <div style="position:absolute;left: 0px;width: 100%;height: calc(100% - 126px);margin-top: 0px;overflow-y: auto;overflow-x: hidden;">
+    <div>
         <div class="container">
             <div class="PrintCard">
                 <div>
                     <!-- Nav tabs -->
                     <!-- Tab panes -->
                     <div class="tab-content">
-                        <div class="tab-pane active" id="printCard" role="tabpanel">
-                            <div class="createNewSupervisee">
-                                <div id="createNewSupervisee" class="row carousel createNewSupervisee" data-ride="carousel" data-interval="false">
-                                    <div class="newSuperviseeProcess col-8 offset-2 carousel-indicators">
-                                        <div class="newSupervisee col-3 takePhotos active" data-target="#createNewSupervisee" data-slide-to="0">
-                                            <div class="newSuperviseeStep"><span>1</span></div>
-                                            <div class="newSuperviseeStepname">Take Photos</div>
-                                        </div>
-                                        <div class="newSupervisee col-3 getFingerPrints" data-target="#createNewSupervisee" data-slide-to="1">
-                                            <div class="newSuperviseeStep"><span>2</span></div>
-                                            <div class="newSuperviseeStepname">Get Fingerprints</div>
+                        <div id="printCard" role="tabpanel" class="active" style="position:absolute;left: 0px;width: 100%;height: calc(100% - 126px);margin-top: 0px;overflow-y: auto;overflow-x: hidden;">
+                            <div class="tab-pane">
+                                <div class="createNewSupervisee">
+                                    <div id="createNewSupervisee" class="row carousel createNewSupervisee" data-ride="carousel" data-interval="false">
+                                        <div class="newSuperviseeProcess col-8 offset-2 carousel-indicators">
+                                            <div class="newSupervisee col-3 takePhotos active" data-target="#createNewSupervisee" data-slide-to="0">
+                                                <div class="newSuperviseeStep"><span>1</span></div>
+                                                <div class="newSuperviseeStepname">Take Photos</div>
+                                            </div>
+                                            <div class="newSupervisee col-3 getFingerPrints" data-target="#createNewSupervisee" data-slide-to="1">
+                                                <div class="newSuperviseeStep"><span>2</span></div>
+                                                <div class="newSuperviseeStepname">Get Fingerprints</div>
 
-                                        </div>
-                                        <div class="newSupervisee col-3 verifyCard" data-target="#createNewSupervisee" data-slide-to="2">
-                                            <div class="newSuperviseeStep"><span>3</span></div>
-                                            <div class="newSuperviseeStepname">Verify Card</div>
-                                        </div>
-                                        <div class="newSupervisee col-3 PrintCard" data-target="#createNewSupervisee" data-slide-to="3">
-                                            <div class="newSuperviseeStep"><span>4</span></div>
-                                            <div class="newSuperviseeStepname">Print Card</div>
-                                        </div>
-                                    </div>
-                                    <div class="cancelButton col-2 ml-auto">
-                                        <a href="#" id="btnCancel">CLICK TO CANCEL</a>
-                                    </div>
-
-
-                                    <div class="newSuperviseeContent carousel-inner ">
-                                        <div class="carousel-item col-8 offset-2 active">
-                                            <div class="newSuperviseeContentWrapper row">
-                                                <div class="col-6">
-                                                    <img id="image1" src="../images/avatar-demo.jpg" class="img-fluid" style="width:80%;"><br />
-                                                </div>
-                                                <div class="col-6">
-                                                    <img id="image2" src="../images/avatar-demo.jpg" class="img-fluid" style="width:80%;"><br />
-                                                </div>
-                                                <div class="col-6">
-                                                    <a href="#" id="btnTakePic1" style="color:#1CACF6;">Take Picture 1</a>
-                                                </div>
-                                                <div class="col-6">
-                                                    <a href="#" id="btnTakePic2" style="color:#1CACF6;">Take Picture 2</a>
-                                                </div>
+                                            </div>
+                                            <div class="newSupervisee col-3 verifyCard" data-target="#createNewSupervisee" data-slide-to="2">
+                                                <div class="newSuperviseeStep"><span>3</span></div>
+                                                <div class="newSuperviseeStepname">Verify Card</div>
+                                            </div>
+                                            <div class="newSupervisee col-3 PrintCard" data-target="#createNewSupervisee" data-slide-to="3">
+                                                <div class="newSuperviseeStep"><span>4</span></div>
+                                                <div class="newSuperviseeStepname">Print Card</div>
                                             </div>
                                         </div>
-                                        <div class="carousel-item col-8 offset-2">
-                                            <div class="newSuperviseeContentWrapper row">
-                                                <div class="col-6">
-                                                    <div style="margin-bottom:10px;text-align:center;"><strong id="leftProcessMessage">Place left thumb onto scanner.</strong></div>
-                                                    <div class="row col-7 offset-1" style="margin:auto;">
-                                                        <div class="col-12" style="padding:20px;background-color:#f1f1f1;margin:auto;text-align:center;">
-                                                            <img src='../images/leftthumb.png' id="leftFingerprint" style="max-width:75%;">
-                                                        </div>
+                                        <div class="cancelButton col-2 ml-auto">
+                                            <a href="#" id="btnCancel">CLICK TO CANCEL</a>
+                                        </div>
+
+
+                                        <div class="newSuperviseeContent carousel-inner ">
+                                            <div class="carousel-item col-8 offset-2 active">
+                                                <div class="newSuperviseeContentWrapper row">
+                                                    <div class="col-6">
+                                                        <img id="image1" src="../images/avatar-demo.jpg" class="img-fluid" style="height:200px;width:auto;"><br />
                                                     </div>
-                                                    <!--<div>Left Thumb-Fingerprint Preview</div>-->
-                                                </div>
-                                                <div class="col-6">
-                                                    <div style="margin-bottom:10px;text-align:center;"><strong id="rightProcessMessage">Place right thumb onto scanner.</strong></div>
-                                                    <div class="row col-7 offset-1" style="margin:auto;">
-                                                        <div class="col-12" style="padding:20px;background-color:#f1f1f1;margin:auto;text-align:center;">
-                                                            <img src='../images/rightthumb.png' id="rightFingerprint" style="max-width:75%;">
-                                                        </div>
+                                                    <div class="col-6">
+                                                        <img id="image2" src="../images/avatar-demo.jpg" class="img-fluid" style="height:200px;width:auto;"><br />
                                                     </div>
-                                                </div>
-                                                <div class="col-6">
-                                                    <div class="row col-7 offset-1" style="margin:auto;">
-                                                        <div class="scan col-6 ml-auto" style="text-align:left;"><a href="javascript:;" data-target="#fingerPrint" data-toggle="modal" id="leftThumbScanBtn">Scan</a></div>
-                                                        <div class="clear col-6 mr-auto" style="text-align:right;"><a href="javascript:;" id="leftThumbClearBtn">Clear</a></div>
+                                                    <div class="col-6">
+                                                        <a href="#" id="btnTakePic1" style="color:#1CACF6;">Take Picture 1</a>
                                                     </div>
-                                                    <div style="margin-top:10px;" class="row col-12 offset-1">Left Thumb-Fingerprint Preview</div>
-                                                </div>
-                                                <div class="col-6">
-                                                    <div class="row col-7 offset-1" style="margin:auto;">
-                                                        <div class="scan col-6 ml-auto" style="text-align:left;"><a href="javascript:;" data-target="#fingerPrint" data-toggle="modal" id="rightThumbScanBtn">Scan</a></div>
-                                                        <div class="clear col-6 mr-auto" style="text-align:right;"><a href="javascript:;" id="rightThumbClearBtn">Clear</a></div>
+                                                    <div class="col-6">
+                                                        <a href="#" id="btnTakePic2" style="color:#1CACF6;">Take Picture 2</a>
                                                     </div>
-                                                    <div style="margin-top:10px;">Right Thumb-Fingerprint Preview</div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="carousel-item col-8 offset-2">
-                                            <div class="newSuperviseeContentWrapper row" style="background-color:transparent;">
-                                                <div class="col-6" style="background-color:transparent;">
-                                                    <img src="" style="max-width:100%;border-radius:10px;border:2px solid #CCC;background-color:transparent;" name="frontCardImg" />
-                                                </div>
-                                                <div class="col-6" style="background-color:transparent;">
-                                                    <img src="" style="max-width:100%;border-radius:10px;border:2px solid #CCC;background-color:transparent;" name="backCardImg" />
+                                            <div class="carousel-item col-8 offset-2">
+                                                <div class="newSuperviseeContentWrapper row">
+                                                    <div class="col-6">
+                                                        <div style="margin-bottom:10px;text-align:center;"><strong id="leftProcessMessage">Place left thumb onto scanner.</strong></div>
+                                                        <div class="row col-7 offset-1" style="margin:auto;">
+                                                            <div class="col-12" style="padding:20px;background-color:#f1f1f1;margin:auto;text-align:center;">
+                                                                <img src='../images/leftthumb.png' id="leftFingerprint" style="height:200px;">
+                                                            </div>
+                                                        </div>
+                                                        <!--<div>Left Thumb-Fingerprint Preview</div>-->
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <div style="margin-bottom:10px;text-align:center;"><strong id="rightProcessMessage">Place right thumb onto scanner.</strong></div>
+                                                        <div class="row col-7 offset-1" style="margin:auto;">
+                                                            <div class="col-12" style="padding:20px;background-color:#f1f1f1;margin:auto;text-align:center;">
+                                                                <img src='../images/rightthumb.png' id="rightFingerprint" style="height:200px;">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <div class="row col-7 offset-1" style="margin:auto;">
+                                                            <div class="scan col-6 ml-auto" style="text-align:left;"><a href="javascript:;" data-target="#fingerPrint" data-toggle="modal" id="leftThumbScanBtn">Scan</a></div>
+                                                            <div class="clear col-6 mr-auto" style="text-align:right;"><a href="javascript:;" id="leftThumbClearBtn">Clear</a></div>
+                                                        </div>
+                                                        <div style="margin-top:10px;text-align:center;">Left Thumb-Fingerprint Preview</div>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <div class="row col-7 offset-1" style="margin:auto;">
+                                                            <div class="scan col-6 ml-auto" style="text-align:left;"><a href="javascript:;" data-target="#fingerPrint" data-toggle="modal" id="rightThumbScanBtn">Scan</a></div>
+                                                            <div class="clear col-6 mr-auto" style="text-align:right;"><a href="javascript:;" id="rightThumbClearBtn">Clear</a></div>
+                                                        </div>
+                                                        <div style="margin-top:10px;text-align:center;">Right Thumb-Fingerprint Preview</div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="carousel-item col-8 offset-2">
-                                            <div class="newSuperviseeContentWrapper row">
-                                                <div class="printingCard col-12" style="display:none" id="printSuccessMessage">
+                                            <div class="carousel-item col-8 offset-2">
+                                                <div class="newSuperviseeContentWrapper row" style="background-color:transparent;">
+                                                    <div class="col-6" style="background-color:transparent;">
+                                                        <img src="" style="max-width:100%;border-radius:10px;border:2px solid #CCC;background-color:transparent;" name="frontCardImg" />
+                                                    </div>
+                                                    <div class="col-6" style="background-color:transparent;">
+                                                        <img src="" style="max-width:100%;border-radius:10px;border:2px solid #CCC;background-color:transparent;" name="backCardImg" />
+                                                    </div>
                                                 </div>
-                                                <div style="max-width:350px;margin:0px auto;display:none;" name="panel-succss-print">
-                                                    <div style="margin-top:50px;">
-                                                        <div group-input="Name">
-                                                            <span name="vertify-name">
-                                                            </span>
-                                                        </div>
-                                                        <div group-input="NRIC">
-                                                            <span name="vertify-nric">
-                                                            </span>
-                                                        </div>
-                                                        <div group-input="Date of Birth">
-                                                            <span name="vertify-dateofbirth">
-                                                            </span>
-                                                        </div>
-                                                        <style type="text/css">
-                                                            [group-input] {
-                                                                position: relative;
-                                                                margin-bottom: 10px;
-                                                            }
-
-                                                                [group-input]::before {
-                                                                    content: attr(group-input);
-                                                                    color: #209CDD;
-                                                                    font-size: 16px;
-                                                                    position: absolute;
-                                                                    z-index: 0;
-                                                                    top: 6px;
-                                                                    left: 0px;
-                                                                    width: 90px;
-                                                                    text-align: right;
-                                                                }
-
-                                                                [group-input] > input, [group-input] > select, [group-input] > span {
-                                                                    border: none;
-                                                                    min-height: 36px;
-                                                                    font-size: 16px;
-                                                                    width: 100%;
-                                                                    padding-left: 110px;
+                                            </div>
+                                            <div class="carousel-item col-8 offset-2">
+                                                <div class="newSuperviseeContentWrapper row">
+                                                    <div class="printingCard col-12" style="display:none" id="printSuccessMessage">
+                                                    </div>
+                                                    <div panel-show-info-card style="max-width:350px;margin:0px auto;display:none;position:relative;left:40px;" name="panel-succss-print">
+                                                        <div style="margin-top:50px;">
+                                                            <div group-input="Name">
+                                                                <span name="vertify-name">
+                                                                </span>
+                                                            </div>
+                                                            <div group-input="NRIC">
+                                                                <span name="vertify-nric">
+                                                                </span>
+                                                            </div>
+                                                            <div group-input="Date of Birth">
+                                                                <span name="vertify-dateofbirth">
+                                                                </span>
+                                                            </div>
+                                                            <style type="text/css">
+                                                                [panel-show-info-card] [group-input] {
                                                                     position: relative;
-                                                                    z-index: 1;
-                                                                    background-color: transparent;
-                                                                    outline: none;
+                                                                    margin-bottom: 10px;
                                                                 }
 
-                                                                [group-input] > span {
-                                                                    display: block;
-                                                                    position: relative;
-                                                                    top: 6px;
-                                                                }
-
-                                                                [group-input] > input, [group-input] > select {
-                                                                    border-bottom: 1px solid #ccc;
-                                                                }
-
-                                                                    [group-input] > input:focus, [group-input] > input:hover, [group-input] > select:focus, [group-input] > select:hover {
-                                                                        border-bottom: 1px solid #1CACF6;
+                                                                    [panel-show-info-card] [group-input]::before {
+                                                                        content: attr(group-input);
+                                                                        color: #209CDD;
+                                                                        font-size: 16px;
+                                                                        position: absolute;
+                                                                        z-index: 0;
+                                                                        top: 6px;
+                                                                        left: 0px;
+                                                                        width: 90px;
+                                                                        text-align: left;
                                                                     }
 
-                                                            :-ms-input-placeholder {
-                                                                font-style: italic;
-                                                            }
-                                                        </style>
+                                                                    [panel-show-info-card] [group-input] > input, [panel-show-info-card] [group-input] > select, [panel-show-info-card] [group-input] > span {
+                                                                        border: none;
+                                                                        min-height: 36px;
+                                                                        font-size: 16px;
+                                                                        width: 100%;
+                                                                        padding-left: 110px;
+                                                                        position: relative;
+                                                                        z-index: 1;
+                                                                        background-color: transparent;
+                                                                        outline: none;
+                                                                        text-align: left;
+                                                                    }
+
+                                                                    [panel-show-info-card] [group-input] > span {
+                                                                        display: block;
+                                                                        position: relative;
+                                                                        top: 6px;
+                                                                    }
+
+                                                                    [panel-show-info-card] [group-input] > input, [panel-show-info-card] [group-input] > select {
+                                                                        border-bottom: 1px solid #ccc;
+                                                                    }
+
+                                                                        [panel-show-info-card] [group-input] > input:focus, [panel-show-info-card] [group-input] > input:hover, [panel-show-info-card] [group-input] > select:focus, [panel-show-info-card] [group-input] > select:hover {
+                                                                            border-bottom: 1px solid #1CACF6;
+                                                                        }
+
+                                                                :-ms-input-placeholder {
+                                                                    font-style: italic;
+                                                                }
+                                                            </style>
+                                                        </div>
+                                                    </div>
+                                                    <div style="clear:both;width:100%;"></div>
+                                                    <div style="text-align:center;width:100%;margin-bottom:20px;">
+                                                        <input class="btn" type="button" value="Reprint" id="rePrinter" style="display:none;" onclick="rePrintCardNew();" />
+                                                        <input class="btn" type="button" value="Done" id="donePrinter" style="display:none;" onclick="api.server.LoadPage('Supervisee.html');" />
                                                     </div>
                                                 </div>
-                                                <div style="clear:both;width:100%;"></div>
-                                                <div style="text-align:center;width:100%;margin-bottom:20px;">
-                                                    <input class="btn" type="button" value="Reprint" id="rePrinter" style="display:none;" onclick="rePrintCardNew();" />
-                                                    <input class="btn" type="button" value="Done" id="donePrinter" style="display:none;" onclick="api.server.LoadPage('Supervisee.html');" />
-                                                </div>
-                                                <!--<div>
-                                                    <input class="btn" type="button" value="Done" onclick="api.server.LoadListSupervisee();" />
-                                                </div>-->
-                                                <!--<div style="margin:10px auto;display:none;text-align:center;" id="reCheckSCard">
-                                                    <img src="" style="margin-left:10px;" name="frontCardImg" />
-                                                    <img src="" style="margin-left:10px;" name="backCardImg" />
-                                                </div>-->
                                             </div>
+
                                         </div>
 
-                                    </div>
+                                        <div class="controlprocess">
+                                            <a class="carousel-control-prev" href="#createNewSupervisee" role="button" data-slide="prev">
 
-                                    <div class="controlprocess">
-                                        <a class="carousel-control-prev" href="#createNewSupervisee" role="button" data-slide="prev">
+                                                <span aria-hidden="true"><i class="fal fa fa-angle-left"></i></span>
+                                                <span class="sr-only">Previous</span>
+                                            </a>
+                                            <a class="carousel-control-next" href="#createNewSupervisee" role="button" data-slide="next">
+                                                <span aria-hidden="true"><i class="fal fa fa-angle-right"></i></span>
+                                                <span class="sr-only">Next</span>
+                                            </a>
+                                        </div>
 
-                                            <span aria-hidden="true"><i class="fal fa fa-angle-left"></i></span>
-                                            <span class="sr-only">Previous</span>
-                                        </a>
-                                        <a class="carousel-control-next" href="#createNewSupervisee" role="button" data-slide="next">
-                                            <span aria-hidden="true"><i class="fal fa fa-angle-right"></i></span>
-                                            <span class="sr-only">Next</span>
-                                        </a>
                                     </div>
 
                                 </div>
-
                             </div>
                         </div>
-                        <div class="tab-pane" id="superviseeDetails" role="tabpanel">
-                            <div class="hidden-scrollbar">
-                                <div class="scrollbar">
-
+                        <div id="superviseeDetails" role="tabpanel">
+                            <div style="position:absolute;left: 0px;width: 100%;height: calc(100% - 185px);margin-top: 0px;overflow-y: auto;overflow-x: hidden;">
+                                <div style="width:800px;max-width: calc(100% - 40px);margin:auto;">
                                     <form class="form-material" id="superviseeFrm">
-
                                         <input type="hidden" id="userId" name="userId" />
                                         <input type="hidden" id="Address_ID" name="address_ID" />
                                         <input type="hidden" id="OAddress_ID" name="Other_Address_ID" />
 
-                                        <ul id="accordion" class="collapsible">
-                                            <!--<li>
-                                                <div class="collapsible-header collapsed" data-toggle="collapse"
-                                                     data-target="#suppervisee" id="biodata">
-                                                    Suppervisee's Biodata
-                                                </div>
-                                                <div id="suppervisee" class="collapsible-body collapse"
-                                                     aria-labelledby="Suppervisee's Biodata" data-parent="#accordion">
-                                                    <div class="row">
-                                                        <div class="col-md-6 col-sm-12">
-                                                            <div class="row">
-                                                                <div class="col-md-6 col-sm-12">
-                                                                    <img src="../images/avatar-demo.jpg" alt="avatar"
-                                                                         class="img-fluid" id="userPhoto1" />
-                                                                    <input type="hidden" id="User_Photo1" name="User_Photo1" />
-                                                                </div>
-                                                                <div class="col-md-6 col-sm-12">
-                                                                    <img src="../images/avatar-demo.jpg" alt="avatar"
-                                                                         class="img-fluid" id="userPhoto2" />
-                                                                    <input type="hidden" id="User_Photo2" name="User_Photo2" />
-                                                                </div>
-                                                            </div>
-                                                            <a href="#" id="updatePhotos">Update Photos</a>
-                                                        </div>
-                                                        <div class="col-md-6 col-sm-12">
-                                                            <div class="row">
-                                                                <div class="col-md-6 col-sm-12">
-                                                                    <img src="../img/avatar-demo.jpg" alt="avatar"
-                                                                         class="img-fluid" id="LeftThumbFingerprint" name="LeftThumbFingerprint" />
-
-                                                                </div>
-                                                                <div class="col-md-6 col-sm-12">
-                                                                    <img src="../img/avatar-demo.jpg" alt="avatar"
-                                                                         class="img-fluid" id="RightThumbFingerprint" name="RightThumbFingerprint" />
-                                                                </div>
-                                                            </div>
-                                                            <a href="#" onclick="api.server.UpdateFingerprints()">Update Fingerprints</a>
-                                                        </div>
+                                        <div item-tab-content="false">
+                                            <div item-tab-title="">Residential Address</div>
+                                            <div item-tab-body="">
+                                                <div id="residential" class="collapsible-body" aria-labelledby="Residential Address" data-parent="#accordion">
+                                                    <div group-input="House No.">
+                                                        <input type="text" placeholder="House No." id="BlkHouse_Number" name="BlkHouse_Number" />
+                                                    </div>
+                                                    <div group-input="Unit No.">
+                                                        <input type="text" placeholder="Unit No." id="FlrUnit_Number" name="FlrUnit_Number" />
+                                                    </div>
+                                                    <div group-input="Street name">
+                                                        <input type="text" placeholder="Street name" id="Street_Name" name="Street_Name" />
+                                                    </div>
+                                                    <div group-input="Country">
+                                                        <input type="text" placeholder="Country" id="Country" name="country" />
+                                                    </div>
+                                                    <div group-input="Postal code">
+                                                        <input type="text" placeholder="Postal code" id="Postal_Code" name="Postal_Code" />
                                                     </div>
                                                 </div>
-                                            </li>-->
-                                            <li>
-                                                <!-- Residential Address-->
-                                                <div class="collapsible-header collapsed" data-toggle="collapse"
-                                                     data-target="#residential">
-                                                    Residential Address
-                                                </div>
-                                                <div id="residential" class="collapsible-body collapse"
-                                                     aria-labelledby="Residential Address" data-parent="#accordion">
-
-                                                    <div class="form-group">
-                                                        <div class="input-group">
-                                                            <div class="input-group-prepend">
-                                                                <span class="input-group-text" id="house">
-                                                                    House No.
-                                                                </span>
-                                                            </div>
-                                                            <input type="text" class="form-control"
-                                                                   placeholder="Enter House No."
-                                                                   aria-label="house" aria-describedby="house" id="BlkHouse_Number" name="BlkHouse_Number">
-                                                        </div>
+                                            </div>
+                                        </div>
+                                        <div item-tab-content="false">
+                                            <div item-tab-title="">Other Address</div>
+                                            <div item-tab-body="">
+                                                <div id="otherAddress" class="collapsible-body" aria-labelledby="Other Address" data-parent="#accordion">
+                                                    <div group-input="House No.">
+                                                        <input type="text" placeholder="House No." id="OBlkHouse_Number" name="OBlkHouse_Number" />
                                                     </div>
-
-                                                    <div class="form-group">
-                                                        <div class="input-group">
-                                                            <div class="input-group-prepend">
-                                                                <span class="input-group-text" id="unit">
-                                                                    Unit No.
-                                                                </span>
-                                                            </div>
-                                                            <input type="text" class="form-control"
-                                                                   placeholder="Enter Unit No."
-                                                                   aria-label="unit" aria-describedby="unit" id="FlrUnit_Number" name="FlrUnit_Number">
-                                                        </div>
+                                                    <div group-input="Unit No.">
+                                                        <input type="text" placeholder="Unit No." id="OFlrUnit_Number" name="OFlrUnit_Number" />
                                                     </div>
-
-                                                    <div class="form-group">
-                                                        <div class="input-group">
-                                                            <div class="input-group-prepend">
-                                                                <span class="input-group-text" id="street">
-                                                                    Street name
-                                                                </span>
-                                                            </div>
-                                                            <input type="text" class="form-control"
-                                                                   placeholder="Enter Street name"
-                                                                   aria-label="street" aria-describedby="street" id="Street_Name" name="Street_Name">
-                                                        </div>
+                                                    <div group-input="Street name">
+                                                        <input type="text" placeholder="Street name" id="OStreet_Name" name="OStreet_Name" />
                                                     </div>
-
-                                                    <div class="form-group">
-                                                        <div class="input-group">
-                                                            <div class="input-group-prepend">
-                                                                <span class="input-group-text" id="country">
-                                                                    Country
-                                                                </span>
-                                                            </div>
-                                                            <input type="text" class="form-control"
-                                                                   placeholder="Enter Country"
-                                                                   aria-label="country" aria-describedby="country" id="Country" name="country">
-                                                        </div>
+                                                    <div group-input="Country">
+                                                        <input type="text" placeholder="Country" id="OCountry" name="OCountry" />
                                                     </div>
-
-                                                    <div class="form-group">
-                                                        <div class="input-group">
-                                                            <div class="input-group-prepend">
-                                                                <span class="input-group-text" id="zip">
-                                                                    Postal code
-                                                                </span>
-                                                            </div>
-                                                            <input type="text" class="form-control"
-                                                                   placeholder="Enter Postal code"
-                                                                   aria-label="zip" aria-describedby="zip" id="Postal_Code" name="Postal_Code">
-                                                        </div>
+                                                    <div group-input="Postal code">
+                                                        <input type="text" placeholder="Postal code" id="OPostal_Code" name="OPostal_Code" />
                                                     </div>
                                                 </div>
-                                            </li>
-                                            <li>
-                                                <!-- Other Address -->
-                                                <div class="collapsible-header collapsed" data-toggle="collapse"
-                                                     data-target="#otherAddress">
-                                                    Other Address
-                                                </div>
-                                                <div id="otherAddress" class="collapsible-body collapse"
-                                                     aria-labelledby="Other Address" data-parent="#accordion">
-                                                    <div class="form-group">
-                                                        <div class="input-group">
-                                                            <div class="input-group-prepend">
-                                                                <span class="input-group-text" id="house2">
-                                                                    House No.
-                                                                </span>
-                                                            </div>
-                                                            <input type="text" class="form-control"
-                                                                   placeholder="Enter House No."
-                                                                   aria-label="house2" aria-describedby="house2" id="OBlkHouse_Number" name="OBlkHouse_Number">
-                                                        </div>
+                                            </div>
+                                        </div>
+                                        <div item-tab-content="false">
+                                            <div item-tab-title="">Next-of-Kin</div>
+                                            <div item-tab-body="">
+                                                <div id="nextOfKin" class="collapsible-body" aria-labelledby="Next-of-Kin" data-parent="#accordion">
+
+                                                    <div group-input="Next-of-Kin Name">
+                                                        <input type="text" placeholder="Next-of-Kin Name" id="NextOfKin_Name" name="NextOfKin_Name" />
                                                     </div>
-
-                                                    <div class="form-group">
-                                                        <div class="input-group">
-                                                            <div class="input-group-prepend">
-                                                                <span class="input-group-text" id="unit2">
-                                                                    Unit No.
-                                                                </span>
-                                                            </div>
-                                                            <input type="text" class="form-control"
-                                                                   placeholder="Enter Unit No."
-                                                                   aria-label="unit2" aria-describedby="unit2" id="OFlrUnit_Number" name="OFlrUnit_Number">
-                                                        </div>
+                                                    <div group-input="Next-of-Kin Contact No.">
+                                                        <input type="text" placeholder="Next-of-Kin Contact No." id="NextOfKin_Contact_Number" name="NextOfKin_Contact_Number" />
                                                     </div>
-
-                                                    <div class="form-group">
-                                                        <div class="input-group">
-                                                            <div class="input-group-prepend">
-                                                                <span class="input-group-text" id="street2">
-                                                                    Street name
-                                                                </span>
-                                                            </div>
-                                                            <input type="text" class="form-control"
-                                                                   placeholder="Enter Street name"
-                                                                   aria-label="street2" aria-describedby="street2" id="OStreet_Name" name="OStreet_Name">
-                                                        </div>
+                                                    <div group-input="Next-of-Kin Relationship">
+                                                        <input type="text" placeholder="Next-of-Kin Relationship" id="NextOfKin_Relationship" name="NextOfKin_Relationship" />
                                                     </div>
-
-                                                    <div class="form-group">
-                                                        <div class="input-group">
-                                                            <div class="input-group-prepend">
-                                                                <span class="input-group-text" id="country2">
-                                                                    Country
-                                                                </span>
-                                                            </div>
-                                                            <input type="text" class="form-control"
-                                                                   placeholder="Enter Country"
-                                                                   aria-label="country2" aria-describedby="country2" id="OCountry" name="OCountry">
-                                                        </div>
+                                                    <div group-input="Next-of-Kin Blk House No.">
+                                                        <input type="text" placeholder="Next-of-Kin Blk House No." id="NextOfKin_BlkHouse_Number" name="NextOfKin_BlkHouse_Number" />
                                                     </div>
-
-
-                                                    <div class="form-group">
-                                                        <div class="input-group">
-                                                            <div class="input-group-prepend">
-                                                                <span class="input-group-text" id="zip2">
-                                                                    Postal code
-                                                                </span>
-                                                            </div>
-                                                            <input type="text" class="form-control"
-                                                                   placeholder="Enter Postal code"
-                                                                   aria-label="zip2" aria-describedby="zip2" id="OPostal_Code" name="OPostal_Code">
-                                                        </div>
+                                                    <div group-input="Next-of-Kin Unit No.">
+                                                        <input type="text" placeholder="Next-of-Kin Unit No." id="NextOfKin_FlrUnit_Number" name="NextOfKin_FlrUnit_Number" />
+                                                    </div>
+                                                    <div group-input="Next-of-Kin Street Name">
+                                                        <input type="text" placeholder="Next-of-Kin Street Name" id="NextOfKin_Street_Name" name="NextOfKin_Street_Name" />
+                                                    </div>
+                                                    <div group-input="Next-of-Kin Country">
+                                                        <input type="text" placeholder="Next-of-Kin Country" id="NextOfKin_Country" name="NextOfKin_Country" />
+                                                    </div>
+                                                    <div group-input="Next-of-Kin Postal code">
+                                                        <input type="text" placeholder="Next-of-Kin Postal code" id="NextOfKin_PostalCode" name="NextOfKin_PostalCode" />
                                                     </div>
                                                 </div>
-                                            </li>
-                                            <li>
-                                                <!-- Next-of-Kin -->
-                                                <div class="collapsible-header collapsed" data-toggle="collapse"
-                                                     data-target="#nextOfKin">
-                                                    Next-of-Kin
-                                                </div>
-                                                <div id="nextOfKin" class="collapsible-body collapse"
-                                                     aria-labelledby="Next-of-Kin" data-parent="#accordion">
+                                            </div>
+                                        </div>
+                                        <div item-tab-content="false">
+                                            <div item-tab-title="">Employment Details</div>
+                                            <div item-tab-body="">
+                                                <div id="employment" class="collapsible-body" aria-labelledby="Employment Details" data-parent="#accordion">
 
-                                                    <div class="form-group">
-                                                        <div class="input-group">
-                                                            <div class="input-group-prepend">
-                                                                <span class="input-group-text" id="nok-name">
-                                                                    Next-of-Kin Name
-                                                                </span>
-                                                            </div>
-                                                            <input type="text" class="form-control"
-                                                                   placeholder="Enter Next-of-Kin Name"
-                                                                   aria-label="nok-name" aria-describedby="nok-name" id="NextOfKin_Name" name="NextOfKin_Name">
-                                                        </div>
+                                                    <div group-input="Employer Name">
+                                                        <input type="text" placeholder="Employer Name" id="Employment_Name" name="Employment_Name" />
                                                     </div>
-                                                    <div class="form-group">
-                                                        <div class="input-group">
-                                                            <div class="input-group-prepend">
-                                                                <span class="input-group-text" id="nok-contact">
-                                                                    Next-of-Kin Contact No.
-                                                                </span>
-                                                            </div>
-                                                            <input type="text" class="form-control"
-                                                                   placeholder="Enter Next-of-Kin Contact No."
-                                                                   aria-label="nok-contact" aria-describedby="nok-contact" id="NextOfKin_Contact_Number" name="NextOfKin_Contact_Number">
-                                                        </div>
+                                                    <div group-input="Employer Contact No.">
+                                                        <input type="text" placeholder="Employer Contact No." id="Employment_Contact_Number" name="Employment_Contact_Number" />
                                                     </div>
-                                                    <div class="form-group">
-                                                        <div class="input-group">
-                                                            <div class="input-group-prepend">
-                                                                <span class="input-group-text" id="nok-relationship">
-                                                                    Next-of-Kin Relationship
-                                                                </span>
-                                                            </div>
-                                                            <input type="text" class="form-control"
-                                                                   placeholder="Enter Next-of-Kin Relationship"
-                                                                   aria-label="nok-relationship"
-                                                                   aria-describedby="nok-relationship" id="NextOfKin_Relationship" name="NextOfKin_Relationship">
-                                                        </div>
+                                                    <div group-input="Employer Company Name">
+                                                        <input type="text" placeholder="Employer Company Name" id="Employment_Company_Name" name="Employment_Company_Name" />
                                                     </div>
-                                                    <div class="form-group">
-                                                        <div class="input-group">
-                                                            <div class="input-group-prepend">
-                                                                <span class="input-group-text" id="nok-house">
-                                                                    Next-of-Kin Blk House No.
-                                                                </span>
-                                                            </div>
-                                                            <input type="text" class="form-control"
-                                                                   placeholder="Enter Next-of-Kin Blk House No."
-                                                                   aria-label="nok-house" aria-describedby="nok-house" id="NextOfKin_BlkHouse_Number" name="NextOfKin_BlkHouse_Number">
-                                                        </div>
+                                                    <div group-input="Employer Job Title">
+                                                        <input type="text" placeholder="Employer Job Title" id="Employment_Job_Title" name="Employment_Job_Title" />
                                                     </div>
-                                                    <div class="form-group">
-                                                        <div class="input-group">
-                                                            <div class="input-group-prepend">
-                                                                <span class="input-group-text" id="nok-unit">
-                                                                    Next-of-Kin Unit No.
-                                                                </span>
-                                                            </div>
-                                                            <input type="text" class="form-control"
-                                                                   placeholder="Enter Next-of-Kin Unit No."
-                                                                   aria-label="nok-unit" aria-describedby="nok-unit" id="NextOfKin_FlrUnit_Number" name="NextOfKin_FlrUnit_Number">
-                                                        </div>
+                                                    <div group-input="Employer Start Date">
+                                                        <input type="text" placeholder="dd/mm/yyyy" id="Employment_Start_Date" name="Employment_Start_Date" />
                                                     </div>
-                                                    <div class="form-group">
-                                                        <div class="input-group">
-                                                            <div class="input-group-prepend">
-                                                                <span class="input-group-text" id="nok-street">
-                                                                    Next-of-Kin Street Name
-                                                                </span>
-                                                            </div>
-                                                            <input type="text" class="form-control"
-                                                                   placeholder="Enter Next-of-Kin Street Name"
-                                                                   aria-label="nok-street" aria-describedby="nok-street" id="NextOfKin_Street_Name" name="NextOfKin_Street_Name">
-                                                        </div>
+                                                    <div group-input="Employer End Date">
+                                                        <input type="text" placeholder="dd/mm/yyyy" id="Employment_End_Date" name="Employment_End_Date" />
                                                     </div>
-                                                    <div class="form-group">
-                                                        <div class="input-group">
-                                                            <div class="input-group-prepend">
-                                                                <span class="input-group-text" id="nok-country">
-                                                                    Next-of-Kin Country
-                                                                </span>
-                                                            </div>
-                                                            <input type="text" class="form-control"
-                                                                   placeholder="Enter Next-of-Kin Country"
-                                                                   aria-label="nok-country" aria-describedby="nok-country" id="NextOfKin_Country" name="NextOfKin_Country">
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <div class="input-group">
-                                                            <div class="input-group-prepend">
-                                                                <span class="input-group-text" id="nok-zip">
-                                                                    Next-of-Kin Postal code
-                                                                </span>
-                                                            </div>
-                                                            <input type="text" class="form-control"
-                                                                   placeholder="Enter Next-of-Kin Postal code"
-                                                                   aria-label="nok-zip" aria-describedby="nok-zip" id="NextOfKin_PostalCode" name="NextOfKin_PostalCode">
-                                                        </div>
+                                                    <div group-input="Employer Remarks">
+                                                        <input type="text" placeholder="Employer Remarks" id="Employment_Remarks" name="Employment_Remarks" />
                                                     </div>
                                                 </div>
-                                            </li>
-                                            <li>
-                                                <!-- Next-of-Kin -->
-                                                <div class="collapsible-header collapsed" data-toggle="collapse"
-                                                     data-target="#employment">
-                                                    Employment Details
-                                                </div>
-                                                <div id="employment" class="collapsible-body collapse"
-                                                     aria-labelledby="Employment Details" data-parent="#accordion">
-
-                                                    <div class="form-group">
-                                                        <div class="input-group">
-                                                            <div class="input-group-prepend">
-                                                                <span class="input-group-text" id="e-name">
-                                                                    Employer Name
-                                                                </span>
-                                                            </div>
-                                                            <input type="text" class="form-control"
-                                                                   placeholder="Enter Employer Name"
-                                                                   aria-label="e-name" aria-describedby="e-name" id="Employment_Name" name="Employment_Name">
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <div class="input-group">
-                                                            <div class="input-group-prepend">
-                                                                <span class="input-group-text" id="e-contact">
-                                                                    Employer Contact No.
-                                                                </span>
-                                                            </div>
-                                                            <input type="text" class="form-control"
-                                                                   placeholder="Enter Contact No."
-                                                                   aria-label="e-contact" aria-describedby="e-contact" id="Employment_Contact_Number" name="Employment_Contact_Number">
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <div class="input-group">
-                                                            <div class="input-group-prepend">
-                                                                <span class="input-group-text" id="e-company">
-                                                                    Employer Company Name
-                                                                </span>
-                                                            </div>
-                                                            <input type="text" class="form-control"
-                                                                   placeholder="Enter Company Name"
-                                                                   aria-label="e-company" aria-describedby="e-company" id="Employment_Company_Name" name="Employment_Company_Name">
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <div class="input-group">
-                                                            <div class="input-group-prepend">
-                                                                <span class="input-group-text" id="e-job">
-                                                                    Employer Job Title
-                                                                </span>
-                                                            </div>
-                                                            <input type="text" class="form-control"
-                                                                   placeholder="Enter Job Title"
-                                                                   aria-label="e-job" aria-describedby="e-job" id="Employment_Job_Title" name="Employment_Job_Title">
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <div class="form-select">
-                                                            <div class="input-group-select">
-                                                                <span class="form-label" id="e-start">
-                                                                    Employer Start Date
-                                                                </span>
-                                                            </div>
-                                                            <input type="text" style="display:none" value="" id="Employment_Start_Date" name="Employment_Start_Date" />
-                                                            <div class="select-wrap">
-
-                                                                <select id="day" title="day">
-                                                                    <option>DD</option>
-
-                                                                </select>
-                                                                <label for="day">
-                                                                    <i class="ion-chevron-down"></i>
-                                                                </label>
-                                                            </div>
-                                                            <div class="select-wrap">
-                                                                <select id="month" title="month">
-                                                                    <option>MM</option>
-
-                                                                </select>
-                                                                <label for="month">
-                                                                    <i class="ion-chevron-down"></i>
-                                                                </label>
-                                                            </div>
-                                                            <div class="select-wrap">
-                                                                <select id="year" title="year">
-                                                                    <option>YYYY</option>
-
-                                                                </select>
-                                                                <label for="year">
-                                                                    <i class="ion-chevron-down"></i>
-                                                                </label>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <div class="form-select">
-                                                            <div class="input-group-select">
-                                                                <span class="form-label" id="e-start">
-                                                                    Employer End Date
-                                                                </span>
-                                                            </div>
-                                                            <input type="text" style="display:none" value="" id="Employment_End_Date" name="Employment_End_Date" />
-                                                            <div class="select-wrap">
-                                                                <select id="day_end" title="day">
-                                                                    <option>DD</option>
-
-                                                                </select>
-                                                                <label for="day_end">
-                                                                    <i class="ion-chevron-down"></i>
-                                                                </label>
-                                                            </div>
-                                                            <div class="select-wrap">
-                                                                <select id="month_end" title="month">
-                                                                    <option>MM</option>
-                                                                </select>
-                                                                <label for="month_end">
-                                                                    <i class="ion-chevron-down"></i>
-                                                                </label>
-                                                            </div>
-                                                            <div class="select-wrap">
-                                                                <select id="year_end" title="year">
-                                                                    <option>YYYY</option>
-
-                                                                </select>
-                                                                <label for="year_end">
-                                                                    <i class="ion-chevron-down"></i>
-                                                                </label>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <div class="input-group">
-                                                            <div class="input-group-prepend">
-                                                                <span class="input-group-text" id="e-remarks">
-                                                                    Employer Remarks
-                                                                </span>
-                                                            </div>
-                                                            <input type="text" class="form-control"
-                                                                   placeholder="Enter Remarks"
-                                                                   aria-label="e-remarks" aria-describedby="e-remarks" id="Employment_Remarks" name="Employment_Remarks">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                        </ul>
-
-                                        <div class="pull-right">
-                                            <!-- <button class="btn btn-light" id="btnCancelEdit" onclick="api.server.LoadListSupervisee();">Cancel</button>-->
-                                            <button class="btn btn-light" onclick="api.server.LoadListSupervisee();">Cancel</button>
-
-                                            <a href="#" class="btn btn-primary" id="SaveBtn">Save</a>
+                                            </div>
                                         </div>
                                     </form>
-
+                                </div>
+                            </div>
+                            <div style="position:absolute;width: 100%;height: 50px;bottom: 10px;border-top: 1px solid #CCC;left:0px;">
+                                <div style="width: calc(100% - 80px);margin-left: 40px;text-align: right;margin-top: 11px;">
+                                    <!--<button class="btn btn-light" onclick="api.server.CancelEditSupervisee();">Cancel</button>-->
+                                    <a href="#" class="btn btn-light" onclick="api.server.LoadListSupervisee();" style="margin-right:20px;min-width:150px;">Cancel</a>
+                                    <!--<button href="#" class="btn btn-primary" onclick="UpdateSupervisee();" id="SaveBtn">Save</button>-->
+                                    <a href="#" class="btn btn-primary" id="SaveBtnNewCard" style="min-width:150px;">Save</a>
                                 </div>
                             </div>
                         </div>
@@ -1095,7 +804,6 @@
 
                 </div>
             </div>
-
         </div>
     </div>
 
@@ -1155,6 +863,23 @@
         var CardInfo = null;
         var countPrinterSmartCard = 0;
 
+        $('#Employment_Start_Date, #Employment_End_Date').datetimepicker({
+            format: 'd/m/Y',
+            timepicker: false,
+            mask: true,
+            scrollInput: false
+        });
+        $('[item-tab-content] [item-tab-title]').click(function () {
+            var _parent = $(this).parent('[item-tab-content]');
+            if (_parent.attr('item-tab-content') != 'true') {
+                _parent.attr('item-tab-content', 'true');
+            } else {
+                _parent.attr('item-tab-content', 'false');
+            }
+        }).mousedown(function (event) {
+            event.preventDefault();
+        });
+
         $('#btnCancel').click(function () {
             api.server.LoadListSupervisee();
         });
@@ -1209,14 +934,15 @@
             $('#rightProcessMessage').text('Place right thumb onto scanner').css('color', '#000');
         });
 
-        $('#SaveBtn').click(function () {
-            $('#Employment_Start_Date').val(setDate('day', 'month', 'year'));
-            $('#Employment_End_Date').val(setDate('day_end', 'month_end', 'year_end'));
+        $('#SaveBtnNewCard').click(function (event) {
             var $form = $("#superviseeFrm");
             var data = getFormData($form);
+            data['Employment_End_Date'] = api.ToDateCSharp(data['Employment_End_Date']);
+            data['Employment_Start_Date'] = api.ToDateCSharp(data['Employment_Start_Date']);
+            
             var json = JSON.stringify(data);
             api.server.SaveSupervisee(json);
-            e.preventDefault();
+            event.preventDefault();
 
         });
 
@@ -1303,7 +1029,7 @@
             userIDNew = model.User.UserId;
         });
         function rePrintCardNew() {
-            api.server.UpdateSuperviseeBiodata(frontCardImg, backCardImg, JSON.stringify(CardInfo))
+            api.server.PrintSmartCard(frontCardImg, backCardImg, JSON.stringify(CardInfo))
         }
         function setImg(number, src) {
             image = document.getElementById('image' + number);
@@ -1380,10 +1106,16 @@
             if (base64Str1 != "") {
                 $('#image1').attr('src', 'data:image/jpg;base64,' + base64Str1);
                 $('[name="card-avarta"]').attr('src', 'data:image/png;base64,' + base64Str1);
+            } else {
+                $('#image1').attr('src', '../images/avatar-demo.jpg');
+                $('[name="card-avarta"]').attr('src', '../images/avatar-demo.jpg');
             }
             if (base64Str2 != "") {
                 $('#image2').attr('src', 'data:image/jpg;base64,' + base64Str2);
                 $('#verifyPhoto2').attr('src', 'data:image/jpg;base64,' + base64Str2);
+            } else {
+                $('#image2').attr('src', '../images/avatar-demo.jpg');
+                $('#verifyPhoto2').attr('src', '../images/avatar-demo.jpg');
             }
         }
     </script>
@@ -1399,7 +1131,6 @@
         function showPrintMessage(status, message) {
             if (status != null) {
                 if (status) {
-                    $('#rePrinter').css('display', 'none');
 
                 } else {
                     $('#rePrinter').css('display', 'inline-block');
@@ -1422,7 +1153,6 @@
                 $('[name="vertify-name"]').text(dataJson.Name);
                 $('[name="vertify-nric"]').text(dataJson.NRIC);
                 $('[name="vertify-dateofbirth"]').text(dataJson.DOB);
-                $('#rePrinter').css('display', 'none');
                 $('#donePrinter').css('display', 'inline-block');
                 $('#createNewSupervisee .carousel-indicators').css('pointer-events', 'none');
                 $('.carousel-control-prev,.carousel-control-next').css('display', 'none');
@@ -1479,12 +1209,12 @@
 
 
 
-            
+
 
             if (api.model != null) {
                 $('#userId').val(api.model.User.UserId);
                 // NextOfKin
-                if (api.model.UserProfile == null) {
+                if (api.model.UserProfile != null) {
                     $('#NextOfKin_Name').val(api.model.UserProfile.NextOfKin_Name);
                     $('#NextOfKin_Contact_Number').val(api.model.UserProfile.NextOfKin_Contact_Number);
                     $('#NextOfKin_Relationship').val(api.model.UserProfile.NextOfKin_Relationship);
@@ -1498,8 +1228,8 @@
                     $('#Employment_Contact_Number').val(api.model.UserProfile.Employment_Contact_Number);
                     $('#Employment_Company_Name').val(api.model.UserProfile.Employment_Company_Name);
                     $('#Employment_Job_Title').val(api.model.UserProfile.Employment_Job_Title);
-                    $('#Employment_Start_Date').val(api.model.UserProfile.Employment_Start_Date);
-                    $('#Employment_End_Date').val(api.model.UserProfile.Employment_End_Date);
+                    $('#Employment_Start_Date').val(api.model.UserProfile.Employment_Start_Date_Text);
+                    $('#Employment_End_Date').val(api.model.UserProfile.Employment_End_Date_Text);
                     $('#Employment_Remarks').val(api.model.UserProfile.Employment_Remarks);
                     $('#address_ID').val(api.model.UserProfile.Residential_Addess_ID);
                     $('#Other_Address_ID').val(api.model.UserProfile.Other_Address_ID);
@@ -1507,7 +1237,7 @@
                     $('#User_Photo1').val(api.model.UserProfile.User_Photo1);
                     $('#User_Photo2').val(api.model.UserProfile.User_Photo2);
                 }
-                
+
 
                 // Residential Address
                 if (api.model.Addresses != null) {
@@ -1525,27 +1255,6 @@
                     $('#OCountry').val(api.model.OtherAddress.Country);
                     $('#OPostal_Code').val(api.model.OtherAddress.Postal_Code);
                 }
-
-                
-
-                var startYear = $('#Employment_Start_Date').val().trim() != "" ? new Date($('#Employment_Start_Date').val()) : null;
-                var endYear = $('#Employment_End_Date').val().trim() != "" ? new Date($('#Employment_End_Date').val()) : null;
-
-                if (startYear != null) {
-                    $('#year').val(startYear.getFullYear());
-                    $('#month').val(startYear.getMonth() + 1); //January is 0
-                    $('#day').val(startYear.getDate());
-
-                }
-
-                if (endYear != null) {
-
-                    $('#year_end').val(endYear.getFullYear());
-                    $('#month_end').val(endYear.getMonth() + 1); //January is 0
-                    $('#day_end').val(endYear.getDate());
-
-                }
-
             }
 
 

@@ -60,7 +60,7 @@ namespace Enrolment
             {
                 System.IO.Directory.CreateDirectory(String.Format("{0}/Temp", CSCallJS.curDir));
 
-                videoSource.NewFrame += new AForge.Video.NewFrameEventHandler(videoSource_NewFrame);
+                videoSource.NewFrame += videoSource_NewFrame;
                 //Start recording
                 videoSource.Start();
                 Lib.LayerWeb.InvokeScript("StartCamera");
@@ -84,16 +84,16 @@ namespace Enrolment
                 int height = Img.Height;
                 float ratio = (float)height / (float)width;
 
-                if (height > 450)
+                if (height > ImageAttr.Height)
                 {
-                    height = 450;
+                    height = ImageAttr.Height;
                     width = Convert.ToInt32(height / ratio);
                 }
 
                 //ResizeImage(Img, width, height).Save(imgSave, System.Drawing.Imaging.ImageFormat.Jpeg);
 
                 //Lib.LayerWeb.InvokeScript("showCamera",DateTime.Now.Ticks.ToString());
-                Lib.LayerWeb.InvokeScript("showCamera", Convert.ToBase64String(ImageToByte2(ResizeImage(Img, width, height))));
+                Lib.LayerWeb.InvokeScript("showCamera", Convert.ToBase64String(Img.ResizeImage(width, height).ImageToByte()));
 
                 //Lib.LayerWeb.BeginInvoke(new System.Threading.ThreadStart(delegate
                 //{
@@ -109,43 +109,13 @@ namespace Enrolment
             
 
         }
-        private Bitmap ResizeImage(Image image, int width, int height)
-        {
-            var destRect = new Rectangle(0, 0, width, height);
-            var destImage = new Bitmap(width, height);
-
-            destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
-
-            using (var graphics = Graphics.FromImage(destImage))
-            {
-                graphics.CompositingMode = CompositingMode.SourceCopy;
-                graphics.CompositingQuality = CompositingQuality.HighSpeed;
-                graphics.InterpolationMode = InterpolationMode.Low;
-                graphics.SmoothingMode = SmoothingMode.HighSpeed;
-                graphics.PixelOffsetMode = PixelOffsetMode.HighSpeed;
-                using (var wrapMode = new ImageAttributes())
-                {
-                    wrapMode.SetWrapMode(WrapMode.TileFlipXY);
-                    graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
-                }
-            }
-
-            return destImage;
-        }
-        private byte[] ImageToByte2(Image img)
-        {
-            using (var stream = new MemoryStream())
-            {
-                img.Save(stream, System.Drawing.Imaging.ImageFormat.Jpeg);
-                return stream.ToArray();
-            }
-        }
+        
         public void stopWebcam()
         {
             if (videoSource != null && videoSource.IsRunning)
             {
                 videoSource.SignalToStop();
-                videoSource.NewFrame -= new AForge.Video.NewFrameEventHandler(videoSource_NewFrame);
+                videoSource.NewFrame -= videoSource_NewFrame;
                 videoSource = null;
             }
                 

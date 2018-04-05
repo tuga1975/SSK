@@ -116,7 +116,7 @@ namespace DutyOfficer.CodeBehind
 
                     if (ttLabelPrinterStatus.Contains(EnumDeviceStatus.Connected))
                     {
-                        printerMonitor.PrintBarcodeLabel(labelInfo);
+                        printerMonitor.PrintTTLabel(labelInfo);
                     }
                     else
                     {

@@ -39,7 +39,8 @@ namespace Trinity.Device.Util
         CloseTTDoor = 22,
         OpenTTDoor = 23,
         MoveUpTTRobot = 24,
-        MoveDownTTRobot = 25
+        MoveDownTTRobot = 25,
+        OpenMUBHolder = 26
     }
 
     public class LEDStatusLightingUtil
@@ -170,6 +171,7 @@ namespace Trinity.Device.Util
                 _rs232Commands[EnumCommands.MoveDownTTRobot] = "WR MR503 1";
                 _rs232Commands[EnumCommands.MoveUpMUBRobot] = "WR MR500 1";
                 _rs232Commands[EnumCommands.MoveUpTTRobot] = "WR MR502 1";
+                _rs232Commands[EnumCommands.OpenMUBHolder] = "WR MR505 1";
 
             }
         }
@@ -649,6 +651,14 @@ namespace Trinity.Device.Util
             //SendASCIICommand(asciiCommand);
             SendCommand_Async(EnumCommands.OpenMUBDoor, null);
 
+        }
+
+        /// <summary>
+        /// Send command 'WR MR505 1' to open bottle holder
+        /// </summary>
+        public void OpenMUBHolder_Async()
+        {
+            SendCommand_Async(EnumCommands.OpenMUBHolder, null);
         }
 
         public void MoveUpMUBRobot_Async()

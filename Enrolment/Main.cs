@@ -457,7 +457,6 @@ namespace Enrolment
                 var currentPhotosSession = session[CommonConstants.CURRENT_PHOTOS];
                 if (InvokeRequired)
                 {
-
                     //Invoke(new Action(() =>
                     //{
                     //    //pictureBox1.Hide();
@@ -609,9 +608,18 @@ namespace Enrolment
                     if (session[CommonConstants.CURRENT_EDIT_USER] != null && currentPage != null)
                     {
                         var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
-                        var oldPhotos = session["TempPhotos"];
+                        //var oldPhotos = session["TempPhotos"];
                         string photo1 = string.Empty;
                         string photo2 = string.Empty;
+                        if (currentEditUser.UserProfile.User_Photo1 != null)
+                        {
+                            photo1 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo1);
+
+                        }
+                        if (currentEditUser.UserProfile.User_Photo2 != null)
+                        {
+                            photo2 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo2);
+                        }
                         /*if (currentEditUser.UserProfile.User_Photo1 != null)
                         {
                             photo1 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo1);
@@ -620,28 +628,28 @@ namespace Enrolment
                         {
                             photo2 = Convert.ToBase64String(currentEditUser.UserProfile.User_Photo2);
                         }*/
-                        var photos = (Tuple<string, string>)session["TempPhotos"];
-                        if (photos != null && photos.Item1 != null)
-                        {
-                            photo1 = photos.Item1;
-                        }
-                        if (photos != null && photos.Item2 != null)
-                        {
-                            photo2 = photos.Item2;
-                        }
+                        //var photos = (Tuple<string, string>)session["TempPhotos"];
+                        //if (photos != null && photos.Item1 != null)
+                        //{
+                        //    photo1 = photos.Item1;
+                        //}
+                        //if (photos != null && photos.Item2 != null)
+                        //{
+                        //    photo2 = photos.Item2;
+                        //}
                         session[CommonConstants.CURRENT_PHOTOS] = null;
 
-                        if (photos != null)
-                        {
-                            currentEditUser.UserProfile.User_Photo1 = photos.Item1 != null ? Convert.FromBase64String(photo1) : null;
-                            currentEditUser.UserProfile.User_Photo2 = photos.Item2 != null ? Convert.FromBase64String(photo2) : null;
-                        }
+                        //if (photos != null)
+                        //{
+                        //    currentEditUser.UserProfile.User_Photo1 = photos.Item1 != null ? Convert.FromBase64String(photo1) : null;
+                        //    currentEditUser.UserProfile.User_Photo2 = photos.Item2 != null ? Convert.FromBase64String(photo2) : null;
+                        //}
 
                         session[CommonConstants.CURRENT_EDIT_USER] = currentEditUser;
                         if (currentPage.ToString() == "EditSupervisee")
                         {
                             LayerWeb.LoadPageHtml("UpdateSuperviseeBiodata.html", currentEditUser);
-                            LayerWeb.InvokeScript("setAvatar", currentEditUser.UserProfile.User_Photo1_Base64, currentEditUser.UserProfile.User_Photo2_Base64);
+                            LayerWeb.InvokeScript("setAvatar", photo1, photo2);
 
                             string fingerprintLeft = "../images/leftthumb.png";
                             string fingerprintRight = "../images/rightthumb.png";

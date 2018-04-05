@@ -46,7 +46,7 @@ namespace DutyOfficer.CodeBehind
                     var statusPrinterBarcode = barcodeScannerUtils.GetDeviceStatus(barcodePrinterName);
 
                     if (statusPrinterBarcode.Count() == 1 && statusPrinterBarcode[0] == EnumDeviceStatus.Connected)
-                        printerMonitor.PrintBarcodeLabel(labelInfo);
+                        printerMonitor.PrintTTLabel(labelInfo);
                     else
                     {
                         // Printer disconnect, get list status of the causes disconnected
