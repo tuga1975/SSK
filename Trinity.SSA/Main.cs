@@ -238,11 +238,6 @@ namespace SSA
             }
         }
 
-        private void _autoPrintTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
-        {
-            _jsCallCS.CheckPrintingAndLabellingProgress();
-        }
-
         private void JSCallCS_OnLogOutCompleted()
         {
             NavigateTo(NavigatorEnums.Authentication_SmartCard);
