@@ -271,7 +271,7 @@ namespace DutyOfficer
             if (userID != null || userID != "")
             {
                 //Receive alerts and notifications from APS, SSK, SSA, UHP and ESP 
-                List<string> modules = new List<string>() { EnumStation.APS, EnumStation.SSK, EnumStation.SSA, EnumStation.UHP, EnumStation.ESP };
+                List<string> modules = new List<string>() { EnumStation.APS, EnumStation.SSK, EnumStation.SSA, EnumStation.UHP, EnumStation.ESP, EnumStation.ENROLMENT };
                 return dalNotify.GetAllNotifications(userID, modules,true);
             }
             return null;

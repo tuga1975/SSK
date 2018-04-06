@@ -9,9 +9,9 @@
             <div class="filters">Date</div>
             <div class="filters">
                 <div class="input-group date" id="datetimepicker">
-                    <input type='text' class="form-control" id="dateSearch" />
-                    <span class="input-group-addon">
-                        <span class="glyphicon glyphicon-calendar"></span>
+                    <input type='text' class="form-control" id="dateSearch" style="border-radius: 3px;padding-right:30px;width:150px;" />
+                    <span class="input-group-addon" style="z-index: 5;font-size: 16px;color: #000;position: relative;margin-left: -25px;">
+                        <i class="fa fa-calendar-o" aria-hidden="true"></i>
                     </span>
                 </div>
             </div>
@@ -38,10 +38,6 @@
     if (pageSize)
         pageSize = 10;
 
-    $(function () {
-        $('#datetimepicker').datepicker({ format: 'dd/mm/yyyy' });
-    });
-
     var today = new Date();
     var dd = today.getDate();
     var mm = today.getMonth() + 1; //January is 0!
@@ -56,7 +52,15 @@
     }
 
     today = dd + '/' + mm + '/' + yyyy;
-    $('#dateSearch').val(today);
+
+    $(function () {
+
+        //$('#dateSearch').val(today);
+
+        $('#datetimepicker').datepicker({ format: 'dd/mm/yyyy' }).datepicker("setDate", new Date());;
+    });
+
+
 
     var searchDateStatistic = $('#dateSearch').val();
 
@@ -107,8 +111,8 @@
                 sortable: true,
                 width: '10%',
                 align: 'center'
-                },
-                {
+            },
+            {
                 field: 'Max',
                 title: 'Max',
                 width: '10%',
@@ -225,7 +229,6 @@
                 });
             }
         }
-
         if (!dateSearch) {
             source = dataSource;
         }
