@@ -635,6 +635,32 @@ namespace SSK
                         else
                         {
                             queueNumber = _dalQueue.InsertQueueNumber(appointment.ID, appointment.UserId, EnumStation.SSK, currentUser.UserId);
+                            string MarkingNumber = new DAL_SettingSystem().GenerateMarkingNumber();
+                            var dalLabel = new DAL_Labels();
+                            dalLabel.Insert(new Trinity.BE.Label
+                            {
+                                UserId = supervisee.UserId,
+                                Label_Type = EnumLabelType.TT,
+                                CompanyName = CommonConstants.COMPANY_NAME,
+                                MarkingNo = MarkingNumber,
+                                NRIC = supervisee.NRIC,
+                                Name = supervisee.Name,
+                                LastStation = EnumStation.SSK,
+                                Queue_ID = queueNumber.Queue_ID
+                            });
+                            dalLabel.Insert(new Trinity.BE.Label
+                            {
+                                UserId = supervisee.UserId,
+                                Label_Type = EnumLabelType.MUB,
+                                CompanyName = CommonConstants.COMPANY_NAME,
+                                MarkingNo = MarkingNumber,
+                                NRIC = supervisee.NRIC,
+                                Name = supervisee.Name,
+                                LastStation = EnumStation.SSK,
+                                Queue_ID = queueNumber.Queue_ID
+                            });
+
+
                             Trinity.SignalR.Client.Instance.AppointmentReported(queueNumber.Queue_ID.ToString().Trim(), queueNumber.Appointment_ID.ToString().Trim());
                             Trinity.SignalR.Client.Instance.QueueInserted(queueNumber.Queue_ID.ToString().Trim());
                             APIUtils.FormQueueNumber.RefreshQueueNumbers();
@@ -644,6 +670,30 @@ namespace SSK
                     else
                     {
                         queueNumber = _dalQueue.InsertQueueNumberFromDO(supervisee.UserId, EnumStation.SSK, currentUser.UserId);
+                        string MarkingNumber = new DAL_SettingSystem().GenerateMarkingNumber();
+                        var dalLabel = new DAL_Labels();
+                        dalLabel.Insert(new Trinity.BE.Label
+                        {
+                            UserId = supervisee.UserId,
+                            Label_Type = EnumLabelType.TT,
+                            CompanyName = CommonConstants.COMPANY_NAME,
+                            MarkingNo = MarkingNumber,
+                            NRIC = supervisee.NRIC,
+                            Name = supervisee.Name,
+                            LastStation = EnumStation.SSK,
+                            Queue_ID = queueNumber.Queue_ID
+                        });
+                        dalLabel.Insert(new Trinity.BE.Label
+                        {
+                            UserId = supervisee.UserId,
+                            Label_Type = EnumLabelType.MUB,
+                            CompanyName = CommonConstants.COMPANY_NAME,
+                            MarkingNo = MarkingNumber,
+                            NRIC = supervisee.NRIC,
+                            Name = supervisee.Name,
+                            LastStation = EnumStation.SSK,
+                            Queue_ID = queueNumber.Queue_ID
+                        });
                         Trinity.SignalR.Client.Instance.QueueInserted(queueNumber.Queue_ID.ToString().Trim());
                         APIUtils.FormQueueNumber.RefreshQueueNumbers();
                         this._web.ShowMessage("Your queue number is:" + queueNumber.QueuedNumber);

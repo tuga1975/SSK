@@ -786,18 +786,23 @@ namespace DutyOfficer
             };
 
             // IsMUB = false: Print UB
+            DAL_Labels dalLabel = new DAL_Labels();
             if (!e.LabelInfo.IsMUB)
             {
-                labelInfo.Label_Type = EnumLabelType.UB;
-                labelInfo.DrugType = e.LabelInfo.DrugType;
+                //labelInfo.Label_Type = EnumLabelType.UB;
+                //labelInfo.DrugType = e.LabelInfo.DrugType;
+                //if (dalLabel.UpdateLabel(labelInfo) != null)
+                //{
+                //    string message = "Print MUB for " + e.LabelInfo.Name + " successful.";
+                //    //MessageBox.Show(message, "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //}
+            }
+            else
+            {
+                dalLabel.UpdatePrinting(e.LabelInfo.UserId, EnumLabelType.MUB, EnumPrintStatus.Successful, EnumStation.DUTYOFFICER, DateTime.Today);
             }
 
-            DAL_Labels dalLabel = new DAL_Labels();
-            if (dalLabel.UpdateLabel(labelInfo) != null)
-            {
-                string message = "Print MUB for " + e.LabelInfo.Name + " successful.";
-                //MessageBox.Show(message, "", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            
 
             DeleteQRCodeImageFileTemp();
         }
@@ -815,28 +820,8 @@ namespace DutyOfficer
 
         private void PrintTTLabels_OnPrintTTLabelSucceeded(object sender, PrintMUBAndTTLabelsEventArgs e)
         {
-            var labelInfo = new Trinity.BE.Label
-            {
-                UserId = e.LabelInfo.UserId,
-                Label_Type = EnumLabelType.TT,
-                CompanyName = e.LabelInfo.CompanyName,
-                MarkingNo = e.LabelInfo.MarkingNo,
-                //DrugType = e.LabelInfo.DrugType,
-                NRIC = e.LabelInfo.NRIC,
-                Name = e.LabelInfo.Name,
-                Date = DateTime.Now,
-                LastStation = e.LabelInfo.LastStation,
-                PrintCount = e.LabelInfo.PrintCount,
-                ReprintReason = e.LabelInfo.ReprintReason
-            };
-
             var dalLabel = new DAL_Labels();
-            if (dalLabel.UpdateLabel(labelInfo) != null)
-            {
-                //string message = "Print TT for " + e.LabelInfo.Name + " successful.";
-                //MessageBox.Show(message, "", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-
+            dalLabel.UpdatePrinting(e.LabelInfo.UserId, EnumLabelType.TT, EnumPrintStatus.Successful, EnumStation.DUTYOFFICER, DateTime.Today);
             DeleteQRCodeImageFileTemp();
         }
 

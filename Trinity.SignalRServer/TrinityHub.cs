@@ -92,7 +92,7 @@ namespace Trinity.NotificationServer
             {
                 Clients.Clients(Program.ProfileConnected.Where(d => d.isApp && d.Station == EnumStation.DUTYOFFICER).Select(d => d.ConnectionId).ToList()).OnNewNotification(notificationInfo);
             }
-            else if (notificationInfo.Name == NotificationNames.SSA_INSERTED_LABEL)
+            else if (notificationInfo.Name == NotificationNames.SSA_PRINTING_LABEL)
             {
                 Clients.Clients(Program.ProfileConnected.Where(d => d.isApp && d.Station == EnumStation.DUTYOFFICER).Select(d => d.ConnectionId).ToList()).OnNewNotification(notificationInfo);
             }

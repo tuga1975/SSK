@@ -38,44 +38,35 @@ namespace SSA.CodeBehind
                         supervisee = currentUser;
                     }
 
-                    // Update Queue finish at SSK and start for SSA
+                    // Update Queue SSA Processing
                     var dalQueue = new DAL_QueueNumber();
                     Trinity.DAL.DBContext.Queue dbQueue = dalQueue.UpdateQueueStatusByUserId(supervisee.UserId, EnumStation.SSK, EnumQueueStatuses.Processing, EnumStation.SSA, EnumQueueStatuses.Processing, "Printing MUB/TT labels", EnumQueueOutcomeText.Processing);
-                    
-                    string markingNo = new DAL_Labels().GetMarkingNoByUserId(supervisee.UserId);
-                    if(string.IsNullOrEmpty(markingNo))
-                    {
-                        markingNo = new DAL_SettingSystem().GenerateMarkingNumber();
-                    }
 
+                    var lable = new DAL_Labels().GetByUserID(supervisee.UserId, EnumLabelType.MUB, DateTime.Today);
+
+                    string markingNo = lable.MarkingNo;
                     var labelInfo = new LabelInfo
                     {
-                        UserId = supervisee.UserId,
-                        Name = supervisee.Name,
-                        NRIC = supervisee.NRIC,
+                        UserId = lable.UserId,
+                        Name = lable.Name,
+                        NRIC = lable.NRIC,
                         Label_Type = EnumLabelType.MUB,
                         Date = DateTime.Now.ToString("dd/MM/yyyy"),
-                        CompanyName = CommonConstants.COMPANY_NAME,
+                        CompanyName = lable.CompanyName,
                         LastStation = EnumStation.SSA,
                         MarkingNo = markingNo,
-                        DrugType = "NA"
+                        DrugType = "NA",
+                        QRCode = lable.QRCode
                     };
-
-                    byte[] byteArrayQRCode = null;
-                    byteArrayQRCode = CommonUtil.CreateLabelQRCode(labelInfo, "AESKey");
-                    labelInfo.QRCode = byteArrayQRCode;
-
-                    using (var ms = new System.IO.MemoryStream(byteArrayQRCode))
+                    using (var ms = new System.IO.MemoryStream(labelInfo.QRCode))
                     {
                         System.IO.Directory.CreateDirectory(String.Format("{0}/Temp", CSCallJS.curDir));
                         string fileName = String.Format("{0}/Temp/{1}", CSCallJS.curDir, "QRCode_" + supervisee.NRIC + ".png");
                         if (System.IO.File.Exists(fileName))
                             System.IO.File.Delete(fileName);
-
                         var bitmap = System.Drawing.Image.FromStream(ms);
                         bitmap.Save(fileName, System.Drawing.Imaging.ImageFormat.Png);
                     }
-
                     //profile model 
                     _web.LoadPageHtml("SuperviseeParticulars.html", labelInfo);
                 }

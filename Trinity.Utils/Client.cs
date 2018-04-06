@@ -111,7 +111,7 @@ namespace Trinity.SignalR
         public event EventHandler<NotificationInfo> OnDOUnblockSupervisee;
         public event EventHandler<NotificationInfo> OnQueueInserted;
         public event EventHandler<NotificationInfo> OnSSACompleted;
-        public event EventHandler<NotificationInfo> OnSSAInsertedLabel;
+        public event EventHandler<NotificationInfo> OnSSAPrintingLabel;
         public event EventHandler<NotificationInfo> OnBackendAPISend;
         public event EventHandler<NotificationInfo> OnAppointmentBooked;
         public event EventHandler<NotificationInfo> OnAppointmentReported;
@@ -179,9 +179,9 @@ namespace Trinity.SignalR
                 {
                     OnSSACompleted?.Invoke(this, notificationInfo);
                 }
-                else if (notificationInfo.Name == NotificationNames.SSA_INSERTED_LABEL)
+                else if (notificationInfo.Name == NotificationNames.SSA_PRINTING_LABEL)
                 {
-                    OnSSAInsertedLabel?.Invoke(this, notificationInfo);
+                    OnSSAPrintingLabel?.Invoke(this, notificationInfo);
                 }
                 else if (notificationInfo.Name == NotificationNames.SHP_COMPLETED || notificationInfo.Name == NotificationNames.SSP_COMPLETED || notificationInfo.Name == NotificationNames.SSP_ERROR)
                 {
@@ -383,9 +383,9 @@ namespace Trinity.SignalR
         {
             PostNotification(notificationInfo: new NotificationInfo() { Name = NotificationNames.SSA_COMPLETED, UserID = UserId });
         }
-        public void SSAInsertedLabel(string UserId)
+        public void SSAPrintingLabel(string UserId)
         {
-            PostNotification(notificationInfo: new NotificationInfo() { Name = NotificationNames.SSA_INSERTED_LABEL, UserID = UserId });
+            PostNotification(notificationInfo: new NotificationInfo() { Name = NotificationNames.SSA_PRINTING_LABEL, UserID = UserId });
         }
         #endregion
     }

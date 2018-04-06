@@ -41,7 +41,7 @@ namespace DutyOfficer
             Trinity.SignalR.Client.Instance.OnAppointmentBooked += OnAppointmentBooked_Handler;
             Trinity.SignalR.Client.Instance.OnAppointmentReported += OnAppointmentReported_Handler;
             Trinity.SignalR.Client.Instance.OnSSACompleted += OnSSACompleted_Handler;
-            Trinity.SignalR.Client.Instance.OnSSAInsertedLabel += OnSSAInsertedLabel_Handler;
+            Trinity.SignalR.Client.Instance.OnSSAPrintingLabel += OnSSAPrintingLabel_Handler;
             Trinity.SignalR.Client.Instance.OnBackendAPISend += OnBackendAPISend_Handler;
             
             // setup variables
@@ -121,7 +121,7 @@ namespace DutyOfficer
             RefreshCurrentTab(EnumDOTabName.Queue);
             RefreshCurrentTab(EnumDOTabName.MUBLabel);
         }
-        private void OnSSAInsertedLabel_Handler(object sender, NotificationInfo e)
+        private void OnSSAPrintingLabel_Handler(object sender, NotificationInfo e)
         {
             RefreshCurrentTab(EnumDOTabName.MUBLabel);
         }
@@ -143,6 +143,7 @@ namespace DutyOfficer
         {
             //string QueueID = e.QueueID;
             RefreshCurrentTab(EnumDOTabName.Queue);
+            RefreshCurrentTab(EnumDOTabName.MUBLabel);
         }
         
 

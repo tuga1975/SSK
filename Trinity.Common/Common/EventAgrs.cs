@@ -168,7 +168,7 @@ namespace Trinity.Common
         public const string APPOINTMENT_REPORTED = "APPOINTMENT_REPORTED";
         public const string QUEUE_INSERTED = "QUEUE_INSERTED";
         public const string SSA_COMPLETED = "SSA_COMPLETED";
-        public const string SSA_INSERTED_LABEL = "SSA_INSERTED_LABEL";
+        public const string SSA_PRINTING_LABEL = "SSA_PRINTING_LABEL";
         public const string BACKEND_API_SEND_DO = "BACKEND_API_SEND_DO";
 
         public const string SHP_COMPLETED = "SHP_COMPLETED";
