@@ -23,6 +23,7 @@ function updateNRICTextValue(value) {
 
 function updateLoginNRICTextValue(value) {
     $('#loginNRIC').val(value);
+    $('#loginPassword').focus();
 }
 
 //function displayNRICLogin() {
