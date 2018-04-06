@@ -540,7 +540,7 @@
                                                         <div style="margin-bottom:10px;text-align:center;"><strong id="leftProcessMessage">Place left thumb onto scanner.</strong></div>
                                                         <div class="row col-7 offset-1" style="margin:auto;">
                                                             <div class="col-12" style="padding:20px;background-color:#f1f1f1;margin:auto;text-align:center;">
-                                                                <img src='../images/leftthumb.png' id="leftFingerprint" style="height:200px;">
+                                                                <img src='../images/leftthumb.png' id="leftFingerprint" style="height:150px;">
                                                             </div>
                                                         </div>
                                                         <!--<div>Left Thumb-Fingerprint Preview</div>-->
@@ -549,7 +549,7 @@
                                                         <div style="margin-bottom:10px;text-align:center;"><strong id="rightProcessMessage">Place right thumb onto scanner.</strong></div>
                                                         <div class="row col-7 offset-1" style="margin:auto;">
                                                             <div class="col-12" style="padding:20px;background-color:#f1f1f1;margin:auto;text-align:center;">
-                                                                <img src='../images/rightthumb.png' id="rightFingerprint" style="height:200px;">
+                                                                <img src='../images/rightthumb.png' id="rightFingerprint" style="height:150px;">
                                                             </div>
                                                         </div>
                                                     </div>
@@ -572,10 +572,10 @@
                                             <div class="carousel-item col-8 offset-2">
                                                 <div class="newSuperviseeContentWrapper row" style="background-color:transparent;">
                                                     <div class="col-6" style="background-color:transparent;">
-                                                        <img src="" style="max-width:100%;border-radius:10px;border:2px solid #CCC;background-color:transparent;" name="frontCardImg" />
+                                                        <img src="" style="max-width:80%;border-radius:10px;border:2px solid #CCC;background-color:transparent;" name="frontCardImg" />
                                                     </div>
                                                     <div class="col-6" style="background-color:transparent;">
-                                                        <img src="" style="max-width:100%;border-radius:10px;border:2px solid #CCC;background-color:transparent;" name="backCardImg" />
+                                                        <img src="" style="max-width:80%;border-radius:10px;border:2px solid #CCC;background-color:transparent;" name="backCardImg" />
                                                     </div>
                                                 </div>
                                             </div>
@@ -649,10 +649,10 @@
                                                         </div>
                                                     </div>
                                                     <div style="clear:both;width:100%;"></div>
-                                                    <div style="text-align:center;width:100%;margin-bottom:20px;">
+                                                    <!--<div style="text-align:center;width:100%;margin-bottom:20px;">
                                                         <input class="btn" type="button" value="Reprint" id="rePrinter" style="display:none;" onclick="rePrintCardNew();" />
                                                         <input class="btn" type="button" value="Done" id="donePrinter" style="display:none;" onclick="api.server.LoadPage('Supervisee.html');" />
-                                                    </div>
+                                                    </div>-->
                                                 </div>
                                             </div>
 
@@ -672,6 +672,12 @@
 
                                     </div>
 
+                                </div>
+                            </div>
+                            <div style="position:absolute;width: 100%;height: 50px;bottom: 10px;border-top: 1px solid #CCC;left:0px;display:none;" panel-btn-save-step4>
+                                <div style="width: calc(100% - 80px);margin-left: 40px;text-align: right;margin-top: 11px;">
+                                    <a href="#" id="rePrinter" class="btn btn-light" onclick="rePrintCardNew();" style="min-width:150px;display:none;">Reprint</a>
+                                    <a href="#" id="donePrinter" class="btn btn-primary" style="min-width:150px;display:none;margin-left:20px;" onclick="api.server.LoadPage('Supervisee.html');">Done</a>
                                 </div>
                             </div>
                         </div>
@@ -972,6 +978,7 @@
             } else {
                 $('.carousel-control-next').css('display', 'flex');
             }
+
             if (data.to == 2) {
                 api.server.loadDataVerify(function (dataRe) {
                     var model = dataRe[0];
@@ -1029,6 +1036,11 @@
                     backCardImg = '';
                 }
                 api.server.UpdateSuperviseeBiodata(frontCardImg, backCardImg, JSON.stringify(CardInfo));
+            }
+            if (data.to == 3) {
+                $('[panel-btn-save-step4]').css('display', 'block');
+            } else {
+                $('[panel-btn-save-step4]').css('display', 'none');
             }
         });
 

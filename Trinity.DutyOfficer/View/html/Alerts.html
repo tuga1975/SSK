@@ -175,11 +175,7 @@
                 title: 'Message',
                 halign: "center",
                 formatter: function (value, row, index, field) {
-                    if (row.isReaded) {
-                        return '<div style="text-decoration:underline; color:dodgerblue;">' + value + '</div>';
-                    } else {
-                        return '<div style="text-decoration:underline; color:dodgerblue;cursor: pointer;">' + value + '</div>';
-                    }
+                    return '<div style="text-decoration:underline; color:dodgerblue;cursor: pointer;">' + value + '</div>';
                 }
             }],
             onClickCell: function (field, value, row, $element) {

@@ -100,38 +100,80 @@
                 sortable: true,
                 width: '10%',
                 align: 'center'
-            }, {
+            },
+            {
                 field: 'EndTime',
                 title: 'End Time',
                 sortable: true,
                 width: '10%',
                 align: 'center'
-            }, {
+                },
+                {
                 field: 'Max',
                 title: 'Max',
                 width: '10%',
-                align: 'center'
-            }, {
+                align: 'center',
+                formatter: function (value, row, index, field) {
+                    if (value == 0) {
+                        return '-';
+                    } else {
+                        return value;
+                    }
+                }
+            },
+            {
                 field: 'Booked',
                 title: 'Booked',
                 width: '10%',
-                align: 'center'
-            }, {
+                align: 'center',
+                formatter: function (value, row, index, field) {
+                    if (value == 0) {
+                        return '-';
+                    } else {
+                        return value;
+                    }
+                }
+            },
+            {
                 field: 'Reported',
                 title: 'Reported',
                 width: '10%',
-                align: 'center'
-            }, {
+                align: 'center',
+                formatter: function (value, row, index, field) {
+                    if (value == 0) {
+                        return '-';
+                    } else {
+                        return value;
+                    }
+                }
+            },
+            {
                 field: 'Absent',
                 title: 'Absent',
                 width: '10%',
-                align: 'center'
-            }, {
+                align: 'center',
+                formatter: function (value, row, index, field) {
+                    if (value == 0) {
+                        return '-';
+                    } else {
+                        return value;
+                    }
+                }
+            },
+            {
                 field: 'Available',
                 title: 'Avaliable',
                 width: '10%',
-                align: 'center'
-            }, {
+                align: 'center',
+                formatter: function (value, row, index, field) {
+                    if (value == 0) {
+                        return '-';
+                    } else {
+                        return value;
+                    }
+                }
+            },
+            {
                 field: '',
                 title: 'Details',
                 width: '30%',
