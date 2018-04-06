@@ -20,6 +20,15 @@ function setNRICFocus() {
     $('#txtNRIC').focus();
 }
 
+function updateNRICTextValue(value) {
+    $('#txtNRIC').val(value);
+} 
+
+function updateLoginNRICTextValue(value) {
+    $('#loginNRIC').val(value);
+    $('#loginPassword').focus();
+}
+
 function displayLogoutButton(display) {
     if (display == false) {
         $('#btn-logout').hide();

@@ -112,22 +112,25 @@ namespace SSA.CodeBehind.Authentication
                 System.Threading.Tasks.Task.Factory.StartNew(() => BarcodeScannerUtil.Instance.StartScanning(BarcodeScannerCallback));
                 return;
             }
-
-            if (supervisee.Status == EnumUserStatuses.Blocked)
+            else
             {
-                CSCallJS.ShowMessage(_web, "This supervisee is being blocked");
-                System.Threading.Tasks.Task.Factory.StartNew(() => BarcodeScannerUtil.Instance.StartScanning(BarcodeScannerCallback));
-                return;
+                if (supervisee.Status == EnumUserStatuses.Blocked)
+                {
+                    CSCallJS.ShowMessage(_web, "This supervisee is being blocked");
+                    System.Threading.Tasks.Task.Factory.StartNew(() => BarcodeScannerUtil.Instance.StartScanning(BarcodeScannerCallback));
+                    return;
+                }
+
+                // Create a session object to store UserLogin information
+                Session session = Session.Instance;
+                session.IsSmartCardAuthenticated = true;
+                session.IsFingerprintAuthenticated = true;
+                session[CommonConstants.SUPERVISEE] = supervisee;
+
+                // raise succeeded event
+                RaiseNRICSucceededEvent();
+                BarcodeScannerUtil.Instance.Disconnect();
             }
-
-            // Create a session object to store UserLogin information
-            Session session = Session.Instance;
-            session.IsSmartCardAuthenticated = true;
-            session.IsFingerprintAuthenticated = true;
-            session[CommonConstants.SUPERVISEE] = supervisee;
-
-            // raise succeeded event
-            RaiseNRICSucceededEvent();
         }
     }
 }

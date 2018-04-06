@@ -4,6 +4,7 @@ using SSA.CodeBehind.Authentication;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading;
@@ -168,7 +169,40 @@ namespace SSA
             //LogOut();
         }
 
-        public void ManualLogin(string username, string password)
+        public void ManualLogin()
+        {
+            _web.LoadPageHtml("Authentication/ManualLogin.html");
+
+            // Enable scanner
+            if (BarcodeScannerUtil.Instance.GetDeviceStatus().Contains(EnumDeviceStatus.Connected))
+            {
+                System.Threading.Tasks.Task.Factory.StartNew(() => BarcodeScannerUtil.Instance.StartScanning(BarcodeScannerCallback));
+            }
+        }
+
+        private void BarcodeScannerCallback(string value, string error)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(error))
+                {
+                    // Fill value to the textbox
+                    //CSCallJS.ShowMessage(_web, value);
+                    CSCallJS.InvokeScript(_web, "updateLoginNRICTextValue", value.Trim());
+                    //CSCallJS.UpdateLoginNRICTextValue(_web, value);
+                }
+                else
+                {
+                    CSCallJS.ShowMessageAsync(_web, "ERROR", error);
+                }
+            }
+            finally
+            {
+                BarcodeScannerUtil.Instance.Disconnect();
+            }
+        }
+
+        public void ProcessManualLogin(string username, string password)
         {
             EventCenter eventCenter = EventCenter.Default;
 

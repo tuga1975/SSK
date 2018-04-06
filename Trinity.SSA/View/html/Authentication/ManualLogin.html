@@ -33,7 +33,7 @@
             alert('Please type your password');
         }
         else {
-            api.server.ManualLogin($('#loginNRIC').val(), $('#loginPassword').val());
+            api.server.ProcessManualLogin($('#loginNRIC').val(), $('#loginPassword').val());
             return true;
         }
         return false;
