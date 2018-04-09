@@ -427,7 +427,7 @@ table td {
 }
 
 table th {
-    padding: 10px !important;
+    padding:3px 10px !important;
 }
 
 table tr:last-child td {
