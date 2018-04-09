@@ -222,7 +222,7 @@ namespace SSK
                 // Start page
                 //NavigateTo(NavigatorEnums.Authentication_SmartCard);
 
-                string startFrom = "Supervisee";
+                string startFrom = "";
                 // 50.132
                 //string superviseeId = "2FFD1A82-E5EC-4884-A5C6-1A68F661DAED";
                 //string dutyOfficerId = "9903e059-7209-45b6-a889-6c4cfdfaeea3";
