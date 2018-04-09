@@ -1,6 +1,6 @@
 ﻿<div class="table-wrapper formWrapper">
     <div class="tab-header">
-        <span class="formHeader"><b>MUB / TT Label</b></span>
+        <span class="formHeader"><b>Manual Printing of MUB/TT Labels</b></span>
     </div>
     <div class="tab-content">
         <div class="form-inline formEntries float-right">
@@ -16,27 +16,82 @@
         <table id="MUBAndTTlabel" class="table">
             <thead>
                 <tr>
-                    <th data-field="IsMUB" data-formatter="cbFormatter" class="col-xs-1" id="PrintMUB">Print MUB</th>
-                    <th data-field="IsTT" data-formatter="cbFormatter" class="col-xs-1" id="PrintTT">Print TT</th>
-                    <th data-field="NRIC" data-sortable="true" class="col-xs-3">NRIC</th>
-                    <th data-field="Name" data-sortable="true" class="col-xs-5">Name</th>
-                    <th data-field="LastStation" class="col-xs-2">Last Station</th>
+                    <th data-field="IsMUB" class="ui-checkbox" data-formatter="cbFormatter" id="PrintMUB" data-width="100" data-align="center" data-halign="center">Print MUB</th>
+                    <th data-field="IsTT" class="ui-checkbox" data-formatter="cbFormatter" id="PrintTT" data-width="100" data-align="center" data-halign="center">Print TT</th>
+                    <th data-field="NRIC" data-sortable="true" data-width="150" data-align="center" data-halign="center">NRIC</th>
+                    <th data-field="Name" data-sortable="true" data-align="center" data-halign="center">Name</th>
+                    <th data-field="LastStation" data-width="150" data-align="center" data-halign="center">Last Station</th>
                     <!--<th data-field="UserId" class="hidden"></th>-->
                 </tr>
             </thead>
         </table>
         <br />
         <div id="PrintMUBAndTTlabel" class="text-right">
-            <button id="PrintMUBAndTTbutton" class="btn btn-default">Print</button>
+            <button id="PrintMUBAndTTbutton" class="btn btn-default" style="background-color:#1CACF6;color: #FFF;padding: 9px 20px !important;min-width: 180px;text-transform: uppercase;font-size: 15px;">Print</button>
         </div>
         <ul id="output"></ul>
         <br />
     </div>
 </div>
+<style type="text/css">
+    .fixed-table-container tbody .selected td {
+        background-color: #FFF !important;
+    }
+
+    .table tr td.ui-checkbox {
+        position: relative;
+    }
+
+        .table tr td.ui-checkbox input {
+            width: 16px;
+            height: 16px;
+            opacity: 0;
+            z-index: 1;
+            position: relative;
+        }
+
+        .table tr td.ui-checkbox::after {
+            content: "\f00c";
+            position: absolute;
+            top: calc(50% - 11px);
+            left: calc(50% - 8px);
+            height: 16px;
+            width: 16px;
+            background: #FFF;
+            color: #FFF;
+            font-family: FontAwesome;
+            z-index: 0;
+            border: 1px solid #DDD;
+            display: block;
+            font-size: 10px;
+            border-radius: 3px;
+        }
+
+        .table tr td.ui-checkbox.ui-checked::after {
+            background-color: #1cacf6;
+            border-color: #1cacf6;
+        }
+
+        .table tr td.ui-checkbox.ui-checked::before {
+            content: " ";
+            width: 100%;
+            position: absolute;
+            border-bottom: 1px solid #DDD;
+            bottom: -1px;
+            left: 0px;
+        }
+</style>
 
 <script type="text/javascript">
 
     var dataSource = [];
+    $('#MUBAndTTlabel').on("change", ".ui-checkbox input:checkbox", function () {
+        if ($(this).prop('checked')) {
+            $(this).parent('td').addClass('ui-checked');
+        } else {
+            $(this).parent('td').removeClass('ui-checked');
+        }
+    });
 
     api.server.GetAllMUBAndTTlabels(function (data) {
         dataSource = data;
@@ -62,10 +117,10 @@
     function cbFormatter(value) {
         return '<input type="checkbox"' + (value == true ? " checked " : "") + '>';
     };
-    
+
     function getDataCallback(response) {
 
-        var data = JSON.parse(response);        
+        var data = JSON.parse(response);
         if (data) {
             data.forEach(function (element, index) {
                 dataSource.push({
@@ -88,7 +143,7 @@
             //singleSelect: true,
             data: dataSource
         });
-    } 
+    }
 
     $('#pageSize').change(function () {
         pageSize = $("#pageSize option:selected").text();
@@ -121,13 +176,13 @@
     });
 
     var model = [];
-        
 
-    $('#PrintMUBAndTTbutton').click(function () {            
+
+    $('#PrintMUBAndTTbutton').click(function () {
         var rows = document.getElementById('MUBAndTTlabel').rows;
         for (i = 0; i < rows.length; i++) {
             var row = rows[i];
-            
+
             if (row.cells[0].firstChild.checked == true || row.cells[1].firstChild.checked == true) {
                 model.push({
                     NRIC: row.cells[2].innerHTML,
@@ -138,8 +193,8 @@
                     //UserId: row.cells[5].innerHTML
                 });
             };
-        } ;
-        
+        };
+
         if (model.length > 0) {
             var data = JSON.stringify(model);
             api.server.LoadPopupMUBAndTTLabel(data, function () {
