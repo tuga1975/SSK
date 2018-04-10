@@ -9,6 +9,7 @@ using System.Threading;
 using System.Windows.Forms;
 using Trinity.Common;
 using Trinity.Common.Common;
+using Trinity.Common.Utils;
 using Trinity.DAL;
 using Trinity.Device;
 using Trinity.Device.Authentication;
@@ -549,6 +550,7 @@ namespace DutyOfficer
 
         private void LayerWeb_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
+            LogManager.Debug("Document Completed");
             if (_isFirstTimeLoaded)
             {
                 LayerWeb.InvokeScript("createEvent", JsonConvert.SerializeObject(_jsCallCS.GetType().GetMethods().Where(d => (d.IsPublic && !d.IsVirtual && !d.IsSecuritySafeCritical) || (d.IsPublic && d.IsSecurityCritical)).ToArray().Select(d => d.Name)));

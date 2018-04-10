@@ -67,6 +67,9 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -129,6 +132,7 @@
     <Compile Include="Utils\CommonUtil.cs" />
     <Compile Include="Utils\Convertor1.cs" />
     <Compile Include="Utils\Convertor2.cs" />
+    <Compile Include="Utils\LogManager.cs" />
     <Compile Include="Utils\TextToSpeech.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -251,6 +255,7 @@
     <None Include="Libs\TSC Barcode Printer\x64\UL.PCX" />
     <None Include="Libs\TSC Barcode Printer\x86\TSCLIB.lib" />
     <None Include="Libs\TSC Barcode Printer\x86\UL.PCX" />
+    <None Include="packages.config" />
     <None Include="View\bootstrap\css\bootstrap-grid.css.map">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
