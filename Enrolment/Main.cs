@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using Trinity.BE;
 using Trinity.Common;
 using Trinity.Common.Common;
+using Trinity.Common.Utils;
 using Trinity.DAL;
 using Trinity.Device.Util;
 
@@ -294,8 +295,8 @@ namespace Enrolment
 
         private void LayerWeb_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
+            LogManager.Debug("Document Completed");
             LayerWeb.InvokeScript("createEvent", JsonConvert.SerializeObject(_jsCallCS.GetType().GetMethods().Where(d => d.IsPublic && !d.IsVirtual && !d.IsSecuritySafeCritical).ToArray().Select(d => d.Name)));
-
             if (_isFirstTimeLoaded)
             {
 
