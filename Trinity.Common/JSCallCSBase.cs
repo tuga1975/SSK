@@ -17,7 +17,7 @@ public class JSCallCSBase
     public Type _thisType = null;
     public JSCallCSBase()
     {
-        
+
     }
 
     public void LoadPage(string file)
@@ -49,9 +49,9 @@ public class JSCallCSBase
             MethodInfo theMethod = _thisType.GetMethod(method);
             var parameterInfo = theMethod.GetParameters();
             List<object> dataParameter = ((object[])data[2]).ToList();
-            if(dataParameter.Count< parameterInfo.Length)
+            if (dataParameter.Count < parameterInfo.Length)
             {
-                for (int i = 1; i <= parameterInfo.Length-dataParameter.Count; i++)
+                for (int i = 1; i <= parameterInfo.Length - dataParameter.Count; i++)
                 {
                     dataParameter.Add(parameterInfo[i].RawDefaultValue);
                 }
@@ -75,9 +75,11 @@ public class JSCallCSBase
             }
             else
             {
-                this._web.ShowMessage(ex.Message);
+                string ID = Guid.NewGuid().ToString().Trim();
+                this._web.ShowMessage("An error occurred.<br/>Please contact the administrator.<br/>Error code: " + ID);
+                Trinity.Common.Utils.LogManager.Debug(ID + ": " + ex.ToString());
             }
-            
+
         }
     }
 
@@ -85,18 +87,18 @@ public class JSCallCSBase
     {
         ThreadPool.QueueUserWorkItem(new WaitCallback(actionThread), new object[] { method, guidEvent, pram });
     }
-    public void ExitWaitPopupMessage(string ID,bool status)
+    public void ExitWaitPopupMessage(string ID, bool status)
     {
-        if(Lib.ArrayIDWaitMessage.ContainsKey(ID))
+        if (Lib.ArrayIDWaitMessage.ContainsKey(ID))
             Lib.ArrayIDWaitMessage[ID] = status;
     }
-    public void LoadPopupHtml(string file,string model)
+    public void LoadPopupHtml(string file, string model)
     {
         this._web.LoadPopupHtml(file, model);
     }
     public void LogErrScript(string message)
     {
-        string file = String.Format("{0}/LogErr/Log.txt",CSCallJS.curDir);
+        string file = String.Format("{0}/LogErr/Log.txt", CSCallJS.curDir);
         string directoryName = new System.IO.FileInfo(file).DirectoryName;
         if (!System.IO.Directory.Exists(directoryName))
         {
