@@ -361,7 +361,7 @@ namespace Trinity.Device.Util
         {
             lock (syncRoot)
             {
-                //DisposeCapture();
+                DisposeCapture();
                 _futronicEnrollment = new FutronicEnrollment();
 
                 // Set control properties
@@ -405,7 +405,7 @@ namespace Trinity.Device.Util
                     _futronicEnrollment.UpdateScreenImage -= UpdateScreenImage_Enrollment;
                     _futronicEnrollment.OnFakeSource -= OnFakeSource_Enrollment;
                     _futronicEnrollment.OnEnrollmentComplete -= OnEnrollmentComplete_Enrollment;
-                    //_futronicEnrollment.Dispose();
+                    _futronicEnrollment.OnCalcel();
                     _futronicEnrollment = null;
                 }
             }
