@@ -47,7 +47,7 @@
                                     </a>
                                 </div>
                                 <div class="clear col-6 mr-auto" style="text-align:right;">
-                                    <a href="#" class="link-grey pull-right" onclick="clearFingerprint(0)" clearBtn>
+                                    <a href="#" class="link-blue pull-right" onclick="clearFingerprint(0)" clearBtn>
                                         Clear
                                     </a>
                                 </div>
@@ -62,7 +62,7 @@
                                     </a>
                                 </div>
                                 <div class="clear col-6 mr-auto" style="text-align:right;">
-                                    <a href="#" class="link-grey pull-right" onclick="clearFingerprint(1)" clearBtn>
+                                    <a href="#" class="link-blue pull-right" onclick="clearFingerprint(1)" clearBtn>
                                         Clear
                                     </a>
                                 </div>
@@ -81,6 +81,12 @@
         <a href="#" class="btn btn-primary" style="min-width:150px;" onclick="SubmitUpdateFingerprints();">Save</a>
     </div>
 </div>
+<style type="text/css">
+    a[disabled]{
+        pointer-events:none;
+        opacity:0.3;
+    }
+</style>
 <script type="text/javascript">
     var modelFingerprinter = null;
     api.ready(function (model) {
@@ -90,19 +96,15 @@
     });
     function disBtnFingerprint(status) {
         if (status) {
-            $('[capturefingerprint-btn]').attr('disabled', 'disabled');
+            $('[capturefingerprint-btn], [clearBtn]').attr('disabled', 'disabled');
         } else {
-            $('[capturefingerprint-btn]').removeAttr('disabled');
+            $('[capturefingerprint-btn], [clearBtn]').removeAttr('disabled');
         }
-        $('[capturefingerprint-btn]').removeClass('link-blue')
-        $('[capturefingerprint-btn]').addClass('link-grey');
-        $('[clearBtn]').removeClass('link-grey');
-        $('[clearBtn]').addClass('link-blue');
     }
     function clearFingerprint(LeftOrRight) {
         $('[capturefingerprint-img="' + LeftOrRight + '"]').attr('src', modelFingerprinter[LeftOrRight] == null ? '../images/rightthumb.png' : 'data:image/png;base64,' + modelFingerprinter[LeftOrRight]).attr('soure', '').attr('data-fingerprint', '');
-        $('[capturefingerprint-btn="' + LeftOrRight + '"]').removeClass('link-grey')
-        $('[capturefingerprint-btn="' + LeftOrRight + '"]').addClass('link-blue');
+        $('[capturefingerprint-btn="' + LeftOrRight + '"]');
+        $('[capturefingerprint-btn="' + LeftOrRight + '"]');
     }
     function captureFingerprintMessage(LeftOrRight, Message, color) {
         $('[capturefingerprint-message="' + LeftOrRight + '"]').text(Message).css('color', color);
