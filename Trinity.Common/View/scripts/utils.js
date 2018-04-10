@@ -149,6 +149,9 @@ function RunScript(script) {
         api.server.LogErrScript(script);
     }
 }
+function alert(content) {
+    ShowMessage('', content);
+}
 function ShowMessage(title, message, id) {
     id = id == null ? '' : id;
     var struc = {

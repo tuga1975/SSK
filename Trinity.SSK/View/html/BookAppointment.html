@@ -197,15 +197,14 @@
                             $oldActive.attr('active', 'true');
 
                         } else {
-                            var re = confirm('You have selected the time slot\n' + startTime + ' on ' + model[0].GetDateTxt + '\nConfirm time slot?', 'Warning');
-                            if (re == true) {
-                                api.server.UpdateTimeAppointment(model[0].ID, timeslot_ID);
-                            }
-                            if ($oldNotAvaiable.length>0) {
-                                $oldNotAvaiable.attr('availble', 'true');
-                            }
-                              
-                           
+                            ShowMessageConfirm('', 'You have selected the time slot<br/>' + startTime + ' on ' + model[0].GetDateTxt + '<br/>Confirm time slot?', function (status) {
+                                if (status) {
+                                    api.server.UpdateTimeAppointment(model[0].ID, timeslot_ID);
+                                }
+                                if ($oldNotAvaiable.length > 0) {
+                                    $oldNotAvaiable.attr('availble', 'true');
+                                }
+                            });
                         }
                     }
                 });
