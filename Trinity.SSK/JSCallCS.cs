@@ -879,9 +879,9 @@ namespace SSK
             // reset session value
             Session session = Session.Instance;
             var user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-            if (user != null)
+            if (user != null && !string.IsNullOrEmpty(user.UserId))
             {
-                Trinity.SignalR.Client.Instance.UserLoggedOut(((Trinity.BE.User)session[CommonConstants.USER_LOGIN]).UserId);
+                Trinity.SignalR.Client.Instance.UserLoggedOut(user.UserId);
             }
             session.IsSmartCardAuthenticated = false;
             session.IsFingerprintAuthenticated = false;
