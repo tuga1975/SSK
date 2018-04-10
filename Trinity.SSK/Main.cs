@@ -646,9 +646,17 @@ namespace SSK
 
         private void Main_Load(object sender, EventArgs e)
         {
-            APIUtils.FormQueueNumber = FormQueueNumber.GetInstance();
-            APIUtils.FormQueueNumber.ShowOnSecondaryScreen();
-            APIUtils.FormQueueNumber.Show();
+            try
+            {
+                APIUtils.FormQueueNumber = FormQueueNumber.GetInstance();
+                APIUtils.FormQueueNumber.ShowOnSecondaryScreen();
+                APIUtils.FormQueueNumber.Show();
+            }
+            catch (Exception ex)
+            {
+
+                this.LayerWeb.ShowMessageAsync("Error Queue", ex.Message);
+            }
         }
     }
 }
