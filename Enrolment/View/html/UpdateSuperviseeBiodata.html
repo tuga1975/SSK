@@ -572,10 +572,10 @@
                                             <div class="carousel-item col-8 offset-2">
                                                 <div class="newSuperviseeContentWrapper row" style="background-color:transparent;">
                                                     <div class="col-6" style="background-color:transparent;">
-                                                        <img src="" style="max-width:80%;border-radius:10px;border:2px solid #CCC;background-color:transparent;" name="frontCardImg" />
+                                                        <canvas id="frontCardImgCanvas" style="width:380px;border:2px solid #CCC;max-width:100%;border-radius:5px;"></canvas>
                                                     </div>
                                                     <div class="col-6" style="background-color:transparent;">
-                                                        <img src="" style="max-width:80%;border-radius:10px;border:2px solid #CCC;background-color:transparent;" name="backCardImg" />
+                                                        <canvas id="backCardImgCanvas" style="width:380px;border:2px solid #CCC;max-width:100%;border-radius:5px;"></canvas>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1019,7 +1019,7 @@
                     frontCardImg = null;
                     backCardImg = null;
                     api.loading(true);
-                    JsBarcode('[name="verifyBarcode"]', model.User.NRIC, { background: "transparent", displayValue: false, height: 50, fontSize: 8, width: 2, margin: 0, font: "Arial" });
+                    JsBarcode('[name="verifyBarcode"]', model.User.NRIC, { background: "transparent", displayValue: false, height: 85, fontSize: 8, width: 5, margin: 0, font: "Arial" });
                     setTimeout(function () {
                         $('#frontCard').parent('div').css('display', 'block');
                         $('#backCard').parent('div').css('display', 'none');
@@ -1033,8 +1033,54 @@
                                         frontCardImg = froncanvas.toDataURL("image/png");
                                         backCardImg = backcanvas.toDataURL("image/png");
 
-                                        $('[name="frontCardImg"]').attr('src', frontCardImg).css('display', 'inline-block');
-                                        $('[name="backCardImg"]').attr('src', backCardImg).css('display', 'inline-block');
+                                        var canvasFrontCard = document.getElementById("frontCardImgCanvas");
+                                        var ctxFrontCard = canvasFrontCard.getContext("2d");
+
+                                        var imgFrontCard = new Image();
+                                        imgFrontCard.src = frontCardImg;
+                                        imgFrontCard.onload = function () {
+
+                                            canvasFrontCard.height = imgFrontCard.height * 0.5;
+                                            canvasFrontCard.width = imgFrontCard.width * 0.5;
+
+                                            var oc = document.createElement('canvas'),
+                                                octx = oc.getContext('2d');
+                                            oc.width = canvasFrontCard.width;
+                                            oc.height = canvasFrontCard.height;
+                                            octx.drawImage(imgFrontCard, 0, 0, oc.width, oc.height);
+
+                                            // step 2
+                                            octx.drawImage(oc, 0, 0, oc.width, oc.height);
+
+                                            // step 3, resize to final size
+                                            ctxFrontCard.drawImage(oc, 0, 0, oc.width, oc.height,
+                                                0, 0, canvasFrontCard.width, canvasFrontCard.height);
+                                        }
+
+                                        var canvasBackCard = document.getElementById("backCardImgCanvas");
+                                        var ctxBackCard = canvasBackCard.getContext("2d");
+
+                                        var imgBackCard = new Image();
+                                        imgBackCard.src = backCardImg;
+                                        imgBackCard.onload = function () {
+
+                                            canvasBackCard.height = imgBackCard.height * 0.5;
+                                            canvasBackCard.width = imgBackCard.width * 0.5;
+
+                                            var oc = document.createElement('canvas'),
+                                                octx = oc.getContext('2d');
+                                            oc.width = canvasBackCard.width;
+                                            oc.height = canvasBackCard.height;
+                                            octx.drawImage(imgBackCard, 0, 0, oc.width, oc.height);
+
+                                            // step 2
+                                            octx.drawImage(oc, 0, 0, oc.width, oc.height);
+
+                                            // step 3, resize to final size
+                                            ctxBackCard.drawImage(oc, 0, 0, oc.width, oc.height,
+                                                0, 0, canvasBackCard.width, canvasBackCard.height);
+                                        }
+
                                         api.loading(false);
                                         $('#frontCard').parent('div').css('display', 'none');
                                         $('#backCard').parent('div').css('display', 'none');
@@ -1172,8 +1218,10 @@
         function showPrintMessage(status, message) {
             if (status != null) {
                 if (status) {
+                    $('[name="panel-succss-print"]').css('display', 'none');
                     countPrinterSmartCard = 0;
                     printSuccsess = true;
+
                 } else {
                     printSuccsess = false;
                     $('#rePrinter').css('display', 'inline-block');
@@ -1354,10 +1402,6 @@
             });
 
             return indexed_array;
-        }
-        function setFingerprintServerCall(finger1, finger2) {
-            $('#LeftThumbFingerprint').attr('src', finger1);
-            $('#RightThumbFingerprint').attr('src', finger2);
         }
 
         function saveNewDataToSession() {
