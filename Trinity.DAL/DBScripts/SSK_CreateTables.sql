@@ -757,7 +757,7 @@ Blocked' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level
 GO
 
 EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ESP
-UHP
+SHP
 ESP
 Test Result' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Notifications', @level2type=N'COLUMN',@level2name=N'Source'
 GO
@@ -779,7 +779,7 @@ GO
 EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'SSK
 SSA
 APS
-UHP
+SHP
 HSA
 ESP' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Queues', @level2type=N'COLUMN',@level2name=N'CurrentStation'
 GO
@@ -792,7 +792,7 @@ SSA: SSA Application
 ODA: Officer''s Desktop Application
 ES: Enrollment Station
 ESP
-UHP
+SHP
 APS' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'ApplicationDevice_Status', @level2type=N'COLUMN',@level2name=N'Station'
 GO
 

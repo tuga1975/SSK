@@ -142,7 +142,7 @@ namespace Experiment
             string comPort = ConfigurationManager.AppSettings["COMPort"];
             int baudRate = int.Parse(ConfigurationManager.AppSettings["BaudRate"]);
             string parity = ConfigurationManager.AppSettings["Parity"];
-            LEDStatusLightingUtil.Instance.OpenPort("SSK", comPort, baudRate, parity);
+            LEDStatusLightingUtil.Instance.OpenPort("ARK", comPort, baudRate, parity);
             LEDStatusLightingUtil.Instance.TurnOffAllLEDs();
             //LEDStatusLightingUtil.Instance.SwitchBLUELightOnOff(true);
             //LEDStatusLightingUtil.Instance.SwitchBLUELightFlashingOnOff(true);
@@ -324,7 +324,7 @@ namespace Experiment
 
         private void button9_Click(object sender, EventArgs e)
         {
-            Guid IDDocuemnt = new DAL_UploadedDocuments().Insert(new List<string>() { @"E:\GitHub\2018\Trinity\Trinity.SSK\bin\Debug\Temp\document_front.bmp" }, "9043d88e-94d1-4c01-982a-02d41965a621");
+            Guid IDDocuemnt = new DAL_UploadedDocuments().Insert(new List<string>() { @"E:\GitHub\2018\Trinity\Trinity.ARK\bin\Debug\Temp\document_front.bmp" }, "9043d88e-94d1-4c01-982a-02d41965a621");
             Alert(IDDocuemnt.ToString());
             //_SaveReasonForQueue(dataAbsenceReporting, IDDocuemnt);
         }

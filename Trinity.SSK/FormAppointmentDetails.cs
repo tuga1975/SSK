@@ -8,7 +8,7 @@ using Trinity.DAL;
 using Trinity.Device;
 using Trinity.Device.Util;
 
-namespace SSK
+namespace ARK
 {
     public partial class FormAppointmentDetails : Form
     {

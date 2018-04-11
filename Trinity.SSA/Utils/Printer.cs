@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Trinity.BE;
 
-namespace SSA.Utils
+namespace ALK.Utils
 {
     public class Printer
     {

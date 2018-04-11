@@ -57,7 +57,7 @@ namespace Trinity.DAL.DBContext
                 else
                     return EnumColors.Green;
             }
-            else if (Station == EnumStation.SSK)
+            else if (Station == EnumStation.ARK)
             {
                 if (this.Status != EnumAppointmentStatuses.Reported)
                     return EnumColors.Grey;

@@ -53,10 +53,10 @@ namespace DutyOfficer
         public StationColorDevice GetStationClolorDevice()
         {
             var dalDeviceStatus = new DAL_DeviceStatus();
-            _StationColorDevice.SSAColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStation.SSA);
-            _StationColorDevice.SSKColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStation.SSK);
-            _StationColorDevice.ESPColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStation.ESP);
-            _StationColorDevice.UHPColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStation.UHP);
+            _StationColorDevice.SSAColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStation.ALK);
+            _StationColorDevice.SSKColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStation.ARK);
+            _StationColorDevice.ESPColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStation.SSP);
+            _StationColorDevice.UHPColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStation.SHP);
             return _StationColorDevice;
         }
 
@@ -107,7 +107,7 @@ namespace DutyOfficer
             DAL_DrugResults dalDrug = new DAL_DrugResults();
             dalDrug.UpdateDrugSeal(UserId, COCA, BARB, LSD, METH, MTQL, PCP, KET, BUPRE, CAT, PPZ, NPS, dutyOfficer.UserId);
             var dalQueue = new DAL_QueueNumber();
-            dalQueue.UpdateQueueStatusByUserId(UserId, EnumStation.HSA, EnumQueueStatuses.Finished, EnumStation.ESP, EnumQueueStatuses.Processing, "Waiting for SSP", EnumQueueOutcomeText.Processing);
+            dalQueue.UpdateQueueStatusByUserId(UserId, EnumStation.HSA, EnumQueueStatuses.Finished, EnumStation.SSP, EnumQueueStatuses.Processing, "Waiting for SSP", EnumQueueOutcomeText.Processing);
         }
         public object getDataQueue()
         {
@@ -121,14 +121,14 @@ namespace DutyOfficer
                 NRIC = app.Membership_Users.NRIC,
                 Name = app.Membership_Users.Name,
                 APS = app.Color(EnumStation.APS),
-                SSK = app.Color(EnumStation.SSK),
-                SSA = app.Color(EnumStation.SSA),
-                UHP = app.Color(EnumStation.UHP),
+                ARK = app.Color(EnumStation.ARK),
+                ALK = app.Color(EnumStation.ALK),
+                SHP = app.Color(EnumStation.SHP),
                 HSA = new {
                     Status = app.Queue == null ? string.Empty : app.Queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStation.HSA).Status,
                     Text = app.Queue == null ? string.Empty : app.Queue.QueueDetails.Any(c => c.Station == EnumStation.HSA && (c.Status == EnumQueueStatuses.SelectSealOrDiscard || c.Status == EnumQueueStatuses.Finished)) ? GetResultUT(app.Membership_Users.NRIC, app.Date) : string.Empty
                 },
-                ESP = app.Color(EnumStation.ESP),
+                SSP = app.Color(EnumStation.SSP),
                 Outcome = app.Queue == null ? string.Empty : app.Queue.Outcome,
                 Message = new
                 {
@@ -143,15 +143,15 @@ namespace DutyOfficer
                 NRIC = queue.Membership_Users1.NRIC,
                 Name = queue.Membership_Users1.Name,
                 APS = queue.Color(EnumStation.APS),
-                SSK = queue.Color(EnumStation.SSK),
-                SSA = queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStation.SSA).Color,
-                UHP = queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStation.UHP).Color,
+                ARK = queue.Color(EnumStation.ARK),
+                ALK = queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStation.ALK).Color,
+                SHP = queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStation.SHP).Color,
                 HSA = new
                 {
                     Status = queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStation.HSA).Status,
                     Text = queue.QueueDetails.Any(c => c.Station == EnumStation.HSA && (c.Status == EnumQueueStatuses.SelectSealOrDiscard || c.Status == EnumQueueStatuses.Finished)) ? GetResultUT(queue.Membership_Users1.NRIC, queue.CreatedTime.Date) : string.Empty
                 },
-                ESP = queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStation.ESP).Color,
+                SSP = queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStation.SSP).Color,
                 Outcome = queue.Outcome,
                 Message = new
                 {
@@ -185,14 +185,14 @@ namespace DutyOfficer
             if (UTResult.Equals(EnumUTResult.NEG))
             {
                 dalDrug.UpdateDiscardDrugResult(UserId, dutyOfficer.UserId);
-                new Trinity.DAL.DAL_QueueNumber().UpdateQueueStatusByUserId(UserId, EnumStation.HSA, EnumQueueStatuses.Finished, EnumStation.ESP, EnumQueueStatuses.NotRequired, string.Empty, EnumQueueOutcomeText.Processing);
-                new Trinity.DAL.DAL_QueueNumber().UpdateQueueStatusByUserId(UserId, EnumStation.ESP, EnumQueueStatuses.NotRequired, EnumStation.DUTYOFFICER, EnumQueueStatuses.TabSmartCard, string.Empty, EnumQueueOutcomeText.TapSmartCardToContinue);
+                new Trinity.DAL.DAL_QueueNumber().UpdateQueueStatusByUserId(UserId, EnumStation.HSA, EnumQueueStatuses.Finished, EnumStation.SSP, EnumQueueStatuses.NotRequired, string.Empty, EnumQueueOutcomeText.Processing);
+                new Trinity.DAL.DAL_QueueNumber().UpdateQueueStatusByUserId(UserId, EnumStation.SSP, EnumQueueStatuses.NotRequired, EnumStation.DUTYOFFICER, EnumQueueStatuses.TabSmartCard, string.Empty, EnumQueueOutcomeText.TapSmartCardToContinue);
             }
             else
             {
                 dalDrug.UpdateDiscardDrugResult(UserId, dutyOfficer.UserId);
-                new Trinity.DAL.DAL_QueueNumber().UpdateQueueStatusByUserId(UserId, EnumStation.HSA, EnumQueueStatuses.Finished, EnumStation.ESP, EnumQueueStatuses.NotRequired, string.Empty, EnumQueueOutcomeText.Processing);
-                new Trinity.DAL.DAL_QueueNumber().UpdateQueueStatusByUserId(UserId, EnumStation.ESP, EnumQueueStatuses.NotRequired, EnumStation.DUTYOFFICER, EnumQueueStatuses.TabSmartCard, EnumMessage.SelectOutCome, EnumQueueOutcomeText.TapSmartCardToContinue);
+                new Trinity.DAL.DAL_QueueNumber().UpdateQueueStatusByUserId(UserId, EnumStation.HSA, EnumQueueStatuses.Finished, EnumStation.SSP, EnumQueueStatuses.NotRequired, string.Empty, EnumQueueOutcomeText.Processing);
+                new Trinity.DAL.DAL_QueueNumber().UpdateQueueStatusByUserId(UserId, EnumStation.SSP, EnumQueueStatuses.NotRequired, EnumStation.DUTYOFFICER, EnumQueueStatuses.TabSmartCard, EnumMessage.SelectOutCome, EnumQueueOutcomeText.TapSmartCardToContinue);
             }
         }
         public void LoadPopupQueue(string queue_ID)
@@ -270,8 +270,8 @@ namespace DutyOfficer
             string userID = ((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId;
             if (userID != null || userID != "")
             {
-                //Receive alerts and notifications from APS, SSK, SSA, UHP and ESP 
-                List<string> modules = new List<string>() { EnumStation.APS, EnumStation.SSK, EnumStation.SSA, EnumStation.UHP, EnumStation.ESP, EnumStation.ENROLMENT };
+                //Receive alerts and notifications from APS, ARK, ALK, SHP and SSP 
+                List<string> modules = new List<string>() { EnumStation.APS, EnumStation.ARK, EnumStation.ALK, EnumStation.SHP, EnumStation.SSP, EnumStation.ENROLMENT };
                 return dalNotify.GetAllNotifications(userID, modules,true);
             }
             return null;
@@ -442,7 +442,7 @@ namespace DutyOfficer
                 Trinity.DAL.DBContext.Timeslot timeslot = dalQueue.GetTimeSlotEmpty();
                 var response = dalAppointment.UpdateTimeslotForApptmt(appointment.ID, timeslot.Timeslot_ID);
                 appointment = response;
-                Trinity.DAL.DBContext.Queue queueNumber = dalQueue.InsertQueueNumber(appointment.ID, appointment.UserId, EnumStation.SSK, dutyOfficer.UserId);
+                Trinity.DAL.DBContext.Queue queueNumber = dalQueue.InsertQueueNumber(appointment.ID, appointment.UserId, EnumStation.ARK, dutyOfficer.UserId);
             }
         }
         #endregion

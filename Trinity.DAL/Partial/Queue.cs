@@ -14,10 +14,10 @@ namespace Trinity.DAL.DBContext
     {
         public string Color(string Station)
         {
-            QueueDetail detail = this.QueueDetails.FirstOrDefault(c => c.Station == EnumStation.SSK);
+            QueueDetail detail = this.QueueDetails.FirstOrDefault(c => c.Station == EnumStation.ARK);
             if (detail != null)
             {
-                if (Station == EnumStation.SSK)
+                if (Station == EnumStation.ARK)
                 {
                     if (detail.Status == EnumQueueStatuses.Errors)
                     {

@@ -63,12 +63,12 @@ namespace Experiment
                 string parity = "";
                 if (chkSSA.Checked)
                 {
-                    station = "SSA";
+                    station = "ALK";
                     parity = "Even";
                 }
                 else if (chkSSK.Checked)
                 {
-                    station = "SSK";
+                    station = "ARK";
                     parity = "None";
                 }
                 ledStatusLightingUtil.DataReceived += LedStatusLightingUtil_DataReceived;
@@ -234,7 +234,7 @@ namespace Experiment
         //    txtReceivedData.Text = "";
         //    try
         //    {
-        //        MessageBox.Show("Starting to send command '" + asciiCommand + "' to SSK LED Status Lighting...");
+        //        MessageBox.Show("Starting to send command '" + asciiCommand + "' to ARK LED Status Lighting...");
         //        serialPort1.WriteLine(asciiCommand);
         //    }
         //    catch (Exception ex)

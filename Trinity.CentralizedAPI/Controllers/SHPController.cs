@@ -95,7 +95,7 @@ namespace Trinity.BackendAPI.Controllers
         {
             try
             {
-                string IDNoti = new DAL.DAL_Notification().InsertNotification(null, null, null, data.Content, false, data.Datetime.Value, data.notification_code, data.Type, EnumStation.UHP);
+                string IDNoti = new DAL.DAL_Notification().InsertNotification(null, null, null, data.Content, false, data.Datetime.Value, data.notification_code, data.Type, EnumStation.SHP);
                 if (string.IsNullOrEmpty(IDNoti))
                 {
                     //return Ok(string.Empty);
@@ -103,7 +103,7 @@ namespace Trinity.BackendAPI.Controllers
                 }
                 else
                 {
-                    await System.Threading.Tasks.Task.Run(() => Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(null, null, data.Content, data.Type, EnumStation.UHP, false));
+                    await System.Threading.Tasks.Task.Run(() => Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(null, null, data.Content, data.Type, EnumStation.SHP, false));
                     //return Ok(IDNoti);
                     return Ok(true);
                 }
@@ -121,7 +121,7 @@ namespace Trinity.BackendAPI.Controllers
             try
             {
                 var user = new DAL.DAL_User().GetByNRIC(model.NRIC);
-                new DAL.DAL_QueueNumber().UpdateQueueStatusByUserId(user.UserId, EnumStation.UHP, EnumQueueStatuses.Finished, EnumStation.HSA, EnumQueueStatuses.Processing, "", EnumQueueOutcomeText.Processing);
+                new DAL.DAL_QueueNumber().UpdateQueueStatusByUserId(user.UserId, EnumStation.SHP, EnumQueueStatuses.Finished, EnumStation.HSA, EnumQueueStatuses.Processing, "", EnumQueueOutcomeText.Processing);
                 await System.Threading.Tasks.Task.Run(() => Trinity.SignalR.Client.Instance.BackendAPISend(NotificationNames.SHP_COMPLETED, model.NRIC));
                 return Ok(true);
             }

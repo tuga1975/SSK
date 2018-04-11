@@ -102,7 +102,7 @@ namespace Trinity.Device
         {
             _lstDevices = new List<DeviceStatus>();
 
-            if (Lib.Station == EnumStation.SSK)
+            if (Lib.Station == EnumStation.ARK)
             {
                 // Initiate LEDs light and open port
                 LEDStatusLightingUtil.Instance.OpenPort();
@@ -201,7 +201,7 @@ namespace Trinity.Device
             {
                 LEDStatusLightingUtil ledLightUtil = LEDStatusLightingUtil.Instance;
 
-                if (_station.ToUpper() == EnumStation.SSK)
+                if (_station.ToUpper() == EnumStation.ARK)
                 {
                     // Get latest application status
                     EnumApplicationStatus newApplicationStatus = GetApplicationStatus();
@@ -237,7 +237,7 @@ namespace Trinity.Device
                         }
                     }
                 }
-                else if (_station.ToUpper() == EnumStation.SSA)
+                else if (_station.ToUpper() == EnumStation.ALK)
                 {
                 }
             }

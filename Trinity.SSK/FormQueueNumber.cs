@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Trinity.DAL.DBContext;
 
-namespace SSK
+namespace ARK
 {
     public partial class FormQueueNumber : Form
     {
@@ -103,9 +103,9 @@ namespace SSK
 
                 List<Trinity.DAL.DBContext.Queue> allQueue = _DAL_QueueNumber.SSKGetQueueToDay();
 
-                List<Trinity.DAL.DBContext.Queue> queueNowServing = allQueue.Where(d => d.QueueDetails.Any(c => c.Station == EnumStation.SSK && c.Status == EnumQueueStatuses.Processing)).OrderBy(d => d.QueueDetails.FirstOrDefault(c => c.Station == EnumStation.SSK).LastUpdatedDate).ToList();
+                List<Trinity.DAL.DBContext.Queue> queueNowServing = allQueue.Where(d => d.QueueDetails.Any(c => c.Station == EnumStation.ARK && c.Status == EnumQueueStatuses.Processing)).OrderBy(d => d.QueueDetails.FirstOrDefault(c => c.Station == EnumStation.ARK).LastUpdatedDate).ToList();
 
-                List<Trinity.DAL.DBContext.Queue> arrQueue = allQueue.Where(d => d.QueueDetails.Any(c => c.Station == EnumStation.SSK && c.Status == EnumQueueStatuses.Waiting)).OrderBy(d => d.Timeslot.SortCategory).ThenBy(d => d.Timeslot.StartTime).ToList();
+                List<Trinity.DAL.DBContext.Queue> arrQueue = allQueue.Where(d => d.QueueDetails.Any(c => c.Station == EnumStation.ARK && c.Status == EnumQueueStatuses.Waiting)).OrderBy(d => d.Timeslot.SortCategory).ThenBy(d => d.Timeslot.StartTime).ToList();
 
                 // get currentTimeslot
                 Trinity.DAL.DBContext.Timeslot currentTimeslot = timeslots.FirstOrDefault(d => d.StartTime.Value <= DateTime.Now.TimeOfDay && d.EndTime.Value > DateTime.Now.TimeOfDay);
@@ -189,7 +189,7 @@ namespace SSK
                         Queue addNowServing = queueCurrent[0];
                         queueNowServing.Add(addNowServing);
                         queueCurrent.RemoveAt(0);
-                        new DAL_QueueDetails().UpdateStatusQueueDetail(addNowServing.Queue_ID, EnumStation.SSK, EnumQueueStatuses.Processing);
+                        new DAL_QueueDetails().UpdateStatusQueueDetail(addNowServing.Queue_ID, EnumStation.ARK, EnumQueueStatuses.Processing);
                     }
                 }
 
@@ -237,7 +237,7 @@ namespace SSK
         {
             var appointment = new DAL_Appointments().GetAppointmentByID(allQueue[0].AppointmentId);
             //var nextTimeslot = new DAL_Setting().GetNextTimeslotToday(appointment.Timeslot.StartTime.Value);
-            var allNextQueue = new DAL_QueueNumber().GetAllQueueByNextimeslot(appointment.Timeslot.StartTime.Value, EnumStation.SSK);
+            var allNextQueue = new DAL_QueueNumber().GetAllQueueByNextimeslot(appointment.Timeslot.StartTime.Value, EnumStation.ARK);
             return allNextQueue;
         }
         private void RefreshQueueNumberTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)

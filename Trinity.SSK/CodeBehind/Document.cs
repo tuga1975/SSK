@@ -5,7 +5,7 @@ using System.Windows.Forms;
 using Trinity.Common;
 using Trinity.DAL;
 
-namespace SSK.CodeBehind
+namespace ARK.CodeBehind
 {
     class Document
     {

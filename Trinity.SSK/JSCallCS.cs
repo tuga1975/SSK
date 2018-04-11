@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json;
-using SSK.CodeBehind.Authentication;
+using ARK.CodeBehind.Authentication;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -14,7 +14,7 @@ using Trinity.Device.Util;
 using Trinity.Util;
 using Trinity.Common.Common;
 
-namespace SSK
+namespace ARK
 {
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public class JSCallCS : JSCallCSBase
@@ -264,7 +264,7 @@ namespace SSK
 
         public void UpdateTimeAppointment(string appointment_ID, string timeslot_ID)
         {
-            if (new DAL_QueueNumber().IsInQueue(appointment_ID, EnumStation.SSK))
+            if (new DAL_QueueNumber().IsInQueue(appointment_ID, EnumStation.ARK))
             {
                 this._web.ShowMessage("You have already queued!<br/> The timeslot cannot be changed.");
             }
@@ -635,7 +635,7 @@ namespace SSK
                         }
                         else
                         {
-                            queueNumber = _dalQueue.InsertQueueNumber(appointment.ID, appointment.UserId, EnumStation.SSK, currentUser.UserId);
+                            queueNumber = _dalQueue.InsertQueueNumber(appointment.ID, appointment.UserId, EnumStation.ARK, currentUser.UserId);
                             string MarkingNumber = new DAL_SettingSystem().GenerateMarkingNumber();
                             var dalLabel = new DAL_Labels();
                             dalLabel.Insert(new Trinity.BE.Label
@@ -646,7 +646,7 @@ namespace SSK
                                 MarkingNo = MarkingNumber,
                                 NRIC = supervisee.NRIC,
                                 Name = supervisee.Name,
-                                LastStation = EnumStation.SSK,
+                                LastStation = EnumStation.ARK,
                                 Queue_ID = queueNumber.Queue_ID
                             });
                             dalLabel.Insert(new Trinity.BE.Label
@@ -657,7 +657,7 @@ namespace SSK
                                 MarkingNo = MarkingNumber,
                                 NRIC = supervisee.NRIC,
                                 Name = supervisee.Name,
-                                LastStation = EnumStation.SSK,
+                                LastStation = EnumStation.ARK,
                                 Queue_ID = queueNumber.Queue_ID
                             });
 
@@ -670,7 +670,7 @@ namespace SSK
                     }
                     else
                     {
-                        queueNumber = _dalQueue.InsertQueueNumberFromDO(supervisee.UserId, EnumStation.SSK, currentUser.UserId);
+                        queueNumber = _dalQueue.InsertQueueNumberFromDO(supervisee.UserId, EnumStation.ARK, currentUser.UserId);
                         string MarkingNumber = new DAL_SettingSystem().GenerateMarkingNumber();
                         var dalLabel = new DAL_Labels();
                         dalLabel.Insert(new Trinity.BE.Label
@@ -681,7 +681,7 @@ namespace SSK
                             MarkingNo = MarkingNumber,
                             NRIC = supervisee.NRIC,
                             Name = supervisee.Name,
-                            LastStation = EnumStation.SSK,
+                            LastStation = EnumStation.ARK,
                             Queue_ID = queueNumber.Queue_ID
                         });
                         dalLabel.Insert(new Trinity.BE.Label
@@ -692,7 +692,7 @@ namespace SSK
                             MarkingNo = MarkingNumber,
                             NRIC = supervisee.NRIC,
                             Name = supervisee.Name,
-                            LastStation = EnumStation.SSK,
+                            LastStation = EnumStation.ARK,
                             Queue_ID = queueNumber.Queue_ID
                         });
                         Trinity.SignalR.Client.Instance.QueueInserted(queueNumber.Queue_ID.ToString().Trim());
@@ -707,7 +707,7 @@ namespace SSK
                     //}
                     //else if (appointment != null && !string.IsNullOrEmpty(appointment.Timeslot_ID))
                     //{
-                    //    queueNumber = _dalQueue.InsertQueueNumber(appointment.ID, appointment.UserId, EnumStation.SSK, currentUser.UserId);
+                    //    queueNumber = _dalQueue.InsertQueueNumber(appointment.ID, appointment.UserId, EnumStation.ARK, currentUser.UserId);
                     //    if (queueNumber != null)
                     //    {
                     //        Trinity.SignalR.Client.Instance.AppointmentBookedOrReported(appointment.ID.ToString().Trim(), EnumAppointmentStatuses.Reported);

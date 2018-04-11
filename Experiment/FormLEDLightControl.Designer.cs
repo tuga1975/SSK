@@ -342,7 +342,7 @@
             this.chkSSA.Name = "chkSSA";
             this.chkSSA.Size = new System.Drawing.Size(97, 36);
             this.chkSSA.TabIndex = 18;
-            this.chkSSA.Text = "SSA";
+            this.chkSSA.Text = "ALK";
             this.chkSSA.UseVisualStyleBackColor = true;
             // 
             // chkSSK
@@ -353,7 +353,7 @@
             this.chkSSK.Name = "chkSSK";
             this.chkSSK.Size = new System.Drawing.Size(97, 36);
             this.chkSSK.TabIndex = 19;
-            this.chkSSK.Text = "SSK";
+            this.chkSSK.Text = "ARK";
             this.chkSSK.UseVisualStyleBackColor = true;
             // 
             // radREDLight

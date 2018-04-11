@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Trinity.Identity;
 
-namespace SSK
+namespace ARK
 {
     public partial class FormTextToSpeech : Form
     {

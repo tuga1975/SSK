@@ -9,7 +9,7 @@ using Trinity.Common;
 using Trinity.Device;
 using Trinity.Device.Util;
 
-namespace SSA.CodeBehind
+namespace ALK.CodeBehind
 {
     public class PrintMUBAndTTLabels
     {

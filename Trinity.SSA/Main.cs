@@ -13,7 +13,7 @@ using Trinity.DAL;
 using Trinity.Device.Authentication;
 using Trinity.Device.Util;
 
-namespace SSA
+namespace ALK
 {
     public partial class Main : Form
     {
@@ -229,7 +229,7 @@ namespace SSA
 
                 _isFirstTimeLoaded = false;
             }
-            // SSA is ready to use - all is well
+            // ALK is ready to use - all is well
             // Turn on GREEN Light
             if (LEDStatusLightingUtil.Instance.IsPortOpen)
             {

@@ -5,7 +5,7 @@ using Trinity.Common;
 using Trinity.DAL;
 using Trinity.Device.Util;
 
-namespace SSA.CodeBehind.Authentication
+namespace ALK.CodeBehind.Authentication
 {
     public class NRIC
     {

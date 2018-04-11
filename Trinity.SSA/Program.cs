@@ -7,7 +7,7 @@ using System.Windows.Forms;
 using Trinity.Device;
 using Trinity.Device.Util;
 
-namespace SSA
+namespace ALK
 {
     static class Program
     {
@@ -40,13 +40,13 @@ namespace SSA
             MUBLabelPrinterMonitor.Start();
             TTLabelPrinterMonitor.Start();
 
-            // SSA is initialisation for use.
+            // ALK is initialisation for use.
             // Turn on BLUE Light
             string comPort = ConfigurationManager.AppSettings["COMPort"];
             int baudRate = int.Parse(ConfigurationManager.AppSettings["BaudRate"]);
             string parity = ConfigurationManager.AppSettings["Parity"];
             Task.Factory.StartNew(ApplicationStatusManager.Instance.StartInitialization);
-            LEDStatusLightingUtil.Instance.OpenPort("SSA", comPort, baudRate, parity);
+            LEDStatusLightingUtil.Instance.OpenPort("ALK", comPort, baudRate, parity);
             LEDStatusLightingUtil.Instance.TurnOffAllLEDs();
             LEDStatusLightingUtil.Instance.SwitchBLUELightOnOff(true);
         }

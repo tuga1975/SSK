@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNet.Identity;
 using Newtonsoft.Json;
-using SSA.CodeBehind.Authentication;
+using ALK.CodeBehind.Authentication;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,7 +15,7 @@ using Trinity.DAL;
 using Trinity.Device.Util;
 using Trinity.Identity;
 
-namespace SSA
+namespace ALK
 {
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public class JSCallCS : JSCallCSBase
@@ -120,7 +120,7 @@ namespace SSA
 
         private void PrintMUBLabels_OnPrintMUBLabelSucceeded(object sender, PrintMUBAndTTLabelsEventArgs e)
         {
-            new DAL_Labels().UpdatePrinting(e.LabelInfo.UserId, EnumLabelType.MUB, EnumPrintStatus.Successful, EnumStation.SSA, DateTime.Today);
+            new DAL_Labels().UpdatePrinting(e.LabelInfo.UserId, EnumLabelType.MUB, EnumPrintStatus.Successful, EnumStation.ALK, DateTime.Today);
             _PrintMUBSucceed = true;
             Trinity.SignalR.Client.Instance.SSAPrintingLabel(e.LabelInfo.UserId);
         }
@@ -130,27 +130,27 @@ namespace SSA
             try
             {
 
-                new DAL_Labels().UpdatePrinting(e.LabelInfo.UserId, EnumLabelType.MUB, e.LabelInfo.PrintStatus, EnumStation.SSA, DateTime.Today);
+                new DAL_Labels().UpdatePrinting(e.LabelInfo.UserId, EnumLabelType.MUB, e.LabelInfo.PrintStatus, EnumStation.ALK, DateTime.Today);
                 _PrintMUBSucceed = false;
                 Trinity.SignalR.Client.Instance.SSAPrintingLabel(e.LabelInfo.UserId);
                 Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(e.LabelInfo.UserId, "Cannot print MUB Label", "User '" + e.LabelInfo.Name + "' cannot print MUB label.", EnumNotificationTypes.Error);
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Trinity.SSA.JSCallCS.PrintMUBLabels_OnPrintMUBLabelFailed. Details:" + ex.Message);
+                MessageBox.Show("Trinity.ALK.JSCallCS.PrintMUBLabels_OnPrintMUBLabelFailed. Details:" + ex.Message);
             }
         }
 
         private void PrintTTLabels_OnPrintTTLabelSucceeded(object sender, PrintMUBAndTTLabelsEventArgs e)
         {
-            new DAL_Labels().UpdatePrinting(e.LabelInfo.UserId, EnumLabelType.TT, EnumPrintStatus.Successful, EnumStation.SSA, DateTime.Today);
+            new DAL_Labels().UpdatePrinting(e.LabelInfo.UserId, EnumLabelType.TT, EnumPrintStatus.Successful, EnumStation.ALK, DateTime.Today);
             Trinity.SignalR.Client.Instance.SSAPrintingLabel(e.LabelInfo.UserId);
             _PrintTTSucceed = true;
         }
 
         private void PrintTTLabels_OnPrintTTLabelFailed(object sender, PrintMUBAndTTLabelsEventArgs e)
         {
-            new DAL_Labels().UpdatePrinting(e.LabelInfo.UserId, EnumLabelType.TT, e.LabelInfo.PrintStatus, EnumStation.SSA, DateTime.Today);
+            new DAL_Labels().UpdatePrinting(e.LabelInfo.UserId, EnumLabelType.TT, e.LabelInfo.PrintStatus, EnumStation.ALK, DateTime.Today);
             _PrintTTSucceed = false;
             Trinity.SignalR.Client.Instance.SSAPrintingLabel(e.LabelInfo.UserId);
             Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(e.LabelInfo.UserId, "Cannot print TT Label", "User '" + e.LabelInfo.Name + "' cannot print TT label.", EnumNotificationTypes.Error);
@@ -749,8 +749,8 @@ namespace SSA
             // Remove queue number and inform others
             var dalQueue = new DAL_QueueNumber();
 
-            dalQueue.UpdateQueueStatusByUserId(supervisee.UserId, EnumStation.SSK, EnumQueueStatuses.Finished, EnumStation.SSA, EnumQueueStatuses.Processing, "Printing MUB/TT labels", EnumQueueOutcomeText.Processing);
-            dalQueue.UpdateQueueStatusByUserId(supervisee.UserId, EnumStation.SSA, EnumQueueStatuses.Finished, EnumStation.UHP, EnumQueueStatuses.Processing, "Waiting for SHP", EnumQueueOutcomeText.Processing);
+            dalQueue.UpdateQueueStatusByUserId(supervisee.UserId, EnumStation.ARK, EnumQueueStatuses.Finished, EnumStation.ALK, EnumQueueStatuses.Processing, "Printing MUB/TT labels", EnumQueueOutcomeText.Processing);
+            dalQueue.UpdateQueueStatusByUserId(supervisee.UserId, EnumStation.ALK, EnumQueueStatuses.Finished, EnumStation.SHP, EnumQueueStatuses.Processing, "Waiting for SHP", EnumQueueOutcomeText.Processing);
 
             Trinity.SignalR.Client.Instance.QueueCompleted(supervisee.UserId);
             Trinity.SignalR.Client.Instance.SSACompleted(supervisee.UserId);
