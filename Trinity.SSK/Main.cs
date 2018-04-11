@@ -18,7 +18,7 @@ using Trinity.Device.Util;
 using Trinity.SignalR;
 using Trinity.Util;
 
-namespace SSK
+namespace ARK
 {
     public partial class Main : Form
     {

@@ -7,7 +7,7 @@ using System.Windows.Forms;
 using Trinity.Common;
 using Trinity.DAL;
 
-namespace SSA.CodeBehind
+namespace ALK.CodeBehind
 {
     class SupperviseeParticulars
     {
@@ -40,7 +40,7 @@ namespace SSA.CodeBehind
 
                     // Update Queue SSA Processing
                     var dalQueue = new DAL_QueueNumber();
-                    Trinity.DAL.DBContext.Queue dbQueue = dalQueue.UpdateQueueStatusByUserId(supervisee.UserId, EnumStation.SSK, EnumQueueStatuses.Processing, EnumStation.SSA, EnumQueueStatuses.Processing, "Printing MUB/TT labels", EnumQueueOutcomeText.Processing);
+                    Trinity.DAL.DBContext.Queue dbQueue = dalQueue.UpdateQueueStatusByUserId(supervisee.UserId, EnumStation.ARK, EnumQueueStatuses.Processing, EnumStation.ALK, EnumQueueStatuses.Processing, "Printing MUB/TT labels", EnumQueueOutcomeText.Processing);
 
                     var lable = new DAL_Labels().GetByUserID(supervisee.UserId, EnumLabelType.MUB, DateTime.Today);
 
@@ -53,7 +53,7 @@ namespace SSA.CodeBehind
                         Label_Type = EnumLabelType.MUB,
                         Date = DateTime.Now.ToString("dd/MM/yyyy"),
                         CompanyName = lable.CompanyName,
-                        LastStation = EnumStation.SSA,
+                        LastStation = EnumStation.ALK,
                         MarkingNo = markingNo,
                         DrugType = "NA",
                         QRCode = lable.QRCode

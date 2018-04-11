@@ -88,7 +88,7 @@ namespace DutyOfficer
                             var queue = new DAL_QueueNumber().GetMyQueueToday(user.UserId);
                             if (queue != null && queue.QueueDetails.Any(d => d.Station == EnumStation.DUTYOFFICER && d.Status == EnumQueueStatuses.TabSmartCard))
                             {
-                                if (_jsCallCS.GetResultUT(user.NRIC, DateTime.Now.Date) == EnumUTResult.NEG && queue.QueueDetails.Any(d => d.Station == EnumStation.ESP && d.Status == EnumQueueStatuses.NotRequired))
+                                if (_jsCallCS.GetResultUT(user.NRIC, DateTime.Now.Date) == EnumUTResult.NEG && queue.QueueDetails.Any(d => d.Station == EnumStation.SSP && d.Status == EnumQueueStatuses.NotRequired))
                                 {
                                     new DAL_QueueNumber().UpdateQueueStatusByUserId(user.UserId, EnumStation.DUTYOFFICER, EnumQueueStatuses.Finished, EnumStation.DUTYOFFICER, EnumQueueStatuses.Finished, string.Empty, EnumQueueOutcomeText.UnconditionalRelease);
                                     this.LayerWeb.InvokeScript("reloadDataQueues");
@@ -186,19 +186,19 @@ namespace DutyOfficer
             {
                 DAL_DeviceStatus device = new DAL_DeviceStatus();
 
-                if (station == EnumStation.SSA)
+                if (station == EnumStation.ALK)
                 {
                     JSCallCS._StationColorDevice.SSAColor = device.CheckStatusDevicesStation(station);
                 }
-                if (station == EnumStation.SSK)
+                if (station == EnumStation.ARK)
                 {
                     JSCallCS._StationColorDevice.SSKColor = device.CheckStatusDevicesStation(station);
                 }
-                if (station == EnumStation.ESP)
+                if (station == EnumStation.SSP)
                 {
                     JSCallCS._StationColorDevice.ESPColor = device.CheckStatusDevicesStation(station);
                 }
-                if (station == EnumStation.UHP)
+                if (station == EnumStation.SHP)
                 {
                     JSCallCS._StationColorDevice.UHPColor = device.CheckStatusDevicesStation(station);
                 }

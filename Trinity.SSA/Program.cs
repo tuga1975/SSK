@@ -7,7 +7,7 @@ using System.Windows.Forms;
 using Trinity.Device;
 using Trinity.Device.Util;
 
-namespace SSA
+namespace ALK
 {
     static class Program
     {

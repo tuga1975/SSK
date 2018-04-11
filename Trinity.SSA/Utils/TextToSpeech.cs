@@ -7,7 +7,7 @@ using Trinity.BE;
 using Trinity.Common;
 using Trinity.DAL;
 
-namespace SSA.Utils
+namespace ALK.Utils
 {
     public class TextToSpeech
     {

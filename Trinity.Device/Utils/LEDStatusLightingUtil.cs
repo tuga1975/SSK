@@ -314,7 +314,7 @@ namespace Trinity.Device.Util
                 {
                     return;
                 }
-                if (_station.Equals(EnumStation.SSK, StringComparison.InvariantCultureIgnoreCase))
+                if (_station.Equals(EnumStation.ARK, StringComparison.InvariantCultureIgnoreCase))
                 {
                     // stop flashing
                     _timer_BlueLightFlashing.Enabled = false;
@@ -324,7 +324,7 @@ namespace Trinity.Device.Util
                     string hexCommand = "00AAFF5501";
                     SendCommand(hexCommand);
                 }
-                else if (_station.Equals(EnumStation.SSA, StringComparison.InvariantCultureIgnoreCase))
+                else if (_station.Equals(EnumStation.ALK, StringComparison.InvariantCultureIgnoreCase))
                 {
                     string hexCommand = "";
                     string asciiCommand = "";
@@ -360,7 +360,7 @@ namespace Trinity.Device.Util
             {
                 return;
             }
-            if (_station.Equals(EnumStation.SSA, StringComparison.InvariantCultureIgnoreCase))
+            if (_station.Equals(EnumStation.ALK, StringComparison.InvariantCultureIgnoreCase))
             {
                 string hexCommand = "";
                 string asciiCommand = "";
@@ -375,7 +375,7 @@ namespace Trinity.Device.Util
                 hexCommand = ToHEX(asciiCommand);
                 SendCommand(hexCommand);
             }
-            else if (_station.Equals(EnumStation.SSK, StringComparison.InvariantCultureIgnoreCase))
+            else if (_station.Equals(EnumStation.ARK, StringComparison.InvariantCultureIgnoreCase))
             {
                 string hexCommand = "";
                 if (isOn)
@@ -396,7 +396,7 @@ namespace Trinity.Device.Util
             {
                 return;
             }
-            if (_station.Equals(EnumStation.SSA, StringComparison.InvariantCultureIgnoreCase))
+            if (_station.Equals(EnumStation.ALK, StringComparison.InvariantCultureIgnoreCase))
             {
                 string hexCommand = "";
                 string asciiCommand = "";
@@ -411,7 +411,7 @@ namespace Trinity.Device.Util
                 hexCommand = ToHEX(asciiCommand);
                 SendCommand(hexCommand);
             }
-            else if (_station.Equals(EnumStation.SSK, StringComparison.InvariantCultureIgnoreCase))
+            else if (_station.Equals(EnumStation.ARK, StringComparison.InvariantCultureIgnoreCase))
             {
                 string hexCommand = "";
                 if (isOn)
@@ -432,7 +432,7 @@ namespace Trinity.Device.Util
             {
                 return;
             }
-            if (_station.Equals(EnumStation.SSA, StringComparison.InvariantCultureIgnoreCase))
+            if (_station.Equals(EnumStation.ALK, StringComparison.InvariantCultureIgnoreCase))
             {
                 string hexCommand = "";
                 string asciiCommand = "";
@@ -447,7 +447,7 @@ namespace Trinity.Device.Util
                 hexCommand = ToHEX(asciiCommand);
                 SendCommand(hexCommand);
             }
-            else if (_station.Equals(EnumStation.SSK, StringComparison.InvariantCultureIgnoreCase))
+            else if (_station.Equals(EnumStation.ARK, StringComparison.InvariantCultureIgnoreCase))
             {
                 string hexCommand = "";
                 if (isOn)
@@ -468,7 +468,7 @@ namespace Trinity.Device.Util
             {
                 return;
             }
-            if (_station.Equals(EnumStation.SSA, StringComparison.InvariantCultureIgnoreCase))
+            if (_station.Equals(EnumStation.ALK, StringComparison.InvariantCultureIgnoreCase))
             {
                 string hexCommand = "";
                 string asciiCommand = "";
@@ -503,7 +503,7 @@ namespace Trinity.Device.Util
                 hexCommand = ToHEX(asciiCommand);
                 SendCommand(hexCommand);
             }
-            else if (_station.Equals(EnumStation.SSK, StringComparison.InvariantCultureIgnoreCase))
+            else if (_station.Equals(EnumStation.ARK, StringComparison.InvariantCultureIgnoreCase))
             {
                 string hexCommand = "";
                 if (isOn)

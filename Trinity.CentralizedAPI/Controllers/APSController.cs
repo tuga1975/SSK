@@ -40,7 +40,7 @@ namespace Trinity.BackendAPI.Controllers
                             {
                                 if (new DAL.DAL_Appointments().CountApptmtHasUseByTimeslot(timeslot.Timeslot_ID) < timeslot.MaximumSupervisee.Value)
                                 {
-                                    if (!new DAL.DAL_QueueNumber().IsInQueue(AppointmentID, EnumStation.SSK))
+                                    if (!new DAL.DAL_QueueNumber().IsInQueue(AppointmentID, EnumStation.ARK))
                                     {
                                         bool updateResult = new DAL.DAL_Appointments().UpdateTimeslot_ID(AppointmentID, timeslot.Timeslot_ID);
                                         if (updateResult)

@@ -193,9 +193,9 @@ namespace Trinity.DAL
             {
                 var queues = _localUnitOfWork.DataContext.Queues
                     .Where(item => item.Appointment.Timeslot_ID == timeslot_ID
-                    && item.QueueDetails.Any(x => x.Station == EnumStation.SSK)
+                    && item.QueueDetails.Any(x => x.Station == EnumStation.ARK)
                     && item.QueueDetails.Any(x => x.Status == EnumQueueStatuses.Waiting))
-                    .Select(item => item.QueueDetails.Where(x => x.Station == EnumStation.SSK && x.Status == EnumQueueStatuses.Waiting).FirstOrDefault()).ToList();
+                    .Select(item => item.QueueDetails.Where(x => x.Station == EnumStation.ARK && x.Status == EnumQueueStatuses.Waiting).FirstOrDefault()).ToList();
 
                 foreach (var item in queues)
                 {
@@ -218,9 +218,9 @@ namespace Trinity.DAL
                     .Select(item => new QueueDetail()
                     {
                         Queue_ID = item.Queue_ID,
-                        Station = item.QueueDetails.FirstOrDefault(dt => dt.Station == EnumStation.SSK)?.Station,
-                        Status = item.QueueDetails.FirstOrDefault(dt => dt.Station == EnumStation.SSK)?.Status,
-                        Message = item.QueueDetails.FirstOrDefault(dt => dt.Station == EnumStation.SSK)?.Message,
+                        Station = item.QueueDetails.FirstOrDefault(dt => dt.Station == EnumStation.ARK)?.Station,
+                        Status = item.QueueDetails.FirstOrDefault(dt => dt.Station == EnumStation.ARK)?.Status,
+                        Message = item.QueueDetails.FirstOrDefault(dt => dt.Station == EnumStation.ARK)?.Message,
                         QueuedNumber = item.QueuedNumber,
                         Timeslot_ID = item.Appointment.Timeslot_ID
                     }).ToList();

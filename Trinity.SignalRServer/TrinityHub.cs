@@ -24,7 +24,7 @@ namespace Trinity.NotificationServer
             {
                 Program.MainForm.WriteToConsole("[" + Station + "] => User '" + notificationInfo.FromUserId + "' has been processed. Queue Number has been removed.");
 
-                Clients.Clients(Program.ProfileConnected.Where(d => d.isApp && d.Station == EnumStation.SSK).Select(d => d.ConnectionId).ToList()).OnNewNotification(notificationInfo);
+                Clients.Clients(Program.ProfileConnected.Where(d => d.isApp && d.Station == EnumStation.ARK).Select(d => d.ConnectionId).ToList()).OnNewNotification(notificationInfo);
             }
             else if (notificationInfo.Name == NotificationNames.DEVICE_STATUS_CHANGED)
             {
@@ -74,11 +74,11 @@ namespace Trinity.NotificationServer
             }
             else if (notificationInfo.Name == NotificationNames.DO_UNBLOCK_SUPERVISEE)
             {
-                Clients.Clients(Program.ProfileConnected.Where(d => d.isApp && d.Station == EnumStation.SSK).Select(d => d.ConnectionId).ToList()).OnNewNotification(notificationInfo);
+                Clients.Clients(Program.ProfileConnected.Where(d => d.isApp && d.Station == EnumStation.ARK).Select(d => d.ConnectionId).ToList()).OnNewNotification(notificationInfo);
             }
             else if (notificationInfo.Name == NotificationNames.APPOINTMENT_BOOKED)
             {
-                Clients.Clients(Program.ProfileConnected.Where(d => d.isApp && (d.Station == EnumStation.DUTYOFFICER || d.Station == EnumStation.SSK)).Select(d => d.ConnectionId).ToList()).OnNewNotification(notificationInfo);
+                Clients.Clients(Program.ProfileConnected.Where(d => d.isApp && (d.Station == EnumStation.DUTYOFFICER || d.Station == EnumStation.ARK)).Select(d => d.ConnectionId).ToList()).OnNewNotification(notificationInfo);
             }
             else if (notificationInfo.Name == NotificationNames.APPOINTMENT_REPORTED)
             {

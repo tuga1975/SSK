@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
  class APIUtils
 {
-    public static SSA.Utils.Printer Printer { get; set; }
-    public static SSA.Utils.TextToSpeech TextToSpeech { get; set; }
+    public static ALK.Utils.Printer Printer { get; set; }
+    public static ALK.Utils.TextToSpeech TextToSpeech { get; set; }
 
     public static void Start()
     {
-        Printer = new SSA.Utils.Printer();
-        TextToSpeech = new SSA.Utils.TextToSpeech();
+        Printer = new ALK.Utils.Printer();
+        TextToSpeech = new ALK.Utils.TextToSpeech();
     }
 
 

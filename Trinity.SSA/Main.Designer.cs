@@ -1,4 +1,4 @@
-﻿namespace SSA
+﻿namespace ALK
 {
     partial class Main
     {

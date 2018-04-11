@@ -7,7 +7,7 @@ using System.Windows.Forms;
 using Trinity.Device;
 using Trinity.Device.Util;
 
-namespace SSK
+namespace ARK
 {
     static class Program
     {

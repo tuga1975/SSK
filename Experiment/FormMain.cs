@@ -142,7 +142,7 @@ namespace Experiment
             string comPort = ConfigurationManager.AppSettings["COMPort"];
             int baudRate = int.Parse(ConfigurationManager.AppSettings["BaudRate"]);
             string parity = ConfigurationManager.AppSettings["Parity"];
-            LEDStatusLightingUtil.Instance.OpenPort(EnumStation.SSK, comPort, baudRate, parity);
+            LEDStatusLightingUtil.Instance.OpenPort(EnumStation.ARK, comPort, baudRate, parity);
             LEDStatusLightingUtil.Instance.TurnOffAllLEDs();
             //LEDStatusLightingUtil.Instance.SwitchBLUELightOnOff(true);
             //LEDStatusLightingUtil.Instance.SwitchBLUELightFlashingOnOff(true);

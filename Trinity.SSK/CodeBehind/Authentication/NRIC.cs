@@ -8,7 +8,7 @@ using Trinity.Common;
 using Trinity.DAL;
 using Trinity.Device.Util;
 
-namespace SSK.CodeBehind.Authentication
+namespace ARK.CodeBehind.Authentication
 {
     public class NRIC
     {

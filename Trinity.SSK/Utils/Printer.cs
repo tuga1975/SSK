@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Trinity.BE;
 
-namespace SSK.Utils
+namespace ARK.Utils
 {
     public class Printer
     {

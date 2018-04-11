@@ -13,7 +13,7 @@ using Trinity.DAL;
 using Trinity.Device.Authentication;
 using Trinity.Device.Util;
 
-namespace SSA
+namespace ALK
 {
     public partial class Main : Form
     {

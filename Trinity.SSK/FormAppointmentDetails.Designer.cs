@@ -1,4 +1,4 @@
-﻿namespace SSK
+﻿namespace ARK
 {
     partial class FormAppointmentDetails
     {
