@@ -133,7 +133,7 @@ namespace SSA
                 new DAL_Labels().UpdatePrinting(e.LabelInfo.UserId, EnumLabelType.MUB, e.LabelInfo.PrintStatus, EnumStation.SSA, DateTime.Today);
                 _PrintMUBSucceed = false;
                 Trinity.SignalR.Client.Instance.SSAPrintingLabel(e.LabelInfo.UserId);
-                Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(e.LabelInfo.UserId, "Cannot print MUB Label", "User '" + e.LabelInfo.UserId + "' cannot print MUB label.", EnumNotificationTypes.Error);
+                Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(e.LabelInfo.UserId, "Cannot print MUB Label", "User '" + e.LabelInfo.Name + "' cannot print MUB label.", EnumNotificationTypes.Error);
             }
             catch (Exception ex)
             {
@@ -153,7 +153,7 @@ namespace SSA
             new DAL_Labels().UpdatePrinting(e.LabelInfo.UserId, EnumLabelType.TT, e.LabelInfo.PrintStatus, EnumStation.SSA, DateTime.Today);
             _PrintTTSucceed = false;
             Trinity.SignalR.Client.Instance.SSAPrintingLabel(e.LabelInfo.UserId);
-            Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(e.LabelInfo.UserId, "Cannot print TT Label", "User '" + e.LabelInfo.UserId + "' cannot print TT label.", EnumNotificationTypes.Error);
+            Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(e.LabelInfo.UserId, "Cannot print TT Label", "User '" + e.LabelInfo.Name + "' cannot print TT label.", EnumNotificationTypes.Error);
         }
 
         private void PrintMUBAndTTLabels_OnPrintTTLabelException(object sender, ExceptionArgs e)
@@ -163,7 +163,8 @@ namespace SSA
             //this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').hide(); ; ");
             //this._web.RunScript("$('#ttStatus').css('color','#000').text('Sent problem to Duty Officer. Please wait to check !');");
             //MessageBox.Show(e.ErrorMessage, "", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId, "MUB & TT", "Cannot print MUB & TT, please check !", EnumNotificationTypes.Error);
+            var user = (Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN];
+            Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(user.UserId, "Can not print MUB & TT Labels", "User "+ user.Name + " cannot print MUB & TT labels, please check!", EnumNotificationTypes.Error);
 
             //DeleteQRCodeImageFileTemp();
             //LogOut();

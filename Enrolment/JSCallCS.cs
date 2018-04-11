@@ -399,8 +399,8 @@ namespace Enrolment
             var updateUProfileResult = dalUserprofile.UpdateProfile(userProfileModel);
 
             ////send notifiy to case officer
-            Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId, "A supervisee has updated profile.", "Please check Supervisee's information!", EnumNotificationTypes.Notification);
-
+            var user = (Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN];
+            Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(user.UserId, "Supervisee " + user.Name + " has updated profile.", "Please check Supervisee " + user.Name + "'s information!", EnumNotificationTypes.Notification);
 
             //session[CommonConstants.CURRENT_EDIT_USER] = data;
             session[CommonConstants.CURRENT_EDIT_USER] = null;
