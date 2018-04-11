@@ -65,7 +65,7 @@ namespace ALK.CodeBehind.Authentication
             }
             else
             {
-                CSCallJS.ShowMessageAsync(_web, "ERROR", error);
+                CSCallJS.ShowMessageAsync(_web, "BarcodeScanner ERROR", error);
             }
         }
 

@@ -9,6 +9,14 @@ namespace Trinity.BE
 {
     public class DeviceStatus
     {
+        public DeviceStatus(EnumDeviceId deviceID)
+        {
+            this.DeviceID = deviceID;
+            this.DeviceName = string.Empty;
+            this.Status = null;
+            this.Summary = EnumDeviceStatusSumary.Error;
+        }
+
         public EnumDeviceId DeviceID { get; set; }
         public string DeviceName { get; set; }
         public EnumDeviceStatus[] Status { get; set; }

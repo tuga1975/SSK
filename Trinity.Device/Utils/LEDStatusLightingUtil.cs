@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Timers;
 using System.Windows.Forms;
+using Trinity.Common.Utils;
 
 namespace Trinity.Device.Util
 {
@@ -267,7 +268,7 @@ namespace Trinity.Device.Util
             }
             catch (IOException ex)
             {
-                MessageBox.Show(ex.Message);
+                LogManager.Error(ex.ToString());
                 return ex.Message;
             }
         }

@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Trinity.BE;
+using Trinity.Common.Utils;
 using Trinity.DAL;
 using Trinity.Device.Util;
 
@@ -100,70 +101,25 @@ namespace Trinity.Device
 
         private ApplicationStatusManager()
         {
+            try
+            {
+            _station = Lib.Station;
             _lstDevices = new List<DeviceStatus>();
 
-            if (Lib.Station == EnumStation.ARK)
+            if (_station == EnumStation.ARK)
             {
                 // Initiate LEDs light and open port
                 LEDStatusLightingUtil.Instance.OpenPort();
 
                 // Define list devices which application use
-                _lstDevices.Add(new DeviceStatus()
-                {
-                    DeviceID = EnumDeviceId.Camera,
-                    DeviceName = string.Empty,
-                    Status = null,
-                    Summary = EnumDeviceStatusSumary.Error
-                });
-                _lstDevices.Add(new DeviceStatus()
-                {
-                    DeviceID = EnumDeviceId.Speaker,
-                    DeviceName = string.Empty,
-                    Status = null,
-                    Summary = EnumDeviceStatusSumary.Error
-                });
-                _lstDevices.Add(new DeviceStatus()
-                {
-                    DeviceID = EnumDeviceId.DocumentScanner,
-                    DeviceName = string.Empty,
-                    Status = null,
-                    Summary = EnumDeviceStatusSumary.Error
-                });
-                _lstDevices.Add(new DeviceStatus()
-                {
-                    DeviceID = EnumDeviceId.FingerprintScanner,
-                    DeviceName = string.Empty,
-                    Status = null,
-                    Summary = EnumDeviceStatusSumary.Error
-                });
-                _lstDevices.Add(new DeviceStatus()
-                {
-                    DeviceID = EnumDeviceId.BarcodeScanner,
-                    DeviceName = string.Empty,
-                    Status = null,
-                    Summary = EnumDeviceStatusSumary.Error
-                });
-                _lstDevices.Add(new DeviceStatus()
-                {
-                    DeviceID = EnumDeviceId.SmartCardReader,
-                    DeviceName = string.Empty,
-                    Status = null,
-                    Summary = EnumDeviceStatusSumary.Error
-                });
-                _lstDevices.Add(new DeviceStatus()
-                {
-                    DeviceID = EnumDeviceId.ReceiptPrinter,
-                    DeviceName = string.Empty,
-                    Status = null,
-                    Summary = EnumDeviceStatusSumary.Error
-                });
-                _lstDevices.Add(new DeviceStatus()
-                {
-                    DeviceID = EnumDeviceId.QueueScreenMonitor,
-                    DeviceName = string.Empty,
-                    Status = null,
-                    Summary = EnumDeviceStatusSumary.Error
-                });
+                _lstDevices.Add(new DeviceStatus(EnumDeviceId.Camera));
+                _lstDevices.Add(new DeviceStatus(EnumDeviceId.Speaker));
+                _lstDevices.Add(new DeviceStatus(EnumDeviceId.DocumentScanner));
+                _lstDevices.Add(new DeviceStatus(EnumDeviceId.FingerprintScanner));
+                _lstDevices.Add(new DeviceStatus(EnumDeviceId.BarcodeScanner));
+                _lstDevices.Add(new DeviceStatus(EnumDeviceId.SmartCardReader));
+                _lstDevices.Add(new DeviceStatus(EnumDeviceId.ReceiptPrinter));
+                _lstDevices.Add(new DeviceStatus(EnumDeviceId.QueueScreenMonitor));
 
                 // start device monitors
                 CameraMonitor.Start();
@@ -174,6 +130,33 @@ namespace Trinity.Device
                 SmartCardReaderMonitor.Start();
                 ReceiptPrinterMonitor.Start();
                 QueueScreenMonitor.Start();
+            }
+            else if (_station == EnumStation.ALK)
+            {
+                // Initiate LEDs light and open port
+                LEDStatusLightingUtil.Instance.OpenPort();
+
+                // Define list devices which application use
+                _lstDevices.Add(new DeviceStatus(EnumDeviceId.Camera));
+                _lstDevices.Add(new DeviceStatus(EnumDeviceId.FingerprintScanner));
+                _lstDevices.Add(new DeviceStatus(EnumDeviceId.BarcodeScanner));
+                _lstDevices.Add(new DeviceStatus(EnumDeviceId.SmartCardReader));
+                _lstDevices.Add(new DeviceStatus(EnumDeviceId.MUBLabelPrinter));
+                _lstDevices.Add(new DeviceStatus(EnumDeviceId.TTLabelPrinter));
+                
+                // start device monitors
+                CameraMonitor.Start();
+                FingerprintReaderMonitor.Start();
+                BarcodeScannerMonitor.Start();
+                SmartCardReaderMonitor.Start();
+                MUBLabelPrinterMonitor.Start();
+                TTLabelPrinterMonitor.Start();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                LogManager.Error("ApplicationStatusManager exception: " + ex.ToString());
             }
         }
 
@@ -239,10 +222,44 @@ namespace Trinity.Device
                 }
                 else if (_station.ToUpper() == EnumStation.ALK)
                 {
+                    // Get latest application status
+                    EnumApplicationStatus newApplicationStatus = GetApplicationStatus();
+
+                    if (newApplicationStatus != _applicationStatus)
+                    {
+                        _applicationStatus = newApplicationStatus;
+
+                        // Always turn off all LEDs before select which LED(s) to turn on.
+                        ledLightUtil.TurnOffAllLEDs();
+
+                        //MessageBox.Show(_applicationStatus.ToString());
+                        switch (_applicationStatus)
+                        {
+                            case EnumApplicationStatus.Initialization:
+                                ledLightUtil.StartBLUELightFlashing();
+                                break;
+                            case EnumApplicationStatus.Ready:
+                                ledLightUtil.SwitchGREENLightOnOff(true);
+                                break;
+                            case EnumApplicationStatus.Caution:
+                                ledLightUtil.StartYELLOWLightFlashing();
+                                break;
+                            case EnumApplicationStatus.Error:
+                                ledLightUtil.SwitchREDLightOnOff(true);
+                                break;
+                            case EnumApplicationStatus.Busy:
+                                ledLightUtil.SwitchBLUELightOnOff(true);
+                                break;
+                            default:
+                                ledLightUtil.SwitchREDLightOnOff(true);
+                                break;
+                        }
+                    }
                 }
             }
             catch (Exception ex)
             {
+                LogManager.Error("UpdateLEDsLight exception: " + ex.ToString());
                 Debug.WriteLine("UpdateLEDsLight exception: " + ex.ToString());
             }
         }
@@ -290,6 +307,11 @@ namespace Trinity.Device
         {
             try
             {
+                if (_lstDevices == null || _lstDevices.Count == 0)
+                {
+                    return;
+                }
+
                 DeviceStatus deviceStatus = _lstDevices.FirstOrDefault(item => item.DeviceID == enumDeviceId);
                 // Save new status
                 deviceStatus.Status = newStatuses;
@@ -341,7 +363,7 @@ namespace Trinity.Device
                 // If application initialization is not finished
                 // and weblayer and all devices are finished
                 // update _isInitializing = false
-                if (_isInitializing && (_lstDevices==null || (_lstDevices!=null && !_lstDevices.Any(item => item.Status == null))))
+                if (_isInitializing && (_lstDevices == null || (_lstDevices!=null && !_lstDevices.Any(item => item.Status == null))))
                 {
                     _isInitializing = false;
                 }

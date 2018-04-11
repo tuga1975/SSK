@@ -202,8 +202,10 @@ namespace ARK
         {
             try
             {
+                // Disconnect the BarcodeScanner
                 BarcodeScannerUtil.Instance.Disconnect();
 
+                // Reset ApplicationStatusManager IsBusy status
                 ApplicationStatusManager.Instance.IsBusy = false;
 
                 // navigate
@@ -264,8 +266,6 @@ namespace ARK
 
                 _isFirstTimeLoaded = false;
 
-
-                // Thread.Sleep(5000);
                 // LayerWeb initiation is compeleted, update application status
                 ApplicationStatusManager.Instance.LayerWebInitilizationCompleted();
             }

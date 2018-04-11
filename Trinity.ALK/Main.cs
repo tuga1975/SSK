@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using Trinity.Common;
 using Trinity.Common.Common;
 using Trinity.DAL;
+using Trinity.Device;
 using Trinity.Device.Authentication;
 using Trinity.Device.Util;
 
@@ -231,15 +232,25 @@ namespace ALK
             }
             // ALK is ready to use - all is well
             // Turn on GREEN Light
-            if (LEDStatusLightingUtil.Instance.IsPortOpen)
-            {
-                LEDStatusLightingUtil.Instance.TurnOffAllLEDs();
-                LEDStatusLightingUtil.Instance.SwitchGREENLightOnOff(true);
-            }
+            //if (LEDStatusLightingUtil.Instance.IsPortOpen)
+            //{
+            //    LEDStatusLightingUtil.Instance.TurnOffAllLEDs();
+            //    LEDStatusLightingUtil.Instance.SwitchGREENLightOnOff(true);
+            //}
+
+            // LayerWeb initiation is compeleted, update application status
+            ApplicationStatusManager.Instance.LayerWebInitilizationCompleted();
         }
 
         private void JSCallCS_OnLogOutCompleted()
         {
+            // Disconnect the BarcodeScanner
+            BarcodeScannerUtil.Instance.Disconnect();
+
+            // Reset ApplicationStatusManager IsBusy status
+            ApplicationStatusManager.Instance.IsBusy = false;
+
+            // navigate
             NavigateTo(NavigatorEnums.Authentication_SmartCard);
         }
 
@@ -255,8 +266,11 @@ namespace ALK
 
         private void SmartCard_OnSmartCardSucceeded()
         {
+            // Set application status is busy
+            ApplicationStatusManager.Instance.IsBusy = true;
+
             // Pause for 1 second and goto Fingerprint Login Screen
-            Thread.Sleep(400);
+            Thread.Sleep(1000);
 
             // navigate to next page: Authentication_Fingerprint
             NavigateTo(NavigatorEnums.Authentication_Fingerprint);

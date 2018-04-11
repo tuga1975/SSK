@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using Trinity.Common;
+using Trinity.Common.Utils;
 
 namespace Trinity.Device.Util
 {
@@ -88,37 +89,31 @@ namespace Trinity.Device.Util
         private bool Connect()
         {
             try
-            {//
-             // Close the COM port if opened.
-             //
-                if (this.serialPort1 != null )
+            {
+                 //
+                 // Close the COM port if opened.
+                 //
+                if (serialPort1.IsOpen)
                 {
-                    if (serialPort1.IsOpen)
-                    {
-                        this.serialPort1.Close();
-                    }
-
-                    //
-                    // Open the COM port.
-                    //
-                    this.serialPort1.Open();
-
-                    //
-                    // Set 100 milliseconds to receive timeout.
-                    //
-                    this.serialPort1.ReadTimeout = 100;
-
-                    //MessageBox.Show("Open port OK: " + this.serialPort1.PortName);
-                    return true;
+                    this.serialPort1.Close();
                 }
-                else
-                {
-                    return false;
-                }
+
+                //
+                // Open the COM port.
+                //
+                this.serialPort1.Open();
+
+                //
+                // Set 100 milliseconds to receive timeout.
+                //
+                this.serialPort1.ReadTimeout = 100;
+
+                //MessageBox.Show("Open port OK: " + this.serialPort1.PortName);
+                return true;
             }
             catch (Exception ex)
             {
-                //MessageBox.Show(this.serialPort1.PortName + "\r\n" + ex.Message);  // non-existent or disappeared
+                LogManager.Error(ex.ToString());
                 return false;
             }
         }
@@ -206,8 +201,17 @@ namespace Trinity.Device.Util
                             // Get data success
                             if (!string.IsNullOrEmpty(data))
                             {
-                                System.Threading.Tasks.Task.Factory.StartNew(() => barcodeScannerCallback(data, string.Empty));
-                                break;
+                                // Restart scanning if COM return "ERROR"
+                                if (data == "ERROR")
+                                {
+                                    StartScanning(barcodeScannerCallback);
+                                    break;
+                                }
+                                else
+                                {
+                                    System.Threading.Tasks.Task.Factory.StartNew(() => barcodeScannerCallback(data, string.Empty));
+                                    break;
+                                }
                             }
 
                             // Get data unsuccess

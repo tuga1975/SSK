@@ -98,12 +98,16 @@ public class JSCallCSBase
     }
     public void LogErrScript(string message)
     {
-        string file = String.Format("{0}/LogErr/Log.txt", CSCallJS.curDir);
-        string directoryName = new System.IO.FileInfo(file).DirectoryName;
-        if (!System.IO.Directory.Exists(directoryName))
-        {
-            System.IO.DirectoryInfo di = System.IO.Directory.CreateDirectory(directoryName);
-        }
-        System.IO.File.AppendAllLines(file, new string[] { message });
+        //string file = String.Format("{0}/LogErr/Log.txt", CSCallJS.curDir);
+        //string directoryName = new System.IO.FileInfo(file).DirectoryName;
+        //if (!System.IO.Directory.Exists(directoryName))
+        //{
+        //    System.IO.DirectoryInfo di = System.IO.Directory.CreateDirectory(directoryName);
+        //}
+        //System.IO.File.AppendAllLines(file, new string[] { message });
+
+        string ID = new Guid().ToString().Trim();
+        this._web.ShowMessage("An error occurred.<br/>Please contact the administrator.<br/>Error code: " + ID);
+        Trinity.Common.Utils.LogManager.Debug(ID + ": " + message);
     }
 }

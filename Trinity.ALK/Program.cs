@@ -21,7 +21,8 @@ namespace ALK
             Application.SetCompatibleTextRenderingDefault(false);
             try
             {
-                Task.Factory.StartNew(StartHealthChecker);
+                // Start application status monitor and update application status
+                Task.Factory.StartNew(ApplicationStatusManager.Instance.StartInitialization);
                 Application.Run(new Main());
             }
             catch (Exception ex)
@@ -30,6 +31,10 @@ namespace ALK
                 Environment.Exit(1);
             }
         }
+
+        /// <summary>
+        /// Just backup, remove it later. Use ApplicationStatusManager instead
+        /// </summary>
         private static void StartHealthChecker()
         {
             // Health checker
