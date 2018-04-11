@@ -146,7 +146,7 @@ namespace SSA
             else
             {
                 // raise failed event
-                SmartCard_OnSmartCardFailed("Unable to read your smart card. Please report to the Duty Officer");
+                SmartCard_OnSmartCardFailed("Unable to read your smart card");
                 //SmartCard_OnSmartCardSucceeded();
             }
         }

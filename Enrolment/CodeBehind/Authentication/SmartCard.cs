@@ -124,7 +124,7 @@ namespace Enrolment.CodeBehind.Authentication
             else
             {
                 // raise failed event
-                RaiseSmartCardFailedEvent(new SmartCardEventArgs("Unable to read your smart card. Please report to the Duty Officer"));
+                RaiseSmartCardFailedEvent(new SmartCardEventArgs("Unable to read your smart card"));
             }
         }
     }
