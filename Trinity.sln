@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2036
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trinity.SSK", "Trinity.SSK\Trinity.SSK.csproj", "{B65ECADC-0BC9-4B1A-84EE-C1FE0541A787}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trinity.ARK", "Trinity.SSK\Trinity.ARK.csproj", "{B65ECADC-0BC9-4B1A-84EE-C1FE0541A787}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trinity.NotificationServer", "Trinity.SignalRServer\Trinity.NotificationServer.csproj", "{2368DFE4-48D1-482D-9445-B5F95FEF5424}"
 EndProject
@@ -15,7 +15,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trinity.BE", "Trinity.BE\Tr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trinity.Common", "Trinity.Common\Trinity.Common.csproj", "{6C023597-F6BA-4857-9C3B-82D91EB4B4A3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trinity.SSA", "Trinity.SSA\Trinity.SSA.csproj", "{B859C82A-D53C-4C65-BADE-C8D8AD6107C8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trinity.ALK", "Trinity.SSA\Trinity.ALK.csproj", "{B859C82A-D53C-4C65-BADE-C8D8AD6107C8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trinity.Enrolment", "Enrolment\Trinity.Enrolment.csproj", "{11700A83-F635-41DB-8732-A58EA8C41A24}"
 EndProject
@@ -31,7 +31,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Experiment", "Experiment\Ex
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trinity.BackendAPI", "Trinity.CentralizedAPI\Trinity.BackendAPI.csproj", "{3E0060ED-B34F-45E0-9895-14B48467C4D1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trinity.SignalR", "Trinity.Utils\Trinity.SignalR.csproj", "{C2EE0B7A-1CBF-4403-807E-8AC9F455C661}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trinity.SignalR", "Trinity.SignalR\Trinity.SignalR.csproj", "{C2EE0B7A-1CBF-4403-807E-8AC9F455C661}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trinity.Device", "Trinity.Device\Trinity.Device.csproj", "{9C043308-E722-46AE-8D57-D0B409C0B729}"
 EndProject
