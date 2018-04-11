@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using Trinity.BE;
 using Trinity.Common;
 using Trinity.Common.Common;
+using Trinity.Common.Utils;
 using Trinity.DAL;
 using Trinity.Device;
 using Trinity.Device.Authentication;
@@ -216,6 +217,7 @@ namespace SSK
 
         private void LayerWeb_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
+            LogManager.Debug("WebBrowser Document Completed");
             LayerWeb.InvokeScript("createEvent", JsonConvert.SerializeObject(_jsCallCS.GetType().GetMethods().Where(d => d.IsPublic && !d.IsVirtual && !d.IsSecuritySafeCritical).ToArray().Select(d => d.Name)));
             if (_isFirstTimeLoaded)
             {
