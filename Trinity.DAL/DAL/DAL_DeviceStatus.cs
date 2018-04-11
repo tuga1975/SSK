@@ -27,7 +27,7 @@ namespace Trinity.DAL
 
                 // local db
                 // delete old statuses
-                string station = System.Reflection.Assembly.GetEntryAssembly().GetName().Name;
+                string station = Lib.Station;
                 var oldRows = _localUnitOfWork.DataContext.ApplicationDevice_Status.Where(item => item.DeviceID == deviceId && item.Station.Equals(station));
                 _localUnitOfWork.DataContext.ApplicationDevice_Status.RemoveRange(oldRows);
 
@@ -133,7 +133,7 @@ namespace Trinity.DAL
         {
             try
             {
-                string station = System.Reflection.Assembly.GetEntryAssembly().GetName().Name;
+                string station = Lib.Station;
 
                 // get all devices statuses of station
                 var deviceStatuses = _localUnitOfWork.DataContext.ApplicationDevice_Status.Where(item => item.Station.ToUpper() == station.ToUpper())
