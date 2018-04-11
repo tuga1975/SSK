@@ -95,7 +95,7 @@ namespace Enrolment
             if (data != null && (string)data["soure"] == "UpdateSuperviseeBiodata.html" && (int)data["step"] == 3 && (bool)data["printsuccsess"])
             {
                 this.LayerWeb.InvokeScript("showPrintMessage", true, "Verifying smart card ...");
-
+                _jsCallCS.CheckVerfyCard();
             }
         }
         private System.Collections.Generic.Dictionary<string, object> getDataStep()
