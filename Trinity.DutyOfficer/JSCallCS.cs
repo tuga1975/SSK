@@ -107,7 +107,7 @@ namespace DutyOfficer
             DAL_DrugResults dalDrug = new DAL_DrugResults();
             dalDrug.UpdateDrugSeal(UserId, COCA, BARB, LSD, METH, MTQL, PCP, KET, BUPRE, CAT, PPZ, NPS, dutyOfficer.UserId);
             var dalQueue = new DAL_QueueNumber();
-            dalQueue.UpdateQueueStatusByUserId(UserId, EnumStation.HSA, EnumQueueStatuses.Finished, EnumStation.SSP, EnumQueueStatuses.Processing, "Waiting for SSP", EnumQueueOutcomeText.Processing);
+            dalQueue.UpdateQueueStatusByUserId(UserId, EnumStation.UT, EnumQueueStatuses.Finished, EnumStation.SSP, EnumQueueStatuses.Processing, "Waiting for SSP", EnumQueueOutcomeText.Processing);
         }
         public object getDataQueue()
         {
@@ -125,8 +125,8 @@ namespace DutyOfficer
                 ALK = app.Color(EnumStation.ALK),
                 SHP = app.Color(EnumStation.SHP),
                 HSA = new {
-                    Status = app.Queue == null ? string.Empty : app.Queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStation.HSA).Status,
-                    Text = app.Queue == null ? string.Empty : app.Queue.QueueDetails.Any(c => c.Station == EnumStation.HSA && (c.Status == EnumQueueStatuses.SelectSealOrDiscard || c.Status == EnumQueueStatuses.Finished)) ? GetResultUT(app.Membership_Users.NRIC, app.Date) : string.Empty
+                    Status = app.Queue == null ? string.Empty : app.Queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStation.UT).Status,
+                    Text = app.Queue == null ? string.Empty : app.Queue.QueueDetails.Any(c => c.Station == EnumStation.UT && (c.Status == EnumQueueStatuses.SelectSealOrDiscard || c.Status == EnumQueueStatuses.Finished)) ? GetResultUT(app.Membership_Users.NRIC, app.Date) : string.Empty
                 },
                 SSP = app.Color(EnumStation.SSP),
                 Outcome = app.Queue == null ? string.Empty : app.Queue.Outcome,
@@ -148,8 +148,8 @@ namespace DutyOfficer
                 SHP = queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStation.SHP).Color,
                 HSA = new
                 {
-                    Status = queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStation.HSA).Status,
-                    Text = queue.QueueDetails.Any(c => c.Station == EnumStation.HSA && (c.Status == EnumQueueStatuses.SelectSealOrDiscard || c.Status == EnumQueueStatuses.Finished)) ? GetResultUT(queue.Membership_Users1.NRIC, queue.CreatedTime.Date) : string.Empty
+                    Status = queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStation.UT).Status,
+                    Text = queue.QueueDetails.Any(c => c.Station == EnumStation.UT && (c.Status == EnumQueueStatuses.SelectSealOrDiscard || c.Status == EnumQueueStatuses.Finished)) ? GetResultUT(queue.Membership_Users1.NRIC, queue.CreatedTime.Date) : string.Empty
                 },
                 SSP = queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStation.SSP).Color,
                 Outcome = queue.Outcome,
@@ -185,13 +185,13 @@ namespace DutyOfficer
             if (UTResult.Equals(EnumUTResult.NEG))
             {
                 dalDrug.UpdateDiscardDrugResult(UserId, dutyOfficer.UserId);
-                new Trinity.DAL.DAL_QueueNumber().UpdateQueueStatusByUserId(UserId, EnumStation.HSA, EnumQueueStatuses.Finished, EnumStation.SSP, EnumQueueStatuses.NotRequired, string.Empty, EnumQueueOutcomeText.Processing);
+                new Trinity.DAL.DAL_QueueNumber().UpdateQueueStatusByUserId(UserId, EnumStation.UT, EnumQueueStatuses.Finished, EnumStation.SSP, EnumQueueStatuses.NotRequired, string.Empty, EnumQueueOutcomeText.Processing);
                 new Trinity.DAL.DAL_QueueNumber().UpdateQueueStatusByUserId(UserId, EnumStation.SSP, EnumQueueStatuses.NotRequired, EnumStation.DUTYOFFICER, EnumQueueStatuses.TabSmartCard, string.Empty, EnumQueueOutcomeText.TapSmartCardToContinue);
             }
             else
             {
                 dalDrug.UpdateDiscardDrugResult(UserId, dutyOfficer.UserId);
-                new Trinity.DAL.DAL_QueueNumber().UpdateQueueStatusByUserId(UserId, EnumStation.HSA, EnumQueueStatuses.Finished, EnumStation.SSP, EnumQueueStatuses.NotRequired, string.Empty, EnumQueueOutcomeText.Processing);
+                new Trinity.DAL.DAL_QueueNumber().UpdateQueueStatusByUserId(UserId, EnumStation.UT, EnumQueueStatuses.Finished, EnumStation.SSP, EnumQueueStatuses.NotRequired, string.Empty, EnumQueueOutcomeText.Processing);
                 new Trinity.DAL.DAL_QueueNumber().UpdateQueueStatusByUserId(UserId, EnumStation.SSP, EnumQueueStatuses.NotRequired, EnumStation.DUTYOFFICER, EnumQueueStatuses.TabSmartCard, EnumMessage.SelectOutCome, EnumQueueOutcomeText.TapSmartCardToContinue);
             }
         }

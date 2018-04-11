@@ -387,10 +387,29 @@ public static class EnumNotificationTypes
 public static class EnumStation
 {
     public const string APS = "APS";
+    /// <summary>
+    /// SSK
+    /// </summary>
     public const string ARK = "ARK";
+
+    /// <summary>
+    /// SSA
+    /// </summary>
     public const string ALK = "ALK";
+
+    /// <summary>
+    /// UHP
+    /// </summary>
     public const string SHP = "SHP";
-    public const string HSA = "UT";
+
+    /// <summary>
+    /// HSA
+    /// </summary>
+    public const string UT = "UT";
+
+    /// <summary>
+    /// ESP
+    /// </summary>
     public const string SSP = "SSP";
 
     public const string ENROLMENT = "Enrolment";
@@ -398,7 +417,7 @@ public static class EnumStation
 
     public static List<string> GetListStation()
     {
-        return new List<string>() { ARK, ALK, SHP, APS, HSA, SSP, ENROLMENT, DUTYOFFICER };
+        return new List<string>() { ARK, ALK, SHP, APS, UT, SSP, ENROLMENT, DUTYOFFICER };
     }
 
 }

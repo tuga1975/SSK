@@ -189,7 +189,7 @@ namespace Trinity.Device.Util
         {
             if (string.IsNullOrEmpty(_station))
             {
-                _station = System.Reflection.Assembly.GetEntryAssembly().GetName().Name;
+                _station = Lib.Station;
             }
             string comPort = ConfigurationManager.AppSettings["COMPort"];
             int baudRate = int.Parse(ConfigurationManager.AppSettings["BaudRate"]);

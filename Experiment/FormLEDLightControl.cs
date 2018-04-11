@@ -63,12 +63,12 @@ namespace Experiment
                 string parity = "";
                 if (chkSSA.Checked)
                 {
-                    station = "ALK";
+                    station = EnumStation.ALK;
                     parity = "Even";
                 }
                 else if (chkSSK.Checked)
                 {
-                    station = "ARK";
+                    station = EnumStation.ARK;
                     parity = "None";
                 }
                 ledStatusLightingUtil.DataReceived += LedStatusLightingUtil_DataReceived;

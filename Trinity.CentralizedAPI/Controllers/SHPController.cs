@@ -121,7 +121,7 @@ namespace Trinity.BackendAPI.Controllers
             try
             {
                 var user = new DAL.DAL_User().GetByNRIC(model.NRIC);
-                new DAL.DAL_QueueNumber().UpdateQueueStatusByUserId(user.UserId, EnumStation.SHP, EnumQueueStatuses.Finished, EnumStation.HSA, EnumQueueStatuses.Processing, "", EnumQueueOutcomeText.Processing);
+                new DAL.DAL_QueueNumber().UpdateQueueStatusByUserId(user.UserId, EnumStation.SHP, EnumQueueStatuses.Finished, EnumStation.UT, EnumQueueStatuses.Processing, "", EnumQueueOutcomeText.Processing);
                 await System.Threading.Tasks.Task.Run(() => Trinity.SignalR.Client.Instance.BackendAPISend(NotificationNames.SHP_COMPLETED, model.NRIC));
                 return Ok(true);
             }
