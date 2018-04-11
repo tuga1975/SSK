@@ -127,41 +127,7 @@ namespace ARK
                 return;
             }
 
-            // get GetOperationSetting of appointment day
-            var operationSettings = new DAL_Setting().GetOperationSettings(user.UserId);
-            Trinity.BE.SettingDetails settingDetail = null;
-            switch (appointment.Date.DayOfWeek)
-            {
-                case DayOfWeek.Sunday:
-                    settingDetail = operationSettings.Sunday;
-                    break;
-                case DayOfWeek.Monday:
-                    settingDetail = operationSettings.Monday;
-                    break;
-                case DayOfWeek.Tuesday:
-                    settingDetail = operationSettings.Tuesday;
-                    break;
-                case DayOfWeek.Wednesday:
-                    settingDetail = operationSettings.Wednesday;
-                    break;
-                case DayOfWeek.Thursday:
-                    settingDetail = operationSettings.Thursday;
-                    break;
-                case DayOfWeek.Friday:
-                    settingDetail = operationSettings.Friday;
-                    break;
-                case DayOfWeek.Saturday:
-                    settingDetail = operationSettings.Saturday;
-                    break;
-                default:
-                    break;
-            }
-
-            if (settingDetail == null)
-            {
-                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_MESSAGE, Message = "Can not get timeslots. \nPlease contact Duty officer." });
-                return;
-            }
+            
 
             // set workingTimeshift
             Trinity.BE.WorkingTimeshift workingTimeshift = new Trinity.BE.WorkingTimeshift();

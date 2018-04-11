@@ -23,34 +23,18 @@ namespace Trinity.DAL
 
         public List<Timeslot> GetTimeSlots(DateTime date)
         {
-            try
-            {
-                List<Timeslot> timeslots = _localUnitOfWork.DataContext.Timeslots.Where(item => DbFunctions.TruncateTime(item.Date) == date.Date).OrderBy(item => item.StartTime).ToList();
-
-                return timeslots;
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
+            return _localUnitOfWork.DataContext.Timeslots.Where(item => DbFunctions.TruncateTime(item.Date) == date.Date).OrderBy(item => item.StartTime).ToList();
         }
 
         public Timeslot GetNextTimeSlotFromDB()
         {
-            try
-            {
-                var date = DateTime.Now.Date;
-                Timeslot timeslot = _localUnitOfWork.DataContext.Timeslots
-                    .Where(item => DbFunctions.TruncateTime(item.Date) > date)
-                    .OrderBy(item => item.StartTime)
-                    .FirstOrDefault();
+            var date = DateTime.Now.Date;
+            Timeslot timeslot = _localUnitOfWork.DataContext.Timeslots
+                .Where(item => DbFunctions.TruncateTime(item.Date) > date)
+                .OrderBy(item => item.StartTime)
+                .FirstOrDefault();
 
-                return timeslot;
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
+            return timeslot;
         }
 
         public bool CheckTimeslot(string timeslotId,DateTime date)

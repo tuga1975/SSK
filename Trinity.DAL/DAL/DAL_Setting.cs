@@ -154,65 +154,6 @@ namespace Trinity.DAL
 
         }
 
-        public void GenerateTimeslots(DateTime date, string createdBy)
-        {
-            // Allow to change pending settings only
-            SettingModel settings = GetSettings();
-            if (settings == null)
-            {
-                // Couldn't change timeslot
-                return;
-            }
-
-            switch (date.DayOfWeek)
-            {
-                case DayOfWeek.Sunday:
-                    GenerateTimeslotAndInsert(date.Date, settings.Sunday, createdBy);
-                    break;
-                case DayOfWeek.Monday:
-                    GenerateTimeslotAndInsert(date.Date, settings.Monday, createdBy);
-                    break;
-                case DayOfWeek.Tuesday:
-                    GenerateTimeslotAndInsert(date.Date, settings.Tuesday, createdBy);
-                    break;
-                case DayOfWeek.Wednesday:
-                    GenerateTimeslotAndInsert(date.Date, settings.Wednesday, createdBy);
-                    break;
-                case DayOfWeek.Thursday:
-                    GenerateTimeslotAndInsert(date.Date, settings.Thursday, createdBy);
-                    break;
-                case DayOfWeek.Friday:
-                    GenerateTimeslotAndInsert(date.Date, settings.Friday, createdBy);
-                    break;
-                case DayOfWeek.Saturday:
-                    GenerateTimeslotAndInsert(date.Date, settings.Saturday, createdBy);
-                    break;
-                default:
-                    break;
-            }
-
-            //mon
-            //GenerateTimeslotAndInsert(date.Date, settings.Monday, createdBy);
-
-            //tue
-            //GenerateTimeslotAndInsert(date.Date, settings.Tuesday, createdBy);
-
-            ////wed
-            //GenerateTimeslotAndInsert(date.Date, settings.Wednesday, createdBy);
-
-            ////thu
-            //GenerateTimeslotAndInsert(date.Date, settings.Thursday, createdBy);
-
-            ////fri
-            //GenerateTimeslotAndInsert(date.Date, settings.Friday, createdBy);
-
-            ////sat
-            //GenerateTimeslotAndInsert(date.Date, settings.Saturday, createdBy);
-
-            ////sun
-            //GenerateTimeslotAndInsert(date.Date, settings.Sunday, createdBy);
-
-        }
 
         private void GenerateTimeslotAndInsert(DateTime date, Trinity.BE.SettingDetails model, string createBy)
         {
@@ -422,36 +363,6 @@ namespace Trinity.DAL
             var timeSlotRepo = _localUnitOfWork.GetRepository<Timeslot>();
             timeSlotRepo.AddRange(listTimeslot);
             _localUnitOfWork.Save();
-        }
-
-        public void UpdateTimeslots(DateTime date, string createdBy)
-        {
-            var timeSlotRepo = _localUnitOfWork.GetRepository<Timeslot>();
-
-            //delete
-            //var listDbTimeslot = timeSlotRepo.GetAll().ToList();
-            var listDbTimeslot = _localUnitOfWork.DataContext.Timeslots.ToList();
-
-            foreach (var item in listDbTimeslot)
-            {
-                timeSlotRepo.Delete(item);
-            }
-
-            _localUnitOfWork.Save();
-            //add new
-            GenerateTimeslots(date, createdBy);
-
-
-        }
-        public void UpdateSettings(DateTime date, Trinity.BE.SettingBE model, string lastUpdateBy)
-        {
-            var repo = _localUnitOfWork.GetRepository<OperationSetting>();
-            var dbSetting = repo.GetAll().FirstOrDefault();
-            SetInfoToSettingDB(model, dbSetting);
-
-            repo.Update(dbSetting);
-            _localUnitOfWork.Save();
-            UpdateTimeslots(date, lastUpdateBy);
         }
 
         //public Timeslot GetTimeslot(Guid settingId, DateTime currentDate)
@@ -721,37 +632,8 @@ namespace Trinity.DAL
         #region Setting & TimeSlot
         public bool UpdateSettingAndTimeSlot(SettingUpdate settingUpdateModel)
         {
-            try
-            {
-                if (EnumAppConfig.IsLocal)
-                {
-                    return UpdateSettingAndTimeslotForLocal(settingUpdateModel.CheckWarningSaveSetting, settingUpdateModel.SettingDetails);
+            return UpdateSettingAndTimeslotForLocal(settingUpdateModel.CheckWarningSaveSetting, settingUpdateModel.SettingDetails);
 
-                    //if(!EnumAppConfig.ByPassCentralizedDB)
-                    //{
-                    //    bool centralizeStatus;
-                    //    var centralUpdate = CallCentralized.Post<bool>(EnumAPIParam.Setting, "UpdateSettingAndTimeSlot", out centralizeStatus, settingUpdateModel);
-
-                    //    if (centralizeStatus)
-                    //    {
-                    //        return centralUpdate;
-                    //    }
-                    //    else
-                    //    {
-                    //        throw new Exception(EnumMessage.NotConnectCentralized);
-                    //    }
-                    //}
-                    //return true;
-                }
-                else
-                {
-                    return UpdateSettingAndTImeslotForCentralize(settingUpdateModel.CheckWarningSaveSetting, settingUpdateModel.SettingDetails);
-                }
-            }
-            catch (Exception e)
-            {
-                return false;
-            }
         }
 
         private bool UpdateSettingAndTimeslotForLocal(CheckWarningSaveSetting modelWarning, BE.SettingDetails model)
