@@ -101,7 +101,7 @@
       <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="pcsc-sharp">
-      <HintPath>..\Trinity.SSK\Libs\pcsc-sharp.dll</HintPath>
+      <HintPath>..\Trinity.Common\Libs\PCSC Smart Card Reader\pcsc-sharp.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
