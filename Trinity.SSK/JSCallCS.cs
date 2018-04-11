@@ -347,7 +347,7 @@ namespace SSK
                         Guid IDDocuemnt = new DAL_UploadedDocuments().Insert(arrayScan, ((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId);
                         new DAL_UserProfile().UploadDocumentScan(IDDocuemnt, data.User.UserId);
                     }
-                    Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(data.User.UserId, "A supervisee has updated profile.", "Please check Supervisee's information!", EnumNotificationTypes.Notification);
+                    Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(data.User.UserId, "Supervisee " + data.User.Name + " has updated profile.", "Please check Supervisee " + data.User.Name + "'s information!", EnumNotificationTypes.Notification);
 
                     session[CommonConstants.USER_LOGIN] = data.User;
 
@@ -359,7 +359,7 @@ namespace SSK
                     var updateUProfileResult = new DAL_UserProfile().UpdateProfile(userProfileModel);
                     // dalUserprofile.UpdateUserProfile(data.UserProfile, data.User.UserId, true);
                     //send notifiy to case officer
-                    Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(data.User.UserId, "A supervisee has updated profile.", "Please check Supervisee's information!", EnumNotificationTypes.Notification);
+                    Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(data.User.UserId, "Supervisee " + data.User.Name + " has updated profile.", "Please check Supervisee " + data.User.Name + "'s information!", EnumNotificationTypes.Notification);
                 }
 
                 //load Supervisee page 
@@ -379,7 +379,8 @@ namespace SSK
             {
                 Session session = Session.Instance;
                 session[CommonConstants.PROFILE_DATA] = jsonData;
-                Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId, "Supervisee's information changed!", "Please check the Supervisee's information!", EnumNotificationTypes.Notification);
+                var user = (Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN];
+                Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(user.UserId, "Supervisee's information changed!", "Please check the Supervisee " + user.Name + "'s information!", EnumNotificationTypes.Notification);
                 LoadPage("Document.html");
 
             }

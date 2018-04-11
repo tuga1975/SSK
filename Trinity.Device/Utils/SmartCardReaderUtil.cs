@@ -82,9 +82,12 @@ namespace Trinity.Device.Util
             {
                 var contextFactory = ContextFactory.Instance;
                 _sCardMonitor = new PCSC.SCardMonitor(contextFactory, SCardScope.System);
-                _sCardMonitor.Initialized += onCardInitialized;
-                _sCardMonitor.CardInserted += onCardInserted;
-                _sCardMonitor.CardRemoved += onCardRemoved;
+                if (onCardInitialized != null)
+                    _sCardMonitor.Initialized += onCardInitialized;
+                if (onCardInserted != null)
+                    _sCardMonitor.CardInserted += onCardInserted;
+                if (onCardRemoved != null)
+                    _sCardMonitor.CardRemoved += onCardRemoved;
 
                 _sCardMonitor.Start(EnumDeviceNames.SmartCardContactlessReader);
 

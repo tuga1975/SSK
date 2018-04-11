@@ -37,7 +37,6 @@ namespace Trinity.Common.Utils
         public static void Fatal(string fatal)
         {
             _log.Fatal(fatal);
-
         }
     }
 }
