@@ -414,7 +414,7 @@ namespace ARK
                 }
                 else
                 {
-                    CSCallJS.ShowMessageAsync(_web, "ERROR", error);
+                    CSCallJS.ShowMessageAsync(_web, "Manual Login ERROR", error);
                 }
             }
             finally
@@ -427,6 +427,8 @@ namespace ARK
         {
             try
             {
+                BarcodeScannerUtil.Instance.Disconnect();
+
                 EventCenter eventCenter = EventCenter.Default;
 
                 //UserManager<ApplicationUser> userManager = ApplicationIdentityManager.GetUserManager();
@@ -466,6 +468,12 @@ namespace ARK
                 }
                 else
                 {
+                    // Enable scanner
+                    if (BarcodeScannerUtil.Instance.GetDeviceStatus().Contains(EnumDeviceStatus.Connected))
+                    {
+                        System.Threading.Tasks.Task.Factory.StartNew(() => BarcodeScannerUtil.Instance.StartScanning(BarcodeScannerCallback));
+                    }
+
                     eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.LOGIN_FAILED, Message = "Your username or password is incorrect." });
                 }
             }

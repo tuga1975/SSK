@@ -127,9 +127,10 @@ namespace ALK.CodeBehind.Authentication
                 session.IsFingerprintAuthenticated = true;
                 session[CommonConstants.SUPERVISEE] = supervisee;
 
+                BarcodeScannerUtil.Instance.Disconnect();
+
                 // raise succeeded event
                 RaiseNRICSucceededEvent();
-                BarcodeScannerUtil.Instance.Disconnect();
             }
         }
     }
