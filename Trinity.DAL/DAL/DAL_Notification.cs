@@ -388,7 +388,7 @@ namespace Trinity.DAL
         public List<Notification> GetNotificationsSentToDutyOfficer()
         {
             IQueryable<Trinity.BE.Notification> queryNotifications = null;
-            List<string> modules = new List<string>() { "APS", "SSK", "SSA", "UHP", "ESP" };
+            List<string> modules = new List<string>() { "APS", "ARK", "ALK", "SHP", "SSP" };
             if (EnumAppConfig.IsLocal)
             {
                 //queryNotifications = _localUnitOfWork.DataContext.Notifications.Where(n => n.ToUserId == null);

@@ -71,14 +71,16 @@ public static class CSCallJS
         web.InvokeScript("AddContentPage", File.ReadAllText(String.Format("{1}/View/html/{0}", file, CSCallJS.curDir), Encoding.UTF8), JsonConvert.SerializeObject(model, Formatting.Indented, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore }), file);
     }
 
-    public static void InvokeScript(this WebBrowser web, string function, params object[] pram)
+    public static object InvokeScript(this WebBrowser web, string function, params object[] pram)
     {
+        object value = null;
         try
         {
             //var a = Lib.LayerWeb;
+            
             web.Invoke((MethodInvoker)(() =>
             {
-                web.Document.InvokeScript(function, pram);
+                value =  web.Document.InvokeScript(function, pram);
             }));
 
         }
@@ -86,6 +88,7 @@ public static class CSCallJS
         {
             Console.WriteLine(ex.Message);
         }
+        return value;
     }
 
     public static void PushNoti(this WebBrowser web, int count)

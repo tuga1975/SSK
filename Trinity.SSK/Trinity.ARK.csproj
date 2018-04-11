@@ -7,8 +7,8 @@
     <ProjectGuid>{B65ECADC-0BC9-4B1A-84EE-C1FE0541A787}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SSK</RootNamespace>
-    <AssemblyName>SSK</AssemblyName>
+    <RootNamespace>ARK</RootNamespace>
+    <AssemblyName>ARK</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <IsWebBootstrapper>false</IsWebBootstrapper>
@@ -211,6 +211,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="log4net.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -430,7 +431,7 @@
       <Project>{b25053fb-2050-4115-9441-8edf5c03fb1d}</Project>
       <Name>Trinity.Identity</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Trinity.Utils\Trinity.SignalR.csproj">
+    <ProjectReference Include="..\Trinity.SignalR\Trinity.SignalR.csproj">
       <Project>{c2ee0b7a-1cbf-4403-807e-8ac9f455c661}</Project>
       <Name>Trinity.SignalR</Name>
     </ProjectReference>

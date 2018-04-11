@@ -53,3 +53,12 @@ function failAlert(message) {
 function setSearchText(searchText) {
     $('#nric').val(searchText);
 }
+
+
+function getSoure() {
+    return JSON.stringify({
+        soure: api.Soure,
+        step: typeof stepNewEnrol == 'undefined' ? 0 : stepNewEnrol,
+        printsuccsess: typeof printSuccsess == 'undefined' ? false : printSuccsess,
+    });
+}

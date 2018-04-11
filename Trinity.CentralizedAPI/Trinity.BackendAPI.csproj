@@ -290,7 +290,7 @@
       <Project>{344f2633-3277-44c5-a55e-b66f920cca14}</Project>
       <Name>Trinity.DAL</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Trinity.Utils\Trinity.SignalR.csproj">
+    <ProjectReference Include="..\Trinity.SignalR\Trinity.SignalR.csproj">
       <Project>{c2ee0b7a-1cbf-4403-807e-8ac9f455c661}</Project>
       <Name>Trinity.SignalR</Name>
     </ProjectReference>
