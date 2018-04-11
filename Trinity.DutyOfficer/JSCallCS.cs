@@ -124,7 +124,7 @@ namespace DutyOfficer
                 ARK = app.Color(EnumStation.ARK),
                 ALK = app.Color(EnumStation.ALK),
                 SHP = app.Color(EnumStation.SHP),
-                HSA = new {
+                UT = new {
                     Status = app.Queue == null ? string.Empty : app.Queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStation.UT).Status,
                     Text = app.Queue == null ? string.Empty : app.Queue.QueueDetails.Any(c => c.Station == EnumStation.UT && (c.Status == EnumQueueStatuses.SelectSealOrDiscard || c.Status == EnumQueueStatuses.Finished)) ? GetResultUT(app.Membership_Users.NRIC, app.Date) : string.Empty
                 },
@@ -146,7 +146,7 @@ namespace DutyOfficer
                 ARK = queue.Color(EnumStation.ARK),
                 ALK = queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStation.ALK).Color,
                 SHP = queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStation.SHP).Color,
-                HSA = new
+                UT = new
                 {
                     Status = queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStation.UT).Status,
                     Text = queue.QueueDetails.Any(c => c.Station == EnumStation.UT && (c.Status == EnumQueueStatuses.SelectSealOrDiscard || c.Status == EnumQueueStatuses.Finished)) ? GetResultUT(queue.Membership_Users1.NRIC, queue.CreatedTime.Date) : string.Empty

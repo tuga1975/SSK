@@ -42,7 +42,7 @@
             pageSize:10,
             pageList: [10, 25, 50, 100],
             onClickCell: function (field, value, row, $element) {
-                if (field == "HSA" && $.trim(value.Text).length > 0 && row.Queue_ID != null && value.Status !='Finished') {                    
+                if (field == "UT" && $.trim(value.Text).length > 0 && row.Queue_ID != null && value.Status !='Finished') {                    
                     api.server.LoadPopupSeal(row.Date, row.UserId, row.Queue_ID, value.Text, function () {
                         $('#idQueueSeal').modal();
                     });
@@ -116,7 +116,7 @@
                     }
                 },
                 {
-                    field: 'HSA',
+                    field: 'UT',
                     title: 'UT',
                     align: 'center',
                     width: '5%',
