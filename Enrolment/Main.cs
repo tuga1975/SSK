@@ -457,13 +457,13 @@ namespace Enrolment
                                 string fingerprintRight = "../images/rightthumb.png";
                                 if (currentEditUser.UserProfile.LeftThumbImage != null)
                                 {
-                                    fingerprintLeft = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(currentEditUser.UserProfile.LeftThumbImage));
+                                    fingerprintLeft = string.Concat(string.Empty, Convert.ToBase64String(currentEditUser.UserProfile.LeftThumbImage));
                                 }
                                 if (currentEditUser.UserProfile.RightThumbImage != null)
                                 {
-                                    fingerprintRight = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(currentEditUser.UserProfile.RightThumbImage));
+                                    fingerprintRight = string.Concat(string.Empty, Convert.ToBase64String(currentEditUser.UserProfile.RightThumbImage));
                                 }
-                                LayerWeb.InvokeScript("setFingerprintServerCall", fingerprintLeft, fingerprintRight);
+                                LayerWeb.InvokeScript("setBase64FingerprintOnloadServerCall", fingerprintLeft, fingerprintRight);
                             }
                             else if (from.ToString() == "edit")
                             {
@@ -705,13 +705,13 @@ namespace Enrolment
                             string fingerprintRight = "../images/rightthumb.png";
                             if (currentEditUser.UserProfile.LeftThumbImage != null)
                             {
-                                fingerprintLeft = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(currentEditUser.UserProfile.LeftThumbImage));
+                                fingerprintLeft = string.Concat(string.Empty, Convert.ToBase64String(currentEditUser.UserProfile.LeftThumbImage));
                             }
                             if (currentEditUser.UserProfile.RightThumbImage != null)
                             {
-                                fingerprintRight = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(currentEditUser.UserProfile.RightThumbImage));
+                                fingerprintRight = string.Concat(string.Empty, Convert.ToBase64String(currentEditUser.UserProfile.RightThumbImage));
                             }
-                            LayerWeb.InvokeScript("setFingerprintServerCall", fingerprintLeft, fingerprintRight);
+                            LayerWeb.InvokeScript("setBase64FingerprintOnloadServerCall", fingerprintLeft, fingerprintRight);
                         }
                         else if (currentPage.ToString() == "UpdateSupervisee")
                         {
@@ -779,13 +779,13 @@ namespace Enrolment
                             string fingerprintRight = "../images/fingerprint.png";
                             if (currentEditUser.UserProfile.LeftThumbImage != null)
                             {
-                                fingerprintLeft = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(currentEditUser.UserProfile.LeftThumbImage));
+                                fingerprintLeft = string.Concat(string.Empty, Convert.ToBase64String(currentEditUser.UserProfile.LeftThumbImage));
                             }
                             if (currentEditUser.UserProfile.RightThumbImage != null)
                             {
-                                fingerprintRight = string.Concat("data:image/jpg;base64,", Convert.ToBase64String(currentEditUser.UserProfile.RightThumbImage));
+                                fingerprintRight = string.Concat(string.Empty, Convert.ToBase64String(currentEditUser.UserProfile.RightThumbImage));
                             }
-                            LayerWeb.InvokeScript("setFingerprintServerCall", fingerprintLeft, fingerprintRight);
+                            LayerWeb.InvokeScript("setBase64FingerprintOnloadServerCall", fingerprintLeft, fingerprintRight);
                         }
                         else if (currentPage.ToString() == "UpdateSupervisee")
                         {
