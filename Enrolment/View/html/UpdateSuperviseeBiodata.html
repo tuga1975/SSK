@@ -677,7 +677,7 @@
                             <div style="position:absolute;width: 100%;height: 50px;bottom: 10px;border-top: 1px solid #CCC;left:0px;display:none;" panel-btn-save-step4>
                                 <div style="width: calc(100% - 80px);margin-left: 40px;text-align: right;margin-top: 11px;">
                                     <a href="#" id="rePrinter" class="btn btn-light" onclick="rePrintCardNew();" style="min-width:150px;display:none;">Reprint</a>
-                                    <a href="#" id="donePrinter" class="btn btn-primary" style="min-width:150px;display:none;margin-left:20px;" onclick="api.server.LoadPage('Supervisee.html');">Done</a>
+                                    <a href="#" id="donePrinter" class="btn btn-primary" style="min-width:150px;display:none;margin-left:20px;" onclick="api.server.DoneEnrolSupervisee();">Done</a>
                                 </div>
                             </div>
                         </div>
@@ -871,6 +871,8 @@
         var CardInfo = null;
         var countPrinterSmartCard = 0;
         var checkStepNew = [];
+        var step = 0;
+        var printsuccsess = false;
         $('#Employment_Start_Date, #Employment_End_Date').datetimepicker({
             format: 'd/m/Y',
             timepicker: false,
@@ -1057,6 +1059,7 @@
             } else {
                 $('[panel-btn-save-step4]').css('display', 'none');
             }
+            step = data.to;
         });
 
         var userIDNew = '';
@@ -1166,8 +1169,10 @@
         function showPrintMessage(status, message) {
             if (status != null) {
                 if (status) {
-
+                    countPrinterSmartCard = 0;
+                    printsuccsess = true;
                 } else {
+                    printsuccsess = false;
                     $('#rePrinter').css('display', 'inline-block');
                     countPrinterSmartCard++;
                     if (countPrinterSmartCard >= 3) {
@@ -1188,9 +1193,12 @@
                 $('[name="vertify-name"]').text(dataJson.Name);
                 $('[name="vertify-nric"]').text(dataJson.NRIC);
                 $('[name="vertify-dateofbirth"]').text(dataJson.DOB);
+
+                $('#rePrinter').css('display', 'inline-block');
                 $('#donePrinter').css('display', 'inline-block');
-                $('#createNewSupervisee .carousel-indicators').css('pointer-events', 'none');
-                $('.carousel-control-prev,.carousel-control-next').css('display', 'none');
+
+                //$('#createNewSupervisee .carousel-indicators').css('pointer-events', 'none');
+                //$('.carousel-control-prev,.carousel-control-next').css('display', 'none');
             } else {
                 ShowMessage(data);
                 $('#rePrinter').css('display', 'inline-block');

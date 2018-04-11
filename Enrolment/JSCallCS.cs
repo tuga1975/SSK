@@ -612,15 +612,14 @@ namespace Enrolment
                     };
                     dalIssueCard.Insert(IssueCard);
                     new DAL_Membership_Users().UpdateSmartCardId(currentEditUser.User.UserId, SmartID);
-                    new DAL_User().ChangeUserStatus(currentEditUser.User.UserId, EnumUserStatuses.Enrolled);
+                    //new DAL_User().ChangeUserStatus(currentEditUser.User.UserId, EnumUserStatuses.Enrolled);
                     new DAL_UserProfile().UpdateCardInfo(currentEditUser.User.UserId, _CardInfo.CardNumberFull, _CardInfo.Date_Of_Issue, _CardInfo.Expired_Date);
                     currentEditUser.UserProfile.Expired_Date = _CardInfo.Expired_Date;
                     currentEditUser.UserProfile.DateOfIssue = _CardInfo.Date_Of_Issue;
                     currentEditUser.UserProfile.SerialNumber = _CardInfo.CardNumberFull;
                     currentEditUser.Membership_Users.SmartCardId = SmartID;
                     this._web.InvokeScript("showPrintMessage", true, "Smart Card was printed successfully! Please collect the smart card from printer and place on the reader to verify.");
-                    Thread.Sleep(10000);
-                    CheckVerfyCard();
+                    
                 }
                 catch (Exception ex)
                 {
@@ -655,6 +654,7 @@ namespace Enrolment
             }
             else
             {
+                this._web.InvokeScript("showPrintMessage", true, "");
                 this._web.InvokeScript("showCheckVerfyCard", true,JsonConvert.SerializeObject( new
                 {
                     Name= smartCardData_Original.SuperviseeBiodata.Name,
@@ -662,6 +662,13 @@ namespace Enrolment
                     DOB= smartCardData_Original.SuperviseeBiodata.DOB
                 }));
             }
+        }
+        public void DoneEnrolSupervisee()
+        {
+            Session session = Session.Instance;
+            var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
+            new DAL_User().ChangeUserStatus(currentEditUser.User.UserId, EnumUserStatuses.Enrolled);
+            _web.LoadPageHtml("Supervisee.html");
         }
         public void AddNewSupervisee()
         {

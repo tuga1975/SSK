@@ -1,5 +1,6 @@
 ﻿using Futronic.SDKHelper;
 using Newtonsoft.Json;
+using PCSC;
 using System;
 using System.Data;
 using System.Drawing;
@@ -13,6 +14,8 @@ using Trinity.Common;
 using Trinity.Common.Common;
 using Trinity.Common.Utils;
 using Trinity.DAL;
+using Trinity.Device;
+using Trinity.Device.Authentication;
 using Trinity.Device.Util;
 
 namespace Enrolment
@@ -64,6 +67,8 @@ namespace Enrolment
 
             _eventCenter.OnNewEvent += EventCenter_OnNewEvent;
 
+            
+
             //login
             _login = new CodeBehind.Login(LayerWeb);
             // Supervisee
@@ -80,6 +85,27 @@ namespace Enrolment
             LayerWeb.Url = new Uri(String.Format("file:///{0}/View/html/Layout.html", CSCallJS.curDir));
             LayerWeb.ObjectForScripting = _jsCallCS;
 
+        }
+
+
+
+        private void OnInserted(object sender, CardStatusEventArgs e)
+        {
+            var data = getDataStep();
+            if (data != null && (string)data["soure"] == "UpdateSuperviseeBiodata.html" && (int)data["step"] == 3 && (bool)data["printsuccsess"])
+            {
+                this.LayerWeb.InvokeScript("showPrintMessage", true, "Verifying smart card ...");
+
+            }
+        }
+        private System.Collections.Generic.Dictionary<string, object> getDataStep()
+        {
+            object value = Lib.LayerWeb.InvokeScript("getSoure");
+            if (value != null)
+            {
+                return JsonConvert.DeserializeObject<System.Collections.Generic.Dictionary<string, object>>(value.ToString());
+            }
+            return null;
         }
         //private void Fingerprint_OnFingerprintSucceeded(object sender, CodeBehind.Authentication.FingerprintEventArgs e)
         //{
@@ -299,6 +325,16 @@ namespace Enrolment
             LayerWeb.InvokeScript("createEvent", JsonConvert.SerializeObject(_jsCallCS.GetType().GetMethods().Where(d => d.IsPublic && !d.IsVirtual && !d.IsSecuritySafeCritical).ToArray().Select(d => d.Name)));
             if (_isFirstTimeLoaded)
             {
+                try
+                {
+                    // Smart Card
+                    SmartCardReaderMonitor.Start();
+                    SmartCardReaderUtil.Instance.StartSmartCardMonitor(null, OnInserted, null);
+                }
+                catch (Exception ex)
+                {
+                    LogManager.Error("LayerWeb_DocumentCompleted - Can not start card reader - "+ex.Message);
+                }
 
                 //Session session = Session.Instance;
                 //Trinity.BE.User user = new DAL_User().GetUserByUserId("bb67863c-c330-41aa-b397-c220428ad16f", true);
@@ -310,6 +346,8 @@ namespace Enrolment
                 _isFirstTimeLoaded = false;
             }
         }
+
+       
 
         private void NRIC_OnNRICSucceeded()
         {
@@ -402,7 +440,7 @@ namespace Enrolment
                             if (from.ToString() == "new")
                             {
                                 LayerWeb.LoadPageHtml("UpdateSuperviseeBiodata.html", currentEditUser);
-                                
+
 
                                 LayerWeb.InvokeScript("setAvatar", currentEditUser.UserProfile.User_Photo1_Base64 ?? string.Empty, currentEditUser.UserProfile.User_Photo2_Base64 ?? string.Empty);
 
