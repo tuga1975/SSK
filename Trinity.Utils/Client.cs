@@ -41,15 +41,7 @@ namespace Trinity.SignalR
         {
             get
             {
-                string _Station = ConfigurationManager.AppSettings["Station"];
-                if (string.IsNullOrEmpty(_Station))
-                    _Station = System.Reflection.Assembly.GetEntryAssembly().GetName().Name;
-                System.Reflection.MemberInfo member = typeof(EnumStation).GetMembers().Where(d => d.Name.ToLower() == _Station.ToLower()).FirstOrDefault();
-                if (member != null)
-                {
-                    _Station = ((System.Reflection.FieldInfo)member).GetValue(member).ToString();
-                }
-                return _Station;
+                return Lib.Station;
             }
         }
         private bool IsConnected

@@ -870,7 +870,7 @@
         var backCardImg = null;
         var CardInfo = null;
         var countPrinterSmartCard = 0;
-
+        var checkStepNew = [];
         $('#Employment_Start_Date, #Employment_End_Date').datetimepicker({
             format: 'd/m/Y',
             timepicker: false,
@@ -978,7 +978,21 @@
             } else {
                 $('.carousel-control-next').css('display', 'flex');
             }
-
+            if (data.from == 0 && data.direction == 'left') {
+                api.server.checkStepNew(data.from, function (status) {
+                    if (!status) {
+                        setTimeout(function () { $('#createNewSupervisee').carousel(0); });
+                        alert('Please update the avatar');
+                    }
+                });
+            } else if (data.from == 1 && data.direction == 'left') {
+                api.server.checkStepNew(data.from, function (status) {
+                    if (!status) {
+                        setTimeout(function () { $('#createNewSupervisee').carousel(1); });
+                        alert('Please update your fingerprint');
+                    }
+                });
+            }
             if (data.to == 2) {
                 api.server.loadDataVerify(function (dataRe) {
                     var model = dataRe[0];
@@ -1037,6 +1051,7 @@
                 }
                 api.server.UpdateSuperviseeBiodata(frontCardImg, backCardImg, JSON.stringify(CardInfo));
             }
+
             if (data.to == 3) {
                 $('[panel-btn-save-step4]').css('display', 'block');
             } else {
