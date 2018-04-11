@@ -1042,6 +1042,37 @@ namespace Enrolment
                 _web.InvokeScript("OnIssuedCardReprinted", false, result.Description);
             }
         }
+        public bool checkStepNew(int step)
+        {
+            Session session = Session.Instance;
+            var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
+
+            if (currentEditUser != null && currentEditUser.UserProfile!=null)
+            {
+                if (step == 0)
+                {
+                    if (currentEditUser.UserProfile.User_Photo1!=null && currentEditUser.UserProfile.User_Photo2 != null)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }else if (step == 1)
+                {
+                    if (currentEditUser.UserProfile.LeftThumbImage != null && currentEditUser.UserProfile.RightThumbImage != null)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+            }
+            return false;
+        }
         #endregion
     }
 }

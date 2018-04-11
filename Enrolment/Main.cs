@@ -402,7 +402,9 @@ namespace Enrolment
                             if (from.ToString() == "new")
                             {
                                 LayerWeb.LoadPageHtml("UpdateSuperviseeBiodata.html", currentEditUser);
-                                LayerWeb.InvokeScript("setAvatar", currentEditUser.UserProfile.User_Photo1_Base64, currentEditUser.UserProfile.User_Photo2_Base64);
+                                
+
+                                LayerWeb.InvokeScript("setAvatar", currentEditUser.UserProfile.User_Photo1_Base64 ?? string.Empty, currentEditUser.UserProfile.User_Photo2_Base64 ?? string.Empty);
 
                                 string fingerprintLeft = "../images/leftthumb.png";
                                 string fingerprintRight = "../images/rightthumb.png";
