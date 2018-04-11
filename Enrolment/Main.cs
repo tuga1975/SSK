@@ -91,19 +91,28 @@ namespace Enrolment
 
         private void OnInserted(object sender, CardStatusEventArgs e)
         {
-            var data = getDataStep();
-            if (data != null && (string)data["soure"] == "UpdateSuperviseeBiodata.html" && (int)data["step"] == 3 && (bool)data["printsuccsess"])
+            try
             {
-                this.LayerWeb.InvokeScript("showPrintMessage", true, "Verifying smart card ...");
-                _jsCallCS.CheckVerfyCard();
+                var data = getDataStep();
+                if (data != null && data["soure"] == "UpdateSuperviseeBiodata.html" && Convert.ToInt32(data["step"]) == 3 && Convert.ToBoolean(data["printsuccsess"]))
+                {
+                    this.LayerWeb.InvokeScript("showPrintMessage", true, "Verifying smart card ...");
+                    _jsCallCS.CheckVerfyCard();
+                }
             }
+            catch (Exception ex)
+            {
+
+                
+            }
+            
         }
-        private System.Collections.Generic.Dictionary<string, object> getDataStep()
+        private System.Collections.Generic.Dictionary<string, string> getDataStep()
         {
             object value = Lib.LayerWeb.InvokeScript("getSoure");
             if (value != null)
             {
-                return JsonConvert.DeserializeObject<System.Collections.Generic.Dictionary<string, object>>(value.ToString());
+                return JsonConvert.DeserializeObject<System.Collections.Generic.Dictionary<string, string>>(value.ToString());
             }
             return null;
         }

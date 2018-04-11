@@ -871,8 +871,8 @@
         var CardInfo = null;
         var countPrinterSmartCard = 0;
         var checkStepNew = [];
-        var step = 0;
-        var printsuccsess = false;
+        var stepNewEnrol = 0;
+        var printSuccsess = false;
         $('#Employment_Start_Date, #Employment_End_Date').datetimepicker({
             format: 'd/m/Y',
             timepicker: false,
@@ -1059,7 +1059,7 @@
             } else {
                 $('[panel-btn-save-step4]').css('display', 'none');
             }
-            step = data.to;
+            stepNewEnrol = data.to;
         });
 
         var userIDNew = '';
@@ -1067,6 +1067,9 @@
             userIDNew = model.User.UserId;
         });
         function rePrintCardNew() {
+            $('[name="panel-succss-print"]').css('display', 'none');
+            $('#donePrinter').css('display', 'none');
+            printSuccsess = false;
             api.server.PrintSmartCard(frontCardImg, backCardImg, JSON.stringify(CardInfo))
         }
         function setImg(number, src) {
@@ -1170,9 +1173,9 @@
             if (status != null) {
                 if (status) {
                     countPrinterSmartCard = 0;
-                    printsuccsess = true;
+                    printSuccsess = true;
                 } else {
-                    printsuccsess = false;
+                    printSuccsess = false;
                     $('#rePrinter').css('display', 'inline-block');
                     countPrinterSmartCard++;
                     if (countPrinterSmartCard >= 3) {

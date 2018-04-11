@@ -59,6 +59,6 @@ function getSoure() {
     return JSON.stringify({
         soure: api.Soure,
         step: typeof stepNewEnrol == 'undefined' ? 0 : stepNewEnrol,
-        printsuccsess: typeof printSuccsess == 'undefined' ? false : printsuccsess,
+        printsuccsess: typeof printSuccsess == 'undefined' ? false : printSuccsess,
     });
 }
