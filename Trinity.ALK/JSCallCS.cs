@@ -122,7 +122,7 @@ namespace ALK
         {
             new DAL_Labels().UpdatePrinting(e.LabelInfo.UserId, EnumLabelType.MUB, EnumPrintStatus.Successful, EnumStation.ALK, DateTime.Today);
             _PrintMUBSucceed = true;
-            Trinity.SignalR.Client.Instance.SSAPrintingLabel(e.LabelInfo.UserId);
+            Trinity.SignalR.Client.Instance.SSALabelPrinted(e.LabelInfo.UserId);
         }
 
         private void PrintMUBLabels_OnPrintMUBLabelFailed(object sender, PrintMUBAndTTLabelsEventArgs e)
@@ -132,7 +132,7 @@ namespace ALK
 
                 new DAL_Labels().UpdatePrinting(e.LabelInfo.UserId, EnumLabelType.MUB, e.LabelInfo.PrintStatus, EnumStation.ALK, DateTime.Today);
                 _PrintMUBSucceed = false;
-                Trinity.SignalR.Client.Instance.SSAPrintingLabel(e.LabelInfo.UserId);
+                Trinity.SignalR.Client.Instance.SSALabelPrinted(e.LabelInfo.UserId);
                 Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(e.LabelInfo.UserId, "Cannot print MUB Label", "User '" + e.LabelInfo.Name + "' cannot print MUB label.", EnumNotificationTypes.Error);
             }
             catch (Exception ex)
@@ -144,7 +144,7 @@ namespace ALK
         private void PrintTTLabels_OnPrintTTLabelSucceeded(object sender, PrintMUBAndTTLabelsEventArgs e)
         {
             new DAL_Labels().UpdatePrinting(e.LabelInfo.UserId, EnumLabelType.TT, EnumPrintStatus.Successful, EnumStation.ALK, DateTime.Today);
-            Trinity.SignalR.Client.Instance.SSAPrintingLabel(e.LabelInfo.UserId);
+            Trinity.SignalR.Client.Instance.SSALabelPrinted(e.LabelInfo.UserId);
             _PrintTTSucceed = true;
         }
 
@@ -152,7 +152,7 @@ namespace ALK
         {
             new DAL_Labels().UpdatePrinting(e.LabelInfo.UserId, EnumLabelType.TT, e.LabelInfo.PrintStatus, EnumStation.ALK, DateTime.Today);
             _PrintTTSucceed = false;
-            Trinity.SignalR.Client.Instance.SSAPrintingLabel(e.LabelInfo.UserId);
+            Trinity.SignalR.Client.Instance.SSALabelPrinted(e.LabelInfo.UserId);
             Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(e.LabelInfo.UserId, "Cannot print TT Label", "User '" + e.LabelInfo.Name + "' cannot print TT label.", EnumNotificationTypes.Error);
         }
 
