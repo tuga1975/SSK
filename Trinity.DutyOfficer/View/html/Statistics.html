@@ -8,7 +8,7 @@
 
             <div class="filters">Date</div>
             <div class="filters">
-                <div class="input-group date" id="datetimepicker">
+                <div class="input-group date">
                     <input type='text' class="form-control" id="dateSearch" style="border-radius: 3px;padding-right:30px;width:150px;" />
                     <span class="input-group-addon" style="z-index: 5;font-size: 16px;color: #000;position: relative;margin-left: -25px;">
                         <i class="fa fa-calendar-o" aria-hidden="true"></i>
@@ -57,7 +57,7 @@
 
         //$('#dateSearch').val(today);
 
-        $('#datetimepicker').datepicker({ format: 'dd/mm/yyyy' }).datepicker("setDate", new Date());;
+        $('#dateSearch').datepicker({ format: 'dd/mm/yyyy' }).datepicker("setDate", new Date());
     });
 
 

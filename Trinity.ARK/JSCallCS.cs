@@ -127,7 +127,7 @@ namespace ARK
                 return;
             }
 
-            
+
 
             // set workingTimeshift
             Trinity.BE.WorkingTimeshift workingTimeshift = new Trinity.BE.WorkingTimeshift();
@@ -241,7 +241,7 @@ namespace ARK
 
                 if (updateResult)
                 {
-                    Trinity.SignalR.Client.Instance.AppointmentBooked(user.UserId,appointment_ID, timeslot_ID);
+                    Trinity.SignalR.Client.Instance.AppointmentBooked(user.UserId, appointment_ID, timeslot_ID);
                     AppointmentDetails appointmentdetails = new DAL_Appointments().GetAppointmentDetails(appointment_ID);
                     ReceiptPrinterUtil.Instance.PrintAppointmentDetails(appointmentdetails);
                     LoadPageSupervisee();
@@ -291,7 +291,7 @@ namespace ARK
             }
         }
 
-        public void SaveProfile(string param,string arrayDocumentScan, bool primaryInfoChange)
+        public void SaveProfile(string param, string arrayDocumentScan, bool primaryInfoChange)
         {
             try
             {
@@ -308,7 +308,7 @@ namespace ARK
                     // dalUserprofile.UpdateUserProfile(data.UserProfile,data.User.UserId , true);
                     //send notifiy to duty officer
                     List<string> arrayScan = JsonConvert.DeserializeObject<List<string>>(arrayDocumentScan);
-                    if (arrayScan.Count>0)
+                    if (arrayScan.Count > 0)
                     {
                         Guid IDDocuemnt = new DAL_UploadedDocuments().Insert(arrayScan, ((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId);
                         new DAL_UserProfile().UploadDocumentScan(IDDocuemnt, data.User.UserId);
@@ -610,8 +610,10 @@ namespace ARK
                         else
                         {
                             queueNumber = _dalQueue.InsertQueueNumber(appointment.ID, appointment.UserId, EnumStation.ARK, currentUser.UserId);
-                            string MarkingNumber = new DAL_SettingSystem().GenerateMarkingNumber();
                             var dalLabel = new DAL_Labels();
+                            string MarkingNumber = dalLabel.GetMarkingNumber(supervisee.UserId, DateTime.Today);
+                            if (string.IsNullOrEmpty(MarkingNumber))
+                                MarkingNumber = new DAL_SettingSystem().GenerateMarkingNumber();
                             dalLabel.Insert(new Trinity.BE.Label
                             {
                                 UserId = supervisee.UserId,
@@ -645,8 +647,11 @@ namespace ARK
                     else
                     {
                         queueNumber = _dalQueue.InsertQueueNumberFromDO(supervisee.UserId, EnumStation.ARK, currentUser.UserId);
-                        string MarkingNumber = new DAL_SettingSystem().GenerateMarkingNumber();
                         var dalLabel = new DAL_Labels();
+                        string MarkingNumber = dalLabel.GetMarkingNumber(supervisee.UserId,DateTime.Today);
+                        if (string.IsNullOrEmpty(MarkingNumber))
+                            MarkingNumber = new DAL_SettingSystem().GenerateMarkingNumber();
+
                         dalLabel.Insert(new Trinity.BE.Label
                         {
                             UserId = supervisee.UserId,
@@ -707,11 +712,11 @@ namespace ARK
                 }
             }
         }
-        
+
         public void SaveReasonForQueue(string dataTxt, string arrayDocumentScan)
         {
             List<string> arrayScan = JsonConvert.DeserializeObject<List<string>>(arrayDocumentScan);
-            if (arrayScan.Count==0)
+            if (arrayScan.Count == 0)
             {
                 _SaveReasonForQueue(dataTxt, null);
             }
@@ -720,7 +725,7 @@ namespace ARK
                 Guid IDDocuemnt = new DAL_UploadedDocuments().Insert(arrayScan, ((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId);
                 _SaveReasonForQueue(dataTxt, IDDocuemnt);
             }
-            
+
         }
 
         private void _SaveReasonForQueue(string dataTxt, Nullable<Guid> IdDocument)

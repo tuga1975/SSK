@@ -62,7 +62,7 @@ namespace ALK
             _nric.OnShowMessage += OnShowMessage;
 
             // Supervisee
-            _supperviseeParticulars = new CodeBehind.SupperviseeParticulars(LayerWeb);
+            _supperviseeParticulars = new CodeBehind.SupperviseeParticulars(LayerWeb, _jsCallCS);
 
             _eventCenter = EventCenter.Default;
             _eventCenter.OnNewEvent += EventCenter_OnNewEvent;

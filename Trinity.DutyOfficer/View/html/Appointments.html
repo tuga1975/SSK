@@ -8,21 +8,19 @@
 
             <div class="filters">Period</div>
             <select class="form-control" id="period">
-                <option>All Day</option>
-                <option>Morning</option>
-                <option>Afternoon</option>
-                <option>Evening</option>
+                <option value="">All Day</option>
+                <option value="Morning">Morning</option>
+                <option value="Afternoon">Afternoon</option>
+                <option value="Evening">Evening</option>
             </select>
 
             <div class="filters">Timeslot</div>
-            <select class="form-control" id="timeslot">
-                <option>All</option>
-            </select>
+            <select class="form-control" id="timeslot"></select>
 
             <div class="filters">Date</div>
             <div class="filters">
                 <div class="input-group date" id="datetimepicker">
-                    <input type='text' class="form-control" id="dateSearch"  style="border-radius: 3px;padding-right:30px;width:150px;" />
+                    <input type='text' class="form-control" id="dateSearch" style="border-radius: 3px;padding-right:30px;width:150px;" />
                     <span class="input-group-addon" style="z-index: 5;font-size: 16px;color: #000;position: relative;margin-left: -25px;">
                         <i class="fa fa-calendar-o" aria-hidden="true"></i>
                     </span>
@@ -30,6 +28,7 @@
             </div>
 
         </div>
+
         <div class="form-inline formEntries float-right">
             <div class="entries">Display </div>
             <select class="form-control" id="pageSize">
@@ -43,10 +42,122 @@
         <table id="tableAppointment"></table>
     </div>
 </div>
+<style type="text/css">
+    #dateSearch::-ms-clear {
+        display: none;
+    }
+</style>
 <script type="text/javascript">
     activemenu('Appointments');
     $("#menu .menu-item").removeClass("active");
     $("#menu [item-menu].active").parent().addClass("active");
+    var dateOld = '';
+    api.ready(function () {
+        $('#tableAppointment').bootstrapTable({
+            pagination: true,
+            pageSize: 10,
+            pageList: [10, 25, 50, 100],
+            columns: [{
+                field: 'TimeSlotTxt',
+                title: 'Time Slot',
+                sortable: true,
+                width: '15%',
+                align: 'center'
+            }, {
+                field: 'NRIC',
+                title: 'NRIC',
+                sortable: true,
+                width: '15%',
+                align: 'center'
+            }, {
+                field: 'Name',
+                title: 'Name',
+                sortable: true,
+                width: '40%',
+                align: 'center'
+            }, {
+                field: 'ReportTimeSpan',
+                title: 'Report Time',
+                sortable: true,
+                width: '15%',
+                align: 'center'
+            }, {
+                field: 'Status',
+                title: 'Status',
+                sortable: true,
+                width: '15%',
+                align: 'center',
+            }, {
+                field: 'HaveUB',
+                title: '',
+                width: '100',
+                align: 'center',
+                formatter: function (value, row, index, field) {
+                    if (!value) {
+                        return '<a href="javascript:;">Seal</a>';
+                    }
+                    return '';
+                }
+            }],
+            onClickCell: function (field, value, row, $element) {
+                if (field == "HaveUB" && !row.HaveUB) {
+                    var index = $element.closest('tr').data('index');
+                    ShowMessageConfirm('', 'Are you sure?', function (status) {
+                        if (status) {
+                            api.server.AppointmentSeal(row.ID, function (status) {
+                                $('#tableAppointment').bootstrapTable('updateRow', {
+                                    index: index,
+                                    row: {
+                                        HaveUB: true
+                                    }
+                                });
+                            });
+                            
+                        }
+                    });
+                }
+            }
+        });
+
+        $('#dateSearch').datepicker({ format: 'dd/mm/yyyy' }).datepicker("setDate", new Date()).on('changeDate', dateChanged).change(dateChanged);
+        $('#period').change(function () {
+            getTimeSlot();
+        });
+        $('#timeslot').change(function () {
+            searchAppointments();
+        });
+        dateChanged();
+    });
+    function dateChanged() {
+        var date = $('#dateSearch').val();
+        if ($.trim(date).length == 0) {
+            $('#dateSearch').datepicker("setDate", dateOld)
+            date = dateOld;
+        }
+        dateOld = date;
+        getTimeSlot();
+    }
+    function getTimeSlot() {
+        api.server.getTimeSlot($('#dateSearch').val(), $('#period').val(), function (data) {
+            var _option = '<option value="">All</option>';
+            $.each(data, function (index, item) {
+                _option += '<option value="' + item.ID + '">' + item.Time + '</option>';
+            });
+            $('#timeslot').html(_option);
+            searchAppointments();
+        });
+    }
+    function searchAppointments() {
+        api.server.GetAllAppoinments($('#dateSearch').val(), $('#period').val(), $('#timeslot').val(), function (data) {
+            $('#tableAppointment').bootstrapTable('load', data);
+        });
+    }
+</script>
+<!--<script type="text/javascript">
+    activemenu('Appointments');
+    $("#menu .menu-item").removeClass("active");
+    $("#menu [item-menu].active").parent().addClass("active");
+
     var dataSource = [];
     var searchSource = [];
     var today = new Date();
@@ -63,7 +174,12 @@
     }
 
     today = dd + '/' + mm + '/' + yyyy;
+
     $('#dateSearch').val(today);
+
+    function searchAppointments() {
+
+    }
 
     $(document).ready(function () {
 
@@ -74,10 +190,10 @@
         $(function () {
             $('#datetimepicker').datepicker({ format: 'dd/mm/yyyy'});
         });
-        
+
         // For case redirected from Statistics
-        api.ready(function (strDateAndStartTime) {            
-            api.server.GetAllAppoinments(function (data) {                
+        api.ready(function (strDateAndStartTime) {
+            api.server.GetAllAppoinments(function (data) {
                 if (data) {
                     data.forEach(function (element, index) {
                         dataSource.push({
@@ -157,7 +273,7 @@
                     }],
                     data: searchSource
                 });
-                
+
                 if (strDateAndStartTime) {
                     var splitDateAndTime = strDateAndStartTime.split(';');
                     var dateAppt = splitDateAndTime[0];
@@ -228,7 +344,7 @@
                 });
             }
         }
-        
+
         $('#tableAppointment').bootstrapTable('refreshOptions', {
             pagination: true,
             data: searchSource
@@ -301,4 +417,4 @@
         time = H + time.substr(hourEnd, 3);
         return time; // return adjusted time or original string
     };
-</script>
+</script>-->

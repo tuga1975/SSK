@@ -106,7 +106,7 @@ public class JSCallCSBase
         //}
         //System.IO.File.AppendAllLines(file, new string[] { message });
 
-        string ID = new Guid().ToString().Trim();
+        string ID = Guid.NewGuid().ToString().Trim();
         this._web.ShowMessage("An error occurred.<br/>Please contact the administrator.<br/>Error code: " + ID);
         Trinity.Common.Utils.LogManager.Debug(ID + ": " + message);
     }

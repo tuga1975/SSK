@@ -613,6 +613,18 @@ namespace Enrolment
                         CSCallJS.LoadPageHtml(this.LayerWeb, "UpdateSuperviseeBiodata.html", currentEditUser);
                         LayerWeb.InvokeScript("setAvatar", currentNewPhotos.Item1, currentNewPhotos.Item2);
 
+                        string fingerprintLeft = "../images/leftthumb.png";
+                        string fingerprintRight = "../images/rightthumb.png";
+                        if (currentEditUser.UserProfile.LeftThumbImage != null)
+                        {
+                            fingerprintLeft = string.Concat(string.Empty, Convert.ToBase64String(currentEditUser.UserProfile.LeftThumbImage));
+                        }
+                        if (currentEditUser.UserProfile.RightThumbImage != null)
+                        {
+                            fingerprintRight = string.Concat(string.Empty, Convert.ToBase64String(currentEditUser.UserProfile.RightThumbImage));
+                        }
+                        LayerWeb.InvokeScript("setBase64FingerprintOnloadServerCall", fingerprintLeft, fingerprintRight);
+
                     }
                     else if (currentPage.ToString() == "UpdateSupervisee")
                     {

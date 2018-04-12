@@ -108,6 +108,10 @@ namespace DutyOfficer
         {
             // khi ở tab Queue nhận đc cái này sẽ tải lại
             RefreshCurrentTab(EnumDOTabName.Queue);
+            if(e.Name== NotificationNames.SSP_COMPLETED)
+            {
+                RefreshCurrentTab(EnumDOTabName.UBLabel);
+            }
         }
         private void OnBackendApiSendDO_Handler(object sender, NotificationInfo e)
         {
@@ -614,6 +618,9 @@ namespace DutyOfficer
                             break;
                         case EnumDOTabName.Alerts:
                             Lib.LayerWeb.InvokeScript("getNotificationInCurrentTab", dataForAlert);
+                            break;
+                        case EnumDOTabName.UBLabel:
+                            Lib.LayerWeb.InvokeScript("getDataAllUBlabels");
                             break;
                     }
                 }

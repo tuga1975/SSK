@@ -79,21 +79,24 @@
 
     var dataSource = [];
 
-    api.server.GetAllUBlabels(function (data) {
-        dataSource = data;
-        $('#UBlabel').bootstrapTable({
-            //pagination: true,
-            search: true,
-            pageSize: 10,
-            pageList: [10, 25, 50, 100],
-            //singleSelect: true,
-            checkboxHeader: false,
-            data: dataSource
-        });
+    $('#UBlabel').bootstrapTable({
+        //pagination: true,
+        search: true,
+        pageSize: 10,
+        pageList: [10, 25, 50, 100],
+        //singleSelect: true,
+        checkboxHeader: false,
+        data: dataSource
     });
 
+    function getDataAllUBlabels() {
+        api.server.GetAllUBlabels(function (data) {
+            dataSource = data;
+            $('#UBlabel').bootstrapTable('load', dataSource);
+        });
+    }
+    getDataAllUBlabels();
     function getDataCallback(response) {
-
         var data = JSON.parse(response);
         if (data) {
             data.forEach(function (element, index) {
@@ -106,16 +109,9 @@
                 });
             });
         }
-
-        $('#UBlabel').bootstrapTable({
-            //pagination: true,
-            search: true,
-            pageSize: 10,
-            //singleSelect: true,
-            checkboxHeader: false,
-            data: dataSource
-        });
+        $('#UBlabel').bootstrapTable('load', dataSource);
     }
+
     $(window).ready(function () {
         $('#pageSize').change(function () {
             pageSize = $("#pageSize option:selected").text();

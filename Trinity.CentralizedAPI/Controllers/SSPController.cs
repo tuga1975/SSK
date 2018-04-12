@@ -250,6 +250,7 @@ namespace Trinity.BackendAPI.Controllers
             {
                 var user = new DAL.DAL_User().GetByNRIC(model.NRIC);
                 new DAL.DAL_QueueNumber().UpdateQueueStatusByUserId(user.UserId, EnumStation.SSP, EnumQueueStatuses.Finished, EnumStation.DUTYOFFICER, EnumQueueStatuses.TabSmartCard, EnumMessage.SelectOutCome, EnumQueueOutcomeText.TapSmartCardToContinue);
+                new DAL.DAL_Labels().DeleteLabel(user.UserId,DateTime.Today,EnumLabelType.UB);
                 await System.Threading.Tasks.Task.Run(() => Trinity.SignalR.Client.Instance.BackendAPISend(NotificationNames.SSP_COMPLETED, model.NRIC));
                 return Ok(true);
             }

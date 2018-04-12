@@ -205,6 +205,27 @@ namespace Trinity.DAL
         //    }
         //}
 
+
+        public string GetMarkingNumber(string UserId,DateTime date)
+        {
+            date = date.Date;
+            var _label = _localUnitOfWork.DataContext.Labels.FirstOrDefault(d=>d.UserId.Equals(UserId) && DbFunctions.TruncateTime(d.Date)== date);
+            if (_label != null)
+            {
+                return _label.MarkingNo;
+            }
+            return string.Empty;
+        }
+        public void DeleteLabel(string UserId, DateTime date,string Type)
+        {
+            date = date.Date;
+            var _label = _localUnitOfWork.DataContext.Labels.FirstOrDefault(d => d.UserId.Equals(UserId) && d.Label_Type.Equals(Type) && DbFunctions.TruncateTime(d.Date) == date);
+            if (_label != null)
+            {
+                _localUnitOfWork.GetRepository<DAL.DBContext.Label>().Delete(_label);
+                _localUnitOfWork.Save();
+            }
+        }
         public void Insert(BE.Label model)
         {
             Label dbLabel = new Label();
@@ -271,70 +292,18 @@ namespace Trinity.DAL
             return lstModels;
         }
 
-        public List<BE.Label> GetAllLabelsForUB()
+        public List<BE.Label> GetAllLabelsForUBToday()
         {
-            try
+            return _localUnitOfWork.DataContext.Labels.Where(d =>  d.Label_Type == EnumLabelType.UB &&  DbFunctions.TruncateTime(d.Date) == DateTime.Today).Select(d => new BE.Label()
             {
-                if (EnumAppConfig.IsLocal)
-                {
-                    var lstModels = _localUnitOfWork.DataContext.Labels.Include("Membership_Users")
-                        .Join(_localUnitOfWork.DataContext.DrugResults,
-                                l => l.Membership_Users.NRIC,
-                                d => d.NRIC,
-                                (l, d) => new BE.Label()
-                                {
-                                    NRIC = l.Membership_Users.NRIC,
-                                    Name = l.Membership_Users.Name,
-                                    LastStation = l.LastStation,
-                                    UserId = l.UserId,
-                                    IsSealed = d.IsSealed,
-                                    MarkingNo = l.MarkingNo,
-                                    Date = l.Date
-                                })
-                    .Where(d => d.IsSealed == true)
-                    .GroupBy(d => d.UserId).Select(d => d.OrderByDescending(t => DbFunctions.TruncateTime(t.Date)).FirstOrDefault()).ToList();
-                    return lstModels;
-
-                    //if ((lstModels != null && lstModels.Count() > 0) || EnumAppConfig.ByPassCentralizedDB)
-                    //{
-                    //    return lstModels.ToList();
-                    //}
-                    //else
-                    //{
-                    //    bool centralizeStatus;
-                    //    var centralUpdate = CallCentralized.Get<List<BE.Label>>(EnumAPIParam.Label, "GetAllLabelsForUB", out centralizeStatus);
-                    //    if (centralizeStatus)
-                    //    {
-                    //        return centralUpdate;
-                    //    }
-                    //    return lstModels.ToList();
-                    //}
-                }
-                else
-                {
-                    var lstModels = _localUnitOfWork.DataContext.Labels.Include("Membership_Users")
-                        .Join(_localUnitOfWork.DataContext.DrugResults,
-                                l => l.Membership_Users.NRIC,
-                                d => d.NRIC,
-                                (l, d) => new BE.Label()
-                                {
-                                    NRIC = l.Membership_Users.NRIC,
-                                    Name = l.Membership_Users.Name,
-                                    LastStation = l.LastStation,
-                                    UserId = l.UserId,
-                                    IsSealed = d.IsSealed,
-                                    MarkingNo = l.MarkingNo,
-                                    Date = l.Date
-                                })
-                    .Where(d => d.IsSealed == true)
-                    .GroupBy(d => d.UserId).Select(d => d.OrderByDescending(t => DbFunctions.TruncateTime(t.Date)).FirstOrDefault()).ToList();
-                    return lstModels;
-                }
-            }
-            catch (Exception e)
-            {
-                return null;
-            }
+                NRIC = d.Membership_Users.NRIC,
+                Name = d.Membership_Users.Name,
+                LastStation = d.LastStation,
+                UserId = d.UserId,
+                MarkingNo = d.MarkingNo,
+                Date = d.Date
+            }).ToList();
+            
         }
 
         public string GetMarkingNoByUserId(string userId)

@@ -32,14 +32,16 @@ namespace Trinity.Common
             };
             string contentQRCode = string.Empty;
             //QR code on both MUB and UB label will follow the data size = 91 characters in total 
-            if (printUB)
-            {
-                contentQRCode = labelInfo.MarkingNo + "*" + labelInfo.NRIC.PadLeft(9, '0') + "*" + labelInfo.Name.PadLeft(60, '_') + "*" + labelInfo.DrugType.PadLeft(7, '_') + "*";
-            }
-            else
-            {
-                contentQRCode = labelInfo.MarkingNo + "*" + labelInfo.NRIC.PadLeft(9, '0') + "*" + labelInfo.Name.PadLeft(60, '_') + "*" + "_".PadLeft(8, '_');
-            }
+            //if (printUB)
+            //{
+            //    contentQRCode = labelInfo.MarkingNo + "*" + labelInfo.NRIC.PadLeft(9, '0') + "*" + labelInfo.Name.PadLeft(60, '_') + "*" + labelInfo.DrugType.PadLeft(7, '_') + "*";
+            //}
+            //else
+            //{
+            //    contentQRCode = labelInfo.MarkingNo + "*" + labelInfo.NRIC.PadLeft(9, '0') + "*" + labelInfo.Name.PadLeft(60, '_') + "*" + "_".PadLeft(8, '_');
+            //}
+
+            contentQRCode = labelInfo.MarkingNo + "*" + labelInfo.NRIC.PadLeft(9, '0') + "*" + labelInfo.Name.PadLeft(60, '_') + "*" + "_".PadLeft(8, '_');
 
             //var encryptContent = CommonUtil.EncryptString(contentQRCode, AESKey);
             //var pixelData = qrCodeWriter.Write(encryptContent);

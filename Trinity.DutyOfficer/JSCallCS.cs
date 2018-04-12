@@ -47,7 +47,7 @@ namespace DutyOfficer
             _printMUBAndTTLabel.OnPrintUBLabelsFailed += PrintUBLabels_OnPrintUBLabelFailed;
             _StationColorDevice = new StationColorDevice();
 
-            
+
         }
 
         public StationColorDevice GetStationClolorDevice()
@@ -69,7 +69,7 @@ namespace DutyOfficer
         public void LoadDrugsTest(string userId)
         {
             var user = new Trinity.DAL.DAL_User().GetUserById(userId);
-            Trinity.DAL.DBContext.DrugResult dbDrugResult = new Trinity.DAL.DAL_DrugResults().GetByNRICAndUploadedDate(user.NRIC,DateTime.Today);
+            Trinity.DAL.DBContext.DrugResult dbDrugResult = new Trinity.DAL.DAL_DrugResults().GetByNRICAndUploadedDate(user.NRIC, DateTime.Today);
             if (dbDrugResult != null)
             {
                 this._web.LoadPopupHtml("QueuePopupDrugs.html", new
@@ -124,7 +124,8 @@ namespace DutyOfficer
                 ARK = app.Color(EnumStation.ARK),
                 ALK = app.Color(EnumStation.ALK),
                 SHP = app.Color(EnumStation.SHP),
-                UT = new {
+                UT = new
+                {
                     Status = app.Queue == null ? string.Empty : app.Queue.QueueDetails.FirstOrDefault(c => c.Station == EnumStation.UT).Status,
                     Text = app.Queue == null ? string.Empty : app.Queue.QueueDetails.Any(c => c.Station == EnumStation.UT && (c.Status == EnumQueueStatuses.SelectSealOrDiscard || c.Status == EnumQueueStatuses.Finished)) ? GetResultUT(app.Membership_Users.NRIC, app.Date) : string.Empty
                 },
@@ -213,7 +214,7 @@ namespace DutyOfficer
             //SmartCard.Instance.Start();
         }
 
-        
+
 
         public void TapSmartCardOnQueueSucceed(string queueId)
         {
@@ -248,7 +249,7 @@ namespace DutyOfficer
         public void SaveOutcome(string UserID, string outcome)
         {
             DAL_QueueNumber dalQueue = new DAL_QueueNumber();
-            
+
             dalQueue.UpdateQueueStatusByUserId(UserID, EnumStation.DUTYOFFICER, EnumQueueStatuses.Finished, EnumStation.DUTYOFFICER, EnumQueueStatuses.Finished, "", outcome);
 
             // Re-load queue
@@ -272,7 +273,7 @@ namespace DutyOfficer
             {
                 //Receive alerts and notifications from APS, ARK, ALK, SHP and SSP 
                 List<string> modules = new List<string>() { EnumStation.APS, EnumStation.ARK, EnumStation.ALK, EnumStation.SHP, EnumStation.SSP, EnumStation.ENROLMENT };
-                return dalNotify.GetAllNotifications(userID, modules,true);
+                return dalNotify.GetAllNotifications(userID, modules, true);
             }
             return null;
         }
@@ -448,7 +449,21 @@ namespace DutyOfficer
         #endregion
 
         #region Appointment
-        public List<Appointment> GetAllAppoinments()
+        public object getTimeSlot(string date, string category)
+        {
+            var dataRe = new DAL_Timeslots().GetTimeSlots(DateTime.ParseExact(date, "dd/MM/yyyy", CultureInfo.InvariantCulture));
+            if (!string.IsNullOrEmpty(category))
+            {
+                dataRe = dataRe.Where(d => d.Category.Equals(category)).ToList();
+            }
+            return dataRe.OrderBy(d=>d.StartTime).Select(d => new
+            {
+                ID = d.Timeslot_ID,
+                Time = string.Format("{0:D2}:{1:D2}", d.StartTime.Value.Hours, d.StartTime.Value.Minutes) + " - " + string.Format("{0:D2}:{1:D2}", d.EndTime.Value.Hours, d.EndTime.Value.Minutes)
+            });
+
+        }
+        public List<Appointment> GetAllAppoinments(string date, string category,string timeslot)
         {
             if (_isFocusQueue)
             {
@@ -457,17 +472,28 @@ namespace DutyOfficer
             }
 
             var dalAppointment = new DAL_Appointments();
-            var result = dalAppointment.GetAllApptmts();
-            foreach (var item in result)
-            {
-                if (item.ReportTime.HasValue)
-                {
-                    item.ReportTimeSpan = item.ReportTime.Value.TimeOfDay;
-                }
-            }
+            var result = dalAppointment.GetAppointmentsByDate(DateTime.ParseExact(date, "dd/MM/yyyy", CultureInfo.InvariantCulture), category, timeslot);
             return result;
         }
+        public void AppointmentSeal(string ID)
+        {
+            var appointment = new DAL_Appointments().GetAppointmentByID(Guid.Parse(ID));
 
+            var dalLabel = new DAL_Labels();
+            string MarkingNumber = dalLabel.GetMarkingNumber(appointment.UserId, appointment.Date);
+            if (string.IsNullOrEmpty(MarkingNumber))
+                MarkingNumber = new DAL_SettingSystem().GenerateMarkingNumber();
+            dalLabel.Insert(new Trinity.BE.Label
+            {
+                UserId = appointment.UserId,
+                Label_Type = EnumLabelType.UB,
+                CompanyName = CommonConstants.COMPANY_NAME,
+                MarkingNo = MarkingNumber,
+                NRIC = appointment.Membership_Users.NRIC,
+                Name = appointment.Membership_Users.Name,
+                LastStation = EnumStation.DUTYOFFICER
+            });
+        }
         #endregion
 
         #region Statistics
@@ -508,14 +534,7 @@ namespace DutyOfficer
         #region Print UB
         public List<Trinity.BE.Label> GetAllUBlabels()
         {
-            if (_isFocusQueue)
-            {
-                Trinity.Device.Util.SmartCardReaderUtil.Instance.StopSmartCardMonitor();
-                _isFocusQueue = false;
-            }
-
-            var dalUBlabels = new DAL_Labels();
-            return dalUBlabels.GetAllLabelsForUB();
+            return new DAL_Labels().GetAllLabelsForUBToday();
         }
 
         //Load Popup of UB label
@@ -802,7 +821,7 @@ namespace DutyOfficer
                 dalLabel.UpdatePrinting(e.LabelInfo.UserId, EnumLabelType.MUB, EnumPrintStatus.Successful, EnumStation.DUTYOFFICER, DateTime.Today);
             }
 
-            
+
 
             DeleteQRCodeImageFileTemp();
         }

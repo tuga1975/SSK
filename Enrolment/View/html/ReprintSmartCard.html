@@ -145,20 +145,14 @@
                     api.loading(true);
                     JsBarcode('[name="verifyBarcode"]', model.User.NRIC, { background: "transparent", displayValue: false, height: 85, fontSize: 8, width: 5, margin: 0, font: "Arial" });
                     setTimeout(function () {
-                        $('#frontCard').parent('div').css('display', 'block');
-                        $('#backCard').parent('div').css('display', 'none');
                         html2canvas($('#frontCard'), {
                             onrendered: function (froncanvas) {
-                                $('#frontCard').parent('div').css('display', 'none');
-                                $('#backCard').parent('div').css('display', 'block');
                                 html2canvas($('#backCard'), {
                                     onrendered: function (backcanvas) {
                                         api.loading(false);
                                         frontCardImg = froncanvas.toDataURL("image/png");
                                         backCardImg = backcanvas.toDataURL("image/png");
                                         StartReprintSmartCard();
-                                        $('#frontCard').parent('div').css('display', 'none');
-                                        $('#backCard').parent('div').css('display', 'none');
                                     }
                                 });
                             }
@@ -170,7 +164,7 @@
     }
 </script>
 
-<div style="opacity:0;position:fixed;z-index:-1;left:0px;top:0px;border-bottom:0px;background-color:#FFF;display:none;">
+<div style="opacity:0;position:fixed;z-index:-1;left:0px;top:0px;background-color:#FFF;opacity:0;width:0px;height:0px;overflow:hidden;">
     <div style="width:1024px;height:642px;position:relative;overflow:hidden;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;background-color:#FFF;overflow:hidden;" id="frontCard">
         <img src="../images/front-smartcard.png" style="position:absolute;z-index:0;left:0px;top:0px;height:100%;width:100%;" />
         <div style="z-index:1;">
@@ -202,7 +196,7 @@
         </div>
     </div>
 </div>
-<div style="opacity:0;position:fixed;z-index:-1;left:0px;top:0px;border-bottom:0px;background-color:#FFF;display:none;overflow:scroll;">
+<div style="opacity:0;position:fixed;z-index:-1;left:0px;top:0px;background-color:#FFF;opacity:0;width:0px;height:0px;overflow:hidden;">
     <div style="width:1024px;height:642px;position:relative;overflow:hidden;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;background-color:#FFF;border-radius:20px;overflow:hidden;" id="backCard">
         <img src="../images/front-smartcard.png" style="position:absolute;z-index:0;left:0px;top:0px;height:100%;width:100%;" />
         <div style="bottom:39px;left:55px;position:absolute;">

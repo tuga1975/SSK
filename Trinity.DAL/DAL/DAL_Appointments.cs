@@ -283,7 +283,43 @@ namespace Trinity.DAL
             }
             return 0;
         }
+        public List<BE.Appointment> GetAppointmentsByDate(DateTime date,string category, string timeslot)
+        {
+            date = date.Date;
 
+            var queryFirst = _localUnitOfWork.DataContext.Appointments.Where(d => d.Date == date && d.Status != EnumAppointmentStatuses.Pending && !string.IsNullOrEmpty(d.Timeslot_ID));
+            if (string.IsNullOrEmpty(timeslot))
+            {
+                if (!string.IsNullOrEmpty(category))
+                {
+                    queryFirst = queryFirst.Where(d => d.Timeslot.Category.Equals(category));
+                }
+            }
+            else
+            {
+                queryFirst = queryFirst.Where(d=>d.Timeslot_ID.Equals(timeslot));
+            }
+            var query = (
+                from appt in queryFirst
+                join label in _localUnitOfWork.DataContext.Labels.Where(d=>DbFunctions.TruncateTime(d.Date)==date && d.Label_Type==EnumLabelType.UB) on appt.UserId equals label.UserId into label_temp
+                from label_value in label_temp.DefaultIfEmpty()
+                select new { Appointment = appt, Label = label_value });
+
+            return query.Select(item => new BE.Appointment()
+            {
+                ID=item.Appointment.ID.ToString().Trim(),
+                NRIC = item.Appointment.Membership_Users.NRIC,
+                Name = item.Appointment.Membership_Users.Name,
+                ReportTime = item.Appointment.ReportTime,
+                Status = item.Appointment.Status,
+                AppointmentDate = item.Appointment.Date,
+                StartTime = item.Appointment.Timeslot.StartTime,
+                EndTime = item.Appointment.Timeslot.EndTime,
+                AbsenceReporting_ID = item.Appointment.AbsenceReporting_ID,
+                Category = item.Appointment.Timeslot.Category,
+                HaveUB = item.Label != null ? true : false
+            }).ToList();
+        }
         public List<BE.Appointment> GetAllApptmts()
         {
             try

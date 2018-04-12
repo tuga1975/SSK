@@ -21,16 +21,16 @@ namespace Trinity.BE
         public string Name { get; set; }
 
         [DataMember]
-        public  Nullable<System.DateTime> AppointmentDate { get; set; }
+        public Nullable<System.DateTime> AppointmentDate { get; set; }
 
         public string GetDateTxt
         {
             get
             {
-                return AppointmentDate.HasValue ? AppointmentDate.Value.ToString("dddd, dd MMM yyyy"):string.Empty;
+                return AppointmentDate.HasValue ? AppointmentDate.Value.ToString("dddd, dd MMM yyyy") : string.Empty;
             }
         }
-       
+
 
         [DataMember]
         public Nullable<System.DateTime> ReportTime { get; set; }
@@ -75,11 +75,26 @@ namespace Trinity.BE
                 return string.Empty;
             }
         }
-
+        public string TimeSlotTxt
+        {
+            get
+            {
+                return FromTimeTxt + " - " + ToTimeTxt;
+            }
+        }
         public string Category { get; set; }
 
         public Nullable<Guid> AbsenceReporting_ID { get; set; }
 
-        public Nullable<System.TimeSpan> ReportTimeSpan { get; set; }
+        public string ReportTimeSpan
+        {
+            get
+            {
+                
+                return ReportTime.HasValue ? string.Format("{0:D2}:{1:D2}:{2:D2}", ReportTime.Value.TimeOfDay.Hours, ReportTime.Value.TimeOfDay.Minutes, ReportTime.Value.TimeOfDay.Seconds) : string.Empty;
+            }
+        }
+        public bool HaveUB { get; set; }
+
     }
 }

@@ -159,12 +159,12 @@ namespace Trinity.DAL
         {
             if (model.Morning_Open_Time.HasValue && model.Morning_Close_Time.HasValue && model.Morning_Interval.HasValue && !model.Morning_Is_Closed)
             {
-                GenerateByTimeshift(date, model.Morning_Open_Time, model.Morning_Close_Time, model.Morning_Interval, createBy, model.Morning_MaximumSupervisee.HasValue?model.Morning_MaximumSupervisee.Value:0);
+                GenerateByTimeshift(date, model.Morning_Open_Time, model.Morning_Close_Time, model.Morning_Interval, createBy, model.Morning_MaximumSupervisee.HasValue ? model.Morning_MaximumSupervisee.Value : 0);
             }
 
             if (model.Afternoon_Open_Time.HasValue && model.Afternoon_Close_Time.HasValue && model.Afternoon_Interval.HasValue && !model.Afternoon_Is_Closed)
             {
-                GenerateByTimeshift(date, model.Afternoon_Open_Time, model.Afternoon_Close_Time, model.Afternoon_Interval, createBy, model.Afternoon_MaximumSupervisee.HasValue ? model.Afternoon_MaximumSupervisee.Value :0);
+                GenerateByTimeshift(date, model.Afternoon_Open_Time, model.Afternoon_Close_Time, model.Afternoon_Interval, createBy, model.Afternoon_MaximumSupervisee.HasValue ? model.Afternoon_MaximumSupervisee.Value : 0);
             }
 
             if (model.Evening_Open_Time.HasValue && model.Evening_Close_Time.HasValue && model.Evening_Interval.HasValue && !model.Evening_Is_Closed)
@@ -179,10 +179,10 @@ namespace Trinity.DAL
             var toTime = closeTime;
             var morningTimeSpan = new TimeSpan(12, 0, 0);
             var eveningTimeSpan = new TimeSpan(17, 0, 0);
-            
+
             while (fromTime < toTime)
             {
-              
+
                 var timeSlot = new BE.TimeslotDetails();
 
 
@@ -218,15 +218,15 @@ namespace Trinity.DAL
 
                 //check exist timeslot before insert
                 var _endTime = fromTime.Value.Add(TimeSpan.FromMinutes(duration.Value));
-                var exist = _localUnitOfWork.DataContext.Timeslots.Any(t => DbFunctions.TruncateTime(t.Date) == date.Date && t.StartTime == fromTime.Value && t.EndTime==_endTime);
-                
+                var exist = _localUnitOfWork.DataContext.Timeslots.Any(t => DbFunctions.TruncateTime(t.Date) == date.Date && t.StartTime == fromTime.Value && t.EndTime == _endTime);
+
                 fromTime = _endTime;
                 if (!exist)
                 {
                     _localUnitOfWork.GetRepository<Timeslot>().Add(SetInfo(new Timeslot(), timeSlot));
                     _localUnitOfWork.Save();
                 }
-               
+
             }
         }
 
@@ -389,7 +389,7 @@ namespace Trinity.DAL
                 HoliDays = GetHolidays(_localUnitOfWork.GetRepository<DBContext.Holiday>()),
                 ChangeHistorySettings = GetHistoryChangeSettings(_localUnitOfWork.GetRepository<DBContext.OperationSettings_ChangeHist>())
             };
-            
+
             settingModel.Monday = settingModel.Monday == null ? new SettingDetails() { DayOfWeek = (int)EnumDayOfWeek.Monday } : settingModel.Monday;
             settingModel.Tuesday = settingModel.Tuesday == null ? new SettingDetails() { DayOfWeek = (int)EnumDayOfWeek.Tuesday } : settingModel.Tuesday;
             settingModel.Wednesday = settingModel.Wednesday == null ? new SettingDetails() { DayOfWeek = (int)EnumDayOfWeek.Wednesday } : settingModel.Wednesday;
@@ -782,17 +782,18 @@ namespace Trinity.DAL
                 arrAppointmentUpdate.ForEach(item =>
                 {
                     item.Timeslot_ID = null;
+                    item.ChangedCount = 0;
                     _localUnitOfWork.GetRepository<DBContext.Appointment>().Update(item);
                 });
-                List<Guid> arrQueueID = modelWarning.arrayDetail.Where(d => d.Queue_ID.HasValue).Select(d => d.Queue_ID.Value).ToList();
-                _localUnitOfWork.DataContext.QueueDetails.Where(d => arrQueueID.Contains(d.Queue_ID)).ToList().ForEach(item =>
-                {
-                    _localUnitOfWork.GetRepository<DBContext.QueueDetail>().Delete(item);
-                });
-                _localUnitOfWork.DataContext.Queues.Where(d => arrQueueID.Contains(d.Queue_ID)).ToList().ForEach(item =>
-                {
-                    _localUnitOfWork.GetRepository<DBContext.Queue>().Delete(item);
-                });
+                //List<Guid> arrQueueID = modelWarning.arrayDetail.Where(d => d.Queue_ID.HasValue).Select(d => d.Queue_ID.Value).ToList();
+                //_localUnitOfWork.DataContext.QueueDetails.Where(d => arrQueueID.Contains(d.Queue_ID)).ToList().ForEach(item =>
+                //{
+                //    _localUnitOfWork.GetRepository<DBContext.QueueDetail>().Delete(item);
+                //});
+                //_localUnitOfWork.DataContext.Queues.Where(d => arrQueueID.Contains(d.Queue_ID)).ToList().ForEach(item =>
+                //{
+                //    _localUnitOfWork.GetRepository<DBContext.Queue>().Delete(item);
+                //});
             }
             #endregion
             #region Delete TimeSlot & Generate Time
@@ -1026,7 +1027,7 @@ namespace Trinity.DAL
             List<DateTime> lstHolidays = GetHolidaysAfterDate(date);
             if (lstHolidays != null && lstHolidays.Count > 0)
             {
-                foreach(var holiday in lstHolidays)
+                foreach (var holiday in lstHolidays)
                 {
                     if (holiday.Day == date.Day && holiday.Month == date.Month && holiday.Year == date.Year)
                     {
@@ -1061,70 +1062,66 @@ namespace Trinity.DAL
         }
         public CheckWarningSaveSetting CheckWarningSaveSetting(int DayOfWeek)
         {
-            try
+            CheckWarningSaveSetting modelReturn = new BE.CheckWarningSaveSetting();
+            var _dayOfWeek = DayOfWeek == 8 ? 1 : DayOfWeek;
+            var DateNow = DateTime.Now.Date;
+
+            var arrayBookAppoint = _localUnitOfWork.DataContext.Appointments.Include("Membership_Users").Include("Timeslot").Include("Queues").Where(d => !string.IsNullOrEmpty(d.Timeslot_ID) && DbFunctions.TruncateTime(d.Date) >= DateNow && SqlFunctions.DatePart("dw", d.Date) == _dayOfWeek).ToList();
+
+            if (arrayBookAppoint != null)
             {
-                CheckWarningSaveSetting modelReturn = new BE.CheckWarningSaveSetting();
-                var _dayOfWeek = DayOfWeek == 8 ? 1 : DayOfWeek;
-                var DateNow = DateTime.Now.Date;
-
-                var arrayBookAppoint = _localUnitOfWork.DataContext.Appointments.Include("Membership_Users").Include("Timeslot").Include("Queues").Where(d => !string.IsNullOrEmpty(d.Timeslot_ID) && DbFunctions.TruncateTime(d.Date) >= DateNow && SqlFunctions.DatePart("dw", d.Date) == _dayOfWeek).ToList();
-
-                if (arrayBookAppoint != null)
+                List<CheckWarningSaveSetting> arrayListUser = new List<CheckWarningSaveSetting>();
+                if ((int)DayOfWeek == DateTime.Now.DayOfWeek())
                 {
-                    List<CheckWarningSaveSetting> arrayListUser = new List<CheckWarningSaveSetting>();
-                    if ((int)DayOfWeek == DateTime.Now.DayOfWeek())
+                    //Nếu là thứ hiện tại cập nhật và chưa có queue đc chạy
+                    //bool isQueueStarted = arrayBookAppoint.Any(d => d.Queue!=null);
+                    //if (isQueueStarted)
+                    //{
+                    //    isQueueStarted = _localUnitOfWork.DataContext.Queues.Any(d => DbFunctions.TruncateTime(d.CreatedTime) == DateNow);
+                    //}
+                    //if (!isQueueStarted)
+                    //{
+                    //    modelReturn.arrayDetail = arrayBookAppoint.Select(d => new CheckWarningSaveSettingDetail()
+                    //    {
+                    //        Date = d.Date,
+                    //        Email = d.Membership_Users.Email,
+                    //        StartTime = d.Timeslot.StartTime.Value,
+                    //        EndTime = d.Timeslot.EndTime.Value,
+                    //        Timeslot_ID = d.Timeslot_ID,
+                    //        UserId = d.UserId,
+                    //        UserName = d.Membership_Users.UserName,
+                    //        Queue_ID = d.Queues.Select(c => c.Queue_ID).FirstOrDefault(),
+                    //        AppointmentID = d.ID
+                    //    }).ToList();
+                    //    modelReturn.isDeleteTimeSlot = true;
+                    //}
+                    modelReturn.arrayDetail = new List<CheckWarningSaveSettingDetail>();
+                    modelReturn.isDeleteTimeSlot = false;
+                }
+                else
+                {
+                    modelReturn.arrayDetail = arrayBookAppoint.Select(d => new CheckWarningSaveSettingDetail()
                     {
-                        //Nếu là thứ hiện tại cập nhật và chưa có queue đc chạy
-                        //bool isQueueStarted = arrayBookAppoint.Any(d => d.Queue!=null);
-                        //if (isQueueStarted)
-                        //{
-                        //    isQueueStarted = _localUnitOfWork.DataContext.Queues.Any(d => DbFunctions.TruncateTime(d.CreatedTime) == DateNow);
-                        //}
-                        //if (!isQueueStarted)
-                        //{
-                        //    modelReturn.arrayDetail = arrayBookAppoint.Select(d => new CheckWarningSaveSettingDetail()
-                        //    {
-                        //        Date = d.Date,
-                        //        Email = d.Membership_Users.Email,
-                        //        StartTime = d.Timeslot.StartTime.Value,
-                        //        EndTime = d.Timeslot.EndTime.Value,
-                        //        Timeslot_ID = d.Timeslot_ID,
-                        //        UserId = d.UserId,
-                        //        UserName = d.Membership_Users.UserName,
-                        //        Queue_ID = d.Queues.Select(c => c.Queue_ID).FirstOrDefault(),
-                        //        AppointmentID = d.ID
-                        //    }).ToList();
-                        //    modelReturn.isDeleteTimeSlot = true;
-                        //}
-                        modelReturn.arrayDetail = new List<CheckWarningSaveSettingDetail>();
-                        modelReturn.isDeleteTimeSlot = false;
-                    }
-                    else
-                    {
-                        modelReturn.arrayDetail = arrayBookAppoint.Select(d => new CheckWarningSaveSettingDetail()
-                        {
-                            Date = d.Date,
-                            Email = d.Membership_Users.Email,
-                            StartTime = d.Timeslot.StartTime.Value,
-                            EndTime = d.Timeslot.EndTime.Value,
-                            Timeslot_ID = d.Timeslot_ID,
-                            UserId = d.UserId,
-                            UserName = d.Membership_Users.UserName,
-                            Queue_ID = d.Queues.Select(c => c.Queue_ID).FirstOrDefault(),
-                            AppointmentID = d.ID
-                        }).ToList();
+                        Date = d.Date,
+                        Email = d.Membership_Users.Email,
+                        StartTime = d.Timeslot.StartTime.Value,
+                        EndTime = d.Timeslot.EndTime.Value,
+                        Timeslot_ID = d.Timeslot_ID,
+                        UserId = d.UserId,
+                        UserName = d.Membership_Users.UserName,
+                        Queue_ID = d.Queues.Select(c => c.Queue_ID).FirstOrDefault(),
+                        AppointmentID = d.ID
+                    }).ToList();
+                    if (modelReturn.arrayDetail.Count > 0)
                         modelReturn.isDeleteTimeSlot = true;
-                    }
-
-                    return modelReturn;
+                    else
+                        modelReturn.isDeleteTimeSlot = false;
                 }
 
-                return null;
+                return modelReturn;
             }
-            catch (Exception e)
-            {
-                return null;
-            }
+
+            return null;
         }
 
         private List<DateTime> GetHolidaysAfterDate(DateTime date)
