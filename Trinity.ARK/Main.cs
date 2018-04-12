@@ -585,6 +585,7 @@ namespace ARK
                     NavigateTo(NavigatorEnums.Authentication_SmartCard);
                     return;
                 }
+                LayerWeb.LoadPageHtml("Authentication/FacialRecognition.html");
                 LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please wait while initializing camera...');");
                 FacialRecognition.Instance.OnFacialRecognitionFailed += Main_OnFacialRecognitionFailed;
                 FacialRecognition.Instance.OnFacialRecognitionSucceeded += Main_OnFacialRecognitionSucceeded;
@@ -593,8 +594,9 @@ namespace ARK
                 List<byte[]> FaceJpg = new System.Collections.Generic.List<byte[]>() { user.User_Photo1, user.User_Photo2 };
                 this.Invoke((MethodInvoker)(() =>
                 {
-                    Point startLocation = new Point((Screen.PrimaryScreen.Bounds.Size.Width / 2) - 400 / 2, (Screen.PrimaryScreen.Bounds.Size.Height / 2) - 400 / 2);
+                    Point startLocation = new Point((Screen.PrimaryScreen.Bounds.Size.Width / 2) - 800 / 2, (Screen.PrimaryScreen.Bounds.Size.Height / 2) - 800 / 2);
                     FacialRecognition.Instance.StartFacialRecognition(startLocation, FaceJpg);
+                    LayerWeb.RunScript("$('.status-text').css('color','#000').text('Face authentication');");
                 }));
             }
             else if (navigatorEnum == NavigatorEnums.Authentication_NRIC)

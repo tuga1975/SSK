@@ -111,7 +111,7 @@ public class FacialRecognition
                 isStartTracking = true;
                 libFace.Init();
 
-                libFace.Show_Window(formLocation, new Size(400, 400));
+                libFace.Show_Window(formLocation, new Size(800, 800));
                 OnFacialRecognitionProcessing();
                 //Thread.Sleep(1000);
                 libFace.FaceDetect += new AT_Facial_API.Library.FaceDetected(lib_FaceDetect);
