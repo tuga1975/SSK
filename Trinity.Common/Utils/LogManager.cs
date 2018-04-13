@@ -19,19 +19,16 @@ namespace Trinity.Common.Utils
         public static void Info(string info)
         {
             _log.Info(info);
-
         }
 
         public static void Warn(string warning)
         {
             _log.Warn(warning);
-
         }
 
         public static void Error(string error)
         {
             _log.Error(error);
-
         }
 
         public static void Fatal(string fatal)
