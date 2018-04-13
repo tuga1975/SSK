@@ -194,7 +194,8 @@ namespace Trinity.Device
                         _applicationStatus = newApplicationStatus;
 
 
-                        LogManager.Debug("TurnOffAllLEDs");
+                        LogManager.Debug("UpdateLEDsLight: TurnOffAllLEDs");
+                        LogManager.Debug("UpdateLEDsLight - New status: " + _applicationStatus.ToString());
 
                         // Always turn off all LEDs before select which LED(s) to turn on.
                         ledLightUtil.TurnOffAllLEDs();
@@ -231,6 +232,9 @@ namespace Trinity.Device
                     if (newApplicationStatus != _applicationStatus)
                     {
                         _applicationStatus = newApplicationStatus;
+
+                        LogManager.Debug("UpdateLEDsLight: TurnOffAllLEDs");
+                        LogManager.Debug("UpdateLEDsLight - New status: " + _applicationStatus.ToString());
 
                         // Always turn off all LEDs before select which LED(s) to turn on.
                         ledLightUtil.TurnOffAllLEDs();
