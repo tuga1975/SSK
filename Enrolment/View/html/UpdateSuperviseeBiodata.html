@@ -1110,7 +1110,96 @@
             $('[name="panel-succss-print"]').css('display', 'none');
             $('#donePrinter').css('display', 'none');
             printSuccsess = false;
-            api.server.PrintSmartCard(frontCardImg, backCardImg, JSON.stringify(CardInfo))
+
+            api.server.loadDataVerify(function (dataRe) {
+                var model = dataRe[0];
+                CardInfo = dataRe[1];
+                $('[name="issueDate"]').text(CardInfo.Date_Of_Issue_Txt);
+                $('[name="verifyCardNumber"]').text(CardInfo.CardNumberFull);
+
+                $('[name="verifyCompanyName"]').text(CardInfo.CompanyName);
+                $('[name="verifyVenueName"]').text(CardInfo.VenueName);
+                $('[name="verifyAddress"]').text(CardInfo.Address);
+                $('[name="verifyContactNumber"]').text(CardInfo.ContactNumber);
+
+                $('[name="verifyName"]').text(model.User.Name);
+                if (model.UserProfile.DOB != null) {
+                    $('[name="verifyDOB"]').text(model.UserProfile.DOBTxt);
+                }
+
+                $('[name="verifyNRIC"]').text(model.User.NRIC);
+                $('[name="verifyGender"]').text(model.UserProfile.Gender == null ? '' : model.UserProfile.Gender);
+                $('[name="verifyNation"]').text(model.UserProfile.Nationality);
+                $('[name="verifyRace"]').text(model.UserProfile.Race == null ? '' : model.UserProfile.Race);
+                frontCardImg = null;
+                backCardImg = null;
+                api.loading(true);
+                JsBarcode('[name="verifyBarcode"]', model.User.NRIC, { background: "transparent", displayValue: false, height: 85, fontSize: 8, width: 5, margin: 0, font: "Arial" });
+                setTimeout(function () {
+                    html2canvas($('#frontCard'), {
+                        onrendered: function (froncanvas) {
+                            html2canvas($('#backCard'), {
+                                onrendered: function (backcanvas) {
+                                    frontCardImg = froncanvas.toDataURL("image/png");
+                                    backCardImg = backcanvas.toDataURL("image/png");
+
+                                    var canvasFrontCard = document.getElementById("frontCardImgCanvas");
+                                    var ctxFrontCard = canvasFrontCard.getContext("2d");
+
+                                    var imgFrontCard = new Image();
+                                    imgFrontCard.src = frontCardImg;
+                                    imgFrontCard.onload = function () {
+
+                                        canvasFrontCard.height = imgFrontCard.height * 0.5;
+                                        canvasFrontCard.width = imgFrontCard.width * 0.5;
+
+                                        var oc = document.createElement('canvas'),
+                                            octx = oc.getContext('2d');
+                                        oc.width = canvasFrontCard.width;
+                                        oc.height = canvasFrontCard.height;
+                                        octx.drawImage(imgFrontCard, 0, 0, oc.width, oc.height);
+
+                                        // step 2
+                                        octx.drawImage(oc, 0, 0, oc.width, oc.height);
+
+                                        // step 3, resize to final size
+                                        ctxFrontCard.drawImage(oc, 0, 0, oc.width, oc.height,
+                                            0, 0, canvasFrontCard.width, canvasFrontCard.height);
+                                    }
+
+                                    var canvasBackCard = document.getElementById("backCardImgCanvas");
+                                    var ctxBackCard = canvasBackCard.getContext("2d");
+
+                                    var imgBackCard = new Image();
+                                    imgBackCard.src = backCardImg;
+                                    imgBackCard.onload = function () {
+
+                                        canvasBackCard.height = imgBackCard.height * 0.5;
+                                        canvasBackCard.width = imgBackCard.width * 0.5;
+
+                                        var oc = document.createElement('canvas'),
+                                            octx = oc.getContext('2d');
+                                        oc.width = canvasBackCard.width;
+                                        oc.height = canvasBackCard.height;
+                                        octx.drawImage(imgBackCard, 0, 0, oc.width, oc.height);
+
+                                        // step 2
+                                        octx.drawImage(oc, 0, 0, oc.width, oc.height);
+
+                                        // step 3, resize to final size
+                                        ctxBackCard.drawImage(oc, 0, 0, oc.width, oc.height,
+                                            0, 0, canvasBackCard.width, canvasBackCard.height);
+                                    }
+
+                                    api.loading(false);
+                                    api.server.UpdateSuperviseeBiodata(frontCardImg, backCardImg, JSON.stringify(CardInfo));
+                                }
+                            });
+                        }
+                    });
+
+                }, 500);
+            });
         }
         function setImg(number, src) {
             image = document.getElementById('image' + number);

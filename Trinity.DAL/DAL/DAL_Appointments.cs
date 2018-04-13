@@ -299,25 +299,24 @@ namespace Trinity.DAL
             {
                 queryFirst = queryFirst.Where(d=>d.Timeslot_ID.Equals(timeslot));
             }
-            var query = (
-                from appt in queryFirst
-                join label in _localUnitOfWork.DataContext.Labels.Where(d=>DbFunctions.TruncateTime(d.Date)==date && d.Label_Type==EnumLabelType.UB) on appt.UserId equals label.UserId into label_temp
-                from label_value in label_temp.DefaultIfEmpty()
-                select new { Appointment = appt, Label = label_value });
+            //var query = (
+            //    from appt in queryFirst
+            //    join label in _localUnitOfWork.DataContext.Labels.Where(d=>DbFunctions.TruncateTime(d.Date)==date && d.Label_Type==EnumLabelType.UB) on appt.UserId equals label.UserId into label_temp
+            //    from label_value in label_temp.DefaultIfEmpty()
+            //    select new { Appointment = appt, Label = label_value });
 
-            return query.Select(item => new BE.Appointment()
+            return queryFirst.Select(item => new BE.Appointment()
             {
-                ID=item.Appointment.ID.ToString().Trim(),
-                NRIC = item.Appointment.Membership_Users.NRIC,
-                Name = item.Appointment.Membership_Users.Name,
-                ReportTime = item.Appointment.ReportTime,
-                Status = item.Appointment.Status,
-                AppointmentDate = item.Appointment.Date,
-                StartTime = item.Appointment.Timeslot.StartTime,
-                EndTime = item.Appointment.Timeslot.EndTime,
-                AbsenceReporting_ID = item.Appointment.AbsenceReporting_ID,
-                Category = item.Appointment.Timeslot.Category,
-                HaveUB = item.Label != null ? true : false
+                ID=item.ID.ToString().Trim(),
+                NRIC = item.Membership_Users.NRIC,
+                Name = item.Membership_Users.Name,
+                ReportTime = item.ReportTime,
+                Status = item.Status,
+                AppointmentDate = item.Date,
+                StartTime = item.Timeslot.StartTime,
+                EndTime = item.Timeslot.EndTime,
+                AbsenceReporting_ID = item.AbsenceReporting_ID,
+                Category = item.Timeslot.Category
             }).ToList();
         }
         public List<BE.Appointment> GetAllApptmts()

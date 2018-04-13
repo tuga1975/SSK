@@ -108,6 +108,25 @@ namespace DutyOfficer
             dalDrug.UpdateDrugSeal(UserId, COCA, BARB, LSD, METH, MTQL, PCP, KET, BUPRE, CAT, PPZ, NPS, dutyOfficer.UserId);
             var dalQueue = new DAL_QueueNumber();
             dalQueue.UpdateQueueStatusByUserId(UserId, EnumStation.UT, EnumQueueStatuses.Finished, EnumStation.SSP, EnumQueueStatuses.Processing, "Waiting for SSP", EnumQueueOutcomeText.Processing);
+
+            
+            var user = new DAL_User().GetUserById(UserId);
+            var dalLabel = new DAL_Labels();
+            string MarkingNumber = dalLabel.GetMarkingNumber(user.UserId, DateTime.Today);
+            if (string.IsNullOrEmpty(MarkingNumber))
+                MarkingNumber = new DAL_SettingSystem().GenerateMarkingNumber();
+            dalLabel.Insert(new Trinity.BE.Label
+            {
+                UserId = UserId,
+                Label_Type = EnumLabelType.UB,
+                CompanyName = CommonConstants.COMPANY_NAME,
+                MarkingNo = MarkingNumber,
+                NRIC = user.NRIC,
+                Name = user.Name,
+                DrugType = dalDrug.GetResultUTByNRIC(user.NRIC, DateTime.Today),
+                LastStation = EnumStation.DUTYOFFICER
+            });
+
         }
         public object getDataQueue()
         {
@@ -475,25 +494,7 @@ namespace DutyOfficer
             var result = dalAppointment.GetAppointmentsByDate(DateTime.ParseExact(date, "dd/MM/yyyy", CultureInfo.InvariantCulture), category, timeslot);
             return result;
         }
-        public void AppointmentSeal(string ID)
-        {
-            var appointment = new DAL_Appointments().GetAppointmentByID(Guid.Parse(ID));
 
-            var dalLabel = new DAL_Labels();
-            string MarkingNumber = dalLabel.GetMarkingNumber(appointment.UserId, appointment.Date);
-            if (string.IsNullOrEmpty(MarkingNumber))
-                MarkingNumber = new DAL_SettingSystem().GenerateMarkingNumber();
-            dalLabel.Insert(new Trinity.BE.Label
-            {
-                UserId = appointment.UserId,
-                Label_Type = EnumLabelType.UB,
-                CompanyName = CommonConstants.COMPANY_NAME,
-                MarkingNo = MarkingNumber,
-                NRIC = appointment.Membership_Users.NRIC,
-                Name = appointment.Membership_Users.Name,
-                LastStation = EnumStation.DUTYOFFICER
-            });
-        }
         #endregion
 
         #region Statistics
