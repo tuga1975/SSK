@@ -190,13 +190,18 @@ namespace ALK
                 // Start page
                 //NavigateTo(NavigatorEnums.Authentication_SmartCard);
 
-                string startFrom = "";
+                string startFrom = System.Configuration.ConfigurationManager.AppSettings["startFrom"];
+
                 // 50.132
                 //string superviseeId = "06a91b1b-99c3-428d-8a55-83892c2adf4c";
                 //string dutyOfficerId = "f1748cb4-3bb5-4129-852d-2aba28bb8cec";
                 // 1.120
-                string superviseeId = "9043d88e-94d1-4c01-982a-02d41965a621";
-                string dutyOfficerId = "f1748cb4-3bb5-4129-852d-2aba28bb8cec";
+                //string superviseeId = "9043d88e-94d1-4c01-982a-02d41965a621";
+                //string dutyOfficerId = "f1748cb4-3bb5-4129-852d-2aba28bb8cec";
+
+                string superviseeId = System.Configuration.ConfigurationManager.AppSettings["superviseeId"];
+                string dutyOfficerId = System.Configuration.ConfigurationManager.AppSettings["dutyOfficerId"];
+
                 Session session = Session.Instance;
 
                 if (startFrom == "Supervisee_Particulars")

@@ -45,6 +45,7 @@ namespace Trinity.Device
 
             set
             {
+                LogManager.Debug("ApplicationStatusManager IsBusy: "  + value);
                 _isBusy = value;
 
                 if (_isBusy)
@@ -79,6 +80,7 @@ namespace Trinity.Device
         {
             try
             {
+                LogManager.Debug("ApplicationStatusManager StartInitialization: " + !_isInitializing);
                 if (!_isInitializing)
                 {
                     _isInitializing = true;
@@ -193,6 +195,10 @@ namespace Trinity.Device
                     {
                         _applicationStatus = newApplicationStatus;
 
+
+                        LogManager.Debug("UpdateLEDsLight: TurnOffAllLEDs");
+                        LogManager.Debug("UpdateLEDsLight - New status: " + _applicationStatus.ToString());
+
                         // Always turn off all LEDs before select which LED(s) to turn on.
                         ledLightUtil.TurnOffAllLEDs();
 
@@ -228,6 +234,9 @@ namespace Trinity.Device
                     if (newApplicationStatus != _applicationStatus)
                     {
                         _applicationStatus = newApplicationStatus;
+
+                        LogManager.Debug("UpdateLEDsLight: TurnOffAllLEDs");
+                        LogManager.Debug("UpdateLEDsLight - New status: " + _applicationStatus.ToString());
 
                         // Always turn off all LEDs before select which LED(s) to turn on.
                         ledLightUtil.TurnOffAllLEDs();
@@ -356,9 +365,12 @@ namespace Trinity.Device
 
         public void LayerWebInitilizationCompleted()
         {
+            LogManager.Debug("LayerWebInitilizationCompleted: _isInitializing_LayerWeb " + _isInitializing_LayerWeb);
+
             if (_isInitializing_LayerWeb)
             {
                 _isInitializing_LayerWeb = false;
+                LogManager.Debug("LayerWebInitilizationCompleted: _isInitializing_LayerWeb " + _isInitializing_LayerWeb);
 
                 // If application initialization is not finished
                 // and weblayer and all devices are finished
@@ -366,6 +378,7 @@ namespace Trinity.Device
                 if (_isInitializing && (_lstDevices == null || (_lstDevices!=null && !_lstDevices.Any(item => item.Status == null))))
                 {
                     _isInitializing = false;
+                    LogManager.Debug("LayerWebInitilizationCompleted: _isInitializing " + _isInitializing);
                 }
 
                 UpdateLEDsLight();

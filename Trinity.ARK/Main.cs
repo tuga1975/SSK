@@ -226,13 +226,18 @@ namespace ARK
                 // Start page
                 //NavigateTo(NavigatorEnums.Authentication_SmartCard);
 
-                string startFrom = "";
+                string startFrom = System.Configuration.ConfigurationManager.AppSettings["startFrom"];
+
                 // 50.132
                 //string superviseeId = "2FFD1A82-E5EC-4884-A5C6-1A68F661DAED";
                 //string dutyOfficerId = "9903e059-7209-45b6-a889-6c4cfdfaeea3";
                 // 1.120
-                string superviseeId = "BEA35A8C-097E-41F2-94BE-6EE7228DA696";
-                string dutyOfficerId = "f1748cb4-3bb5-4129-852d-2aba28bb8cec";
+                //string superviseeId = "BEA35A8C-097E-41F2-94BE-6EE7228DA696";
+                //string dutyOfficerId = "f1748cb4-3bb5-4129-852d-2aba28bb8cec";
+
+                string superviseeId = System.Configuration.ConfigurationManager.AppSettings["superviseeId"];
+                string dutyOfficerId = System.Configuration.ConfigurationManager.AppSettings["dutyOfficerId"];
+
                 Session session = Session.Instance;
 
                 if (startFrom == "Supervisee")

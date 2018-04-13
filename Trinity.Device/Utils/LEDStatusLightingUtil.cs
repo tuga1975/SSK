@@ -218,6 +218,8 @@ namespace Trinity.Device.Util
         /// <returns></returns>
         public string OpenPort(string station, string portName, int baudRate, string parity)
         {
+            LogManager.Debug(string.Format("Led Light Open port: {0}, {1}, {2}, {3}", station, portName, baudRate, parity));
+
             InitializeSerialPort();
 
             try
@@ -309,12 +311,11 @@ namespace Trinity.Device.Util
         {
             try
             {
-
-
                 if (!IsPortOpen)
                 {
                     return;
                 }
+
                 if (_station.Equals(EnumStation.ARK, StringComparison.InvariantCultureIgnoreCase))
                 {
                     // stop flashing
@@ -327,6 +328,10 @@ namespace Trinity.Device.Util
                 }
                 else if (_station.Equals(EnumStation.ALK, StringComparison.InvariantCultureIgnoreCase))
                 {
+                    // stop flashing
+                    _timer_BlueLightFlashing.Enabled = false;
+                    _timer_YellowLightFlashing.Enabled = false;
+
                     string hexCommand = "";
                     string asciiCommand = "";
                     //
@@ -429,6 +434,9 @@ namespace Trinity.Device.Util
 
         public void SwitchBLUELightOnOff(bool isOn)
         {
+            //LogManager.Debug("SwitchBLUELightOnOff: " + isOn);
+            //LogManager.Debug("SwitchBLUELightOnOff IsPortOpen: " + IsPortOpen);
+
             if (!IsPortOpen)
             {
                 return;

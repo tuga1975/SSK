@@ -14,6 +14,7 @@ using Trinity.Common.Common;
 using Trinity.DAL;
 using Trinity.Device.Util;
 using Trinity.Identity;
+using Trinity.Device;
 
 namespace ALK
 {
@@ -238,6 +239,9 @@ namespace ALK
                     session[CommonConstants.USER_LOGIN] = user;
 
                     eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = 0, Name = EventNames.LOGIN_SUCCEEDED });
+
+                    // Set application status is busy
+                    ApplicationStatusManager.Instance.IsBusy = true;
                 }
                 else
                 {
