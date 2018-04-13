@@ -87,36 +87,7 @@
                 sortable: true,
                 width: '15%',
                 align: 'center',
-            }, {
-                field: 'HaveUB',
-                title: '',
-                width: '100',
-                align: 'center',
-                formatter: function (value, row, index, field) {
-                    if (!value) {
-                        return '<a href="javascript:;">Seal</a>';
-                    }
-                    return '';
-                }
-            }],
-            onClickCell: function (field, value, row, $element) {
-                if (field == "HaveUB" && !row.HaveUB) {
-                    var index = $element.closest('tr').data('index');
-                    ShowMessageConfirm('', 'Are you sure?', function (status) {
-                        if (status) {
-                            api.server.AppointmentSeal(row.ID, function (status) {
-                                $('#tableAppointment').bootstrapTable('updateRow', {
-                                    index: index,
-                                    row: {
-                                        HaveUB: true
-                                    }
-                                });
-                            });
-                            
-                        }
-                    });
-                }
-            }
+            }]
         });
 
         $('#dateSearch').datepicker({ format: 'dd/mm/yyyy' }).datepicker("setDate", new Date()).on('changeDate', dateChanged).change(dateChanged);

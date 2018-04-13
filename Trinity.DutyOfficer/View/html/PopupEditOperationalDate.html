@@ -362,63 +362,63 @@
         setEnableControls('evening', $('#evening-Closed').is(":checked"));
     });
 
-    $('#morning-start-HH').change(function () {
-        var morningStart = $('#morning-start-HH').val();
-        var morningEnd = $('#morning-end-HH').val();
-        var optionHHEndMorning = optionsHH.slice(morningStart, optionsHH.length);
-        $('#morning-end-HH').empty();
-        $.each(optionHHEndMorning, function (i, p) {
-            $('#morning-end-HH').append($('<option></option>').val(p).html(p));
-        });
-        if (morningEnd > morningStart) {
-            $('#morning-end-HH').val(morningEnd);
-        }
-    });
+    //$('#morning-start-HH').change(function () {
+    //    var morningStart = $('#morning-start-HH').val();
+    //    var morningEnd = $('#morning-end-HH').val();
+    //    var optionHHEndMorning = optionsHH.slice(morningStart, optionsHH.length);
+    //    $('#morning-end-HH').empty();
+    //    $.each(optionHHEndMorning, function (i, p) {
+    //        $('#morning-end-HH').append($('<option></option>').val(p).html(p));
+    //    });
+    //    if (morningEnd > morningStart) {
+    //        $('#morning-end-HH').val(morningEnd);
+    //    }
+    //});
 
-    $('#afternoon-start-HH').change(function () {
-        var afternoonStart = $('#afternoon-start-HH').val();
-        var afternoonEnd = $('#afternoon-end-HH').val();
-        var optionHHEndAfternoon = optionsHH.slice(afternoonStart, optionsHH.length);
-        $('#afternoon-end-HH').empty();
-        $.each(optionHHEndAfternoon, function (i, p) {
-            $('#afternoon-end-HH').append($('<option></option>').val(p).html(p));
-        });
-        if (afternoonEnd > afternoonStart) {
-            $('#afternoon-end-HH').val(afternoonEnd);
-        }
-    });
+    //$('#afternoon-start-HH').change(function () {
+    //    var afternoonStart = $('#afternoon-start-HH').val();
+    //    var afternoonEnd = $('#afternoon-end-HH').val();
+    //    var optionHHEndAfternoon = optionsHH.slice(afternoonStart, optionsHH.length);
+    //    $('#afternoon-end-HH').empty();
+    //    $.each(optionHHEndAfternoon, function (i, p) {
+    //        $('#afternoon-end-HH').append($('<option></option>').val(p).html(p));
+    //    });
+    //    if (afternoonEnd > afternoonStart) {
+    //        $('#afternoon-end-HH').val(afternoonEnd);
+    //    }
+    //});
 
-    $('#afternoon-end-HH').change(function () {
-        var afternoonEnd = $('#afternoon-end-HH').val();
-        var eveningStart = $('#evening-start-HH').val();
-        var eveningEnd = $('#evening-end-HH').val();
-        var optionHHForEvening = optionsHH.slice(afternoonEnd, optionsHH.length);
-        $('#evening-start-HH').empty();
-        $('#evening-end-HH').empty();
-        $.each(optionHHForEvening, function (i, p) {
-            $('#evening-start-HH').append($('<option></option>').val(p).html(p));
-            $('#evening-end-HH').append($('<option></option>').val(p).html(p));
-        });
-        if (eveningStart > afternoonEnd) {
-            $('#evening-start-HH').val(eveningStart);
-        };
-        if (eveningEnd > afternoonEnd) {
-            $('#evening-end-HH').val(eveningEnd);
-        };
-    });
+    //$('#afternoon-end-HH').change(function () {
+    //    var afternoonEnd = $('#afternoon-end-HH').val();
+    //    var eveningStart = $('#evening-start-HH').val();
+    //    var eveningEnd = $('#evening-end-HH').val();
+    //    var optionHHForEvening = optionsHH.slice(afternoonEnd, optionsHH.length);
+    //    $('#evening-start-HH').empty();
+    //    $('#evening-end-HH').empty();
+    //    $.each(optionHHForEvening, function (i, p) {
+    //        $('#evening-start-HH').append($('<option></option>').val(p).html(p));
+    //        $('#evening-end-HH').append($('<option></option>').val(p).html(p));
+    //    });
+    //    if (eveningStart > afternoonEnd) {
+    //        $('#evening-start-HH').val(eveningStart);
+    //    };
+    //    if (eveningEnd > afternoonEnd) {
+    //        $('#evening-end-HH').val(eveningEnd);
+    //    };
+    //});
 
-    $('#evening-start-HH').change(function () {
-        var eveningStart = $('#evening-start-HH').val();
-        var eveningEnd = $('#evening-end-HH').val();
-        var optionHHEndEvening = optionsHH.slice(eveningStart, optionsHH.length);
-        $('#evening-end-HH').empty();
-        $.each(optionHHEndEvening, function (i, p) {
-            $('#evening-end-HH').append($('<option></option>').val(p).html(p));
-        });
-        if (eveningEnd > eveningStart) {
-            $('#evening-end-HH').val(eveningEnd);
-        }
-    });
+    //$('#evening-start-HH').change(function () {
+    //    var eveningStart = $('#evening-start-HH').val();
+    //    var eveningEnd = $('#evening-end-HH').val();
+    //    var optionHHEndEvening = optionsHH.slice(eveningStart, optionsHH.length);
+    //    $('#evening-end-HH').empty();
+    //    $.each(optionHHEndEvening, function (i, p) {
+    //        $('#evening-end-HH').append($('<option></option>').val(p).html(p));
+    //    });
+    //    if (eveningEnd > eveningStart) {
+    //        $('#evening-end-HH').val(eveningEnd);
+    //    }
+    //});
 
     var operationSetting;
     $("#SaveOperationBtn").click(function (e) {
@@ -448,8 +448,8 @@
             default:
                 dayOfWeek = 0;
         }
-        
-        var isClosedMorning = true;        
+
+        var isClosedMorning = true;
         if ($('#morning-closed[aria-expanded]').attr('aria-expanded') == 'true') {
             isClosedMorning = false;
         }
@@ -458,7 +458,7 @@
             isClosedAfternoon = false;
         }
         var isClosedEvening = true;
-        if ( $('#evening-closed[aria-expanded]').attr('aria-expanded') == 'true') {
+        if ($('#evening-closed[aria-expanded]').attr('aria-expanded') == 'true') {
             isClosedEvening = false;
         }
 
@@ -516,34 +516,93 @@
 
         operationSetting = model;
 
+        if (!checkValidateSetting(model)) {
+            return;
+        }
+
         var data = JSON.stringify(model);
-        api.server.CheckWarningSaveSetting(model.DayOfWeek, function (check) {
-            if (check == true) {
-                api.server.UpdateOperationSetting(data, function () {
-                    $('#idEditOperationalDate').modal('toggle');
-                });
-            }
-            else {
-                api.server.UpdateOperationSetting(data, function () {
-                    api.server.LoadPage('Settings.html');
-                    $('#idEditOperationalDate').modal('toggle');
-                });
-            };
-        });
+
+
+        //api.server.CheckWarningSaveSetting(model.DayOfWeek, function (check) {
+        //    if (check == true) {
+        //        api.server.UpdateOperationSetting(data, function () {
+        //            $('#idEditOperationalDate').modal('toggle');
+        //        });
+        //    }
+        //    else {
+        //        api.server.UpdateOperationSetting(data, function () {
+        //            api.server.LoadPage('Settings.html');
+        //            $('#idEditOperationalDate').modal('toggle');
+        //        });
+        //    };
+        //});
 
         e.preventDefault();
     });
+    function checkValidateSetting(model) {
+        if (!model.Morning_Is_Closed) {
+            if (convertTimeSpanToInt(model.Morning_Open_Time) <= convertTimeSpanToInt(model.Morning_Close_Time)) {
+                ShowMessage('The morning start time must be greater than the end time');
+                return false;
+            }
+        }
+        if (!model.Afternoon_Is_Closed) {
+            if (convertTimeSpanToInt(model.Afternoon_Open_Time) <= convertTimeSpanToInt(model.Afternoon_Close_Time)) {
+                ShowMessage('The afternoon start time must be greater than the end time');
+                return false;
+            } else {
+                if (!model.Morning_Is_Closed) {
+                    if (convertTimeSpanToInt(model.Afternoon_Open_Time) <= convertTimeSpanToInt(model.Morning_Close_Time)) {
+                        ShowMessage('Afternoon time must be greater than morning');
+                        return false;
+                    }
+                }
+            }
+        }
+        if (!model.Evening_Close_Time) {
+            if (convertTimeSpanToInt(model.Evening_Open_Time) <= convertTimeSpanToInt(model.Evening_Close_Time)) {
+                ShowMessage('The evening start time must be greater than the end time');
+                return false;
+            } else {
+                if (!model.Afternoon_Is_Closed) {
+                    if (convertTimeSpanToInt(model.Evening_Open_Time) <= convertTimeSpanToInt(model.Afternoon_Close_Time)) {
+                        ShowMessage('Evening time must be greater than afternoon');
+                        return false;
+                    }
+                }
+                if (!model.Morning_Is_Closed) {
+                    if (convertTimeSpanToInt(model.Evening_Open_Time) <= convertTimeSpanToInt(model.Morning_Close_Time)) {
+                        ShowMessage('Evening time must be greater than morning');
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
 
+    function convertTimeSpanToInt(time) {
+        var hours = Number(time.match(/^(\d+)/)[1]);
+        var minutes = Number(time.match(/:(\d+)/)[1]);
+        return hours + minutes;
+    }
     function convert12To24H(time, AMPM) {
         var hours = Number(time.match(/^(\d+)/)[1]);
         var minutes = Number(time.match(/:(\d+)/)[1]);
-        if (AMPM == "PM" && hours < 12) hours = hours + 12;
-        if (AMPM == "AM" && hours == 12) hours = hours - 12;
+        if (AMPM == "PM") {
+            if (hours == 0 || hours == 12) {
+                hours = 24;
+            } else if (hours < 12) {
+                hours += 12;
+            }
+        }
+        //if (AMPM == "PM" && hours < 12) hours = hours + 12;
+        //if (AMPM == "AM" && hours == 12) hours = hours - 12;
         var sHours = hours.toString();
         var sMinutes = minutes.toString();
         if (hours < 10) sHours = "0" + sHours;
         if (minutes < 10) sMinutes = "0" + sMinutes;
 
         return hours + ":" + sMinutes;
-    };    
+    };
 </script>

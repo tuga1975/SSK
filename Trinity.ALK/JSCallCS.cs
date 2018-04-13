@@ -276,11 +276,18 @@ namespace ALK
                 {
                     supervisee = currentUser;
                 }
+
                 if (supervisee != null)
                 {
-                    string fileName = String.Format("{0}/Temp/{1}", CSCallJS.curDir, "QRCode_" + supervisee.NRIC + ".png");
-                    if (System.IO.File.Exists(fileName))
-                        System.IO.File.Delete(fileName);
+                    try
+                    {
+                        string fileName = String.Format("{0}/Temp/{1}", CSCallJS.curDir, "QRCode_" + supervisee.NRIC + ".png");
+                        if (System.IO.File.Exists(fileName))
+                            System.IO.File.Delete(fileName);
+                    }
+                    catch
+                    {
+                    }
                 }
             }
         }
