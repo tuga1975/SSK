@@ -113,7 +113,7 @@ namespace Trinity.Device.Util
                     {
                         TSCLIB_DLL.windowsfont(startX + 70, startY, fontHeight, 0, fontStyle, 0, fontName, " : " + ttLabelInfo.Name.Substring(0, maxChar));
                         // Add name line if name is too long. Need to improve (split name by space char)
-                        TSCLIB_DLL.windowsfont(startX + 100, startY += fontHeight, fontHeight, 0, fontStyle, 0, fontName, "-" + ttLabelInfo.Name.Substring(maxChar, ttLabelInfo.Name.Length - maxChar));
+                        TSCLIB_DLL.windowsfont(startX + 100, startY += fontHeight, fontHeight, 0, fontStyle, 0, fontName, ttLabelInfo.Name.Substring(maxChar, ttLabelInfo.Name.Length - maxChar));
                     }
                     else
                     {
@@ -193,7 +193,7 @@ namespace Trinity.Device.Util
                 {
                     TSCLIB_DLL.windowsfont(startX + 70, startY, fontHeight, 0, fontStyle, 0, fontName, " : " + ttLabelInfo.Name.Substring(0, maxChar));
                     // Add name line if name is too long. Need to improve (split name by space char)
-                    TSCLIB_DLL.windowsfont(startX + 100, startY += fontHeight, fontHeight, 0, fontStyle, 0, fontName, "-" + ttLabelInfo.Name.Substring(maxChar, ttLabelInfo.Name.Length - maxChar));
+                    TSCLIB_DLL.windowsfont(startX + 100, startY += fontHeight, fontHeight, 0, fontStyle, 0, fontName, ttLabelInfo.Name.Substring(maxChar, ttLabelInfo.Name.Length - maxChar));
                 }
                 else
                 {
@@ -270,7 +270,7 @@ namespace Trinity.Device.Util
                 {
                     TSCLIB_DLL.windowsfont(startX + 70, startY, fontHeight, 0, fontStyle, 0, fontName, " : " + ttLabelInfo.Name.Substring(0, maxChar));
                     // Add name line if name is too long. Need to improve (split name by space char)
-                    TSCLIB_DLL.windowsfont(startX + 100, startY += fontHeight, fontHeight, 0, fontStyle, 0, fontName, "-" + ttLabelInfo.Name.Substring(maxChar, ttLabelInfo.Name.Length - maxChar));
+                    TSCLIB_DLL.windowsfont(startX + 100, startY += fontHeight, fontHeight, 0, fontStyle, 0, fontName, ttLabelInfo.Name.Substring(maxChar, ttLabelInfo.Name.Length - maxChar));
                 }
                 else
                 {
@@ -367,7 +367,7 @@ namespace Trinity.Device.Util
                     {
                         TSCLIB_DLL.windowsfont(startX, startY_Value, fontHeight, rotation, fontStyle, 0, fontName, " : " + mubLabelInfo.Name.Substring(0, maxChar));
                         // Addition line if name is too long. Need to improve (detech addition row by space char)
-                        TSCLIB_DLL.windowsfont(startX -= (fontHeight + lineSpacing), startY_Value + 32, fontHeight, rotation, fontStyle, 0, fontName, "-" + mubLabelInfo.Name.Substring(maxChar, mubLabelInfo.Name.Length - maxChar));
+                        TSCLIB_DLL.windowsfont(startX -= (fontHeight + lineSpacing), startY_Value + 32, fontHeight, rotation, fontStyle, 0, fontName, mubLabelInfo.Name.Substring(maxChar, mubLabelInfo.Name.Length - maxChar));
                     }
                     else
                     {

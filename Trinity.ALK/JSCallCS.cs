@@ -353,6 +353,7 @@ namespace ALK
 
         public void ConfirmAction(string action, string json)
         {
+            this._web.RunScript("$('#divSave').hide();");
             //_currentAction = action;
             _currentLabelInfo = JsonConvert.DeserializeObject<LabelInfo>(json);
             if (action == "InitializeMUBAndTTApplicator")
@@ -390,6 +391,7 @@ namespace ALK
             }
             else if (action == "OpenMUBAndTTDoor")
             {
+                this._web.RunScript("$('#divSave').hide();");
                 OpenMUBDoor();
                 OpenTTDoor();
             }
@@ -529,6 +531,8 @@ namespace ALK
             }
             else
             {
+                this._web.RunScript("$('#divSave').show();");
+                this._web.RunScript("$('#CancelBtn').hide();");
                 this._web.RunScript("$('#mubStatus').css('color','#000').text('Cannot complete printing and pasting MUB. Please report to Duty Officer');");
                 this._web.RunScript("$('#ConfirmBtn').html('Open MUB and TT Door.');");
                 this._web.RunScript("$('#lblNextAction').text('OpenMUBAndTTDoor');");
@@ -848,6 +852,8 @@ namespace ALK
             }
             else
             {
+                this._web.RunScript("$('#divSave').show();");
+                this._web.RunScript("$('#CancelBtn').hide();");
                 this._web.RunScript("$('#ttStatus').css('color','#000').text('Cannot complete printing and pasting TT. Please report to Duty Officer');");
                 this._web.RunScript("$('#ConfirmBtn').html('Open MUB and TT Door.');");
                 this._web.RunScript("$('#lblNextAction').text('OpenMUBAndTTDoor');");
