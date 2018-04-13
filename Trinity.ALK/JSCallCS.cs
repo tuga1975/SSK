@@ -55,7 +55,7 @@ namespace ALK
             _printMUBAndTTLabel.OnPrintMUBAndTTLabelsException += PrintMUBAndTTLabels_OnPrintTTLabelException;
             _popupModel = new Trinity.BE.PopupModel();
 
-            LEDStatusLightingUtil.Instance.OnNewEvent += Instance_OnNewEvent;
+            //LEDStatusLightingUtil.Instance.OnNewEvent += Instance_OnNewEvent;
         }
 
         /// <summary>
