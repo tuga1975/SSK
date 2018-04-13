@@ -218,6 +218,8 @@ namespace Trinity.Device.Util
         /// <returns></returns>
         public string OpenPort(string station, string portName, int baudRate, string parity)
         {
+            LogManager.Debug(string.Format("Led Light Open port: {0}, {1}, {2}, {3}", station, portName, baudRate, parity));
+
             InitializeSerialPort();
 
             try
