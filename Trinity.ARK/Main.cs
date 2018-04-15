@@ -48,7 +48,7 @@ namespace ARK
 
             #region Initialize and register events
             // _jsCallCS
-            _jsCallCS = new JSCallCS(this.LayerWeb,this);
+            _jsCallCS = new JSCallCS(this.LayerWeb, this);
             _jsCallCS.OnNRICFailed += JSCallCS_OnNRICFailed;
             _jsCallCS.OnShowMessage += JSCallCS_ShowMessage;
             _jsCallCS.OnLogOutCompleted += JSCallCS_OnLogOutCompleted;
@@ -93,7 +93,7 @@ namespace ARK
         }
         private void OnAppointmentBooked_Handler(object sender, NotificationInfo e)
         {
-            
+
         }
         private void DOUnblockSupervisee_Handler(object sender, NotificationInfo e)
         {
@@ -287,7 +287,7 @@ namespace ARK
             }
             if (supervisee != null)
             {
-                if (supervisee.Status==EnumUserStatuses.Blocked)
+                if (supervisee.Status == EnumUserStatuses.Blocked)
                 {
                     LayerWeb.ShowMessage("This supervisee is being blocked");
                 }
@@ -350,6 +350,7 @@ namespace ARK
             FacialRecognition.Instance.OnFacialRecognitionFailed -= Main_OnFacialRecognitionFailed;
             FacialRecognition.Instance.OnFacialRecognitionSucceeded -= Main_OnFacialRecognitionSucceeded;
             FacialRecognition.Instance.OnFacialRecognitionProcessing -= Main_OnFacialRecognitionProcessing;
+            FacialRecognition.Instance.OnCameraInitialized -= Main_OnCameraInitialized;
             this.Invoke((MethodInvoker)(() =>
             {
                 FacialRecognition.Instance.Dispose();
@@ -383,7 +384,12 @@ namespace ARK
 
         private void Main_OnFacialRecognitionProcessing()
         {
-            LayerWeb.RunScript("$('.status-text').css('color','#000').text('Scanning your face...');");
+            LayerWeb.RunScript("$('.status-text').css('color','#000').text('Processing...');");
+        }
+
+        private void Main_OnCameraInitialized()
+        {
+            LayerWeb.RunScript("$('.facialRecognition').hide();");
         }
 
         private void Main_OnFacialRecognitionFailed()
@@ -391,6 +397,8 @@ namespace ARK
             FacialRecognition.Instance.OnFacialRecognitionFailed -= Main_OnFacialRecognitionFailed;
             FacialRecognition.Instance.OnFacialRecognitionSucceeded -= Main_OnFacialRecognitionSucceeded;
             FacialRecognition.Instance.OnFacialRecognitionProcessing -= Main_OnFacialRecognitionProcessing;
+            FacialRecognition.Instance.OnCameraInitialized -= Main_OnCameraInitialized;
+
             this.Invoke((MethodInvoker)(() =>
             {
                 FacialRecognition.Instance.Dispose();
@@ -591,17 +599,18 @@ namespace ARK
                     return;
                 }
                 LayerWeb.LoadPageHtml("Authentication/FacialRecognition.html");
-                LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please wait while initializing camera...');");
+                LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please remain still as Facial Recognition Check takes place.');");
                 FacialRecognition.Instance.OnFacialRecognitionFailed += Main_OnFacialRecognitionFailed;
                 FacialRecognition.Instance.OnFacialRecognitionSucceeded += Main_OnFacialRecognitionSucceeded;
                 FacialRecognition.Instance.OnFacialRecognitionProcessing += Main_OnFacialRecognitionProcessing;
+                FacialRecognition.Instance.OnCameraInitialized += Main_OnCameraInitialized;
 
                 List<byte[]> FaceJpg = new System.Collections.Generic.List<byte[]>() { user.User_Photo1, user.User_Photo2 };
                 this.Invoke((MethodInvoker)(() =>
                 {
-                    Point startLocation = new Point((Screen.PrimaryScreen.Bounds.Size.Width / 2) - 800 / 2, (Screen.PrimaryScreen.Bounds.Size.Height / 2) - 800 / 2);
+                    Point startLocation = new Point((Screen.PrimaryScreen.Bounds.Size.Width / 2) - 800 / 2, (Screen.PrimaryScreen.Bounds.Size.Height / 2) - 450 / 2);
                     FacialRecognition.Instance.StartFacialRecognition(startLocation, FaceJpg);
-                    LayerWeb.RunScript("$('.status-text').css('color','#000').text('Face authentication');");
+                    //LayerWeb.RunScript("$('.status-text').css('color','#000').text('Face authentication');");
                 }));
             }
             else if (navigatorEnum == NavigatorEnums.Authentication_NRIC)

@@ -64,6 +64,7 @@ public class FacialRecognition
     public event Action OnFacialRecognitionSucceeded;
     public event Action OnFacialRecognitionFailed;
     public event Action OnFacialRecognitionProcessing;
+    public event Action OnCameraInitialized;
     private int _matchingScore = 2800;
     //private List<byte[]> FaceJpg = new List<byte[]>();
 
@@ -110,8 +111,9 @@ public class FacialRecognition
             {
                 isStartTracking = true;
                 libFace.Init();
+                OnCameraInitialized?.Invoke();
 
-                libFace.Show_Window(formLocation, new Size(800, 800));
+                libFace.Show_Window(formLocation, new Size(800, 450));
                 OnFacialRecognitionProcessing();
                 //Thread.Sleep(1000);
                 libFace.FaceDetect += new AT_Facial_API.Library.FaceDetected(lib_FaceDetect);

@@ -373,6 +373,7 @@
     <Content Include="View\img\Background.png" />
     <Content Include="View\img\bookappointment.png" />
     <Content Include="View\img\Calendar-Clock-Icon.jpeg" />
+    <Content Include="View\img\camera.jpg" />
     <Content Include="View\img\central_narco_logo.png" />
     <Content Include="View\img\DocumentScan.png" />
     <Content Include="View\img\FingerPrint.png" />

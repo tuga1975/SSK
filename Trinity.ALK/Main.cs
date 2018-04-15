@@ -428,6 +428,8 @@ namespace ALK
             FacialRecognition.Instance.OnFacialRecognitionFailed -= Main_OnFacialRecognitionFailed;
             FacialRecognition.Instance.OnFacialRecognitionSucceeded -= Main_OnFacialRecognitionSucceeded;
             FacialRecognition.Instance.OnFacialRecognitionProcessing -= Main_OnFacialRecognitionProcessing;
+            FacialRecognition.Instance.OnCameraInitialized -= Main_OnCameraInitialized;
+
             this.Invoke((MethodInvoker)(() =>
             {
                 FacialRecognition.Instance.Dispose();
@@ -468,7 +470,12 @@ namespace ALK
 
         private void Main_OnFacialRecognitionProcessing()
         {
-            LayerWeb.RunScript("$('.status-text').css('color','#000').text('Scanning your face...');");
+            LayerWeb.RunScript("$('.status-text').css('color','#000').text('Processing...');");
+        }
+
+        private void Main_OnCameraInitialized()
+        {
+            LayerWeb.RunScript("$('.facialRecognition').hide();");
         }
 
         private void Main_OnFacialRecognitionFailed()
@@ -476,6 +483,8 @@ namespace ALK
             FacialRecognition.Instance.OnFacialRecognitionFailed -= Main_OnFacialRecognitionFailed;
             FacialRecognition.Instance.OnFacialRecognitionSucceeded -= Main_OnFacialRecognitionSucceeded;
             FacialRecognition.Instance.OnFacialRecognitionProcessing -= Main_OnFacialRecognitionProcessing;
+            FacialRecognition.Instance.OnCameraInitialized -= Main_OnCameraInitialized;
+
             this.Invoke((MethodInvoker)(() =>
             {
                 FacialRecognition.Instance.Dispose();
@@ -621,10 +630,11 @@ namespace ALK
                 FacialRecognition.Instance.OnFacialRecognitionFailed += Main_OnFacialRecognitionFailed;
                 FacialRecognition.Instance.OnFacialRecognitionSucceeded += Main_OnFacialRecognitionSucceeded;
                 FacialRecognition.Instance.OnFacialRecognitionProcessing += Main_OnFacialRecognitionProcessing;
+                FacialRecognition.Instance.OnCameraInitialized += Main_OnCameraInitialized;
 
                 this.Invoke((MethodInvoker)(() =>
                 {
-                    Point startLocation = new Point((Screen.PrimaryScreen.Bounds.Size.Width / 2) - 800 / 2, (Screen.PrimaryScreen.Bounds.Size.Height / 2) - 800 / 2);
+                    Point startLocation = new Point((Screen.PrimaryScreen.Bounds.Size.Width / 2) - 800 / 2, (Screen.PrimaryScreen.Bounds.Size.Height / 2) - 450 / 2);
                     //Point startLocation = new Point((Screen.PrimaryScreen.Bounds.Size.Width / 2) - 400 / 2, (Screen.PrimaryScreen.Bounds.Size.Height / 2) - 400 / 2);
                     try
                     {
@@ -667,6 +677,11 @@ namespace ALK
                 _displayLoginButtonStatus = true;
                 CSCallJS.DisplayLogoutButton(this.LayerWeb, _displayLoginButtonStatus);
             }
+        }
+
+        private void Instance_OnCameraInitialized()
+        {
+            throw new NotImplementedException();
         }
         #endregion
     }
