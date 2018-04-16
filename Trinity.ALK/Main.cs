@@ -653,7 +653,7 @@ namespace ALK
             else if (navigatorEnum == NavigatorEnums.Supervisee_Particulars)
             {
                 _supperviseeParticulars.Start();
-                btnConfirm.Enabled = true;
+                //btnConfirm.Enabled = true;
             }
             else if (navigatorEnum == NavigatorEnums.Supervisee_NRIC)
             {
