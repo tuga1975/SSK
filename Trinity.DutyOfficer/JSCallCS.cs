@@ -115,6 +115,7 @@ namespace DutyOfficer
             string MarkingNumber = dalLabel.GetMarkingNumber(user.UserId, DateTime.Today);
             if (string.IsNullOrEmpty(MarkingNumber))
                 MarkingNumber = new DAL_SettingSystem().GenerateMarkingNumber();
+            var myQueue = dalQueue.GetMyQueueToday(user.UserId);
             dalLabel.Insert(new Trinity.BE.Label
             {
                 UserId = UserId,
@@ -124,6 +125,7 @@ namespace DutyOfficer
                 NRIC = user.NRIC,
                 Name = user.Name,
                 DrugType = dalDrug.GetResultUTByNRIC(user.NRIC, DateTime.Today),
+                Queue_ID = myQueue.Queue_ID,
                 LastStation = EnumStation.DUTYOFFICER
             });
 
