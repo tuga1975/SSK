@@ -162,7 +162,7 @@ namespace ALK
             _PrintMUBSucceed = false;
             _PrintTTSucceed = false;
             //this._web.RunScript("$('#WaitingSection').hide();$('#CompletedSection').hide(); ; ");
-            //this._web.RunScript("$('#ttStatus').css('color','#000').text('Sent problem to Duty Officer. Please wait to check !');");
+            //this._web.RunScript("$('#mubandttStatus').css('color','#000').text('Sent problem to Duty Officer. Please wait to check !');");
             //MessageBox.Show(e.ErrorMessage, "", MessageBoxButtons.OK, MessageBoxIcon.Error);
             var user = (Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN];
             Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(user.UserId, "Can not print MUB & TT Labels", "User "+ user.Name + " cannot print MUB & TT labels, please check!", EnumNotificationTypes.Error);
@@ -307,7 +307,7 @@ namespace ALK
                 if (currentUser == null)
                 {
                     // Check why current user is null
-                    this._web.RunScript("$('#mubStatus').css('color','#000').text('The current user is null');");
+                    this._web.RunScript("$('#mubandttStatus').css('color','#000').text('The current user is null');");
                     return;
                 }
                 //Trinity.BE.User supervisee = null;
@@ -324,8 +324,7 @@ namespace ALK
 
                 CheckMUBPrintingLabellingProgress();
                 CheckTTPrintingLabellingProgress();
-                this._web.RunScript("$('#mubStatus').css('color','#000').text('MUB label is being printed and labelled...');");
-                this._web.RunScript("$('#ttStatus').css('color','#000').text('TT label is being printed and labelled...');");
+                this._web.RunScript("$('#mubandttStatus').css('color','#000').text('MUB & TT label is being printed and labelled...');");
                 this._web.RunScript("$('#ConfirmBtn').html('Waiting...');");
                 this._web.RunScript("$('#lblNextAction').text('CheckIfMUBAndTTIsRemoved');");
             }
@@ -391,8 +390,7 @@ namespace ALK
             }
             else if (action == "CheckIfMUBAndTTIsRemoved")
             {
-                this._web.RunScript("$('#mubStatus').css('color','#000').text('Please remove MUB');");
-                this._web.RunScript("$('#ttStatus').css('color','#000').text('Please remove TT');");
+                this._web.RunScript("$('#mubandttStatus').css('color','#000').text('Please remove MUB && TT');");
                 CheckIfMUBIsRemoved();
                 CheckIfTTIsRemoved();
             }
@@ -448,8 +446,8 @@ namespace ALK
         private void CheckIfMUBIsPresent()
         {
             _mubIsPresent = false;
-            //this._web.RunScript("$('#mubStatus').css('color','#000').text('Checking if the MUB Applicator is present...');");
-            this._web.RunScript("$('#mubStatus').css('color','#000').text('Please place the MUB on the holder');");
+            //this._web.RunScript("$('#mubandttStatus').css('color','#000').text('Checking if the MUB Applicator is present...');");
+            this._web.RunScript("$('#mubandttStatus').css('color','#000').text('Please place the MUB on the holder');");
 
             // Check if MUB is present or not
             LEDStatusLightingUtil.Instance.SendCommand_Async(EnumCommands.CheckIfMUBIsPresent, CheckIfMUBIsPresent_Callback);
@@ -458,7 +456,7 @@ namespace ALK
         private void CheckIfTTIsPresent()
         {
             _ttIsPresent = false;
-            this._web.RunScript("$('#ttStatus').css('color','#000').text('Checking if the TT is present...');");
+            this._web.RunScript("$('#mubandttStatus').css('color','#000').text('Checking if the TT is present...');");
 
             // Check if MUB is present or not
             LEDStatusLightingUtil.Instance.SendCommand_Async(EnumCommands.CheckIfTTIsPresent, CheckIfTTIsPresent_Callback);
@@ -481,7 +479,7 @@ namespace ALK
             try
             {
                 _mubApplicatorStarted = false;
-                this._web.RunScript("$('#mubStatus').css('color','#000').text('The MUB Applicator is starting...');");
+                this._web.RunScript("$('#mubandttStatus').css('color','#000').text('The MUB Applicator is starting...');");
                 this._web.RunScript("$('#ConfirmBtn').html('Starting Applicator...');");
                 // Start MUB Applicator
                 LEDStatusLightingUtil.Instance.StartMUBApplicator_Async();
@@ -531,7 +529,7 @@ namespace ALK
                 // Show tutorial videos to guide user how to remove MUB
                 ShowTutorialVideos(false);
 
-                this._web.RunScript("$('#mubStatus').css('color','#000').text('MUB was processed successfully. Please remove MUB.');");
+                this._web.RunScript("$('#mubandttStatus').css('color','#000').text('MUB was processed successfully. Please remove MUB.');");
                 this._web.RunScript("$('#ConfirmBtn').html('Confirm to remove the MUB and TT');");
                 this._web.RunScript("$('#lblNextAction').text('CheckIfMUBAndTTIsRemoved');");
                 CheckIfMUBIsRemoved();
@@ -540,7 +538,7 @@ namespace ALK
             {
                 this._web.RunScript("$('#divSave').show();");
                 this._web.RunScript("$('#CancelBtn').hide();");
-                this._web.RunScript("$('#mubStatus').css('color','#000').text('Cannot complete printing and pasting MUB. Please report to Duty Officer');");
+                this._web.RunScript("$('#mubandttStatus').css('color','#000').text('Cannot complete printing and pasting MUB. Please report to Duty Officer');");
                 this._web.RunScript("$('#ConfirmBtn').html('Open MUB and TT Door.');");
                 this._web.RunScript("$('#lblNextAction').text('OpenMUBAndTTDoor');");
             }
@@ -551,7 +549,7 @@ namespace ALK
             _mubApplicatorReady = isReady;
             if (isReady)
             {
-                this._web.RunScript("$('#mubStatus').css('color','#000').text('MUB Applicator is ready.');");
+                this._web.RunScript("$('#mubandttStatus').css('color','#000').text('MUB Applicator is ready.');");
 
                 if (_ttApplicatorReady)
                 {
@@ -570,7 +568,7 @@ namespace ALK
             }
             else
             {
-                this._web.RunScript("$('#mubStatus').css('color','#000').text('MUB Applicator is not ready.');");
+                this._web.RunScript("$('#mubandttStatus').css('color','#000').text('MUB Applicator is not ready.');");
             }
         }
 
@@ -580,7 +578,7 @@ namespace ALK
             if (isStarted)
             {
                 // MUB Applicator is started. Ready to print
-                this._web.RunScript("$('#mubStatus').css('color','#000').text('MUB label is ready to print.');");
+                this._web.RunScript("$('#mubandttStatus').css('color','#000').text('MUB label is ready to print.');");
                 // Set next action to 'PrintMUBAndTTLabel'
                 if (_currentLabelInfo != null & _ttApplicatorStarted)
                 {
@@ -592,7 +590,7 @@ namespace ALK
             }
             else
             {
-                this._web.RunScript("$('#mubStatus').css('color','#000').text('MUB Applicator cannot be started. Checking if the MUB Door is closed or not');");
+                this._web.RunScript("$('#mubandttStatus').css('color','#000').text('MUB Applicator cannot be started. Checking if the MUB Door is closed or not');");
                 // InitializeMUBApplicator();
 
                 // Follow suggestion from supplier
@@ -606,7 +604,7 @@ namespace ALK
             _mubDoorIsFullyClosed = isFullyClosed;
             if (!_mubDoorIsFullyClosed)
             {
-                this._web.RunScript("$('#mubStatus').css('color','#000').text('The MUB Door is not closed. Start sending command to close...');");
+                this._web.RunScript("$('#mubandttStatus').css('color','#000').text('The MUB Door is not closed. Start sending command to close...');");
 
                 // If the MUB Door is not fully closed
                 // Then send command to close MUB Door
@@ -615,13 +613,13 @@ namespace ALK
                 // Wait for 200 miliseconds
                 Thread.Sleep(200);
 
-                this._web.RunScript("$('#mubStatus').css('color','#000').text('Start checking if the MUB Door is fully closed...');");
+                this._web.RunScript("$('#mubandttStatus').css('color','#000').text('Start checking if the MUB Door is fully closed...');");
                 LEDStatusLightingUtil.Instance.SendCommand_Async(EnumCommands.CheckIfMUBDoorIsFullyClosed, CheckIfMUBDoorIsFullyClosed_Callback2);
             }
             else
             {
                 // If the MUB Door is fully closed, start MUB Applicator again
-                this._web.RunScript("$('#mubStatus').css('color','#000').text('The MUB Door is fully closed. Trying to start MUB Applicator again...');");
+                this._web.RunScript("$('#mubandttStatus').css('color','#000').text('The MUB Door is fully closed. Trying to start MUB Applicator again...');");
                 StartMUBApplicator();
             }
         }
@@ -632,7 +630,7 @@ namespace ALK
             if (isStarted)
             {
                 // TT Applicator is started. Ready to print
-                this._web.RunScript("$('#ttStatus').css('color','#000').text('TT label is ready to print.');");
+                this._web.RunScript("$('#mubandttStatus').css('color','#000').text('TT label is ready to print.');");
 
                 // Set next action to 'PrintMUBAndTTLabel'
                 if (_currentLabelInfo != null && _mubApplicatorStarted)
@@ -644,7 +642,7 @@ namespace ALK
             }
             else
             {
-                this._web.RunScript("$('#ttStatus').css('color','#000').text('TT Applicator cannot be started. Checking if the TT Door is closed or not');");
+                this._web.RunScript("$('#mubandttStatus').css('color','#000').text('TT Applicator cannot be started. Checking if the TT Door is closed or not');");
                 // Try to re-initialize TT
                 //InitializeTTApplicator();
                 // Follow suggestion from supplier
@@ -658,7 +656,7 @@ namespace ALK
             _ttDoorIsFullyClosed = isFullyClosed;
             if (!_ttDoorIsFullyClosed)
             {
-                this._web.RunScript("$('#ttStatus').css('color','#000').text('The TT Door is not closed. Start sending command to close...');");
+                this._web.RunScript("$('#mubandttStatus').css('color','#000').text('The TT Door is not closed. Start sending command to close...');");
 
                 // If the TT Door is not fully closed
                 // Then send command to close TT Door
@@ -667,13 +665,13 @@ namespace ALK
                 // Wait for 200  milliseconds
                 Thread.Sleep(200);
 
-                this._web.RunScript("$('#ttStatus').css('color','#000').text('Start checking if the TT Door is fully closed...');");
+                this._web.RunScript("$('#mubandttStatus').css('color','#000').text('Start checking if the TT Door is fully closed...');");
                 LEDStatusLightingUtil.Instance.SendCommand_Async(EnumCommands.CheckIfTTDoorIsFullyClosed, CheckIfTTDoorIsFullyClosed_Callback2);
             }
             else
             {
                 // If the TT Door is fully closed, start TT Applicator again
-                this._web.RunScript("$('#ttStatus').css('color','#000').text('The TT Door is fully closed. Trying to start TT Applicator again...');");
+                this._web.RunScript("$('#mubandttStatus').css('color','#000').text('The TT Door is fully closed. Trying to start TT Applicator again...');");
                 StartTTApplicator();
             }
         }
@@ -684,7 +682,7 @@ namespace ALK
             if (isPresent)
             {
                 // MUB is placed on the holder
-                this._web.RunScript("$('#mubStatus').css('color','#000').text('The MUB has been placed on the holder.');");
+                this._web.RunScript("$('#mubandttStatus').css('color','#000').text('The MUB has been placed on the holder.');");
 
                 // Set next action to "StartMUBApplicator"
                 if (_ttIsPresent)
@@ -704,7 +702,7 @@ namespace ALK
                 // Update on April 5th 2018, 15:28
                 Thread.Sleep(500);
                 // MUB is not present
-                this._web.RunScript("$('#mubStatus').css('color','#000').text('The MUB is not present.');");
+                this._web.RunScript("$('#mubandttStatus').css('color','#000').text('The MUB is not present.');");
                 // Sleep 500 miliseconds and then check MUB presence again
                 Thread.Sleep(500);
                 CheckIfMUBIsPresent();
@@ -716,7 +714,7 @@ namespace ALK
             _mubIsRemoved = isRemoved;
             if (_mubIsRemoved)
             {
-                this._web.RunScript("$('#mubStatus').css('color','#000').text('The MUB has been removed.');");
+                this._web.RunScript("$('#mubandttStatus').css('color','#000').text('The MUB has been removed.');");
 
                 if (_ttIsRemoved)
                 {
@@ -755,8 +753,7 @@ namespace ALK
             if (currentUser == null)
             {
                 // Check why current user is null
-                this._web.RunScript("$('#mubStatus').css('color','#000').text('The current user is null');");
-                this._web.RunScript("$('#ttStatus').css('color','#000').text('');");
+                this._web.RunScript("$('#mubandttStatus').css('color','#000').text('The current user is null');");
                 return;
             }
             Trinity.BE.User supervisee = null;
@@ -779,9 +776,7 @@ namespace ALK
             Trinity.SignalR.Client.Instance.SSACompleted(supervisee.UserId);
 
             //lblStatus.Text = "The door is fully close";
-            this._web.RunScript("$('#mubStatus').css('color','#000').text('MUB and TT Labels Printing Completed. Logging out...');");
-            this._web.RunScript("$('#ttStatus').css('color','#000').text('');");
-
+            this._web.RunScript("$('#mubandttStatus').css('color','#000').text('MUB and TT Labels Printing Completed. Logging out...');");
             //btnConfirm.Text = "Initialize MUB Applicator";
             this._web.RunScript("$('#ConfirmBtn').html('Logout');");
 
@@ -812,7 +807,7 @@ namespace ALK
         private void StartTTApplicator()
         {
             _ttApplicatorStarted = false;
-            this._web.RunScript("$('#ttStatus').css('color','#000').text('The TT Applicator is starting...');");
+            this._web.RunScript("$('#mubandttStatus').css('color','#000').text('The TT Applicator is starting...');");
             this._web.RunScript("$('#ConfirmBtn').html('Starting Applicator...');");
             // Start MUB Applicator
             LEDStatusLightingUtil.Instance.StartTTApplicator_Async();
@@ -852,7 +847,7 @@ namespace ALK
                 // Show tutorial videos to guide user how to remove TT
                 ShowTutorialVideos(false);
 
-                this._web.RunScript("$('#ttStatus').css('color','#000').text('TT was processed successfully. Please remove TT.');");
+                this._web.RunScript("$('#mubandttStatus').css('color','#000').text('TT was processed successfully. Please remove TT.');");
                 this._web.RunScript("$('#ConfirmBtn').html('Confirm to remove the MUB and TT');");
                 this._web.RunScript("$('#lblNextAction').text('CheckIfMUBAndTTIsRemoved');");
                 CheckIfTTIsRemoved();
@@ -861,7 +856,7 @@ namespace ALK
             {
                 this._web.RunScript("$('#divSave').show();");
                 this._web.RunScript("$('#CancelBtn').hide();");
-                this._web.RunScript("$('#ttStatus').css('color','#000').text('Cannot complete printing and pasting TT. Please report to Duty Officer');");
+                this._web.RunScript("$('#mubandttStatus').css('color','#000').text('Cannot complete printing and pasting TT. Please report to Duty Officer');");
                 this._web.RunScript("$('#ConfirmBtn').html('Open MUB and TT Door.');");
                 this._web.RunScript("$('#lblNextAction').text('OpenMUBAndTTDoor');");
             }
@@ -872,7 +867,7 @@ namespace ALK
             _ttApplicatorReady = isReady;
             if (_ttApplicatorReady)
             {
-                this._web.RunScript("$('#ttStatus').css('color','#000').text('TT Applicator is ready.');");
+                this._web.RunScript("$('#mubandttStatus').css('color','#000').text('TT Applicator is ready.');");
 
                 if (_mubApplicatorReady)
                 {
@@ -889,7 +884,7 @@ namespace ALK
             }
             else
             {
-                this._web.RunScript("$('#ttStatus').css('color','#000').text('TT Applicator is not ready.');");
+                this._web.RunScript("$('#mubandttStatus').css('color','#000').text('TT Applicator is not ready.');");
             }
         }
 
@@ -900,7 +895,7 @@ namespace ALK
             if (_ttIsPresent)
             {
                 // TT is placed on the holder
-                this._web.RunScript("$('#ttStatus').css('color','#000').text('The TT has been placed on the holder.');");
+                this._web.RunScript("$('#mubandttStatus').css('color','#000').text('The TT has been placed on the holder.');");
 
                 // Set next action to "StartTTApplicator"
                 if (_mubIsPresent)
@@ -916,7 +911,7 @@ namespace ALK
                 // Update on April 5th 2018, 15:28
                 Thread.Sleep(500);
                 // TT is not present
-                this._web.RunScript("$('#ttStatus').css('color','#000').text('The TT is not present.');");
+                this._web.RunScript("$('#mubandttStatus').css('color','#000').text('The TT is not present.');");
                 // Sleep 500 miliseconds and then check MUB presence again
                 Thread.Sleep(500);
                 CheckIfTTIsPresent();
@@ -928,7 +923,7 @@ namespace ALK
             _ttIsRemoved = isRemoved;
             if (_ttIsRemoved)
             {
-                this._web.RunScript("$('#ttStatus').css('color','#000').text('The TT has been removed.');");
+                this._web.RunScript("$('#mubandttStatus').css('color','#000').text('The TT has been removed.');");
 
                 if (_mubIsRemoved)
                 {
