@@ -388,8 +388,8 @@ namespace Trinity.Device.Util
                     TSCLIB_DLL.windowsfont(startX, startY_Value, fontHeight, rotation, fontStyle, 0, fontName, " : " + mubLabelInfo.MarkingNumber);
 
                     //Drawing barcode
-                    //TSCLIB_DLL.barcode(startX.ToString(), (startY += fontHeight + 8).ToString(), "39", "72", "0", "0", "1", "3", mubLabelInfo.QRCodeString);
-                    TSCLIB_DLL.sendcommand("DMATRIX 200,16,400,400,x3,r90, \"" + mubLabelInfo.QRCodeString + "\"");
+                    //TSCLIB_DLL.sendcommand("DMATRIX 200,16,400,400,x3,r90, \"" + mubLabelInfo.QRCodeString + "\"");
+                    TSCLIB_DLL.sendcommand("DMATRIX 200,250,400,400,x2, \"" + mubLabelInfo.QRCodeString + "\"");
 
                     //Print labels
                     TSCLIB_DLL.printlabel("1", "1");
