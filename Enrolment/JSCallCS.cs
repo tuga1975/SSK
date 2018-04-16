@@ -845,11 +845,23 @@ namespace Enrolment
         {
             Session session = Session.Instance;
             var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
-            byte[] _left = Convert.FromBase64String(left);
-            byte[] _right = Convert.FromBase64String(right);
+            byte[] _left = new byte[] { };
+            byte[] _right = new byte[] { };
 
-            byte[] _leftImg = Convert.FromBase64String(leftImg);
-            byte[] _rightImg = Convert.FromBase64String(rightImg);
+
+            if (!string.IsNullOrEmpty(left))
+                _left = Convert.FromBase64String(left);
+            if (!string.IsNullOrEmpty(right))
+                _right = Convert.FromBase64String(right);
+
+            byte[] _leftImg = new byte[] { };
+            byte[] _rightImg = new byte[] { };
+
+            if (!string.IsNullOrEmpty(leftImg))
+                _leftImg = Convert.FromBase64String(leftImg);
+            if (!string.IsNullOrEmpty(rightImg))
+                _rightImg = Convert.FromBase64String(rightImg);
+
             new DAL_Membership_Users().UpdateFingerprint(currentEditUser.User.UserId, _left, _right);
             new DAL_UserProfile().UpdateFingerprintImg(currentEditUser.User.UserId, _leftImg, _rightImg);
             if (_left.Length > 0)
