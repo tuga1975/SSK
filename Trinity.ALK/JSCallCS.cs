@@ -328,6 +328,7 @@ namespace ALK
                 CheckTTPrintingLabellingProgress();
                 this._web.RunScript("$('#mubStatus').css('color','#000').text('MUB label is being printed and labelled...');");
                 this._web.RunScript("$('#ttStatus').css('color','#000').text('TT label is being printed and labelled...');");
+                this._web.RunScript("$('#divSave').hide();");
                 this._web.RunScript("$('#ConfirmBtn').html('Waiting...');");
                 this._web.RunScript("$('#lblNextAction').text('CheckIfMUBAndTTIsRemoved');");
             }
