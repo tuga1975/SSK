@@ -363,47 +363,63 @@ namespace ALK
 
         public void ConfirmAction(string action, string json)
         {
-            this._web.RunScript("$('#divSave').hide();");
-            //_currentAction = action;
-            _currentLabelInfo = JsonConvert.DeserializeObject<LabelInfo>(json);
-            if (action == "InitializeMUBAndTTApplicator")
+
+            bool isPrinterConnected = true;
+            if (!BarcodePrinterUtil.Instance.GetDeviceStatus(EnumDeviceNames.MUBLabelPrinter).Contains(EnumDeviceStatus.Connected))
             {
-                // Initialize MUB Applicator
-                InitializeMUBApplicator();
-                InitializeTTApplicator();
+                isPrinterConnected = false;
+                this._web.RunScript("$('#mubStatus').css('color','#000').text('Problem communicating with the MUB Printer.');");
             }
-            else if (action == "CheckIfMUBAndTTIsPresent")
+            if (!BarcodePrinterUtil.Instance.GetDeviceStatus(EnumDeviceNames.TTLabelPrinter).Contains(EnumDeviceStatus.Connected))
             {
-                // MUB Applicator is ready
-                // Check if MUB is present or not
-                CheckIfMUBIsPresent();
-                CheckIfTTIsPresent();
+                isPrinterConnected = false;
+                this._web.RunScript("$('#ttStatus').css('color','#000').text('Problem communicating with the TT Printer.');");
             }
-            else if (action == "StartMUBAndTTApplicator")
-            {
-                CheckIfMUBIsPresent();
-                CheckIfTTIsPresent();
-            }
-            else if (action == "PrintMUBAndTTLabel")
-            {
-                if (_mubApplicatorStarted && _ttApplicatorStarted && _currentLabelInfo != null)
-                {
-                    // Start to print
-                    StartToPrintMUBAndTTLabel(_currentLabelInfo);
-                }
-            }
-            else if (action == "CheckIfMUBAndTTIsRemoved")
-            {
-                this._web.RunScript("$('#mubStatus').css('color','#000').text('Please remove MUB');");
-                this._web.RunScript("$('#ttStatus').css('color','#000').text('Please remove TT');");
-                CheckIfMUBIsRemoved();
-                CheckIfTTIsRemoved();
-            }
-            else if (action == "OpenMUBAndTTDoor")
+
+            if (isPrinterConnected)
             {
                 this._web.RunScript("$('#divSave').hide();");
-                OpenMUBDoor();
-                OpenTTDoor();
+                //_currentAction = action;
+                _currentLabelInfo = JsonConvert.DeserializeObject<LabelInfo>(json);
+                if (action == "InitializeMUBAndTTApplicator")
+                {
+                    // Initialize MUB Applicator
+                    InitializeMUBApplicator();
+                    InitializeTTApplicator();
+                }
+                else if (action == "CheckIfMUBAndTTIsPresent")
+                {
+                    // MUB Applicator is ready
+                    // Check if MUB is present or not
+                    CheckIfMUBIsPresent();
+                    CheckIfTTIsPresent();
+                }
+                else if (action == "StartMUBAndTTApplicator")
+                {
+                    CheckIfMUBIsPresent();
+                    CheckIfTTIsPresent();
+                }
+                else if (action == "PrintMUBAndTTLabel")
+                {
+                    if (_mubApplicatorStarted && _ttApplicatorStarted && _currentLabelInfo != null)
+                    {
+                        // Start to print
+                        StartToPrintMUBAndTTLabel(_currentLabelInfo);
+                    }
+                }
+                else if (action == "CheckIfMUBAndTTIsRemoved")
+                {
+                    this._web.RunScript("$('#mubStatus').css('color','#000').text('Please remove MUB');");
+                    this._web.RunScript("$('#ttStatus').css('color','#000').text('Please remove TT');");
+                    CheckIfMUBIsRemoved();
+                    CheckIfTTIsRemoved();
+                }
+                else if (action == "OpenMUBAndTTDoor")
+                {
+                    this._web.RunScript("$('#divSave').hide();");
+                    OpenMUBDoor();
+                    OpenTTDoor();
+                }
             }
         }
 

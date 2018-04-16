@@ -523,55 +523,54 @@
         var data = JSON.stringify(model);
 
 
-        //api.server.CheckWarningSaveSetting(model.DayOfWeek, function (check) {
-        //    if (check == true) {
-        //        api.server.UpdateOperationSetting(data, function () {
-        //            $('#idEditOperationalDate').modal('toggle');
-        //        });
-        //    }
-        //    else {
-        //        api.server.UpdateOperationSetting(data, function () {
-        //            api.server.LoadPage('Settings.html');
-        //            $('#idEditOperationalDate').modal('toggle');
-        //        });
-        //    };
-        //});
+        api.server.CheckWarningSaveSetting(model.DayOfWeek, function (check) {
+            if (check == true) {
+                $('#idEditOperationalDate').modal('toggle');
+                api.server.UpdateOperationSetting(data);
+            }
+            else {
+                $('#idEditOperationalDate').modal('toggle');
+                api.server.UpdateOperationSetting(data, function () {
+                    api.server.LoadPage('Settings.html');
+                });
+            };
+        });
 
         e.preventDefault();
     });
     function checkValidateSetting(model) {
         if (!model.Morning_Is_Closed) {
-            if (convertTimeSpanToInt(model.Morning_Open_Time) <= convertTimeSpanToInt(model.Morning_Close_Time)) {
+            if (convertTimeSpanToInt(model.Morning_Open_Time) >= convertTimeSpanToInt(model.Morning_Close_Time)) {
                 ShowMessage('The morning start time must be greater than the end time');
                 return false;
             }
         }
         if (!model.Afternoon_Is_Closed) {
-            if (convertTimeSpanToInt(model.Afternoon_Open_Time) <= convertTimeSpanToInt(model.Afternoon_Close_Time)) {
+            if (convertTimeSpanToInt(model.Afternoon_Open_Time) >= convertTimeSpanToInt(model.Afternoon_Close_Time)) {
                 ShowMessage('The afternoon start time must be greater than the end time');
                 return false;
             } else {
                 if (!model.Morning_Is_Closed) {
-                    if (convertTimeSpanToInt(model.Afternoon_Open_Time) <= convertTimeSpanToInt(model.Morning_Close_Time)) {
+                    if (convertTimeSpanToInt(model.Afternoon_Open_Time) < convertTimeSpanToInt(model.Morning_Close_Time)) {
                         ShowMessage('Afternoon time must be greater than morning');
                         return false;
                     }
                 }
             }
         }
-        if (!model.Evening_Close_Time) {
-            if (convertTimeSpanToInt(model.Evening_Open_Time) <= convertTimeSpanToInt(model.Evening_Close_Time)) {
+        if (!model.Evening_Is_Closed) {
+            if (convertTimeSpanToInt(model.Evening_Open_Time) >= convertTimeSpanToInt(model.Evening_Close_Time)) {
                 ShowMessage('The evening start time must be greater than the end time');
                 return false;
             } else {
                 if (!model.Afternoon_Is_Closed) {
-                    if (convertTimeSpanToInt(model.Evening_Open_Time) <= convertTimeSpanToInt(model.Afternoon_Close_Time)) {
+                    if (convertTimeSpanToInt(model.Evening_Open_Time) < convertTimeSpanToInt(model.Afternoon_Close_Time)) {
                         ShowMessage('Evening time must be greater than afternoon');
                         return false;
                     }
                 }
                 if (!model.Morning_Is_Closed) {
-                    if (convertTimeSpanToInt(model.Evening_Open_Time) <= convertTimeSpanToInt(model.Morning_Close_Time)) {
+                    if (convertTimeSpanToInt(model.Evening_Open_Time) < convertTimeSpanToInt(model.Morning_Close_Time)) {
                         ShowMessage('Evening time must be greater than morning');
                         return false;
                     }
@@ -584,7 +583,7 @@
     function convertTimeSpanToInt(time) {
         var hours = Number(time.match(/^(\d+)/)[1]);
         var minutes = Number(time.match(/:(\d+)/)[1]);
-        return hours + minutes;
+        return (hours * 60) + minutes;
     }
     function convert12To24H(time, AMPM) {
         var hours = Number(time.match(/^(\d+)/)[1]);
