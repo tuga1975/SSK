@@ -299,6 +299,8 @@ namespace ARK
                 var rawData = JsonConvert.DeserializeObject<Trinity.BE.ProfileRawMData>(param);
                 var data = new Trinity.BE.ProfileRawMData().ToProfileModel(rawData);
                 Session session = Session.Instance;
+
+                var user = ((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]);
                 if (primaryInfoChange)
                 {
                     var updateUserResult = new DAL_User().Update(data.User);
@@ -311,12 +313,12 @@ namespace ARK
                     List<string> arrayScan = JsonConvert.DeserializeObject<List<string>>(arrayDocumentScan);
                     if (arrayScan.Count > 0)
                     {
-                        Guid IDDocuemnt = new DAL_UploadedDocuments().Insert(arrayScan, ((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId);
+                        Guid IDDocuemnt = new DAL_UploadedDocuments().Insert(arrayScan, user.UserId);
                         new DAL_UserProfile().UploadDocumentScan(IDDocuemnt, data.User.UserId);
                     }
                     Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(data.User.UserId, "Supervisee " + data.User.Name + " has updated profile.", "Please check Supervisee " + data.User.Name + "'s information!", EnumNotificationTypes.Notification);
 
-                    session[CommonConstants.USER_LOGIN] = data.User;
+                    session[CommonConstants.USER_LOGIN] = new DAL_User().GetUserBySmartCardId(user.SmartCardId);
 
                 }
                 else
@@ -330,7 +332,7 @@ namespace ARK
                 }
 
                 //load Supervisee page 
-                LoadPageSupervisee(); ;
+                LoadPageSupervisee();
             }
             catch (Exception ex)
             {
