@@ -462,6 +462,8 @@
         <input type="hidden" name="SerialNumber" id="SerialNumber" />
         <input type="hidden" name="DateOfIssue" id="DateOfIssue" />
         <input type="hidden" name="Gender" id="Gender" />
+        <input type="hidden" name="MaritalStatus" id="MaritalStatus" />
+        <input type="hidden" name="Nationality" id="Nationality" />
         <input type="hidden" name="Race" id="Race" />
         <input type="hidden" id="ParticularsName" name="ParticularsName">
         <input type="hidden" id="NRIC" name="NRIC">
@@ -481,7 +483,7 @@
                     <label>
                         NRIC No.
                     </label>
-                    <div class="value" id="nricDisplay">
+                    <div class="value" id="NRIC_DisplayValue">
                     </div>
                 </div>
 
@@ -489,54 +491,25 @@
                     <label>
                         Date of Birth
                     </label>
-                    <div class="value" id="dobDisplay">
+                    <div class="value" id="DOB_DisplayValue">
+
+                    </div>
+                </div>
+                <div class="form-group-text">
+                    <label>
+                        Nationality
+                    </label>
+                    <div class="value" id="Nationality_DisplayValue">
+                    </div>
+                </div>
+                <div class="form-group-text">
+                    <label>
+                        Marital Status
+                    </label>
+                    <div class="value" id="MaritalStatus_DisplayValue">
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <div class="form-select">
-                        <div class="input-group-select">
-                            <label for="Nationality">
-                                <span class="form-label">
-                                    Nationality  <span>*</span>
-                                </span>
-                            </label>
-
-                        </div>
-                        <div class="select-wrap">
-                            <select title="Nationality" class="form-control" id="Nationality" name="Nationality">
-                                <option>Singaporean</option>
-                                <option>Malaysian</option>
-                            </select>
-                            <label for="Nationality">
-                                <i class="ion-chevron-down"></i>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="clearfix"></div>
-                </div>
-                <div class="form-group">
-                    <div class="form-select">
-                        <div class="input-group-select">
-                            <label for="MaritalStatus">
-                                <span class="form-label">
-                                    Marital Status <span>*</span>
-                                </span>
-                            </label>
-
-                        </div>
-                        <div class="select-wrap">
-                            <select title="Marital Status" class="form-control" id="MaritalStatus" name="MaritalStatus">
-                                <option>Single</option>
-                                <option>Married</option>
-                            </select>
-                            <label for="year">
-                                <i class="ion-chevron-down"></i>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="clearfix"></div>
-                </div>
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-prepend">
@@ -1191,7 +1164,7 @@
             dataJson.Employment_End_Date = txt[2] + '-' + txt[1] + '-' + txt[0];
         }
         api.server.SaveProfile(JSON.stringify(dataJson), JSON.stringify(arrayImg), true);
-        
+
     }
     function checkComfirmUpdateProfile() {
         ShowMessageConfirm("", "You are sure you want to update", function (status) {
@@ -1226,7 +1199,9 @@
         $('#SmartCardId').val(model.User.SmartCardId);
 
         $('#ParticularsNameDisplay').text(model.User.Name);
-        $('#nricDisplay').val(model.User.NRIC);
+        $('#NRIC_DisplayValue').text(model.User.NRIC);
+        $('#DOB_DisplayValue').text(model.UserProfile.DOBAsString);
+
         // profile
         if (model.UserProfile != null) {
 
@@ -1235,17 +1210,19 @@
             _maritalStatus = model.UserProfile.Maritial_Status;
             $('#DOB').val(model.UserProfile.DOBAsString);
             $('#Nationality').val(model.UserProfile.Nationality);
+            $('#Nationality_DisplayValue').text(model.UserProfile.Nationality);
             $('#SerialNumber').val(model.UserProfile.SerialNumber);
             $('#DateOfIssue').val(model.UserProfile.DateOfIssue);
             $('#Gender').val(model.UserProfile.Gender);
             $('#Race').val(model.UserProfile.Race);
             $('#MaritalStatus').val(model.UserProfile.Maritial_Status);
+            $('#MaritalStatus_DisplayValue').text(model.UserProfile.Maritial_Status);
             $('#PrimaryContact').val(model.UserProfile.Primary_Phone);
             $('#SecondaryContact').val(model.UserProfile.Secondary_Phone);
             $('#PrimaryEmail').val(model.UserProfile.Primary_Email);
             $('#SecondaryEmail').val(model.UserProfile.Secondary_Email);
 
-            $('#dobDisplay').val(model.UserProfile.DOBAsString);
+            //$('#dobDisplay').val(model.UserProfile.DOBAsString);
 
             //next of kin information
             $('#NextOfKin_Name').val(model.UserProfile.NextOfKin_Name);
@@ -1296,7 +1273,7 @@
         //    api.server.LoadScanDocument(jsonFormData);
         //    jsonFormData = null;
         //}
-        api.server.LoadPopupHtml("PopupScanDocument.html",'scanDocumentProfileCallbackImg');
+        api.server.LoadPopupHtml("PopupScanDocument.html", 'scanDocumentProfileCallbackImg');
     });
 
     $('#btnOK').click(function () {
@@ -1343,7 +1320,7 @@
         if ($('#ParticularsName').val() != _particularName || $('#NRIC').val() != _nric || $('#DOB').val() != _dob || $('#Nationality').val() != _nationality || $('#MaritalStatus').val() != _maritalStatus) {
             //$('#divSave').hide();
             //$('#divError').show();
-           // $('#divSupportDocument').fadeIn(1000);
+            // $('#divSupportDocument').fadeIn(1000);
             $("input[class='form-control pri']").each(function () {
                 if ($(this).val() == "") {
                     $(this).addClass("highlight");
@@ -1364,7 +1341,7 @@
             }
         }
         else {
-         //   $('#divSupportDocument').hide();
+            //   $('#divSupportDocument').hide();
             var activeTab = $('#activeTab').val();
             var empty = $('#' + activeTab).find("input[class='form-control pri']").filter(function () {
                 return this.value.trim() === "";
@@ -1414,10 +1391,10 @@
     $('input[class="form-control pri"]').keyup(function () {
         $('#divSave').show();
         if ($('#ParticularsName').val() != _particularName || $('#NRIC').val() != _nric || $('#DOB').val() != _dob || $('#Nationality').val() != _nationality || $('#MaritalStatus').val() != _maritalStatus) {
-          //  $('#divSupportDocument').fadeIn(1000);
+            //  $('#divSupportDocument').fadeIn(1000);
         }
         else {
-         //   $('#divSupportDocument').fadeOut(500);
+            //   $('#divSupportDocument').fadeOut(500);
         }
 
         if ($(this).val() != "") {
