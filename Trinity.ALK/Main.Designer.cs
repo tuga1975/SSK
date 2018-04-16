@@ -37,10 +37,9 @@
             // 
             this.LayerWeb.Dock = System.Windows.Forms.DockStyle.Fill;
             this.LayerWeb.Location = new System.Drawing.Point(0, 0);
-            this.LayerWeb.Margin = new System.Windows.Forms.Padding(4);
-            this.LayerWeb.MinimumSize = new System.Drawing.Size(27, 25);
+            this.LayerWeb.MinimumSize = new System.Drawing.Size(20, 20);
             this.LayerWeb.Name = "LayerWeb";
-            this.LayerWeb.Size = new System.Drawing.Size(1675, 788);
+            this.LayerWeb.Size = new System.Drawing.Size(1256, 640);
             this.LayerWeb.TabIndex = 0;
             this.LayerWeb.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.LayerWeb_DocumentCompleted);
             // 
@@ -48,9 +47,10 @@
             // 
             this.btnConfirm.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnConfirm.Enabled = false;
-            this.btnConfirm.Location = new System.Drawing.Point(13, 727);
+            this.btnConfirm.Location = new System.Drawing.Point(10, 591);
+            this.btnConfirm.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnConfirm.Name = "btnConfirm";
-            this.btnConfirm.Size = new System.Drawing.Size(276, 49);
+            this.btnConfirm.Size = new System.Drawing.Size(207, 40);
             this.btnConfirm.TabIndex = 1;
             this.btnConfirm.Tag = "0";
             this.btnConfirm.Text = "Initialize MUB Applicator";
@@ -61,24 +61,24 @@
             // 
             this.lblStatus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblStatus.AutoSize = true;
-            this.lblStatus.Location = new System.Drawing.Point(295, 743);
+            this.lblStatus.Location = new System.Drawing.Point(221, 604);
+            this.lblStatus.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblStatus.Name = "lblStatus";
-            this.lblStatus.Size = new System.Drawing.Size(0, 17);
+            this.lblStatus.Size = new System.Drawing.Size(0, 13);
             this.lblStatus.TabIndex = 2;
             // 
             // Main
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1675, 788);
+            this.ClientSize = new System.Drawing.Size(1256, 640);
             this.Controls.Add(this.lblStatus);
             this.Controls.Add(this.btnConfirm);
             this.Controls.Add(this.LayerWeb);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "Main";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Supervisee Sample Authentication";
+            this.Text = "Authentication and Labelling Kiosk";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Main_FormClosing);
             this.Load += new System.EventHandler(this.Main_Load);
