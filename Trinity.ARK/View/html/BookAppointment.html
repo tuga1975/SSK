@@ -188,7 +188,7 @@
                 var endTime = _this.attr('end');
                 api.server.CheckBookingTime(timeslot_ID, model[0].AppointmentDate, function (isPast) {
                     if (isPast) {
-                        alert('You can not choose the timeslot in the past.');
+                        alert('This timeslot is not available.');
                     }
                     else {
                         if (model[0].ChangedCount >= 3) {
