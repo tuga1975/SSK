@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
             this.LayerWeb = new System.Windows.Forms.WebBrowser();
             this.btnConfirm = new System.Windows.Forms.Button();
             this.lblStatus = new System.Windows.Forms.Label();
@@ -75,10 +76,11 @@
             this.Controls.Add(this.btnConfirm);
             this.Controls.Add(this.LayerWeb);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "Main";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Supervisee Sample Authentication";
+            this.Text = "Authentication and Labelling Kiosk";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Main_FormClosing);
             this.Load += new System.EventHandler(this.Main_Load);

@@ -475,7 +475,7 @@ namespace ALK
 
         private void Main_OnCameraInitialized()
         {
-            LayerWeb.RunScript("$('.facialRecognition').hide();");
+            //LayerWeb.RunScript("$('.facialRecognition').hide();");
         }
 
         private void Main_OnFacialRecognitionFailed()
