@@ -367,12 +367,12 @@ namespace ALK
             if (!BarcodePrinterUtil.Instance.GetDeviceStatus(EnumDeviceNames.MUBLabelPrinter).Contains(EnumDeviceStatus.Connected))
             {
                 isPrinterConnected = false;
-                this._web.RunScript("$('#mubStatus').css('color','red').text('MUB printer is not connected.');");
+                this._web.RunScript("$('#mubStatus').css('color','#000').text('Problem communicating with the MUB Printer.');");
             }
             if (!BarcodePrinterUtil.Instance.GetDeviceStatus(EnumDeviceNames.TTLabelPrinter).Contains(EnumDeviceStatus.Connected))
             {
                 isPrinterConnected = false;
-                this._web.RunScript("$('#ttStatus').css('color','red').text('TT printer is not connected.');");
+                this._web.RunScript("$('#ttStatus').css('color','#000').text('Problem communicating with the TT Printer.');");
             }
 
             if (isPrinterConnected)
