@@ -324,7 +324,7 @@ namespace Enrolment
 
             if ((!rawData.Employment_Start_Date.HasValue && rawData.Employment_End_Date.HasValue) || (rawData.Employment_Start_Date.HasValue && rawData.Employment_End_Date.HasValue && rawData.Employment_Start_Date.Value >= rawData.Employment_End_Date.Value))
             {
-                _web.ShowMessage("<b>Employer Start Date</b> must be less than <b>Employer End Date</b>");
+                _web.ShowMessage("<b>Employment Start Date</b> must be less than <b>Employment End Date</b>");
             }
             else
             {
