@@ -15,6 +15,7 @@ using Trinity.DAL;
 using Trinity.Device.Util;
 using Trinity.Identity;
 using Trinity.Device;
+using Trinity.Common.Utils;
 
 namespace ALK
 {
@@ -195,7 +196,8 @@ namespace ALK
                 }
                 else
                 {
-                    CSCallJS.ShowMessageAsync(_web, "Manual Login ERROR", error);
+                    LogManager.Error("BarcodeScannerCallback ERROR: " + error);
+                    //CSCallJS.ShowMessageAsync(_web, "Manual Login ERROR", error);
                 }
             }
             finally

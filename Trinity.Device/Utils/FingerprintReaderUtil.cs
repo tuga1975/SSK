@@ -187,7 +187,7 @@ namespace Trinity.Device.Util
             catch (Exception ex)
             {
                 Debug.WriteLine("FingerprintReaderUtils.GetDeviceStatus exception: " + ex.Message);
-                return new EnumDeviceStatus[] { EnumDeviceStatus.None };
+                return new EnumDeviceStatus[] { EnumDeviceStatus.Disconnected };
             }
         }
 

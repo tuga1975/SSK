@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows.Forms;
 using Trinity.Common;
+using Trinity.Common.Utils;
 using Trinity.DAL;
 using Trinity.Device.Util;
 
@@ -65,7 +66,8 @@ namespace ALK.CodeBehind.Authentication
             }
             else
             {
-                CSCallJS.ShowMessageAsync(_web, "BarcodeScanner ERROR", error);
+                LogManager.Error("BarcodeScannerCallback ERROR: " + error);
+                //CSCallJS.ShowMessageAsync(_web, "BarcodeScanner ERROR", error);
             }
         }
 
