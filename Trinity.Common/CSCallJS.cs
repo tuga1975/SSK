@@ -11,11 +11,11 @@ using System.Dynamic;
 public static class CSCallJS
 {
     public static readonly string curDir = Directory.GetCurrentDirectory().ToLower();
-    
+
     private async static Task<bool> _WaitPopupMessage(string ID)
     {
-        Lib.ArrayIDWaitMessage.Add(ID,null);
-        
+        Lib.ArrayIDWaitMessage.Add(ID, null);
+
         while (!Lib.ArrayIDWaitMessage[ID].HasValue)
         {
             await Task.Delay(1000);
@@ -28,7 +28,7 @@ public static class CSCallJS
     public static bool ShowMessageConfirm(this WebBrowser web, string title, string content)
     {
         string ID = Guid.NewGuid().ToString().Trim();
-        web.InvokeScript("ShowMessageConfirm", title, content,"", ID);
+        web.InvokeScript("ShowMessageConfirm", title, content, "", ID);
         return Task.Run(async () => await _WaitPopupMessage(ID)).Result;
     }
     public static bool ShowMessageConfirm(this WebBrowser web, string content)
@@ -44,7 +44,7 @@ public static class CSCallJS
     }
     public static void ShowMessage(this WebBrowser web, string content)
     {
-        ShowMessage(web,string.Empty,content);
+        ShowMessage(web, string.Empty, content);
     }
     public static void ShowMessageAsync(this WebBrowser web, string title, string content)
     {
@@ -64,25 +64,33 @@ public static class CSCallJS
     }
     public static void LoadPageHtml(this WebBrowser web, string file)
     {
-        web.InvokeScript("AddContentPage", File.ReadAllText(String.Format("{1}/View/html/{0}", file, CSCallJS.curDir), Encoding.UTF8),null, file);
+        web.InvokeScript("AddContentPage", File.ReadAllText(String.Format("{1}/View/html/{0}", file, CSCallJS.curDir), Encoding.UTF8), null, file);
     }
     public static void LoadPageHtml(this WebBrowser web, string file, object model)
     {
         web.InvokeScript("AddContentPage", File.ReadAllText(String.Format("{1}/View/html/{0}", file, CSCallJS.curDir), Encoding.UTF8), JsonConvert.SerializeObject(model, Formatting.Indented, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore }), file);
     }
 
+
+    private static object BeginInvoke(WebBrowser web, string function, params object[] pram)
+    {
+        return web.Document.InvokeScript(function, pram);
+    }
+    private delegate object StringArgReturningVoidDelegate(WebBrowser web, string function, params object[] pram);
     public static object InvokeScript(this WebBrowser web, string function, params object[] pram)
     {
         object value = null;
         try
         {
-            //var a = Lib.LayerWeb;
-            
-            web.Invoke((MethodInvoker)(() =>
+            if (web.InvokeRequired)
             {
-                value =  web.Document.InvokeScript(function, pram);
-            }));
-
+                StringArgReturningVoidDelegate d = new StringArgReturningVoidDelegate(BeginInvoke);
+                value = web.Invoke(d, web,function,pram);
+            }
+            else
+            {
+                value = BeginInvoke(web,function, pram);
+            }
         }
         catch (Exception ex)
         {

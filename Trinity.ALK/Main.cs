@@ -569,9 +569,9 @@ namespace ALK
 
             CSCallJS.ShowMessage(LayerWeb, e.Caption, e.Message);
         }
-
-        private void NavigateTo(NavigatorEnums navigatorEnum)
+        private void _NavigateToFormThread(object pram)
         {
+            NavigatorEnums navigatorEnum = (NavigatorEnums)pram;
             // navigate
             if (navigatorEnum == NavigatorEnums.Authentication_SmartCard)
             {
@@ -677,6 +677,10 @@ namespace ALK
                 _displayLoginButtonStatus = true;
                 CSCallJS.DisplayLogoutButton(this.LayerWeb, _displayLoginButtonStatus);
             }
+        }
+        private void NavigateTo(NavigatorEnums navigatorEnum)
+        {
+            ThreadPool.QueueUserWorkItem(new WaitCallback(_NavigateToFormThread), navigatorEnum);
         }
 
         private void Instance_OnCameraInitialized()

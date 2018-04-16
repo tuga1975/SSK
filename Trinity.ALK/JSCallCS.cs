@@ -166,7 +166,7 @@ namespace ALK
             //this._web.RunScript("$('#ttStatus').css('color','#000').text('Sent problem to Duty Officer. Please wait to check !');");
             //MessageBox.Show(e.ErrorMessage, "", MessageBoxButtons.OK, MessageBoxIcon.Error);
             var user = (Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN];
-            Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(user.UserId, "Can not print MUB & TT Labels", "User "+ user.Name + " cannot print MUB & TT labels, please check!", EnumNotificationTypes.Error);
+            Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(user.UserId, "Can not print MUB & TT Labels", "User " + user.Name + " cannot print MUB & TT labels, please check!", EnumNotificationTypes.Error);
 
             //DeleteQRCodeImageFileTemp();
             //LogOut();

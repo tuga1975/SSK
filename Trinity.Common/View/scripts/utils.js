@@ -155,8 +155,8 @@ function alert(content) {
 function ShowMessage(title, message, id) {
     id = id == null ? '' : id;
     if (title != null && title.length > 0 && (message == null || (message != null && message.length == 0))) {
-        title = '';
         message = title;
+        title = '';
     }
     var struc = {
         title: title,

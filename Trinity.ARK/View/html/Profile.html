@@ -578,10 +578,10 @@
             </div>
             <div class="tab-pane fade show " id="addresses" role="tabpanel"
                  aria-labelledby="particulars-tab">
-                <div class="form-group">
+                <!--<div class="form-group">
                     <div class="input-group">
                         <div class="input-group-prepend">
-                            <label for="AddressesHouseNumber">
+                            <label for="Residential_Addess_HouseNumber">
                                 <span class="input-group-text">
                                     House Number
                                 </span>
@@ -590,14 +590,21 @@
                         </div>
                         <input type="text" class="form-control"
                                placeholder="Enter House Number"
-                               aria-label="house" aria-describedby="house" id="AddressesHouseNumber" name="AddressesHouseNumber" disabled="disabled">
+                               aria-label="house" aria-describedby="house" id="Residential_Addess_HouseNumber" name="Residential_Addess_HouseNumber" disabled="disabled">
                     </div>
-                    <div class="clearfix"></div>
+                    <div class="clearfix"></div>Residential_Addess_HouseNumber
+                </div>-->
+                <div class="form-group-text">
+                    <label>
+                        House Number
+                    </label>
+                    <div class="value" id="Residential_Addess_HouseNumber">
+                    </div>
                 </div>
-                <div class="form-group">
+                <!--<div class="form-group">
                     <div class="input-group">
                         <div class="input-group-prepend">
-                            <label for="AddressUnitNumber">
+                            <label for="Residential_Addess_UnitNumber">
                                 <span class="input-group-text">
                                     Unit Number
                                 </span>
@@ -606,14 +613,21 @@
                         </div>
                         <input type="text" class="form-control"
                                placeholder="Enter Unit Number"
-                               aria-label="house" aria-describedby="house" id="AddressUnitNumber" name="UnitNumber" disabled="disabled">
+                               aria-label="house" aria-describedby="house" id="Residential_Addess_UnitNumber" name="UnitNumber" disabled="disabled">
                     </div>
                     <div class="clearfix"></div>
+                </div>-->
+                <div class="form-group-text">
+                    <label>
+                        Unit Number
+                    </label>
+                    <div class="value" id="Residential_Addess_UnitNumber">
+                    </div>
                 </div>
-                <div class="form-group">
+                <!--<div class="form-group">
                     <div class="input-group">
                         <div class="input-group-prepend">
-                            <label for="AddressStreetName">
+                            <label for="Residential_Addess_StreetName">
                                 <span class="input-group-text">
                                     Street Name
                                 </span>
@@ -622,14 +636,21 @@
                         </div>
                         <input type="text" class="form-control"
                                placeholder="Enter Street Name"
-                               aria-label="house" aria-describedby="house" id="AddressStreetName" name="StreetName" disabled="disabled">
+                               aria-label="house" aria-describedby="house" id="Residential_Addess_StreetName" name="StreetName" disabled="disabled">
                     </div>
                     <div class="clearfix"></div>
+                </div>-->
+                <div class="form-group-text">
+                    <label>
+                        Street Name
+                    </label>
+                    <div class="value" id="Residential_Addess_StreetName">
+                    </div>
                 </div>
-                <div class="form-group">
+                <!--<div class="form-group">
                     <div class="input-group">
                         <div class="input-group-prepend">
-                            <label for="AddressCountry">
+                            <label for="Residential_Addess_Country">
                                 <span class="input-group-text">
                                     Country
                                 </span>
@@ -638,9 +659,23 @@
                         </div>
                         <input type="text" class="form-control"
                                placeholder="Enter Country"
-                               aria-label="house" aria-describedby="house" id="AddressCountry" name="Country" disabled="disabled">
+                               aria-label="house" aria-describedby="house" id="Residential_Addess_Country" name="Country" disabled="disabled">
                     </div>
                     <div class="clearfix"></div>
+                </div>-->
+                <div class="form-group-text">
+                    <label>
+                        Postal Code
+                    </label>
+                    <div class="value" id="Residential_Addess_PostalCode">
+                    </div>
+                </div>
+                <div class="form-group-text">
+                    <label>
+                        Country
+                    </label>
+                    <div class="value" id="Residential_Addess_Country">
+                    </div>
                 </div>
             </div>
             <div class="tab-pane fade show " id="next-of-kin" role="tabpanel"
@@ -1014,22 +1049,22 @@
                 <input type="hidden" name="Postal_Code" id="Postal_Code" />
                 <div class="input-group">
                     <span class="input-group-addon">House Number</span>
-                    <input id="AddressHouseNumber" type="text" class="form-control" name="AddressesHouseNumber" disabled="disabled" />
+                    <input id="Residential_Addess_HouseNumber" type="text" class="form-control" name="Residential_Addess_HouseNumber" disabled="disabled" />
                 </div>
                 <br />
                 <div class="input-group">
                     <span class="input-group-addon">Unit Number</span>
-                    <input id="AddressUnitNumber" type="text" class="form-control" name="UnitNumber" disabled="disabled" />
+                    <input id="Residential_Addess_UnitNumber" type="text" class="form-control" name="UnitNumber" disabled="disabled" />
                 </div>
                 <br />
                 <div class="input-group">
                     <span class="input-group-addon">Street Name</span>
-                    <input id="AddressStreetName" type="text" class="form-control" name="StreetName" disabled="disabled" />
+                    <input id="Residential_Addess_StreetName" type="text" class="form-control" name="StreetName" disabled="disabled" />
                 </div>
                 <br />
                 <div class="input-group">
                     <span class="input-group-addon">Country</span>
-                    <input id="AddressCountry" type="text" class="form-control" name="Country" disabled="disabled" />
+                    <input id="Residential_Addess_Country" type="text" class="form-control" name="Country" disabled="disabled" />
                 </div>
             </div>
 
@@ -1239,18 +1274,24 @@
             $('#Employment_Job_Title').val(model.UserProfile.Employment_Job_Title);
             $('#Employment_Start_Date').val(model.UserProfile.Employment_Start_Date_Text);
             $('#Employment_End_Date').val(model.UserProfile.Employment_End_Date_Text);
-            $('#Employment_Remarks').val(model.UserProfile.Employment_Employment_Remarks);
+            alert(model.UserProfile.Employment_Remarks);
+            $('#Employment_Remarks').val(model.UserProfile.Employment_Remarks);
         }
 
         if (model.Addresses != null) {
             //address information
             $('#Residential_Addess_ID').val(model.Addresses.Address_ID);
             $('#Other_Address_ID').val(model.OtherAddress.Address_ID);
-            $('#AddressHouseNumber').val(model.Addresses.BlkHouse_Number);
-            $('#AddressUnitNumber').val(model.Addresses.FlrUnit_Number);
-            $('#AddressStreetName').val(model.Addresses.Street_Name);
-            $('#AddressCountry').val(model.Addresses.Country);
+            //$('#Residential_Addess_HouseNumber').val(model.Addresses.BlkHouse_Number);
+            $('#Residential_Addess_HouseNumber').text(model.Addresses.BlkHouse_Number);
+            //$('#Residential_Addess_UnitNumber').val(model.Addresses.FlrUnit_Number);
+            $('#Residential_Addess_UnitNumber').text(model.Addresses.FlrUnit_Number);
+            //$('#Residential_Addess_StreetName').val(model.Addresses.Street_Name);
+            $('#Residential_Addess_StreetName').text(model.Addresses.Street_Name);
+            //$('#Residential_Addess_Country').val(model.Addresses.Country);
+            $('#Residential_Addess_Country').text(model.Addresses.Country);
             $('#Postal_Code').val(model.Addresses.Postal_Code);
+            $('#Residential_Addess_PostalCode').text(model.Addresses.Postal_Code);
         }
     });
 
