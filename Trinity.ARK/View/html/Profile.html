@@ -1182,8 +1182,6 @@
         _particularName = model.User.Name;
         _nric = model.User.NRIC;
 
-
-
         $('#UserId').val(model.User.UserId);
         $('#LeftFingerprint').val(model.User.LeftThumbFingerprint);
         $('#RightFingerprint').val(model.User.RightThumbFingerprint);
@@ -1210,13 +1208,13 @@
             _maritalStatus = model.UserProfile.Maritial_Status;
             $('#DOB').val(model.UserProfile.DOBAsString);
             $('#Nationality').val(model.UserProfile.Nationality);
-            $('#Nationality_DisplayValue').text(model.UserProfile.Nationality);
+            $('#Nationality_DisplayValue').text(model.UserProfile.Nationality != null ? model.UserProfile.Nationality : '');
             $('#SerialNumber').val(model.UserProfile.SerialNumber);
             $('#DateOfIssue').val(model.UserProfile.DateOfIssue);
             $('#Gender').val(model.UserProfile.Gender);
             $('#Race').val(model.UserProfile.Race);
             $('#MaritalStatus').val(model.UserProfile.Maritial_Status);
-            $('#MaritalStatus_DisplayValue').text(model.UserProfile.Maritial_Status);
+            $('#MaritalStatus_DisplayValue').text(model.UserProfile.Maritial_Status != null ? model.UserProfile.Maritial_Status : '');
             $('#PrimaryContact').val(model.UserProfile.Primary_Phone);
             $('#SecondaryContact').val(model.UserProfile.Secondary_Phone);
             $('#PrimaryEmail').val(model.UserProfile.Primary_Email);
@@ -1254,8 +1252,6 @@
             $('#AddressCountry').val(model.Addresses.Country);
             $('#Postal_Code').val(model.Addresses.Postal_Code);
         }
-
-
     });
 
     function activeTab(name) {
@@ -1264,7 +1260,6 @@
         if (name != "Particulars") {
             $('#noticeMess').hide();
         }
-
     }
 
     $('#btnScan').click(function () {
