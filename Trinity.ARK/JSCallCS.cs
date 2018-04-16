@@ -13,6 +13,7 @@ using Trinity.BE;
 using Trinity.Device.Util;
 using Trinity.Util;
 using Trinity.Common.Common;
+using Trinity.Common.Utils;
 
 namespace ARK
 {
@@ -414,7 +415,8 @@ namespace ARK
                 }
                 else
                 {
-                    CSCallJS.ShowMessageAsync(_web, "Manual Login ERROR", error);
+                    LogManager.Error("BarcodeScannerCallback ERROR: " + error);
+                    //CSCallJS.ShowMessageAsync(_web, "Manual Login ERROR", error);
                 }
             }
             finally

@@ -389,7 +389,7 @@ namespace Trinity.Device.Util
 
                     //Drawing barcode
                     //TSCLIB_DLL.sendcommand("DMATRIX 200,16,400,400,x3,r90, \"" + mubLabelInfo.QRCodeString + "\"");
-                    TSCLIB_DLL.sendcommand("DMATRIX 200,250,400,400,x2, \"" + mubLabelInfo.QRCodeString + "\"");
+                    TSCLIB_DLL.sendcommand("DMATRIX 200,50,267,267, \"" + mubLabelInfo.QRCodeString + "\"");
 
                     //Print labels
                     TSCLIB_DLL.printlabel("1", "1");

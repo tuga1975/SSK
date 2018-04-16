@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Trinity.Common;
+using Trinity.Common.Utils;
 using Trinity.DAL;
 using Trinity.Device.Util;
 
@@ -67,7 +68,8 @@ namespace ARK.CodeBehind.Authentication
             }
             else
             {
-                CSCallJS.ShowMessageAsync(_web, "ERROR", error);
+                LogManager.Error("BarcodeScannerCallback ERROR: " + error);
+                //CSCallJS.ShowMessageAsync(_web, "ERROR", error);
             }
         }
 
