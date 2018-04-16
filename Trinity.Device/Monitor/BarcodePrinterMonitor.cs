@@ -34,9 +34,10 @@ namespace Trinity.Device
                 var statuses = BarcodePrinterUtil.Instance.GetDeviceStatus(EnumDeviceNames.MUBLabelPrinter);
                 
                 // update local ApplicationDevice_Status
-                DAL_DeviceStatus dAL_DeviceStatus = new DAL_DeviceStatus();
-                dAL_DeviceStatus.Update((int)EnumDeviceId.MUBLabelPrinter, statuses);
-                Trinity.SignalR.Client.Instance.DeviceStatusChanged((int)EnumDeviceId.MUBLabelPrinter, statuses);
+                ApplicationStatusManager.Instance.ReportDeviceStatus(EnumDeviceId.MUBLabelPrinter, statuses);
+                //DAL_DeviceStatus dAL_DeviceStatus = new DAL_DeviceStatus();
+                //dAL_DeviceStatus.Update((int)EnumDeviceId.MUBLabelPrinter, statuses);
+                //Trinity.SignalR.Client.Instance.DeviceStatusChanged((int)EnumDeviceId.MUBLabelPrinter, statuses);
             }
             catch (Exception ex)
             {
@@ -72,9 +73,10 @@ namespace Trinity.Device
                 var statuses = BarcodePrinterUtil.Instance.GetDeviceStatus(EnumDeviceNames.UBLabelPrinter);
 
                 // update local ApplicationDevice_Status
-                DAL_DeviceStatus dAL_DeviceStatus = new DAL_DeviceStatus();
-                dAL_DeviceStatus.Update((int)EnumDeviceId.UBLabelPrinter, statuses);
-                Trinity.SignalR.Client.Instance.DeviceStatusChanged((int)EnumDeviceId.UBLabelPrinter, statuses);
+                ApplicationStatusManager.Instance.ReportDeviceStatus(EnumDeviceId.UBLabelPrinter, statuses);
+                //DAL_DeviceStatus dAL_DeviceStatus = new DAL_DeviceStatus();
+                //dAL_DeviceStatus.Update((int)EnumDeviceId.UBLabelPrinter, statuses);
+                //Trinity.SignalR.Client.Instance.DeviceStatusChanged((int)EnumDeviceId.UBLabelPrinter, statuses);
             }
             catch (Exception ex)
             {
@@ -110,9 +112,10 @@ namespace Trinity.Device
                 var statuses = BarcodePrinterUtil.Instance.GetDeviceStatus(EnumDeviceNames.TTLabelPrinter);
 
                 // update local ApplicationDevice_Status
-                DAL_DeviceStatus dAL_DeviceStatus = new DAL_DeviceStatus();
-                dAL_DeviceStatus.Update((int)EnumDeviceId.TTLabelPrinter, statuses);
-                Trinity.SignalR.Client.Instance.DeviceStatusChanged((int)EnumDeviceId.TTLabelPrinter, statuses);
+                ApplicationStatusManager.Instance.ReportDeviceStatus(EnumDeviceId.TTLabelPrinter, statuses);
+                //DAL_DeviceStatus dAL_DeviceStatus = new DAL_DeviceStatus();
+                //dAL_DeviceStatus.Update((int)EnumDeviceId.TTLabelPrinter, statuses);
+                //Trinity.SignalR.Client.Instance.DeviceStatusChanged((int)EnumDeviceId.TTLabelPrinter, statuses);
             }
             catch (Exception ex)
             {
