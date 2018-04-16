@@ -68,7 +68,7 @@
             if (arrrayAbsence.length == 0) {
                 alert("You must provide a reason!");
             } else {
-                ShowMessageConfirm('Supporting Documents', 'Do you have sopporting documents for you absence on ' + arrrayAbsence.map(function (item) { return '(' + item.Date + ')' }).join(", "), function (status) {
+                ShowMessageConfirm('Supporting Documents', 'Do you have supporting documents for your absence on ' + arrrayAbsence.map(function (item) { return '(' + item.Date + ')' }).join(", "), function (status) {
                     if (status) {
                         api.server.LoadPopupHtml("PopupScanDocument.html", 'scanDocumentAbsenceCallbackImg');
                     } else {
