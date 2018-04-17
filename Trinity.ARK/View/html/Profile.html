@@ -573,7 +573,7 @@
                 </div>
 
 
-                <div class="form-group">
+                <!--<div class="form-group">
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <label for="SecondaryContact">
@@ -642,7 +642,7 @@
                                aria-label="house" aria-describedby="house" placeholder="Country" name="Country" group="Alternate_Addresses" maxlength="50" scandoc="1">
                     </div>
                     <div class="clearfix"></div>
-                </div>
+                </div>-->
             </div>
             <div class="tab-pane fade show " id="next-of-kin" role="tabpanel"
                  aria-labelledby="particulars-tab">
@@ -979,11 +979,7 @@
                     modelUpdate[group][name] = valueNow;
                 } else {
                     if (typeof type != 'undefined' && type == 'date') {
-                        if (valueNow.length > 0) {
-                            var txt = valueNow.split('/');
-                            valueNow = txt[2] + '-' + txt[1] + '-' + txt[0];
-                        }
-                        modelUpdate[group][nameserver] = valueNow;
+                        modelUpdate[group][nameserver] = api.ToDateCSharp(valueNow);
                     } else {
                         modelUpdate[group][nameserver] = valueNow;
                     }
