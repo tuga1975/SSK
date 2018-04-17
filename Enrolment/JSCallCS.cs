@@ -615,18 +615,18 @@ namespace Enrolment
                         Reprint_Reason = string.Empty,
                         Serial_Number = _CardInfo.CardNumberFull,
                         Expired_Date = _CardInfo.Expired_Date,
-                        Status = EnumIssuedCards.Active,
+                        Status = EnumIssuedCards.Inactive,
                         SmartCardId = SmartID,
                         UserId = currentEditUser.User.UserId
                     };
                     dalIssueCard.Insert(IssueCard);
-                    new DAL_Membership_Users().UpdateSmartCardId(currentEditUser.User.UserId, SmartID);
-                    //new DAL_User().ChangeUserStatus(currentEditUser.User.UserId, EnumUserStatuses.Enrolled);
-                    new DAL_UserProfile().UpdateCardInfo(currentEditUser.User.UserId, _CardInfo.CardNumberFull, _CardInfo.Date_Of_Issue, _CardInfo.Expired_Date);
-                    currentEditUser.UserProfile.Expired_Date = _CardInfo.Expired_Date;
-                    currentEditUser.UserProfile.DateOfIssue = _CardInfo.Date_Of_Issue;
-                    currentEditUser.UserProfile.SerialNumber = _CardInfo.CardNumberFull;
-                    currentEditUser.Membership_Users.SmartCardId = SmartID;
+                    //new DAL_Membership_Users().UpdateSmartCardId(currentEditUser.User.UserId, SmartID);
+                    ////new DAL_User().ChangeUserStatus(currentEditUser.User.UserId, EnumUserStatuses.Enrolled);
+                    //new DAL_UserProfile().UpdateCardInfo(currentEditUser.User.UserId, _CardInfo.CardNumberFull, _CardInfo.Date_Of_Issue, _CardInfo.Expired_Date);
+                    //currentEditUser.UserProfile.Expired_Date = _CardInfo.Expired_Date;
+                    //currentEditUser.UserProfile.DateOfIssue = _CardInfo.Date_Of_Issue;
+                    //currentEditUser.UserProfile.SerialNumber = _CardInfo.CardNumberFull;
+                    //currentEditUser.Membership_Users.SmartCardId = SmartID;
                     this._web.InvokeScript("showPrintMessage", true, "Smart Card was printed successfully! Please collect the smart card from printer and place on the reader to verify.");
 
                 }
@@ -676,7 +676,12 @@ namespace Enrolment
         {
             Session session = Session.Instance;
             var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
-            new DAL_User().ChangeUserStatus(currentEditUser.User.UserId, EnumUserStatuses.Enrolled);
+            var data = new DAL_User().DoneEnrolSupervisee(currentEditUser.User.UserId);
+
+            currentEditUser.UserProfile.Expired_Date = data.Expired_Date;
+            currentEditUser.UserProfile.DateOfIssue = data.Date_Of_Issue;
+            currentEditUser.UserProfile.SerialNumber = data.Serial_Number;
+            currentEditUser.Membership_Users.SmartCardId = data.SmartCardId;
             _web.LoadPageHtml("Supervisee.html");
         }
         public void AddNewSupervisee()

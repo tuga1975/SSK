@@ -175,6 +175,8 @@ namespace DutyOfficer
                     notification.Source = (string)e.Source;
                     notification.Type = e.Type;
                     notification.Datetime = DateTime.Now;
+                    notification.NotificationID = e.NotificationID;
+
                     object result = JsonConvert.SerializeObject(notification, Formatting.Indented,
                     new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
                     RefreshCurrentTab(EnumDOTabName.Alerts, result);

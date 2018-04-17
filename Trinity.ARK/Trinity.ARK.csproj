@@ -334,6 +334,8 @@
     <Content Include="View\html\Authentication\NRIC.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="View\datetimepicker\jquery.datetimepicker.css" />
+    <Content Include="View\datetimepicker\jquery.datetimepicker.full.min.js" />
     <Content Include="View\html\Document.html" />
     <Content Include="View\html\Layout_QueueNumber.html" />
     <Content Include="View\html\PopupScanDocument.html" />
