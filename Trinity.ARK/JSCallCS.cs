@@ -288,13 +288,15 @@ namespace ARK
             Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
             var data = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, object>>>(param);
             List<string> arrayScan = JsonConvert.DeserializeObject<List<string>>(arrayDocumentScan);
-            new DAL_UserProfile().ARKUpdateProfile(user.UserId,data, arrayScan);
-            if(isSendNotiIfDontScanDocument && arrayScan.Count == 0)
+            if(new DAL_UserProfile().ARKUpdateProfile(user.UserId, data, arrayScan))
             {
+                if (isSendNotiIfDontScanDocument && arrayScan.Count == 0)
+                {
 
-                Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(user.UserId, "Supervisee " + user.Name + " has updated profile don't upload scan document.", "Please check Supervisee " + user.Name + "'s information!", EnumNotificationTypes.Notification);
+                    Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(user.UserId, "Supervisee " + user.Name + " has updated profile don't upload scan document.", "Please check Supervisee " + user.Name + "'s information!", EnumNotificationTypes.Notification);
+                }
+                LoadPageSupervisee();
             }
-            LoadPageSupervisee();
 
 
 

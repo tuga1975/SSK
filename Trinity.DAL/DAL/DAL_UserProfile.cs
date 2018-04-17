@@ -32,7 +32,7 @@ namespace Trinity.DAL
             }
         }
 
-        public void ARKUpdateProfile(string UserID, Dictionary<string, Dictionary<string, object>> dataUpdate, List<string> arrayScanDocument)
+        public bool ARKUpdateProfile(string UserID, Dictionary<string, Dictionary<string, object>> dataUpdate, List<string> arrayScanDocument)
         {
             bool isUpdateUser_Profiles = false;
             bool isSaveDataBase = false;
@@ -102,6 +102,7 @@ namespace Trinity.DAL
             if ((!userProfile.Employment_Start_Date.HasValue && userProfile.Employment_End_Date.HasValue) || (userProfile.Employment_Start_Date.HasValue && userProfile.Employment_End_Date.HasValue && userProfile.Employment_Start_Date.Value >= userProfile.Employment_End_Date.Value))
             {
                 Lib.LayerWeb.ShowMessage("<b>Employment Start Date</b> must be less than <b>Employment End Date</b>");
+                return false;
             }
             else
             {
@@ -112,11 +113,9 @@ namespace Trinity.DAL
                 if (isSaveDataBase)
                 {
                     _localUnitOfWork.Save();
-
                 }
             }
-
-
+            return true;
         }
         public void UploadDocumentScan(Guid IDDocument, string UserID)
         {
