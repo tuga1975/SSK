@@ -176,6 +176,11 @@ namespace ALK
         {
             _web.LoadPageHtml("Authentication/ManualLogin.html");
 
+            RestartBarcodeScanning();
+        }
+
+        public void RestartBarcodeScanning()
+        {
             // Enable scanner
             if (BarcodeScannerUtil.Instance.GetDeviceStatus().Contains(EnumDeviceStatus.Connected))
             {
