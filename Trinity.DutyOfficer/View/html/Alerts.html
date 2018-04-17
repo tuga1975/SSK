@@ -69,7 +69,9 @@
                     source: objNotify.Source,
                     type: objNotify.Type,
                     dateTime: objNotify.Date,
-                    message: objNotify.Subject
+                    message: objNotify.Subject,
+                    content: objNotify.Content,
+                    notificationId: objNotify.NotificationID,
                 });
         $table.bootstrapTable('load', dataSource);
     }
@@ -101,7 +103,8 @@
                     dateTime: element.Date,
                     message: element.Subject,
                     isReaded : element.IsRead,
-                    notificationId : element.NotificationID
+                    notificationId: element.NotificationID,
+                    content: element.Content
                 });
             });
         }

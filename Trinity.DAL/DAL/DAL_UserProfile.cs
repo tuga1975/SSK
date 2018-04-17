@@ -7,6 +7,7 @@ using Trinity.BE;
 using Trinity.DAL.DBContext;
 using Trinity.DAL.Repository;
 using Trinity.Common;
+using System.Reflection;
 
 namespace Trinity.DAL
 {
@@ -16,7 +17,107 @@ namespace Trinity.DAL
         Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
 
         #region 2018
-        public void UploadDocumentScan(Guid IDDocument,string UserID)
+
+        public void CreateUserProfileIfNotExit(string UserID)
+        {
+            DAL.DBContext.User_Profiles userProfile = _localUnitOfWork.DataContext.User_Profiles.FirstOrDefault(d => d.UserId.Equals(UserID));
+            if (userProfile == null)
+            {
+                userProfile = new User_Profiles()
+                {
+                    UserId = UserID
+                };
+                _localUnitOfWork.GetRepository<DAL.DBContext.User_Profiles>().Add(userProfile);
+                _localUnitOfWork.Save();
+            }
+        }
+
+        public bool ARKUpdateProfile(string UserID, Dictionary<string, Dictionary<string, object>> dataUpdate, List<string> arrayScanDocument)
+        {
+            bool isUpdateUser_Profiles = false;
+            bool isSaveDataBase = false;
+            CreateUserProfileIfNotExit(UserID);
+            DAL.DBContext.User_Profiles userProfile = _localUnitOfWork.DataContext.User_Profiles.FirstOrDefault(d => d.UserId.Equals(UserID));
+            DAL.DBContext.Address Alternate_Addresses = null;
+            if (dataUpdate.ContainsKey("Alternate_Addresses"))
+            {
+                if (!string.IsNullOrEmpty(userProfile.Other_Address_ID))
+                {
+                    Alternate_Addresses = _localUnitOfWork.DataContext.Addresses.FirstOrDefault(d => d.Address_ID.Equals(userProfile.Other_Address_ID));
+                }
+                if (Alternate_Addresses == null)
+                {
+                    Alternate_Addresses = new DBContext.Address()
+                    {
+                        Address_ID = Guid.NewGuid().ToString().Trim()
+                    };
+                    foreach (var item in dataUpdate["Alternate_Addresses"])
+                    {
+                        PropertyInfo propertyInfo = Alternate_Addresses.GetType().GetProperty(item.Key);
+                        propertyInfo.SetValue(Alternate_Addresses, Convert.ChangeType(item.Value, propertyInfo.PropertyType), null);
+                    }
+                    userProfile.Other_Address_ID = Alternate_Addresses.Address_ID;
+                    _localUnitOfWork.GetRepository<DAL.DBContext.Address>().Add(Alternate_Addresses);
+                    isUpdateUser_Profiles = true;
+                    isSaveDataBase = true;
+                }
+                else
+                {
+                    bool isUpdateAddress = false;
+                    foreach (var item in dataUpdate["Alternate_Addresses"])
+                    {
+                        PropertyInfo propertyInfo = Alternate_Addresses.GetType().GetProperty(item.Key);
+                        propertyInfo.SetValue(Alternate_Addresses, Convert.ChangeType(item.Value, propertyInfo.PropertyType), null);
+                        isSaveDataBase = true;
+                        isUpdateAddress = true;
+                    }
+                    if (isUpdateAddress)
+                    {
+                        _localUnitOfWork.GetRepository<DAL.DBContext.Address>().Update(Alternate_Addresses);
+                    }
+                }
+            }
+
+            if (dataUpdate.ContainsKey("User_Profiles"))
+            {
+                foreach (var item in dataUpdate["User_Profiles"])
+                {
+                    PropertyInfo propertyInfo = userProfile.GetType().GetProperty(item.Key);
+                    var underlyingType = Nullable.GetUnderlyingType(propertyInfo.PropertyType);
+                    propertyInfo.SetValue(userProfile, Convert.ChangeType(item.Value, underlyingType ?? propertyInfo.PropertyType), null);
+                    isUpdateUser_Profiles = true;
+                    isSaveDataBase = true;
+                }
+            }
+
+            if (arrayScanDocument.Count > 0)
+            {
+                Guid IDDocuemnt = new DAL_UploadedDocuments().Insert(arrayScanDocument, userProfile.UserId);
+                userProfile.Document_ID = IDDocuemnt;
+                isUpdateUser_Profiles = true;
+                isSaveDataBase = true;
+            }
+
+
+            if ((!userProfile.Employment_Start_Date.HasValue && userProfile.Employment_End_Date.HasValue) || (userProfile.Employment_Start_Date.HasValue && userProfile.Employment_End_Date.HasValue && userProfile.Employment_Start_Date.Value >= userProfile.Employment_End_Date.Value))
+            {
+                Lib.LayerWeb.ShowMessage("<b>Employment Start Date</b> must be less than <b>Employment End Date</b>");
+                return false;
+            }
+            else
+            {
+                if (isUpdateUser_Profiles)
+                {
+                    _localUnitOfWork.GetRepository<DAL.DBContext.User_Profiles>().Update(userProfile);
+                }
+                if (isSaveDataBase)
+                {
+                    _localUnitOfWork.Save();
+                }
+            }
+            return true;
+        }
+        public void UploadDocumentScan(Guid IDDocument, string UserID)
         {
             var use = _localUnitOfWork.DataContext.User_Profiles.FirstOrDefault(d => d.UserId == UserID);
             use.Document_ID = IDDocument;
@@ -28,7 +129,7 @@ namespace Trinity.DAL
             if (EnumAppConfig.IsLocal)
             {
                 bool statusCentralized;
-                CallCentralized.Post("User_Profiles", "UpdateCardInfo", out statusCentralized, "UserId="+ UserId, "CardNumber="+ CardNumber, "Date_of_Issue="+ Date_of_Issue.ToString(), "Expired_Date="+ Expired_Date.ToString());
+                CallCentralized.Post("User_Profiles", "UpdateCardInfo", out statusCentralized, "UserId=" + UserId, "CardNumber=" + CardNumber, "Date_of_Issue=" + Date_of_Issue.ToString(), "Expired_Date=" + Expired_Date.ToString());
                 if (!statusCentralized)
                 {
                     throw new Exception(EnumMessage.NotConnectCentralized);
@@ -55,7 +156,7 @@ namespace Trinity.DAL
                 _centralizedUnitOfWork.Save();
             }
 
-            
+
         }
 
         public void UpdateFingerprintImg(string userId, byte[] left, byte[] right)
@@ -97,7 +198,7 @@ namespace Trinity.DAL
                     this._centralizedUnitOfWork.Save();
                 }
             }
-            
+
         }
         public bool UpdateProfile(BE.UserProfile model)
         {
@@ -125,7 +226,7 @@ namespace Trinity.DAL
                         SetInfo(dbUserProfile, model);
                         localUserProfileRepo.Update(dbUserProfile);
                     }
-                    return _localUnitOfWork.Save()>0;
+                    return _localUnitOfWork.Save() > 0;
                 }
             }
             else
@@ -154,20 +255,8 @@ namespace Trinity.DAL
             string AddressID = isOther ? user.Other_Address_ID : user.Residential_Addess_ID;
             if (string.IsNullOrEmpty(AddressID))
                 return null;
-            DBContext.Address addressData;
-            if (EnumAppConfig.IsLocal)
-            {
-                addressData = _localUnitOfWork.DataContext.Addresses.FirstOrDefault(a => a.Address_ID == AddressID);
-                if (addressData == null)
-                {
-                    return CallCentralized.Get<BE.Address>("User", "GetAddByUserId", "userId=" + userId, "isOther=" + isOther);
-                }
-            }
-            else
-            {
-                addressData = _centralizedUnitOfWork.DataContext.Addresses.FirstOrDefault(a => a.Address_ID == AddressID);
-            }
 
+            DBContext.Address addressData = _localUnitOfWork.DataContext.Addresses.FirstOrDefault(a => a.Address_ID == AddressID);
 
             if (addressData != null)
             {
@@ -415,8 +504,8 @@ namespace Trinity.DAL
             dbUserProfile.NextOfKin_Street_Name = model.NextOfKin_Street_Name;
             dbUserProfile.Primary_Email = model.Primary_Email;
             dbUserProfile.Primary_Phone = model.Primary_Phone;
-            dbUserProfile.Other_Address_ID = model.Other_Address_ID!=""? model.Other_Address_ID:null;
-            dbUserProfile.Residential_Addess_ID = model.Residential_Addess_ID!=""? model.Residential_Addess_ID:null;
+            dbUserProfile.Other_Address_ID = model.Other_Address_ID != "" ? model.Other_Address_ID : null;
+            dbUserProfile.Residential_Addess_ID = model.Residential_Addess_ID != "" ? model.Residential_Addess_ID : null;
             dbUserProfile.Secondary_Email = model.Secondary_Email;
             dbUserProfile.Secondary_Phone = model.Secondary_Phone;
             dbUserProfile.User_Photo1 = model.User_Photo1;
@@ -425,7 +514,7 @@ namespace Trinity.DAL
             dbUserProfile.Gender = model.Gender;
             dbUserProfile.Race = model.Race;
             dbUserProfile.Serial_Number = model.SerialNumber;
-            
+
 
             var dalUser = new Trinity.DAL.DAL_User();
             var result = dalUser.GetUserByUserId(model.UserId);
@@ -491,9 +580,9 @@ namespace Trinity.DAL
             return new Response<BE.Address>((int)EnumResponseStatuses.ErrorSystem, EnumResponseMessage.ErrorSystem, null);
         }
 
-        
 
-        
-        
+
+
+
     }
 }

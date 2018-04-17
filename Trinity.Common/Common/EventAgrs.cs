@@ -178,6 +178,7 @@ namespace Trinity.Common
 
     public class NotificationInfo
     {
+        public string NotificationID { get; set; }
         public string Name { get; set; }
         public string FromUserId { get; set; }
         public string[] ToUserIds { get; set; }

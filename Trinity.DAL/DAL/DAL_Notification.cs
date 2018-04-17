@@ -167,7 +167,7 @@ namespace Trinity.DAL
         /// <param name="content"></param>
         /// <param name="notificationType"></param>
         /// <param name="station"></param>
-        public int SendToDutyOfficer(string fromUserId, string dutyOfficerID, string subject, string content, string notificationType, string station)
+        public int SendToDutyOfficer(string NotificationID, string fromUserId, string dutyOfficerID, string subject, string content, string notificationType, string station)
         {
             if (EnumAppConfig.IsLocal)
             {
@@ -177,7 +177,7 @@ namespace Trinity.DAL
                     Datetime = DateTime.Now,
                     FromUserId = fromUserId,
                     IsFromSupervisee = true,
-                    NotificationID = Guid.NewGuid().ToString().Trim(),
+                    NotificationID = NotificationID,
                     Source = station,
                     IsRead = false,
                     Subject = subject,

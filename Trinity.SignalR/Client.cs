@@ -183,7 +183,8 @@ namespace Trinity.SignalR
 
         public void SendToDutyOfficer(string fromUserId, string dutyOfficerID, string subject, string content, string notificationType)
         {
-            int result = new DAL.DAL_Notification().SendToDutyOfficer(fromUserId, dutyOfficerID, subject, content, notificationType, Station);
+            string NotificationID = Guid.NewGuid().ToString().Trim();
+            int result = new DAL.DAL_Notification().SendToDutyOfficer(NotificationID,fromUserId, dutyOfficerID, subject, content, notificationType, Station);
             if (result > 0)
             {
                 NotificationInfo notificationInfo = new NotificationInfo()
@@ -194,27 +195,28 @@ namespace Trinity.SignalR
                     Content = content,
                     Subject = subject,
                     Type = notificationType,
-                    Source = Station
+                    Source = Station,
+                    NotificationID = NotificationID
                 };
                 PostNotification(notificationInfo);
             }
         }
 
-        public void SendToAppDutyOfficers(string fromUserId, string subject, string content, string notificationType, string station = null, bool isInsertDB = true)
+        public void SendToAppDutyOfficers(string fromUserId, string subject, string content, string notificationType, string station = null, bool isInsertDB = true,string NotificationID = null)
         {
-            if (!isInsertDB || !string.IsNullOrEmpty(new DAL.DAL_Notification().InsertNotification(fromUserId, null, subject, content, !string.IsNullOrEmpty(fromUserId), DateTime.Now, null, notificationType, Station)))
+
+
+            NotificationInfo notificationInfo = new NotificationInfo()
             {
-                NotificationInfo notificationInfo = new NotificationInfo()
-                {
-                    Name = NotificationNames.ALERT_MESSAGE,
-                    FromUserId = fromUserId,
-                    Content = content,
-                    Subject = subject,
-                    Type = notificationType,
-                    Source = station == null ? Station : station
-                };
-                PostNotification(notificationInfo);
-            }
+                Name = NotificationNames.ALERT_MESSAGE,
+                FromUserId = fromUserId,
+                Content = content,
+                Subject = subject,
+                Type = notificationType,
+                Source = station == null ? Station : station,
+                NotificationID = !isInsertDB && !string.IsNullOrEmpty(NotificationID)? NotificationID: new DAL.DAL_Notification().InsertNotification(fromUserId, null, subject, content, !string.IsNullOrEmpty(fromUserId), DateTime.Now, null, notificationType, Station)
+            };
+            PostNotification(notificationInfo);
         }
 
         /// <summary>

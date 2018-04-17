@@ -49,6 +49,28 @@ namespace Trinity.DAL
             }
             return _localUnitOfWork.Save() > 0;
         }
+
+        public DAL.DBContext.IssuedCard DoneEnrolSupervisee(string UserId)
+        {
+            new DAL_UserProfile().CreateUserProfileIfNotExit(UserId);
+            DAL.DBContext.IssuedCard IssueCard = _localUnitOfWork.DataContext.IssuedCards.Where(d => d.UserId.Equals(UserId)).OrderByDescending(d => d.CreatedDate).FirstOrDefault();
+            IssueCard.Status = EnumIssuedCards.Active;
+
+            DAL.DBContext.Membership_Users member_user = _localUnitOfWork.DataContext.Membership_Users.FirstOrDefault(d => d.UserId.Equals(UserId));
+            member_user.SmartCardId = IssueCard.Serial_Number;
+            member_user.Status = EnumUserStatuses.Enrolled;
+
+            DBContext.User_Profiles user = _localUnitOfWork.DataContext.User_Profiles.FirstOrDefault(d => d.UserId == UserId);
+            user.Serial_Number = IssueCard.Serial_Number;
+            user.Date_of_Issue = IssueCard.Date_Of_Issue;
+            user.Expired_Date = IssueCard.Expired_Date;
+
+            _localUnitOfWork.GetRepository<DBContext.User_Profiles>().Update(user);
+            _localUnitOfWork.GetRepository<DBContext.Membership_Users>().Update(member_user);
+            _localUnitOfWork.GetRepository<DAL.DBContext.IssuedCard>().Update(IssueCard);
+            _localUnitOfWork.Save();
+            return IssueCard;
+        }
         public bool Update(BE.User model)
         {
             if (EnumAppConfig.IsLocal)
