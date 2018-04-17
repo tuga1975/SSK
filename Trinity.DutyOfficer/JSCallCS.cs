@@ -30,7 +30,6 @@ namespace DutyOfficer
         private bool _isPrintFailMUB = false;
         private bool _isPrintFailTT = false;
         private bool _isPrintFailUB = false;
-        public static StationColorDevice _StationColorDevice;
         private bool _isFocusQueue = false;
 
         public JSCallCS(WebBrowser web)
@@ -45,26 +44,21 @@ namespace DutyOfficer
             _printMUBAndTTLabel.OnPrintTTLabelsFailed += PrintTTLabels_OnPrintTTLabelFailed;
             _printMUBAndTTLabel.OnPrintMUBAndTTLabelsException += PrintMUBAndTTLabels_OnPrintTTLabelException;
             _printMUBAndTTLabel.OnPrintUBLabelsFailed += PrintUBLabels_OnPrintUBLabelFailed;
-            _StationColorDevice = new StationColorDevice();
-
-
         }
 
         public StationColorDevice GetStationClolorDevice()
         {
             var dalDeviceStatus = new DAL_DeviceStatus();
+            StationColorDevice _StationColorDevice = new StationColorDevice();
             _StationColorDevice.SSAColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStation.ALK);
             _StationColorDevice.SSKColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStation.ARK);
             _StationColorDevice.ESPColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStation.SSP);
             _StationColorDevice.UHPColor = dalDeviceStatus.CheckStatusDevicesStation(EnumStation.SHP);
+
+            Trinity.Common.Utils.LogManager.Info("GetStationClolorDevice: " + JsonConvert.SerializeObject(_StationColorDevice));
             return _StationColorDevice;
         }
-
-        public void LoadStationColorDevice()
-        {
-            this._web.InvokeScript("LoadStationColorDevice");
-        }
-
+        
         #region Queue
         public void LoadDrugsTest(string userId)
         {

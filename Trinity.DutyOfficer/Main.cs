@@ -44,7 +44,7 @@ namespace DutyOfficer
             Trinity.SignalR.Client.Instance.OnSSACompleted += OnSSACompleted_Handler;
             Trinity.SignalR.Client.Instance.OnSSAPrintingLabel += OnSSAPrintingLabel_Handler;
             Trinity.SignalR.Client.Instance.OnBackendAPISend += OnBackendAPISend_Handler;
-            
+
             // setup variables
             _smartCardFailed = 0;
             _fingerprintFailed = 0;
@@ -108,7 +108,7 @@ namespace DutyOfficer
         {
             // khi ở tab Queue nhận đc cái này sẽ tải lại
             RefreshCurrentTab(EnumDOTabName.Queue);
-            if(e.Name== NotificationNames.SSP_COMPLETED)
+            if (e.Name == NotificationNames.SSP_COMPLETED)
             {
                 RefreshCurrentTab(EnumDOTabName.UBLabel);
             }
@@ -150,13 +150,13 @@ namespace DutyOfficer
             RefreshCurrentTab(EnumDOTabName.Queue);
             RefreshCurrentTab(EnumDOTabName.MUBLabel);
         }
-        
+
 
         private void OnAppDisconnected_Handler(object sender, EventInfo e)
         {
             string station = (string)e.Source;
             new DAL_DeviceStatus().RemoveDevice(station);
-            _jsCallCS.LoadStationColorDevice();
+            LayerWeb.InvokeScript("LoadStationColorDevice");
         }
 
         private void OnNewNotification_Handler(object sender, NotificationInfo e)
@@ -180,7 +180,7 @@ namespace DutyOfficer
                     RefreshCurrentTab(EnumDOTabName.Alerts, result);
                 }
             }
-            
+
         }
 
         private void OnDeviceStatusChanged_Handler(object sender, EventInfo e)
@@ -188,26 +188,26 @@ namespace DutyOfficer
             string station = (string)e.Source;
             if (!string.IsNullOrEmpty(station))
             {
-                DAL_DeviceStatus device = new DAL_DeviceStatus();
+                //DAL_DeviceStatus device = new DAL_DeviceStatus();
 
-                if (station == EnumStation.ALK)
-                {
-                    JSCallCS._StationColorDevice.SSAColor = device.CheckStatusDevicesStation(station);
-                }
-                if (station == EnumStation.ARK)
-                {
-                    JSCallCS._StationColorDevice.SSKColor = device.CheckStatusDevicesStation(station);
-                }
-                if (station == EnumStation.SSP)
-                {
-                    JSCallCS._StationColorDevice.ESPColor = device.CheckStatusDevicesStation(station);
-                }
-                if (station == EnumStation.SHP)
-                {
-                    JSCallCS._StationColorDevice.UHPColor = device.CheckStatusDevicesStation(station);
-                }
-
-                _jsCallCS.LoadStationColorDevice();
+                //if (station == EnumStation.ALK)
+                //{
+                //    JSCallCS._StationColorDevice.SSAColor = device.CheckStatusDevicesStation(station);
+                //}
+                //if (station == EnumStation.ARK)
+                //{
+                //    JSCallCS._StationColorDevice.SSKColor = device.CheckStatusDevicesStation(station);
+                //}
+                //if (station == EnumStation.SSP)
+                //{
+                //    JSCallCS._StationColorDevice.ESPColor = device.CheckStatusDevicesStation(station);
+                //}
+                //if (station == EnumStation.SHP)
+                //{
+                //    JSCallCS._StationColorDevice.UHPColor = device.CheckStatusDevicesStation(station);
+                //}
+                LogManager.Info("OnDeviceStatusChanged_Handler: " + station);
+                LayerWeb.InvokeScript("LoadStationColorDevice");
             }
         }
 
