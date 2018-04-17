@@ -134,10 +134,10 @@ namespace ARK
         private void Fingerprint_OnDeviceDisconnected()
         {
             // set message
-            string message = "The fingerprint reader is not connected, please report to the Duty Officer!";
+            string message = "The fingerprint reader is not connected. Please report to the Duty Officer!";
 
             // Send Notification to duty officer
-            Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(null, "The fingerprinter is not connected", "The fingerprinter is not connected.", EnumNotificationTypes.Error);
+            Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(null, "The fingerprint reader is not connected.", "The fingerprint reader is not connected.", EnumNotificationTypes.Error);
 
 
             // show message box to user
@@ -289,7 +289,7 @@ namespace ARK
             {
                 if (supervisee.Status == EnumUserStatuses.Blocked)
                 {
-                    LayerWeb.ShowMessage("This supervisee is being blocked");
+                    LayerWeb.ShowMessage("This supervisee was blocked");
                 }
                 else
                 {
@@ -489,7 +489,7 @@ namespace ARK
             }
 
             // display failed on UI
-            LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please place your finger on the reader. Failed: " + _fingerprintFailed + "');");
+            LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please place your finger on the reader. Failed count: " + _fingerprintFailed + "');");
 
             // restart identification
             if (user != null)

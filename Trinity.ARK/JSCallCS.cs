@@ -233,7 +233,7 @@ namespace ARK
         {
             if (new DAL_QueueNumber().IsInQueue(appointment_ID, EnumStation.ARK))
             {
-                this._web.ShowMessage("You have already queued!<br/> The timeslot cannot be changed.");
+                this._web.ShowMessage("You already registered a queue number!");
             }
             else
             {
@@ -249,7 +249,7 @@ namespace ARK
                 }
                 else
                 {
-                    this._web.ShowMessage("Booking Appointment failed<br/>Please try again");
+                    this._web.ShowMessage("Book Appointment failed.<br/>Please try again!");
                 }
             }
         }
@@ -612,7 +612,7 @@ namespace ARK
                     {
                         if (string.IsNullOrEmpty(appointment.Timeslot_ID) && currentUser.Role == EnumUserRoles.Supervisee)
                         {
-                            _web.ShowMessage("You have not selected the timeslot!<br/> Please go to Book Appointment page to select a timeslot.");
+                            _web.ShowMessage("You have not selected a timeslot!<br/> Please go to Book Appointment page to select a timeslot.");
                         }
                         else
                         {
@@ -715,7 +715,7 @@ namespace ARK
                 }
                 else
                 {
-                    this._web.ShowMessage("You have already queued!\n Please wait for your turn.");
+                    this._web.ShowMessage("You already registered a queue number!\n Please wait for your turn.");
                 }
             }
         }

@@ -110,7 +110,7 @@ namespace ALK.CodeBehind.Authentication
 
             if (supervisee == null)
             {
-                CSCallJS.ShowMessage(_web, "NRIC '" + nric + "': not found. Please check NRIC again.");
+                CSCallJS.ShowMessage(_web, "NRIC '" + nric + "' not found. Please check NRIC again.");
                 System.Threading.Tasks.Task.Factory.StartNew(() => BarcodeScannerUtil.Instance.StartScanning(BarcodeScannerCallback));
                 return;
             }
@@ -118,7 +118,7 @@ namespace ALK.CodeBehind.Authentication
             {
                 if (supervisee.Status == EnumUserStatuses.Blocked)
                 {
-                    CSCallJS.ShowMessage(_web, "This supervisee is being blocked");
+                    CSCallJS.ShowMessage(_web, "This supervisee was blocked");
                     System.Threading.Tasks.Task.Factory.StartNew(() => BarcodeScannerUtil.Instance.StartScanning(BarcodeScannerCallback));
                     return;
                 }

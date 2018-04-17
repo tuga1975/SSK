@@ -541,18 +541,18 @@
     function checkValidateSetting(model) {
         if (!model.Morning_Is_Closed) {
             if (convertTimeSpanToInt(model.Morning_Open_Time) >= convertTimeSpanToInt(model.Morning_Close_Time)) {
-                ShowMessage('The morning start time must be greater than the end time');
+                ShowMessage('The Morning Start Time must be greater than the Morning End Time');
                 return false;
             }
         }
         if (!model.Afternoon_Is_Closed) {
             if (convertTimeSpanToInt(model.Afternoon_Open_Time) >= convertTimeSpanToInt(model.Afternoon_Close_Time)) {
-                ShowMessage('The afternoon start time must be greater than the end time');
+                ShowMessage('The Afternoon Start Time must be greater than the Afternoon End Time');
                 return false;
             } else {
                 if (!model.Morning_Is_Closed) {
                     if (convertTimeSpanToInt(model.Afternoon_Open_Time) < convertTimeSpanToInt(model.Morning_Close_Time)) {
-                        ShowMessage('Afternoon time must be greater than morning');
+                        ShowMessage('The Afternoon Start Time must be greater than the Morning End Time');
                         return false;
                     }
                 }
@@ -560,18 +560,18 @@
         }
         if (!model.Evening_Is_Closed) {
             if (convertTimeSpanToInt(model.Evening_Open_Time) >= convertTimeSpanToInt(model.Evening_Close_Time)) {
-                ShowMessage('The evening start time must be greater than the end time');
+                ShowMessage('The Evening Start Time must be greater than the Evening End Time');
                 return false;
             } else {
                 if (!model.Afternoon_Is_Closed) {
                     if (convertTimeSpanToInt(model.Evening_Open_Time) < convertTimeSpanToInt(model.Afternoon_Close_Time)) {
-                        ShowMessage('Evening time must be greater than afternoon');
+                        ShowMessage('The Evening Start Time must be greater than Afternoon End Time');
                         return false;
                     }
                 }
                 if (!model.Morning_Is_Closed) {
                     if (convertTimeSpanToInt(model.Evening_Open_Time) < convertTimeSpanToInt(model.Morning_Close_Time)) {
-                        ShowMessage('Evening time must be greater than morning');
+                        ShowMessage('The Evening Start Time must be greater than the Morning End Time');
                         return false;
                     }
                 }
