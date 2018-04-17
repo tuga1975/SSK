@@ -760,7 +760,7 @@
                                                         <input type="text" placeholder="Next-of-Kin Country" id="NextOfKin_Country" name="NextOfKin_Country" />
                                                     </div>
                                                     <div group-input="Next-of-Kin Postal code">
-                                                        <input type="text" placeholder="Next-of-Kin Postal code" id="NextOfKin_PostalCode" name="NextOfKin_PostalCode" />
+                                                        <input type="text" placeholder="Next-of-Kin Postal code" id="NextOfKin_PostalCode" name="NextOfKin_PostalCode" maxlength="30"/>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1260,11 +1260,11 @@
         }
 
         function setBase64FingerprintOnloadServerCall(leftFinger, rightFinger) {
-            if (leftFinger != "") {
+            if (leftFinger!=null && leftFinger != "") {
                 $('#leftFingerprint').attr('src', 'data:image/png;base64,' + leftFinger);
                 $('#verifyLeftFinger').attr('src', 'data:image/png;base64,' + leftFinger);
             }
-            if (rightFinger != "") {
+            if (rightFinger!=null && rightFinger != "") {
                 $('#rightFingerprint').attr('src', 'data:image/png;base64,' + rightFinger);
                 $('#verifyRightFinger').attr('src', 'data:image/png;base64,' + rightFinger);
 
