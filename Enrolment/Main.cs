@@ -453,8 +453,8 @@ namespace Enrolment
 
                                 LayerWeb.InvokeScript("setAvatar", currentEditUser.UserProfile.User_Photo1_Base64 ?? string.Empty, currentEditUser.UserProfile.User_Photo2_Base64 ?? string.Empty);
 
-                                string fingerprintLeft = "../images/leftthumb.png";
-                                string fingerprintRight = "../images/rightthumb.png";
+                                string fingerprintLeft = string.Empty;
+                                string fingerprintRight = string.Empty;
                                 if (currentEditUser.UserProfile.LeftThumbImage != null)
                                 {
                                     fingerprintLeft = string.Concat(string.Empty, Convert.ToBase64String(currentEditUser.UserProfile.LeftThumbImage));
@@ -613,8 +613,8 @@ namespace Enrolment
                         CSCallJS.LoadPageHtml(this.LayerWeb, "UpdateSuperviseeBiodata.html", currentEditUser);
                         LayerWeb.InvokeScript("setAvatar", currentNewPhotos.Item1, currentNewPhotos.Item2);
 
-                        string fingerprintLeft = "../images/leftthumb.png";
-                        string fingerprintRight = "../images/rightthumb.png";
+                        string fingerprintLeft = string.Empty;
+                        string fingerprintRight = string.Empty;
                         if (currentEditUser.UserProfile.LeftThumbImage != null)
                         {
                             fingerprintLeft = string.Concat(string.Empty, Convert.ToBase64String(currentEditUser.UserProfile.LeftThumbImage));
@@ -713,8 +713,8 @@ namespace Enrolment
                             LayerWeb.LoadPageHtml("UpdateSuperviseeBiodata.html", currentEditUser);
                             LayerWeb.InvokeScript("setAvatar", photo1, photo2);
 
-                            string fingerprintLeft = "../images/leftthumb.png";
-                            string fingerprintRight = "../images/rightthumb.png";
+                            string fingerprintLeft = string.Empty;
+                            string fingerprintRight = string.Empty;
                             if (currentEditUser.UserProfile.LeftThumbImage != null)
                             {
                                 fingerprintLeft = string.Concat(string.Empty, Convert.ToBase64String(currentEditUser.UserProfile.LeftThumbImage));
@@ -787,8 +787,8 @@ namespace Enrolment
                             LayerWeb.LoadPageHtml("UpdateSuperviseeBiodata.html", currentEditUser);
                             LayerWeb.InvokeScript("setAvatar", currentEditUser.UserProfile.User_Photo1_Base64, currentEditUser.UserProfile.User_Photo2_Base64);
 
-                            string fingerprintLeft = "../images/fingerprint.png";
-                            string fingerprintRight = "../images/fingerprint.png";
+                            string fingerprintLeft = string.Empty;
+                            string fingerprintRight = string.Empty;
                             if (currentEditUser.UserProfile.LeftThumbImage != null)
                             {
                                 fingerprintLeft = string.Concat(string.Empty, Convert.ToBase64String(currentEditUser.UserProfile.LeftThumbImage));
