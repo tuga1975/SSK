@@ -57,7 +57,7 @@ namespace Trinity.DAL
             IssueCard.Status = EnumIssuedCards.Active;
 
             DAL.DBContext.Membership_Users member_user = _localUnitOfWork.DataContext.Membership_Users.FirstOrDefault(d => d.UserId.Equals(UserId));
-            member_user.SmartCardId = IssueCard.Serial_Number;
+            member_user.SmartCardId = IssueCard.SmartCardId;
             member_user.Status = EnumUserStatuses.Enrolled;
 
             DBContext.User_Profiles user = _localUnitOfWork.DataContext.User_Profiles.FirstOrDefault(d => d.UserId == UserId);
