@@ -54,7 +54,7 @@ namespace Trinity.DAL
                     foreach (var item in dataUpdate["Alternate_Addresses"])
                     {
                         PropertyInfo propertyInfo = Alternate_Addresses.GetType().GetProperty(item.Key);
-                        propertyInfo.SetValue(Alternate_Addresses, Convert.ChangeType(item.Value, propertyInfo.PropertyType), null);
+                        propertyInfo.SetValue(Alternate_Addresses, item.Value == null ? null : Convert.ChangeType(item.Value, propertyInfo.PropertyType), null);
                     }
                     userProfile.Other_Address_ID = Alternate_Addresses.Address_ID;
                     _localUnitOfWork.GetRepository<DAL.DBContext.Address>().Add(Alternate_Addresses);
@@ -67,7 +67,7 @@ namespace Trinity.DAL
                     foreach (var item in dataUpdate["Alternate_Addresses"])
                     {
                         PropertyInfo propertyInfo = Alternate_Addresses.GetType().GetProperty(item.Key);
-                        propertyInfo.SetValue(Alternate_Addresses, Convert.ChangeType(item.Value, propertyInfo.PropertyType), null);
+                        propertyInfo.SetValue(Alternate_Addresses, item.Value == null ? null : Convert.ChangeType(item.Value, propertyInfo.PropertyType), null);
                         isSaveDataBase = true;
                         isUpdateAddress = true;
                     }
@@ -84,7 +84,7 @@ namespace Trinity.DAL
                 {
                     PropertyInfo propertyInfo = userProfile.GetType().GetProperty(item.Key);
                     var underlyingType = Nullable.GetUnderlyingType(propertyInfo.PropertyType);
-                    propertyInfo.SetValue(userProfile, Convert.ChangeType(item.Value, underlyingType ?? propertyInfo.PropertyType), null);
+                    propertyInfo.SetValue(userProfile, item.Value == null ? null : Convert.ChangeType(item.Value, underlyingType ?? propertyInfo.PropertyType), null);
                     isUpdateUser_Profiles = true;
                     isSaveDataBase = true;
                 }
