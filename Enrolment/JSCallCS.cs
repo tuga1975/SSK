@@ -760,24 +760,13 @@ namespace Enrolment
 
         #region Authentication & Authorization
 
-        private static int _count = 0;
         public void Login(string username, string password)
         {
-            _count++;
             EventCenter eventCenter = EventCenter.Default;
             var dalUser = new DAL_User();
             ApplicationUser appUser = dalUser.Login(username, password);
             if (appUser != null)
             {
-                var userInfo = dalUser.GetUserById(appUser.Id);
-                if (userInfo.AccessFailedCount >= 3)
-                {
-                    eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.LOGIN_FAILED, Message = "You have exceeded the maximum amount of tries to Login. Please goto APS and select \"Forgot Password\" to reset your password." });
-                    return;
-                }
-                // Authenticated successfully
-                // Reset AccessFailedCount
-                dalUser.ChangeAccessFailedCount(appUser.Id, 0);
                 // Check if the current user is an Enrolment Officer or not
                 if (dalUser.IsInRole(appUser.Id, EnumUserRoles.EnrolmentOfficer))
                 {
@@ -811,12 +800,12 @@ namespace Enrolment
             }
             else
             {
-                ApplicationUser user = dalUser.FindByName(username);
-                if (user != null)
-                {
-                    var userInfo = dalUser.GetUserByUserId(user.Id).Data;
-                    dalUser.ChangeAccessFailedCount(user.Id, userInfo.AccessFailedCount + 1);
-                }
+                //ApplicationUser user = dalUser.FindByName(username);
+                //if (user != null)
+                //{
+                //    var userInfo = dalUser.GetUserByUserId(user.Id).Data;
+                //    dalUser.ChangeAccessFailedCount(user.Id, userInfo.AccessFailedCount + 1);
+                //}
                 _web.ShowMessage("Your username or password is incorrect.");
                 //eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Code = -1, Name = EventNames.LOGIN_FAILED, Message = "Your username or password is incorrect." });
             }

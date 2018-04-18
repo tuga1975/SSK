@@ -22,7 +22,7 @@ namespace Trinity.DAL
                 // validate
                 if (!DeviceIdExist(deviceId))
                 {
-                    throw new Exception("DeviceID is not valid");
+                    throw new Trinity.Common.ExceptionArgs("DeviceID is not valid");
                 }
 
                 // local db
@@ -53,7 +53,7 @@ namespace Trinity.DAL
                 // savechanges
                 if (_localUnitOfWork.DataContext.SaveChanges() < 0)
                 {
-                    throw new Exception("Save data to local database failed.");
+                    throw new Trinity.Common.ExceptionArgs("Save data to local database failed.");
                 }
                 // Send Noti server
                 //Lib.SignalR.DeviceStatusUpdate(deviceId, deviceStatuses);

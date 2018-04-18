@@ -7,12 +7,16 @@ using System.Windows.Forms;
 
 namespace Trinity.Common
 {
-    public class ExceptionArgs
+    public class ExceptionArgs:Exception
     {
         public long ErrorCode { get; set; }
         public string ErrorMessage { get; set; }
 
         public ExceptionArgs() { }
+
+        public ExceptionArgs(string ErrorMessage) {
+            this.ErrorMessage = ErrorMessage;
+        }
 
         public ExceptionArgs(FailedInfo failedInfo)
         {

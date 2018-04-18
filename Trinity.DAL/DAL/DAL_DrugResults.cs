@@ -346,7 +346,7 @@ namespace Trinity.DAL
         //                }
         //                else
         //                {
-        //                    throw new Exception(EnumMessage.NotConnectCentralized);
+        //                    throw new Trinity.Common.ExceptionArgs(EnumMessage.NotConnectCentralized);
         //                }
         //            }
         //        }

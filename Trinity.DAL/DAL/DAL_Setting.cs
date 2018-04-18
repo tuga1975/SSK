@@ -433,15 +433,18 @@ namespace Trinity.DAL
 
         public DBContext.Holiday AddHoliday(DateTime date, string shortDesc, string notes, string updatedByName, string updatedByID)
         {
-            try
+            DBContext.Holiday holiday = new DBContext.Holiday()
             {
-                DBContext.Holiday holiday = new DBContext.Holiday()
-                {
-                    Holiday1 = date,
-                    ShortDesc = shortDesc,
-                    Notes = notes
-                };
-
+                Holiday1 = date.Date,
+                ShortDesc = shortDesc,
+                Notes = notes
+            };
+            if (_localUnitOfWork.DataContext.Holidays.Any(d=>d.Holiday1== holiday.Holiday1))
+            {
+                throw new Trinity.Common.ExceptionArgs("Holidays "+ holiday.Holiday1.ToString("dd/MM/yyyy")+ " already exist.");
+            }
+            else
+            {
                 _localUnitOfWork.GetRepository<DBContext.Holiday>().Add(holiday);
 
                 // Insert to Change History Setting
@@ -472,10 +475,6 @@ namespace Trinity.DAL
 
                 _localUnitOfWork.Save();
                 return holiday;
-            }
-            catch (Exception e)
-            {
-                return null;
             }
         }
 
@@ -536,7 +535,7 @@ namespace Trinity.DAL
                     //    }
                     //    else
                     //    {
-                    //        throw new Exception(EnumMessage.NotConnectCentralized);
+                    //        throw new Trinity.Common.ExceptionArgs(EnumMessage.NotConnectCentralized);
                     //    }
                     //}
                 }

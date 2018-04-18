@@ -132,7 +132,7 @@ namespace Trinity.DAL
                 CallCentralized.Post("User_Profiles", "UpdateCardInfo", out statusCentralized, "UserId=" + UserId, "CardNumber=" + CardNumber, "Date_of_Issue=" + Date_of_Issue.ToString(), "Expired_Date=" + Expired_Date.ToString());
                 if (!statusCentralized)
                 {
-                    throw new Exception(EnumMessage.NotConnectCentralized);
+                    throw new Trinity.Common.ExceptionArgs(EnumMessage.NotConnectCentralized);
                 }
                 else
                 {
@@ -167,7 +167,7 @@ namespace Trinity.DAL
                 CallCentralized.Post<bool>("User_Profiles", "UpdateFingerprintImg", out statusCentralized, new object[] { userId, left, right });
                 if (!statusCentralized)
                 {
-                    throw new Exception(EnumMessage.NotConnectCentralized);
+                    throw new Trinity.Common.ExceptionArgs(EnumMessage.NotConnectCentralized);
                 }
                 else
                 {
@@ -208,7 +208,7 @@ namespace Trinity.DAL
                 CallCentralized.Post<bool>("User_Profiles", "UpdateProfile", out statusCentralized, model);
                 if (!statusCentralized)
                 {
-                    throw new Exception(EnumMessage.NotConnectCentralized);
+                    throw new Trinity.Common.ExceptionArgs(EnumMessage.NotConnectCentralized);
                 }
                 else
                 {

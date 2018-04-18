@@ -1,16 +1,4 @@
-﻿
-<style type="text/css">
-    .status-text {
-        width: 100%;
-        margin-bottom: 20px;
-        font-size: 16px;
-        text-align: center;
-        font-weight: bold;
-        color: #334352;
-    }
-</style>
-
-<style>
+﻿<style>
     .z-depth-2 {
         -webkit-box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
         box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
@@ -23,20 +11,48 @@
             display: block;
         }
     }
+
+    .manualLogin {
+        display: block;
+        /*float: right;*/
+        padding-top: 20px;
+        width: 800px;
+        margin: 0 auto;
+        text-align: right;
+    }
+
+        .manualLogin a {
+            color: #1CACF6;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .manualLogin img {
+            width: 25px;
+        }
+</style>
+<style type="text/css">
+    .status-text {
+        width: 100%;
+        margin-bottom: 20px;
+        font-size: 16px;
+        text-align: center;
+        font-weight: bold;
+        color: #334352;
+    }
 </style>
 <div class="status-text">
 </div>
 <div class="container my-5">
-    <!--<h4 class="text-center my-5 font-weight-bold">
-        Please place your thumb print on the reader
-    </h4>-->
-    <div align="center" class="w-75 mx-auto embed-responsive embed-responsive-16by9">
+    <div align="center" class="w-75 mx-auto embed-responsive embed-responsive-16by9" style="position:relative;overflow:visible;">
         <video autoplay loop class="embed-responsive-item">
             <source src="../img/Thumbprint.mp4" type="video/mp4">
         </video>
     </div>
-    
 </div>
+
+
+
 
 <script type="text/javascript">
     //show menu logout or back main

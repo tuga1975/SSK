@@ -23,7 +23,7 @@ namespace Trinity.DAL
                 CallCentralized.Post("User", "UpdateSmartCardId", out statusCentralized, "UserId="+ UserId, "SmartCardId="+ SmartCardId);
                 if (!statusCentralized)
                 {
-                    throw new Exception(EnumMessage.NotConnectCentralized);
+                    throw new Trinity.Common.ExceptionArgs(EnumMessage.NotConnectCentralized);
                 }
                 else
                 {
@@ -46,7 +46,7 @@ namespace Trinity.DAL
                 CallCentralized.Post<bool>("User", "UpdateFingerprint", out statusCentralized, new object[] { userId , left, right });
                 if (!statusCentralized)
                 {
-                    throw new Exception(EnumMessage.NotConnectCentralized);
+                    throw new Trinity.Common.ExceptionArgs(EnumMessage.NotConnectCentralized);
                 }
                 else
                 {

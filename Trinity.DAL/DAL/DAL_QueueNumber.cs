@@ -78,7 +78,7 @@ namespace Trinity.DAL
             var timeslot = GetTimeSlotEmpty();
             if (timeslot == null)
             {
-                throw new Exception("Sorry all timeslots are fully booked!");
+                throw new Trinity.Common.ExceptionArgs("Sorry all timeslots are fully booked!");
             }
             else
             {
@@ -144,7 +144,7 @@ namespace Trinity.DAL
 
             if (string.IsNullOrEmpty(timeslotID))
             {
-                throw new Exception("Sorry all timeslots are fully booked!");
+                throw new Trinity.Common.ExceptionArgs("Sorry all timeslots are fully booked!");
             }
 
             Trinity.DAL.DBContext.Queue dataInsert = new Trinity.DAL.DBContext.Queue()
@@ -805,7 +805,7 @@ namespace Trinity.DAL
                         var centralData = CallCentralized.Post<int>(EnumAPIParam.QueueNumber, "UpdateQueueOutcomeByQueueId", out centralizeStatus, "queueId=" + queueId.ToString(), "outcome=" + outcome);
                         if (!centralizeStatus)
                         {
-                            throw new Exception(EnumMessage.NotConnectCentralized);
+                            throw new Trinity.Common.ExceptionArgs(EnumMessage.NotConnectCentralized);
                         }
                     }
 

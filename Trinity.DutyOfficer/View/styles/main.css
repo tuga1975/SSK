@@ -1013,3 +1013,52 @@ tr.selected input[type="checkbox"]:after {
 .modal-header .close{
     outline:none !important;
 }
+
+
+[group-input] {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+    [group-input]::before {
+        content: attr(group-input);
+        color: #209CDD;
+        font-size: 16px;
+        position: absolute;
+        z-index: 0;
+        top: 6px;
+        left: 0px;
+    }
+
+    [group-input] > input, [group-input] > select {
+        border: none;
+        height: 36px;
+        font-size: 16px;
+        width: 100%;
+        padding-left: 200px;
+        position: relative;
+        z-index: 1;
+        background-color: transparent;
+        outline: none;
+    }
+
+    [group-input] > input, [group-input] > select {
+        border-bottom: 1px solid #ccc;
+    }
+
+        [group-input] > input:focus, [group-input] > input:hover, [group-input] > select:focus, [group-input] > select:hover {
+            border-bottom: 1px solid #1CACF6;
+        }
+
+:-ms-input-placeholder {
+    font-style: italic;
+    color: #c4c8cb;
+}
+
+.datepicker td, .datepicker th {
+    padding: 5px 10px !important;
+}
+
+.pagination-detail{
+    display:none;
+}

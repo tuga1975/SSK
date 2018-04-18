@@ -79,7 +79,7 @@ namespace Trinity.DAL
                 //CallCentralized.Post<bool>("User", "Update", out statusCentralized, model);
                 //if (!statusCentralized)
                 //{
-                //    throw new Exception(EnumMessage.NotConnectCentralized);
+                //    throw new Trinity.Common.ExceptionArgs(EnumMessage.NotConnectCentralized);
                 //}
                 //else
                 //{
@@ -385,7 +385,7 @@ namespace Trinity.DAL
                 CallCentralized.Post("User", "ChangeAccessFailedCount", out statusCentralized, "userId=" + userId, "count=" + count);
                 if (!statusCentralized)
                 {
-                    throw new Exception(EnumMessage.NotConnectCentralized);
+                    throw new Trinity.Common.ExceptionArgs(EnumMessage.NotConnectCentralized);
                 }
                 else
                 {
@@ -798,7 +798,7 @@ namespace Trinity.DAL
                 //    var centralUpdate = CallCentralized.Post<Setting>(EnumAPIParam.User, "UnblockSuperviseeById", out centralizeStatus, "userId=" + userId, "reason=" + reason);
                 //    if (!centralizeStatus)
                 //    {
-                //        throw new Exception(EnumMessage.NotConnectCentralized);
+                //        throw new Trinity.Common.ExceptionArgs(EnumMessage.NotConnectCentralized);
                 //    }
                 //}
             }

@@ -85,7 +85,12 @@ namespace Trinity.BackendAPI.Controllers
                 {
                     user = new DAL.DAL_User().GetByNRIC(data.NRIC);
                 }
-                string IDNoti = new DAL.DAL_Notification().InsertNotification(user != null ? user.UserId : null, null, null, data.Content, false, data.Datetime, data.notification_code, data.Type, EnumStation.SSP);
+                string Subject = data.Content;
+                if (Subject.Length > 100)
+                {
+                    Subject = Subject.Substring(0, 96) + " ...";
+                }
+                string IDNoti = new DAL.DAL_Notification().InsertNotification(user != null ? user.UserId : null, null, Subject, data.Content, false, data.Datetime, data.notification_code, data.Type, EnumStation.SSP);
                 if (!string.IsNullOrEmpty(IDNoti))
                 {
                     if (data.Type == EnumNotificationTypes.Error && user != null)
