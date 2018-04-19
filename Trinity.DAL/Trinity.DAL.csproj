@@ -264,6 +264,7 @@
     <Compile Include="DBContext\User_Profiles.cs">
       <DependentUpon>TrinityCentralizedDB.tt</DependentUpon>
     </Compile>
+    <Compile Include="Partial\DrugResult.cs" />
     <Compile Include="Partial\Timeslot.cs" />
     <Compile Include="Partial\Queue.cs" />
     <Compile Include="Partial\QueueDetail.cs" />
