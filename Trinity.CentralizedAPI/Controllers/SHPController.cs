@@ -95,7 +95,12 @@ namespace Trinity.BackendAPI.Controllers
         {
             try
             {
-                string IDNoti = new DAL.DAL_Notification().InsertNotification(null, null, null, data.Content, false, data.Datetime.Value, data.notification_code, data.Type, EnumStation.SHP);
+                string Subject = data.Content;
+                if (Subject.Length > 100)
+                {
+                    Subject = Subject.Substring(0, 96) + " ...";
+                }
+                string IDNoti = new DAL.DAL_Notification().InsertNotification(null, null, Subject, data.Content, false, data.Datetime.Value, data.notification_code, data.Type, EnumStation.SHP);
                 if (string.IsNullOrEmpty(IDNoti))
                 {
                     //return Ok(string.Empty);

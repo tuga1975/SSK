@@ -128,7 +128,7 @@ namespace DutyOfficer
         {
             List<object> arrayDataa = new List<object>();
             new DAL_DrugResults().CheckDrugResult();
-            arrayDataa.AddRange(new DAL_Appointments().GetByDate(DateTime.Today).Select(app => new
+            arrayDataa.AddRange(new DAL_Appointments().GetByDate(new DateTime(2018, 04, 18)).Select(app => new
             {
                 Queue_ID = app.Queue == null ? null : app.Queue.Queue_ID.ToString().Trim(),
                 Date = app.Date,
@@ -151,7 +151,7 @@ namespace DutyOfficer
                     content = (app.Queue == null ? string.Empty : app.Queue.QueueDetails.Where(c => c.Station == app.Queue.CurrentStation).FirstOrDefault().Message) ?? string.Empty
                 }
             }).ToList());
-            arrayDataa.AddRange(new DAL_QueueNumber().GetQueueWalkInByDate(DateTime.Today).Select(queue => new
+            arrayDataa.AddRange(new DAL_QueueNumber().GetQueueWalkInByDate(new DateTime(2018,04,18)).Select(queue => new
             {
                 Queue_ID = queue.Queue_ID,
                 Date = queue.CreatedTime.Date,
@@ -388,7 +388,7 @@ namespace DutyOfficer
 
         }
 
-        public void AddHoliday(string json)
+        public bool AddHoliday(string json)
         {
             var holiday = JsonConvert.DeserializeObject<Trinity.DAL.DBContext.Holiday>(json);
             var dalSetting = new DAL_Setting();
@@ -397,6 +397,7 @@ namespace DutyOfficer
             Trinity.BE.User dutyOfficer = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
 
             dalSetting.AddHoliday(holiday.Holiday1, holiday.ShortDesc, holiday.Notes, dutyOfficer.Name, dutyOfficer.UserId);
+            return true;
         }
 
         public void DeleteHoliday(string json)

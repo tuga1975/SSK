@@ -66,19 +66,24 @@ public class JSCallCSBase
         catch (Exception ex)
         {
             this._web.SetLoading(false);
-
             ex = ex.InnerException != null ? ex.InnerException : ex;
-
-            if (ex.Source.Equals(".Net SqlClient Data Provider") || (ex.Source.Equals("EntityFramework") && ex.Message.Equals("The underlying provider failed on Open.")))
+            if (ex is Trinity.Common.ExceptionArgs)
             {
-                this._web.ShowMessage("Can not connect to the database.<br/>Please check the connection.");
+                this._web.ShowMessage(((Trinity.Common.ExceptionArgs)ex).ErrorMessage);
             }
             else
             {
-                //string ID = Guid.NewGuid().ToString().Trim();
-                //this._web.ShowMessage("An error occurred.<br/>Please contact the administrator.<br/>Error code: " + ID);
-                this._web.ShowMessage("Error:" + ex.Message);
-                Trinity.Common.Utils.LogManager.Error("Error in Trinity.Common.JSCallCSBase.actionThread. Details:" + ex.Message);
+                if (ex.Source.Equals(".Net SqlClient Data Provider") || (ex.Source.Equals("EntityFramework") && ex.Message.Equals("The underlying provider failed on Open.")))
+                {
+                    this._web.ShowMessage("Can not connect to the database.<br/>Please check the connection.");
+                }
+                else
+                {
+                    //string ID = Guid.NewGuid().ToString().Trim();
+                    //this._web.ShowMessage("An error occurred.<br/>Please contact the administrator.<br/>Error code: " + ID);
+                    this._web.ShowMessage("Error:" + ex.Message);
+                    Trinity.Common.Utils.LogManager.Error("Error in Trinity.Common.JSCallCSBase.actionThread. Details:" + ex.Message);
+                }
             }
         }
     }

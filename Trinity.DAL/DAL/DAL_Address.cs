@@ -51,7 +51,7 @@ namespace Trinity.DAL
                 //CallCentralized.Post("Address", "SaveAddress", out statusCentralized, model);
                 //if (!statusCentralized)
                 //{
-                //    throw new Exception(EnumMessage.NotConnectCentralized);
+                //    throw new Trinity.Common.ExceptionArgs(EnumMessage.NotConnectCentralized);
                 //}
                 //else
                 //{

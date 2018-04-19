@@ -33,7 +33,7 @@ namespace Trinity.DAL
             BE.IssueCard issueCard = GetIssueCardBySmartCardId(model.SmartCardId);
             if (issueCard!=null)
             {
-                throw new Exception(EnumMessage.SmartCardIsAlreadyInUse);
+                throw new Trinity.Common.ExceptionArgs(EnumMessage.SmartCardIsAlreadyInUse);
             }
             else
             {

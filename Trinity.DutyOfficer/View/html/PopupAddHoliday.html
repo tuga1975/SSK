@@ -9,7 +9,11 @@
             </div>
             <div class="modal-body">
                 <div class="form-group">
-                    <div class="input-group date">
+                    <div group-input="Date">
+                        <input type="text" placeholder="Date" id="HolidayDate" name="HolidayDate" maxlength="50" />
+                    </div>
+
+                    <!--<div class="input-group date">
                         <label class="input-group-addon">Date</label>
                         <select class="form-control" id="day">
                             <option>15</option>
@@ -23,15 +27,19 @@
                             <option>2018</option>
                         </select>
                     </div>
-                    <br />
-                    <div class="input-group description">
-                        <label class="input-group-addon">Short Description</label>
-                        <span><input type="text" class="form-control pri" id="description"></span>
+                    <br />-->
+                    <div group-input="Short Description">
+                        <input type="text" placeholder="Short Description" id="description" name="description" maxlength="50" />
                     </div>
-                    <br />
+
+                    <!--<div class="input-group description">
+                        <label class="input-group-addon">Short Description</label>
+                        <span><input type="text" class="form-control pri" id="description" maxlength="50"></span>
+                    </div>
+                    <br />-->
                     <div>
-                        <label class="textarea">Notes</label>
-                        <textarea type="text" class="form-control pri col-12" rows="5" id="note"></textarea>
+                        <label class="textarea" style="padding:0px;">Notes</label>
+                        <textarea type="text" class="form-control pri col-12" rows="5" id="note" maxlength="255" style="border:1px solid #CCC;resize:none;"></textarea>
                     </div>
                 </div>
             </div>
@@ -44,61 +52,43 @@
 </div>
 
 <script type="text/javascript">
-    var lstDays = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"];
-    var lstMonths = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"];
-    var lstYears = ["2018", '2019', '2020', '2021', '2022', '2023', '2024', '2025', '2026', '2027', '2028', '2029', '2030'];
+    //var lstDays = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"];
+    //var lstMonths = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"];
+    //var lstYears = ["2018", '2019', '2020', '2021', '2022', '2023', '2024', '2025', '2026', '2027', '2028', '2029', '2030'];
 
-    $('#day').empty();
-    $('#month').empty();
-    $('#year').empty();
+    //$('#day').empty();
+    //$('#month').empty();
+    //$('#year').empty();
 
-    $.each(lstDays, function (i, p) {
-        $('#day').append($('<option></option>').val(p).html(p));
-    });
+    //$.each(lstDays, function (i, p) {
+    //    $('#day').append($('<option></option>').val(p).html(p));
+    //});
 
-    $.each(lstMonths, function (i, p) {
-        $('#month').append($('<option></option>').val(p).html(p));
-    });
+    //$.each(lstMonths, function (i, p) {
+    //    $('#month').append($('<option></option>').val(p).html(p));
+    //});
 
-    $.each(lstYears, function (i, p) {
-        $('#year').append($('<option></option>').val(p).html(p));
-    });
+    //$.each(lstYears, function (i, p) {
+    //    $('#year').append($('<option></option>').val(p).html(p));
+    //});
+    $('#HolidayDate').datepicker({ format: 'dd/mm/yyyy' });
 
     $("#AddBtn").click(function (e) {
-        var date = new Date($('#year').val(), $('#month').val() - 1, $('#day').val());        
+        var date = api.ToDateCSharp($('#HolidayDate').val());
         var description = $('#description').val();
         var note = $('#note').val();
-        var checkExist = false;
-
-        if (model.HoliDays != null && model.HoliDays.length > 0) {
-            model.HoliDays.forEach(function (element, index) {
-                if (Date.parse(element.Holiday1) == Date.parse(date)) {
-                    checkExist = true;
-                    alert('Date is duplicate!');
-                    return;
-                }
-            });
-        }
-
-        if (!checkExist) {
-            //date.setHours(date.getHours() - date.getTimezoneOffset() / 60);
-            date = new Date(Date.UTC($('#year').val(), $('#month').val() - 1, $('#day').val()));
-            model.HoliDays.push({
-                Holiday1: date,
-                ShortDesc: description,
-                Notes: note
-            });
-
-            var holiday = { Holiday1: date, ShortDesc: description, Notes: note };
-            var data = JSON.stringify(holiday);
-            api.server.AddHoliday(data, function () {
+        var holiday = { Holiday1: date, ShortDesc: description, Notes: note };
+        var data = JSON.stringify(holiday);
+        api.server.AddHoliday(data, function (status) {
+            if (status){
                 api.server.LoadPage('Settings.html');
                 $('#idAddHoliday').modal('toggle');
-            });
-        }
+            }
+        });
+
         e.preventDefault();
     });
-    
+
     function convertDateToUTC(date) {
         return new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds());
     }

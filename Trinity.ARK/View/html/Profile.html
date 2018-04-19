@@ -460,7 +460,7 @@
                     <label>
                         NRIC No.
                     </label>
-                    <div class="value" name="Name" group="Membership_Users">
+                    <div class="value" name="NRIC" group="Membership_Users">
                     </div>
                 </div>
 
@@ -486,20 +486,24 @@
                     <div class="value" name="Maritial_Status" group="User_Profiles">
                     </div>
                 </div>
-                <div class="form-group-text">
-                    <label>
-                        Primary Contact No.
-                    </label>
-                    <div class="value" name="Primary_Phone" group="User_Profiles">
+                
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <label for="SecondaryContact">
+                                <span class="input-group-text">
+                                    Primary Contact No.
+                                </span>
+                            </label>
+
+                        </div>
+                        <input type="text" class="form-control"
+                               placeholder="eg. 98764324"
+                               aria-label="house" aria-describedby="house" name="Primary_Phone" group="User_Profiles" maxlength="50" scandoc="0">
                     </div>
+                    <div class="clearfix"></div>
                 </div>
-                <div class="form-group-text">
-                    <label>
-                        Primary Email
-                    </label>
-                    <div class="value" name="Primary_Email" group="User_Profiles">
-                    </div>
-                </div>
+
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-prepend">
@@ -516,6 +520,25 @@
                     </div>
                     <div class="clearfix"></div>
                 </div>
+
+
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <label for="SecondaryEmail">
+                                <span class="input-group-text">
+                                    Primary Email
+                                </span>
+                            </label>
+
+                        </div>
+                        <input type="text" class="form-control"
+                               placeholder="email@email.com"
+                               aria-label="house" aria-describedby="house" name="Primary_Email" group="User_Profiles" maxlength="255" scandoc="0">
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-prepend">
@@ -573,7 +596,7 @@
                 </div>
 
 
-                <div class="form-group">
+                <!--<div class="form-group">
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <label for="SecondaryContact">
@@ -642,7 +665,7 @@
                                aria-label="house" aria-describedby="house" placeholder="Country" name="Country" group="Alternate_Addresses" maxlength="50" scandoc="1">
                     </div>
                     <div class="clearfix"></div>
-                </div>
+                </div>-->
             </div>
             <div class="tab-pane fade show " id="next-of-kin" role="tabpanel"
                  aria-labelledby="particulars-tab">
@@ -979,11 +1002,7 @@
                     modelUpdate[group][name] = valueNow;
                 } else {
                     if (typeof type != 'undefined' && type == 'date') {
-                        if (valueNow.length > 0) {
-                            var txt = valueNow.split('/');
-                            valueNow = txt[2] + '-' + txt[1] + '-' + txt[0];
-                        }
-                        modelUpdate[group][nameserver] = valueNow;
+                        modelUpdate[group][nameserver] = api.ToDateCSharp(valueNow);
                     } else {
                         modelUpdate[group][nameserver] = valueNow;
                     }

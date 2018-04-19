@@ -40,7 +40,7 @@ namespace Trinity.DAL.Repository
         {
             if (dataContext.GetValidationErrors().Any())
             {
-                throw new Exception(dataContext.GetValidationErrors().ToList()[0].ValidationErrors.ToList()[0].ErrorMessage);
+                throw new Trinity.Common.ExceptionArgs(dataContext.GetValidationErrors().ToList()[0].ValidationErrors.ToList()[0].ErrorMessage);
             }
             return DataContext.SaveChanges();
         }
@@ -49,7 +49,7 @@ namespace Trinity.DAL.Repository
         {
             if (dataContext.GetValidationErrors().Any())
             {
-                throw new Exception(dataContext.GetValidationErrors().ToList()[0].ValidationErrors.ToList()[0].ErrorMessage);
+                throw new Trinity.Common.ExceptionArgs(dataContext.GetValidationErrors().ToList()[0].ValidationErrors.ToList()[0].ErrorMessage);
             }
             return DataContext.SaveChangesAsync();
         }
@@ -110,7 +110,7 @@ namespace Trinity.DAL.Repository
         {
             if (dataContext.GetValidationErrors().Any())
             {
-                throw new Exception(dataContext.GetValidationErrors().ToList()[0].ValidationErrors.ToList()[0].ErrorMessage);
+                throw new Trinity.Common.ExceptionArgs(dataContext.GetValidationErrors().ToList()[0].ValidationErrors.ToList()[0].ErrorMessage);
             }
             return DataContext.SaveChanges();
         }
@@ -119,7 +119,7 @@ namespace Trinity.DAL.Repository
         {
             if (dataContext.GetValidationErrors().Any())
             {
-                throw new Exception(dataContext.GetValidationErrors().ToList()[0].ValidationErrors.ToList()[0].ErrorMessage);
+                throw new Trinity.Common.ExceptionArgs(dataContext.GetValidationErrors().ToList()[0].ValidationErrors.ToList()[0].ErrorMessage);
             }
             return DataContext.SaveChangesAsync();
         }
