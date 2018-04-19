@@ -53,22 +53,36 @@ namespace Trinity.DAL
         public DAL.DBContext.IssuedCard DoneEnrolSupervisee(string UserId)
         {
             new DAL_UserProfile().CreateUserProfileIfNotExit(UserId);
-            DAL.DBContext.IssuedCard IssueCard = _localUnitOfWork.DataContext.IssuedCards.Where(d => d.UserId.Equals(UserId)).OrderByDescending(d => d.CreatedDate).FirstOrDefault();
-            IssueCard.Status = EnumIssuedCards.Active;
-
-            DAL.DBContext.Membership_Users member_user = _localUnitOfWork.DataContext.Membership_Users.FirstOrDefault(d => d.UserId.Equals(UserId));
-            member_user.SmartCardId = IssueCard.SmartCardId;
-            member_user.Status = EnumUserStatuses.Enrolled;
-
-            DBContext.User_Profiles user = _localUnitOfWork.DataContext.User_Profiles.FirstOrDefault(d => d.UserId == UserId);
-            user.Serial_Number = IssueCard.Serial_Number;
-            user.Date_of_Issue = IssueCard.Date_Of_Issue;
-            user.Expired_Date = IssueCard.Expired_Date;
-
-            _localUnitOfWork.GetRepository<DBContext.User_Profiles>().Update(user);
-            _localUnitOfWork.GetRepository<DBContext.Membership_Users>().Update(member_user);
-            _localUnitOfWork.GetRepository<DAL.DBContext.IssuedCard>().Update(IssueCard);
-            _localUnitOfWork.Save();
+            _localUnitOfWork.DataContext.Database.BeginTransaction();
+            DAL.DBContext.IssuedCard IssueCard = null;
+            try
+            {
+                Common.Utils.LogManager.Debug("DoneEnrolSupervisee: Step 1");
+                IssueCard = _localUnitOfWork.DataContext.IssuedCards.Where(d => d.UserId.Equals(UserId)).OrderByDescending(d => d.CreatedDate).FirstOrDefault();
+                IssueCard.Status = EnumIssuedCards.Active;
+                Common.Utils.LogManager.Debug("DoneEnrolSupervisee: Step 2");
+                DAL.DBContext.Membership_Users member_user = _localUnitOfWork.DataContext.Membership_Users.FirstOrDefault(d => d.UserId.Equals(UserId));
+                member_user.SmartCardId = IssueCard.SmartCardId;
+                member_user.Status = EnumUserStatuses.Enrolled;
+                Common.Utils.LogManager.Debug("DoneEnrolSupervisee: Step 3");
+                DBContext.User_Profiles user = _localUnitOfWork.DataContext.User_Profiles.FirstOrDefault(d => d.UserId == UserId);
+                user.Serial_Number = IssueCard.Serial_Number;
+                user.Date_of_Issue = IssueCard.Date_Of_Issue;
+                user.Expired_Date = IssueCard.Expired_Date;
+                Common.Utils.LogManager.Debug("DoneEnrolSupervisee: Step 4");
+                _localUnitOfWork.GetRepository<DBContext.User_Profiles>().Update(user);
+                _localUnitOfWork.GetRepository<DBContext.Membership_Users>().Update(member_user);
+                _localUnitOfWork.GetRepository<DAL.DBContext.IssuedCard>().Update(IssueCard);
+                _localUnitOfWork.Save();
+                Common.Utils.LogManager.Debug("DoneEnrolSupervisee: Step 5");
+                _localUnitOfWork.DataContext.Database.CurrentTransaction.Commit();
+                Common.Utils.LogManager.Debug("DoneEnrolSupervisee: Step 6");
+            }
+            catch (Exception ex)
+            {
+                _localUnitOfWork.DataContext.Database.CurrentTransaction.Rollback();
+                throw ex;
+            }
             return IssueCard;
         }
         public bool Update(BE.User model)

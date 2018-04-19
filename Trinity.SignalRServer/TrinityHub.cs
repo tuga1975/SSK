@@ -144,6 +144,7 @@ namespace Trinity.NotificationServer
                 item.DateOffline = DateTime.Now;
                 if (item.isApp)
                 {
+                    new DAL.DAL_DeviceStatus().RemoveDevice(Station);
                     Program.MainForm.WriteToConsole("[" + item.Station + "] => App Disconnected");
                     foreach (var itemConnect in Program.ProfileConnected.Where(d => d.isUser && d.Station == EnumStation.DUTYOFFICER))
                     {
