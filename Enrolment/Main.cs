@@ -93,7 +93,9 @@ namespace Enrolment
         {
             try
             {
+                LogManager.Debug("OnInserted");
                 var data = getDataStep();
+                LogManager.Debug("getDataStep OK");
                 if (data != null && data["soure"] == "UpdateSuperviseeBiodata.html" && Convert.ToInt32(data["step"]) == 3 && Convert.ToBoolean(data["printsuccsess"]))
                 {
                     this.LayerWeb.InvokeScript("showPrintMessage", true, "Verifying smart card ...");
@@ -102,8 +104,7 @@ namespace Enrolment
             }
             catch (Exception ex)
             {
-
-                
+                LogManager.Error(ex.ToString());
             }
             
         }
@@ -337,6 +338,7 @@ namespace Enrolment
                 try
                 {
                     // Smart Card
+                    LogManager.Debug("StartSmartCardMonitor");
                     SmartCardReaderMonitor.Start();
                     SmartCardReaderUtil.Instance.StartSmartCardMonitor(null, OnInserted, null);
                 }

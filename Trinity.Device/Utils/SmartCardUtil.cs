@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Trinity.Device.Util
 {
@@ -81,6 +82,7 @@ namespace Trinity.Device.Util
                 // get card data
                 SmartCardData_Original smartCardData_Original = null;
                 bool readDataResult = smartCardReaderUtil.ReadAllData_MifareClassic(ref smartCardData_Original);
+                //MessageBox.Show(readDataResult.ToString());
                 if (!readDataResult)
                 {
                     throw new Exception("Can not get card data");
@@ -92,7 +94,9 @@ namespace Trinity.Device.Util
                 }
 
                 _cardUID = cardUID;
+                //MessageBox.Show(cardUID);
                 _cardData_Original = smartCardData_Original;
+                //MessageBox.Show(Newtonsoft.Json.JsonConvert.SerializeObject(_cardData_Original));
 
                 return true;
             }
