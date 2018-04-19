@@ -129,6 +129,25 @@ namespace ALK
                         SmartCard_OnSmartCardFailed("You haven't enrolled yet.");
                         return;
                     }
+                    if (user.Role == EnumUserRoles.Supervisee)
+                    {
+                        var smartCard = new DAL_IssueCard().GetIssueCardBySmartCardId(cardUID);
+                        if (smartCard == null)
+                        {
+                            SmartCard_OnSmartCardFailed("Your smart card does not exist");
+                            return;
+                        }
+                        else if (smartCard.Status == EnumIssuedCards.Inactive)
+                        {
+                            SmartCard_OnSmartCardFailed("Your smart card does not work");
+                            return;
+                        }
+                        else if (smartCard.Status == EnumIssuedCards.Active && smartCard.Expired_Date < DateTime.Today)
+                        {
+                            SmartCard_OnSmartCardFailed("Your smart card has expired");
+                            return;
+                        }
+                    }
                     Session session = Session.Instance;
                     session.IsSmartCardAuthenticated = true;
                     session[CommonConstants.USER_LOGIN] = user;

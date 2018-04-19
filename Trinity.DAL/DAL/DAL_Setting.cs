@@ -439,9 +439,9 @@ namespace Trinity.DAL
                 ShortDesc = shortDesc,
                 Notes = notes
             };
-            if (_localUnitOfWork.DataContext.Holidays.Any(d=>d.Holiday1== holiday.Holiday1))
+            if (_localUnitOfWork.DataContext.Holidays.Any(d => d.Holiday1 == holiday.Holiday1))
             {
-                throw new Trinity.Common.ExceptionArgs("Holidays "+ holiday.Holiday1.ToString("dd/MM/yyyy")+ " already exist.");
+                throw new Trinity.Common.ExceptionArgs("Holidays " + holiday.Holiday1.ToString("dd/MM/yyyy") + " already exist.");
             }
             else
             {
@@ -999,15 +999,18 @@ namespace Trinity.DAL
                 List<DBContext.Timeslot> arrTimeSlot = new List<Timeslot>();
 
                 #region Morning
-                arrTimeSlot.AddRange(GenerateTimeSlot(dateGenTimeSlot, operationSetting.Morning_Open_Time.Value, operationSetting.Morning_Close_Time.Value, operationSetting.Morning_Interval.HasValue ? operationSetting.Morning_Interval.Value : 15,
-                                                        model.Last_Updated_By, operationSetting.Morning_MaximumSupervisee.HasValue ? operationSetting.Morning_MaximumSupervisee.Value : 0, EnumTimeshift.Morning));
+                if (!operationSetting.Morning_Is_Closed)
+                    arrTimeSlot.AddRange(GenerateTimeSlot(dateGenTimeSlot, operationSetting.Morning_Open_Time.Value, operationSetting.Morning_Close_Time.Value, operationSetting.Morning_Interval.HasValue ? operationSetting.Morning_Interval.Value : 15,
+                                                            model.Last_Updated_By, operationSetting.Morning_MaximumSupervisee.HasValue ? operationSetting.Morning_MaximumSupervisee.Value : 0, EnumTimeshift.Morning));
                 #endregion
                 #region Evening
-                arrTimeSlot.AddRange(GenerateTimeSlot(dateGenTimeSlot, operationSetting.Evening_Open_Time.Value, operationSetting.Evening_Close_Time.Value, operationSetting.Evening_Interval.HasValue ? operationSetting.Evening_Interval.Value : 15,
+                if (!operationSetting.Evening_Is_Closed)
+                    arrTimeSlot.AddRange(GenerateTimeSlot(dateGenTimeSlot, operationSetting.Evening_Open_Time.Value, operationSetting.Evening_Close_Time.Value, operationSetting.Evening_Interval.HasValue ? operationSetting.Evening_Interval.Value : 15,
                                                         model.Last_Updated_By, operationSetting.Evening_MaximumSupervisee.HasValue ? operationSetting.Evening_MaximumSupervisee.Value : 0, EnumTimeshift.Evening));
                 #endregion
                 #region Afternoon
-                arrTimeSlot.AddRange(GenerateTimeSlot(dateGenTimeSlot, operationSetting.Afternoon_Open_Time.Value, operationSetting.Afternoon_Close_Time.Value, operationSetting.Afternoon_Interval.HasValue ? operationSetting.Afternoon_Interval.Value : 15,
+                if (!operationSetting.Afternoon_Is_Closed)
+                    arrTimeSlot.AddRange(GenerateTimeSlot(dateGenTimeSlot, operationSetting.Afternoon_Open_Time.Value, operationSetting.Afternoon_Close_Time.Value, operationSetting.Afternoon_Interval.HasValue ? operationSetting.Afternoon_Interval.Value : 15,
                                                         model.Last_Updated_By, operationSetting.Afternoon_MaximumSupervisee.HasValue ? operationSetting.Afternoon_MaximumSupervisee.Value : 0, EnumTimeshift.Afternoon));
                 #endregion
                 _centralizedUnitOfWork.GetRepository<DBContext.Timeslot>().AddRange(arrTimeSlot);
