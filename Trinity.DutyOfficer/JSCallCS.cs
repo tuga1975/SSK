@@ -215,6 +215,17 @@ namespace DutyOfficer
         {
             var dalQueue = new DAL_QueueNumber();
             Trinity.BE.QueueInfo queueInfo = dalQueue.GetQueueInfoByQueueID(new Guid(queue_ID));
+            if (queueInfo.CurrentStation==EnumStation.UT)
+            {
+                if (queueInfo.Status == EnumQueueStatuses.Finished || queueInfo.Status == EnumQueueStatuses.SelectSealOrDiscard)
+                {
+                    queueInfo.Status = GetResultUT(queueInfo.NRIC, queueInfo.Date.Date);
+                }
+                else if(queueInfo.Status!=EnumQueueStatuses.Errors)
+                {
+                    queueInfo.Status = string.Empty;
+                }
+            }
             this._web.LoadPopupHtml("QueuePopupDetail.html", queueInfo);
         }
 
