@@ -29,7 +29,7 @@ namespace ARK
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-                Environment.Exit(1);
+                //Environment.Exit(1);
             }
             //Application.Run(new FormTextToSpeech());
             //Application.Run(new FormAppointmentDetails());

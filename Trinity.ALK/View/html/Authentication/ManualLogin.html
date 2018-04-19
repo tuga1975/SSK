@@ -27,7 +27,7 @@
 
         setTimeout(function () {
             if ($.trim(_this.val()) != _value) {
-                
+                api.server.RestartBarcodeScanning();
             }
         }, 10);
     });

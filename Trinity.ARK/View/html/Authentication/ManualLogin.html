@@ -24,6 +24,17 @@
     </div>
 </form>
 <script type="text/javascript">
+    $('input[name="loginNRIC"]').mouseup(function () {
+        var _this = $(this);
+        var _value = $.trim(_this.val());
+
+        setTimeout(function () {
+            if ($.trim(_this.val()) != _value) {
+                api.server.RestartBarcodeScanning();
+            }
+        }, 10);
+    });
+
     $('#LoginBtn').click(function () {
 
         var loginNRIC = document.getElementById('loginNRIC').value;
