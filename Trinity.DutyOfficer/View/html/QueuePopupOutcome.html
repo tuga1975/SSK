@@ -30,8 +30,8 @@
                 </div>
             </div>
             <div class="modal-footer d-flex justify-content-center">
-                <button type="button" class="btn btn-default" data-dismiss="modal" aria-label="Close">CANCEL</button>
-                <button type="button" id="btnOutcome" class="btn btn-default">CONFIRM</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal" aria-label="Close" style="padding: 9px 20px !important;min-width: 180px;text-transform: uppercase;font-size: 15px;">CANCEL</button>
+                <button type="button" id="btnOutcome" class="btn btn-default" style="background-color:#1CACF6;color: #FFF;padding: 9px 20px !important;min-width: 180px;text-transform: uppercase;font-size: 15px;margin-left:20px;">CONFIRM</button>
             </div>
         </div>
     </div>
@@ -41,13 +41,10 @@
 
         $('#idQueueOutcome').modal();
 
-        //$("#idQueueOutcome .check").change(function () {
-        //    if ($(this).is(":checked")) {
-        //        $("#idQueueOutcome .check").not($(this)).each(function () {
-        //            $(this).removeAttr("checked");
-        //        })
-        //    }
-        //});
+        $("#idQueueOutcome .check").change(function () {
+            $('#idQueueOutcome .item').removeClass('selected');
+            $(this).parent('.item').addClass('selected');
+        });
 
         $("#idQueueOutcome #btnOutcome").click(function (e) {
             var outcomeChoose = $("input:radio[name='typeOutcome']:checked").val();
@@ -61,9 +58,50 @@
             e.preventDefault(); // avoid to execute the actual submit of the form.
         });
     });
-    
+
 </script>
 <style>
+    #idQueueOutcome .item {
+        position: relative;
+    }
+
+        #idQueueOutcome .item input {
+            position: absolute;
+            left: 0px;
+            top: calc(50% - 8px);
+            height: 16px;
+            width: 100%;
+            z-index: 2;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        #idQueueOutcome .item span {
+            padding-left: 30px;
+        }
+
+            #idQueueOutcome .item span::after {
+                content: "\f00c";
+                position: absolute;
+                top: calc(50% - 8px);
+                left: 0px;
+                height: 16px;
+                width: 16px;
+                background: #FFF;
+                color: #FFF;
+                font-family: FontAwesome;
+                z-index: 1;
+                border: 1px solid #DDD;
+                display: block;
+                font-size: 10px;
+                border-radius: 3px;
+                text-align: center;
+            }
+
+        #idQueueOutcome .item.selected span::after {
+            background-color: #1cacf6;
+            border-color: #1cacf6;
+        }
     /* The container */
     .container {
         display: block;
