@@ -149,13 +149,13 @@
                 sortable: true,
                 halign: "center",
                 formatter: function (value, row, index, field) {
-                    switch (value) {
-                        case Type.error:
-                            return '<span style="color:red;display:inline-block;">' + value + '</span>';
-                        case Type.notification:
-                            return '<span style="color:black;display:inline-block;">' + value + '</span>';
-                        case Type.caution:
-                            return '<span style="color:#FFCC00;display:inline-block;">' + value + '</span>';
+                    switch (value.toLowerCase()) {
+                        case Type.error.toLowerCase():
+                            return '<span style="color:red;display:inline-block;">' + value.charAt(0).toUpperCase() + value.slice(1) + '</span>';
+                        case Type.notification.toLowerCase():
+                            return '<span style="color:black;display:inline-block;">' + value.charAt(0).toUpperCase() + value.slice(1) + '</span>';
+                        case Type.caution.toLowerCase():
+                            return '<span style="color:#FFCC00;display:inline-block;">' + value.charAt(0).toUpperCase() + value.slice(1) + '</span>';
                         default:
                             return "";
                     }

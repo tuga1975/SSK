@@ -99,7 +99,7 @@ namespace Trinity.BackendAPI.Controllers
 
                         await System.Threading.Tasks.Task.Run(() => Trinity.SignalR.Client.Instance.BackendAPISend(NotificationNames.SSP_ERROR, data.NRIC));
                     }
-                    await System.Threading.Tasks.Task.Run(() => Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(user != null ? user.UserId : null, null, data.Content, data.Type, EnumStation.SSP, false, IDNoti));
+                    await System.Threading.Tasks.Task.Run(() => Trinity.SignalR.Client.Instance.SendToAppDutyOfficers((user != null ? user.UserId : null),Subject, data.Content, data.Type, EnumStation.SSP, false, IDNoti));
                     //return Ok(IDNoti);
                     return Ok(true);
                 }
