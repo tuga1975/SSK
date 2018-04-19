@@ -410,6 +410,15 @@ namespace ARK
             }
         }
 
+        public void RestartBarcodeScanning()
+        {
+            // Enable scanner
+            if (BarcodeScannerUtil.Instance.GetDeviceStatus().Contains(EnumDeviceStatus.Connected))
+            {
+                System.Threading.Tasks.Task.Factory.StartNew(() => BarcodeScannerUtil.Instance.StartScanning(BarcodeScannerCallback));
+            }
+        }
+
         private void BarcodeScannerCallback(string value, string error)
         {
             try

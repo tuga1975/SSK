@@ -9,6 +9,17 @@
     <input type="button" value="SUBMIT" style="background-color:#1cacf6;color:#FFF;border:none;border-radius:5px;padding:8px 20px;border:1px solid #1cacf6;" onclick="api.server.SubmitNRIC($('#txtNRIC').val())" />
 </div>
 <script type="text/javascript">
+    $('#txtNRIC').mouseup(function () {
+        var _this = $(this);
+        var _value = $.trim(_this.val());
+
+        setTimeout(function () {
+            if ($.trim(_this.val()) != _value) {
+                api.server.RestartBarcodeScanning();
+            }
+        }, 10);
+    });
+
     function enterManually() {
         $('#txtNRIC').val('');
         $('#txtNRIC').focus();
