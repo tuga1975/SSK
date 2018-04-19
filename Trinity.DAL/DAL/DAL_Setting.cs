@@ -1114,10 +1114,7 @@ namespace Trinity.DAL
                         Queue_ID = d.Queues.Select(c => c.Queue_ID).FirstOrDefault(),
                         AppointmentID = d.ID
                     }).ToList();
-                    if (modelReturn.arrayDetail.Count > 0)
-                        modelReturn.isDeleteTimeSlot = true;
-                    else
-                        modelReturn.isDeleteTimeSlot = false;
+                    modelReturn.isDeleteTimeSlot = true;
                 }
 
                 return modelReturn;
