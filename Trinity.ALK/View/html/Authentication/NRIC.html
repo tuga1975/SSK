@@ -18,6 +18,17 @@
 </div>
 
 <script type="text/javascript">
+    $('#txtNRIC').mouseup(function () {
+        var _this = $(this);
+        var _value = $.trim(_this.val());
+
+        setTimeout(function () {
+            if ($.trim(_this.val()) != _value) {
+                //
+            }
+        }, 10);
+    });
+
     function enterManually() {
         $('#txtNRIC').val('');
         $('#txtNRIC').focus();

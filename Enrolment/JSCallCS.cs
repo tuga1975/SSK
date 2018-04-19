@@ -17,6 +17,7 @@ using Trinity.Device;
 using Trinity.Device.Util;
 using System.IO;
 using System.Drawing;
+using Trinity.Common.Utils;
 
 namespace Enrolment
 {
@@ -654,15 +655,18 @@ namespace Enrolment
 
         public void CheckVerfyCard()
         {
+            LogManager.Debug("Start CheckVerfyCard");
             SmartCardReaderUtil smartCardReaderUtil = SmartCardReaderUtil.Instance;
             SmartCardData_Original smartCardData_Original = null;
             bool readDataResult = smartCardReaderUtil.ReadAllData_MifareClassic(ref smartCardData_Original);
+            LogManager.Debug("readDataResult: " + readDataResult.ToString());
             if (!readDataResult)
             {
-                this._web.InvokeScript("showCheckVerfyCard", false, "Can not read information smart card.");
+                this._web.InvokeScript("showCheckVerfyCard", false, "Can not read information of smart card.");
             }
             else
             {
+                //MessageBox.Show(Newtonsoft.Json.JsonConvert.SerializeObject(smartCardData_Original));
                 this._web.InvokeScript("showPrintMessage", true, "");
                 this._web.InvokeScript("showCheckVerfyCard", true, JsonConvert.SerializeObject(new
                 {
