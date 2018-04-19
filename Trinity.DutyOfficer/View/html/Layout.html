@@ -153,9 +153,9 @@
     api.ready(function () {
         LoadStationColorDevice();
         $(".notifyCount").hide();
-        //window.setInterval(function () {
-        //    LoadStationColorDevice();
-        //}, 900000); // Auto call this to update color station every 15 mins
+        window.setInterval(function () {
+            LoadStationColorDevice();
+        }, 900000); // Auto call this to update color station every 15 mins
     });
     function LoadStationColorDevice() {
         api.server.GetStationClolorDevice(function (data) {
