@@ -174,7 +174,7 @@
                         <td>{Evening_MaximumSupervisee}</td>\
                         <td>{Evening_Spare_Slots}</td>\
                         <td>{Evening_Interval} mins</td>\
-                        <td style="color: #1cacf6; background: #fff; font-weight: normal; cursor:pointer;" onclick="showPopupSettingDetail(\'{DayOfWeekTxt}\');">Edit</td>\
+                        <td style="color: #1cacf6; background: #fff; font-weight: normal; cursor:pointer;text-decoration: underline;" onclick="showPopupSettingDetail(\'{DayOfWeekTxt}\');">Edit</td>\
                 </tr>';
         if (data.Monday != null) {
             $('[table-settings]').append(api.DumpDataToTxt(html, data.Monday));
