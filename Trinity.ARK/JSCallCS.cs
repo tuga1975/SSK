@@ -103,14 +103,25 @@ namespace ARK
         public void BookAppointment()
         {
             Session session = Session.Instance;
-            Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
             var eventCenter = Trinity.Common.Common.EventCenter.Default;
+            Trinity.BE.User currentUser = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+            Trinity.BE.User supervisee = null;
+            if (currentUser.Role == EnumUserRoles.DutyOfficer)
+            {
+                supervisee = (Trinity.BE.User)session[CommonConstants.SUPERVISEE];
+            }
+            else
+            {
+                supervisee = currentUser;
+            }
+
+
 
             // check supervisee have appoitment
-            Trinity.DAL.DBContext.Appointment appointment = new DAL_Appointments().GetNextAppointment(user.UserId);
+            Trinity.DAL.DBContext.Appointment appointment = new DAL_Appointments().GetNextAppointment(supervisee.UserId);
             if (appointment != null && (appointment.Status == EnumAppointmentStatuses.Reported || appointment.Status == EnumAppointmentStatuses.Absent))
             {
-                appointment = new DAL_Appointments().GetNextAppointmentByStatus(user.UserId, EnumAppointmentStatuses.Pending);
+                appointment = new DAL_Appointments().GetNextAppointmentByStatus(supervisee.UserId, EnumAppointmentStatuses.Pending);
             }
 
             if (appointment == null)
@@ -237,12 +248,24 @@ namespace ARK
             }
             else
             {
-                Trinity.BE.User user = (Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN];
+                Session session = Session.Instance;
+                Trinity.BE.User currentUser = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+                Trinity.BE.User supervisee = null;
+                if (currentUser.Role == EnumUserRoles.DutyOfficer)
+                {
+                    supervisee = (Trinity.BE.User)session[CommonConstants.SUPERVISEE];
+                }
+                else
+                {
+                    supervisee = currentUser;
+                }
+
+
                 bool updateResult = new DAL_Appointments().UpdateTimeslot_ID(appointment_ID, timeslot_ID);
 
                 if (updateResult)
                 {
-                    Trinity.SignalR.Client.Instance.AppointmentBooked(user.UserId, appointment_ID, timeslot_ID);
+                    Trinity.SignalR.Client.Instance.AppointmentBooked(supervisee.UserId, appointment_ID, timeslot_ID);
                     AppointmentDetails appointmentdetails = new DAL_Appointments().GetAppointmentDetails(appointment_ID);
                     if (BarcodePrinterUtil.Instance.GetDeviceStatus(EnumDeviceNames.ReceiptPrinter).Contains(EnumDeviceStatus.Connected))
                     {
@@ -250,7 +273,7 @@ namespace ARK
                     }
                     else
                     {
-                        Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(user.UserId, "Lost connection to printer", "Lost connection to printer", EnumNotificationTypes.Error);
+                        Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(supervisee.UserId, "Lost connection to printer", "Lost connection to printer", EnumNotificationTypes.Error);
                         _web.ShowMessage("Lost connection to printer");
                     }
                     LoadPageSupervisee();
@@ -274,7 +297,8 @@ namespace ARK
         {
             Session session = Session.Instance;
             Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-            _web.LoadPageHtml("Profile.html", new {
+            _web.LoadPageHtml("Profile.html", new
+            {
                 Membership_Users = user,
                 User_Profiles = new DAL_UserProfile().GetProfile(user.UserId),
                 Primary_Addresses = new DAL_UserProfile().GetAddByUserId(user.UserId, true),
@@ -288,7 +312,7 @@ namespace ARK
             Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
             var data = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, object>>>(param);
             List<string> arrayScan = JsonConvert.DeserializeObject<List<string>>(arrayDocumentScan);
-            if(new DAL_UserProfile().ARKUpdateProfile(user.UserId, data, arrayScan))
+            if (new DAL_UserProfile().ARKUpdateProfile(user.UserId, data, arrayScan))
             {
                 if (isSendNotiIfDontScanDocument && arrayScan.Count == 0)
                 {
@@ -611,69 +635,25 @@ namespace ARK
             }
             DAL_Appointments _Appointment = new DAL_Appointments();
             Trinity.DAL.DBContext.Appointment appointment = new DAL_Appointments().GetAppointmentByDate(supervisee.UserId, DateTime.Today);
-            if (appointment == null && currentUser.Role == EnumUserRoles.Supervisee)
-            {
-                var eventCenter = Trinity.Common.Common.EventCenter.Default;
-                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_MESSAGE, Message = "You have no appointment today" });
-            }
-            else
-            {
-                var _dalQueue = new DAL_QueueNumber();
-                Trinity.DAL.DBContext.Queue queueNumber = null;
+            var _dalQueue = new DAL_QueueNumber();
+            Trinity.DAL.DBContext.Queue queueNumber = null;
 
-                if (!_dalQueue.IsUserAlreadyQueue(supervisee.UserId, DateTime.Today))
+            if (!_dalQueue.IsUserAlreadyQueue(supervisee.UserId, DateTime.Today))
+            {
+                if (appointment != null)
                 {
-                    if (appointment != null)
+                    if (string.IsNullOrEmpty(appointment.Timeslot_ID) && currentUser.Role == EnumUserRoles.Supervisee)
                     {
-                        if (string.IsNullOrEmpty(appointment.Timeslot_ID) && currentUser.Role == EnumUserRoles.Supervisee)
-                        {
-                            _web.ShowMessage("You have not selected a timeslot!<br/> Please go to Book Appointment page to select a timeslot.");
-                        }
-                        else
-                        {
-                            queueNumber = _dalQueue.InsertQueueNumber(appointment.ID, appointment.UserId, EnumStation.ARK, currentUser.UserId);
-                            var dalLabel = new DAL_Labels();
-                            string MarkingNumber = dalLabel.GetMarkingNumber(supervisee.UserId, DateTime.Today);
-                            if (string.IsNullOrEmpty(MarkingNumber))
-                                MarkingNumber = new DAL_SettingSystem().GenerateMarkingNumber();
-                            dalLabel.Insert(new Trinity.BE.Label
-                            {
-                                UserId = supervisee.UserId,
-                                Label_Type = EnumLabelType.TT,
-                                CompanyName = CommonConstants.COMPANY_NAME,
-                                MarkingNo = MarkingNumber,
-                                NRIC = supervisee.NRIC,
-                                Name = supervisee.Name,
-                                LastStation = EnumStation.ARK,
-                                Queue_ID = queueNumber.Queue_ID
-                            });
-                            dalLabel.Insert(new Trinity.BE.Label
-                            {
-                                UserId = supervisee.UserId,
-                                Label_Type = EnumLabelType.MUB,
-                                CompanyName = CommonConstants.COMPANY_NAME,
-                                MarkingNo = MarkingNumber,
-                                NRIC = supervisee.NRIC,
-                                Name = supervisee.Name,
-                                LastStation = EnumStation.ARK,
-                                Queue_ID = queueNumber.Queue_ID
-                            });
-
-
-                            Trinity.SignalR.Client.Instance.AppointmentReported(queueNumber.Queue_ID.ToString().Trim(), queueNumber.Appointment_ID.ToString().Trim());
-                            Trinity.SignalR.Client.Instance.QueueInserted(queueNumber.Queue_ID.ToString().Trim());
-                            APIUtils.FormQueueNumber.RefreshQueueNumbers();
-                            this._web.ShowMessage("Your queue number is:" + queueNumber.QueuedNumber);
-                        }
+                        _web.ShowMessage("You have not selected a timeslot!");
+                        BookAppointment();
                     }
                     else
                     {
-                        queueNumber = _dalQueue.InsertQueueNumberFromDO(supervisee.UserId, EnumStation.ARK, currentUser.UserId);
+                        queueNumber = _dalQueue.InsertQueueNumber(appointment.ID, appointment.UserId, EnumStation.ARK, currentUser.UserId);
                         var dalLabel = new DAL_Labels();
-                        string MarkingNumber = dalLabel.GetMarkingNumber(supervisee.UserId,DateTime.Today);
+                        string MarkingNumber = dalLabel.GetMarkingNumber(supervisee.UserId, DateTime.Today);
                         if (string.IsNullOrEmpty(MarkingNumber))
                             MarkingNumber = new DAL_SettingSystem().GenerateMarkingNumber();
-
                         dalLabel.Insert(new Trinity.BE.Label
                         {
                             UserId = supervisee.UserId,
@@ -696,43 +676,89 @@ namespace ARK
                             LastStation = EnumStation.ARK,
                             Queue_ID = queueNumber.Queue_ID
                         });
+
+
+                        Trinity.SignalR.Client.Instance.AppointmentReported(queueNumber.Queue_ID.ToString().Trim(), queueNumber.Appointment_ID.ToString().Trim());
                         Trinity.SignalR.Client.Instance.QueueInserted(queueNumber.Queue_ID.ToString().Trim());
                         APIUtils.FormQueueNumber.RefreshQueueNumbers();
                         this._web.ShowMessage("Your queue number is:" + queueNumber.QueuedNumber);
                     }
-
-                    //if (appointment != null && string.IsNullOrEmpty(appointment.Timeslot_ID))
-                    //{
-                    //    var eventCenter = Trinity.Common.Common.EventCenter.Default;
-                    //    eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_MESSAGE, Message = "You have not selected the timeslot!\n Please go to Book Appointment page to select a timeslot." });
-                    //}
-                    //else if (appointment != null && !string.IsNullOrEmpty(appointment.Timeslot_ID))
-                    //{
-                    //    queueNumber = _dalQueue.InsertQueueNumber(appointment.ID, appointment.UserId, EnumStation.ARK, currentUser.UserId);
-                    //    if (queueNumber != null)
-                    //    {
-                    //        Trinity.SignalR.Client.Instance.AppointmentBookedOrReported(appointment.ID.ToString().Trim(), EnumAppointmentStatuses.Reported);
-                    //        Trinity.SignalR.Client.Instance.QueueInserted(queueNumber.Queue_ID.ToString().Trim());
-                    //        APIUtils.FormQueueNumber.RefreshQueueNumbers();
-                    //        var eventCenter = Trinity.Common.Common.EventCenter.Default;
-                    //        eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_MESSAGE, Message = "Your queue number is:" + queueNumber.QueuedNumber });
-                    //    }
-                    //    else
-                    //    {
-                    //        this._web.ShowMessage("Sorry all timeslots are fully booked!");
-                    //    }
-
-                    //}
-                    //else
-                    //{
-
-                    //}
                 }
                 else
                 {
-                    this._web.ShowMessage("You already registered a queue number!\n Please wait for your turn.");
+                    queueNumber = _dalQueue.InsertQueueNumberFromDO(supervisee.UserId, EnumStation.ARK, currentUser.UserId);
+                    var dalLabel = new DAL_Labels();
+                    string MarkingNumber = dalLabel.GetMarkingNumber(supervisee.UserId, DateTime.Today);
+                    if (string.IsNullOrEmpty(MarkingNumber))
+                        MarkingNumber = new DAL_SettingSystem().GenerateMarkingNumber();
+
+                    dalLabel.Insert(new Trinity.BE.Label
+                    {
+                        UserId = supervisee.UserId,
+                        Label_Type = EnumLabelType.TT,
+                        CompanyName = CommonConstants.COMPANY_NAME,
+                        MarkingNo = MarkingNumber,
+                        NRIC = supervisee.NRIC,
+                        Name = supervisee.Name,
+                        LastStation = EnumStation.ARK,
+                        Queue_ID = queueNumber.Queue_ID
+                    });
+                    dalLabel.Insert(new Trinity.BE.Label
+                    {
+                        UserId = supervisee.UserId,
+                        Label_Type = EnumLabelType.MUB,
+                        CompanyName = CommonConstants.COMPANY_NAME,
+                        MarkingNo = MarkingNumber,
+                        NRIC = supervisee.NRIC,
+                        Name = supervisee.Name,
+                        LastStation = EnumStation.ARK,
+                        Queue_ID = queueNumber.Queue_ID
+                    });
+                    Trinity.SignalR.Client.Instance.QueueInserted(queueNumber.Queue_ID.ToString().Trim());
+                    APIUtils.FormQueueNumber.RefreshQueueNumbers();
+                    this._web.ShowMessage("Your queue number is:" + queueNumber.QueuedNumber);
                 }
+
+                //if (appointment != null && string.IsNullOrEmpty(appointment.Timeslot_ID))
+                //{
+                //    var eventCenter = Trinity.Common.Common.EventCenter.Default;
+                //    eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_MESSAGE, Message = "You have not selected the timeslot!\n Please go to Book Appointment page to select a timeslot." });
+                //}
+                //else if (appointment != null && !string.IsNullOrEmpty(appointment.Timeslot_ID))
+                //{
+                //    queueNumber = _dalQueue.InsertQueueNumber(appointment.ID, appointment.UserId, EnumStation.ARK, currentUser.UserId);
+                //    if (queueNumber != null)
+                //    {
+                //        Trinity.SignalR.Client.Instance.AppointmentBookedOrReported(appointment.ID.ToString().Trim(), EnumAppointmentStatuses.Reported);
+                //        Trinity.SignalR.Client.Instance.QueueInserted(queueNumber.Queue_ID.ToString().Trim());
+                //        APIUtils.FormQueueNumber.RefreshQueueNumbers();
+                //        var eventCenter = Trinity.Common.Common.EventCenter.Default;
+                //        eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_MESSAGE, Message = "Your queue number is:" + queueNumber.QueuedNumber });
+                //    }
+                //    else
+                //    {
+                //        this._web.ShowMessage("Sorry all timeslots are fully booked!");
+                //    }
+
+                //}
+                //else
+                //{
+
+                //}
             }
+            else
+            {
+                this._web.ShowMessage("You already registered a queue number!\n Please wait for your turn.");
+            }
+            //if (appointment == null && currentUser.Role == EnumUserRoles.Supervisee)
+            //{
+            //    var eventCenter = Trinity.Common.Common.EventCenter.Default;
+            //    eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.ALERT_MESSAGE, Message = "You have no appointment today" });
+            //}
+            //else
+            //{
+
+            //}
         }
 
         public void SaveReasonForQueue(string dataTxt, string arrayDocumentScan)
