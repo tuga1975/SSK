@@ -24,7 +24,7 @@
             </thead>
         </table>
         <br />
-        <div id="PrintUBlabel" class="text-right">
+        <div id="PrintUBlabel" class="text-right" style="display:none;">
             <button id="PrintUBbutton" class="btn btn-default" style="background-color:#1CACF6;color: #FFF;padding: 9px 20px !important;min-width: 180px;text-transform: uppercase;font-size: 15px;">Print</button>
         </div>
     </div>
@@ -65,6 +65,7 @@
         background-color: #1cacf6;
         border-color: #1cacf6;
     }
+
     .table tr.selected td.bs-checkbox::before {
         content: " ";
         width: 100%;
@@ -93,6 +94,7 @@
         api.server.GetAllUBlabels(function (data) {
             dataSource = data;
             $('#UBlabel').bootstrapTable('load', dataSource);
+            $('#PrintUBlabel').css('display', dataSource.length > 0 ? 'block' : 'none');
         });
     }
     getDataAllUBlabels();
@@ -110,6 +112,7 @@
             });
         }
         $('#UBlabel').bootstrapTable('load', dataSource);
+        $('#PrintUBlabel').css('display', dataSource.length > 0 ? 'block' : 'none');
     }
 
     $(window).ready(function () {
