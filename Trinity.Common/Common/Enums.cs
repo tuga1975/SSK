@@ -536,7 +536,7 @@ public static class EnumMessage
     public const string NotConnectCentralized = "Can not connect to Centralized";
     public const string SmartCardIsAlreadyInUse = "This smart card is already in use";
     public const string SelectOutCome = "Select outcome";
-    public const string SelectSealtOrDiscard = "Results Negative. Select to Sealt or Discard";
+    public const string SelectSealtOrDiscard = "Select {0} to Seal or Discard";
     public const string LeakageDeletected = "Leakage Deletected";
 }
 

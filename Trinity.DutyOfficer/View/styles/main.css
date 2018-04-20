@@ -310,15 +310,18 @@ span[color] {
     position: fixed;
     z-index: 10;
     width: 100%;
-    height: calc(100vh - 290px);
-    top: 270px;
+    height: calc(100% - 276px);
+    top: 276px;
     left: 0px;
     overflow-x: hidden;
     overflow-y: auto;
 }
 
 #content {
-    position: relative;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
 }
 
 .status-text {
@@ -343,22 +346,23 @@ span[color] {
     background: #fff;
 }
 
-.tab-header span {
-    border-bottom: 2px solid #ff005a;
-    font-weight: bold;
-    padding-bottom: 10px;
-    font-size: 18px;
-}
+    .tab-header span {
+        border-bottom: 2px solid #ff005a;
+        font-weight: bold;
+        padding-bottom: 10px;
+        font-size: 18px;
+    }
 
 .tab-content {
     padding: 20px 40px;
-    overflow: auto;
+    /*overflow: auto;*/
 }
 
-.tab-content .tabtitle span {
-    color: #1cacf6;
-    font-weight: 500;
-}
+    .tab-content .tabtitle span {
+        color: #1cacf6;
+        font-weight: 500;
+    }
+
 table {
     font-size: 14px;
     width: 100%;
@@ -370,15 +374,15 @@ table {
     margin-top: 20px;
 }
 
-table th,
-table tr.active {
-    background-color: #f6f6f6;
-    border-color: #fff;
-}
+    table th,
+    table tr.active {
+        background-color: #f6f6f6;
+        border-color: #fff;
+    }
 
-table th[checkbox] {
-    padding: 0 20px;
-}
+        table th[checkbox] {
+            padding: 0 20px;
+        }
 /*Search, Filter*/
 .fixed-table-toolbar .search {
     font-size: 14px;
@@ -386,8 +390,8 @@ table th[checkbox] {
     z-index: 10;
     top: 210px;
     right: 40px;
-    
 }
+
     .fixed-table-toolbar .search .form-control {
         background-color: #f6f6f6;
         padding: 10px 12px;
@@ -401,6 +405,7 @@ table th[checkbox] {
         background-size: 20px;
         padding-right: 50px;
     }
+
 table thead th .both {
     background-image: url(../img/icon-sort.png) !important;
     margin-right: 10px !important;
@@ -427,7 +432,7 @@ table td {
 }
 
 table th {
-    padding:3px 10px !important;
+    padding: 3px 10px !important;
 }
 
 table tr:last-child td {
@@ -642,8 +647,8 @@ table th {
 }
 
 #operationTable tr th {
-    border-bottom: 1px solid #dedede !important;
-    border-top: 1px solid #dedede !important;
+    /*border-bottom: 1px solid #dedede !important;
+    border-top: 1px solid #dedede !important;*/
 }
 
 #panel-holidays .tabactive button {
@@ -1010,8 +1015,9 @@ tr.selected input[type="checkbox"]:after {
     border-radius: 5px;
     color: dodgerblue;
 }
-.modal-header .close{
-    outline:none !important;
+
+.modal-header .close {
+    outline: none !important;
 }
 
 
@@ -1055,10 +1061,14 @@ tr.selected input[type="checkbox"]:after {
     color: #c4c8cb;
 }
 
-.datepicker td, .datepicker th {
-    padding: 5px 10px !important;
+.datepicker {
+    z-index: 100 !important;
 }
 
-.pagination-detail{
-    display:none;
+    .datepicker td, .datepicker th {
+        padding: 5px 10px !important;
+    }
+
+.pagination-detail {
+    display: none;
 }

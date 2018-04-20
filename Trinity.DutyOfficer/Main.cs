@@ -155,7 +155,7 @@ namespace DutyOfficer
         private void OnAppDisconnected_Handler(object sender, EventInfo e)
         {
             string station = (string)e.Source;
-            new DAL_DeviceStatus().RemoveDevice(station);
+            //new DAL_DeviceStatus().RemoveDevice(station);
             LayerWeb.InvokeScript("LoadStationColorDevice");
         }
 

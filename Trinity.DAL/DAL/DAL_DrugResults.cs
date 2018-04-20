@@ -35,7 +35,7 @@ namespace Trinity.DAL
             foreach (var item in query)
             {
                 arrayQueueUpdateed.Add(item.queue.Queue_ID);
-                DAL_Queue.UpdateQueueStatusByUserId(item.queue.UserId, EnumStation.UT, EnumQueueStatuses.SelectSealOrDiscard, EnumStation.UT, EnumQueueStatuses.SelectSealOrDiscard, EnumMessage.SelectSealtOrDiscard, EnumQueueOutcomeText.Processing);
+                DAL_Queue.UpdateQueueStatusByUserId(item.queue.UserId, EnumStation.UT, EnumQueueStatuses.SelectSealOrDiscard, EnumStation.UT, EnumQueueStatuses.SelectSealOrDiscard, String.Format(EnumMessage.SelectSealtOrDiscard, item.drugresult.Result), EnumQueueOutcomeText.Processing);
             }
             return arrayQueueUpdateed;
         }
