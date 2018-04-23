@@ -575,7 +575,7 @@ namespace ARK
             {
                 var listAppointment = new DAL_Appointments().GetAbsentAppointments(supervisee.UserId);
 
-                this._web.ShowMessage("You have been absent for " + absenceCount + " times.<br/>Please provide reasons and the supporting documents.");
+                this._web.ShowMessage("You have been absent for " + absenceCount + " time(s).<br/>Please provide reason(s) and supporting document(s).");
                 _web.LoadPageHtml("ReasonsForQueue.html", listAppointment.Select(d => new
                 {
                     ID = d.ID,
