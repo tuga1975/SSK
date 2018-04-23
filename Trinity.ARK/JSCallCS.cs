@@ -293,7 +293,7 @@ namespace ARK
         }
         #endregion
 
-        private object[] data_old_update_profile  = null;
+        private object[] data_old_update_profile = null;
         public void LoadProfile()
         {
             Session session = Session.Instance;
@@ -319,20 +319,17 @@ namespace ARK
             Trinity.BE.UserProfile User_Profiles_New = null;
             Trinity.BE.Address Alternate_Addresses_New = null;
             Nullable<Guid> IDDocuemnt = null;
-            if (new DAL_UserProfile().ARKUpdateProfile(user.UserId, data, arrayScan,out User_Profiles_New,out Alternate_Addresses_New,out IDDocuemnt))
+            if (new DAL_UserProfile().ARKUpdateProfile(user.UserId, data, arrayScan, out User_Profiles_New, out Alternate_Addresses_New, out IDDocuemnt))
             {
-                
-                new DAL_UpdateProfile_Requests().CreateRequest(
-                    (Trinity.BE.UserProfile)data_old_update_profile[0],
-                    (Trinity.BE.Address)data_old_update_profile[1],
-                    User_Profiles_New,
-                    Alternate_Addresses_New,
-                    IDDocuemnt
-                );
-
-                if (isSendNotiIfDontScanDocument && arrayScan.Count == 0)
+                if (isSendNotiIfDontScanDocument)
                 {
-
+                    new DAL_UpdateProfile_Requests().CreateRequest(
+                        (Trinity.BE.UserProfile)data_old_update_profile[0],
+                        (Trinity.BE.Address)data_old_update_profile[1],
+                        User_Profiles_New,
+                        Alternate_Addresses_New,
+                        IDDocuemnt
+                    );
                     Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(user.UserId, "Supervisee " + user.Name + " has updated profile don't upload scan document.", "Please check Supervisee " + user.Name + "'s information!", EnumNotificationTypes.Notification);
                 }
                 LoadPageSupervisee();
