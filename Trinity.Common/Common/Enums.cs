@@ -599,3 +599,10 @@ public static class ImageAttr
     public const float Ratio = (float)Height/ (float)Width;
     
 }
+
+public static class Enum_UpdateProfile_Requests
+{
+    public const string Reject = "Reject";
+    public const string Approve = "Approve";
+    public const string Pending = "Pending";
+}

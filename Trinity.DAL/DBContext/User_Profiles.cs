@@ -63,12 +63,14 @@ namespace Trinity.DAL.DBContext
         public Nullable<System.DateTime> PrbEndingDate { get; set; }
         public Nullable<int> ForgetPass_FailAttempt { get; set; }
         public Nullable<int> DOB_FailAttempt { get; set; }
+        public string Current_Profile_Version { get; set; }
     
         public virtual Address Address { get; set; }
         public virtual Address Address1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<APS_USER_ACT_LOG> APS_USER_ACT_LOG { get; set; }
         public virtual Membership_Users Membership_Users { get; set; }
+        public virtual UpdateProfile_Requests UpdateProfile_Requests { get; set; }
         public virtual UploadedDocument UploadedDocument { get; set; }
     }
 }

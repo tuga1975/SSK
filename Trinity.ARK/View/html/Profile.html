@@ -375,9 +375,10 @@
         .form-group-text label {
             display: inline-block;
             padding: .375rem .75rem;
-            width: 35%;
+            width: 160px;
             font-size: 100%;
             padding-left: 0px;
+            color: #1cacf6;
         }
 
         .form-group-text .value {
@@ -385,7 +386,61 @@
             padding: .375rem .75rem;
             font-weight: bold;
             font-size: 100%;
+            padding-left: 16px;
         }
+
+    [group-input] {
+        position: relative;
+        margin-bottom: 30px;
+    }
+
+        [group-input]::before {
+            content: attr(group-input);
+            color: #209CDD;
+            font-size: 100%;
+            position: absolute;
+            z-index: 0;
+            top: 6px;
+            left: 0px;
+            max-width: 160px;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        [group-input][scandoc="1"]::before {
+            padding-right: 10px;
+            background-image: url(../img/star.png);
+            background-position: top right;
+            background-repeat: no-repeat;
+            background-size: 6px;
+        }
+
+        [group-input] > input, [group-input] > select {
+            border: none;
+            font-size: 100%;
+            width: 100%;
+            padding-left: 180px;
+            position: relative;
+            z-index: 1;
+            background-color: transparent;
+            outline: none;
+            height: 100%;
+            padding-top: 8px;
+            padding-bottom: 8px;
+        }
+
+        [group-input] > input, [group-input] > select {
+            border-bottom: 1px solid #ccc;
+        }
+
+            [group-input] > input:focus, [group-input] > input:hover, [group-input] > select:focus, [group-input] > select:hover {
+                border-bottom: 1px solid #1CACF6;
+            }
+
+    :-ms-input-placeholder {
+        font-style: italic;
+    }
 </style>
 
 <div class="p-3">
@@ -445,15 +500,16 @@
 </ul>
 
 <div class="profile-content">
+
     <form class="form-material profile-wrap z-depth-2" id="profileFrm">
         <div class="profile-tab-content bg-white tab-content">
-            <div class="tab-pane fade show active" id="particulars" role="tabpanel"
-                 aria-labelledby="particulars-tab">
+            <div class="tab-pane fade show active" id="particulars" role="tabpanel" aria-labelledby="particulars-tab">
                 <div class="form-group-text">
                     <label>
                         Name
                     </label>
                     <div class="value" name="Name" group="Membership_Users">
+                        Nguyễn Văn Thắng
                     </div>
                 </div>
                 <div class="form-group-text">
@@ -486,435 +542,87 @@
                     <div class="value" name="Maritial_Status" group="User_Profiles">
                     </div>
                 </div>
-                
-                <div class="form-group">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <label for="SecondaryContact">
-                                <span class="input-group-text">
-                                    Primary Contact No.
-                                </span>
-                            </label>
-
-                        </div>
-                        <input type="text" class="form-control"
-                               placeholder="eg. 98764324"
-                               aria-label="house" aria-describedby="house" name="Primary_Phone" group="User_Profiles" maxlength="50" scandoc="0">
-                    </div>
-                    <div class="clearfix"></div>
-                </div>
-
-                <div class="form-group">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <label for="SecondaryContact">
-                                <span class="input-group-text">
-                                    Secondary Contact No.
-                                </span>
-                            </label>
-
-                        </div>
-                        <input type="text" class="form-control"
-                               placeholder="eg. 98764324"
-                               aria-label="house" aria-describedby="house" name="Secondary_Phone" group="User_Profiles" maxlength="50" scandoc="0">
-                    </div>
-                    <div class="clearfix"></div>
-                </div>
-
-
-                <div class="form-group">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <label for="SecondaryEmail">
-                                <span class="input-group-text">
-                                    Primary Email
-                                </span>
-                            </label>
-
-                        </div>
-                        <input type="text" class="form-control"
-                               placeholder="email@email.com"
-                               aria-label="house" aria-describedby="house" name="Primary_Email" group="User_Profiles" maxlength="255" scandoc="0">
-                    </div>
-                    <div class="clearfix"></div>
-                </div>
-
-                <div class="form-group">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <label for="SecondaryEmail">
-                                <span class="input-group-text">
-                                    Secondary Email
-                                </span>
-                            </label>
-
-                        </div>
-                        <input type="text" class="form-control"
-                               placeholder="email@email.com"
-                               aria-label="house" aria-describedby="house" name="Secondary_Email" group="User_Profiles" maxlength="255" scandoc="0">
-                    </div>
-                    <div class="clearfix"></div>
-                </div>
-
-            </div>
-            <div class="tab-pane fade show " id="addresses" role="tabpanel"
-                 aria-labelledby="particulars-tab">
                 <div class="form-group-text">
                     <label>
-                        Primary House Number
+                        Primary Contact No.
+                    </label>
+                    <div class="value" name="Primary_Phone" group="User_Profiles">
+                        Nguyễn Văn Thắng
+                    </div>
+                </div>
+                <div group-input="Secondary Contact No." scandoc="0"><input type="text" placeholder="eg. 98764324" name="Secondary_Phone" group="User_Profiles" scandoc="0" maxlength="50"></div>
+                <div class="form-group-text" style="margin-top:0px;">
+                    <label>
+                        Primary Email
+                    </label>
+                    <div class="value" name="Primary_Email" group="User_Profiles">
+                    </div>
+                </div>
+                <div group-input="Secondary Email" scandoc="0"><input type="text" placeholder="email@email.com" name="Secondary_Email" group="User_Profiles" scandoc="0" maxlength="255"></div>
+
+            </div>
+            <div class="tab-pane fade show " id="addresses" role="tabpanel" aria-labelledby="particulars-tab">
+                <div style="margin-bottom:10px;font-size: 110%;font-weight: bold;color: #1cacf6;">Primary Address</div>
+                <div class="form-group-text">
+                    <label>
+                        House Number
                     </label>
                     <div class="value" name="BlkHouse_Number" group="Primary_Addresses">
                     </div>
                 </div>
                 <div class="form-group-text">
                     <label>
-                        Primary Unit Number
+                        Unit Number
                     </label>
                     <div class="value" name="FlrUnit_Number" group="Primary_Addresses">
                     </div>
                 </div>
                 <div class="form-group-text">
                     <label>
-                        Primary Street Name
+                        Street Name
                     </label>
                     <div class="value" name="Street_Name" group="Primary_Addresses">
                     </div>
                 </div>
                 <div class="form-group-text">
                     <label>
-                        Primary Postal Code
+                        Postal Code
                     </label>
                     <div class="value" name="Postal_Code" group="Primary_Addresses">
                     </div>
                 </div>
                 <div class="form-group-text">
                     <label>
-                        Primary Country
+                        Country
                     </label>
                     <div class="value" name="Country" group="Primary_Addresses">
                     </div>
                 </div>
-
-
-                <!--<div class="form-group">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <label for="SecondaryContact">
-                                <span class="input-group-text">
-                                    Alternate House Number
-                                </span>
-                            </label>
-                        </div>
-                        <input type="text" class="form-control"
-                               aria-label="house" aria-describedby="house" placeholder="House Number" name="BlkHouse_Number" group="Alternate_Addresses" maxlength="50" scandoc="1">
-                    </div>
-                    <div class="clearfix"></div>
-                </div>
-                <div class="form-group">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <label for="SecondaryContact">
-                                <span class="input-group-text">
-                                    Alternate Unit Number
-                                </span>
-                            </label>
-                        </div>
-                        <input type="text" class="form-control"
-                               aria-label="house" aria-describedby="house" placeholder="Unit Number" name="FlrUnit_Number" group="Alternate_Addresses" maxlength="50" scandoc="1">
-                    </div>
-                    <div class="clearfix"></div>
-                </div>
-                <div class="form-group">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <label for="SecondaryContact">
-                                <span class="input-group-text">
-                                    Alternate Street Name
-                                </span>
-                            </label>
-                        </div>
-                        <input type="text" class="form-control"
-                               aria-label="house" aria-describedby="house" placeholder="Street Name" name="Street_Name" group="Alternate_Addresses" maxlength="255" scandoc="1">
-                    </div>
-                    <div class="clearfix"></div>
-                </div>
-                <div class="form-group">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <label for="SecondaryContact">
-                                <span class="input-group-text">
-                                    Alternate Postal Code
-                                </span>
-                            </label>
-                        </div>
-                        <input type="text" class="form-control"
-                               aria-label="house" aria-describedby="house" placeholder="Postal Code" name="Postal_Code" group="Alternate_Addresses" maxlength="30" scandoc="1">
-                    </div>
-                    <div class="clearfix"></div>
-                </div>
-                <div class="form-group">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <label for="SecondaryContact">
-                                <span class="input-group-text">
-                                    Alternate Country
-                                </span>
-                            </label>
-                        </div>
-                        <input type="text" class="form-control"
-                               aria-label="house" aria-describedby="house" placeholder="Country" name="Country" group="Alternate_Addresses" maxlength="50" scandoc="1">
-                    </div>
-                    <div class="clearfix"></div>
-                </div>-->
+                <div style="margin-bottom:10px;font-size: 110%;font-weight: bold;color: #1cacf6;">Alternate Address</div>
+                <div group-input="House Number" scandoc="1"><input type="text" placeholder="House Number" name="BlkHouse_Number" group="Alternate_Addresses" scandoc="1" maxlength="50"></div>
+                <div group-input="Unit Number" scandoc="1"><input type="text" placeholder="Unit Number" name="FlrUnit_Number" group="Alternate_Addresses" scandoc="1" maxlength="50"></div>
+                <div group-input="Street Name" scandoc="1"><input type="text" placeholder="Street Name" name="Street_Name" group="Alternate_Addresses" scandoc="1" maxlength="255"></div>
+                <div group-input="Postal Code" scandoc="1"><input type="text" placeholder="Postal Code" name="Postal_Code" group="Alternate_Addresses" scandoc="1" maxlength="30"></div>
+                <div group-input="Country" scandoc="1"><input type="text" placeholder="Country" name="Country" group="Alternate_Addresses" scandoc="1" maxlength="50"></div>
             </div>
-            <div class="tab-pane fade show " id="next-of-kin" role="tabpanel"
-                 aria-labelledby="particulars-tab">
-
-                <div class="form-group">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <label for="NextOfKin_Name">
-                                <span class="input-group-text">
-                                    Name
-                                </span>
-                            </label>
-
-                        </div>
-                        <input type="text" class="form-control"
-                               placeholder="Enter Name"
-                               aria-label="house" aria-describedby="house" name="NextOfKin_Name" group="User_Profiles" maxlength="255" scandoc="0">
-                    </div>
-                    <div class="clearfix"></div>
-                </div>
-
-                <div class="form-group">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <label for="NextOfKin_Contact_Number">
-                                <span class="input-group-text">
-                                    Contact Number
-                                </span>
-                            </label>
-
-                        </div>
-                        <input type="text" class="form-control"
-                               placeholder="eg. 98764324"
-                               aria-label="house" aria-describedby="house" name="NextOfKin_Contact_Number" group="User_Profiles" maxlength="50" scandoc="0">
-                    </div>
-                    <div class="clearfix"></div>
-                </div>
-                <div class="form-group">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <label for="NextOfKin_Relationship">
-                                <span class="input-group-text">
-                                    Relationship
-                                </span>
-                            </label>
-
-                        </div>
-                        <input type="text" class="form-control"
-                               placeholder="Enter Relationship"
-                               aria-label="house" aria-describedby="house" name="NextOfKin_Relationship" group="User_Profiles" maxlength="255" scandoc="0">
-                    </div>
-                    <div class="clearfix"></div>
-                </div>
-                <div class="form-group">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <label for="NextOfKin_BlkHouse_Number">
-                                <span class="input-group-text">
-                                    House Number
-                                </span>
-                            </label>
-
-                        </div>
-                        <input type="text" class="form-control"
-                               placeholder="Enter House Number"
-                               aria-label="house" aria-describedby="house" name="NextOfKin_BlkHouse_Number" group="User_Profiles" maxlength="50" scandoc="0">
-                    </div>
-                    <div class="clearfix"></div>
-                </div>
-                <div class="form-group">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <label for="NextOfKin_FlrUnit_Number">
-                                <span class="input-group-text">
-                                    Unit Number
-                                </span>
-                            </label>
-
-                        </div>
-                        <input type="text" class="form-control"
-                               placeholder="Enter Unit Number"
-                               aria-label="house" aria-describedby="house" name="NextOfKin_FlrUnit_Number" group="User_Profiles" maxlength="50" scandoc="0">
-                    </div>
-                    <div class="clearfix"></div>
-                </div>
-                <div class="form-group">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <label for="NextOfKin_Street_Name">
-                                <span class="input-group-text">
-                                    Street Name
-                                </span>
-                            </label>
-
-                        </div>
-                        <input type="text" class="form-control"
-                               placeholder="Enter Street Name"
-                               aria-label="house" aria-describedby="house" name="NextOfKin_Street_Name" group="User_Profiles" maxlength="50" scandoc="0">
-                    </div>
-                    <div class="clearfix"></div>
-                </div>
-                <div class="form-group">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <label for="NextOfKin_PostalCode">
-                                <span class="input-group-text">
-                                    Postal Code
-                                </span>
-                            </label>
-
-                        </div>
-                        <input type="text" class="form-control"
-                               placeholder="Enter Postal Code"
-                               aria-label="house" aria-describedby="house" name="NextOfKin_PostalCode" group="User_Profiles" maxlength="30" scandoc="0">
-                    </div>
-                    <div class="clearfix"></div>
-                </div>
-                <div class="form-group">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <label for="NextOfKin_Country">
-                                <span class="input-group-text">
-                                    Country
-                                </span>
-                            </label>
-
-                        </div>
-                        <input type="text" class="form-control"
-                               placeholder="Enter Country"
-                               aria-label="house" aria-describedby="house" name="NextOfKin_Country" group="User_Profiles" maxlength="50" scandoc="0">
-                    </div>
-                    <div class="clearfix"></div>
-                </div>
+            <div class="tab-pane fade show " id="next-of-kin" role="tabpanel" aria-labelledby="particulars-tab">
+                <div group-input="Name" scandoc="0"><input type="text" placeholder="Enter Name" name="NextOfKin_Name" group="User_Profiles" scandoc="0" maxlength="255"></div>
+                <div group-input="Contact Number" scandoc="0"><input type="text" placeholder="eg. 98764324" name="NextOfKin_Contact_Number" group="User_Profiles" scandoc="0" maxlength="50"></div>
+                <div group-input="Relationship" scandoc="0"><input type="text" placeholder="Enter Relationship" name="NextOfKin_Relationship" group="User_Profiles" scandoc="0" maxlength="255"></div>
+                <div group-input="House Number" scandoc="0"><input type="text" placeholder="Enter House Number" name="NextOfKin_BlkHouse_Number" group="User_Profiles" scandoc="0" maxlength="50"></div>
+                <div group-input="Unit Number" scandoc="0"><input type="text" placeholder="Enter Unit Number" name="NextOfKin_FlrUnit_Number" group="User_Profiles" scandoc="0" maxlength="50"></div>
+                <div group-input="Street Name" scandoc="0"><input type="text" placeholder="Enter Street Name" name="NextOfKin_Street_Name" group="User_Profiles" scandoc="0" maxlength="50"></div>
+                <div group-input="Postal Code" scandoc="0"><input type="text" placeholder="Enter Postal Code" name="NextOfKin_PostalCode" group="User_Profiles" scandoc="0" maxlength="30"></div>
+                <div group-input="Country" scandoc="0"><input type="text" placeholder="Enter Country" name="NextOfKin_Country" group="User_Profiles" scandoc="0" maxlength="50"></div>
             </div>
-            <div class="tab-pane fade show " id="employment" role="tabpanel"
-                 aria-labelledby="particulars-tab">
-
-                <div class="form-group">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <label for="Employment_Name">
-                                <span class="input-group-text">
-                                    Employer Name
-                                </span>
-                            </label>
-
-                        </div>
-                        <input type="text" class="form-control"
-                               placeholder="Enter Name"
-                               aria-label="house" aria-describedby="house" name="Employment_Name" group="User_Profiles" maxlength="255" scandoc="1">
-                    </div>
-                    <div class="clearfix"></div>
-                </div>
-                <div class="form-group">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <label for="Employment_Contact_Number">
-                                <span class="input-group-text">
-                                    Employer Contact
-                                </span>
-                            </label>
-
-                        </div>
-                        <input type="text" class="form-control"
-                               placeholder="Enter Employer Contact"
-                               aria-label="house" aria-describedby="house" name="Employment_Contact_Number" group="User_Profiles" maxlength="50" scandoc="1">
-                    </div>
-                    <div class="clearfix"></div>
-                </div>
-                <div class="form-group">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <label for="Employment_Company_Name">
-                                <span class="input-group-text">
-                                    Company Name
-                                </span>
-                            </label>
-
-                        </div>
-                        <input type="text" class="form-control"
-                               placeholder="Enter Company Name"
-                               aria-label="house" aria-describedby="house" name="Employment_Company_Name" group="User_Profiles" maxlength="255" scandoc="1">
-                    </div>
-                    <div class="clearfix"></div>
-                </div>
-                <div class="form-group">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <label for="Employment_Job_Title">
-                                <span class="input-group-text">
-                                    Job Title
-                                </span>
-                            </label>
-
-                        </div>
-                        <input type="text" class="form-control"
-                               placeholder="Enter Job Tittle"
-                               aria-label="house" aria-describedby="house" name="Employment_Job_Title" group="User_Profiles" maxlength="50" scandoc="1">
-                    </div>
-                    <div class="clearfix"></div>
-                </div>
-                <div class="form-group">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <label for="Employment_Start_Date">
-                                <span class="input-group-text">
-                                    Start Date
-                                </span>
-                            </label>
-
-                        </div>
-                        <input type="text" class="form-control"
-                               placeholder="Enter Start Date eg:YYYY-MM-DD"
-                               aria-label="house" aria-describedby="house" valtype="date" nameserver="Employment_Start_Date" name="Employment_Start_Date_Text" group="User_Profiles" scandoc="1">
-                    </div>
-                    <div class="clearfix"></div>
-                </div>
-                <div class="form-group">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <label for="Employment_End_Date">
-                                <span class="input-group-text">
-                                    End Date
-                                </span>
-                            </label>
-
-                        </div>
-                        <input type="text" class="form-control"
-                               placeholder="Enter End Date eg:YYYY-MM-DD"
-                               aria-label="house" aria-describedby="house" valtype="date" nameserver="Employment_End_Date" name="Employment_End_Date_Text" group="User_Profiles" scandoc="1">
-                    </div>
-                    <div class="clearfix"></div>
-                </div>
-                <div class="form-group">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <label for="Employment_Remarks">
-                                <span class="input-group-text">
-                                    Remarks
-                                </span>
-                            </label>
-
-                        </div>
-                        <input type="text" class="form-control"
-                               placeholder="Enter Employment_Remarks"
-                               aria-label="house" aria-describedby="house" name="Employment_Remarks" group="User_Profiles" maxlength="255" scandoc="1">
-                    </div>
-                    <div class="clearfix"></div>
-                </div>
+            <div class="tab-pane fade show " id="employment" role="tabpanel" aria-labelledby="particulars-tab">
+                <div group-input="Employer Name" scandoc="1"><input type="text" placeholder="Enter Name" name="Employment_Name" group="User_Profiles" scandoc="1" maxlength="255"></div>
+                <div group-input="Employer Contact" scandoc="1"><input type="text" placeholder="Enter Employer Contact" name="Employment_Contact_Number" group="User_Profiles" scandoc="1" maxlength="50"></div>
+                <div group-input="Company Name" scandoc="1"><input type="text" placeholder="Enter Company Name" name="Employment_Company_Name" group="User_Profiles" scandoc="1" maxlength="255"></div>
+                <div group-input="Job Title" scandoc="1"><input type="text" placeholder="Enter Job Tittle" name="Employment_Job_Title" group="User_Profiles" scandoc="1" maxlength="50"></div>
+                <div group-input="Start Date" scandoc="1"><input type="text" placeholder="Enter Start Date eg:YYYY-MM-DD" valtype="date" nameserver="Employment_Start_Date" name="Employment_Start_Date_Text" group="User_Profiles" scandoc="1"></div>
+                <div group-input="End Date" scandoc="1"><input type="text" placeholder="Enter End Date eg:YYYY-MM-DD" valtype="date" nameserver="Employment_End_Date" name="Employment_End_Date_Text" group="User_Profiles" scandoc="1"></div>
+                <div group-input="Remarks" scandoc="1"><input type="text" placeholder="Enter Employment_Remarks" name="Employment_Remarks" group="User_Profiles" scandoc="1" maxlength="255"></div>
 
             </div>
         </div>
@@ -936,9 +644,11 @@
     var jsonFormData = null;
     var modelProfile = null;
     var modelUpdate = {};
+    var modelFullUpdate = {};
     var isScanUpdate = false;
+
     function scanDocumentProfileCallbackImg(arrayImg) {
-        api.server.SaveProfile(JSON.stringify(modelUpdate), JSON.stringify(arrayImg), isScanUpdate);
+        api.server.SaveProfile(JSON.stringify(modelUpdate), JSON.stringify(modelFullUpdate), JSON.stringify(arrayImg), isScanUpdate);
     }
     api.ready(function (model) {
         modelProfile = model;
@@ -979,6 +689,7 @@
         //get data
         isScanUpdate = false;
         modelUpdate = {};
+        var isUpdate = false;
         $form.find('input[group]').each(function () {
             var name = $(this).attr('name');
             var group = $(this).attr('group');
@@ -988,6 +699,7 @@
 
             if (typeof modelUpdate[group] == 'undefined') {
                 modelUpdate[group] = {};
+                modelFullUpdate[group] = {};
             }
             if (modelProfile[group] != null && typeof modelProfile[group][name] != 'undefined') {
                 valueOld = modelProfile[group][name] == null ? '' : modelProfile[group][name];
@@ -996,28 +708,48 @@
                 isScanUpdate = true;
             }
             if (valueNow != valueOld) {
+                isUpdate = true;
                 var nameserver = $(this).attr('nameserver');
                 var type = $(this).attr('valtype');
                 if (typeof nameserver == 'undefined') {
                     modelUpdate[group][name] = valueNow;
+                    modelFullUpdate[group][name] = valueNow;
                 } else {
                     if (typeof type != 'undefined' && type == 'date') {
                         modelUpdate[group][nameserver] = api.ToDateCSharp(valueNow);
+                        modelFullUpdate[group][nameserver] = api.ToDateCSharp(valueNow);
                     } else {
                         modelUpdate[group][nameserver] = valueNow;
+                        modelFullUpdate[group][nameserver] = valueNow;
                     }
                 }
-            }
-        });
-        ShowMessageConfirm("", "Are you sure you want to update", function (status) {
-            if (status) {
-                if (isScanUpdate) {
-                    api.server.LoadPopupHtml("PopupScanDocument.html", 'scanDocumentProfileCallbackImg');
+            } else {
+                var nameserver = $(this).attr('nameserver');
+                var type = $(this).attr('valtype');
+                if (typeof nameserver == 'undefined') {
+                    modelFullUpdate[group][name] = valueNow;
                 } else {
-                    scanDocumentProfileCallbackImg([]);
+                    if (typeof type != 'undefined' && type == 'date') {
+                        modelFullUpdate[group][nameserver] = api.ToDateCSharp(valueNow);
+                    } else
+                        modelFullUpdate[group][nameserver] = valueNow;
                 }
             }
         });
+        if (isUpdate) {
+            ShowMessageConfirm("", "Are you sure you want to update", function (status) {
+                if (status) {
+                    if (isScanUpdate) {
+                        api.server.LoadPopupHtml("PopupScanDocument.html", 'scanDocumentProfileCallbackImg');
+                    } else {
+                        scanDocumentProfileCallbackImg([]);
+                    }
+                }
+            });
+        } else {
+            alert('Not data changes');
+        }
+        
         e.preventDefault(); // avoid to execute the actual submit of the form.
     });
 

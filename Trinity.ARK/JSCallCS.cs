@@ -293,27 +293,43 @@ namespace ARK
         }
         #endregion
 
+        private object[] data_old_update_profile  = null;
         public void LoadProfile()
         {
             Session session = Session.Instance;
             Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-            _web.LoadPageHtml("Profile.html", new
+            var dataReturn = new
             {
                 Membership_Users = user,
                 User_Profiles = new DAL_UserProfile().GetProfile(user.UserId),
                 Primary_Addresses = new DAL_UserProfile().GetAddByUserId(user.UserId, true),
                 Alternate_Addresses = new DAL_UserProfile().GetAddByUserId(user.UserId, true)
-            });
+            };
+            data_old_update_profile = new object[] { dataReturn.User_Profiles, dataReturn.Alternate_Addresses };
+            _web.LoadPageHtml("Profile.html", dataReturn);
         }
 
-        public void SaveProfile(string param, string arrayDocumentScan, bool isSendNotiIfDontScanDocument)
+        public void SaveProfile(string param, string dataChangeAll, string arrayDocumentScan, bool isSendNotiIfDontScanDocument)
         {
             Session session = Session.Instance;
             Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
             var data = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, object>>>(param);
             List<string> arrayScan = JsonConvert.DeserializeObject<List<string>>(arrayDocumentScan);
-            if (new DAL_UserProfile().ARKUpdateProfile(user.UserId, data, arrayScan))
+
+            Trinity.BE.UserProfile User_Profiles_New = null;
+            Trinity.BE.Address Alternate_Addresses_New = null;
+            Nullable<Guid> IDDocuemnt = null;
+            if (new DAL_UserProfile().ARKUpdateProfile(user.UserId, data, arrayScan,out User_Profiles_New,out Alternate_Addresses_New,out IDDocuemnt))
             {
+                
+                new DAL_UpdateProfile_Requests().CreateRequest(
+                    (Trinity.BE.UserProfile)data_old_update_profile[0],
+                    (Trinity.BE.Address)data_old_update_profile[1],
+                    User_Profiles_New,
+                    Alternate_Addresses_New,
+                    IDDocuemnt
+                );
+
                 if (isSendNotiIfDontScanDocument && arrayScan.Count == 0)
                 {
 
@@ -321,55 +337,6 @@ namespace ARK
                 }
                 LoadPageSupervisee();
             }
-
-
-
-            //try
-            //{
-            //    var rawData = JsonConvert.DeserializeObject<Trinity.BE.ProfileRawMData>(param);
-            //    var data = new Trinity.BE.ProfileRawMData().ToProfileModel(rawData);
-            //    Session session = Session.Instance;
-
-            //    var user = ((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]);
-            //    if (primaryInfoChange)
-            //    {
-            //        var updateUserResult = new DAL_User().Update(data.User);
-            //        // dalUser.UpdateUser(data.User, data.User.UserId, true);
-            //        var userProfileModel = data.UserProfile;
-            //        userProfileModel.UserId = data.User.UserId;
-            //        var updateUProfileResult = new DAL_UserProfile().UpdateProfile(userProfileModel);
-            //        // dalUserprofile.UpdateUserProfile(data.UserProfile,data.User.UserId , true);
-            //        //send notifiy to duty officer
-            //        List<string> arrayScan = JsonConvert.DeserializeObject<List<string>>(arrayDocumentScan);
-            //        if (arrayScan.Count > 0)
-            //        {
-            //            Guid IDDocuemnt = new DAL_UploadedDocuments().Insert(arrayScan, user.UserId);
-            //            new DAL_UserProfile().UploadDocumentScan(IDDocuemnt, data.User.UserId);
-            //        }
-            //        Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(data.User.UserId, "Supervisee " + data.User.Name + " has updated profile.", "Please check Supervisee " + data.User.Name + "'s information!", EnumNotificationTypes.Notification);
-
-            //        session[CommonConstants.USER_LOGIN] = new DAL_User().GetUserBySmartCardId(user.SmartCardId);
-
-            //    }
-            //    else
-            //    {
-            //        var userProfileModel = data.UserProfile;
-            //        userProfileModel.UserId = data.User.UserId;
-            //        var updateUProfileResult = new DAL_UserProfile().UpdateProfile(userProfileModel);
-            //        // dalUserprofile.UpdateUserProfile(data.UserProfile, data.User.UserId, true);
-            //        //send notifiy to case officer
-            //        Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(data.User.UserId, "Supervisee " + data.User.Name + " has updated profile.", "Please check Supervisee " + data.User.Name + "'s information!", EnumNotificationTypes.Notification);
-            //    }
-
-            //    //load Supervisee page 
-            //    LoadPageSupervisee();
-            //}
-            //catch (Exception ex)
-            //{
-            //    Debug.WriteLine("JSCallCS.SaveProfile exception: " + ex.ToString());
-            //    CSCallJS.InvokeScript(_web, "showMessage", "Update failed!!!\n Please check the input information.");
-            //    return;
-            //}
         }
 
         public void LoadScanDocument(string jsonData)

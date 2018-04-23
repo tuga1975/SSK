@@ -397,6 +397,7 @@
     <Content Include="View\img\ScanFingerPrint.png" />
     <Content Include="View\img\ScanSmartCard.png" />
     <Content Include="View\img\SmartCard.mp4" />
+    <Content Include="View\img\star.png" />
     <Content Include="View\img\ThumbDocumentScanner.mp4" />
     <Content Include="View\img\Thumbprint.mp4" />
     <Content Include="View\img\updateprofile.png" />

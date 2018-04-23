@@ -12,25 +12,24 @@ namespace Trinity.DAL.DBContext
     using System;
     using System.Collections.Generic;
     
-    public partial class Message
+    public partial class UpdateProfile_Requests
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Message()
+        public UpdateProfile_Requests()
         {
-            this.Recipients = new HashSet<Recipient>();
+            this.User_Profiles = new HashSet<User_Profiles>();
         }
     
-        public int MsgID { get; set; }
-        public string Subject { get; set; }
-        public string MsgContent { get; set; }
-        public Nullable<int> DeliveryStatus { get; set; }
-        public Nullable<System.DateTime> DeliveryDateTime { get; set; }
-        public Nullable<bool> SMS { get; set; }
-        public Nullable<bool> Email { get; set; }
+        public string VersionId { get; set; }
         public string UserId { get; set; }
+        public System.DateTime UpdatedTime { get; set; }
+        public string Status { get; set; }
+        public string ApprovedOrRejectedBy { get; set; }
+        public Nullable<System.DateTime> ApprovedOrRejectedTime { get; set; }
+        public string Current_Content_JSON { get; set; }
+        public string Note { get; set; }
     
-        public virtual Membership_Users Membership_Users { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Recipient> Recipients { get; set; }
+        public virtual ICollection<User_Profiles> User_Profiles { get; set; }
     }
 }

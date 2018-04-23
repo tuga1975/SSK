@@ -32,19 +32,29 @@ namespace Trinity.DAL
             }
         }
 
-        public bool ARKUpdateProfile(string UserID, Dictionary<string, Dictionary<string, object>> dataUpdate, List<string> arrayScanDocument)
+        public bool ARKUpdateProfile(string UserID, Dictionary<string, Dictionary<string, object>> dataUpdate, List<string> arrayScanDocument,out BE.UserProfile User_Profiles_New, out BE.Address Alternate_Addresses_New, out Guid? IDDocuemnt_Re)
         {
+            IDDocuemnt_Re = null;
+            User_Profiles_New = null;
+            Alternate_Addresses_New = null;
+
             bool isUpdateUser_Profiles = false;
             bool isSaveDataBase = false;
             CreateUserProfileIfNotExit(UserID);
+            Nullable<Guid> IDDocuemnt = null;
+            if (arrayScanDocument.Count > 0)
+            {
+                IDDocuemnt = new DAL_UploadedDocuments().Insert(arrayScanDocument, UserID);
+            }
+
             DAL.DBContext.User_Profiles userProfile = _localUnitOfWork.DataContext.User_Profiles.FirstOrDefault(d => d.UserId.Equals(UserID));
             DAL.DBContext.Address Alternate_Addresses = null;
+            if (!string.IsNullOrEmpty(userProfile.Other_Address_ID))
+            {
+                Alternate_Addresses = _localUnitOfWork.DataContext.Addresses.FirstOrDefault(d => d.Address_ID.Equals(userProfile.Other_Address_ID));
+            }
             if (dataUpdate.ContainsKey("Alternate_Addresses"))
             {
-                if (!string.IsNullOrEmpty(userProfile.Other_Address_ID))
-                {
-                    Alternate_Addresses = _localUnitOfWork.DataContext.Addresses.FirstOrDefault(d => d.Address_ID.Equals(userProfile.Other_Address_ID));
-                }
                 if (Alternate_Addresses == null)
                 {
                     Alternate_Addresses = new DBContext.Address()
@@ -90,13 +100,14 @@ namespace Trinity.DAL
                 }
             }
 
-            if (arrayScanDocument.Count > 0)
+            if (IDDocuemnt.HasValue)
             {
-                Guid IDDocuemnt = new DAL_UploadedDocuments().Insert(arrayScanDocument, userProfile.UserId);
-                userProfile.Document_ID = IDDocuemnt;
+                userProfile.Document_ID = IDDocuemnt.Value;
                 isUpdateUser_Profiles = true;
                 isSaveDataBase = true;
+                IDDocuemnt_Re = IDDocuemnt.Value;
             }
+            
 
 
             if ((!userProfile.Employment_Start_Date.HasValue && userProfile.Employment_End_Date.HasValue) || (userProfile.Employment_Start_Date.HasValue && userProfile.Employment_End_Date.HasValue && userProfile.Employment_Start_Date.Value >= userProfile.Employment_End_Date.Value))
@@ -114,6 +125,8 @@ namespace Trinity.DAL
                 {
                     _localUnitOfWork.Save();
                 }
+                User_Profiles_New = userProfile.Map<BE.UserProfile>();
+                Alternate_Addresses_New = Alternate_Addresses.Map<BE.Address>(); ;
             }
             return true;
         }

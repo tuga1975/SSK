@@ -29,6 +29,7 @@ namespace Trinity.DAL.DBContext
         public virtual DbSet<ActionLog> ActionLogs { get; set; }
         public virtual DbSet<Address> Addresses { get; set; }
         public virtual DbSet<ApplicationDevice_Status> ApplicationDevice_Status { get; set; }
+        public virtual DbSet<AppLog> AppLogs { get; set; }
         public virtual DbSet<Appointment> Appointments { get; set; }
         public virtual DbSet<APS_USER_ACT_LOG> APS_USER_ACT_LOG { get; set; }
         public virtual DbSet<Device> Devices { get; set; }
@@ -56,6 +57,7 @@ namespace Trinity.DAL.DBContext
         public virtual DbSet<SMS_LOG> SMS_LOG { get; set; }
         public virtual DbSet<Timeslot> Timeslots { get; set; }
         public virtual DbSet<Transaction> Transactions { get; set; }
+        public virtual DbSet<UpdateProfile_Requests> UpdateProfile_Requests { get; set; }
         public virtual DbSet<UploadedDocumentDetail> UploadedDocumentDetails { get; set; }
         public virtual DbSet<UploadedDocument> UploadedDocuments { get; set; }
         public virtual DbSet<User_Profiles> User_Profiles { get; set; }
