@@ -44,6 +44,9 @@ namespace ALK
         private bool _mubDoorIsFullyClosed = false;
         private bool _ttDoorIsFullyClosed = false;
         private List<string> _errorLogs = new List<string>();
+        private int _mubAndTTPresenceCheckedCount = 0;
+        private int _mubAndTTRemovalCheckedCount = 0;
+
         public JSCallCS(WebBrowser web)
         {
             this._web = web;
@@ -765,6 +768,20 @@ namespace ALK
                 // Set next action to "StartMUBApplicator"
                 if (_ttIsPresent)
                 {
+                    if (_mubAndTTPresenceCheckedCount == 0)
+                    {
+                        _mubAndTTPresenceCheckedCount++;
+                        // Sleep for 1 second and check again if all MUB and TT are on the holders
+                        Thread.Sleep(1000);
+
+                        _mubIsPresent = false;
+                        _ttIsPresent = false;
+                        CheckIfMUBIsPresent();
+                        CheckIfTTIsPresent();
+                        return;
+                    }
+                    _mubAndTTPresenceCheckedCount = 0;
+
                     // MUB and TT are present on the hold
                     // Hide tutorial videos
                     HideTutorialVideos();
@@ -799,6 +816,24 @@ namespace ALK
 
                 if (_ttIsRemoved)
                 {
+                    ///
+                    /// Begin enhancement https://trello.com/c/3486BpQ4/58-the-mub-tt-sensor-should-also-be-constantly-checking-whether-its-placed-or-removed
+                    ///
+                    if (_mubAndTTRemovalCheckedCount == 0)
+                    {
+                        _mubAndTTRemovalCheckedCount++;
+                        // Sleep for 1 second and check again if all MUB and TT have been removed
+                        Thread.Sleep(1000);
+
+                        _mubIsRemoved = false;
+                        _ttIsRemoved = false;
+                        CheckIfMUBIsRemoved();
+                        CheckIfTTIsRemoved();
+                        return;
+                    }
+                    _mubAndTTRemovalCheckedCount = 0;
+                    // End enhancement
+
                     CloseMUBDoor();
                     CloseTTDoor();
                 }
@@ -1009,10 +1044,27 @@ namespace ALK
                 // Set next action to "StartTTApplicator"
                 if (_mubIsPresent)
                 {
-                    LogManager.Debug("Starting Applicator...");
+                    if (_mubAndTTPresenceCheckedCount == 0)
+                    {
+                        _mubAndTTPresenceCheckedCount++;
+                        // Sleep for 1 second and check again if all MUB and TT are on the holders
+                        Thread.Sleep(1000);
 
+                        _mubIsPresent = false;
+                        _ttIsPresent = false;
+                        CheckIfMUBIsPresent();
+                        CheckIfTTIsPresent();
+                        return;
+                    }
+                    _mubAndTTPresenceCheckedCount = 0;
+
+                    // MUB and TT are present on the hold
+                    // Hide tutorial videos
+                    HideTutorialVideos();
+                    LogManager.Debug("Starting Applicator...");
                     this._web.RunScript("$('#ConfirmBtn').html('Starting Applicator...');");
                     this._web.RunScript("$('#lblNextAction').text('StartMUBAndTTApplicator');");
+
                     StartMUBApplicator();
                     StartTTApplicator();
                 }
@@ -1041,6 +1093,24 @@ namespace ALK
 
                 if (_mubIsRemoved)
                 {
+                    ///
+                    /// Begin enhancement https://trello.com/c/3486BpQ4/58-the-mub-tt-sensor-should-also-be-constantly-checking-whether-its-placed-or-removed
+                    ///
+                    if (_mubAndTTRemovalCheckedCount == 0)
+                    {
+                        _mubAndTTRemovalCheckedCount++;
+                        // Sleep for 1 second and check again if all MUB and TT have been removed
+                        Thread.Sleep(1000);
+
+                        _mubIsRemoved = false;
+                        _ttIsRemoved = false;
+                        CheckIfMUBIsRemoved();
+                        CheckIfTTIsRemoved();
+                        return;
+                    }
+                    _mubAndTTRemovalCheckedCount = 0;
+                    // End enhancement
+
                     CloseMUBDoor();
                     CloseTTDoor();
                 }

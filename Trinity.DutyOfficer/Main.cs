@@ -209,7 +209,12 @@ namespace DutyOfficer
                 //    JSCallCS._StationColorDevice.UHPColor = device.CheckStatusDevicesStation(station);
                 //}
                 LogManager.Info("OnDeviceStatusChanged_Handler: " + station);
-                LayerWeb.InvokeScript("LoadStationColorDevice");
+
+                LayerWeb.InvokeScript("SetStationColorDevice",JsonConvert.SerializeObject(_jsCallCS.GetStationClolorDevice()));
+            }
+            else
+            {
+                LogManager.Info("OnDeviceStatusChanged_Handler: Emty");
             }
         }
 

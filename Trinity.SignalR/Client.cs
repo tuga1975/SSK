@@ -114,7 +114,7 @@ namespace Trinity.SignalR
                 }
                 else if (notificationInfo.Name == NotificationNames.DEVICE_STATUS_CHANGED)
                 {
-                    OnDeviceStatusChanged?.Invoke(this, new EventInfo() { Name = EventNames.DEVICE_STATUS_CHANGED, Data = notificationInfo.Data });
+                    OnDeviceStatusChanged?.Invoke(this, new EventInfo() { Name = EventNames.DEVICE_STATUS_CHANGED, Data = notificationInfo.Data,Source = notificationInfo.Source });
                 }
                 else if (notificationInfo.Name == NotificationNames.APP_DISCONNECTED)
                 {
@@ -178,7 +178,7 @@ namespace Trinity.SignalR
 
         public void DeviceStatusChanged(int deviceId, EnumDeviceStatus[] newDeviceStatuses)
         {
-            PostNotification(notificationInfo: new NotificationInfo() { Name = NotificationNames.DEVICE_STATUS_CHANGED, Type = EnumNotificationTypes.Notification, Data = new object[] { deviceId, newDeviceStatuses } });
+            PostNotification(notificationInfo: new NotificationInfo() { Name = NotificationNames.DEVICE_STATUS_CHANGED, Type = EnumNotificationTypes.Notification,Source = Station, Data = new object[] { deviceId, newDeviceStatuses } });
         }
 
         public void SendToDutyOfficer(string fromUserId, string dutyOfficerID, string subject, string content, string notificationType)

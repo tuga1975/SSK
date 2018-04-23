@@ -165,12 +165,17 @@
             LoadStationColorDevice();
         }, 900000); // Auto call this to update color station every 15 mins
     });
+    function SetStationColorDevice(data) {
+        if (typeof data == 'string')
+            data = JSON.parse(data);
+        $('#colorStatus_SSK').css("background-color", data.SSKColor);
+        $('#colorStatus_SSA').css("background-color", data.SSAColor);
+        $('#colorStatus_UHP').css("background-color", data.UHPColor);
+        $('#colorStatus_ESP').css("background-color", data.ESPColor);
+    }
     function LoadStationColorDevice() {
         api.server.GetStationClolorDevice(function (data) {
-            $('#colorStatus_SSK').css("background-color", data.SSKColor);
-            $('#colorStatus_SSA').css("background-color", data.SSAColor);
-            $('#colorStatus_UHP').css("background-color", data.UHPColor);
-            $('#colorStatus_ESP').css("background-color", data.ESPColor);
+            SetStationColorDevice(data);
         });
     };   
 </script>
