@@ -53,9 +53,9 @@ namespace Trinity.BackendAPI.Controllers
     {
         [HttpGet]
         [ResponseType(typeof(SHPDrugResultsModel))]
-        public IHttpActionResult SHPGetDrugResults(string markingnumber)
+        public IHttpActionResult SHPGetDrugResults(string alkMarkingNumber)
         {
-            Trinity.DAL.DBContext.DrugResult result = new DAL.DAL_DrugResults().GetByMarkingNumber(markingnumber);
+            Trinity.DAL.DBContext.DrugResult result = new DAL.DAL_DrugResults().GetByMarkingNumber(alkMarkingNumber);
             if (result == null)
             {
                 return Ok();
