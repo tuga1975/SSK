@@ -1241,7 +1241,8 @@
         }
         var countScanFinger = 0;
         function changCountFinger() {
-            countScanFinger++;
+            if (countScanFinger < 5)
+                countScanFinger++;
         }
         function changeMessageServerCall(isRight, message, color) {
             if (isRight) {

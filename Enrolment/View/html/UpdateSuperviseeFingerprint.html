@@ -82,16 +82,17 @@
     </div>
 </div>
 <style type="text/css">
-    a[disabled]{
-        pointer-events:none;
-        opacity:0.3;
+    a[disabled] {
+        pointer-events: none;
+        opacity: 0.3;
     }
 </style>
 <script type="text/javascript">
     var modelFingerprinter = null;
     var countScanFinger = 0;
     function changCountFinger() {
-        countScanFinger++;
+        if (countScanFinger < 5)
+            countScanFinger++;
     }
 
     api.ready(function (model) {
@@ -112,7 +113,7 @@
         $('[capturefingerprint-btn="' + LeftOrRight + '"]');
     }
     function captureFingerprintMessage(LeftOrRight, Message, color) {
-        $('[capturefingerprint-message="' + LeftOrRight + '"]').text(Message + ' (' + countScanFinger+'/5)').css('color', color);
+        $('[capturefingerprint-message="' + LeftOrRight + '"]').text(Message + ' (' + countScanFinger + '/5)').css('color', color);
     }
     function setImageFingerprint(LeftOrRight, img) {
         $('[capturefingerprint-img="' + LeftOrRight + '"]').attr('src', 'data:image/png;base64,' + img).attr('soure', img);
