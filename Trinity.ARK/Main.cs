@@ -181,17 +181,17 @@ namespace ARK
                         var smartCard =  new DAL_IssueCard().GetIssueCardBySmartCardId(cardUID);
                         if (smartCard == null)
                         {
-                            LayerWeb.ShowMessageAsync("Authentication failed", "Your smart card does not exist");
+                            LayerWeb.ShowMessage("Authentication failed", "Your smart card does not exist");
                             SmartCard_OnSmartCardFailed("Your smart card does not exist");
                             return;
                         }else if (smartCard.Status== EnumIssuedCards.Inactive)
                         {
-                            LayerWeb.ShowMessageAsync("Authentication failed", "Your smart card does not work");
+                            LayerWeb.ShowMessage("Authentication failed", "Your smart card does not work");
                             SmartCard_OnSmartCardFailed("Your smart card does not work");
                             return;
                         }else if (smartCard.Status == EnumIssuedCards.Active && smartCard.Expired_Date<DateTime.Today)
                         {
-                            LayerWeb.ShowMessageAsync("Authentication failed", "Your smart card has expired");
+                            LayerWeb.ShowMessage("Authentication failed", "Your smart card has expired");
                             SmartCard_OnSmartCardFailed("Your smart card has expired");
                             return;
                         }
