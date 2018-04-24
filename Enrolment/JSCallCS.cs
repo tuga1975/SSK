@@ -182,10 +182,25 @@ namespace Enrolment
             }
             eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.OPEN_FINGERPRINT_CAPTURE_FORM, Message = number });
         }
-        public void CancelCaptureFingerprint()
+        public void CancelCaptureFingerprint(int leftorright)
         {
-            EventCenter eventCenter = EventCenter.Default;
-            eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.CANCEL_CAPTURE_FINGERPRINT });
+            Session session = Session.Instance;
+            var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
+            if (currentEditUser != null && currentEditUser.UserProfile != null)
+            {
+                if (leftorright == 0)
+                {
+                    //left
+                    currentEditUser.UserProfile.LeftThumbImage = null;
+                }
+                else
+                {
+                    currentEditUser.UserProfile.RightThumbImage = null;
+                }
+            }
+            
+            //EventCenter eventCenter = EventCenter.Default;
+            //eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.CANCEL_CAPTURE_FINGERPRINT });
         }
 
         public void ConfirmFingerprint()
@@ -972,6 +987,8 @@ namespace Enrolment
         private void OnTakeOff(Futronic.SDKHelper.FTR_PROGRESS Progress)
         {
             _web.InvokeScript("captureFingerprintMessage", FingerprintLeftRight, "Remove thumb from fingerprint scanner.", EnumColors.Yellow);
+            _web.InvokeScript("changCountFinger");
+            
         }
         private void OnPutOn(Futronic.SDKHelper.FTR_PROGRESS Progress)
         {

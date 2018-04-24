@@ -929,7 +929,7 @@
 
 
         $('#leftThumbClearBtn').click(function () {
-            api.server.CancelCaptureFingerprint();
+            api.server.CancelCaptureFingerprint(0);
             $('#leftFingerprint').attr('src', '../images/leftthumb.png');
             $('#leftThumbClearBtn').attr('disabled', 'disabled');
             $('#leftThumbScanBtn').removeAttr('disabled');
@@ -937,7 +937,7 @@
 
         });
         $('#rightThumbClearBtn').click(function () {
-            api.server.CancelCaptureFingerprint();
+            api.server.CancelCaptureFingerprint(1);
             $('#rightFingerprint').attr('src', '../images/rightthumb.png');
             $('#rightThumbClearBtn').attr('disabled', 'disabled');
             $('#rightThumbScanBtn').removeAttr('disabled');
@@ -1215,6 +1215,7 @@
             } else {
                 $('#rightThumbDiv').find('button').attr('disabled', 'disabled');
             }
+            countScanFinger = 0;
             api.server.CaptureFingerPrint(isRight);
         }
         //$('#leftThumbScanBtn').click(function () {
@@ -1238,14 +1239,17 @@
 
 
         }
-
+        var countScanFinger = 0;
+        function changCountFinger() {
+            countScanFinger++;
+        }
         function changeMessageServerCall(isRight, message, color) {
             if (isRight) {
-                $('#rightProcessMessage').text(message).css('color', color);
+                $('#rightProcessMessage').text(message + ' (' + countScanFinger+'/5)').css('color', color);
 
             }
             else {
-                $('#leftProcessMessage').text(message).css('color', color);
+                $('#leftProcessMessage').text(message + ' (' + countScanFinger + '/5)').css('color', color);
             }
         }
 

@@ -319,6 +319,7 @@ namespace Enrolment
             Session session = Session.Instance;
             var isRight = session[CommonConstants.IS_RIGHT_THUMB] != null ? (bool)session[CommonConstants.IS_RIGHT_THUMB] : (bool)session[CommonConstants.IS_RIGHT_THUMB];
             LayerWeb.InvokeScript("changeMessageServerCall", isRight, "Remove thumb from fingerprint scanner.", EnumColors.Yellow);
+            LayerWeb.InvokeScript("changCountFinger");
         }
         private void OnPutOn(FTR_PROGRESS Progress)
         {

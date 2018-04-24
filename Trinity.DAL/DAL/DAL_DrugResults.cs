@@ -54,7 +54,9 @@ namespace Trinity.DAL
 
         public DBContext.DrugResult GetByMarkingNumber(string MarkingNumber)
         {
-            return _localUnitOfWork.DataContext.DrugResults.FirstOrDefault(d => d.markingnumber.Equals(MarkingNumber));
+            var label = _localUnitOfWork.DataContext.Labels.FirstOrDefault(d => d.MarkingNo.Equals(MarkingNumber));
+            var dateonly = label.Date.Date;
+            return _localUnitOfWork.DataContext.DrugResults.FirstOrDefault(d => d.NRIC== label.NRIC && DbFunctions.TruncateTime(d.UploadedDate) == dateonly);
         }
 
         public string GetDrugTypeByNRIC(string NRIC)
