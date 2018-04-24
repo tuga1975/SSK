@@ -289,11 +289,11 @@ namespace Trinity.Device
                 {
                     return EnumApplicationStatus.Error;
                 }
-                LogManager.Debug("GetApplicationStatus _lstDevices: " + _lstDevices.Count);
-                foreach (var item in _lstDevices)
-                {
-                    LogManager.Debug(item.DeviceID + ": " + item.Summary + " - " + item.Status);
-                }
+                //LogManager.Debug("GetApplicationStatus _lstDevices: " + _lstDevices.Count);
+                //foreach (var item in _lstDevices)
+                //{
+                //    LogManager.Debug(item.DeviceID + ": " + item.Summary + " - " + item.Status);
+                //}
 
                 // Get list device summary
                 List<EnumDeviceStatusSumary> deviceStatusSumaries = _lstDevices.Select(item => item.Summary).ToList();
