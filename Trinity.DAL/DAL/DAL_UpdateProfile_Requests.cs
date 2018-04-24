@@ -24,6 +24,7 @@ namespace Trinity.DAL
         {
             var dataApprove = _localUnitOfWork.DataContext.UpdateProfile_Requests.Where(d => d.UserId == User_Profiles_Old.UserId && d.Status == Enum_UpdateProfile_Requests.Approve).OrderByDescending(d => d.UpdatedTime).FirstOrDefault();
             var dataPending = _localUnitOfWork.DataContext.UpdateProfile_Requests.FirstOrDefault(d => d.UserId == User_Profiles_Old.UserId && d.Status == Enum_UpdateProfile_Requests.Pending);
+            int statusApprove = -1;
             if (dataApprove == null)
             {
 
@@ -40,8 +41,7 @@ namespace Trinity.DAL
                     VersionId = Guid.NewGuid().ToString().Trim(),
                     Current_Content_JSON = JsonConvert.SerializeObject(dataRequest)
                 };
-
-                _localUnitOfWork.GetRepository<DBContext.UpdateProfile_Requests>().Add(dataApprove);
+                statusApprove = 0;
             }
             if (dataPending == null)
             {
@@ -80,8 +80,8 @@ namespace Trinity.DAL
 
                     dataApprove.Current_Content_JSON = JsonConvert.SerializeObject(dataRequest);
                     dataApprove.UpdatedTime = DateTime.Now;
-                    _localUnitOfWork.GetRepository<DBContext.UpdateProfile_Requests>().Update(dataApprove);
-
+                    if (statusApprove == -1)
+                        statusApprove = 1;
                 }
             }
             else
@@ -101,7 +101,15 @@ namespace Trinity.DAL
                 _localUnitOfWork.GetRepository<DBContext.UpdateProfile_Requests>().Update(dataPending);
             }
 
-            
+            if (statusApprove == 0)
+            {
+                _localUnitOfWork.GetRepository<DBContext.UpdateProfile_Requests>().Add(dataApprove);
+            }
+            else if (statusApprove == 1)
+            {
+                _localUnitOfWork.GetRepository<DBContext.UpdateProfile_Requests>().Update(dataApprove);
+            }
+
             _localUnitOfWork.Save();
 
         }

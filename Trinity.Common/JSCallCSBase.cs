@@ -79,10 +79,10 @@ public class JSCallCSBase
                 }
                 else
                 {
-                    //string ID = Guid.NewGuid().ToString().Trim();
-                    //this._web.ShowMessage("An error occurred.<br/>Please contact the administrator.<br/>Error code: " + ID);
-                    this._web.ShowMessage("Error:" + ex.Message);
-                    Trinity.Common.Utils.LogManager.Error("Error in Trinity.Common.JSCallCSBase.actionThread. Details:" + ex.Message);
+                    string ID = Guid.NewGuid().ToString().Trim();
+                    this._web.ShowMessage("An error occurred.<br/>Please contact the administrator.<br/>Error code: " + ID);
+                    //this._web.ShowMessage("Error:" + ex.Message);
+                    Trinity.Common.Utils.LogManager.Error("["+ ID + "]  Error in Trinity.Common.JSCallCSBase.actionThread. Details:" + ex.Message);
                 }
             }
         }
