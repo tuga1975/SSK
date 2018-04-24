@@ -353,12 +353,15 @@ namespace ARK
                 _smartCardFailed = 0;
                 // display failed on UI
                 LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please place your smart card on the reader.');");
+                LayerWeb.RunScript("$('[status-authentication]').text('');");
                 return;
             }
-
-            // display failed on UI
-            LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please place your smart card on the reader.');");
-            LayerWeb.RunScript("$('[status-authentication]').text('SmartCard Verification Failed : " + _smartCardFailed + "');");
+            else
+            {
+                // display failed on UI
+                LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please place your smart card on the reader.');");
+                LayerWeb.RunScript("$('[status-authentication]').text('SmartCard Verification Failed : " + _smartCardFailed + "');");
+            }
         }
 
         #endregion

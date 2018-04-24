@@ -331,7 +331,7 @@ namespace ALK
 
                 // display failed on UI
                 LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please place your smart card on the reader.');");
-
+                LayerWeb.RunScript("$('[status-authentication]').text('');");
                 return;
             }
 
