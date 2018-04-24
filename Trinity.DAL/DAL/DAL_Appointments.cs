@@ -160,6 +160,7 @@ namespace Trinity.DAL
                     appointment.Timeslot_ID = timeslot_ID;
                     appointment.ChangedCount += 1;
                     appointment.Status = EnumAppointmentStatuses.Booked;
+                    appointment.ReportTime = DateTime.Now;
 
                     var entry = _localUnitOfWork.DataContext.Entry(appointment);
                     entry.State = EntityState.Modified;
