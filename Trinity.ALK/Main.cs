@@ -292,7 +292,7 @@ namespace ALK
         {
             // Set application status is busy
             ApplicationStatusManager.Instance.IsBusy = true;
-
+            LayerWeb.RunScript("$('[status-authentication]').text('');");
             // Pause for 1 second and goto Fingerprint Login Screen
             Thread.Sleep(1000);
 
@@ -333,7 +333,8 @@ namespace ALK
             }
 
             // display failed on UI
-            LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please place your smart card on the reader. Failed: " + _smartCardFailed + "');");
+            LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please place your smart card on the reader.');");
+            LayerWeb.RunScript("$('[status-authentication]').text('SmartCard Verification Failed : " + _smartCardFailed + "');");
         }
 
         #endregion
@@ -351,7 +352,7 @@ namespace ALK
                 // Create a session object to store UserLogin information
                 Session session = Session.Instance;
                 session.IsFingerprintAuthenticated = true;
-
+                LayerWeb.RunScript("$('[status-authentication]').text('');");
                 LayerWeb.RunScript("$('.status-text').css('color','#000').text('Fingerprint authentication is successful.');");
 
                 Thread.Sleep(200);
@@ -420,8 +421,8 @@ namespace ALK
             }
 
             // display failed on UI
-            LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please place your finger on the reader. Failed: " + _fingerprintFailed + "');");
-
+            LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please place your finger on the reader');");
+            LayerWeb.RunScript("$('[status-authentication]').text('FingerPrint Verification Failed : " + _fingerprintFailed + "');");
             // restart identification
             if (user != null)
             {
