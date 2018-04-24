@@ -331,7 +331,11 @@ namespace ARK
                 );
                 if (isSendNotiIfDontScanDocument)
                 {
-                    Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(user.UserId, "Supervisee " + user.Name + " has updated profile don't upload scan document.", "Please check Supervisee " + user.Name + "'s information!", EnumNotificationTypes.Notification);
+                    Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(user.UserId, "Supervisee " + user.Name + " has updated profile.", "Please check Supervisee " + user.Name + "'s information!", EnumNotificationTypes.Notification);
+                }
+                else
+                {
+                    Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(user.UserId, "Supervisee " + user.Name + " has updated profile and scan documents.", "Please check Supervisee " + user.Name + "'s information!", EnumNotificationTypes.Notification);
                 }
                 LoadPageSupervisee();
             }

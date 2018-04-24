@@ -641,7 +641,6 @@
         </div>
     </div>
 </div>
-
 <script type="text/javascript">
 
     var jsonFormData = null;
@@ -651,7 +650,25 @@
     var isScanUpdate = false;
 
     function scanDocumentProfileCallbackImg(arrayImg) {
-        api.server.SaveProfile(JSON.stringify(modelUpdate), JSON.stringify(modelFullUpdate), JSON.stringify(arrayImg), isScanUpdate);
+        if (isScanUpdate && arrayImg.length == 0) {
+            var arrrayScan = [];
+            $("#profileFrm").find('input[group]').each(function () {
+                var name = $(this).attr('name');
+                var group = $(this).attr('group');
+                var isScan = $(this).attr('scandoc') == '1' ? true : false;
+                var valueNow = $.trim($(this).val());
+                var valueOld = '';
+                if (modelProfile[group] != null && typeof modelProfile[group][name] != 'undefined') {
+                    valueOld = modelProfile[group][name] == null ? '' : modelProfile[group][name];
+                }
+                if (isScan && valueNow != valueOld) {
+                    arrrayScan.push($(this).parent('[group-input]').attr('group-input'));
+                }
+            });
+            ShowMessage('Profile Not Updated', 'Please bring the supporting documents and upload your profile during the next visit.<div style="text-align:left;margin-top:20px;">Supporting documents required for:<br/>' + arrrayScan.join('<br/>')+'</div>');
+        } else {
+            api.server.SaveProfile(JSON.stringify(modelUpdate), JSON.stringify(modelFullUpdate), JSON.stringify(arrayImg), isScanUpdate);
+        }
     }
     api.ready(function (model) {
         modelProfile = model;

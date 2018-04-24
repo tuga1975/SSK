@@ -15,7 +15,7 @@
                     </div>
                 </div>
                 <div style="position:absolute;bottom: 15px;width: calc(100% - 30px);left: 15px;" btn-step="0">
-                    <button type="button" class="btn btn-primary" btn-scan-continue="" style="display:none;float:left;width:auto;">Scan</button>
+                    <button type="button" class="btn btn-primary" btn-scan-continue="" style="display:none;float:left;width:auto;">CANCEL</button>
                     <button type="button" class="btn btn-primary" btn-scan="" style="float:right;width:auto;margin-left:20px;"></button>
                     <button type="button" class="btn btn-primary" btn-cancel="" style="float:right;width:auto;"></button>
                     <div style="clear:both;"></div>
@@ -138,9 +138,8 @@
         });
         $('#PopupScanDocument [btn-scan-continue]').click(function () {
             var _this = $(this);
-            api.server.StartScanDocument(function () {
-                _this.parent('[btn-step]').attr('btn-step', 1);
-            });
+            $('#PopupScanDocument').modal('toggle');
+            eval(functioncallsuccess)([]);
         });
         //
     });
@@ -196,7 +195,7 @@
         border-radius: 3px;
     }
 
-    [btn-cancel] {
+    [btn-cancel], [btn-scan-continue] {
         background-color: #FFF !important;
         color: #333 !important;
         border: 1px solid #CCC !important;
@@ -358,7 +357,7 @@
 
 
     [btn-step="2"] [btn-scan-continue] {
-        display: none !important;
+        display: block !important;
     }
 
 
