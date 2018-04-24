@@ -93,7 +93,7 @@ namespace Trinity.Util
             {
                 error_string = string.Format("The PDIScan library returned error #{0:D} with extra info \"{1}\".",
                             pdiscan_error, Marshal.PtrToStringAnsi(extra_info));
-                MessageBox.Show(error_string);
+                Common.Utils.LogManager.Error(error_string);
                 return;
             }
 
@@ -136,10 +136,10 @@ namespace Trinity.Util
                 pdiscan_error = PdiScanWrap.PdConnectToScanner(scanning_handle, "", 1);
                 if (pdiscan_error != pdiscan_errors.PDISCAN_ERR_NONE)
                 {
-                    MessageBox.Show("Connect PDISCAN_ERR_NONE");
+                    Common.Utils.LogManager.Info("Connect PDISCAN_ERR_NONE");
                     if (pdiscan_error == pdiscan_errors.PDISCAN_ERR_SCANNER_NOT_FOUND)
                     {
-                        MessageBox.Show("The Document scanner (DPI) is not connected to the computer.");
+                        Common.Utils.LogManager.Info("The Document scanner (DPI) is not connected to the computer.");
                         return false;
                     }
                     else
@@ -154,7 +154,7 @@ namespace Trinity.Util
                 if (pdiscan_error != pdiscan_errors.PDISCAN_ERR_NONE)
                 {
                     display_pdiscan_error(pdiscan_error);
-                    MessageBox.Show("Connect PDISCAN_ERR_NONE 1");
+                    Common.Utils.LogManager.Info("Connect PDISCAN_ERR_NONE 1");
                     return false;
                 }
                 //if (default_color == (int)pd_color_depths.PD_COLOR_DEPTH_BITONAL)
@@ -200,7 +200,7 @@ namespace Trinity.Util
                 if (pdiscan_error != pdiscan_errors.PDISCAN_ERR_NONE)
                 {
                     display_pdiscan_error(pdiscan_error);
-                    MessageBox.Show("Connect PDISCAN_ERR_NONE 2");
+                    Common.Utils.LogManager.Info("Connect PDISCAN_ERR_NONE 2");
                     return false;
                 }
                 //if (default_duplex_on == 1)
@@ -236,7 +236,7 @@ namespace Trinity.Util
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Connect exception: " + ex.ToString());
+                Common.Utils.LogManager.Error("Connect exception: " + ex.ToString());
                 return false;
             }
         }
@@ -256,7 +256,7 @@ namespace Trinity.Util
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Disconnect exception: " + ex.ToString());
+                Common.Utils.LogManager.Error("Disconnect exception: " + ex.ToString());
                 return false;
             }
         }
@@ -274,7 +274,7 @@ namespace Trinity.Util
                 {
                     if(!Connect())
                     {
-                        MessageBox.Show("StartScanning.PdEnableFeeder failed");
+                        Common.Utils.LogManager.Error("StartScanning.PdEnableFeeder failed");
                         return false;
                     }
                 }
@@ -300,7 +300,7 @@ namespace Trinity.Util
             }
             catch (Exception ex)
             {
-                MessageBox.Show("StartScanning exception: " + ex.ToString());
+                Common.Utils.LogManager.Error("StartScanning exception: " + ex.ToString());
                 return false;
             }
         }
@@ -333,8 +333,7 @@ namespace Trinity.Util
                 {
                     _documentScannerCallback = null;
                 }
-
-                MessageBox.Show("StopScanning exception: " + ex.ToString());
+                Common.Utils.LogManager.Error("StopScanning exception: " + ex.ToString());
                 return false;
             }
         }
@@ -356,7 +355,7 @@ namespace Trinity.Util
                     + "Short Description: " + Marshal.PtrToStringAnsi(short_description) + "\n"
                     + "Long Description: " + Marshal.PtrToStringAnsi(long_description) + "\n"
                     + "Extra Info: " + Marshal.PtrToStringAnsi(extra_info) + "\n";
-                MessageBox.Show("display_pdiscan_error: " + error_string);
+                Common.Utils.LogManager.Error("display_pdiscan_error: " + error_string);
             }
 
             Marshal.FreeHGlobal(short_description);
@@ -393,7 +392,7 @@ namespace Trinity.Util
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Get_PDIScan_Error_Details exception: " + ex.ToString());
+                Common.Utils.LogManager.Error("Get_PDIScan_Error_Details exception: " + ex.ToString());
                 return string.Empty;
             }
         }
@@ -483,7 +482,8 @@ namespace Trinity.Util
             }
             catch (Exception ex)
             {
-                MessageBox.Show("page_end_callback exception: " + ex.ToString());
+                Common.Utils.LogManager.Error("page_end_callback exception: " + ex.ToString());
+                
                 // callback
                 _documentScannerCallback(new string[] {}, ex.Message);
                 _documentScannerCallback = null;
@@ -506,14 +506,14 @@ namespace Trinity.Util
 
         private void scanning_error_callback(pdiscan_errors ScanningError, string ExtraInfo, IntPtr UserData)
         {
-            MessageBox.Show("scanning_error_callback: " + ExtraInfo);
+            Common.Utils.LogManager.Error("scanning_error_callback: " + ExtraInfo);
         }
 
         private void imprinter_string_callback(int PageNumber, IntPtr ImprinterString, IntPtr UserData)
         {
             try
             {
-                MessageBox.Show("imprinter_string_callback");
+                Common.Utils.LogManager.Info("imprinter_string_callback");
                 IntPtr impstr = Marshal.StringToHGlobalAnsi("imprinttest we do\n word wrap");
                 PD_IMPRINT_SETUP setup = new PD_IMPRINT_SETUP();
                 setup.eBase = pd_imprinter_horizontal_offset_bases.PD_IMPRINTER_HORIZONTAL_OFFSET_BASE_LEADING_EDGE;
@@ -524,7 +524,7 @@ namespace Trinity.Util
             }
             catch (Exception ex)
             {
-                MessageBox.Show("imprinter_string_callback exception: " + ex.ToString());
+                Common.Utils.LogManager.Error("imprinter_string_callback exception: " + ex.ToString());
             }
         }
         #endregion
