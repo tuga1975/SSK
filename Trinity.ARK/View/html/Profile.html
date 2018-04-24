@@ -631,10 +631,13 @@
 </div>
 <div class="profile-action">
     <div class="mt-4">
+        <div style="position: fixed;bottom: 17px;left: 40px;">
+            <span style="color:red;">*</span>
+            Supporting documents required
+        </div>
         <div style="display:block;float:right;" id="divSave">
-            <!--<button type="button" class="btn btn-dark" onclick="api.server.LoadPageSupervisee();">Back</button>-->
-            <button type="button" class="btn btn-dark" style="position:fixed;bottom:10px;right:140px; float:right;" onclick="api.server.LoadPageSupervisee();">Cancel</button>
-            <button type="button" class="btn btn-success" style="position:fixed;bottom:10px;right:40px; float:right;" id="SaveBtn">Update</button>
+            <button type="button" class="btn btn-dark" style="position:fixed;bottom:10px;right:140px;border-radius:5px;min-width:100px;margin-right:20px;" onclick="api.server.LoadPageSupervisee();">Cancel</button>
+            <button type="button" class="btn btn-success" style="position:fixed;bottom:10px;right:40px;border-radius:5px;min-width:100px;color:#FFF;background-color:#1CACF6;" id="SaveBtn">Update</button>
         </div>
     </div>
 </div>
@@ -749,7 +752,7 @@
         } else {
             alert('Not data changes');
         }
-        
+
         e.preventDefault(); // avoid to execute the actual submit of the form.
     });
 
