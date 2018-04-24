@@ -302,7 +302,7 @@ namespace ARK
             {
                 Membership_Users = user,
                 User_Profiles = new DAL_UserProfile().GetProfile(user.UserId),
-                Primary_Addresses = new DAL_UserProfile().GetAddByUserId(user.UserId, true),
+                Primary_Addresses = new DAL_UserProfile().GetAddByUserId(user.UserId, false),
                 Alternate_Addresses = new DAL_UserProfile().GetAddByUserId(user.UserId, true)
             };
             data_old_update_profile = new object[] { dataReturn.User_Profiles, dataReturn.Alternate_Addresses };
