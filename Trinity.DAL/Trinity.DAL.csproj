@@ -214,6 +214,9 @@
     <Compile Include="DBContext\Recipient.cs">
       <DependentUpon>SSK.tt</DependentUpon>
     </Compile>
+    <Compile Include="DBContext\ReportingDay.cs">
+      <DependentUpon>SSK.tt</DependentUpon>
+    </Compile>
     <Compile Include="DBContext\Security_QA.cs">
       <DependentUpon>SSK.tt</DependentUpon>
     </Compile>

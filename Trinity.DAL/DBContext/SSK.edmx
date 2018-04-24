@@ -370,6 +370,18 @@
           <Property Name="SMS" Type="bit" />
           <Property Name="DeliveryStatus" Type="int" />
         </EntityType>
+        <EntityType Name="ReportingDays">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="Mon" Type="bit" />
+          <Property Name="Tues" Type="bit" />
+          <Property Name="Wedness" Type="bit" />
+          <Property Name="Thurs" Type="bit" />
+          <Property Name="Fri" Type="bit" />
+          <Property Name="Sat" Type="bit" />
+        </EntityType>
         <EntityType Name="Security_QA">
           <Key>
             <PropertyRef Name="UserId" />
@@ -515,7 +527,6 @@
           <Property Name="PrbEndingDate" Type="date" />
           <Property Name="ForgetPass_FailAttempt" Type="int" />
           <Property Name="DOB_FailAttempt" Type="int" />
-          <Property Name="Current_Profile_Version" Type="nvarchar" MaxLength="128" />
         </EntityType>
         <Association Name="FK__Restauran__UserI__1CFC3D38">
           <End Role="Membership_Users" Type="Self.Membership_Users" Multiplicity="0..1" />
@@ -861,6 +872,20 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_ReportingDays_Membership_Users">
+          <End Role="Membership_Users" Type="Self.Membership_Users" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="ReportingDays" Type="Self.ReportingDays" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Membership_Users">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="ReportingDays">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_UploadedDocumentDetails_UploadedDocuments">
           <End Role="UploadedDocuments" Type="Self.UploadedDocuments" Multiplicity="1" />
           <End Role="UploadedDocumentDetails" Type="Self.UploadedDocumentDetails" Multiplicity="*" />
@@ -909,18 +934,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_User_Profiles_UpdateProfile_Requests">
-          <End Role="UpdateProfile_Requests" Type="Self.UpdateProfile_Requests" Multiplicity="0..1" />
-          <End Role="User_Profiles" Type="Self.User_Profiles" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="UpdateProfile_Requests">
-              <PropertyRef Name="VersionId" />
-            </Principal>
-            <Dependent Role="User_Profiles">
-              <PropertyRef Name="Current_Profile_Version" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_User_Profiles_UploadedDocuments">
           <End Role="UploadedDocuments" Type="Self.UploadedDocuments" Multiplicity="0..1" />
           <End Role="User_Profiles" Type="Self.User_Profiles" Multiplicity="*" />
@@ -961,6 +974,7 @@
           <EntitySet Name="QueueDetails" EntityType="Self.QueueDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Queues" EntityType="Self.Queues" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Recipients" EntityType="Self.Recipients" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ReportingDays" EntityType="Self.ReportingDays" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Security_QA" EntityType="Self.Security_QA" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Settings" EntityType="Self.Settings" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SMS_LOG" EntityType="Self.SMS_LOG" Schema="dbo" store:Type="Tables" />
@@ -1082,6 +1096,10 @@
             <End Role="Membership_Users" EntitySet="Membership_Users" />
             <End Role="Recipients" EntitySet="Recipients" />
           </AssociationSet>
+          <AssociationSet Name="FK_ReportingDays_Membership_Users" Association="Self.FK_ReportingDays_Membership_Users">
+            <End Role="Membership_Users" EntitySet="Membership_Users" />
+            <End Role="ReportingDays" EntitySet="ReportingDays" />
+          </AssociationSet>
           <AssociationSet Name="FK_UploadedDocumentDetails_UploadedDocuments" Association="Self.FK_UploadedDocumentDetails_UploadedDocuments">
             <End Role="UploadedDocuments" EntitySet="UploadedDocuments" />
             <End Role="UploadedDocumentDetails" EntitySet="UploadedDocumentDetails" />
@@ -1096,10 +1114,6 @@
           </AssociationSet>
           <AssociationSet Name="FK_User_Profiles_Membership_Users" Association="Self.FK_User_Profiles_Membership_Users">
             <End Role="Membership_Users" EntitySet="Membership_Users" />
-            <End Role="User_Profiles" EntitySet="User_Profiles" />
-          </AssociationSet>
-          <AssociationSet Name="FK_User_Profiles_UpdateProfile_Requests" Association="Self.FK_User_Profiles_UpdateProfile_Requests">
-            <End Role="UpdateProfile_Requests" EntitySet="UpdateProfile_Requests" />
             <End Role="User_Profiles" EntitySet="User_Profiles" />
           </AssociationSet>
           <AssociationSet Name="FK_User_Profiles_UploadedDocuments" Association="Self.FK_User_Profiles_UploadedDocuments">
@@ -1139,6 +1153,7 @@
           <EntitySet Name="QueueDetails" EntityType="SSKModel.QueueDetail" />
           <EntitySet Name="Queues" EntityType="SSKModel.Queue" />
           <EntitySet Name="Recipients" EntityType="SSKModel.Recipient" />
+          <EntitySet Name="ReportingDays" EntityType="SSKModel.ReportingDay" />
           <EntitySet Name="Security_QA" EntityType="SSKModel.Security_QA" />
           <EntitySet Name="Settings" EntityType="SSKModel.Setting" />
           <EntitySet Name="SMS_LOG" EntityType="SSKModel.SMS_LOG" />
@@ -1252,6 +1267,10 @@
             <End Role="Membership_Users" EntitySet="Membership_Users" />
             <End Role="Recipient" EntitySet="Recipients" />
           </AssociationSet>
+          <AssociationSet Name="FK_ReportingDays_Membership_Users" Association="SSKModel.FK_ReportingDays_Membership_Users">
+            <End Role="Membership_Users" EntitySet="Membership_Users" />
+            <End Role="ReportingDay" EntitySet="ReportingDays" />
+          </AssociationSet>
           <AssociationSet Name="FK_User_Profiles_Membership_Users" Association="SSKModel.FK_User_Profiles_Membership_Users">
             <End Role="Membership_Users" EntitySet="Membership_Users" />
             <End Role="User_Profiles" EntitySet="User_Profiles" />
@@ -1271,10 +1290,6 @@
           <AssociationSet Name="FK_Queues_Timeslots" Association="SSKModel.FK_Queues_Timeslots">
             <End Role="Timeslot" EntitySet="Timeslots" />
             <End Role="Queue" EntitySet="Queues" />
-          </AssociationSet>
-          <AssociationSet Name="FK_User_Profiles_UpdateProfile_Requests" Association="SSKModel.FK_User_Profiles_UpdateProfile_Requests">
-            <End Role="UpdateProfile_Requests" EntitySet="UpdateProfile_Requests" />
-            <End Role="User_Profiles" EntitySet="User_Profiles" />
           </AssociationSet>
           <AssociationSet Name="FK_UploadedDocumentDetails_UploadedDocuments" Association="SSKModel.FK_UploadedDocumentDetails_UploadedDocuments">
             <End Role="UploadedDocument" EntitySet="UploadedDocuments" />
@@ -1582,6 +1597,7 @@
           <NavigationProperty Name="Queues" Relationship="SSKModel.FK_Queues_Membership_Users" FromRole="Membership_Users" ToRole="Queue" />
           <NavigationProperty Name="Queues1" Relationship="SSKModel.FK_Queues_Membership_Users1" FromRole="Membership_Users" ToRole="Queue" />
           <NavigationProperty Name="Recipients" Relationship="SSKModel.FK_Recipients_User_Profiles" FromRole="Membership_Users" ToRole="Recipient" />
+          <NavigationProperty Name="ReportingDay" Relationship="SSKModel.FK_ReportingDays_Membership_Users" FromRole="Membership_Users" ToRole="ReportingDay" />
           <NavigationProperty Name="User_Profiles" Relationship="SSKModel.FK_User_Profiles_Membership_Users" FromRole="Membership_Users" ToRole="User_Profiles" />
         </EntityType>
         <EntityType Name="Message">
@@ -1704,6 +1720,19 @@
           <NavigationProperty Name="Membership_Users" Relationship="SSKModel.FK_Recipients_User_Profiles" FromRole="Recipient" ToRole="Membership_Users" />
           <NavigationProperty Name="Message" Relationship="SSKModel.FK_MsgRecipients_SentMessages" FromRole="Recipient" ToRole="Message" />
         </EntityType>
+        <EntityType Name="ReportingDay">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Mon" Type="Boolean" />
+          <Property Name="Tues" Type="Boolean" />
+          <Property Name="Wedness" Type="Boolean" />
+          <Property Name="Thurs" Type="Boolean" />
+          <Property Name="Fri" Type="Boolean" />
+          <Property Name="Sat" Type="Boolean" />
+          <NavigationProperty Name="Membership_Users" Relationship="SSKModel.FK_ReportingDays_Membership_Users" FromRole="ReportingDay" ToRole="Membership_Users" />
+        </EntityType>
         <EntityType Name="Security_QA">
           <Key>
             <PropertyRef Name="UserId" />
@@ -1784,7 +1813,6 @@
           <Property Name="ApprovedOrRejectedTime" Type="DateTime" Precision="3" />
           <Property Name="Current_Content_JSON" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Note" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="User_Profiles" Relationship="SSKModel.FK_User_Profiles_UpdateProfile_Requests" FromRole="UpdateProfile_Requests" ToRole="User_Profiles" />
         </EntityType>
         <EntityType Name="UploadedDocumentDetail">
           <Key>
@@ -1857,12 +1885,10 @@
           <Property Name="PrbEndingDate" Type="DateTime" Precision="0" />
           <Property Name="ForgetPass_FailAttempt" Type="Int32" />
           <Property Name="DOB_FailAttempt" Type="Int32" />
-          <Property Name="Current_Profile_Version" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Address" Relationship="SSKModel.FK_User_Profiles_Addresses2" FromRole="User_Profiles" ToRole="Address" />
           <NavigationProperty Name="Address1" Relationship="SSKModel.FK_User_Profiles_Addresses3" FromRole="User_Profiles" ToRole="Address" />
           <NavigationProperty Name="APS_USER_ACT_LOG" Relationship="SSKModel.FK_APS_USER_ACT_LOG_User_Profiles" FromRole="User_Profiles" ToRole="APS_USER_ACT_LOG" />
           <NavigationProperty Name="Membership_Users" Relationship="SSKModel.FK_User_Profiles_Membership_Users" FromRole="User_Profiles" ToRole="Membership_Users" />
-          <NavigationProperty Name="UpdateProfile_Requests" Relationship="SSKModel.FK_User_Profiles_UpdateProfile_Requests" FromRole="User_Profiles" ToRole="UpdateProfile_Requests" />
           <NavigationProperty Name="UploadedDocument" Relationship="SSKModel.FK_User_Profiles_UploadedDocuments" FromRole="User_Profiles" ToRole="UploadedDocument" />
         </EntityType>
         <Association Name="FK_AbsenceReporting_UploadedDocuments">
@@ -2185,6 +2211,20 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_ReportingDays_Membership_Users">
+          <End Type="SSKModel.Membership_Users" Role="Membership_Users" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="SSKModel.ReportingDay" Role="ReportingDay" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Membership_Users">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="ReportingDay">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_User_Profiles_Membership_Users">
           <End Type="SSKModel.Membership_Users" Role="Membership_Users" Multiplicity="1" />
           <End Type="SSKModel.User_Profiles" Role="User_Profiles" Multiplicity="0..1" />
@@ -2242,18 +2282,6 @@
             </Principal>
             <Dependent Role="Queue">
               <PropertyRef Name="Timeslot_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_User_Profiles_UpdateProfile_Requests">
-          <End Type="SSKModel.UpdateProfile_Requests" Role="UpdateProfile_Requests" Multiplicity="0..1" />
-          <End Type="SSKModel.User_Profiles" Role="User_Profiles" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="UpdateProfile_Requests">
-              <PropertyRef Name="VersionId" />
-            </Principal>
-            <Dependent Role="User_Profiles">
-              <PropertyRef Name="Current_Profile_Version" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2674,6 +2702,19 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="ReportingDays">
+            <EntityTypeMapping TypeName="SSKModel.ReportingDay">
+              <MappingFragment StoreEntitySet="ReportingDays">
+                <ScalarProperty Name="Sat" ColumnName="Sat" />
+                <ScalarProperty Name="Fri" ColumnName="Fri" />
+                <ScalarProperty Name="Thurs" ColumnName="Thurs" />
+                <ScalarProperty Name="Wedness" ColumnName="Wedness" />
+                <ScalarProperty Name="Tues" ColumnName="Tues" />
+                <ScalarProperty Name="Mon" ColumnName="Mon" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Security_QA">
             <EntityTypeMapping TypeName="SSKModel.Security_QA">
               <MappingFragment StoreEntitySet="Security_QA">
@@ -2782,7 +2823,6 @@
           <EntitySetMapping Name="User_Profiles">
             <EntityTypeMapping TypeName="SSKModel.User_Profiles">
               <MappingFragment StoreEntitySet="User_Profiles">
-                <ScalarProperty Name="Current_Profile_Version" ColumnName="Current_Profile_Version" />
                 <ScalarProperty Name="DOB_FailAttempt" ColumnName="DOB_FailAttempt" />
                 <ScalarProperty Name="ForgetPass_FailAttempt" ColumnName="ForgetPass_FailAttempt" />
                 <ScalarProperty Name="PrbEndingDate" ColumnName="PrbEndingDate" />

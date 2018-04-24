@@ -12,15 +12,16 @@ namespace Trinity.DAL.DBContext
     using System;
     using System.Collections.Generic;
     
-    public partial class UpdateProfile_Requests
+    public partial class ReportingDay
     {
-        public string VersionId { get; set; }
         public string UserId { get; set; }
-        public System.DateTime UpdatedTime { get; set; }
-        public string Status { get; set; }
-        public string ApprovedOrRejectedBy { get; set; }
-        public Nullable<System.DateTime> ApprovedOrRejectedTime { get; set; }
-        public string Current_Content_JSON { get; set; }
-        public string Note { get; set; }
+        public Nullable<bool> Mon { get; set; }
+        public Nullable<bool> Tues { get; set; }
+        public Nullable<bool> Wedness { get; set; }
+        public Nullable<bool> Thurs { get; set; }
+        public Nullable<bool> Fri { get; set; }
+        public Nullable<bool> Sat { get; set; }
+    
+        public virtual Membership_Users Membership_Users { get; set; }
     }
 }

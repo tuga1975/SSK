@@ -90,6 +90,7 @@ namespace Trinity.DAL.DBContext
         public virtual ICollection<Queue> Queues1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Recipient> Recipients { get; set; }
+        public virtual ReportingDay ReportingDay { get; set; }
         public virtual User_Profiles User_Profiles { get; set; }
     }
 }
