@@ -42,7 +42,7 @@
                         <div class="col-6">
                             <div class="row col-7 offset-1" style="margin:auto;">
                                 <div class="scan col-6 ml-auto" style="text-align:left;">
-                                    <a href="#" class="link-blue" onclick="disBtnFingerprint(true); api.server.CaptureFingerprint(0);" capturefingerprint-btn="0">
+                                    <a href="#" class="link-blue" onclick="disBtnFingerprint(true);countScanFinger = 0; api.server.CaptureFingerprint(0);" capturefingerprint-btn="0">
                                         Scan
                                     </a>
                                 </div>
@@ -57,7 +57,7 @@
                         <div class="col-6">
                             <div class="row col-7 offset-1" style="margin:auto;">
                                 <div class="scan col-6 ml-auto" style="text-align:left;">
-                                    <a href="#" class="link-blue" onclick="disBtnFingerprint(true); api.server.CaptureFingerprint(1);" capturefingerprint-btn="1">
+                                    <a href="#" class="link-blue" onclick="disBtnFingerprint(true);countScanFinger = 0; api.server.CaptureFingerprint(1);" capturefingerprint-btn="1">
                                         Scan
                                     </a>
                                 </div>
@@ -82,13 +82,19 @@
     </div>
 </div>
 <style type="text/css">
-    a[disabled]{
-        pointer-events:none;
-        opacity:0.3;
+    a[disabled] {
+        pointer-events: none;
+        opacity: 0.3;
     }
 </style>
 <script type="text/javascript">
     var modelFingerprinter = null;
+    var countScanFinger = 0;
+    function changCountFinger() {
+        if (countScanFinger < 5)
+            countScanFinger++;
+    }
+
     api.ready(function (model) {
         modelFingerprinter = model;
         clearFingerprint(0);
@@ -107,7 +113,7 @@
         $('[capturefingerprint-btn="' + LeftOrRight + '"]');
     }
     function captureFingerprintMessage(LeftOrRight, Message, color) {
-        $('[capturefingerprint-message="' + LeftOrRight + '"]').text(Message).css('color', color);
+        $('[capturefingerprint-message="' + LeftOrRight + '"]').text(Message + ' (' + countScanFinger + '/5)').css('color', color);
     }
     function setImageFingerprint(LeftOrRight, img) {
         $('[capturefingerprint-img="' + LeftOrRight + '"]').attr('src', 'data:image/png;base64,' + img).attr('soure', img);

@@ -281,6 +281,20 @@ namespace Trinity.SignalR
         {
             PostNotification(notificationInfo: new NotificationInfo() { Name = NotificationNames.SSA_PRINTING_LABEL, UserID = UserId });
         }
+
+        /// <summary>
+        /// An application inform Notification Server its status
+        /// </summary>
+        /// <param name="appName"></param>
+        ///     appName: SHP or SSP
+        /// <param name="appStatus"></param>
+        ///     appStatus: OK or Error
+        /// <param name="message"></param>
+        ///     message: error message
+        public void AppStatusChanged(string appName, string appStatus, string message)
+        {
+            //PostNotification(notificationInfo: new NotificationInfo() { Name = NotificationNames.DEVICE_STATUS_CHANGED, Type = EnumNotificationTypes.Notification, Source = Station, Data = new object[] { deviceId, newDeviceStatuses } });
+        }
         #endregion
     }
 }

@@ -321,15 +321,16 @@ namespace ARK
             Nullable<Guid> IDDocuemnt = null;
             if (new DAL_UserProfile().ARKUpdateProfile(user.UserId, data, arrayScan, out User_Profiles_New, out Alternate_Addresses_New, out IDDocuemnt))
             {
+                new DAL_UpdateProfile_Requests().CreateRequest(
+                    (Trinity.BE.UserProfile)data_old_update_profile[0],
+                    (Trinity.BE.Address)data_old_update_profile[1],
+                    User_Profiles_New,
+                    Alternate_Addresses_New,
+                    IDDocuemnt,
+                    isSendNotiIfDontScanDocument
+                );
                 if (isSendNotiIfDontScanDocument)
                 {
-                    new DAL_UpdateProfile_Requests().CreateRequest(
-                        (Trinity.BE.UserProfile)data_old_update_profile[0],
-                        (Trinity.BE.Address)data_old_update_profile[1],
-                        User_Profiles_New,
-                        Alternate_Addresses_New,
-                        IDDocuemnt
-                    );
                     Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(user.UserId, "Supervisee " + user.Name + " has updated profile don't upload scan document.", "Please check Supervisee " + user.Name + "'s information!", EnumNotificationTypes.Notification);
                 }
                 LoadPageSupervisee();
@@ -574,7 +575,7 @@ namespace ARK
             {
                 var listAppointment = new DAL_Appointments().GetAbsentAppointments(supervisee.UserId);
 
-                this._web.ShowMessage("You have been absent for " + absenceCount + " times.<br/>Please provide reasons and the supporting documents.");
+                this._web.ShowMessage("You have been absent for " + absenceCount + " time(s).<br/>Please provide reason(s) and supporting document(s).");
                 _web.LoadPageHtml("ReasonsForQueue.html", listAppointment.Select(d => new
                 {
                     ID = d.ID,
