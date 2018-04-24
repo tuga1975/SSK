@@ -292,7 +292,7 @@ namespace ALK
         {
             // Set application status is busy
             ApplicationStatusManager.Instance.IsBusy = true;
-
+            LayerWeb.RunScript("$('[status-authentication]').text('');");
             // Pause for 1 second and goto Fingerprint Login Screen
             Thread.Sleep(1000);
 
@@ -334,6 +334,7 @@ namespace ALK
 
             // display failed on UI
             LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please place your smart card on the reader. Failed: " + _smartCardFailed + "');");
+            LayerWeb.RunScript("$('[status-authentication]').text('SmartCard Verification Failed : " + _smartCardFailed + "');");
         }
 
         #endregion
