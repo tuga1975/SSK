@@ -18,6 +18,16 @@ namespace Trinity.NotificationServer
             }
         }
 
+        private void AppStatusChanged(string station, string status, string errorMesssage)
+        {
+            new DAL.DAL_DeviceStatus().AppStatusChanged(station, status, errorMesssage);
+            Clients.Clients(Program.ProfileConnected.Where(d => d.isApp && d.Station == EnumStation.DUTYOFFICER).Select(d => d.ConnectionId).ToList()).OnNewNotification(new NotificationInfo()
+            {
+                Name = NotificationNames.DEVICE_STATUS_CHANGED,
+                Type = EnumNotificationTypes.Notification,
+                Source = station
+            });
+        }
         public void OnNewNotification(NotificationInfo notificationInfo)
         {
             if (notificationInfo.Name == NotificationNames.QUEUE_COMPLETED)
@@ -28,7 +38,14 @@ namespace Trinity.NotificationServer
             }
             else if (notificationInfo.Name == NotificationNames.DEVICE_STATUS_CHANGED)
             {
-                Clients.Clients(Program.ProfileConnected.Where(d => d.isApp && d.Station == EnumStation.DUTYOFFICER).Select(d => d.ConnectionId).ToList()).OnNewNotification(notificationInfo);
+                if (notificationInfo.Source != null && (notificationInfo.Source.ToString() == EnumStation.SSP || notificationInfo.Source.ToString() == EnumStation.SHP))
+                {
+                    AppStatusChanged(notificationInfo.Source.ToString(), notificationInfo.Status, notificationInfo.Content);
+                }
+                else
+                {
+                    Clients.Clients(Program.ProfileConnected.Where(d => d.isApp && d.Station == EnumStation.DUTYOFFICER).Select(d => d.ConnectionId).ToList()).OnNewNotification(notificationInfo);
+                }
             }
             else if (notificationInfo.Name == NotificationNames.USER_LOGGED_IN)
             {
@@ -63,7 +80,7 @@ namespace Trinity.NotificationServer
                         Clients.Clients(Program.ProfileConnected.Where(d => d.isUser && d.UserID == toUserIDs[i]).Select(d => d.ConnectionId).ToList()).OnNewNotification(notificationInfo);
                     }
                 }
-                else if(notificationInfo.ToUserIds==null)
+                else if (notificationInfo.ToUserIds == null)
                 {
                     Clients.Clients(Program.ProfileConnected.Where(d => d.isApp && d.Station == EnumStation.DUTYOFFICER).Select(d => d.ConnectionId).ToList()).OnNewNotification(notificationInfo);
                 }
@@ -102,6 +119,7 @@ namespace Trinity.NotificationServer
             }
         }
 
+
         #region Connection functions
         public override Task OnConnected()
         {
@@ -113,6 +131,11 @@ namespace Trinity.NotificationServer
                     Station = Station
                 });
                 Program.MainForm.WriteToConsole("[" + Station + "] => App Connect");
+
+                //if (Station == EnumStation.SSP || Station == EnumStation.SHP)
+                //{
+                //    AppStatusChanged(Station, Enum_AppStatusChanged.OK, string.Empty);
+                //}
             }
             foreach (var item in Program.ProfileConnected.Where(d => d.isOffline && d.ConnectionId == Context.ConnectionId))
             {

@@ -73,7 +73,7 @@ namespace Trinity.DAL
                 _localUnitOfWork.GetRepository<DBContext.User_Profiles>().Update(user);
                 _localUnitOfWork.GetRepository<DBContext.Membership_Users>().Update(member_user);
                 _localUnitOfWork.GetRepository<DAL.DBContext.IssuedCard>().Update(IssueCard);
-                _localUnitOfWork.Save();
+                _localUnitOfWork.DataContext.SaveChanges();
                 Common.Utils.LogManager.Debug("DoneEnrolSupervisee: Step 5");
                 _localUnitOfWork.DataContext.Database.CurrentTransaction.Commit();
                 Common.Utils.LogManager.Debug("DoneEnrolSupervisee: Step 6");

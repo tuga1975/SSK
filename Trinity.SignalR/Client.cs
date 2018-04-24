@@ -170,7 +170,7 @@ namespace Trinity.SignalR
         {
             PostNotification(notificationInfo: new NotificationInfo() { Name = NotificationNames.USER_LOGGED_IN, FromUserId = userId, Type = EnumNotificationTypes.Notification });
         }
-        
+
         public void UserLoggedOut(string userId)
         {
             PostNotification(notificationInfo: new NotificationInfo() { Name = NotificationNames.USER_LOGGED_OUT, FromUserId = userId, Type = EnumNotificationTypes.Notification });
@@ -285,15 +285,12 @@ namespace Trinity.SignalR
         /// <summary>
         /// An application inform Notification Server its status
         /// </summary>
-        /// <param name="appName"></param>
-        ///     appName: SHP or SSP
-        /// <param name="appStatus"></param>
-        ///     appStatus: OK or Error
-        /// <param name="message"></param>
-        ///     message: error message
+        /// <param name="appName">SHP or SSP</param>
+        /// <param name="appStatus">OK or Error</param>
+        /// <param name="message">error message</param>
         public void AppStatusChanged(string appName, string appStatus, string message)
         {
-            //PostNotification(notificationInfo: new NotificationInfo() { Name = NotificationNames.DEVICE_STATUS_CHANGED, Type = EnumNotificationTypes.Notification, Source = Station, Data = new object[] { deviceId, newDeviceStatuses } });
+            PostNotification(notificationInfo: new NotificationInfo() { Name = NotificationNames.DEVICE_STATUS_CHANGED, Type = EnumNotificationTypes.Notification, Source = appName, Status = appStatus, Content = message });
         }
         #endregion
     }

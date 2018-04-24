@@ -15,6 +15,22 @@ namespace Trinity.DAL
         Local_UnitOfWork _localUnitOfWork = new Local_UnitOfWork();
         Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
 
+        public void AppStatusChanged(string station, string status,string errorMesssage)
+        {
+            var oldRows = _localUnitOfWork.DataContext.ApplicationDevice_Status.Where(item => item.Station.Equals(station));
+            _localUnitOfWork.DataContext.ApplicationDevice_Status.RemoveRange(oldRows);
+
+            var dataInsert = new ApplicationDevice_Status()
+            {
+                ID = Guid.NewGuid(),
+                Station = station,
+                StatusCode = (int)(status == Enum_AppStatusChanged.OK ? EnumDeviceStatus.Connected : EnumDeviceStatus.Disconnected),
+            };
+            if (!string.IsNullOrEmpty(errorMesssage))
+                dataInsert.StatusMessage = errorMesssage;
+            _localUnitOfWork.DataContext.ApplicationDevice_Status.Add(dataInsert);
+            _localUnitOfWork.DataContext.SaveChanges();
+        }
         public bool Update(int deviceId, EnumDeviceStatus[] deviceStatuses,string Station = null)
         {
             try

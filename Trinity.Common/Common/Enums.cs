@@ -606,3 +606,9 @@ public static class Enum_UpdateProfile_Requests
     public const string Approve = "Approve";
     public const string Pending = "Pending";
 }
+
+public static class Enum_AppStatusChanged
+{
+    public const string OK = "OK";
+    public const string Error = "Error";
+}

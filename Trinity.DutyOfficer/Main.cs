@@ -156,7 +156,9 @@ namespace DutyOfficer
         {
             string station = (string)e.Source;
             //new DAL_DeviceStatus().RemoveDevice(station);
-            LayerWeb.InvokeScript("LoadStationColorDevice");
+
+            LayerWeb.InvokeScript("SetStationColorDevice", JsonConvert.SerializeObject(_jsCallCS.GetStationClolorDevice()));
+
         }
 
         private void OnNewNotification_Handler(object sender, NotificationInfo e)
