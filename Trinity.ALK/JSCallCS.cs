@@ -625,8 +625,8 @@ namespace ALK
 
             if (_mubIsPresent != null && _mubIsPresent.Value && _ttIsPresent != null && _ttIsPresent.Value)
             {
-                // Sleep for 1 second and check status again
-                Thread.Sleep(1000);
+                // Sleep for 3 seconds and check status again
+                Thread.Sleep(3000);
 
                 _mubIsPresent = LEDStatusLightingUtil.Instance.GetMUBStatus();
                 _ttIsPresent = LEDStatusLightingUtil.Instance.GetTTStatus();
@@ -809,8 +809,8 @@ namespace ALK
             }
             if (_mubIsRemoved != null && _mubIsRemoved.Value && _ttIsRemoved != null && _ttIsRemoved.Value)
             {
-                // Sleep for 1 second and check status again
-                Thread.Sleep(1000);
+                // Sleep for 3 seconds and check status again
+                Thread.Sleep(3000);
 
                 _mubIsRemoved = !LEDStatusLightingUtil.Instance.GetMUBStatus();
                 _ttIsRemoved = !LEDStatusLightingUtil.Instance.GetTTStatus();
