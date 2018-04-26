@@ -134,19 +134,16 @@ namespace ALK
                         var smartCard = new DAL_IssueCard().GetIssueCardBySmartCardId(cardUID);
                         if (smartCard == null)
                         {
-                            LayerWeb.ShowMessageAsync("Authentication failed", "Your smart card does not exist");
                             SmartCard_OnSmartCardFailed("Your smart card does not exist");
                             return;
                         }
                         else if (smartCard.Status == EnumIssuedCards.Inactive)
                         {
-                            LayerWeb.ShowMessageAsync("Authentication failed", "Your smart card does not work");
                             SmartCard_OnSmartCardFailed("Your smart card does not work");
                             return;
                         }
                         else if (smartCard.Status == EnumIssuedCards.Active && smartCard.Expired_Date < DateTime.Today)
                         {
-                            LayerWeb.ShowMessageAsync("Authentication failed", "Your smart card has expired");
                             SmartCard_OnSmartCardFailed("Your smart card has expired");
                             return;
                         }
@@ -312,6 +309,8 @@ namespace ALK
             _smartCardFailed++;
 
             // exceeded max failed
+            LayerWeb.ShowMessage("Authentication failed", message);
+
             if (_smartCardFailed > 3)
             {
                 // Send Notification to duty officer
@@ -319,12 +318,12 @@ namespace ALK
 
                 // show message box to user
                 //MessageBox.Show(message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                _popupModel.Title = "Authorization Failed";
-                _popupModel.Message = message;
-                _popupModel.IsShowLoading = false;
-                _popupModel.IsShowOK = true;
+                //_popupModel.Title = "Authorization Failed";
+                //_popupModel.Message = message;
+                //_popupModel.IsShowLoading = false;
+                //_popupModel.IsShowOK = true;
 
-                LayerWeb.InvokeScript("showPopupModal", JsonConvert.SerializeObject(_popupModel));
+                //LayerWeb.InvokeScript("showPopupModal", JsonConvert.SerializeObject(_popupModel));
 
                 // reset counter
                 _smartCardFailed = 0;
