@@ -52,12 +52,14 @@ namespace ARK.CodeBehind.Authentication
 
             if (BarcodeScannerUtil.Instance.GetDeviceStatus().Contains(EnumDeviceStatus.Connected))
             {
+                LogManager.Debug("Start Authentication_NRIC BarcodeScanner");
                 System.Threading.Tasks.Task.Factory.StartNew(() => BarcodeScannerUtil.Instance.StartScanning(BarcodeScannerCallback));
             }
         }
 
         private void BarcodeScannerCallback(string value, string error)
         {
+            LogManager.Debug("BarcodeScannerCallback value: " + value + ", error: " + error);
             if (string.IsNullOrEmpty(error))
             {
                 // Fill value to the textbox

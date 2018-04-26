@@ -399,6 +399,7 @@ namespace ARK
             // Enable scanner
             if (BarcodeScannerUtil.Instance.GetDeviceStatus().Contains(EnumDeviceStatus.Connected))
             {
+                LogManager.Debug("Start Duty Officer Override BarcodeScanner");
                 System.Threading.Tasks.Task.Factory.StartNew(() => BarcodeScannerUtil.Instance.StartScanning(BarcodeScannerCallback));
             }
         }
@@ -408,6 +409,7 @@ namespace ARK
             // Enable scanner
             if (BarcodeScannerUtil.Instance.GetDeviceStatus().Contains(EnumDeviceStatus.Connected))
             {
+                LogManager.Debug("Restart Duty Officer Override BarcodeScanner");
                 System.Threading.Tasks.Task.Factory.StartNew(() => BarcodeScannerUtil.Instance.StartScanning(BarcodeScannerCallback));
             }
         }
@@ -416,6 +418,7 @@ namespace ARK
         {
             try
             {
+                LogManager.Debug("BarcodeScannerCallback value: " + value + ", error: " + error);
                 if (string.IsNullOrEmpty(error))
                 {
                     // Fill value to the textbox
@@ -431,6 +434,7 @@ namespace ARK
             }
             finally
             {
+                LogManager.Debug("BarcodeScannerCallback Disconnect");
                 BarcodeScannerUtil.Instance.Disconnect();
             }
         }
