@@ -105,6 +105,7 @@ namespace Trinity.Device.Util
             if (_sCardMonitor != null)
             {
                 _sCardMonitor.Cancel();
+                _sCardMonitor = null;
             }
         }
 

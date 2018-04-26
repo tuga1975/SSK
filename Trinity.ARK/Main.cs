@@ -599,6 +599,7 @@ namespace ARK
             {
                 LayerWeb.LoadPageHtml("Authentication/SmartCard.html");
                 LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please place your smart card on the reader.');");
+                SmartCardReaderUtil.Instance.StopSmartCardMonitor();
                 SmartCard.Instance.Start();
             }
             else if (navigatorEnum == NavigatorEnums.Authentication_Fingerprint)

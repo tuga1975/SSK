@@ -26,8 +26,21 @@ namespace ARK.CodeBehind
 
             // get user login info
             Session session = Session.Instance;
-            Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-            List<Trinity.BE.Notification> myNotifications = new Trinity.DAL.DAL_Notification().GetAllNotifications(user.UserId);
+
+            
+
+            Trinity.BE.User currentUser = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+            Trinity.BE.User supervisee = null;
+            if (currentUser.Role == EnumUserRoles.DutyOfficer)
+            {
+                supervisee = (Trinity.BE.User)session[CommonConstants.SUPERVISEE];
+            }
+            else
+            {
+                supervisee = currentUser;
+            }
+
+            List<Trinity.BE.Notification> myNotifications = new Trinity.DAL.DAL_Notification().GetAllNotifications(supervisee.UserId);
             if (myNotifications != null)
             {
                 var unReadCount = myNotifications.Count;
@@ -36,7 +49,7 @@ namespace ARK.CodeBehind
                     Lib.LayerWeb.PushNoti(unReadCount);
                 }));
             }
-            _web.InvokeScript("IsDutyOfficer", user.Role == EnumUserRoles.DutyOfficer);
+            //_web.InvokeScript("IsDutyOfficer", user.Role == EnumUserRoles.DutyOfficer);
 
             //// if user login is dutyofficer, implement duty officer override
             //if (user.Role == EnumUserRoles.DutyOfficer)

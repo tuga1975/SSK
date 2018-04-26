@@ -58,7 +58,7 @@ namespace ARK
         {
 
             Session currentSession = Session.Instance;
-            Trinity.BE.User user = (Trinity.BE.User)currentSession[CommonConstants.USER_LOGIN];
+            Trinity.BE.User user = getSuperviseeLogin();
 
             DAL_Notification dalNotification = new DAL_Notification();
 
@@ -104,18 +104,8 @@ namespace ARK
         {
             Session session = Session.Instance;
             var eventCenter = Trinity.Common.Common.EventCenter.Default;
-            Trinity.BE.User currentUser = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-            Trinity.BE.User supervisee = null;
-            if (currentUser.Role == EnumUserRoles.DutyOfficer)
-            {
-                supervisee = (Trinity.BE.User)session[CommonConstants.SUPERVISEE];
-            }
-            else
-            {
-                supervisee = currentUser;
-            }
-
-
+            Trinity.BE.User supervisee = getSuperviseeLogin();
+            
 
             // check supervisee have appoitment
             Trinity.DAL.DBContext.Appointment appointment = new DAL_Appointments().GetNextAppointment(supervisee.UserId);
@@ -164,11 +154,25 @@ namespace ARK
             // redirect
             this._web.LoadPageHtml("BookAppointment.html", new object[] { appointmentBE, workingTimeshift });
         }
-
+        private Trinity.BE.User getSuperviseeLogin()
+        {
+            Session session = Session.Instance;
+            Trinity.BE.User currentUser = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+            Trinity.BE.User supervisee = null;
+            if (currentUser.Role == EnumUserRoles.DutyOfficer)
+            {
+                supervisee = (Trinity.BE.User)session[CommonConstants.SUPERVISEE];
+            }
+            else
+            {
+                supervisee = currentUser;
+            }
+            return supervisee;
+        }
         public string GetNextAppointmentDate()
         {
             Session session = Session.Instance;
-            Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+            Trinity.BE.User user = getSuperviseeLogin();
             if (user != null)
             {
                 var _appointment = new DAL_Appointments().GetNextAppointment(user.UserId);
@@ -248,19 +252,8 @@ namespace ARK
             }
             else
             {
-                Session session = Session.Instance;
-                Trinity.BE.User currentUser = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-                Trinity.BE.User supervisee = null;
-                if (currentUser.Role == EnumUserRoles.DutyOfficer)
-                {
-                    supervisee = (Trinity.BE.User)session[CommonConstants.SUPERVISEE];
-                }
-                else
-                {
-                    supervisee = currentUser;
-                }
-
-
+                Trinity.BE.User supervisee = getSuperviseeLogin();
+                
                 bool updateResult = new DAL_Appointments().UpdateTimeslot_ID(appointment_ID, timeslot_ID);
 
                 if (updateResult)
@@ -297,7 +290,7 @@ namespace ARK
         public void LoadProfile()
         {
             Session session = Session.Instance;
-            Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+            Trinity.BE.User user = getSuperviseeLogin();
             var dataReturn = new
             {
                 Membership_Users = user,
@@ -312,7 +305,7 @@ namespace ARK
         public void SaveProfile(string param, string dataChangeAll, string arrayDocumentScan, bool isSendNotiIfDontScanDocument)
         {
             Session session = Session.Instance;
-            Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+            Trinity.BE.User user = getSuperviseeLogin();
             var data = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, object>>>(param);
             List<string> arrayScan = JsonConvert.DeserializeObject<List<string>>(arrayDocumentScan);
 
@@ -321,13 +314,15 @@ namespace ARK
             Nullable<Guid> IDDocuemnt = null;
             if (new DAL_UserProfile().ARKUpdateProfile(user.UserId, data, arrayScan, out User_Profiles_New, out Alternate_Addresses_New, out IDDocuemnt))
             {
+                Trinity.BE.User currentUser = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
                 new DAL_UpdateProfile_Requests().CreateRequest(
                     (Trinity.BE.UserProfile)data_old_update_profile[0],
                     (Trinity.BE.Address)data_old_update_profile[1],
                     User_Profiles_New,
                     Alternate_Addresses_New,
                     IDDocuemnt,
-                    isSendNotiIfDontScanDocument
+                    isSendNotiIfDontScanDocument,
+                    (currentUser.Role == EnumUserRoles.DutyOfficer)
                 );
                 if (isSendNotiIfDontScanDocument)
                 {
@@ -340,57 +335,7 @@ namespace ARK
                 LoadPageSupervisee();
             }
         }
-
-        public void LoadScanDocument(string jsonData)
-        {
-            try
-            {
-                Session session = Session.Instance;
-                session[CommonConstants.PROFILE_DATA] = jsonData;
-                var user = (Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN];
-                Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(user.UserId, "Supervisee's information changed!", "Please check the Supervisee " + user.Name + "'s information!", EnumNotificationTypes.Notification);
-                LoadPage("Document.html");
-
-            }
-            catch (Exception)
-            {
-                var eventCenter = Trinity.Common.Common.EventCenter.Default;
-                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.SOMETHING_WENT_WRONG, Message = "Something wrong happened!" });
-                LoadProfile();
-            }
-        }
-
-        public void LoadScanDocumentForAbsence(string jsonData, string reason)
-        {
-
-            try
-            {
-                Session session = Session.Instance;
-
-
-                var reasonModel = JsonConvert.DeserializeObject<Trinity.BE.Reason>(reason);
-                var result = new DAL_AbsenceReporting().SetInfo(reasonModel);
-                //var absenceModel = dalAbsence.SetInfo(reasonModel);
-                session[CommonConstants.ABSENCE_REPORTING_DATA] = result;
-
-                LoadPage("DocumentFromQueue.html");
-
-            }
-            catch (Exception)
-            {
-                var eventCenter = Trinity.Common.Common.EventCenter.Default;
-                eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.SOMETHING_WENT_WRONG, Message = "Something wrong happened!" });
-                LoadProfile();
-            }
-        }
-
-        public void UpdateProfileAfterScanDoc()
-        {
-            Session session = Session.Instance;
-            var jsonData = session[CommonConstants.PROFILE_DATA];
-
-            //SaveProfile(jsonData.ToString(), true);
-        }
+        
 
         public void ManualLogin()
         {
@@ -510,15 +455,7 @@ namespace ARK
 
         public int GetMyAbsencesCount()
         {
-            Session session = Session.Instance;
-            Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-
-            Trinity.BE.User supervisee = null;
-            // Check if the current user is a duty officcer
-            if (user.Role == EnumUserRoles.DutyOfficer)
-            {
-                supervisee = (Trinity.BE.User)session[CommonConstants.SUPERVISEE];
-            }
+            Trinity.BE.User supervisee = getSuperviseeLogin();
             if (supervisee != null)
             {
                 return new DAL_Appointments().CountAbsenceReport(supervisee.UserId);
@@ -533,22 +470,10 @@ namespace ARK
         public void ReportingForQueueNumber()
         {
             // Get current user
-            Session session = Session.Instance;
-            Trinity.BE.User currentUser = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-            Trinity.BE.User supervisee = currentUser;
+            
+            Trinity.BE.User supervisee = getSuperviseeLogin();
             // Check if the current user is a duty officcer 
-            if (currentUser.Role == EnumUserRoles.DutyOfficer)
-            {
-                supervisee = (Trinity.BE.User)session[CommonConstants.SUPERVISEE];
-            }
-            else
-            {
-                supervisee = currentUser;
-            }
-            if (supervisee.Status == EnumUserStatuses.Blocked)
-            {
-
-            }
+            
             int absenceCount = 0;
 
             if (supervisee != null)
@@ -743,7 +668,7 @@ namespace ARK
             }
             else
             {
-                Guid IDDocuemnt = new DAL_UploadedDocuments().Insert(arrayScan, ((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId);
+                Guid IDDocuemnt = new DAL_UploadedDocuments().Insert(arrayScan, getSuperviseeLogin().UserId);
                 _SaveReasonForQueue(dataTxt, IDDocuemnt);
             }
 
@@ -756,96 +681,8 @@ namespace ARK
             LoadPageSupervisee();
         }
 
-        //public void SaveReasonForQueue(/*string data,*/ string reason, string selectedID)
-        //{
-        //    Session currentSession = Session.Instance;
-        //    Trinity.BE.User user = (Trinity.BE.User)currentSession[CommonConstants.USER_LOGIN];
-        //    //send message to case office if no support document
-        //    if (reason == "No Supporting Document")
-        //    {
-        //        APIUtils.SignalR.SendToAllDutyOfficers(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId, "Supervisee get queue without supporting document", "Please check the Supervisee's information!", NotificationType.Notification);
-        //    }
-        //    var charSeparators = new char[] { ',' };
-        //    var listSplitID = selectedID.Split(charSeparators, StringSplitOptions.RemoveEmptyEntries);
-
-        //    if (listSplitID.Count()<=0)
-        //    {
-        //        CSCallJS.InvokeScript(_web, "showMessage", "You have select a date to report!");
-        //        return;
-        //    }
-        //    //var listAppointment = JsonConvert.DeserializeObject<List<Appointment>>(data);
-        //    Trinity.BE.Reason reasonModel = JsonConvert.DeserializeObject<Trinity.BE.Reason>(reason);
-        //    if (reasonModel == null)
-        //    {
-        //        reasonModel = new Trinity.BE.Reason()
-        //        {
-        //            Detail = "",
-        //            Value = (int)EnumAbsenceReasons.No_Valid_Reason
-        //        };
-
-        //    }
-        //    //create absence report 
-        //    var dalAbsence = new DAL_AbsenceReporting();
-
-
-        //    var dalAppointment = new DAL_Appointments();
-
-        //    var listSelectedDate = new DAL_Appointments().GetListAppointmentFromListSelectedDate(selectedID);
-        //    //var listSelectedDate = dalAppointment.GetListAppointmentFromSelectedDate(listSplitID);
-        //    foreach (var item in listSelectedDate)
-        //    {
-        //        var result = new DAL_AbsenceReporting().SetInfo(reasonModel);
-        //        //var absenceModel = dalAbsence.SetInfo(reasonModel);
-        //        var absenceModel = result;
-        //        var create = dalAbsence.CreateAbsenceReporting(absenceModel, true);
-        //        if (create)
-        //        {
-        //            var absenceId = absenceModel.ID;
-        //            dalAppointment.UpdateAbsenceReason(item.ID, absenceModel.ID);
-
-        //            //dalAppointment.UpdateReason(item.ID, absenceModel.ID);
-        //        }
-
-        //    }
-
-        //    //send notify to case officer
-        //    if (reasonModel.Value == (int)EnumAbsenceReasons.No_Valid_Reason)
-        //    {
-        //        APIUtils.SignalR.SendToAllDutyOfficers(user.UserId, user.Name + " has not provided any valid reason", " Please check the Supervisee's information!", NotificationType.Notification);
-        //        LoadPageSupervisee();;
-        //        return;
-        //    }
-
-        //    APIUtils.SignalR.SendToAllDutyOfficers(user.UserId, user.Name + " has provided absent reason", user.Name + " has provided absent reason.", NotificationType.Notification);
-        //    ReportingForQueueNumber();
-        //    LoadPageSupervisee();;
-        //}
-
-        public void UpdateAbsenceAfterScanDoc()
-        {
-
-            Session session = Session.Instance;
-            Trinity.BE.AbsenceReporting absenceData = (Trinity.BE.AbsenceReporting)session[CommonConstants.ABSENCE_REPORTING_DATA];
-            //get scanned data from session
-            var scannedDoc = (byte[])session[CommonConstants.SCANNED_DOCUMENT];
-            var listAppointment = (List<Trinity.DAL.DBContext.Appointment>)session[CommonConstants.LIST_APPOINTMENT];
-            absenceData.ScannedDocument = scannedDoc;
-            var dalAbsence = new DAL_AbsenceReporting();
-            var create = dalAbsence.CreateAbsenceReporting(absenceData, true);
-            if (create)
-            {
-                var dalAppointment = new DAL_Appointments();
-                foreach (var item in listAppointment)
-                {
-                    var absenceId = absenceData.ID;
-                    dalAppointment.UpdateAbsenceReason(item.ID, absenceData.ID);
-                    // dalAppointment.UpdateReason(item.ID, absenceData.ID);
-                }
-            }
-            LoadPageSupervisee();
-
-        }
-
+        
+        
         public void LoadPageSupervisee()
         {
             main.NavigateTo(NavigatorEnums.Supervisee);
@@ -879,7 +716,7 @@ namespace ARK
         {
             // reset session value
             Session session = Session.Instance;
-            var user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+            var user = getSuperviseeLogin();
             if (user != null && !string.IsNullOrEmpty(user.UserId))
             {
                 Trinity.SignalR.Client.Instance.UserLoggedOut(user.UserId);

@@ -344,7 +344,6 @@
     <Content Include="View\html\ReasonsForQueue.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="View\html\DocumentFromQueue.html" />
     <Content Include="View\html\QueueNumber.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

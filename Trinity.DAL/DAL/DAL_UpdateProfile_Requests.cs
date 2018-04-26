@@ -19,7 +19,8 @@ namespace Trinity.DAL
                                   BE.UserProfile User_Profiles_New,
                                   BE.Address Alternate_Addresses_New,
                                   Guid? DocumentID,
-                                  bool isScanDocument
+                                  bool isScanDocument,
+                                  bool isDoLogin
                                  )
         {
             var dataApprove = _localUnitOfWork.DataContext.UpdateProfile_Requests.Where(d => d.UserId == User_Profiles_Old.UserId && d.Status == Enum_UpdateProfile_Requests.Approve).OrderByDescending(d => d.UpdatedTime).FirstOrDefault();
@@ -57,7 +58,7 @@ namespace Trinity.DAL
 
                     dataPending = new DBContext.UpdateProfile_Requests()
                     {
-                        Status = Enum_UpdateProfile_Requests.Pending,
+                        Status = isDoLogin? Enum_UpdateProfile_Requests.Approve : Enum_UpdateProfile_Requests.Pending,
                         UpdatedTime = DateTime.Now,
                         UserId = User_Profiles_Old.UserId,
                         VersionId = Guid.NewGuid().ToString().Trim(),
@@ -98,6 +99,9 @@ namespace Trinity.DAL
                 dataRequest.Add("UploadedDocuments", arrayDocument);
                 dataPending.Current_Content_JSON = JsonConvert.SerializeObject(dataRequest);
                 dataPending.UpdatedTime = DateTime.Now;
+                if (isDoLogin)
+                    dataPending.Status = Enum_UpdateProfile_Requests.Approve;
+
                 _localUnitOfWork.GetRepository<DBContext.UpdateProfile_Requests>().Update(dataPending);
             }
 
