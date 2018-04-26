@@ -154,9 +154,11 @@ namespace Trinity.Device.Util
         /// </summary>
         public void StartScanning(Action<string, string> barcodeScannerCallback)
         {
+            LogManager.Debug("Start barcode Scanner ");
             // Open port
             if (!Connect())
             {
+                LogManager.Debug("Port " + EnumDeviceNames.BarcodeScannerPortName + " is disconnected.");
                 barcodeScannerCallback(string.Empty, "Port " + EnumDeviceNames.BarcodeScannerPortName + " is disconnected.");
                 return;
             }
@@ -225,12 +227,14 @@ namespace Trinity.Device.Util
                 }
                 catch (IOException ex)
                 {
+                    LogManager.Error(ex.ToString());
                     //MessageBox.Show(this.serialPort1.PortName + "\r\n" + ex.Message);    // disappeared
                     barcodeScannerCallback(string.Empty, "Port " + EnumDeviceNames.BarcodeScannerPortName + "\r\n" + ex.Message);
                 }
             }
             else
             {
+                LogManager.Error("!this.serialPort1.IsOpen");
                 //MessageBox.Show(this.serialPort1.PortName + " is disconnected.");
                 barcodeScannerCallback(string.Empty, "Port " + EnumDeviceNames.BarcodeScannerPortName + " is disconnected (can not connect).");
             }
