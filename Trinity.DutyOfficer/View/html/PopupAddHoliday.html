@@ -50,7 +50,12 @@
         </div>
     </div>
 </div>
-
+<style type="text/css">
+    .datepicker {
+        z-index: 1060 !important;
+        margin-left: 200px;
+    }
+</style>
 <script type="text/javascript">
     //var lstDays = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"];
     //var lstMonths = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"];
@@ -71,22 +76,26 @@
     //$.each(lstYears, function (i, p) {
     //    $('#year').append($('<option></option>').val(p).html(p));
     //});
-    $('#HolidayDate').datepicker({ format: 'dd/mm/yyyy' });
+    $('#HolidayDate').keydown(function (event) { event.preventDefault(); }).datepicker({ format: 'dd/mm/yyyy' });
 
     $("#AddBtn").click(function (e) {
+        e.preventDefault();
+
         var date = api.ToDateCSharp($('#HolidayDate').val());
         var description = $('#description').val();
         var note = $('#note').val();
         var holiday = { Holiday1: date, ShortDesc: description, Notes: note };
         var data = JSON.stringify(holiday);
+        if (date == null) {
+            ShowMessage('Date can not be empty');
+            return;
+        }
         api.server.AddHoliday(data, function (status) {
             if (status){
                 api.server.LoadPage('Settings.html');
                 $('#idAddHoliday').modal('toggle');
             }
         });
-
-        e.preventDefault();
     });
 
     function convertDateToUTC(date) {

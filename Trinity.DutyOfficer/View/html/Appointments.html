@@ -90,7 +90,7 @@
             }]
         });
 
-        $('#dateSearch').datepicker({ format: 'dd/mm/yyyy' }).datepicker("setDate", new Date()).on('changeDate', dateChanged).change(dateChanged);
+        $('#dateSearch').keydown(function (event) { event.preventDefault();}).datepicker({ format: 'dd/mm/yyyy' }).datepicker("setDate", new Date()).on('changeDate', dateChanged).change(dateChanged);
         $('#period').change(function () {
             getTimeSlot();
         });

@@ -57,7 +57,7 @@
 
         //$('#dateSearch').val(today);
 
-        $('#dateSearch').datepicker({ format: 'dd/mm/yyyy' }).datepicker("setDate", new Date());
+        $('#dateSearch').keydown(function (event) { event.preventDefault(); }).datepicker({ format: 'dd/mm/yyyy' }).datepicker("setDate", new Date());
     });
 
 
