@@ -84,10 +84,18 @@ function AddContentPopup(html, model, id) {
         api.model = JSON.parse(model);
     else
         api.model = null;
-    if ($('#panel-popup > [id="' + id + '"]').length > 0)
-        $('#panel-popup > [id="' + id + '"]').replaceWith(html);
-    else
-        $('#panel-popup').append(html);
+    if (id == 'PopupMessage.html') {
+        var divMessagepanel = $('#panel-popup > [id="' + id + '"]');
+        if (divMessagepanel.length == 0) {
+            divMessagepanel = $('<div id="' + id + '"></div>').appendTo($('#panel-popup'));
+        }
+        divMessagepanel.append(html);
+    } else {
+        if ($('#panel-popup > [id="' + id + '"]').length > 0)
+            $('#panel-popup > [id="' + id + '"]').replaceWith(html);
+        else
+            $('#panel-popup').append(html);
+    }
     api.callReady(api.model);
 }
 function createEvent(arrayFun) {
@@ -153,7 +161,7 @@ function alert(content) {
     ShowMessage('', content);
 }
 function ShowMessage(title, message, id) {
-    id = id == null ? '' : id;
+    id = id == null ? api.Guid() +'-front-end' : id;
     if (title != null && title.length > 0 && (message == null || (message != null && message.length == 0))) {
         message = title;
         title = '';
@@ -163,8 +171,8 @@ function ShowMessage(title, message, id) {
         message: message,
         id: id
     };
-    api.server.LoadPopupHtml('PopupMessage.html',JSON.stringify(struc), function () {
-        $('#PopupMessage').modal({
+    api.server.LoadPopupHtml('PopupMessage.html', JSON.stringify(struc), function () {
+        $('#panel-popup [popup-message="' + struc.id + '"]').modal({
             backdrop: 'static',
             keyboard: false
         });

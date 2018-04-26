@@ -31,6 +31,7 @@
                                                                 <textarea placeholder="Please input reason here"></textarea>\
                                                     </div>');
         });
+        $('[parent-tab] [content-tab]').css('height', 'calc(100% - ' + $('[parent-tab] [header-tab]').outerHeight(true) + 'px - 200px)');
         $('[parent-tab] [header-tab] [item]').click(function () {
             var index = $(this).index();
             $(this).parent('[header-tab]').children('[item]').removeAttr('active').eq(index).attr('active', '');
