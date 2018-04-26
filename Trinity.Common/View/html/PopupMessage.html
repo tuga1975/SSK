@@ -1,9 +1,9 @@
-﻿<div class="modal" role="dialog" id="PopupMessage" style="z-index: 99999;">
+﻿<div class="modal" role="dialog" popup-message="" style="z-index: 99999;">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-body">
                 <div class="title"></div>
-                <div class="contentMesg">
+                <div class="contentMesg" style="padding: 10px 0 20px 0 !important;">
                 </div>
                 <div>
                     <button type="button" class="btn btn-primary">OK</button>
@@ -15,19 +15,20 @@
 <script type="text/javascript">
     api.ready(function (response) {
         response = JSON.parse(response);
+        $('#panel-popup [popup-message=""]').attr('popup-message', response.id);
         if (response.title == 0) {
-            $('#PopupMessage .title').css('display', 'none');
+            $('#panel-popup [popup-message="' + response.id+'"] .title').css('display', 'none');
         } else {
-            $('#PopupMessage .title').html(response.title);
+            $('#panel-popup [popup-message="' + response.id +'"] .title').html(response.title);
         }
-        $('#PopupMessage .contentMesg').html(response.message);
-        $('#PopupMessage button').click(function () {
-            if (response.id.length > 0) {
+        $('#panel-popup [popup-message="' + response.id +'"] .contentMesg').html(response.message);
+        $('#panel-popup [popup-message="' + response.id +'"] button').click(function () {
+            if (response.id.length > 0 && response.id.indexOf('-front-end')==-1) {
                 api.server.ExitWaitPopupMessage(response.id,true, function () {
-                    $('#PopupMessage').modal('toggle');
+                    $('#panel-popup [popup-message="' + response.id + '"]').modal('toggle').remove();
                 });
             } else {
-                $('#PopupMessage').modal('toggle');
+                $('#panel-popup [popup-message="' + response.id + '"]').modal('toggle').remove();
             }
         });
     });
