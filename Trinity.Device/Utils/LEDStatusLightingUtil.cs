@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Timers;
 using System.Windows.Forms;
+using Trinity.Common;
 using Trinity.Common.Utils;
 
 namespace Trinity.Device.Util
@@ -973,6 +974,68 @@ namespace Trinity.Device.Util
             }
         }
         ///////////////////////////
+
+        #endregion
+
+        #region Monitor MUB/TT 
+        public event EventHandler<MUBTTEventArgs> MUBStatusChanged;
+        public event EventHandler<MUBTTEventArgs> TTStatusChanged;
+        private bool _monitoring = false;
+        private bool? _currentMUBStatus = null; // Present:true, Removed:false
+        private bool? _currentTTStatus = null;  // Present:true, Removed:false
+
+        public void StartMonitorMUBAndTT()
+        {
+            _currentMUBStatus = null;
+            _currentTTStatus = null;
+            _monitoring = true;
+            Thread thread = new Thread(new ThreadStart(MonitorMUBAndTT));
+            thread.Start();
+        }
+        private void MonitorMUBAndTT()
+        {
+            while (_monitoring)
+            {
+                LEDStatusLightingUtil.Instance.SendCommand_Async(EnumCommands.CheckIfMUBIsPresent, CheckIfMUBIsPresent_Callback);
+                LEDStatusLightingUtil.Instance.SendCommand_Async(EnumCommands.CheckIfTTIsPresent, CheckIfTTIsPresent_Callback);
+                Thread.Sleep(200);
+            }
+        }
+
+        public void StopMonitorMUBAndTT()
+        {
+            _monitoring = false;
+        }
+
+        private void CheckIfMUBIsPresent_Callback(bool isPresent)
+        {
+            if (_currentMUBStatus == null || _currentMUBStatus.Value != isPresent)
+            {
+                _currentMUBStatus = isPresent;
+                LogManager.Info("MUB status changed. New status:" + (isPresent ? "Present" : "Removed"));
+                MUBStatusChanged?.Invoke(this, new MUBTTEventArgs("MUB", isPresent));
+            }
+        }
+
+        private void CheckIfTTIsPresent_Callback(bool isPresent)
+        {
+            if (_currentTTStatus == null || _currentTTStatus.Value != isPresent)
+            {
+                _currentTTStatus = isPresent;
+                LogManager.Info("TT status changed. New status:" + (isPresent ? "Present" : "Removed"));
+                TTStatusChanged?.Invoke(this, new MUBTTEventArgs("TT", isPresent));
+            }
+        }
+
+        public bool? GetMUBStatus()
+        {
+            return _currentMUBStatus;
+        }
+
+        public bool? GetTTStatus()
+        {
+            return _currentTTStatus;
+        }
 
         #endregion
 

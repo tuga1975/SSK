@@ -7,14 +7,15 @@ using System.Windows.Forms;
 
 namespace Trinity.Common
 {
-    public class ExceptionArgs:Exception
+    public class ExceptionArgs : Exception
     {
         public long ErrorCode { get; set; }
         public string ErrorMessage { get; set; }
 
         public ExceptionArgs() { }
 
-        public ExceptionArgs(string ErrorMessage) {
+        public ExceptionArgs(string ErrorMessage)
+        {
             this.ErrorMessage = ErrorMessage;
         }
 
@@ -56,6 +57,35 @@ namespace Trinity.Common
         public MessageBoxButtons Button { get => _button; set => _button = value; }
         public MessageBoxIcon Icon { get => _icon; set => _icon = value; }
     }
+
+    public class MUBTTEventArgs
+    {
+        private string _name;
+        private bool _status;
+
+        public MUBTTEventArgs(string name, bool status)
+        {
+            _name = name;
+            _status = status;
+        }
+
+        public string Name
+        {
+            get
+            {
+                return _name;
+            }
+        }
+
+        public bool Status
+        {
+            get
+            {
+                return _status;
+            }
+        }
+    }
+
     public class NavigateEventArgs
     {
         private NavigatorEnums _navigatorEnum;
