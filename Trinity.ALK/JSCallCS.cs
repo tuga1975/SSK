@@ -424,8 +424,8 @@ namespace ALK
                 }
                 else if (action == "CheckIfMUBAndTTIsRemoved")
                 {
-                    this._web.RunScript("$('#mubStatus').css('color','#000').text('Please remove MUB');");
-                    this._web.RunScript("$('#ttStatus').css('color','#000').text('Please remove TT');");
+                    this._web.RunScript("$('#mubStatus').css('color','#000').text('Please collect your Master Urine Bottle and ');");
+                    this._web.RunScript("$('#ttStatus').css('color','#000').text('Test Tube, and verify your information.');");
                     //CheckIfMUBIsRemoved();
                     //CheckIfTTIsRemoved();
                     CheckIfMUBAndTTRemoved();
@@ -866,8 +866,8 @@ namespace ALK
                     // Show tutorial videos to guide user how to remove MUB & TT
                     ShowTutorialVideos(false);
 
-                    this._web.RunScript("$('#ttStatus').css('color','#000').text('TT was processed successfully. Please remove TT.');");
-                    this._web.RunScript("$('#mubStatus').css('color','#000').text('MUB was processed successfully. Please remove MUB.');");
+                    this._web.RunScript("$('#mubStatus').css('color','#000').text('Please collect your Master Urine Bottle and ');");
+                    this._web.RunScript("$('#ttStatus').css('color','#000').text('Test Tube, and verify your information.');");
                     this._web.RunScript("$('#ConfirmBtn').html('Confirm to remove the MUB and TT');");
                     this._web.RunScript("$('#lblNextAction').text('CheckIfMUBAndTTIsRemoved');");
                     //CheckIfMUBIsRemoved();
@@ -959,8 +959,8 @@ namespace ALK
                     // Show tutorial videos to guide user how to remove MUB & TT
                     ShowTutorialVideos(false);
 
-                    this._web.RunScript("$('#ttStatus').css('color','#000').text('TT was processed successfully. Please remove TT.');");
-                    this._web.RunScript("$('#mubStatus').css('color','#000').text('MUB was processed successfully. Please remove MUB.');");
+                    this._web.RunScript("$('#mubStatus').css('color','#000').text('Please collect your Master Urine Bottle and ');");
+                    this._web.RunScript("$('#ttStatus').css('color','#000').text('Test Tube, and verify your information.');");
                     this._web.RunScript("$('#ConfirmBtn').html('Confirm to remove the MUB and TT');");
                     this._web.RunScript("$('#lblNextAction').text('CheckIfMUBAndTTIsRemoved');");
                     //CheckIfTTIsRemoved();
