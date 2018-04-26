@@ -78,7 +78,7 @@ namespace Trinity.DAL
             var timeslot = GetTimeSlotEmpty();
             if (timeslot == null)
             {
-                throw new Trinity.Common.ExceptionArgs("Sorry all timeslots are fully booked!");
+                throw new Trinity.Common.ExceptionArgs("Unable get queue.<br/>All time slots are close today.");
             }
             else
             {
@@ -144,7 +144,7 @@ namespace Trinity.DAL
 
             if (string.IsNullOrEmpty(timeslotID))
             {
-                throw new Trinity.Common.ExceptionArgs("Sorry all timeslots are fully booked!");
+                throw new Trinity.Common.ExceptionArgs("Unable get queue.<br/>All time slots are close today.");
             }
 
             Trinity.DAL.DBContext.Queue dataInsert = new Trinity.DAL.DBContext.Queue()
