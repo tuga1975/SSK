@@ -32,7 +32,8 @@ namespace ARK
         private bool _displayLoginButtonStatus = false;
         private bool _isFirstTimeLoaded = true;
         private Client _signalrClient = null;
-
+        private System.Timers.Timer _timerCheckLogout;
+        private long? _timeActionApp;
         public Main()
         {
             InitializeComponent();
@@ -286,6 +287,12 @@ namespace ARK
                     NavigateTo(NavigatorEnums.Authentication_SmartCard);
                 }
 
+                this._timerCheckLogout = new System.Timers.Timer();
+                this._timerCheckLogout.AutoReset = true;
+                this._timerCheckLogout.Interval = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["seconds_check_logout"])*1000;
+                this._timerCheckLogout.Elapsed += TimeCheckLogout_EventHandler; ;
+                this._timerCheckLogout.Start();
+
                 _isFirstTimeLoaded = false;
 
                 // LayerWeb initiation is compeleted, update application status
@@ -293,6 +300,15 @@ namespace ARK
             }
         }
 
+        private void TimeCheckLogout_EventHandler(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            long time = long.Parse(LayerWeb.InvokeScript("getTimeActionApp").ToString());
+            if (_timeActionApp.HasValue && time - _timeActionApp.Value==0 && (Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]!=null)
+            {
+                _jsCallCS.LogOut();
+            }
+            _timeActionApp = time;
+        }
         private void NRIC_OnNRICSucceeded()
         {
             // navigate to Supervisee page

@@ -30,6 +30,9 @@ namespace ALK
         private bool _isFirstTimeLoaded = true;
         private Trinity.BE.PopupModel _popupModel;
 
+        private System.Timers.Timer _timerCheckLogout;
+        private long? _timeActionApp;
+
         public Main()
         {
             InitializeComponent();
@@ -252,6 +255,11 @@ namespace ALK
                     NavigateTo(NavigatorEnums.Authentication_SmartCard);
                 }
 
+                this._timerCheckLogout = new System.Timers.Timer();
+                this._timerCheckLogout.AutoReset = true;
+                this._timerCheckLogout.Interval = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["seconds_check_logout"]) * 1000;
+                this._timerCheckLogout.Elapsed += TimeCheckLogout_EventHandler; ;
+                this._timerCheckLogout.Start();
                 _isFirstTimeLoaded = false;
             }
             // ALK is ready to use - all is well
@@ -264,6 +272,16 @@ namespace ALK
 
             // LayerWeb initiation is compeleted, update application status
             ApplicationStatusManager.Instance.LayerWebInitilizationCompleted();
+        }
+
+        private void TimeCheckLogout_EventHandler(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            long time = long.Parse(LayerWeb.InvokeScript("getTimeActionApp").ToString());
+            if (_timeActionApp.HasValue && time - _timeActionApp.Value == 0 && (Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN] != null)
+            {
+                _jsCallCS.LogOut();
+            }
+            _timeActionApp = time;
         }
 
         private void JSCallCS_OnLogOutCompleted()

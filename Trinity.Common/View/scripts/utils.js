@@ -245,6 +245,26 @@ $(document).ready(function () {
     });
 });
 
+var time_action_app = new Date().getTime();
+window.addEventListener('load', function () {
+    document.body.addEventListener('touchstart', function (e) {
+        time_action_app = new Date().getTime();
+    }, false);
+    document.body.addEventListener('touchmove', function (e) {
+        time_action_app = new Date().getTime();
+    }, false);
+    document.body.addEventListener('mousemove', function (e) {
+        time_action_app = new Date().getTime();
+    }, false);
+    document.body.addEventListener('click', function (e) {
+        time_action_app = new Date().getTime();
+    }, false);
+}, false);
+
+function getTimeActionApp() {
+    return time_action_app;
+}
+
 window.onerror = function (msg, url, line, col, error) {
     // Note that col & error are new to the HTML 5 spec and may not be 
     // supported in every browser.  It worked for me in Chrome.
