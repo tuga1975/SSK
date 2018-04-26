@@ -1,1116 +1,1014 @@
-﻿<div>
-    <style>
-        .container {
-            padding: 0px;
-        }
+﻿<style>
+    .container {
+        padding: 0px;
+    }
 
-        #superviseeDetails:not(.active), #printCard:not(.active) {
-            display: none;
-        }
+    #superviseeDetails:not(.active), #printCard:not(.active) {
+        display: none;
+    }
 
-        .xdsoft_datetimepicker {
-            margin-left: 200px;
-        }
+    .xdsoft_datetimepicker {
+        margin-left: 200px;
+    }
 
-        [item-tab-content] {
-            margin: 20px 0px;
-        }
+    [item-tab-content] {
+        margin: 20px 0px;
+    }
 
-            [item-tab-content] [item-tab-title] {
-                border-bottom: 1px solid #DDD;
-                position: relative;
-                cursor: pointer;
-                font-size: 18px;
-            }
-
-                [item-tab-content] [item-tab-title]::after {
-                    content: "\f077";
-                    font-family: "FontAwesome";
-                    color: #1cacf6;
-                    position: absolute;
-                    right: 0px;
-                    bottom: 0px;
-                }
-
-        [item-tab-content="true"] [item-tab-title]::after {
-            content: "\f077" !important;
-        }
-
-        [item-tab-content] [item-tab-title]::after {
-            content: "\f078";
-            font-family: "FontAwesome";
-            color: #1cacf6;
-            position: absolute;
-            right: 0px;
-            bottom: 0px;
-            font-size: 13px;
-        }
-
-        [item-tab-content] [item-tab-body] {
-            display: none;
-        }
-
-        [item-tab-content="true"] [item-tab-body] {
-            display: block;
-            margin: 1rem 0px;
-        }
-
-        .form-group {
-            margin-bottom: 1rem;
+        [item-tab-content] [item-tab-title] {
+            border-bottom: 1px solid #DDD;
             position: relative;
-            min-height: 50px;
+            cursor: pointer;
+            font-size: 18px;
         }
 
-        .form-select {
-            width: 100%;
-            float: left;
-            border-bottom: 1px solid #ccc;
-            margin: 10px 0;
-            display: flex;
-            flex-direction: row;
-        }
-
-            .form-select .input-group-select {
-                min-width: 35%;
-            }
-
-            .form-select .form-label {
-                border: 0;
-                border-radius: 0;
-                background-color: transparent;
-                color: #209CDD;
-                padding: .375rem .75rem;
-                margin-bottom: 0;
-                font-size: 1rem;
-                font-weight: 400;
-                line-height: 1.5;
+            [item-tab-content] [item-tab-title]::after {
+                content: "\f077";
+                font-family: "FontAwesome";
+                color: #1cacf6;
                 position: absolute;
+                right: 0px;
+                bottom: 0px;
             }
 
-            .form-select select {
-                padding: .375rem .75rem;
-                font-size: 1rem;
-                line-height: 1.5;
-                color: #495057;
-                -moz-appearance: none; /* Firefox */
-                -webkit-appearance: none; /* Safari and Chrome */
-                text-indent: 1px;
-                text-overflow: '';
-                border: 0;
-                position: relative;
-            }
+    [item-tab-content="true"] [item-tab-title]::after {
+        content: "\f077" !important;
+    }
 
-                .form-select select + label {
-                    float: right;
-                    margin-top: 7px;
-                    margin-right: 5px;
-                    pointer-events: none;
-                    background-color: #fff;
-                    padding-right: 5px;
-                    color: #209CDD;
-                }
+    [item-tab-content] [item-tab-title]::after {
+        content: "\f078";
+        font-family: "FontAwesome";
+        color: #1cacf6;
+        position: absolute;
+        right: 0px;
+        bottom: 0px;
+        font-size: 13px;
+    }
 
-                .form-select select::-ms-expand {
-                    display: none;
-                }
+    [item-tab-content] [item-tab-body] {
+        display: none;
+    }
 
-            .form-select .select-wrap {
-                position: relative;
-            }
+    [item-tab-content="true"] [item-tab-body] {
+        display: block;
+        margin: 1rem 0px;
+    }
 
-        .collapsible {
-            list-style: none;
-            padding: 0;
-            margin: 1rem 0;
-        }
+    .form-group {
+        margin-bottom: 1rem;
+        position: relative;
+        min-height: 50px;
+    }
 
-            .collapsible li {
-                list-style: none;
-                padding: 0;
-            }
+    .form-select {
+        width: 100%;
+        float: left;
+        border-bottom: 1px solid #ccc;
+        margin: 10px 0;
+        display: flex;
+        flex-direction: row;
+    }
 
-            .collapsible .collapsible-header {
-                font-size: 1.2rem;
-                border-bottom: 1px solid #ccc;
-                position: relative;
-                padding-top: 1rem;
-            }
-
-                .collapsible .collapsible-header:after {
-                    color: #1cacf6;
-                    content: "\f126";
-                    display: inline-block;
-                    font-family: "Ionicons";
-                    speak: none;
-                    font-style: normal;
-                    font-weight: normal;
-                    font-variant: normal;
-                    text-transform: none;
-                    text-rendering: auto;
-                    line-height: 1;
-                    -webkit-font-smoothing: antialiased;
-                    -moz-osx-font-smoothing: grayscale;
-                    position: absolute;
-                    right: 0;
-                }
-
-                .collapsible .collapsible-header.collapsed:after {
-                    content: "\f123";
-                }
-
-            .collapsible .collapsible-body {
-                margin: 1rem 0;
-            }
-
-        #superviseeDetails .btn {
-            text-transform: uppercase;
-        }
-
-        .form-material .input-group-prepend {
+        .form-select .input-group-select {
             min-width: 35%;
         }
 
-        .form-material .input-group .input-group-text {
+        .form-select .form-label {
             border: 0;
             border-radius: 0;
             background-color: transparent;
             color: #209CDD;
+            padding: .375rem .75rem;
+            margin-bottom: 0;
+            font-size: 1rem;
+            font-weight: 400;
+            line-height: 1.5;
+            position: absolute;
         }
 
-        .form-material .btn {
-            background: #1CACF6;
-            color: #fff;
-            text-transform: uppercase;
-        }
-
-            .form-material .btn.btn-light {
-                background-color: transparent;
-                color: #1CACF6;
-            }
-
-        .form-group {
-            margin-bottom: 1rem;
+        .form-select select {
+            padding: .375rem .75rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #495057;
+            -moz-appearance: none; /* Firefox */
+            -webkit-appearance: none; /* Safari and Chrome */
+            text-indent: 1px;
+            text-overflow: '';
+            border: 0;
             position: relative;
-            min-height: 50px;
         }
 
-        .form-select {
-            width: 100%;
-            float: left;
-            border-bottom: 1px solid #ccc;
-            margin: 10px 0;
-            display: flex;
-            flex-direction: row;
-        }
-
-            .form-select .input-group-select {
-                min-width: 35%;
-            }
-
-            .form-select .form-label {
-                border: 0;
-                border-radius: 0;
-                background-color: transparent;
+            .form-select select + label {
+                float: right;
+                margin-top: 7px;
+                margin-right: 5px;
+                pointer-events: none;
+                background-color: #fff;
+                padding-right: 5px;
                 color: #209CDD;
-                padding: .375rem .75rem;
-                margin-bottom: 0;
-                font-size: 1rem;
-                font-weight: 400;
-                line-height: 1.5;
-                position: absolute;
             }
 
-            .form-select select {
-                padding: .375rem .75rem;
-                font-size: 1rem;
-                line-height: 1.5;
-                color: #495057;
-                -moz-appearance: none; /* Firefox */
-                -webkit-appearance: none; /* Safari and Chrome */
-                text-indent: 1px;
-                text-overflow: '';
-                border: 0;
-                position: relative;
-            }
-
-                .form-select select + label {
-                    float: right;
-                    margin-top: 7px;
-                    margin-right: 5px;
-                    pointer-events: none;
-                    background-color: #fff;
-                    padding-right: 5px;
-                    color: #209CDD;
-                }
-
-                .form-select select::-ms-expand {
-                    display: none;
-                }
-
-            .form-select .select-wrap {
-                position: relative;
-            }
-
-        .tab-fix {
-            position: relative;
-            max-width: 100%;
-            max-height: calc(100% - 80px);
-            overflow-x: hidden;
-            overflow-y: auto;
-        }
-
-        .form-material input::-webkit-input-placeholder {
-            font-style: italic;
-            color: #ccc;
-        }
-
-        .form-material input:-moz-placeholder {
-            font-style: italic;
-            color: #ccc;
-        }
-
-        .form-material input::-moz-placeholder {
-            font-style: italic;
-            color: #ccc;
-        }
-
-        .form-material input:-ms-input-placeholder {
-            font-style: italic;
-            color: #ccc;
-        }
-
-        .hidden-scrollbar {
-            position: relative;
-            height: 450px;
-            width: 100%;
-            overflow: hidden;
-        }
-
-            .hidden-scrollbar .scrollbar {
-                position: absolute;
-                top: 0;
-                bottom: 0;
-                left: 0;
-                right: -17px;
-                padding-right: 17px;
-                overflow-y: auto;
-                overflow-x: hidden;
-            }
-
-        /*Create New Supervisee Title*/
-        .createNewSuperviseeTitle {
-            border-bottom: 1px solid #dee2e6;
-            padding: 20px 20px 0;
-        }
-
-            .createNewSuperviseeTitle h5 {
-                border-bottom: 2px solid red;
-                width: fit-content;
-                padding-bottom: 5px;
-                margin-bottom: 0;
-            }
-
-        /*Create New Supervisee Process*/
-        .newSuperviseeProcess {
-            text-align: center;
-            padding: 30px 0;
-            font-size: 15px;
-            color: #dee2e6;
-            overflow: hidden;
-        }
-
-            .newSuperviseeProcess .newSupervisee:before {
-                content: "\f105";
-                font-family: FontAwesome;
-                position: absolute;
-                bottom: 0;
-                right: 0;
-                height: 50px;
-                width: 25px;
-                font-size: 45px;
-                font-weight: normal;
-            }
-
-            .newSuperviseeProcess .newSupervisee:last-child:before {
+            .form-select select::-ms-expand {
                 display: none;
             }
 
-            .newSuperviseeProcess .newSupervisee.active {
+        .form-select .select-wrap {
+            position: relative;
+        }
+
+    .collapsible {
+        list-style: none;
+        padding: 0;
+        margin: 1rem 0;
+    }
+
+        .collapsible li {
+            list-style: none;
+            padding: 0;
+        }
+
+        .collapsible .collapsible-header {
+            font-size: 1.2rem;
+            border-bottom: 1px solid #ccc;
+            position: relative;
+            padding-top: 1rem;
+        }
+
+            .collapsible .collapsible-header:after {
+                color: #1cacf6;
+                content: "\f126";
+                display: inline-block;
+                font-family: "Ionicons";
+                speak: none;
+                font-style: normal;
+                font-weight: normal;
+                font-variant: normal;
+                text-transform: none;
+                text-rendering: auto;
+                line-height: 1;
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+                position: absolute;
+                right: 0;
+            }
+
+            .collapsible .collapsible-header.collapsed:after {
+                content: "\f123";
+            }
+
+        .collapsible .collapsible-body {
+            margin: 1rem 0;
+        }
+
+    #superviseeDetails .btn {
+        text-transform: uppercase;
+    }
+
+    .form-material .input-group-prepend {
+        min-width: 35%;
+    }
+
+    .form-material .input-group .input-group-text {
+        border: 0;
+        border-radius: 0;
+        background-color: transparent;
+        color: #209CDD;
+    }
+
+    .form-material .btn {
+        background: #1CACF6;
+        color: #fff;
+        text-transform: uppercase;
+    }
+
+        .form-material .btn.btn-light {
+            background-color: transparent;
+            color: #1CACF6;
+        }
+
+    .form-group {
+        margin-bottom: 1rem;
+        position: relative;
+        min-height: 50px;
+    }
+
+    .form-select {
+        width: 100%;
+        float: left;
+        border-bottom: 1px solid #ccc;
+        margin: 10px 0;
+        display: flex;
+        flex-direction: row;
+    }
+
+        .form-select .input-group-select {
+            min-width: 35%;
+        }
+
+        .form-select .form-label {
+            border: 0;
+            border-radius: 0;
+            background-color: transparent;
+            color: #209CDD;
+            padding: .375rem .75rem;
+            margin-bottom: 0;
+            font-size: 1rem;
+            font-weight: 400;
+            line-height: 1.5;
+            position: absolute;
+        }
+
+        .form-select select {
+            padding: .375rem .75rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #495057;
+            -moz-appearance: none; /* Firefox */
+            -webkit-appearance: none; /* Safari and Chrome */
+            text-indent: 1px;
+            text-overflow: '';
+            border: 0;
+            position: relative;
+        }
+
+            .form-select select + label {
+                float: right;
+                margin-top: 7px;
+                margin-right: 5px;
+                pointer-events: none;
+                background-color: #fff;
+                padding-right: 5px;
+                color: #209CDD;
+            }
+
+            .form-select select::-ms-expand {
+                display: none;
+            }
+
+        .form-select .select-wrap {
+            position: relative;
+        }
+
+    .tab-fix {
+        position: relative;
+        max-width: 100%;
+        max-height: calc(100% - 80px);
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+    .form-material input::-webkit-input-placeholder {
+        font-style: italic;
+        color: #ccc;
+    }
+
+    .form-material input:-moz-placeholder {
+        font-style: italic;
+        color: #ccc;
+    }
+
+    .form-material input::-moz-placeholder {
+        font-style: italic;
+        color: #ccc;
+    }
+
+    .form-material input:-ms-input-placeholder {
+        font-style: italic;
+        color: #ccc;
+    }
+
+    .hidden-scrollbar {
+        position: relative;
+        height: 450px;
+        width: 100%;
+        overflow: hidden;
+    }
+
+        .hidden-scrollbar .scrollbar {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: -17px;
+            padding-right: 17px;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+    /*Create New Supervisee Title*/
+    .createNewSuperviseeTitle {
+        border-bottom: 1px solid #dee2e6;
+        padding: 20px 20px 0;
+    }
+
+        .createNewSuperviseeTitle h5 {
+            border-bottom: 2px solid red;
+            width: fit-content;
+            padding-bottom: 5px;
+            margin-bottom: 0;
+        }
+
+    /*Create New Supervisee Process*/
+    .newSuperviseeProcess {
+        text-align: center;
+        padding: 30px 0;
+        font-size: 15px;
+        color: #dee2e6;
+        overflow: hidden;
+    }
+
+        .newSuperviseeProcess .newSupervisee:before {
+            content: "\f105";
+            font-family: FontAwesome;
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            height: 50px;
+            width: 25px;
+            font-size: 45px;
+            font-weight: normal;
+        }
+
+        .newSuperviseeProcess .newSupervisee:last-child:before {
+            display: none;
+        }
+
+        .newSuperviseeProcess .newSupervisee.active {
+            color: #1CACF6;
+        }
+
+        .newSuperviseeProcess .newSuperviseeStep {
+            margin-bottom: 15px;
+        }
+
+            .newSuperviseeProcess .newSuperviseeStep span {
+                border-radius: 50%;
+                background: #dee2e6;
+                text-align: center;
+                color: #fff;
+                display: inline-block;
+                font-size: 22px;
+                width: 50px;
+                height: 50px;
+                line-height: 50px;
+                text-align: center;
+            }
+
+        .newSuperviseeProcess .newSupervisee.active .newSuperviseeStep span {
+            background: #1CACF6;
+        }
+
+        .newSuperviseeProcess .newSuperviseeStepname span {
+            text-align: right;
+        }
+
+    .newSuperviseeContent {
+        overflow: hidden;
+    }
+
+    button {
+        background: none;
+        border: none;
+        color: #1CACF6;
+        margin-top: 20px;
+    }
+
+    .controlprocess i:before {
+        font-size: 100px;
+    }
+
+    .carousel-control-prev,
+    .carousel-control-next {
+        color: #666666 !important;
+    }
+
+        .carousel-control-next:focus,
+        .carousel-control-next:hover,
+        .carousel-control-prev:focus,
+        .carousel-control-prev:hover {
+            color: #1CACF6 !important;
+        }
+
+
+    .carousel-indicators {
+        top: 0;
+        position: relative;
+        bottom: none;
+        margin-right: 0;
+    }
+
+    #newSupervisee {
+        text-align: center;
+    }
+
+    /*New Supervisee Content */
+    .newSuperviseeContent .newSuperviseeContentWrapper {
+        text-align: center;
+    }
+
+
+        .newSuperviseeContent .newSuperviseeContentWrapper a {
+            color: #696969;
+            text-decoration: underline;
+            line-height: 1.2;
+        }
+
+            .newSuperviseeContent .newSuperviseeContentWrapper a:hover,
+            .newSuperviseeContent .newSuperviseeContentWrapper a:focus {
                 color: #1CACF6;
             }
 
-            .newSuperviseeProcess .newSuperviseeStep {
-                margin-bottom: 15px;
-            }
+    .verifyCardview {
+        background-image: url(../images/viewlayer.png);
+        background-size: cover;
+        width: 87%;
+        height: 190px;
+        background-repeat: no-repeat;
+        font-size: 22px;
+        font-weight: bold;
+        position: relative;
+    }
 
-                .newSuperviseeProcess .newSuperviseeStep span {
-                    border-radius: 50%;
-                    background: #dee2e6;
-                    text-align: center;
-                    color: #fff;
-                    display: inline-block;
-                    font-size: 22px;
-                    width: 50px;
-                    height: 50px;
-                    line-height: 50px;
-                    text-align: center;
-                }
-
-            .newSuperviseeProcess .newSupervisee.active .newSuperviseeStep span {
-                background: #1CACF6;
-            }
-
-            .newSuperviseeProcess .newSuperviseeStepname span {
-                text-align: right;
-            }
-
-        .newSuperviseeContent {
-            overflow: hidden;
-        }
-
-        button {
-            background: none;
-            border: none;
-            color: #1CACF6;
-            margin-top: 20px;
-        }
-
-        .controlprocess i:before {
-            font-size: 100px;
-        }
-
-        .carousel-control-prev,
-        .carousel-control-next {
-            color: #666666 !important;
-        }
-
-            .carousel-control-next:focus,
-            .carousel-control-next:hover,
-            .carousel-control-prev:focus,
-            .carousel-control-prev:hover {
-                color: #1CACF6 !important;
-            }
-
-
-        .carousel-indicators {
-            top: 0;
-            position: relative;
-            bottom: none;
-            margin-right: 0;
-        }
-
-        #newSupervisee {
+        .verifyCardview p {
+            top: 38%;
+            position: absolute;
             text-align: center;
+            width: 100%;
         }
 
-        /*New Supervisee Content */
-        .newSuperviseeContent .newSuperviseeContentWrapper {
-            text-align: center;
-        }
+    .printingCard img {
+        background: none !important;
+        width: 100px;
+    }
 
+    .modal-dialog {
+        width: 450px;
+    }
 
-            .newSuperviseeContent .newSuperviseeContentWrapper a {
-                color: #696969;
-                text-decoration: underline;
-                line-height: 1.2;
-            }
+    .modal-header {
+        border: none;
+    }
 
-                .newSuperviseeContent .newSuperviseeContentWrapper a:hover,
-                .newSuperviseeContent .newSuperviseeContentWrapper a:focus {
-                    color: #1CACF6;
-                }
+    .modal-body button {
+        padding: 10px 0;
+        border-radius: 4px;
+    }
 
-        .verifyCardview {
-            background-image: url(../images/viewlayer.png);
-            background-size: cover;
-            width: 87%;
-            height: 190px;
-            background-repeat: no-repeat;
-            font-size: 22px;
-            font-weight: bold;
-            position: relative;
-        }
+    .cancelButton {
+        z-index: 9;
+    }
 
-            .verifyCardview p {
-                top: 38%;
-                position: absolute;
-                text-align: center;
-                width: 100%;
-            }
+    .carousel-control {
+        opacity: 0;
+    }
+</style>
+<div>
+    <ul class="nav nav-tabs nav-tabs-custom" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" data-toggle="tab" href="#printCard" role="tab">
+                <i class="fa fa-print"></i>Print Card
+            </a>
+        </li>
 
-        .printingCard img {
-            background: none !important;
-            width: 100px;
-        }
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#superviseeDetails" role="tab">
+                <i class="fa fa-info-circle"></i>Supervisee Details
+            </a>
+        </li>
+    </ul>
+</div>
+<div class="title-border-red border-bottom">
+    <h5>Create New Supervisee</h5>
+</div>
+<div>
+    <div class="container">
+        <div class="PrintCard">
+            <div>
+                <!-- Nav tabs -->
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div id="printCard" role="tabpanel" class="active" style="position:absolute;left: 0px;width: 100%;height: calc(100% - 126px);margin-top: 0px;overflow-y: auto;overflow-x: hidden;">
+                        <div class="tab-pane">
+                            <div class="createNewSupervisee">
+                                <div style="position:absolute;width:calc(100% - 250px);left:40px;top:15px;z-index:9;">
+                                    <span style="display:inline-block;margin-right:50px;float:left;">
+                                        <span style="display:inline-block;margin-right:5px;">Name:</span>
+                                        <span style="display:inline-block;font-weight:700;" display-data="Name"></span>
+                                    </span>
+                                    <span style="display:inline-block;float:left;">
+                                        <span style="display:inline-block;margin-right:5px;">NRIC:</span>
+                                        <span style="display:inline-block;font-weight:700;" display-data="NRIC"></span>
+                                    </span>
+                                </div>
+                                <a href="#" id="btnCancel" style="position:absolute;right:40px;top:15px;z-index:9;">CLICK TO CANCEL</a>
+                                <div id="createNewSupervisee" class="row carousel createNewSupervisee" data-ride="carousel" data-interval="false">
+                                    <div class="newSuperviseeProcess col-8 offset-2 carousel-indicators" style="margin-top:30px;">
+                                        <div class="newSupervisee col-3 takePhotos active" data-target="#createNewSupervisee" data-slide-to="0">
+                                            <div class="newSuperviseeStep"><span>1</span></div>
+                                            <div class="newSuperviseeStepname">Take Photos</div>
+                                        </div>
+                                        <div class="newSupervisee col-3 getFingerPrints" data-target="#createNewSupervisee" data-slide-to="1">
+                                            <div class="newSuperviseeStep"><span>2</span></div>
+                                            <div class="newSuperviseeStepname">Get Fingerprints</div>
 
-        .modal-dialog {
-            width: 450px;
-        }
-
-        .modal-header {
-            border: none;
-        }
-
-        .modal-body button {
-            padding: 10px 0;
-            border-radius: 4px;
-        }
-
-        .cancelButton {
-            z-index: 9;
-        }
-
-        .carousel-control {
-            opacity: 0;
-        }
-    </style>
-    <div>
-        <ul class="nav nav-tabs nav-tabs-custom" role="tablist">
-            <li class="nav-item">
-                <a class="nav-link active" data-toggle="tab" href="#printCard" role="tab">
-                    <i class="fa fa-print"></i>Print Card
-                </a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" data-toggle="tab" href="#superviseeDetails" role="tab">
-                    <i class="fa fa-info-circle"></i>Supervisee Details
-                </a>
-            </li>
-        </ul>
-    </div>
-    <div class="title-border-red border-bottom">
-        <h5>Create New Supervisee</h5>
-    </div>
-    <div>
-        <div class="container">
-            <div class="PrintCard">
-                <div>
-                    <!-- Nav tabs -->
-                    <!-- Tab panes -->
-                    <div class="tab-content">
-                        <div id="printCard" role="tabpanel" class="active" style="position:absolute;left: 0px;width: 100%;height: calc(100% - 126px);margin-top: 0px;overflow-y: auto;overflow-x: hidden;">
-                            <div class="tab-pane">
-                                <div class="createNewSupervisee">
-                                    <div id="createNewSupervisee" class="row carousel createNewSupervisee" data-ride="carousel" data-interval="false">
-                                        <div class="newSuperviseeProcess col-8 offset-2 carousel-indicators">
-                                            <div class="newSupervisee col-3 takePhotos active" data-target="#createNewSupervisee" data-slide-to="0">
-                                                <div class="newSuperviseeStep"><span>1</span></div>
-                                                <div class="newSuperviseeStepname">Take Photos</div>
-                                            </div>
-                                            <div class="newSupervisee col-3 getFingerPrints" data-target="#createNewSupervisee" data-slide-to="1">
-                                                <div class="newSuperviseeStep"><span>2</span></div>
-                                                <div class="newSuperviseeStepname">Get Fingerprints</div>
-
-                                            </div>
-                                            <div class="newSupervisee col-3 verifyCard" data-target="#createNewSupervisee" data-slide-to="2">
-                                                <div class="newSuperviseeStep"><span>3</span></div>
-                                                <div class="newSuperviseeStepname">Verify Card</div>
-                                            </div>
-                                            <div class="newSupervisee col-3 PrintCard" data-target="#createNewSupervisee" data-slide-to="3">
-                                                <div class="newSuperviseeStep"><span>4</span></div>
-                                                <div class="newSuperviseeStepname">Print Card</div>
+                                        </div>
+                                        <div class="newSupervisee col-3 verifyCard" data-target="#createNewSupervisee" data-slide-to="2">
+                                            <div class="newSuperviseeStep"><span>3</span></div>
+                                            <div class="newSuperviseeStepname">Verify Card</div>
+                                        </div>
+                                        <div class="newSupervisee col-3 PrintCard" data-target="#createNewSupervisee" data-slide-to="3">
+                                            <div class="newSuperviseeStep"><span>4</span></div>
+                                            <div class="newSuperviseeStepname">Print Card</div>
+                                        </div>
+                                    </div>
+                                    <div class="newSuperviseeContent carousel-inner ">
+                                        <div class="carousel-item col-8 offset-2 active">
+                                            <div class="newSuperviseeContentWrapper row">
+                                                <div class="col-6">
+                                                    <img id="image1" src="../images/avatar-demo.jpg" class="img-fluid" style="height:200px;width:auto;"><br />
+                                                </div>
+                                                <div class="col-6">
+                                                    <img id="image2" src="../images/avatar-demo.jpg" class="img-fluid" style="height:200px;width:auto;"><br />
+                                                </div>
+                                                <div class="col-6">
+                                                    <a href="#" id="btnTakePic1" style="color:#1CACF6;">Take Picture 1</a>
+                                                </div>
+                                                <div class="col-6">
+                                                    <a href="#" id="btnTakePic2" style="color:#1CACF6;">Take Picture 2</a>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="cancelButton col-2 ml-auto">
-                                            <a href="#" id="btnCancel">CLICK TO CANCEL</a>
+                                        <div class="carousel-item col-8 offset-2">
+                                            <div class="newSuperviseeContentWrapper row">
+                                                <div class="col-6">
+                                                    <div style="margin-bottom:10px;text-align:center;"><strong id="leftProcessMessage">Place left thumb onto scanner.</strong></div>
+                                                    <div class="row col-7 offset-1" style="margin:auto;">
+                                                        <div class="col-12" style="padding:20px;background-color:#f1f1f1;margin:auto;text-align:center;">
+                                                            <img src='../images/leftthumb.png' id="leftFingerprint" style="height:150px;">
+                                                        </div>
+                                                    </div>
+                                                    <!--<div>Left Thumb-Fingerprint Preview</div>-->
+                                                </div>
+                                                <div class="col-6">
+                                                    <div style="margin-bottom:10px;text-align:center;"><strong id="rightProcessMessage">Place right thumb onto scanner.</strong></div>
+                                                    <div class="row col-7 offset-1" style="margin:auto;">
+                                                        <div class="col-12" style="padding:20px;background-color:#f1f1f1;margin:auto;text-align:center;">
+                                                            <img src='../images/rightthumb.png' id="rightFingerprint" style="height:150px;">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="row col-7 offset-1" style="margin:auto;">
+                                                        <div class="scan col-6 ml-auto" style="text-align:left;"><a href="javascript:;" data-target="#fingerPrint" data-toggle="modal" id="leftThumbScanBtn">Scan</a></div>
+                                                        <div class="clear col-6 mr-auto" style="text-align:right;"><a href="javascript:;" id="leftThumbClearBtn">Clear</a></div>
+                                                    </div>
+                                                    <div style="margin-top:10px;text-align:center;">Left Thumb-Fingerprint Preview</div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="row col-7 offset-1" style="margin:auto;">
+                                                        <div class="scan col-6 ml-auto" style="text-align:left;"><a href="javascript:;" data-target="#fingerPrint" data-toggle="modal" id="rightThumbScanBtn">Scan</a></div>
+                                                        <div class="clear col-6 mr-auto" style="text-align:right;"><a href="javascript:;" id="rightThumbClearBtn">Clear</a></div>
+                                                    </div>
+                                                    <div style="margin-top:10px;text-align:center;">Right Thumb-Fingerprint Preview</div>
+                                                </div>
+                                            </div>
                                         </div>
+                                        <div class="carousel-item col-8 offset-2">
+                                            <div class="newSuperviseeContentWrapper row" style="background-color:transparent;">
+                                                <div class="col-6" style="background-color:transparent;">
+                                                    <canvas id="frontCardImgCanvas" style="width:380px;border:2px solid #CCC;max-width:100%;border-radius:15px;"></canvas>
+                                                </div>
+                                                <div class="col-6" style="background-color:transparent;">
+                                                    <canvas id="backCardImgCanvas" style="width:380px;border:2px solid #CCC;max-width:100%;border-radius:15px;"></canvas>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="carousel-item col-8 offset-2">
+                                            <div class="newSuperviseeContentWrapper row">
+                                                <div class="printingCard col-12" style="display:none" id="printSuccessMessage">
+                                                </div>
+                                                <div panel-show-info-card style="max-width:350px;margin:0px auto;display:none;position:relative;left:40px;" name="panel-succss-print">
+                                                    <div style="margin-top:50px;">
+                                                        <div group-input="Name">
+                                                            <span name="vertify-name">
+                                                            </span>
+                                                        </div>
+                                                        <div group-input="NRIC">
+                                                            <span name="vertify-nric">
+                                                            </span>
+                                                        </div>
+                                                        <div group-input="Date of Birth">
+                                                            <span name="vertify-dateofbirth">
+                                                            </span>
+                                                        </div>
+                                                        <style type="text/css">
+                                                            [panel-show-info-card] [group-input] {
+                                                                position: relative;
+                                                                margin-bottom: 10px;
+                                                            }
 
+                                                                [panel-show-info-card] [group-input]::before {
+                                                                    content: attr(group-input);
+                                                                    color: #209CDD;
+                                                                    font-size: 16px;
+                                                                    position: absolute;
+                                                                    z-index: 0;
+                                                                    top: 6px;
+                                                                    left: 0px;
+                                                                    width: 90px;
+                                                                    text-align: left;
+                                                                }
 
-                                        <div class="newSuperviseeContent carousel-inner ">
-                                            <div class="carousel-item col-8 offset-2 active">
-                                                <div class="newSuperviseeContentWrapper row">
-                                                    <div class="col-6">
-                                                        <img id="image1" src="../images/avatar-demo.jpg" class="img-fluid" style="height:200px;width:auto;"><br />
-                                                    </div>
-                                                    <div class="col-6">
-                                                        <img id="image2" src="../images/avatar-demo.jpg" class="img-fluid" style="height:200px;width:auto;"><br />
-                                                    </div>
-                                                    <div class="col-6">
-                                                        <a href="#" id="btnTakePic1" style="color:#1CACF6;">Take Picture 1</a>
-                                                    </div>
-                                                    <div class="col-6">
-                                                        <a href="#" id="btnTakePic2" style="color:#1CACF6;">Take Picture 2</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="carousel-item col-8 offset-2">
-                                                <div class="newSuperviseeContentWrapper row">
-                                                    <div class="col-6">
-                                                        <div style="margin-bottom:10px;text-align:center;"><strong id="leftProcessMessage">Place left thumb onto scanner.</strong></div>
-                                                        <div class="row col-7 offset-1" style="margin:auto;">
-                                                            <div class="col-12" style="padding:20px;background-color:#f1f1f1;margin:auto;text-align:center;">
-                                                                <img src='../images/leftthumb.png' id="leftFingerprint" style="height:150px;">
-                                                            </div>
-                                                        </div>
-                                                        <!--<div>Left Thumb-Fingerprint Preview</div>-->
-                                                    </div>
-                                                    <div class="col-6">
-                                                        <div style="margin-bottom:10px;text-align:center;"><strong id="rightProcessMessage">Place right thumb onto scanner.</strong></div>
-                                                        <div class="row col-7 offset-1" style="margin:auto;">
-                                                            <div class="col-12" style="padding:20px;background-color:#f1f1f1;margin:auto;text-align:center;">
-                                                                <img src='../images/rightthumb.png' id="rightFingerprint" style="height:150px;">
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-6">
-                                                        <div class="row col-7 offset-1" style="margin:auto;">
-                                                            <div class="scan col-6 ml-auto" style="text-align:left;"><a href="javascript:;" data-target="#fingerPrint" data-toggle="modal" id="leftThumbScanBtn">Scan</a></div>
-                                                            <div class="clear col-6 mr-auto" style="text-align:right;"><a href="javascript:;" id="leftThumbClearBtn">Clear</a></div>
-                                                        </div>
-                                                        <div style="margin-top:10px;text-align:center;">Left Thumb-Fingerprint Preview</div>
-                                                    </div>
-                                                    <div class="col-6">
-                                                        <div class="row col-7 offset-1" style="margin:auto;">
-                                                            <div class="scan col-6 ml-auto" style="text-align:left;"><a href="javascript:;" data-target="#fingerPrint" data-toggle="modal" id="rightThumbScanBtn">Scan</a></div>
-                                                            <div class="clear col-6 mr-auto" style="text-align:right;"><a href="javascript:;" id="rightThumbClearBtn">Clear</a></div>
-                                                        </div>
-                                                        <div style="margin-top:10px;text-align:center;">Right Thumb-Fingerprint Preview</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="carousel-item col-8 offset-2">
-                                                <div class="newSuperviseeContentWrapper row" style="background-color:transparent;">
-                                                    <div class="col-6" style="background-color:transparent;">
-                                                        <canvas id="frontCardImgCanvas" style="width:380px;border:2px solid #CCC;max-width:100%;border-radius:15px;"></canvas>
-                                                    </div>
-                                                    <div class="col-6" style="background-color:transparent;">
-                                                        <canvas id="backCardImgCanvas" style="width:380px;border:2px solid #CCC;max-width:100%;border-radius:15px;"></canvas>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="carousel-item col-8 offset-2">
-                                                <div class="newSuperviseeContentWrapper row">
-                                                    <div class="printingCard col-12" style="display:none" id="printSuccessMessage">
-                                                    </div>
-                                                    <div panel-show-info-card style="max-width:350px;margin:0px auto;display:none;position:relative;left:40px;" name="panel-succss-print">
-                                                        <div style="margin-top:50px;">
-                                                            <div group-input="Name">
-                                                                <span name="vertify-name">
-                                                                </span>
-                                                            </div>
-                                                            <div group-input="NRIC">
-                                                                <span name="vertify-nric">
-                                                                </span>
-                                                            </div>
-                                                            <div group-input="Date of Birth">
-                                                                <span name="vertify-dateofbirth">
-                                                                </span>
-                                                            </div>
-                                                            <style type="text/css">
-                                                                [panel-show-info-card] [group-input] {
+                                                                [panel-show-info-card] [group-input] > input, [panel-show-info-card] [group-input] > select, [panel-show-info-card] [group-input] > span {
+                                                                    border: none;
+                                                                    min-height: 36px;
+                                                                    font-size: 16px;
+                                                                    width: 100%;
+                                                                    padding-left: 110px;
                                                                     position: relative;
-                                                                    margin-bottom: 10px;
+                                                                    z-index: 1;
+                                                                    background-color: transparent;
+                                                                    outline: none;
+                                                                    text-align: left;
                                                                 }
 
-                                                                    [panel-show-info-card] [group-input]::before {
-                                                                        content: attr(group-input);
-                                                                        color: #209CDD;
-                                                                        font-size: 16px;
-                                                                        position: absolute;
-                                                                        z-index: 0;
-                                                                        top: 6px;
-                                                                        left: 0px;
-                                                                        width: 90px;
-                                                                        text-align: left;
-                                                                    }
-
-                                                                    [panel-show-info-card] [group-input] > input, [panel-show-info-card] [group-input] > select, [panel-show-info-card] [group-input] > span {
-                                                                        border: none;
-                                                                        min-height: 36px;
-                                                                        font-size: 16px;
-                                                                        width: 100%;
-                                                                        padding-left: 110px;
-                                                                        position: relative;
-                                                                        z-index: 1;
-                                                                        background-color: transparent;
-                                                                        outline: none;
-                                                                        text-align: left;
-                                                                    }
-
-                                                                    [panel-show-info-card] [group-input] > span {
-                                                                        display: block;
-                                                                        position: relative;
-                                                                        top: 6px;
-                                                                    }
-
-                                                                    [panel-show-info-card] [group-input] > input, [panel-show-info-card] [group-input] > select {
-                                                                        border-bottom: 1px solid #ccc;
-                                                                    }
-
-                                                                        [panel-show-info-card] [group-input] > input:focus, [panel-show-info-card] [group-input] > input:hover, [panel-show-info-card] [group-input] > select:focus, [panel-show-info-card] [group-input] > select:hover {
-                                                                            border-bottom: 1px solid #1CACF6;
-                                                                        }
-
-                                                                :-ms-input-placeholder {
-                                                                    font-style: italic;
+                                                                [panel-show-info-card] [group-input] > span {
+                                                                    display: block;
+                                                                    position: relative;
+                                                                    top: 6px;
                                                                 }
-                                                            </style>
-                                                        </div>
+
+                                                                [panel-show-info-card] [group-input] > input, [panel-show-info-card] [group-input] > select {
+                                                                    border-bottom: 1px solid #ccc;
+                                                                }
+
+                                                                    [panel-show-info-card] [group-input] > input:focus, [panel-show-info-card] [group-input] > input:hover, [panel-show-info-card] [group-input] > select:focus, [panel-show-info-card] [group-input] > select:hover {
+                                                                        border-bottom: 1px solid #1CACF6;
+                                                                    }
+
+                                                            :-ms-input-placeholder {
+                                                                font-style: italic;
+                                                            }
+                                                        </style>
                                                     </div>
-                                                    <div style="clear:both;width:100%;"></div>
-                                                    <!--<div style="text-align:center;width:100%;margin-bottom:20px;">
-                                                        <input class="btn" type="button" value="Reprint" id="rePrinter" style="display:none;" onclick="rePrintCardNew();" />
-                                                        <input class="btn" type="button" value="Done" id="donePrinter" style="display:none;" onclick="api.server.LoadPage('Supervisee.html');" />
-                                                    </div>-->
                                                 </div>
+                                                <div style="clear:both;width:100%;"></div>
+                                                <!--<div style="text-align:center;width:100%;margin-bottom:20px;">
+                                                    <input class="btn" type="button" value="Reprint" id="rePrinter" style="display:none;" onclick="rePrintCardNew();" />
+                                                    <input class="btn" type="button" value="Done" id="donePrinter" style="display:none;" onclick="api.server.LoadPage('Supervisee.html');" />
+                                                </div>-->
                                             </div>
-
-                                        </div>
-
-                                        <div class="controlprocess">
-                                            <a class="carousel-control-prev" href="#createNewSupervisee" role="button" data-slide="prev">
-
-                                                <span aria-hidden="true"><i class="fal fa fa-angle-left"></i></span>
-                                                <span class="sr-only">Previous</span>
-                                            </a>
-                                            <a class="carousel-control-next" href="#createNewSupervisee" role="button" data-slide="next">
-                                                <span aria-hidden="true"><i class="fal fa fa-angle-right"></i></span>
-                                                <span class="sr-only">Next</span>
-                                            </a>
                                         </div>
 
                                     </div>
 
+                                    <div class="controlprocess">
+                                        <a class="carousel-control-prev" href="#createNewSupervisee" role="button" data-slide="prev">
+
+                                            <span aria-hidden="true"><i class="fal fa fa-angle-left"></i></span>
+                                            <span class="sr-only">Previous</span>
+                                        </a>
+                                        <a class="carousel-control-next" href="#createNewSupervisee" role="button" data-slide="next">
+                                            <span aria-hidden="true"><i class="fal fa fa-angle-right"></i></span>
+                                            <span class="sr-only">Next</span>
+                                        </a>
+                                    </div>
+
                                 </div>
-                            </div>
-                            <div style="position:absolute;width: 100%;height: 50px;bottom: 10px;border-top: 1px solid #CCC;left:0px;display:none;" panel-btn-save-step4>
-                                <div style="width: calc(100% - 80px);margin-left: 40px;text-align: right;margin-top: 11px;">
-                                    <a href="#" id="rePrinter" class="btn btn-light" onclick="rePrintCardNew();" style="min-width:150px;display:none;">Reprint</a>
-                                    <a href="#" id="donePrinter" class="btn btn-primary" style="min-width:150px;display:none;margin-left:20px;" onclick="api.server.DoneEnrolSupervisee();">Done</a>
-                                </div>
+
                             </div>
                         </div>
-                        <div id="superviseeDetails" role="tabpanel">
-                            <div style="position:absolute;left: 0px;width: 100%;height: calc(100% - 185px);margin-top: 0px;overflow-y: auto;overflow-x: hidden;">
-                                <div style="width:800px;max-width: calc(100% - 40px);margin:auto;">
-                                    <form class="form-material" id="superviseeFrm">
-                                        <input type="hidden" id="userId" name="userId" />
-                                        <input type="hidden" id="Address_ID" name="address_ID" />
-                                        <input type="hidden" id="OAddress_ID" name="Other_Address_ID" />
-
-                                        <div item-tab-content="false">
-                                            <div item-tab-title="">Residential Address</div>
-                                            <div item-tab-body="">
-                                                <div id="residential" class="collapsible-body" aria-labelledby="Residential Address" data-parent="#accordion">
-                                                    <div group-input="House No.">
-                                                        <input type="text" placeholder="House No." id="BlkHouse_Number" name="BlkHouse_Number" maxlength="50" />
-                                                    </div>
-                                                    <div group-input="Unit No.">
-                                                        <input type="text" placeholder="Unit No." id="FlrUnit_Number" name="FlrUnit_Number" maxlength="50" />
-                                                    </div>
-                                                    <div group-input="Street name">
-                                                        <input type="text" placeholder="Street name" id="Street_Name" name="Street_Name" maxlength="255" />
-                                                    </div>
-                                                    <div group-input="Country">
-                                                        <input type="text" placeholder="Country" id="Country" name="country" maxlength="50" />
-                                                    </div>
-                                                    <div group-input="Postal code">
-                                                        <input type="text" placeholder="Postal code" id="Postal_Code" name="Postal_Code" maxlength="30" />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div item-tab-content="false">
-                                            <div item-tab-title="">Other Address</div>
-                                            <div item-tab-body="">
-                                                <div id="otherAddress" class="collapsible-body" aria-labelledby="Other Address" data-parent="#accordion">
-                                                    <div group-input="House No.">
-                                                        <input type="text" placeholder="House No." id="OBlkHouse_Number" name="OBlkHouse_Number" maxlength="50" />
-                                                    </div>
-                                                    <div group-input="Unit No.">
-                                                        <input type="text" placeholder="Unit No." id="OFlrUnit_Number" name="OFlrUnit_Number" maxlength="50" />
-                                                    </div>
-                                                    <div group-input="Street name">
-                                                        <input type="text" placeholder="Street name" id="OStreet_Name" name="OStreet_Name" maxlength="255" />
-                                                    </div>
-                                                    <div group-input="Country">
-                                                        <input type="text" placeholder="Country" id="OCountry" name="OCountry" maxlength="50" />
-                                                    </div>
-                                                    <div group-input="Postal code">
-                                                        <input type="text" placeholder="Postal code" id="OPostal_Code" name="OPostal_Code" maxlength="30" />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div item-tab-content="false">
-                                            <div item-tab-title="">Next-of-Kin</div>
-                                            <div item-tab-body="">
-                                                <div id="nextOfKin" class="collapsible-body" aria-labelledby="Next-of-Kin" data-parent="#accordion">
-
-                                                    <div group-input="Next-of-Kin Name">
-                                                        <input type="text" placeholder="Next-of-Kin Name" id="NextOfKin_Name" name="NextOfKin_Name" maxlength="255" />
-                                                    </div>
-                                                    <div group-input="Next-of-Kin Contact No.">
-                                                        <input type="text" placeholder="Next-of-Kin Contact No." id="NextOfKin_Contact_Number" name="NextOfKin_Contact_Number" maxlength="50" />
-                                                    </div>
-                                                    <div group-input="Next-of-Kin Relationship">
-                                                        <input type="text" placeholder="Next-of-Kin Relationship" id="NextOfKin_Relationship" name="NextOfKin_Relationship" maxlength="255" />
-                                                    </div>
-                                                    <div group-input="Next-of-Kin Blk House No.">
-                                                        <input type="text" placeholder="Next-of-Kin Blk House No." id="NextOfKin_BlkHouse_Number" name="NextOfKin_BlkHouse_Number" maxlength="50" />
-                                                    </div>
-                                                    <div group-input="Next-of-Kin Unit No.">
-                                                        <input type="text" placeholder="Next-of-Kin Unit No." id="NextOfKin_FlrUnit_Number" name="NextOfKin_FlrUnit_Number" maxlength="50" />
-                                                    </div>
-                                                    <div group-input="Next-of-Kin Street Name">
-                                                        <input type="text" placeholder="Next-of-Kin Street Name" id="NextOfKin_Street_Name" name="NextOfKin_Street_Name" maxlength="255" />
-                                                    </div>
-                                                    <div group-input="Next-of-Kin Country">
-                                                        <input type="text" placeholder="Next-of-Kin Country" id="NextOfKin_Country" name="NextOfKin_Country" maxlength="50" />
-                                                    </div>
-                                                    <div group-input="Next-of-Kin Postal code">
-                                                        <input type="text" placeholder="Next-of-Kin Postal code" id="NextOfKin_PostalCode" name="NextOfKin_PostalCode" maxlength="30" />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div item-tab-content="false">
-                                            <div item-tab-title="">Employment Details</div>
-                                            <div item-tab-body="">
-                                                <div id="employment" class="collapsible-body" aria-labelledby="Employment Details" data-parent="#accordion">
-
-                                                    <div group-input="Employer Name">
-                                                        <input type="text" placeholder="Employer Name" id="Employment_Name" name="Employment_Name" maxlength="255" />
-                                                    </div>
-                                                    <div group-input="Employer Contact No.">
-                                                        <input type="text" placeholder="Employer Contact No." id="Employment_Contact_Number" name="Employment_Contact_Number" maxlength="50" />
-                                                    </div>
-                                                    <div group-input="Company Name">
-                                                        <input type="text" placeholder="Company Name" id="Employment_Company_Name" name="Employment_Company_Name" maxlength="255" />
-                                                    </div>
-                                                    <div group-input="Job Title">
-                                                        <input type="text" placeholder="Job Title" id="Employment_Job_Title" name="Employment_Job_Title" maxlength="50" />
-                                                    </div>
-                                                    <div group-input="Employment Start Date">
-                                                        <input type="text" placeholder="dd/mm/yyyy" id="Employment_Start_Date" name="Employment_Start_Date" />
-                                                    </div>
-                                                    <div group-input="Employment End Date">
-                                                        <input type="text" placeholder="dd/mm/yyyy" id="Employment_End_Date" name="Employment_End_Date" />
-                                                    </div>
-                                                    <div group-input="Remarks">
-                                                        <input type="text" placeholder="Remarks" id="Employment_Remarks" name="Employment_Remarks" maxlength="255" />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                            <div style="position:absolute;width: 100%;height: 50px;bottom: 10px;border-top: 1px solid #CCC;left:0px;">
-                                <div style="width: calc(100% - 80px);margin-left: 40px;text-align: right;margin-top: 11px;">
-                                    <!--<button class="btn btn-light" onclick="api.server.CancelEditSupervisee();">Cancel</button>-->
-                                    <a href="#" class="btn btn-light" onclick="api.server.LoadListSupervisee();" style="margin-right:20px;min-width:150px;">Cancel</a>
-                                    <!--<button href="#" class="btn btn-primary" onclick="UpdateSupervisee();" id="SaveBtn">Save</button>-->
-                                    <a href="#" class="btn btn-primary" id="SaveBtnNewCard" style="min-width:150px;">Save</a>
-                                </div>
+                        <div style="position:absolute;width: 100%;height: 50px;bottom: 10px;border-top: 1px solid #CCC;left:0px;display:none;" panel-btn-save-step4>
+                            <div style="width: calc(100% - 80px);margin-left: 40px;text-align: right;margin-top: 11px;">
+                                <a href="#" id="rePrinter" class="btn btn-light" onclick="rePrintCardNew();" style="min-width:150px;display:none;">Reprint</a>
+                                <a href="#" id="donePrinter" class="btn btn-primary" style="min-width:150px;display:none;margin-left:20px;" onclick="api.server.DoneEnrolSupervisee();">Done</a>
                             </div>
                         </div>
                     </div>
+                    <div id="superviseeDetails" role="tabpanel">
+                        <div style="position:absolute;left: 0px;width: 100%;height: calc(100% - 185px);margin-top: 0px;overflow-y: auto;overflow-x: hidden;">
+                            <div style="width:800px;max-width: calc(100% - 40px);margin:auto;">
+                                <div style="margin-top:20px;">
+                                    <div style="margin-bottom:10px;">
+                                        <span style="display:inline-block;width:50px;">Name:</span>
+                                        <span style="display:inline-block;font-weight:700;" display-data="Name"></span>
+                                    </div>
+                                    <div style="margin-bottom:30px;">
+                                        <span style="display:inline-block;width:50px;">NRIC:</span>
+                                        <span style="display:inline-block;font-weight:700;" display-data="NRIC"></span>
+                                    </div>
+                                </div>
+                                <form class="form-material" id="superviseeFrm">
+                                    <input type="hidden" id="userId" name="userId" />
+                                    <input type="hidden" id="Address_ID" name="address_ID" />
+                                    <input type="hidden" id="OAddress_ID" name="Other_Address_ID" />
 
+                                    <div item-tab-content="false">
+                                        <div item-tab-title="">Residential Address</div>
+                                        <div item-tab-body="">
+                                            <div id="residential" class="collapsible-body" aria-labelledby="Residential Address" data-parent="#accordion">
+                                                <div group-input="House No.">
+                                                    <input type="text" placeholder="House No." id="BlkHouse_Number" name="BlkHouse_Number" maxlength="50" />
+                                                </div>
+                                                <div group-input="Unit No.">
+                                                    <input type="text" placeholder="Unit No." id="FlrUnit_Number" name="FlrUnit_Number" maxlength="50" />
+                                                </div>
+                                                <div group-input="Street name">
+                                                    <input type="text" placeholder="Street name" id="Street_Name" name="Street_Name" maxlength="255" />
+                                                </div>
+                                                <div group-input="Country">
+                                                    <input type="text" placeholder="Country" id="Country" name="country" maxlength="50" />
+                                                </div>
+                                                <div group-input="Postal code">
+                                                    <input type="text" placeholder="Postal code" id="Postal_Code" name="Postal_Code" maxlength="30" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div item-tab-content="false">
+                                        <div item-tab-title="">Other Address</div>
+                                        <div item-tab-body="">
+                                            <div id="otherAddress" class="collapsible-body" aria-labelledby="Other Address" data-parent="#accordion">
+                                                <div group-input="House No.">
+                                                    <input type="text" placeholder="House No." id="OBlkHouse_Number" name="OBlkHouse_Number" maxlength="50" />
+                                                </div>
+                                                <div group-input="Unit No.">
+                                                    <input type="text" placeholder="Unit No." id="OFlrUnit_Number" name="OFlrUnit_Number" maxlength="50" />
+                                                </div>
+                                                <div group-input="Street name">
+                                                    <input type="text" placeholder="Street name" id="OStreet_Name" name="OStreet_Name" maxlength="255" />
+                                                </div>
+                                                <div group-input="Country">
+                                                    <input type="text" placeholder="Country" id="OCountry" name="OCountry" maxlength="50" />
+                                                </div>
+                                                <div group-input="Postal code">
+                                                    <input type="text" placeholder="Postal code" id="OPostal_Code" name="OPostal_Code" maxlength="30" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div item-tab-content="false">
+                                        <div item-tab-title="">Next-of-Kin</div>
+                                        <div item-tab-body="">
+                                            <div id="nextOfKin" class="collapsible-body" aria-labelledby="Next-of-Kin" data-parent="#accordion">
+
+                                                <div group-input="Next-of-Kin Name">
+                                                    <input type="text" placeholder="Next-of-Kin Name" id="NextOfKin_Name" name="NextOfKin_Name" maxlength="255" />
+                                                </div>
+                                                <div group-input="Next-of-Kin Contact No.">
+                                                    <input type="text" placeholder="Next-of-Kin Contact No." id="NextOfKin_Contact_Number" name="NextOfKin_Contact_Number" maxlength="50" />
+                                                </div>
+                                                <div group-input="Next-of-Kin Relationship">
+                                                    <input type="text" placeholder="Next-of-Kin Relationship" id="NextOfKin_Relationship" name="NextOfKin_Relationship" maxlength="255" />
+                                                </div>
+                                                <div group-input="Next-of-Kin Blk House No.">
+                                                    <input type="text" placeholder="Next-of-Kin Blk House No." id="NextOfKin_BlkHouse_Number" name="NextOfKin_BlkHouse_Number" maxlength="50" />
+                                                </div>
+                                                <div group-input="Next-of-Kin Unit No.">
+                                                    <input type="text" placeholder="Next-of-Kin Unit No." id="NextOfKin_FlrUnit_Number" name="NextOfKin_FlrUnit_Number" maxlength="50" />
+                                                </div>
+                                                <div group-input="Next-of-Kin Street Name">
+                                                    <input type="text" placeholder="Next-of-Kin Street Name" id="NextOfKin_Street_Name" name="NextOfKin_Street_Name" maxlength="255" />
+                                                </div>
+                                                <div group-input="Next-of-Kin Country">
+                                                    <input type="text" placeholder="Next-of-Kin Country" id="NextOfKin_Country" name="NextOfKin_Country" maxlength="50" />
+                                                </div>
+                                                <div group-input="Next-of-Kin Postal code">
+                                                    <input type="text" placeholder="Next-of-Kin Postal code" id="NextOfKin_PostalCode" name="NextOfKin_PostalCode" maxlength="30" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div item-tab-content="false">
+                                        <div item-tab-title="">Employment Details</div>
+                                        <div item-tab-body="">
+                                            <div id="employment" class="collapsible-body" aria-labelledby="Employment Details" data-parent="#accordion">
+
+                                                <div group-input="Employer Name">
+                                                    <input type="text" placeholder="Employer Name" id="Employment_Name" name="Employment_Name" maxlength="255" />
+                                                </div>
+                                                <div group-input="Employer Contact No.">
+                                                    <input type="text" placeholder="Employer Contact No." id="Employment_Contact_Number" name="Employment_Contact_Number" maxlength="50" />
+                                                </div>
+                                                <div group-input="Company Name">
+                                                    <input type="text" placeholder="Company Name" id="Employment_Company_Name" name="Employment_Company_Name" maxlength="255" />
+                                                </div>
+                                                <div group-input="Job Title">
+                                                    <input type="text" placeholder="Job Title" id="Employment_Job_Title" name="Employment_Job_Title" maxlength="50" />
+                                                </div>
+                                                <div group-input="Employment Start Date">
+                                                    <input type="text" placeholder="dd/mm/yyyy" id="Employment_Start_Date" name="Employment_Start_Date" />
+                                                </div>
+                                                <div group-input="Employment End Date">
+                                                    <input type="text" placeholder="dd/mm/yyyy" id="Employment_End_Date" name="Employment_End_Date" />
+                                                </div>
+                                                <div group-input="Remarks">
+                                                    <input type="text" placeholder="Remarks" id="Employment_Remarks" name="Employment_Remarks" maxlength="255" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div style="position:absolute;width: 100%;height: 50px;bottom: 10px;border-top: 1px solid #CCC;left:0px;">
+                            <div style="width: calc(100% - 80px);margin-left: 40px;text-align: right;margin-top: 11px;">
+                                <!--<button class="btn btn-light" onclick="api.server.CancelEditSupervisee();">Cancel</button>-->
+                                <a href="#" class="btn btn-light" onclick="api.server.LoadListSupervisee();" style="margin-right:20px;min-width:150px;">Cancel</a>
+                                <!--<button href="#" class="btn btn-primary" onclick="UpdateSupervisee();" id="SaveBtn">Save</button>-->
+                                <a href="#" class="btn btn-primary" id="SaveBtnNewCard" style="min-width:150px;">Save</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+
             </div>
         </div>
     </div>
-
-
-    <div style="opacity:0;position:fixed;z-index:-1;left:0px;top:0px;background-color:#FFF;opacity:0;width:0px;height:0px;overflow:hidden;">
-        <div style="width:1024px;height:642px;position:relative;overflow:hidden;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;background-color:#FFF;overflow:hidden;" id="frontCard">
-            <img src="../images/front-smartcard.png" style="position:absolute;z-index:0;left:0px;top:0px;height:100%;width:100%;" />
-            <div style="z-index:1;">
-                <div style="position:absolute;left:0px;top:0px;height:100%;width:100%;">
-                    <div style="position:absolute;width: 308px;height: 308px;top: 123px;left: 148px;z-index:0;overflow:hidden;">
-                        <img src="../images/hinh-avatar-dep-1.jpg" name="card-avarta" style="position:absolute;height: 396px;top: calc(50% - (396px / 2));left:0px;width: 308px;" />
-                    </div>
-                    <img src="../images/front-avarta.png" style="position:absolute;z-index:1;left:0px;top:0px;width:100%;height:auto;" />
+</div>
+<div style="opacity:0;position:fixed;z-index:-1;left:0px;top:0px;background-color:#FFF;opacity:0;width:0px;height:0px;overflow:hidden;">
+    <div style="width:1024px;height:642px;position:relative;overflow:hidden;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;background-color:#FFF;overflow:hidden;" id="frontCard">
+        <img src="../images/front-smartcard.png" style="position:absolute;z-index:0;left:0px;top:0px;height:100%;width:100%;" />
+        <div style="z-index:1;">
+            <div style="position:absolute;left:0px;top:0px;height:100%;width:100%;">
+                <div style="position:absolute;width: 308px;height: 308px;top: 123px;left: 148px;z-index:0;overflow:hidden;">
+                    <img src="../images/hinh-avatar-dep-1.jpg" name="card-avarta" style="position:absolute;height: 396px;top: calc(50% - (396px / 2));left:0px;width: 308px;" />
                 </div>
-                <div style="position:absolute;font-size: 35px;font-weight: 700;top: 30px;left: 140px;color:#000;z-index:1;text-transform:uppercase;">
-                    Supervision Card
+                <img src="../images/front-avarta.png" style="position:absolute;z-index:1;left:0px;top:0px;width:100%;height:auto;" />
+            </div>
+            <div style="position:absolute;font-size: 35px;font-weight: 700;top: 30px;left: 140px;color:#000;z-index:1;text-transform:uppercase;">
+                Supervision Card
+            </div>
+            <div style="position:absolute;top: 120px;left: 540px;width: calc(100% - 570px);height:calc(100% - 70px);z-index:1;">
+                <div style="font-size: 28px;color:#5c5c5c;margin-bottom: 10px;font-weight: bold;">Name</div>
+                <div style="font-size: 32px;color:#2a2a2a;text-transform:uppercase;margin-bottom: 20px;line-height: 40px;letter-spacing: 0px;font-weight: bolder;min-height:80px;" name="verifyName">
+                    MAXIMILIAN MARK CHEONG SENG LOONG
                 </div>
-                <div style="position:absolute;top: 120px;left: 540px;width: calc(100% - 570px);height:calc(100% - 70px);z-index:1;">
-                    <div style="font-size: 28px;color:#5c5c5c;margin-bottom: 10px;font-weight: bold;">Name</div>
-                    <div style="font-size: 32px;color:#2a2a2a;text-transform:uppercase;margin-bottom: 20px;line-height: 40px;letter-spacing: 0px;font-weight: bolder;min-height:80px;" name="verifyName">
-                        MAXIMILIAN MARK CHEONG SENG LOONG
-                    </div>
-                    <div style="font-size: 28px;color:#5c5c5c;margin-bottom: 10px;font-weight: bold;margin-top:35px;">NRIC No.</div>
-                    <div style="font-size: 32px;color:#2a2a2a;text-transform:uppercase;margin-bottom: 0px;line-height: 25px;letter-spacing: 0px;font-weight: bolder;" name="verifyNRIC">
-                        23423
-                    </div>
+                <div style="font-size: 28px;color:#5c5c5c;margin-bottom: 10px;font-weight: bold;margin-top:35px;">NRIC No.</div>
+                <div style="font-size: 32px;color:#2a2a2a;text-transform:uppercase;margin-bottom: 0px;line-height: 25px;letter-spacing: 0px;font-weight: bolder;" name="verifyNRIC">
+                    23423
                 </div>
-                <div style="position:absolute;left:95px;bottom:45px;height: 85px;width: 600px;z-index:1;">
-                    <img name="verifyBarcode" />
-                </div>
-                <div style="position:absolute;right: 40px;bottom: 30px;text-align:right;font-size: 32px;font-weight:bold;color:#2a2a2a;z-index:1;" name="verifyCardNumber">
-                    2018/00001
-                </div>
+            </div>
+            <div style="position:absolute;left:95px;bottom:45px;height: 85px;width: 600px;z-index:1;">
+                <img name="verifyBarcode" />
+            </div>
+            <div style="position:absolute;right: 40px;bottom: 30px;text-align:right;font-size: 32px;font-weight:bold;color:#2a2a2a;z-index:1;" name="verifyCardNumber">
+                2018/00001
             </div>
         </div>
     </div>
-    <div style="opacity:0;position:fixed;z-index:-1;left:0px;top:0px;background-color:#FFF;opacity:0;width:0px;height:0px;overflow:hidden;">
-        <div style="width:1024px;height:642px;position:relative;overflow:hidden;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;background-color:#FFF;border-radius:20px;overflow:hidden;" id="backCard">
-            <img src="../images/front-smartcard.png" style="position:absolute;z-index:0;left:0px;top:0px;height:100%;width:100%;" />
-            <div style="bottom:39px;left:55px;position:absolute;">
-                <div style="font-size: 32px;font-weight: bold;margin-bottom: 15px;">
-                    <div>Date of Issue: <span name="issueDate">4357348578347583479</span></div>
-                </div>
-                <div style="font-size:28px;">
-                    If this card is found, please return to any Police Station or to:<br />
-                    <span name="verifyCompanyName" style="font-weight:bold;font-size:27px;">34534534</span><br />
-                    <span name="verifyVenueName" style="font-weight:bold;font-size:27px;">34534534</span><br />
-                    <span name="verifyAddress" style="font-weight:bold;font-size:27px;">54654</span>
-                    <span style="display:none;"><br /><b style="font-size:14px;">Contact Number: </b><span name="verifyContactNumber" style="font-weight:bold;font-size:14px;">54654654654</span></span>
-                </div>
+</div>
+<div style="opacity:0;position:fixed;z-index:-1;left:0px;top:0px;background-color:#FFF;opacity:0;width:0px;height:0px;overflow:hidden;">
+    <div style="width:1024px;height:642px;position:relative;overflow:hidden;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;background-color:#FFF;border-radius:20px;overflow:hidden;" id="backCard">
+        <img src="../images/front-smartcard.png" style="position:absolute;z-index:0;left:0px;top:0px;height:100%;width:100%;" />
+        <div style="bottom:39px;left:55px;position:absolute;">
+            <div style="font-size: 32px;font-weight: bold;margin-bottom: 15px;">
+                <div>Date of Issue: <span name="issueDate">4357348578347583479</span></div>
             </div>
-            <img src="../images/backend-logo.png" style="position:absolute;z-index:0;right:55px;bottom:45px;" />
+            <div style="font-size:28px;">
+                If this card is found, please return to any Police Station or to:<br />
+                <span name="verifyCompanyName" style="font-weight:bold;font-size:27px;">34534534</span><br />
+                <span name="verifyVenueName" style="font-weight:bold;font-size:27px;">34534534</span><br />
+                <span name="verifyAddress" style="font-weight:bold;font-size:27px;">54654</span>
+                <span style="display:none;"><br /><b style="font-size:14px;">Contact Number: </b><span name="verifyContactNumber" style="font-weight:bold;font-size:14px;">54654654654</span></span>
+            </div>
         </div>
+        <img src="../images/backend-logo.png" style="position:absolute;z-index:0;right:55px;bottom:45px;" />
     </div>
-    <script>
+</div>
+<script>
 
-        var frontCardImg = null;
-        var backCardImg = null;
-        var CardInfo = null;
-        var countPrinterSmartCard = 0;
-        var checkStepNew = [];
-        var stepNewEnrol = 0;
-        var printSuccsess = false;
-        $('#Employment_Start_Date, #Employment_End_Date').datetimepicker({
-            format: 'd/m/Y',
-            timepicker: false,
-            mask: true,
-            scrollInput: false
-        });
-        $('[item-tab-content] [item-tab-title]').click(function () {
-            var _parent = $(this).parent('[item-tab-content]');
-            if (_parent.attr('item-tab-content') != 'true') {
-                _parent.attr('item-tab-content', 'true');
-            } else {
-                _parent.attr('item-tab-content', 'false');
+    var frontCardImg = null;
+    var backCardImg = null;
+    var CardInfo = null;
+    var countPrinterSmartCard = 0;
+    var checkStepNew = [];
+    var stepNewEnrol = 0;
+    var printSuccsess = false;
+    $('#Employment_Start_Date, #Employment_End_Date').datetimepicker({
+        format: 'd/m/Y',
+        timepicker: false,
+        mask: true,
+        scrollInput: false
+    });
+    $('[item-tab-content] [item-tab-title]').click(function () {
+        var _parent = $(this).parent('[item-tab-content]');
+        if (_parent.attr('item-tab-content') != 'true') {
+            _parent.attr('item-tab-content', 'true');
+        } else {
+            _parent.attr('item-tab-content', 'false');
+        }
+    }).mousedown(function (event) {
+        event.preventDefault();
+    });
+
+    $('#btnCancel').click(function () {
+        api.server.LoadListSupervisee();
+    });
+
+    $('#btnTakePic1').click(function () {
+        api.server.OpenPictureCaptureForm('1', 'new');
+    });
+    $('#btnTakePic2').click(function () {
+        api.server.OpenPictureCaptureForm('2', 'new');
+    });
+    $('#rightThumbScanBtn').click(function () {
+        ActionScanFingerPrint(true);
+    });
+    $('#leftThumbScanBtn').click(function () {
+        ActionScanFingerPrint(false);
+    });
+    $('#btnReprint').click(function () {
+        api.server.PrintSmartCard(frontCardImg, backCardImg, JSON.stringify(CardInfo));
+    });
+
+    $('#month').change(function () {
+        setCalendar('day', 'month', 'year');
+    });
+    $('#year').change(function () {
+        setCalendar('day', 'month', 'year');
+    });
+
+    $('#month_end').change(function () {
+        setCalendar('day_end', 'month_end', 'year_end');
+    });
+    $('#year_end').change(function () {
+        setCalendar('day_end', 'month_end', 'year_end');
+    });
+    $('#btnCancelEdit').click(function () {
+        api.server.LoadListSupervisee();
+    });
+
+
+    $('#leftThumbClearBtn').click(function () {
+        api.server.CancelCaptureFingerprint(0);
+        $('#leftFingerprint').attr('src', '../images/leftthumb.png');
+        $('#leftThumbClearBtn').attr('disabled', 'disabled');
+        $('#leftThumbScanBtn').removeAttr('disabled');
+        $('#leftProcessMessage').text('Place left thumb onto scanner').css('color', '#000');
+
+    });
+    $('#rightThumbClearBtn').click(function () {
+        api.server.CancelCaptureFingerprint(1);
+        $('#rightFingerprint').attr('src', '../images/rightthumb.png');
+        $('#rightThumbClearBtn').attr('disabled', 'disabled');
+        $('#rightThumbScanBtn').removeAttr('disabled');
+        $('#rightProcessMessage').text('Place right thumb onto scanner').css('color', '#000');
+    });
+
+    $('#SaveBtnNewCard').click(function (event) {
+        var $form = $("#superviseeFrm");
+        var data = getFormData($form);
+        data['Employment_End_Date'] = api.ToDateCSharp(data['Employment_End_Date']);
+        data['Employment_Start_Date'] = api.ToDateCSharp(data['Employment_Start_Date']);
+
+        var json = JSON.stringify(data);
+        api.server.SaveSupervisee(json);
+        event.preventDefault();
+
+    });
+
+    var myCarousel = $('#createNewSupervisee');
+
+    //$('#createNewSupervisee').on('slid.bs.carousel', function (data) {
+
+    //});
+    $('.carousel-control-prev').css('display', 'none');
+    $('#createNewSupervisee').on('slide.bs.carousel', function (data) {
+        if (data.direction == 'left') {
+            if (data.from + 1 < data.to) {
+                setTimeout(function () { $('#createNewSupervisee').carousel(data.from); });
+                return;
             }
-        }).mousedown(function (event) {
-            event.preventDefault();
-        });
+        }
+        if (data.to == 0) {
+            $('.carousel-control-prev').css('display', 'none');
+        } else {
+            $('.carousel-control-prev').css('display', 'flex');
+        }
 
-        $('#btnCancel').click(function () {
-            api.server.LoadListSupervisee();
-        });
-
-        $('#btnTakePic1').click(function () {
-            api.server.OpenPictureCaptureForm('1', 'new');
-        });
-        $('#btnTakePic2').click(function () {
-            api.server.OpenPictureCaptureForm('2', 'new');
-        });
-        $('#rightThumbScanBtn').click(function () {
-            ActionScanFingerPrint(true);
-        });
-        $('#leftThumbScanBtn').click(function () {
-            ActionScanFingerPrint(false);
-        });
-        $('#btnReprint').click(function () {
-            api.server.PrintSmartCard(frontCardImg, backCardImg, JSON.stringify(CardInfo));
-        });
-
-        $('#month').change(function () {
-            setCalendar('day', 'month', 'year');
-        });
-        $('#year').change(function () {
-            setCalendar('day', 'month', 'year');
-        });
-
-        $('#month_end').change(function () {
-            setCalendar('day_end', 'month_end', 'year_end');
-        });
-        $('#year_end').change(function () {
-            setCalendar('day_end', 'month_end', 'year_end');
-        });
-        $('#btnCancelEdit').click(function () {
-            api.server.LoadListSupervisee();
-        });
-
-
-        $('#leftThumbClearBtn').click(function () {
-            api.server.CancelCaptureFingerprint(0);
-            $('#leftFingerprint').attr('src', '../images/leftthumb.png');
-            $('#leftThumbClearBtn').attr('disabled', 'disabled');
-            $('#leftThumbScanBtn').removeAttr('disabled');
-            $('#leftProcessMessage').text('Place left thumb onto scanner').css('color', '#000');
-
-        });
-        $('#rightThumbClearBtn').click(function () {
-            api.server.CancelCaptureFingerprint(1);
-            $('#rightFingerprint').attr('src', '../images/rightthumb.png');
-            $('#rightThumbClearBtn').attr('disabled', 'disabled');
-            $('#rightThumbScanBtn').removeAttr('disabled');
-            $('#rightProcessMessage').text('Place right thumb onto scanner').css('color', '#000');
-        });
-
-        $('#SaveBtnNewCard').click(function (event) {
-            var $form = $("#superviseeFrm");
-            var data = getFormData($form);
-            data['Employment_End_Date'] = api.ToDateCSharp(data['Employment_End_Date']);
-            data['Employment_Start_Date'] = api.ToDateCSharp(data['Employment_Start_Date']);
-
-            var json = JSON.stringify(data);
-            api.server.SaveSupervisee(json);
-            event.preventDefault();
-
-        });
-
-        var myCarousel = $('#createNewSupervisee');
-
-        //$('#createNewSupervisee').on('slid.bs.carousel', function (data) {
-
-        //});
-        $('.carousel-control-prev').css('display', 'none');
-        $('#createNewSupervisee').on('slide.bs.carousel', function (data) {
-            if (data.direction == 'left') {
-                if (data.from + 1 < data.to) {
-                    setTimeout(function () { $('#createNewSupervisee').carousel(data.from); });
-                    return;
+        if (data.to == $('[data-slide-to]').length - 1) {
+            $('.carousel-control-next').css('display', 'none');
+        } else {
+            $('.carousel-control-next').css('display', 'flex');
+        }
+        if (data.from == 0 && data.direction == 'left') {
+            api.server.checkStepNew(data.from, function (status) {
+                if (!status) {
+                    setTimeout(function () { $('#createNewSupervisee').carousel(0); });
+                    alert('Please update your photos');
                 }
-            }
-            if (data.to == 0) {
-                $('.carousel-control-prev').css('display', 'none');
-            } else {
-                $('.carousel-control-prev').css('display', 'flex');
-            }
-
-            if (data.to == $('[data-slide-to]').length - 1) {
-                $('.carousel-control-next').css('display', 'none');
-            } else {
-                $('.carousel-control-next').css('display', 'flex');
-            }
-            if (data.from == 0 && data.direction == 'left') {
-                api.server.checkStepNew(data.from, function (status) {
-                    if (!status) {
-                        setTimeout(function () { $('#createNewSupervisee').carousel(0); });
-                        alert('Please update your photos');
-                    }
-                });
-            } else if (data.from == 1 && data.direction == 'left') {
-                api.server.checkStepNew(data.from, function (status) {
-                    if (!status) {
-                        setTimeout(function () { $('#createNewSupervisee').carousel(1); });
-                        alert('Please update your fingerprint');
-                    }
-                });
-            }
-            if (data.to == 2) {
-                api.server.loadDataVerify(function (dataRe) {
-                    var model = dataRe[0];
-                    CardInfo = dataRe[1];
-                    $('[name="issueDate"]').text(CardInfo.Date_Of_Issue_Txt);
-                    $('[name="verifyCardNumber"]').text(CardInfo.CardNumberFull);
-
-                    $('[name="verifyCompanyName"]').text(CardInfo.CompanyName);
-                    $('[name="verifyVenueName"]').text(CardInfo.VenueName);
-                    $('[name="verifyAddress"]').text(CardInfo.Address);
-                    $('[name="verifyContactNumber"]').text(CardInfo.ContactNumber);
-
-                    $('[name="verifyName"]').text(model.User.Name);
-                    if (model.UserProfile.DOB != null) {
-                        $('[name="verifyDOB"]').text(model.UserProfile.DOBTxt);
-                    }
-
-                    $('[name="verifyNRIC"]').text(model.User.NRIC);
-                    $('[name="verifyGender"]').text(model.UserProfile.Gender == null ? '' : model.UserProfile.Gender);
-                    $('[name="verifyNation"]').text(model.UserProfile.Nationality);
-                    $('[name="verifyRace"]').text(model.UserProfile.Race == null ? '' : model.UserProfile.Race);
-                    frontCardImg = null;
-                    backCardImg = null;
-                    api.loading(true);
-                    JsBarcode('[name="verifyBarcode"]', model.User.NRIC, { background: "transparent", displayValue: false, height: 85, fontSize: 8, width: 5, margin: 0, font: "Arial" });
-                    setTimeout(function () {
-                        html2canvas($('#frontCard'), {
-                            onrendered: function (froncanvas) {
-                                html2canvas($('#backCard'), {
-                                    onrendered: function (backcanvas) {
-                                        frontCardImg = froncanvas.toDataURL("image/png");
-                                        backCardImg = backcanvas.toDataURL("image/png");
-
-                                        var canvasFrontCard = document.getElementById("frontCardImgCanvas");
-                                        var ctxFrontCard = canvasFrontCard.getContext("2d");
-
-                                        var imgFrontCard = new Image();
-                                        imgFrontCard.src = frontCardImg;
-                                        imgFrontCard.onload = function () {
-
-                                            canvasFrontCard.height = imgFrontCard.height * 0.5;
-                                            canvasFrontCard.width = imgFrontCard.width * 0.5;
-
-                                            var oc = document.createElement('canvas'),
-                                                octx = oc.getContext('2d');
-                                            oc.width = canvasFrontCard.width;
-                                            oc.height = canvasFrontCard.height;
-                                            octx.drawImage(imgFrontCard, 0, 0, oc.width, oc.height);
-
-                                            // step 2
-                                            octx.drawImage(oc, 0, 0, oc.width, oc.height);
-
-                                            // step 3, resize to final size
-                                            ctxFrontCard.drawImage(oc, 0, 0, oc.width, oc.height,
-                                                0, 0, canvasFrontCard.width, canvasFrontCard.height);
-                                        }
-
-                                        var canvasBackCard = document.getElementById("backCardImgCanvas");
-                                        var ctxBackCard = canvasBackCard.getContext("2d");
-
-                                        var imgBackCard = new Image();
-                                        imgBackCard.src = backCardImg;
-                                        imgBackCard.onload = function () {
-
-                                            canvasBackCard.height = imgBackCard.height * 0.5;
-                                            canvasBackCard.width = imgBackCard.width * 0.5;
-
-                                            var oc = document.createElement('canvas'),
-                                                octx = oc.getContext('2d');
-                                            oc.width = canvasBackCard.width;
-                                            oc.height = canvasBackCard.height;
-                                            octx.drawImage(imgBackCard, 0, 0, oc.width, oc.height);
-
-                                            // step 2
-                                            octx.drawImage(oc, 0, 0, oc.width, oc.height);
-
-                                            // step 3, resize to final size
-                                            ctxBackCard.drawImage(oc, 0, 0, oc.width, oc.height,
-                                                0, 0, canvasBackCard.width, canvasBackCard.height);
-                                        }
-
-                                        api.loading(false);
-                                    }
-                                });        
-                            }
-                        });
-                        
-                    }, 500);
-                });
-            } else if (data.to == 3) {
-                if (frontCardImg == null) {
-                    frontCardImg = '';
+            });
+        } else if (data.from == 1 && data.direction == 'left') {
+            api.server.checkStepNew(data.from, function (status) {
+                if (!status) {
+                    setTimeout(function () { $('#createNewSupervisee').carousel(1); });
+                    alert('Please update your fingerprint');
                 }
-                if (backCardImg == null) {
-                    backCardImg = '';
-                }
-                api.server.UpdateSuperviseeBiodata(frontCardImg, backCardImg, JSON.stringify(CardInfo));
-            }
-
-            if (data.to == 3) {
-                $('[panel-btn-save-step4]').css('display', 'block');
-            } else {
-                $('[panel-btn-save-step4]').css('display', 'none');
-            }
-            stepNewEnrol = data.to;
-        });
-
-        var userIDNew = '';
-        api.ready(function (model) {
-            userIDNew = model.User.UserId;
-        });
-        function rePrintCardNew() {
-            $('[name="panel-succss-print"]').css('display', 'none');
-            $('#donePrinter').css('display', 'none');
-            printSuccsess = false;
-
+            });
+        }
+        if (data.to == 2) {
             api.server.loadDataVerify(function (dataRe) {
                 var model = dataRe[0];
                 CardInfo = dataRe[1];
@@ -1192,7 +1090,6 @@
                                     }
 
                                     api.loading(false);
-                                    api.server.UpdateSuperviseeBiodata(frontCardImg, backCardImg, JSON.stringify(CardInfo));
                                 }
                             });
                         }
@@ -1200,324 +1097,442 @@
 
                 }, 500);
             });
-        }
-        function setImg(number, src) {
-            image = document.getElementById('image' + number);
-            image.src = src;
-        }
-        $(document).ready(function () {
-            $('#leftThumbClearBtn').attr('disabled', 'disabled');
-            $('#rightThumbClearBtn').attr('disabled', 'disabled');
-        });
-        function ActionScanFingerPrint(isRight) {
-            if (isRight) {
-                $('#leftThumbDiv').find('button').attr('disabled', 'disabled');
-            } else {
-                $('#rightThumbDiv').find('button').attr('disabled', 'disabled');
+        } else if (data.to == 3) {
+            if (frontCardImg == null) {
+                frontCardImg = '';
             }
-            countScanFinger = 0;
-            api.server.CaptureFingerPrint(isRight);
-        }
-        //$('#leftThumbScanBtn').click(function () {
-        //    $('#rightThumbDiv').find('button').attr('disabled', 'disabled');
-        //    api.server.CaptureFingerPrint(false);
-
-        //});
-
-        //$('#rightThumbScanBtn').click(function () {
-        //    $('#leftThumbDiv').find('button').attr('disabled', 'disabled');
-        //    api.server.CaptureFingerPrint(true);
-        //});
-
-        function enableClearBtnServerCall(isRight) {
-
-            $('#rightThumbClearBtn').removeAttr('disabled');
-            $('#leftThumbScanBtn').removeAttr('disabled');
-            $('#leftThumbClearBtn').removeAttr('disabled');
-            $('#rightThumbScanBtn').removeAttr('disabled');
-
-
-
-        }
-        var countScanFinger = 0;
-        function changCountFinger() {
-            if (countScanFinger < 5)
-                countScanFinger++;
-        }
-        function changeMessageServerCall(isRight, message, color) {
-            if (isRight) {
-                $('#rightProcessMessage').text(message + ' (' + countScanFinger+'/5)').css('color', color);
-
+            if (backCardImg == null) {
+                backCardImg = '';
             }
-            else {
-                $('#leftProcessMessage').text(message + ' (' + countScanFinger + '/5)').css('color', color);
-            }
+            api.server.UpdateSuperviseeBiodata(frontCardImg, backCardImg, JSON.stringify(CardInfo));
         }
 
-        function setFingerprintImage(isRight, base64String) {
-            if (isRight) {
-                $('#rightProcessMessage').text(message).css('color', color);
-
-            }
-            else {
-                $('#leftProcessMessage').text(message).css('color', color);
-            }
+        if (data.to == 3) {
+            $('[panel-btn-save-step4]').css('display', 'block');
+        } else {
+            $('[panel-btn-save-step4]').css('display', 'none');
         }
+        stepNewEnrol = data.to;
+    });
 
-        function setBase64FingerprintOnloadServerCall(leftFinger, rightFinger) {
-            if (leftFinger!=null && leftFinger != "") {
-                $('#leftFingerprint').attr('src', 'data:image/png;base64,' + leftFinger);
-                $('#verifyLeftFinger').attr('src', 'data:image/png;base64,' + leftFinger);
-            }
-            if (rightFinger!=null && rightFinger != "") {
-                $('#rightFingerprint').attr('src', 'data:image/png;base64,' + rightFinger);
-                $('#verifyRightFinger').attr('src', 'data:image/png;base64,' + rightFinger);
+    var userIDNew = '';
+    api.ready(function (model) {
+        userIDNew = model.User.UserId;
+    });
+    function rePrintCardNew() {
+        $('[name="panel-succss-print"]').css('display', 'none');
+        $('#donePrinter').css('display', 'none');
+        printSuccsess = false;
 
+        api.server.loadDataVerify(function (dataRe) {
+            var model = dataRe[0];
+            CardInfo = dataRe[1];
+            $('[name="issueDate"]').text(CardInfo.Date_Of_Issue_Txt);
+            $('[name="verifyCardNumber"]').text(CardInfo.CardNumberFull);
+
+            $('[name="verifyCompanyName"]').text(CardInfo.CompanyName);
+            $('[name="verifyVenueName"]').text(CardInfo.VenueName);
+            $('[name="verifyAddress"]').text(CardInfo.Address);
+            $('[name="verifyContactNumber"]').text(CardInfo.ContactNumber);
+
+            $('[name="verifyName"]').text(model.User.Name);
+            if (model.UserProfile.DOB != null) {
+                $('[name="verifyDOB"]').text(model.UserProfile.DOBTxt);
             }
 
-        }
+            $('[name="verifyNRIC"]').text(model.User.NRIC);
+            $('[name="verifyGender"]').text(model.UserProfile.Gender == null ? '' : model.UserProfile.Gender);
+            $('[name="verifyNation"]').text(model.UserProfile.Nationality);
+            $('[name="verifyRace"]').text(model.UserProfile.Race == null ? '' : model.UserProfile.Race);
+            frontCardImg = null;
+            backCardImg = null;
+            api.loading(true);
+            JsBarcode('[name="verifyBarcode"]', model.User.NRIC, { background: "transparent", displayValue: false, height: 85, fontSize: 8, width: 5, margin: 0, font: "Arial" });
+            setTimeout(function () {
+                html2canvas($('#frontCard'), {
+                    onrendered: function (froncanvas) {
+                        html2canvas($('#backCard'), {
+                            onrendered: function (backcanvas) {
+                                frontCardImg = froncanvas.toDataURL("image/png");
+                                backCardImg = backcanvas.toDataURL("image/png");
 
-        function setAvatar(base64Str1, base64Str2) {
-            if (base64Str1 != "") {
-                $('#image1').attr('src', 'data:image/jpg;base64,' + base64Str1);
-                $('[name="card-avarta"]').attr('src', 'data:image/png;base64,' + base64Str1);
-            } else {
-                $('#image1').attr('src', '../images/avatar-demo.jpg');
-                $('[name="card-avarta"]').attr('src', '../images/avatar-demo.jpg');
-            }
-            if (base64Str2 != "") {
-                $('#image2').attr('src', 'data:image/jpg;base64,' + base64Str2);
-                $('#verifyPhoto2').attr('src', 'data:image/jpg;base64,' + base64Str2);
-            } else {
-                $('#image2').attr('src', '../images/avatar-demo.jpg');
-                $('#verifyPhoto2').attr('src', '../images/avatar-demo.jpg');
-            }
-        }
-    </script>
-    <script>
+                                var canvasFrontCard = document.getElementById("frontCardImgCanvas");
+                                var ctxFrontCard = canvasFrontCard.getContext("2d");
 
-        function LoadSuperviseeDetails() {
-            api.server.EditSupervisee(userIDNew);
-        }
-        $(document).ready(function () {
-            countPrinterSmartCard = 0;
-        });
+                                var imgFrontCard = new Image();
+                                imgFrontCard.src = frontCardImg;
+                                imgFrontCard.onload = function () {
 
-        function showPrintMessage(status, message) {
-            if (status != null) {
-                if (status) {
-                    $('[name="panel-succss-print"]').css('display', 'none');
-                    countPrinterSmartCard = 0;
-                    printSuccsess = true;
+                                    canvasFrontCard.height = imgFrontCard.height * 0.5;
+                                    canvasFrontCard.width = imgFrontCard.width * 0.5;
 
-                } else {
-                    printSuccsess = false;
-                    $('#rePrinter').css('display', 'inline-block');
-                    countPrinterSmartCard++;
-                    if (countPrinterSmartCard >= 3) {
-                        countPrinterSmartCard = 0;
-                        ShowMessage('Unable to print Smart Card');
+                                    var oc = document.createElement('canvas'),
+                                        octx = oc.getContext('2d');
+                                    oc.width = canvasFrontCard.width;
+                                    oc.height = canvasFrontCard.height;
+                                    octx.drawImage(imgFrontCard, 0, 0, oc.width, oc.height);
+
+                                    // step 2
+                                    octx.drawImage(oc, 0, 0, oc.width, oc.height);
+
+                                    // step 3, resize to final size
+                                    ctxFrontCard.drawImage(oc, 0, 0, oc.width, oc.height,
+                                        0, 0, canvasFrontCard.width, canvasFrontCard.height);
+                                }
+
+                                var canvasBackCard = document.getElementById("backCardImgCanvas");
+                                var ctxBackCard = canvasBackCard.getContext("2d");
+
+                                var imgBackCard = new Image();
+                                imgBackCard.src = backCardImg;
+                                imgBackCard.onload = function () {
+
+                                    canvasBackCard.height = imgBackCard.height * 0.5;
+                                    canvasBackCard.width = imgBackCard.width * 0.5;
+
+                                    var oc = document.createElement('canvas'),
+                                        octx = oc.getContext('2d');
+                                    oc.width = canvasBackCard.width;
+                                    oc.height = canvasBackCard.height;
+                                    octx.drawImage(imgBackCard, 0, 0, oc.width, oc.height);
+
+                                    // step 2
+                                    octx.drawImage(oc, 0, 0, oc.width, oc.height);
+
+                                    // step 3, resize to final size
+                                    ctxBackCard.drawImage(oc, 0, 0, oc.width, oc.height,
+                                        0, 0, canvasBackCard.width, canvasBackCard.height);
+                                }
+
+                                api.loading(false);
+                                api.server.UpdateSuperviseeBiodata(frontCardImg, backCardImg, JSON.stringify(CardInfo));
+                            }
+                        });
                     }
-                }
-            }
-            $('#printSuccessMessage').text('');
-            var $_message = message;
-            $('#printSuccessMessage').append($_message).show();
+                });
+
+            }, 500);
+        });
+    }
+    function setImg(number, src) {
+        image = document.getElementById('image' + number);
+        image.src = src;
+    }
+    $(document).ready(function () {
+        $('#leftThumbClearBtn').attr('disabled', 'disabled');
+        $('#rightThumbClearBtn').attr('disabled', 'disabled');
+    });
+    function ActionScanFingerPrint(isRight) {
+        if (isRight) {
+            $('#leftThumbDiv').find('button').attr('disabled', 'disabled');
+        } else {
+            $('#rightThumbDiv').find('button').attr('disabled', 'disabled');
+        }
+        countScanFinger = 0;
+        api.server.CaptureFingerPrint(isRight);
+    }
+    //$('#leftThumbScanBtn').click(function () {
+    //    $('#rightThumbDiv').find('button').attr('disabled', 'disabled');
+    //    api.server.CaptureFingerPrint(false);
+
+    //});
+
+    //$('#rightThumbScanBtn').click(function () {
+    //    $('#leftThumbDiv').find('button').attr('disabled', 'disabled');
+    //    api.server.CaptureFingerPrint(true);
+    //});
+
+    function enableClearBtnServerCall(isRight) {
+
+        $('#rightThumbClearBtn').removeAttr('disabled');
+        $('#leftThumbScanBtn').removeAttr('disabled');
+        $('#leftThumbClearBtn').removeAttr('disabled');
+        $('#rightThumbScanBtn').removeAttr('disabled');
+
+
+
+    }
+    var countScanFinger = 0;
+    function changCountFinger() {
+        if (countScanFinger < 5)
+            countScanFinger++;
+    }
+    function changeMessageServerCall(isRight, message, color) {
+        if (isRight) {
+            $('#rightProcessMessage').text(message + ' (' + countScanFinger + '/5)').css('color', color);
+
+        }
+        else {
+            $('#leftProcessMessage').text(message + ' (' + countScanFinger + '/5)').css('color', color);
+        }
+    }
+
+    function setFingerprintImage(isRight, base64String) {
+        if (isRight) {
+            $('#rightProcessMessage').text(message).css('color', color);
+
+        }
+        else {
+            $('#leftProcessMessage').text(message).css('color', color);
+        }
+    }
+
+    function setBase64FingerprintOnloadServerCall(leftFinger, rightFinger) {
+        if (leftFinger != null && leftFinger != "") {
+            $('#leftFingerprint').attr('src', 'data:image/png;base64,' + leftFinger);
+            $('#verifyLeftFinger').attr('src', 'data:image/png;base64,' + leftFinger);
+        }
+        if (rightFinger != null && rightFinger != "") {
+            $('#rightFingerprint').attr('src', 'data:image/png;base64,' + rightFinger);
+            $('#verifyRightFinger').attr('src', 'data:image/png;base64,' + rightFinger);
+
         }
 
-        function showCheckVerfyCard(status, data) {
+    }
+
+    function setAvatar(base64Str1, base64Str2) {
+        if (base64Str1 != "") {
+            $('#image1').attr('src', 'data:image/jpg;base64,' + base64Str1);
+            $('[name="card-avarta"]').attr('src', 'data:image/png;base64,' + base64Str1);
+        } else {
+            $('#image1').attr('src', '../images/avatar-demo.jpg');
+            $('[name="card-avarta"]').attr('src', '../images/avatar-demo.jpg');
+        }
+        if (base64Str2 != "") {
+            $('#image2').attr('src', 'data:image/jpg;base64,' + base64Str2);
+            $('#verifyPhoto2').attr('src', 'data:image/jpg;base64,' + base64Str2);
+        } else {
+            $('#image2').attr('src', '../images/avatar-demo.jpg');
+            $('#verifyPhoto2').attr('src', '../images/avatar-demo.jpg');
+        }
+    }
+</script>
+<script>
+
+    function LoadSuperviseeDetails() {
+        api.server.EditSupervisee(userIDNew);
+    }
+    $(document).ready(function () {
+        countPrinterSmartCard = 0;
+    });
+
+    function showPrintMessage(status, message) {
+        if (status != null) {
             if (status) {
-                var dataJson = JSON.parse(data);
-                $('[name="panel-succss-print"]').css('display', 'block');
-                $('[name="vertify-name"]').text(dataJson.Name);
-                $('[name="vertify-nric"]').text(dataJson.NRIC);
-                $('[name="vertify-dateofbirth"]').text(dataJson.DOB);
+                $('[name="panel-succss-print"]').css('display', 'none');
+                countPrinterSmartCard = 0;
+                printSuccsess = true;
 
-                $('#rePrinter').css('display', 'inline-block');
-                $('#donePrinter').css('display', 'inline-block');
-
-                //$('#createNewSupervisee .carousel-indicators').css('pointer-events', 'none');
-                //$('.carousel-control-prev,.carousel-control-next').css('display', 'none');
             } else {
-                ShowMessage("Verification Failed",data);
-                $('#printSuccessMessage').html('');
+                printSuccsess = false;
                 $('#rePrinter').css('display', 'inline-block');
-            }
-        }
-        function showMessageFingerprintFalse3() {
-            alert('Unable to print Fingerprint');
-        }
-    </script>
-
-    <script>
-        $(function () {
-            $('.s_label').click(function () {
-                $(this).next().fadeToggle(200);
-            });
-            var d = new Date();
-            var month = new Array();
-            var year = d.getFullYear();
-            var years = new Array();
-            var days = new Array();
-
-            for (var i = 0; i < 31; i++) {
-                days[i] = (i + 1);
-            }
-            $.each(days, function (key, value) {
-                $('#day').append($('<option>', { value: value })
-                    .text(value));
-                $('#day_end').append($('<option>', { value: value })
-                    .text(value));
-            });
-
-            for (var i = 1; i < 13; i++) {
-                month[i] = i;
-            }
-
-            $.each(month, function (key, value) {
-                $('#month').append($('<option>', { value: value })
-                    .text(value));
-                $('#month_end').append($('<option>', { value: value })
-                    .text(value));
-            });
-            for (var i = 0; i < 100; i++) {
-                years[i] = (year - i);
-            }
-            $.each(years, function (key, value) {
-                $('#year').append($('<option>', { value: value })
-                    .text(value));
-                $('#year_end').append($('<option>', { value: value })
-                    .text(value));
-            });
-
-
-
-
-
-            if (api.model != null) {
-                $('#userId').val(api.model.User.UserId);
-                // NextOfKin
-                if (api.model.UserProfile != null) {
-                    $('#NextOfKin_Name').val(api.model.UserProfile.NextOfKin_Name);
-                    $('#NextOfKin_Contact_Number').val(api.model.UserProfile.NextOfKin_Contact_Number);
-                    $('#NextOfKin_Relationship').val(api.model.UserProfile.NextOfKin_Relationship);
-                    $('#NextOfKin_BlkHouse_Number').val(api.model.UserProfile.NextOfKin_BlkHouse_Number);
-                    $('#NextOfKin_FlrUnit_Number').val(api.model.UserProfile.NextOfKin_FlrUnit_Number);
-                    $('#NextOfKin_Street_Name').val(api.model.UserProfile.NextOfKin_Street_Name);
-                    $('#NextOfKin_Country').val(api.model.UserProfile.NextOfKin_Country);
-                    $('#NextOfKin_PostalCode').val(api.model.UserProfile.NextOfKin_PostalCode);
-                    // Employment
-                    $('#Employment_Name').val(api.model.UserProfile.Employment_Name);
-                    $('#Employment_Contact_Number').val(api.model.UserProfile.Employment_Contact_Number);
-                    $('#Employment_Company_Name').val(api.model.UserProfile.Employment_Company_Name);
-                    $('#Employment_Job_Title').val(api.model.UserProfile.Employment_Job_Title);
-                    $('#Employment_Start_Date').val(api.model.UserProfile.Employment_Start_Date_Text);
-                    $('#Employment_End_Date').val(api.model.UserProfile.Employment_End_Date_Text);
-                    $('#Employment_Remarks').val(api.model.UserProfile.Employment_Remarks);
-                    $('#address_ID').val(api.model.UserProfile.Residential_Addess_ID);
-                    $('#Other_Address_ID').val(api.model.UserProfile.Other_Address_ID);
-                    // photo
-                    $('#User_Photo1').val(api.model.UserProfile.User_Photo1);
-                    $('#User_Photo2').val(api.model.UserProfile.User_Photo2);
-                }
-
-
-                // Residential Address
-                if (api.model.Addresses != null) {
-                    $('#Street_Name').val(api.model.Addresses.Street_Name);
-                    $('#BlkHouse_Number').val(api.model.Addresses.BlkHouse_Number);
-                    $('#FlrUnit_Number').val(api.model.Addresses.FlrUnit_Number);
-                    $('#Country').val(api.model.Addresses.Country);
-                    $('#Postal_Code').val(api.model.Addresses.Postal_Code);
-                }
-                // Other Address
-                if (api.model.OtherAddress != null) {
-                    $('#OStreet_Name').val(api.model.OtherAddress.Street_Name);
-                    $('#OBlkHouse_Number').val(api.model.OtherAddress.BlkHouse_Number);
-                    $('#OFlrUnit_Number').val(api.model.OtherAddress.FlrUnit_Number);
-                    $('#OCountry').val(api.model.OtherAddress.Country);
-                    $('#OPostal_Code').val(api.model.OtherAddress.Postal_Code);
+                countPrinterSmartCard++;
+                if (countPrinterSmartCard >= 3) {
+                    countPrinterSmartCard = 0;
+                    ShowMessage('Unable to print Smart Card');
                 }
             }
+        }
+        $('#printSuccessMessage').text('');
+        var $_message = message;
+        $('#printSuccessMessage').append($_message).show();
+    }
 
+    function showCheckVerfyCard(status, data) {
+        if (status) {
+            var dataJson = JSON.parse(data);
+            $('[name="panel-succss-print"]').css('display', 'block');
+            $('[name="vertify-name"]').text(dataJson.Name);
+            $('[name="vertify-nric"]').text(dataJson.NRIC);
+            $('[name="vertify-dateofbirth"]').text(dataJson.DOB);
 
+            $('#rePrinter').css('display', 'inline-block');
+            $('#donePrinter').css('display', 'inline-block');
 
+            //$('#createNewSupervisee .carousel-indicators').css('pointer-events', 'none');
+            //$('.carousel-control-prev,.carousel-control-next').css('display', 'none');
+        } else {
+            ShowMessage("Verification Failed", data);
+            $('#printSuccessMessage').html('');
+            $('#rePrinter').css('display', 'inline-block');
+        }
+    }
+    function showMessageFingerprintFalse3() {
+        alert('Unable to print Fingerprint');
+    }
+</script>
+<script>
+    $(function () {
+        $('.s_label').click(function () {
+            $(this).next().fadeToggle(200);
+        });
+        var d = new Date();
+        var month = new Array();
+        var year = d.getFullYear();
+        var years = new Array();
+        var days = new Array();
 
-
+        for (var i = 0; i < 31; i++) {
+            days[i] = (i + 1);
+        }
+        $.each(days, function (key, value) {
+            $('#day').append($('<option>', { value: value })
+                .text(value));
+            $('#day_end').append($('<option>', { value: value })
+                .text(value));
         });
 
-        function setDate(day_Id, month_Id, year_Id) {
-            var _day = $('#' + day_Id + '').val().trim();
-            var _month = $('#' + month_Id + '').val().trim();
-            var _year = $('#' + year_Id + '').val().trim();
-            if (_day != "" && _day != "DD" && _month != "" && _month != "MM" && _year != "" && _year != "YYYY") {
-                return _year + "-" + _month + "-" + _day;
+        for (var i = 1; i < 13; i++) {
+            month[i] = i;
+        }
+
+        $.each(month, function (key, value) {
+            $('#month').append($('<option>', { value: value })
+                .text(value));
+            $('#month_end').append($('<option>', { value: value })
+                .text(value));
+        });
+        for (var i = 0; i < 100; i++) {
+            years[i] = (year - i);
+        }
+        $.each(years, function (key, value) {
+            $('#year').append($('<option>', { value: value })
+                .text(value));
+            $('#year_end').append($('<option>', { value: value })
+                .text(value));
+        });
+
+
+
+
+
+        if (api.model != null) {
+
+            $('[display-data="Name"]').text(api.model.User.Name);
+            $('[display-data="NRIC"]').text(api.model.User.NRIC);
+
+            $('#userId').val(api.model.User.UserId);
+            // NextOfKin
+            if (api.model.UserProfile != null) {
+                $('#NextOfKin_Name').val(api.model.UserProfile.NextOfKin_Name);
+                $('#NextOfKin_Contact_Number').val(api.model.UserProfile.NextOfKin_Contact_Number);
+                $('#NextOfKin_Relationship').val(api.model.UserProfile.NextOfKin_Relationship);
+                $('#NextOfKin_BlkHouse_Number').val(api.model.UserProfile.NextOfKin_BlkHouse_Number);
+                $('#NextOfKin_FlrUnit_Number').val(api.model.UserProfile.NextOfKin_FlrUnit_Number);
+                $('#NextOfKin_Street_Name').val(api.model.UserProfile.NextOfKin_Street_Name);
+                $('#NextOfKin_Country').val(api.model.UserProfile.NextOfKin_Country);
+                $('#NextOfKin_PostalCode').val(api.model.UserProfile.NextOfKin_PostalCode);
+                // Employment
+                $('#Employment_Name').val(api.model.UserProfile.Employment_Name);
+                $('#Employment_Contact_Number').val(api.model.UserProfile.Employment_Contact_Number);
+                $('#Employment_Company_Name').val(api.model.UserProfile.Employment_Company_Name);
+                $('#Employment_Job_Title').val(api.model.UserProfile.Employment_Job_Title);
+                $('#Employment_Start_Date').val(api.model.UserProfile.Employment_Start_Date_Text);
+                $('#Employment_End_Date').val(api.model.UserProfile.Employment_End_Date_Text);
+                $('#Employment_Remarks').val(api.model.UserProfile.Employment_Remarks);
+                $('#address_ID').val(api.model.UserProfile.Residential_Addess_ID);
+                $('#Other_Address_ID').val(api.model.UserProfile.Other_Address_ID);
+                // photo
+                $('#User_Photo1').val(api.model.UserProfile.User_Photo1);
+                $('#User_Photo2').val(api.model.UserProfile.User_Photo2);
             }
-            else {
-                return null;
+
+
+            // Residential Address
+            if (api.model.Addresses != null) {
+                $('#Street_Name').val(api.model.Addresses.Street_Name);
+                $('#BlkHouse_Number').val(api.model.Addresses.BlkHouse_Number);
+                $('#FlrUnit_Number').val(api.model.Addresses.FlrUnit_Number);
+                $('#Country').val(api.model.Addresses.Country);
+                $('#Postal_Code').val(api.model.Addresses.Postal_Code);
+            }
+            // Other Address
+            if (api.model.OtherAddress != null) {
+                $('#OStreet_Name').val(api.model.OtherAddress.Street_Name);
+                $('#OBlkHouse_Number').val(api.model.OtherAddress.BlkHouse_Number);
+                $('#OFlrUnit_Number').val(api.model.OtherAddress.FlrUnit_Number);
+                $('#OCountry').val(api.model.OtherAddress.Country);
+                $('#OPostal_Code').val(api.model.OtherAddress.Postal_Code);
             }
         }
-        function setCalendar(day_Id, month_Id, year_Id) {
-            var _month = $('#' + month_Id + '').val();
-            var _year = $('#' + year_Id + '').val();
 
-            var _daysInMonth = daysInMonth(_month, _year);
 
-            $('#' + day_Id + '').find('option').remove();
-            var days = new Array();
 
-            for (var i = 0; i < 31; i++) {
-                days[i] = (i + 1);
+
+
+    });
+
+    function setDate(day_Id, month_Id, year_Id) {
+        var _day = $('#' + day_Id + '').val().trim();
+        var _month = $('#' + month_Id + '').val().trim();
+        var _year = $('#' + year_Id + '').val().trim();
+        if (_day != "" && _day != "DD" && _month != "" && _month != "MM" && _year != "" && _year != "YYYY") {
+            return _year + "-" + _month + "-" + _day;
+        }
+        else {
+            return null;
+        }
+    }
+    function setCalendar(day_Id, month_Id, year_Id) {
+        var _month = $('#' + month_Id + '').val();
+        var _year = $('#' + year_Id + '').val();
+
+        var _daysInMonth = daysInMonth(_month, _year);
+
+        $('#' + day_Id + '').find('option').remove();
+        var days = new Array();
+
+        for (var i = 0; i < 31; i++) {
+            days[i] = (i + 1);
+        }
+        $.each(days, function (key, value) {
+            if (value <= _daysInMonth) {
+                $('#' + day_Id + '').append($('<option>', { value: value })
+                    .text(value));
             }
-            $.each(days, function (key, value) {
-                if (value <= _daysInMonth) {
-                    $('#' + day_Id + '').append($('<option>', { value: value })
-                        .text(value));
-                }
 
-            });
-        }
-
-        function daysInMonth(month, year) { // Use 1 for January, 2 for February, etc.
-            return new Date(year, month, 0).getDate();
-        }
-
-        function getFormData($form) {
-            var unindexed_array = $form.serializeArray();
-            var indexed_array = {};
-
-            $.map(unindexed_array, function (n, i) {
-                indexed_array[n['name']] = n['value'];
-            });
-
-            return indexed_array;
-        }
-
-        function saveNewDataToSession() {
-            var $form = $("#superviseeFrm");
-            var data = getFormData($form);
-            var json = JSON.stringify(data);
-            api.server.saveNewDataToSession(json);
-        }
-
-        $("#updatePhotos").click(function () {
-            showPopUp("pageUpdatePhotos");
         });
-        $("#Close_popup").click(function () {
-            hidePopUp();
-        });
-        jQuery(function ($) {
-            var modal_lv = 0;
-            $('.modal').on('shown.bs.modal', function (e) {
-                a = $('.modal-backdrop:last').css('zIndex', 1051 + modal_lv); console.log(a);
-                b = $(e.currentTarget).css('zIndex', 1052 + modal_lv); console.log(b);
-                modal_lv++
-            });
+    }
 
-            $('.modal').on('hidden.bs.modal', function (e) {
-                modal_lv--
-            });
+    function daysInMonth(month, year) { // Use 1 for January, 2 for February, etc.
+        return new Date(year, month, 0).getDate();
+    }
+
+    function getFormData($form) {
+        var unindexed_array = $form.serializeArray();
+        var indexed_array = {};
+
+        $.map(unindexed_array, function (n, i) {
+            indexed_array[n['name']] = n['value'];
         });
 
-    </script>
-</div>
+        return indexed_array;
+    }
+
+    function saveNewDataToSession() {
+        var $form = $("#superviseeFrm");
+        var data = getFormData($form);
+        var json = JSON.stringify(data);
+        api.server.saveNewDataToSession(json);
+    }
+
+    $("#updatePhotos").click(function () {
+        showPopUp("pageUpdatePhotos");
+    });
+    $("#Close_popup").click(function () {
+        hidePopUp();
+    });
+    jQuery(function ($) {
+        var modal_lv = 0;
+        $('.modal').on('shown.bs.modal', function (e) {
+            a = $('.modal-backdrop:last').css('zIndex', 1051 + modal_lv); console.log(a);
+            b = $(e.currentTarget).css('zIndex', 1052 + modal_lv); console.log(b);
+            modal_lv++
+        });
+
+        $('.modal').on('hidden.bs.modal', function (e) {
+            modal_lv--
+        });
+    });
+
+</script>

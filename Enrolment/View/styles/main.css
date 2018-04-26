@@ -2,10 +2,14 @@
     font-family: Verdana,sans-serif;
     font-size: 14px;
     line-height: 1.5;
-    background-color:#FFF;
+    background-color: #FFF;
     width: 100%;
     background-size: cover;
 }
+
+    body * {
+        color: #334352;
+    }
 
 .bodyContent {
     margin: 20px 40px;
@@ -454,6 +458,7 @@ highlight {
     border-left: none !important;
     color: #334352;
 }
+
 .fixed-table-container thead th .sortable {
     padding-right: 15px !important;
 }
