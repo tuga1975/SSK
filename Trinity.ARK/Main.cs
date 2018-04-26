@@ -212,7 +212,7 @@ namespace ARK
             else
             {
                 // raise failed event
-                SmartCard_OnSmartCardFailed("Unable to read your smart card");
+                SmartCard_OnSmartCardFailed("Unable to read your smart card.<br/>Please report to the Duty officer.");
             }
         }
 
