@@ -27,13 +27,25 @@ namespace Trinity.DAL
 
         public void Reject(string userId)
         {
-            DAL.DBContext.UpdateProfile_Requests dataReject = _localUnitOfWork.DataContext.UpdateProfile_Requests.FirstOrDefault(d => d.UserId == userId && d.Status == Enum_UpdateProfile.Pending);
-            if (dataReject != null)
+            using (var transaction = _localUnitOfWork.DataContext.Database.BeginTransaction())
             {
-                dataReject.Status = Enum_UpdateProfile.Reject;
-                _localUnitOfWork.GetRepository<DAL.DBContext.UpdateProfile_Requests>().Update(dataReject);
-                _localUnitOfWork.Save();
-                Rollback(userId);
+                try
+                {
+                    DAL.DBContext.UpdateProfile_Requests dataReject = _localUnitOfWork.DataContext.UpdateProfile_Requests.FirstOrDefault(d => d.UserId == userId && d.Status == Enum_UpdateProfile.Pending);
+                    if (dataReject != null)
+                    {
+                        dataReject.Status = Enum_UpdateProfile.Reject;
+                        _localUnitOfWork.GetRepository<DAL.DBContext.UpdateProfile_Requests>().Update(dataReject);
+                        Rollback(userId);
+                    }
+                    _localUnitOfWork.DataContext.SaveChanges();
+                    transaction.Commit();
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    throw ex;
+                }
             }
         }
 
@@ -97,10 +109,6 @@ namespace Trinity.DAL
                         if (isUpdateAlternate_Addresses)
                             _localUnitOfWork.GetRepository<DAL.DBContext.Address>().Update(address);
                     }
-                }
-                if (isUpdateUserProfile || isUpdateAlternate_Addresses)
-                {
-                    _localUnitOfWork.Save();
                 }
             }
         }
