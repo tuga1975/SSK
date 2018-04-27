@@ -315,7 +315,7 @@ namespace ARK
             if (new DAL_UserProfile().ARKUpdateProfile(user.UserId, data, arrayScan, out User_Profiles_New, out Alternate_Addresses_New, out IDDocuemnt))
             {
                 Trinity.BE.User currentUser = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-                new DAL_UpdateProfile_Requests().CreateRequest(
+                new DAL_UpdateProfile().CreateRequest(
                     (Trinity.BE.UserProfile)data_old_update_profile[0],
                     (Trinity.BE.Address)data_old_update_profile[1],
                     User_Profiles_New,

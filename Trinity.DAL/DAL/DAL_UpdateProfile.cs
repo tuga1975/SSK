@@ -9,46 +9,45 @@ using System.Reflection;
 
 namespace Trinity.DAL
 {
-    public class DAL_UpdateProfile_Requests
+    public class DAL_UpdateProfile
     {
         Local_UnitOfWork _localUnitOfWork = new Local_UnitOfWork();
         Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
 
-
-
-        public void Approve(string UserID)
+        public void Approve(string userId)
         {
-            DAL.DBContext.UpdateProfile_Requests dataApprove = _localUnitOfWork.DataContext.UpdateProfile_Requests.FirstOrDefault(d => d.UserId == UserID && d.Status == Enum_UpdateProfile_Requests.Pending);
+            DAL.DBContext.UpdateProfile_Requests dataApprove = _localUnitOfWork.DataContext.UpdateProfile_Requests.FirstOrDefault(d => d.UserId == userId && d.Status == Enum_UpdateProfile.Pending);
             if (dataApprove != null)
             {
-                dataApprove.Status = Enum_UpdateProfile_Requests.Approve;
+                dataApprove.Status = Enum_UpdateProfile.Approve;
                 _localUnitOfWork.GetRepository<DAL.DBContext.UpdateProfile_Requests>().Update(dataApprove);
                 _localUnitOfWork.Save();
             }
         }
-        public void Reject(string UserID)
+
+        public void Reject(string userId)
         {
-            DAL.DBContext.UpdateProfile_Requests dataReject = _localUnitOfWork.DataContext.UpdateProfile_Requests.FirstOrDefault(d => d.UserId == UserID && d.Status == Enum_UpdateProfile_Requests.Pending);
+            DAL.DBContext.UpdateProfile_Requests dataReject = _localUnitOfWork.DataContext.UpdateProfile_Requests.FirstOrDefault(d => d.UserId == userId && d.Status == Enum_UpdateProfile.Pending);
             if (dataReject != null)
             {
-                dataReject.Status = Enum_UpdateProfile_Requests.Reject;
+                dataReject.Status = Enum_UpdateProfile.Reject;
                 _localUnitOfWork.GetRepository<DAL.DBContext.UpdateProfile_Requests>().Update(dataReject);
                 _localUnitOfWork.Save();
-                Rollback(UserID);
+                Rollback(userId);
             }
         }
 
-        public void Rollback(string UserID)
+        public void Rollback(string userId)
         {
-            var dataApprove = _localUnitOfWork.DataContext.UpdateProfile_Requests.Where(d => d.UserId == UserID && d.Status == Enum_UpdateProfile_Requests.Approve).OrderByDescending(d => d.UpdatedTime).FirstOrDefault();
+            var dataApprove = _localUnitOfWork.DataContext.UpdateProfile_Requests.Where(d => d.UserId == userId && d.Status == Enum_UpdateProfile.Approve).OrderByDescending(d => d.UpdatedTime).FirstOrDefault();
             if (dataApprove != null)
             {
                 bool isUpdateUserProfile = false;
-                BE.UpdateProfile_Requests_Model model = JsonConvert.DeserializeObject<BE.UpdateProfile_Requests_Model>(dataApprove.Current_Content_JSON);
+                BE.UpdateProfile_Model model = JsonConvert.DeserializeObject<BE.UpdateProfile_Model>(dataApprove.Current_Content_JSON);
                 if (model.User_Profiles != null)
                 {
                     List<string> ignore = new List<string>() { "LeftThumb_Photo", "RightThumb_Photo", "User_Photo2", "User_Photo1" };
-                    DAL.DBContext.User_Profiles userProfile = _localUnitOfWork.DataContext.User_Profiles.FirstOrDefault(d => d.UserId.Equals(UserID));
+                    DAL.DBContext.User_Profiles userProfile = _localUnitOfWork.DataContext.User_Profiles.FirstOrDefault(d => d.UserId.Equals(userId));
 
                     var sourceProps = model.User_Profiles.GetType().GetProperties().Where(x => x.CanRead && !ignore.Contains(x.Name)).ToList();
                     var destProps = userProfile.GetType().GetProperties()
@@ -115,8 +114,8 @@ namespace Trinity.DAL
                                   bool isDoLogin
                                  )
         {
-            var dataApprove = _localUnitOfWork.DataContext.UpdateProfile_Requests.Where(d => d.UserId == User_Profiles_Old.UserId && d.Status == Enum_UpdateProfile_Requests.Approve).OrderByDescending(d => d.UpdatedTime).FirstOrDefault();
-            var dataPending = _localUnitOfWork.DataContext.UpdateProfile_Requests.FirstOrDefault(d => d.UserId == User_Profiles_Old.UserId && d.Status == Enum_UpdateProfile_Requests.Pending);
+            var dataApprove = _localUnitOfWork.DataContext.UpdateProfile_Requests.Where(d => d.UserId == User_Profiles_Old.UserId && d.Status == Enum_UpdateProfile.Approve).OrderByDescending(d => d.UpdatedTime).FirstOrDefault();
+            var dataPending = _localUnitOfWork.DataContext.UpdateProfile_Requests.FirstOrDefault(d => d.UserId == User_Profiles_Old.UserId && d.Status == Enum_UpdateProfile.Pending);
             if (dataApprove == null)
             {
 
@@ -127,7 +126,7 @@ namespace Trinity.DAL
 
                 dataApprove = new DBContext.UpdateProfile_Requests()
                 {
-                    Status = Enum_UpdateProfile_Requests.Approve,
+                    Status = Enum_UpdateProfile.Approve,
                     UpdatedTime = DateTime.Now,
                     UserId = User_Profiles_Old.UserId,
                     VersionId = Guid.NewGuid().ToString().Trim(),
@@ -147,7 +146,7 @@ namespace Trinity.DAL
 
                 dataPending = new DBContext.UpdateProfile_Requests()
                 {
-                    Status = isDoLogin || !isScanDocument ? Enum_UpdateProfile_Requests.Approve : Enum_UpdateProfile_Requests.Pending,
+                    Status = isDoLogin || !isScanDocument ? Enum_UpdateProfile.Approve : Enum_UpdateProfile.Pending,
                     UpdatedTime = DateTime.Now,
                     UserId = User_Profiles_Old.UserId,
                     VersionId = Guid.NewGuid().ToString().Trim(),
@@ -170,14 +169,11 @@ namespace Trinity.DAL
                 dataPending.Current_Content_JSON = JsonConvert.SerializeObject(dataRequest);
                 dataPending.UpdatedTime = DateTime.Now;
                 if (isDoLogin)
-                    dataPending.Status = Enum_UpdateProfile_Requests.Approve;
+                    dataPending.Status = Enum_UpdateProfile.Approve;
 
                 _localUnitOfWork.GetRepository<DBContext.UpdateProfile_Requests>().Update(dataPending);
             }
-
-
             _localUnitOfWork.Save();
-
         }
     }
 }

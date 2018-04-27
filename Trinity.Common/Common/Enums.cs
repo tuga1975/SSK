@@ -600,7 +600,7 @@ public static class ImageAttr
     
 }
 
-public static class Enum_UpdateProfile_Requests
+public static class Enum_UpdateProfile
 {
     public const string Reject = "Reject";
     public const string Approve = "Approve";
