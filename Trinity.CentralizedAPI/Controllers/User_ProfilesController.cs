@@ -12,6 +12,8 @@ namespace Trinity.BackendAPI.Controllers
     {
         public string UserId { get; set; }
     }
+
+    [Route("api/User_Profiles/{Action}")]
     public class User_ProfilesController : ApiController
     {
         [HttpPost]
