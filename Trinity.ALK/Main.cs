@@ -299,7 +299,8 @@ namespace ALK
         private void NRIC_OnNRICSucceeded()
         {
             // navigate to Supervisee page
-            Trinity.SignalR.Client.Instance.UserLoggedIn(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId);
+
+            Trinity.SignalR.Client.Instance.UserLoggedIn(_jsCallCS.getSuperviseeLogin().UserId);
 
             NavigateTo(NavigatorEnums.Supervisee_NRIC);
         }

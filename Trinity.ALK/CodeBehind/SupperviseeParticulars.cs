@@ -21,18 +21,7 @@ namespace ALK.CodeBehind
 
         public void Start()
         {
-            Session session = Session.Instance;
-            Trinity.BE.User currentUser = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-
-            Trinity.BE.User supervisee = null;
-            if (currentUser.Role == EnumUserRoles.DutyOfficer)
-            {
-                supervisee = (Trinity.BE.User)session[CommonConstants.SUPERVISEE];
-            }
-            else
-            {
-                supervisee = currentUser;
-            }
+            Trinity.BE.User supervisee = _jsCallCS.getSuperviseeLogin();
             // Update Queue ALK Processing
             var dalQueue = new DAL_QueueNumber();
 

@@ -190,6 +190,7 @@
     <Compile Include="Controllers\APSController.cs" />
     <Compile Include="Controllers\SHPController.cs" />
     <Compile Include="Controllers\SSPController.cs" />
+    <Compile Include="Controllers\User_ProfilesController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

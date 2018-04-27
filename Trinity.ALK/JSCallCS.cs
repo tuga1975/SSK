@@ -94,6 +94,22 @@ namespace ALK
         }
         #endregion
 
+        public Trinity.BE.User getSuperviseeLogin()
+        {
+            Session session = Session.Instance;
+            Trinity.BE.User currentUser = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+            Trinity.BE.User supervisee = null;
+            if (currentUser.Role == EnumUserRoles.DutyOfficer)
+            {
+                supervisee = (Trinity.BE.User)session[CommonConstants.SUPERVISEE];
+            }
+            else
+            {
+                supervisee = currentUser;
+            }
+            return supervisee;
+        }
+
         public void SubmitNRIC(string strNRIC)
         {
             NRIC nric = NRIC.GetInstance(_web);
@@ -269,31 +285,17 @@ namespace ALK
         // Delete file image QRCode after print Supervisee particulars to avoid over memory. The image QRCode is auto generate to show on view SuperviseeParticulars
         public void DeleteQRCodeImageFileTemp()
         {
-            Session session = Session.Instance;
-            Trinity.BE.User currentUser = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-            if (currentUser != null)
+            Trinity.BE.User supervisee = getSuperviseeLogin();
+            if (supervisee != null)
             {
-                Trinity.BE.User supervisee = null;
-                if (currentUser.Role == EnumUserRoles.DutyOfficer)
+                try
                 {
-                    supervisee = (Trinity.BE.User)session[CommonConstants.SUPERVISEE];
+                    string fileName = String.Format("{0}/Temp/{1}", CSCallJS.curDir, "QRCode_" + supervisee.NRIC + ".png");
+                    if (System.IO.File.Exists(fileName))
+                        System.IO.File.Delete(fileName);
                 }
-                else
+                catch
                 {
-                    supervisee = currentUser;
-                }
-
-                if (supervisee != null)
-                {
-                    try
-                    {
-                        string fileName = String.Format("{0}/Temp/{1}", CSCallJS.curDir, "QRCode_" + supervisee.NRIC + ".png");
-                        if (System.IO.File.Exists(fileName))
-                            System.IO.File.Delete(fileName);
-                    }
-                    catch
-                    {
-                    }
                 }
             }
         }
@@ -308,8 +310,7 @@ namespace ALK
             if (_PrintMUBSucceed && _PrintTTSucceed)
             {
                 // Update queue status is finished
-                Session session = Session.Instance;
-                Trinity.BE.User currentUser = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+                Trinity.BE.User currentUser = getSuperviseeLogin();
                 if (currentUser == null)
                 {
                     // Check why current user is null
@@ -1219,10 +1220,8 @@ namespace ALK
 
             // Hide all tutorial videos
             HideTutorialVideos();
-
             // Complete test. Remove queue number from Queue Monitor
-            Session session = Session.Instance;
-            Trinity.BE.User currentUser = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+            Trinity.BE.User currentUser = getSuperviseeLogin();
             if (currentUser == null)
             {
                 // Check why current user is null
@@ -1232,15 +1231,8 @@ namespace ALK
                 this._web.RunScript("$('#ttStatus').css('color','#000').text('');");
                 return;
             }
-            Trinity.BE.User supervisee = null;
-            if (currentUser.Role == EnumUserRoles.DutyOfficer)
-            {
-                supervisee = (Trinity.BE.User)session[CommonConstants.SUPERVISEE];
-            }
-            else
-            {
-                supervisee = currentUser;
-            }
+            Trinity.BE.User supervisee = currentUser;
+            
 
             // Remove queue number and inform others
             var dalQueue = new DAL_QueueNumber();
