@@ -15,64 +15,96 @@ namespace Trinity.DAL
         Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
 
 
-        //public void Rollback(string UserID)
-        //{
-        //    var dataApprove = _localUnitOfWork.DataContext.UpdateProfile_Requests.Where(d => d.UserId == UserID && d.Status == Enum_UpdateProfile_Requests.Approve).OrderByDescending(d => d.UpdatedTime).FirstOrDefault();
-        //    if (dataApprove != null)
-        //    {
-        //        bool isUpdateUserProfile = false;
-        //        BE.UpdateProfile_Requests_Model model = JsonConvert.DeserializeObject<BE.UpdateProfile_Requests_Model>(dataApprove.Current_Content_JSON);
-        //        if (model.User_Profiles!=null)
-        //        {
-        //            DAL.DBContext.User_Profiles userProfile = _localUnitOfWork.DataContext.User_Profiles.FirstOrDefault(d => d.UserId.Equals(UserID));
 
-        //            var sourceProps = model.User_Profiles.GetType().GetProperties().Where(x => x.CanRead).ToList();
-        //            var destProps = userProfile.GetType().GetProperties()
-        //                    .Where(x => x.CanWrite)
-        //                    .ToList();
+        public void Approve(string UserID)
+        {
+            DAL.DBContext.UpdateProfile_Requests dataApprove = _localUnitOfWork.DataContext.UpdateProfile_Requests.FirstOrDefault(d => d.UserId == UserID && d.Status == Enum_UpdateProfile_Requests.Pending);
+            if (dataApprove != null)
+            {
+                dataApprove.Status = Enum_UpdateProfile_Requests.Approve;
+                _localUnitOfWork.GetRepository<DAL.DBContext.UpdateProfile_Requests>().Update(dataApprove);
+                _localUnitOfWork.Save();
+            }
+        }
+        public void Reject(string UserID)
+        {
+            DAL.DBContext.UpdateProfile_Requests dataReject = _localUnitOfWork.DataContext.UpdateProfile_Requests.FirstOrDefault(d => d.UserId == UserID && d.Status == Enum_UpdateProfile_Requests.Pending);
+            if (dataReject != null)
+            {
+                dataReject.Status = Enum_UpdateProfile_Requests.Reject;
+                _localUnitOfWork.GetRepository<DAL.DBContext.UpdateProfile_Requests>().Update(dataReject);
+                _localUnitOfWork.Save();
+                Rollback(UserID);
+            }
+        }
 
-        //            foreach (var sourceProp in sourceProps)
-        //            {
-        //                if (destProps.Any(x => x.Name == sourceProp.Name))
-        //                {
-        //                    var _setProps = destProps.First(x => x.Name == sourceProp.Name);
+        public void Rollback(string UserID)
+        {
+            var dataApprove = _localUnitOfWork.DataContext.UpdateProfile_Requests.Where(d => d.UserId == UserID && d.Status == Enum_UpdateProfile_Requests.Approve).OrderByDescending(d => d.UpdatedTime).FirstOrDefault();
+            if (dataApprove != null)
+            {
+                bool isUpdateUserProfile = false;
+                BE.UpdateProfile_Requests_Model model = JsonConvert.DeserializeObject<BE.UpdateProfile_Requests_Model>(dataApprove.Current_Content_JSON);
+                if (model.User_Profiles != null)
+                {
+                    List<string> ignore = new List<string>() { "LeftThumb_Photo", "RightThumb_Photo", "User_Photo2", "User_Photo1" };
+                    DAL.DBContext.User_Profiles userProfile = _localUnitOfWork.DataContext.User_Profiles.FirstOrDefault(d => d.UserId.Equals(UserID));
 
-        //                    object vauleNow = _setProps.GetValue(userProfile);
-        //                    object valueOld = sourceProp.GetValue(model.User_Profiles);
-        //                    if (_setProps.CanWrite)
-        //                    {
-        //                        _setProps.SetValue(userProfile, sourceProp.GetValue(entity, null), null);
-        //                    }
-        //                }
-        //            }
-
-        //            //foreach (var item in model["User_Profiles"])
-        //            //{
-        //            //    PropertyInfo propertyInfo = userProfile.GetType().GetProperty(item.Key);
-        //            //    object vauleNow =  propertyInfo.GetValue(userProfile);
-        //            //    object valueOld = item.Value;
-        //            //    if (vauleNow != valueOld)
-        //            //    {
-        //            //        var underlyingType = Nullable.GetUnderlyingType(propertyInfo.PropertyType);
-        //            //        propertyInfo.SetValue(userProfile, item.Value == null ? null : Convert.ChangeType(item.Value, underlyingType ?? propertyInfo.PropertyType), null);
-        //            //        isUpdateUserProfile = true;
-        //            //    }
-        //            //}
-        //        }
-
-
-        //        if (isUpdateUserProfile)
-        //        {
-
-        //        }
-
-        //        //foreach (var item in model.UploadedDocuments)
-        //        //{
-        //        //    _localUnitOfWork.GetRepository<Trinity.DAL>
-        //        //}
-
-        //    }
-        //}
+                    var sourceProps = model.User_Profiles.GetType().GetProperties().Where(x => x.CanRead && !ignore.Contains(x.Name)).ToList();
+                    var destProps = userProfile.GetType().GetProperties()
+                            .Where(x => x.CanWrite && !ignore.Contains(x.Name))
+                            .ToList();
+                    foreach (var sourceProp in sourceProps)
+                    {
+                        if (destProps.Any(x => x.Name == sourceProp.Name))
+                        {
+                            var _setProps = destProps.First(x => x.Name == sourceProp.Name);
+                            var vauleNow = _setProps.GetValue(userProfile);
+                            var valueOld = sourceProp.GetValue(model.User_Profiles);
+                            if (_setProps.CanWrite && ((vauleNow == null && valueOld != null) || (vauleNow != null && valueOld == null) || (vauleNow != null && valueOld != null && !vauleNow.Equals(valueOld))))
+                            {
+                                _setProps.SetValue(userProfile, valueOld, null);
+                                isUpdateUserProfile = true;
+                            }
+                        }
+                    }
+                    if (isUpdateUserProfile)
+                        _localUnitOfWork.GetRepository<DAL.DBContext.User_Profiles>().Update(userProfile);
+                }
+                bool isUpdateAlternate_Addresses = false;
+                if (model.Alternate_Addresses != null && !string.IsNullOrEmpty(model.Alternate_Addresses.Address_ID))
+                {
+                    DAL.DBContext.Address address = _localUnitOfWork.DataContext.Addresses.FirstOrDefault(d => d.Address_ID == model.Alternate_Addresses.Address_ID);
+                    if (address != null)
+                    {
+                        var sourceProps = model.Alternate_Addresses.GetType().GetProperties().Where(x => x.CanRead).ToList();
+                        var destProps = address.GetType().GetProperties()
+                                .Where(x => x.CanWrite)
+                                .ToList();
+                        foreach (var sourceProp in sourceProps)
+                        {
+                            if (destProps.Any(x => x.Name == sourceProp.Name))
+                            {
+                                var _setProps = destProps.First(x => x.Name == sourceProp.Name);
+                                var vauleNow = _setProps.GetValue(address);
+                                var valueOld = sourceProp.GetValue(model.Alternate_Addresses);
+                                if (_setProps.CanWrite && ((vauleNow == null && valueOld != null) || (vauleNow != null && valueOld == null) || (vauleNow != null && valueOld != null && !vauleNow.Equals(valueOld))))
+                                {
+                                    _setProps.SetValue(address, valueOld, null);
+                                    isUpdateAlternate_Addresses = true;
+                                }
+                            }
+                        }
+                        if (isUpdateAlternate_Addresses)
+                            _localUnitOfWork.GetRepository<DAL.DBContext.Address>().Update(address);
+                    }
+                }
+                if (isUpdateUserProfile || isUpdateAlternate_Addresses)
+                {
+                    _localUnitOfWork.Save();
+                }
+            }
+        }
 
         public void CreateRequest(BE.UserProfile User_Profiles_Old,
                                   BE.Address Alternate_Addresses_Old,
