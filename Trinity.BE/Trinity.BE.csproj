@@ -103,6 +103,7 @@
     <Compile Include="Appointment.cs" />
     <Compile Include="Statistics.cs" />
     <Compile Include="Membership_Users.cs" />
+    <Compile Include="UpdateProfile_Requests_Model.cs" />
     <Compile Include="User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserProfile.cs" />
