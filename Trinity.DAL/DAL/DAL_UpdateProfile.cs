@@ -43,7 +43,7 @@ namespace Trinity.DAL
             if (dataApprove != null)
             {
                 bool isUpdateUserProfile = false;
-                BE.UpdateProfile_Model model = JsonConvert.DeserializeObject<BE.UpdateProfile_Model>(dataApprove.Current_Content_JSON);
+                BE.UpdateProfile_Request_Model model = JsonConvert.DeserializeObject<BE.UpdateProfile_Request_Model>(dataApprove.Current_Content_JSON);
                 if (model.User_Profiles != null)
                 {
                     List<string> ignore = new List<string>() { "LeftThumb_Photo", "RightThumb_Photo", "User_Photo2", "User_Photo1" };
