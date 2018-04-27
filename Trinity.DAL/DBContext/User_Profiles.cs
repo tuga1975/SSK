@@ -63,6 +63,7 @@ namespace Trinity.DAL.DBContext
         public Nullable<System.DateTime> PrbEndingDate { get; set; }
         public Nullable<int> ForgetPass_FailAttempt { get; set; }
         public Nullable<int> DOB_FailAttempt { get; set; }
+        public string Current_Profile_Version { get; set; }
     
         public virtual Address Address { get; set; }
         public virtual Address Address1 { get; set; }

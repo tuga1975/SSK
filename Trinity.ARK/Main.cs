@@ -37,7 +37,6 @@ namespace ARK
         public Main()
         {
             InitializeComponent();
-            //new DAL_UpdateProfile_Requests().Rollback("73506476-DC03-4C0F-8647-F502AC429551");
             APIUtils.Start();
             //Notification
             Trinity.SignalR.Client.Instance.OnQueueCompleted += OnQueueCompleted_Handler;

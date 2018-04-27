@@ -19,6 +19,7 @@ namespace Trinity.DAL.DBContext
         public string PerformedBy { get; set; }
         public Nullable<System.DateTime> PerformedDate { get; set; }
         public string Note { get; set; }
+        public string Station { get; set; }
     
         public virtual Membership_Users Membership_Users { get; set; }
         public virtual Membership_Users Membership_Users1 { get; set; }

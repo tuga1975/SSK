@@ -24,6 +24,7 @@
           <Property Name="PerformedBy" Type="nvarchar" MaxLength="128" />
           <Property Name="PerformedDate" Type="datetime" />
           <Property Name="Note" Type="nvarchar" MaxLength="255" />
+          <Property Name="Station" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="Addresses">
           <Key>
@@ -46,19 +47,6 @@
           <Property Name="DeviceID" Type="int" />
           <Property Name="StatusCode" Type="int" Nullable="false" />
           <Property Name="StatusMessage" Type="nvarchar" MaxLength="100" Nullable="false" />
-        </EntityType>
-        <EntityType Name="AppLogs">
-          <Key>
-            <PropertyRef Name="Log_ID" />
-          </Key>
-          <Property Name="Log_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Date" Type="datetimeoffset" Precision="7" />
-          <Property Name="Source" Type="nvarchar" MaxLength="55" />
-          <Property Name="Location" Type="nvarchar" MaxLength="255" />
-          <Property Name="Logger" Type="nvarchar" MaxLength="255" />
-          <Property Name="Message" Type="nvarchar(max)" />
-          <Property Name="Exception" Type="nvarchar(max)" />
-          <Property Name="RequestBody" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="Appointments">
           <Key>
@@ -527,6 +515,7 @@
           <Property Name="PrbEndingDate" Type="date" />
           <Property Name="ForgetPass_FailAttempt" Type="int" />
           <Property Name="DOB_FailAttempt" Type="int" />
+          <Property Name="Current_Profile_Version" Type="nvarchar" MaxLength="128" />
         </EntityType>
         <Association Name="FK__Restauran__UserI__1CFC3D38">
           <End Role="Membership_Users" Type="Self.Membership_Users" Multiplicity="0..1" />
@@ -951,7 +940,6 @@
           <EntitySet Name="ActionLog" EntityType="Self.ActionLog" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Addresses" EntityType="Self.Addresses" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ApplicationDevice_Status" EntityType="Self.ApplicationDevice_Status" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="AppLogs" EntityType="Self.AppLogs" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Appointments" EntityType="Self.Appointments" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="APS_USER_ACT_LOG" EntityType="Self.APS_USER_ACT_LOG" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Devices" EntityType="Self.Devices" Schema="dbo" store:Type="Tables" />
@@ -1130,7 +1118,6 @@
           <EntitySet Name="ActionLogs" EntityType="SSKModel.ActionLog" />
           <EntitySet Name="Addresses" EntityType="SSKModel.Address" />
           <EntitySet Name="ApplicationDevice_Status" EntityType="SSKModel.ApplicationDevice_Status" />
-          <EntitySet Name="AppLogs" EntityType="SSKModel.AppLog" />
           <EntitySet Name="Appointments" EntityType="SSKModel.Appointment" />
           <EntitySet Name="APS_USER_ACT_LOG" EntityType="SSKModel.APS_USER_ACT_LOG" />
           <EntitySet Name="Devices" EntityType="SSKModel.Device" />
@@ -1321,6 +1308,7 @@
           <Property Name="PerformedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="PerformedDate" Type="DateTime" Precision="3" />
           <Property Name="Note" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Station" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Membership_Users" Relationship="SSKModel.FK_ActionLog_Membership_Users" FromRole="ActionLog" ToRole="Membership_Users" />
           <NavigationProperty Name="Membership_Users1" Relationship="SSKModel.FK_ActionLog_Membership_Users1" FromRole="ActionLog" ToRole="Membership_Users" />
         </EntityType>
@@ -1348,19 +1336,6 @@
           <Property Name="StatusCode" Type="Int32" Nullable="false" />
           <Property Name="StatusMessage" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Device" Relationship="SSKModel.FK_ApplicationDevice_Status_Devices" FromRole="ApplicationDevice_Status" ToRole="Device" />
-        </EntityType>
-        <EntityType Name="AppLog">
-          <Key>
-            <PropertyRef Name="Log_ID" />
-          </Key>
-          <Property Name="Log_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Date" Type="DateTimeOffset" Precision="7" />
-          <Property Name="Source" Type="String" MaxLength="55" FixedLength="false" Unicode="true" />
-          <Property Name="Location" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Logger" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Message" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Exception" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="RequestBody" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Appointment">
           <Key>
@@ -1885,6 +1860,7 @@
           <Property Name="PrbEndingDate" Type="DateTime" Precision="0" />
           <Property Name="ForgetPass_FailAttempt" Type="Int32" />
           <Property Name="DOB_FailAttempt" Type="Int32" />
+          <Property Name="Current_Profile_Version" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Address" Relationship="SSKModel.FK_User_Profiles_Addresses2" FromRole="User_Profiles" ToRole="Address" />
           <NavigationProperty Name="Address1" Relationship="SSKModel.FK_User_Profiles_Addresses3" FromRole="User_Profiles" ToRole="Address" />
           <NavigationProperty Name="APS_USER_ACT_LOG" Relationship="SSKModel.FK_APS_USER_ACT_LOG_User_Profiles" FromRole="User_Profiles" ToRole="APS_USER_ACT_LOG" />
@@ -2329,6 +2305,7 @@
           <EntitySetMapping Name="ActionLogs">
             <EntityTypeMapping TypeName="SSKModel.ActionLog">
               <MappingFragment StoreEntitySet="ActionLog">
+                <ScalarProperty Name="Station" ColumnName="Station" />
                 <ScalarProperty Name="Note" ColumnName="Note" />
                 <ScalarProperty Name="PerformedDate" ColumnName="PerformedDate" />
                 <ScalarProperty Name="PerformedBy" ColumnName="PerformedBy" />
@@ -2358,20 +2335,6 @@
                 <ScalarProperty Name="DeviceID" ColumnName="DeviceID" />
                 <ScalarProperty Name="Station" ColumnName="Station" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="AppLogs">
-            <EntityTypeMapping TypeName="SSKModel.AppLog">
-              <MappingFragment StoreEntitySet="AppLogs">
-                <ScalarProperty Name="RequestBody" ColumnName="RequestBody" />
-                <ScalarProperty Name="Exception" ColumnName="Exception" />
-                <ScalarProperty Name="Message" ColumnName="Message" />
-                <ScalarProperty Name="Logger" ColumnName="Logger" />
-                <ScalarProperty Name="Location" ColumnName="Location" />
-                <ScalarProperty Name="Source" ColumnName="Source" />
-                <ScalarProperty Name="Date" ColumnName="Date" />
-                <ScalarProperty Name="Log_ID" ColumnName="Log_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -2823,6 +2786,7 @@
           <EntitySetMapping Name="User_Profiles">
             <EntityTypeMapping TypeName="SSKModel.User_Profiles">
               <MappingFragment StoreEntitySet="User_Profiles">
+                <ScalarProperty Name="Current_Profile_Version" ColumnName="Current_Profile_Version" />
                 <ScalarProperty Name="DOB_FailAttempt" ColumnName="DOB_FailAttempt" />
                 <ScalarProperty Name="ForgetPass_FailAttempt" ColumnName="ForgetPass_FailAttempt" />
                 <ScalarProperty Name="PrbEndingDate" ColumnName="PrbEndingDate" />

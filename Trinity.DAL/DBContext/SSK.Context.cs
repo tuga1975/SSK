@@ -29,7 +29,6 @@ namespace Trinity.DAL.DBContext
         public virtual DbSet<ActionLog> ActionLogs { get; set; }
         public virtual DbSet<Address> Addresses { get; set; }
         public virtual DbSet<ApplicationDevice_Status> ApplicationDevice_Status { get; set; }
-        public virtual DbSet<AppLog> AppLogs { get; set; }
         public virtual DbSet<Appointment> Appointments { get; set; }
         public virtual DbSet<APS_USER_ACT_LOG> APS_USER_ACT_LOG { get; set; }
         public virtual DbSet<Device> Devices { get; set; }

@@ -210,7 +210,7 @@ namespace ARK
             }
             catch (Exception ex)
             {
-                CSCallJS.ShowMessage(wbQueueNumber, "RefreshQueueNumbers", ex.Message);
+                Trinity.Common.Utils.LogManager.Error("RefreshQueueNumbers: " + ex.ToString());
             }
         }
 
