@@ -1,6 +1,6 @@
 ﻿var api = new Api();
 function Api() {
-    this.Soure = null;
+    this.Soure = '';
     this.countNoti = 0;
     this.model = null;
     this.server = {};
@@ -273,6 +273,9 @@ function getTimeActionApp() {
     return time_action_app;
 }
 
+function getSoure() {
+    return api.Soure;
+}
 window.onerror = function (msg, url, line, col, error) {
     // Note that col & error are new to the HTML 5 spec and may not be 
     // supported in every browser.  It worked for me in Chrome.

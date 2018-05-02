@@ -179,16 +179,18 @@ namespace ARK
                     }
                     if (user.Role == EnumUserRoles.Supervisee)
                     {
-                        var smartCard =  new DAL_IssueCard().GetIssueCardBySmartCardId(cardUID);
+                        var smartCard = new DAL_IssueCard().GetIssueCardBySmartCardId(cardUID);
                         if (smartCard == null)
                         {
                             SmartCard_OnSmartCardFailed("Your smart card does not exist");
                             return;
-                        }else if (smartCard.Status== EnumIssuedCards.Inactive)
+                        }
+                        else if (smartCard.Status == EnumIssuedCards.Inactive)
                         {
                             SmartCard_OnSmartCardFailed("Your smart card does not work");
                             return;
-                        }else if (smartCard.Status == EnumIssuedCards.Active && smartCard.Expired_Date<DateTime.Today)
+                        }
+                        else if (smartCard.Status == EnumIssuedCards.Active && smartCard.Expired_Date < DateTime.Today)
                         {
                             SmartCard_OnSmartCardFailed("Your smart card has expired");
                             return;
@@ -289,7 +291,7 @@ namespace ARK
 
                 this._timerCheckLogout = new System.Timers.Timer();
                 this._timerCheckLogout.AutoReset = true;
-                this._timerCheckLogout.Interval = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["seconds_check_logout"])*1000;
+                this._timerCheckLogout.Interval = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["seconds_check_logout"]) * 1000;
                 this._timerCheckLogout.Elapsed += TimeCheckLogout_EventHandler; ;
                 this._timerCheckLogout.Start();
 
@@ -303,7 +305,8 @@ namespace ARK
         private void TimeCheckLogout_EventHandler(object sender, System.Timers.ElapsedEventArgs e)
         {
             long time = long.Parse(LayerWeb.InvokeScript("getTimeActionApp").ToString());
-            if (_timeActionApp.HasValue && time - _timeActionApp.Value==0 && (Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]!=null)
+            string soure = LayerWeb.InvokeScript("getSoure").ToString();
+            if (_timeActionApp.HasValue && time - _timeActionApp.Value == 0 && (Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN] != null && soure != "Profile.html")
             {
                 _jsCallCS.LogOut();
             }
