@@ -611,6 +611,7 @@ public static class Enum_AppStatusChanged
 {
     public const string OK = "OK";
     public const string Error = "Error";
+    public const string Caution = "Caution";
 }
 
 public static class ActionName

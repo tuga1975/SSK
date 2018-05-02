@@ -24,7 +24,7 @@ namespace Trinity.DAL
             {
                 ID = Guid.NewGuid(),
                 Station = station,
-                StatusCode = (int)(status == Enum_AppStatusChanged.OK ? EnumDeviceStatus.Connected : EnumDeviceStatus.Disconnected),
+                StatusCode = (int)(status == Enum_AppStatusChanged.OK ? EnumDeviceStatus.Connected : status == Enum_AppStatusChanged.Error?EnumDeviceStatus.Disconnected:EnumDeviceStatus.Busy),
             };
             if (!string.IsNullOrEmpty(errorMesssage))
                 dataInsert.StatusMessage = errorMesssage;
