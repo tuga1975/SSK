@@ -13,8 +13,8 @@ namespace Trinity.BackendAPI.Controllers
         public string UserId { get; set; }
     }
 
-    [Route("api/User_Profiles/{Action}")]
-    public class User_ProfilesController : ApiController
+    [Route("api/UserProfiles/{Action}")]
+    public class UserProfilesController : ApiController
     {
         [HttpPost]
         [ResponseType(typeof(bool))]
