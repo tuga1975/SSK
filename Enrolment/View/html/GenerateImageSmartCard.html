@@ -1,0 +1,111 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <style type="text/css">
+        body {
+            width: 3496px;
+            width: 5000px;
+            margin: 0px;
+            padding: 0px;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            background-color: #FFF;
+        }
+    </style>
+    <script type="text/javascript" src="../scripts/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="../html2canvas/html2canvas.js"></script>
+    <script type="text/javascript" src="../html2canvas/jquery.plugin.html2canvas.js"></script>
+    <script type="text/javascript" src="../scripts/JsBarcode.all.min.js"></script>
+    <script type="text/javascript">
+        window.addEventListener('message', function (event) {
+            if (event.data.indexOf('GenerateImageSmartCard;') > -1) {
+                var dataJson = JSON.parse(event.data.split('GenerateImageSmartCard;')[1]);
+                GetFrontSmartCard(dataJson);
+            }
+        });
+        function GetFrontSmartCard(dataJson) {
+            $('[name="issueDate"]').text(dataJson.Date_Of_Issue_Txt);
+            $('[name="verifyCardNumber"]').text(dataJson.CardNumberFull);
+            $('[name="verifyCompanyName"]').text(dataJson.CompanyName);
+            $('[name="verifyVenueName"]').text(dataJson.VenueName);
+            $('[name="verifyAddress"]').text(dataJson.Address);
+            $('[name="verifyContactNumber"]').text(dataJson.ContactNumber);
+            $('[name="card-avarta"]').attr('src', 'data:image/png;base64,' + dataJson.User_Photo1_Base64);
+            $('[name="verifyName"]').text(dataJson.Name);
+            $('[name="verifyNRIC"]').text(dataJson.NRIC);
+            JsBarcode('[name="verifyBarcode"]', dataJson.NRIC, { background: "transparent", displayValue: false, height: 290.1632970451011, fontSize: 27.3094867807154, width: 17.06842923794713, margin: 0, font: "Arial" });
+            setTimeout(function () {
+                html2canvas($('#frontCard'), {
+                    onrendered: function (froncanvas) {
+                        html2canvas($('#backCard'), {
+                            onrendered: function (backcanvas) {
+                                var dataImg = {
+                                    Front: froncanvas.toDataURL("image/png"),
+                                    Back: backcanvas.toDataURL("image/png"),
+                                    Soure: dataJson.Soure
+                                };
+                                window.parent.postMessage('ReturnSmartCard;' + JSON.stringify(dataImg), "*");
+                            }
+                        });
+                    }
+                });
+            }, 500);
+
+
+        }
+    </script>
+</head>
+
+<body>
+    <div>
+        <div style="width:3496px;height:2195px;position:relative;background-color:#FFF;" id="frontCard">
+            <img src="../images/front-smartcard.png" style="position:absolute;z-index:0;left:0px;top:0px;height:100%;width:100%;" />
+            <div style="z-index:1;">
+                <div style="position:absolute;left:0px;top:0px;height:100%;width:100%;">
+                    <div style="position:absolute;width: 1080px;height: 1080px;top: 410px;left: 495px;z-index:0;overflow:hidden;background-color: red;">
+                        <img src="../images/hinh-avatar-dep-1.jpg" name="card-avarta" style="position:absolute;top: calc(50% - (1388.571428571429px / 2));height: 1388.571428571429px;left:0px;width: 1080px;" />
+                    </div>
+                    <img src="../images/front-avarta.png" style="position:absolute;z-index:1;left:0px;top:0px;width:100%;height:auto;" />
+                </div>
+                <div style="position:absolute;font-size: 120px;font-weight: 700;top: 102.4105754276827px;left: 477.96875px;color:#000;z-index:1;text-transform:uppercase;">
+                    Supervision Card
+                </div>
+                <div style="position:absolute;top: calc(120px * 3.413685847589425);left: calc(540px * 3.4140625);width: calc(100% - 1950px);height: calc(100% - 1200px);z-index:1;">
+                    <div style="font-size: 95.59375px;color:#5c5c5c;margin-bottom: 10px;font-weight: bold;">Name</div>
+                    <div style="font-size: 109.25px;color:#2a2a2a;text-transform:uppercase;margin-bottom: 20px;line-height: 136.5625px;letter-spacing: 0px;font-weight: bolder;min-height:80px;" name="verifyName">
+                        MAXIMILIAN MARK CHEONG SENG LOONG
+                    </div>
+                    <div style="font-size: 95.59375px;color:#5c5c5c;margin-bottom: 10px;font-weight: bold;margin-top: 119.4921875px;">NRIC No.</div>
+                    <div style="font-size: 109.25px;color:#2a2a2a;text-transform:uppercase;margin-bottom: 0px;line-height: 136.5625px;letter-spacing: 0px;font-weight: bolder;" name="verifyNRIC">
+                        23423
+                    </div>
+                </div>
+                <div style="position:absolute;left:324.3359375px;bottom:153.6158631415241px;height: 290.1953125px;width: 2048.4375px;z-index:1;">
+                    <img name="verifyBarcode" />
+                </div>
+                <div style="position:absolute;right: 136.5625px;bottom: 102.421875px;text-align:right;font-size: 109.25px;font-weight:bold;color:#2a2a2a;z-index:1;" name="verifyCardNumber">
+                    2018/00001
+                </div>
+            </div>
+        </div>
+        <div style="clear:both;"></div>
+        <div style="width:3496px;height:2195px;position:relative;background-color:#FFF;" id="backCard">
+            <img src="../images/front-smartcard.png" style="position:absolute;z-index:0;left:0px;top:0px;height:100%;width:100%;" />
+            <div style="bottom:133.1337480559876px;left:187.7734375px;position:absolute;z-index:1;">
+                <div style="font-size: 109.25px;font-weight: bold;margin-bottom: 51.2109375px;">
+                    <div>Date of Issue: <span name="issueDate">4357348578347583479</span></div>
+                </div>
+                <div style="font-size:95.59375px;">
+                    If this card is found, please return to any Police Station or to:<br />
+                    <span name="verifyCompanyName" style="font-weight:bold;font-size:92.1796875px;">34534534</span><br />
+                    <span name="verifyVenueName" style="font-weight:bold;font-size:92.1796875px;">34534534</span><br />
+                    <span name="verifyAddress" style="font-weight:bold;font-size:92.1796875px;">54654</span>
+                    <span style="display:none;"><br /><b style="font-size:47.796875px;">Contact Number: </b><span name="verifyContactNumber" style="font-weight:bold;font-size:14px;">54654654654</span></span>
+                </div>
+            </div>
+            <img src="../images/backend-logo.png" style="position:absolute;z-index:1;right:187.7734375px;bottom:153.6158631415241px;" />
+        </div>
+    </div>
+</body>
+</html>

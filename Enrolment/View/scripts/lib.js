@@ -62,3 +62,16 @@ function getSoure() {
         printsuccsess: typeof printSuccsess == 'undefined' ? false : printSuccsess,
     });
 }
+
+window.addEventListener('message', function (event) {
+    if (event.data.indexOf('ReturnSmartCard;') > -1) {
+        var dataReturn = JSON.parse(event.data.split('ReturnSmartCard;')[1]);
+        if (dataReturn.Soure == 'ReprintSmartCard') {
+            GenerateImageSmartCardSuccess(dataReturn.Front, dataReturn.Back);
+        } else if (dataReturn.Soure == 'UpdateSuperviseeBiodata') {
+            GenerateImageSmartCardSuccess(dataReturn.Front, dataReturn.Back);
+        } else if (dataReturn.Soure == 'UpdateSuperviseeBiodata_Reprint'){
+            GenerateImageSmartCardReprintSuccess(dataReturn.Front, dataReturn.Back);
+        }
+    }
+}); 
