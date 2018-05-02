@@ -22,6 +22,5 @@ namespace Trinity.DAL.DBContext
         public string Station { get; set; }
     
         public virtual Membership_Users Membership_Users { get; set; }
-        public virtual Membership_Users Membership_Users1 { get; set; }
     }
 }

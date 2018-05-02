@@ -6,6 +6,8 @@ using Trinity.DAL.DBContext;
 using Trinity.DAL.Repository;
 using Trinity.Identity;
 using Trinity.Common;
+using System.Data.Entity;
+
 namespace Trinity.DAL
 {
     public class DAL_User
@@ -27,7 +29,7 @@ namespace Trinity.DAL
         public List<Trinity.DAL.DBContext.Membership_Users> GetSuperviseeBlockedAppointmentsAvailable(DateTime DateAppointment,Nullable<int> take = null)
         {
             DateAppointment = DateAppointment.Date;
-            var query = _localUnitOfWork.DataContext.Appointments.Where(d => d.Date == DateAppointment && string.IsNullOrEmpty(d.Timeslot_ID) && d.Membership_Users.Status == EnumUserStatuses.Blocked).Select(d => d.Membership_Users);
+            var query = _localUnitOfWork.DataContext.ActionLogs.Where(d => d.Station == EnumStation.ARK && DbFunctions.TruncateTime(d.PerformedDate) == DateAppointment && d.Membership_Users.Status == EnumUserStatuses.Blocked).Select(d=>d.Membership_Users).ToList();
             if (take.HasValue)
             {
                 return query.Take(take.Value).ToList();
@@ -295,10 +297,10 @@ namespace Trinity.DAL
             if (EnumAppConfig.IsLocal)
             {
                 ApplicationUser user = user = ApplicationIdentityManager.GetUserManager().Find(username, password);
-                if (user == null)
-                {
-                    user = CallCentralized.Get<ApplicationUser>("User", "Login", "username=" + username, "password=" + password);
-                }
+                //if (user == null)
+                //{
+                //    user = CallCentralized.Get<ApplicationUser>("User", "Login", "username=" + username, "password=" + password);
+                //}
                 return user;
             }
             else
@@ -356,10 +358,10 @@ namespace Trinity.DAL
             if (EnumAppConfig.IsLocal)
             {
                 bool? status = status = ApplicationIdentityManager.GetUserManager().IsInRole(Id, Role);
-                if (status == null)
-                {
-                    status = CallCentralized.Get<bool>("User", "IsInRole", "Id=" + Id, "Role=" + Role);
-                }
+                //if (status == null)
+                //{
+                //    status = CallCentralized.Get<bool>("User", "IsInRole", "Id=" + Id, "Role=" + Role);
+                //}
                 return status.Value;
             }
             else
@@ -373,10 +375,10 @@ namespace Trinity.DAL
             if (EnumAppConfig.IsLocal)
             {
                 ApplicationUser user = ApplicationIdentityManager.GetUserManager().FindByName(username);
-                if (user == null)
-                {
-                    user = CallCentralized.Get<ApplicationUser>("User", "FindByName", "username=" + username);
-                }
+                //if (user == null)
+                //{
+                //    user = CallCentralized.Get<ApplicationUser>("User", "FindByName", "username=" + username);
+                //}
                 return user;
             }
             else

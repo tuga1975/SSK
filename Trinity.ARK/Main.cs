@@ -204,6 +204,10 @@ namespace ARK
                     SmartCardReaderUtil sCardMonitor = SmartCardReaderUtil.Instance;
                     sCardMonitor.StopSmartCardMonitor();
                     // raise succeeded event
+
+                    new DAL_ActionLog().Insert(ActionName.TabSmartCard, user.UserId,string.Empty,EnumStation.ARK);
+
+
                     SmartCard_OnSmartCardSucceeded();
                 }
                 else

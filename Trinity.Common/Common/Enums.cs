@@ -612,3 +612,8 @@ public static class Enum_AppStatusChanged
     public const string OK = "OK";
     public const string Error = "Error";
 }
+
+public static class ActionName
+{
+    public const string TabSmartCard = "TabSmartCard";
+}

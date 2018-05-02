@@ -110,7 +110,7 @@ namespace ALK.CodeBehind.Authentication
 
             if (supervisee == null)
             {
-                CSCallJS.ShowMessage(_web, "NRIC '" + nric + "' not found. Please check NRIC again.");
+                CSCallJS.ShowMessage(_web, "NRIC " + nric + " is not registered");
                 System.Threading.Tasks.Task.Factory.StartNew(() => BarcodeScannerUtil.Instance.StartScanning(BarcodeScannerCallback));
                 return;
             }

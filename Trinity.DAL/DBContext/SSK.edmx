@@ -553,18 +553,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_ActionLog_Membership_Users1">
-          <End Role="Membership_Users" Type="Self.Membership_Users" Multiplicity="0..1" />
-          <End Role="ActionLog" Type="Self.ActionLog" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Membership_Users">
-              <PropertyRef Name="UserId" />
-            </Principal>
-            <Dependent Role="ActionLog">
-              <PropertyRef Name="PerformedBy" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_ApplicationDevice_Status_Devices">
           <End Role="Devices" Type="Self.Devices" Multiplicity="0..1" />
           <End Role="ApplicationDevice_Status" Type="Self.ApplicationDevice_Status" Multiplicity="*" />
@@ -984,10 +972,6 @@
             <End Role="Membership_Users" EntitySet="Membership_Users" />
             <End Role="ActionLog" EntitySet="ActionLog" />
           </AssociationSet>
-          <AssociationSet Name="FK_ActionLog_Membership_Users1" Association="Self.FK_ActionLog_Membership_Users1">
-            <End Role="Membership_Users" EntitySet="Membership_Users" />
-            <End Role="ActionLog" EntitySet="ActionLog" />
-          </AssociationSet>
           <AssociationSet Name="FK_ApplicationDevice_Status_Devices" Association="Self.FK_ApplicationDevice_Status_Devices">
             <End Role="Devices" EntitySet="Devices" />
             <End Role="ApplicationDevice_Status" EntitySet="ApplicationDevice_Status" />
@@ -1162,10 +1146,6 @@
             <End Role="Membership_Users" EntitySet="Membership_Users" />
             <End Role="ActionLog" EntitySet="ActionLogs" />
           </AssociationSet>
-          <AssociationSet Name="FK_ActionLog_Membership_Users1" Association="SSKModel.FK_ActionLog_Membership_Users1">
-            <End Role="Membership_Users" EntitySet="Membership_Users" />
-            <End Role="ActionLog" EntitySet="ActionLogs" />
-          </AssociationSet>
           <AssociationSet Name="FK_User_Profiles_Addresses2" Association="SSKModel.FK_User_Profiles_Addresses2">
             <End Role="Address" EntitySet="Addresses" />
             <End Role="User_Profiles" EntitySet="User_Profiles" />
@@ -1310,7 +1290,6 @@
           <Property Name="Note" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Station" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Membership_Users" Relationship="SSKModel.FK_ActionLog_Membership_Users" FromRole="ActionLog" ToRole="Membership_Users" />
-          <NavigationProperty Name="Membership_Users1" Relationship="SSKModel.FK_ActionLog_Membership_Users1" FromRole="ActionLog" ToRole="Membership_Users" />
         </EntityType>
         <EntityType Name="Address">
           <Key>
@@ -1557,7 +1536,6 @@
           <Property Name="IsFirstAttempt" Type="Boolean" />
           <Property Name="Note" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="ActionLogs" Relationship="SSKModel.FK_ActionLog_Membership_Users" FromRole="Membership_Users" ToRole="ActionLog" />
-          <NavigationProperty Name="ActionLogs1" Relationship="SSKModel.FK_ActionLog_Membership_Users1" FromRole="Membership_Users" ToRole="ActionLog" />
           <NavigationProperty Name="Appointments" Relationship="SSKModel.FK_Appointments_Membership_Users" FromRole="Membership_Users" ToRole="Appointment" />
           <NavigationProperty Name="IssuedCards" Relationship="SSKModel.FK_IssuedCards_Membership_Users" FromRole="Membership_Users" ToRole="IssuedCard" />
           <NavigationProperty Name="Labels" Relationship="SSKModel.FK_Labels_Membership_Users" FromRole="Membership_Users" ToRole="Label" />
@@ -1892,18 +1870,6 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ActionLog_Membership_Users">
-          <End Type="SSKModel.Membership_Users" Role="Membership_Users" Multiplicity="0..1" />
-          <End Type="SSKModel.ActionLog" Role="ActionLog" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Membership_Users">
-              <PropertyRef Name="UserId" />
-            </Principal>
-            <Dependent Role="ActionLog">
-              <PropertyRef Name="PerformedBy" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_ActionLog_Membership_Users1">
           <End Type="SSKModel.Membership_Users" Role="Membership_Users" Multiplicity="0..1" />
           <End Type="SSKModel.ActionLog" Role="ActionLog" Multiplicity="*" />
           <ReferentialConstraint>

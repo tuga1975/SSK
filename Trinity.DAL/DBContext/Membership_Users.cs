@@ -18,7 +18,6 @@ namespace Trinity.DAL.DBContext
         public Membership_Users()
         {
             this.ActionLogs = new HashSet<ActionLog>();
-            this.ActionLogs1 = new HashSet<ActionLog>();
             this.Appointments = new HashSet<Appointment>();
             this.IssuedCards = new HashSet<IssuedCard>();
             this.Labels = new HashSet<Label>();
@@ -60,8 +59,6 @@ namespace Trinity.DAL.DBContext
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ActionLog> ActionLogs { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ActionLog> ActionLogs1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Appointment> Appointments { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
