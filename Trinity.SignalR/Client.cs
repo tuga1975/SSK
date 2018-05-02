@@ -286,7 +286,7 @@ namespace Trinity.SignalR
         /// An application inform Notification Server its status
         /// </summary>
         /// <param name="appName">SHP or SSP</param>
-        /// <param name="appStatus">OK or Error</param>
+        /// <param name="appStatus">OK or Error or Caution</param>
         /// <param name="message">error message</param>
         public void AppStatusChanged(string appName, string appStatus, string message)
         {
