@@ -230,16 +230,14 @@ namespace Trinity.BackendAPI.Controllers
         [ResponseType(typeof(SSPCaseOfficerModel))]
         public IHttpActionResult SSPGetCaseOfficer(string NRIC)
         {
-            var dalUser = new DAL.DAL_User();
-            Trinity.DAL.DBContext.Membership_Users user = dalUser.GetByNRIC(NRIC);
-            if (!string.IsNullOrEmpty(user.OfficerId))
+            Trinity.DAL.DBContext.Membership_Users user = new DAL.DAL_User().GetByNRIC(NRIC);
+            if (user != null && user.Membership_UserRoles != null && user.Membership_UserRoles.Any(d => d.Membership_Roles != null && d.Membership_Roles.Name == EnumUserRoles.CaseOfficer))
             {
-                var caseOfficer = dalUser.GetUserById(user.OfficerId);
-                if (caseOfficer != null)
-                {
-                    return Ok(new SSPCaseOfficerModel() { Name = caseOfficer.Name });
-                }
-                    
+                return Ok(new SSPCaseOfficerModel() { Name = user.Name });
+            }
+            else
+            {
+                return Ok(new SSPCaseOfficerModel() { Name = string.Empty });
             }
             return Ok(new SSPCaseOfficerModel() { Name = null });
         }
