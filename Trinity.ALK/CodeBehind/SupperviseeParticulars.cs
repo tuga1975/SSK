@@ -24,6 +24,10 @@ namespace ALK.CodeBehind
         public void Start()
         {
             Trinity.BE.User supervisee = _jsCallCS.getSuperviseeLogin();
+            if (supervisee == null)
+            {
+                return;
+            }
             // Update Queue ALK Processing
             var dalQueue = new DAL_QueueNumber();
 

@@ -100,6 +100,10 @@ namespace ALK
         {
             Session session = Session.Instance;
             Trinity.BE.User currentUser = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+            if (currentUser == null)
+            {
+                return null;
+            }
             Trinity.BE.User supervisee = null;
             if (currentUser.Role == EnumUserRoles.DutyOfficer)
             {
@@ -1236,7 +1240,7 @@ namespace ALK
                 return;
             }
             Trinity.BE.User supervisee = currentUser;
-            
+
 
             // Remove queue number and inform others
             var dalQueue = new DAL_QueueNumber();
