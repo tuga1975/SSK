@@ -69,11 +69,41 @@ namespace Trinity.BackendAPI.Controllers
         public bool Found { get; set; }
         public byte[] Right { get; set; }
         public byte[] Left { get; set; }
+        public string Message { get; set; }
+    }
+    public class SSPVerifyDutyOfficerModel
+    {
+        public string ID { get; set; }
+        public string Password { get; set; }
     }
 
     [Route("api/SSP/{Action}")]
     public class SSPController : ApiController
     {
+
+        [HttpPost]
+        [ResponseType(typeof(bool))]
+        public IHttpActionResult SSPVerifyDutyOfficer([FromBody]SSPVerifyDutyOfficerModel data)
+        {
+            try
+            {
+                var dalUser = new DAL.DAL_User();
+                ApplicationUser appUser = dalUser.Login(data.ID, data.Password);
+                if (appUser != null)
+                {
+                    if (dalUser.IsInRole(appUser.Id, EnumUserRoles.DutyOfficer))
+                    {
+                        return Ok(true);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+            return Ok(false);
+        }
+
         [HttpPost]
         [ResponseType(typeof(bool))]
         public async System.Threading.Tasks.Task<IHttpActionResult> SSPPostNotification([FromBody]SSPNotificationModel data)
@@ -99,7 +129,7 @@ namespace Trinity.BackendAPI.Controllers
 
                         await System.Threading.Tasks.Task.Run(() => Trinity.SignalR.Client.Instance.BackendAPISend(NotificationNames.SSP_ERROR, data.NRIC));
                     }
-                    await System.Threading.Tasks.Task.Run(() => Trinity.SignalR.Client.Instance.SendToAppDutyOfficers((user != null ? user.UserId : null),Subject, data.Content, data.Type, EnumStation.SSP, false, IDNoti));
+                    await System.Threading.Tasks.Task.Run(() => Trinity.SignalR.Client.Instance.SendToAppDutyOfficers((user != null ? user.UserId : null), Subject, data.Content, data.Type, EnumStation.SSP, false, IDNoti));
                     //return Ok(IDNoti);
                     return Ok(true);
                 }
@@ -138,14 +168,49 @@ namespace Trinity.BackendAPI.Controllers
 
         [HttpGet]
         [ResponseType(typeof(SSPAuthenticateModel))]
-        public IHttpActionResult SSPAuthenticate(string NRIC)
+        public IHttpActionResult SSPAuthenticate(string NRIC, string SmartCardUID)
         {
             Trinity.DAL.DBContext.Membership_Users user = new DAL.DAL_User().GetByNRIC(NRIC);
             if (user == null)
             {
                 return Ok(new SSPAuthenticateModel()
                 {
-                    Found = false
+                    Found = false,
+                    Message = "NRIC " + NRIC + " is not registered"
+                });
+            }
+            var smartCard = new DAL.DAL_IssueCard().GetIssueCardBySmartCardId(SmartCardUID);
+            if (smartCard == null)
+            {
+                return Ok(new SSPAuthenticateModel()
+                {
+                    Found = false,
+                    Message = "Your smart card does not exist"
+                });
+            }
+            else if (smartCard.Status == EnumIssuedCards.Inactive)
+            {
+                return Ok(new SSPAuthenticateModel()
+                {
+                    Found = false,
+                    Message = "Your smart card does not work"
+                });
+            }
+            else if (smartCard.Status == EnumIssuedCards.Active && smartCard.Expired_Date < DateTime.Today)
+            {
+                return Ok(new SSPAuthenticateModel()
+                {
+                    Found = false,
+                    Message = "Your smart card has expired"
+                });
+            }
+
+            if (user.UserId != smartCard.UserId)
+            {
+                return Ok(new SSPAuthenticateModel()
+                {
+                    Found = false,
+                    Message = "Smart cards are not yours"
                 });
             }
             else
@@ -155,7 +220,8 @@ namespace Trinity.BackendAPI.Controllers
                     Name = user.Name,
                     Found = true,
                     Right = user.RightThumbFingerprint,
-                    Left = user.LeftThumbFingerprint
+                    Left = user.LeftThumbFingerprint,
+                    Message = "Success"
                 });
             }
         }
@@ -255,7 +321,7 @@ namespace Trinity.BackendAPI.Controllers
             {
                 var user = new DAL.DAL_User().GetByNRIC(model.NRIC);
                 new DAL.DAL_QueueNumber().UpdateQueueStatusByUserId(user.UserId, EnumStation.SSP, EnumQueueStatuses.Finished, EnumStation.DUTYOFFICER, EnumQueueStatuses.TabSmartCard, EnumMessage.SelectOutCome, EnumQueueOutcomeText.TapSmartCardToContinue);
-                new DAL.DAL_Labels().DeleteLabel(user.UserId,DateTime.Today,EnumLabelType.UB);
+                new DAL.DAL_Labels().DeleteLabel(user.UserId, DateTime.Today, EnumLabelType.UB);
                 await System.Threading.Tasks.Task.Run(() => Trinity.SignalR.Client.Instance.BackendAPISend(NotificationNames.SSP_COMPLETED, model.NRIC));
                 return Ok(true);
             }
