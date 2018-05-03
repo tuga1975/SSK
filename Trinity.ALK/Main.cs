@@ -280,7 +280,7 @@ namespace ALK
         {
             long time = long.Parse(LayerWeb.InvokeScript("getTimeActionApp").ToString());
             string soure = LayerWeb.InvokeScript("getSoure").ToString();
-            if (_timeActionApp.HasValue && time - _timeActionApp.Value == 0 && (Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN] != null && soure== "SuperviseeParticulars.html" && )
+            if (_timeActionApp.HasValue && time - _timeActionApp.Value == 0 && (Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN] != null && soure== "SuperviseeParticulars.html" && !_isPrintingMUBTT)
             {
                 _jsCallCS.LogOut();
             }
