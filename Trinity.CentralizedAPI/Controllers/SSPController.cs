@@ -256,7 +256,6 @@ namespace Trinity.BackendAPI.Controllers
             {
                 return Ok();
             }
-            return Ok(new SSPCaseOfficerModel() { Name = null });
         }
 
         [HttpGet]
