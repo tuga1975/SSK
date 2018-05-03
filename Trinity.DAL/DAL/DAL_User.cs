@@ -29,7 +29,7 @@ namespace Trinity.DAL
         public List<Trinity.DAL.DBContext.Membership_Users> GetSuperviseeBlockedAppointmentsAvailable(DateTime DateAppointment,Nullable<int> take = null)
         {
             DateAppointment = DateAppointment.Date;
-            var query = _localUnitOfWork.DataContext.ActionLogs.Where(d => d.Station == EnumStation.ARK && DbFunctions.TruncateTime(d.PerformedDate) == DateAppointment && d.Membership_Users.Status == EnumUserStatuses.Blocked).Select(d=>d.Membership_Users).ToList();
+            var query = _localUnitOfWork.DataContext.ActionLogs.Where(d => d.Station == EnumStation.ARK && DbFunctions.TruncateTime(d.PerformedDate) == DateAppointment && d.Membership_Users.Status == EnumUserStatuses.Blocked).Select(d=>d.Membership_Users).Distinct().ToList();
             if (take.HasValue)
             {
                 return query.Take(take.Value).ToList();
