@@ -273,7 +273,7 @@ function getTimeActionApp() {
     return time_action_app;
 }
 
-function getSoure() {
+function getSource() {
     return api.Soure;
 }
 window.onerror = function (msg, url, line, col, error) {

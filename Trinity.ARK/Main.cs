@@ -309,7 +309,7 @@ namespace ARK
         private void TimeCheckLogout_EventHandler(object sender, System.Timers.ElapsedEventArgs e)
         {
             long time = long.Parse(LayerWeb.InvokeScript("getTimeActionApp").ToString());
-            string soure = LayerWeb.InvokeScript("getSoure").ToString();
+            string soure = LayerWeb.InvokeScript("getSource").ToString();
             if (_timeActionApp.HasValue && time - _timeActionApp.Value == 0 && (Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN] != null && soure != "Profile.html")
             {
                 _jsCallCS.LogOut();
