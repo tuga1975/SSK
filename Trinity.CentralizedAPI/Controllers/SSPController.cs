@@ -165,7 +165,12 @@ namespace Trinity.BackendAPI.Controllers
                 return Ok(false);
             }
         }
-
+        [HttpGet]
+        [ResponseType(typeof(SSPAuthenticateModel))]
+        public IHttpActionResult SSPAuthenticate(string NRIC)
+        {
+            return SSPAuthenticate(NRIC, string.Empty);
+        }
         [HttpGet]
         [ResponseType(typeof(SSPAuthenticateModel))]
         public IHttpActionResult SSPAuthenticate(string NRIC, string SmartCardUID)
