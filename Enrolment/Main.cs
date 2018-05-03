@@ -110,7 +110,7 @@ namespace Enrolment
         }
         private System.Collections.Generic.Dictionary<string, string> getDataStep()
         {
-            object value = Lib.LayerWeb.InvokeScript("getSoure");
+            object value = Lib.LayerWeb.InvokeScript("getSource");
             if (value != null)
             {
                 return JsonConvert.DeserializeObject<System.Collections.Generic.Dictionary<string, string>>(value.ToString());

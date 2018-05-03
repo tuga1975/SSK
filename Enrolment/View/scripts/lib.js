@@ -55,7 +55,7 @@ function setSearchText(searchText) {
 }
 
 
-function getSoure() {
+function getSource() {
     return JSON.stringify({
         soure: api.Soure,
         step: typeof stepNewEnrol == 'undefined' ? 0 : stepNewEnrol,
