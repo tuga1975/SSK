@@ -39,26 +39,28 @@
         text-align: center;
         font-weight: bold;
         color: #334352;
+        min-height:24px;
     }
 </style>
-<div class="status-text">
-</div>
-<div class="container my-5">
-    <div align="center" class="w-75 mx-auto embed-responsive embed-responsive-16by9" style="position:relative;overflow:visible;">
-        <video autoplay loop class="embed-responsive-item">
+<div style="position: absolute;bottom: 60px;width:100%;max-height: 100%;height: calc(100% - 110px);">
+    <div class="status-text">
+    </div>
+
+    <div class="z-depth-2" style="background-color:#FFF;padding:10px;position: absolute;height: calc(100% - 40px);width:100%;text-align:center;">
+        <video autoplay loop style="height: 100%;max-width: 100%;">
             <source src="../img/SmartCard.mp4" type="video/mp4">
         </video>
-        <div style="position:absolute;bottom:-40px;right:0px;">
+        <div style="position:absolute;bottom:-50px;right:0px;font-weight:bold;">
             <a href="javascript:;" class="pull-right" onclick="api.server.ManualLogin();">
-                <img src="../img/ManualLogin.png" /> D.O.
+                <img src="../img/ManualLogin.png" style="position:relative;left:-10px;" /> D.O.
             </a>
         </div>
-        <div style="position:absolute;bottom:-60px;left:0px;width:100%;color:red;" status-authentication>
+        <div style="position:absolute;bottom:-50px;left:0px;width:100%;color:red;text-align:center;" status-authentication>
         </div>
     </div>
+    <script type="text/javascript">
+        //show menu logout or back main
+        $('#header[right-show]').attr('right-show', '');
+        $('#content').removeAttr('style');
+    </script>
 </div>
-<script type="text/javascript">
-    //show menu logout or back main
-    $('#header[right-show]').attr('right-show', '');
-    $('#content').removeAttr('style');
-</script>

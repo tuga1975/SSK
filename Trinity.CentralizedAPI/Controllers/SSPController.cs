@@ -231,8 +231,14 @@ namespace Trinity.BackendAPI.Controllers
         public IHttpActionResult SSPGetCaseOfficer(string NRIC)
         {
             Trinity.DAL.DBContext.Membership_Users user = new DAL.DAL_User().GetByNRIC(NRIC);
-
-            return Ok(new SSPCaseOfficerModel() { Name = user == null ? string.Empty : user.Name });
+            if (user != null && user.Membership_UserRoles != null && user.Membership_UserRoles.Any(d => d.Membership_Roles != null && d.Membership_Roles.Name == EnumUserRoles.DutyOfficer))
+            {
+                return Ok(new SSPCaseOfficerModel() { Name = user.Name });
+            }
+            else
+            {
+                return Ok(new SSPCaseOfficerModel() { Name = string.Empty });
+            }
         }
 
         [HttpGet]
