@@ -179,6 +179,17 @@ namespace Trinity.BackendAPI.Controllers
                     Message = "NRIC " + NRIC + " is not registered"
                 });
             }
+            if (string.IsNullOrEmpty(SmartCardUID))
+            {
+                return Ok(new SSPAuthenticateModel()
+                {
+                    Name = user.Name,
+                    Found = true,
+                    Right = user.RightThumbFingerprint,
+                    Left = user.LeftThumbFingerprint,
+                    Message = "Success"
+                });
+            }
             var smartCard = new DAL.DAL_IssueCard().GetIssueCardBySmartCardId(SmartCardUID);
             if (smartCard == null)
             {
@@ -228,16 +239,17 @@ namespace Trinity.BackendAPI.Controllers
 
         [HttpGet]
         [ResponseType(typeof(SSPCaseOfficerModel))]
-        public IHttpActionResult SSPGetCaseOfficer(string NRIC)
+        public IHttpActionResult SSPGetOfficerName(string NRIC)
         {
             Trinity.DAL.DBContext.Membership_Users user = new DAL.DAL_User().GetByNRIC(NRIC);
-            if (user != null && user.Membership_UserRoles != null && user.Membership_UserRoles.Any(d => d.Membership_Roles != null && d.Membership_Roles.Name == EnumUserRoles.CaseOfficer))
+            if (user != null && user.Membership_UserRoles != null && user.Membership_UserRoles.Any(d => d.Membership_Roles != null &&
+            (d.Membership_Roles.Name == EnumUserRoles.CaseOfficer || d.Membership_Roles.Name == EnumUserRoles.DutyOfficer || d.Membership_Roles.Name == EnumUserRoles.EnrolmentOfficer)))
             {
                 return Ok(new SSPCaseOfficerModel() { Name = user.Name });
             }
             else
             {
-                return Ok(new SSPCaseOfficerModel() { Name = string.Empty });
+                return Ok();
             }
         }
 
