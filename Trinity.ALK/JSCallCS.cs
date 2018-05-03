@@ -44,9 +44,11 @@ namespace ALK
         private bool _mubDoorIsFullyClosed = false;
         private bool _ttDoorIsFullyClosed = false;
         private List<string> _errorLogs = new List<string>();
+        private Main _main;
 
-        public JSCallCS(WebBrowser web)
+        public JSCallCS(WebBrowser web, Main _main)
         {
+            this._main = _main;
             this._web = web;
             _thisType = this.GetType();
             _printMUBAndTTLabel = new CodeBehind.PrintMUBAndTTLabels(this);
@@ -384,6 +386,8 @@ namespace ALK
 
             if (isPrinterConnected)
             {
+                _main._isPrintingMUBTT = true;
+
                 LogManager.Info("MUB and TT Printers are connected.");
                 this._web.RunScript("$('#divSave').hide();");
                 //_currentAction = action;

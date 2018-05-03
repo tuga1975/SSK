@@ -30,8 +30,10 @@ namespace ALK
         private bool _isFirstTimeLoaded = true;
         private Trinity.BE.PopupModel _popupModel;
 
-        private System.Timers.Timer _timerCheckLogout;
+        public System.Timers.Timer _timerCheckLogout;
         private long? _timeActionApp;
+        public bool _isPrintingMUBTT = false;
+
 
         public Main()
         {
@@ -47,8 +49,13 @@ namespace ALK
             _popupModel = new Trinity.BE.PopupModel();
 
             #region Initialize and register events
+            this._timerCheckLogout = new System.Timers.Timer();
+            this._timerCheckLogout.AutoReset = true;
+            this._timerCheckLogout.Interval = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["session_timeout"]) * 1000;
+            this._timerCheckLogout.Elapsed += TimeCheckLogout_EventHandler;
+
             // _jsCallCS
-            _jsCallCS = new JSCallCS(this.LayerWeb);
+            _jsCallCS = new JSCallCS(this.LayerWeb,this);
             _jsCallCS.OnNRICFailed += JSCallCS_OnNRICFailed;
             _jsCallCS.OnShowMessage += JSCallCS_ShowMessage;
             _jsCallCS.OnLogOutCompleted += JSCallCS_OnLogOutCompleted;
@@ -65,7 +72,7 @@ namespace ALK
             _nric.OnShowMessage += OnShowMessage;
 
             // Supervisee
-            _supperviseeParticulars = new CodeBehind.SupperviseeParticulars(LayerWeb, _jsCallCS);
+            _supperviseeParticulars = new CodeBehind.SupperviseeParticulars(LayerWeb, _jsCallCS,this);
 
             _eventCenter = EventCenter.Default;
             _eventCenter.OnNewEvent += EventCenter_OnNewEvent;
@@ -255,11 +262,6 @@ namespace ALK
                     NavigateTo(NavigatorEnums.Authentication_SmartCard);
                 }
 
-                this._timerCheckLogout = new System.Timers.Timer();
-                this._timerCheckLogout.AutoReset = true;
-                this._timerCheckLogout.Interval = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["seconds_check_logout"]) * 1000;
-                this._timerCheckLogout.Elapsed += TimeCheckLogout_EventHandler; ;
-                this._timerCheckLogout.Start();
                 _isFirstTimeLoaded = false;
             }
             // ALK is ready to use - all is well
@@ -277,7 +279,8 @@ namespace ALK
         private void TimeCheckLogout_EventHandler(object sender, System.Timers.ElapsedEventArgs e)
         {
             long time = long.Parse(LayerWeb.InvokeScript("getTimeActionApp").ToString());
-            if (_timeActionApp.HasValue && time - _timeActionApp.Value == 0 && (Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN] != null)
+            string soure = LayerWeb.InvokeScript("getSoure").ToString();
+            if (_timeActionApp.HasValue && time - _timeActionApp.Value == 0 && (Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN] != null && soure== "SuperviseeParticulars.html" && )
             {
                 _jsCallCS.LogOut();
             }
@@ -294,6 +297,10 @@ namespace ALK
 
             // navigate
             NavigateTo(NavigatorEnums.Authentication_SmartCard);
+            if (_timerCheckLogout.Enabled)
+            {
+                _timerCheckLogout.Stop();
+            }
         }
 
         private void NRIC_OnNRICSucceeded()

@@ -13,10 +13,12 @@ namespace ALK.CodeBehind
     {
         WebBrowser _web;
         private JSCallCS _jsCallCS;
-        public SupperviseeParticulars(WebBrowser web, JSCallCS _jsCallCS)
+        private Main _main;
+        public SupperviseeParticulars(WebBrowser web, JSCallCS _jsCallCS, Main _main)
         {
             this._web = web;
             this._jsCallCS = _jsCallCS;
+            this._main = _main;
         }
 
         public void Start()
@@ -66,6 +68,10 @@ namespace ALK.CodeBehind
                 }
                 //profile model 
                 _web.LoadPageHtml("SuperviseeParticulars.html", labelInfo);
+                _main._isPrintingMUBTT = false;
+                if (_main._timerCheckLogout.Enabled)
+                    _main._timerCheckLogout.Stop();
+                _main._timerCheckLogout.Start();
             }
         }
     }
