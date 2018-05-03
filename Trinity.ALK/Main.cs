@@ -257,7 +257,7 @@ namespace ALK
 
                 this._timerCheckLogout = new System.Timers.Timer();
                 this._timerCheckLogout.AutoReset = true;
-                this._timerCheckLogout.Interval = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["seconds_check_logout"]) * 1000;
+                this._timerCheckLogout.Interval = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["session_timeout"]) * 1000;
                 this._timerCheckLogout.Elapsed += TimeCheckLogout_EventHandler; ;
                 this._timerCheckLogout.Start();
                 _isFirstTimeLoaded = false;
