@@ -176,7 +176,14 @@ namespace ALK
             else
             {
                 // raise failed event
-                SmartCard_OnSmartCardFailed("Unable to read your smart card.<br/>Please report to the Duty officer.");
+                if (string.IsNullOrEmpty(cardUID))
+                {
+                    SmartCard_OnSmartCardFailed("Unable to retrieve smart card information.");
+                }
+                else
+                {
+                    SmartCard_OnSmartCardFailed("Your smart card does not exist");
+                }
                 //SmartCard_OnSmartCardSucceeded();
             }
         }
@@ -340,6 +347,8 @@ namespace ALK
             if (_smartCardFailed > 3)
             {
                 // Send Notification to duty officer
+                LayerWeb.ShowMessage("Authentication failed", "Unable to read your smart card.<br/>Please report to the Duty officer.");
+
                 Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(null, message, message, EnumNotificationTypes.Error);
 
                 // show message box to user

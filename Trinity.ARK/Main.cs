@@ -225,7 +225,15 @@ namespace ARK
             else
             {
                 // raise failed event
-                SmartCard_OnSmartCardFailed("Unable to read your smart card.<br/>Please report to the Duty officer.");
+                
+                if (string.IsNullOrEmpty(cardUID))
+                {
+                    SmartCard_OnSmartCardFailed("Unable to retrieve smart card information.");
+                }
+                else
+                {
+                    SmartCard_OnSmartCardFailed("Your smart card does not exist");
+                }
             }
         }
 
@@ -369,10 +377,8 @@ namespace ARK
             if (_smartCardFailed > 3)
             {
                 // Send Notification to duty officer
+                LayerWeb.ShowMessage("Authentication failed", "Unable to read your smart card.<br/>Please report to the Duty officer.");
                 Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(null, message, message, EnumNotificationTypes.Error);
-                // show message box to user
-                //MessageBox.Show(message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                // reset counter
                 _smartCardFailed = 0;
                 // display failed on UI
                 LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please place your smart card on the reader.');");
