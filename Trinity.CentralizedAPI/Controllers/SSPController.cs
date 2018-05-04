@@ -7,6 +7,7 @@ using System.Web.Http;
 using System.Web.Http.Description;
 using Newtonsoft.Json;
 using Trinity.Common;
+using Trinity.Common.Utils;
 
 namespace Trinity.BackendAPI.Controllers
 {
@@ -110,6 +111,7 @@ namespace Trinity.BackendAPI.Controllers
         {
             try
             {
+                LogManager.Debug(string.Format("Begin SSPPostNotification, NRIC:{0}, Type:{1}, Datetime:{2}, Notification_Code:{3}, Content:{4}", data.NRIC, data.Type, data.Datetime, data.notification_code, data.Content));
                 Trinity.DAL.DBContext.Membership_Users user = null;
                 if (!string.IsNullOrEmpty(data.NRIC))
                 {
@@ -130,12 +132,12 @@ namespace Trinity.BackendAPI.Controllers
                         await System.Threading.Tasks.Task.Run(() => Trinity.SignalR.Client.Instance.BackendAPISend(NotificationNames.SSP_ERROR, data.NRIC));
                     }
                     await System.Threading.Tasks.Task.Run(() => Trinity.SignalR.Client.Instance.SendToAppDutyOfficers((user != null ? user.UserId : null), Subject, data.Content, data.Type, EnumStation.SSP, false, IDNoti));
-                    //return Ok(IDNoti);
+                    LogManager.Debug("SSPPostNotification completed successfully");
                     return Ok(true);
                 }
                 else
                 {
-                    //return Ok(string.Empty);
+                    LogManager.Error("SSPPostNotification failed.");
                     return Ok(false);
                 }
             }
