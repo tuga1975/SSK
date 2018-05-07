@@ -544,6 +544,7 @@ namespace Enrolment
         private int UpdateSuperviseeBio_CountPriterSmartCard = 0;
         public void UpdateSuperviseeBiodata(string frontBase64, string backBase64, string cardInfo)
         {
+            LogManager.Debug("UpdateSuperviseeBiodata: Start");
             UpdateSuperviseeBio_CountPriterSmartCard = 0;
             Session session = Session.Instance;
             var dalUser = new Trinity.DAL.DAL_User();
@@ -554,6 +555,9 @@ namespace Enrolment
                 EventCenter eventCenter = EventCenter.Default;
 
                 eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.UPDATE_SUPERVISEE_BIODATA, Data = new object[] { profileModel, frontBase64, backBase64 } });
+                LogManager.Debug("UpdateSuperviseeBiodata: End");
+
+                LogManager.Debug("PrintSmartCard: Start");
                 PrintSmartCard(frontBase64, backBase64, cardInfo);
             }
         }
@@ -595,6 +599,8 @@ namespace Enrolment
                 new System.Drawing.Bitmap(new System.IO.MemoryStream(Convert.FromBase64String(backBase64))).Save(ImgBack, System.Drawing.Imaging.ImageFormat.Bmp);
             }
 
+            LogManager.Debug("PrintSmartCard: Save file priter success");
+
             PrintAndWriteSmartCardInfo infoPrinter = new PrintAndWriteSmartCardInfo()
             {
                 BackCardImagePath = ImgBack,
@@ -611,6 +617,7 @@ namespace Enrolment
         }
         private void OnNewCardPrinted(PrintAndWriteCardResult result)
         {
+            LogManager.Debug("OnNewCardPrinted: "+ result.Success);
             UpdateSuperviseeBio_CountPriterSmartCard++;
             Session session = Session.Instance;
             var userLogin = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
@@ -643,11 +650,13 @@ namespace Enrolment
                     //currentEditUser.UserProfile.DateOfIssue = _CardInfo.Date_Of_Issue;
                     //currentEditUser.UserProfile.SerialNumber = _CardInfo.CardNumberFull;
                     //currentEditUser.Membership_Users.SmartCardId = SmartID;
+                    LogManager.Debug("OnNewCardPrinted: showPrintMessage");
                     this._web.InvokeScript("showPrintMessage", true, "Smart Card was printed successfully! Please collect the smart card from printer and place on the reader to verify.");
 
                 }
                 catch (Exception ex)
                 {
+                    LogManager.Debug("OnNewCardPrinted: "+ ex.ToString());
                     this._web.InvokeScript("showPrintMessage", false, EnumMessage.SmartCardIsAlreadyInUse);
                     if (UpdateSuperviseeBio_CountPriterSmartCard > 3)
                     {
@@ -659,6 +668,7 @@ namespace Enrolment
             }
             else
             {
+                LogManager.Debug("OnNewCardPrinted: False");
                 if (UpdateSuperviseeBio_CountPriterSmartCard > 3)
                 {
                     Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(userLogin.UserId, "Smart card printing too 3 times unsuccessful", "Smart card printing too 3 times unsuccessful", EnumNotificationTypes.Error);
@@ -689,6 +699,7 @@ namespace Enrolment
                     NRIC = smartCardData_Original.SuperviseeBiodata.NRIC,
                     DOB = smartCardData_Original.SuperviseeBiodata.DOB
                 }));
+                LogManager.Debug("CheckVerfyCard: " + JsonConvert.SerializeObject(smartCardData_Original));
             }
         }
         public void DoneEnrolSupervisee()

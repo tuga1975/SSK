@@ -93,11 +93,13 @@ namespace Enrolment
         {
             try
             {
+                
                 LogManager.Debug("OnInserted");
                 var data = getDataStep();
                 LogManager.Debug("getDataStep OK");
                 if (data != null && data["soure"] == "UpdateSuperviseeBiodata.html" && Convert.ToInt32(data["step"]) == 3 && Convert.ToBoolean(data["printsuccsess"]))
                 {
+                    LogManager.Debug("OnInserted: Verifying smart card ...");
                     this.LayerWeb.InvokeScript("showPrintMessage", true, "Verifying smart card ...");
                     _jsCallCS.CheckVerfyCard();
                 }
