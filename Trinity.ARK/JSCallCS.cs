@@ -724,6 +724,7 @@ namespace ARK
             session.IsSmartCardAuthenticated = false;
             session.IsFingerprintAuthenticated = false;
             session[CommonConstants.USER_LOGIN] = null;
+            session[CommonConstants.SUPERVISEE] = null;
             session[CommonConstants.PROFILE_DATA] = null;
             RaiseLogOutCompletedEvent();
 
