@@ -126,20 +126,20 @@ namespace ALK
 
             if (user != null)
             {
-                if (user.Role == EnumUserRoles.Supervisee || user.Role == EnumUserRoles.DutyOfficer)
+                if (user.Role.Equals(EnumUserRoles.Supervisee, StringComparison.InvariantCultureIgnoreCase) || user.Role.Equals(EnumUserRoles.DutyOfficer, StringComparison.InvariantCultureIgnoreCase))
                 {
                     // Only enrolled supervisees are allowed to login
-                    if (user.Status == EnumUserStatuses.Blocked)
+                    if (user.Status.Equals(EnumUserStatuses.Blocked, StringComparison.InvariantCultureIgnoreCase))
                     {
                         SmartCard_OnSmartCardFailed("You have been blocked.", "Supervisee " + user.Name + " has been blocked.");
                         return;
                     }
-                    if (user.Status == EnumUserStatuses.New)
+                    if (user.Status.Equals(EnumUserStatuses.New, StringComparison.InvariantCultureIgnoreCase))
                     {
                         SmartCard_OnSmartCardFailed("You haven't enrolled yet.", "Supervisee " + user.Name + " hasn't enrolled yet.");
                         return;
                     }
-                    if (user.Role == EnumUserRoles.Supervisee)
+                    if (user.Role.Equals(EnumUserRoles.Supervisee, StringComparison.InvariantCultureIgnoreCase))
                     {
                         var smartCard = new DAL_IssueCard().GetIssueCardBySmartCardId(cardUID);
                         if (smartCard == null)
@@ -147,12 +147,12 @@ namespace ALK
                             SmartCard_OnSmartCardFailed("Your smart card does not exist.", "The smart card " + cardUID + " does not exist.");
                             return;
                         }
-                        else if (smartCard.Status == EnumIssuedCards.Inactive)
+                        else if (smartCard.Status.Equals(EnumIssuedCards.Inactive, StringComparison.InvariantCultureIgnoreCase))
                         {
                             SmartCard_OnSmartCardFailed("Your smart card does not work.", "The smart card " + cardUID + " does not work.");
                             return;
                         }
-                        else if (smartCard.Status == EnumIssuedCards.Active && smartCard.Expired_Date < DateTime.Today)
+                        else if (smartCard.Status.Equals(EnumIssuedCards.Active, StringComparison.InvariantCultureIgnoreCase) && smartCard.Expired_Date < DateTime.Today)
                         {
                             SmartCard_OnSmartCardFailed("Your smart card has already expired.", "The smart card " + cardUID + " has already expired.");
                             return;
@@ -287,7 +287,7 @@ namespace ALK
         {
             long time = long.Parse(LayerWeb.InvokeScript("getTimeActionApp").ToString());
             object soure = LayerWeb.InvokeScript("getSoure");
-            if (_timeActionApp.HasValue && time - _timeActionApp.Value == 0 && (Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN] != null && soure!=null && soure.ToString()== "SuperviseeParticulars.html" && !_isPrintingMUBTT)
+            if (_timeActionApp.HasValue && time - _timeActionApp.Value == 0 && (Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN] != null && soure != null && soure.ToString() == "SuperviseeParticulars.html" && !_isPrintingMUBTT)
             {
                 _jsCallCS.LogOut();
             }
