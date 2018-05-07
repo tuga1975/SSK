@@ -653,7 +653,7 @@ namespace ARK
                     return;
                 }
                 LayerWeb.LoadPageHtml("Authentication/FacialRecognition.html");
-                LayerWeb.RunScript("$('.status-text').css('color','#000').text(" + Resources.INFO_REMAIN_YOUR_FACE_STILL + "');");
+                LayerWeb.RunScript("$('.status-text').css('color','#000').text('" + Resources.INFO_REMAIN_YOUR_FACE_STILL + "');");
                 FacialRecognition.Instance.OnFacialRecognitionFailed += Main_OnFacialRecognitionFailed;
                 FacialRecognition.Instance.OnFacialRecognitionSucceeded += Main_OnFacialRecognitionSucceeded;
                 FacialRecognition.Instance.OnFacialRecognitionProcessing += Main_OnFacialRecognitionProcessing;
