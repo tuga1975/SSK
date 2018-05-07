@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using Trinity.BE;
 using Trinity.Common;
 using Trinity.Common.Common;
+using Trinity.Common.Properties;
 using Trinity.Common.Utils;
 using Trinity.DAL;
 using Trinity.Device;
@@ -53,7 +54,7 @@ namespace ARK
             this._timerCheckLogout.AutoReset = true;
             this._timerCheckLogout.Interval = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["session_timeout"]) * 1000;
             this._timerCheckLogout.Elapsed += TimeCheckLogout_EventHandler;
-            
+
 
             // _jsCallCS
             _jsCallCS = new JSCallCS(this.LayerWeb, this);
@@ -177,14 +178,14 @@ namespace ARK
             if (user != null)
             {
                 // Only enrolled supervisees are allowed to login
-                if (user.Role == EnumUserRoles.Supervisee || user.Role == EnumUserRoles.DutyOfficer)
+                if (user.Role.Equals(EnumUserRoles.Supervisee, StringComparison.InvariantCultureIgnoreCase) || user.Role.Equals(EnumUserRoles.DutyOfficer, StringComparison.InvariantCultureIgnoreCase))
                 {
-                    if (user.Status == EnumUserStatuses.New)
+                    if (user.Status.Equals(EnumUserStatuses.New, StringComparison.InvariantCultureIgnoreCase))
                     {
                         SmartCard_OnSmartCardFailed("You haven't enrolled yet.", "Supervisee " + user.Name + " hasn't enrolled yet.");
                         return;
                     }
-                    if (user.Role == EnumUserRoles.Supervisee)
+                    if (user.Role.Equals(EnumUserRoles.Supervisee, StringComparison.InvariantCultureIgnoreCase))
                     {
                         var smartCard = new DAL_IssueCard().GetIssueCardBySmartCardId(cardUID);
                         if (smartCard == null)
@@ -192,12 +193,12 @@ namespace ARK
                             SmartCard_OnSmartCardFailed("Your smart card does not exist.", "The smart card " + cardUID + " does not exist.");
                             return;
                         }
-                        else if (smartCard.Status == EnumIssuedCards.Inactive)
+                        else if (smartCard.Status.Equals(EnumIssuedCards.Inactive, StringComparison.InvariantCultureIgnoreCase))
                         {
                             SmartCard_OnSmartCardFailed("Your smart card does not work.", "The smart card " + cardUID + " does not work.");
                             return;
                         }
-                        else if (smartCard.Status == EnumIssuedCards.Active && smartCard.Expired_Date < DateTime.Today)
+                        else if (smartCard.Status.Equals(EnumIssuedCards.Active, StringComparison.InvariantCultureIgnoreCase) && smartCard.Expired_Date < DateTime.Today)
                         {
                             SmartCard_OnSmartCardFailed("Your smart card has already expired.", "The smart card " + cardUID + " has already expired.");
                             return;
@@ -212,7 +213,7 @@ namespace ARK
                     sCardMonitor.StopSmartCardMonitor();
                     // raise succeeded event
 
-                    new DAL_ActionLog().Insert(ActionName.TabSmartCard, user.UserId,string.Empty,EnumStation.ARK);
+                    new DAL_ActionLog().Insert(ActionName.TabSmartCard, user.UserId, string.Empty, EnumStation.ARK);
                     SmartCard_OnSmartCardSucceeded();
                 }
                 else
@@ -223,7 +224,7 @@ namespace ARK
             else
             {
                 // raise failed event
-                
+
                 if (string.IsNullOrEmpty(cardUID))
                 {
                     SmartCard_OnSmartCardFailed("Unable to retrieve smart card information.", "The smart card " + cardUID + " cannot be read.");
@@ -247,7 +248,7 @@ namespace ARK
 
                 // navigate
                 NavigateTo(NavigatorEnums.Authentication_SmartCard);
-                if(this._timerCheckLogout.Enabled)
+                if (this._timerCheckLogout.Enabled)
                 {
                     this._timerCheckLogout.Stop();
                 }
@@ -320,7 +321,7 @@ namespace ARK
         {
             long time = long.Parse(LayerWeb.InvokeScript("getTimeActionApp").ToString());
             object soure = LayerWeb.InvokeScript("getSource");
-            if (_timeActionApp.HasValue && time - _timeActionApp.Value == 0 && (Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN] != null && soure!=null &&  soure.ToString() != "Profile.html")
+            if (_timeActionApp.HasValue && time - _timeActionApp.Value == 0 && (Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN] != null && soure != null && soure.ToString() != "Profile.html")
             {
                 _jsCallCS.LogOut();
             }
@@ -613,7 +614,7 @@ namespace ARK
             if (navigatorEnum == NavigatorEnums.Authentication_SmartCard)
             {
                 LayerWeb.LoadPageHtml("Authentication/SmartCard.html");
-                LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please place your smart card on the reader.');");
+                LayerWeb.RunScript("$('.status-text').css('color','#000').text('" + Resources.INFO_PLACE_SMARTCARD + "');");
                 SmartCardReaderUtil.Instance.StopSmartCardMonitor();
                 SmartCard.Instance.Start();
             }
@@ -624,7 +625,7 @@ namespace ARK
                     Session session = Session.Instance;
                     Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
                     LayerWeb.LoadPageHtml("Authentication/FingerPrint.html");
-                    LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please place your thumb print on the reader.');");
+                    LayerWeb.RunScript("$('.status-text').css('color','#000').text('" + Resources.INFO_PLACE_THUMBPRINT + "');");
                     Fingerprint.Instance.Start(new System.Collections.Generic.List<byte[]>() { user.LeftThumbFingerprint, user.RightThumbFingerprint });
                 }
                 catch (System.IO.FileNotFoundException ex)
@@ -652,7 +653,7 @@ namespace ARK
                     return;
                 }
                 LayerWeb.LoadPageHtml("Authentication/FacialRecognition.html");
-                LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please remain still as Facial Recognition Check takes place.');");
+                LayerWeb.RunScript("$('.status-text').css('color','#000').text('" + Resources.INFO_REMAIN_YOUR_FACE_STILL + "');");
                 FacialRecognition.Instance.OnFacialRecognitionFailed += Main_OnFacialRecognitionFailed;
                 FacialRecognition.Instance.OnFacialRecognitionSucceeded += Main_OnFacialRecognitionSucceeded;
                 FacialRecognition.Instance.OnFacialRecognitionProcessing += Main_OnFacialRecognitionProcessing;
@@ -678,7 +679,7 @@ namespace ARK
                 Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
                 if (user.Role == EnumUserRoles.Supervisee && user.Status == EnumUserStatuses.Blocked)
                 {
-                    LayerWeb.ShowMessageAsync("You have been blocked<br/>Contact Duty Officer for help");
+                    LayerWeb.ShowMessageAsync(Resources.INFO_YOU_HAVE_BEEN_BLOCKED);
                     _jsCallCS.LogOut();
                     return;
                 }

@@ -121,6 +121,12 @@
     <Compile Include="Common\EventCenter.cs" />
     <Compile Include="Common\LabelInfo.cs" />
     <Compile Include="Common\MifareCard.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="ResponseModel.cs" />
     <Compile Include="Common\Results.cs" />
     <Compile Include="Common\User.cs" />
@@ -315,6 +321,13 @@
   <ItemGroup>
     <Folder Include="DeviceMonitor\" />
     <Folder Include="View\materialize\fonts\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
