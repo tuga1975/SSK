@@ -206,7 +206,8 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ScheduledTask\EmailJob.cs" />
+    <Compile Include="ScheduledTask\JobAbsent.cs" />
+    <Compile Include="ScheduledTask\JobReminder.cs" />
     <Compile Include="ScheduledTask\JobScheduler.cs" />
   </ItemGroup>
   <ItemGroup>

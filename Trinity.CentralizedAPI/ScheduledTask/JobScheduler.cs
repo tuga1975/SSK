@@ -13,44 +13,49 @@ namespace Trinity.BackendAPI.ScheduledTask
     {
         public async static void Start()
         {
-            // Grab the Scheduler instance from the Factory
             NameValueCollection props = new NameValueCollection
                 {
                     { "quartz.serializer.type", "binary" }
                 };
-            
-            // define the job and tie it to our HelloJob class
-            IJobDetail job = JobBuilder.Create<EmailJob>()
-                .WithIdentity("jobSendMail", "JobScheduler")
+
+
+            IJobDetail jobReminder = JobBuilder.Create<JobReminder>()
+                .WithIdentity("jobReminder", "JobScheduler")
                 .Build();
 
-            ITrigger trigger = TriggerBuilder.Create()
-           .WithIdentity("triggerSendMail", "JobScheduler")
+            ITrigger triggerReminder = TriggerBuilder.Create()
+           .WithIdentity("jobReminder", "JobScheduler")
            .WithDailyTimeIntervalSchedule
              (s =>
                 s.WithIntervalInHours(24)
                .OnEveryDay()
                .StartingDailyAt(TimeOfDay.HourAndMinuteOfDay(21, 00))
              )
-           .ForJob(job)
-           .WithIdentity("EmailTrigger")
+           .ForJob(jobReminder)
+           .WithIdentity("Reminder")
            .Build();
 
-            //// Trigger the job to run now, and then repeat every 10 seconds
-            //ITrigger trigger = TriggerBuilder.Create()
-            //    .WithIdentity("triggerSendMail", "JobScheduler")
-            //    .StartNow()
-            //    .WithSimpleSchedule(x => x
-            //        .WithIntervalInSeconds(30)
-            //        .RepeatForever())
-            //    .Build();
 
-            // Tell quartz to schedule the job using our trigger
+            IJobDetail jobAbsent = JobBuilder.Create<JobAbsent>()
+                .WithIdentity("jobAbsent", "JobScheduler")
+                .Build();
+
+            ITrigger triggerAbsent = TriggerBuilder.Create()
+           .WithIdentity("jobAbsent", "JobScheduler")
+           .WithDailyTimeIntervalSchedule
+             (s =>
+                s.WithIntervalInHours(24)
+               .OnEveryDay()
+               .StartingDailyAt(TimeOfDay.HourAndMinuteOfDay(21, 00))
+             )
+           .ForJob(jobAbsent)
+           .WithIdentity("Absent")
+           .Build();
 
             StdSchedulerFactory factory = new StdSchedulerFactory(props);
             IScheduler scheduler = await factory.GetScheduler();
-            await scheduler.ScheduleJob(job, trigger);
-            
+            await scheduler.ScheduleJob(jobReminder, triggerReminder);
+            await scheduler.ScheduleJob(jobAbsent, triggerAbsent);
             await scheduler.Start();
         }
     }

@@ -296,6 +296,8 @@ namespace ALK
 
         private void JSCallCS_OnLogOutCompleted()
         {
+            _isPrintingMUBTT = false;
+
             // Disconnect the BarcodeScanner
             BarcodeScannerUtil.Instance.Disconnect();
 

@@ -198,7 +198,7 @@ namespace Enrolment
                     currentEditUser.UserProfile.RightThumbImage = null;
                 }
             }
-            
+
             //EventCenter eventCenter = EventCenter.Default;
             //eventCenter.RaiseEvent(new Trinity.Common.EventInfo() { Name = EventNames.CANCEL_CAPTURE_FINGERPRINT });
         }
@@ -988,7 +988,7 @@ namespace Enrolment
         {
             _web.InvokeScript("captureFingerprintMessage", FingerprintLeftRight, "Remove thumb from fingerprint scanner.", EnumColors.Yellow);
             _web.InvokeScript("changCountFinger");
-            
+
         }
         private void OnPutOn(Futronic.SDKHelper.FTR_PROGRESS Progress)
         {
@@ -1008,6 +1008,35 @@ namespace Enrolment
             var currentEditUser = (Trinity.BE.ProfileModel)session[CommonConstants.CURRENT_EDIT_USER];
             List<Trinity.BE.IssueCard> array = new Trinity.DAL.DAL_IssueCard().GetMyIssueCards(currentEditUser.User.UserId);
             return new object[] { array, currentEditUser.User.UserId };
+        }
+        private string ScaleImage(Image image, int maxWidth, int maxHeight)
+        {
+            var ratioX = (double)maxWidth / image.Width;
+            var ratioY = (double)maxHeight / image.Height;
+            var ratio = Math.Min(ratioX, ratioY);
+
+            var newWidth = (int)(image.Width * ratio);
+            var newHeight = (int)(image.Height * ratio);
+
+            var newImage = new Bitmap(newWidth, newHeight);
+
+            using (var graphics = Graphics.FromImage(newImage))
+                graphics.DrawImage(image, 0, 0, newWidth, newHeight);
+
+            using (MemoryStream m = new MemoryStream())
+            {
+                newImage.Save(m, image.RawFormat);
+                byte[] imageBytes = m.ToArray();
+
+                // Convert byte[] to Base64 String
+                string base64String = Convert.ToBase64String(imageBytes);
+                return base64String;
+            }
+        }
+        public string ScaleImage(string base64)
+        {
+            base64 = base64.Replace("data:image/png;base64,", string.Empty);
+            return "data:image/png;base64," + ScaleImage(new System.Drawing.Bitmap(new System.IO.MemoryStream(Convert.FromBase64String(base64))),400,251);
         }
         public void ReprintIssuedCard(string reprintReason, string cardInfo, string frontBase64, string backBase64)
         {

@@ -164,6 +164,8 @@ namespace ALK
             {
                 MessageBox.Show("Trinity.ALK.JSCallCS.PrintMUBLabels_OnPrintMUBLabelFailed. Details:" + ex.Message);
             }
+            _main._isPrintingMUBTT = false;
+            RefreshSessionTimeout();
         }
 
         private void PrintTTLabels_OnPrintTTLabelSucceeded(object sender, PrintMUBAndTTLabelsEventArgs e)
@@ -179,6 +181,8 @@ namespace ALK
             _PrintTTSucceed = false;
             Trinity.SignalR.Client.Instance.SSALabelPrinted(e.LabelInfo.UserId);
             Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(e.LabelInfo.UserId, "Cannot print TT Label", "User '" + e.LabelInfo.Name + "' cannot print TT label.", EnumNotificationTypes.Error);
+            _main._isPrintingMUBTT = false;
+            RefreshSessionTimeout();
         }
 
         private void PrintMUBAndTTLabels_OnPrintTTLabelException(object sender, ExceptionArgs e)
@@ -190,6 +194,9 @@ namespace ALK
             //MessageBox.Show(e.ErrorMessage, "", MessageBoxButtons.OK, MessageBoxIcon.Error);
             var user = (Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN];
             Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(user.UserId, "Can not print MUB & TT Labels", "User " + user.Name + " cannot print MUB & TT labels, please check!", EnumNotificationTypes.Error);
+
+            _main._isPrintingMUBTT = false;
+            RefreshSessionTimeout();
 
             //DeleteQRCodeImageFileTemp();
             //LogOut();
@@ -321,6 +328,8 @@ namespace ALK
                 {
                     // Check why current user is null
                     this._web.RunScript("$('#mubStatus').css('color','#000').text('The current user is null');");
+                    _main._isPrintingMUBTT = false;
+                    RefreshSessionTimeout();
                     return;
                 }
                 //Trinity.BE.User supervisee = null;
@@ -359,6 +368,8 @@ namespace ALK
                     _popupModel.Message = "Unable to print TT label.\nPlease report to the Duty Officer";
                 }
                 this._web.InvokeScript("showPopupModal", JsonConvert.SerializeObject(_popupModel));
+                _main._isPrintingMUBTT = false;
+                RefreshSessionTimeout();
             }
         }
 
@@ -391,7 +402,6 @@ namespace ALK
             if (isPrinterConnected)
             {
                 _main._isPrintingMUBTT = true;
-
                 LogManager.Info("MUB and TT Printers are connected.");
                 this._web.RunScript("$('#divSave').hide();");
                 //_currentAction = action;
@@ -513,6 +523,8 @@ namespace ALK
             {
                 LogManager.Error("MUB Applicator is not ready.");
                 this._web.RunScript("$('#mubStatus').css('color','#000').text('MUB Applicator is not ready.');");
+                _main._isPrintingMUBTT = false;
+                RefreshSessionTimeout();
             }
         }
 
@@ -553,6 +565,8 @@ namespace ALK
             {
                 LogManager.Error("TT Applicator is not ready.");
                 this._web.RunScript("$('#ttStatus').css('color','#000').text('TT Applicator is not ready.');");
+                _main._isPrintingMUBTT = false;
+                RefreshSessionTimeout();
             }
         }
 
@@ -678,6 +692,8 @@ namespace ALK
             {
                 LogManager.Error("Error in StartMUBApplicator. Details:" + ex.Message);
                 MessageBox.Show("Error in StartMUBApplicator. Details:" + ex.Message);
+                _main._isPrintingMUBTT = false;
+                RefreshSessionTimeout();
             }
         }
 
@@ -835,6 +851,13 @@ namespace ALK
             }
         }
 
+        public void RefreshSessionTimeout()
+        {
+            if (_main._timerCheckLogout.Enabled)
+                _main._timerCheckLogout.Stop();
+            _main._timerCheckLogout.Start();
+        }
+
         //private void CheckIfMUBIsRemoved()
         //{
         //    // Check if MUB is present or not
@@ -891,6 +914,8 @@ namespace ALK
                 this._web.RunScript("$('#mubStatus').css('color','#000').text('Cannot complete printing and pasting MUB. Please report to Duty Officer');");
                 this._web.RunScript("$('#ConfirmBtn').html('Open MUB and TT Door.');");
                 this._web.RunScript("$('#lblNextAction').text('OpenMUBAndTTDoor');");
+                _main._isPrintingMUBTT = false;
+                RefreshSessionTimeout();
             }
         }
 
@@ -984,6 +1009,8 @@ namespace ALK
                 this._web.RunScript("$('#ttStatus').css('color','#000').text('Cannot complete printing and pasting TT. Please report to Duty Officer');");
                 this._web.RunScript("$('#ConfirmBtn').html('Open MUB and TT Door.');");
                 this._web.RunScript("$('#lblNextAction').text('OpenMUBAndTTDoor');");
+                _main._isPrintingMUBTT = false;
+                RefreshSessionTimeout();
             }
         }
 
@@ -1237,6 +1264,8 @@ namespace ALK
 
                 this._web.RunScript("$('#mubStatus').css('color','#000').text('The current user is null');");
                 this._web.RunScript("$('#ttStatus').css('color','#000').text('');");
+                _main._isPrintingMUBTT = false;
+                RefreshSessionTimeout();
                 return;
             }
             Trinity.BE.User supervisee = currentUser;

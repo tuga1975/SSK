@@ -113,6 +113,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DAL\DAL_Messages.cs" />
     <Compile Include="DAL\DAL_ActionLog.cs" />
     <Compile Include="DAL\DAL_UpdateProfile.cs" />
     <Compile Include="DAL\DAL_Transactions.cs" />
