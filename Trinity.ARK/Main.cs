@@ -52,7 +52,7 @@ namespace ARK
             this._timerCheckLogout = new System.Timers.Timer();
             this._timerCheckLogout.AutoReset = true;
             this._timerCheckLogout.Interval = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["session_timeout"]) * 1000;
-            this._timerCheckLogout.Elapsed += TimeCheckLogout_EventHandler; ;
+            this._timerCheckLogout.Elapsed += TimeCheckLogout_EventHandler;
             
 
             // _jsCallCS
@@ -321,8 +321,8 @@ namespace ARK
         private void TimeCheckLogout_EventHandler(object sender, System.Timers.ElapsedEventArgs e)
         {
             long time = long.Parse(LayerWeb.InvokeScript("getTimeActionApp").ToString());
-            string soure = LayerWeb.InvokeScript("getSource").ToString();
-            if (_timeActionApp.HasValue && time - _timeActionApp.Value == 0 && (Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN] != null && soure != "Profile.html")
+            object soure = LayerWeb.InvokeScript("getSource");
+            if (_timeActionApp.HasValue && time - _timeActionApp.Value == 0 && (Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN] != null && soure!=null &&  soure.ToString() != "Profile.html")
             {
                 _jsCallCS.LogOut();
             }

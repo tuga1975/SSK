@@ -286,8 +286,8 @@ namespace ALK
         private void TimeCheckLogout_EventHandler(object sender, System.Timers.ElapsedEventArgs e)
         {
             long time = long.Parse(LayerWeb.InvokeScript("getTimeActionApp").ToString());
-            string soure = LayerWeb.InvokeScript("getSoure").ToString();
-            if (_timeActionApp.HasValue && time - _timeActionApp.Value == 0 && (Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN] != null && soure== "SuperviseeParticulars.html" && !_isPrintingMUBTT)
+            object soure = LayerWeb.InvokeScript("getSoure");
+            if (_timeActionApp.HasValue && time - _timeActionApp.Value == 0 && (Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN] != null && soure!=null && soure.ToString()== "SuperviseeParticulars.html" && !_isPrintingMUBTT)
             {
                 _jsCallCS.LogOut();
             }
