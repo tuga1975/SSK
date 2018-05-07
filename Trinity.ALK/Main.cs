@@ -55,7 +55,7 @@ namespace ALK
             this._timerCheckLogout.Elapsed += TimeCheckLogout_EventHandler;
 
             // _jsCallCS
-            _jsCallCS = new JSCallCS(this.LayerWeb,this);
+            _jsCallCS = new JSCallCS(this.LayerWeb, this);
             _jsCallCS.OnNRICFailed += JSCallCS_OnNRICFailed;
             _jsCallCS.OnShowMessage += JSCallCS_ShowMessage;
             _jsCallCS.OnLogOutCompleted += JSCallCS_OnLogOutCompleted;
@@ -72,7 +72,7 @@ namespace ALK
             _nric.OnShowMessage += OnShowMessage;
 
             // Supervisee
-            _supperviseeParticulars = new CodeBehind.SupperviseeParticulars(LayerWeb, _jsCallCS,this);
+            _supperviseeParticulars = new CodeBehind.SupperviseeParticulars(LayerWeb, _jsCallCS, this);
 
             _eventCenter = EventCenter.Default;
             _eventCenter.OnNewEvent += EventCenter_OnNewEvent;
@@ -93,7 +93,7 @@ namespace ALK
             Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(null, "The fingerprinter is not connected", "The fingerprinter is not connected.", EnumNotificationTypes.Error);
 
             // show message box to user
-            MessageBox.Show(message, "Authentication failed!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show(message, "Authentication Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
             // navigate to smartcard login page
             //NavigateTo(NavigatorEnums.Authentication_SmartCard);
@@ -131,12 +131,12 @@ namespace ALK
                     // Only enrolled supervisees are allowed to login
                     if (user.Status == EnumUserStatuses.Blocked)
                     {
-                        SmartCard_OnSmartCardFailed("You have been blocked.");
+                        SmartCard_OnSmartCardFailed("You have been blocked.", "Supervisee " + user.Name + " has been blocked.");
                         return;
                     }
                     if (user.Status == EnumUserStatuses.New)
                     {
-                        SmartCard_OnSmartCardFailed("You haven't enrolled yet.");
+                        SmartCard_OnSmartCardFailed("You haven't enrolled yet.", "Supervisee " + user.Name + " hasn't enrolled yet.");
                         return;
                     }
                     if (user.Role == EnumUserRoles.Supervisee)
@@ -144,17 +144,17 @@ namespace ALK
                         var smartCard = new DAL_IssueCard().GetIssueCardBySmartCardId(cardUID);
                         if (smartCard == null)
                         {
-                            SmartCard_OnSmartCardFailed("Your smart card does not exist");
+                            SmartCard_OnSmartCardFailed("Your smart card does not exist.", "The smart card " + cardUID + " does not exist.");
                             return;
                         }
                         else if (smartCard.Status == EnumIssuedCards.Inactive)
                         {
-                            SmartCard_OnSmartCardFailed("Your smart card does not work");
+                            SmartCard_OnSmartCardFailed("Your smart card does not work.", "The smart card " + cardUID + " does not work.");
                             return;
                         }
                         else if (smartCard.Status == EnumIssuedCards.Active && smartCard.Expired_Date < DateTime.Today)
                         {
-                            SmartCard_OnSmartCardFailed("Your smart card has expired");
+                            SmartCard_OnSmartCardFailed("Your smart card has already expired.", "The smart card " + cardUID + " has already expired.");
                             return;
                         }
                     }
@@ -170,7 +170,7 @@ namespace ALK
                 }
                 else
                 {
-                    SmartCard_OnSmartCardFailed("You do not have permission to access this page");
+                    SmartCard_OnSmartCardFailed("You do not have permission to access this page", "The user " + user.Name + " tries to access a page for which he/she is not authorized.");
                 }
             }
             else
@@ -178,11 +178,11 @@ namespace ALK
                 // raise failed event
                 if (string.IsNullOrEmpty(cardUID))
                 {
-                    SmartCard_OnSmartCardFailed("Unable to retrieve smart card information.");
+                    SmartCard_OnSmartCardFailed("Unable to retrieve smart card information.", "The smart card " + cardUID + " cannot be read.");
                 }
                 else
                 {
-                    SmartCard_OnSmartCardFailed("Your smart card does not exist");
+                    SmartCard_OnSmartCardFailed("Your smart card does not exist.", "The smart card " + cardUID + " does not exist.");
                 }
                 //SmartCard_OnSmartCardSucceeded();
             }
@@ -336,20 +336,18 @@ namespace ALK
             //NavigateTo(NavigatorEnums.Authentication_Facial);
         }
 
-        private void SmartCard_OnSmartCardFailed(string message)
+        private void SmartCard_OnSmartCardFailed(string errMsg, string notification)
         {
             // increase counter
             _smartCardFailed++;
 
             // exceeded max failed
-            LayerWeb.ShowMessage("Authentication failed", message);
-
+            LayerWeb.ShowMessage("Authentication Failed", errMsg);
             if (_smartCardFailed > 3)
             {
                 // Send Notification to duty officer
-                LayerWeb.ShowMessage("Authentication failed", "Unable to read your smart card.<br/>Please report to the Duty officer.");
-
-                Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(null, message, message, EnumNotificationTypes.Error);
+                LayerWeb.ShowMessage("Authentication Failed", "Unable to read your smart card.<br/>Please report to the Duty Officer.");
+                Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(null, notification, notification, EnumNotificationTypes.Error);
 
                 // show message box to user
                 //MessageBox.Show(message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);

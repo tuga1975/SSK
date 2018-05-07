@@ -1,6 +1,7 @@
 ﻿using PCSC;
 using System;
 using System.Diagnostics;
+using Trinity.Common.Utils;
 using Trinity.Device.Util;
 
 namespace Trinity.Device.Authentication
@@ -16,7 +17,7 @@ namespace Trinity.Device.Authentication
 
         private SmartCard()
         {
-            
+
         }
 
         public static SmartCard Instance
@@ -42,34 +43,33 @@ namespace Trinity.Device.Authentication
             SmartCardReaderUtil.Instance.StartSmartCardMonitor(OnCardInitialized, OnCardInserted, OnCardRemoved);
         }
 
-        
+
         private void OnCardInitialized(object sender, CardStatusEventArgs e)
         {
-            Debug.WriteLine("onCardInitialized");
+            LogManager.Debug("OnCardInitialized...");
             string cardUID = SmartCardReaderUtil.Instance.GetCardUID();
-            if (!string.IsNullOrEmpty(cardUID) && GetCardInfoSucceeded!=null)
-            {
-                GetCardInfoSucceeded(cardUID);
-            }
-            Debug.WriteLine($"Card UID: {cardUID}");
-        }
+            LogManager.Debug("Smart Card UID: " + cardUID);
 
-        private void OnCardInserted(object sender, CardStatusEventArgs e)
-        {
-            Debug.WriteLine("onCardInitialized");
-            string cardUID = SmartCardReaderUtil.Instance.GetCardUID();
             if (!string.IsNullOrEmpty(cardUID) && GetCardInfoSucceeded != null)
             {
                 GetCardInfoSucceeded(cardUID);
             }
-            Debug.WriteLine($"Card UID: {cardUID}");
+        }
+
+        private void OnCardInserted(object sender, CardStatusEventArgs e)
+        {
+            LogManager.Debug("OnCardInserted...");
+            string cardUID = SmartCardReaderUtil.Instance.GetCardUID();
+            LogManager.Debug("Smart Card UID: " + cardUID);
+            if (!string.IsNullOrEmpty(cardUID) && GetCardInfoSucceeded != null)
+            {
+                GetCardInfoSucceeded(cardUID);
+            }
         }
 
         private void OnCardRemoved(object sender, CardStatusEventArgs e)
         {
-            Debug.WriteLine("OnCardRemoved");
+            LogManager.Debug("OnCardRemoved");
         }
-        
     }
-    
 }

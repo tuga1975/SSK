@@ -19,6 +19,7 @@ namespace Trinity.BackendAPI
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             ScheduledTask.JobScheduler.Start();
+            log4net.Config.XmlConfigurator.Configure();
         }
     }
 }

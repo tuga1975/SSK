@@ -126,6 +126,11 @@ namespace DutyOfficer
         }
         public object getDataQueue()
         {
+            if (!_isFocusQueue)
+            {
+                SmartCard.Instance.Start();
+                _isFocusQueue = true;
+            }
             List<object> arrayDataa = new List<object>();
             new DAL_DrugResults().CheckDrugResult();
             arrayDataa.AddRange(new DAL_Appointments().GetByDate(DateTime.Today).Select(app => new

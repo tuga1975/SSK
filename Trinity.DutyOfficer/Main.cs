@@ -331,7 +331,8 @@ namespace DutyOfficer
                 //APIUtils.SignalR.SendNotificationToDutyOfficer(message, message);
 
                 // show message box to user
-                MessageBox.Show(message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //MessageBox.Show(message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                CSCallJS.ShowMessage(LayerWeb, "Authentication Failed", message);
 
                 // reset counter
                 _smartCardFailed = 0;
@@ -364,7 +365,8 @@ namespace DutyOfficer
                 //APIUtils.SignalR.SendNotificationToDutyOfficer(message, message);
 
                 // show message box to user
-                MessageBox.Show(message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //MessageBox.Show(message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                CSCallJS.ShowMessage(LayerWeb, "Authentication Failed", message);
 
                 // navigate to smartcard login page
                 NavigateTo(NavigatorEnums.Authentication_Facial);

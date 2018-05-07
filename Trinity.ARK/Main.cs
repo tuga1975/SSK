@@ -149,7 +149,7 @@ namespace ARK
 
 
             // show message box to user
-            CSCallJS.ShowMessage(LayerWeb, "Authentication failed!", message);
+            CSCallJS.ShowMessage(LayerWeb, "Authentication Failed", message);
             //MessageBox.Show(message, "Authentication failed!", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
             // navigate to smartcard login page
@@ -181,7 +181,7 @@ namespace ARK
                 {
                     if (user.Status == EnumUserStatuses.New)
                     {
-                        SmartCard_OnSmartCardFailed("You haven't enrolled yet.");
+                        SmartCard_OnSmartCardFailed("You haven't enrolled yet.", "Supervisee " + user.Name + " hasn't enrolled yet.");
                         return;
                     }
                     if (user.Role == EnumUserRoles.Supervisee)
@@ -189,17 +189,17 @@ namespace ARK
                         var smartCard = new DAL_IssueCard().GetIssueCardBySmartCardId(cardUID);
                         if (smartCard == null)
                         {
-                            SmartCard_OnSmartCardFailed("Your smart card does not exist");
+                            SmartCard_OnSmartCardFailed("Your smart card does not exist.", "The smart card " + cardUID + " does not exist.");
                             return;
                         }
                         else if (smartCard.Status == EnumIssuedCards.Inactive)
                         {
-                            SmartCard_OnSmartCardFailed("Your smart card does not work");
+                            SmartCard_OnSmartCardFailed("Your smart card does not work.", "The smart card " + cardUID + " does not work.");
                             return;
                         }
                         else if (smartCard.Status == EnumIssuedCards.Active && smartCard.Expired_Date < DateTime.Today)
                         {
-                            SmartCard_OnSmartCardFailed("Your smart card has expired");
+                            SmartCard_OnSmartCardFailed("Your smart card has already expired.", "The smart card " + cardUID + " has already expired.");
                             return;
                         }
                     }
@@ -213,13 +213,11 @@ namespace ARK
                     // raise succeeded event
 
                     new DAL_ActionLog().Insert(ActionName.TabSmartCard, user.UserId,string.Empty,EnumStation.ARK);
-
-
                     SmartCard_OnSmartCardSucceeded();
                 }
                 else
                 {
-                    SmartCard_OnSmartCardFailed("You do not have permission to login to this system");
+                    SmartCard_OnSmartCardFailed("You do not have permission to login to this system.", "The user " + user.Name + " tries to access ARK for which he/she is not authorized.");
                 }
             }
             else
@@ -228,11 +226,11 @@ namespace ARK
                 
                 if (string.IsNullOrEmpty(cardUID))
                 {
-                    SmartCard_OnSmartCardFailed("Unable to retrieve smart card information.");
+                    SmartCard_OnSmartCardFailed("Unable to retrieve smart card information.", "The smart card " + cardUID + " cannot be read.");
                 }
                 else
                 {
-                    SmartCard_OnSmartCardFailed("Your smart card does not exist");
+                    SmartCard_OnSmartCardFailed("Your smart card does not exist.", "The smart card " + cardUID + " does not exist.");
                 }
             }
         }
@@ -368,17 +366,17 @@ namespace ARK
             //NavigateTo(NavigatorEnums.Authentication_Facial);
         }
 
-        private void SmartCard_OnSmartCardFailed(string message)
+        private void SmartCard_OnSmartCardFailed(string errMsg, string notification)
         {
             // increase counter
             _smartCardFailed++;
-            LayerWeb.ShowMessage("Authentication failed", message);
+            LayerWeb.ShowMessage("Authentication Failed", errMsg);
             // exceeded max failed
             if (_smartCardFailed > 3)
             {
                 // Send Notification to duty officer
-                LayerWeb.ShowMessage("Authentication failed", "Unable to read your smart card.<br/>Please report to the Duty officer.");
-                Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(null, message, message, EnumNotificationTypes.Error);
+                LayerWeb.ShowMessage("Authentication Failed", "Unable to read your smart card.<br/>Please report to the Duty Officer.");
+                Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(null, notification, notification, EnumNotificationTypes.Error);
                 _smartCardFailed = 0;
                 // display failed on UI
                 LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please place your smart card on the reader.');");
@@ -594,7 +592,7 @@ namespace ARK
         {
             //MessageBox.Show(e.Message, "Authentication failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
             //LayerWeb.ShowMessage("Authentication failed", e.Message);
-            CSCallJS.ShowMessage(LayerWeb, "Authentication failed", e.Message);
+            CSCallJS.ShowMessage(LayerWeb, "Authentication Failed", e.Message);
         }
 
         private void JSCallCS_ShowMessage(object sender, ShowMessageEventArgs e)
