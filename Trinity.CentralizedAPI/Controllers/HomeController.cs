@@ -8,6 +8,7 @@ using System.Web.Mvc;
 
 namespace Trinity.BackendAPI.Controllers
 {
+
     public class HomeController : Controller
     {
         // GET: Home

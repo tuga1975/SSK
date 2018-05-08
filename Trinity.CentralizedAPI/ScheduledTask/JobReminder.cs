@@ -25,6 +25,7 @@ namespace Trinity.BackendAPI.ScheduledTask
                 client.Host = ConfigurationManager.AppSettings["Host"];
                 client.Port = Convert.ToInt32(ConfigurationManager.AppSettings["Port"]);
                 client.UseDefaultCredentials = false;
+                client.EnableSsl = Convert.ToBoolean(ConfigurationManager.AppSettings["EnableSsl"]);
                 client.Credentials = new NetworkCredential(ConfigurationManager.AppSettings["User-NetworkCredential"], ConfigurationManager.AppSettings["Password-NetworkCredential"]);
 
                 MailMessage mailMessage = new MailMessage();
@@ -37,6 +38,7 @@ namespace Trinity.BackendAPI.ScheduledTask
                 }
                 mailMessage.Subject = "[CNB-Trinity] Dppointment reminder";
                 mailMessage.Body = html.Replace("{IdLogo}", oAttachment.ContentId).Replace("{Subject}", "[CNB-Trinity] Dppointment reminder").Replace("{Body}", "Tomorrow " + DateTime.Today.ToString("dd/MM/yyyy") + " you will have an appointment");
+                mailMessage.IsBodyHtml = true;
                 client.Send(mailMessage);
 
                 DAL.DAL_Messages dal_message = new DAL.DAL_Messages();

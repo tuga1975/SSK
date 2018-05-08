@@ -199,6 +199,7 @@
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\APSController.cs" />
+    <Compile Include="Controllers\TestJobController.cs" />
     <Compile Include="Controllers\SHPController.cs" />
     <Compile Include="Controllers\SSPController.cs" />
     <Compile Include="Controllers\UserProfilesController.cs" />

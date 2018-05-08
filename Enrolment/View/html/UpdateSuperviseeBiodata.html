@@ -888,137 +888,25 @@
     var stepNewEnrol = 0;
     var printSuccsess = false;
     function GenerateImageSmartCardSuccess(front, back) {
+        frontCardImg = front;
+        backCardImg = back;
         api.server.ScaleImage(front,function (base64) {
             $('#frontCardImgCanvas').attr('src', base64);
         });
         api.server.ScaleImage(back, function (base64) {
             $('#backCardImgCanvas').attr('src', base64);
         });
-        //frontCardImg = front;
-        //backCardImg = back;
-        //var canvasFrontCard = document.getElementById("frontCardImgCanvas");
-        //var ctxFrontCard = canvasFrontCard.getContext("2d");
-
-        //var imgFrontCard = new Image();
-        //imgFrontCard.src = frontCardImg;
-        //imgFrontCard.onload = function () {
-
-        //    canvasFrontCard.height = 238.5869565217391;
-        //    canvasFrontCard.width = 380;
-
-        //    var oc = document.createElement('canvas'),
-        //        octx = oc.getContext('2d');
-        //    oc.width = canvasFrontCard.width;
-        //    oc.height = canvasFrontCard.height;
-        //    octx.drawImage(imgFrontCard, 0, 0, oc.width, oc.height);
-
-        //    // step 2
-        //    octx.drawImage(oc, 0, 0, oc.width, oc.height);
-
-        //    // step 3, resize to final size
-        //    ctxFrontCard.drawImage(oc, 0, 0, oc.width, oc.height,
-        //        0, 0, canvasFrontCard.width, canvasFrontCard.height);
-        //}
-
-        //var canvasBackCard = document.getElementById("backCardImgCanvas");
-        //var ctxBackCard = canvasBackCard.getContext("2d");
-
-        //var imgBackCard = new Image();
-        //imgBackCard.src = backCardImg;
-        //imgBackCard.onload = function () {
-
-        //    var canvas = document.getElementById("backCardImgCanvas");
-        //    var ctx = canvas.getContext("2d");
-
-        //    canvas.height = canvas.width * (imgBackCard.height / imgBackCard.width);
-
-        //    // step 1 - resize to 50%
-        //    var oc = document.createElement('canvas'),
-        //        octx = oc.getContext('2d');
-
-        //    oc.width = imgBackCard.width * 0.5;
-        //    oc.height = imgBackCard.height * 0.5;
-        //    octx.drawImage(imgBackCard, 0, 0, oc.width, oc.height);
-
-        //    // step 2
-        //    octx.drawImage(oc, 0, 0, oc.width * 0.5, oc.height * 0.5);
-
-        //    // step 3, resize to final size
-        //    ctx.drawImage(oc, 0, 0, oc.width * 0.5, oc.height * 0.5,
-        //        0, 0, canvas.width, canvas.height);
-
-
-        //    //canvasBackCard.height = 238.5869565217391;
-        //    //canvasBackCard.width = 380;
-
-        //    //var oc = document.createElement('canvas'),
-        //    //    octx = oc.getContext('2d');
-        //    //oc.width = canvasBackCard.width;
-        //    //oc.height = canvasBackCard.height;
-        //    //octx.drawImage(imgBackCard, 0, 0, oc.width, oc.height);
-
-        //    //// step 2
-        //    //octx.drawImage(oc, 0, 0, oc.width, oc.height);
-
-        //    //// step 3, resize to final size
-        //    //ctxBackCard.drawImage(oc, 0, 0, oc.width, oc.height,
-        //    //    0, 0, canvasBackCard.width, canvasBackCard.height);
-        //}
-
         api.loading(false);
-
     }
     function GenerateImageSmartCardReprintSuccess(front, back) {
         frontCardImg = front;
         backCardImg = back;
-        var canvasFrontCard = document.getElementById("frontCardImgCanvas");
-        var ctxFrontCard = canvasFrontCard.getContext("2d");
-
-        var imgFrontCard = new Image();
-        imgFrontCard.src = frontCardImg;
-        imgFrontCard.onload = function () {
-
-            canvasFrontCard.height = 238.5869565217391;
-            canvasFrontCard.width = 380;
-
-            var oc = document.createElement('canvas'),
-                octx = oc.getContext('2d');
-            oc.width = canvasFrontCard.width;
-            oc.height = canvasFrontCard.height;
-            octx.drawImage(imgFrontCard, 0, 0, oc.width, oc.height);
-
-            // step 2
-            octx.drawImage(oc, 0, 0, oc.width, oc.height);
-
-            // step 3, resize to final size
-            ctxFrontCard.drawImage(oc, 0, 0, oc.width, oc.height,
-                0, 0, canvasFrontCard.width, canvasFrontCard.height);
-        }
-
-        var canvasBackCard = document.getElementById("backCardImgCanvas");
-        var ctxBackCard = canvasBackCard.getContext("2d");
-
-        var imgBackCard = new Image();
-        imgBackCard.src = backCardImg;
-        imgBackCard.onload = function () {
-
-            canvasBackCard.height = 238.5869565217391;
-            canvasBackCard.width = 380;
-
-            var oc = document.createElement('canvas'),
-                octx = oc.getContext('2d');
-            oc.width = canvasBackCard.width;
-            oc.height = canvasBackCard.height;
-            octx.drawImage(imgBackCard, 0, 0, oc.width, oc.height);
-
-            // step 2
-            octx.drawImage(oc, 0, 0, oc.width, oc.height);
-
-            // step 3, resize to final size
-            ctxBackCard.drawImage(oc, 0, 0, oc.width, oc.height,
-                0, 0, canvasBackCard.width, canvasBackCard.height);
-        }
-
+        api.server.ScaleImage(front, function (base64) {
+            $('#frontCardImgCanvas').attr('src', base64);
+        });
+        api.server.ScaleImage(back, function (base64) {
+            $('#backCardImgCanvas').attr('src', base64);
+        });
         api.loading(false);
         api.server.UpdateSuperviseeBiodata(frontCardImg, backCardImg, JSON.stringify(CardInfo));
     }
