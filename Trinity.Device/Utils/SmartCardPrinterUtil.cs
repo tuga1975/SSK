@@ -245,7 +245,7 @@ namespace Trinity.Device.Util
                     returnValue.Success = true;
                 }else if (string.IsNullOrEmpty(returnValue.CardUID) && string.IsNullOrEmpty(returnValue.Description))
                 {
-                    returnValue.Description = "Please put the smart card on the printer!";
+                    returnValue.Description = "Smart card type unsupported!";
                 }
 
                 OnCompleted(returnValue);
