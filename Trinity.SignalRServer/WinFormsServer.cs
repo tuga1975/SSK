@@ -41,8 +41,8 @@ namespace Trinity.NotificationServer
             {
                 try
                 {
-                    var lisChekck = new DAL.DAL_DrugResults().CheckDrugResult();
-                    if (lisChekck.Count>0)
+                    var lisCheck = new DAL.DAL_DrugResults().CheckDrugResult();
+                    if (lisCheck.Count>0)
                     {
                         GlobalHost.ConnectionManager.GetHubContext<TrinityHub>().Clients.Clients(Program.ProfileConnected.Where(d => d.isApp && d.Station == EnumStation.DUTYOFFICER).Select(d => d.ConnectionId).ToList()).OnNewNotification(new NotificationInfo() { Name = NotificationNames.SHP_COMPLETED, NRIC = string.Empty });
                     }
