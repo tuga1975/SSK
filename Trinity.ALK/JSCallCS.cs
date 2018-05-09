@@ -734,7 +734,7 @@ namespace ALK
 
             this._web.RunScript("$('#ttStatus').css('color','#000').text('The TT Applicator is starting...');");
             this._web.RunScript("$('#ConfirmBtn').html('Starting Applicator...');");
-            // Start MUB Applicator
+            // Start TT Applicator
             LEDStatusLightingUtil.Instance.StartTTApplicator_Async();
             // Wait for 200 miliseconds and then check TT Applicator status
             Thread.Sleep(200);

@@ -31,7 +31,7 @@ namespace ALK
         private Trinity.BE.PopupModel _popupModel;
 
         public System.Timers.Timer _timerCheckLogout;
-        private long? _timeActionApp;
+        private long? _timeActionApp = null;
         public bool _isPrintingMUBTT = false;
 
 
