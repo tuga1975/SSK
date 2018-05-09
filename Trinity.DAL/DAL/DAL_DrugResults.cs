@@ -30,14 +30,14 @@ namespace Trinity.DAL
             var query = (from queue in _localUnitOfWork.DataContext.Queues.Where(d => DbFunctions.TruncateTime(d.CreatedTime) == today && d.QueueDetails.Any(c => c.Station == EnumStation.UT && c.Status == EnumQueueStatuses.Processing))
                          join drugresult in _localUnitOfWork.DataContext.DrugResults.Where(d => DbFunctions.TruncateTime(d.UploadedDate) == today) on queue.Membership_Users1.NRIC equals drugresult.NRIC
                          select new { queue, drugresult }).Where(d => d.drugresult != null).ToList();
-            List<Guid> arrayQueueUpdateed = new List<Guid>();
+            List<Guid> arrayQueueUpdated = new List<Guid>();
             DAL_QueueNumber DAL_Queue = new DAL.DAL_QueueNumber();
             foreach (var item in query)
             {
-                arrayQueueUpdateed.Add(item.queue.Queue_ID);
+                arrayQueueUpdated.Add(item.queue.Queue_ID);
                 DAL_Queue.UpdateQueueStatusByUserId(item.queue.UserId, EnumStation.UT, EnumQueueStatuses.SelectSealOrDiscard, EnumStation.UT, EnumQueueStatuses.SelectSealOrDiscard, String.Format(EnumMessage.SelectSealtOrDiscard, item.drugresult.Result), EnumQueueOutcomeText.Processing);
             }
-            return arrayQueueUpdateed;
+            return arrayQueueUpdated;
         }
 
         public DBContext.DrugResult GetByNRICAndUploadedDate(string NRIC, DateTime UploadedDate)
