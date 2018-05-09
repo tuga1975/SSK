@@ -131,7 +131,7 @@ namespace DutyOfficer
             }
             List<object> arrayData = new List<object>();
             new DAL_DrugResults().CheckDrugResult();
-            arrayData.AddRange(new DAL_Appointments().GetByDate(DateTime.Today.AddDays(-1)).Select(app => new
+            arrayData.AddRange(new DAL_Appointments().GetByDate(DateTime.Today).Select(app => new
             {
                 Queue_ID = app.Queue == null ? null : app.Queue.Queue_ID.ToString().Trim(),
                 Date = app.Date,
@@ -154,7 +154,7 @@ namespace DutyOfficer
                     content = (app.Queue == null ? string.Empty : app.Queue.QueueDetails.Where(c => c.Station == app.Queue.CurrentStation).FirstOrDefault().Message) ?? string.Empty
                 }
             }).ToList());
-            arrayData.AddRange(new DAL_QueueNumber().GetQueueWalkInByDate(DateTime.Today.AddDays(-1)).Select(queue => new
+            arrayData.AddRange(new DAL_QueueNumber().GetQueueWalkInByDate(DateTime.Today).Select(queue => new
             {
                 Queue_ID = queue.Queue_ID,
                 Date = queue.CreatedTime.Date,

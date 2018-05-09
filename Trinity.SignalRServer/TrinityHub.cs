@@ -119,7 +119,10 @@ namespace Trinity.NotificationServer
             }
             try
             {
-                Program.MainForm.WriteToConsole(notificationInfo.Name+": "+(DateTime.Now - notificationInfo.dateSend).TotalSeconds);
+                if (notificationInfo.Name!=NotificationNames.DEVICE_STATUS_CHANGED)
+                {
+                    Program.MainForm.WriteToConsole(notificationInfo.Name + ": " + (DateTime.Now - notificationInfo.dateSend).TotalSeconds);
+                }
             }
             catch (Exception)
             {
