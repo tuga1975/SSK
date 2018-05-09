@@ -70,7 +70,7 @@
                     type: objNotify.Type,
                     dateTime: objNotify.Date,
                     message: objNotify.Subject,
-                    content: objNotify.Content,
+                    content: objNotify.ContentTextarea,
                     notificationId: objNotify.NotificationID,
                 });
         $table.bootstrapTable('load', dataSource);
@@ -104,7 +104,7 @@
                     message: element.Subject,
                     isReaded : element.IsRead,
                     notificationId: element.NotificationID,
-                    content: element.Content
+                    content: element.ContentTextarea
                 });
             });
         }
