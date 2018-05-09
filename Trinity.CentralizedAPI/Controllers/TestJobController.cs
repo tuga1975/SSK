@@ -28,5 +28,12 @@ namespace Trinity.BackendAPI.Controllers
             Trinity.BackendAPI.ScheduledTask.JobAbsent jobAbsent = new ScheduledTask.JobAbsent();
             jobAbsent.Execute(null);
         }
+
+        [HttpGet]
+        public async void CheckSendNoti()
+        {
+            
+            await System.Threading.Tasks.Task.Run(() => Trinity.SignalR.Client.Instance.SSACompleted("AAAA"));
+        }
     }
 }

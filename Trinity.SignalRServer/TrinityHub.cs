@@ -117,6 +117,15 @@ namespace Trinity.NotificationServer
             {
                 Clients.Clients(Program.ProfileConnected.Where(d => d.isApp && d.Station == EnumStation.DUTYOFFICER).Select(d => d.ConnectionId).ToList()).OnNewNotification(notificationInfo);
             }
+            try
+            {
+                Program.MainForm.WriteToConsole(notificationInfo.Name+": "+(DateTime.Now - notificationInfo.dateSend).TotalSeconds);
+            }
+            catch (Exception)
+            {
+                
+            }
+            
         }
 
 
