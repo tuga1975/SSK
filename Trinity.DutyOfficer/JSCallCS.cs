@@ -67,6 +67,7 @@ namespace DutyOfficer
                 this._web.LoadPopupHtml("QueuePopupDrugs.html", new
                 {
                     Date = DateTime.Today.ToString("dd MMM yyyy"),
+                    Name = user.Name,
                     TestResults = new
                     {
                         AMPH = dbDrugResult.AMPH,
@@ -234,7 +235,12 @@ namespace DutyOfficer
 
         public void LoadPopupOutcome(string userId)
         {
-            this._web.LoadPopupHtml("QueuePopupOutcome.html", userId);
+            Trinity.BE.User user = new DAL_User().GetUserById(userId);
+            this._web.LoadPopupHtml("QueuePopupOutcome.html", new
+            {
+                UserId = user.UserId,
+                Name = user.Name
+            });
         }
 
         public void startInstanceSmartcard()
