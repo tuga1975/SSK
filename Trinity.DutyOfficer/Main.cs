@@ -95,7 +95,10 @@ namespace DutyOfficer
                                 }
                                 else
                                 {
-                                    this.LayerWeb.LoadPopupHtml("QueuePopupOutcome.html", user.UserId);
+                                    this.LayerWeb.LoadPopupHtml("QueuePopupOutcome.html", new {
+                                        UserId = user.UserId,
+                                        Name = user.Name
+                                    });
                                 }
                             }
                         }

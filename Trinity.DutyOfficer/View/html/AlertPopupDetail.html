@@ -42,7 +42,7 @@
         if(data){
             $("#valMessageSource").text(data.source);
             $("#valDateTime").text(formatDate(data.dateTime));
-            $("#valContent").val(data.message);
+            $("#valContent").val(data.content);
             switch(data.type){
                 case Type.error :
                     $("#valType").text(Type.error);

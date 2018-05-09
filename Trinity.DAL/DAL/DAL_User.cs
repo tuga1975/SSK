@@ -161,8 +161,7 @@ namespace Trinity.DAL
                         UserId = item.UserId,
                         Status = item.Status,
                         SmartCardId = item.SmartCardId,
-                        RightThumbFingerprint =
-                        item.RightThumbFingerprint,
+                        RightThumbFingerprint = item.RightThumbFingerprint,
                         LeftThumbFingerprint = item.LeftThumbFingerprint,
                         Name = item.Name,
                         NRIC = item.NRIC,

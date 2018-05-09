@@ -106,7 +106,7 @@ namespace ALK.CodeBehind.Authentication
         public void NRICAuthentication(string nric)
         {
             DAL_User dal_User = new DAL_User();
-            var supervisee = dal_User.GetSuperviseeByNRIC(nric);
+            var supervisee = dal_User.GetByNRIC(nric);
 
             if (supervisee == null)
             {
@@ -116,23 +116,42 @@ namespace ALK.CodeBehind.Authentication
             }
             else
             {
-                if (supervisee.Status == EnumUserStatuses.Blocked)
+                string RoleName = supervisee.Membership_UserRoles.FirstOrDefault().Membership_Roles.Name;
+                if (RoleName.Equals(EnumUserRoles.USA, StringComparison.InvariantCultureIgnoreCase) || RoleName.Equals(EnumUserRoles.Supervisee, StringComparison.InvariantCultureIgnoreCase) || RoleName.Equals(EnumUserRoles.DutyOfficer, StringComparison.InvariantCultureIgnoreCase))
                 {
-                    CSCallJS.ShowMessage(_web, "This supervisee was blocked");
-                    System.Threading.Tasks.Task.Factory.StartNew(() => BarcodeScannerUtil.Instance.StartScanning(BarcodeScannerCallback));
-                    return;
+                    if (supervisee.Status.Equals(EnumUserStatuses.Blocked, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        CSCallJS.ShowMessage(_web, "This supervisee was blocked");
+                        System.Threading.Tasks.Task.Factory.StartNew(() => BarcodeScannerUtil.Instance.StartScanning(BarcodeScannerCallback));
+                        return;
+                    }
+
+                    // Create a session object to store UserLogin information
+                    Session session = Session.Instance;
+                    session.IsSmartCardAuthenticated = true;
+                    session.IsFingerprintAuthenticated = true;
+                    session[CommonConstants.SUPERVISEE] = new Trinity.BE.User()
+                    {
+                        UserId = supervisee.UserId,
+                        Status = supervisee.Status,
+                        SmartCardId = supervisee.SmartCardId,
+                        RightThumbFingerprint = supervisee.RightThumbFingerprint,
+                        LeftThumbFingerprint = supervisee.LeftThumbFingerprint,
+                        Name = supervisee.Name,
+                        NRIC = supervisee.NRIC,
+                        Role = supervisee.Membership_UserRoles.FirstOrDefault().Membership_Roles.Name,
+                        IsFirstAttempt = supervisee.IsFirstAttempt
+                    };
+
+                    BarcodeScannerUtil.Instance.Disconnect();
+
+                    // raise succeeded event
+                    RaiseNRICSucceededEvent();
                 }
-
-                // Create a session object to store UserLogin information
-                Session session = Session.Instance;
-                session.IsSmartCardAuthenticated = true;
-                session.IsFingerprintAuthenticated = true;
-                session[CommonConstants.SUPERVISEE] = supervisee;
-
-                BarcodeScannerUtil.Instance.Disconnect();
-
-                // raise succeeded event
-                RaiseNRICSucceededEvent();
+                else
+                {
+                    CSCallJS.ShowMessage(_web, "NRIC " + nric + " is not have access.");
+                }
             }
         }
     }

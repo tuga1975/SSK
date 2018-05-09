@@ -41,5 +41,30 @@ namespace Trinity.DAL
             }
 
         }
+        public void Insert(Trinity.DAL.DBContext.Membership_Users user, string Subject, string Body, bool isEmail)
+        {
+            using (var transaction = _localUnitOfWork.DataContext.Database.BeginTransaction())
+            {
+                try
+                {
+                    _localUnitOfWork.GetRepository<DAL.DBContext.Message>().Add(new Message()
+                    {
+                        Email = isEmail,
+                        SMS = isEmail ? false : true,
+                        MsgContent = Body,
+                        Subject = Subject,
+                        UserId = user.UserId
+                    });
+                    _localUnitOfWork.DataContext.SaveChanges();
+                    transaction.Commit();
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    throw ex;
+                }
+            }
+
+        }
     }
 }
