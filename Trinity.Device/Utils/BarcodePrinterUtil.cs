@@ -7,6 +7,7 @@ using System.Management;
 using System.Threading;
 using System.Windows.Forms;
 using Trinity.Common;
+using Trinity.Common.Utils;
 
 namespace Trinity.Device.Util
 {
@@ -72,11 +73,11 @@ namespace Trinity.Device.Util
             {
                 try
                 {
-                    //MessageBox.Show("PrintTTLabel ");
+                    //LogManager.Debug("PrintTTLabel ");
                     // validate
                     if (!ttLabelInfo.IsValid())
                     {
-                        MessageBox.Show("!ttLabelInfo.IsValid");
+                        LogManager.Debug("!ttLabelInfo.IsValid");
                         return false;
                     }
 
@@ -86,7 +87,8 @@ namespace Trinity.Device.Util
                     //Setup the media size and sensor type info
                     // page size 55mm x 30mm
                     // template size 45mm x 30mm (actually 55mm x 32.5mm)
-                    TSCLIB_DLL.setup("55", "32.5", "4", "8", "0", "0", "0");
+                    //TSCLIB_DLL.setup("55", "32.5", "4", "8", "0", "0", "0");
+                    TSCLIB_DLL.setup("50", "30", "4", "8", "0", "0", "0");
                     TSCLIB_DLL.sendcommand("GAP 3mm, 0mm");
                     //TSCLIB_DLL.setup("52.5", "30", "4", "8", "0", "0", "0");
                     //TSCLIB_DLL.sendcommand("GAP 1.3mm, 0mm");
@@ -98,8 +100,10 @@ namespace Trinity.Device.Util
 
                     // DPI = 203 => 8px = 1 mm
                     //Draw windows font
-                    int startX = 54;
-                    int startY = 32;
+                    //int startX = 54;
+                    //int startY = 32;
+                    int startX = 48;
+                    int startY = 16;
                     //int startX = 40;
                     //int startY = 0;
                     string fontName = "ARIAL";
@@ -135,13 +139,13 @@ namespace Trinity.Device.Util
                     TSCLIB_DLL.printlabel("1", "1");
                     TSCLIB_DLL.closeport();
 
-                    //MessageBox.Show("Print OK");
+                    //LogManager.Debug("Print OK");
                     return true;
                 }
                 catch (Exception ex)
                 {
                     //Debug.WriteLine("Print exception: " + ex.ToString());
-                    MessageBox.Show("Print exception: " + ex.ToString());
+                    LogManager.Debug("Print exception: " + ex.ToString());
                     return false;
                 }
             }
@@ -151,11 +155,11 @@ namespace Trinity.Device.Util
         {
             try
             {
-                //MessageBox.Show("PrintTTLabel ");
+                //LogManager.Debug("PrintTTLabel ");
                 // validate
                 if (!ttLabelInfo.IsValid())
                 {
-                    MessageBox.Show("!ttLabelInfo.IsValid");
+                    LogManager.Debug("!ttLabelInfo.IsValid");
                     return false;
                 }
 
@@ -215,13 +219,13 @@ namespace Trinity.Device.Util
                 TSCLIB_DLL.printlabel("1", "1");
                 TSCLIB_DLL.closeport();
 
-                //MessageBox.Show("Print OK");
+                //LogManager.Debug("Print OK");
                 return true;
             }
             catch (Exception ex)
             {
                 //Debug.WriteLine("Print exception: " + ex.ToString());
-                MessageBox.Show("Print exception: " + ex.ToString());
+                LogManager.Debug("Print exception: " + ex.ToString());
                 return false;
             }
         }
@@ -230,11 +234,11 @@ namespace Trinity.Device.Util
         {
             try
             {
-                //MessageBox.Show("PrintTTLabel ");
+                //LogManager.Debug("PrintTTLabel ");
                 // validate
                 if (!ttLabelInfo.IsValid())
                 {
-                    MessageBox.Show("!ttLabelInfo.IsValid");
+                    LogManager.Debug("!ttLabelInfo.IsValid");
                     return false;
                 }
 
@@ -292,13 +296,13 @@ namespace Trinity.Device.Util
                 TSCLIB_DLL.printlabel("1", "1");
                 TSCLIB_DLL.closeport();
 
-                //MessageBox.Show("Print OK");
+                //LogManager.Debug("Print OK");
                 return true;
             }
             catch (Exception ex)
             {
                 //Debug.WriteLine("Print exception: " + ex.ToString());
-                MessageBox.Show("Print exception: " + ex.ToString());
+                LogManager.Debug("Print exception: " + ex.ToString());
                 return false;
             }
         }
@@ -317,7 +321,7 @@ namespace Trinity.Device.Util
                     // validate
                     if (!mubLabelInfo.IsValid())
                     {
-                        //MessageBox.Show("Model is not valid.");
+                        //LogManager.Debug("Model is not valid.");
                         return false;
                     }
 
@@ -346,7 +350,7 @@ namespace Trinity.Device.Util
                     // send FEED command
                     //TSCLIB_DLL.sendcommand("FEED 80");
 
-                    TSCLIB_DLL.sendcommand("SIZE 40mm, 82mm");
+                    TSCLIB_DLL.sendcommand("SIZE 40mm, 80mm");
                     TSCLIB_DLL.sendcommand("GAP 3mm, 0mm");
                     //TSCLIB_DLL.sendcommand("SIZE 42.5mm, 80mm");
                     //TSCLIB_DLL.sendcommand("GAP 1.3mm, 0mm");
@@ -469,7 +473,7 @@ namespace Trinity.Device.Util
                 catch (Exception ex)
                 {
                     //Debug.WriteLine("Print exception: " + ex.ToString());
-                    MessageBox.Show("Print exception: " + ex.ToString());
+                    LogManager.Debug("Print exception: " + ex.ToString());
                     return false;
                 }
             }
@@ -509,7 +513,7 @@ namespace Trinity.Device.Util
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                LogManager.Debug(ex.Message);
                 Debug.WriteLine("Print exception: " + ex.ToString());
                 // Delete temp file
                 File.Delete(filePath);

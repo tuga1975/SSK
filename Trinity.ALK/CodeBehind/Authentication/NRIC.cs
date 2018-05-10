@@ -53,7 +53,7 @@ namespace ALK.CodeBehind.Authentication
             }
         }
 
-        private void BarcodeScannerCallback(string value, string error)
+        public void BarcodeScannerCallback(string value, string error)
         {
             //MessageBox.Show("BarcodeScannerCallback");
             if (string.IsNullOrEmpty(error))
