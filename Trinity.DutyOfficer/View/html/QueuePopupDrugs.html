@@ -3,6 +3,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">Drug Tests <em class="currentDate" current-date>15 February 2018</em> </h4>
+                <h4 class="modal-title" name=""></h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -91,7 +92,9 @@
 <script type="text/javascript">
     api.ready(function (model) {
         if (model != null) {
-            $('[namedrug="time"]').text(model.Date);
+            $('#idQueueDrugs [name]').text(model.Name);
+            $('#idQueueDrugs [current-date]').text(model.Date);
+            //$('#idQueueDrugs [namedrug="time"]').text(model.Date);
             for (var key in model.TestResults) {
                 var data = model.TestResults[key];
                 data = data == null ? 'null' : data.toString().toLowerCase();
@@ -135,15 +138,15 @@
             e.preventDefault(); // avoid to execute the actual submit of the form.
         });
 
-        var today = new Date();
-        var dd = today.getDate();
-        var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-        var mm = monthNames[today.getMonth()];
-        var yyyy = today.getFullYear();
-        if (dd < 10) {
-            dd = '0' + dd;
-        }
-        var today = dd + ' ' + mm + ' ' + yyyy;
-        $('[current-date]').text(today);
+        //var today = new Date();
+        //var dd = today.getDate();
+        //var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        //var mm = monthNames[today.getMonth()];
+        //var yyyy = today.getFullYear();
+        //if (dd < 10) {
+        //    dd = '0' + dd;
+        //}
+        //var today = dd + ' ' + mm + ' ' + yyyy;
+        //$('[current-date]').text(today);
     });
 </script>

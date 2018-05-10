@@ -163,6 +163,8 @@ namespace Trinity.SignalR
             await WaitConnectFalse();
             if (notificationInfo != null)
                 notificationInfo.Source = notificationInfo.Source == null ? Station : notificationInfo.Source;
+
+            notificationInfo.dateSend = DateTime.Now;
             await HubProxy.Invoke("OnNewNotification", notificationInfo);
         }
 

@@ -170,18 +170,19 @@ namespace Trinity.DAL
 
             }
 
-            if (string.IsNullOrEmpty(appointment.Timeslot_ID))
-            {
-                appointment.Timeslot_ID = timeslotID;
-                _localUnitOfWork.GetRepository<Trinity.DAL.DBContext.Appointment>().Update(appointment);
-            }
+            
 
             _localUnitOfWork.GetRepository<Trinity.DAL.DBContext.Queue>().Add(dataInsert);
             _localUnitOfWork.GetRepository<Trinity.DAL.DBContext.QueueDetail>().AddRange(arrayQueueDetail);
 
-            Trinity.DAL.DBContext.Appointment appointmentUpdate = _localUnitOfWork.DataContext.Appointments.FirstOrDefault(d => d.ID == appointmentID);
-            appointmentUpdate.Status = EnumAppointmentStatuses.Reported;
-            _localUnitOfWork.GetRepository<Trinity.DAL.DBContext.Appointment>().Update(appointmentUpdate);
+
+            if (string.IsNullOrEmpty(appointment.Timeslot_ID))
+            {
+                appointment.Timeslot_ID = timeslotID;
+            }
+            appointment.Status = EnumAppointmentStatuses.Reported;
+            appointment.ReportTime = DateTime.Now;
+            _localUnitOfWork.GetRepository<Trinity.DAL.DBContext.Appointment>().Update(appointment);
 
             _localUnitOfWork.Save();
             return dataInsert;

@@ -245,7 +245,7 @@ namespace Trinity.Device.Util
                     returnValue.Success = true;
                 }else if (string.IsNullOrEmpty(returnValue.CardUID) && string.IsNullOrEmpty(returnValue.Description))
                 {
-                    returnValue.Description = "Smart card type unsupported! (Cannot get Card UID, support Mifare classic 4k only)";
+                    returnValue.Description = "Smart card type unsupported!";
                 }
 
                 OnCompleted(returnValue);

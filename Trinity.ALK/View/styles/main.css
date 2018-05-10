@@ -426,3 +426,57 @@
 .SSA-embed-responsive-1by1::before {
     padding-top: 100%;
 }
+
+
+[group-input] {
+    position: relative;
+    margin-bottom: 30px;
+}
+
+    [group-input]::before {
+        content: attr(group-input);
+        color: #209CDD;
+        font-size: 100%;
+        position: absolute;
+        z-index: 0;
+        top: 6px;
+        left: 0px;
+        max-width: 160px;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+
+    [group-input][scandoc="1"]::before {
+        padding-right: 10px;
+        background-image: url(../img/star.png);
+        background-position: top right;
+        background-repeat: no-repeat;
+        background-size: 6px;
+    }
+
+    [group-input] > input, [group-input] > select {
+        border: none;
+        font-size: 100%;
+        width: 100%;
+        padding-left: 180px;
+        position: relative;
+        z-index: 1;
+        background-color: transparent;
+        outline: none;
+        height: 100%;
+        padding-top: 8px;
+        padding-bottom: 8px;
+    }
+
+    [group-input] > input, [group-input] > select {
+        border-bottom: 1px solid #ccc;
+    }
+
+        [group-input] > input:focus, [group-input] > input:hover, [group-input] > select:focus, [group-input] > select:hover {
+            border-bottom: 1px solid #1CACF6;
+        }
+
+:-ms-input-placeholder {
+    font-style: italic;
+}

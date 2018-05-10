@@ -2,22 +2,13 @@
     <div class="titles"><span class="underline">Login</span></div><br />
     <div class="contentWrapper">
         <div class="contentForm">
-            <div class="container contentPrinting text-center center-block ">
-                <div class="input-group" data-tip="Enter your NRIC">
-                    <!--<span class="input-group-addon">NRIC:</span>-->
-                    <input id="loginNRIC" type="text" class="form-control pri" name="loginNRIC" placeholder="NRIC"/>
-                </div>
-                <br />
-                <div class="input-group" data-tip="Enter your Password">
-                    <!--<span class="input-group-addon">Password:</span>-->
-                    <input id="loginPassword" type="password" class="form-control pri" name="loginPassword" placeholder="Password"/>
-                </div>
-            </div>
+            <div group-input="NRIC"><input type="text" placeholder="Enter NRIC" name="loginNRIC" id="loginNRIC"></div>
+            <div group-input="Password" style="margin-bottom:15px;"><input type="text" placeholder="Enter Password" name="loginPassword" id="loginPassword"></div>
         </div>
     </div>
     <div id="divSave">
-        <button type="button" class="btn btn-dark" id="CancelBtn">CANCEL</button>
-        <button type="button" class="btn btn-dark" id="LoginBtn">SUBMIT</button>
+        <button type="button" class="btn btn-dark" id="CancelBtn" style="border-radius:5px;margin-right:20px;">CANCEL</button>
+        <button type="button" class="btn btn-dark" id="LoginBtn" style="border-radius:5px;background-color:#1CACF6;color:#FFF !important;">SUBMIT</button>
     </div>
 </form>
 <script type="text/javascript">

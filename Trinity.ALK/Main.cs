@@ -31,7 +31,7 @@ namespace ALK
         private Trinity.BE.PopupModel _popupModel;
 
         public System.Timers.Timer _timerCheckLogout;
-        private long? _timeActionApp;
+        private long? _timeActionApp = null;
         public bool _isPrintingMUBTT = false;
 
 
@@ -126,7 +126,7 @@ namespace ALK
 
             if (user != null)
             {
-                if (user.Role.Equals(EnumUserRoles.Supervisee, StringComparison.InvariantCultureIgnoreCase) || user.Role.Equals(EnumUserRoles.DutyOfficer, StringComparison.InvariantCultureIgnoreCase))
+                if (user.Role.Equals(EnumUserRoles.USA, StringComparison.InvariantCultureIgnoreCase) || user.Role.Equals(EnumUserRoles.Supervisee, StringComparison.InvariantCultureIgnoreCase) || user.Role.Equals(EnumUserRoles.DutyOfficer, StringComparison.InvariantCultureIgnoreCase))
                 {
                     // Only enrolled supervisees are allowed to login
                     if (user.Status.Equals(EnumUserStatuses.Blocked, StringComparison.InvariantCultureIgnoreCase))
@@ -139,7 +139,7 @@ namespace ALK
                         SmartCard_OnSmartCardFailed("You haven't enrolled yet.", "Supervisee " + user.Name + " hasn't enrolled yet.");
                         return;
                     }
-                    if (user.Role.Equals(EnumUserRoles.Supervisee, StringComparison.InvariantCultureIgnoreCase))
+                    if (user.Role.Equals(EnumUserRoles.USA, StringComparison.InvariantCultureIgnoreCase) || user.Role.Equals(EnumUserRoles.Supervisee, StringComparison.InvariantCultureIgnoreCase))
                     {
                         var smartCard = new DAL_IssueCard().GetIssueCardBySmartCardId(cardUID);
                         if (smartCard == null)
@@ -152,7 +152,7 @@ namespace ALK
                             SmartCard_OnSmartCardFailed("Your smart card does not work.", "The smart card " + cardUID + " does not work.");
                             return;
                         }
-                        else if (smartCard.Status.Equals(EnumIssuedCards.Active, StringComparison.InvariantCultureIgnoreCase) && smartCard.Expired_Date < DateTime.Today)
+                        else if ((smartCard.Status.Equals(EnumIssuedCards.Active, StringComparison.InvariantCultureIgnoreCase) && smartCard.Expired_Date < DateTime.Today) || (user.Expired_Date.HasValue && user.Expired_Date.Value < DateTime.Today))
                         {
                             SmartCard_OnSmartCardFailed("Your smart card has already expired.", "The smart card " + cardUID + " has already expired.");
                             return;
@@ -402,7 +402,7 @@ namespace ALK
                     // navigate to Authentication_NRIC
                     NavigateTo(NavigatorEnums.Authentication_NRIC);
                 }
-                else if (currentUser.Role == EnumUserRoles.Supervisee)
+                else if (currentUser.Role.Equals(EnumUserRoles.USA, StringComparison.InvariantCultureIgnoreCase) || currentUser.Role.Equals(EnumUserRoles.Supervisee, StringComparison.InvariantCultureIgnoreCase))
                 {
                     // navigate to SuperviseeParticulars page
                     Trinity.SignalR.Client.Instance.UserLoggedIn(currentUser.UserId);
@@ -509,7 +509,7 @@ namespace ALK
                 // navigate to Authentication_NRIC
                 NavigateTo(NavigatorEnums.Authentication_NRIC);
             }
-            else if (currentUser.Role == EnumUserRoles.Supervisee)
+            else if (currentUser.Role.Equals(EnumUserRoles.USA, StringComparison.InvariantCultureIgnoreCase) || currentUser.Role.Equals(EnumUserRoles.Supervisee, StringComparison.InvariantCultureIgnoreCase))
             {
                 // navigate to SuperviseeParticulars page
                 Trinity.SignalR.Client.Instance.UserLoggedIn(currentUser.UserId);
@@ -640,10 +640,6 @@ namespace ALK
             {
                 Session session = Session.Instance;
                 Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-                if (user == null)
-                {
-                    MessageBox.Show("Tai sao user lai null");
-                }
                 LayerWeb.LoadPageHtml("Authentication/FingerPrint.html");
                 LayerWeb.RunScript("$('.status-text').css('color','#000').text('Please place your thumb print on the reader.');");
                 //if (user.LeftThumbFingerprint == null && user.RightThumbFingerprint == null)

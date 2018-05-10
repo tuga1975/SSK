@@ -37,6 +37,8 @@ public static class EnumUserRoles
     public const string Supervisee = "Supervisee";
     public const string EnrolmentOfficer = "EnrolmentOfficer";
     public const string CaseOfficer = "CaseOfficer";
+    public const string USA = "USA";
+    
 };
 
 public enum EnumErrorCodes

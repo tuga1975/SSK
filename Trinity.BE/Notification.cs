@@ -63,6 +63,15 @@ namespace Trinity.BE
         public string Content { get; set; }
 
         [DataMember]
+        public string ContentTextarea
+        {
+            get
+            {
+                return string.IsNullOrEmpty(Content) ? string.Empty : Content.Replace("<br/>", "\n").Replace("<br />", "\n");
+            }
+        }
+
+        [DataMember]
         public bool IsRead { get; set; }
 
         [DataMember]

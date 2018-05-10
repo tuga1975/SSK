@@ -229,6 +229,8 @@ namespace Trinity.Common
         public string QueueID { get; set; }
         public string Status { get; set; }
         public string notification_code { get; set; }
+
+        public DateTime dateSend { get; set; }
     }
 
     public class PrintMUBAndTTLabelsEventArgs

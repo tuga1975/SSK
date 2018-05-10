@@ -4,18 +4,16 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Reflection;
-using System.Text;
+using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using Trinity.BE;
 using Trinity.Common;
 using Trinity.Common.Common;
 using Trinity.DAL;
-using Trinity.Identity;
-using System.Linq;
 using Trinity.Device.Authentication;
 using Trinity.Device.Util;
+using Trinity.Identity;
 
 namespace DutyOfficer
 {
@@ -24,8 +22,8 @@ namespace DutyOfficer
     {
         private CodeBehind.PrintMUBAndTTLabels _printMUBAndTTLabel;
 
-        public event EventHandler<NRICEventArgs> OnNRICFailed;
-        public event EventHandler<ShowMessageEventArgs> OnShowMessage;
+        //public event EventHandler<NRICEventArgs> OnNRICFailed;
+        //public event EventHandler<ShowMessageEventArgs> OnShowMessage;
         public event Action OnLogOutCompleted;
         private bool _isPrintFailMUB = false;
         private bool _isPrintFailTT = false;
@@ -58,7 +56,7 @@ namespace DutyOfficer
             Trinity.Common.Utils.LogManager.Info("GetStationClolorDevice: " + JsonConvert.SerializeObject(_StationColorDevice));
             return _StationColorDevice;
         }
-        
+
         #region Queue
         public void LoadDrugsTest(string userId)
         {
@@ -69,6 +67,7 @@ namespace DutyOfficer
                 this._web.LoadPopupHtml("QueuePopupDrugs.html", new
                 {
                     Date = DateTime.Today.ToString("dd MMM yyyy"),
+                    Name = user.Name,
                     TestResults = new
                     {
                         AMPH = dbDrugResult.AMPH,
@@ -103,7 +102,7 @@ namespace DutyOfficer
             var dalQueue = new DAL_QueueNumber();
             dalQueue.UpdateQueueStatusByUserId(UserId, EnumStation.UT, EnumQueueStatuses.Finished, EnumStation.SSP, EnumQueueStatuses.Processing, "Waiting for SSP", EnumQueueOutcomeText.Processing);
 
-            
+
             var user = new DAL_User().GetUserById(UserId);
             var dalLabel = new DAL_Labels();
             string MarkingNumber = dalLabel.GetMarkingNumber(user.UserId, DateTime.Today);
@@ -131,9 +130,9 @@ namespace DutyOfficer
                 SmartCard.Instance.Start();
                 _isFocusQueue = true;
             }
-            List<object> arrayDataa = new List<object>();
+            List<object> arrayData = new List<object>();
             new DAL_DrugResults().CheckDrugResult();
-            arrayDataa.AddRange(new DAL_Appointments().GetByDate(DateTime.Today).Select(app => new
+            arrayData.AddRange(new DAL_Appointments().GetByDate(DateTime.Today).Select(app => new
             {
                 Queue_ID = app.Queue == null ? null : app.Queue.Queue_ID.ToString().Trim(),
                 Date = app.Date,
@@ -156,7 +155,7 @@ namespace DutyOfficer
                     content = (app.Queue == null ? string.Empty : app.Queue.QueueDetails.Where(c => c.Station == app.Queue.CurrentStation).FirstOrDefault().Message) ?? string.Empty
                 }
             }).ToList());
-            arrayDataa.AddRange(new DAL_QueueNumber().GetQueueWalkInByDate(DateTime.Today).Select(queue => new
+            arrayData.AddRange(new DAL_QueueNumber().GetQueueWalkInByDate(DateTime.Today).Select(queue => new
             {
                 Queue_ID = queue.Queue_ID,
                 Date = queue.CreatedTime.Date,
@@ -179,7 +178,7 @@ namespace DutyOfficer
                     content = queue.QueueDetails.Where(c => c.Station == queue.CurrentStation).FirstOrDefault().Message == null ? "" : queue.QueueDetails.Where(c => c.Station == queue.CurrentStation).FirstOrDefault().Message
                 }
             }).ToList());
-            return arrayDataa;
+            return arrayData;
         }
         public string GetResultUT(string NRIC, DateTime date)
         {
@@ -220,13 +219,13 @@ namespace DutyOfficer
         {
             var dalQueue = new DAL_QueueNumber();
             Trinity.BE.QueueInfo queueInfo = dalQueue.GetQueueInfoByQueueID(new Guid(queue_ID));
-            if (queueInfo.CurrentStation==EnumStation.UT)
+            if (queueInfo.CurrentStation == EnumStation.UT)
             {
                 if (queueInfo.Status == EnumQueueStatuses.Finished || queueInfo.Status == EnumQueueStatuses.SelectSealOrDiscard)
                 {
                     queueInfo.Status = GetResultUT(queueInfo.NRIC, queueInfo.Date.Date);
                 }
-                else if(queueInfo.Status!=EnumQueueStatuses.Errors)
+                else if (queueInfo.Status != EnumQueueStatuses.Errors)
                 {
                     queueInfo.Status = string.Empty;
                 }
@@ -236,7 +235,12 @@ namespace DutyOfficer
 
         public void LoadPopupOutcome(string userId)
         {
-            this._web.LoadPopupHtml("QueuePopupOutcome.html", userId);
+            Trinity.BE.User user = new DAL_User().GetUserById(userId);
+            this._web.LoadPopupHtml("QueuePopupOutcome.html", new
+            {
+                UserId = user.UserId,
+                Name = user.Name
+            });
         }
 
         public void startInstanceSmartcard()
@@ -244,8 +248,6 @@ namespace DutyOfficer
             _isFocusQueue = true;
             //SmartCard.Instance.Start();
         }
-
-
 
         public void TapSmartCardOnQueueSucceed(string queueId)
         {
@@ -488,14 +490,14 @@ namespace DutyOfficer
             {
                 dataRe = dataRe.Where(d => d.Category.Equals(category)).ToList();
             }
-            return dataRe.OrderBy(d=>d.StartTime).Select(d => new
+            return dataRe.OrderBy(d => d.StartTime).Select(d => new
             {
                 ID = d.Timeslot_ID,
                 Time = string.Format("{0:D2}:{1:D2}", d.StartTime.Value.Hours, d.StartTime.Value.Minutes) + " - " + string.Format("{0:D2}:{1:D2}", d.EndTime.Value.Hours, d.EndTime.Value.Minutes)
             });
 
         }
-        public List<Appointment> GetAllAppoinments(string date, string category,string timeslot)
+        public List<Appointment> GetAllAppoinments(string date, string category, string timeslot)
         {
             if (_isFocusQueue)
             {
@@ -1050,6 +1052,4 @@ namespace DutyOfficer
         }
     }
     #endregion
-
-
 }

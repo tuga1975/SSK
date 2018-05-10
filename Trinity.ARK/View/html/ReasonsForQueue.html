@@ -85,7 +85,11 @@
         });
     });
     function scanDocumentAbsenceCallbackImg(arrImg) {
-        api.server.SaveReasonForQueue(JSON.stringify(arrrayAbsence), JSON.stringify(arrImg));
+        if (arrImg != null && arrImg.length > 0) {
+            api.server.SaveReasonForQueue(JSON.stringify(arrrayAbsence), JSON.stringify(arrImg));
+        } else {
+            alert("There are no scanned documents.<br/>Please try again.");
+        }
     }
 </script>
 <script type="text/javascript">

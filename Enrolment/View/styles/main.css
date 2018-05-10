@@ -499,3 +499,6 @@ highlight {
     font-style: italic;
     color: #c4c8cb;
 }
+.pagination-detail {
+    display: none;
+}
