@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Trinity.Common;
 using Trinity.Common.Utils;
@@ -57,7 +54,7 @@ namespace ARK.CodeBehind.Authentication
             }
         }
 
-        private void BarcodeScannerCallback(string value, string error)
+        public void BarcodeScannerCallback(string value, string error)
         {
             LogManager.Debug("BarcodeScannerCallback value: " + value + ", error: " + error);
             if (string.IsNullOrEmpty(error))
@@ -138,7 +135,7 @@ namespace ARK.CodeBehind.Authentication
 
                     // raise succeeded event
                     RaiseNRICSucceededEvent();
-                    BarcodeScannerUtil.Instance.Disconnect();
+                    //BarcodeScannerUtil.Instance.Disconnect();
                 }
             }
         }

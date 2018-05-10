@@ -154,7 +154,7 @@ namespace Trinity.Device.Util
         /// </summary>
         public void StartScanning(Action<string, string> barcodeScannerCallback)
         {
-            LogManager.Debug("Start barcode Scanner ");
+            LogManager.Debug("Start barcode Scanning");
             // Open port
             if (!Connect())
             {
@@ -177,9 +177,11 @@ namespace Trinity.Device.Util
 
             if (this.serialPort1.IsOpen)
             {
+                LogManager.Debug("Barcode Scanner: Open port OK.");
                 try
                 {
                     this.serialPort1.Write(sendBytes, 0, sendBytes.Length);
+                    LogManager.Debug("Barcode Scanner: Write command OK.");
                     //MessageBox.Show(this.serialPort1.PortName + "\r\n Write OK");
 
                     // get data
@@ -189,23 +191,35 @@ namespace Trinity.Device.Util
                         string data = string.Empty;
                         string description = string.Empty;
                         _stopReceiveData = false;
+                        LogManager.Debug("Barcode Scanner: Start looping.");
                         for (; ; )
                         {
                             Thread.Sleep(100);
                             data = ReceiveData_Auto(this.serialPort1, ref description);
 
                             // Stop manually
-                            if (_stopReceiveData)
+                            //if (_stopReceiveData)
+                            //{
+                            //    break;
+                            //}
+
+                            // Get data success
+                            LogManager.Debug("Barcode Scanner: Get data success.");
+                            LogManager.Debug("Barcode Scanner: data:" + data);
+                            if (string.IsNullOrWhiteSpace(data))
                             {
+                                LogManager.Debug("Barcode Scanner: data: IsNullOrWhiteSpace, restart scanning automatic.");
+                                StartScanning(barcodeScannerCallback);
                                 break;
                             }
 
-                            // Get data success
                             if (!string.IsNullOrEmpty(data))
                             {
+                                LogManager.Debug("Barcode Scanner: COM returned data.");
                                 // Restart scanning if COM return "ERROR"
                                 if (data == "ERROR")
                                 {
+                                    LogManager.Debug("Barcode Scanner: COM return ERROR byte, restart scanning automatic.");
                                     StartScanning(barcodeScannerCallback);
                                     break;
                                 }
@@ -219,10 +233,13 @@ namespace Trinity.Device.Util
                             // Get data unsuccess
                             if (!string.IsNullOrEmpty(description) && !description.Contains("no data"))
                             {
+                                LogManager.Debug("Barcode Scanner: Get data unsuccess.");
+                                LogManager.Debug("Barcode Scanner: description: " + description);
                                 System.Threading.Tasks.Task.Factory.StartNew(() => barcodeScannerCallback(data, description));
                                 break;
                             }
                         }
+                        LogManager.Debug("Barcode Scanner: End Looping.");
                     });
                 }
                 catch (IOException ex)
@@ -242,14 +259,17 @@ namespace Trinity.Device.Util
 
         private string ReceiveData_Auto(SerialPort serialPort, ref string description)
         {
+            LogManager.Debug("Barcode Scanner: Start ReceiveData_Auto.");
             Byte[] recvBytes = new Byte[RECV_DATA_MAX];
             int recvSize;
             string returnValue = string.Empty;
 
-            if (serialPort.IsOpen == false)
+            //if (serialPort.IsOpen == false)
+            if (this.serialPort1.IsOpen == false)
             {
                 //MessageBox.Show(serialPort.PortName + " is disconnected.");
-                description = serialPort.PortName + " is disconnected.";
+                description = this.serialPort1.PortName + " is disconnected.";
+                LogManager.Debug("ReceiveData_Auto: disconnected: " + description);
                 return returnValue;
             }
 
@@ -257,18 +277,20 @@ namespace Trinity.Device.Util
             {
                 try
                 {
-                    recvSize = readDataSub(recvBytes, serialPort);
+                    recvSize = readDataSub(recvBytes, this.serialPort1);
                 }
                 catch (IOException ex)
                 {
                     //MessageBox.Show(serialPort.PortName + "\r\n" + ex.Message);    // disappeared
                     description = "IOException";
+                    LogManager.Debug("ReceiveData_Auto: IOException: " + description);
                     break;
                 }
                 if (recvSize == 0)
                 {
                     //MessageBox.Show(serialPort.PortName + " has no data.");
-                    description = serialPort.PortName + " has no data.";
+                    description = this.serialPort1.PortName + " has no data.";
+                    LogManager.Debug("ReceiveData_Auto: no data: " + description);
                     break;
                 }
                 if (recvBytes[0] == STX)
@@ -291,12 +313,14 @@ namespace Trinity.Device.Util
                     int lastIndex = Array.FindLastIndex(recvBytes, b => b != 0);
                     //Array.Resize(ref recvBytes, lastIndex + 1);
                     Array.Resize(ref recvBytes, lastIndex);
+                    LogManager.Debug("ReceiveData_Auto: " + PrintByteArray(recvBytes));
 
                     returnValue = Encoding.GetEncoding("Shift_JIS").GetString(recvBytes);
                     break;
                 }
             }
 
+            LogManager.Debug("ReceiveData_Auto: returnValue: " + returnValue + ", description: " + description);
             return returnValue;
         }
 

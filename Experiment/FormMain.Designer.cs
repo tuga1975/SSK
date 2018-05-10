@@ -393,6 +393,7 @@
             // 
             // button13
             // 
+            this.button13.Enabled = false;
             this.button13.Location = new System.Drawing.Point(517, 460);
             this.button13.Margin = new System.Windows.Forms.Padding(2);
             this.button13.Name = "button13";
