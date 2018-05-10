@@ -46,9 +46,7 @@ function getRealtimeNotificationServer(notification){
                     message: objNotify.Content
                 });
     }
-    var isLarge = lstAlerts.length >= 10;
-    $(".notifyCount").text(isLarge ? "10+" : lstAlerts.length);
-    $(".notifyCount").show();
+    $('[noti-alert]').attr('noti-alert', (lstAlerts.length > 10) ? '10+' : lstAlerts.length);
 }
 
 function refreshQueueNumbers(currentQueueNumber, nextQueueNumberList) {

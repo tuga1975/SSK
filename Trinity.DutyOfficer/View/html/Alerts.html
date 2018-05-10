@@ -80,8 +80,7 @@
         if(lstAlerts){
             lstAlerts = [];
         }
-        $(".notifyCount").text("");
-        $(".notifyCount").hide();
+        $('[noti-alert]').attr('noti-alert', lstAlerts.length);
     }
 
     api.server.getAlertsSendToDutyOfficer(function (data) {

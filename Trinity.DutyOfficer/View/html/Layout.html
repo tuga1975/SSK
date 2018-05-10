@@ -31,8 +31,8 @@
         .modal {
             text-align: center;
             padding: 0 !important;
-            overflow-x:hidden;
-            overflow-y:auto;
+            overflow-x: hidden;
+            overflow-y: auto;
         }
 
             .modal:before {
@@ -53,13 +53,36 @@
             width: 800px;
             max-width: calc(100% - 20px);
         }
+
         #menu .menu-item {
-            width:calc(100% / 8);
-            padding:15px 5px;
-        } #menu [item-menu] {
+            width: calc(100% / 8);
+            padding: 15px 5px;
+        }
+
+        #menu [item-menu] {
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+        }
+
+        [noti-alert="0"]::after, [noti-alert=""]::after {
+            display: none;
+        }
+
+        [noti-alert]::after {
+            content: attr(noti-alert);
+            width: 30px;
+            height: 30px;
+            position: absolute;
+            right: 0px;
+            top: -10px;
+            text-align: center;
+            background-color: red;
+            color: #FFF;
+            border-radius: 50%;
+            font-size: 11px;
+            line-height: 29px;
+            font-weight: 700;
         }
     </style>
     <script type="text/javascript">
@@ -108,10 +131,10 @@
             <span class="icon-active"><img src="../img/icon-Q-active.png" /></span>
             <span id="Queue" item-menu="Queue" text-menu="Queue"></span>
         </div>
-        <div class="col menu-item d-flex justify-content-center" onclick="api.server.LoadPage('Alerts.html')">
+        <div class="col menu-item d-flex justify-content-center" onclick="api.server.LoadPage('Alerts.html')" noti-alert="0">
             <span class="icon"><img src="../img/icon-alerts.png" /></span>
             <span class="icon-active"><img src="../img/icon-alerts-active.png" /></span>
-            <span id="Alerts" item-menu="Alerts" text-menu="Alerts"><span class="notifyCount" style="display:none;">10+</span></span>
+            <span id="Alerts" item-menu="Alerts" text-menu="Alerts"></span>
         </div>
         <div class="col menu-item d-flex justify-content-center" onclick="api.server.LoadPage('Appointments.html')">
             <span class="icon"><img src="../img/icon-Appt.png" /></span>
@@ -145,22 +168,21 @@
         </div>
     </div>
 
-        <div id="parent-content">
-            <div id="content"></div>
-        </div>
+    <div id="parent-content">
+        <div id="content"></div>
+    </div>
 
-        <div class="loading">
-            <span class="loader"></span>
-        </div>
-        <div id="panel-popup">
-        </div>
+    <div class="loading">
+        <span class="loader"></span>
+    </div>
+    <div id="panel-popup">
+    </div>
 
 </body>
 </html>
 <script type="text/javascript">
     api.ready(function () {
         LoadStationColorDevice();
-        $(".notifyCount").hide();
         window.setInterval(function () {
             LoadStationColorDevice();
         }, 900000); // Auto call this to update color station every 15 mins
@@ -177,5 +199,5 @@
         api.server.GetStationClolorDevice(function (data) {
             SetStationColorDevice(data);
         });
-    };   
+    };
 </script>
