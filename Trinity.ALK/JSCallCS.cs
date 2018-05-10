@@ -884,9 +884,12 @@ namespace ALK
 
         public void RefreshSessionTimeout()
         {
-            if (_main._timerCheckLogout.Enabled)
-                _main._timerCheckLogout.Stop();
-            _main._timerCheckLogout.Start();
+            if (_main._timerCheckLogout != null)
+            {
+                if (_main._timerCheckLogout.Enabled)
+                    _main._timerCheckLogout.Stop();
+                _main._timerCheckLogout.Start();
+            }
         }
 
         //private void CheckIfMUBIsRemoved()

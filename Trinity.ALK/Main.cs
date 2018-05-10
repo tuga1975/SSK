@@ -49,11 +49,14 @@ namespace ALK
             _popupModel = new Trinity.BE.PopupModel();
 
             #region Initialize and register events
-            this._timerCheckLogout = new System.Timers.Timer();
-            this._timerCheckLogout.AutoReset = true;
-            this._timerCheckLogout.Interval = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["session_timeout"]) * 1000;
-            this._timerCheckLogout.Elapsed += TimeCheckLogout_EventHandler;
-
+            double _sessionTimeout = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["session_timeout"]);
+            if (_sessionTimeout > 0)
+            {
+                this._timerCheckLogout = new System.Timers.Timer();
+                this._timerCheckLogout.AutoReset = true;
+                this._timerCheckLogout.Interval = _sessionTimeout * 1000;
+                this._timerCheckLogout.Elapsed += TimeCheckLogout_EventHandler;
+            }
             // _jsCallCS
             _jsCallCS = new JSCallCS(this.LayerWeb, this);
             _jsCallCS.OnNRICFailed += JSCallCS_OnNRICFailed;
@@ -306,10 +309,14 @@ namespace ALK
 
             // navigate
             NavigateTo(NavigatorEnums.Authentication_SmartCard);
-            if (_timerCheckLogout.Enabled)
+            if (_timerCheckLogout != null)
             {
-                _timerCheckLogout.Stop();
+                if (_timerCheckLogout.Enabled)
+                {
+                    _timerCheckLogout.Stop();
+                }
             }
+            
         }
 
         private void NRIC_OnNRICSucceeded()

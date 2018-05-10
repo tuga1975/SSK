@@ -50,12 +50,14 @@ namespace ARK
 
             #region Initialize and register events
 
-            this._timerCheckLogout = new System.Timers.Timer();
-            this._timerCheckLogout.AutoReset = true;
-            this._timerCheckLogout.Interval = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["session_timeout"]) * 1000;
-            this._timerCheckLogout.Elapsed += TimeCheckLogout_EventHandler;
-
-
+            double _sessionTimeout = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["session_timeout"]);
+            if (_sessionTimeout>0)
+            {
+                this._timerCheckLogout = new System.Timers.Timer();
+                this._timerCheckLogout.AutoReset = true;
+                this._timerCheckLogout.Interval = _sessionTimeout * 1000;
+                this._timerCheckLogout.Elapsed += TimeCheckLogout_EventHandler;
+            }
             // _jsCallCS
             _jsCallCS = new JSCallCS(this.LayerWeb, this);
             _jsCallCS.OnNRICFailed += JSCallCS_OnNRICFailed;
@@ -248,9 +250,12 @@ namespace ARK
 
                 // navigate
                 NavigateTo(NavigatorEnums.Authentication_SmartCard);
-                if (this._timerCheckLogout.Enabled)
+                if (this._timerCheckLogout != null)
                 {
-                    this._timerCheckLogout.Stop();
+                    if (this._timerCheckLogout.Enabled)
+                    {
+                        this._timerCheckLogout.Stop();
+                    }
                 }
             }
             catch (Exception ex)
@@ -685,11 +690,14 @@ namespace ARK
                 }
                 _signalrClient = Client.Instance;
                 _signalrClient.OnNewNotification += _signalrClient_OnNewNotification;
-                if (this._timerCheckLogout.Enabled)
+                if (this._timerCheckLogout != null)
                 {
-                    this._timerCheckLogout.Stop();
+                    if (this._timerCheckLogout.Enabled)
+                    {
+                        this._timerCheckLogout.Stop();
+                    }
+                    this._timerCheckLogout.Start();
                 }
-                this._timerCheckLogout.Start();
                 _suppervisee.Start();
             }
 

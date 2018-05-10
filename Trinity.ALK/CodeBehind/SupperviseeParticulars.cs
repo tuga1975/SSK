@@ -121,9 +121,13 @@ namespace ALK.CodeBehind
             //profile model 
             _web.LoadPageHtml("SuperviseeParticulars.html", labelInfo);
             _main._isPrintingMUBTT = false;
-            if (_main._timerCheckLogout.Enabled)
-                _main._timerCheckLogout.Stop();
-            _main._timerCheckLogout.Start();
+            if (_main._timerCheckLogout!=null)
+            {
+                if (_main._timerCheckLogout.Enabled)
+                    _main._timerCheckLogout.Stop();
+                _main._timerCheckLogout.Start();
+            }
+            
         }
     }
 }
