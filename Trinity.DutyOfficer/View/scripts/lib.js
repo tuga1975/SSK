@@ -46,10 +46,12 @@ function getRealtimeNotificationServer(notification) {
     //                message: objNotify.Content
     //            });
     //}
-    api.server.GetCountNotificationsUnread(function (count) {
-        $('[noti-alert]').attr('noti-alert', (count > 99 ? '99+' : count));
-    });
+    api.server.GetCountNotificationsUnread();
 
+}
+function setCountMessage(count) {
+    count = parseInt(count);
+    $('[noti-alert]').attr('noti-alert', (count > 99 ? '99+' : count));
 }
 
 function refreshQueueNumbers(currentQueueNumber, nextQueueNumberList) {

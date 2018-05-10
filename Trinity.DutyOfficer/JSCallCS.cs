@@ -310,11 +310,12 @@ namespace DutyOfficer
             }
             return null;
         }
-        public int GetCountNotificationsUnread()
+        public void GetCountNotificationsUnread()
         {
             string userID = ((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId;
             List<string> modules = new List<string>() { EnumStation.APS, EnumStation.ARK, EnumStation.ALK, EnumStation.SHP, EnumStation.SSP, EnumStation.ENROLMENT };
-            return new DAL_Notification().GetCountNotificationsUnread(userID,modules,true);
+            int count =  new DAL_Notification().GetCountNotificationsUnread(userID,modules,true);
+            this._web.InvokeScript("setCountMessage", count);
         }
         public bool updateReadedStatus(string NotificationID)
         {
@@ -323,6 +324,7 @@ namespace DutyOfficer
             if (userID != null || userID != "")
             {
                 Response<bool> response = dalNotify.updateReadStatus(NotificationID, true);
+                Trinity.SignalR.Client.Instance.DOReadMessage(NotificationID);
                 return response.ResponseCode == (int)EnumResponseStatuses.Success;
             }
             return false;

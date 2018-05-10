@@ -36,6 +36,10 @@ namespace Trinity.NotificationServer
 
                 Clients.Clients(Program.ProfileConnected.Where(d => d.isApp && d.Station == EnumStation.ARK).Select(d => d.ConnectionId).ToList()).OnNewNotification(notificationInfo);
             }
+            else if (notificationInfo.Name == NotificationNames.DO_READMESSAGE)
+            {
+                Clients.Clients(Program.ProfileConnected.Where(d => d.isApp && d.Station == EnumStation.DUTYOFFICER).Select(d => d.ConnectionId).ToList()).OnNewNotification(notificationInfo);
+            }
             else if (notificationInfo.Name == NotificationNames.DEVICE_STATUS_CHANGED)
             {
                 if (notificationInfo.Source != null && (notificationInfo.Source.ToString() == EnumStation.SSP || notificationInfo.Source.ToString() == EnumStation.SHP))
@@ -119,16 +123,16 @@ namespace Trinity.NotificationServer
             }
             try
             {
-                if (notificationInfo.Name!=NotificationNames.DEVICE_STATUS_CHANGED)
+                if (notificationInfo.Name != NotificationNames.DEVICE_STATUS_CHANGED)
                 {
                     Program.MainForm.WriteToConsole(notificationInfo.Name + ": " + (DateTime.Now - notificationInfo.dateSend).TotalSeconds);
                 }
             }
             catch (Exception)
             {
-                
+
             }
-            
+
         }
 
 

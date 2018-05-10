@@ -44,6 +44,7 @@ namespace DutyOfficer
             Trinity.SignalR.Client.Instance.OnSSACompleted += OnSSACompleted_Handler;
             Trinity.SignalR.Client.Instance.OnSSAPrintingLabel += OnSSAPrintingLabel_Handler;
             Trinity.SignalR.Client.Instance.OnBackendAPISend += OnBackendAPISend_Handler;
+            Trinity.SignalR.Client.Instance.OnDOReadMessage += OnDOReadMessage_Handler;
 
             // setup variables
             _smartCardFailed = 0;
@@ -95,7 +96,8 @@ namespace DutyOfficer
                                 }
                                 else
                                 {
-                                    this.LayerWeb.LoadPopupHtml("QueuePopupOutcome.html", new {
+                                    this.LayerWeb.LoadPopupHtml("QueuePopupOutcome.html", new
+                                    {
                                         UserId = user.UserId,
                                         Name = user.Name
                                     });
@@ -106,7 +108,11 @@ namespace DutyOfficer
                 }));
             }
         }
-
+        private void OnDOReadMessage_Handler(object sender, NotificationInfo e)
+        {
+            if (!_isFirstTimeLoaded)
+                _jsCallCS.GetCountNotificationsUnread();
+        }
         private void OnBackendAPISend_Handler(object sender, NotificationInfo e)
         {
             // khi ở tab Queue nhận đc cái này sẽ tải lại
@@ -215,7 +221,7 @@ namespace DutyOfficer
                 //}
                 LogManager.Info("OnDeviceStatusChanged_Handler: " + station);
 
-                LayerWeb.InvokeScript("SetStationColorDevice",JsonConvert.SerializeObject(_jsCallCS.GetStationClolorDevice()));
+                LayerWeb.InvokeScript("SetStationColorDevice", JsonConvert.SerializeObject(_jsCallCS.GetStationClolorDevice()));
             }
             else
             {

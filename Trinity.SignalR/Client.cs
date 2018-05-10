@@ -103,6 +103,8 @@ namespace Trinity.SignalR
         public event EventHandler<NotificationInfo> OnBackendAPISend;
         public event EventHandler<NotificationInfo> OnAppointmentBooked;
         public event EventHandler<NotificationInfo> OnAppointmentReported;
+        public event EventHandler<NotificationInfo> OnDOReadMessage;
+        
 
         private void RegisterIncomingEvents()
         {
@@ -111,6 +113,9 @@ namespace Trinity.SignalR
                 if (notificationInfo.Name == NotificationNames.QUEUE_COMPLETED)
                 {
                     OnQueueCompleted?.Invoke(this, new EventInfo() { Name = EventNames.QUEUE_COMPLETED, Data = notificationInfo.FromUserId });
+                }else if (notificationInfo.Name == NotificationNames.DO_READMESSAGE)
+                {
+                    OnDOReadMessage?.Invoke(this, notificationInfo);
                 }
                 else if (notificationInfo.Name == NotificationNames.DEVICE_STATUS_CHANGED)
                 {
@@ -293,6 +298,11 @@ namespace Trinity.SignalR
         public void AppStatusChanged(string appName, string appStatus, string message)
         {
             PostNotification(notificationInfo: new NotificationInfo() { Name = NotificationNames.DEVICE_STATUS_CHANGED, Type = EnumNotificationTypes.Notification, Source = appName, Status = appStatus, Content = message });
+        }
+
+        public void DOReadMessage(string NotificationID)
+        {
+            PostNotification(notificationInfo: new NotificationInfo() { Name = NotificationNames.DO_READMESSAGE, NotificationID = NotificationID });
         }
         #endregion
     }
