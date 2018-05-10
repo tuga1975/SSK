@@ -152,7 +152,7 @@ namespace ALK
                             SmartCard_OnSmartCardFailed("Your smart card does not work.", "The smart card " + cardUID + " does not work.");
                             return;
                         }
-                        else if (smartCard.Status.Equals(EnumIssuedCards.Active, StringComparison.InvariantCultureIgnoreCase) && smartCard.Expired_Date < DateTime.Today)
+                        else if ((smartCard.Status.Equals(EnumIssuedCards.Active, StringComparison.InvariantCultureIgnoreCase) && smartCard.Expired_Date < DateTime.Today) || (user.Expired_Date.HasValue && user.Expired_Date.Value < DateTime.Today))
                         {
                             SmartCard_OnSmartCardFailed("Your smart card has already expired.", "The smart card " + cardUID + " has already expired.");
                             return;

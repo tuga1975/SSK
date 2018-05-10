@@ -462,7 +462,8 @@ namespace Trinity.DAL
                             Role = item.Membership_UserRoles.FirstOrDefault().Membership_Roles.Name,
                             User_Photo1 = item.User_Profiles.User_Photo1,
                             User_Photo2 = item.User_Profiles.User_Photo2,
-                            IsFirstAttempt = item.IsFirstAttempt
+                            IsFirstAttempt = item.IsFirstAttempt,
+                            Expired_Date = item.User_Profiles.Expired_Date
                         }).FirstOrDefault();
 
 
@@ -496,7 +497,8 @@ namespace Trinity.DAL
                             Name = item.Name,
                             NRIC = item.NRIC,
                             Role = item.Membership_UserRoles.FirstOrDefault().Membership_Roles.Name,
-                            IsFirstAttempt = item.IsFirstAttempt
+                            IsFirstAttempt = item.IsFirstAttempt,
+                            Expired_Date = item.User_Profiles.Expired_Date
                         }).FirstOrDefault();
 
                     // return value

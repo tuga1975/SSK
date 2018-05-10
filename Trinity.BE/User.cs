@@ -46,6 +46,9 @@ namespace Trinity.BE
 
         [DataMember]
         public string Note { get; set; }
+
+        [DataMember]
+        public Nullable<DateTime> Expired_Date { get; set; }
     }
 
     public class UserBlockedModel
