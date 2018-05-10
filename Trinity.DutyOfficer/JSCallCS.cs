@@ -310,7 +310,12 @@ namespace DutyOfficer
             }
             return null;
         }
-
+        public int GetCountNotificationsUnread()
+        {
+            string userID = ((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId;
+            List<string> modules = new List<string>() { EnumStation.APS, EnumStation.ARK, EnumStation.ALK, EnumStation.SHP, EnumStation.SSP, EnumStation.ENROLMENT };
+            return new DAL_Notification().GetCountNotificationsUnread(userID,modules,true);
+        }
         public bool updateReadedStatus(string NotificationID)
         {
             var dalNotify = new DAL_Notification();

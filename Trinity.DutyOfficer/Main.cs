@@ -594,6 +594,7 @@ namespace DutyOfficer
             {
                 Trinity.SignalR.Client.Instance.UserLoggedIn(((Trinity.BE.User)Session.Instance[CommonConstants.USER_LOGIN]).UserId);
                 NavigateTo(NavigatorEnums.Queue);
+                LayerWeb.InvokeScript("getRealtimeNotificationServer");
             }
             else if (e.Name.Equals(EventNames.LOGIN_FAILED))
             {

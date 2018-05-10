@@ -16,12 +16,12 @@ namespace Trinity.DAL
         Centralized_UnitOfWork _centralizedUnitOfWork = new Centralized_UnitOfWork();
 
         #region refactor 2018
-        public List<DBContext.Notification> GetByDate(string Source,DateTime date)
+        public List<DBContext.Notification> GetByDate(string Source, DateTime date)
         {
             date = date.Date;
             return _localUnitOfWork.DataContext.Notifications.Where(d => DbFunctions.TruncateTime(d.Datetime) == date && d.Source.ToLower().Equals(Source.ToLower())).ToList();
         }
-        
+
         public List<Notification> GetAllNotifications(string userId)
         {
             if (EnumAppConfig.IsLocal)
@@ -57,8 +57,11 @@ namespace Trinity.DAL
                 }).ToList();
             }
         }
-
-        public List<Notification> GetAllNotifications(string userId, List<string> modules,bool isDOApp = false)
+        public int GetCountNotificationsUnread(string userId, List<string> modules, bool isDOApp = false)
+        {
+            return _localUnitOfWork.DataContext.Notifications.Count(d => (!d.IsRead.HasValue || (d.IsRead.HasValue && !d.IsRead.Value)) && ((!string.IsNullOrEmpty(d.ToUserId) && d.ToUserId == userId) || (isDOApp && string.IsNullOrEmpty(d.ToUserId))));
+        }
+        public List<Notification> GetAllNotifications(string userId, List<string> modules, bool isDOApp = false)
         {
             // local request
             if (EnumAppConfig.IsLocal)
@@ -135,7 +138,7 @@ namespace Trinity.DAL
         /// <param name="notificationType"></param>
         /// <param name="station"></param>
         /// <returns></returns>
-        public string InsertNotification(string fromUserId, string toUserId, string subject, string content,bool IsFromSupervisee, DateTime datetime, string notification_code, string notificationType, string station)
+        public string InsertNotification(string fromUserId, string toUserId, string subject, string content, bool IsFromSupervisee, DateTime datetime, string notification_code, string notificationType, string station)
         {
             string IDNoti = Guid.NewGuid().ToString().Trim();
             _localUnitOfWork.GetRepository<DBContext.Notification>().Add(new DBContext.Notification()
@@ -155,7 +158,7 @@ namespace Trinity.DAL
             if (_localUnitOfWork.Save() > 0)
                 return IDNoti;
             else
-            return string.Empty;
+                return string.Empty;
         }
 
         /// <summary>
@@ -439,7 +442,7 @@ namespace Trinity.DAL
             }
         }
 
-        
+
 
         public Response<bool> updateReadStatus(string NotificationID, bool isReaded)
         {
@@ -493,7 +496,7 @@ namespace Trinity.DAL
         }
 
 
-       
+
 
         public Trinity.DAL.DBContext.Notification GetNotification(Guid notificationId, bool isLocal)
         {

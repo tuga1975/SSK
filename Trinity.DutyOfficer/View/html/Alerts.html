@@ -74,20 +74,12 @@
                     notificationId: objNotify.NotificationID,
                 });
         $table.bootstrapTable('load', dataSource);
+        getRealtimeNotificationServer();
     }
-
-    function clearNotificationAlerts(){
-        if(lstAlerts){
-            lstAlerts = [];
-        }
-        $('[noti-alert]').attr('noti-alert', lstAlerts.length);
-    }
+    
 
     api.server.getAlertsSendToDutyOfficer(function (data) {
-        
-
-        clearNotificationAlerts();
-
+        getRealtimeNotificationServer();
         var Type = {
             error: "Error",
             notification: "Notification",
@@ -197,6 +189,7 @@
                                             isReaded: true
                                         }
                                     });
+                                    getRealtimeNotificationServer();
                                 });
                             } else {
                                 $('#alertPopup').modal();

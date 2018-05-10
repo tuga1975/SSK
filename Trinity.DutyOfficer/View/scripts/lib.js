@@ -36,17 +36,20 @@ function displayLogoutButton(display) {
     }
 }
 
-function getRealtimeNotificationServer(notification){
-    var objNotify = JSON.parse(notification);
-    if(objNotify){
-        lstAlerts.push({
-                    source: objNotify.Source,
-                    type: objNotify.Type,
-                    dateTime: objNotify.Date,
-                    message: objNotify.Content
-                });
-    }
-    $('[noti-alert]').attr('noti-alert', (lstAlerts.length > 10) ? '10+' : lstAlerts.length);
+function getRealtimeNotificationServer(notification) {
+    //var objNotify = JSON.parse(notification);
+    //if(objNotify){
+    //    lstAlerts.push({
+    //                source: objNotify.Source,
+    //                type: objNotify.Type,
+    //                dateTime: objNotify.Date,
+    //                message: objNotify.Content
+    //            });
+    //}
+    api.server.GetCountNotificationsUnread(function (count) {
+        $('[noti-alert]').attr('noti-alert', (count > 99 ? '99+' : count));
+    });
+
 }
 
 function refreshQueueNumbers(currentQueueNumber, nextQueueNumberList) {
@@ -69,9 +72,9 @@ function refreshQueueNumbers(currentQueueNumber, nextQueueNumberList) {
     }
 }
 
-function getActiveTab(){
+function getActiveTab() {
     var activeTabNameNode = $("#menu span.active");
-    if(activeTabNameNode.length>0){
+    if (activeTabNameNode.length > 0) {
         return activeTabNameNode[0].id;
     }
     return "";
