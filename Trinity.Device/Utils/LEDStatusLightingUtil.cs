@@ -174,7 +174,6 @@ namespace Trinity.Device.Util
                 _rs232Commands[EnumCommands.MoveUpMUBRobot] = "WR MR500 1";
                 _rs232Commands[EnumCommands.MoveUpTTRobot] = "WR MR502 1";
                 _rs232Commands[EnumCommands.OpenMUBHolder] = "WR MR505 1";
-
             }
         }
 
@@ -219,20 +218,20 @@ namespace Trinity.Device.Util
         /// <returns></returns>
         public string OpenPort(string station, string portName, int baudRate, string parity)
         {
-            LogManager.Debug(string.Format("Led Light Open port: {0}, {1}, {2}, {3}", station, portName, baudRate, parity));
-
+            LogManager.Debug(string.Format("RS232_COM_Controller: Opening port (Station:{0}, Port:{1}, Baud rate:{2}, Parity:{3})...", station, portName, baudRate, parity));
             InitializeSerialPort();
-
             try
             {
                 lock (syncRoot)
                 {
                     if (string.IsNullOrEmpty(station))
                     {
+                        LogManager.Error("RS232_COM_Controller: Station must not be null.");
                         return "Please select a station: ARK or ALK";
                     }
                     if (string.IsNullOrEmpty(portName) || string.IsNullOrEmpty(parity))
                     {
+                        LogManager.Error("RS232_COM_Controller: Port and Parity must not be null.");
                         return "Please select port settings";
                     }
                     else
@@ -240,6 +239,7 @@ namespace Trinity.Device.Util
                         // Check if the port already open
                         if (_serialPort.IsOpen)
                         {
+                            LogManager.Error("RS232_COM_Controller: The Port already open.");
                             return "The serial port already open";
                         }
                         _station = station;
@@ -265,19 +265,22 @@ namespace Trinity.Device.Util
 
                         StartCommandHandler();
 
+                        LogManager.Debug(string.Format("RS232_COM_Controller: The port (Station:{0}, Port:{1}, Baud rate:{2}, Parity:{3}) was open successfully.", station, portName, baudRate, parity));
+
                         return string.Empty;
                     }
                 }
             }
             catch (IOException ex)
             {
-                LogManager.Error(ex.ToString());
+                LogManager.Error("RS232_COM_Controller: Error in OpenPort:" + ex.ToString());
                 return ex.Message;
             }
         }
 
         public string ClosePort()
         {
+            LogManager.Debug("RS232_COM_Controller: Begin to close the COM port...");
             if (_serialPort == null)
             {
                 return string.Empty;
@@ -293,6 +296,7 @@ namespace Trinity.Device.Util
             }
             catch (IOException ioEx)
             {
+                LogManager.Error("RS232_COM_Controller: Error in ClosePort:" + ioEx.Message);
                 MessageBox.Show("Error in ClosePort. Details:" + ioEx.Message);
                 return ioEx.Message;
             }
@@ -310,10 +314,12 @@ namespace Trinity.Device.Util
         #region LED Control functions
         public void TurnOffAllLEDs()
         {
+            LogManager.Debug("RS232_COM_Controller: Begin to turn off all LEDs...");
             try
             {
                 if (!IsPortOpen)
                 {
+                    LogManager.Debug("RS232_COM_Controller: The COM port is closed.");
                     return;
                 }
 
@@ -354,10 +360,12 @@ namespace Trinity.Device.Util
                     hexCommand = ToHEX(asciiCommand);
                     SendCommand(hexCommand);
                 }
+                LogManager.Debug("RS232_COM_Controller:Turn off all LEDs successfully.");
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error in TurnOffAllLEDs. Details: " + ex.Message);
+                LogManager.Error("RS232_COM_Controller: Error in TurnOffAllLED:" + ex.Message);
+                //MessageBox.Show("Error in TurnOffAllLEDs. Details: " + ex.Message);
             }
         }
 
@@ -537,7 +545,7 @@ namespace Trinity.Device.Util
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("LEDStatusLightingUtil.StartBLUELightFlashing exception: " + ex.ToString());
+                LogManager.Error("Error in LEDStatusLightingUtil.StartBLUELightFlashing:" + ex.Message);
             }
         }
 
@@ -549,7 +557,7 @@ namespace Trinity.Device.Util
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("LEDStatusLightingUtil.StopBLUELightFlashing exception: " + ex.ToString());
+                LogManager.Error("Error in LEDStatusLightingUtil.StopBLUELightFlashing:" + ex.Message);
             }
         }
 
@@ -562,7 +570,7 @@ namespace Trinity.Device.Util
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("LEDStatusLightingUtil.StartYELLOWLightFlashing exception: " + ex.ToString());
+                LogManager.Error("Error in LEDStatusLightingUtil.StartYELLOWLightFlashing:" + ex.Message);
             }
         }
 
@@ -574,7 +582,7 @@ namespace Trinity.Device.Util
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("LEDStatusLightingUtil.StopYELLOWLightFlashing exception: " + ex.ToString());
+                LogManager.Error("Error in LEDStatusLightingUtil.StopYELLOWLightFlashing:" + ex.Message);
             }
         }
 
@@ -623,6 +631,7 @@ namespace Trinity.Device.Util
             }
             catch (Exception ex)
             {
+                LogManager.Error("Error in LEDStatusLightingUtil.DisplayLedLight_DeviceStatus:" + ex.Message);
                 // display error colour
                 SwitchREDLightOnOff(true);
             }
@@ -707,7 +716,6 @@ namespace Trinity.Device.Util
             //string asciiCommand = "WR MR104 1";
             //SendASCIICommand(asciiCommand);
             SendCommand_Async(EnumCommands.StartTTApplicator, null);
-
         }
 
         public void CloseTTDoor_Async()
@@ -802,7 +810,8 @@ namespace Trinity.Device.Util
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error in CompleteCurrentCommand. Details:" + ex.Message);
+                LogManager.Error("Error in LEDStatusLightingUtil.CompleteCurrentCommand:" + ex.Message);
+                //MessageBox.Show("Error in CompleteCurrentCommand. Details:" + ex.Message);
             }
         }
 
@@ -853,7 +862,8 @@ namespace Trinity.Device.Util
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error in CommandsHandler. Details:" + ex.Message);
+                LogManager.Error("Error in LEDStatusLightingUtil.CommandsHandler:" + ex.Message);
+                //MessageBox.Show("Error in CommandsHandler. Details:" + ex.Message);
                 StartCommandHandler();
             }
         }
@@ -883,7 +893,8 @@ namespace Trinity.Device.Util
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error in SendCommand_Async. Details:" + ex.Message);
+                LogManager.Error("Error in LEDStatusLightingUtil.SendCommand_Async:" + ex.Message);
+                //MessageBox.Show("Error in SendCommand_Async. Details:" + ex.Message);
             }
         }
 
@@ -970,10 +981,10 @@ namespace Trinity.Device.Util
             {
                 CompleteCurrentCommand(false);
                 Thread currentThread = Thread.CurrentThread;
-                MessageBox.Show("Error in SendCommand_Async_Callback. Current thread:" + currentThread.Name + ". Details:" + ex.Message);
+                LogManager.Error("Error in SendCommand_Async_Callback. Current thread:" + currentThread.Name + ". Details:" + ex.Message);
+                //MessageBox.Show("Error in SendCommand_Async_Callback. Current thread:" + currentThread.Name + ". Details:" + ex.Message);
             }
         }
-        ///////////////////////////
 
         #endregion
 
@@ -1012,7 +1023,7 @@ namespace Trinity.Device.Util
             if (_currentMUBStatus == null || _currentMUBStatus.Value != isPresent)
             {
                 _currentMUBStatus = isPresent;
-                LogManager.Info("MUB status changed. New status:" + (isPresent ? "Present" : "Removed"));
+                LogManager.Debug("MUB status changed. New status:" + (isPresent ? "Present" : "Removed"));
                 MUBStatusChanged?.Invoke(this, new MUBTTEventArgs("MUB", isPresent));
             }
         }
@@ -1022,7 +1033,7 @@ namespace Trinity.Device.Util
             if (_currentTTStatus == null || _currentTTStatus.Value != isPresent)
             {
                 _currentTTStatus = isPresent;
-                LogManager.Info("TT status changed. New status:" + (isPresent ? "Present" : "Removed"));
+                LogManager.Debug("TT status changed. New status:" + (isPresent ? "Present" : "Removed"));
                 TTStatusChanged?.Invoke(this, new MUBTTEventArgs("TT", isPresent));
             }
         }
@@ -1057,11 +1068,13 @@ namespace Trinity.Device.Util
 
         private string StartCommunication()
         {
+            LogManager.Debug("RS232_COM_Controller: Start communication by sending command '43520D'");
             return SendCommand("43520D");
         }
 
         private string ResetPLC()
         {
+            LogManager.Debug("RS232_COM_Controller: Reset PLC by sending command '4D310D'");
             return SendCommand("4D310D");
         }
 
@@ -1088,8 +1101,10 @@ namespace Trinity.Device.Util
         {
             lock (syncRoot)
             {
+                LogManager.Debug(string.Format("RS232_COM_Controller: Begin to send command '{0}'...", hexCommand));
                 if (!IsPortOpen)
                 {
+                    LogManager.Debug("RS232_COM_Controller: The COM port is closed.");
                     return "The serial port is closed.";
                 }
 
@@ -1098,10 +1113,12 @@ namespace Trinity.Device.Util
                 try
                 {
                     _serialPort.Write(bytestosend, 0, bytestosend.Length);
+                    LogManager.Debug(string.Format("RS232_COM_Controller: The command '{0}' was sent successfully.", hexCommand));
                     return string.Empty;
                 }
                 catch (Exception ex)
                 {
+                    LogManager.Error(string.Format("RS232_COM_Controller: Error in SendCommand('{0}'): {1}.", hexCommand, ex.Message));
                     return ex.Message;
                 }
             }
@@ -1122,7 +1139,7 @@ namespace Trinity.Device.Util
             }
             catch (Exception ex)
             {
-                Console.WriteLine("LEDStatusLightingUtil.OnBlueLightFlashingTimedEvent exception: " + ex.ToString());
+                LogManager.Error("Error in LEDStatusLightingUtil.OnBlueLightFlashingTimedEvent:" + ex.Message);
             }
         }
 
@@ -1135,7 +1152,7 @@ namespace Trinity.Device.Util
             }
             catch (Exception ex)
             {
-                Console.WriteLine("LEDStatusLightingUtil.OnYellowLightFlashingTimedEvent exception: " + ex.ToString());
+                LogManager.Error("Error in LEDStatusLightingUtil.OnYellowLightFlashingTimedEvent:" + ex.Message);
             }
         }
         #endregion
