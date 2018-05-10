@@ -569,7 +569,7 @@ namespace Enrolment
         public void PrintSmartCard(string frontBase64, string backBase64, string cardInfo)
         {
             _CardInfo = JsonConvert.DeserializeObject<Trinity.BE.CardInfo>(cardInfo);
-            this._web.InvokeScript("showPrintMessage", null, @"<p>Printing card in progress.Please wait.....</p>");
+            this._web.InvokeScript("showPrintMessage", null, @"<p>Printing card in progress. Please wait.....</p>");
             frontBase64 = frontBase64.Replace("data:image/png;base64,", string.Empty);
             backBase64 = backBase64.Replace("data:image/png;base64,", string.Empty);
             Session session = Session.Instance;
