@@ -501,7 +501,9 @@ namespace ALK
             if (isReady)
             {
                 LogManager.Debug("MUB Applicator is ready.");
-                this._web.RunScript("$('#mubStatus').css('color','#000').text('MUB Applicator is ready.');");
+                // Remove Status Words due to Trello#95
+                //this._web.RunScript("$('#mubStatus').css('color','#000').text('MUB Applicator is ready.');");
+                this._web.RunScript("$('#mubStatus').css('color','#000').text('');");
 
                 if (_ttApplicatorReady)
                 {
@@ -543,7 +545,9 @@ namespace ALK
             if (_ttApplicatorReady)
             {
                 LogManager.Debug("TT Applicator is ready.");
-                this._web.RunScript("$('#ttStatus').css('color','#000').text('TT Applicator is ready.');");
+                // Remove Status Words due to Trello#95
+                //this._web.RunScript("$('#ttStatus').css('color','#000').text('TT Applicator is ready.');");
+                this._web.RunScript("$('#ttStatus').css('color','#000').text('');");
 
                 if (_mubApplicatorReady)
                 {
@@ -594,12 +598,14 @@ namespace ALK
 
         private void CheckMUBAndTTPresence()
         {
-            //////////////////
             _mubIsPresent = null;
             _ttIsPresent = null;
             LogManager.Debug("Checking if the MUB and TT are present...");
-            this._web.RunScript("$('#mubStatus').css('color','#000').text('Please place the MUB on the holder.');");
-            this._web.RunScript("$('#ttStatus').css('color','#000').text('Please place the TT on the holder.');");
+            // Remove Status Words due to Trello#95
+            //this._web.RunScript("$('#mubStatus').css('color','#000').text('Please place the MUB on the holder.');");
+            //this._web.RunScript("$('#ttStatus').css('color','#000').text('Please place the TT on the holder.');");
+            this._web.RunScript("$('#mubStatus').css('color','#000').text('');");
+            this._web.RunScript("$('#ttStatus').css('color','#000').text('');");
 
             // Check if MUB is present or not
             LEDStatusLightingUtil.Instance.MUBStatusChanged += CheckMUBAndTTPresence_Callback;
@@ -622,28 +628,36 @@ namespace ALK
                 LogManager.Debug("The MUB has been placed on the holder.");
 
                 // MUB is placed on the holder
-                this._web.RunScript("$('#mubStatus').css('color','#000').text('The MUB has been placed on the holder.');");
+                // Remove Status Words due to Trello#95
+                //this._web.RunScript("$('#mubStatus').css('color','#000').text('The MUB has been placed on the holder.');");
+                this._web.RunScript("$('#mubStatus').css('color','#000').text('');");
             }
             else
             {
                 LogManager.Debug("The MUB is not present.");
 
                 // MUB is placed on the holder
-                this._web.RunScript("$('#mubStatus').css('color','#000').text('Please place the MUB on the holder.');");
+                // Remove Status Words due to Trello#95
+                //this._web.RunScript("$('#mubStatus').css('color','#000').text('Please place the MUB on the holder.');");
+                this._web.RunScript("$('#mubStatus').css('color','#000').text('');");
             }
             if (_ttIsPresent != null && _ttIsPresent.Value)
             {
                 LogManager.Debug("The TT has been placed on the holder.");
 
                 // TT is placed on the holder
-                this._web.RunScript("$('#ttStatus').css('color','#000').text('The TT has been placed on the holder.');");
+                // Remove Status Words due to Trello#95
+                //this._web.RunScript("$('#ttStatus').css('color','#000').text('The TT has been placed on the holder.');");
+                this._web.RunScript("$('#ttStatus').css('color','#000').text('');");
             }
             else
             {
                 LogManager.Debug("The TT is not present.");
 
                 // TT is placed on the holder
-                this._web.RunScript("$('#ttStatus').css('color','#000').text('Please place the TT on the holder.');");
+                // Remove Status Words due to Trello#95
+                //this._web.RunScript("$('#ttStatus').css('color','#000').text('Please place the TT on the holder.');");
+                this._web.RunScript("$('#ttStatus').css('color','#000').text('');");
             }
 
             if (_mubIsPresent != null && _mubIsPresent.Value && _ttIsPresent != null && _ttIsPresent.Value)
@@ -678,7 +692,10 @@ namespace ALK
             {
                 _mubApplicatorStarted = false;
                 LogManager.Debug("Starting MUB Applicator...");
-                this._web.RunScript("$('#mubStatus').css('color','#000').text('The MUB Applicator is starting...');");
+                // Remove Status Words due to Trello#95
+                //this._web.RunScript("$('#mubStatus').css('color','#000').text('The MUB Applicator is starting...');");
+                this._web.RunScript("$('#mubStatus').css('color','#000').text('');");
+
                 this._web.RunScript("$('#ConfirmBtn').html('Starting Applicator...');");
                 // Start MUB Applicator
                 LEDStatusLightingUtil.Instance.StartMUBApplicator_Async();
@@ -704,7 +721,9 @@ namespace ALK
             {
                 // MUB Applicator is started. Ready to print
                 LogManager.Debug("MUB label is ready to print.");
-                this._web.RunScript("$('#mubStatus').css('color','#000').text('MUB label is ready to print.');");
+                // Remove Status Words due to Trello#95
+                //this._web.RunScript("$('#mubStatus').css('color','#000').text('MUB label is ready to print.');");
+                this._web.RunScript("$('#mubStatus').css('color','#000').text('');");
 
                 // Set next action to 'PrintMUBAndTTLabel'
                 if (_currentLabelInfo != null & _ttApplicatorStarted)
@@ -732,7 +751,10 @@ namespace ALK
             _ttApplicatorStarted = false;
             LogManager.Debug("Starting the TT Applicator...");
 
-            this._web.RunScript("$('#ttStatus').css('color','#000').text('The TT Applicator is starting...');");
+            // Remove Status Words due to Trello#95
+            //this._web.RunScript("$('#ttStatus').css('color','#000').text('The TT Applicator is starting...');");
+            this._web.RunScript("$('#ttStatus').css('color','#000').text('');");
+
             this._web.RunScript("$('#ConfirmBtn').html('Starting Applicator...');");
             // Start TT Applicator
             LEDStatusLightingUtil.Instance.StartTTApplicator_Async();
@@ -750,7 +772,9 @@ namespace ALK
                 LogManager.Debug("TT label is ready to print.");
 
                 // TT Applicator is started. Ready to print
-                this._web.RunScript("$('#ttStatus').css('color','#000').text('TT label is ready to print.');");
+                // Remove Status Words due to Trello#95
+                //this._web.RunScript("$('#ttStatus').css('color','#000').text('TT label is ready to print.');");
+                this._web.RunScript("$('#ttStatus').css('color','#000').text('');");
 
                 // Set next action to 'PrintMUBAndTTLabel'
                 if (_currentLabelInfo != null && _mubApplicatorStarted)
@@ -814,23 +838,30 @@ namespace ALK
             if (_mubIsRemoved != null && _mubIsRemoved.Value)
             {
                 LogManager.Debug("The MUB has been removed.");
-                this._web.RunScript("$('#mubStatus').css('color','#000').text('The MUB has been removed.');");
+                // Remove Status Words due to Trello#95
+                //this._web.RunScript("$('#mubStatus').css('color','#000').text('The MUB has been removed.');");
+                this._web.RunScript("$('#mubStatus').css('color','#000').text('');");
             }
             else
             {
                 LogManager.Debug("The MUB is not removed. Please remove MUB.");
-                this._web.RunScript("$('#mubStatus').css('color','#000').text('Please remove MUB.');");
-
+                // Remove Status Words due to Trello#95
+                //this._web.RunScript("$('#mubStatus').css('color','#000').text('Please remove MUB.');");
+                this._web.RunScript("$('#mubStatus').css('color','#000').text('');");
             }
             if (_ttIsRemoved != null && _ttIsRemoved.Value)
             {
                 LogManager.Debug("The TT has been removed.");
-                this._web.RunScript("$('#ttStatus').css('color','#000').text('The TT has been removed.');");
+                // Remove Status Words due to Trello#95
+                //this._web.RunScript("$('#ttStatus').css('color','#000').text('The TT has been removed.');");
+                this._web.RunScript("$('#ttStatus').css('color','#000').text('');");
             }
             else
             {
                 LogManager.Debug("The TT is not removed. Please remove TT.");
-                this._web.RunScript("$('#ttStatus').css('color','#000').text('Please remove TT.');");
+                // Remove Status Words due to Trello#95
+                //this._web.RunScript("$('#ttStatus').css('color','#000').text('Please remove TT.');");
+                this._web.RunScript("$('#ttStatus').css('color','#000').text('');");
             }
             if (_mubIsRemoved != null && _mubIsRemoved.Value && _ttIsRemoved != null && _ttIsRemoved.Value)
             {
@@ -949,7 +980,9 @@ namespace ALK
             if (!_mubDoorIsFullyClosed)
             {
                 LogManager.Debug("The MUB Door is not closed. Start sending command to close...");
-                this._web.RunScript("$('#mubStatus').css('color','#000').text('The MUB Door is not closed. Start sending command to close...');");
+                // Remove Status Words due to Trello#95
+                //this._web.RunScript("$('#mubStatus').css('color','#000').text('The MUB Door is not closed. Start sending command to close...');");
+                this._web.RunScript("$('#mubStatus').css('color','#000').text('');");
 
                 // If the MUB Door is not fully closed
                 // Then send command to close MUB Door
@@ -958,7 +991,9 @@ namespace ALK
                 // Wait for 200 miliseconds
                 Thread.Sleep(200);
                 LogManager.Debug("Start checking if the MUB Door is fully closed...");
-                this._web.RunScript("$('#mubStatus').css('color','#000').text('Start checking if the MUB Door is fully closed...');");
+                // Remove Status Words due to Trello#95
+                //this._web.RunScript("$('#mubStatus').css('color','#000').text('Start checking if the MUB Door is fully closed...');");
+                this._web.RunScript("$('#mubStatus').css('color','#000').text('');");
                 LEDStatusLightingUtil.Instance.SendCommand_Async(EnumCommands.CheckIfMUBDoorIsFullyClosed, CheckIfMUBDoorIsFullyClosed_Callback2);
             }
             else
@@ -966,7 +1001,9 @@ namespace ALK
                 LogManager.Debug("The MUB Door is fully closed. Trying to start MUB Applicator again...");
 
                 // If the MUB Door is fully closed, start MUB Applicator again
-                this._web.RunScript("$('#mubStatus').css('color','#000').text('The MUB Door is fully closed. Trying to start MUB Applicator again...');");
+                // Remove Status Words due to Trello#95
+                //this._web.RunScript("$('#mubStatus').css('color','#000').text('The MUB Door is fully closed. Trying to start MUB Applicator again...');");
+                this._web.RunScript("$('#mubStatus').css('color','#000').text('');");
                 StartMUBApplicator();
             }
         }
@@ -1043,7 +1080,9 @@ namespace ALK
             if (!_ttDoorIsFullyClosed)
             {
                 LogManager.Debug("The TT Door is not closed. Start sending command to close...");
-                this._web.RunScript("$('#ttStatus').css('color','#000').text('The TT Door is not closed. Start sending command to close...');");
+                // Remove Status Words due to Trello#95
+                //this._web.RunScript("$('#ttStatus').css('color','#000').text('The TT Door is not closed. Start sending command to close...');");
+                this._web.RunScript("$('#ttStatus').css('color','#000').text('');");
 
                 // If the TT Door is not fully closed
                 // Then send command to close TT Door
@@ -1053,7 +1092,9 @@ namespace ALK
                 Thread.Sleep(200);
                 LogManager.Debug("Start checking if the TT Door is fully closed...");
 
-                this._web.RunScript("$('#ttStatus').css('color','#000').text('Start checking if the TT Door is fully closed...');");
+                // Remove Status Words due to Trello#95
+                //this._web.RunScript("$('#ttStatus').css('color','#000').text('Start checking if the TT Door is fully closed...');");
+                this._web.RunScript("$('#ttStatus').css('color','#000').text('');");
                 LEDStatusLightingUtil.Instance.SendCommand_Async(EnumCommands.CheckIfTTDoorIsFullyClosed, CheckIfTTDoorIsFullyClosed_Callback2);
             }
             else
@@ -1061,193 +1102,12 @@ namespace ALK
                 LogManager.Debug("The TT Door is fully closed. Trying to start TT Applicator again...");
 
                 // If the TT Door is fully closed, start TT Applicator again
-                this._web.RunScript("$('#ttStatus').css('color','#000').text('The TT Door is fully closed. Trying to start TT Applicator again...');");
+                // Remove Status Words due to Trello#95
+                //this._web.RunScript("$('#ttStatus').css('color','#000').text('The TT Door is fully closed. Trying to start TT Applicator again...');");
+                this._web.RunScript("$('#ttStatus').css('color','#000').text('');");
                 StartTTApplicator();
             }
         }
-
-        //private void CheckIfMUBIsPresent_Callback(bool isPresent)
-        //{
-        //    _mubIsPresent = isPresent;
-        //    if (isPresent)
-        //    {
-        //        LogManager.Debug("The MUB has been placed on the holder.");
-
-        //        // MUB is placed on the holder
-        //        this._web.RunScript("$('#mubStatus').css('color','#000').text('The MUB has been placed on the holder.');");
-
-        //        // Set next action to "StartMUBApplicator"
-        //        if (_ttIsPresent)
-        //        {
-        //            if (_mubAndTTPresenceCheckedCount == 0)
-        //            {
-        //                _mubAndTTPresenceCheckedCount++;
-        //                // Sleep for 1 second and check again if all MUB and TT are on the holders
-        //                Thread.Sleep(1000);
-
-        //                _mubIsPresent = false;
-        //                _ttIsPresent = false;
-        //                CheckIfMUBIsPresent();
-        //                CheckIfTTIsPresent();
-        //                return;
-        //            }
-        //            _mubAndTTPresenceCheckedCount = 0;
-
-        //            // MUB and TT are present on the hold
-        //            // Hide tutorial videos
-        //            HideTutorialVideos();
-        //            LogManager.Debug("Starting Applicator...");
-        //            this._web.RunScript("$('#ConfirmBtn').html('Starting Applicator...');");
-        //            this._web.RunScript("$('#lblNextAction').text('StartMUBAndTTApplicator');");
-
-        //            StartMUBApplicator();
-        //            StartTTApplicator();
-        //        }
-        //    }
-        //    else
-        //    {
-        //        // Update on April 5th 2018, 15:28
-        //        Thread.Sleep(500);
-        //        // MUB is not present
-        //        LogManager.Debug("The MUB is not present.");
-        //        this._web.RunScript("$('#mubStatus').css('color','#000').text('The MUB is not present.');");
-        //        // Sleep 500 miliseconds and then check MUB presence again
-        //        Thread.Sleep(500);
-        //        CheckIfMUBIsPresent();
-        //    }
-        //}
-
-        //private void CheckIfMUBIsRemoved_Callback(bool isRemoved)
-        //{
-        //    _mubIsRemoved = isRemoved;
-        //    if (_mubIsRemoved)
-        //    {
-        //        LogManager.Debug("The MUB has been removed.");
-        //        this._web.RunScript("$('#mubStatus').css('color','#000').text('The MUB has been removed.');");
-
-        //        if (_ttIsRemoved)
-        //        {
-        //            ///
-        //            /// Begin enhancement https://trello.com/c/3486BpQ4/58-the-mub-tt-sensor-should-also-be-constantly-checking-whether-its-placed-or-removed
-        //            ///
-        //            if (_mubAndTTRemovalCheckedCount == 0)
-        //            {
-        //                _mubAndTTRemovalCheckedCount++;
-        //                // Sleep for 1 second and check again if all MUB and TT have been removed
-        //                Thread.Sleep(1000);
-
-        //                _mubIsRemoved = false;
-        //                _ttIsRemoved = false;
-        //                CheckIfMUBIsRemoved();
-        //                CheckIfTTIsRemoved();
-        //                return;
-        //            }
-        //            _mubAndTTRemovalCheckedCount = 0;
-        //            // End enhancement
-
-        //            CloseMUBDoor();
-        //            CloseTTDoor();
-        //        }
-        //    }
-        //    else
-        //    {
-        //        // Update on April 5th 2018, 15:28
-        //        Thread.Sleep(500);
-        //        CheckIfMUBIsRemoved();
-        //    }
-        //}
-
-        //private void CheckIfTTIsPresent_Callback(bool isPresent)
-        //{
-        //    _ttIsPresent = isPresent;
-        //    if (_ttIsPresent)
-        //    {
-        //        LogManager.Debug("The TT has been placed on the holder.");
-
-        //        // TT is placed on the holder
-        //        this._web.RunScript("$('#ttStatus').css('color','#000').text('The TT has been placed on the holder.');");
-
-        //        // Set next action to "StartTTApplicator"
-        //        if (_mubIsPresent)
-        //        {
-        //            if (_mubAndTTPresenceCheckedCount == 0)
-        //            {
-        //                _mubAndTTPresenceCheckedCount++;
-        //                // Sleep for 1 second and check again if all MUB and TT are on the holders
-        //                Thread.Sleep(1000);
-
-        //                _mubIsPresent = false;
-        //                _ttIsPresent = false;
-        //                CheckIfMUBIsPresent();
-        //                CheckIfTTIsPresent();
-        //                return;
-        //            }
-        //            _mubAndTTPresenceCheckedCount = 0;
-
-        //            // MUB and TT are present on the hold
-        //            // Hide tutorial videos
-        //            HideTutorialVideos();
-        //            LogManager.Debug("Starting Applicator...");
-        //            this._web.RunScript("$('#ConfirmBtn').html('Starting Applicator...');");
-        //            this._web.RunScript("$('#lblNextAction').text('StartMUBAndTTApplicator');");
-
-        //            StartMUBApplicator();
-        //            StartTTApplicator();
-        //        }
-        //    }
-        //    else
-        //    {
-        //        // Update on April 5th 2018, 15:28
-        //        Thread.Sleep(500);
-        //        // TT is not present
-        //        LogManager.Debug("The TT is not present.");
-
-        //        this._web.RunScript("$('#ttStatus').css('color','#000').text('The TT is not present.');");
-        //        // Sleep 500 miliseconds and then check MUB presence again
-        //        Thread.Sleep(500);
-        //        CheckIfTTIsPresent();
-        //    }
-        //}
-
-        //private void CheckIfTTIsRemoved_Callback(bool isRemoved)
-        //{
-        //    _ttIsRemoved = isRemoved;
-        //    if (_ttIsRemoved)
-        //    {
-        //        LogManager.Debug("The TT has been removed.");
-        //        this._web.RunScript("$('#ttStatus').css('color','#000').text('The TT has been removed.');");
-
-        //        if (_mubIsRemoved)
-        //        {
-        //            ///
-        //            /// Begin enhancement https://trello.com/c/3486BpQ4/58-the-mub-tt-sensor-should-also-be-constantly-checking-whether-its-placed-or-removed
-        //            ///
-        //            if (_mubAndTTRemovalCheckedCount == 0)
-        //            {
-        //                _mubAndTTRemovalCheckedCount++;
-        //                // Sleep for 1 second and check again if all MUB and TT have been removed
-        //                Thread.Sleep(1000);
-
-        //                _mubIsRemoved = false;
-        //                _ttIsRemoved = false;
-        //                CheckIfMUBIsRemoved();
-        //                CheckIfTTIsRemoved();
-        //                return;
-        //            }
-        //            _mubAndTTRemovalCheckedCount = 0;
-        //            // End enhancement
-
-        //            CloseMUBDoor();
-        //            CloseTTDoor();
-        //        }
-        //    }
-        //    else
-        //    {
-        //        // Update on April 5th 2018, 15:28
-        //        Thread.Sleep(500);
-        //        CheckIfTTIsRemoved();
-        //    }
-        //}
 
         private void CompletePrinting()
         {
@@ -1262,7 +1122,10 @@ namespace ALK
                 // Check why current user is null
                 LogManager.Error("The current user is null.");
 
-                this._web.RunScript("$('#mubStatus').css('color','#000').text('The current user is null');");
+                // Remove Status Words due to Trello#95
+                //this._web.RunScript("$('#mubStatus').css('color','#000').text('The current user is null');");
+                this._web.RunScript("$('#mubStatus').css('color','#000').text('');");
+
                 this._web.RunScript("$('#ttStatus').css('color','#000').text('');");
                 _main._isPrintingMUBTT = false;
                 RefreshSessionTimeout();
@@ -1283,7 +1146,10 @@ namespace ALK
             //lblStatus.Text = "The door is fully close";
             LogManager.Debug("MUB and TT Labels Printing Completed. Logging out...");
 
-            this._web.RunScript("$('#mubStatus').css('color','#000').text('MUB and TT Labels have been printed and labelled completed. Logging out...');");
+            // Remove Status Words due to Trello#95
+            //this._web.RunScript("$('#mubStatus').css('color','#000').text('MUB and TT Labels have been printed and labelled completed. Logging out...');");
+            this._web.RunScript("$('#mubStatus').css('color','#000').text('');");
+
             this._web.RunScript("$('#ttStatus').css('color','#000').text('');");
 
             //btnConfirm.Text = "Initialize MUB Applicator";
