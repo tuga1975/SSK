@@ -44,6 +44,13 @@ namespace Enrolment
         {
             InitializeComponent();
 
+            // Check if another instance of Enrolment App is running
+            if (CommonUtil.CheckIfAnotherInstanceIsRunning("EnrolmentApp"))
+            {
+                MessageBox.Show("An instance of Enrolment Application is already running.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Environment.Exit(1);
+            }
+
             APIUtils.Start();
             //Notification
             Trinity.SignalR.Client signalrClient = Trinity.SignalR.Client.Instance;

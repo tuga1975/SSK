@@ -35,11 +35,16 @@ namespace ALK
         private long? _timeActionApp = null;
         public bool _isPrintingMUBTT = false;
 
-
         public Main()
         {
             InitializeComponent();
-
+           
+            // Check if another instance of ALK is running
+            if (CommonUtil.CheckIfAnotherInstanceIsRunning("ALK")) 
+            {
+                MessageBox.Show("An instance of ALK is already running.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Environment.Exit(1);
+            }
             APIUtils.Start();
             //Notification
             Trinity.SignalR.Client signalrClient = Trinity.SignalR.Client.Instance;
@@ -319,7 +324,7 @@ namespace ALK
                     _timerCheckLogout.Stop();
                 }
             }
-            
+
         }
 
         private void NRIC_OnNRICSucceeded()

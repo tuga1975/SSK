@@ -22,7 +22,13 @@ namespace Trinity.NotificationServer
         internal WinFormsServer()
         {
             InitializeComponent();
-            
+
+            // Check if another instance of Notification Server is running
+            if (CommonUtil.CheckIfAnotherInstanceIsRunning("NS"))
+            {
+                MessageBox.Show("An instance of Notification Server is already running.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Environment.Exit(1);
+            }
         }
 
         private void ButtonStart_Click(object sender, EventArgs e)
