@@ -37,12 +37,12 @@ namespace ALK.CodeBehind
                 //this._web.RunScript("$('.status-text').css('color','#000').text('Please wait');");
                 Lib.LayerWeb.LoadPageHtml("SuperviseeParticulars.html", labelInfo);
                 System.Threading.Thread.Sleep(500);
-                Trinity.BE.PopupModel popupModel = new Trinity.BE.PopupModel();
-                popupModel.Title = "MUB and TT Labels \n\nPrinting in Progress";
-                popupModel.Message = "Please wait a moment";
-                popupModel.IsShowLoading = true;
-                popupModel.IsShowOK = false;
-                Lib.LayerWeb.InvokeScript("showPopupModal", JsonConvert.SerializeObject(popupModel));
+                //Trinity.BE.PopupModel popupModel = new Trinity.BE.PopupModel();
+                //popupModel.Title = "MUB and TT Labels \n\nPrinting in Progress";
+                //popupModel.Message = "Please wait a moment";
+                //popupModel.IsShowLoading = true;
+                //popupModel.IsShowOK = false;
+                //Lib.LayerWeb.InvokeScript("showPopupModal", JsonConvert.SerializeObject(popupModel));
 
                 System.Threading.Thread.Sleep(200);
 
