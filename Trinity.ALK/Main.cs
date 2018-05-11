@@ -9,6 +9,7 @@ using System.Threading;
 using System.Windows.Forms;
 using Trinity.Common;
 using Trinity.Common.Common;
+using Trinity.Common.Utils;
 using Trinity.DAL;
 using Trinity.Device;
 using Trinity.Device.Authentication;
@@ -116,10 +117,12 @@ namespace ALK
         }
         private void GetCardInfoSucceeded(string cardUID)
         {
+            LogManager.Debug("GetCardInfoSucceeded: " + cardUID);
             //MessageBox.Show(cardUID);
             // get local user info
             DAL_User dAL_User = new DAL_User();
             var user = dAL_User.GetUserBySmartCardId(cardUID);
+            LogManager.Debug("GetCardInfoSucceeded: user: " + JsonConvert.SerializeObject(user));
 
             // if local user is null, get user from centralized, and sync db
             //if (user == null)
@@ -332,6 +335,7 @@ namespace ALK
 
         private void SmartCard_OnSmartCardSucceeded()
         {
+            LogManager.Debug("SmartCard_OnSmartCardSucceeded");
             // Set application status is busy
             ApplicationStatusManager.Instance.IsBusy = true;
             LayerWeb.RunScript("$('[status-authentication]').text('');");
