@@ -63,6 +63,15 @@
 
     var dataSource = [];
 
+    function setMessageIsRead(notificationId) {
+        $table.bootstrapTable('updateByUniqueId', {
+            id: notificationId,
+            row: {
+                isReaded: true
+            }
+        });
+    }
+
     function getNotificationInCurrentTab(notification){
         var objNotify = JSON.parse(notification);
         dataSource.unshift({
@@ -128,6 +137,7 @@
             search: true,
             pageSize: 10,
             pageList: [10, 25, 50, 100],
+            uniqueId:'notificationId',
             columns: [{
                 field: 'source',
                 title: 'Source',
@@ -183,8 +193,8 @@
                             if (!row.isReaded) {
                                 api.server.updateReadedStatus(notificationId, function (isUpdateSuccessed) {
                                     $('#alertPopup').modal();
-                                    $table.bootstrapTable('updateRow', {
-                                        index: index,
+                                    $table.bootstrapTable('updateByUniqueId', {
+                                        id: notificationId,
                                         row: {
                                             isReaded: true
                                         }

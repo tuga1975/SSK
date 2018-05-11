@@ -111,7 +111,16 @@ namespace DutyOfficer
         private void OnDOReadMessage_Handler(object sender, NotificationInfo e)
         {
             if (!_isFirstTimeLoaded)
+            {
                 _jsCallCS.GetCountNotificationsUnread();
+                Lib.LayerWeb.Invoke((MethodInvoker)(() =>
+                {
+                    if (GetCurrentTab() == EnumDOTabName.Alerts)
+                    {
+                        this.LayerWeb.InvokeScript("setMessageIsRead", e.NotificationID);
+                    }
+                }));
+            }
         }
         private void OnBackendAPISend_Handler(object sender, NotificationInfo e)
         {
