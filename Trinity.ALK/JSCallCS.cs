@@ -613,17 +613,13 @@ namespace ALK
                 // MUB is placed on the holder
                 // Remove Status Words due to Trello#95
                 //this._web.RunScript("$('#mubStatus').css('color','#000').text('The MUB has been placed on the holder.');");
-                this._web.RunScript("$('#mubStatus').css('color','#000').text('');");
             }
             else
             {
                 LogManager.Debug("The MUB is not present.");
-
                 // MUB is placed on the holder
                 // Remove Status Words due to Trello#95
                 //this._web.RunScript("$('#mubStatus').css('color','#000').text('Please place the MUB on the holder.');");
-                this._web.RunScript("$('#mubStatus').css('color','#000').text('Please place your Master Urine Bottle and');");
-                this._web.RunScript("$('#ttStatus').css('color','#000').text('Test Tube in their respective holder.');");
             }
             if (_ttIsPresent != null && _ttIsPresent.Value)
             {
@@ -632,19 +628,16 @@ namespace ALK
                 // TT is placed on the holder
                 // Remove Status Words due to Trello#95
                 //this._web.RunScript("$('#ttStatus').css('color','#000').text('The TT has been placed on the holder.');");
-                this._web.RunScript("$('#ttStatus').css('color','#000').text('');");
             }
             else
             {
                 LogManager.Debug("The TT is not present.");
-
                 // TT is placed on the holder
                 // Remove Status Words due to Trello#95
                 //this._web.RunScript("$('#ttStatus').css('color','#000').text('Please place the TT on the holder.');");
-                this._web.RunScript("$('#mubStatus').css('color','#000').text('Please place your Master Urine Bottle and');");
-                this._web.RunScript("$('#ttStatus').css('color','#000').text('Test Tube in their respective holder.');");
             }
-
+            this._web.RunScript("$('#mubStatus').css('color','#000').text('Please place your Master Urine Bottle and');");
+            this._web.RunScript("$('#ttStatus').css('color','#000').text('Test Tube in their respective holder.');");
             if (_mubIsPresent != null && _mubIsPresent.Value && _ttIsPresent != null && _ttIsPresent.Value)
             {
                 // Sleep for 3 seconds and check status again
@@ -679,7 +672,7 @@ namespace ALK
                 LogManager.Debug("Starting MUB Applicator...");
                 // Remove Status Words due to Trello#95
                 //this._web.RunScript("$('#mubStatus').css('color','#000').text('The MUB Applicator is starting...');");
-                this._web.RunScript("$('#mubStatus').css('color','#000').text('');");
+                this._web.RunScript("$('#mubStatus').css('color','#000').text('MUB and TT Labels Printing in Progress. Please wait a moment.');");
 
                 this._web.RunScript("$('#ConfirmBtn').html('Starting Applicator...');");
                 // Start MUB Applicator
@@ -825,31 +818,27 @@ namespace ALK
                 LogManager.Debug("The MUB has been removed.");
                 // Remove Status Words due to Trello#95
                 //this._web.RunScript("$('#mubStatus').css('color','#000').text('The MUB has been removed.');");
-                this._web.RunScript("$('#mubStatus').css('color','#000').text('');");
             }
             else
             {
                 LogManager.Debug("The MUB is not removed. Please remove MUB.");
                 // Remove Status Words due to Trello#95
                 //this._web.RunScript("$('#mubStatus').css('color','#000').text('Please remove MUB.');");
-                this._web.RunScript("$('#mubStatus').css('color','#000').text('Please collect your Master Urine Bottle and ');");
-                this._web.RunScript("$('#ttStatus').css('color','#000').text('Test Tube, and verify your information.');");
             }
             if (_ttIsRemoved != null && _ttIsRemoved.Value)
             {
                 LogManager.Debug("The TT has been removed.");
                 // Remove Status Words due to Trello#95
                 //this._web.RunScript("$('#ttStatus').css('color','#000').text('The TT has been removed.');");
-                this._web.RunScript("$('#ttStatus').css('color','#000').text('');");
             }
             else
             {
                 LogManager.Debug("The TT is not removed. Please remove TT.");
                 // Remove Status Words due to Trello#95
                 //this._web.RunScript("$('#ttStatus').css('color','#000').text('Please remove TT.');");
-                this._web.RunScript("$('#mubStatus').css('color','#000').text('Please collect your Master Urine Bottle and ');");
-                this._web.RunScript("$('#ttStatus').css('color','#000').text('Test Tube, and verify your information.');");
             }
+            this._web.RunScript("$('#mubStatus').css('color','#000').text('Please collect your Master Urine Bottle and ');");
+            this._web.RunScript("$('#ttStatus').css('color','#000').text('Test Tube, and verify your information.');");
             if (_mubIsRemoved != null && _mubIsRemoved.Value && _ttIsRemoved != null && _ttIsRemoved.Value)
             {
                 // Sleep for 3 seconds and check status again
@@ -862,7 +851,7 @@ namespace ALK
                     LEDStatusLightingUtil.Instance.MUBStatusChanged -= CheckIfMUBAndTTRemoved_Callback;
                     LEDStatusLightingUtil.Instance.TTStatusChanged -= CheckIfMUBAndTTRemoved_Callback;
                     LEDStatusLightingUtil.Instance.StopMonitorMUBAndTT();
-
+                    HideTutorialVideos();
                     CloseMUBDoor();
                     CloseTTDoor();
                 }
@@ -1104,7 +1093,7 @@ namespace ALK
             LogManager.Debug("Complete printing and labelling.");
 
             // Hide all tutorial videos
-            HideTutorialVideos();
+            //HideTutorialVideos();
             // Complete test. Remove queue number from Queue Monitor
             Trinity.BE.User currentUser = getSuperviseeLogin();
             if (currentUser == null)
