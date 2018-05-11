@@ -349,7 +349,7 @@ namespace ALK
                 CheckTTPrintingLabellingProgress();
                 // Remove Status Words due to Trello#95
                 //this._web.RunScript("$('#mubStatus').css('color','#000').text('MUB label is being printed and labelled...');");
-                this._web.RunScript("$('#mubStatus').css('color','#000').text('');");
+                this._web.RunScript("$('#mubStatus').css('color','#000').text('MUB and TT Labels Printing in Progress. Please wait a moment.');");
                 //this._web.RunScript("$('#ttStatus').css('color','#000').text('TT label is being printed and labelled...');");
                 this._web.RunScript("$('#ttStatus').css('color','#000').text('');");
 
@@ -360,17 +360,17 @@ namespace ALK
             else
             {
                 _popupModel.Title = "Printing Failed";
-                _popupModel.Message = "Unable to print labels.\nPlease report to the Duty Officer";
+                _popupModel.Message = "Unable to print Labels.\nPlease report to the Duty Officer";
                 _popupModel.IsShowLoading = false;
                 _popupModel.IsShowOK = true;
 
                 if (!_PrintMUBSucceed)
                 {
-                    _popupModel.Message = "Unable to print MUB label.\nPlease report to the Duty Officer";
+                    _popupModel.Message = "Unable to print MUB Label.\nPlease report to the Duty Officer";
                 }
                 if (!_PrintTTSucceed)
                 {
-                    _popupModel.Message = "Unable to print TT label.\nPlease report to the Duty Officer";
+                    _popupModel.Message = "Unable to print TT Label.\nPlease report to the Duty Officer";
                 }
                 this._web.InvokeScript("showPopupModal", JsonConvert.SerializeObject(_popupModel));
                 _main._isPrintingMUBTT = false;
@@ -579,28 +579,6 @@ namespace ALK
             }
         }
 
-        //private void CheckIfMUBIsPresent()
-        //{
-        //    _mubIsPresent = false;
-        //    //this._web.RunScript("$('#mubStatus').css('color','#000').text('Checking if the MUB Applicator is present...');");
-        //    LogManager.Debug("Checking if the MUB is present...");
-        //    this._web.RunScript("$('#mubStatus').css('color','#000').text('Please place the MUB on the holder');");
-
-        //    // Check if MUB is present or not
-        //    LEDStatusLightingUtil.Instance.SendCommand_Async(EnumCommands.CheckIfMUBIsPresent, CheckIfMUBIsPresent_Callback);
-        //}
-
-        //private void CheckIfTTIsPresent()
-        //{
-        //    _ttIsPresent = false;
-        //    //this._web.RunScript("$('#ttStatus').css('color','#000').text('Checking if the TT is present...');");
-        //    LogManager.Debug("Checking if the TT is present...");
-        //    this._web.RunScript("$('#ttStatus').css('color','#000').text('Please place the TT on the holder');");
-
-        //    // Check if TT is present or not
-        //    LEDStatusLightingUtil.Instance.SendCommand_Async(EnumCommands.CheckIfTTIsPresent, CheckIfTTIsPresent_Callback);
-        //}
-
         private void CheckMUBAndTTPresence()
         {
             _mubIsPresent = null;
@@ -609,8 +587,8 @@ namespace ALK
             // Remove Status Words due to Trello#95
             //this._web.RunScript("$('#mubStatus').css('color','#000').text('Please place the MUB on the holder.');");
             //this._web.RunScript("$('#ttStatus').css('color','#000').text('Please place the TT on the holder.');");
-            this._web.RunScript("$('#mubStatus').css('color','#000').text('');");
-            this._web.RunScript("$('#ttStatus').css('color','#000').text('');");
+            this._web.RunScript("$('#mubStatus').css('color','#000').text('Please place your Master Urine Bottle and');");
+            this._web.RunScript("$('#ttStatus').css('color','#000').text('Test Tube in their respective holder.');");
 
             // Check if MUB is present or not
             LEDStatusLightingUtil.Instance.MUBStatusChanged += CheckMUBAndTTPresence_Callback;
@@ -644,7 +622,8 @@ namespace ALK
                 // MUB is placed on the holder
                 // Remove Status Words due to Trello#95
                 //this._web.RunScript("$('#mubStatus').css('color','#000').text('Please place the MUB on the holder.');");
-                this._web.RunScript("$('#mubStatus').css('color','#000').text('');");
+                this._web.RunScript("$('#mubStatus').css('color','#000').text('Please place your Master Urine Bottle and');");
+                this._web.RunScript("$('#ttStatus').css('color','#000').text('Test Tube in their respective holder.');");
             }
             if (_ttIsPresent != null && _ttIsPresent.Value)
             {
@@ -662,7 +641,8 @@ namespace ALK
                 // TT is placed on the holder
                 // Remove Status Words due to Trello#95
                 //this._web.RunScript("$('#ttStatus').css('color','#000').text('Please place the TT on the holder.');");
-                this._web.RunScript("$('#ttStatus').css('color','#000').text('');");
+                this._web.RunScript("$('#mubStatus').css('color','#000').text('Please place your Master Urine Bottle and');");
+                this._web.RunScript("$('#ttStatus').css('color','#000').text('Test Tube in their respective holder.');");
             }
 
             if (_mubIsPresent != null && _mubIsPresent.Value && _ttIsPresent != null && _ttIsPresent.Value)
@@ -852,7 +832,8 @@ namespace ALK
                 LogManager.Debug("The MUB is not removed. Please remove MUB.");
                 // Remove Status Words due to Trello#95
                 //this._web.RunScript("$('#mubStatus').css('color','#000').text('Please remove MUB.');");
-                this._web.RunScript("$('#mubStatus').css('color','#000').text('');");
+                this._web.RunScript("$('#mubStatus').css('color','#000').text('Please collect your Master Urine Bottle and ');");
+                this._web.RunScript("$('#ttStatus').css('color','#000').text('Test Tube, and verify your information.');");
             }
             if (_ttIsRemoved != null && _ttIsRemoved.Value)
             {
@@ -866,7 +847,8 @@ namespace ALK
                 LogManager.Debug("The TT is not removed. Please remove TT.");
                 // Remove Status Words due to Trello#95
                 //this._web.RunScript("$('#ttStatus').css('color','#000').text('Please remove TT.');");
-                this._web.RunScript("$('#ttStatus').css('color','#000').text('');");
+                this._web.RunScript("$('#mubStatus').css('color','#000').text('Please collect your Master Urine Bottle and ');");
+                this._web.RunScript("$('#ttStatus').css('color','#000').text('Test Tube, and verify your information.');");
             }
             if (_mubIsRemoved != null && _mubIsRemoved.Value && _ttIsRemoved != null && _ttIsRemoved.Value)
             {
