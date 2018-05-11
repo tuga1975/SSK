@@ -327,7 +327,8 @@ namespace ALK
                 if (currentUser == null)
                 {
                     // Check why current user is null
-                    this._web.RunScript("$('#mubStatus').css('color','#000').text('The current user is null');");
+                    // Remove Status Words due to Trello#95
+                    //this._web.RunScript("$('#mubStatus').css('color','#000').text('The current user is null');");
                     _main._isPrintingMUBTT = false;
                     RefreshSessionTimeout();
                     return;
@@ -346,8 +347,12 @@ namespace ALK
 
                 CheckMUBPrintingLabellingProgress();
                 CheckTTPrintingLabellingProgress();
-                this._web.RunScript("$('#mubStatus').css('color','#000').text('MUB label is being printed and labelled...');");
-                this._web.RunScript("$('#ttStatus').css('color','#000').text('TT label is being printed and labelled...');");
+                // Remove Status Words due to Trello#95
+                //this._web.RunScript("$('#mubStatus').css('color','#000').text('MUB label is being printed and labelled...');");
+                this._web.RunScript("$('#mubStatus').css('color','#000').text('');");
+                //this._web.RunScript("$('#ttStatus').css('color','#000').text('TT label is being printed and labelled...');");
+                this._web.RunScript("$('#ttStatus').css('color','#000').text('');");
+
                 this._web.RunScript("$('#divSave').hide();");
                 this._web.RunScript("$('#ConfirmBtn').html('Waiting...');");
                 this._web.RunScript("$('#lblNextAction').text('CheckIfMUBAndTTIsRemoved');");
