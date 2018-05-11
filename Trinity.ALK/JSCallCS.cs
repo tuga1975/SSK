@@ -851,6 +851,8 @@ namespace ALK
                     LEDStatusLightingUtil.Instance.MUBStatusChanged -= CheckIfMUBAndTTRemoved_Callback;
                     LEDStatusLightingUtil.Instance.TTStatusChanged -= CheckIfMUBAndTTRemoved_Callback;
                     LEDStatusLightingUtil.Instance.StopMonitorMUBAndTT();
+                    this._web.RunScript("$('#mubStatus').css('color','#000').text('');");
+                    this._web.RunScript("$('#ttStatus').css('color','#000').text('');");
                     HideTutorialVideos();
                     CloseMUBDoor();
                     CloseTTDoor();
