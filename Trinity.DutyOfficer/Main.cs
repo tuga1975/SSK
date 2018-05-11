@@ -33,6 +33,13 @@ namespace DutyOfficer
         public Main()
         {
             InitializeComponent();
+
+            // Check if another instance of DO App is running
+            if (CommonUtil.CheckIfAnotherInstanceIsRunning("DOApp"))
+            {
+                MessageBox.Show("An instance of DO Application is already running.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Environment.Exit(1);
+            }
             //Notification
             Trinity.SignalR.Client.Instance.OnDeviceStatusChanged += OnDeviceStatusChanged_Handler;
             Trinity.SignalR.Client.Instance.OnNewNotification += OnNewNotification_Handler;

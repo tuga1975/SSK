@@ -38,6 +38,13 @@ namespace ARK
         public Main()
         {
             InitializeComponent();
+
+            // Check if another instance of ARK is running
+            if (CommonUtil.CheckIfAnotherInstanceIsRunning("ARK"))
+            {
+                MessageBox.Show("An instance of ARK is already running.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Environment.Exit(1);
+            }
             APIUtils.Start();
             //Notification
             Trinity.SignalR.Client.Instance.OnQueueCompleted += OnQueueCompleted_Handler;

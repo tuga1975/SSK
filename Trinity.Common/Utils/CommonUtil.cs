@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using ZXing.QrCode;
 
@@ -34,7 +35,7 @@ namespace Trinity.Common
             //QR code on both MUB and UB label will follow the data size = 91 characters in total
             if (printUB)
             {
-                contentQRCode = labelInfo.MarkingNo + "*" + labelInfo.NRIC.PadLeft(9, '0') + "*" + labelInfo.Name.PadLeft(60, '_') + "*" + labelInfo.DrugType+ "*";
+                contentQRCode = labelInfo.MarkingNo + "*" + labelInfo.NRIC.PadLeft(9, '0') + "*" + labelInfo.Name.PadLeft(60, '_') + "*" + labelInfo.DrugType + "*";
             }
             else
             {
@@ -172,7 +173,7 @@ namespace Trinity.Common
 
             return plaintext;
         }
-        
+
         public static string GetDeviceStatusText(EnumDeviceStatus deviceStatus)
         {
             switch (deviceStatus)
@@ -387,6 +388,19 @@ namespace Trinity.Common
                 graphics.DrawImage(image, 0, 0, newWidth, newHeight);
 
             return newImage;
+        }
+
+        private static Mutex mutex = null;
+        public static bool CheckIfAnotherInstanceIsRunning(string appName)
+        {
+            bool createdNew;
+            mutex = new Mutex(true, appName, out createdNew);
+
+            if (!createdNew)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }
