@@ -7,11 +7,11 @@ using System.Windows.Forms;
 
 namespace Enrolment.CodeBehind
 {
-    class Suppervisee
+    class Supervisee
     {
         WebBrowser _web;
         JSCallCS jSCallCS;
-        public Suppervisee(WebBrowser web)
+        public Supervisee(WebBrowser web)
         {
             _web = web;
             jSCallCS = new JSCallCS(web);

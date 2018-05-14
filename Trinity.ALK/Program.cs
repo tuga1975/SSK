@@ -31,29 +31,5 @@ namespace ALK
                 Environment.Exit(1);
             }
         }
-
-        /// <summary>
-        /// Just backup, remove it later. Use ApplicationStatusManager instead
-        /// </summary>
-        private static void StartHealthChecker()
-        {
-            // Health checker
-            CameraMonitor.Start();
-            DocumentScannerMonitor.Start();
-            FingerprintReaderMonitor.Start();
-            SmartCardReaderMonitor.Start();
-            MUBLabelPrinterMonitor.Start();
-            TTLabelPrinterMonitor.Start();
-
-            // ALK is initialisation for use.
-            // Turn on BLUE Light
-            string comPort = ConfigurationManager.AppSettings["COMPort"];
-            int baudRate = int.Parse(ConfigurationManager.AppSettings["BaudRate"]);
-            string parity = ConfigurationManager.AppSettings["Parity"];
-            Task.Factory.StartNew(ApplicationStatusManager.Instance.StartInitialization);
-            LEDStatusLightingUtil.Instance.OpenPort("ALK", comPort, baudRate, parity);
-            LEDStatusLightingUtil.Instance.TurnOffAllLEDs();
-            LEDStatusLightingUtil.Instance.SwitchBLUELightOnOff(true);
-        }
     }
 }

@@ -125,7 +125,7 @@ namespace ARK.CodeBehind.Authentication
                 }
                 else
                 {
-                    // Create a session object to store Suppervisee information
+                    // Create a session object to store Supervisee information
                     Session session = Session.Instance;
                     session.IsSmartCardAuthenticated = true;
                     session.IsFingerprintAuthenticated = true;

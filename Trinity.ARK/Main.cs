@@ -25,7 +25,7 @@ namespace ARK
     {
         private JSCallCS _jsCallCS;
         private CodeBehind.Authentication.NRIC _nric;
-        private CodeBehind.Suppervisee _suppervisee;
+        private CodeBehind.Supervisee _supervisee;
         private NavigatorEnums _currentPage;
         private EventCenter _eventCenter;
         private int _smartCardFailed;
@@ -84,7 +84,7 @@ namespace ARK
             _nric.OnShowMessage += OnShowMessage;
 
             // Supervisee
-            _suppervisee = new CodeBehind.Suppervisee(LayerWeb);
+            _supervisee = new CodeBehind.Supervisee(LayerWeb);
 
             _eventCenter = EventCenter.Default;
 
@@ -705,7 +705,7 @@ namespace ARK
                     }
                     this._timerCheckLogout.Start();
                 }
-                _suppervisee.Start();
+                _supervisee.Start();
             }
 
             // set current page

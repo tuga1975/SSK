@@ -8,11 +8,11 @@ using Trinity.Common;
 
 namespace ARK.CodeBehind
 {
-    class Suppervisee
+    class Supervisee
     {
         WebBrowser _web;
 
-        public Suppervisee(WebBrowser web)
+        public Supervisee(WebBrowser web)
         {
             _web = web;
         }

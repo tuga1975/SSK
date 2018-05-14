@@ -27,7 +27,7 @@ namespace Enrolment
         private CodeBehind.Authentication.NRIC _nric;
         private CodeBehind.Login _login;
         private CodeBehind.WebcamCapture _webcamCapture;
-        private CodeBehind.Suppervisee _suppervisee;
+        private CodeBehind.Supervisee _supervisee;
         private NavigatorEnums _currentPage;
         //private CodeBehind.Authentication.Fingerprint _fingerprint;
         private int _smartCardFailed;
@@ -79,7 +79,7 @@ namespace Enrolment
             //login
             _login = new CodeBehind.Login(LayerWeb);
             // Supervisee
-            _suppervisee = new CodeBehind.Suppervisee(LayerWeb);
+            _supervisee = new CodeBehind.Supervisee(LayerWeb);
             //webcam capture
             _webcamCapture = new CodeBehind.WebcamCapture(LayerWeb);
 

@@ -40,11 +40,10 @@
             // 
             this.LayerWeb.Dock = System.Windows.Forms.DockStyle.Fill;
             this.LayerWeb.Location = new System.Drawing.Point(0, 0);
-            this.LayerWeb.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.LayerWeb.MinimumSize = new System.Drawing.Size(27, 25);
+            this.LayerWeb.MinimumSize = new System.Drawing.Size(20, 20);
             this.LayerWeb.Name = "LayerWeb";
             this.LayerWeb.ScriptErrorsSuppressed = true;
-            this.LayerWeb.Size = new System.Drawing.Size(1203, 786);
+            this.LayerWeb.Size = new System.Drawing.Size(901, 639);
             this.LayerWeb.TabIndex = 0;
             this.LayerWeb.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.LayerWeb_DocumentCompleted);
             // 
@@ -52,10 +51,9 @@
             // 
             this.pictureBoxHead.BackColor = System.Drawing.Color.Transparent;
             this.pictureBoxHead.BackgroundImage = global::Enrolment.Properties.Resources.transparentHead;
-            this.pictureBoxHead.Location = new System.Drawing.Point(160, 183);
-            this.pictureBoxHead.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pictureBoxHead.Location = new System.Drawing.Point(120, 149);
             this.pictureBoxHead.Name = "pictureBoxHead";
-            this.pictureBoxHead.Size = new System.Drawing.Size(957, 603);
+            this.pictureBoxHead.Size = new System.Drawing.Size(718, 490);
             this.pictureBoxHead.TabIndex = 2;
             this.pictureBoxHead.TabStop = false;
             this.pictureBoxHead.Visible = false;
@@ -63,28 +61,27 @@
             // pictureBox1
             // 
             this.pictureBox1.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.pictureBox1.Location = new System.Drawing.Point(89, 183);
-            this.pictureBox1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.pictureBox1.Location = new System.Drawing.Point(49, 149);
+            this.pictureBox1.Margin = new System.Windows.Forms.Padding(2);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(957, 603);
+            this.pictureBox1.Size = new System.Drawing.Size(718, 490);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox1.TabIndex = 1;
             this.pictureBox1.TabStop = false;
             // 
             // Main
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
-            this.ClientSize = new System.Drawing.Size(1224, 716);
+            this.ClientSize = new System.Drawing.Size(918, 582);
             this.Controls.Add(this.pictureBoxHead);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.LayerWeb);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "Main";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Trinity Enrolment";
+            this.Text = "Enrolment";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Main_FormClosing);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Main_FormClosed);

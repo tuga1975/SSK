@@ -9,12 +9,12 @@ using Trinity.DAL;
 
 namespace ALK.CodeBehind
 {
-    class SupperviseeParticulars
+    class SuperviseeParticulars
     {
         WebBrowser _web;
         private JSCallCS _jsCallCS;
         private Main _main;
-        public SupperviseeParticulars(WebBrowser web, JSCallCS _jsCallCS, Main _main)
+        public SuperviseeParticulars(WebBrowser web, JSCallCS _jsCallCS, Main _main)
         {
             this._web = web;
             this._jsCallCS = _jsCallCS;
