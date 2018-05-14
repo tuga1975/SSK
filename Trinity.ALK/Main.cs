@@ -234,6 +234,7 @@ namespace ALK
 
             if (_isFirstTimeLoaded)
             {
+                _isFirstTimeLoaded = false;
                 // Start page
                 //NavigateTo(NavigatorEnums.Authentication_SmartCard);
 
@@ -279,8 +280,6 @@ namespace ALK
                 {
                     NavigateTo(NavigatorEnums.Authentication_SmartCard);
                 }
-
-                _isFirstTimeLoaded = false;
             }
             // ALK is ready to use - all is well
             // Turn on GREEN Light

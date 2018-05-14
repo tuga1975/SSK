@@ -35,7 +35,7 @@ namespace ALK.CodeBehind
             {
                 var dalLabel = new DAL_Labels();
                 var lable = dalLabel.GetByUserID(supervisee.UserId, EnumLabelType.MUB, DateTime.Today);
-                if (lable==null)
+                if (lable == null)
                 {
                     string MarkingNumber = new DAL_SettingSystem().GenerateMarkingNumber();
                     dalLabel.Insert(new Trinity.BE.Label
@@ -59,20 +59,21 @@ namespace ALK.CodeBehind
                         LastStation = EnumStation.ALK
                     });
                     lable = dalLabel.GetByUserID(supervisee.UserId, EnumLabelType.MUB, DateTime.Today);
-                    labelInfo = new LabelInfo
-                    {
-                        UserId = lable.UserId,
-                        Name = lable.Name,
-                        NRIC = lable.NRIC,
-                        Label_Type = EnumLabelType.MUB,
-                        Date = DateTime.Now.ToString("dd/MM/yyyy"),
-                        CompanyName = lable.CompanyName,
-                        LastStation = EnumStation.ALK,
-                        MarkingNo = lable.MarkingNo,
-                        DrugType = "NA",
-                        QRCode = lable.QRCode
-                    };
+
                 }
+                labelInfo = new LabelInfo
+                {
+                    UserId = lable.UserId,
+                    Name = lable.Name,
+                    NRIC = lable.NRIC,
+                    Label_Type = EnumLabelType.MUB,
+                    Date = DateTime.Now.ToString("dd/MM/yyyy"),
+                    CompanyName = lable.CompanyName,
+                    LastStation = EnumStation.ALK,
+                    MarkingNo = lable.MarkingNo,
+                    DrugType = "NA",
+                    QRCode = lable.QRCode
+                };
             }
             else if (supervisee.Role.Equals(EnumUserRoles.Supervisee, StringComparison.OrdinalIgnoreCase))
             {
@@ -108,7 +109,7 @@ namespace ALK.CodeBehind
                     QRCode = lable.QRCode
                 };
             }
-            
+
             using (var ms = new System.IO.MemoryStream(labelInfo.QRCode))
             {
                 System.IO.Directory.CreateDirectory(String.Format("{0}/Temp", CSCallJS.curDir));
@@ -121,13 +122,13 @@ namespace ALK.CodeBehind
             //profile model 
             _web.LoadPageHtml("SuperviseeParticulars.html", labelInfo);
             _main._isPrintingMUBTT = false;
-            if (_main._timerCheckLogout!=null)
+            if (_main._timerCheckLogout != null)
             {
                 if (_main._timerCheckLogout.Enabled)
                     _main._timerCheckLogout.Stop();
                 _main._timerCheckLogout.Start();
             }
-            
+
         }
     }
 }
