@@ -57,3 +57,11 @@ function refreshQueueNumbers(currentQueueNumber, nextQueueNumberList) {
         }
     }
 }
+
+window.addEventListener('message', function (event) {
+    if (event.data.indexOf('ReturnGenerateImageMUBAndTTLabel;') > -1) {
+        api.loading(false);
+        var dataReturn = JSON.parse(event.data.split('ReturnGenerateImageMUBAndTTLabel;')[1]);
+        api.server.CallPrintingMUBAndTT(dataReturn.action, dataReturn.json, dataReturn.canvas);
+    }
+}); 

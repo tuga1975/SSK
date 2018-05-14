@@ -53,6 +53,7 @@
         -webkit-box-shadow: 0px 1px 15px rgba(0,0,0,0.4);
         box-shadow: 0px 1px 15px rgba(0,0,0,0.4);
     }
+
     #parent-content {
         overflow: visible;
     }
@@ -111,27 +112,33 @@
         </div>
     </div>
 </form>
-
+<iframe src="GenerateImageMUBAndTTLabel.html" style="width:0px;height:0px;overflow:hidden;position:relative;z-index:-1;" name="IframeGenerateImageMUBAndTTLabel"></iframe>
 <script type="text/javascript">
+    function GenerateImageMUBAndTTLabel(data) {
+        api.loading(true);
+        window.frames.IframeGenerateImageMUBAndTTLabel.postMessage('GenerateImageMUBAndTTLabel;' + data, "*");
+    }
     api.ready(function (model) {
-        $('#UserName').val(model.Name);
-        $('#NRIC').val(model.NRIC);
-        $('#Date').val(model.Date);
-        $('#MarkingNumber').val(model.MarkingNo);
-        var srcQRCode = "../../Temp/QRCode_" + model.NRIC + ".png";
-        $("#imgQRCode").attr("src", srcQRCode);
+        if (model != null) {
+            $('#UserName').val(model.Name);
+            $('#NRIC').val(model.NRIC);
+            $('#Date').val(model.Date);
+            //$('#MarkingNumber').val(model.MarkingNo);
+            //var srcQRCode = "../../Temp/QRCode_" + model.NRIC + ".png";
+            //$("#imgQRCode").attr("src", srcQRCode);
 
-        $("#ConfirmBtn").click(function (e) {
-            var action = $("#lblNextAction").text();
-            var json = JSON.stringify(model);
-            //api.server.MappingTemplateMUBAndTTLabels(json);
-            api.server.ConfirmAction(action, json);
-            e.preventDefault(); // avoid to execute the actual submit of the form.
-        });
+            $("#ConfirmBtn").click(function (e) {
+                var action = $("#lblNextAction").text();
+                var json = JSON.stringify(model);
+                //api.server.MappingTemplateMUBAndTTLabels(json);
+                api.server.ConfirmAction(action, json);
+                e.preventDefault(); // avoid to execute the actual submit of the form.
+            });
 
-        $('#CancelBtn').click(function () {
-            api.server.DeleteQRCodeImageFileTemp();
-            api.server.LogOut();
-        });
+            $('#CancelBtn').click(function () {
+                api.server.DeleteQRCodeImageFileTemp();
+                api.server.LogOut();
+            });
+        }
     });
 </script>

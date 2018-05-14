@@ -198,6 +198,7 @@
     <Content Include="View\html\Authentication\mov_bbb.mp4" />
     <Content Include="View\html\Authentication\NRIC.html" />
     <Content Include="View\html\Authentication\SmartCard.html" />
+    <Content Include="View\html\GenerateImageMUBAndTTLabel.html" />
     <Content Include="View\html\hourglass.gif" />
     <Content Include="View\html\Layout.html" />
     <Content Include="View\html\Layout_QueueNumber.html" />

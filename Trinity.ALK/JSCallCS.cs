@@ -486,7 +486,9 @@ namespace ALK
         private void StartToPrintMUBAndTTLabel(LabelInfo labelInfo)
         {
             LogManager.Debug("Start printing MUB and TT labels...");
-            _web.LoadPageHtml("PrintingTemplates/MUBLabelTemplate.html", new object[] { "PrintMUBAndTTLabel", labelInfo });
+            _web.InvokeScript("GenerateImageMUBAndTTLabel", JsonConvert.SerializeObject(new object[] { "PrintMUBAndTTLabel", labelInfo }));
+
+            //_web.LoadPageHtml("PrintingTemplates/MUBLabelTemplate.html", new object[] { "PrintMUBAndTTLabel", labelInfo });
         }
 
         #region MUB printing & labelling sample process
