@@ -22,7 +22,7 @@ namespace ALK
         private JSCallCS _jsCallCS;
         private EventCenter _eventCenter;
         private CodeBehind.Authentication.NRIC _nric;
-        private CodeBehind.SupperviseeParticulars _supperviseeParticulars;
+        private CodeBehind.SuperviseeParticulars _superviseeParticulars;
         private NavigatorEnums _currentPage;
 
         private int _smartCardFailed;
@@ -81,7 +81,7 @@ namespace ALK
             _nric.OnShowMessage += OnShowMessage;
 
             // Supervisee
-            _supperviseeParticulars = new CodeBehind.SupperviseeParticulars(LayerWeb, _jsCallCS, this);
+            _superviseeParticulars = new CodeBehind.SuperviseeParticulars(LayerWeb, _jsCallCS, this);
 
             _eventCenter = EventCenter.Default;
             _eventCenter.OnNewEvent += EventCenter_OnNewEvent;
@@ -720,12 +720,12 @@ namespace ALK
             }
             else if (navigatorEnum == NavigatorEnums.Supervisee_Particulars)
             {
-                _supperviseeParticulars.Start();
+                _superviseeParticulars.Start();
                 //btnConfirm.Enabled = true;
             }
             else if (navigatorEnum == NavigatorEnums.Supervisee_NRIC)
             {
-                _supperviseeParticulars.Start();
+                _superviseeParticulars.Start();
                 CSCallJS.DisplayNRICLogin(LayerWeb);
             }
 

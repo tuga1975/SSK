@@ -1,0 +1,163 @@
+﻿
+<style>
+    #parent-content {
+        top: 0px;
+        height: 100%;
+    }
+
+    [panel-login] {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        -webkit-transform: translate(-50%, -50%);
+        -moz-transform: translate(-50%, -50%);
+        -ms-transform: translate(-50%, -50%);
+        -o-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+        max-width:900px;
+    }
+    #parent-content {
+        background-image: url('../images/Background.png') !important;
+        background-size: cover !important;
+    }
+    #header {
+        visibility: hidden;
+    }
+
+    .z-depth-2 {
+        -webkit-box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+    }
+
+    .color-dark {
+        background-color: #334352;
+    }
+
+    .login-form a {
+        color: #209cdd;
+    }
+
+    .login-form .card {
+        border: 0;
+        border-radius: 0;
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+        margin-bottom: 0;
+    }
+
+        .login-form .card .card-footer {
+            border: 0;
+            border-radius: 0;
+            margin-bottom: 0;
+            background-color: transparent;
+        }
+
+    .form-material .form-control {
+        border: 0;
+        color: #fff;
+    }
+
+    .form-material .input-group .input-group-text {
+        border: 0;
+        border-radius: 0;
+        background-color: transparent;
+        color: #209CDD;
+    }
+
+    .form-material .btn {
+        background: #1CACF6;
+        color: #fff;
+    }
+
+    .copyright {
+        color: #5D5D5D;
+        font-size: 0.8rem;
+    }
+
+    .link {
+        display: inline-block;
+        padding: 0;
+    }
+
+        .link li {
+            display: inline-block;
+        }
+
+            .link li:after {
+                content: "|";
+                padding: 5px 0;
+            }
+
+            .link li:last-of-type:after {
+                content: "";
+                padding: 5px 0;
+            }
+
+            .link li a {
+                color: #000;
+                border-bottom: 1px solid #000;
+            }
+</style>
+
+<div class="container" panel-login>
+    <div class="login-form">
+        <div class="card-group z-depth-2 row">
+            <div class="card col-md-5 col-xs-12">
+                <div class="card-body">
+                    <div class="container">
+                        <img src="../images/logoCNB.svg" alt="Logo" style="height:auto;width:100%;max-height:80px !important;" />
+                        <h1 class="my-5 text-muted">
+                            Enrolment
+                        </h1>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <p class="copyright">
+                        Copyright &copy; 2018 Central Narcotics Bureau (CNB). All Rights Reserved.
+                    </p>
+                    <ul class="link">
+                        <li>
+                            <a href="#">Privacy policy</a>
+                        </li>
+                        <li>
+                            <a href="#">Terms of Use</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card col-md-7 col-xs-12 color-dark text-white">
+                <div class="card-body">
+                    <h1>Login</h1>
+                    <form class="form-material mt-3">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="username">
+                                    <i class="fa fa-user"></i>
+                                </span>
+                            </div>
+                            <input type="text" class="form-control" placeholder="Username"
+                                   aria-label="Username" aria-describedby="username" id="inputUsername">
+                        </div>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="password">
+                                    <i class="fa fa-lock"></i>
+                                </span>
+                            </div>
+                            <input type="password" class="form-control" placeholder="Password"
+                                   aria-label="password" aria-describedby="password" id="inputPassword">
+                        </div>
+                        <!--<a href="#">Forget password ?</a>-->
+
+                        <button type="button" class="btn btn-lg btn-block my-5" data-toggle="modal" data-target="#reset_password" onclick="api.server.Login($('#inputUsername').val(), $('#inputPassword').val()); return false;">
+                            Login
+                        </button>
+                        <!--<button type="button" class="btn btn-lg btn-block my-5" data-toggle="modal" data-target="#reset_password" onclick="alert('a');">
+                            Login
+                        </button>-->
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

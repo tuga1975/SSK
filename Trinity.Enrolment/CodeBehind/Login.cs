@@ -7,19 +7,18 @@ using System.Windows.Forms;
 
 namespace Enrolment.CodeBehind
 {
-    class Suppervisee
+    class Login
     {
         WebBrowser _web;
-        JSCallCS jSCallCS;
-        public Suppervisee(WebBrowser web)
+
+        public Login(WebBrowser web)
         {
             _web = web;
-            jSCallCS = new JSCallCS(web);
         }
 
         public void Start()
         {
-            jSCallCS.LoadListSupervisee();
+            _web.LoadPageHtml("Login.html");
         }
     }
 }
