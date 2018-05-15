@@ -566,7 +566,6 @@ namespace ALK
                     FacialRecognition.Instance.Dispose();
                 }));
 
-                session = Session.Instance;
                 Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
                 string errorMessage = "User '" + user.Name + "' cannot complete facial authentication";
                 Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(user.UserId, "Facial authentication failed", errorMessage, EnumNotificationTypes.Error);
