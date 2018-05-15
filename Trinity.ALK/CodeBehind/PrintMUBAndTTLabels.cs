@@ -33,24 +33,11 @@ namespace ALK.CodeBehind
             try
             {
                 Lib.LayerWeb.SetLoading(false);
-                //this._web.LoadPageHtml("PrintingMUBAndTTLabels.html");
-                //this._web.RunScript("$('.status-text').css('color','#000').text('Please wait');");
-                Lib.LayerWeb.LoadPageHtml("SuperviseeParticulars.html", labelInfo);
-                System.Threading.Thread.Sleep(500);
-                //Trinity.BE.PopupModel popupModel = new Trinity.BE.PopupModel();
-                //popupModel.Title = "MUB and TT Labels \n\nPrinting in Progress";
-                //popupModel.Message = "Please wait a moment";
-                //popupModel.IsShowLoading = true;
-                //popupModel.IsShowOK = false;
-                //Lib.LayerWeb.InvokeScript("showPopupModal", JsonConvert.SerializeObject(popupModel));
-
                 System.Threading.Thread.Sleep(200);
-
                 PrinterMonitor printerMonitor = PrinterMonitor.Instance;
                 printerMonitor.OnPrintMUBLabelSucceeded += OnPrintMUBLabelsSucceeded;
                 printerMonitor.OnPrintTTLabelSucceeded += OnPrintTTLabelsSucceeded;//RaisePrintMUBAndTTLabelsSucceededEvent;
                 printerMonitor.OnMonitorException += OnPrintMUBAndTTLabelsException;
-                
                 Session session = Session.Instance;
                 if (session.IsAuthenticated)
                 {
@@ -59,9 +46,7 @@ namespace ALK.CodeBehind
                     //System.Threading.Thread.Sleep(1000);
                     tasks.Add(Task.Run(() => { PrintTTLabel(printerMonitor, labelInfo); }));
                     Task.WaitAll(tasks.ToArray());
-
-                    Lib.LayerWeb.InvokeScript("closePopup");
-
+                    
                     _jsCallCs.OnPrintingAndLabellingCompleted();
                 }
             }

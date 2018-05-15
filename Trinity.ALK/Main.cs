@@ -38,9 +38,9 @@ namespace ALK
         public Main()
         {
             InitializeComponent();
-           
+
             // Check if another instance of ALK is running
-            if (CommonUtil.CheckIfAnotherInstanceIsRunning("ALK")) 
+            if (CommonUtil.CheckIfAnotherInstanceIsRunning("ALK"))
             {
                 MessageBox.Show("An instance of ALK is already running.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Environment.Exit(1);
@@ -552,37 +552,56 @@ namespace ALK
 
         private void Main_OnFacialRecognitionFailed()
         {
-            FacialRecognition.Instance.OnFacialRecognitionFailed -= Main_OnFacialRecognitionFailed;
-            FacialRecognition.Instance.OnFacialRecognitionSucceeded -= Main_OnFacialRecognitionSucceeded;
-            FacialRecognition.Instance.OnFacialRecognitionProcessing -= Main_OnFacialRecognitionProcessing;
-            FacialRecognition.Instance.OnCameraInitialized -= Main_OnCameraInitialized;
-
-            this.Invoke((MethodInvoker)(() =>
-            {
-                FacialRecognition.Instance.Dispose();
-            }));
 
             Session session = Session.Instance;
-            Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
-            string errorMessage = "User '" + user.Name + "' cannot complete facial authentication";
-            Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(user.UserId, "Facial authentication failed", errorMessage, EnumNotificationTypes.Error);
+            if (!session.IsFacialAuthenticated)
+            {
+                FacialRecognition.Instance.OnFacialRecognitionFailed -= Main_OnFacialRecognitionFailed;
+                FacialRecognition.Instance.OnFacialRecognitionSucceeded -= Main_OnFacialRecognitionSucceeded;
+                FacialRecognition.Instance.OnFacialRecognitionProcessing -= Main_OnFacialRecognitionProcessing;
+                FacialRecognition.Instance.OnCameraInitialized -= Main_OnCameraInitialized;
 
-            // show message box to user
-            //MessageBox.Show("Facial authentication failed", "Facial Authentication", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            Trinity.BE.PopupModel popupModel = new Trinity.BE.PopupModel();
-            popupModel.Title = "Authorization Failed";
-            popupModel.Message = "Facial Recognition failed.\nPlease report to the Duty Officer";
-            popupModel.IsShowLoading = false;
-            popupModel.IsShowOK = true;
+                this.Invoke((MethodInvoker)(() =>
+                {
+                    FacialRecognition.Instance.Dispose();
+                }));
 
-            LayerWeb.InvokeScript("showPopupModal", JsonConvert.SerializeObject(popupModel));
+                Session session = Session.Instance;
+                Trinity.BE.User user = (Trinity.BE.User)session[CommonConstants.USER_LOGIN];
+                string errorMessage = "User '" + user.Name + "' cannot complete facial authentication";
+                Trinity.SignalR.Client.Instance.SendToAppDutyOfficers(user.UserId, "Facial authentication failed", errorMessage, EnumNotificationTypes.Error);
 
-            // navigate to smartcard login page
-            NavigateTo(NavigatorEnums.Authentication_SmartCard);
+                // show message box to user
+                //MessageBox.Show("Facial authentication failed", "Facial Authentication", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Trinity.BE.PopupModel popupModel = new Trinity.BE.PopupModel();
+                popupModel.Title = "Authorization Failed";
+                popupModel.Message = "Facial Recognition failed.\nPlease report to the Duty Officer";
+                popupModel.IsShowLoading = false;
+                popupModel.IsShowOK = true;
 
-            // reset counter
-            _fingerprintFailed = 0;
+                LayerWeb.InvokeScript("showPopupModal", JsonConvert.SerializeObject(popupModel));
 
+                // navigate to smartcard login page
+                NavigateTo(NavigatorEnums.Authentication_SmartCard);
+
+                // reset counter
+                _fingerprintFailed = 0;
+            }
+            try
+            {
+                StackTrace trace = new StackTrace();
+                int caller = 1;
+
+                StackFrame frame = trace.GetFrame(caller);
+
+                string callerName = frame.GetMethod().Name;
+                LogManager.Debug("Main_OnFacialRecognitionFailed: " + callerName);
+
+            }
+            catch (Exception)
+            {
+
+            }
         }
 
         #endregion

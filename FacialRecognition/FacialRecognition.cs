@@ -116,7 +116,7 @@ public class FacialRecognition
                 libFace.Show_Window(formLocation, new Size(800, 450));
                 OnFacialRecognitionProcessing();
                 //Thread.Sleep(1000);
-                libFace.FaceDetect += new AT_Facial_API.Library.FaceDetected(lib_FaceDetect);
+                libFace.FaceDetect += lib_FaceDetect;
                 libFace.StartTracking();
 
                 try
@@ -162,6 +162,7 @@ public class FacialRecognition
         {
             //formAvarta.Hide();
             libFace.StopTracking();
+            libFace.FaceDetect -= lib_FaceDetect;
             libFace.Close_Window();
             libFace.Photo_JPG = null;
             libFace.Deinit();
