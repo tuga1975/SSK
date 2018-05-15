@@ -474,7 +474,7 @@ namespace ALK
                 catch (Exception ex)
                 {
                     LogManager.Error("Error in ConfirmAction:" + ex.Message);
-                    this._web.ShowMessage("Printing Failed", "Error occurred during initialization. " + ex.Message + "<br/>Please report to Duty Officer.");
+                    this._web.ShowMessage("Printing Failed", "Error occurred during initialization of MUB/TT Printing. " + ex.Message + "<br/>Please report to Duty Officer.");
                 }
             }
         }
