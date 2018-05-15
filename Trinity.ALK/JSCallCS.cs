@@ -162,7 +162,9 @@ namespace ALK
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Trinity.ALK.JSCallCS.PrintMUBLabels_OnPrintMUBLabelFailed. Details:" + ex.Message);
+                LogManager.Error("Error in PrintMUBLabels_OnPrintMUBLabelFailed. Details:" + ex.Message);
+                //MessageBox.Show("Trinity.ALK.JSCallCS.PrintMUBLabels_OnPrintMUBLabelFailed. Details:" + ex.Message);
+                this._web.ShowMessage("Printing Failed", "Cannot print MUB Label.<br/>" + ex.Message);
             }
             _main._isPrintingMUBTT = false;
             RefreshSessionTimeout();
@@ -378,6 +380,12 @@ namespace ALK
             }
         }
 
+        /// <summary>
+        /// This function is called by Javascript after the canvas was generated
+        /// </summary>
+        /// <param name="action"></param>
+        /// <param name="jsonModel"></param>
+        /// <param name="base64String"></param>
         public void CallPrintingMUBAndTT(string action, string jsonModel, string base64String)
         {
             string base64StringCanvas = base64String.Split(',')[1];
@@ -409,56 +417,64 @@ namespace ALK
                 _main._isPrintingMUBTT = true;
                 LogManager.Info("MUB and TT Printers are connected.");
                 this._web.RunScript("$('#divSave').hide();");
-                //_currentAction = action;
-                _currentLabelInfo = JsonConvert.DeserializeObject<LabelInfo>(json);
-                if (action == "InitializeMUBAndTTApplicator")
+
+                try
                 {
-                    // Initialize MUB Applicator
-                    InitializeMUBApplicator();
-                    InitializeTTApplicator();
-                }
-                else if (action == "CheckIfMUBAndTTIsPresent")
-                {
-                    // MUB Applicator is ready
-                    // Check if MUB is present or not
-                    //CheckIfMUBIsPresent();
-                    //CheckIfTTIsPresent();
-                    CheckMUBAndTTPresence();
-                }
-                else if (action == "StartMUBAndTTApplicator")
-                {
-                    //CheckIfMUBIsPresent();
-                    //CheckIfTTIsPresent();
-                    CheckMUBAndTTPresence();
-                }
-                else if (action == "PrintMUBAndTTLabel")
-                {
-                    if (_mubApplicatorStarted && _ttApplicatorStarted && _currentLabelInfo != null)
+                    _currentLabelInfo = JsonConvert.DeserializeObject<LabelInfo>(json);
+                    if (action == "InitializeMUBAndTTApplicator")
                     {
-                        // Start to print
-                        StartToPrintMUBAndTTLabel(_currentLabelInfo);
+                        // Initialize MUB Applicator
+                        InitializeMUBApplicator();
+                        InitializeTTApplicator();
                     }
-                    else
+                    else if (action == "CheckIfMUBAndTTIsPresent")
                     {
-                        if (_currentLabelInfo == null)
+                        // MUB Applicator is ready
+                        // Check if MUB is present or not
+                        //CheckIfMUBIsPresent();
+                        //CheckIfTTIsPresent();
+                        CheckMUBAndTTPresence();
+                    }
+                    else if (action == "StartMUBAndTTApplicator")
+                    {
+                        //CheckIfMUBIsPresent();
+                        //CheckIfTTIsPresent();
+                        CheckMUBAndTTPresence();
+                    }
+                    else if (action == "PrintMUBAndTTLabel")
+                    {
+                        if (_mubApplicatorStarted && _ttApplicatorStarted && _currentLabelInfo != null)
                         {
-                            LogManager.Error("Label info is null.");
+                            // Start to print
+                            StartToPrintMUBAndTTLabel(_currentLabelInfo);
+                        }
+                        else
+                        {
+                            if (_currentLabelInfo == null)
+                            {
+                                LogManager.Error("Label info is null.");
+                            }
                         }
                     }
+                    else if (action == "CheckIfMUBAndTTIsRemoved")
+                    {
+                        this._web.RunScript("$('#mubStatus').css('color','#000').text('Please collect your Master Urine Bottle and ');");
+                        this._web.RunScript("$('#ttStatus').css('color','#000').text('Test Tube, and verify your information.');");
+                        //CheckIfMUBIsRemoved();
+                        //CheckIfTTIsRemoved();
+                        CheckIfMUBAndTTRemoved();
+                    }
+                    else if (action == "OpenMUBAndTTDoor")
+                    {
+                        this._web.RunScript("$('#divSave').hide();");
+                        OpenMUBDoor();
+                        OpenTTDoor();
+                    }
                 }
-                else if (action == "CheckIfMUBAndTTIsRemoved")
+                catch (Exception ex)
                 {
-                    this._web.RunScript("$('#mubStatus').css('color','#000').text('Please collect your Master Urine Bottle and ');");
-                    this._web.RunScript("$('#ttStatus').css('color','#000').text('Test Tube, and verify your information.');");
-                    //CheckIfMUBIsRemoved();
-                    //CheckIfTTIsRemoved();
-                    CheckIfMUBAndTTRemoved();
-                }
-                else if (action == "OpenMUBAndTTDoor")
-                {
-                    this._web.RunScript("$('#divSave').hide();");
-                    OpenMUBDoor();
-                    OpenTTDoor();
+                    LogManager.Error("Error in ConfirmAction:" + ex.Message);
+                    this._web.ShowMessage("Printing Failed", "Error occurred during initialization. " + ex.Message + "<br/>Please report to Duty Officer.");
                 }
             }
         }
@@ -688,7 +704,8 @@ namespace ALK
             catch (Exception ex)
             {
                 LogManager.Error("Error in StartMUBApplicator. Details:" + ex.Message);
-                MessageBox.Show("Error in StartMUBApplicator. Details:" + ex.Message);
+                //MessageBox.Show("Error in StartMUBApplicator. Details:" + ex.Message);
+                this._web.ShowMessage("Printing Failed", "Cannot start MUB Application.<br/>" + ex.Message);
                 _main._isPrintingMUBTT = false;
                 RefreshSessionTimeout();
             }
