@@ -1,26 +1,87 @@
-﻿<form id="manualLoginFrm">
+﻿<style type="text/css">
+    [group-input] {
+        position: relative;
+        margin-bottom: 30px;
+    }
+
+        [group-input]::before {
+            content: attr(group-input);
+            color: #209CDD;
+            font-size: 100%;
+            position: absolute;
+            z-index: 0;
+            top: 6px;
+            left: 0px;
+            max-width: 160px;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        [group-input][scandoc="1"]::before {
+            padding-right: 10px;
+            background-image: url(../img/star.png);
+            background-position: top right;
+            background-repeat: no-repeat;
+            background-size: 6px;
+        }
+
+        [group-input] > input, [group-input] > select {
+            border: none;
+            font-size: 100%;
+            width: 100%;
+            padding-left: 180px;
+            position: relative;
+            z-index: 1;
+            background-color: transparent;
+            outline: none;
+            height: 100%;
+            padding-top: 8px;
+            padding-bottom: 8px;
+        }
+
+        [group-input] > input, [group-input] > select {
+            border-bottom: 1px solid #ccc;
+        }
+
+            [group-input] > input:focus, [group-input] > input:hover, [group-input] > select:focus, [group-input] > select:hover {
+                border-bottom: 1px solid #1CACF6;
+            }
+
+    :-ms-input-placeholder {
+        font-style: italic;
+    }
+
+    .underline {
+        display: inline-block;
+        padding-bottom: 7px !important;
+        border-bottom: 2px solid #ff005a !important;
+    }
+
+    #manualLoginFrm {
+        margin-top: 50px;
+    }
+
+    .contentForm {
+        width: 100%;
+    }
+
+    .contentWrapper {
+        padding: 0px;
+    }
+</style>
+<form id="manualLoginFrm">
     <!--<div class="titles"><span class="underline">Login</span></div>-->
-    <div name-page="Login"></div>
-    <br />
-    <div class="contentWrapper" style="margin-top:40px;">
+    <div class="titles"><span class="underline">Login</span></div><br />
+    <div class="contentWrapper">
         <div class="contentForm">
-            <div class="container contentPrinting text-center center-block ">
-                <div class="input-group" data-tip="Enter your NRIC">
-                    <!--<span class="input-group-addon">NRIC:</span>-->
-                    <input id="loginNRIC" type="text" class="form-control pri" name="loginNRIC" placeholder="NRIC" />
-                </div>
-                <br />
-                <div class="input-group" data-tip="Enter your Password">
-                    <!--<span class="input-group-addon">Password:</span>-->
-                    <input id="loginPassword" type="password" class="form-control pri" name="loginPassword" placeholder="Password" />
-                </div>
-            </div>
+            <div group-input="NRIC"><input type="text" placeholder="Enter NRIC" name="loginNRIC" id="loginNRIC"></div>
+            <div group-input="Password" style="margin-bottom:15px;"><input type="password" placeholder="Enter Password" name="loginPassword" id="loginPassword"></div>
         </div>
     </div>
     <div id="divSave">
-        <!--<button type="button" class="btn btn-dark" id="CancelBtn" onclick="window.external.LoadPage('Authentication/SmartCard.html');">CANCEL</button>-->
-        <button type="button" class="btn btn-dark" id="CancelBtn" onclick="api.server.LoadAuthentication_SmartCard(); return;">CANCEL</button>
-        <button type="button" class="btn btn-dark" id="LoginBtn">SUBMIT</button>
+        <button type="button" class="btn btn-dark" id="CancelBtn" style="border-radius:5px;margin-right:20px;" onclick="api.server.LoadAuthentication_SmartCard(); return;">CANCEL</button>
+        <button type="button" class="btn btn-dark" id="LoginBtn" style="border-radius:5px;background-color:#1CACF6;color:#FFF !important;">SUBMIT</button>
     </div>
 </form>
 <script type="text/javascript">
@@ -51,5 +112,5 @@
             return true;
         }
         return false;
-    });    
+    });
 </script>
