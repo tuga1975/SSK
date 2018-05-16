@@ -5,6 +5,8 @@ using System.Net.Mail;
 using System.Threading.Tasks;
 using System.Linq;
 using System.Configuration;
+using System.Drawing;
+using System.IO;
 
 namespace Trinity.BackendAPI.ScheduledTask
 {
@@ -14,12 +16,25 @@ namespace Trinity.BackendAPI.ScheduledTask
         {
             try
             {
+                DAL.DAL_Notification dal_NoTi = new DAL.DAL_Notification();
+
                 var arrayUser = new DAL.DAL_User().GetFromAbsent(DateTime.Today);
                 string html = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath("~/EmailTemplate/EmailTemplate.html"), System.Text.Encoding.UTF8);
                 Attachment oAttachment = new Attachment(System.Web.Hosting.HostingEnvironment.MapPath("~/EmailTemplate/logoSendMail.png"));
                 oAttachment.ContentId = Guid.NewGuid().ToString().Trim();
                 DAL.DAL_Messages dal_message = new DAL.DAL_Messages();
 
+                string strBase64 = string.Empty;
+
+                using (Image image = Image.FromFile(System.Web.Hosting.HostingEnvironment.MapPath("~/EmailTemplate/logoSendMail.png")))
+                {
+                    using (MemoryStream m = new MemoryStream())
+                    {
+                        image.Save(m, image.RawFormat);
+                        byte[] imageBytes = m.ToArray();
+                        strBase64 = "data:image/png;base64," + Convert.ToBase64String(imageBytes);
+                    }
+                }
                 foreach (var recepient in arrayUser)
                 {
                     MailMessage message = new MailMessage();
@@ -46,6 +61,8 @@ namespace Trinity.BackendAPI.ScheduledTask
                     };
 
                     client.SendAsync(message, null);
+
+                    dal_NoTi.InsertNotification(null, recepient.UserId, message.Subject, message.Body.Replace("cid:" + oAttachment.ContentId, strBase64), false, DateTime.Now, null, EnumNotificationTypes.Notification, EnumStation.DUTYOFFICER);
                 }
             }
             catch (Exception)
