@@ -31,6 +31,13 @@ namespace Trinity.BE
         {
             get
             {
+                return Datetime.HasValue ? Datetime.Value.ToString("dd/MM/yyyy hh:mm tt") : string.Empty;
+            }
+        }
+        public string StrDate
+        {
+            get
+            {
                 return Datetime.HasValue ? Datetime.Value.ToString("dd/MM/yyyy") : string.Empty;
             }
         }

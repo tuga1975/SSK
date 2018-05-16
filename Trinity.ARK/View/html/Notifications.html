@@ -504,7 +504,7 @@
                 $('#nextNoti').addClass('active');
                 $('#prevNoti').addClass('active');
                 api.server.GetUserName(model[_prev].ToUserId, function (to) {
-                    $('#notifications').html('<p>To: ' + to + '</p><p><strong>' + model[_prev].Subject + '</strong></p><p>' + model[_prev].Datetime + '</p><br/><p>' + model[_prev].Content + '</p>');
+                    $('#notifications').html('<p>To: ' + to + '</p><p><strong>' + model[_prev].Subject + '</strong></p><p>' + model[_prev].StrDateTime + '</p><br/><p>' + model[_prev].Content + '</p>');
                 });
 
                 $('[prevID]').val(_prev);
@@ -513,7 +513,7 @@
             }
             else if (_prev == 0) {
                 api.server.GetUserName(model[_first].ToUserId, function (to) {
-                    $('#notifications').html('<p>To: ' + to + '</p><p><strong>' + model[_first].Subject + '</strong></p><p>' + model[_first].Datetime + '</p><br/><p>' + model[_first].Content + '</p>');
+                    $('#notifications').html('<p>To: ' + to + '</p><p><strong>' + model[_first].Subject + '</strong></p><p>' + model[_first].StrDateTime + '</p><br/><p>' + model[_first].Content + '</p>');
                 });
                 _count = 1;
                 $('#currentNumber').text(_count);
@@ -533,7 +533,7 @@
                 $('#nextNoti').addClass('active');
                 $('#prevNoti').addClass('active');
                 api.server.GetUserName(model[_next].ToUserId, function (to) {
-                    $('#notifications').html('<p>To: ' + to + '</p><p><strong>' + model[_next].Subject + '</strong></p><p>' + model[_next].Datetime + '</p><br/><p>' + model[_next].Content + '</p>');
+                    $('#notifications').html('<p>To: ' + to + '</p><p><strong>' + model[_next].Subject + '</strong></p><p>' + model[_next].StrDateTime + '</p><br/><p>' + model[_next].Content + '</p>');
                 });
 
 
@@ -543,7 +543,7 @@
             }
             else if (_next == _last) {
                 api.server.GetUserName(model[_last].ToUserId, function (to) {
-                    $('#notifications').html('<p>To: ' + to + '</p><p><strong>' + model[_last].Subject + '</strong></p><p>' + model[_last].Datetime + '</p><br/><p>' + model[_last].Content + '</p>');
+                    $('#notifications').html('<p>To: ' + to + '</p><p><strong>' + model[_last].Subject + '</strong></p><p>' + model[_last].StrDateTime + '</p><br/><p>' + model[_last].Content + '</p>');
                 });
                 _count = _modelLength;
                 $('#currentNumber').text(_count);
