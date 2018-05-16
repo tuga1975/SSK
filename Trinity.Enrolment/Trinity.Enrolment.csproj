@@ -135,6 +135,18 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="View\fonts\.DS_Store" />
+    <None Include="View\fonts\helveticaneue.ttf" />
+    <None Include="View\fonts\helveticaneuebold.ttf" />
+    <None Include="View\fonts\helveticaneuebolditalic.ttf" />
+    <None Include="View\fonts\helveticaneuecondensedblack.ttf" />
+    <None Include="View\fonts\helveticaneuecondensedbold.ttf" />
+    <None Include="View\fonts\helveticaneueitalic.ttf" />
+    <None Include="View\fonts\helveticaneuelight.ttf" />
+    <None Include="View\fonts\helveticaneuelightitalic.ttf" />
+    <None Include="View\fonts\helveticaneuemedium.ttf" />
+    <None Include="View\fonts\helveticaneueultralight.ttf" />
+    <None Include="View\fonts\helveticaneueultralightitalic.ttf" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
