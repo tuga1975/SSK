@@ -462,7 +462,7 @@
             $('#currentNumber').text(1);
             var id = model[_first].ID.toString();
             api.server.GetUserName(model[_first].ToUserId, function (to) {
-                $('#notifications').html('<p>To: ' + to + '</p><p><strong>' + model[_first].Subject + '</strong></p><p>' + model[_first].Datetime + '</p><br/><p>' + model[_first].Content + '</p>');
+                $('#notifications').html('<p>To: ' + to + '</p><p><strong>' + model[_first].Subject + '</strong></p><p>' + model[_first].StrDateTime + '</p><br/><p>' + model[_first].Content + '</p>');
             });
             $('[nextID]').val(_next);
             $('[prevID]').val(_prev);
