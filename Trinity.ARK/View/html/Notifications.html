@@ -4,7 +4,6 @@
         <a href="javascript:;" onclick="api.server.LoadPageSupervisee();"><b class="ion-navicon-round" style="font-size:21px;color:#1cacf6;">Back to Main menu</b></a>
     </div>
 </div>-->
-
 <style>
     .z-depth-2 {
         -webkit-box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
@@ -494,11 +493,10 @@
 
         }
         $('#prevNoti').click(function () {
-            api.server.StopSpeakNotification();
             _prev = parseInt($('[prevID]').val());
             if (_prev > 0) {
-                //alert(_prev);
-                _prev = (_prev - 1);
+                _prev -= 1;
+                api.server.StopSpeakNotification();
                 _count = (_count - 1);
                 $('#currentNumber').text(_count);
                 $('#nextNoti').addClass('active');
@@ -506,29 +504,22 @@
                 api.server.GetUserName(model[_prev].ToUserId, function (to) {
                     $('#notifications').html('<p>To: ' + to + '</p><p><strong>' + model[_prev].Subject + '</strong></p><p>' + model[_prev].StrDateTime + '</p><br/><p>' + model[_prev].Content + '</p>');
                 });
-
+                api.server.ChangeReadStatus(model[_prev].ID.toString());
                 $('[prevID]').val(_prev);
                 $('[nextID]').val((_prev + 1));
                 api.server.SpeakNotification(model[_prev].ID.toString());
+                if (_prev == 0) {
+                    $('#prevNoti').removeClass('active');
+                }
             }
-            else if (_prev == 0) {
-                api.server.GetUserName(model[_first].ToUserId, function (to) {
-                    $('#notifications').html('<p>To: ' + to + '</p><p><strong>' + model[_first].Subject + '</strong></p><p>' + model[_first].StrDateTime + '</p><br/><p>' + model[_first].Content + '</p>');
-                });
-                _count = 1;
-                $('#currentNumber').text(_count);
-                $('#prevNoti').removeClass('active');
-            }
+
         });
         $('#nextNoti').click(function () {
-            api.server.StopSpeakNotification();
+
             _next = parseInt($('[nextID]').val());
-
-            if (_next < _last) {
-
-                _next = (_next + 1);
+            if (_next < _modelLength) {
+                api.server.StopSpeakNotification();
                 _count = (_count + 1);
-
                 $('#currentNumber').text(_count);
                 $('#nextNoti').addClass('active');
                 $('#prevNoti').addClass('active');
@@ -536,54 +527,15 @@
                     $('#notifications').html('<p>To: ' + to + '</p><p><strong>' + model[_next].Subject + '</strong></p><p>' + model[_next].StrDateTime + '</p><br/><p>' + model[_next].Content + '</p>');
                 });
 
-
-                $('[nextID]').val(_next);
-                $('[prevID]').val((_next - 1));
+                api.server.ChangeReadStatus(model[_next].ID.toString());
+                $('[nextID]').val(_next + 1);
+                $('[prevID]').val((_next));
                 api.server.SpeakNotification(model[_next].ID.toString());
-            }
-            else if (_next == _last) {
-                api.server.GetUserName(model[_last].ToUserId, function (to) {
-                    $('#notifications').html('<p>To: ' + to + '</p><p><strong>' + model[_last].Subject + '</strong></p><p>' + model[_last].StrDateTime + '</p><br/><p>' + model[_last].Content + '</p>');
-                });
-                _count = _modelLength;
-                $('#currentNumber').text(_count);
-                $('#nextNoti').removeClass('active');
+                if (_next + 1 == _modelLength) {
+                    $('#nextNoti').removeClass('active');
+                }
             }
         });
-
-        //var carouselEl = $('.carousel');
-        //var carouselItems = carouselEl.find('.item');
-        //carouselEl.carousel({
-        //}).on('slide.bs.carousel', function (event) {
-
-        //})
-
-
-        //$('.carousel-control.left').click(function () {
-        //    var hasPrev = carouselItems.siblings('.active').prev().length;
-        //    if (hasPrev) {
-        //        var id = carouselItems.siblings('.active').prev().attr('id');
-        //        api.server.ChangeReadStatus(id);
-        //        api.server.SpeakNotification(id);
-        //    }
-        //    else {
-        //        var id = model[0].ID.toString();
-        //        api.server.SpeakNotification(id);
-        //    }
-        //});
-
-        //$('.carousel-control.right').click(function () {
-        //    var hasNext = carouselItems.siblings('.active').next().length;
-        //    if (hasNext) {
-        //        var id = carouselItems.siblings('.active').next().attr('id');
-        //        api.server.ChangeReadStatus(id);
-        //        api.server.SpeakNotification(id);
-        //    }
-        //    else {
-        //        var id = model[0].ID.toString();
-        //        api.server.SpeakNotification(id);
-        //    }
-        //});
     });
 
     api.server.GetNextAppointmentDate(function (_date) {

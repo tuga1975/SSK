@@ -513,25 +513,32 @@ namespace Trinity.DAL
         public void ChangeReadStatus(string notificationId)
         {
 
-            var localRepo = _localUnitOfWork.GetRepository<DBContext.Notification>();
-            var centralRepo = _centralizedUnitOfWork.GetRepository<DBContext.Notification>();
-
-            var dbLocalNotification = GetNotification(Guid.Parse(notificationId), true);
-            if (dbLocalNotification != null)
+            Trinity.DAL.DBContext.Notification noti = _localUnitOfWork.DataContext.Notifications.FirstOrDefault(d => d.NotificationID == notificationId && (!d.IsRead.HasValue || !d.IsRead.Value));
+            if (noti != null)
             {
-                dbLocalNotification.IsRead = true;
-                localRepo.Update(dbLocalNotification);
+                noti.IsRead = true;
+                _localUnitOfWork.GetRepository<DBContext.Notification>().Update(noti);
                 _localUnitOfWork.Save();
             }
+            //var localRepo = _localUnitOfWork.GetRepository<DBContext.Notification>();
+            //var centralRepo = _centralizedUnitOfWork.GetRepository<DBContext.Notification>();
+
+            //var dbLocalNotification = GetNotification(Guid.Parse(notificationId), true);
+            //if (dbLocalNotification != null)
+            //{
+            //    dbLocalNotification.IsRead = true;
+            //    localRepo.Update(dbLocalNotification);
+            //    _localUnitOfWork.Save();
+            //}
 
 
-            var dbCentralNotification = GetNotification(Guid.Parse(notificationId), false);
-            if (dbCentralNotification != null)
-            {
-                dbCentralNotification.IsRead = true;
-                centralRepo.Update(dbCentralNotification);
-                _centralizedUnitOfWork.Save();
-            }
+            //var dbCentralNotification = GetNotification(Guid.Parse(notificationId), false);
+            //if (dbCentralNotification != null)
+            //{
+            //    dbCentralNotification.IsRead = true;
+            //    centralRepo.Update(dbCentralNotification);
+            //    _centralizedUnitOfWork.Save();
+            //}
 
         }
     }
