@@ -127,7 +127,7 @@ namespace ALK
             // get local user info
             DAL_User dAL_User = new DAL_User();
             var user = dAL_User.GetUserBySmartCardId(cardUID);
-            LogManager.Debug("GetCardInfoSucceeded: user: " + JsonConvert.SerializeObject(user));
+            //LogManager.Debug("GetCardInfoSucceeded: user: " + JsonConvert.SerializeObject(user));
 
             // if local user is null, get user from centralized, and sync db
             //if (user == null)
