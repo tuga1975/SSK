@@ -86,9 +86,10 @@ namespace ARK
                 return;
             }
         }
-
+        private bool isSpeaking = false;
         public void SpeakNotification(string notificationId)
         {
+            isSpeaking = true;
             DAL_Notification dalNotify = new DAL_Notification();
             string content = dalNotify.GetNotification(notificationId);
             APIUtils.TextToSpeech.Speak(content);
@@ -685,6 +686,11 @@ namespace ARK
         
         public void LoadPageSupervisee()
         {
+            if (isSpeaking)
+            {
+                StopSpeakNotification();
+                isSpeaking = false;
+            }
             main.NavigateTo(NavigatorEnums.Supervisee);
         }
 
